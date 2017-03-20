@@ -1,0 +1,55 @@
+configuration: Debug
+
+environment:
+  app_version: '7.1.0'
+
+version: '%app_version%.{build}'
+
+clone_depth: 1 
+
+install:
+  - git submodule update --init --recursive
+
+assembly_info:
+  patch: true
+  file: SolutionInfo.*	
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"	
+
+cache:
+  packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+
+before_build:
+  - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
+  - nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility 
+  - nuget sources add -name serializer -source https://ci.appveyor.com/nuget/ospsuite-serializer 
+  - nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting 
+  - nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding 
+  - nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
+  - nuget sources add -name funcparser -source https://ci.appveyor.com/nuget/ospsuite-funcparser 
+  - nuget sources add -name simmodel -source https://ci.appveyor.com/nuget/ospsuite-simmodel
+  - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes-282
+  - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
+  - nuget restore
+
+build:
+  verbosity: minimal
+  project: MoBi.sln
+
+test:
+  assemblies:
+    - MoBi.Tests.dll
+    - MoBi.UI.Tests.dll
+
+  categories:
+    except:
+      - IntegrationTests
+
+skip_commits:
+  files:
+    - '*.md'
+
+notifications:
+  - provider: Slack
+    incoming_webhook:      
+      secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyF1h7st5qNdNezFp6T+bWXqrcZ4q/smtPcJ7LkUFHL46JDYUFlIL8FDz+ApX/vP+x0=

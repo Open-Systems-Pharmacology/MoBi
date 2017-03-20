@@ -1,0 +1,680 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9DFDB6C9-FB74-4578-AAAF-F89C07BD4414}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MoBi</RootNamespace>
+    <AssemblyName>MoBi.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Data.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.4\lib\net452\DevExpress.Data.v16.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.4\lib\net452\DevExpress.Utils.v16.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FakeItEasy, Version=2.3.3.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FakeItEasy.2.3.3\lib\net40\FakeItEasy.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="libsbmlcsP">
+      <HintPath>..\..\pre\libsbmlcsP.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MPFitLib, Version=1.1.0.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Draw, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Draw.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Instruments, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Instruments.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Layout, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Layout.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Pdf, Version=5.1.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Pdf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Svg, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Svg.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Xml, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Assets, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.21\lib\net452\OSPSuite.Assets.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.BDDHelper">
+      <HintPath>..\..\packages\OSPSuite.BDDHelper.2.0.0.1\lib\net45\OSPSuite.BDDHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Core, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.21\lib\net452\OSPSuite.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.DataBinding">
+      <HintPath>..\..\packages\OSPSuite.DataBinding.2.0.0.1\lib\net45\OSPSuite.DataBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.FuncParser">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.21\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Presentation, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.21\lib\net452\OSPSuite.Presentation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Serializer">
+      <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.SimModel">
+      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.1\lib\net45\OSPSuite.SimModel.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.TeXReporting">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.1\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Utility">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.1\lib\net45\OSPSuite.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="SX">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.2.8\lib\net45\SX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net451\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Application\AddBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Application\BaseForSpecs.cs" />
+    <Compile Include="Application\BuildConfigurationUpdaterSpecs.cs" />
+    <Compile Include="Application\BuildingBlockVersionUpdaterSpecs.cs" />
+    <Compile Include="Application\CheckNameVisitorSpecs.cs" />
+    <Compile Include="Application\DimensionConverterSpecs.cs" />
+    <Compile Include="Application\EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommandSpecs.cs" />
+    <Compile Include="Application\EditUseDerivedValuesCommandSpecs.cs" />
+    <Compile Include="Application\EntityExtensionSpecs.cs" />
+    <Compile Include="Application\MoBiContextSpecs.cs" />
+    <Compile Include="Application\MoBiCoreGlobalsForSpecs.cs" />
+    <Compile Include="Application\MoBiDimensionFactorySpecs.cs" />
+    <Compile Include="Application\MoBiMergedDimensionFactorySpecs.cs" />
+    <Compile Include="Application\MoleculeBuilderToDtoMoleculeBuilderMapperSpecs.cs" />
+    <Compile Include="Application\MolWeightConverterSpecs.cs" />
+    <Compile Include="Application\ProjectMetaDataSpecs.cs" />
+    <Compile Include="Application\ProjectUpdate\DimensionRetrieverSpecs.cs" />
+    <Compile Include="Application\ProjectUpdate\ParameterStarValuesUpdaterSpecs.cs" />
+    <Compile Include="Application\ProjectUpdate\ProjectUpdaterSpecs.cs" />
+    <Compile Include="Application\ProjectUpdate\SpatialStructureUpdaterSpecs.cs" />
+    <Compile Include="Application\ReactionToDTOReactionMapperSpecs.cs" />
+    <Compile Include="Application\StoichiometricStringCreaterSpecs.cs" />
+    <Compile Include="Application\DimensionValidatorSpecs.cs" />
+    <Compile Include="ContainerExtensionForSpecs.cs" />
+    <Compile Include="Core\AddChartTemplateToBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\BuildConfigurationFactorySpecs.cs" />
+    <Compile Include="Core\Commands\AddChartTemplateToSimulationSettingsCommandSpecs.cs" />
+    <Compile Include="Core\Commands\AddFormulaUsablePathCommandSpecs.cs" />
+    <Compile Include="Core\Commands\AddMoleculeStartValueToBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\AddObjectBaseItemSpecs.cs" />
+    <Compile Include="Core\AdjustFormulasVisitorSpecs.cs" />
+    <Compile Include="Core\Commands\AddParameterStartValueFromQuantityInSimulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\AddParameterStartValueToBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\AddParameterToContainerCommandSpecs.cs" />
+    <Compile Include="Core\Commands\AddReactionPartnerToEductCollectionSpecs.cs" />
+    <Compile Include="Core\Commands\AddValuePointCommandSpecs.cs" />
+    <Compile Include="Core\Commands\BuildingBlockChangeBaseCommandExtensionsSpecs.cs" />
+    <Compile Include="Core\Commands\ChangeModifierCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ChangeMoleculeTypeCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ChangeStartValueFormulaCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ChangeMoleculeStartValueNameCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ChangeTableFormulaWithOffsetOffsetObjectPathCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ChangeParameterStartValueNameCommandSpecs.cs" />
+    <Compile Include="Core\Commands\CloneManagerForBuildingBlockForSpecs.cs" />
+    <Compile Include="Core\Commands\ChangeTableFormulaWithOffsetTableObjectPathCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ChangeVariableNameCommandSpecs.cs" />
+    <Compile Include="Core\Commands\CommandHelperForSpecs.cs" />
+    <Compile Include="Core\Commands\EditFormulaAliasCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditFormulaStringCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditMoleculeStartValuePathCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditParameterBuildModeInBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditParameterCanBeVariedInPopulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditParameterDescriptionInBuildingBlockComandSpecs.cs" />
+    <Compile Include="Core\Commands\EditParameterFormulaInBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditParameterNameInBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditParameterRHSFormulaInBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditParameterStartValuePathCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditParameterTagCommandAtSumFormulaSpecs.cs" />
+    <Compile Include="Core\Commands\EditPathAtUsablePathCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditPropertyCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditReactionPartnerMoleculeNameCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditReactionPartnerStoichiometricCoefficientCommandSpecs.cs" />
+    <Compile Include="Core\Commands\MoveDiagramNodeSpecs.cs" />
+    <Compile Include="Core\Commands\RemoveChartTemplateFromSimulationSettingsCommandSpecs.cs" />
+    <Compile Include="Core\Commands\RemoveContainerFromSpatialStructureCommandSpecs.cs" />
+    <Compile Include="Core\Commands\RemoveMoleculeStartValueFromBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\RemoveParameterStartValueFromBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\RemoveSimulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\RemoveValuePointFromTableFormulaCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ResetParamterValuesToDefaultFromStartValuesInSimulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ResetQuantityValueInBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ResetQuantityValueInSimulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetConstantFormulaValueCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetContainerModeCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetMoleculeListsCommandSpecs.cs" />
+    <Compile Include="Core\Commands\RenameModelCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetParameterDimensionInBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetParameterStartValueWithUnitCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetQuantityUnitInSimulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetQuantityValueInSimulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetRestartSolverInValuePointCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetTableFormulaXUnitCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetTableFormulaYUnitCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetValuePointCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SwapBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SynchronizeMoleculeStartValueCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SynchronizeParameterStartValueCommandSpecs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\Commands\UpdateDimensionInObserverBuilderCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateDimensionInParameterStartValueCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateDimensionOfFormulaUsablePathCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateDistributedFormulaCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateMoleculeStartValueInBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateMoleculeStartValueIsPresentCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateMoleculeStartValueScaleDivisorCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateParameterStartValuesInBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateSimulationCommandSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Converter313To32Specs.cs" />
+    <Compile Include="Core\DataRepositoryExtensionsSpecs.cs" />
+    <Compile Include="Core\DataViewExtensionsSpecs.cs" />
+    <Compile Include="Core\DeserializedReferenceResolverSpecs.cs" />
+    <Compile Include="Core\FormulaCachePresenterSpecs.cs" />
+    <Compile Include="Core\GroupRepositorySpecs.cs" />
+    <Compile Include="Core\Mapper\ApplicationBuilderToDTOApplicationBuilderMapperSpecs.cs" />
+    <Compile Include="Core\Mapper\MoleculeStartValuesBuildingBlockToParameterDataTableMapperSpecs.cs" />
+    <Compile Include="Core\Mapper\ParameterListToSimulationParameterDataTableMapperSpecs.cs" />
+    <Compile Include="Core\Mapper\ParameterStartValueToDTOParameterStartValueMapperSpecs.cs" />
+    <Compile Include="Core\Mapper\ReactionBuildingBlockToReactionDataTableMapperSpecs.cs" />
+    <Compile Include="Core\MoBiProjectSpecs.cs" />
+    <Compile Include="Core\MoBiReactionBuildingBlockSpecs.cs" />
+    <Compile Include="Core\MoBiRegisterAllVisitorSpecs.cs" />
+    <Compile Include="Core\Commands\EditIsAdvancesParameterPropertyCommandSpecs.cs" />
+    <Compile Include="Core\Mapper\ParameterToDTOParameterMapperSpecs.cs" />
+    <Compile Include="Core\MoBiSimulationDiffBuilderSpecs.cs" />
+    <Compile Include="Core\MoBiSimulationSpecs.cs" />
+    <Compile Include="Core\MoBiSpatialStructureFactorySpecs.cs" />
+    <Compile Include="Core\MoBiSpatialStructureSpecs.cs" />
+    <Compile Include="Core\MoBiUnregisterAllVisitorSpecs.cs" />
+    <Compile Include="Core\NameCorrectorSpecs.cs" />
+    <Compile Include="Core\ObjectTypeResolverSpecs.cs" />
+    <Compile Include="Core\ProjectClassifiableUpdaterAfterDeserializationSpecs.cs" />
+    <Compile Include="Core\ProjectConverterLoggerSpecs.cs" />
+    <Compile Include="Core\RemoveChartTemplateFromBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\SBML\AssignmentImporterSpecs.cs" />
+    <Compile Include="Core\SBML\ASTHandlerSpecs.cs" />
+    <Compile Include="Core\SBML\CompartmentImporterSpecs.cs" />
+    <Compile Include="Core\SBML\ContextForSBMLIntegration.cs" />
+    <Compile Include="Core\SBML\EventImporterSpecs.cs" />
+    <Compile Include="Core\SBML\Helper.cs" />
+    <Compile Include="Core\SBML\MoleculeInformationSpecs.cs" />
+    <Compile Include="Core\SBML\ParameterImporterSpecs.cs" />
+    <Compile Include="Core\SBML\ReactionImporterSpecs.cs" />
+    <Compile Include="Core\SBML\RuleImporterSpecs.cs" />
+    <Compile Include="Core\SBML\SpeciesImporterSpecs.cs" />
+    <Compile Include="Core\SBML\UnitImporterSpecs.cs" />
+    <Compile Include="Core\SearchVisitorSpecs.cs" />
+    <Compile Include="Core\SerializationTaskSpecs.cs" />
+    <Compile Include="Core\Service\AffectedBuildingBlockRetrieverSpecs.cs" />
+    <Compile Include="Core\Service\AmountToConcentrationConverterSpecs.cs" />
+    <Compile Include="Core\Service\AmoutToConcentrationFormulaMapperSpecs.cs" />
+    <Compile Include="Core\Service\BuildingBlockRetrieverSpecs.cs" />
+    <Compile Include="Core\Service\BuilingBlockReferenceUpdaterSpecs.cs" />
+    <Compile Include="Core\Service\CreateCommitChangesToMoleculeStartValuesBuildingBlockCommandTaskSpecs.cs" />
+    <Compile Include="Core\Service\CreateCommitChangesToParameterStartValuesBuildingBlockCommandTaskSpecs.cs" />
+    <Compile Include="Core\Service\DataNamingServiceSpecs.cs" />
+    <Compile Include="Core\Service\ForbbidenNamesRetrieverSpecs.cs" />
+    <Compile Include="Core\Service\ContextSpecificReferenciesRetrieverSpecs.cs" />
+    <Compile Include="Core\Service\ModelPartsToExcelExporterTaskSpecs.cs" />
+    <Compile Include="Core\Service\MoleculeResolverSpecs.cs" />
+    <Compile Include="Core\Service\ParameterResolverSpecs.cs" />
+    <Compile Include="Core\Service\ParameterStartValueSynchronizerSpecs.cs" />
+    <Compile Include="Core\Service\PassiveTransportConverterSpecs.cs" />
+    <Compile Include="Core\Service\ProjectTaskSpecs.cs" />
+    <Compile Include="Core\Service\QuantitySynchronizerSpecs.cs" />
+    <Compile Include="Core\Service\RenameBuildingBlockTaskSpecs.cs" />
+    <Compile Include="Core\Service\ReportingHelperSpecs.cs" />
+    <Compile Include="Core\Service\SerializationTasksSpecs.cs" />
+    <Compile Include="Core\Service\SimulationFactorySpecs.cs" />
+    <Compile Include="Core\Service\SimulationPersistableUpdaterSpecs.cs" />
+    <Compile Include="Core\Service\SimulationUpdateTaskSpecs.cs" />
+    <Compile Include="Core\Service\TagTaskSpecs.cs" />
+    <Compile Include="Core\SessionFactoryProviderHelperForSpecs.cs" />
+    <Compile Include="Core\SessionFactoryProviderSpecs.cs" />
+    <Compile Include="Core\SetCreateProcessRateParameterCommandSpecs.cs" />
+    <Compile Include="Core\SimulationLoaderSpecs.cs" />
+    <Compile Include="Core\SpatialStructureExtensionsSpecs.cs" />
+    <Compile Include="Core\TypeDictionarySpecs.cs" />
+    <Compile Include="DimensionFactoryForSpecs.cs" />
+    <Compile Include="HelperForSpecs.cs" />
+    <Compile Include="IntegrationTests\MoBiReactionBuildingBlockLoadSpecs.cs" />
+    <Compile Include="Presentation\ImportFromExcelTaskSpecs.cs" />
+    <Compile Include="IntegrationTests\BuildConfigurationLoadSpecs.cs" />
+    <Compile Include="IntegrationTests\ContextForIntegration.cs" />
+    <Compile Include="IntegrationTests\SBMLTestSuiteSpecs.cs" />
+    <Compile Include="Presentation\AddProductUICommandSpecs.cs" />
+    <Compile Include="Presentation\AddNewBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Presentation\AddEductUICommandSpecs.cs" />
+    <Compile Include="Presentation\BuildingBlockMergePresenterSpecs.cs" />
+    <Compile Include="Presentation\BuildingBlockSelectionPresenterSpecs.cs" />
+    <Compile Include="Presentation\ContextMenuFactoryForDescriptorConditionSpecs.cs" />
+    <Compile Include="Presentation\ContextSpecificationWithLocalContainer.cs" />
+    <Compile Include="Presentation\CreateBuildingBlockMergePresenterSpecs.cs" />
+    <Compile Include="Presentation\CreatePKSimMoleculePresenterSpecs.cs" />
+    <Compile Include="Presentation\DTOValuePointSpecs.cs" />
+    <Compile Include="Presentation\FormulaUsablePathDTOSpecs.cs" />
+    <Compile Include="Presentation\EditChartTemplateManagerPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditContainerInSimulationPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditDistributedParameterPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditEventGroupBuildingBlockPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditFavoritesInSimulationPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditFavoritesPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditMoleculeStartValuesPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditObserverBuilderPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditQuantityInSimulationPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditReactionBuilderPresenterSpecs.cs" />
+    <Compile Include="IntegrationTests\ProjectTaskIntegrationTests.cs" />
+    <Compile Include="IntegrationTests\ExceptionManagerForSpecs.cs" />
+    <Compile Include="IntegrationTests\ReportingSpecs.cs" />
+    <Compile Include="Presentation\CommitSimulationChangesToBuildingBlockUICommandSpecs.cs" />
+    <Compile Include="Presentation\EditEventBuilderPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditParameterPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditReactionBuildingBlockPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditTableFormulaPresenterSpecs.cs" />
+    <Compile Include="Presentation\ParameterDTOSpecs.cs" />
+    <Compile Include="Presentation\ProductReactionPartnerContextMenuSpecificationFactorySpecs.cs" />
+    <Compile Include="Presentation\ExportModelPartsToExcelUICommandSpecs.cs" />
+    <Compile Include="Presentation\EditExplicitFormulaPresenterSpecs.cs" />
+    <Compile Include="Presentation\FormulaPresenterCacheSpecs.cs" />
+    <Compile Include="Presentation\HierarchicalStructurePresenterSpecs.cs" />
+    <Compile Include="Presentation\IgnoreReplaceMergeManagerSpecs.cs" />
+    <Compile Include="Presentation\ImportExcelSheetSelectionDTOSpecs.cs" />
+    <Compile Include="Presentation\ImportMoleculeStartValuesPresenterSpecs.cs" />
+    <Compile Include="Presentation\ImportParameterStartValuesPresenterSpecs.cs" />
+    <Compile Include="Presentation\ImportQuantitiesForSimulationPresenterSpecs.cs" />
+    <Compile Include="Presentation\InteractionTasksForMoleculeBuildingBlockSpecs.cs" />
+    <Compile Include="Presentation\InteractionTasksForSpatialStructureSpecs.cs" />
+    <Compile Include="Presentation\LegendPresenterSpecs.cs" />
+    <Compile Include="Presentation\Mapper\DataTableToImportQuantityDTOMapperForSimulationsSpecs.cs" />
+    <Compile Include="Presentation\Mapper\EventGroupBuilderToObjectBaseSummaryDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\ExplicitFormulaToExplicitFormulaDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\InteractionContainerToDTOInteractionConatainerMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\MoleculeBuilderDTOToTreeNodeMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\TransporterMoleculeContainerToDTOTranpsorterMoleculeContainerMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\MoleculeStartValueToObjectBaseSummaryDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\ParameterStartValueToObjectBaseSummaryDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\ReactionBuilderToObjectBaseSummaryDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\MoleculeBuilderToObjectBaseSummaryDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\DataTableToImportQuantityDTOMapperForMoleculesSpecs.cs" />
+    <Compile Include="Presentation\Mapper\ObserverBuilderToObjectBaseSummaryDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\Mapper\DataTableToImportQuantityDTOMapperForParametersSpecs.cs" />
+    <Compile Include="Presentation\Mapper\PassiveTransportBuilderToObjectBaseSummaryDTOMapperSpecs.cs" />
+    <Compile Include="Presentation\MergeConflictOptionsSpecs.cs" />
+    <Compile Include="Presentation\MoleculeListPresenterSpecs.cs" />
+    <Compile Include="Presentation\MoleculeStartValueDTOSpecs.cs" />
+    <Compile Include="Presentation\MultipleBuildingBlockInfoNodeContextMenuFactorySpecs.cs" />
+    <Compile Include="Presentation\ObjectPathCreatorAtReactionParameterSpecs.cs" />
+    <Compile Include="Presentation\ObjectPathCreatorAtReactionSpecs.cs" />
+    <Compile Include="Presentation\ReactionEductsPresenterSpecs.cs" />
+    <Compile Include="Presentation\RootContextMenuFactoryForProjectItemSpecs.cs" />
+    <Compile Include="Presentation\Tasks\ChartTasksSpecs.cs" />
+    <Compile Include="Presentation\Tasks\ChartTemplatingTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\DiagramTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\EditTaskForContainerSpecs.cs" />
+    <Compile Include="Presentation\Tasks\EditTaskForEventBuilderSpecs.cs" />
+    <Compile Include="Presentation\Tasks\EditTaskForInteractionContainerSpecs.cs" />
+    <Compile Include="Presentation\Tasks\EditTaskForSimualtionTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\EditTasksForAmountObserverBuilderSpecs.cs" />
+    <Compile Include="Presentation\Tasks\EditTasksForSimulationSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForActiveTransportBuilderSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForApplicationMoleculeBuilderSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForMoleculeBuilderSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForNeighborhoodSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForReactionBuilderSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForReactionBuildingBlockSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForRootApplicationBuilderSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForRootEventGroupSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\MergeWorkflowTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\MoBiFormulaTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\ParameterStartValueTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\PKSimExportTaskSpecs.cs" />
+    <Compile Include="Presentation\ApplicationControllerSpecs.cs" />
+    <Compile Include="Presentation\BuildingBlockExplorerPresenterSpecs.cs" />
+    <Compile Include="Presentation\ContextMenuFactoryForProjectItemSpecs.cs" />
+    <Compile Include="Presentation\CreateSimulationPresenterSpecs.cs" />
+    <Compile Include="Presentation\DiagramModelToImageTaskSpecs.cs" />
+    <Compile Include="Presentation\EditContainerPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditFormulaPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditParameterListSpecs.cs" />
+    <Compile Include="Presentation\EditPassiveTransportBuildingBlockPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditSpatialStructurePresenterSpecs.cs" />
+    <Compile Include="Presentation\EditTransportBuilderSpecs.cs" />
+    <Compile Include="Presentation\EditTransporterMoleculeContainerPresenterSpecs.cs" />
+    <Compile Include="Presentation\SelectAndEditParameterStartValuesPresenterSpecs.cs" />
+    <Compile Include="Presentation\NotificationMessageMapperSpecs.cs" />
+    <Compile Include="Presentation\NotificationMessageSpecs.cs" />
+    <Compile Include="Presentation\NotificationPresenterSpecs.cs" />
+    <Compile Include="Presentation\HeavyWorkManagerForSpecs.cs" />
+    <Compile Include="Presentation\InteractionTasksForSimulationSpecs.cs" />
+    <Compile Include="Presentation\MoleculeStartValuesPresenterSpecs.cs" />
+    <Compile Include="Presentation\Tasks\MoleculeStartValuesTaskSpecs.cs" />
+    <Compile Include="Presentation\ObjectPathCreatorSpecs.cs" />
+    <Compile Include="Presentation\ProjectTaskSpecs.cs" />
+    <Compile Include="Presentation\EductReactionPartnerContextMenuSpecificationFactorySpecs.cs" />
+    <Compile Include="Presentation\SearchPresenterSpecs.cs" />
+    <Compile Include="Presentation\SelectAndEditMoleculesStartValuesPresenterSpecs.cs" />
+    <Compile Include="Presentation\SelectEventAssingmentTargetPresenterSpecs.cs" />
+    <Compile Include="Presentation\SelectReferencePresenterSpecs.cs" />
+    <Compile Include="Presentation\ShowPresenterFactorySpecs.cs" />
+    <Compile Include="Presentation\SimulationExplorerPresenterSpecs.cs" />
+    <Compile Include="Presentation\EditSimulationPresenterSpecs.cs" />
+    <Compile Include="Presentation\StartOptionsSpecs.cs" />
+    <Compile Include="Presentation\SubPresenterHelper.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForParameterSpecs.cs" />
+    <Compile Include="Presentation\Tasks\EditValuePointTasksSpecs.cs" />
+    <Compile Include="Presentation\Tasks\InteractionTasksForDistributedParameterSpecs.cs" />
+    <Compile Include="Presentation\Tasks\MoleculeListTasksSpecs.cs" />
+    <Compile Include="Presentation\Tasks\ObservedDataTasksSpecs.cs" />
+    <Compile Include="Presentation\Tasks\ReloadRelatedItemTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\SearchTaskSpecs.cs" />
+    <Compile Include="Presentation\Tasks\SimulationRunnerSpecs.cs" />
+    <Compile Include="Presentation\TreeNodeFactorySpecs.cs" />
+    <Compile Include="Presentation\UpdateSimulationFromBuildingBlockUICommandSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_2\PK_Manual_DiclofenacSpecs.cs" />
+    <Compile Include="IntegrationTests\ContextWithLoadedProject.cs" />
+    <Compile Include="ProjectConversion\v3_2\EventGroupBuildingBlockConversionSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_2\MoleculeBuildingBlockConversionSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_2\MultipleOutputSchemaItemConversionSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_2\OutputSchemaConversionSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_2\PassiveTransportBuildingBlockConversionSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_3\ChartConversionSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_3\Converter32To33Specs.cs" />
+    <Compile Include="ProjectConversion\v3_3\PassiveTransportBuildignBlockConversionSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_3\ProjectConversion33IntegrationTest.cs" />
+    <Compile Include="ProjectConversion\v3_5\331_TestGISpecs.cs" />
+    <Compile Include="ProjectConversion\v3_5\MoBiSimulation3_4Specs.cs" />
+    <Compile Include="ProjectConversion\v3_5\BuildConfiguration_341Specs.cs" />
+    <Compile Include="ProjectConversion\v3_5\ModelCoreSimulation3_0Specs.cs" />
+    <Compile Include="ProjectConversion\v3_5\SimpleProject_341Specs.cs" />
+    <Compile Include="ProjectConversion\v6_0\Converter36To601Specs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Presentation\TagVisitorSpecs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\packages\OSPSuite.SimModel.2.0.0.1\OSPSuite.SimModel\OSPSuite.SimModel.xsd">
+      <Link>OSPSuite.SimModel.xsd</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\src\Data\AllCalculationMethods.pkml">
+      <Link>AllCalculationMethods.pkml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="app.config" />
+    <None Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-model.m" />
+    <None Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-results.csv" />
+    <None Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-model.m" />
+    <None Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-results.csv" />
+    <None Include="Core\SBML\Testfiles\SBMLTestSuite\00001\00001-results.csv" />
+    <None Include="Core\SBML\Testfiles\SBMLTestSuite\00002\00002-results.csv" />
+    <None Include="packages.config" />
+    <None Include="TestFiles\331_TestGI.mbp3" />
+    <None Include="TestFiles\523_Export_S1.pkml" />
+    <None Include="TestFiles\Chart.pkml" />
+    <None Include="TestFiles\EB_LV.mbp3" />
+    <None Include="TestFiles\Events.pkml" />
+    <None Include="TestFiles\ManualModel_Sim.mbp3" />
+    <None Include="TestFiles\ModelCoreSimulation3_0.pkml" />
+    <None Include="TestFiles\Molecules.pkml" />
+    <None Include="TestFiles\Passive Transports.pkml" />
+    <None Include="TestFiles\PK_Manual_Diclofenac.mbp3" />
+    <None Include="TestFiles\psv.xlsx" />
+    <None Include="TestFiles\run.pkml" />
+    <None Include="TestFiles\SimpleProject_341.mbp3" />
+    <None Include="TestFiles\warnings.pkml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\pre\libsbmlcs.dll">
+      <Link>libsbmlcs.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="..\..\dimensions\OSPSuite.Dimensions.xml">
+      <Link>OSPSuite.Dimensions.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\packages\OSPSuite.SimModelSolver_CVODES282.2.0.0.1\lib\net45\OSPSuite.SimModelSolver_CVODES282.dll">
+      <Link>OSPSuite.SimModelSolver_CVODES282.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\x86\SQLite.Interop.dll">
+      <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Core\SBML\Testfiles\AssignmentRuleTestSpecies.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-model.html" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-plot.html" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-plot.jpg" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l1v2-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l1v2.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l2v1-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l2v1.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l2v2-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l2v2.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l2v3-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l2v3.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l2v4-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l2v4.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l3v1-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-sbml-l3v1.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00001\00001-settings.txt" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-model.html" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-plot.html" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-plot.jpg" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l1v2-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l1v2.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l2v1-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l2v1.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l2v2-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l2v2.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l2v3-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l2v3.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l2v4-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l2v4.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l3v1-sedml.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-sbml-l3v1.xml" />
+    <Content Include="Core\SBML\Testfiles\cases\SBMLTestSuite\00002\00002-settings.txt" />
+    <Content Include="Core\SBML\Testfiles\initAssign_test_l3v1.xml" />
+    <Content Include="Core\SBML\Testfiles\InitialAssignmentTest.xml" />
+    <Content Include="Core\SBML\Testfiles\MoleculeInformation_simple.xml" />
+    <Content Include="Core\SBML\Testfiles\MulticompartmentReactionTest_simple.xml" />
+    <Content Include="Core\SBML\Testfiles\PassiveTransportTest_simple.xml" />
+    <Content Include="Core\SBML\Testfiles\RateRuleTest.xml" />
+    <Content Include="Core\SBML\Testfiles\SBMLTestSuite\00001\00001-sbml-l3v1.xml" />
+    <Content Include="Core\SBML\Testfiles\SBMLTestSuite\00001\00001-settings.txt" />
+    <Content Include="Core\SBML\Testfiles\SBMLTestSuite\00002\00002-sbml-l3v1.xml" />
+    <Content Include="Core\SBML\Testfiles\SBMLTestSuite\00002\00002-settings.txt" />
+    <Content Include="Core\SBML\Testfiles\Species_sameName_diffComp.xml" />
+    <Content Include="Core\SBML\Testfiles\Species_simple.xml" />
+    <Content Include="Core\SBML\Testfiles\UnitTestFile.xml" />
+    <None Include="TestFiles\MoBiSimulation3_4.pkml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MoBi.BatchTool\MoBi.BatchTool.csproj">
+      <Project>{881d23db-4a9f-45c8-ba67-58b790537634}</Project>
+      <Name>MoBi.BatchTool</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\MoBi.Core\MoBi.Core.csproj">
+      <Project>{2DBF50BE-A749-421C-B526-8BDA31CFE7B3}</Project>
+      <Name>MoBi.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\MoBi.Presentation\MoBi.Presentation.csproj">
+      <Project>{B4C86DCA-8877-4400-8088-2401EE65B403}</Project>
+      <Name>MoBi.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\MoBi.Assets\MoBi.Assets.csproj">
+      <Project>{3c65ffc2-d9ec-4951-8c35-04854ad34e52}</Project>
+      <Name>MoBi.Assets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\MoBi.UI\MoBi.UI.csproj">
+      <Project>{de743812-f444-42e2-b72d-cf298933e2ba}</Project>
+      <Name>MoBi.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

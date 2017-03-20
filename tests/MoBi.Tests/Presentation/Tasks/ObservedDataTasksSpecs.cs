@@ -1,0 +1,332 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Events;
+using FakeItEasy;
+using MoBi.Assets;
+using MoBi.Core.Domain.Model;
+using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Events;
+
+using OSPSuite.Core.Importer;
+
+namespace MoBi.Presentation.Tasks
+{
+   public abstract class concern_for_ObservedDataTask : ContextSpecification<IObservedDataTask>
+   {
+      protected IDataImporter _dataImporter;
+      protected IDimensionFactory _dimensionFactory;
+      protected IMoBiContext _context;
+      protected IEventPublisher _eventPublisher;
+      protected IDialogCreator _dialogCreator;
+      protected DataRepository _dataRepository;
+      protected IMoBiProject _project;
+      private IInteractionTask _interactionTask;
+      private IDataRepositoryTask _dataRepositoryTask;
+      protected IContainerTask _containerTask;
+      private IObjectTypeResolver _objectTypeResolver;
+
+      protected override void Context()
+      {
+         _dataImporter = A.Fake<IDataImporter>();
+         _dimensionFactory = A.Fake<IDimensionFactory>();
+         _context = A.Fake<IMoBiContext>();
+         _dialogCreator = A.Fake<IDialogCreator>();
+         _dataRepository = new DataRepository {new BaseGrid("", DimensionFactoryForSpecs.Factory.GetDimension("Time"))};
+         _interactionTask = A.Fake<IInteractionTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _containerTask = A.Fake<IContainerTask>();
+         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         sut = new ObservedDataTask(_dataImporter, _dimensionFactory, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver);
+
+         _project = new MoBiProject();
+         A.CallTo(() => _context.Project).Returns(_project);
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
+      }
+   }
+
+   internal class When_removing_multiple_results_from_a_simulation : concern_for_ObservedDataTask
+   {
+      private IReadOnlyList<DataRepository> _repositories;
+      private DataRepository _currentResult;
+      private DataRepository _historicResult;
+      private MoBiSimulation _moBiSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _currentResult = new DataRepository("id1");
+         _historicResult = new DataRepository("id2");
+         _repositories = new List<DataRepository> {_currentResult, _historicResult};
+         _moBiSimulation = new MoBiSimulation {Results = _currentResult};
+         _moBiSimulation.HistoricResults.Add(_historicResult);
+
+         _project.AddSimulation(_moBiSimulation);
+
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveResultsFromSimulations(_repositories);
+      }
+
+      [Observation]
+      public void the_data_repositories_must_be_removed_from_the_simulations()
+      {
+         _moBiSimulation.HistoricResults.Contains(_historicResult).ShouldBeFalse();
+         _moBiSimulation.Results.ShouldBeNull();
+      }
+   }
+
+   internal class When_renaming_a_observed_data_Repository : concern_for_ObservedDataTask
+   {
+      private string _newName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dataRepository.Name = "OLD";
+         _newName = "New";
+         A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._)).Returns(_newName);
+      }
+
+      protected override void Because()
+      {
+         sut.Rename(_dataRepository);
+      }
+
+      [Observation]
+      public void should_change_Name_of_data_repository_to_new_name()
+      {
+         _dataRepository.Name.ShouldBeEqualTo(_newName);
+      }
+   }
+
+   public class When_removing_a_data_Repository : concern_for_ObservedDataTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _project.AddObservedData(_dataRepository);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.Delete(_dataRepository);
+      }
+
+      [Observation]
+      public void should_remove_observed_data_from_current_project()
+      {
+         _project.AllObservedData.Contains(_dataRepository).ShouldBeFalse();
+      }
+   }
+
+   public class When_not_removing_a_data_Repository : concern_for_ObservedDataTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _project.AddObservedData(_dataRepository);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.No);
+      }
+
+      protected override void Because()
+      {
+         sut.Delete(_dataRepository);
+      }
+
+      [Observation]
+      public void should_not_remove_observed_data_from_current_project()
+      {
+         _project.AllObservedData.Contains(_dataRepository).ShouldBeTrue();
+      }
+   }
+
+   public class When_addding_data_from_Excel : concern_for_ObservedDataTask
+   {
+      private ObservedDataAddedEvent _event;
+      private IReadOnlyList<ColumnInfo> _columnsInfo;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _dimensionFactory.Dimensions).Returns(new []
+         {
+            DimensionFactoryForSpecs.MassDimension,
+            DimensionFactoryForSpecs.TimeDimension,
+            Constants.Dimension.NO_DIMENSION
+         });
+         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.TIME)).Returns(DimensionFactoryForSpecs.TimeDimension);
+
+         A.CallTo(_dataImporter)
+            .WithReturnType<IEnumerable<DataRepository>>()
+            .Invokes(x=>_columnsInfo = x.GetArgument<IReadOnlyList<ColumnInfo>>(1))
+            .Returns(new[] {_dataRepository});
+
+         A.CallTo(() => _context.PublishEvent(A<ObservedDataAddedEvent>._)).Invokes(call => _event = call.GetArgument<ObservedDataAddedEvent>(0));
+         _dataRepository.Name = "A";
+         _dataRepository.BaseGrid.Name = "B";
+
+         A.CallTo(() => _containerTask.CreateUniqueName(A<IEnumerable<IWithName>>._, "A", true)).Returns("A");
+
+         _dataRepository.Add(new DataColumn("name", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
+      }
+
+      protected override void Because()
+      {
+         sut.AddObservedDataToProject();
+      }
+
+      [Observation]
+      public void should_have_removed_the_time_dimension_from_all_data_columns()
+      {
+         var dataColumn = _columnsInfo[1];
+         dataColumn.DimensionInfos.Find(x=>x.Dimension.Name == Constants.Dimension.TIME).ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_have_kept_the_dimensionsless_dimension_in_all_data_columns()
+      {
+         var dataColumn = _columnsInfo[1];
+         dataColumn.DimensionInfos.Find(x => x.Dimension == Constants.Dimension.NO_DIMENSION).ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void the_container_task_should_be_used_to_create_a_unique_name()
+      {
+         A.CallTo(() => _containerTask.CreateUniqueName(A<IEnumerable<IWithName>>._, "A", true)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void data_repository_should_have_paths_applied_on_x_and_y_columns()
+      {
+         _dataRepository.BaseGrid.QuantityInfo.PathAsString.ShouldBeEqualTo("A|B");
+         _dataRepository.AllButBaseGrid().First().QuantityInfo.PathAsString.ShouldBeEqualTo("A|name");
+      }
+
+      [Observation]
+      public void should_add_data_repositroy_to_current_project()
+      {
+         _project.AllObservedData.Contains(_dataRepository).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_publish_right_add_observed_data_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<ObservedDataAddedEvent>._)).MustHaveHappened();
+         _event.ShouldNotBeNull();
+         _event.DataRepository.ShouldBeEqualTo(_dataRepository);
+      }
+   }
+
+   public class When_adding_an_observed_data_to_project_that_already_exists : concern_for_ObservedDataTask
+   {
+      private DataRepository _newDataRepository;
+
+      protected override void Context()
+      {
+         base.Context();
+         _newDataRepository = new DataRepository("NEW");
+         _dataRepository.Id = "XX";
+         _project.AddObservedData(_dataRepository);
+      }
+
+      protected override void Because()
+      {
+         sut.AddObservedDataToProject(_dataRepository);
+         sut.AddObservedDataToProject(_newDataRepository);
+      }
+
+      [Observation]
+      public void should_only_add_the_new_repository()
+      {
+         _project.AllObservedData.ShouldOnlyContain(_dataRepository, _newDataRepository);
+      }
+   }
+
+   public class When_removing_all_results_defined_in_a_simulation : concern_for_ObservedDataTask
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation().WithName("TOTO");
+         _simulation.HistoricResults.Add(new DataRepository("Rep1"));
+         _simulation.HistoricResults.Add(new DataRepository("Rep2"));
+         _simulation.Results = new DataRepository("Res");
+
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.DeleteAllResultsFrom(_simulation);
+      }
+
+      [Observation]
+      public void should_ask_the_user_if_he_really_wants_to_delete_the_results()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveAllResultsFrom(_simulation.Name))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_remove_all_historical_results_and_current_results()
+      {
+         _simulation.HistoricResults.Count.ShouldBeEqualTo(0);
+         _simulation.Results.ShouldBeNull();
+      }
+   }
+
+   public class When_removing_all_results_over_all_simulation : concern_for_ObservedDataTask
+   {
+      private IMoBiSimulation _simulation1;
+      private IMoBiSimulation _simulation2;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation1 = new MoBiSimulation().WithName("SIM1");
+         _simulation2 = new MoBiSimulation().WithName("SIM1");
+         _simulation1.HistoricResults.Add(new DataRepository("Rep1"));
+         _simulation2.HistoricResults.Add(new DataRepository("Rep2"));
+         _simulation1.Results = new DataRepository("Res");
+         _simulation2.Results = new DataRepository("Res");
+
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+
+         _project.AddSimulation(_simulation1);
+         _project.AddSimulation(_simulation2);
+      }
+
+      protected override void Because()
+      {
+         sut.DeleteAllResultsFromAllSimulation();
+      }
+
+      [Observation]
+      public void should_ask_the_user_if_he_really_wants_to_delete_the_results()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveAllResultsFromProject())).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_remove_all_historical_results_and_current_results()
+      {
+         _simulation1.HistoricResults.Count.ShouldBeEqualTo(0);
+         _simulation1.Results.ShouldBeNull();
+
+         _simulation2.HistoricResults.Count.ShouldBeEqualTo(0);
+         _simulation2.Results.ShouldBeNull();
+      }
+   }
+}

@@ -1,0 +1,30 @@
+using MoBi.Core.Domain.Model;
+using MoBi.Presentation.DTO;
+using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+
+namespace MoBi.Presentation.Presenter
+{
+   public interface IEditContainerObserverBuilderPresenter : IEditObserverBuilderPresenter, ICreatePresenter<IContainerObserverBuilder>
+   {
+   }
+
+   internal class EditContainerObserverBuilderPresenter : EditObserverBuilderPresenter<IContainerObserverBuilder>, IEditContainerObserverBuilderPresenter
+   {
+      private readonly IObserverBuilderToDTOObserverBuilderMapper _observerBuilderMapper;
+
+      public EditContainerObserverBuilderPresenter(IEditObserverBuilderView view, IMoBiContext context, IViewItemContextMenuFactory viewItemContextMenuFactory, IObserverBuilderToDTOObserverBuilderMapper observerBuilderMapper, IEditTaskFor<IContainerObserverBuilder> editTasks, IEditFormulaPresenter editFormulaPresenter, ISelectReferenceAtContainerObserverPresenter selectReferencePresenter, IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<IObserverBuilder> descriptorConditionListPresenter) :
+         base(view, editFormulaPresenter, selectReferencePresenter, context, viewItemContextMenuFactory, editTasks, moleculeListPresenter, descriptorConditionListPresenter)
+      {
+         _observerBuilderMapper = observerBuilderMapper;
+      }
+
+      protected override ObserverBuilderDTO MapFrom(IContainerObserverBuilder observerBuilder)
+      {
+         return _observerBuilderMapper.MapFrom(observerBuilder);
+      }
+   }
+}

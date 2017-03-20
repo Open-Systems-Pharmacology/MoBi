@@ -1,0 +1,61 @@
+﻿using System.Linq;
+using MoBi.Core.Domain.Extensions;
+using MoBi.Core.Domain.Model;
+using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain;
+
+namespace MoBi.Presentation.Presenter
+{
+   public interface IObjectPathCreatorAtObserver : IObjectPathCreator
+   {
+   }
+
+   internal class ObjectPathCreatorAtObserver : ObjectPathCreatorBase, IObjectPathCreatorAtObserver
+   {
+      public ObjectPathCreatorAtObserver(IObjectPathFactory objectPathFactory, IAliasCreator aliasCreator, IMoBiContext context) : base(objectPathFactory, aliasCreator, context)
+      {
+      }
+
+      protected override T AdjustReferences<T>(IEntity entity, T path) 
+      {
+         path.AddAtFront(ObjectPath.PARENT_CONTAINER);
+         path.AddAtFront(ObjectPath.PARENT_CONTAINER);
+         return path;
+      }
+   }
+
+   internal interface IObjectPathCreatorAtAmountObserver : IObjectPathCreatorAtObserver
+   {
+   }
+
+   internal class ObjectPathCreatorAtAmountObserver : ObjectPathCreatorAtObserver, IObjectPathCreatorAtAmountObserver
+   {
+      public ObjectPathCreatorAtAmountObserver(IObjectPathFactory objectPathFactory, IAliasCreator aliasCreator, IMoBiContext context)
+         : base(objectPathFactory, aliasCreator, context)
+      {
+      }
+      
+      public override ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      {
+         var dtoReference = base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
+         if (!shouldCreateAbsolutePaths && !IsMoleculeReference(objectBaseDTO))
+         {
+            var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
+            var parameterToUse = _context.Get<IParameter>(dtoDummyParameter.ParameterToUse.Id);
+            correctMoleculeReferences(dtoDummyParameter.ModelParentName, parameterToUse, dtoReference.Path);
+         }
+         return dtoReference;
+      }
+
+      private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : IObjectPath
+      {
+         if (entity.IsAtMolecule())
+         {
+            if (path.Contains(moleculeName))
+            {
+               path.Replace(moleculeName, ObjectPathKeywords.MOLECULE);
+            }
+         }
+      }
+   }
+}

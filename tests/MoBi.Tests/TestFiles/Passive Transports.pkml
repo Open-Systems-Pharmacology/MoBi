@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PassiveTransportBuildingBlock id="4f26635c-b577-4279-ab93-be8cc8967674" name="Passive Transports" bbVersion="2" version="3">
+  <Builders>
+    <TransportBuilder id="7dd8ec32-3bba-4532-9e8c-546544626dbd" name="PassiveTransport" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="8c095700-2229-4a26-a75e-4b708c20af8a" transportType="0">
+      <Children>
+        <Parameter id="4f9fc8f7-ac53-4f05-a633-7eaa413abcee" name="K" persistable="0" isFixedValue="0" dim="Second order rate constant" quantityType="Parameter" visible="1" canBeVaried="1" value="0.4" displayUnit="l/µmol/min" />
+      </Children>
+      <SourceCriteria />
+      <TargetCriteria />
+      <MoleculeList forAll="1" />
+    </TransportBuilder>
+    <TransportBuilder id="7a981397-5e21-469e-89ff-488b9070a35a" name="GallbladderEmptying" mode="Logical" containerType="Other" dimension="Rate" createProcessRateParameter="0" processRateParameterPersistable="0" formula="73f97cbf-9598-4e80-8298-4b80b326b223" transportType="0">
+      <SourceCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="Gallbladder" />
+        </DescriptorConditions>
+      </SourceCriteria>
+      <TargetCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="Duodenum" />
+          <MatchTagCondition tag="Lumen" />
+        </DescriptorConditions>
+      </TargetCriteria>
+      <MoleculeList forAll="1" />
+    </TransportBuilder>
+  </Builders>
+  <FormulaCache>
+    <Formulas>
+      <Formula id="73f97cbf-9598-4e80-8298-4b80b326b223" name="GallbladderEmptyingRate" dim="Rate" formula="GallbladderEmptyingRate">
+        <Paths>
+          <Path path="0" as="1" dim="2" />
+        </Paths>
+      </Formula>
+      <ConstantFormula id="8c095700-2229-4a26-a75e-4b708c20af8a" dim="Amount per time" value="0" />
+    </Formulas>
+    <StringMap>
+      <Map s="Organism|Gallbladder|Gallbladder emptying rate" id="0" />
+      <Map s="GallbladderEmptyingRate" id="1" />
+      <Map s="Rate" id="2" />
+    </StringMap>
+  </FormulaCache>
+</PassiveTransportBuildingBlock>

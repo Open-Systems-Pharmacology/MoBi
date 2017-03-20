@@ -1,0 +1,1475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DE743812-F444-42E2-B72D-CF298933E2BA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MoBi.UI</RootNamespace>
+    <AssemblyName>MoBi.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <StartupObject>
+    </StartupObject>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationIcon>MoBi.ico</ApplicationIcon>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <DocumentationFile>bin\Debug\MoBi.UI.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.BonusSkins.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.BonusSkins.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Charts.v16.2.Core, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.Charts.v16.2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.4\lib\net452\DevExpress.Data.v16.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Office.v16.2.Core, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.Office.v16.2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.PivotGrid.v16.2.Core, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.PivotGrid.v16.2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v16.2.Core, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.Printing.v16.2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.RichEdit.v16.2.Core, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.RichEdit.v16.2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.4\lib\net452\DevExpress.Utils.v16.2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraBars.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraBars.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraCharts.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v16.2.UI, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraCharts.v16.2.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraCharts.v16.2.Wizard, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraCharts.v16.2.Wizard.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraEditors.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraGrid.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraGrid.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraLayout.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraLayout.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraNavBar.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraNavBar.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraPivotGrid.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraPivotGrid.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraPrinting.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraPrinting.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraRichEdit.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraRichEdit.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraRichEdit.v16.2.Extensions, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraRichEdit.v16.2.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraTreeList.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraTreeList.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.XtraVerticalGrid.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.16.2.4\lib\net452\DevExpress.XtraVerticalGrid.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MPFitLib, Version=1.1.0.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Draw, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Draw.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Instruments, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Instruments.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Layout, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Layout.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Pdf, Version=5.1.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Pdf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Svg, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Svg.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Xml, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Assets, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.21\lib\net452\OSPSuite.Assets.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Core, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.21\lib\net452\OSPSuite.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.DataBinding">
+      <HintPath>..\..\packages\OSPSuite.DataBinding.2.0.0.1\lib\net45\OSPSuite.DataBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.DataBinding.DevExpress">
+      <HintPath>..\..\packages\OSPSuite.DataBinding.DevExpress.2.0.0.1\lib\net45\OSPSuite.DataBinding.DevExpress.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.FuncParser">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.21\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Presentation, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.21\lib\net452\OSPSuite.Presentation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Serializer">
+      <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.SimModel">
+      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.1\lib\net45\OSPSuite.SimModel.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.TeXReporting">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.1\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.UI, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.UI.7.1.0.21\lib\net452\OSPSuite.UI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Utility">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.1\lib\net45\OSPSuite.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="SX">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.2.8\lib\net45\SX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net451\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Input.Manipulations" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="AboutView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutView.Designer.cs">
+      <DependentUpon>AboutView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Diagram\DiagramManagers\MoBiReactionDiagramManager.cs" />
+    <Compile Include="Diagram\DiagramManagers\SimulationDiagramManager.cs" />
+    <Compile Include="Diagram\DiagramManagers\SpatialStructureDiagramManager.cs" />
+    <Compile Include="Diagram\DiagramRegister.cs" />
+    <Compile Include="Diagram\Nodes\ParameterNode.cs" />
+    <Compile Include="Extensions\TabPageExtensions.cs" />
+    <Compile Include="Presenters\ReactionDiagramPresenter.cs" />
+    <Compile Include="Services\DiagramUpdater.cs" />
+    <Compile Include="Services\MoBiApplication.cs" />
+    <Compile Include="Services\ToolTipCreator.cs" />
+    <Compile Include="Settings\UserSettings.cs" />
+    <Compile Include="UICommands\AddNamedPartnerUICommand.cs" />
+    <Compile Include="UIConstants.cs" />
+    <Compile Include="Views\BaseDiagram\ChartOptionsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\BaseDiagram\ChartOptionsView.Designer.cs">
+      <DependentUpon>ChartOptionsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BaseDiagram\DiagramOptionsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\BaseDiagram\DiagramOptionsView.Designer.cs">
+      <DependentUpon>DiagramOptionsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BaseDiagram\ForceLayoutConfigurationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\BaseDiagram\ForceLayoutConfigurationView.Designer.cs">
+      <DependentUpon>ForceLayoutConfigurationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BaseDiagram\MoBiBaseDiagramView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\BaseDiagram\MoBiBaseDiagramView.Designer.cs">
+      <DependentUpon>MoBiBaseDiagramView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BaseStartValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\BaseStartValuesView.Designer.cs">
+      <DependentUpon>BaseStartValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BuildingBlockMergeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\BuildingBlockMergeView.Designer.cs">
+      <DependentUpon>BuildingBlockMergeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CalculateScaleDivisorsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CalculateScaleDivisorsView.Designer.cs">
+      <DependentUpon>CalculateScaleDivisorsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChartView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ChartView.Designer.cs">
+      <DependentUpon>ChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ConfigureSimulationView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ConfigureSimulationView.Designer.cs">
+      <DependentUpon>ConfigureSimulationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateBuildingBlockMergeView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CreateBuildingBlockMergeView.Designer.cs">
+      <DependentUpon>CreateBuildingBlockMergeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreatePKSimMoleculeView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CreatePKSimMoleculeView.Designer.cs">
+      <DependentUpon>CreatePKSimMoleculeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateSimulationView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CreateSimulationView.Designer.cs">
+      <DependentUpon>CreateSimulationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateStartValuesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CreateStartValuesView.Designer.cs">
+      <DependentUpon>CreateStartValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DescriptorConditionListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DescriptorConditionListView.Designer.cs">
+      <DependentUpon>DescriptorConditionListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditBlackBoxFormulaView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditBlackBoxFormulaView.Designer.cs">
+      <DependentUpon>EditBlackBoxFormulaView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditBuildConfigurationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditBuildConfigurationView.Designer.cs">
+      <DependentUpon>EditBuildConfigurationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditBuildingBlockBaseView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditBuildingBlockBaseView.Designer.cs">
+      <DependentUpon>EditBuildingBlockBaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateSpatialStructureView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditActiveTransportBuilderContainerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditActiveTransportBuilderContainerView.Designer.cs">
+      <DependentUpon>EditActiveTransportBuilderContainerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditApplicationMoleculeBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditApplicationMoleculeBuilderView.Designer.cs">
+      <DependentUpon>EditApplicationMoleculeBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditContainerInSimulationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditContainerInSimulationView.Designer.cs">
+      <DependentUpon>EditContainerInSimulationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditDistributedParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditDistributedParameterView.Designer.cs">
+      <DependentUpon>EditDistributedParameterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditEventAssignmentBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditEventAssignmentBuilderView.Designer.cs">
+      <DependentUpon>EditEventAssignmentBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditEventBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditEventBuilderView.Designer.cs">
+      <DependentUpon>EditEventBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditEventGroupBuildingBlockView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditEventGroupBuildingBlockView.Designer.cs">
+      <DependentUpon>EditEventGroupBuildingBlockView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditEventGroupView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditEventGroupView.Designer.cs">
+      <DependentUpon>EditEventGroupView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditFavoritesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditFavoritesView.Designer.cs">
+      <DependentUpon>EditFavoritesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditFormulaView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditFormulaView.Designer.cs">
+      <DependentUpon>EditFormulaView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditMoleculeBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditMoleculeBuilderView.Designer.cs">
+      <DependentUpon>EditMoleculeBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditNeighborhoodView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditNeighborhoodView.Designer.cs">
+      <DependentUpon>EditNeighborhoodView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditObserverBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditObserverBuilderView.Designer.cs">
+      <DependentUpon>EditObserverBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditObserverBuildingBlockView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditObserverBuildingBlockView.Designer.cs">
+      <DependentUpon>EditObserverBuildingBlockView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditOutputSchemaView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditOutputSchemaView.Designer.cs">
+      <DependentUpon>EditOutputSchemaView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditParameterListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditParameterListView.Designer.cs">
+      <DependentUpon>EditParameterListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditPassiveTransportBuildingBlockView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditPassiveTransportBuildingBlockView.Designer.cs">
+      <DependentUpon>EditPassiveTransportBuildingBlockView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditQuantityInSimulationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditQuantityInSimulationView.Designer.cs">
+      <DependentUpon>EditQuantityInSimulationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditSimulationSettingsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditSimulationSettingsView.Designer.cs">
+      <DependentUpon>EditSimulationSettingsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditSumFormulaView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditSumFormulaView.Designer.cs">
+      <DependentUpon>EditSumFormulaView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditTableFormulaWithOffSetFormulaView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditTableFormulaWithOffSetFormulaView.Designer.cs">
+      <DependentUpon>EditTableFormulaWithOffSetFormulaView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditTransportBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditTransportBuilderView.Designer.cs">
+      <DependentUpon>EditTransportBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExportSelectedQuantitiesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ExportSelectedQuantitiesView.Designer.cs">
+      <DependentUpon>ExportSelectedQuantitiesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ImportMoleculeStartValuesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ImportMoleculeStartValuesView.Designer.cs">
+      <DependentUpon>ImportMoleculeStartValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ImportQuantityView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ImportQuantityView.Designer.cs">
+      <DependentUpon>ImportQuantityView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MergeConflictResolverView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MergeConflictResolverView.Designer.cs">
+      <DependentUpon>MergeConflictResolverView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LegendView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\LegendView.Designer.cs">
+      <DependentUpon>LegendView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditChartTemplateManagerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditChartTemplateManagerView.Designer.cs">
+      <DependentUpon>EditChartTemplateManagerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ModalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ModalForm.Designer.cs">
+      <DependentUpon>ModalForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MoleculeDependentBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\MoleculeDependentBuilderView.Designer.cs">
+      <DependentUpon>MoleculeDependentBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewFormulaView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\NewFormulaView.Designer.cs">
+      <DependentUpon>NewFormulaView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NotificationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\NotificationView.Designer.cs">
+      <DependentUpon>NotificationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EventGroupsListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EventGroupsListView.Designer.cs">
+      <DependentUpon>EventGroupsListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormulaCacheView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\FormulaCacheView.Designer.cs">
+      <DependentUpon>FormulaCacheView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ApplyToSelectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ApplyToSelectionView.Designer.cs">
+      <DependentUpon>ApplyToSelectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MoleculeStartValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\MoleculeStartValuesView.Designer.cs">
+      <DependentUpon>MoleculeStartValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MultipleStringSelectionView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MultipleStringSelectionView.Designer.cs">
+      <DependentUpon>MultipleStringSelectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BuildingBlockExplorerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\BuildingBlockExplorerView.Designer.cs">
+      <DependentUpon>BuildingBlockExplorerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewValuePointView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\NewValuePointView.Designer.cs">
+      <DependentUpon>NewValuePointView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ObjectBaseSummaryView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ObjectBaseSummaryView.Designer.cs">
+      <DependentUpon>ObjectBaseSummaryView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ParameterStartValuesView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ParameterStartValuesView.Designer.cs">
+      <DependentUpon>ParameterStartValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReactionBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ReactionBuilderView.Designer.cs">
+      <DependentUpon>ReactionBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReactionPartnerConnectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SearchView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SearchView.Designer.cs">
+      <DependentUpon>SearchView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectFormulasForObjectBaseView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SelectFormulasForObjectBaseView.Designer.cs">
+      <DependentUpon>SelectFormulasForObjectBaseView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectFormulaUsablePathView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SelectFormulaUsablePathView.Designer.cs">
+      <DependentUpon>SelectFormulaUsablePathView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectManyView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Views\SelectManyView.Designer.cs">
+      <DependentUpon>SelectManyView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ModelDiagram\SimulationDiagramView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\MoleculeListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\MoleculeListView.Designer.cs">
+      <DependentUpon>MoleculeListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReactionDiagram\ReactionDiagramView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SelectEventAssignmentTargetView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SelectEventAssignmentTargetView.Designer.cs">
+      <DependentUpon>SelectEventAssignmentTargetView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectLocalisationView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Views\SelectLocalisationView.Designer.cs">
+      <DependentUpon>SelectLocalisationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectMoleculesForBuildingBlockView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SelectMoleculesForBuildingBlockView.Designer.cs">
+      <DependentUpon>SelectMoleculesForBuildingBlockView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectReferenceView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SelectReferenceView.Designer.cs">
+      <DependentUpon>SelectReferenceView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectRenamingView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SelectRenamingView.Designer.cs">
+      <DependentUpon>SelectRenamingView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditReactionInSimulationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditReactionInSimulationView.Designer.cs">
+      <DependentUpon>EditReactionInSimulationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SimulationExplorerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SimulationExplorerView.Designer.cs">
+      <DependentUpon>SimulationExplorerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OutputSelectionsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\OutputSelectionsView.Designer.cs">
+      <DependentUpon>OutputSelectionsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SimulationView\EditSimulationView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SimulationView\EditSimulationView.Designer.cs">
+      <DependentUpon>EditSimulationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SelectAndEditContainerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SelectAndEditContainerView.Designer.cs">
+      <DependentUpon>SelectAndEditContainerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditBaseInfoView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditBaseInfoView.Designer.cs">
+      <DependentUpon>EditBaseInfoView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditContainerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditContainerView.Designer.cs">
+      <DependentUpon>EditContainerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditMoleculeStartValuesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditMoleculeStartValuesView.Designer.cs">
+      <DependentUpon>EditMoleculeStartValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditParameterStartValuesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditParameterStartValuesView.Designer.cs">
+      <DependentUpon>EditParameterStartValuesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditParameterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditParameterView.Designer.cs">
+      <DependentUpon>EditParameterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditSolverSettingsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditSolverSettingsView.Designer.cs">
+      <DependentUpon>EditSolverSettingsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditSpatialStructureView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditSpatialStructureView.Designer.cs">
+      <DependentUpon>EditSpatialStructureView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditUnitView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditUnitView.designer.cs">
+      <DependentUpon>EditUnitView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HierarchicalStructureView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\HierarchicalStructureView.Designer.cs">
+      <DependentUpon>HierarchicalStructureView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditExplicitFormulaView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditExplicitFormulaView.Designer.cs">
+      <DependentUpon>EditExplicitFormulaView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\ApplicationStartup.cs" />
+    <Compile Include="Views\ChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ChartControl.Designer.cs">
+      <DependentUpon>ChartControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditConstantFormulaView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditConstantFormulaView.Designer.cs">
+      <DependentUpon>EditConstantFormulaView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditReactionBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditReactionBuilderView.Designer.cs">
+      <DependentUpon>EditReactionBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditReactionBuildingBlockView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditReactionBuildingBlockView.Designer.cs">
+      <DependentUpon>EditReactionBuildingBlockView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditMoleculesBuildingBlockView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditMoleculesBuildingBlockView.Designer.cs">
+      <DependentUpon>EditMoleculesBuildingBlockView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReactionListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ReactionListView.Designer.cs">
+      <DependentUpon>ReactionListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FinalOptionsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\FinalOptionsView.Designer.cs">
+      <DependentUpon>FinalOptionsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SolverMessageView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SolverMessageView.Designer.cs">
+      <DependentUpon>SolverMessageView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SpaceDiagram\SpatialStructureDiagramView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SplashScreen.Designer.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectChartView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ProjectChartView.Designer.cs">
+      <DependentUpon>ProjectChartView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReactionModifierConnectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserSettingsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\UserSettingsView.Designer.cs">
+      <DependentUpon>UserSettingsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UxGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Views\ValidationMessagesView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ValidationMessagesView.Designer.cs">
+      <DependentUpon>ValidationMessagesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterfaceRegister.cs" />
+    <Compile Include="Views\EditDimensionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditDimensionView.Designer.cs">
+      <DependentUpon>EditDimensionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ImportExportListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Views\BuildingBlockSelectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\BuildingBlockSelectionView.Designer.cs">
+      <DependentUpon>BuildingBlockSelectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MoBiMainView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\MoBiMainView.Designer.cs">
+      <DependentUpon>MoBiMainView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helper\ValueEditBinder.cs" />
+    <EmbeddedResource Include="AboutView.resx">
+      <DependentUpon>AboutView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\BaseDiagram\ChartOptionsView.resx">
+      <DependentUpon>ChartOptionsView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\BaseDiagram\DiagramOptionsView.resx">
+      <DependentUpon>DiagramOptionsView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\BaseDiagram\ForceLayoutConfigurationView.resx">
+      <DependentUpon>ForceLayoutConfigurationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\BaseStartValuesView.resx">
+      <DependentUpon>BaseStartValuesView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\BuildingBlockMergeView.resx">
+      <DependentUpon>BuildingBlockMergeView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CalculateScaleDivisorsView.resx">
+      <DependentUpon>CalculateScaleDivisorsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ConfigureSimulationView.resx">
+      <DependentUpon>ConfigureSimulationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CreateBuildingBlockMergeView.resx">
+      <DependentUpon>CreateBuildingBlockMergeView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CreatePKSimMoleculeView.resx">
+      <DependentUpon>CreatePKSimMoleculeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CreateSimulationView.resx">
+      <DependentUpon>CreateSimulationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\CreateStartValuesView.resx">
+      <DependentUpon>CreateStartValuesView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DescriptorConditionListView.resx">
+      <DependentUpon>DescriptorConditionListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditBlackBoxFormulaView.resx">
+      <DependentUpon>EditBlackBoxFormulaView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditBuildConfigurationView.resx">
+      <DependentUpon>EditBuildConfigurationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditBuildingBlockBaseView.resx">
+      <DependentUpon>EditBuildingBlockBaseView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ChartControl.resx">
+      <DependentUpon>ChartControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditActiveTransportBuilderContainerView.resx">
+      <DependentUpon>EditActiveTransportBuilderContainerView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditContainerInSimulationView.resx">
+      <DependentUpon>EditContainerInSimulationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditFavoritesView.resx">
+      <DependentUpon>EditFavoritesView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditSimulationSettingsView.resx">
+      <DependentUpon>EditSimulationSettingsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditSumFormulaView.resx">
+      <DependentUpon>EditSumFormulaView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditTableFormulaWithOffSetFormulaView.resx">
+      <DependentUpon>EditTableFormulaWithOffSetFormulaView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ExportSelectedQuantitiesView.resx">
+      <DependentUpon>ExportSelectedQuantitiesView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ImportQuantityView.resx">
+      <DependentUpon>ImportQuantityView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MergeConflictResolverView.resx">
+      <DependentUpon>MergeConflictResolverView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\LegendView.resx">
+      <DependentUpon>LegendView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditChartTemplateManagerView.resx">
+      <DependentUpon>EditChartTemplateManagerView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ModalForm.resx">
+      <DependentUpon>ModalForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MoleculeDependentBuilderView.resx">
+      <DependentUpon>MoleculeDependentBuilderView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\NewFormulaView.resx">
+      <DependentUpon>NewFormulaView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\NotificationView.resx">
+      <DependentUpon>NotificationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ApplyToSelectionView.resx">
+      <DependentUpon>ApplyToSelectionView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ObjectBaseSummaryView.resx">
+      <DependentUpon>ObjectBaseSummaryView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ReactionBuilderView.resx">
+      <DependentUpon>ReactionBuilderView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SearchView.resx">
+      <DependentUpon>SearchView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SelectAndEditContainerView.resx">
+      <DependentUpon>SelectAndEditContainerView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditApplicationBuilderView.resx">
+      <DependentUpon>EditApplicationBuilderView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditApplicationMoleculeBuilderView.resx">
+      <DependentUpon>EditApplicationMoleculeBuilderView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditBaseInfoView.resx">
+      <DependentUpon>EditBaseInfoView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditContainerView.resx">
+      <DependentUpon>EditContainerView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditDistributedParameterView.resx">
+      <DependentUpon>EditDistributedParameterView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditEventAssignmentBuilderView.resx">
+      <DependentUpon>EditEventAssignmentBuilderView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditEventBuilderView.resx">
+      <DependentUpon>EditEventBuilderView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditEventGroupBuildingBlockView.resx">
+      <DependentUpon>EditEventGroupBuildingBlockView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditEventGroupView.resx">
+      <DependentUpon>EditEventGroupView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditExplicitFormulaView.resx">
+      <DependentUpon>EditExplicitFormulaView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditFormulaView.resx">
+      <DependentUpon>EditFormulaView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditMoleculeBuilderView.resx">
+      <DependentUpon>EditMoleculeBuilderView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditMoleculeStartValuesView.resx">
+      <DependentUpon>EditMoleculeStartValuesView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditObserverBuilderView.resx">
+      <DependentUpon>EditObserverBuilderView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditObserverBuildingBlockView.resx">
+      <DependentUpon>EditObserverBuildingBlockView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditOutputSchemaView.resx">
+      <DependentUpon>EditOutputSchemaView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditParameterListView.resx">
+      <DependentUpon>EditParameterListView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditParameterStartValuesView.resx">
+      <DependentUpon>EditParameterStartValuesView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditParameterView.resx">
+      <DependentUpon>EditParameterView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditPassiveTransportBuildingBlockView.resx">
+      <DependentUpon>EditPassiveTransportBuildingBlockView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditQuantityInSimulationView.resx">
+      <DependentUpon>EditQuantityInSimulationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditTableFormulaView.resx">
+      <DependentUpon>EditTableFormulaView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditTransportBuilderView.resx">
+      <DependentUpon>EditTransportBuilderView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditSolverSettingsView.resx">
+      <DependentUpon>EditSolverSettingsView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditSpatialStructureView.resx">
+      <DependentUpon>EditSpatialStructureView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditUnitView.resx">
+      <DependentUpon>EditUnitView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EventGroupsListView.resx">
+      <DependentUpon>EventGroupsListView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormulaCacheView.resx">
+      <DependentUpon>FormulaCacheView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MoleculeStartValuesView.resx">
+      <DependentUpon>MoleculeStartValuesView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MultipleStringSelectionView.resx">
+      <DependentUpon>MultipleStringSelectionView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\HierarchicalStructureView.resx">
+      <DependentUpon>HierarchicalStructureView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MoleculeListView.resx">
+      <DependentUpon>MoleculeListView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\NewValuePointView.resx">
+      <DependentUpon>NewValuePointView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ObserverListView.resx">
+      <DependentUpon>ObserverListView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ParameterStartValuesView.resx">
+      <DependentUpon>ParameterStartValuesView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ReactionDiagram\ReactionDiagramView.resx">
+      <DependentUpon>ReactionDiagramView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SelectEventAssignmentTargetView.resx">
+      <DependentUpon>SelectEventAssignmentTargetView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SelectFormulasForObjectBaseView.resx">
+      <DependentUpon>SelectFormulasForObjectBaseView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SelectFormulaUsablePathView.resx">
+      <DependentUpon>SelectFormulaUsablePathView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SelectMoleculesForBuildingBlockView.resx">
+      <DependentUpon>SelectMoleculesForBuildingBlockView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SelectReferenceView.resx">
+      <DependentUpon>SelectReferenceView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SelectRenamingView.resx">
+      <DependentUpon>SelectRenamingView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditReactionInSimulationView.resx">
+      <DependentUpon>EditReactionInSimulationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SimulationExplorerView.resx">
+      <DependentUpon>SimulationExplorerView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditConstantFormulaView.resx">
+      <DependentUpon>EditConstantFormulaView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditDimensionView.resx">
+      <DependentUpon>EditDimensionView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditReactionBuilderView.resx">
+      <DependentUpon>EditReactionBuilderView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditReactionBuildingBlockView.resx">
+      <DependentUpon>EditReactionBuildingBlockView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditMoleculesBuildingBlockView.resx">
+      <DependentUpon>EditMoleculesBuildingBlockView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ReactionListView.resx">
+      <DependentUpon>ReactionListView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FinalOptionsView.resx">
+      <DependentUpon>FinalOptionsView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\BuildingBlockSelectionView.resx">
+      <DependentUpon>BuildingBlockSelectionView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MoBiMainView.resx">
+      <DependentUpon>MoBiMainView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\OutputSelectionsView.resx">
+      <DependentUpon>OutputSelectionsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SimulationView\EditSimulationView.resx">
+      <DependentUpon>EditSimulationView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SolverMessageView.resx">
+      <DependentUpon>SolverMessageView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SplashScreen.resx">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\StringSelectionListBox.resx">
+      <DependentUpon>StringSelectionListBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\UserSettingsView.resx">
+      <DependentUpon>UserSettingsView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ValidationMessagesView.resx">
+      <DependentUpon>ValidationMessagesView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ValidationOptionsView.resx">
+      <DependentUpon>ValidationOptionsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ValueEdit.resx">
+      <DependentUpon>ValueEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="MoBi.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Views\StringSelectionListBox.cs" />
+    <Compile Include="Views\StringSelectionListBox.Designer.cs">
+      <DependentUpon>StringSelectionListBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ValidationOptionsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ValidationOptionsView.Designer.cs">
+      <DependentUpon>ValidationOptionsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ValueEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ValueEdit.Designer.cs">
+      <DependentUpon>ValueEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ObserverListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ObserverListView.Designer.cs">
+      <DependentUpon>ObserverListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditApplicationBuilderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditApplicationBuilderView.Designer.cs">
+      <DependentUpon>EditApplicationBuilderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditTableFormulaView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditTableFormulaView.Designer.cs">
+      <DependentUpon>EditTableFormulaView.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MoBi.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\OK.ico" />
+    <None Include="Resources\Cancel.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj">
+      <Project>{2DBF50BE-A749-421C-B526-8BDA31CFE7B3}</Project>
+      <Name>MoBi.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj">
+      <Project>{B4C86DCA-8877-4400-8088-2401EE65B403}</Project>
+      <Name>MoBi.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj">
+      <Project>{3C65FFC2-D9EC-4951-8C35-04854AD34E52}</Project>
+      <Name>MoBi.Assets</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mappers\" />
+    <Folder Include="Views\LayoutDiagram\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets'))" />
+  </Target>
+</Project>

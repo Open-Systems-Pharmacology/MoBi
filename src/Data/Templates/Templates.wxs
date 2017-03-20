@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="TemplatesFolder" />
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="Templates">
+            <Component Id="cmp374F2E6BC824C1FDABF758B2A4DBA4D9" Directory="TemplatesFolder" Guid="{F3BA8F12-F464-4DE3-A56B-7C21A2C956EF}">
+                <File Id="fil79B17D4913EBBAEFEBA4105F38FCDC39" KeyPath="yes" Source="$(var.DeployDir)\2 Pores Passive Transports.pkml" />
+            </Component>
+            <Component Id="cmp087C9502218DBD1D30CE63798C756F84" Directory="TemplatesFolder" Guid="{1705ACB7-7957-4594-8899-562AB22CD11D}">
+                <File Id="fil1C5785125DAB2D21289888DA6A60FADD" KeyPath="yes" Source="$(var.DeployDir)\Human 2 Pores.pkml" />
+            </Component>
+            <Component Id="cmp090C2C580DD8B1A1EB579F22B73399F9" Directory="TemplatesFolder" Guid="{0CDBEF64-2890-410A-A901-F8DAD4F8C04A}">
+                <File Id="fil09082036B7295115D415DD30BE154996" KeyPath="yes" Source="$(var.DeployDir)\Human Standard.pkml" />
+            </Component>
+            <Component Id="cmp3FAAB3ECA73829C31D72698CBD0B07E0" Directory="TemplatesFolder" Guid="{9D7EFC1D-6EFC-4EF8-8075-8998E2F221B1}">
+                <File Id="fil0285F806A47FDC68EF96E2F90B8882BF" KeyPath="yes" Source="$(var.DeployDir)\IV Bolus (mg).pkml" />
+            </Component>
+            <Component Id="cmp8036AEE0D13517138A83F94D492FA476" Directory="TemplatesFolder" Guid="{3D82DC52-2614-4096-91DC-5F5D96CA62D8}">
+                <File Id="filC8283E328DA0D97865029D2A29499340" KeyPath="yes" Source="$(var.DeployDir)\IV Bolus.pkml" />
+            </Component>
+            <Component Id="cmpAC7B6389CE8AE17F048D1AFF414CE2F1" Directory="TemplatesFolder" Guid="{5BBE10B3-4A7B-4CBE-B4D1-030A7CEB08B5}">
+                <File Id="fil8C8E5D423C385B74B918C110F1429881" KeyPath="yes" Source="$(var.DeployDir)\Standard Molecule.pkml" />
+            </Component>
+            <Component Id="cmp0676C96D7FC2A3E331DCCA96F338ECEC" Directory="TemplatesFolder" Guid="{1397E89F-1DE1-4E42-A784-C196FBF9502D}">
+                <File Id="fil5C5ACD687D9CF94D0867C3CD4070AEF5" KeyPath="yes" Source="$(var.DeployDir)\Standard Observer.pkml" />
+            </Component>
+            <Component Id="cmp6CF0163EE98FBC3EBF89AD378186437F" Directory="TemplatesFolder" Guid="{641BDF2B-CB77-48AB-B01C-BFB6586C0F80}">
+                <File Id="fil49B20717480C07A2FC51995B70C0E07E" KeyPath="yes" Source="$(var.DeployDir)\Standard Passive Transports.pkml" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

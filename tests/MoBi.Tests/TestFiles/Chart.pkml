@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Chart sideMarginsEnabled="1" legendPosition="None" backColor="Transparent" diagramBackColor="White">
+    <Axes>
+        <Axis axisType="X" dimension="Time" unitName="day(s)" scaling="Linear" numberMode="Normal" gridLines="0" />
+        <Axis axisType="Y" dimension="Volume" unitName="ml" scaling="Linear" numberMode="Normal" gridLines="0" />
+        <Axis axisType="Y2" scaling="Linear" numberMode="Normal" gridLines="0" />
+    </Axes>
+    <Curves>
+        <Curve name="Organism-Tumor-Volume" xData="48ca196f-d92a-4f70-90d7-d76f182fc370" yData="55278c63-bb88-4226-bf32-346ab8a775fa">
+            <CurveOptions yAxisType="Y" interpolationMode="xLinear" visible="1" color="Red" lineStyle="Solid" symbol="None" lineThickness="2" />
+        </Curve>
+        <Curve name="Tumor volumes.786-3mgkg-Mean-Mean Volume" xData="52daa360-9318-4b27-845a-eb3982dcaee7" yData="4fce44fd-d736-4c95-9a76-c061f2923dc1">
+            <CurveOptions yAxisType="Y" interpolationMode="xLinear" visible="1" color="Blue" lineStyle="None" symbol="Circle" lineThickness="2" />
+        </Curve>
+    </Curves>
+</Chart>

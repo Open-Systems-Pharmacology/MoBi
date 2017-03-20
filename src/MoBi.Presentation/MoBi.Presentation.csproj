@@ -1,0 +1,942 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B4C86DCA-8877-4400-8088-2401EE65B403}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MoBi.Presentation</RootNamespace>
+    <AssemblyName>MoBi.Presentation</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\MoBi.Presentation.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=3.4.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Data.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.4\lib\net452\DevExpress.Data.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v16.2, Version=16.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.16.2.4\lib\net452\DevExpress.Utils.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.7.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.7\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MPFitLib, Version=1.1.0.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\csmpfit.1.1.0\lib\net20\MPFitLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Draw, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Draw.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Instruments, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Instruments.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Layout, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Layout.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Pdf, Version=5.1.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Pdf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Svg, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Svg.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Northwoods.Go.Xml, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Assets, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.21\lib\net452\OSPSuite.Assets.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Core, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.21\lib\net452\OSPSuite.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.FuncParser">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.21\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Presentation, Version=7.1.0.21, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.21\lib\net452\OSPSuite.Presentation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OSPSuite.Serializer">
+      <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.SimModel">
+      <HintPath>..\..\packages\OSPSuite.SimModel.2.0.0.1\lib\net45\OSPSuite.SimModel.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.TeXReporting">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.1\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    </Reference>
+    <Reference Include="OSPSuite.Utility">
+      <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.1\lib\net45\OSPSuite.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="SX">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.2.8\lib\net45\SX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.104.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.104.0\lib\net451\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Core\CloseSubjectPresenterInvoker.cs" />
+    <Compile Include="Core\Workspace.cs" />
+    <Compile Include="DTO\EmptyFormulaUsableDTO.cs" />
+    <Compile Include="DTO\FavoriteParameterDTO.cs" />
+    <Compile Include="DTO\LegendItemDTO.cs" />
+    <Compile Include="DTO\RenameObjectDTOFactory.cs" />
+    <Compile Include="DTO\SolverSettingsDTO.cs" />
+    <Compile Include="Extensions\HistoricalResultsNodeExtensions.cs" />
+    <Compile Include="Extensions\SmartXLSExtensions.cs" />
+    <Compile Include="Mappers\DataTableToImportQuantityDTOMapperForSimulations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappers\IOutputIntervalToOutputIntervalDTOMapper.cs" />
+    <Compile Include="Mappers\MoBiQuantityPathToQuantityDisplayPathMapper.cs" />
+    <Compile Include="Mappers\ObjectBaseDTOToReferenceNodeMapper.cs" />
+    <Compile Include="Mappers\ParameterToFavoriteParameterDTOMapper.cs" />
+    <Compile Include="Mappers\TransportMoleculeContainerToObjectBaseDTOMapper.cs" />
+    <Compile Include="Mappers\UsedCalcualtionMethodToUsedCalcualtionMethodDTOMapper.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForEductBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForModifierBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForObjectBaseDTOSpecificationFactory.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForEmptyFormulaUsablePath.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForFavorite.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForHistoricalResultsNode.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSensitivityAnalysis.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSimulationFavoritesNode.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ReactionProductPartnerContextMenuSpecificationFactory.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ReactionModifierContextMenuSpecificationFactory.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\RootContextMenuForParameterIdentification.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForParameterIdentification.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\MultipleBuildingBlockInfoNodeContextMenuFactory.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\MultipleChartNodeContextMenu.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\MultipleResultsNodeContextMenuFactory.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\MultipleSimulationNodeContextMenuFactory.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\RootContextMenuFor.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\RootContextMenuForSensitivityAnalysis.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\RootContextMenuForSimulation.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\MultipleBuildingBlockNodeContextMenuFactory.cs" />
+    <Compile Include="MoBiApplicationController.cs" />
+    <Compile Include="DTO\InteractionContainerDTO.cs" />
+    <Compile Include="DTO\ObjectBaseSummaryDTO.cs" />
+    <Compile Include="DTO\ApplicationBuilderDTO.cs" />
+    <Compile Include="DTO\ApplicationMoleculeBuilderDTO.cs" />
+    <Compile Include="DTO\BreadCrumbsDTO.cs" />
+    <Compile Include="DTO\BuildingBlockMappingDTO.cs" />
+    <Compile Include="DTO\BuildingBlockSelectionDTO.cs" />
+    <Compile Include="DTO\StringDTO.cs" />
+    <Compile Include="DTO\TableFormulaBuilderDTO.cs" />
+    <Compile Include="DTO\TransporterMoleculeContainerDTO.cs" />
+    <Compile Include="DTO\BuildingBlockDTO.cs" />
+    <Compile Include="DTO\ConstantFormulaBuilderDTO.cs" />
+    <Compile Include="DTO\ContainerDTO.cs" />
+    <Compile Include="DTO\DimensionDTO.cs" />
+    <Compile Include="DTO\DistributedParameterDTO.cs" />
+    <Compile Include="DTO\DummyParameterDTO.cs" />
+    <Compile Include="DTO\DummyMoleculeDTO.cs" />
+    <Compile Include="DTO\DummyReactionDTO.cs" />
+    <Compile Include="DTO\EventAssignmentBuilderDTO.cs" />
+    <Compile Include="DTO\EventBuilderDTO.cs" />
+    <Compile Include="DTO\EventGroupBuilderDTO.cs" />
+    <Compile Include="DTO\ExplicitFormulaBuilderDTO.cs" />
+    <Compile Include="DTO\FormulaInfoDTO.cs" />
+    <Compile Include="DTO\FormulaUsablePathDTO.cs" />
+    <Compile Include="DTO\ListItemDTO.cs" />
+    <Compile Include="DTO\NeighborhoodDTO.cs" />
+    <Compile Include="DTO\NeighborhoodBuilderDTO.cs" />
+    <Compile Include="DTO\ObjectFormulaDTO.cs" />
+    <Compile Include="DTO\ObserverBuilderDTO.cs" />
+    <Compile Include="DTO\ObserverBuildingBlockDTO.cs" />
+    <Compile Include="DTO\TransportBuilderDTO.cs" />
+    <Compile Include="DTO\ReactionDTO.cs" />
+    <Compile Include="DTO\ReactionBuilderDTO.cs" />
+    <Compile Include="DTO\ReactionInfoDTO.cs" />
+    <Compile Include="DTO\ReferenceDTO.cs" />
+    <Compile Include="DTO\SearchResultDTO.cs" />
+    <Compile Include="DTO\SpatialStructureDTO.cs" />
+    <Compile Include="DTO\StartValuesDTO.cs" />
+    <Compile Include="DTO\TableFormulaWithOffsetDTO.cs" />
+    <Compile Include="DTO\TransportDTO.cs" />
+    <Compile Include="DTO\ExportQuantitiesSelectionDTO.cs" />
+    <Compile Include="DTO\FormulaBuilderDTO.cs" />
+    <Compile Include="DTO\IDescriptorConditionDTO.cs" />
+    <Compile Include="DTO\ImportedQuantityDTO.cs" />
+    <Compile Include="DTO\ImportExcelSheetSelectionDTO.cs" />
+    <Compile Include="DTO\QuantityImporterDTO.cs" />
+    <Compile Include="DTO\LogFilterDTO.cs" />
+    <Compile Include="DTO\MoleculeBuilderDTO.cs" />
+    <Compile Include="DTO\MoleculeStartValueDTO.cs" />
+    <Compile Include="DTO\ObjectBaseDTO.cs" />
+    <Compile Include="DTO\ParameterDTO.cs" />
+    <Compile Include="DTO\ParameterStartValueDTO.cs" />
+    <Compile Include="DTO\QuantityDTO.cs" />
+    <Compile Include="DTO\ScaleDivisorDTO.cs" />
+    <Compile Include="DTO\SelectStringChangeDTO.cs" />
+    <Compile Include="DTO\StartValueDTO.cs" />
+    <Compile Include="DTO\StartValueFormulaDTO.cs" />
+    <Compile Include="DTO\SumFormulaDTO.cs" />
+    <Compile Include="DTO\TagDTO.cs" />
+    <Compile Include="DTO\ValueEditDTO.cs" />
+    <Compile Include="DTO\ValuePointDTO.cs" />
+    <Compile Include="EditParameterMode.cs" />
+    <Compile Include="Formatters\FormatterExtensions.cs" />
+    <Compile Include="Formatters\StartValueFormatter.cs" />
+    <Compile Include="Formatters\NullableWithDisplayUnitFormatter.cs" />
+    <Compile Include="Formatters\UnitFormatter.cs" />
+    <Compile Include="Formatters\ValuePointFormatter.cs" />
+    <Compile Include="Helpers\AbstractMergeManager.cs" />
+    <Compile Include="Helpers\IgnoreReplaceCloneMergeManager.cs" />
+    <Compile Include="Helpers\IgnoreReplaceMergeManager.cs" />
+    <Compile Include="Helpers\MergeIgnoreReplaceMergeManager.cs" />
+    <Compile Include="Helpers\MergeConflictOptions.cs" />
+    <Compile Include="Helpers\MergeManagers.cs" />
+    <Compile Include="Mappers\DataTableToImportParameterQuantityDTOMapper.cs" />
+    <Compile Include="Mappers\InteractionContainerToInteractionConatainerDTOMapper.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForContainer.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForContainerInEvents.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForNeighborhoodBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForParameter.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuSpecificationFactoryForInteractionContainer.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuSpecifictaionFactoryForEventGroupBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\IContextMenu.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\RootContextMenuForSpacialStructure.cs" />
+    <Compile Include="Nodes\BuildConfigurationNode.cs" />
+    <Compile Include="Nodes\BuildingBlockInfoNode.cs" />
+    <Compile Include="Nodes\ReferenceNode.cs" />
+    <Compile Include="Presenter\AbstractParameterBasePresenter.cs" />
+    <Compile Include="Presenter\AbstractQuantitiesImporterPresenter.cs" />
+    <Compile Include="Presenter\ApplyToSelectionPresenter.cs" />
+    <Compile Include="Presenter\BaseDiagram\DiagramPopupMenuBase.cs" />
+    <Compile Include="Presenter\BaseDiagram\DiagramPopupMenuBaseWithContext.cs" />
+    <Compile Include="Presenter\ConfigureSimulationPresenterBase.cs" />
+    <Compile Include="Presenter\DeleteStartValuePresenter.cs" />
+    <Compile Include="Presenter\EditAmountObserverBuilderPresenter.cs" />
+    <Compile Include="Presenter\EditBlackBoxFormulaPresenter.cs" />
+    <Compile Include="Presenter\EditContainerObserverBuilderPresenter.cs" />
+    <Compile Include="Presenter\EditChartTemplateManagerPresenter.cs" />
+    <Compile Include="Presenter\EditFavoritesInBuildindBlockPresenter.cs" />
+    <Compile Include="Presenter\EditFavoritesInEventGroupsPresenter.cs" />
+    <Compile Include="Presenter\EditFavoritesInMoleculesPresenter.cs" />
+    <Compile Include="Presenter\EditFavoritesInReactionsPresenter.cs" />
+    <Compile Include="Presenter\EditFavoritesInSpatialStructurePresenter.cs" />
+    <Compile Include="Presenter\EditFavoritesPresenter.cs" />
+    <Compile Include="Presenter\EditFavoritesPresenterInSimulation.cs" />
+    <Compile Include="Presenter\ReactionEductsPresenter.cs" />
+    <Compile Include="Presenter\ImportQuantitiesForSimulationPresenter.cs" />
+    <Compile Include="Presenter\IParameterPresenter.cs" />
+    <Compile Include="Presenter\IStartValuesPresenter.cs" />
+    <Compile Include="Presenter\LegendPresenter.cs" />
+    <Compile Include="Presenter\Main\JournalDiagramMainPresenter.cs" />
+    <Compile Include="Presenter\Main\JournalPresenter.cs" />
+    <Compile Include="Presenter\Main\MainComparisonPresenter.cs" />
+    <Compile Include="Presenter\ReactionModifiersPresenter.cs" />
+    <Compile Include="Presenter\MoleculeNegativeValuesAllowedSelectionPresenter.cs" />
+    <Compile Include="Presenter\NameComparer.cs" />
+    <Compile Include="Presenter\ReactionProductsPresenter.cs" />
+    <Compile Include="Presenter\ReactionPartnerPresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtEventAssignmentPresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtEventPresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtMoleculeParameterPresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtMoleculePresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtObserverPresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtParameterPresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtReactionParameterPresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtReactionPresenter.cs" />
+    <Compile Include="Presenter\SelectReferenceAtTransportPresenter.cs" />
+    <Compile Include="Presenter\SelectReferencePresenterBase.cs" />
+    <Compile Include="Presenter\SelectReferencePresenterFactory.cs" />
+    <Compile Include="Presenter\SimulationAnalysisPresenterFactory.cs" />
+    <Compile Include="Presenter\SimulationSettingsItems.cs" />
+    <Compile Include="Serialization\SerializerRegister.cs" />
+    <Compile Include="Serialization\Xml\Serializer\DiagramColorsXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializer\DiagramOptionsXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializer\DirectoryMapSettingsXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializer\DirectoryMapXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializer\ForceLayoutConfigurationXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializer\MergeConflictViewSettingsXmlSerializer.cs" />
+    <Compile Include="Serialization\Xml\Serializer\MoBiXmlSerializerRepository.cs" />
+    <Compile Include="Serialization\Xml\Serializer\UserSettingsXmlSerialiser.cs" />
+    <Compile Include="Serialization\Xml\UserSettingsPersistor.cs" />
+    <Compile Include="Settings\IUserSettings.cs" />
+    <Compile Include="Settings\MergeConflictViewSettings.cs" />
+    <Compile Include="Tasks\CheckNameVisitor.cs" />
+    <Compile Include="Tasks\ImportFromExcelTask.cs" />
+    <Compile Include="Tasks\DimensionValidator.cs" />
+    <Compile Include="Tasks\Edit\EditTaskForInteractionContainer.cs" />
+    <Compile Include="Tasks\Edit\EditTaskForSimulation.cs" />
+    <Compile Include="Tasks\FullPathDisplayResolver.cs" />
+    <Compile Include="Tasks\Interaction\AbstractStartValuePathTask.cs" />
+    <Compile Include="Tasks\Interaction\DiagramTask.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForActiveTransportBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForEnumerableBuildingBlockOfContainerBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForInteractionContainer.cs" />
+    <Compile Include="Tasks\Interaction\IntreactionTasksForTransportBuilderAtApplicationBuilder.cs" />
+    <Compile Include="Tasks\Interaction\MoleculeStartValuePathTask.cs" />
+    <Compile Include="Tasks\Interaction\ParameterStartValuesPathTask.cs" />
+    <Compile Include="Tasks\ISerializationTask.cs" />
+    <Compile Include="Tasks\MoBiFormulaTask.cs" />
+    <Compile Include="Tasks\ReloadRelatedItemTask.cs" />
+    <Compile Include="Tasks\SerializationTask.cs" />
+    <Compile Include="Tasks\SimulationComparisonTask.cs" />
+    <Compile Include="Tasks\SingleStartPresenterTask.cs" />
+    <Compile Include="Tasks\ToolTipPartCreator.cs" />
+    <Compile Include="UICommand\AddNewApplicationsEventGroup.cs" />
+    <Compile Include="UICommand\AddReactionBuilderUICommand.cs" />
+    <Compile Include="UICommand\DeleteAllResultsInAllSimulationsUICommand.cs" />
+    <Compile Include="UICommand\DeleteAllResultsInSimulationUICommand.cs" />
+    <Compile Include="UICommand\EditObservedDataUICommand.cs" />
+    <Compile Include="UICommand\ExportSimulationToSimModelXml.cs" />
+    <Compile Include="UICommand\ImportSBMLUICommand.cs" />
+    <Compile Include="UICommand\ImportSimulationParameterValuesUICommand.cs" />
+    <Compile Include="UICommand\RemoveCommandFor.cs" />
+    <Compile Include="UICommand\RemoveCommandForContainer.cs" />
+    <Compile Include="UICommand\RemoveCommandForContainerAtEventGroup.cs" />
+    <Compile Include="UICommand\RemoveCommandForContainerAtMolecule.cs" />
+    <Compile Include="UICommand\RemoveMultipleResultsUICommand.cs" />
+    <Compile Include="UICommand\RemoveMultipleSimulationsUICommand.cs" />
+    <Compile Include="UICommand\RemoveMultipleSummaryChartUICommand.cs" />
+    <Compile Include="UICommand\RemoveSummaryChartUICommand.cs" />
+    <Compile Include="UICommand\RemoveTopContainerCommand.cs" />
+    <Compile Include="UICommand\RenameObjectCommand.cs" />
+    <Compile Include="UICommand\ShowBuildingBlockDiffUICommand.cs" />
+    <Compile Include="Views\BaseDiagram\IMoBiBaseDiagramView.cs" />
+    <Compile Include="Views\IApplyToSelectionView.cs" />
+    <Compile Include="Views\IEditBlackBoxFormulaView.cs" />
+    <Compile Include="Views\IEditContainerInSimulationView.cs" />
+    <Compile Include="Views\IEditFavoritesView.cs" />
+    <Compile Include="Views\ILegendView.cs" />
+    <Compile Include="Views\IEditChartTemplateManagerView.cs" />
+    <Compile Include="Views\INewFormulaView.cs" />
+    <Compile Include="Mappers\AbstractDataTableProviderToQuantityDTOMapper.cs" />
+    <Compile Include="Mappers\StartValueToObjectBaseSummaryDTOMappers.cs" />
+    <Compile Include="Mappers\ConstantFormulaToDTOConstantFormulaMapper.cs" />
+    <Compile Include="Mappers\ContainerToContainerDTOMapper.cs" />
+    <Compile Include="Mappers\DataTableToImportStartValueDTOMapperForParametersInBuildingBlock.cs" />
+    <Compile Include="Mappers\DescriptorConditionToDescriptorConditionDTOMapper.cs" />
+    <Compile Include="Mappers\DimensionToDTODimensionMapper.cs" />
+    <Compile Include="Mappers\DistributedParameterToDistributedParameterDTOMapper.cs" />
+    <Compile Include="DTO\DummyMoleculeContainerDTO.cs" />
+    <Compile Include="Mappers\DTOEventGroupBuilderToEventNodeMapper.cs" />
+    <Compile Include="Mappers\EventGroupBuilderToObjectBaseSummaryDTOMapper.cs" />
+    <Compile Include="Mappers\MoleculeBuilderToObjectBaseSummaryDTOMapper.cs" />
+    <Compile Include="Mappers\ObserverBuilderToObjectBaseSummaryDTOMapper.cs" />
+    <Compile Include="Mappers\PassiveTransportBuilderToObjectBaseSummaryDTOMapper.cs" />
+    <Compile Include="Mappers\ReactionBuilderToObjectBaseSummaryDTOMapper.cs" />
+    <Compile Include="Mappers\MoleculeBuilderDTOToTreeNodeMapper.cs" />
+    <Compile Include="Mappers\ObjectBaseDTOToSpatialStructureNodeMapper.cs" />
+    <Compile Include="Mappers\DataTableToImportQuantityDTOMapperForMolecules.cs" />
+    <Compile Include="Mappers\EventGroupBuilderToDTOEventGroupBuilderMapper.cs" />
+    <Compile Include="Mappers\ExplicitFormulaToExplicitFormulaDTOMapper.cs" />
+    <Compile Include="Mappers\FormulaToFormulaInfoDTOMapper.cs" />
+    <Compile Include="Mappers\FormulaToFormulaBuilderDTOMapper.cs" />
+    <Compile Include="Mappers\IFormulaUsablePathToFormulaUsablePathDTOMapper.cs" />
+    <Compile Include="Mappers\ImportedQuantityToMoleculeStartValueMapper.cs" />
+    <Compile Include="Mappers\ImportedQuantityToParameterStartValueMapper.cs" />
+    <Compile Include="Mappers\ImportQuantityDTOsFromDataTablesMapperException.cs" />
+    <Compile Include="Mappers\ItemToListItemMapper.cs" />
+    <Compile Include="Mappers\MoleculeBuilderToDummyMoleculeDTOMapper.cs" />
+    <Compile Include="Mappers\MoleculeBuilderToMoleculeBuilderDTOMapper.cs" />
+    <Compile Include="Mappers\MoleculeStartValueToMoleculeStartValueDTOMapper.cs" />
+    <Compile Include="Mappers\NeighborhoodBuilderToDTONeighborhoodBuilderMapper.cs" />
+    <Compile Include="Mappers\NeighborhoodToDTONeighborhoodMapper.cs" />
+    <Compile Include="Mappers\NotificationMessageMapper.cs" />
+    <Compile Include="Mappers\ObjectBaseToObjectBaseDTOMapper.cs" />
+    <Compile Include="Mappers\ObjectBaseToDummyMoleculeDTOMapper.cs" />
+    <Compile Include="Mappers\ObjectBaseToSpatialStructureNodeMapper.cs" />
+    <Compile Include="Mappers\ObserverBuilderToDTOObserverBuilderMapperBase.cs" />
+    <Compile Include="Mappers\ParameterStartValuesToDTOParameterStartValuesMapper.cs" />
+    <Compile Include="Mappers\ParameterToDummyParameterDTOMapper.cs" />
+    <Compile Include="Mappers\ParameterToParameterDTOMapper.cs" />
+    <Compile Include="Mappers\QuantityToQuantityDTOMapper.cs" />
+    <Compile Include="Mappers\ReactionBuilderToReactionBuilderDTOMapper.cs" />
+    <Compile Include="Mappers\ReactionBuilderToReactionInfoDTOMapper.cs" />
+    <Compile Include="Mappers\ReactionToReactionDTOMapper.cs" />
+    <Compile Include="Mappers\SearchResultToDTOSearchResultMapper.cs" />
+    <Compile Include="Mappers\SelectEventAssingmentTargetPresenter.cs" />
+    <Compile Include="Mappers\SimulationSettingsToObjectBaseDTOMapper.cs" />
+    <Compile Include="Mappers\SolverSettingsToDTOSolverSettingsMapper.cs" />
+    <Compile Include="Mappers\SpatialStructureToDTOSpatialStructureMapper.cs" />
+    <Compile Include="Mappers\StringChangeToSelectDTOStringChangeMapper.cs" />
+    <Compile Include="Mappers\SumFormulaToDTOSumFormulaMapper.cs" />
+    <Compile Include="Mappers\TableFormulaToDTOTableFormulaMapper.cs" />
+    <Compile Include="Mappers\TableFormulaWithOffsetToDtoTableFormulaWithOffsetMapper.cs" />
+    <Compile Include="Mappers\TagToTagDTOMapper.cs" />
+    <Compile Include="Mappers\TransportBuilderToDTOTransportBuilderMapper.cs" />
+    <Compile Include="Mappers\TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper.cs" />
+    <Compile Include="Mappers\TransportToTransportDTOMapper.cs" />
+    <Compile Include="Mappers\UnitToDTOUnitMapper.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForDescriptorCondition.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForBuildingBlock.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForBuildingBlockInfo.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForFormulaFactory.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForMergableBuildingBlock.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForMoleculeStartValuesBuildingBlock.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForNotification.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForObservedDataFolder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForParameterStartValuesBuildingBlock.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSummaryChart.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\RootContextMenuForMoleculeBuildingBlock.cs" />
+    <Compile Include="MoBiColors.cs" />
+    <Compile Include="ModalPresenter.cs" />
+    <Compile Include="Presenter\NewFormulaPresenter.cs" />
+    <Compile Include="Nodes\HierarchicalStructureNode.cs" />
+    <Compile Include="Nodes\MoleculeTreeNode.cs" />
+    <Compile Include="Nodes\ObjectBaseNode.cs" />
+    <Compile Include="MenusAndBars\ButtonGroupIds.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForEventBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForNeighborhoodBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForObserverBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSimulation.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\RecreateSimulationFromBuildConfigurationUiCommand.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\RemoveEventBuilderFromEventGroupBuilderUICommand.cs" />
+    <Compile Include="MenusAndBars\StatusBarElements.cs" />
+    <Compile Include="Nodes\RootNodeType.cs" />
+    <Compile Include="Nodes\SimulationNode.cs" />
+    <Compile Include="Nodes\SpatialStructureReferenceRootNode.cs" />
+    <Compile Include="Nodes\TextNode.cs" />
+    <Compile Include="Nodes\TreeNodeFactory.cs" />
+    <Compile Include="Presenter\AboutPresenter.cs" />
+    <Compile Include="Presenter\AbstractQuantitiesImporterPresenterForBuildingBlock.cs" />
+    <Compile Include="Presenter\BaseDiagram\ChartOptionsPresenter.cs" />
+    <Compile Include="Presenter\BaseDiagram\DiagramOptionsPresenter.cs" />
+    <Compile Include="Presenter\BaseDiagram\CopyToClipboardService.cs" />
+    <Compile Include="Presenter\BasePresenter\AbstractEditPresenter.cs" />
+    <Compile Include="Presenter\BasePresenter\AbstractSubPresenterWithFormula.cs" />
+    <Compile Include="Presenter\BasePresenter\MoBiDisposablePresenter.cs" />
+    <Compile Include="Presenter\BuildingBlockMergePresenter.cs" />
+    <Compile Include="Presenter\CalculateScaleDivisorsPresenter.cs" />
+    <Compile Include="Presenter\ComparisonChartPresenter.cs" />
+    <Compile Include="Presenter\ConfigureSimulationPresenter.cs" />
+    <Compile Include="Presenter\CreateBuildingBlockMergePresenter.cs" />
+    <Compile Include="Presenter\CreatePKSimMoleculePresenter.cs" />
+    <Compile Include="Presenter\CreateStartValuesPresenter.cs" />
+    <Compile Include="Presenter\DescriptorConditionListPresenter.cs" />
+    <Compile Include="Presenter\EditApplicationMoleculeBuilderPresenter.cs" />
+    <Compile Include="Presenter\EditAssignmentBuilderPresenter.cs" />
+    <Compile Include="Presenter\EditBuildingBlockStarter.cs" />
+    <Compile Include="Presenter\EditBuildingBlockPresenterBase.cs" />
+    <Compile Include="Presenter\EditDistributedParameterPresenter.cs" />
+    <Compile Include="Presenter\EditEventBuilderPresenter.cs" />
+    <Compile Include="Presenter\EditSimulationSettingsPresenter.cs" />
+    <Compile Include="Presenter\EditSumFormulaPresenter.cs" />
+    <Compile Include="Presenter\EditTableFormulaWithOffSetFormulaPresenter.cs" />
+    <Compile Include="Presenter\ExportSelectedQuantitiesPresenter.cs" />
+    <Compile Include="Presenter\FormulaCachePresenter.cs" />
+    <Compile Include="Presenter\EditFormulaPresenter.cs" />
+    <Compile Include="Presenter\EditParameterListPresenter.cs" />
+    <Compile Include="Presenter\EditTableFormulaPresenter.cs" />
+    <Compile Include="Presenter\FormulaPresenterCache.cs" />
+    <Compile Include="Presenter\IBreadCrumbsPresenter.cs" />
+    <Compile Include="Presenter\IConfigureSimulationView.cs" />
+    <Compile Include="Presenter\IDiagramBuildingBlockPresenter.cs" />
+    <Compile Include="Presenter\EditTypedFormulaPresenter.cs" />
+    <Compile Include="Presenter\ImportMoleculeStartValuePresenter.cs" />
+    <Compile Include="Presenter\ImportParameterStartQuantitiesPresenter.cs" />
+    <Compile Include="Presenter\ISelectAndEditPresenter.cs" />
+    <Compile Include="Presenter\ISelectMoleculesForBuildingBlockPresenter.cs" />
+    <Compile Include="Presenter\ISelectFormulasForObjectBasePresenter.cs" />
+    <Compile Include="Presenter\MergeConflictResolverPresenter.cs" />
+    <Compile Include="Presenter\ObjectBaseSummaryPresenter.cs" />
+    <Compile Include="Presenter\SelectAndEditStartValuesPresenter.cs" />
+    <Compile Include="Presenter\SelectOption.cs" />
+    <Compile Include="Presenter\RefreshStartValueFromOriginalBuildingBlockPresenter.cs" />
+    <Compile Include="Presenter\StartValuesPresenter.cs" />
+    <Compile Include="Presenter\Main\NotificationPresenter.cs" />
+    <Compile Include="Presenter\Main\ExplorerPresenter.cs" />
+    <Compile Include="Presenter\Main\HistoryPresenter.cs" />
+    <Compile Include="Presenter\EditOutputSchemaPresenter.cs" />
+    <Compile Include="Presenter\ITagVisitor.cs" />
+    <Compile Include="Presenter\Localisations.cs" />
+    <Compile Include="Presenter\Main\MenuAndToolBarPresenter.cs" />
+    <Compile Include="Presenter\Main\BuildingBlockExplorerPresenter.cs" />
+    <Compile Include="Presenter\Main\SimulationExplorerPresenter.cs" />
+    <Compile Include="Presenter\MoleculeDependentBuilderPresenter.cs" />
+    <Compile Include="Presenter\MoleculeIsPresentSelectionPresenter.cs" />
+    <Compile Include="Presenter\MoleculeStartValuesPresenter.cs" />
+    <Compile Include="Presenter\MultipleStringSelectionPresenter.cs" />
+    <Compile Include="Presenter\NewValuePointPresenter.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorAtEvent.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorAtEventAssingment.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorAtMoleculeApllicationBuilder.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorAtMoleculeStartValue.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorAtObserver.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorAtParameter.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorAtReaction.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorAtTransport.cs" />
+    <Compile Include="Presenter\ObjectPathCreatorBase.cs" />
+    <Compile Include="Presenter\ParameterStartValuesPresenter.cs" />
+    <Compile Include="Presenter\Main\SearchPresenter.cs" />
+    <Compile Include="Presenter\ReportingPresenter.cs" />
+    <Compile Include="Presenter\SelectEventAssingmentTargetPresenter.cs" />
+    <Compile Include="Presenter\SelectFormulaUsablePathPresenter.cs" />
+    <Compile Include="Presenter\SelectItemForReferencePresenterAtApplicationBuilder.cs" />
+    <Compile Include="Presenter\SelectLocalisationPresenter.cs" />
+    <Compile Include="Presenter\SelectRenamingPresenter.cs" />
+    <Compile Include="Presenter\SelectXmlElementPresenter.cs" />
+    <Compile Include="Presenter\EditContainerInSimulationPresenter.cs" />
+    <Compile Include="Presenter\EditQuantityInSimulationPresenter.cs" />
+    <Compile Include="Presenter\EditReactionInSimulationPresenter.cs" />
+    <Compile Include="Presenter\SimpleEditPresenter.cs" />
+    <Compile Include="Presenter\EditInSimulationPresenterFactory.cs" />
+    <Compile Include="Presenter\OutputSelectionsPresenter.cs" />
+    <Compile Include="Presenter\SimulationChartPresenter.cs" />
+    <Compile Include="Presenter\Simulation\ISimulationItemPresenter.cs" />
+    <Compile Include="Presenter\Simulation\SimulationItems.cs" />
+    <Compile Include="Presenter\SolverMessagePresenter.cs" />
+    <Compile Include="Presenter\Main\StatusBarPresenter.cs" />
+    <Compile Include="Presenter\HierarchicalSpatialStructurePresenter.cs" />
+    <Compile Include="Presenter\ProjectChartPresenter.cs" />
+    <Compile Include="Presenter\ValidationOptionsPresenter.cs" />
+    <Compile Include="RegionNames.cs" />
+    <Compile Include="Repositories\ButtonGroupRepository.cs" />
+    <Compile Include="Tasks\ChartTemplatingTask.cs" />
+    <Compile Include="Tasks\DiagramModelToImageTask.cs" />
+    <Compile Include="Tasks\TableFormulaTask.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForObserverBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTaskForApplicationMoleculeBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTaskForContainer.cs" />
+    <Compile Include="Tasks\Edit\EditTaskForEventAssingmentBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTaskFor.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForBuildingBlock.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForDistributedParameter.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForNeighborhoodBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForSimulation.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForSpatialStructure.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForTransportBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForTransporterMoleculeContainer.cs" />
+    <Compile Include="Tasks\EntityTask.cs" />
+    <Compile Include="Tasks\Interaction\AbstractStartValuesTask.cs" />
+    <Compile Include="Tasks\Interaction\BuildingBlockTaskRetriever.cs" />
+    <Compile Include="Tasks\Edit\EditTaksForMoleculeBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForParameter.cs" />
+    <Compile Include="Tasks\Edit\EditTaskForEventBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForEventGroupBuilder.cs" />
+    <Compile Include="Tasks\Edit\EditTasksForReactionBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTask.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTaskContext.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTaskConvention.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTaskForCloneMergeBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForContainerBase.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForDistributedParameter.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForEnumerableBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForEventBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForMergableBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForRootEventGroup.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForEventGroupChildren.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForMoleculeBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForObserverBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForReactionBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForRootApplicationBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForSimulationSettings.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForSpatialStructure.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForTopContainer.cs" />
+    <Compile Include="Tasks\Interaction\IStartValuesTask.cs" />
+    <Compile Include="Tasks\Interaction\MoleculeListTasks.cs" />
+    <Compile Include="Tasks\Interaction\NewMoleculeBuildingBlockDescription.cs" />
+    <Compile Include="Tasks\Interaction\ObjectBaseTask.cs" />
+    <Compile Include="Tasks\Interaction\RenameTask.cs" />
+    <Compile Include="Tasks\MergeTask.cs" />
+    <Compile Include="Tasks\PKSimExportTask.cs" />
+    <Compile Include="Tasks\SearchTasks.cs" />
+    <Compile Include="Tasks\SimulationRunner.cs" />
+    <Compile Include="Tasks\OutputSelectionsRetriever.cs" />
+    <Compile Include="Tasks\SimulationUpdateTask.cs" />
+    <Compile Include="Tasks\MergeWorkflowTask.cs" />
+    <Compile Include="Tasks\XmlContentSelector.cs" />
+    <Compile Include="UICommand\AbstractStartValueSubjectRetrieverUICommand.cs" />
+    <Compile Include="UICommand\AddLabelCommand.cs" />
+    <Compile Include="UICommand\AddMoleculeStartValuesUICommand.cs" />
+    <Compile Include="UICommand\AddnewMoleculeBuildingBlockFromSelectionUiCommand.cs" />
+    <Compile Include="UICommand\AddParameterStartValuesUICommand.cs" />
+    <Compile Include="UICommand\AddPKSimMoleculeCommand.cs" />
+    <Compile Include="UICommand\CalculateScaleFactorCommand.cs" />
+    <Compile Include="UICommand\CloneBuildingBlockUICommand.cs" />
+    <Compile Include="UICommand\CommitSimulationChangesToBuildingBlockUICommand.cs" />
+    <Compile Include="UICommand\ExportMatlabODEUICommand.cs" />
+    <Compile Include="UICommand\ExportModelPartsToExcelUICommand.cs" />
+    <Compile Include="UICommand\ExportToPDFCommand.cs" />
+    <Compile Include="UICommand\ImportMoleculeStartValuesUICommand.cs" />
+    <Compile Include="UICommand\ImportParameterStartValuesUICommand.cs" />
+    <Compile Include="UICommand\MergeBuildingBlocksUICommand.cs" />
+    <Compile Include="UICommand\MergeBuildingBlockUICommand.cs" />
+    <Compile Include="UICommand\MoleculeStartValuesExtendUICommand.cs" />
+    <Compile Include="UICommand\ParameterStartValuesExtendUICommand.cs" />
+    <Compile Include="UICommand\LoadProjectUICommand.cs" />
+    <Compile Include="StartOptions.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTaskFor.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTaskForParameter.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTaskForReactionBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForApplicationMoleculeBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForContainer.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForEventAssignmentBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForMoleculeBuilder.cs" />
+    <Compile Include="Tasks\Interaction\MoleculeStartValuesTask.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForNeighborhood.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForObserverBuilder.cs" />
+    <Compile Include="Tasks\Interaction\ParameterStartValuesTask.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForPassiveTransportBuilder.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForPassiveTransportBuildingBlock.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForSimulation.cs" />
+    <Compile Include="Tasks\Interaction\InteractionTasksForTransporterMoleculeContainer.cs" />
+    <Compile Include="UICommand\AddNewApplicationMoleculeBuilderUICommand.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForEventGroupBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForBuildBlocks.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFor.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForPassiveTransportBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForTransporterMoleculeContainer.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForContainer.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForDataRepository.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForDescriptorCondition.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForFormulaUsablePath.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForMoleculeBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForProductBuilder.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ReactionEductPartnerContextMenuSpecificationFactory.cs" />
+    <Compile Include="Presenter\BaseDiagram\ForceLayoutConfigurationPresenter.cs" />
+    <Compile Include="Presenter\EditActiveTransportBuilderContainer.cs" />
+    <Compile Include="Presenter\EditApplicationBuilderPresenter.cs" />
+    <Compile Include="Presenter\SplashScreenPresenter.cs" />
+    <Compile Include="UICommand\CreateSimulationReportUICommand.cs" />
+    <Compile Include="UICommand\DiagramUICommands\AddMoleculeNameUICommand.cs" />
+    <Compile Include="UICommand\DiagramUICommands\FitToPageCommand.cs" />
+    <Compile Include="UICommand\DiagramUICommands\LayoutByForcesCommand.cs" />
+    <Compile Include="UICommand\DiagramUICommands\LayoutInLayersCommand.cs" />
+    <Compile Include="UICommand\DiagramUICommands\ZoomOutCommand.cs" />
+    <Compile Include="UICommand\DiagramUICommands\ZoomInCommand.cs" />
+    <Compile Include="UICommand\EditSimulationUICommand.cs" />
+    <Compile Include="UICommand\ExportHistoryUICommand.cs" />
+    <Compile Include="UICommand\ExportSimulationResultsToExcelCommand.cs" />
+    <Compile Include="UICommand\IShowProjectExplorerCommand.cs" />
+    <Compile Include="UICommand\SendSimulationToPKSimUICommand.cs" />
+    <Compile Include="UICommand\OpenSimulationCommand.cs" />
+    <Compile Include="UICommand\RemoveCommandForActiveTranport.cs" />
+    <Compile Include="UICommand\RemoveSimulationUICommand.cs" />
+    <Compile Include="UICommand\RenameDataRepositoryUICommand.cs" />
+    <Compile Include="UICommand\RenameSimulationCommand.cs" />
+    <Compile Include="UICommand\SaveUICommandFor.cs" />
+    <Compile Include="UICommand\ShowAboutUICommand.cs" />
+    <Compile Include="UICommand\ShowBuildingBlockExplorerCommand.cs" />
+    <Compile Include="UICommand\ShowNotificationCommand.cs" />
+    <Compile Include="UICommand\ShowSearchCommand.cs" />
+    <Compile Include="UICommand\ShowSimulationExplorerCommand.cs" />
+    <Compile Include="UICommand\SwitchHistoricalResultPersistanceUICommand.cs" />
+    <Compile Include="UICommand\UndoCommand.cs" />
+    <Compile Include="UICommand\UpdateSimulationFromBuildingBlockUICommand.cs" />
+    <Compile Include="UICommand\UserSettingsPresenter.cs" />
+    <Compile Include="UICommand\AddNewPassiveTransportToApplicationBuilderUICommand.cs" />
+    <Compile Include="Views\BaseDiagram\IDiagramAndOptionsViews.cs" />
+    <Compile Include="Views\IAboutView.cs" />
+    <Compile Include="Views\IBuildingBlockMergeView.cs" />
+    <Compile Include="Views\IBuildingBlockSelectionView.cs" />
+    <Compile Include="Views\ICalculateScaleDivisorsView.cs" />
+    <Compile Include="Views\ICreateBuildingBlockMergeView.cs" />
+    <Compile Include="Views\ICreatePKSimMoleculeView.cs" />
+    <Compile Include="Views\ICreateSimulationView.cs" />
+    <Compile Include="Views\ICreateStartValuesView.cs" />
+    <Compile Include="Views\IDescriptorConditionListView.cs" />
+    <Compile Include="Views\IEditBuildConfigurationView.cs" />
+    <Compile Include="Views\IEditBuildingBlockBaseView.cs" />
+    <Compile Include="Views\ICreateSpatialStructureView.cs" />
+    <Compile Include="Views\IEditActiveTransportBuilderContainerView.cs" />
+    <Compile Include="Views\IEditApplicationBuilderView.cs" />
+    <Compile Include="Views\IEditApplicationMoleculeBuilderView.cs" />
+    <Compile Include="Views\IEditDistributedParameterView.cs" />
+    <Compile Include="Views\IEditTypedFormulaView.cs" />
+    <Compile Include="Views\IEditEventAssignmentBuilderView.cs" />
+    <Compile Include="Views\IEditFormulaView.cs" />
+    <Compile Include="Views\IEditNeighborhoodView.cs" />
+    <Compile Include="Views\IEditOutputSchemaView.cs" />
+    <Compile Include="Views\IEditParameterListView.cs" />
+    <Compile Include="Views\IEditQuantityInSimulationView.cs" />
+    <Compile Include="Views\IEditSimulationSettingsView.cs" />
+    <Compile Include="Views\IEditSumFormulaView.cs" />
+    <Compile Include="Views\IEditTableFormulaView.cs" />
+    <Compile Include="Views\IEditTableFormulaWithOffSetFormulaView.cs" />
+    <Compile Include="Views\IExportSelectedQuantitiesView.cs" />
+    <Compile Include="Views\IImportMoleculeStartValuesView.cs" />
+    <Compile Include="Views\IImportQuantityView.cs" />
+    <Compile Include="Views\IMergeConflictResolverView.cs" />
+    <Compile Include="Views\IMoleculeDependentBuilderView.cs" />
+    <Compile Include="Views\INotificationView.cs" />
+    <Compile Include="Views\IFormulaCacheView.cs" />
+    <Compile Include="Views\IMoleculeStartValuesView.cs" />
+    <Compile Include="Views\IMultipleStringSelectionView.cs" />
+    <Compile Include="Views\IBuildingBlockExplorerView.cs" />
+    <Compile Include="Views\IObjectBaseSummaryView.cs" />
+    <Compile Include="Views\IParameterStartValuesView.cs" />
+    <Compile Include="Views\IReactionBuilderView.cs" />
+    <Compile Include="Views\ISearchView.cs" />
+    <Compile Include="Views\ISelectEventAssignmentTargetView.cs" />
+    <Compile Include="Views\ISelectFormulaUsablePathView.cs" />
+    <Compile Include="Views\ISelectLocalisationView.cs" />
+    <Compile Include="Views\ISelectManyView.cs" />
+    <Compile Include="Views\ISelectMoleculesForBuildingBlockView.cs" />
+    <Compile Include="Views\ISelectReferenceView.cs" />
+    <Compile Include="Views\ISelectRenamingView.cs" />
+    <Compile Include="Views\ISelectFormulasForObjectBaseView.cs" />
+    <Compile Include="Views\IEditReactionInSimulationView.cs" />
+    <Compile Include="Views\ISimulationExplorerView.cs" />
+    <Compile Include="Views\IOutputSelectionsView.cs" />
+    <Compile Include="Views\ISolverMessageView.cs" />
+    <Compile Include="Views\ISplashScreen.cs" />
+    <Compile Include="Views\IStartValuesView.cs" />
+    <Compile Include="Views\IProjectChartView.cs" />
+    <Compile Include="Views\IUserSettingsView.cs" />
+    <Compile Include="Presenter\EditEventGroupBuildingBlockPresenter.cs" />
+    <Compile Include="Presenter\EditEventGroupPresenter.cs" />
+    <Compile Include="Presenter\EditMoleculeBuilderPresenter.cs" />
+    <Compile Include="Presenter\EditObserverBuilderPresenter.cs" />
+    <Compile Include="Presenter\EditObserverBuildingBlockPresenter.cs" />
+    <Compile Include="Presenter\EventGroupListPresenter.cs" />
+    <Compile Include="Presenter\MoleculeListPresenter.cs" />
+    <Compile Include="Presenter\ObserverBuilderListPresenter.cs" />
+    <Compile Include="Presenter\ReactionDiagram\IReactionDiagramPresenter.cs" />
+    <Compile Include="Presenter\ReactionDiagram\ReactionPopupMenus.cs" />
+    <Compile Include="Tasks\ObservedDataTask.cs" />
+    <Compile Include="UICommand\ImportDataRepositoryUICommand.cs" />
+    <Compile Include="Presenter\BaseDiagram\BasePopupMenus.cs" />
+    <Compile Include="Presenter\CreateSimulationPresenter.cs" />
+    <Compile Include="Presenter\EditBuildConfigurationPresenter.cs" />
+    <Compile Include="Presenter\EditContainerPresenter.cs" />
+    <Compile Include="Presenter\SelectAndEditMoleculesStartValuesPresenter.cs" />
+    <Compile Include="Presenter\EditMoleculeStartValuesPresenter.cs" />
+    <Compile Include="Presenter\EditParameterPresenter.cs" />
+    <Compile Include="Presenter\EditParameterStartValuesPresenter.cs" />
+    <Compile Include="Presenter\EditTransportBuilderPresenter.cs" />
+    <Compile Include="Presenter\EditPassiveTransportBuildingBlockPresenter.cs" />
+    <Compile Include="Presenter\EditSolverSettingsPresenter.cs" />
+    <Compile Include="Presenter\EditSpatialStructurePresenter.cs" />
+    <Compile Include="Views\IEditEventGroupBuildingBlockView.cs" />
+    <Compile Include="Views\IEditEventGroupView.cs" />
+    <Compile Include="Views\IEditEventBuilderView.cs" />
+    <Compile Include="Views\IEditMoleculeBuilderView.cs" />
+    <Compile Include="Views\IEditObserverBuilderView.cs" />
+    <Compile Include="Views\IEditObserverBuildingBlockView.cs" />
+    <Compile Include="Views\IEditPassiveTransportBuildingBlockView.cs" />
+    <Compile Include="Views\IEditTransportBuilderView.cs" />
+    <Compile Include="Presenter\ModelDiagram\ModelPopupMenus.cs" />
+    <Compile Include="Presenter\ModelDiagram\SimulationDiagramPresenter.cs" />
+    <Compile Include="Presenter\HierarchicalSimulationPresenter.cs" />
+    <Compile Include="Presenter\BuildingBlockSelectionPresenter.cs" />
+    <Compile Include="Presenter\BaseDiagram\MoBiBaseDiagramPresenter.cs" />
+    <Compile Include="Presenter\SpaceDiagram\SpacePopupMenus.cs" />
+    <Compile Include="Presenter\SpaceDiagram\SpatialStructureDiagramPresenter.cs" />
+    <Compile Include="Presenter\EditSimulationPresenter.cs" />
+    <Compile Include="Views\IEventGroupsListView.cs" />
+    <Compile Include="Views\IMoleculeListView.cs" />
+    <Compile Include="Views\IObserverListView.cs" />
+    <Compile Include="Views\IEditSimulationView.cs" />
+    <Compile Include="Views\IFinalOptionsView.cs" />
+    <Compile Include="Views\ISelectAndEditContainerView.cs" />
+    <Compile Include="Views\IEditMoleculeStartValuesView.cs" />
+    <Compile Include="Views\IEditParameterStartValuesView.cs" />
+    <Compile Include="Views\IEditSolverSettingsView.cs" />
+    <Compile Include="Presenter\SelectAndEditParameterStartValuesPresenter.cs" />
+    <Compile Include="Presenter\FinalOptionsPresenter.cs" />
+    <Compile Include="Presenter\HierarchicalStructurePresenter.cs" />
+    <Compile Include="Views\IEditContainerView.cs" />
+    <Compile Include="Views\IEditParameterView.cs" />
+    <Compile Include="Views\IEditSpatialStructureView.cs" />
+    <Compile Include="Presenter\EditDimensionPresenter.cs" />
+    <Compile Include="Presenter\EditUnitPresenter.cs" />
+    <Compile Include="Tasks\UnitTasks.cs" />
+    <Compile Include="Views\IEditUnitView.cs" />
+    <Compile Include="Views\IHierarchicalStructureView.cs" />
+    <Compile Include="Presenter\EditExplicitFormulaPresenter.cs" />
+    <Compile Include="Views\IEditExplicitFormulaView.cs" />
+    <Compile Include="Presenter\EditConstantFormulaPresenter.cs" />
+    <Compile Include="Presenter\CreateFormulaPresenter.cs" />
+    <Compile Include="Views\IEditConstantFormulaView.cs" />
+    <Compile Include="Views\INameEdit.cs" />
+    <Compile Include="UICommand\ReactionPartnerBuilderUICommands.cs" />
+    <Compile Include="Presenter\EditMoleculeBuildingBlockPresenter.cs" />
+    <Compile Include="Presenter\EditReactionBuildingBlockPresenter.cs" />
+    <Compile Include="Presenter\EditReactionBuilderPresenter.cs" />
+    <Compile Include="Views\IEditReactionBuilderView.cs" />
+    <Compile Include="Presenter\ReactionsListSubPresenter.cs" />
+    <Compile Include="UICommand\EditCommandFor.cs" />
+    <Compile Include="UICommand\AddCommandFor.cs" />
+    <Compile Include="MenusAndBars\MenuBarItemExtensions.cs" />
+    <Compile Include="MenusAndBars\MenuBarItemIds.cs" />
+    <Compile Include="PresentationRegister.cs" />
+    <Compile Include="Presenter\ChartPresenter.cs">
+    </Compile>
+    <Compile Include="Presenter\IPresenter.cs" />
+    <Compile Include="Views\IEditMoleculesBuildingBlockView.cs" />
+    <Compile Include="Views\IEditReactionBuildingBlockView.cs" />
+    <Compile Include="Views\IReactionListView.cs" />
+    <Compile Include="Views\IValidationOptionsView.cs" />
+    <Compile Include="Views\IView.cs" />
+    <Compile Include="UICommand\IExitCommand.cs" />
+    <Compile Include="UICommand\ShowHistoryCommand.cs" />
+    <Compile Include="UICommand\StopSimulationCommand.cs" />
+    <Compile Include="UICommand\RunActiveSimulationCommand.cs" />
+    <Compile Include="UICommand\UserSettingsCommand.cs" />
+    <Compile Include="UICommand\CloseProjectCommand.cs" />
+    <Compile Include="UICommand\NewSimulationCommand.cs" />
+    <Compile Include="Repositories\MenuBarItemRepository.cs" />
+    <Compile Include="UICommand\SaveProjectAsCommand.cs" />
+    <Compile Include="UICommand\SaveProjectCommand.cs" />
+    <Compile Include="Tasks\ChartTasks.cs" />
+    <Compile Include="UICommand\NewProjectCommand.cs" />
+    <Compile Include="UICommand\OpenProjectCommand.cs" />
+    <Compile Include="Tasks\ProjectTask.cs" />
+    <Compile Include="Views\IChartView.cs" />
+    <Compile Include="Presenter\IValidationMessagesPresenter.cs" />
+    <Compile Include="Presenter\DimensionCreationPresenter.cs" />
+    <Compile Include="Presenter\DropAllowedTypes.cs" />
+    <Compile Include="Views\IImportExportListView.cs">
+    </Compile>
+    <Compile Include="Presenter\ImportExportPresenter.cs" />
+    <Compile Include="Presenter\MoBiMainViewPresenter.cs">
+    </Compile>
+    <Compile Include="Presenter\SelectionPresenter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\IEditDimensionView.cs" />
+    <Compile Include="Views\IMoBiMainView.cs" />
+    <Compile Include="Views\IContainerModalView.cs" />
+    <Compile Include="Views\ISelectionView.cs" />
+    <Compile Include="Views\IValidationMessagesView.cs" />
+    <Compile Include="Views\BaseDiagram\IBaseLayouterInterfaces.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj">
+      <Project>{2dbf50be-a749-421c-b526-8bda31cfe7b3}</Project>
+      <Name>MoBi.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj">
+      <Project>{3c65ffc2-d9ec-4951-8c35-04854ad34e52}</Project>
+      <Name>MoBi.Assets</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.104.0\build\net451\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
