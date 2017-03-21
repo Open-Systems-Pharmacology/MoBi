@@ -96,7 +96,7 @@ namespace MoBi.UI.Services
       private static void updateGoDiagramKey()
       {
          // This line is patched during creation of setup. Do not modify.
-         GoView.LicenseKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
+         UIRegister.GoDiagramKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
       }
 
       private static void registerUIComponents(IContainer container)
