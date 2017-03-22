@@ -3,6 +3,8 @@ configuration: Debug
 environment:
   app_version: '7.1.0'
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
+  COVERALLS_REPO_TOKEN:
+    secure: AhpW8y3cpVk6I4q31MA0rOqy+bMr2WCJeCaFqDbDs4Ppf0yPlrKX5ABRz1JHKLUw
 
 version: '%app_version%.{build}'
 
@@ -51,10 +53,8 @@ build:
   verbosity: minimal
   project: MoBi.sln
 
-test:
-  assemblies:
-    - MoBi.Tests.dll
-    - MoBi.UI.Tests.dll
+test_script:
+  - rake cover["+[MoBi.Core]* +[MoBi.Assets]* +[MoBi.Presentation]*"]
 
 on_finish: 
   - ps: Get-ChildItem setup.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
