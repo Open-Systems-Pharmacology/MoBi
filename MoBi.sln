@@ -19,6 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.BatchTool", "src\MoBi.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B29CBF46-FC2E-4201-BBEC-940B5601A773}"
 	ProjectSection(SolutionItems) = preProject
+		appveyor-coverage.yml = appveyor-coverage.yml
 		appveyor-nightly.yml = appveyor-nightly.yml
 		appveyor.yml = appveyor.yml
 		log4net.config.xml = log4net.config.xml
