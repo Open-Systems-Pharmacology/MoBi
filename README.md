@@ -21,6 +21,7 @@ where it should be considered.
 
 ## Code Status
 [![Build status](https://ci.appveyor.com/api/projects/status/qgv5bpwys5snl7mk/branch/master?svg=true&passingText=master%20-%20passing)](https://ci.appveyor.com/project/open-systems-pharmacology-ci/mobi/branch/master)
+[![Coverage Status](https://coveralls.io/repos/github/Open-Systems-Pharmacology/MoBi/badge.svg?branch=develop)](https://coveralls.io/github/Open-Systems-Pharmacology/MoBi?branch=develop)
 
 ## Code of conduct
 Everyone interacting in the Open Systems Pharmacology community (codebases, issue trackers, chat rooms, mailing lists etc...) is expected to follow the Open Systems Pharmacology [code of conduct](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CODE_OF_CONDUCT.md).
