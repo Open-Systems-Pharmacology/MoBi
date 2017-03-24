@@ -3,6 +3,10 @@ require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
 require_relative 'scripts/coverage'
 
+task :cover do |t, args|
+	Coverage.cover("+[MoBi.Core]* +[MoBi.Assets]* +[MoBi.Presentation]*" , "MoBi.Tests.csproj")
+end
+
 task :create_setup, [:product_version, :configuration] do |t, args|
 	setup_dir = File.join(solution_dir, 'setup')
 	src_dir = File.join(solution_dir, 'src', 'MoBi', 'bin', args.configuration)
