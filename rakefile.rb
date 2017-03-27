@@ -5,9 +5,9 @@ require_relative 'scripts/coverage'
 
 task :cover do
 	filter = []
-	filter.push("+[MoBi.Core]*")
-	filter.push("+[MoBi.Assets]*")
-	filter.push("+[MoBi.Presentation]*")
+	filter << "+[MoBi.Core]*"
+	filter << "+[MoBi.Assets]*"
+	filter << "+[MoBi.Presentation]*"
 
 	Coverage.cover(filter , "MoBi.Tests.csproj")
 end
