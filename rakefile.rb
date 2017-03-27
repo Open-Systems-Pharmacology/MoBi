@@ -4,7 +4,12 @@ require_relative 'scripts/utils'
 require_relative 'scripts/coverage'
 
 task :cover do
-	Coverage.cover("+[MoBi.Core]* +[MoBi.Assets]* +[MoBi.Presentation]*" , "MoBi.Tests.csproj")
+	filter = []
+	filter.push("+[MoBi.Core]*")
+	filter.push("+[MoBi.Assets]*")
+	filter.push("+[MoBi.Presentation]*")
+
+	Coverage.cover(filter , "MoBi.Tests.csproj")
 end
 
 task :create_setup, [:product_version, :configuration] do |t, args|
