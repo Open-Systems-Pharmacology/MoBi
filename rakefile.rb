@@ -3,7 +3,7 @@ require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
 require_relative 'scripts/coverage'
 
-task :cover do |t, args|
+task :cover do
 	Coverage.cover("+[MoBi.Core]* +[MoBi.Assets]* +[MoBi.Presentation]*" , "MoBi.Tests.csproj")
 end
 
