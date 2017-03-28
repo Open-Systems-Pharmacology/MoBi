@@ -204,11 +204,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Assets, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.49\lib\net452\OSPSuite.Assets.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.24\lib\net452\OSPSuite.Assets.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Core, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.49\lib\net452\OSPSuite.Core.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.24\lib\net452\OSPSuite.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.DataBinding">
@@ -221,11 +221,11 @@
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Infrastructure, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.49\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.24\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Presentation, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.49\lib\net452\OSPSuite.Presentation.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.24\lib\net452\OSPSuite.Presentation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
@@ -238,7 +238,7 @@
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.1\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.UI, Version=7.1.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.UI.7.1.0.49\lib\net452\OSPSuite.UI.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.UI.7.1.0.24\lib\net452\OSPSuite.UI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OSPSuite.Utility">
@@ -290,14 +290,18 @@
     <Compile Include="Services\BatchJournalDiagramManagerFactory.cs" />
     <Compile Include="Services\BatchLogger.cs" />
     <Compile Include="Services\BatchUserSettings.cs" />
-    <Compile Include="Views\BatchMainView.cs" />
+    <Compile Include="Views\BatchMainView.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Views\BatchMainView.Designer.cs">
       <DependentUpon>BatchMainView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\IBatchMainView.cs" />
     <Compile Include="Views\IBatchView.cs" />
     <Compile Include="Views\IFileFromFolderRunnerView.cs" />
-    <Compile Include="Views\FileFromFolderRunnerView.cs" />
+    <Compile Include="Views\FileFromFolderRunnerView.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Views\FileFromFolderRunnerView.Designer.cs">
       <DependentUpon>FileFromFolderRunnerView.cs</DependentUpon>
     </Compile>
