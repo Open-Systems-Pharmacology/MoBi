@@ -30,6 +30,7 @@ install:
     Start-Process msiexec.exe -ArgumentList /i, C:\MikTex.msi, /quiet, /qn, /norestart, INSTALLDIR=$env:MIK_TEX_INSTALL_DIR -Wait
 
 before_build:
+  - nuget sources
   - nuget sources remove -name nuget.org
   - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
   - nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility 
