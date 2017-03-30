@@ -94,7 +94,6 @@ def update_smart_xls(source_dir, smart_xls_package)
   end
 end
 
-
 def solution_dir
 	File.dirname(__FILE__)
 end
