@@ -45,10 +45,9 @@ before_build:
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
   - nuget restore
   - rake "update_go_license[ApplicationStartup.cs, %GO_DIAGRAM_KEY%]"
-  - rake "update_smartxls[C:/smartxls.zip]"
   
 after_build:
-  - rake "create_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%]"
+  - rake "create_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, C:/smartxls.zip]"
   - 7z a setup.zip %APPVEYOR_BUILD_FOLDER%\setup\deploy\*.msi
 
 build:
