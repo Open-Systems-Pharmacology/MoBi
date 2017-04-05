@@ -12,13 +12,17 @@ task :cover do
 	Coverage.cover(filter , "MoBi.Tests.csproj")
 end
 
-task :create_setup, [:product_version, :configuration, :smart_xls_package] do |t, args|
+task :update_smartxls, [:smart_xls_package] do |t, args|
+	src_dir = File.dirname(Dir.glob("packages/**/SX.dll").first)
+	puts args.smart_xls_package
+	update_smart_xls src_dir, args.smart_xls_package
+end
+
+task :create_setup, [:product_version, :configuration] do |t, args|
 	setup_dir = File.join(solution_dir, 'setup')
 	src_dir = File.join(solution_dir, 'src', 'MoBi', 'bin', args.configuration)
 	product_version = args.product_version
 	suite_name = 'Open Systems Pharmacology Suite'
-
-	update_smart_xls src_dir, args.smart_xls_package
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
