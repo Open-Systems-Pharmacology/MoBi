@@ -68,6 +68,7 @@ task :postclean do |t, args|
 		copy_files 'Data', ['xml', 'mbdt']
 		copy_file 'src/Data/AllCalculationMethods.pkml'
 		copy_dimensions_xml
+		copy_pkparameters_xml
 	end
 
 	copy_depdencies solution_dir,  File.join(all_users_application_dir, 'Templates') do
