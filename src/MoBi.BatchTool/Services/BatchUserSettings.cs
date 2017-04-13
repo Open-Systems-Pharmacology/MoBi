@@ -68,7 +68,7 @@ namespace MoBi.BatchTool.Services
       public bool ShowPKSimDimensionProblemWarnings { get; set; }
       public bool ShowCannotCalcErrors { get; set; }
       public bool ShowPKSimObserverMessages { get; set; }
-      public bool CheckRules { get; private set; }
+      public bool CheckRules { get; set; }
       public ValidationSettings ValidationSettings { get; private set; }
       public OutputSelections OutputSelections { get; set; }
       public bool GroupParameters { get; set; }
