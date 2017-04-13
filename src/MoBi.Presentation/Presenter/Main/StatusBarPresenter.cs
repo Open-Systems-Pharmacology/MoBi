@@ -68,19 +68,19 @@ namespace MoBi.Presentation.Presenter.Main
       private void updateProjectInfo(string projectName, string projectPath, string reactionDimensionMode, bool enabled)
       {
          update(StatusBarElements.ProjectName)
-            .WithCaption(string.Format("Project: {0}", projectName))
-            .And.ToolTipText(string.Format("Project: {0}", projectName))
+            .WithCaption($"Project: {projectName}")
+            .And.ToolTipText($"Project: {projectName}")
             .And.Enabled(enabled);
 
          update(StatusBarElements.ProjectPath)
             .WithCaption(projectPath)
-            .And.ToolTipText(string.Format("Project File: {0}", projectPath))
+            .And.ToolTipText($"Project File: {projectPath}")
             .And.Enabled(enabled);
 
 
          update(StatusBarElements.ProjectReactionDimensionMode)
             .WithCaption(reactionDimensionMode)
-            .And.ToolTipText(string.Format("Reaction Rate Base: {0}", reactionDimensionMode))
+            .And.ToolTipText($"Reaction Rate Base: {reactionDimensionMode}")
             .And.Enabled(enabled);
       }
 
@@ -90,7 +90,7 @@ namespace MoBi.Presentation.Presenter.Main
          if (_numberOfReportsBeingCreated == 1)
             caption = "1 report is being created...";
          else if (_numberOfReportsBeingCreated > 1)
-            caption = "{0} reports are being created...".FormatWith(_numberOfReportsBeingCreated);
+            caption = $"{_numberOfReportsBeingCreated} reports are being created...";
 
          update(StatusBarElements.Report)
             .WithCaption(caption);

@@ -219,7 +219,7 @@ namespace MoBi.Presentation.Tasks
          else
             terminationString = results.Warnings.Any() ? "failed" : "aborted";
 
-         return String.Format("simulation run {0}", terminationString);
+         return $"simulation run {terminationString}";
       }
 
       private void onSimulationFinished(object sender, EventArgs eventArgs)

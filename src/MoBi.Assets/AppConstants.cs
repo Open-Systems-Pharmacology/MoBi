@@ -237,7 +237,7 @@ namespace MoBi.Assets
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
-            return "Delete all results from simulation '{0}'".FormatWith(simulationName);
+            return $"Delete all results from simulation '{simulationName}'";
          }
 
          public static string DisplayValue(double displayValue, string displayUnit)

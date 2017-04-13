@@ -53,7 +53,7 @@ namespace MoBi.Presentation.Presenter
          if (formulaType == typeof (SumFormula))
             return presenterFor<IEditSumFormulaPresenter>(formulaType);
 
-         throw new NotSupportedException(String.Format("Formula '{0}' not supported at the moment", formulaType.Name));
+         throw new NotSupportedException($"Formula '{formulaType.Name}' not supported at the moment");
       }
 
       public bool HasPresenterFor(Type formulaType)

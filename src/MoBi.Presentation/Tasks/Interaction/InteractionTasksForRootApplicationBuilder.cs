@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          //TODO: Code is identical to the one in InteractionTasksForRootEventGroup and should be refactored
          if (!sourceEventGroupBuilders.Any())
-            throw new NotMatchingSerializationFileException(string.Format("Top {0}",ObjectTypes.EventGroupBuildingBlock));
+            throw new NotMatchingSerializationFileException($"Top {ObjectTypes.EventGroupBuildingBlock}");
 
          if (sourceEventGroupBuilders.Count == 1)
             return sourceEventGroupBuilders;

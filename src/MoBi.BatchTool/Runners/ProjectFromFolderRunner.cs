@@ -31,7 +31,7 @@ namespace MoBi.BatchTool.Runners
          var inputFolder = parameters.inputFolder;
          return Task.Run(() =>
          {
-            _logger.AddInSeparator("Starting batch run: {0}".FormatWith(DateTime.Now.ToIsoFormat(withSeconds: true)));
+            _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat(withSeconds: true)}");
             var inputDirectory = new DirectoryInfo(inputFolder);
 
             if (!inputDirectory.Exists)
@@ -61,20 +61,20 @@ namespace MoBi.BatchTool.Runners
             }
             var end = DateTime.UtcNow;
             var timeSpent = end - begin;
-            _logger.AddInSeparator("{0} projects computed in '{1}'".FormatWith(allProjectFiles.Length, timeSpent.ToDisplay()));
-            _logger.AddInSeparator("Batch run finished: {0}".FormatWith(DateTime.Now.ToIsoFormat(withSeconds: true)));
+            _logger.AddInSeparator($"{allProjectFiles.Length} projects computed in '{timeSpent.ToDisplay()}'");
+            _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat(withSeconds: true)}");
          });
       }
 
       private void compute(string projectFile)
       {
-         _logger.AddInfo("Computing file '{0}'".FormatWith(projectFile));
+         _logger.AddInfo($"Computing file '{projectFile}'");
          _serializationTask.LoadProject(projectFile);
          var project = _context.CurrentProject;
 
          foreach (var simulation in project.Simulations)
          {
-            _logger.AddInfo("Computing simulation '{0}'".FormatWith(simulation.Name));
+            _logger.AddInfo($"Computing simulation '{simulation.Name}'");
             try
             {
                _simulationBatchRunner.Compute(simulation);
