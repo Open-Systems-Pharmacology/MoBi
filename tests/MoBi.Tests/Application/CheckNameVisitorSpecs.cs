@@ -375,7 +375,7 @@ namespace MoBi.Application
       {
          base.Context();
          _simulationSettings = new SimulationSettings();
-         _simulationSettings.OutputSelections.AddOutput(new QuantitySelection("A|B|{0}".FormatWith(_oldName), QuantityType.Drug));
+         _simulationSettings.OutputSelections.AddOutput(new QuantitySelection($"A|B|{_oldName}", QuantityType.Drug));
          _simulationSettings.OutputSelections.AddOutput(new QuantitySelection("A|B|C", QuantityType.Drug));
       }
 
@@ -432,8 +432,8 @@ namespace MoBi.Application
          _simulationSettings.AddChartTemplate(_curveChartTemplate);
          _curveTemplate = new CurveTemplate
          {
-            xData = {Path = "A|B|{0}".FormatWith(_oldName)},
-            yData = {Path = "C|D|{0}".FormatWith(_oldName)},
+            xData = {Path = $"A|B|{_oldName}"},
+            yData = {Path = $"C|D|{_oldName}"},
          };
          _curveChartTemplate.Curves.Add(_curveTemplate);
 

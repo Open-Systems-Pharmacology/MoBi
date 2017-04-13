@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Mappers
          }
          dto.TypeName = _objectTypeResolver.TypeFor(foundObject);
          dto.ProjectItem = searchResult.ProjectItem;
-         dto.ProjectItemName = string.Format("{0}: {1}", _objectTypeResolver.TypeFor(searchResult.ProjectItem), searchResult.ProjectItem.Name);
+         dto.ProjectItemName = $"{_objectTypeResolver.TypeFor(searchResult.ProjectItem)}: {searchResult.ProjectItem.Name}";
          return dto;
       }
    }

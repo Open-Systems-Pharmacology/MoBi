@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Mappers
          dto.Selected = _defaultSelected;
          dto.Description = input.ChangeDescription;
          dto.Change = input;
-         dto.BuildingBlock = string.Format("{0}:{1}", _objectTypeResolver.TypeFor(input.BuildingBlock),input.BuildingBlock.Name);
+         dto.BuildingBlock = $"{_objectTypeResolver.TypeFor(input.BuildingBlock)}:{input.BuildingBlock.Name}";
          return dto;
       }
    }

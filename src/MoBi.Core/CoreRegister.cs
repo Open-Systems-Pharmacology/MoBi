@@ -48,6 +48,7 @@ namespace MoBi.Core
             scan.ExcludeType<ClipboardManager>();
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
             scan.ExcludeNamespaceContainingType<ProjectReporter>();
+            scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
             scan.WithConvention(new OSPSuiteRegistrationConvention());
          });
 

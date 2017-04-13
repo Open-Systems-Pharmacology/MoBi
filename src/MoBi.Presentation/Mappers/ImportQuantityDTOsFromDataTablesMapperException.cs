@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Mappers
             var sb = new StringBuilder();
 
             // +2 to make the message a little more friendly for the user (+1=convert from 0-base to 1-base, +1=header row)
-            sb.Append(string.Format("row {0} ", _rowIndex + 2)); 
+            sb.Append($"row {_rowIndex + 2} "); 
             return _suggestion + " in " + sb.ToString().Trim(',');
          }
       }

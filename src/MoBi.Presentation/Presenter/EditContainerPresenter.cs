@@ -67,9 +67,9 @@ namespace MoBi.Presentation.Presenter
          switch (mode)
          {
             case ContainerMode.Physical:
-               return string.Format("{0} {1}", mode, ToolTips.Container.PhysicalContainer);
+               return $"{mode} {ToolTips.Container.PhysicalContainer}";
             case ContainerMode.Logical:
-               return string.Format("{0} {1}", mode, ToolTips.Container.LogicalContainer);
+               return $"{mode} {ToolTips.Container.LogicalContainer}";
             default:
                throw new ArgumentOutOfRangeException("mode");
          }

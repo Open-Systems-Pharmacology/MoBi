@@ -20,7 +20,7 @@ namespace MoBi.Presentation.DTO
 
       public override string ToString()
       {
-         return Formula != null ? string.Format("{0} ({1})",Formula.Name, FormulaString) : FormulaString;
+         return Formula != null ? $"{Formula.Name} ({FormulaString})" : FormulaString;
       }
    }
 
