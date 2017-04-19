@@ -3,10 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -16,11 +12,13 @@ using Northwoods.Go;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
-
 using OSPSuite.Presentation.Presenters.Diagram;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Presentation.Views.Diagram;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter.BaseDiagram
 {
@@ -68,13 +66,13 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       protected IDiagramPopupMenuBase _diagramPopupMenu;
       private readonly IDiagramTask _diagramTask;
 
-      protected MoBiBaseDiagramPresenter(TView view, 
-         IContainerBaseLayouter layouter, 
-         IDialogCreator dialogCreator, 
-         IDiagramModelFactory diagramModelFactory, 
-         IUserSettings userSettings, 
-         IMoBiContext context, 
-         IDiagramTask diagramTask, 
+      protected MoBiBaseDiagramPresenter(TView view,
+         IContainerBaseLayouter layouter,
+         IDialogCreator dialogCreator,
+         IDiagramModelFactory diagramModelFactory,
+         IUserSettings userSettings,
+         IMoBiContext context,
+         IDiagramTask diagramTask,
          IStartOptions runOptions)
          : base(view, layouter, dialogCreator, diagramModelFactory)
       {
@@ -130,8 +128,8 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       public virtual IDiagramPopupMenuBase GetPopupMenu(IBaseNode baseNode)
       {
          if (baseNode == null) return _diagramPopupMenu;
-         if (baseNode.IsAnImplementationOf(typeof (IContainerNode))) return _containerPopupMenu;
-         if (baseNode.IsAnImplementationOf(typeof (INeighborhoodNode))) return _neighborhoodPopupMenu;
+         if (baseNode.IsAnImplementationOf(typeof(IContainerNode))) return _containerPopupMenu;
+         if (baseNode.IsAnImplementationOf(typeof(INeighborhoodNode))) return _neighborhoodPopupMenu;
          return _diagramPopupMenu;
       }
 
@@ -139,7 +137,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       {
          if (_view.IsMoleculeNode(DiagramModel.GetNode(id)))
             return;
-         
+
          var objectBase = _context.Get<IObjectBase>(id);
          _context.PublishEvent(new EntitySelectedEvent(objectBase, this));
       }
