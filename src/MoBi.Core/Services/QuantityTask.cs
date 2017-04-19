@@ -107,14 +107,15 @@ namespace MoBi.Core.Services
 
       private ICommand synchronizedCommand(IQuantity quantity, IMoBiSimulation simulation, IMoBiCommand simulationCommand)
       {
-         var macroCommand = new MoBiMacroCommand().WithHistoryEntriesFrom(simulationCommand);
+         var macroCommand = new MoBiMacroCommand();
 
          //add one before setting the value in the simulation to enable correct undo
          macroCommand.Add(_quantitySynchronizer.Synchronize(quantity, simulation));
          macroCommand.Add(simulationCommand.AsHidden().Run(_context));
          macroCommand.Add(_quantitySynchronizer.Synchronize(quantity, simulation));
 
-         return macroCommand;
+         //needs to be done at the end because description might be set only after run
+         return macroCommand.WithHistoryEntriesFrom(simulationCommand);
       }
 
       public ICommand SetDistributedParameterDimension(IDistributedParameter distributedParameter, IDimension dimension, IBuildingBlock buildingBlock)
