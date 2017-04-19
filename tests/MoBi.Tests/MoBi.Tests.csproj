@@ -340,6 +340,7 @@
     <Compile Include="Core\ObjectTypeResolverSpecs.cs" />
     <Compile Include="Core\ProjectClassifiableUpdaterAfterDeserializationSpecs.cs" />
     <Compile Include="Core\ProjectConverterLoggerSpecs.cs" />
+    <Compile Include="Core\QuantityTaskSpecs.cs" />
     <Compile Include="Core\RemoveChartTemplateFromBuildingBlockCommandSpecs.cs" />
     <Compile Include="Core\SBML\AssignmentImporterSpecs.cs" />
     <Compile Include="Core\SBML\ASTHandlerSpecs.cs" />
