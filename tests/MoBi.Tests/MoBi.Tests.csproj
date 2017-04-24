@@ -544,7 +544,7 @@
     <Compile Include="Presentation\TagVisitorSpecs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\packages\OSPSuite.SimModel.2.0.0.6\OSPSuite.SimModel\OSPSuite.SimModel.xsd">
+    <None Include="..\..\packages\OSPSuite.SimModel.2.0.0.9\OSPSuite.SimModel\OSPSuite.SimModel.xsd">
       <Link>OSPSuite.SimModel.xsd</Link>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
