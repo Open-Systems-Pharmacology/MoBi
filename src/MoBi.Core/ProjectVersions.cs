@@ -21,8 +21,8 @@ namespace MoBi.Core
       public static readonly ProjectVersion V6_1_1 = addVersion(PKMLVersion.V6_1_1, "6.1.1");
       public static readonly ProjectVersion V6_2_1 = addVersion(PKMLVersion.V6_2_1, "6.2.1");
       public static readonly ProjectVersion V6_3_1 = addVersion(PKMLVersion.V6_3_1, "6.3.1");
-      public static readonly ProjectVersion V6_4_1 = addVersion(PKMLVersion.V6_4_2, "6.4.1");
-      public static readonly ProjectVersion Current = V6_4_1;
+      public static readonly ProjectVersion V7_1_0 = addVersion(PKMLVersion.V7_1_0, "7.1.0");
+      public static readonly ProjectVersion Current = V7_1_0;
 
       private static ProjectVersion addVersion(int versionNumber, string versionDisplay)
       {

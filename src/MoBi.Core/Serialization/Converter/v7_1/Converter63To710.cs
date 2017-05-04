@@ -1,13 +1,13 @@
 ﻿using System.Xml.Linq;
 using MoBi.Core.Domain.Model;
 
-namespace MoBi.Core.Serialization.Converter.v6_4
+namespace MoBi.Core.Serialization.Converter.v7_1
 {
-   public class Converter63To64 : IMoBiObjectConverter
+   public class Converter63To710 : IMoBiObjectConverter
    {
-      private readonly OSPSuite.Core.Converter.v6_4.Converter63To64 _coreConverter;
+      private readonly OSPSuite.Core.Converter.v7_1.Converter63To710 _coreConverter;
 
-      public Converter63To64(OSPSuite.Core.Converter.v6_4.Converter63To64 coreConverter)
+      public Converter63To710(OSPSuite.Core.Converter.v7_1.Converter63To710 coreConverter)
       {
          _coreConverter = coreConverter;
       }
