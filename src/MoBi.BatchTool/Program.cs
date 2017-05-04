@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using MoBi.BatchTool.Presenters;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Services;
 
 namespace MoBi.BatchTool
@@ -26,7 +27,7 @@ namespace MoBi.BatchTool
          }
          catch (Exception e)
          {
-            MessageBox.Show(ExceptionManager.ExceptionMessageWithStackTraceFrom(e), "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(e.ExceptionMessageWithStackTrace(), "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             e.LogError();
          }
       }
