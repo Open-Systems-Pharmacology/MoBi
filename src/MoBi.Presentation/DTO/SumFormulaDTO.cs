@@ -19,7 +19,7 @@ namespace MoBi.Presentation.DTO
 
       public override string FormulaString
       {
-         get { return string.Format("∑{0}", VariablePattern); }
+         get { return $"∑{VariablePattern}"; }
       }
    }
 }

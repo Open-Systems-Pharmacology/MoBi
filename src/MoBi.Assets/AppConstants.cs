@@ -34,7 +34,6 @@ namespace MoBi.Assets
       public const int DEFAULT_NUMBER_OF_BINS = 20;
       public const int DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN = 100;
       public static readonly int NotificationToolTipDelay = 30000;
-      public static readonly string DefaultChartLayoutName = "Standard View";
       public static readonly int NotFoundIndex = -1;
       public static readonly string NullString = "null";
       public static readonly string ProductName = "MoBi";
@@ -238,7 +237,7 @@ namespace MoBi.Assets
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
-            return "Delete all results from simulation '{0}'".FormatWith(simulationName);
+            return $"Delete all results from simulation '{simulationName}'";
          }
 
          public static string DisplayValue(double displayValue, string displayUnit)

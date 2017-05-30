@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Formatters
             return AppConstants.NaN;
 
          var formattedValue = base.Format(valueToFormat);
-         return string.Format("{0} {1}", formattedValue, _unit);
+         return $"{formattedValue} {_unit}";
       }
    }
 }

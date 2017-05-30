@@ -98,7 +98,7 @@ namespace MoBi.Core
 
       public string TemplateFolder => Path.Combine(AllUsersFolderPath, AppConstants.SpecialFileNames.TemplatesFolder);
 
-      public override string ChartLayoutTemplateFolderPath => AllUsersFile("Layouts");
+      public override string ChartLayoutTemplateFolderPath => AllUsersFile("ChartLayouts");
 
       public string SpaceOrganismUserTemplate => CurrentUserFile("SpaceOrganismTemplate.mbdt");
 

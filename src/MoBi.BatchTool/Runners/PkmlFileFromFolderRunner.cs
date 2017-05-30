@@ -31,7 +31,7 @@ namespace MoBi.BatchTool.Runners
          var inputFolder = parameters.inputFolder;
          return Task.Run(() =>
          {
-            _logger.AddInSeparator("Starting batch run: {0}".FormatWith(DateTime.Now.ToIsoFormat(withSeconds: true)));
+            _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat(withSeconds: true)}");
 
             var inputDirectory = new DirectoryInfo(inputFolder);
             if (!inputDirectory.Exists)
@@ -61,15 +61,15 @@ namespace MoBi.BatchTool.Runners
             }
             var end = DateTime.UtcNow;
             var timeSpent = end - begin;
-            _logger.AddInSeparator("{0} simulations computed in '{1}'".FormatWith(allSimulationFiles.Length, timeSpent.ToDisplay()));
+            _logger.AddInSeparator($"{allSimulationFiles.Length} simulations computed in '{timeSpent.ToDisplay()}'");
 
-            _logger.AddInSeparator("Batch run finished: {0}".FormatWith(DateTime.Now.ToIsoFormat(withSeconds: true)));
+            _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat(withSeconds: true)}");
          });
       }
 
       private void compute(string pkmlFile)
       {
-         _logger.AddInfo("Computing file '{0}'".FormatWith(pkmlFile));
+         _logger.AddInfo($"Computing file '{pkmlFile}'");
          var simulation = loadSimulationFromFile(pkmlFile);
          _simulationBatchRunner.Compute(simulation);
       }

@@ -1,12 +1,25 @@
 require_relative 'scripts/setup'
 require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
+require_relative 'scripts/coverage'
 
-task :create_setup, [:product_version, :configuration] do |t, args|
+task :cover do
+	filter = []
+	filter << "+[MoBi.Core]*"
+	filter << "+[MoBi.Assets]*"
+	filter << "+[MoBi.Presentation]*"
+
+	Coverage.cover(filter , "MoBi.Tests.csproj")
+end
+
+task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
+	require_relative 'scripts/smartxls'
 	setup_dir = File.join(solution_dir, 'setup')
 	src_dir = File.join(solution_dir, 'src', 'MoBi', 'bin', args.configuration)
 	product_version = args.product_version
 	suite_name = 'Open Systems Pharmacology Suite'
+
+	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
@@ -55,6 +68,7 @@ task :postclean do |t, args|
 		copy_files 'Data', ['xml', 'mbdt']
 		copy_file 'src/Data/AllCalculationMethods.pkml'
 		copy_dimensions_xml
+		copy_pkparameters_xml
 	end
 
 	copy_depdencies solution_dir,  File.join(all_users_application_dir, 'Templates') do
@@ -71,6 +85,7 @@ task :postclean do |t, args|
 end
 
 private
+
 def solution_dir
 	File.dirname(__FILE__)
 end

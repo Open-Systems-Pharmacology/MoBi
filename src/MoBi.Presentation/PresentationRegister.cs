@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Helper;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.Core;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Presenter.Main;
+using MoBi.Presentation.Presenter.ModelDiagram;
+using MoBi.Presentation.Presenter.SpaceDiagram;
 using MoBi.Presentation.Serialization.Xml.Serializer;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
@@ -20,6 +22,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Domain.Services;
@@ -29,6 +32,7 @@ using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Comparisons;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Diagram;
 using OSPSuite.Presentation.Presenters.Journal;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Repositories;
@@ -73,6 +77,7 @@ namespace MoBi.Presentation
             scan.ExcludeType<MoBiApplicationController>();
             scan.ExcludeType<MoBiXmlSerializerRepository>();
             scan.ExcludeType<MoBiMainViewPresenter>();
+            scan.Exclude(t => t.IsAnImplementationOf<IMoBiBaseDiagramPresenter>());
 
             //exclude presenter already registered at startup
             scan.ExcludeType<SplashScreenPresenter>();
@@ -86,10 +91,10 @@ namespace MoBi.Presentation
          container.Register<IMoBiApplicationController, IApplicationController, MoBiApplicationController>(LifeStyle.Singleton);
 
          registerMainPresenters(container);
-
          registerSingleStartPresenters(container);
          registerCreatePresenter(container);
          registerContextMenuAndCommands(container);
+         registerDiagramPresenter(container);
 
          //selection presenter
          container.Register<ISelectionPresenter<XElement>, SelectXmlElementPresenter>();
@@ -125,6 +130,12 @@ namespace MoBi.Presentation
          container.Register<IQuantityPathToQuantityDisplayPathMapper, MoBiQuantityPathToQuantityDisplayPathMapper>();
 
          container.Register<IMoBiXmlSerializerRepository, MoBiXmlSerializerRepository>(LifeStyle.Singleton);
+      }
+
+      private void registerDiagramPresenter(IContainer container)
+      {
+         container.Register<ISimulationDiagramPresenter, IMoBiBaseDiagramPresenter<IMoBiSimulation>, IBaseDiagramPresenter<IMoBiSimulation>, SimulationDiagramPresenter>(LifeStyle.Transient);
+         container.Register<ISpatialStructureDiagramPresenter, IMoBiBaseDiagramPresenter<IMoBiSpatialStructure>, IBaseDiagramPresenter<IMoBiSpatialStructure>, SpatialStructureDiagramPresenter>(LifeStyle.Transient);
       }
 
       private static void registerContextMenuAndCommands(IContainer container)

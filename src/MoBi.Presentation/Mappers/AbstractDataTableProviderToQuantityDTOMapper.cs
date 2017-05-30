@@ -157,7 +157,7 @@ namespace MoBi.Presentation.Mappers
             }
             catch (Exception e)
             {
-               importerDTO.AddToLog(string.Format("{0}, {1}, {2}", AppConstants.Exceptions.FrameworkExceptionOccurred, e.Message, row.ToNiceString()));
+               importerDTO.AddToLog($"{AppConstants.Exceptions.FrameworkExceptionOccurred}, {e.Message}, {row.ToNiceString()}");
                importerDTO.QuantitDTOs.Clear();
                break;
             }

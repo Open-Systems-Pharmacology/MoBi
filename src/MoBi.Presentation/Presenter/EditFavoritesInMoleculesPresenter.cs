@@ -12,6 +12,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -28,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       {
          var captions = new Dictionary<PathElement, string>();
          captions.Add(PathElement.TopContainer, AppConstants.Captions.Molecule);
-         captions.Add(PathElement.Container, String.Format("{0}/{1}", ObjectTypes.TransporterMoleculeContainer, ObjectTypes.InteractionContainer));
+         captions.Add(PathElement.Container, $"{ObjectTypes.TransporterMoleculeContainer}/{ObjectTypes.InteractionContainer}");
          captions.Add(PathElement.BottomCompartment, ObjectTypes.ActiveTransport);
          _view.SetCaptions(captions);
       }

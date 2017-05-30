@@ -121,11 +121,11 @@ namespace MoBi.Core.Services
       private ExplicitFormula createConcentrationFormulaFromConstantValue(double defaultStartValue, string usingFormulaName, IFormulaCache formulaCache)
       {
          var explicitFormulaInConcentration = _objectBaseFactory.Create<ExplicitFormula>()
-            .WithName("Amount_to_concentration for {0}".FormatWith(usingFormulaName))
+            .WithName($"Amount_to_concentration for {usingFormulaName}")
             .WithDimension(_concentrationDimension);
 
          var volumeAlias = _formulaTask.AddParentVolumeReferenceToFormula(explicitFormulaInConcentration);
-         explicitFormulaInConcentration.FormulaString = "{0}/{1}".FormatWith(defaultStartValue.ConvertedTo<string>(), volumeAlias);
+         explicitFormulaInConcentration.FormulaString = $"{defaultStartValue.ConvertedTo<string>()}/{volumeAlias}";
          formulaCache.Add(explicitFormulaInConcentration);
          return explicitFormulaInConcentration;
       }

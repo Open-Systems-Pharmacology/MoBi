@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Settings
       bool ShowPKSimDimensionProblemWarnings { get; set; }
       bool ShowCannotCalcErrors { get; set; }
       bool ShowPKSimObserverMessages { get; set; }
-      bool CheckRules { get; }
+      bool CheckRules { get; set; }
       ValidationSettings ValidationSettings { get; }
       OutputSelections OutputSelections { get; set; }
       bool GroupParameters { get; set; }

@@ -2,6 +2,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;

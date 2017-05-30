@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using MoBi.UI.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
@@ -25,7 +26,7 @@ namespace MoBi
          }
          catch (Exception e)
          {
-            MessageBox.Show(ExceptionManager.ExceptionMessageWithStackTraceFrom(e), "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(e.ExceptionMessageWithStackTrace(), "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             e.LogError();
          }
       }

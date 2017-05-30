@@ -1,8 +1,8 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using OSPSuite.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views
@@ -25,7 +25,7 @@ namespace MoBi.UI.Views
          Opacity = 0.9;
          progressBar.Properties.ShowTitle = true;
          lblCaption.Text = string.Empty;
-         Icon = ApplicationIcons.MoBi.WithSize(IconSizes.Size48x48);
+         Icon = ApplicationIcons.MoBi;
       }
 
       public void StopProgress()

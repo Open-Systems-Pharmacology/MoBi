@@ -16,6 +16,7 @@ using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
 using MoBi.Presentation.Settings;
+using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core;
@@ -26,6 +27,7 @@ using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
+using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
@@ -68,6 +70,9 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<ISimulationDiagramManager>());
             container.RegisterImplementationOf(A.Fake<ISpatialStructureDiagramManager>());
             container.RegisterImplementationOf(A.Fake<IMoBiReactionDiagramManager>());
+            container.RegisterImplementationOf(A.Fake<ISimulationDiagramView>());
+            container.RegisterImplementationOf(A.Fake<IContainerBaseLayouter>());
+            container.RegisterImplementationOf(A.Fake<ILayerLayouter>());
 
             container.Register<IDiagramModelToXmlMapper, BatchDiagramModelToXmlMapper>();
             container.Register<IMoBiConfiguration, MoBiConfiguration>(LifeStyle.Singleton);
