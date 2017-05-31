@@ -31,7 +31,7 @@
       {
          this.components = new System.ComponentModel.Container();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.gridMessages = new DevExpress.XtraGrid.GridControl();
+         this.gridMessages = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewMessages = new MoBi.UI.Views.UxGridView();
          this._barManager = new DevExpress.XtraBars.BarManager(this.components);
          this.menuBar = new DevExpress.XtraBars.Bar();

@@ -33,7 +33,7 @@
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.pictureBox = new System.Windows.Forms.PictureBox();
          this._labelName = new System.Windows.Forms.Label();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new UxGridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();

@@ -30,7 +30,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.grdObjectPaths = new DevExpress.XtraGrid.GridControl();
+         this.grdObjectPaths = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewReferencePaths = new MoBi.UI.Views.UxGridView();
          this.txtFormulaString = new DevExpress.XtraEditors.TextEdit();
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();

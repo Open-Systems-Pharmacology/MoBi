@@ -29,7 +29,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this._gridControl = new DevExpress.XtraGrid.GridControl();
+         this._gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this._gridView = new UxGridView();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._gridControl)).BeginInit();

@@ -70,7 +70,7 @@ namespace MoBi.UI.Views
          this.tabTags = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControlTags = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btAddTag = new DevExpress.XtraEditors.SimpleButton();
-         this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+         this.gridControl1 = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewTags = new DevExpress.XtraGrid.Views.Grid.GridView();
          this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItemAddTag = new DevExpress.XtraLayout.LayoutControlItem();

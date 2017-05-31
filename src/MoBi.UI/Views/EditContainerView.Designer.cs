@@ -37,7 +37,7 @@ namespace MoBi.UI.Views
          this.cbContainerMode = new DevExpress.XtraEditors.ComboBoxEdit();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
          this.btAddTag = new DevExpress.XtraEditors.SimpleButton();
          this.cbContainerType = new DevExpress.XtraEditors.ComboBoxEdit();

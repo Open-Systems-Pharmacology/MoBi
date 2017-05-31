@@ -34,7 +34,7 @@ namespace MoBi.UI.Views
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
          this.layoutControlItemValueGrid = new DevExpress.XtraLayout.LayoutControlItem();
          this.btnAddValuePoint = new DevExpress.XtraEditors.SimpleButton();

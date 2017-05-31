@@ -38,7 +38,7 @@ namespace MoBi.UI.Views
          this.ckWholeName = new UxCheckEdit();
          this.cbScope = new DevExpress.XtraEditors.ComboBoxEdit();
          this.txtSearchExpression = new DevExpress.XtraEditors.ButtonEdit();
-         this.grdResultControl = new DevExpress.XtraGrid.GridControl();
+         this.grdResultControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridSearchResult = new DevExpress.XtraGrid.Views.Grid.GridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlResult = new DevExpress.XtraLayout.LayoutControlItem();
