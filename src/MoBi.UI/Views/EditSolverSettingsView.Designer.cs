@@ -33,7 +33,7 @@
          this.components = new System.ComponentModel.Container();
          this.cbSolver = new DevExpress.XtraEditors.ComboBoxEdit();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemSolver = new DevExpress.XtraLayout.LayoutControlItem();

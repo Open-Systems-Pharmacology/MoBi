@@ -38,7 +38,7 @@ namespace MoBi.UI.Views
          this.lblParentName = new DevExpress.XtraEditors.LabelControl();
          this.btAddParameter = new DevExpress.XtraEditors.SimpleButton();
          this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this._gridView = new MoBi.UI.Views.UxGridView();
          this.layoutGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItemParentName = new DevExpress.XtraLayout.LayoutControlItem();

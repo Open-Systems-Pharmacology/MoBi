@@ -1567,6 +1567,7 @@ namespace MoBi.Assets
          public static readonly string MoleculeObserver = "Molecule Observer";
          public static readonly string ContainerObserver = "Container Observer";
          public static readonly string SelectMolecules = "Select Molecules";
+         public static readonly string LoadingApplication = "Loading Application...";
 
          public static string ManageDisplayUnits(string type)
          {

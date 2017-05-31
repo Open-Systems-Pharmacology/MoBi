@@ -39,7 +39,7 @@ namespace MoBi.UI.Views
          this.layoutControlProperties = new OSPSuite.UI.Controls.UxLayoutControl();
          this.cbMoleculeType = new DevExpress.XtraEditors.ComboBoxEdit();
          this.grpFormula = new DevExpress.XtraEditors.GroupControl();
-         this.gridControlCalcualtionMethod = new DevExpress.XtraGrid.GridControl();
+         this.gridControlCalcualtionMethod = new OSPSuite.UI.Controls.UxGridControl();
          this.grdCalculationMethodsView = new MoBi.UI.Views.UxGridView();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
          this.chkIsFloating = new UxCheckEdit();

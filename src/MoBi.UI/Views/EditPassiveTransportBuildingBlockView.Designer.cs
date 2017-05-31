@@ -38,7 +38,7 @@
          this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
          this.errorProvider = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
          this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
-         this.grdPassiveTransportlist = new DevExpress.XtraGrid.GridControl();
+         this.grdPassiveTransportlist = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
          ((System.ComponentModel.ISupportInitialize)(this.tabPagesControl)).BeginInit();
          this.tabPagesControl.SuspendLayout();

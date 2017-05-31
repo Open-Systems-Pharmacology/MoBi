@@ -244,13 +244,11 @@
       <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.1.0.99\lib\net452\OSPSuite.Assets.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.13, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.13\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.1.0.99\lib\net452\OSPSuite.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.13, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.13\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.DataBinding">
       <HintPath>..\..\packages\OSPSuite.DataBinding.2.0.0.1\lib\net45\OSPSuite.DataBinding.dll</HintPath>
@@ -261,13 +259,11 @@
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.1.0.79, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.1.0.79\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.2.0.13, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.2.0.13\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.1.0.99\lib\net452\OSPSuite.Presentation.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.Presentation, Version=7.2.0.13, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.13\lib\net452\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -280,9 +276,8 @@
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.0.6\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.UI, Version=7.1.0.99, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.UI.7.1.0.99\lib\net452\OSPSuite.UI.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OSPSuite.UI, Version=7.2.0.13, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.UI.7.2.0.13\lib\net452\OSPSuite.UI.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=2.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.2.0.0.5\lib\net45\OSPSuite.Utility.dll</HintPath>
@@ -524,12 +519,6 @@
     </Compile>
     <Compile Include="Views\EditMoleculeBuilderView.Designer.cs">
       <DependentUpon>EditMoleculeBuilderView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\EditNeighborhoodView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\EditNeighborhoodView.Designer.cs">
-      <DependentUpon>EditNeighborhoodView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\EditObserverBuilderView.cs">
       <SubType>UserControl</SubType>

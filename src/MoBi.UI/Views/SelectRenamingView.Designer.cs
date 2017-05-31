@@ -32,7 +32,7 @@ namespace MoBi.UI.Views
       private void InitializeComponent()
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+         this.gridControl1 = new OSPSuite.UI.Controls.UxGridControl();
          this.grdRenamings = new MoBi.UI.Views.UxGridView();
          this.chkShouldRename = new UxCheckEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();

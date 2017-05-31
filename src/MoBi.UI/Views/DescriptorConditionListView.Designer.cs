@@ -29,7 +29,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.lblCriteriaDescription = new DevExpress.XtraEditors.LabelControl();
