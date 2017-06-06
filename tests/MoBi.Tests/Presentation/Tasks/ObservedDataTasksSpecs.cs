@@ -8,6 +8,7 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
@@ -105,7 +106,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_change_Name_of_data_repository_to_new_name()
       {
-         _dataRepository.Name.ShouldBeEqualTo(_newName);
+         A.CallTo(() => _context.AddToHistory(A<RenameObservedDataCommand>._)).MustHaveHappened();
       }
    }
 
