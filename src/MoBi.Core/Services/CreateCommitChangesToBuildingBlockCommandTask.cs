@@ -26,6 +26,15 @@ namespace MoBi.Core.Services
 
       public virtual IMoBiCommand CreateCommitToBuildingBlockCommand(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
+         var macroCommand = new MoBiMacroCommand();
+         macroCommand.Add(CreateCommitCommand(simulation, templateBuildingBlock));
+         //hide this command that is only required for separation of concerns
+         macroCommand.Add(new ResetFixedConstantParametersToDefaultInSimulationCommand<T>(simulation, _buildingBlockRetriever(simulation.BuildConfiguration)) { Visible = false });
+         return macroCommand;
+      }
+
+      protected IMoBiCommand CreateCommitCommand(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
+      {
          var typedTemplateBuildingBlock = templateBuildingBlock.DowncastTo<T>();
          var cloneOfBuildingBlockInSimulation = _cloneManager.CloneBuildingBlock(_buildingBlockRetriever(simulation.BuildConfiguration));
 

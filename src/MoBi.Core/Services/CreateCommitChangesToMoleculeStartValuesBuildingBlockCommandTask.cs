@@ -15,7 +15,7 @@ namespace MoBi.Core.Services
       public override IMoBiCommand CreateCommitToBuildingBlockCommand(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
          var macroCommand = new MoBiMacroCommand();
-         macroCommand.Add(base.CreateCommitToBuildingBlockCommand(simulation, templateBuildingBlock));
+         macroCommand.Add(CreateCommitCommand(simulation, templateBuildingBlock));
          //hide this command that is only required for separation of concerns
          macroCommand.Add(new ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand(simulation) {Visible = false});
          return macroCommand;

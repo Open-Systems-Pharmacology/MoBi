@@ -281,6 +281,7 @@
     <Compile Include="Core\Commands\RemoveParameterStartValueFromBuildingBlockCommandSpecs.cs" />
     <Compile Include="Core\Commands\RemoveSimulationCommandSpecs.cs" />
     <Compile Include="Core\Commands\RemoveValuePointFromTableFormulaCommandSpecs.cs" />
+    <Compile Include="Core\Commands\ResetFixedConstantParametersToDefaultInSimulationCommandSpecs.cs" />
     <Compile Include="Core\Commands\ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommandSpecs.cs" />
     <Compile Include="Core\Commands\ResetParamterValuesToDefaultFromStartValuesInSimulationCommandSpecs.cs" />
     <Compile Include="Core\Commands\ResetQuantityValueInBuildingBlockCommandSpecs.cs" />
