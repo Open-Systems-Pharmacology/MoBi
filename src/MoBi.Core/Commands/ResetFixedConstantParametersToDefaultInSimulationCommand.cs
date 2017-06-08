@@ -46,12 +46,12 @@ namespace MoBi.Core.Commands
 
       private bool parameterIsConstantFixedAndFromBuildingBlock(IParameter parameter)
       {
-         return parameter.IsFixedValue && parameter.Formula.IsConstant() && isFromBuildingBlock(parameter, _buildingBlockFromSimulation);
+         return parameter.IsFixedValue && parameter.Formula.IsConstant() && isFromBuildingBlock(parameter);
       }
 
-      private bool isFromBuildingBlock(IParameter x, TBuildingBlock affectedBuildingBlock)
+      private bool isFromBuildingBlock(IParameter x)
       {
-         return Equals(_affectedBuildingBlockRetriever.RetrieveFor(x, _simulation).UntypedBuildingBlock, affectedBuildingBlock);
+         return Equals(_affectedBuildingBlockRetriever.RetrieveFor(x, _simulation).UntypedBuildingBlock, _buildingBlockFromSimulation);
       }
 
       private void resetQuantity(IQuantity fixedQuantity)
