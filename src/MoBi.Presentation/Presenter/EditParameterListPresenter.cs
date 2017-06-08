@@ -382,7 +382,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool canHandle(ParameterChangedEvent eventToHandle)
       {
-         return _parameters.ContainsItem(eventToHandle.Parameter);
+         return _parameters.Any(parameter => eventToHandle.Parameters.Contains(parameter));
       }
    }
 }

@@ -195,6 +195,7 @@
     <Compile Include="Commands\RemoveSimulationCommand.cs" />
     <Compile Include="Commands\RemoveStartValueFromBuildingBlockInSimulationCommand.cs" />
     <Compile Include="Commands\ReplaceBuildingBlockTemplatesCommand.cs" />
+    <Compile Include="Commands\ResetFixedConstantParametersToDefaultInSimulationCommand.cs" />
     <Compile Include="Commands\ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand.cs" />
     <Compile Include="Commands\ResetParamterValuesToDefaultFromStartValuesInSimulationCommand.cs" />
     <Compile Include="Commands\ResetQuantityValueInBuildingBlockCommand.cs" />
