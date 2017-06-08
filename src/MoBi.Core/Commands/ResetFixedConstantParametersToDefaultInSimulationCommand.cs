@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
          _formulaTask = context.Resolve<IMoBiFormulaTask>();
          _affectedBuildingBlockRetriever = context.Resolve<IAffectedBuildingBlockRetriever>();
 
-         var fixedParameters = fixedConstantParametersFromBuildingBlock().ToList();
+         var fixedParameters = fixedConstantParametersFromBuildingBlock();
          resetFixedParametersInSimulation(fixedParameters);
 
          context.PublishEvent(new ParameterChangedEvent(fixedParameters));
@@ -38,10 +38,10 @@ namespace MoBi.Core.Commands
          fixedParameters.Each(resetQuantity);
       }
 
-      private IEnumerable<IParameter> fixedConstantParametersFromBuildingBlock()
+      private IReadOnlyList<IParameter> fixedConstantParametersFromBuildingBlock()
       {
          return _simulation.Model.Root.GetAllContainersAndSelf<IContainer>()
-            .SelectMany(container => container.AllParameters(parameterIsConstantFixedAndFromBuildingBlock));
+            .SelectMany(container => container.AllParameters(parameterIsConstantFixedAndFromBuildingBlock)).ToList();
       }
 
       private bool parameterIsConstantFixedAndFromBuildingBlock(IParameter parameter)
@@ -49,15 +49,16 @@ namespace MoBi.Core.Commands
          return parameter.IsFixedValue && parameter.Formula.IsConstant() && isFromBuildingBlock(parameter);
       }
 
-      private bool isFromBuildingBlock(IParameter x)
+      private bool isFromBuildingBlock(IParameter paramter)
       {
-         return Equals(_affectedBuildingBlockRetriever.RetrieveFor(x, _simulation).UntypedBuildingBlock, _buildingBlockFromSimulation);
+         var buildingBlockInfo = _affectedBuildingBlockRetriever.RetrieveFor(paramter, _simulation);
+         return buildingBlockInfo != null && Equals(buildingBlockInfo.UntypedBuildingBlock, _buildingBlockFromSimulation);
       }
 
-      private void resetQuantity(IQuantity fixedQuantity)
+      private void resetQuantity(IQuantity quantity)
       {
-         fixedQuantity.Formula = _formulaTask.CreateNewFormula<ConstantFormula>(fixedQuantity.Dimension).WithValue(fixedQuantity.Value);
-         fixedQuantity.IsFixedValue = false;
+         quantity.Formula = _formulaTask.CreateNewFormula<ConstantFormula>(quantity.Dimension).WithValue(quantity.Value);
+         quantity.IsFixedValue = false;
       }
 
       protected override void ClearReferences()
