@@ -113,10 +113,15 @@ namespace MoBi.Presentation.Presenter.Main
          return notification.Type.Is(VisibleNotification);
       }
 
-      private bool isObservedMessage(NotificationMessageDTO notification)
+      private bool isPKSimObserverMessage(NotificationMessageDTO notification)
       {
-         return notification.Object.IsAnImplementationOf<IObserverBuilder>() &&
-                AppConstants.DefaultNames.PKSimObservers.Contains(notification.ObjectName);
+         if (!notification.Object.IsAnImplementationOf<IObserverBuilder>())
+            return false;
+
+         if (AppConstants.DefaultNames.PKSimStaticObservers.Contains(notification.ObjectName))
+            return true;
+
+         return AppConstants.DefaultNames.PKSimDynamicObservers.Any(notification.ObjectName.StartsWith);
       }
 
       public void ClearNotifications(MessageOrigin messageOrigin)
@@ -201,7 +206,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private bool notificationIsViible(NotificationMessageDTO message)
       {
-         return _userSettings.ShowPKSimObserverMessages || !isObservedMessage(message);
+         return _userSettings.ShowPKSimObserverMessages || !isPKSimObserverMessage(message);
       }
 
       public void Handle(FormulaValidEvent eventToHandle)
