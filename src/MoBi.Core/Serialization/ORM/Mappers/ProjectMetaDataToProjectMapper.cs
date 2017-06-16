@@ -1,6 +1,4 @@
 using System.Linq;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
@@ -14,6 +12,8 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.ORM.Mappers
 {
@@ -103,7 +103,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
             return;
 
          var deserializedEntity = deserializeContent<object>(entity.Content, serializationContext);
-         if (deserializedEntity.IsAnImplementationOf<ICurveChart>())
+         if (deserializedEntity.IsAnImplementationOf<CurveChart>())
             addChartToProject(deserializedEntity);
 
          else if (deserializedEntity.IsAnImplementationOf<ParameterIdentification>())
@@ -122,7 +122,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
 
       private void addChartToProject(object deserializedEntity)
       {
-         var chart = deserializedEntity.DowncastTo<ICurveChart>();
+         var chart = deserializedEntity.DowncastTo<CurveChart>();
          //only add charts with at least one curve otherwise chart is corrupted
          if (!chart.Curves.Any())
             return;

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -17,6 +14,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -100,7 +100,7 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
       }
 
-      private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<ICurve> curves)
+      private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
       {
          foreach (var curve in curves.Where(c => c.IsObserved()))
          {
@@ -114,10 +114,7 @@ namespace MoBi.Presentation.Presenter
          Edit(subject.DowncastTo<IMoBiSimulation>());
       }
 
-      public override object Subject
-      {
-         get { return _simulation; }
-      }
+      public override object Subject => _simulation;
 
       public void ShowData()
       {
@@ -131,20 +128,19 @@ namespace MoBi.Presentation.Presenter
 
          if (_simulation.Chart == null)
          {
-            _simulation.Chart = _chartFactory.Create<ICurveChart>().WithAxes();
+            _simulation.Chart = _chartFactory.Create<CurveChart>().WithAxes();
             _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);
          }
 
          // Whether or not the chart is new, if it has no curves
          // we apply the simulation default template
-         if(_simulation.Chart.Curves.Count == 0)
+         if (_simulation.Chart.Curves.Count == 0)
             defaultTemplate = _simulation.DefaultChartTemplate;
 
          addObservedDataRepositories(data, _simulation.Chart.Curves);
          _chartPresenter.Show(_simulation.Chart, data, defaultTemplate);
       }
 
-  
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
          if (!_simulation.Equals(eventToHandle.Simulation))

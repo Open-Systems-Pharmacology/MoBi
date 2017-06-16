@@ -4,7 +4,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class RemoveSummaryChartUICommand : ObjectUICommand<ICurveChart>
+   internal class RemoveSummaryChartUICommand : ObjectUICommand<CurveChart>
    {
       private readonly IChartTasks _chartTasks;
 

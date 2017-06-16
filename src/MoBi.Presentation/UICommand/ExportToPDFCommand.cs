@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.UICommands;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.UICommand
 {
@@ -64,7 +64,7 @@ namespace MoBi.Presentation.UICommand
       }
    }
 
-   public class ExportChartToPDFCommand : ExportToPDFCommand<ICurveChart>
+   public class ExportChartToPDFCommand : ExportToPDFCommand<CurveChart>
    {
       public ExportChartToPDFCommand(IMoBiApplicationController applicationController) : base(applicationController)
       {
@@ -79,13 +79,13 @@ namespace MoBi.Presentation.UICommand
          IEnumerable<T> all;
          if (typeof(T).IsAnImplementationOf<IBuildingBlock>())
             all = project.AllBuildingBlocks().Where(x => x.IsAnImplementationOf<T>()).Cast<T>();
-         
-         else if (typeof (T).IsAnImplementationOf<IMoBiSimulation>())
+
+         else if (typeof(T).IsAnImplementationOf<IMoBiSimulation>())
             all = project.Simulations.Cast<T>();
-         
-         else if (typeof (T).IsAnImplementationOf<DataRepository>())
+
+         else if (typeof(T).IsAnImplementationOf<DataRepository>())
             all = project.AllObservedData.Cast<T>();
-         
+
          else
             all = Enumerable.Empty<T>();
 

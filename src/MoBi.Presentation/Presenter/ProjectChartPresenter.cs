@@ -7,12 +7,12 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IProjectChartPresenter : ISingleStartPresenter<ICurveChart>
+   public interface IProjectChartPresenter : ISingleStartPresenter<CurveChart>
    {
-      void Show(ICurveChart chart, IReadOnlyList<DataRepository> data);
+      void Show(CurveChart chart, IReadOnlyList<DataRepository> data);
    }
 
-   public class ProjectChartPresenter : SubjectPresenter<IProjectChartView, IProjectChartPresenter, ICurveChart>, IProjectChartPresenter
+   public class ProjectChartPresenter : SubjectPresenter<IProjectChartView, IProjectChartPresenter, CurveChart>, IProjectChartPresenter
    {
       private readonly IComparisonChartPresenter _chartPresenter;
       private readonly IMoBiProjectRetriever _projectRetriever;
@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_chartPresenter);
       }
 
-      public override void Edit(ICurveChart chart)
+      public override void Edit(CurveChart chart)
       {
          Show(chart, new List<DataRepository>());
       }
@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Presenter
          get { return _chartPresenter.Chart; }
       }
 
-      public void Show(ICurveChart chart, IReadOnlyList<DataRepository> data)
+      public void Show(CurveChart chart, IReadOnlyList<DataRepository> data)
       {
          _chartPresenter.Show(chart, data);
          _chartPresenter.UpdateTemplatesBasedOn(_projectRetriever.Current);

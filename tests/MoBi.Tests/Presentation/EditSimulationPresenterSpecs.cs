@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -8,8 +6,11 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation
@@ -136,14 +137,14 @@ namespace MoBi.Presentation
    {
       private IMoBiSimulation _simulation;
       private SimulationRunFinishedEvent _event;
-      private ICurveChart _chart;
+      private CurveChart _chart;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Edit(_simulation);
-         _chart = A.Fake<ICurveChart>();
+         _chart = A.Fake<CurveChart>();
          A.CallTo(() => _simulation.Chart).Returns(_chart);
          A.CallTo(() => _view.ShowsResults).Returns(true);
          _event = new SimulationRunFinishedEvent(_simulation);
@@ -214,7 +215,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_not_display_result_data()
       {
-         A.CallTo(() => _chartPresenter.Show(A<ICurveChart>._, A<IReadOnlyList<DataRepository>>._, null))
+         A.CallTo(() => _chartPresenter.Show(A<CurveChart>._, A<IReadOnlyList<DataRepository>>._, null))
             .MustNotHaveHappened();
       }
 
@@ -228,20 +229,43 @@ namespace MoBi.Presentation
    internal class told_edit_simulation_to_show_data : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
-      private IItemNotifyCache<string, ICurve> _curves;
       private DataRepository _observedDataRepository;
       private IEnumerable<DataRepository> _data;
+
+      private Curve createObservedCurve(DataRepository observedDataRepository)
+      {
+         var dimensionFactory = A.Fake<IDimensionFactory>();
+         var curve = new Curve
+         {
+            Name = "OBS"
+         };
+         var baseGrid = new BaseGrid("baseGrid", HelperForSpecs.TimeDimension)
+         {
+            DataInfo = new DataInfo(ColumnOrigins.BaseGrid),
+            Repository = observedDataRepository
+         };
+
+         var ydata = new DataColumn("ydata", HelperForSpecs.ConcentrationDimension, baseGrid)
+         {
+            DataInfo = new DataInfo(ColumnOrigins.Observation),
+            Repository = observedDataRepository
+         };
+
+         curve.SetxData(baseGrid, dimensionFactory);
+         curve.SetyData(ydata, dimensionFactory);
+         return curve;
+      }
 
       protected override void Context()
       {
          base.Context();
-         _simulation = A.Fake<IMoBiSimulation>();
-         _simulation.Results = new DataRepository();  
-         var chart = A.Fake<ICurveChart>();
-         _curves = new ItemNotifyCache<string, ICurve>(c => c.Id);
-         _observedDataRepository = new DataRepository();  
-         _curves.Add(createObservedCurve(_observedDataRepository));
-         A.CallTo(() => chart.Curves).Returns(_curves);
+         _simulation = new MoBiSimulation {Results = new DataRepository()};
+
+         var chart = new CurveChart();
+
+         _observedDataRepository = new DataRepository();
+         chart.AddCurve(createObservedCurve(_observedDataRepository));
+
          _simulation.Chart = chart;
 
          A.CallTo(() => _chartPresenter.Show(chart, A<IReadOnlyList<DataRepository>>._, null))
@@ -253,24 +277,6 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.ShowData();
-      }
-
-      private ICurve createObservedCurve(DataRepository observedDataRepository)
-      {
-         var curve = A.Fake<ICurve>();
-         A.CallTo(() => curve.Id).Returns("OBS");
-         curve.Name = "OBS";
-         var baseGrid = A.Fake<BaseGrid>();
-         baseGrid.DataInfo = A.Fake<DataInfo>();
-         baseGrid.Repository = observedDataRepository;
-         baseGrid.DataInfo.Origin = ColumnOrigins.BaseGrid;
-         var ydata = A.Fake<BaseGrid>();
-         ydata.DataInfo = A.Fake<DataInfo>();
-         ydata.DataInfo.Origin = ColumnOrigins.Observation;
-         ydata.Repository = observedDataRepository;
-         A.CallTo(() => curve.xData).Returns(baseGrid);
-         A.CallTo(() => curve.yData).Returns(ydata);
-         return curve;
       }
 
       [Observation]

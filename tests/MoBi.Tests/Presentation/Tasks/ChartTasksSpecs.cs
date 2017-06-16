@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Events;
+﻿using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.UICommand;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -46,7 +45,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_setting_origin_text_on_a_chart : concern_for_ChartTasks
    {
-      private ICurveChart _chart;
+      private CurveChart _chart;
 
       protected override void Context()
       {
@@ -75,12 +74,12 @@ namespace MoBi.Presentation.Tasks
 
    public class When_deleting_charts_and_the_user_decides_to_go_ahead_with_delete : concern_for_ChartTasks
    {
-      private IReadOnlyList<ICurveChart> _charts;
+      private IReadOnlyList<CurveChart> _charts;
 
       protected override void Context()
       {
          base.Context();
-         _charts = new List<ICurveChart> { new CurveChart() };
+         _charts = new List<CurveChart> {new CurveChart()};
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 
@@ -92,18 +91,18 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_remove_the_charts()
       {
-         A.CallTo(() => _currentProject.RemoveChart(A<ICurveChart>.Ignored)).MustHaveHappened();
+         A.CallTo(() => _currentProject.RemoveChart(A<CurveChart>.Ignored)).MustHaveHappened();
       }
    }
 
    public class When_deleting_multiple_charts_and_the_user_decides_not_to_go_ahead_with_delete : concern_for_ChartTasks
    {
-      private IReadOnlyList<ICurveChart> _charts;
+      private IReadOnlyList<CurveChart> _charts;
 
       protected override void Context()
       {
          base.Context();
-         _charts = new List<ICurveChart>{new CurveChart()};
+         _charts = new List<CurveChart> {new CurveChart()};
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }
 
@@ -115,7 +114,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_not_remove_the_charts()
       {
-         A.CallTo(() => _currentProject.RemoveChart(A<ICurveChart>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _currentProject.RemoveChart(A<CurveChart>.Ignored)).MustNotHaveHappened();
       }
    }
 
@@ -140,5 +139,4 @@ namespace MoBi.Presentation.Tasks
          _historialResult.IsPersistable().ShouldBeTrue();
       }
    }
-
 }

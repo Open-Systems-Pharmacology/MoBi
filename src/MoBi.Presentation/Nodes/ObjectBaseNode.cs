@@ -1,4 +1,3 @@
-using MoBi.Core;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
@@ -7,7 +6,7 @@ using OSPSuite.Presentation.Presenters.Nodes;
 
 namespace MoBi.Presentation.Nodes
 {
-   public class HistoricalResultsNode: ObjectWithIdAndNameNode<DataRepository>, IViewItem
+   public class HistoricalResultsNode : ObjectWithIdAndNameNode<DataRepository>, IViewItem
    {
       public HistoricalResultsNode(DataRepository dataRepository)
          : base(dataRepository)
@@ -22,9 +21,9 @@ namespace MoBi.Presentation.Nodes
       }
    }
 
-   public class ChartNode : ObjectWithIdAndNameNode<ICurveChart>, IViewItem
+   public class ChartNode : ObjectWithIdAndNameNode<CurveChart>, IViewItem
    {
-      public ChartNode(ICurveChart chart)
+      public ChartNode(CurveChart chart)
          : base(chart)
       {
       }
