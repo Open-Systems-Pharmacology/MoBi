@@ -93,7 +93,19 @@ namespace MoBi.Assets
          public static string EmptyCalculationMethodDescription = "";
 
          public static readonly string GlobalEventTag = "Events";
-         public static readonly string[] PKSimObservers = {"Plasma (Peripheral Venous Blood)", "Plasma Unbound (Peripheral Venous Blood)", "Tissue", "Fraction excreted"};
+
+         public static readonly IReadOnlyList<string> PKSimStaticObservers = new []
+         {
+            "Plasma (Peripheral Venous Blood)",
+            "Plasma Unbound (Peripheral Venous Blood)",
+            "Tissue",
+            "Fraction excreted"
+         };
+
+         public static readonly IReadOnlyList<string> PKSimDynamicObservers = new[]
+         {
+            "Fraction of dose"
+         };
       }
 
       public static class SpecialFileNames
