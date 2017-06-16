@@ -2,6 +2,7 @@
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Mappers;
@@ -22,8 +23,8 @@ namespace MoBi.Presentation.Presenter
 
       public SimulationChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks,
          IChartEditorAndDisplayPresenter chartEditorAndDisplayPresenter, IChartTemplatingTask chartTemplatingTask, IDataColumnToPathElementsMapper dataColumnToPathElementsMapper,
-         IChartEditorLayoutTask chartEditorLayoutTask, ICurveNamer curveNamer)
-         : base(chartView, context, userSettings, chartTasks, chartEditorAndDisplayPresenter, chartTemplatingTask, dataColumnToPathElementsMapper, chartEditorLayoutTask)
+         IChartEditorLayoutTask chartEditorLayoutTask, ICurveNamer curveNamer, IChartUpdater chartUpdater)
+         : base(chartView, context, userSettings, chartTasks, chartEditorAndDisplayPresenter, chartTemplatingTask, dataColumnToPathElementsMapper, chartEditorLayoutTask, chartUpdater)
       {
          _curveNamer = curveNamer;
       }

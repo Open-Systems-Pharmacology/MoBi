@@ -75,11 +75,12 @@ namespace MoBi.Presentation.Presenter
       private readonly string _nameProperty;
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       private IWithChartTemplates _withChartTemplates;
+      private readonly IChartUpdater _chartUpdater;
 
       protected ChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings,
          IChartTasks chartTasks, IChartEditorAndDisplayPresenter chartEditorAndDisplayPresenter,
          IChartTemplatingTask chartTemplatingTask, IDataColumnToPathElementsMapper dataColumnToPathElementsMapper,
-         IChartEditorLayoutTask chartEditorLayoutTask) :
+         IChartEditorLayoutTask chartEditorLayoutTask, IChartUpdater chartUpdater) :
          base(chartView)
       {
          _chartTasks = chartTasks;
@@ -93,6 +94,7 @@ namespace MoBi.Presentation.Presenter
 
          _dataColumnToPathElementsMapper = dataColumnToPathElementsMapper;
          _chartEditorLayoutTask = chartEditorLayoutTask;
+         _chartUpdater = chartUpdater;
          _userSettings = userSettings;
          _context = context;
 
@@ -228,7 +230,10 @@ namespace MoBi.Presentation.Presenter
       private void addObservedData(IReadOnlyList<DataRepository> repositories)
       {
          _editorPresenter.AddDataRepositories(repositories);
-         repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => _editorPresenter.AddCurveForColumn(observationColumn));
+         using (_chartUpdater.UpdateTransaction(Chart))
+         {
+            repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => _editorPresenter.AddCurveForColumn(observationColumn));
+         }
       }
 
       private void addObservedDataIfNeeded(IEnumerable<DataRepository> dataRepositories)
@@ -354,7 +359,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(ObservedDataRemovedEvent eventToHandle)
       {
          var dataRepository = eventToHandle.DataRepository;
-         _editorPresenter.RemoveDataRepositories(new[] {dataRepository});
+         _editorPresenter.RemoveDataRepositories(new[] { dataRepository });
          _displayPresenter.Refresh();
       }
 
