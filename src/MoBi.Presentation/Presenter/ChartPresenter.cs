@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Presenter
       protected readonly ICache<DataRepository, IMoBiSimulation> _simulations;
       private IChartDisplayPresenter _displayPresenter;
       private IChartEditorPresenter _editorPresenter;
-      private readonly string _nameProperty;
+
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       private IWithChartTemplates _withChartTemplates;
       private readonly IChartUpdater _chartUpdater;
@@ -87,7 +87,6 @@ namespace MoBi.Presentation.Presenter
          _chartEditorAndDisplayPresenter = chartEditorAndDisplayPresenter;
          initializeDisplayPresenter(chartEditorAndDisplayPresenter);
          initializeEditorPresenter(chartEditorAndDisplayPresenter);
-         initializeNoCurvesHint();
 
          _chartTemplatingTask = chartTemplatingTask;
          _simulations = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
@@ -103,8 +102,6 @@ namespace MoBi.Presentation.Presenter
          initLayout();
          initEditorPresenterSettings();
 
-
-         _nameProperty = MoBiReflectionHelper.PropertyName<CurveChart>(x => x.Name);
          _observedDataDragDropBinder = new ObservedDataDragDropBinder();
 
          AddSubPresenters(_chartEditorAndDisplayPresenter);
@@ -122,6 +119,7 @@ namespace MoBi.Presentation.Presenter
          _displayPresenter.DragDrop += OnDragDrop;
          _displayPresenter.DragOver += OnDragOver;
          _displayPresenter.ExportToPDF = () => _chartTasks.ExportToPDF(Chart);
+         initializeNoCurvesHint();
       }
 
       private void clearNoCurvesHint()
@@ -251,41 +249,24 @@ namespace MoBi.Presentation.Presenter
 
       public void Clear()
       {
-         releasePropertyChanged();
-
          _editorPresenter.Clear();
          _displayPresenter.Clear();
       }
 
-      private void releasePropertyChanged()
-      {
-         if (Chart != null)
-            Chart.PropertyChanged -= onPropertyChanged;
-      }
-
-      private void subscribePropertyChanged()
-      {
-         if (Chart != null)
-            Chart.PropertyChanged += onPropertyChanged;
-      }
-
       public void Edit(CurveChart curveChart)
       {
-         releasePropertyChanged();
-
          _editorPresenter.Edit(curveChart);
          _displayPresenter.Edit(curveChart);
-
-         subscribePropertyChanged();
       }
 
       private void onPropertyChanged(object sender, PropertyChangedEventArgs e)
       {
-         MarkChartOwnerAsChanged();
-         if (e.PropertyName.Equals(_nameProperty))
-         {
-            _context.PublishEvent(new RenamedEvent(Chart));
-         }
+         // TODO
+//         MarkChartOwnerAsChanged();
+//         if (e.PropertyName.Equals(_nameProperty))
+//         {
+//            _context.PublishEvent(new RenamedEvent(Chart));
+//         }
       }
 
       public void Show(CurveChart chart, IReadOnlyList<DataRepository> dataRepositories, CurveChartTemplate defaultTemplate = null)
@@ -315,11 +296,8 @@ namespace MoBi.Presentation.Presenter
 
       private void addDataRepositoriesToSimulation(IReadOnlyCollection<DataRepository> dataRepositories)
       {
-         dataRepositories.Each(dataRepository =>
+         dataRepositories.Where(dataRepository => !_simulations.Contains(dataRepository)).Each(dataRepository =>
          {
-            if (_simulations.Contains(dataRepository))
-               return;
-
             var simulation = findSimulation(dataRepository) ?? findHistoricSimulation(dataRepository);
             if (simulation != null)
                _simulations.Add(dataRepository, simulation);
