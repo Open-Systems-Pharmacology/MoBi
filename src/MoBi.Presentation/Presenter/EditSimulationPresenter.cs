@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Presenter
          _solverSettingsPresenter.Edit(_simulation);
          _editOutputSchemaPresenter.Edit(_simulation);
          _favoritesPresenter.Edit(_simulation);
-         _chartPresenter.UpdateTemplatesBasedOn(_simulation);
+         _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
          UpdateCaption();
          _view.Display();

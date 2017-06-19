@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Presenter
       public void Show(CurveChart chart, IReadOnlyList<DataRepository> data)
       {
          _chartPresenter.Show(chart, data);
-         _chartPresenter.UpdateTemplatesBasedOn(_projectRetriever.Current);
+         _chartPresenter.UpdateTemplatesFor(_projectRetriever.Current);
          UpdateCaption();
          View.Display();
       }

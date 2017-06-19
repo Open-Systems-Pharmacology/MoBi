@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Core.Helper;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
@@ -56,16 +53,14 @@ namespace MoBi.Presentation.Presenter
       /// </remarks>
       void Show(CurveChart chart, IReadOnlyList<DataRepository> dataRepositories, CurveChartTemplate defaultTemplate = null);
 
-      void UpdateTemplatesBasedOn(IWithChartTemplates withChartTemplates);
-      void Edit(CurveChart curveChart);
+      void UpdateTemplatesFor(IWithChartTemplates withChartTemplates);
    }
 
-   public abstract class ChartPresenter : AbstractCommandCollectorPresenter<IChartView, IChartPresenter>, IChartPresenter
+   public abstract class ChartPresenter : ChartPresenter<CurveChart, IChartView, IChartPresenter>, IChartPresenter
    {
       protected readonly IMoBiContext _context;
       private readonly IUserSettings _userSettings;
       private readonly IChartTasks _chartTasks;
-      private readonly IChartEditorAndDisplayPresenter _chartEditorAndDisplayPresenter;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
       private readonly IDataColumnToPathElementsMapper _dataColumnToPathElementsMapper;
       private readonly IChartEditorLayoutTask _chartEditorLayoutTask;
@@ -74,37 +69,34 @@ namespace MoBi.Presentation.Presenter
       private IChartEditorPresenter _editorPresenter;
 
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
-      private IWithChartTemplates _withChartTemplates;
       private readonly IChartUpdater _chartUpdater;
+      private IWithChartTemplates _withChartTemplates;
 
-      protected ChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings,
-         IChartTasks chartTasks, IChartEditorAndDisplayPresenter chartEditorAndDisplayPresenter,
-         IChartTemplatingTask chartTemplatingTask, IDataColumnToPathElementsMapper dataColumnToPathElementsMapper,
-         IChartEditorLayoutTask chartEditorLayoutTask, IChartUpdater chartUpdater) :
-         base(chartView)
+      protected ChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks,
+         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext) :
+         base(chartView, chartPresenterContext)
       {
          _chartTasks = chartTasks;
-         _chartEditorAndDisplayPresenter = chartEditorAndDisplayPresenter;
-         initializeDisplayPresenter(chartEditorAndDisplayPresenter);
-         initializeEditorPresenter(chartEditorAndDisplayPresenter);
+         initializeDisplayPresenter(chartPresenterContext.ChartEditorAndDisplayPresenter);
+         initializeEditorPresenter(chartPresenterContext.ChartEditorAndDisplayPresenter);
 
          _chartTemplatingTask = chartTemplatingTask;
          _simulations = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
 
-         _dataColumnToPathElementsMapper = dataColumnToPathElementsMapper;
-         _chartEditorLayoutTask = chartEditorLayoutTask;
+         _dataColumnToPathElementsMapper = chartPresenterContext.DataColumnToPathElementsMapper;
+         _chartEditorLayoutTask = chartPresenterContext.EditorLayoutTask;
          _chartUpdater = chartUpdater;
          _userSettings = userSettings;
          _context = context;
 
-         _view.SetChartView(_chartEditorAndDisplayPresenter.BaseView);
+         _view.SetChartView(chartPresenterContext.ChartEditorAndDisplayPresenter.BaseView);
 
          initLayout();
          initEditorPresenterSettings();
 
          _observedDataDragDropBinder = new ObservedDataDragDropBinder();
 
-         AddSubPresenters(_chartEditorAndDisplayPresenter);
+         AddSubPresenters(chartPresenterContext.ChartEditorAndDisplayPresenter);
       }
 
       private void initializeEditorPresenter(IChartEditorAndDisplayPresenter chartEditorAndDisplayPresenter)
@@ -150,10 +142,15 @@ namespace MoBi.Presentation.Presenter
          return _dataColumnToPathElementsMapper.MapFrom(column, rootContainerForDataColumn);
       }
 
-      protected ICommand<IMoBiContext> AddAndExecute(ICommand<IMoBiContext> command)
+      //      protected ICommand<IMoBiContext> AddAndExecute(ICommand<IMoBiContext> command)
+      //      {
+      //         AddCommand(command.Run(_context));
+      //         return command;
+      //      }
+
+      protected override ISimulation SimulationFor(DataColumn dataColumn)
       {
-         AddCommand(command.Run(_context));
-         return command;
+         return findSimulation(dataColumn.Repository);
       }
 
       protected void AddMenuButtons()
@@ -169,12 +166,12 @@ namespace MoBi.Presentation.Presenter
 
       protected virtual IEnumerable<IMenuBarItem> AllMenuButtons()
       {
-         yield return _chartEditorAndDisplayPresenter.ChartLayoutButton;
+         yield return _chartPresenterContext.ChartEditorAndDisplayPresenter.ChartLayoutButton;
       }
 
       private void initLayout()
       {
-         _chartEditorLayoutTask.InitFromUserSettings(_chartEditorAndDisplayPresenter);
+         _chartEditorLayoutTask.InitFromUserSettings(_chartPresenterContext.ChartEditorAndDisplayPresenter);
       }
 
       protected void LoadFromTemplate(CurveChartTemplate chartTemplate, bool triggeredManually)
@@ -194,6 +191,7 @@ namespace MoBi.Presentation.Presenter
       {
          var data = e.Data<IList<ITreeNode>>();
          //do not use null propagation as suggested by resharper
+         // ReSharper disable once UseNullPropagation
          if (data == null)
             return false;
 
@@ -241,32 +239,10 @@ namespace MoBi.Presentation.Presenter
          addObservedData(dataRepositories.ToList());
       }
 
-      public CurveChart Chart
+      protected override void ChartChanged()
       {
-         get => _displayPresenter.Chart;
-         protected set => Edit(value);
-      }
-
-      public void Clear()
-      {
-         _editorPresenter.Clear();
-         _displayPresenter.Clear();
-      }
-
-      public void Edit(CurveChart curveChart)
-      {
-         _editorPresenter.Edit(curveChart);
-         _displayPresenter.Edit(curveChart);
-      }
-
-      private void onPropertyChanged(object sender, PropertyChangedEventArgs e)
-      {
-         // TODO
-//         MarkChartOwnerAsChanged();
-//         if (e.PropertyName.Equals(_nameProperty))
-//         {
-//            _context.PublishEvent(new RenamedEvent(Chart));
-//         }
+         base.ChartChanged();
+         MarkChartOwnerAsChanged();
       }
 
       public void Show(CurveChart chart, IReadOnlyList<DataRepository> dataRepositories, CurveChartTemplate defaultTemplate = null)
@@ -277,7 +253,9 @@ namespace MoBi.Presentation.Presenter
             //do not validate template when showing a chart as the chart might well be without curves when initialized for the first time.
             var currentTemplate = defaultTemplate ?? _chartTemplatingTask.TemplateFrom(chart, validateTemplate: false);
             replaceSimulationRepositories(dataRepositories);
-            Chart = chart;
+            InitializeAnalysis(chart);
+            UpdateTemplatesBasedOn(_withChartTemplates);
+            BindChartToEditors();
             LoadFromTemplate(currentTemplate, triggeredManually: false);
 
             addObservedDataIfNeeded(dataRepositories);
@@ -288,20 +266,21 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public virtual void UpdateTemplatesBasedOn(IWithChartTemplates withChartTemplates)
+      public virtual void UpdateTemplatesFor(IWithChartTemplates withChartTemplates)
       {
          _withChartTemplates = withChartTemplates;
-         ResetMenus();
+         UpdateTemplatesBasedOn(withChartTemplates);
       }
 
       private void addDataRepositoriesToSimulation(IReadOnlyCollection<DataRepository> dataRepositories)
       {
-         dataRepositories.Where(dataRepository => !_simulations.Contains(dataRepository)).Each(dataRepository =>
-         {
-            var simulation = findSimulation(dataRepository) ?? findHistoricSimulation(dataRepository);
-            if (simulation != null)
-               _simulations.Add(dataRepository, simulation);
-         });
+         dataRepositories.Where(dataRepository => !_simulations.Contains(dataRepository))
+            .Each(dataRepository =>
+            {
+               var simulation = findSimulation(dataRepository) ?? findHistoricSimulation(dataRepository);
+               if (simulation != null)
+                  _simulations.Add(dataRepository, simulation);
+            });
       }
 
       private IMoBiSimulation findSimulation(DataRepository dataRepository)
@@ -329,15 +308,10 @@ namespace MoBi.Presentation.Presenter
          _editorPresenter.RemoveDataRepositories(repositoriesToRemove);
       }
 
-      protected GridColumnSettings Column(BrowserColumns browserColumns)
-      {
-         return _editorPresenter.DataBrowserColumnSettingsFor(browserColumns);
-      }
-
       public void Handle(ObservedDataRemovedEvent eventToHandle)
       {
          var dataRepository = eventToHandle.DataRepository;
-         _editorPresenter.RemoveDataRepositories(new[] { dataRepository });
+         _editorPresenter.RemoveDataRepositories(new[] {dataRepository});
          _displayPresenter.Refresh();
       }
 
@@ -347,33 +321,6 @@ namespace MoBi.Presentation.Presenter
          _displayPresenter.DragDrop -= OnDragDrop;
          _displayPresenter.DragOver -= OnDragOver;
          Clear();
-      }
-
-      protected virtual void ResetMenus()
-      {
-         ClearMenuButtons();
-         AddChartTemplateMenu();
-         AddMenuButtons();
-      }
-
-      protected void AddChartTemplateMenu()
-      {
-         if (_withChartTemplates == null)
-            return;
-
-         _editorPresenter.AddChartTemplateMenu(_withChartTemplates, curveChartTemplate =>
-            LoadFromTemplate(_withChartTemplates.ChartTemplates.FindByName(curveChartTemplate.Name), triggeredManually: true));
-      }
-
-      public void Handle(ChartTemplatesChangedEvent eventToHandle)
-      {
-         if (canHandle(eventToHandle))
-            ResetMenus();
-      }
-
-      private bool canHandle(ChartTemplatesChangedEvent eventToHandle)
-      {
-         return Equals(eventToHandle.WithChartTemplates, _withChartTemplates);
       }
    }
 }

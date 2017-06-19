@@ -5,8 +5,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Presentation.Mappers;
-using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Services.Charts;
 using IChartTemplatingTask = MoBi.Presentation.Tasks.IChartTemplatingTask;
 
@@ -20,10 +18,8 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
 
-      public ComparisonChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks, IChartEditorAndDisplayPresenter chartEditorAndDisplayPresenter, 
-         IChartTemplatingTask chartTemplatingTask, IDataColumnToPathElementsMapper dataColumnToPathElementsMapper, IChartEditorLayoutTask chartEditorLayoutTask, 
-         IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IChartUpdater chartUpdater) :
-            base(chartView, context, userSettings, chartTasks, chartEditorAndDisplayPresenter, chartTemplatingTask, dataColumnToPathElementsMapper, chartEditorLayoutTask, chartUpdater)
+      public ComparisonChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks, IChartTemplatingTask chartTemplatingTask, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext) :
+         base(chartView, context, userSettings, chartTasks, chartTemplatingTask, chartUpdater, chartPresenterContext)
       {
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
       }
