@@ -24,7 +24,6 @@ namespace MoBi.Presentation.Presenter
       IDiagramBuildingBlockPresenter, IListener<SimulationRunFinishedEvent>, IListener<EntitySelectedEvent>, IListener<SimulationReloadEvent>, IListener<FavoritesSelectedEvent>
    {
       void LoadDiagram();
-      void ShowData();
    }
 
    public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter
@@ -40,7 +39,7 @@ namespace MoBi.Presentation.Presenter
       private bool _diagramLoaded;
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IChartFactory _chartFactory;
-      private bool _dataShown;
+      private bool _chartLoaded;
       private readonly IEditFavoritesInSimulationPresenter _favoritesPresenter;
       private readonly IChartTasks _chartTask;
 
@@ -98,6 +97,7 @@ namespace MoBi.Presentation.Presenter
          _view.SetEditView(_favoritesPresenter.BaseView);
          UpdateCaption();
          _view.Display();
+         loadChart();
       }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
@@ -116,12 +116,12 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _simulation;
 
-      public void ShowData()
+      private void loadChart()
       {
-         if (_dataShown) return;
+         if (_chartLoaded) return;
          CurveChartTemplate defaultTemplate = null;
 
-         _dataShown = true;
+         _chartLoaded = true;
          var data = new List<DataRepository>();
          if (_simulation.Results != null)
             data.Add(_simulation.Results);
@@ -146,14 +146,14 @@ namespace MoBi.Presentation.Presenter
          if (!_simulation.Equals(eventToHandle.Simulation))
             return;
 
-         _dataShown = false;
+         _chartLoaded = false;
 
          if (!_view.ShowsResults)
             _view.ShowResultsTab();
 
          _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);
 
-         ShowData();
+         loadChart();
       }
 
       public void Handle(EntitySelectedEvent eventToHandle)
@@ -243,7 +243,7 @@ namespace MoBi.Presentation.Presenter
       private void reloadAll()
       {
          _hierarchicalPresenter.Clear();
-         _dataShown = false;
+         _chartLoaded = false;
          _diagramLoaded = false;
          Edit(_simulation);
       }

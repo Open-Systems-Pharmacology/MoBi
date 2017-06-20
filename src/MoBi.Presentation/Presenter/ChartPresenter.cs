@@ -22,7 +22,6 @@ using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Services.Charts;
-using OSPSuite.Presentation.Settings;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -64,39 +63,36 @@ namespace MoBi.Presentation.Presenter
       protected readonly IChartTemplatingTask _chartTemplatingTask;
       private readonly IDataColumnToPathElementsMapper _dataColumnToPathElementsMapper;
       private readonly IChartEditorLayoutTask _chartEditorLayoutTask;
-      protected readonly ICache<DataRepository, IMoBiSimulation> _simulations;
+      protected readonly ICache<DataRepository, IMoBiSimulation> _dataRepositoryCache;
       private IChartDisplayPresenter _displayPresenter;
       private IChartEditorPresenter _editorPresenter;
 
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
-      private readonly IChartUpdater _chartUpdater;
-      private IWithChartTemplates _withChartTemplates;
 
-      protected ChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks,
-         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext) :
+      protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks,
+         IChartTemplatingTask chartTemplatingTask) :
          base(chartView, chartPresenterContext)
       {
          _chartTasks = chartTasks;
-         initializeDisplayPresenter(chartPresenterContext.ChartEditorAndDisplayPresenter);
-         initializeEditorPresenter(chartPresenterContext.ChartEditorAndDisplayPresenter);
+         initializeDisplayPresenter(chartPresenterContext.EditorAndDisplayPresenter);
+         initializeEditorPresenter(chartPresenterContext.EditorAndDisplayPresenter);
 
          _chartTemplatingTask = chartTemplatingTask;
-         _simulations = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
+         _dataRepositoryCache = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
 
          _dataColumnToPathElementsMapper = chartPresenterContext.DataColumnToPathElementsMapper;
          _chartEditorLayoutTask = chartPresenterContext.EditorLayoutTask;
-         _chartUpdater = chartUpdater;
          _userSettings = userSettings;
          _context = context;
 
-         _view.SetChartView(chartPresenterContext.ChartEditorAndDisplayPresenter.BaseView);
+         _view.SetChartView(chartPresenterContext.EditorAndDisplayPresenter.BaseView);
 
          initLayout();
          initEditorPresenterSettings();
 
          _observedDataDragDropBinder = new ObservedDataDragDropBinder();
 
-         AddSubPresenters(chartPresenterContext.ChartEditorAndDisplayPresenter);
+         AddSubPresenters(chartPresenterContext.EditorAndDisplayPresenter);
       }
 
       private void initializeEditorPresenter(IChartEditorAndDisplayPresenter chartEditorAndDisplayPresenter)
@@ -137,16 +133,10 @@ namespace MoBi.Presentation.Presenter
 
       private PathElements displayPathForColumn(DataColumn column)
       {
-         var simulationForDataColumn = _simulations[column.Repository];
+         var simulationForDataColumn = _dataRepositoryCache[column.Repository];
          var rootContainerForDataColumn = simulationForDataColumn?.Model.Root;
          return _dataColumnToPathElementsMapper.MapFrom(column, rootContainerForDataColumn);
       }
-
-      //      protected ICommand<IMoBiContext> AddAndExecute(ICommand<IMoBiContext> command)
-      //      {
-      //         AddCommand(command.Run(_context));
-      //         return command;
-      //      }
 
       protected override ISimulation SimulationFor(DataColumn dataColumn)
       {
@@ -166,17 +156,17 @@ namespace MoBi.Presentation.Presenter
 
       protected virtual IEnumerable<IMenuBarItem> AllMenuButtons()
       {
-         yield return _chartPresenterContext.ChartEditorAndDisplayPresenter.ChartLayoutButton;
+         yield return _chartPresenterContext.EditorAndDisplayPresenter.ChartLayoutButton;
       }
 
       private void initLayout()
       {
-         _chartEditorLayoutTask.InitFromUserSettings(_chartPresenterContext.ChartEditorAndDisplayPresenter);
+         _chartEditorLayoutTask.InitFromUserSettings(_chartPresenterContext.EditorAndDisplayPresenter);
       }
 
-      protected void LoadFromTemplate(CurveChartTemplate chartTemplate, bool triggeredManually)
+      protected void LoadFromTemplate(CurveChartTemplate chartTemplate, bool triggeredManually, bool propogateChartChangeEvent = true)
       {
-         _chartTemplatingTask.InitFromTemplate(_simulations, Chart, _editorPresenter, chartTemplate, CurveNameDefinition, triggeredManually);
+         _chartTemplatingTask.InitFromTemplate(_dataRepositoryCache, Chart, _editorPresenter, chartTemplate, CurveNameDefinition, triggeredManually, propogateChartChangeEvent);
       }
 
       protected virtual void OnDragOver(object sender, DragEventArgs e)
@@ -218,7 +208,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addHistoricalResults(IReadOnlyList<DataRepository> repositories)
       {
-         addDataRepositoriesToSimulation(repositories);
+         addDataRepositoriesToDataRepositoryCache(repositories);
          _editorPresenter.AddDataRepositories(repositories);
          repositories.Each(repository => repository.SetPersistable(persistable: true));
       }
@@ -226,10 +216,8 @@ namespace MoBi.Presentation.Presenter
       private void addObservedData(IReadOnlyList<DataRepository> repositories)
       {
          _editorPresenter.AddDataRepositories(repositories);
-         using (_chartUpdater.UpdateTransaction(Chart))
-         {
-            repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => _editorPresenter.AddCurveForColumn(observationColumn));
-         }
+         repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => _editorPresenter.AddCurveForColumn(observationColumn));
+         _chartPresenterContext.Refresh();
       }
 
       private void addObservedDataIfNeeded(IEnumerable<DataRepository> dataRepositories)
@@ -254,10 +242,7 @@ namespace MoBi.Presentation.Presenter
             var currentTemplate = defaultTemplate ?? _chartTemplatingTask.TemplateFrom(chart, validateTemplate: false);
             replaceSimulationRepositories(dataRepositories);
             InitializeAnalysis(chart);
-            UpdateTemplatesBasedOn(_withChartTemplates);
-            BindChartToEditors();
-            LoadFromTemplate(currentTemplate, triggeredManually: false);
-
+            LoadFromTemplate(currentTemplate, triggeredManually: false, propogateChartChangeEvent: false);
             addObservedDataIfNeeded(dataRepositories);
          }
          finally
@@ -268,18 +253,17 @@ namespace MoBi.Presentation.Presenter
 
       public virtual void UpdateTemplatesFor(IWithChartTemplates withChartTemplates)
       {
-         _withChartTemplates = withChartTemplates;
          UpdateTemplatesBasedOn(withChartTemplates);
       }
 
-      private void addDataRepositoriesToSimulation(IReadOnlyCollection<DataRepository> dataRepositories)
+      private void addDataRepositoriesToDataRepositoryCache(IReadOnlyCollection<DataRepository> dataRepositories)
       {
-         dataRepositories.Where(dataRepository => !_simulations.Contains(dataRepository))
+         dataRepositories.Where(dataRepository => !_dataRepositoryCache.Contains(dataRepository))
             .Each(dataRepository =>
             {
                var simulation = findSimulation(dataRepository) ?? findHistoricSimulation(dataRepository);
                if (simulation != null)
-                  _simulations.Add(dataRepository, simulation);
+                  _dataRepositoryCache.Add(dataRepository, simulation);
             });
       }
 
@@ -296,10 +280,10 @@ namespace MoBi.Presentation.Presenter
 
       private void replaceSimulationRepositories(IReadOnlyCollection<DataRepository> dataRepositories)
       {
-         var repositoriesToRemove = _simulations.Keys.Except(dataRepositories).ToList();
-         repositoriesToRemove.Each(_simulations.Remove);
+         var repositoriesToRemove = _dataRepositoryCache.Keys.Except(dataRepositories).ToList();
+         repositoriesToRemove.Each(_dataRepositoryCache.Remove);
 
-         addDataRepositoriesToSimulation(dataRepositories);
+         addDataRepositoriesToDataRepositoryCache(dataRepositories);
 
          _editorPresenter.AddDataRepositories(dataRepositories);
 
@@ -311,7 +295,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(ObservedDataRemovedEvent eventToHandle)
       {
          var dataRepository = eventToHandle.DataRepository;
-         _editorPresenter.RemoveDataRepositories(new[] {dataRepository});
+         _editorPresenter.RemoveDataRepositories(new[] { dataRepository });
          _displayPresenter.Refresh();
       }
 

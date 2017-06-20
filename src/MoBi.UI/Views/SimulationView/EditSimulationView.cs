@@ -1,6 +1,4 @@
 ﻿using System;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraTab;
 using MoBi.Assets;
@@ -8,9 +6,11 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Extensions;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views.SimulationView
 {
@@ -28,10 +28,7 @@ namespace MoBi.UI.Views.SimulationView
          _presenter = presenter;
       }
 
-      private IEditSimulationPresenter simulationPresenter
-      {
-         get { return _presenter.DowncastTo<IEditSimulationPresenter>(); }
-      }
+      private IEditSimulationPresenter simulationPresenter => _presenter.DowncastTo<IEditSimulationPresenter>();
 
       public override void InitializeResources()
       {
@@ -48,18 +45,12 @@ namespace MoBi.UI.Views.SimulationView
          spliterDiagram.SplitterPosition = Convert.ToInt32(Height * AppConstants.Diagram.SplitterDiagramRatio);
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Simulation; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Simulation;
 
       private void tabSelectionChanged(TabPageChangingEventArgs e)
       {
          if (e.Page.Equals(tabDiagram))
             simulationPresenter.LoadDiagram();
-
-         if (e.Page.Equals(tabResults))
-            simulationPresenter.ShowData();
       }
 
       public void SetEditView(IView view)
@@ -74,7 +65,13 @@ namespace MoBi.UI.Views.SimulationView
 
       public void SetChartView(IView view)
       {
+         view.CaptionChanged += (o, e) => OnEvent(() => tabResults.Text = captionNameFrom(view));
          tabResults.FillWith(view);
+      }
+
+      private string captionNameFrom(IView view)
+      {
+         return string.IsNullOrWhiteSpace(view.Caption) ? AppConstants.Captions.Results : view.Caption;
       }
 
       public void SetModelDiagram(ISimulationDiagramView subView)
@@ -83,10 +80,7 @@ namespace MoBi.UI.Views.SimulationView
          subView.Overview = modelOverview;
       }
 
-      public bool ShowsResults
-      {
-         get { return tabs.SelectedTabPage.Equals(tabResults); }
-      }
+      public bool ShowsResults => tabs.SelectedTabPage.Equals(tabResults);
 
       public void ShowResultsTab()
       {

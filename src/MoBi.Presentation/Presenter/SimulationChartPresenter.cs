@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Presenter
       private readonly ICurveNamer _curveNamer;
 
       public SimulationChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks, IChartTemplatingTask chartTemplatingTask, ICurveNamer curveNamer, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext)
-         : base(chartView, context, userSettings, chartTasks, chartTemplatingTask, chartUpdater, chartPresenterContext)
+         : base(chartView, chartPresenterContext, context, userSettings, chartTasks, chartTemplatingTask)
       {
          _curveNamer = curveNamer;
       }
@@ -29,12 +29,12 @@ namespace MoBi.Presentation.Presenter
 
       protected override void MarkChartOwnerAsChanged()
       {
-         _simulations.Each(simulation => simulation.HasChanged = true);
+         _dataRepositoryCache.Each(simulation => simulation.HasChanged = true);
       }
 
       protected override string CurveNameDefinition(DataColumn column)
       {
-         return _curveNamer.CurveNameForColumn(_simulations[column.Repository], column, addSimulationName: false);
+         return _curveNamer.CurveNameForColumn(_dataRepositoryCache[column.Repository], column, addSimulationName: false);
       }
    }
 }

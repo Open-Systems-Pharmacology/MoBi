@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       ICommand ReplaceTemplatesInBuildingBlockCommand(ISimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates);
 
-      void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually);
+      void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually, bool propogateChartChangeEvent = true);
    }
 
    public class ChartTemplatingTask : OSPSuite.Presentation.Services.Charts.ChartTemplatingTask, IChartTemplatingTask
@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Tasks
          return new ReplaceBuildingBlockTemplatesCommand(simulationSettings, curveChartTemplates).Run(_context);
       }
 
-      public void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually)
+      public void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually, bool propogateChartChangeEvent = true)
       {
          var allAvailableColumns = chartEditorPresenter.AllDataColumns.ToList();
          if (chartTemplate == null)
@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Tasks
             return;
          }
 
-         InitializeChartFromTemplate(chart, allAvailableColumns, chartTemplate, curveNameDefinition, triggeredManually);
+         InitializeChartFromTemplate(chart, allAvailableColumns, chartTemplate, curveNameDefinition, triggeredManually, propogateChartChangeEvent);
 
          if (!chart.Curves.Any() && !triggeredManually)
             UpdateDefaultSettings(chartEditorPresenter, allAvailableColumns, simulations);

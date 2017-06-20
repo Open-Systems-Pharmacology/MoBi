@@ -271,12 +271,12 @@ namespace MoBi.Presentation
          A.CallTo(() => _chartPresenter.Show(chart, A<IReadOnlyList<DataRepository>>._, null))
             .Invokes(x => _data = x.GetArgument<IEnumerable<DataRepository>>(1));
 
-         sut.Edit(_simulation);
+         
       }
 
       protected override void Because()
       {
-         sut.ShowData();
+         sut.Edit(_simulation);
       }
 
       [Observation]
