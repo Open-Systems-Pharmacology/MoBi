@@ -43,18 +43,18 @@ namespace MoBi.UI.Views
             .WithFormat(x => x.StartTimeParameter.ParameterFormatter())
             .WithCaption(AppConstants.Captions.StartTime)
             .WithEditorConfiguration((activeEditor, intervalDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, intervalDTO.StartTimeParameter as ParameterDTO))
-            .OnValueSet += (o, e) => setParameterValue(o.StartTimeParameter, e.NewValue);
+            .OnValueUpdating += (o, e) => setParameterValue(o.StartTimeParameter, e.NewValue);
 
          _gridViewBinder.Bind(dto => dto.EndTime)
             .WithFormat(x => x.EndTimeParameter.ParameterFormatter())
             .WithCaption(AppConstants.Captions.EndTime)
             .WithEditorConfiguration((activeEditor, intervalDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, intervalDTO.EndTimeParameter as ParameterDTO))
-            .OnValueSet += (o, e) => setParameterValue(o.EndTimeParameter, e.NewValue);
+            .OnValueUpdating += (o, e) => setParameterValue(o.EndTimeParameter, e.NewValue);
 
          _gridViewBinder.Bind(dto => dto.Resolution)
             .WithFormat(x => x.ResolutionParameter.ParameterFormatter())
             .WithEditorConfiguration((activeEditor, intervalDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, intervalDTO.ResolutionParameter as ParameterDTO))
-            .OnValueSet += (o, e) => setParameterValue(o.ResolutionParameter, e.NewValue);
+            .OnValueUpdating += (o, e) => setParameterValue(o.ResolutionParameter, e.NewValue);
 
          _gridViewBinder.AddUnboundColumn()
             .WithRepository(dto => createAddRemoveButtons())

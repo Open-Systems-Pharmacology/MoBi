@@ -40,20 +40,20 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.Mode).To(cbContainerMode)
             .WithValues(dto => _presenter.AllContainerModes())
             .AndDisplays(mode => _presenter.ContainerModeDisplayFor(mode))
-            .OnValueSet += (o, e) => OnEvent((() => _presenter.SetContainerMode(e.NewValue)));
+            .OnValueUpdating += (o, e) => OnEvent((() => _presenter.SetContainerMode(e.NewValue)));
 
          _screenBinder.Bind(dto => dto.ContainerType)
             .To(cbContainerType)
             .WithValues(dto => _presenter.AllContainerTypes())
-            .OnValueSet += onValueSet;
+            .OnValueUpdating += OnValueUpdating;
 
          _screenBinder.Bind(dto => dto.Name)
             .To(btName)
-            .OnValueSet += onNameSet;
+            .OnValueUpdating += onNameSet;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
-            .OnValueSet += onValueSet;
+            .OnValueUpdating += OnValueUpdating;
 
          _gridBinder = new GridViewBinder<TagDTO>(gridView);
          _gridBinder.Bind(dto => dto.Value)
@@ -94,7 +94,7 @@ namespace MoBi.UI.Views
          OnEvent(() => _presenter.SetInitialName(e.NewValue));
       }
 
-      private void onValueSet<T>(ContainerDTO container, PropertyValueSetEventArgs<T> e)
+      private void OnValueUpdating<T>(ContainerDTO container, PropertyValueSetEventArgs<T> e)
       {
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }

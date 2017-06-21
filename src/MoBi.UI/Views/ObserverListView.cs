@@ -49,7 +49,7 @@ namespace MoBi.UI.Views
             .WithShowInColumnChooser(true)
             .AsHidden();
 
-         colDimension.OnValueSet += onPropertySet;
+         colDimension.OnValueUpdating += onPropertySet;
 
          gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown,e);
       }

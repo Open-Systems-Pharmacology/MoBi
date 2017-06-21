@@ -61,12 +61,12 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<MoleculeBuilderDTO>();
-         _screenBinder.Bind(dto => dto.Stationary).To(chkIsFloating).OnValueSet += onIsPresentValueSet;
-         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueSet += onValueSet;
-         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueSet += onValueSet;
+         _screenBinder.Bind(dto => dto.Stationary).To(chkIsFloating).OnValueUpdating += onIsPresentValueSet;
+         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueUpdating += OnValueUpdating;
+         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueUpdating += OnValueUpdating;
          _screenBinder.Bind(dto => dto.MoleculeType).To(cbMoleculeType)
             .WithValues(dto => _presenter.GetMoleculeTypes())
-            .OnValueSet += (builder, args) => _presenter.SetMoleculeType(args.NewValue, args.OldValue);
+            .OnValueUpdating += (builder, args) => _presenter.SetMoleculeType(args.NewValue, args.OldValue);
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
@@ -75,7 +75,7 @@ namespace MoBi.UI.Views
          _gridBinder.Bind(dto => dto.CalculationMethodName)
             .WithCaption(AppConstants.Captions.CalculationMethod)
             .WithEditRepository(getComboboxRepositoryItem)
-            .OnValueSet += onCalculationMethodChanged;
+            .OnValueUpdating += onCalculationMethodChanged;
 
          btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
       }
@@ -127,7 +127,7 @@ namespace MoBi.UI.Views
          _presenter.SetStationaryProperty(value.NewValue, value.OldValue);
       }
 
-      private void onValueSet<T>(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<T> value)
+      private void OnValueUpdating<T>(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<T> value)
       {
          _screenBinder.Validate();
          this.DoWithinExceptionHandler(() => _presenter.SetPropertyValueFromView(value.PropertyName, value.NewValue, value.OldValue));

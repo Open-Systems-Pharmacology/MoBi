@@ -60,12 +60,12 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
 
          _screenBinder = new ScreenBinder<EventBuilderDTO>();
-         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueSet += onPropertyValueSet;
-         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueSet += onPropertyValueSet;
-         _screenBinder.Bind(dto => dto.OneTime).To(chkOneTime).OnValueSet += onPropertyValueSet;
+         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueUpdating += onPropertyValueSet;
+         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueUpdating += onPropertyValueSet;
+         _screenBinder.Bind(dto => dto.OneTime).To(chkOneTime).OnValueUpdating += onPropertyValueSet;
          _screenBinder.Bind(dto => dto.Condition).To(cmbCondition)
             .WithValues(dto => _presenter.AllFormulaNames())
-            .OnValueSet += onConditionFormulaNameSet;
+            .OnValueUpdating += onConditionFormulaNameSet;
 
          _gridBinder = new GridViewBinder<EventAssignmentBuilderDTO>(grdAssingments);
          var selectButtonrepository = createSelectButtonRepository();
@@ -76,10 +76,10 @@ namespace MoBi.UI.Views
          _gridBinder.Bind(dto => dto.NewFormula)
             .WithCaption(AppConstants.Captions.NewFormula)
             .WithRepository(d => getFormualReposititory(grdAssingments))
-            .WithOnValueSet(onAssingmentFormulaSet);
+            .WithOnValueUpdating(onAssingmentFormulaSet);
          _gridBinder.Bind(dto => dto.UseAsValue)
             .WithCaption(AppConstants.Captions.UseAsValue)
-            .OnValueSet += onAssignmentPropertySet;
+            .OnValueUpdating += onAssignmentPropertySet;
 
          var buttonRepository = createAddRemoveButtonRepository();
          _gridBinder.AddUnboundColumn()

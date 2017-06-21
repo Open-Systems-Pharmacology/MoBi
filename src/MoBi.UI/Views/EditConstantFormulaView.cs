@@ -51,7 +51,7 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<ConstantFormulaBuilderDTO>();
          _screenBinder.Bind(x => x.Value).To(valueEdit);
-         valueEdit.ValueChanged += onValueSet;
+         valueEdit.ValueChanged += OnValueUpdating;
          valueEdit.UnitChanged += onUnitChange;
 
 
@@ -63,7 +63,7 @@ namespace MoBi.UI.Views
          this.DoWithinExceptionHandler(() => _presenter.SetDisplayUnit(valueEditDTO, unit));
       }
 
-      private void onValueSet(ValueEditDTO valueEditDTO, double value)
+      private void OnValueUpdating(ValueEditDTO valueEditDTO, double value)
       {
          this.DoWithinExceptionHandler(() => _presenter.SetDisplayValue(valueEditDTO, value));
       }

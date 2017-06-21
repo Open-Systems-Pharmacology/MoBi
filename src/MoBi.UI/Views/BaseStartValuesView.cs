@@ -224,7 +224,7 @@ namespace MoBi.UI.Views
          _gridViewBinder.AutoBind(param => param.ValueDescription)
             .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
             .WithCaption(AppConstants.Captions.ValueDescription)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetValueDescription(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetValueDescription(o, e.NewValue)));
       }
 
       private void removeStartValue(TStartValue elementToRemove)
@@ -262,7 +262,7 @@ namespace MoBi.UI.Views
             _gridViewBinder.Bind(expression)
                .WithCaption(caption)
                .WithRepository(x => _pathRepositoryItemComboBox)
-               .WithOnValueSet((o, e) => OnEvent(() => OnPathElementSet(o, e, index))));
+               .WithOnValueUpdating((o, e) => OnEvent(() => OnPathElementSet(o, e, index))));
       }
 
       public void BindTo(IEnumerable<TStartValue> startValues)

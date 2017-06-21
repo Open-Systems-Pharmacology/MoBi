@@ -60,16 +60,16 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<ObserverBuilderDTO>();
          _screenBinder.Bind(dto => dto.Name)
             .To(btName)
-            .OnValueSet += onPropertySet;
+            .OnValueUpdating += onPropertySet;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
-            .OnValueSet += onPropertySet;
+            .OnValueUpdating += onPropertySet;
 
          _screenBinder.Bind(dto => dto.Dimension)
             .To(cbDimension)
             .WithValues(dto => allDimensions())
-            .OnValueSet += onDimensionSet;
+            .OnValueUpdating += onDimensionSet;
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 

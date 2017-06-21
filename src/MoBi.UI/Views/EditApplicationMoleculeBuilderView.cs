@@ -29,7 +29,7 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<ApplicationMoleculeBuilderDTO>();
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
-            .OnValueSet += onValueSet;
+            .OnValueUpdating += OnValueUpdating;
 
          _screenBinder.Bind(dto => dto.RelativeContainerPath)
             .To(btContainerPath);
@@ -46,7 +46,7 @@ namespace MoBi.UI.Views
          ActiveControl = btContainerPath;
       }
 
-      private void onValueSet<T>(ApplicationMoleculeBuilderDTO applicationMoleculeBuilder, PropertyValueSetEventArgs<T> e)
+      private void OnValueUpdating<T>(ApplicationMoleculeBuilderDTO applicationMoleculeBuilder, PropertyValueSetEventArgs<T> e)
       {
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }

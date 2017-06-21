@@ -30,18 +30,18 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<EventAssignmentBuilderDTO>();
          _screenBinder.Bind(dto => dto.Name)
             .To(btnName)
-            .OnValueSet += onValueSet;
+            .OnValueUpdating += OnValueUpdating;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
-            .OnValueSet += onValueSet;
+            .OnValueUpdating += OnValueUpdating;
 
          _screenBinder.Bind(dto => dto.ChangedEntityPath)
             .To(btnTargetPath);
 
          _screenBinder.Bind(dto => dto.UseAsValue)
             .To(chkUseAsValue)
-            .OnValueSet += onValueSet;
+            .OnValueUpdating += OnValueUpdating;
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
          btnTargetPath.ButtonClick += (o, e) => OnEvent(_presenter.SelectPath);
@@ -58,7 +58,7 @@ namespace MoBi.UI.Views
          btnTargetPath.Properties.ReadOnly = true;
       }
 
-      private void onValueSet<T>(EventAssignmentBuilderDTO eventAssignmentBuilder, PropertyValueSetEventArgs<T> e)
+      private void OnValueUpdating<T>(EventAssignmentBuilderDTO eventAssignmentBuilder, PropertyValueSetEventArgs<T> e)
       {
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }

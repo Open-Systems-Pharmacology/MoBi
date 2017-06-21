@@ -93,23 +93,23 @@ namespace MoBi.UI.Views
 
          _screenBinder.Bind(dto => dto.UseDerivedValues)
             .To(chkUseDerivedValues)
-            .OnValueSet += setUseDerivedValues;
+            .OnValueUpdating += setUseDerivedValues;
 
          _colX = _gridBinder.AutoBind(dto => dto.XValue)
             .WithFormat(dto => dto.ValuePointXFormatter())
             .WithToolTip(ToolTips.Formula.X)
-            .WithOnValueSet((o, e) => OnEvent(() => onXValueSet(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => onXValueSet(o, e.NewValue)));
 
          _colY = _gridBinder.AutoBind(dto => dto.YValue)
             .WithFormat(dto => dto.ValuePointYFormatter())
             .WithToolTip(ToolTips.Formula.Y)
-            .WithOnValueSet((o, e) => OnEvent(() => onYValueSet(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => onYValueSet(o, e.NewValue)));
 
          _colRestartSolver = _gridBinder.Bind(dto => dto.RestartSolver)
             .WithRepository(dto => _uxRepositoryItemCheckEdit)
             .WithToolTip(ToolTips.Formula.RestartSolver)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
-            .WithOnValueSet((o, e) => OnEvent(() => setRestartSolver(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => setRestartSolver(o, e.NewValue)));
 
          var buttonRepository = createButtonRepository();
          _colButtons = _gridBinder.AddUnboundColumn().WithRepository(dto => buttonRepository)

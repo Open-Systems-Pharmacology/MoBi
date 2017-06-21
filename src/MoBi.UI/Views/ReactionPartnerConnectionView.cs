@@ -21,11 +21,11 @@ namespace MoBi.UI.Views
          _gridBinder.Bind(item => item.MoleculeName)
             .AsReadOnly()
             .WithCaption(AppConstants.Captions.MoleculeNames)
-            .OnValueSet += onMoleculeNameSet;
+            .OnValueUpdating += onMoleculeNameSet;
 
          _gridBinder.Bind(item => item.StoichiometricCoefficient)
             .WithCaption(AppConstants.Captions.StoichiometricCoefficient)
-            .OnValueSet += onCoefficentSet;
+            .OnValueUpdating += onCoefficentSet;
          base.InitializeBinding();
       }
 

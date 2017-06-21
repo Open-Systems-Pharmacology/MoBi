@@ -34,7 +34,7 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<SumFormulaDTO>();
          _screenBinder.Bind(dto => dto.Variable).To(txtVariableName)
-            .OnValueSet += (dto, eventArgs) => _presenter.ChangeVariableName(eventArgs.NewValue, eventArgs.OldValue);
+            .OnValueUpdating += (dto, eventArgs) => _presenter.ChangeVariableName(eventArgs.NewValue, eventArgs.OldValue);
 
          _screenBinder.Bind(dto => dto.FormulaString).To(lblFormula);
       }

@@ -119,7 +119,7 @@ namespace MoBi.UI.Views
             .WithRepository(repositoryForValue)
             .WithEditorConfiguration(configureRepository)
             .WithToolTip(ToolTips.ParameterList.SetParameterValue)
-            .WithOnValueSet(onParameterValueSet)
+            .WithOnValueUpdating(onParameterValueSet)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
          _unitControl.ParameterUnitSet += setParameterUnit;
@@ -132,7 +132,7 @@ namespace MoBi.UI.Views
 
          _gridViewBinder.Bind(dto => dto.ValueDescription)
             .WithShowInColumnChooser(true)
-            .WithOnValueSet(onParameterValueDescriptionSet);
+            .WithOnValueUpdating(onParameterValueDescriptionSet);
 
          _gridViewBinder.Bind(dto => dto.Description)
             .AsReadOnly().WithShowInColumnChooser(true);
@@ -142,7 +142,7 @@ namespace MoBi.UI.Views
             .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(OSPSuite.Assets.ToolTips.FavoritesToolTip)
-            .WithOnValueSet((o, e) => onIsFavoriteSet(o, e.NewValue));
+            .WithOnValueUpdating((o, e) => onIsFavoriteSet(o, e.NewValue));
 
          _isFixedParameterEditRepository.ButtonClick +=
             (o, e) => this.DoWithinExceptionHandler(() => onResetValue(_gridViewBinder.FocusedElement));

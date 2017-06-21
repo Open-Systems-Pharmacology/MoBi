@@ -72,7 +72,7 @@ namespace MoBi.UI.Views
          initPathElementColumn(dto => dto.PathElement9, Captions.PathElement(9));
 
          _gridViewBinder.AutoBind(x => x.ScaleDivisor)
-            .WithOnValueSet((o, e) => _presenter.UpdateScaleFactorValue(o, e.NewValue));
+            .WithOnValueUpdating((o, e) => _presenter.UpdateScaleFactorValue(o, e.NewValue));
 
          _gridViewBinder.Changed += NotifyViewChanged;
 

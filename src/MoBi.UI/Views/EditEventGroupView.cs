@@ -35,8 +35,8 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<EventGroupBuilderDTO>();
-         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueSet += onPropertySet;
-         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueSet += onPropertySet;
+         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueUpdating += onPropertySet;
+         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueUpdating += onPropertySet;
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 

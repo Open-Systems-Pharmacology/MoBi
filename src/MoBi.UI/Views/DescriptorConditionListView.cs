@@ -53,7 +53,7 @@ namespace MoBi.UI.Views
             .AsReadOnly();
 
          _gridViewBinder.Bind(dto => dto.Tag)
-            .OnValueSet += (o, e) => OnEvent(() => onCritiraTagChanged(o, e));
+            .OnValueUpdating += (o, e) => OnEvent(() => onCritiraTagChanged(o, e));
 
          gridControl.MouseClick += (o, e) => OnEvent(onGridClick, e);
       }
