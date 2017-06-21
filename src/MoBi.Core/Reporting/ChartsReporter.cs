@@ -6,9 +6,9 @@ using OSPSuite.TeXReporting.Items;
 
 namespace MoBi.Core.Reporting
 {
-   internal class ChartsReporter : OSPSuiteTeXReporter<IReadOnlyCollection<CurveChart>>
+   internal class ChartsReporter : OSPSuiteTeXReporter<IEnumerable<CurveChart>>
    {
-      public override IReadOnlyCollection<object> Report(IReadOnlyCollection<CurveChart> charts, OSPSuiteTracker buildTracker)
+      public override IReadOnlyCollection<object> Report(IEnumerable<CurveChart> charts, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
 

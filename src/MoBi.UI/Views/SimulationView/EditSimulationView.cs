@@ -63,15 +63,10 @@ namespace MoBi.UI.Views.SimulationView
          tabTree.FillWith(view);
       }
 
-      public void SetChartView(IView view)
+      public void SetChartView(IChartView chartView)
       {
-         view.CaptionChanged += (o, e) => OnEvent(() => tabResults.Text = captionNameFrom(view));
-         tabResults.FillWith(view);
-      }
-
-      private string captionNameFrom(IView view)
-      {
-         return string.IsNullOrWhiteSpace(view.Caption) ? AppConstants.Captions.Results : view.Caption;
+         chartView.CaptionChanged += (o, e) => OnEvent(() => tabResults.Text = simulationPresenter.CreateResultTabCaption(chartView.Caption));
+         tabResults.FillWith(chartView);
       }
 
       public void SetModelDiagram(ISimulationDiagramView subView)

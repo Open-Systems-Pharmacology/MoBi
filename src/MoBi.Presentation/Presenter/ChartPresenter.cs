@@ -16,7 +16,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -61,27 +60,24 @@ namespace MoBi.Presentation.Presenter
       private readonly IUserSettings _userSettings;
       private readonly IChartTasks _chartTasks;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
-      private readonly IDataColumnToPathElementsMapper _dataColumnToPathElementsMapper;
-      private readonly IChartEditorLayoutTask _chartEditorLayoutTask;
       protected readonly ICache<DataRepository, IMoBiSimulation> _dataRepositoryCache;
-      private IChartDisplayPresenter _displayPresenter;
-      private IChartEditorPresenter _editorPresenter;
 
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
+
+      private IChartDisplayPresenter displayPresenter => _chartPresenterContext.DisplayPresenter;
+      private IChartEditorPresenter editorPresenter => _chartPresenterContext.EditorPresenter;
 
       protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks,
          IChartTemplatingTask chartTemplatingTask) :
          base(chartView, chartPresenterContext)
       {
          _chartTasks = chartTasks;
-         initializeDisplayPresenter(chartPresenterContext.EditorAndDisplayPresenter);
-         initializeEditorPresenter(chartPresenterContext.EditorAndDisplayPresenter);
+         initializeDisplayPresenter();
+         initializeEditorPresenter();
 
          _chartTemplatingTask = chartTemplatingTask;
          _dataRepositoryCache = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
 
-         _dataColumnToPathElementsMapper = chartPresenterContext.DataColumnToPathElementsMapper;
-         _chartEditorLayoutTask = chartPresenterContext.EditorLayoutTask;
          _userSettings = userSettings;
          _context = context;
 
@@ -95,29 +91,27 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(chartPresenterContext.EditorAndDisplayPresenter);
       }
 
-      private void initializeEditorPresenter(IChartEditorAndDisplayPresenter chartEditorAndDisplayPresenter)
+      private void initializeEditorPresenter()
       {
-         _editorPresenter = chartEditorAndDisplayPresenter.EditorPresenter;
-         _editorPresenter.SetCurveNameDefinition(CurveNameDefinition);
+         editorPresenter.SetCurveNameDefinition(CurveNameDefinition);
       }
 
-      private void initializeDisplayPresenter(IChartEditorAndDisplayPresenter chartEditorAndDisplayPresenter)
+      private void initializeDisplayPresenter()
       {
-         _displayPresenter = chartEditorAndDisplayPresenter.DisplayPresenter;
-         _displayPresenter.DragDrop += OnDragDrop;
-         _displayPresenter.DragOver += OnDragOver;
-         _displayPresenter.ExportToPDF = () => _chartTasks.ExportToPDF(Chart);
+         displayPresenter.DragDrop += OnDragDrop;
+         displayPresenter.DragOver += OnDragOver;
+         displayPresenter.ExportToPDF = () => _chartTasks.ExportToPDF(Chart);
          initializeNoCurvesHint();
       }
 
       private void clearNoCurvesHint()
       {
-         _displayPresenter.SetNoCurvesSelectedHint(string.Empty);
+         displayPresenter.SetNoCurvesSelectedHint(string.Empty);
       }
 
       private void initializeNoCurvesHint()
       {
-         _displayPresenter.SetNoCurvesSelectedHint(AppConstants.PleaseSelectCurveInChartEditor);
+         displayPresenter.SetNoCurvesSelectedHint(AppConstants.PleaseSelectCurveInChartEditor);
       }
 
       protected ChartOptions ChartOptions => _userSettings.ChartOptions;
@@ -126,16 +120,16 @@ namespace MoBi.Presentation.Presenter
 
       private void initEditorPresenterSettings()
       {
-         _editorPresenter.SetDisplayQuantityPathDefinition(displayPathForColumn);
+         editorPresenter.SetDisplayQuantityPathDefinition(displayPathForColumn);
          //Show all Columns
-         _editorPresenter.SetShowDataColumnInDataBrowserDefinition(col => true);
+         editorPresenter.SetShowDataColumnInDataBrowserDefinition(col => true);
       }
 
       private PathElements displayPathForColumn(DataColumn column)
       {
          var simulationForDataColumn = _dataRepositoryCache[column.Repository];
          var rootContainerForDataColumn = simulationForDataColumn?.Model.Root;
-         return _dataColumnToPathElementsMapper.MapFrom(column, rootContainerForDataColumn);
+         return _chartPresenterContext.DataColumnToPathElementsMapper.MapFrom(column, rootContainerForDataColumn);
       }
 
       protected override ISimulation SimulationFor(DataColumn dataColumn)
@@ -145,13 +139,13 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddMenuButtons()
       {
-         AllMenuButtons().Each(_editorPresenter.AddButton);
-         _editorPresenter.AddUsedInMenuItem();
+         AllMenuButtons().Each(editorPresenter.AddButton);
+         editorPresenter.AddUsedInMenuItem();
       }
 
       protected void ClearMenuButtons()
       {
-         _editorPresenter.ClearButtons();
+         editorPresenter.ClearButtons();
       }
 
       protected virtual IEnumerable<IMenuBarItem> AllMenuButtons()
@@ -161,12 +155,12 @@ namespace MoBi.Presentation.Presenter
 
       private void initLayout()
       {
-         _chartEditorLayoutTask.InitFromUserSettings(_chartPresenterContext.EditorAndDisplayPresenter);
+         _chartPresenterContext.EditorLayoutTask.InitFromUserSettings(_chartPresenterContext.EditorAndDisplayPresenter);
       }
 
       protected void LoadFromTemplate(CurveChartTemplate chartTemplate, bool triggeredManually, bool propogateChartChangeEvent = true)
       {
-         _chartTemplatingTask.InitFromTemplate(_dataRepositoryCache, Chart, _editorPresenter, chartTemplate, CurveNameDefinition, triggeredManually, propogateChartChangeEvent);
+         _chartTemplatingTask.InitFromTemplate(_dataRepositoryCache, Chart, editorPresenter, chartTemplate, CurveNameDefinition, triggeredManually, propogateChartChangeEvent);
       }
 
       protected virtual void OnDragOver(object sender, DragEventArgs e)
@@ -209,14 +203,14 @@ namespace MoBi.Presentation.Presenter
       private void addHistoricalResults(IReadOnlyList<DataRepository> repositories)
       {
          addDataRepositoriesToDataRepositoryCache(repositories);
-         _editorPresenter.AddDataRepositories(repositories);
+         editorPresenter.AddDataRepositories(repositories);
          repositories.Each(repository => repository.SetPersistable(persistable: true));
       }
 
       private void addObservedData(IReadOnlyList<DataRepository> repositories)
       {
-         _editorPresenter.AddDataRepositories(repositories);
-         repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => _editorPresenter.AddCurveForColumn(observationColumn));
+         editorPresenter.AddDataRepositories(repositories);
+         repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => editorPresenter.AddCurveForColumn(observationColumn));
          _chartPresenterContext.Refresh();
       }
 
@@ -285,25 +279,25 @@ namespace MoBi.Presentation.Presenter
 
          addDataRepositoriesToDataRepositoryCache(dataRepositories);
 
-         _editorPresenter.AddDataRepositories(dataRepositories);
+         editorPresenter.AddDataRepositories(dataRepositories);
 
-         var repositories = _editorPresenter.AllDataColumns.Select(col => col.Repository).Distinct();
+         var repositories = editorPresenter.AllDataColumns.Select(col => col.Repository).Distinct();
          repositoriesToRemove = repositories.Except(dataRepositories).ToList();
-         _editorPresenter.RemoveDataRepositories(repositoriesToRemove);
+         editorPresenter.RemoveDataRepositories(repositoriesToRemove);
       }
 
       public void Handle(ObservedDataRemovedEvent eventToHandle)
       {
          var dataRepository = eventToHandle.DataRepository;
-         _editorPresenter.RemoveDataRepositories(new[] { dataRepository });
-         _displayPresenter.Refresh();
+         editorPresenter.RemoveDataRepositories(new[] {dataRepository});
+         displayPresenter.Refresh();
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
          base.ReleaseFrom(eventPublisher);
-         _displayPresenter.DragDrop -= OnDragDrop;
-         _displayPresenter.DragOver -= OnDragOver;
+         displayPresenter.DragDrop -= OnDragDrop;
+         displayPresenter.DragOver -= OnDragOver;
          Clear();
       }
    }
