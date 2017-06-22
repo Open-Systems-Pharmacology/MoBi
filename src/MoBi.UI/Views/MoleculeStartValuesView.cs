@@ -38,7 +38,7 @@ namespace MoBi.UI.Views
 
          var colName = _gridViewBinder.AutoBind(dto => dto.Name)
             .WithCaption(AppConstants.Captions.MoleculeName)
-            .WithOnValueSet((o, e) => OnEvent(() => OnNameSet(o, e)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => OnNameSet(o, e)));
 
          //to put the name in the first column
          colName.XtraColumn.VisibleIndex = 0;
@@ -48,29 +48,29 @@ namespace MoBi.UI.Views
             .WithFormat(dto => dto.MoleculeStartValueFormatter())
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet((o, e) => OnEvent(() => moleculeStartValuePresenter.SetValue(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => moleculeStartValuePresenter.SetValue(o, e.NewValue)));
 
          InitializeValueDescriptionBinding();
 
 
          _gridViewBinder.AutoBind(dto => dto.ScaleDivisor)
             .WithCaption(AppConstants.Captions.ScaleDivisor)
-            .WithOnValueSet((o, e) => OnEvent(() => moleculeStartValuePresenter.SetScaleDivisor(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => moleculeStartValuePresenter.SetScaleDivisor(o, e.NewValue)));
 
          _gridViewBinder.Bind(dto => dto.IsPresent)
             .WithCaption(AppConstants.Captions.IsPresent)
             .WithRepository(dto => _checkItemRepository)
-            .WithOnValueSet((o, e) => OnEvent(() => onSetIsPresent(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => onSetIsPresent(o, e.NewValue)));
 
          _gridViewBinder.Bind(dto => dto.NegativeValuesAllowed)
             .WithCaption(AppConstants.Captions.NegativeValuesAllowed)
             .WithRepository(dto => _checkItemRepository)
-            .WithOnValueSet((o, e) => OnEvent(() => onSetNegativeValueAllowed(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => onSetNegativeValueAllowed(o, e.NewValue)));
 
 
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())
-            .WithOnValueSet((o, e) => moleculeStartValuePresenter.SetFormula(o, e.NewValue.Formula));
+            .WithOnValueUpdating((o, e) => moleculeStartValuePresenter.SetFormula(o, e.NewValue.Formula));
 
          gridView.HiddenEditor += (o, e) => hideEditor();
       }

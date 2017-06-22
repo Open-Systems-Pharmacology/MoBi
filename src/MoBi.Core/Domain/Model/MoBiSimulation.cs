@@ -14,7 +14,7 @@ namespace MoBi.Core.Domain.Model
    public interface IMoBiSimulation : IModelCoreSimulation, IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
    {
       ICache<string, DataRepository> HistoricResults { get; }
-      ICurveChart Chart { get; set; }
+      CurveChart Chart { get; set; }
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
       string ParameterIdentificationWorkingDirectory { get; set; }
       void Update(IMoBiBuildConfiguration updatedBuildConfiguration, IModel model);
@@ -37,7 +37,7 @@ namespace MoBi.Core.Domain.Model
       private bool _hasChanged;
       private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       public IDiagramModel DiagramModel { get; set; }
-      public ICurveChart Chart { get; set; }
+      public CurveChart Chart { get; set; }
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
 
@@ -48,8 +48,8 @@ namespace MoBi.Core.Domain.Model
 
       public bool HasChanged
       {
-         get { return _hasChanged || MoBiBuildConfiguration.HasChangedBuildingBlocks(); }
-         set { _hasChanged = value; }
+         get => _hasChanged || MoBiBuildConfiguration.HasChangedBuildingBlocks();
+         set => _hasChanged = value;
       }
 
       public ISimulationSettings Settings => MoBiBuildConfiguration.SimulationSettings;
@@ -78,7 +78,7 @@ namespace MoBi.Core.Domain.Model
          return Charts.Any(x => chartUsesObservedData(dataRepository, x));
       }
 
-      private static bool chartUsesObservedData(DataRepository dataRepository, ICurveChart curveChart)
+      private static bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart)
       {
          return curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
       }
@@ -128,7 +128,7 @@ namespace MoBi.Core.Domain.Model
          get { return OutputSchema.Intervals.Select(x => x.EndTime.Value).Max(); }
       }
 
-      public IEnumerable<ICurveChart> Charts
+      public IEnumerable<CurveChart> Charts
       {
          get { yield return Chart; }
       }
@@ -139,8 +139,8 @@ namespace MoBi.Core.Domain.Model
 
       public IReactionBuildingBlock Reactions
       {
-         get { return BuildConfiguration.Reactions; }
-         set { BuildConfiguration.Reactions = value; }
+         get => BuildConfiguration.Reactions;
+         set => BuildConfiguration.Reactions = value;
       }
 
       public void AddChartTemplate(CurveChartTemplate chartTemplate)
@@ -183,7 +183,7 @@ namespace MoBi.Core.Domain.Model
 
       public override DataRepository Results
       {
-         get { return base.Results; }
+         get => base.Results;
          set
          {
             base.Results = value;

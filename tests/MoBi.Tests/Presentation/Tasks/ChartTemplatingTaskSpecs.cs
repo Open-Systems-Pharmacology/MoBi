@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Mappers;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -28,6 +27,7 @@ namespace MoBi.Presentation.Tasks
       protected ICloneManagerForModel _cloneManager;
       protected List<CurveChartTemplate> _existingTemplates;
       private IMoBiContext _executionContext;
+      private IChartUpdater _chartUpdater;
 
       protected override void Context()
       {
@@ -39,8 +39,9 @@ namespace MoBi.Presentation.Tasks
          _cloneManager = A.Fake<ICloneManagerForModel>();
          _executionContext = A.Fake<IMoBiContext>();
 
+         _chartUpdater = A.Fake<IChartUpdater>();
          sut = new ChartTemplatingTask(_chartTemplatePeristor, _chartFromTeplateService, _chartTemplateMapper, _applicationController,
-            _messagePresenter, _cloneManager, _executionContext);
+            _messagePresenter, _cloneManager, _executionContext, _chartUpdater);
 
          _existingTemplates = new List<CurveChartTemplate>();
       }

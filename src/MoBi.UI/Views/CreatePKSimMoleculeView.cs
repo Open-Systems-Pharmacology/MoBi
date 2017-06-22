@@ -49,7 +49,7 @@ namespace MoBi.UI.Views
             .WithFormat(x => x.ParameterFormatter())
             .WithCaption(AppConstants.Captions.Value)
             .WithEditorConfiguration((activeEditor, parmeterDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, parmeterDTO))
-            .WithOnValueSet((p, e) => setParameterValue(p, e.NewValue))
+            .WithOnValueUpdating((p, e) => setParameterValue(p, e.NewValue))
             .OnChanged += p => NotifyViewChanged();
 
          _comboBoxUnit.ParameterUnitSet += setParameterUnit;

@@ -30,9 +30,9 @@ namespace MoBi.UI.Views
 
       public override void InitializeBinding()
       {
-         _screenBinder.Bind(x => x.Name).To(edName).OnValueSet += onPropertyValueSet;
-         _screenBinder.Bind(x => x.Factor).To(edFactor).OnValueSet += onPropertyValueSet;
-         _screenBinder.Bind(x => x.Offset).To(edOffset).OnValueSet += onPropertyValueSet;
+         _screenBinder.Bind(x => x.Name).To(edName).OnValueUpdating += onPropertyValueSet;
+         _screenBinder.Bind(x => x.Factor).To(edFactor).OnValueUpdating += onPropertyValueSet;
+         _screenBinder.Bind(x => x.Offset).To(edOffset).OnValueUpdating += onPropertyValueSet;
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 

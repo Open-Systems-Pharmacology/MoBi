@@ -8,7 +8,7 @@ namespace MoBi.Presentation.Views
    {
       void SetEditView(IView view);
       void SetTreeView(IView view);
-      void SetChartView(IView view);
+      void SetChartView(IChartView chartView);
       void SetModelDiagram(ISimulationDiagramView subView);
 
       /// <summary>

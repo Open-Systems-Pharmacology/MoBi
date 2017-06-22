@@ -22,7 +22,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<ValidationSettings>();
-         _screenBinder.Bind(x => x.CheckDimensions).To(chkValidateDimensions).OnValueSet += dimensionValidationChanged;
+         _screenBinder.Bind(x => x.CheckDimensions).To(chkValidateDimensions).OnValueUpdating += dimensionValidationChanged;
          _screenBinder.Bind(x => x.ShowCannotCalcErrors).To(chkShowUnableToCalculateWarnings);
          _screenBinder.Bind(x => x.ShowPKSimDimensionProblemWarnings).To(chkShowPKSimWarnings);
          _screenBinder.Bind(x => x.ShowPKSimObserverMessages).To(chkValiadatePkSimStandardObserver);

@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -36,16 +36,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      public IContextMenu InitializeWith(ICurveChart chart)
+      public IContextMenu InitializeWith(CurveChart chart)
       {
          _allMenuItems = new List<IMenuBarItem>();
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditSummaryChartUICommand, ICurveChart>(chart)
+            .WithCommandFor<EditSummaryChartUICommand, CurveChart>(chart)
             .WithIcon(ApplicationIcons.Edit));
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithCommandFor<RemoveSummaryChartUICommand, ICurveChart>(chart)
+            .WithCommandFor<RemoveSummaryChartUICommand, CurveChart>(chart)
             .WithIcon(ApplicationIcons.Delete));
 
          return this;

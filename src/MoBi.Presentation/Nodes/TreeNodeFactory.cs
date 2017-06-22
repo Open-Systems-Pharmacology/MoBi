@@ -1,16 +1,16 @@
 using System.Linq;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
+using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Repositories;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Nodes
 {
@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(IObjectBaseDTO objectBase);
       ITreeNode CreateFor(DataRepository dataRepository);
       ITreeNode CreateFor(ClassifiableSimulation classifiableSimulation);
-      ITreeNode CreateFor(ICurveChart chart);
+      ITreeNode CreateFor(CurveChart chart);
       ITreeNode CreateFor(IMoBiBuildConfiguration buildConfiguration);
       ITreeNode CreateFor(IBuildingBlock buildingBlock);
       ITreeNode CreateFor(IMoleculeBuildingBlock moleculeBuildingBlock);
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Nodes
             .Under(buildConfigNode);
       }
 
-      public ITreeNode CreateFor(ICurveChart chart)
+      public ITreeNode CreateFor(CurveChart chart)
       {
          return new ChartNode(chart).WithIcon(ApplicationIcons.SimulationComparison);
       }

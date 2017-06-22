@@ -1,8 +1,8 @@
-﻿using System.Windows.Forms;
-using OSPSuite.UI.Extensions;
-using MoBi.Presentation.Presenter;
+﻿using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -15,7 +15,7 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public void SetChartView(Control control)
+      public void SetChartView(IView control)
       {
          this.FillWith(control);
       }

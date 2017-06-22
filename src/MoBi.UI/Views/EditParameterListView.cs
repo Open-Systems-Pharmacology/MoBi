@@ -119,13 +119,13 @@ namespace MoBi.UI.Views
             .WithRepository(repositoryForValue)
             .WithEditorConfiguration(configureRepository)
             .WithToolTip(ToolTips.ParameterList.SetParameterValue)
-            .WithOnValueSet(onParameterValueSet)
+            .WithOnValueUpdating(onParameterValueSet)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
          _gridViewBinder.Bind(dto => dto.ValueDescription)
             .WithCaption(AppConstants.Captions.ValueDescription)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
-            .WithOnValueSet(onParameterValueDescriptionSet);
+            .WithOnValueUpdating(onParameterValueDescriptionSet);
 
          _unitControl.ParameterUnitSet += setParameterUnit;
 
@@ -139,7 +139,7 @@ namespace MoBi.UI.Views
 
          _colDimension = _gridViewBinder.Bind(dto => dto.Dimension)
             .WithRepository(dto => createDimensionRepository())
-            .WithOnValueSet((o, e) => OnEvent(() => onSetDimension(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => onSetDimension(o, e.NewValue)));
 
          _colGroup = _gridViewBinder.Bind(dto => dto.GroupName)
             .AsReadOnly();
@@ -148,7 +148,7 @@ namespace MoBi.UI.Views
          _colBuildMode = _gridViewBinder.Bind(dto => dto.BuildMode)
             .WithRepository(dto => createBuildModeRepository())
             .WithCaption(AppConstants.ParameterType)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetBuildModeFor(o, e.NewValue)))
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetBuildModeFor(o, e.NewValue)))
             .WithShowInColumnChooser(true);
 
          _colDescription = _gridViewBinder.Bind(dto => dto.Description)
@@ -160,13 +160,13 @@ namespace MoBi.UI.Views
             .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _checkBoxRepository)
             .WithToolTip(OSPSuite.Assets.ToolTips.FavoritesToolTip)
-            .WithOnValueSet((o, e) => OnEvent(() => onIsFavoriteSet(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => onIsFavoriteSet(o, e.NewValue)));
 
          _colPersistable = _gridViewBinder.Bind(dto => dto.Persistable)
             .WithCaption(AppConstants.Captions.Persistable)
             .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _checkBoxRepository)
-            .WithOnValueSet((o, e) => OnEvent(() => onIsPersistableSet(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => onIsPersistableSet(o, e.NewValue)));
 
          _colButtons = _gridViewBinder.AddUnboundColumn()
             .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)

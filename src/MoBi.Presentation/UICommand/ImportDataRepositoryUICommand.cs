@@ -1,7 +1,7 @@
-using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
@@ -66,7 +66,7 @@ namespace MoBi.Presentation.UICommand
       }
    }
 
-   internal class EditSummaryChartUICommand : ObjectUICommand<ICurveChart>
+   internal class EditSummaryChartUICommand : ObjectUICommand<CurveChart>
    {
       private readonly IChartTasks _chartTasks;
 

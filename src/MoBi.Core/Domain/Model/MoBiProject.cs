@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.UnitSystem;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
@@ -9,6 +7,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Domain.Model
 {
@@ -30,8 +30,8 @@ namespace MoBi.Core.Domain.Model
 
       void AddSimulation(IMoBiSimulation newSimulation);
       void RemoveSimulation(IMoBiSimulation simualtionToRemove);
-      void AddChart(ICurveChart chart);
-      void RemoveChart(ICurveChart chartToRemove);
+      void AddChart(CurveChart chart);
+      void RemoveChart(CurveChart chartToRemove);
 
       //only for serialization
       IReadOnlyList<IBuildingBlock> AllBuildingBlocks();
@@ -68,7 +68,7 @@ namespace MoBi.Core.Domain.Model
       /// <returns></returns>
       IEnumerable<IObjectBase> All();
 
-      IEnumerable<ICurveChart> Charts { get; }
+      IEnumerable<CurveChart> Charts { get; }
 
       /// <summary>
       ///    Returns <c>true</c> if the project does not contain any building block and simulation otherwise <c>false</c>
@@ -79,7 +79,7 @@ namespace MoBi.Core.Domain.Model
    public class MoBiProject : Project, IMoBiProject
    {
       private readonly List<IBuildingBlock> _buildingBlocks;
-      private readonly List<ICurveChart> _charts;
+      private readonly List<CurveChart> _charts;
       private readonly List<IMoBiSimulation> _allSimulations;
 
       public string ChartSettings { get; set; }
@@ -87,15 +87,14 @@ namespace MoBi.Core.Domain.Model
 
       public override bool HasChanged { get; set; }
 
-
-      public override  IEnumerable<IUsesObservedData> AllUsersOfObservedData => AllParameterIdentifications.Cast<IUsesObservedData>().Union(Simulations);
+      public override IEnumerable<IUsesObservedData> AllUsersOfObservedData => AllParameterIdentifications.Cast<IUsesObservedData>().Union(Simulations);
 
       public ReactionDimensionMode ReactionDimensionMode { get; set; }
 
       public MoBiProject()
       {
          DimensionFactory = new MoBiMergedDimensionFactory();
-         _charts = new List<ICurveChart>();
+         _charts = new List<CurveChart>();
          _buildingBlocks = new List<IBuildingBlock>();
          _allSimulations = new List<IMoBiSimulation>();
          ReactionDimensionMode = ReactionDimensionMode.AmountBased;
@@ -112,7 +111,7 @@ namespace MoBi.Core.Domain.Model
          return get<T>();
       }
 
-      public IEnumerable<ICurveChart> Charts => _charts;
+      public IEnumerable<CurveChart> Charts => _charts;
 
       public bool IsEmpty => !_buildingBlocks.Any() && !_allSimulations.Any();
 
@@ -152,12 +151,12 @@ namespace MoBi.Core.Domain.Model
          RemoveClassifiableForWrappedObject(simualtionToRemove);
       }
 
-      public void AddChart(ICurveChart chart)
+      public void AddChart(CurveChart chart)
       {
          _charts.Add(chart);
       }
 
-      public void RemoveChart(ICurveChart chartToRemove)
+      public void RemoveChart(CurveChart chartToRemove)
       {
          _charts.Remove(chartToRemove);
       }
@@ -212,7 +211,8 @@ namespace MoBi.Core.Domain.Model
       {
          return buildingBlockCollection
             .Where(msvBB => msvBB.Uses(buildingBlockToRemove))
-            .OfType<IBuildingBlock>().ToList();
+            .OfType<IBuildingBlock>()
+            .ToList();
       }
    }
 }

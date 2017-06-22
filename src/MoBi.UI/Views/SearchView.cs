@@ -86,7 +86,7 @@ namespace MoBi.UI.Views
             .WithValues(_presenter.GetScopes())
             .AndDisplays(_presenter.GetScopeNames());
          _screenBinder.Bind(options => options.WholeWord).To(ckWholeName);
-         _screenBinder.Bind(options => options.RegEx).To(chkRegExSearch).OnValueSet += onChangeRegEx;
+         _screenBinder.Bind(options => options.RegEx).To(chkRegExSearch).OnValueUpdating += onChangeRegEx;
          _screenBinder.Bind(options => options.CaseSensitive).To(chkCaseSensitive);
          _gridResultBinder = new GridViewBinder<SearchResultDTO>(gridSearchResult);
          var colProjectItem = _gridResultBinder.Bind(dto => dto.ProjectItemName).WithCaption(AppConstants.Captions.ProjectItem).AsReadOnly();
