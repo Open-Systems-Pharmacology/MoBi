@@ -72,7 +72,7 @@ namespace MoBi.Core.Mapper
                Value = 2.0,
                Formula = new ExplicitFormula("F=MA"),
                RHSFormula = new ExplicitFormula("i*i=-1"),
-               DisplayUnit = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass).DefaultUnit,
+               DisplayUnit = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass).DefaultUnit,
                Description = "description"
             },
             new Parameter()

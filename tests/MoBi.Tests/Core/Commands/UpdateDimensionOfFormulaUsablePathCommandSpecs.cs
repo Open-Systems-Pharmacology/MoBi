@@ -26,8 +26,8 @@ namespace MoBi.Core.Commands
          _newDimension = HelperForSpecs.ConcentrationDimension;
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<IFormula>(_formula.Id)).Returns(_formula);
-         A.CallTo(() => _context.DimensionFactory.GetDimension(_newDimension.ToString())).Returns(_newDimension);
-         A.CallTo(() => _context.DimensionFactory.GetDimension(HelperForSpecs.AmountDimension.ToString())).Returns(HelperForSpecs.AmountDimension);
+         A.CallTo(() => _context.DimensionFactory.Dimension(_newDimension.ToString())).Returns(_newDimension);
+         A.CallTo(() => _context.DimensionFactory.Dimension(HelperForSpecs.AmountDimension.ToString())).Returns(HelperForSpecs.AmountDimension);
 
          sut = new UpdateDimensionOfFormulaUsablePathCommand(_newDimension, _formula, _alias, _buildingBlock);
       }

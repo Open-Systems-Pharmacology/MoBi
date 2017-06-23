@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Mappers
             throw new ImportQuantityDTOsFromDataTablesMapperException(
                row, rowIndex,
                AppConstants.Exceptions.ImportedDimensionNotRecognized(getDimensionConstantForProject(_reactionDimensionRetriever.SelectedDimensionMode),
-                  _dimensionFactory.GetDimension(getDimensionConstantForProject(_reactionDimensionRetriever.SelectedDimensionMode)).GetUnitNames()));
+                  _dimensionFactory.Dimension(getDimensionConstantForProject(_reactionDimensionRetriever.SelectedDimensionMode)).GetUnitNames()));
          }
       }
 
@@ -90,10 +90,10 @@ namespace MoBi.Presentation.Mappers
 
       private bool isCorrectDimensionForDimensionMode(ReactionDimensionMode dimensionMode, ImportedQuantityDTO dto)
       {
-         if (dto.Dimension == _dimensionFactory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION) && dimensionMode == ReactionDimensionMode.ConcentrationBased)
+         if (dto.Dimension == _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION) && dimensionMode == ReactionDimensionMode.ConcentrationBased)
             return true;
 
-         if (dto.Dimension == _dimensionFactory.GetDimension(Constants.Dimension.AMOUNT) && dimensionMode == ReactionDimensionMode.AmountBased)
+         if (dto.Dimension == _dimensionFactory.Dimension(Constants.Dimension.AMOUNT) && dimensionMode == ReactionDimensionMode.AmountBased)
             return true;
 
          return false;

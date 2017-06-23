@@ -91,7 +91,7 @@ namespace MoBi.Presentation
             A.CallTo(() => _context.Get<IContainer>(_moleculePropertiesID)).Returns(_moleculeProperties);
             var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
             _rightDimension = A.Fake<IDimension>();
-            A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+            A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
             A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
             var rootContainer = new Container().WithName(_rootName);
             var parentContainer = new Container().WithName(_parentName);
@@ -137,7 +137,7 @@ namespace MoBi.Presentation
             A.CallTo(() => _context.Get<IContainer>(_moleculePropertiesID)).Returns(_moleculeProperties);
             var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
             _rightDimension = A.Fake<IDimension>();
-            A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+            A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
             A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
             var rootContainer = new Container().WithName(_rootName);
             var parentContainer = new Container().WithName(_parentName);
@@ -184,7 +184,7 @@ namespace MoBi.Presentation
             A.CallTo(() => _context.Get<IContainer>(_moleculePropertiesID)).Returns(_moleculeProperties);
             var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
             _rightDimension = A.Fake<IDimension>();
-            A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+            A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
             A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
             _parentContainer = new Container().WithName(_parentName);
             _parentContainer.Add(_moleculeProperties);
@@ -531,7 +531,7 @@ namespace MoBi.Presentation
             base.Context();
             var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
             _rightDimension = A.Fake<IDimension>();
-            A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+            A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
             A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
             _dtoMolecule = new ObjectBaseDTO().WithId(ObjectPathKeywords.MOLECULE);
 
@@ -567,7 +567,7 @@ namespace MoBi.Presentation
             base.Context();
             var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
             _rightDimension = A.Fake<IDimension>();
-            A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+            A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
             A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
             _dtoMoleculeParameter = new DummyParameterDTO().WithId("ID");
             _parameterName = "Para";
@@ -613,7 +613,7 @@ namespace MoBi.Presentation
          base.Context();
          var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
          _rightDimension = A.Fake<IDimension>();
-         A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+         A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
          A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
          _parameterName = "Para";
          var paramterId = _parameterName;
@@ -658,7 +658,7 @@ namespace MoBi.Presentation
             base.Context();
             var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
             _rightDimension = A.Fake<IDimension>();
-            A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+            A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
             A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
             _parameterName = "Para";
             var paramterId = _parameterName;
@@ -946,7 +946,7 @@ namespace MoBi.Presentation
             base.Context();
             var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
             _rightDimension = A.Fake<IDimension>();
-            A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+            A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
             A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
             _parameterName = "Para";
             var paramterId = _parameterName;
@@ -1001,7 +1001,7 @@ namespace MoBi.Presentation
           base.Context();
           var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
           _rightDimension = A.Fake<IDimension>();
-          A.CallTo(() => dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+          A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
           A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
           _parameterName = "Para";
           

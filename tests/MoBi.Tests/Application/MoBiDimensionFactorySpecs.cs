@@ -79,7 +79,7 @@ namespace MoBi.Application
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.GetDimension("TRALALA")).ShouldThrowAn<KeyNotFoundException>();
+         The.Action(() => sut.Dimension("TRALALA")).ShouldThrowAn<KeyNotFoundException>();
       }
    }
 
@@ -88,7 +88,7 @@ namespace MoBi.Application
       [Observation]
       public void should_return_a_new_dimension()
       {
-         sut.GetDimension(AppConstants.RHSDimensionName(_drugMassDimension)).ShouldNotBeNull();
+         sut.Dimension(AppConstants.RHSDimensionName(_drugMassDimension)).ShouldNotBeNull();
       }
    }
 
@@ -106,7 +106,7 @@ namespace MoBi.Application
       [Observation]
       public void should_return_a_new_dimension()
       {
-         The.Action(() => sut.GetDimension("TRALALAL" + AppConstants.RHSDimensionSuffix)).ShouldThrowAn<KeyNotFoundException>();
+         The.Action(() => sut.Dimension("TRALALAL" + AppConstants.RHSDimensionSuffix)).ShouldThrowAn<KeyNotFoundException>();
       }
    }
 }

@@ -236,7 +236,7 @@ namespace MoBi.Core.Domain.Model
             return ObjectRepository.Get(valueAsString);
 
          if (propertyType.IsAnImplementationOf<IDimension>())
-            return DimensionFactory.GetDimension(valueAsString);
+            return DimensionFactory.Dimension(valueAsString);
 
          if (propertyType.IsAnImplementationOf<IObjectPath>())
             return ObjectPathFactory.CreateObjectPathFrom(valueAsString.ToPathArray());

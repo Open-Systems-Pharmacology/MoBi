@@ -53,7 +53,7 @@ namespace MoBi.Application
 
       protected override void Because()
       {
-         _res = sut.GetMergedDimensionFor(_parameter) as MergedDimensionFor<IParameter>;
+         _res = sut.MergedDimensionFor(_parameter) as MergedDimensionFor<IParameter>;
       }
 
       [Observation]
@@ -83,7 +83,7 @@ namespace MoBi.Application
 
       protected override void Because()
       {
-         _res = sut.GetMergedDimensionFor(_parameter);
+         _res = sut.MergedDimensionFor(_parameter);
       }
 
       [Observation]
@@ -122,7 +122,7 @@ namespace MoBi.Application
 
       protected override void Because()
       {
-         _res = sut.GetMergedDimensionFor(_parameter) as MergedDimensionFor<IParameter>;
+         _res = sut.MergedDimensionFor(_parameter) as MergedDimensionFor<IParameter>;
       }
 
       [Observation]

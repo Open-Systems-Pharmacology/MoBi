@@ -32,14 +32,14 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          var formula = context.Get<IFormula>(_formulaId);
-         formula.FormulaUsablePathBy(_alias).Dimension = context.DimensionFactory.GetDimension(_newDimension);
+         formula.FormulaUsablePathBy(_alias).Dimension = context.DimensionFactory.Dimension(_newDimension);
          context.PublishEvent(new FormulaChangedEvent(formula));
       }
 
       protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          var formula = context.Get<IFormula>(_formulaId);
-         return new UpdateDimensionOfFormulaUsablePathCommand(context.DimensionFactory.GetDimension(_oldDimension), formula, _alias, _buildingBlock).AsInverseFor(this);
+         return new UpdateDimensionOfFormulaUsablePathCommand(context.DimensionFactory.Dimension(_oldDimension), formula, _alias, _buildingBlock).AsInverseFor(this);
       }
    }
 }

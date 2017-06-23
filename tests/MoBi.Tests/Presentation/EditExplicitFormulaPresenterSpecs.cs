@@ -73,7 +73,7 @@ namespace MoBi.Presentation
          sut.Edit(_formula);
          sut.InitializeWith(A.Fake<ICommandCollector>());
          _formula.AddObjectPath(new FormulaUsablePath());
-         A.CallTo(() => _dimensionFactory.GetDimension(_userSettings.ParameterDefaultDimension)).Returns(HelperForSpecs.AmountDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(_userSettings.ParameterDefaultDimension)).Returns(HelperForSpecs.AmountDimension);
       }
 
       protected override void Because()

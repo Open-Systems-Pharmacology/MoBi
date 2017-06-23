@@ -21,8 +21,8 @@ namespace MoBi.Core.Commands
       {
          _buildingBlock = new ObserverBuildingBlock();
          _context = A.Fake<IMoBiContext>();
-         _newDimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
-         _oldDimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Concentration);
+         _newDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         _oldDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Concentration);
 
          _observedBuilder = new ObserverBuilder
          {

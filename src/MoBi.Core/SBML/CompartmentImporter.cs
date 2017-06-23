@@ -122,7 +122,7 @@ namespace MoBi.Core.SBML
 
          var volumeParameter = _objectBaseFactory.Create<IParameter>()
             .WithName(SBMLConstants.VOLUME)
-            .WithDimension(_dimensionFactory.GetDimension(OSPSuite.Core.Domain.Constants.Dimension.VOLUME))
+            .WithDimension(_dimensionFactory.Dimension(OSPSuite.Core.Domain.Constants.Dimension.VOLUME))
             .WithFormula(formula);
 
          return volumeParameter;
@@ -155,24 +155,24 @@ namespace MoBi.Core.SBML
          {
             case (SBMLConstants.SBML_CONTAINER_3D):
                sizeDimension = !compartment.isSetUnits()
-                  ? _dimensionFactory.GetDimension(Constants.Dimension.VOLUME)
+                  ? _dimensionFactory.Dimension(Constants.Dimension.VOLUME)
                   : GetDimensionFromSBMLUnit(compartment.getUnits());
                break;
             case (SBMLConstants.SBML_CONTAINER_2D):
                sizeDimension = !compartment.isSetUnits()
-                  ? _dimensionFactory.GetDimension(SBMLConstants.AREA)
+                  ? _dimensionFactory.Dimension(SBMLConstants.AREA)
                   : GetDimensionFromSBMLUnit(compartment.getUnits());
                break;
             case (SBMLConstants.SBML_CONTAINER_1D):
                sizeDimension = !compartment.isSetUnits()
-                  ? _dimensionFactory.GetDimension(SBMLConstants.LENGTH)
+                  ? _dimensionFactory.Dimension(SBMLConstants.LENGTH)
                   : GetDimensionFromSBMLUnit(compartment.getUnits());
                break;
             case (SBMLConstants.SBML_CONTAINER_NO): 
                //no size & units allowed
                return null;
             default:
-               sizeDimension = _dimensionFactory.GetDimension(Constants.Dimension.DIMENSIONLESS);
+               sizeDimension = _dimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS);
                break;
          }
          if (sizeDimension != null)

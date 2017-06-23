@@ -43,14 +43,14 @@ namespace MoBi.Presentation.Mappers
       {
          var parameter = distributedParameter.GetSingleChildByName<IParameter>(childName);
          if (parameter == null)
-            return new DistributionParameterDTO(dummyParameter()) {Dimension = _dimensionFactory.GetDimension(Constants.Dimension.DIMENSIONLESS)};
+            return new DistributionParameterDTO(dummyParameter()) {Dimension = _dimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS)};
 
          return mapFrom(parameter);
       }
 
       private Parameter dummyParameter()
       {
-         return new Parameter().WithFormula(new ConstantFormula(0)).WithDimension(_dimensionFactory.GetDimension(Constants.Dimension.DIMENSIONLESS));
+         return new Parameter().WithFormula(new ConstantFormula(0)).WithDimension(_dimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS));
       }
 
       private DistributionParameterDTO mapFrom(IParameter parameter)

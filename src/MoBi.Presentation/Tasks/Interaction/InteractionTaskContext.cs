@@ -118,7 +118,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IDimension DimensionByName(string dimensionName)
       {
-         return Context.DimensionFactory.GetDimension(dimensionName);
+         return Context.DimensionFactory.Dimension(dimensionName);
       }
 
       public T Active<T>() where T : class

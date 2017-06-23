@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          parameter.DisplayUnit = _interactionTaskContext.DisplayUnitFor(parameter);
 
-         var percentile = _parameterFactory.CreateParameter(Constants.Distribution.PERCENTILE, AppConstants.DEFAULT_PERCENTILE, _dimensionFactory.GetDimension(AppConstants.DimensionNames.FRACTION));
+         var percentile = _parameterFactory.CreateParameter(Constants.Distribution.PERCENTILE, AppConstants.DEFAULT_PERCENTILE, _dimensionFactory.Dimension(AppConstants.DimensionNames.FRACTION));
          var mean = _parameterFactory.CreateParameter(Constants.Distribution.MEAN, AppConstants.DEFAULT_PARAMETER_START_VALUE, parameter.Dimension);
          var deviation = _parameterFactory.CreateParameter(Constants.Distribution.DEVIATION, AppConstants.DEFAULT_PARAMETER_START_VALUE, parameter.Dimension);
 

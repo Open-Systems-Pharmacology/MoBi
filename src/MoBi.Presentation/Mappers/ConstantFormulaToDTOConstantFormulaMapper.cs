@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
       public ConstantFormulaBuilderDTO MapFrom(ConstantFormula constantFormula, Unit displayUnit)
       {
          var dto = Map<ConstantFormulaBuilderDTO>(constantFormula);
-         dto.Dimension = constantFormula.Dimension ?? _dimensionFactory.GetDimension(Constants.Dimension.DIMENSIONLESS);
+         dto.Dimension = constantFormula.Dimension ?? _dimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS);
          //set the kernel value after the fact (afer display unit);
          var valueDTO = new ValueEditDTO {Dimension = dto.Dimension, DisplayUnit = displayUnit, KernelValue = constantFormula.Value};
          constantFormula.Changed += o => { valueDTO.KernelValue = constantFormula.Value; };

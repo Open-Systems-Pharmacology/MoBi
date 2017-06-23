@@ -7,10 +7,9 @@ namespace MoBi.Core.Helper
    {
       public static IDimension GetDimensionForChart(this IDimensionFactory dimensionFactory, string dimensionName)
       {
-         return dimensionFactory.GetMergedDimensionFor(new DataColumn
+         return dimensionFactory.MergedDimensionFor(new DataColumn
                                                           {
-            Dimension =
-               dimensionFactory.GetDimension(dimensionName)
+            Dimension = dimensionFactory.Dimension(dimensionName)
          });
       }
    }

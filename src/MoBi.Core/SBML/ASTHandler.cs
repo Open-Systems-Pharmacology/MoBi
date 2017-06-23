@@ -452,7 +452,7 @@ namespace MoBi.Core.SBML
       {
          if (!_objectPaths.Exists(x => x.Alias == Constants.Dimension.TIME))
             _objectPaths.Add(
-               _objectPathFactory.CreateTimePath(_moBiDimensionFactory.GetDimension(Constants.Dimension.TIME)));
+               _objectPathFactory.CreateTimePath(_moBiDimensionFactory.Dimension(Constants.Dimension.TIME)));
          return Constants.Dimension.TIME;
       }
 
