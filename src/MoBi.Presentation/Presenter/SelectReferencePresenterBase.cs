@@ -163,7 +163,7 @@ namespace MoBi.Presentation.Presenter
       {
          return new ReferenceDTO
          {
-            Path = new TimePath {TimeDimension = _context.DimensionFactory.GetDimension(Constants.Dimension.TIME)}
+            Path = new TimePath {TimeDimension = _context.DimensionFactory.Dimension(Constants.Dimension.TIME)}
          };
       }
 

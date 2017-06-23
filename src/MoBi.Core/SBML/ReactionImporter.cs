@@ -483,7 +483,7 @@ namespace MoBi.Core.SBML
       private IDimension GetDimension(LocalParameter localParameter)
       {
          if (!localParameter.isSetUnits())
-            return _dimensionFactory.GetDimension(Constants.Dimension.DIMENSIONLESS);
+            return _dimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS);
          if (_sbmlInformation.MobiDimension.ContainsKey(localParameter.getUnits()))
             return _sbmlInformation.MobiDimension[localParameter.getUnits()];
          return null;

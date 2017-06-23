@@ -155,9 +155,9 @@ namespace MoBi.Core.Serialization.Converter.v3_3
       private void updateEHCKinetic(ExplicitFormula kinetic, string moleculeName)
       {
          kinetic.FormulaString = GallbladderEmptyingNewFormula;
-         var amount = _context.DimensionFactory.GetDimension(Constants.Dimension.AMOUNT);
+         var amount = _context.DimensionFactory.Dimension(Constants.Dimension.AMOUNT);
          var noDimension = _context.DimensionFactory.NoDimension;
-         var time = _context.DimensionFactory.GetDimension(Constants.Dimension.TIME);
+         var time = _context.DimensionFactory.Dimension(Constants.Dimension.TIME);
          kinetic.ClearObjectPaths();
          kinetic.AddObjectPath(
             _context.ObjectPathFactory.CreateFormulaUsablePathFrom(Constants.ORGANISM, Gallbladder,
@@ -228,7 +228,7 @@ namespace MoBi.Core.Serialization.Converter.v3_3
 
       private void updateTotalDrugMassHandling(IModelCoreSimulation simulation, IContainer root)
       {
-         var amountDimension = _context.DimensionFactory.GetDimension(Constants.Dimension.AMOUNT);
+         var amountDimension = _context.DimensionFactory.Dimension(Constants.Dimension.AMOUNT);
          updateTotalDrugMass(root.GetSingleChildByName<IContainer>(Applications));
          var oldDrugMassPath = new ObjectPath(new[] { simulation.Model.Root.Name, Applications, TotalDrugmassOld });
          var allObserver = root.GetAllChildren<IObserver>().ToList();
@@ -311,7 +311,7 @@ namespace MoBi.Core.Serialization.Converter.v3_3
 
       public void Visit(IMoleculeBuildingBlock moleculeBuildingBlock)
       {
-         var amountDimension = _context.DimensionFactory.GetDimension(Constants.Dimension.AMOUNT);
+         var amountDimension = _context.DimensionFactory.Dimension(Constants.Dimension.AMOUNT);
          var formula = createTotalDrugMassFormula(amountDimension);
          foreach (var moleculeBuilder in moleculeBuildingBlock)
          {

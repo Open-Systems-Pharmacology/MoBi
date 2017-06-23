@@ -120,7 +120,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _dimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         _dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
          _parameterStartValue = A.Fake<IParameterStartValue>();
          _parameter = new Parameter {Dimension = _dimension, Name = _name, Value = 1.0} ;
 

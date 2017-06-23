@@ -9,7 +9,7 @@ namespace MoBi.Core.Domain.UnitSystem
       {
          try
          {
-            return dimensionFactory.GetDimension(dimensionName);
+            return dimensionFactory.Dimension(dimensionName);
          }
          catch (KeyNotFoundException)
          {

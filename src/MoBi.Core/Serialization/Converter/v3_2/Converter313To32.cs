@@ -257,7 +257,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          var calculatedSpecificIntestinalPermeabilityTranscellularFormula =
             moleculeBuildingBlock.FormulaCache.FindByName("PARAM_P_int_InVitro");
          if (calculatedSpecificIntestinalPermeabilityTranscellularFormula == null) return;
-         var velocity = _dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY);
+         var velocity = _dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY);
          moleculeBuildingBlock.Each(mb=>addCalculatedSpecificIntestinalPermeabilityTranscellularParameterTo(mb,calculatedSpecificIntestinalPermeabilityTranscellularFormula,velocity));
       }
 
@@ -313,7 +313,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          return _objectBaseFactory.Create<IParameter>().WithName("Default Intestinal permeability (transcellular)")
             .WithMode(ParameterBuildMode.Global)
             .WithFormula(formula)
-            .WithDimension(_dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY));
+            .WithDimension(_dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY));
       }
 
       private IParameter createMucosaPermeabilityScaleFactorTranscellularParameter(IFormula mucosaPermeabilityScaleFactorTranscellularFormula)
@@ -326,7 +326,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
 
       private IFormula creteDefaultIntestinalPermeabilityTranscellularFormula()
       {
-         var velocity = _dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY);
+         var velocity = _dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY);
          IFormula defaultIntestinalPermeabilityTranscellularFormula = _objectBaseFactory
             .Create<ExplicitFormula>()
             .WithFormulaString("P_int_InVitro")
@@ -346,9 +346,9 @@ namespace MoBi.Core.Serialization.Converter.v3_2
             .WithDimension(Constants.Dimension.NO_DIMENSION)
             .WithName("PARAM_P_int_scalefactor");
          mucosaPermeabilityScaleFactor_transcellularFormula.AddObjectPath(
-            createFormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Default Intestinal permeability (transcellular)" },"P_int_trans_default",_dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY)));
+            createFormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Default Intestinal permeability (transcellular)" },"P_int_trans_default",_dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY)));
          mucosaPermeabilityScaleFactor_transcellularFormula.AddObjectPath(
-            createFormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Intestinal permeability (transcellular)" }, "P_int_trans", _dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY)));
+            createFormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Intestinal permeability (transcellular)" }, "P_int_trans", _dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY)));
          return mucosaPermeabilityScaleFactor_transcellularFormula;
       }
 
@@ -364,9 +364,9 @@ namespace MoBi.Core.Serialization.Converter.v3_2
             .WithDimension(Constants.Dimension.NO_DIMENSION)
             .WithName("PARAM_Blood2Plasma");
          blood2PlasmaFormula.AddObjectPath(
-            createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Fraction unbound (plasma)"}, "fu", _dimensionFactory.GetDimension(AppConstants.DimensionNames.FRACTION)));
+            createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Fraction unbound (plasma)"}, "fu", _dimensionFactory.Dimension(AppConstants.DimensionNames.FRACTION)));
          blood2PlasmaFormula.AddObjectPath(
-            createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Lipophilicity"}, "LogP", _dimensionFactory.GetDimension("Log Units")));
+            createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Lipophilicity"}, "LogP", _dimensionFactory.Dimension("Log Units")));
          blood2PlasmaFormula.AddObjectPath(
             createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Partition coefficient (water/protein)"}, "KProt", Constants.Dimension.NO_DIMENSION));
          blood2PlasmaFormula.AddObjectPath(
@@ -413,7 +413,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
       public void Visit(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
       {
          
-         moleculeStartValuesBuildingBlock.Each(msv=>msv.Dimension = _dimensionFactory.GetDimension(Constants.Dimension.AMOUNT));
+         moleculeStartValuesBuildingBlock.Each(msv=>msv.Dimension = _dimensionFactory.Dimension(Constants.Dimension.AMOUNT));
          convert(moleculeStartValuesBuildingBlock);
       }
 
@@ -435,7 +435,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
       public void Visit(IEventGroupBuildingBlock eventGroupBuildingBlock)
       {
          convert(eventGroupBuildingBlock);
-         var inversedVolume = _dimensionFactory.GetDimension(AppConstants.DimensionNames.INVERSED_VOLUME);
+         var inversedVolume = _dimensionFactory.Dimension(AppConstants.DimensionNames.INVERSED_VOLUME);
          eventGroupBuildingBlock.Each(eg => convertSpecialParameter(eg, "Number_Of_Particles_Factor",1000,inversedVolume));
       }
 
@@ -460,7 +460,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
 
       private void convertSpecialParametersIn(IContainer container)
       {
-         var inversedLength = _dimensionFactory.GetDimension(AppConstants.DimensionNames.INVERSED_LENGTH);
+         var inversedLength = _dimensionFactory.Dimension(AppConstants.DimensionNames.INVERSED_LENGTH);
          convertSpecialParameter(container, "Surface/Volume ratio (blood cells)", 10, inversedLength);
          convertSpecialParameter(container, "SA proportionality factor", 1.0 / 100, inversedLength);
       }
@@ -535,7 +535,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
 
       private void convertSpecialParametersIn(IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
       {
-         var inversedLength = _dimensionFactory.GetDimension(AppConstants.DimensionNames.INVERSED_LENGTH);
+         var inversedLength = _dimensionFactory.Dimension(AppConstants.DimensionNames.INVERSED_LENGTH);
          convertSpecialParameter(parameterStartValuesBuildingBlock, "Organism|Surface/Volume ratio (blood cells)", 10, inversedLength);
          convertSpecialParameter(parameterStartValuesBuildingBlock, "Organism|SA proportionality factor", 1.0 / 100, inversedLength);
       }

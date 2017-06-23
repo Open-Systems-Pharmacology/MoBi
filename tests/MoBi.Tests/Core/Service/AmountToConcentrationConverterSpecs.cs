@@ -44,10 +44,10 @@ namespace MoBi.Core.Service
          _formulaCache = new FormulaCache();
          _objectTypeResolver=new ObjectTypeResolver();
          A.CallTo(() => _formulaTask.AddParentVolumeReferenceToFormula(A<IFormula>._)).Returns(Constants.VOLUME_ALIAS);
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(HelperForSpecs.AmountDimension);
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.AMOUNT_PER_TIME)).Returns(HelperForSpecs.AmountPerTimeDimension);
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION)).Returns(HelperForSpecs.ConcentrationDimension);
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME)).Returns(HelperForSpecs.ConcentrationPerTimeDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(HelperForSpecs.AmountDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.AMOUNT_PER_TIME)).Returns(HelperForSpecs.AmountPerTimeDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION)).Returns(HelperForSpecs.ConcentrationDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME)).Returns(HelperForSpecs.ConcentrationPerTimeDimension);
          A.CallTo(() => _objectBaseFactory.Create<ExplicitFormula>()).Returns(new ExplicitFormula());
          A.CallTo(() => _formulaFactory.ConstantFormula(0, HelperForSpecs.ConcentrationDimension)).Returns(_constantZeroFormula);
          sut = new AmountToConcentrationConverter(_reactionDimensionRetriever, _dimensionFactory, _amoutToConcentrationFormulaMapper,

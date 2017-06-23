@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       {
          _valuePointDTO = new ValuePointDTO
          {
-            X = new ValueEditDTO {Dimension = _context.DimensionFactory.GetDimension(Constants.Dimension.TIME)},
+            X = new ValueEditDTO {Dimension = _context.DimensionFactory.Dimension(Constants.Dimension.TIME)},
             Y = new ValueEditDTO {Dimension = Dimension}
          };
 

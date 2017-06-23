@@ -41,8 +41,8 @@ namespace MoBi.Core.Domain.UnitSystem
 
       public IDimensionFactory ProjectFactory
       {
-         get { return _projectFactory; }
-         set { _projectFactory = value ?? new MoBiMergedDimensionFactory(); }
+         get => _projectFactory;
+         set => _projectFactory = value ?? new MoBiMergedDimensionFactory();
       }
 
       public IDimension DimensionForUnit(string unitName)
@@ -75,12 +75,9 @@ namespace MoBi.Core.Domain.UnitSystem
          ProjectFactory.AddDimension(dimension);
       }
 
-      public IEnumerable<string> GetDimensionNames()
-      {
-         return Dimensions.Select(x => x.Name);
-      }
+      public IEnumerable<string> DimensionNames => Dimensions.Select(x => x.Name);
 
-      public IDimension GetDimension(string name)
+      public IDimension Dimension(string name)
       {
          return
             BaseFactory.TryGetDimension(name) ??
@@ -92,7 +89,7 @@ namespace MoBi.Core.Domain.UnitSystem
       {
          try
          {
-            return GetDimension(dimensionName);
+            return Dimension(dimensionName);
          }
          catch (KeyNotFoundException)
          {
@@ -119,7 +116,7 @@ namespace MoBi.Core.Domain.UnitSystem
             throw new KeyNotFoundException(AppConstants.Exceptions.UnknownDimension(name));
 
          var dimensionName = name.Replace(AppConstants.RHSDimensionSuffix, "");
-         var originDimension = GetDimension(dimensionName);
+         var originDimension = Dimension(dimensionName);
          return RHSDimensionFor(originDimension);
       }
 
@@ -141,8 +138,8 @@ namespace MoBi.Core.Domain.UnitSystem
       public IDimension RHSDimensionFor(IDimension dimension)
       {
          var dimensionName = AppConstants.RHSDimensionName(dimension);
-         if (GetDimensionNames().Contains(dimensionName))
-            return GetDimension(dimensionName);
+         if (DimensionNames.Contains(dimensionName))
+            return Dimension(dimensionName);
 
          var unitName = AppConstants.RHSDefaultUnitName(dimension);
 
@@ -179,22 +176,19 @@ namespace MoBi.Core.Domain.UnitSystem
          }
       }
 
-      public IDimension NoDimension
-      {
-         get { return GetDimension(Constants.Dimension.DIMENSIONLESS); }
-      }
+      public IDimension NoDimension => Dimension(Constants.Dimension.DIMENSIONLESS);
 
-      public IDimension GetMergedDimensionFor<T>(T hasDimension) where T : IWithDimension
+      public IDimension MergedDimensionFor<T>(T hasDimension) where T : IWithDimension
       {
          if (hasDimension.Dimension == null)
             return null;
 
-         var dim = BaseFactory.GetMergedDimensionFor(hasDimension);
+         var dim = BaseFactory.MergedDimensionFor(hasDimension);
 
          if (!Equals(dim, hasDimension.Dimension))
             return dim;
 
-         return ProjectFactory.GetMergedDimensionFor(hasDimension);
+         return ProjectFactory.MergedDimensionFor(hasDimension);
       }
 
       public void AddMergingInformation(IDimensionMergingInformation mergingInforamtion)

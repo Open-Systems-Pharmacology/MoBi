@@ -26,8 +26,8 @@ namespace MoBi
       }
 
 
-      public static IDimension MassDimension => Factory.GetDimension(DimensionNames.Mass);
-      public static IDimension TimeDimension => Factory.GetDimension(DimensionNames.Time);
+      public static IDimension MassDimension => Factory.Dimension(DimensionNames.Mass);
+      public static IDimension TimeDimension => Factory.Dimension(DimensionNames.Time);
 
       public static class DimensionNames
       {

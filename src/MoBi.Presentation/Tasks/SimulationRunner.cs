@@ -198,8 +198,8 @@ namespace MoBi.Presentation.Tasks
 
       private bool isConcentrationColumn(DataColumn column)
       {
-         return column.Dimension.Equals(_context.DimensionFactory.GetDimension(AppConstants.DimensionNames.MASS_CONCENTRATION)) ||
-                column.Dimension.Equals(_context.DimensionFactory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION));
+         return column.Dimension.Equals(_context.DimensionFactory.Dimension(AppConstants.DimensionNames.MASS_CONCENTRATION)) ||
+                column.Dimension.Equals(_context.DimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION));
       }
 
       private IInfoCommand getSimulationResultLabel(SimulationRunResults results)

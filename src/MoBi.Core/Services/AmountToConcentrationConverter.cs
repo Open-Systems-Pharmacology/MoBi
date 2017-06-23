@@ -56,8 +56,8 @@ namespace MoBi.Core.Services
          _displayUnitRetriever = displayUnitRetriever;
          _objectTypeResolver = objectTypeResolver;
          _formulaFactory = formulaFactory;
-         _concentrationDimension = dimensionFactory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION);
-         _concentrationPerTimeDimension = dimensionFactory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME);
+         _concentrationDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
+         _concentrationPerTimeDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME);
       }
 
       public void Convert(IReactionBuilder reaction, IFormulaCache formulaCache)

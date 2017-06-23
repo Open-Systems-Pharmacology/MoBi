@@ -217,7 +217,7 @@ namespace MoBi.Presentation.Tasks
       {
          var newFormula = _context.Create<TableFormula>();
          newFormula.UseDerivedValues = false;
-         newFormula.XDimension = _context.DimensionFactory.GetDimension(Constants.Dimension.TIME);
+         newFormula.XDimension = _context.DimensionFactory.Dimension(Constants.Dimension.TIME);
          newFormula.XDisplayUnit = newFormula.XDimension.DefaultUnit;
          newFormula.XName = newFormula.XDimension.DisplayName;
          newFormula.YName = AppConstants.Captions.DisplayNameYValue;

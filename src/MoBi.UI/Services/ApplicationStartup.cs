@@ -186,8 +186,8 @@ namespace MoBi.UI.Services
 
       private static void setUpDimensionMergings(IDimensionFactory factory)
       {
-         var concentrationDimension = factory.GetDimension(AppConstants.DimensionNames.MASS_CONCENTRATION);
-         var molarConcentrationDimomension = factory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION);
+         var concentrationDimension = factory.Dimension(AppConstants.DimensionNames.MASS_CONCENTRATION);
+         var molarConcentrationDimomension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
 
          factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimomension,
             new MolWeightDimensonConverterForFormulaUseable(concentrationDimension, molarConcentrationDimomension)));

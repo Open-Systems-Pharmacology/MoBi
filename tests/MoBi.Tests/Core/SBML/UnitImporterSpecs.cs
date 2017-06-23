@@ -66,8 +66,8 @@ namespace MoBi.Core.SBML
 
             _sbmlModel.addUnitDefinition(_unitDef);
             sut.DoImport(_sbmlModel, new MoBiProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
-            _substanceDimension = _dimensionFactoy.GetDimension("SBML_substance");
-            _volumeDimension = _dimensionFactoy.GetDimension("Volume");
+            _substanceDimension = _dimensionFactoy.Dimension("SBML_substance");
+            _volumeDimension = _dimensionFactoy.Dimension("Volume");
          }
 
          [Observation]

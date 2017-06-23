@@ -25,39 +25,39 @@ namespace MoBi.Core.SBML
 
         private void InitBaseUnitsDictionary()
         {
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_AMPERE, _moBiDimensionFactory.GetDimension("Ampere").Unit("A"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_BECQUEREL, _moBiDimensionFactory.GetDimension("Becquerel").Unit("Bq"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_CANDELA, _moBiDimensionFactory.GetDimension("Candela").Unit("cd"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_COULOMB, _moBiDimensionFactory.GetDimension("Coulomb").Unit("C"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_AMPERE, _moBiDimensionFactory.Dimension("Ampere").Unit("A"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_BECQUEREL, _moBiDimensionFactory.Dimension("Becquerel").Unit("Bq"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_CANDELA, _moBiDimensionFactory.Dimension("Candela").Unit("cd"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_COULOMB, _moBiDimensionFactory.Dimension("Coulomb").Unit("C"));
             _baseUnitsDictionary.Add(libsbml.UNIT_KIND_DIMENSIONLESS, _moBiDimensionFactory.NoDimension.DefaultUnit);
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_FARAD, _moBiDimensionFactory.GetDimension("Becquerel").Unit("Bq"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_GRAM,_moBiDimensionFactory.GetDimension("Mass").Unit("g"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_GRAY, _moBiDimensionFactory.GetDimension("Gray").Unit("Gy"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_HENRY, _moBiDimensionFactory.GetDimension("Henry").Unit("H"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_HERTZ, _moBiDimensionFactory.GetDimension("Hertz").Unit("Hz"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_JOULE, _moBiDimensionFactory.GetDimension("Joule").Unit("J"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_KATAL, _moBiDimensionFactory.GetDimension("Katal").Unit("kat"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_KELVIN, _moBiDimensionFactory.GetDimension("Kelvin").Unit("K"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_KILOGRAM, _moBiDimensionFactory.GetDimension("Mass").Unit("kg"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_LITER, _moBiDimensionFactory.GetDimension("Volume").Unit("l"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_LITRE, _moBiDimensionFactory.GetDimension("Volume").Unit("l"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_LUMEN, _moBiDimensionFactory.GetDimension("Lumen").Unit("lm"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_LUX, _moBiDimensionFactory.GetDimension("Lux").Unit("lx"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_METER, _moBiDimensionFactory.GetDimension("Length").Unit("m"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_METRE, _moBiDimensionFactory.GetDimension("Length").Unit("m"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_MOLE, _moBiDimensionFactory.GetDimension("Amount").Unit("mol"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_NEWTON, _moBiDimensionFactory.GetDimension("Newton").Unit("N"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_OHM, _moBiDimensionFactory.GetDimension("Ohm").Unit("Ohm"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_PASCAL, _moBiDimensionFactory.GetDimension("Pressure").Unit("Pa"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_RADIAN, _moBiDimensionFactory.GetDimension("Radian").Unit("rad"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SECOND, _moBiDimensionFactory.GetDimension("Time").Unit("s"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SIEMENS, _moBiDimensionFactory.GetDimension("Siemens").Unit("S"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SIEVERT, _moBiDimensionFactory.GetDimension("Sievert").Unit("Sv"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_STERADIAN, _moBiDimensionFactory.GetDimension("Steradian").Unit("sr"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_TESLA, _moBiDimensionFactory.GetDimension("Tesla").Unit("T"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_VOLT, _moBiDimensionFactory.GetDimension("Volt").Unit("V"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_WATT, _moBiDimensionFactory.GetDimension("Watt").Unit("W"));
-            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_WEBER, _moBiDimensionFactory.GetDimension("Weber").Unit("Wb"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_FARAD, _moBiDimensionFactory.Dimension("Becquerel").Unit("Bq"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_GRAM,_moBiDimensionFactory.Dimension("Mass").Unit("g"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_GRAY, _moBiDimensionFactory.Dimension("Gray").Unit("Gy"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_HENRY, _moBiDimensionFactory.Dimension("Henry").Unit("H"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_HERTZ, _moBiDimensionFactory.Dimension("Hertz").Unit("Hz"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_JOULE, _moBiDimensionFactory.Dimension("Joule").Unit("J"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_KATAL, _moBiDimensionFactory.Dimension("Katal").Unit("kat"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_KELVIN, _moBiDimensionFactory.Dimension("Kelvin").Unit("K"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_KILOGRAM, _moBiDimensionFactory.Dimension("Mass").Unit("kg"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_LITER, _moBiDimensionFactory.Dimension("Volume").Unit("l"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_LITRE, _moBiDimensionFactory.Dimension("Volume").Unit("l"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_LUMEN, _moBiDimensionFactory.Dimension("Lumen").Unit("lm"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_LUX, _moBiDimensionFactory.Dimension("Lux").Unit("lx"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_METER, _moBiDimensionFactory.Dimension("Length").Unit("m"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_METRE, _moBiDimensionFactory.Dimension("Length").Unit("m"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_MOLE, _moBiDimensionFactory.Dimension("Amount").Unit("mol"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_NEWTON, _moBiDimensionFactory.Dimension("Newton").Unit("N"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_OHM, _moBiDimensionFactory.Dimension("Ohm").Unit("Ohm"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_PASCAL, _moBiDimensionFactory.Dimension("Pressure").Unit("Pa"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_RADIAN, _moBiDimensionFactory.Dimension("Radian").Unit("rad"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SECOND, _moBiDimensionFactory.Dimension("Time").Unit("s"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SIEMENS, _moBiDimensionFactory.Dimension("Siemens").Unit("S"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SIEVERT, _moBiDimensionFactory.Dimension("Sievert").Unit("Sv"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_STERADIAN, _moBiDimensionFactory.Dimension("Steradian").Unit("sr"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_TESLA, _moBiDimensionFactory.Dimension("Tesla").Unit("T"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_VOLT, _moBiDimensionFactory.Dimension("Volt").Unit("V"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_WATT, _moBiDimensionFactory.Dimension("Watt").Unit("W"));
+            _baseUnitsDictionary.Add(libsbml.UNIT_KIND_WEBER, _moBiDimensionFactory.Dimension("Weber").Unit("Wb"));
         }
 
         protected override void Import(Model model)

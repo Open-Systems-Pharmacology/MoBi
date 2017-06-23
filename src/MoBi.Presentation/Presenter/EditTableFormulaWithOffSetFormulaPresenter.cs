@@ -60,7 +60,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool isValideOffsetObject(IObjectBase para)
       {
-         var time = _context.DimensionFactory.GetDimension(Constants.Dimension.TIME);
+         var time = _context.DimensionFactory.Dimension(Constants.Dimension.TIME);
          return para.IsAnImplementationOf<IParameter>() && ((IParameter) para).Dimension.Equals(time);
       }
 

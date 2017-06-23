@@ -82,10 +82,7 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_distributedParameterDTO);
       }
 
-      public override object Subject
-      {
-         get { return _distributedParameter; }
-      }
+      public override object Subject => _distributedParameter;
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
@@ -102,24 +99,11 @@ namespace MoBi.Presentation.Presenter
          return _context.DimensionFactory.Dimensions;
       }
 
-      public override bool CanClose
-      {
-         get
-         {
-            //if the parameter is not set, the presenter was not bound and can be closed
-            return _distributedParameter == null || base.CanClose;
-         }
-      }
+      public override bool CanClose => _distributedParameter == null || base.CanClose;
 
-      public IDimension PercentDimension
-      {
-         get { return _context.DimensionFactory.GetDimension(AppConstants.DimensionNames.FRACTION); }
-      }
+      public IDimension PercentDimension => _context.DimensionFactory.Dimension(AppConstants.DimensionNames.FRACTION);
 
-      public IDimension NoDimension
-      {
-         get { return _context.DimensionFactory.GetDimension(Constants.Dimension.DIMENSIONLESS); }
-      }
+      public IDimension NoDimension => _context.DimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS);
 
       public void SetPercentile(double newValue)
       {
@@ -254,9 +238,6 @@ namespace MoBi.Presentation.Presenter
             : Enumerable.Empty<FormulaBuilderDTO>();
       }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock != null ? BuildingBlock.FormulaCache : null; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock != null ? BuildingBlock.FormulaCache : null;
    }
 }

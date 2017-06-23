@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = interactionTask;
          _dimensionFactory = dimensionFactory;
          _context = context;
-         _molWeightDimension = dimensionFactory.GetDimension(AppConstants.DimensionNames.MOL_WEIGHT);
+         _molWeightDimension = dimensionFactory.Dimension(AppConstants.DimensionNames.MOL_WEIGHT);
       }
 
       public void AddObservedDataToProject()
@@ -239,7 +239,7 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<ColumnInfo> createColumnInfos()
       {
-         var timeDimension = _dimensionFactory.GetDimension(CoreConstants.Dimension.TIME);
+         var timeDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.TIME);
          var timeColumn = new ColumnInfo
          {
             DefaultDimension = timeDimension,
@@ -253,7 +253,7 @@ namespace MoBi.Presentation.Tasks
          timeColumn.DimensionInfos.Add(new DimensionInfo {Dimension = timeDimension, IsMainDimension = true});
          yield return timeColumn;
 
-         var mainDimension = _dimensionFactory.GetDimension(CoreConstants.Dimension.MOLAR_CONCENTRATION);
+         var mainDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.MOLAR_CONCENTRATION);
          var measurementInfo = new ColumnInfo
          {
             DefaultDimension = mainDimension,
@@ -286,7 +286,7 @@ namespace MoBi.Presentation.Tasks
 
       private void addDimensionsTo(ColumnInfo columnInfo, IDimension mainDimension)
       {
-         var timeDimension = _dimensionFactory.GetDimension(CoreConstants.Dimension.TIME);
+         var timeDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.TIME);
 
          foreach (var dimension in _dimensionFactory.Dimensions.Where(x => x != timeDimension))
          {

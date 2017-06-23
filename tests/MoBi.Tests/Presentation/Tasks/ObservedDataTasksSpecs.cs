@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Tasks
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _context = A.Fake<IMoBiContext>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _dataRepository = new DataRepository {new BaseGrid("", DimensionFactoryForSpecs.Factory.GetDimension("Time"))};
+         _dataRepository = new DataRepository {new BaseGrid("", DimensionFactoryForSpecs.Factory.Dimension("Time"))};
          _interactionTask = A.Fake<IInteractionTask>();
          _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
          _containerTask = A.Fake<IContainerTask>();
@@ -169,7 +169,7 @@ namespace MoBi.Presentation.Tasks
             DimensionFactoryForSpecs.TimeDimension,
             Constants.Dimension.NO_DIMENSION
          });
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.TIME)).Returns(DimensionFactoryForSpecs.TimeDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.TIME)).Returns(DimensionFactoryForSpecs.TimeDimension);
 
          A.CallTo(_dataImporter)
             .WithReturnType<IEnumerable<DataRepository>>()

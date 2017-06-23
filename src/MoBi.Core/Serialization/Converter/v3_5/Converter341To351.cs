@@ -222,7 +222,7 @@ namespace MoBi.Core.Serialization.Converter.v3_5
          if (lumen == null) return;
 
          var variabilityFactor = lumen.EntityAt<IParameter>(EffectiveSurfaceAreaVariabilityFactor);
-         var area = _dimensionFactory.GetDimension("Area");
+         var area = _dimensionFactory.Dimension("Area");
          foreach (var containerWithSurfaceArea in organism.GetAllChildren<IContainer>(c => c.ContainsName(EffectiveSurfaceAreaEnhancementFactor)))
          {
             var effectiveSurfaceArea = _objectBaseFactory.Create<IParameter>()
@@ -301,7 +301,7 @@ namespace MoBi.Core.Serialization.Converter.v3_5
 
       private IParameter distributionParameter(string name, double value)
       {
-         var dimension = _dimensionFactory.GetDimension(Constants.Dimension.DIMENSIONLESS);
+         var dimension = _dimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS);
          var meanFormula = _formulaTask.CreateNewFormula<ConstantFormula>(dimension).WithValue(value);
          return _objectBaseFactory.Create<IParameter>()
             .WithName(name)

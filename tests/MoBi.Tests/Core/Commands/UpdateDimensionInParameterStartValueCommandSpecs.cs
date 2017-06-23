@@ -21,10 +21,10 @@ namespace MoBi.Core.Commands
       {
          _buildingBlock = new ParameterStartValuesBuildingBlock();
          _context = A.Fake<IMoBiContext>();
-         _newDimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         _newDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
          _newDisplayUnit = _newDimension.DefaultUnit;
 
-         _oldDimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Concentration);
+         _oldDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Concentration);
          _oldDisplayUnit = _oldDimension.DefaultUnit;
 
          _startValue = new ParameterStartValue {Dimension = _oldDimension, StartValue = 1.0, DisplayUnit = _oldDisplayUnit};

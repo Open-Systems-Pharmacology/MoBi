@@ -85,8 +85,8 @@ namespace MoBi.Presentation.Mapper
          A.CallTo(() => _dimensionFactory.DimensionForUnit("s")).Returns(_timeDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("")).Throws<Exception>();
 
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_amountDimension);
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION)).Returns(_concentrationDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_amountDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION)).Returns(_concentrationDimension);
 
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.AmountBased);
 

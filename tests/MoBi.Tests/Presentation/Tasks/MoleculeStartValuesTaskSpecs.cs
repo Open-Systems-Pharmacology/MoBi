@@ -145,7 +145,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _dimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         _dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
          _moleculeStartValue = new MoleculeStartValue {Dimension = _dimension, Name = _name, Formula = null};
 
          _builder = new MoleculeBuilder
@@ -195,7 +195,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _firstStartValueRef = new MoleculeStartValue {Path = new ObjectPath("this", "path", "C1"), StartValue = -1.0, IsPresent = true};
-         IDimension d = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         IDimension d = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
          _moleculeStartValues = new List<ImportedQuantityDTO>
          {
@@ -435,7 +435,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _dim = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         _dim = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
          _startValue = new MoleculeStartValue {Dimension = _dim, StartValue = _targetDisplayValue, DisplayUnit = _dim.Unit("g")};
       }
