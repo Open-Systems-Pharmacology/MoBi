@@ -221,7 +221,6 @@ namespace MoBi.UI.Services
 
          container.RegisterImplementationOf(this);
 
-         container.Register<IToolTipCreator, ToolTipCreator>(LifeStyle.Singleton);
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
          container.Register<ISplashScreen, SplashScreen>();

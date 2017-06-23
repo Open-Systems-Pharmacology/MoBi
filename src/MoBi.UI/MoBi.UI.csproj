@@ -948,9 +948,6 @@
     <Compile Include="Views\EditDimensionView.Designer.cs">
       <DependentUpon>EditDimensionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\ImportExportListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Views\BuildingBlockSelectionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

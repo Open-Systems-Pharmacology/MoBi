@@ -9,7 +9,6 @@ namespace MoBi.UI.Services
    {
       public void RemoveMoleculeNodeFromDiagram(string moleculeNodeId, IMoBiReactionDiagramManager reactionDiagramManager, IDiagramModel diagramModel)
       {
-         var node = diagramModel.FindByName(moleculeNodeId);
          reactionDiagramManager.RemoveMoleculeNode(diagramModel.GetNode<MoleculeNode>(moleculeNodeId));
       }
    }
