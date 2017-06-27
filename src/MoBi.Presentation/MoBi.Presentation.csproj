@@ -971,9 +971,6 @@
     <Compile Include="Presenter\IValidationMessagesPresenter.cs" />
     <Compile Include="Presenter\DimensionCreationPresenter.cs" />
     <Compile Include="Presenter\DropAllowedTypes.cs" />
-    <Compile Include="Views\IImportExportListView.cs">
-    </Compile>
-    <Compile Include="Presenter\ImportExportPresenter.cs" />
     <Compile Include="Presenter\MoBiMainViewPresenter.cs">
     </Compile>
     <Compile Include="Presenter\SelectionPresenter.cs" />

@@ -55,7 +55,7 @@ namespace MoBi.UI.Services
          var sb = new StringBuilder();
          foreach (var objectPath in formula.ObjectPaths)
          {
-            sb.AppendLine(string.Format("<I>{0}</I> is defined as: {1}", objectPath.Alias, objectPath.Path));
+            sb.AppendLine($"<I>{objectPath.Alias}</I> is defined as: {objectPath.Path}");
          }
 
          toolTip.WithText(sb.ToString());
