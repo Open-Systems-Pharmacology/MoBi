@@ -253,6 +253,6 @@ paket-files/
 
 setup/deploy
 setup/MoBi*
-setup/portable-setup.zip
+setup/*.zip
 
 *.ncrunchproject
