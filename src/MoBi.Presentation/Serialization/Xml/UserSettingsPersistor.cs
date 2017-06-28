@@ -33,13 +33,13 @@ namespace MoBi.Presentation.Serialization.Xml
             var serializer = _serializerRepository.SerializerFor(_userSettings);
             var xml = serializer.Serialize(_userSettings, serializationContext);
             var doc = XDocument.Load(new StringReader(xml.ToString()));
-            doc.Save(_configuration.UserSettings);
+            doc.Save(_configuration.UserSettingsFilePath);
          }
       }
 
       public void Load()
       {
-         foreach (var filePath in _configuration.UserApplicationSettingsFilePaths.Where(FileHelper.FileExists))
+         foreach (var filePath in _configuration.UserSettingsFilePaths.Where(FileHelper.FileExists))
          {
             try
             {

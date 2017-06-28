@@ -31,23 +31,22 @@ namespace MoBi.UI.Views.BaseDiagram
       /// </summary>
       private void InitializeComponent()
       {
+         this.components = new System.ComponentModel.Container();
          this.chkTopContainerInCurveName = new OSPSuite.UI.Controls.UxCheckEdit();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.diagramColorEdit = new UxColorPickEditWithHistory();
-         this.chartBackgroundColorEdit = new UxColorPickEditWithHistory();
+         this.diagramColorEdit = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
+         this.chartBackgroundColorEdit = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.cbPreferredChartYScaling = new DevExpress.XtraEditors.ComboBoxEdit();
          this.cbeDefaultLayoutName = new DevExpress.XtraEditors.ComboBoxEdit();
          this.chkSimulationInCurveName = new OSPSuite.UI.Controls.UxCheckEdit();
-         this.chkDimensionInCurveName = new OSPSuite.UI.Controls.UxCheckEdit();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
          this.defaultLayoutLayoutItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.defaultYScalingLayoutItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.chartBackgroundColorLayoutItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.chartDiagramBackgroundColorLayoutItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.timer1 = new System.Windows.Forms.Timer();
+         this.timer1 = new System.Windows.Forms.Timer(this.components);
          this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkTopContainerInCurveName.Properties)).BeginInit();
@@ -58,9 +57,7 @@ namespace MoBi.UI.Views.BaseDiagram
          ((System.ComponentModel.ISupportInitialize)(this.cbPreferredChartYScaling.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbeDefaultLayoutName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkSimulationInCurveName.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkDimensionInCurveName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.defaultLayoutLayoutItem)).BeginInit();
@@ -83,12 +80,12 @@ namespace MoBi.UI.Views.BaseDiagram
          // 
          // layoutControl
          // 
+         this.layoutControl.AllowCustomization = false;
          this.layoutControl.Controls.Add(this.diagramColorEdit);
          this.layoutControl.Controls.Add(this.chartBackgroundColorEdit);
          this.layoutControl.Controls.Add(this.cbPreferredChartYScaling);
          this.layoutControl.Controls.Add(this.cbeDefaultLayoutName);
          this.layoutControl.Controls.Add(this.chkSimulationInCurveName);
-         this.layoutControl.Controls.Add(this.chkDimensionInCurveName);
          this.layoutControl.Controls.Add(this.chkTopContainerInCurveName);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
@@ -101,8 +98,9 @@ namespace MoBi.UI.Views.BaseDiagram
          // diagramColorEdit
          // 
          this.diagramColorEdit.EditValue = System.Drawing.Color.Empty;
-         this.diagramColorEdit.Location = new System.Drawing.Point(215, 153);
+         this.diagramColorEdit.Location = new System.Drawing.Point(215, 130);
          this.diagramColorEdit.Name = "diagramColorEdit";
+         this.diagramColorEdit.Properties.AutomaticColor = System.Drawing.Color.Black;
          this.diagramColorEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.diagramColorEdit.Size = new System.Drawing.Size(128, 20);
@@ -112,8 +110,9 @@ namespace MoBi.UI.Views.BaseDiagram
          // chartBackgroundColorEdit
          // 
          this.chartBackgroundColorEdit.EditValue = System.Drawing.Color.Empty;
-         this.chartBackgroundColorEdit.Location = new System.Drawing.Point(215, 129);
+         this.chartBackgroundColorEdit.Location = new System.Drawing.Point(215, 106);
          this.chartBackgroundColorEdit.Name = "chartBackgroundColorEdit";
+         this.chartBackgroundColorEdit.Properties.AutomaticColor = System.Drawing.Color.Black;
          this.chartBackgroundColorEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.chartBackgroundColorEdit.Size = new System.Drawing.Size(128, 20);
@@ -122,7 +121,7 @@ namespace MoBi.UI.Views.BaseDiagram
          // 
          // cbPreferredChartYScaling
          // 
-         this.cbPreferredChartYScaling.Location = new System.Drawing.Point(215, 105);
+         this.cbPreferredChartYScaling.Location = new System.Drawing.Point(215, 82);
          this.cbPreferredChartYScaling.Name = "cbPreferredChartYScaling";
          this.cbPreferredChartYScaling.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -132,7 +131,7 @@ namespace MoBi.UI.Views.BaseDiagram
          // 
          // cbeDefaultLayoutName
          // 
-         this.cbeDefaultLayoutName.Location = new System.Drawing.Point(215, 81);
+         this.cbeDefaultLayoutName.Location = new System.Drawing.Point(215, 58);
          this.cbeDefaultLayoutName.Name = "cbeDefaultLayoutName";
          this.cbeDefaultLayoutName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -151,25 +150,12 @@ namespace MoBi.UI.Views.BaseDiagram
          this.chkSimulationInCurveName.StyleController = this.layoutControl;
          this.chkSimulationInCurveName.TabIndex = 101;
          // 
-         // chkDimensionInCurveName
-         // 
-         this.chkDimensionInCurveName.AllowClicksOutsideControlArea = false;
-         this.chkDimensionInCurveName.EditValue = true;
-         this.chkDimensionInCurveName.Location = new System.Drawing.Point(12, 58);
-         this.chkDimensionInCurveName.Name = "chkDimensionInCurveName";
-         this.chkDimensionInCurveName.Properties.Caption = "Show Dimension Name in Curve Name";
-         this.chkDimensionInCurveName.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-         this.chkDimensionInCurveName.Size = new System.Drawing.Size(331, 19);
-         this.chkDimensionInCurveName.StyleController = this.layoutControl;
-         this.chkDimensionInCurveName.TabIndex = 102;
-         // 
          // layoutControlGroup
          // 
          this.layoutControlGroup.CustomizationFormText = "layoutControlGroup1";
          this.layoutControlGroup.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup.GroupBordersVisible = false;
          this.layoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
             this.layoutControlItem2,
             this.layoutControlItem4,
             this.defaultLayoutLayoutItem,
@@ -179,20 +165,7 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Size = new System.Drawing.Size(355, 217);
-         this.layoutControlGroup.Text = "layoutControlGroup";
          this.layoutControlGroup.TextVisible = false;
-         // 
-         // layoutControlItem1
-         // 
-         this.layoutControlItem1.Control = this.chkDimensionInCurveName;
-         this.layoutControlItem1.CustomizationFormText = "layoutControlItem1";
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 46);
-         this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(335, 23);
-         this.layoutControlItem1.Text = "layoutControlItem1";
-         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem1.TextToControlDistance = 0;
-         this.layoutControlItem1.TextVisible = false;
          // 
          // layoutControlItem2
          // 
@@ -201,9 +174,7 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControlItem2.Location = new System.Drawing.Point(0, 23);
          this.layoutControlItem2.Name = "layoutControlItem2";
          this.layoutControlItem2.Size = new System.Drawing.Size(335, 23);
-         this.layoutControlItem2.Text = "layoutControlItem2";
          this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem2.TextToControlDistance = 0;
          this.layoutControlItem2.TextVisible = false;
          // 
          // layoutControlItem4
@@ -213,49 +184,43 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControlItem4.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItem4.Name = "layoutControlItem4";
          this.layoutControlItem4.Size = new System.Drawing.Size(335, 23);
-         this.layoutControlItem4.Text = "layoutControlItem4";
          this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem4.TextToControlDistance = 0;
          this.layoutControlItem4.TextVisible = false;
          // 
          // defaultLayoutLayoutItem
          // 
          this.defaultLayoutLayoutItem.Control = this.cbeDefaultLayoutName;
          this.defaultLayoutLayoutItem.CustomizationFormText = "defaultLayoutLayoutItem";
-         this.defaultLayoutLayoutItem.Location = new System.Drawing.Point(0, 69);
+         this.defaultLayoutLayoutItem.Location = new System.Drawing.Point(0, 46);
          this.defaultLayoutLayoutItem.Name = "defaultLayoutLayoutItem";
          this.defaultLayoutLayoutItem.Size = new System.Drawing.Size(335, 24);
-         this.defaultLayoutLayoutItem.Text = "defaultLayoutLayoutItem";
          this.defaultLayoutLayoutItem.TextSize = new System.Drawing.Size(200, 13);
          // 
          // defaultYScalingLayoutItem
          // 
          this.defaultYScalingLayoutItem.Control = this.cbPreferredChartYScaling;
          this.defaultYScalingLayoutItem.CustomizationFormText = "defaultYScalingLayoutItem";
-         this.defaultYScalingLayoutItem.Location = new System.Drawing.Point(0, 93);
+         this.defaultYScalingLayoutItem.Location = new System.Drawing.Point(0, 70);
          this.defaultYScalingLayoutItem.Name = "defaultYScalingLayoutItem";
          this.defaultYScalingLayoutItem.Size = new System.Drawing.Size(335, 24);
-         this.defaultYScalingLayoutItem.Text = "defaultYScalingLayoutItem";
          this.defaultYScalingLayoutItem.TextSize = new System.Drawing.Size(200, 13);
          // 
          // chartBackgroundColorLayoutItem
          // 
          this.chartBackgroundColorLayoutItem.Control = this.chartBackgroundColorEdit;
          this.chartBackgroundColorLayoutItem.CustomizationFormText = "chartBackgroundColorLayoutItem";
-         this.chartBackgroundColorLayoutItem.Location = new System.Drawing.Point(0, 117);
+         this.chartBackgroundColorLayoutItem.Location = new System.Drawing.Point(0, 94);
          this.chartBackgroundColorLayoutItem.Name = "chartBackgroundColorLayoutItem";
          this.chartBackgroundColorLayoutItem.Size = new System.Drawing.Size(335, 24);
-         this.chartBackgroundColorLayoutItem.Text = "chartBackgroundColorLayoutItem";
          this.chartBackgroundColorLayoutItem.TextSize = new System.Drawing.Size(200, 13);
          // 
          // chartDiagramBackgroundColorLayoutItem
          // 
          this.chartDiagramBackgroundColorLayoutItem.Control = this.diagramColorEdit;
          this.chartDiagramBackgroundColorLayoutItem.CustomizationFormText = "chartDiagramBackgroundColorLayoutItem";
-         this.chartDiagramBackgroundColorLayoutItem.Location = new System.Drawing.Point(0, 141);
+         this.chartDiagramBackgroundColorLayoutItem.Location = new System.Drawing.Point(0, 118);
          this.chartDiagramBackgroundColorLayoutItem.Name = "chartDiagramBackgroundColorLayoutItem";
-         this.chartDiagramBackgroundColorLayoutItem.Size = new System.Drawing.Size(335, 56);
-         this.chartDiagramBackgroundColorLayoutItem.Text = "chartDiagramBackgroundColorLayoutItem";
+         this.chartDiagramBackgroundColorLayoutItem.Size = new System.Drawing.Size(335, 79);
          this.chartDiagramBackgroundColorLayoutItem.TextSize = new System.Drawing.Size(200, 13);
          // 
          // layoutControlItem3
@@ -264,9 +229,7 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControlItem3.Location = new System.Drawing.Point(0, 53);
          this.layoutControlItem3.Name = "layoutControlItem3";
          this.layoutControlItem3.Size = new System.Drawing.Size(226, 30);
-         this.layoutControlItem3.Text = "layoutControlItem3";
          this.layoutControlItem3.TextSize = new System.Drawing.Size(50, 20);
-         this.layoutControlItem3.TextToControlDistance = 5;
          // 
          // ChartOptionsView
          // 
@@ -284,9 +247,7 @@ namespace MoBi.UI.Views.BaseDiagram
          ((System.ComponentModel.ISupportInitialize)(this.cbPreferredChartYScaling.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbeDefaultLayoutName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkSimulationInCurveName.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkDimensionInCurveName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.defaultLayoutLayoutItem)).EndInit();
@@ -305,7 +266,6 @@ namespace MoBi.UI.Views.BaseDiagram
       private UxLayoutControl layoutControl;
       private DevExpress.XtraEditors.ComboBoxEdit cbPreferredChartYScaling;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
       private DevExpress.XtraLayout.LayoutControlItem defaultLayoutLayoutItem;
@@ -313,7 +273,6 @@ namespace MoBi.UI.Views.BaseDiagram
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
       private UxCheckEdit chkTopContainerInCurveName;
       private UxCheckEdit chkSimulationInCurveName;
-      private UxCheckEdit chkDimensionInCurveName;
       private UxColorPickEditWithHistory diagramColorEdit;
       private UxColorPickEditWithHistory chartBackgroundColorEdit;
       private DevExpress.XtraLayout.LayoutControlItem chartBackgroundColorLayoutItem;

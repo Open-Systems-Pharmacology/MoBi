@@ -63,7 +63,7 @@ namespace MoBi.Presentation
          base.Context();
          _project = A.Fake<IMoBiProject>();
          A.CallTo(
-            () => _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject, AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, _project.Name, null))
+            () => _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, _project.Name, null))
             .Returns("Name");
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
@@ -79,7 +79,7 @@ namespace MoBi.Presentation
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, string.Empty, null))
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, string.Empty, null))
             .MustHaveHappened();
       }
    }
@@ -129,7 +129,7 @@ namespace MoBi.Presentation
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER,
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER,
                   Constants.DirectoryKey.PROJECT, _fileName, null))
             .Returns(_fileName);
       }
@@ -168,7 +168,7 @@ namespace MoBi.Presentation
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER,
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER,
                   Constants.DirectoryKey.PROJECT, _fileName, null))
             .Returns(String.Empty);
       }
@@ -184,7 +184,7 @@ namespace MoBi.Presentation
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER,
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER,
                   Constants.DirectoryKey.PROJECT, _fileName, null)).MustHaveHappened();
       }
 
@@ -448,7 +448,7 @@ namespace MoBi.Presentation
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .Returns(_fileName);
          _project = A.Fake<IMoBiProject>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -465,7 +465,7 @@ namespace MoBi.Presentation
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .MustHaveHappened();
       }
 
@@ -513,12 +513,12 @@ namespace MoBi.Presentation
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .Returns(String.Empty);
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .Returns(_fileName);
       }
 
@@ -533,7 +533,7 @@ namespace MoBi.Presentation
          A.CallTo(
             () =>
                _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
-                  AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null)).MustNotHaveHappened();
+                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null)).MustNotHaveHappened();
       }
 
       [Observation]

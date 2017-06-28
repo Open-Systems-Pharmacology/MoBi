@@ -146,7 +146,7 @@ namespace MoBi.Presentation.Tasks
          var settings = new DataImporterSettings
          {
             Icon = ApplicationIcons.MoBi,
-            Caption = $"{AppConstants.ProductName} - {AppConstants.Captions.ImportObservedData}"
+            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
          };
          settings.AddNamingPatternMetaData(Constants.FILE);
          return settings;

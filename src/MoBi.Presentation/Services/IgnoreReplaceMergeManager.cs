@@ -1,13 +1,12 @@
 using System;
-using OSPSuite.Utility;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility;
 
-namespace MoBi.Presentation.Helpers
+namespace MoBi.Presentation.Services
 {
    public abstract class IgnoreReplaceMergeManager<T> : AbstractMergeManager<T>, IIgnoreReplaceMergeManager<T> where T : class, IObjectBase
    {

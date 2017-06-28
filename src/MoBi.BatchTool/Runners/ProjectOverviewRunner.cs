@@ -41,7 +41,7 @@ namespace MoBi.BatchTool.Runners
             if (!inputDirectory.Exists)
                throw new ArgumentException($"Input folder '{inputFolder}' does not exist");
 
-            var allProjectFiles = inputDirectory.GetFiles(AppConstants.FileFilter.MOBI_PROJECT_FILTER, SearchOption.AllDirectories);
+            var allProjectFiles = inputDirectory.GetFiles(AppConstants.Filter.MOBI_PROJECT_FILTER, SearchOption.AllDirectories);
             if (allProjectFiles.Length == 0)
                throw new ArgumentException($"No project file found in '{inputFolder}'");
 

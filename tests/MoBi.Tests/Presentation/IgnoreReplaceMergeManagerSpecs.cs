@@ -8,8 +8,8 @@ using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Helpers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
 

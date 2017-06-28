@@ -35,7 +35,6 @@ namespace MoBi.Presentation.Tasks
 
       public void SendSimulationToPKSim(IMoBiSimulation simulation)
       {
-         _pkSimStarter.CheckPKSimInstallation();
          var simulationTransfer = new SimulationTransfer
          {
             Simulation = simulation,
@@ -48,13 +47,11 @@ namespace MoBi.Presentation.Tasks
          var fileName = FileHelper.GenerateTemporaryFileName();
          fileName = Path.ChangeExtension(fileName, Constants.Filter.PKML_EXTENSION);
          _simulationPersister.Save(simulationTransfer, fileName);
-         _pkSimStarter.StartWithSimulationFile(fileName);
+         _pkSimStarter.StartPopulationSimulationWithSimulationFile(fileName);
       }
 
       public void StartWithContentFile(string contentFile)
       {
-         _pkSimStarter.CheckPKSimInstallation();
-         
          _pkSimStarter.StartWithWorkingJournalFile(_journalRetriever.JournalFullPath);
       }
    }

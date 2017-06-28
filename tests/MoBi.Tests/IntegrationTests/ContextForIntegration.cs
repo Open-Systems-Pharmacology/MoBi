@@ -110,14 +110,12 @@ namespace MoBi.IntegrationTests
       private static void setupCalculationMethods(IContainer container)
       {
          var configuration = IoC.Resolve<IMoBiConfiguration>();
-         configuration.CalculationMethodRepositoryFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.SpecialFileNames.CalculationMethodRepositoryFileName);
+         configuration.CalculationMethodRepositoryFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.SpecialFileNames.CALCULATION_METHOD_REPOSITORY_FILE_NAME);
          ApplicationStartup.InitCalculationMethodRepository(container);
       }
 
       private static void setupDimensions(IContainer container)
       {
-         var configuration = IoC.Resolve<IMoBiConfiguration>();
-         configuration.DimensionFactoryFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.SpecialFileNames.DimensionFactoryFileName);
          ApplicationStartup.InitDimensions(container);
       }
 

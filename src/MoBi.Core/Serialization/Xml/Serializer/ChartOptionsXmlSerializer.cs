@@ -12,7 +12,6 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       {
          Map(options => options.SimulationInCurveName);
          Map(options => options.TopContainerInCurveName);
-         Map(options => options.DimensionInCurveName);
          Map(options => options.DefaultChartYScaling);
          Map(options => options.DefaultChartBackColor);
          Map(options => options.DefaultChartDiagramBackColor);

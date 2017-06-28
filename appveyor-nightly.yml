@@ -49,6 +49,7 @@ before_build:
 after_build:
   - rake "create_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, C:/smartxls.zip, 2.6.2.9]"
   - 7z a setup.zip %APPVEYOR_BUILD_FOLDER%\setup\deploy\*.msi
+  - rake "create_portable_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, mobi-portable-setup.zip]"
 
 build:
   verbosity: minimal
@@ -61,6 +62,7 @@ test:
 
 on_finish: 
   - ps: Get-ChildItem setup.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  - ps: Get-ChildItem .\setup\*.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
 skip_commits:
   files:
