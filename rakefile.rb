@@ -13,13 +13,7 @@ task :cover do
 end
 
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
-	require_relative 'scripts/smartxls'
-	setup_dir = File.join(solution_dir, 'setup')
-	src_dir = File.join(solution_dir, 'src', 'MoBi', 'bin', args.configuration)
-	product_version = args.product_version
-	suite_name = 'Open Systems Pharmacology Suite'
-
-	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
+	update_smart_xls args
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
@@ -43,10 +37,10 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 
 	Rake::Task['setup:create'].execute(OpenStruct.new(
 		solution_dir: solution_dir,
-		src_dir: src_dir, 
+		src_dir: src_dir_for(args.configuration),  
 		setup_dir: setup_dir,  
 		product_name: product_name, 
-		product_version: product_version,
+		product_version: args.product_version,
 		harvest_ignored_files: harvest_ignored_files,		
 		suite_name: suite_name,
 		setup_files: setup_files,
@@ -54,9 +48,52 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		))
 end
 
+task :create_portable_setup, [:product_version, :configuration, :package_name] do |t, args|
+	#Files required for setup creation only and that will not be harvested automatically
+	setup_files	 = [
+		'Open Systems Pharmacology Suite License.pdf',
+		'documentation/*.pdf',
+		'dimensions/*.xml',
+		'pkparameters/*.xml',
+		'src/Data/*.xml',
+		'setup/**/*.{rtf}',
+		'log4net.config.xml',
+	]
+
+	setup_folders = [
+		'src/Data/**/*.{pkml,mbp3}',
+		'packages/**/OSPSuite.Presentation/**/*.{xml}',
+		'packages/**/OSPSuite.TeXReporting/**/*.{json,sty,tex}',
+	]
+
+	Rake::Task['setup:create_portable'].execute(OpenStruct.new(
+		solution_dir: solution_dir,
+		src_dir: src_dir_for(args.configuration), 
+		setup_dir: setup_dir,  
+		product_name: product_name, 
+		product_version: args.product_version,
+		suite_name: suite_name,
+		setup_files: setup_files,
+		setup_folders: setup_folders,
+		package_name: args.package_name
+		))
+end
+
+
 task :update_go_license, [:file_path, :license] do |t, args|
 	Utils.update_go_diagram_license args.file_path, args.license
 end	
+
+def src_dir_for(configuration)
+	File.join(solution_dir, 'src', 'MoBi', 'bin', configuration)
+end
+
+def update_smart_xls(args) 
+	require_relative 'scripts/smartxls'
+
+	src_dir = src_dir_for(args.configuration)
+	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
+end
 
 task :postclean do |t, args| 
 	packages_dir =  File.join(solution_dir, 'packages')
@@ -79,7 +116,7 @@ task :postclean do |t, args|
 		copy_files 'OSPSuite.Presentation', 'xml'
 	end
 
-	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'TEXTemplates', 'StandardTemplate') do
+	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
 		copy_files 'StandardTemplate', '*'
 	end
 end
@@ -96,4 +133,12 @@ end
 
 def product_name
 	'MoBi'
+end
+
+def suite_name
+	'Open Systems Pharmacology Suite'
+end
+
+def setup_dir
+	File.join(solution_dir, 'setup')
 end

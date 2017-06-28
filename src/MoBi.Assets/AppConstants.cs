@@ -36,7 +36,7 @@ namespace MoBi.Assets
       public static readonly int NotificationToolTipDelay = 30000;
       public static readonly int NotFoundIndex = -1;
       public static readonly string NullString = "null";
-      public static readonly string ProductName = "MoBi";
+      public static readonly string PRODUCT_NAME = "MoBi";
       public static readonly string Website = "www.open-systems-pharmacology.org";
       public static readonly string ProductSiteDownload = "http://setup.open-systems-pharmacology.org";
       public static readonly string IssueTrackerUrl = "http://www.open-systems-pharmacology.org/mobi/issues";
@@ -110,17 +110,14 @@ namespace MoBi.Assets
 
       public static class SpecialFileNames
       {
-         public static readonly string CompanyFolderName = "Open Systems Pharmacology";
-         public static readonly string ApplicationFolderPath = Path.Combine(CompanyFolderName, ProductName);
-         public static readonly string LayoutFileNamePattern = "*.xml";
-         public static readonly string MatlabSimulationFiles = "Simulationfiles";
-         public static readonly string TemplatesFolder = "Templates";
-
-         public static readonly string XmlSchemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OSPSuite.SimModel.xsd");
-         public static readonly string DimensionFactoryFileName = "OSPSuite.Dimensions.xml";
-         public static readonly string PKParametersFileName = "OSPSuite.PKParameters.xml";
-         public static readonly string GroupRepositoryFileName = "GroupRepository.xml";
-         public static readonly string CalculationMethodRepositoryFileName = "AllCalculationMethods.pkml";
+         public static readonly string COMPANY_FOLDER_NAME = "Open Systems Pharmacology";
+         public static readonly string APPLICATION_FOLDER_PATH = Path.Combine(COMPANY_FOLDER_NAME, PRODUCT_NAME);
+         public static readonly string TEMPLATES_FOLDER = "Templates";
+         public static readonly string LOCAL_TEX_TEMPLATE_FOLDER_NAME = "Templates";
+         public static readonly string GROUP_REPOSITORY_FILE_NAME = "GroupRepository.xml";
+         public static readonly string CALCULATION_METHOD_REPOSITORY_FILE_NAME = "AllCalculationMethods.pkml";
+         public static readonly string SPATIAL_STRUCTURE_TEMPLATE = "SpaceOrganismTemplate.mbdt";
+         public static readonly string STANDARD_MOLECULE = "Standard Molecule.pkml";
       }
 
       public static class XmlNames
@@ -862,7 +859,7 @@ namespace MoBi.Assets
 
       }
 
-      public static class FileFilter
+      public static class Filter
       {
          public static readonly string MOBI_PROJECT_EXTENSION = ".mbp3";
          public static readonly string MOBI_DIAGRAM_TEMPLATE_EXTENSION = ".mbdt";
@@ -873,6 +870,7 @@ namespace MoBi.Assets
          public static readonly string LICENSE_FILE_FILTER = Constants.Filter.FileFilter("MoBi License", Constants.Filter.TEXT_EXTENSION);
          public static readonly string MOBI2_PROJECT_FILTER = Constants.Filter.FileFilter("MoBi 2 Project", ".mbp");
          public static readonly string SBML_MODEL_FILE_FILTER = Constants.Filter.XmlFilter("SBML");
+         public static readonly string PKSIM_FILE_FILTER = Constants.Filter.FileFilter("PKSim", ".exe");
       }
 
       public static class DirectoryKey
@@ -1580,6 +1578,8 @@ namespace MoBi.Assets
          public static readonly string ContainerObserver = "Container Observer";
          public static readonly string SelectMolecules = "Select Molecules";
          public static readonly string LoadingApplication = "Loading Application...";
+         public static readonly string PKSimPath = "PK-Sim executable path";
+         public static readonly string SelectPKSimExecutablePath = "Select PK-Sim executable path";
 
          public static string ManageDisplayUnits(string type)
          {
@@ -2043,11 +2043,11 @@ namespace MoBi.Assets
          return $"For more information, please contact your {productDisplayName} support ({support})";
       }
 
-      public class PKSim
+      public static class PKSim
       {
          public static readonly string PopulationSimulationArgument = "/pop";
          public static readonly string JournalFileArgument = "/j";
-         public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup.";
+         public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup. Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
       }
 
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)

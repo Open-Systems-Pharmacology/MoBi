@@ -50,12 +50,6 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_check_that_PKSim_is_installed()
-      {
-         A.CallTo(() => _pkSimStarter.CheckPKSimInstallation()).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_export_simualtion_transfer_to_a_pkml_file()
       {
          A.CallTo(() => _simulationPersister
@@ -66,7 +60,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_start_pksim()
       {
-         A.CallTo(() => _pkSimStarter.StartWithSimulationFile(A<string>._)).MustHaveHappened();
+         A.CallTo(() => _pkSimStarter.StartPopulationSimulationWithSimulationFile(A<string>._)).MustHaveHappened();
       }
 
       [Observation]

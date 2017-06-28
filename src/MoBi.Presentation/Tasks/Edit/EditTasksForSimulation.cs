@@ -16,7 +16,6 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.SimModel.Services;
-using SimModelNET;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -113,10 +112,6 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var exportFolder = _interactionTask.AskForFolder(AppConstants.Dialog.ExportSimulationMatlabODE, Constants.DirectoryKey.SIM_MODEL_XML);
          if (string.IsNullOrEmpty(exportFolder)) return;
-         if (!XMLSchemaCache.IsInitialized)
-         {
-            XMLSchemaCache.InitializeFromFile(AppConstants.SpecialFileNames.XmlSchemaPath);
-         }
          _simModelExporter.ExportODEForMatlab(simulation, exportFolder, MatlabFormulaExportMode.Formula);
       }
 
@@ -156,7 +151,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public void ExportSimModelXml(IMoBiSimulation simulation)
       {
-         var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, AppConstants.FileFilter.SIM_MODEL_FILE_FILTER, Constants.DirectoryKey.SIM_MODEL_XML, simulation.Name);
+         var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, AppConstants.Filter.SIM_MODEL_FILE_FILTER, Constants.DirectoryKey.SIM_MODEL_XML, simulation.Name);
          if (fileName.IsNullOrEmpty()) return;
          _simModelExporter.Export(simulation, fileName);
       }

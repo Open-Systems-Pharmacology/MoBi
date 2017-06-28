@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoBi.Presentation.Helpers
+namespace MoBi.Presentation.Services
 {
    [Flags]
    public enum MergeConflictOptions

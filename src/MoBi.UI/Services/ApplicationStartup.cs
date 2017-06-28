@@ -141,7 +141,7 @@ namespace MoBi.UI.Services
          var configuration = container.Resolve<IMoBiConfiguration>();
          var dimFactory = container.Resolve<IMoBiDimensionFactory>();
          var persister = container.Resolve<IDimensionFactoryPersistor>();
-         persister.Load(dimFactory.BaseFactory, configuration.DimensionFactoryFile);
+         persister.Load(dimFactory.BaseFactory, configuration.DimensionFilePath);
          dimFactory.BaseFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
          container.RegisterImplementationOf<IDimensionFactory>(dimFactory);
          setUpDimensionMergings(dimFactory.BaseFactory);
@@ -236,8 +236,8 @@ namespace MoBi.UI.Services
          //Register log4Net factory and set the path to configuration file
          var log4NetLogFactory = new Log4NetLogFactory();
 
-         log4NetLogFactory.Configure(new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log4net.config.xml")));
-         log4NetLogFactory.UpdateLogFileLocation(config.AllUsersFolderPath);
+         log4NetLogFactory.Configure(new FileInfo(config.LogConfigurationFile));
+//         log4NetLogFactory.UpdateLogFileLocation(config.AllUsersFolderPath);
          container.RegisterImplementationOf((ILogFactory) log4NetLogFactory);
 
          registerRunOptionsIn(container);

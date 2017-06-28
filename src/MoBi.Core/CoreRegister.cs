@@ -76,7 +76,9 @@ namespace MoBi.Core
          //Register abstract factories
          container.RegisterFactory<IHistoryManagerFactory>();
          container.RegisterFactory<IDiagramManagerFactory>();
-         XMLSchemaCache.InitializeFromFile(AppConstants.SpecialFileNames.XmlSchemaPath);
+
+         var config = container.Resolve<IMoBiConfiguration>();
+         XMLSchemaCache.InitializeFromFile(config.SimModelSchemaFilePath);
 
          registerReporters(container);
 

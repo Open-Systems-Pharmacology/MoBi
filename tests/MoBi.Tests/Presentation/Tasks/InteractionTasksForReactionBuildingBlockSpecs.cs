@@ -2,7 +2,7 @@
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using MoBi.Presentation.Helpers;
+using MoBi.Presentation.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;

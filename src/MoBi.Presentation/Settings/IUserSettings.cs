@@ -4,7 +4,6 @@ using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
@@ -48,9 +47,15 @@ namespace MoBi.Presentation.Settings
       bool ShowCannotCalcErrors { get; set; }
       bool ShowPKSimObserverMessages { get; set; }
       bool CheckRules { get; set; }
+      bool GroupParameters { get; set; }
+
       ValidationSettings ValidationSettings { get; }
       OutputSelections OutputSelections { get; set; }
-      bool GroupParameters { get; set; }
       MergeConflictViewSettings MergeConflictViewSettings { get; set; }
+
+      /// <summary>
+      ///    Path of PK-Sim installation. Only used if the installation path is not found in the registry
+      /// </summary>
+      string PKSimPath { get; set; }
    }
 }
