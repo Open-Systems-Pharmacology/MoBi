@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Services
       {
          var moBiPath = retrievePKSimExecutablePath();
 
-         //now start MoBi
+         //now start PK-Sim
          var args = new[]
          {
             option,
