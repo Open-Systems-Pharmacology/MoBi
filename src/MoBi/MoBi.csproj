@@ -80,6 +80,12 @@
       <HintPath>..\..\packages\MathNet.Numerics.3.19.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
