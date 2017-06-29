@@ -37,7 +37,7 @@ namespace MoBi.Presentation.Tasks
          sut = new MoBiFormulaTask(_context, _applicationController, _formulaTask, _nameCorrector, _dialogCreator);
 
          _usingFormulaObject = A.Fake<IUsingFormula>();
-         A.CallTo(() => _usingFormulaObject.Formula).Returns(MvExplicitFormula());
+         _usingFormulaObject.Formula = MvExplicitFormula();
       }
 
       protected static ExplicitFormula MvExplicitFormula()
