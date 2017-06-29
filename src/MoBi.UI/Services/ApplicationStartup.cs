@@ -234,9 +234,8 @@ namespace MoBi.UI.Services
 
          //Register log4Net factory and set the path to configuration file
          var log4NetLogFactory = new Log4NetLogFactory();
-
          log4NetLogFactory.Configure(new FileInfo(config.LogConfigurationFile));
-//         log4NetLogFactory.UpdateLogFileLocation(config.AllUsersFolderPath);
+         log4NetLogFactory.UpdateLogFileLocation(config.AllUsersFolderPath);
          container.RegisterImplementationOf((ILogFactory) log4NetLogFactory);
 
          registerRunOptionsIn(container);
