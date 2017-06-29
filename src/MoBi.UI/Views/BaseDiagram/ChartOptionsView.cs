@@ -47,7 +47,6 @@ namespace MoBi.UI.Views.BaseDiagram
          _screenBinder = new ScreenBinder<ChartOptions>();
          _screenBinder.Bind(options => options.SimulationInCurveName).To(chkSimulationInCurveName);
          _screenBinder.Bind(options => options.TopContainerInCurveName).To(chkTopContainerInCurveName);
-         _screenBinder.Bind(options => options.DimensionInCurveName).To(chkDimensionInCurveName);
          _screenBinder.Bind(options => options.DefaultChartYScaling).To(cbPreferredChartYScaling).WithValues(getAllScalings);
          _screenBinder.Bind(options => options.DefaultChartBackColor).To(chartBackgroundColorEdit);
          _screenBinder.Bind(options => options.DefaultChartDiagramBackColor).To(diagramColorEdit);
@@ -72,9 +71,6 @@ namespace MoBi.UI.Views.BaseDiagram
          _screenBinder.BindToSource(chartOptions);
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
    }
 }

@@ -31,7 +31,7 @@ namespace MoBi.BatchTool.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Caption = AppConstants.ProductName;
+         Caption = AppConstants.PRODUCT_NAME;
          ShowInTaskbar = true;
          StartPosition = FormStartPosition.CenterScreen;
          ApplicationIcon = ApplicationIcons.MoBi;

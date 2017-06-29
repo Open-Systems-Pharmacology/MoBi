@@ -119,7 +119,7 @@
                                 </Component>
                             </Directory>
 
-                            <Directory Id="TeXTemplatesFolder" Name="TEXTemplates">
+                            <Directory Id="TeXTemplatesFolder" Name="TeXTemplates">
                                 <Component Id="TeXTemplatesFolder" Guid="B53F252A-675F-442F-B539-239A210F594A">
                                     <CreateFolder Directory="TeXTemplatesFolder">
                                         <Permission User="Everyone" GenericAll="yes"/>

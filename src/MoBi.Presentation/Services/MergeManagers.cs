@@ -1,13 +1,13 @@
 ﻿using System;
-using OSPSuite.Utility.Collections;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Collections;
 
-namespace MoBi.Presentation.Helpers
+namespace MoBi.Presentation.Services
 {
    public interface IIgnoreReplaceMergeManager<T> where T : IObjectBase
    {

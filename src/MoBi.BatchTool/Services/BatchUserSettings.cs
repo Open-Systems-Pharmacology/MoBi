@@ -39,6 +39,7 @@ namespace MoBi.BatchTool.Services
       public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }
       public MergeConflictViewSettings MergeConflictViewSettings { get; set; }
+      public string PKSimPath { get; set; }
 
       public string IconSizeGeneral { get; set; }
       public bool RenameDependentObjectsDefault { get; set; }

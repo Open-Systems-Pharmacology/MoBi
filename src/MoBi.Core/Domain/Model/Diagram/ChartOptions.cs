@@ -7,7 +7,6 @@ namespace MoBi.Core.Domain.Model.Diagram
    {
       public bool SimulationInCurveName { get; set; }
       public bool TopContainerInCurveName { get; set; }
-      public bool DimensionInCurveName { get; set; }
       public string DefaultLayoutName { get; set; }
       public Scalings DefaultChartYScaling { get; set; }
       public Color DefaultChartBackColor { get; set; }
@@ -17,7 +16,6 @@ namespace MoBi.Core.Domain.Model.Diagram
       {
          SimulationInCurveName = false;
          TopContainerInCurveName = false;
-         DimensionInCurveName = false;
          DefaultLayoutName = Constants.DEFAULT_CHART_LAYOUT;
          DefaultChartYScaling = Scalings.Log;
          DefaultChartBackColor = Color.White;

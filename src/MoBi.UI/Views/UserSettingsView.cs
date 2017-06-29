@@ -15,23 +15,26 @@ namespace MoBi.UI.Views
 {
    public partial class UserSettingsView : BaseModalView, IUserSettingsView
    {
-      private ScreenBinder<IUserSettings> _screenBinder;
+      private readonly ScreenBinder<IUserSettings> _screenBinder;
+      private IUserSettingsPresenter _presenter;
 
       public UserSettingsView()
       {
          InitializeComponent();
+         _screenBinder = new ScreenBinder<IUserSettings>();
       }
 
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         _screenBinder = new ScreenBinder<IUserSettings>();
          _screenBinder.Bind(x => x.RenameDependentObjectsDefault).To(chkRenameDependent);
          _screenBinder.Bind(x => x.MRUListItemCount).To(tbMRUFiles);
          _screenBinder.Bind(x => x.DecimalPlace).To(tbDecimalPlace);
          _screenBinder.Bind(x => x.MaximumNumberOfCoresToUse).To(tbNumberOfProcessors);
+         _screenBinder.Bind(x => x.PKSimPath).To(buttonPKSimPath);
 
          RegisterValidationFor(_screenBinder);
+         buttonPKSimPath.ButtonClick += (o, e) => OnEvent(_presenter.SelectPKSimPath);
       }
 
       public void BindTo(IUserSettings userSettings)
@@ -66,13 +69,13 @@ namespace MoBi.UI.Views
 
       public bool LayoutViewVisible
       {
-         get { return tabFlowLayout.PageVisible; }
-         set { tabFlowLayout.PageVisible = value; }
+         get => tabFlowLayout.PageVisible;
+         set => tabFlowLayout.PageVisible = value;
       }
 
       public void AttachPresenter(IUserSettingsPresenter presenter)
       {
-         //nothing to do here
+         _presenter = presenter;
       }
 
       public override void InitializeResources()
@@ -80,9 +83,9 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          Caption = AppConstants.Captions.UserSettings;
          layoutItemDecimalPlace.Text = AppConstants.Captions.DecimalPlace.FormatForLabel();
-         layoutItemValidationItems.Text = AppConstants.Captions.ValidationOptions;
+         layoutGroupValidationItems.Text = AppConstants.Captions.ValidationOptions;
          layoutItemNumberOfRecentProjects.Text = AppConstants.Captions.MRUListItemCount.FormatForLabel();
-         layoutItemValidationItems.TextLocation = Locations.Top;
+         layoutItemPKSimPath.Text = AppConstants.Captions.PKSimPath.FormatForLabel(checkCase:false);
          CancelVisible = false;
          tabDisplayUnits.Text = AppConstants.Captions.DefaultDisplayUnits;
          Icon = ApplicationIcons.Settings;

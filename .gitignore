@@ -252,5 +252,7 @@ paket-files/
 *.sln.iml
 
 setup/deploy
+setup/MoBi*
+setup/*.zip
 
 *.ncrunchproject

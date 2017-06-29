@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -12,8 +9,11 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
-namespace MoBi.Presentation.Helpers
+namespace MoBi.Presentation.Services
 {
    public abstract class AbstractMergeManager<T> where T : class, IObjectBase
    {
