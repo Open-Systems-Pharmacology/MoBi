@@ -10,3 +10,12 @@
 [submodule "scripts"]
 	path = scripts
 	url = https://github.com/open-systems-pharmacology/build-scripts.git
+[submodule "examples/--name"]
+	path = examples/--name
+	url = https://github.com/Open-Systems-Pharmacology/Example_Diclofenac.git
+[submodule "examples/Diclofenac"]
+	path = examples/Diclofenac
+	url = https://github.com/Open-Systems-Pharmacology/Example_Diclofenac.git
+[submodule "examples/ManualModel"]
+	path = examples/ManualModel
+	url = https://github.com/Open-Systems-Pharmacology/Example_ManualModel.git

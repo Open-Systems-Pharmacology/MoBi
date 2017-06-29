@@ -43,10 +43,6 @@
                         <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\MoBi\$(var.ProductReleaseVersion)" Name="InstallPath" Type="string" KeyPath="no" Value="[INSTALLDIR]MoBi.exe"/>
                         <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\MoBi\$(var.ProductReleaseVersion)" Name="InstallDir" Type="string" KeyPath="no" Value="[INSTALLDIR]"/>
                     </Component>
-
-                  <Component Id='log4net.config.xml' Guid='DFCFEDFA-2B88-4FFD-BA64-D4D108D98FD1'>
-                    <File Name='log4net.config.xml' Id='log4net.config.xml' Source='$(var.DeployDir)/log4net.config.xml' KeyPath='yes' />
-                  </Component>
                 </Directory>
             </Directory>
 
@@ -61,7 +57,6 @@
                                 <Permission User="Everyone" GenericAll="yes"/>
                             </CreateFolder>
                         </Component>
-
 
                         <Directory Id="MoBiCommonDataVersionFolder" Name="$(var.ProductReleaseVersion)">
                             <Component Id="MoBiCommonDataVersionFolder" Guid="6A55A8E0-9EF0-4FD2-BE56-0E90B19B52CB">
@@ -88,6 +83,11 @@
 
                             <Component Id="OSPSuite.PKParameters.xml" Guid="4C689602-73AF-48ED-A894-8E45577AEDAE">
                                 <File Name="OSPSuite.PKParameters.xml" Id="OSPSuite.PKParameters.xml" Source="$(var.DeployDir)/OSPSuite.PKParameters.xml" KeyPath="yes"/>
+                            </Component>
+
+
+                            <Component Id='log4net.config.xml' Guid='DFCFEDFA-2B88-4FFD-BA64-D4D108D98FD1'>
+                              <File Name='log4net.config.xml' Id='log4net.config.xml' Source='$(var.DeployDir)/log4net.config.xml' KeyPath='yes' />
                             </Component>
 
                             <Directory Id="ExamplesFolder" Name="Examples">
