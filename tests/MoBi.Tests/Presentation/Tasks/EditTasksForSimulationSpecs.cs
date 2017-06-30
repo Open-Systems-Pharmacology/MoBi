@@ -6,6 +6,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.SimModel.Services;
 
@@ -20,6 +21,7 @@ namespace MoBi.Presentation.Tasks
       private IDataRepositoryTask _dataRepositoryTask;
       private ISimModelExporter _simulationModelExporter;
       private IModelReportCreator _reportCreator;
+      private IDimensionFactory _dimensionFactory;
 
       protected override void Context()
       {
@@ -30,7 +32,8 @@ namespace MoBi.Presentation.Tasks
          _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
          _simulationModelExporter = A.Fake<ISimModelExporter>();
          _reportCreator = A.Fake<IModelReportCreator>();
-         sut = new EditTasksForSimulation(_context, _simulationPersitor, _dialogCreator, _forbiddenNamesRetriever, _dataRepositoryTask, _reportCreator, _simulationModelExporter);
+         _dimensionFactory= A.Fake<IDimensionFactory>();
+         sut = new EditTasksForSimulation(_context, _simulationPersitor, _dialogCreator, _forbiddenNamesRetriever, _dataRepositoryTask, _reportCreator, _simulationModelExporter, _dimensionFactory);
       }
    }
 

@@ -17,7 +17,8 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
-		'MoBi.exe' 
+		'MoBi.exe',
+		'Standard Molecule.pkml'
 	]
 
 	#Files required for setup creation only
@@ -25,6 +26,7 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'packages/**/OSPSuite.Core/**/*.xml',
 		'packages/**/OSPSuite.Presentation/**/*.{wxs,xml}',
 		'packages/**/OSPSuite.TeXReporting/**/*.*',
+		'examples/**/*.{wxs,pkml,mbp3}',
 		'src/Data/**/*.*',
 		'src/MoBi.Assets/Resources/*.ico',
 		'documentation/*.pdf',
@@ -61,7 +63,7 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	]
 
 	setup_folders = [
-		'src/Data/**/*.{pkml,mbp3}',
+		'examples/**/*.{pkml,mbp3}',
 		'packages/**/OSPSuite.Presentation/**/*.{xml}',
 		'packages/**/OSPSuite.TeXReporting/**/*.{json,sty,tex}',
 	]

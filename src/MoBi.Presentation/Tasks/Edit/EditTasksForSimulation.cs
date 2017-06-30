@@ -14,6 +14,7 @@ using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.SimModel.Services;
 
@@ -39,10 +40,11 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly IModelReportCreator _reportCreator;
       private readonly IDataRepositoryTask _dataRepositoryTask;
       private readonly ISimModelExporter _simModelExporter;
+      private readonly IDimensionFactory _dimensionFactory;
 
       public EditTasksForSimulation(IInteractionTaskContext interactionTaskContext, ISimulationPersistor simulationPersistor, IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriver, IDataRepositoryTask dataRepositoryTask,
-         IModelReportCreator reportCreator, ISimModelExporter simModelExporter) : base(interactionTaskContext)
+         IModelReportCreator reportCreator, ISimModelExporter simModelExporter, IDimensionFactory dimensionFactory) : base(interactionTaskContext)
       {
          _simulationPersistor = simulationPersistor;
          _dialogCreator = dialogCreator;
@@ -50,6 +52,7 @@ namespace MoBi.Presentation.Tasks.Edit
          _dataRepositoryTask = dataRepositoryTask;
          _reportCreator = reportCreator;
          _simModelExporter = simModelExporter;
+         _dimensionFactory = dimensionFactory;
       }
 
       public void CreateReport(IModelCoreSimulation simulation)
@@ -93,7 +96,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       private void exportDataRepository(string fileName, IEnumerable<DataColumn> dataRepository)
       {
-         var dataTables = _dataRepositoryTask.ToDataTable(dataRepository, x => x.QuantityInfo.PathAsString);
+         var dataTables = _dataRepositoryTask.ToDataTable(dataRepository, x => x.QuantityInfo.PathAsString, _dimensionFactory.MergedDimensionFor);
          _dataRepositoryTask.ExportToExcel(dataTables, fileName, true);
       }
 

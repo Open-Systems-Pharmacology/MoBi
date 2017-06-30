@@ -30,7 +30,7 @@ install:
 
     Start-Process msiexec.exe -ArgumentList /i, C:\MikTex.msi, /quiet, /qn, /norestart, INSTALLDIR=$env:MIK_TEX_INSTALL_DIR -Wait
 - ps: >-
-    (new-object net.webclient).DownloadFile('https://ci.appveyor.com/api/projects/Open-Systems-Pharmacology-ci/smartxls/artifacts/OSPSuite.SmartXLS.2.6.2.9.nupkg', 'C:\smartxls.zip')
+    (new-object net.webclient).DownloadFile('https://ci.appveyor.com/api/projects/Open-Systems-Pharmacology-ci/smartxls/artifacts/OSPSuite.SmartXLS.2.6.4.1.nupkg', 'C:\smartxls.zip')
 
 before_build:
   - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
