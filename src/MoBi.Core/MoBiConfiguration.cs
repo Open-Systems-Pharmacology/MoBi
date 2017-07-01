@@ -45,6 +45,7 @@ namespace MoBi.Core
          SpaceOrganismUserTemplate = CurrentUserFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
          SpaceOrganismBaseTemplate = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
          StandardMoleculeTemplateFile = templateFile(AppConstants.SpecialFileNames.STANDARD_MOLECULE);
+         
       }
 
       public string PKSimPath
