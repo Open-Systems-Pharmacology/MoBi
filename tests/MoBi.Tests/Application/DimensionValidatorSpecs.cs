@@ -58,7 +58,8 @@ namespace MoBi.Application
          bsaFormula.AddObjectPath(new FormulaUsablePath("Root", "MW").WithAlias("MW").WithDimension(molWeightDimension));
 
 
-         var pksimPara = new Parameter().WithName(AppConstants.Parameters.RADIUS_SOLUTE)
+         var pksimPara = new Parameter()
+            .WithName(AppConstants.Parameters.RADIUS_SOLUTE)
             .WithFormula(radiusFormula)
             .WithDimension(lengthDimension);
 
@@ -67,7 +68,8 @@ namespace MoBi.Application
             .WithDimension(molWeightDimension)
             .WithFormula(new ConstantFormula(1));
 
-         var BSA = new Parameter().WithName(AppConstants.Parameters.BSA)
+         var BSA = new Parameter()
+            .WithName(AppConstants.Parameters.BSA)
             .WithFormula(bsaFormula)
             .WithDimension(areaDimension);
 
