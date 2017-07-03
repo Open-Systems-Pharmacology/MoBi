@@ -130,6 +130,18 @@ namespace MoBi.UI.Settings
          Rules.AddRange(AllRules.All());
       }
 
+      public bool ShowPKSimDimensionProblemWarnings
+      {
+         set => ValidationSettings.ShowPKSimDimensionProblemWarnings = value;
+         get => ValidationSettings.ShowPKSimDimensionProblemWarnings;
+      }
+
+      public bool ShowCannotCalcErrors
+      {
+         set => ValidationSettings.ShowCannotCalcErrors = value;
+         get => ValidationSettings.ShowCannotCalcErrors;
+      }
+
       public string DefaultChartEditorLayout
       {
          get => ChartOptions.DefaultLayoutName;
@@ -203,18 +215,6 @@ namespace MoBi.UI.Settings
       private string streamToString(MemoryStream streamToConvert)
       {
          return streamToConvert.ToArray().ToByteString();
-      }
-
-      public bool ShowPKSimDimensionProblemWarnings
-      {
-         set => ValidationSettings.ShowPKSimDimensionProblemWarnings = value;
-         get => ValidationSettings.ShowPKSimDimensionProblemWarnings;
-      }
-
-      public bool ShowCannotCalcErrors
-      {
-         set => ValidationSettings.ShowCannotCalcErrors = value;
-         get => ValidationSettings.ShowCannotCalcErrors;
       }
 
       private static class AllRules

@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Application
 {
@@ -32,7 +33,7 @@ namespace MoBi.Application
       }
    }
 
-   internal class When_validating_a_parameter_from_pksim : concern_for_DimensionValidator
+   internal class When_validating_a_parameter_from_pksim_that_should_not_be_show_in_the_default_validatopm : concern_for_DimensionValidator
    {
       private IContainer _root;
       private ValidationResult _result;
@@ -40,18 +41,40 @@ namespace MoBi.Application
       protected override void Context()
       {
          base.Context();
-         base.Context();
-         _root = new Container().WithName("Root");
-         IDimension length = new Dimension(new BaseDimensionRepresentation() {LengthExponent = 1}, "Length", "cm");
 
-         var explicitFormula = new ExplicitFormula().WithFormulaString("0,0333 * (MW * 1E9) ^ 0,4226 * 1E-8").WithDimension(length);
-         IDimension molWeight = new Dimension(new BaseDimensionRepresentation() {AmountExponent = 1, MassExponent = -1}, "MW", "mol/g");
-         explicitFormula.AddObjectPath(new FormulaUsablePath(new[] {"Root", "MW"}).WithAlias("MW").WithDimension(molWeight));
-         IEntity pksimPara = new Parameter().WithName("Radius (solute)").WithParentContainer(_root)
-            .WithFormula(
-               explicitFormula).WithDimension(length);
-         new Parameter().WithName("MW").WithParentContainer(_root).WithDimension(molWeight).WithFormula(new ConstantFormula(1));
-         explicitFormula.ResolveObjectPathsFor(pksimPara);
+         var lengthDimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, AppConstants.DimensionNames.LENGTH, "cm");
+         var molWeightDimension = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1, MassExponent = -1 }, "MW", "mol/g");
+         var areaDimension = new Dimension(new BaseDimensionRepresentation { LengthExponent = 2,}, AppConstants.DimensionNames.AREA, "cm²");
+
+         var radiusFormula = new ExplicitFormula()
+            .WithFormulaString("0,0333 * (MW * 1E9) ^ 0,4226 * 1E-8")
+            .WithDimension(lengthDimension);
+
+         radiusFormula.AddObjectPath(new FormulaUsablePath("Root", "MW").WithAlias("MW").WithDimension(molWeightDimension));
+
+         var bsaFormula = new ExplicitFormula()
+            .WithFormulaString("MW ^ 0,4226")
+            .WithDimension(areaDimension);
+         bsaFormula.AddObjectPath(new FormulaUsablePath("Root", "MW").WithAlias("MW").WithDimension(molWeightDimension));
+
+
+         var pksimPara = new Parameter().WithName(AppConstants.Parameters.RADIUS_SOLUTE)
+            .WithFormula(radiusFormula)
+            .WithDimension(lengthDimension);
+
+         var molweight = new Parameter()
+            .WithName("MW")
+            .WithDimension(molWeightDimension)
+            .WithFormula(new ConstantFormula(1));
+
+         var BSA = new Parameter().WithName(AppConstants.Parameters.BSA)
+            .WithFormula(bsaFormula)
+            .WithDimension(areaDimension);
+
+         _root = new Container{pksimPara, molweight, BSA }.WithName("Root");
+
+         radiusFormula.ResolveObjectPathsFor(pksimPara);
+         bsaFormula.ResolveObjectPathsFor(BSA);
       }
 
       protected override void Because()
@@ -62,11 +85,11 @@ namespace MoBi.Application
       [Observation]
       public void should_retrurn_valid()
       {
-         _result.ValidationState.ShouldBeEqualTo(ValidationState.Valid);
+         _result.ValidationState.ShouldBeEqualTo(ValidationState.Valid, _result.Messages.Select(x=>x.Text).ToString("\n"));
       }
    }
 
-   internal class When_validating_a_parameter_there_dimension_can_not_be_calculatetd : concern_for_DimensionValidator
+   internal class When_validating_a_parameter_whose_dimension_can_not_be_calculatetd : concern_for_DimensionValidator
    {
       private IContainer _root;
       private ValidationResult _result;
@@ -74,16 +97,21 @@ namespace MoBi.Application
       protected override void Context()
       {
          base.Context();
-         base.Context();
+
          _root = new Container().WithName("Root");
-         IDimension length = new Dimension(new BaseDimensionRepresentation() {LengthExponent = 1}, "Length", "cm");
+         var length = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, "Length", "cm");
+         var molWeight = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1, MassExponent = -1 }, "MW", "mol/g");
 
          var explicitFormula = new ExplicitFormula().WithFormulaString("exp(MW)").WithDimension(length);
-         IDimension molWeight = new Dimension(new BaseDimensionRepresentation() {AmountExponent = 1, MassExponent = -1}, "MW", "mol/g");
-         explicitFormula.AddObjectPath(new FormulaUsablePath(new[] {"Root", "MW"}).WithAlias("MW").WithDimension(molWeight));
-         IEntity pksimPara = new Parameter().WithName("Radius (solute)").WithParentContainer(_root)
-            .WithFormula(
-               explicitFormula).WithDimension(length);
+         explicitFormula.AddObjectPath(new FormulaUsablePath(new[] { "Root", "MW" }).WithAlias("MW").WithDimension(molWeight));
+
+
+         var pksimPara = new Parameter()
+            .WithName(AppConstants.Parameters.RADIUS_SOLUTE)
+            .WithParentContainer(_root)
+            .WithFormula(explicitFormula)
+            .WithDimension(length);
+
          new Parameter().WithName("MW").WithParentContainer(_root).WithDimension(molWeight).WithFormula(new ConstantFormula(1));
          explicitFormula.ResolveObjectPathsFor(pksimPara);
       }
