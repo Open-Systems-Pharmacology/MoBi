@@ -14,7 +14,6 @@ using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
@@ -54,7 +53,7 @@ namespace MoBi.Presentation.Tasks
    /// <summary>
    ///    Making sure that the execute is actually called as part of the specs. Command is actually tested elsewhere
    /// </summary>
-   public class when_updating_scale_divisor : concern_for_MoleculeStartValuesTask
+   public class When_updating_scale_divisor : concern_for_MoleculeStartValuesTask
    {
       private IMoleculeStartValue _moleculeStartValue;
 
@@ -76,7 +75,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_retrieving_default_dimension : concern_for_MoleculeStartValuesTask
+   public class When_retrieving_default_dimension : concern_for_MoleculeStartValuesTask
    {
       private IDimension _result;
 
@@ -98,7 +97,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_removing_building_block_referenced_by_simulation : concern_for_MoleculeStartValuesTask
+   public class When_removing_building_block_referenced_by_simulation : concern_for_MoleculeStartValuesTask
    {
       private IMoBiProject _project;
       private IMoBiSimulation _simulation;
@@ -134,7 +133,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_comparing_start_value_to_original_builder : concern_for_MoleculeStartValuesTask
+   public class When_comparing_start_value_to_original_builder : concern_for_MoleculeStartValuesTask
    {
       private IMoleculeStartValue _moleculeStartValue;
       private const string _name = "Name";
@@ -161,7 +160,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_original_buidler_cannot_be_found : when_comparing_start_value_to_original_builder
+   public class When_original_buidler_cannot_be_found : When_comparing_start_value_to_original_builder
    {
       [Observation]
       public void should_test_as_not_equivalent()
@@ -170,7 +169,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_original_builder_can_be_found : when_comparing_start_value_to_original_builder
+   public class When_original_builder_can_be_found : When_comparing_start_value_to_original_builder
    {
       protected override void Context()
       {
@@ -185,7 +184,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_importing_multiple_molecule_start_values : concern_for_MoleculeStartValuesTask
+   public class When_importing_multiple_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
       private IList<ImportedQuantityDTO> _moleculeStartValues;
       private IMoleculeStartValue _firstStartValueRef;
@@ -328,7 +327,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_removing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
+   public class When_removing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
 
@@ -346,7 +345,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_appending_an_element_of_start_value : concern_for_MoleculeStartValuesTask
+   public class When_appending_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
 
@@ -364,7 +363,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_replacing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
+   public class When_replacing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
 
@@ -382,7 +381,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_replacing_an_element_outside_start_value_path_range : concern_for_MoleculeStartValuesTask
+   public class When_replacing_an_element_outside_start_value_path_range : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
 
@@ -425,7 +424,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_updating_a_molecule_start_value_with_new_display_unit : concern_for_MoleculeStartValuesTask
+   public class When_updating_a_molecule_start_value_with_new_display_unit : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
       private IDimension _dim;
@@ -463,7 +462,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_updating_a_molecule_start_value_from_original_building_block_when_the_start_value_has_changed : concern_for_MoleculeStartValuesTask
+   public class When_updating_a_molecule_start_value_from_original_building_block_When_the_start_value_has_changed : concern_for_MoleculeStartValuesTask
    {
       protected override void Context()
       {

@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_converting_dimensions_on_observer_builder : concern_for_UpdateDimensionInObserverBuilderCommand
+   public class When_converting_dimensions_on_observer_builder : concern_for_UpdateDimensionInObserverBuilderCommand
    {
       protected override void Because()
       {
@@ -49,7 +49,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_reversing_dimension_change_on_observer_builder : concern_for_UpdateDimensionInObserverBuilderCommand
+   public class When_reversing_dimension_change_on_observer_builder : concern_for_UpdateDimensionInObserverBuilderCommand
    {
       protected override void Context()
       {

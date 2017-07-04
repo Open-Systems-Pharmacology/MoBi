@@ -21,7 +21,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecule_properties_in_spatial_structure : concern_for_ParameterResolver
+   public class When_resolving_molecule_properties_in_spatial_structure : concern_for_ParameterResolver
    {
       private IParameter _result;
 
@@ -43,7 +43,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecule_parameter_in_spatial_structure_and_container_cannot_be_resolved : concern_for_ParameterResolver
+   public class When_resolving_molecule_parameter_in_spatial_structure_and_container_cannot_be_resolved : concern_for_ParameterResolver
    {
       private IParameter _result;
 
@@ -72,7 +72,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecule_parameter_in_spatial_structure_and_container_can_be_resolved : concern_for_ParameterResolver
+   public class When_resolving_molecule_parameter_in_spatial_structure_and_container_can_be_resolved : concern_for_ParameterResolver
    {
       private IParameter _result;
 
@@ -101,7 +101,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_container_parameter_in_spatial_structure : concern_for_ParameterResolver
+   public class When_resolving_container_parameter_in_spatial_structure : concern_for_ParameterResolver
    {
       private IParameter _result;
 
@@ -129,7 +129,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecule_builder_global_parameters : concern_for_ParameterResolver
+   public class When_resolving_molecule_builder_global_parameters : concern_for_ParameterResolver
    {
       private IParameter _result;
 
@@ -202,7 +202,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecule_builder_local_parameters_when_the_container_path_is_invalid : concern_for_ParameterResolver
+   public class When_resolving_molecule_builder_local_parameters_When_the_container_path_is_invalid : concern_for_ParameterResolver
    {
       private IParameter _result;
 

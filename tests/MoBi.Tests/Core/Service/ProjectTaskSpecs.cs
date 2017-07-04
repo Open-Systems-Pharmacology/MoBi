@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
@@ -12,7 +10,6 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Mappers;
 using MoBi.Core.SBML;
-using MoBi.Core.Serialization.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Tasks;
@@ -61,10 +58,6 @@ namespace MoBi.Core.Service
          sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _spatialStructureFactory, new HeavyWorkManagerForSpecs(), 
             _simSettingsFactory, new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _reactionBuildingBlockFactory);
       }
-   }
-
-   internal class When_adding_a_simulation_t : concern_for_ProjectTask
-   {
    }
 
    internal class When_loading_a_simulation : concern_for_ProjectTask

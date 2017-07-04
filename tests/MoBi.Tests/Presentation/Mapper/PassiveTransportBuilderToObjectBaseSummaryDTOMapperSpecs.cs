@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_transport_builder_for_all : concern_for_PassiveTransportBuilderToObjectBaseSummaryDTOMapper
+   public class When_mapping_transport_builder_for_all : concern_for_PassiveTransportBuilderToObjectBaseSummaryDTOMapper
    {
       private ObjectBaseSummaryDTO _result;
 
@@ -50,14 +50,14 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void when_mapping_passive_transport_dto_has_correct_values()
+      public void When_mapping_passive_transport_dto_has_correct_values()
       {
          _result.EntityName.ShouldBeEqualTo("Name");
          _result.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.PassiveTransport);
       }
 
       [Observation]
-      public void when_mapping_passive_transport_dictionary_has_correct_values()
+      public void When_mapping_passive_transport_dictionary_has_correct_values()
       {
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.SourceDescriptor)).ShouldBeEqualTo(1);
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.TargetDescriptor)).ShouldBeEqualTo(1);
@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_transport_builder_not_for_all : concern_for_PassiveTransportBuilderToObjectBaseSummaryDTOMapper
+   public class When_mapping_transport_builder_not_for_all : concern_for_PassiveTransportBuilderToObjectBaseSummaryDTOMapper
    {
       private ObjectBaseSummaryDTO _result;
 
@@ -96,14 +96,14 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void when_mapping_passive_transport_dto_has_correct_values()
+      public void When_mapping_passive_transport_dto_has_correct_values()
       {
          _result.EntityName.ShouldBeEqualTo("Name");
          _result.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.PassiveTransport);
       }
 
       [Observation]
-      public void when_mapping_passive_transport_dictionary_has_correct_values()
+      public void When_mapping_passive_transport_dictionary_has_correct_values()
       {
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.SourceDescriptor)).ShouldBeEqualTo(1);
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.TargetDescriptor)).ShouldBeEqualTo(1);

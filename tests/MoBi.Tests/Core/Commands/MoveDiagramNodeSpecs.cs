@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_reverting_command_to_move_a_node_in_the_diagram : concern_for_MoveDiagramNodeCommand
+   public class When_reverting_command_to_move_a_node_in_the_diagram : concern_for_MoveDiagramNodeCommand
    {
       private IBaseNode _copyNode;
       protected override void Context()
@@ -57,7 +57,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_moving_nodes_in_a_diagram : concern_for_MoveDiagramNodeCommand
+   public class When_moving_nodes_in_a_diagram : concern_for_MoveDiagramNodeCommand
    {
       protected override void Because()
       {

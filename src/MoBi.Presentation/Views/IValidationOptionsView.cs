@@ -6,7 +6,6 @@ namespace MoBi.Presentation.Views
 {
    public interface IValidationOptionsView : IView<IValidationOptionsPresenter>
    {
-      void EnableDisableValidationSubOptions(bool enabled);
-      void Show(ValidationSettings validationOptions);
+      void BindTo(ValidationSettings validationOptions);
    }
 }

@@ -16,7 +16,6 @@ namespace MoBi.Assets
    public static class AppConstants
    {
       public static readonly int LayoutVersion = 24;
-      public static readonly string MolWeight = "MolWeight";
       public static readonly string NotMatch = "not tagged with";
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
@@ -72,16 +71,6 @@ namespace MoBi.Assets
          public static readonly string ReportCreationStarted = "Report creation started...";
          public static readonly string ReportCreationFinished = "Report created!";
          public static readonly string Concentration = "Concentration";
-
-         public static string ReportCreationStartedMessage(string reportFullPath)
-         {
-            return "This might take a while...";
-         }
-
-         public static string ReportCreationFinishedMessage(string reportFullPath)
-         {
-            return $"Report can be found at {reportFullPath}";
-         }
       }
 
       public static class Organs
@@ -1016,25 +1005,15 @@ namespace MoBi.Assets
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
 
-         public static string AddNew(string objectTypeName)
-         {
-            return $"Create {objectTypeName}...";
-         }
+         public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
-         public static string AddExisting(string objectTypeName)
-         {
-            return $"Load {objectTypeName}...";
-         }
+         public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
 
-         public static string AddExistingFromTemplate(string objectTypeName)
-         {
-            return $"Load {objectTypeName} from Template...";
-         }
+         public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
       }
 
       public static class DimensionNames
       {
-         public static readonly string MASS_CONCENTRATION = "Concentration (mass)";
          public static readonly string FRACTION = "Fraction";
          public static readonly string INVERSED_LENGTH = "Inversed length";
          public static readonly string LENGTH = "Length";
@@ -1101,60 +1080,33 @@ namespace MoBi.Assets
          public static readonly string MoleculeNodeMissingInLink = "Molecule Node missing in Link";
          public static readonly string FileInNotAnExcelFile = "File is not an Excel file";
 
-         public static string DuplicatedImportedStartValue(string path)
-         {
-            return $"Duplicated entry for imported start value with path '{path}'";
-         }
+         public static string DuplicatedImportedStartValue(string path) => $"Duplicated entry for imported start value with path '{path}'";
 
          public static string CannotConvertAConcentrationModelBasedIntoAnAmountBasedModel(string modelType)
          {
             return string.Format("Cannot convert concentration {0} into amount {0}.", modelType.ToLowerInvariant());
          }
 
-         public static string CannotImportFromExcelFile(string filePath)
-         {
-            return $"Failed to import from {filePath}. It may not be valid Excel file format";
-         }
+         public static string CannotImportFromExcelFile(string filePath) => $"Failed to import from {filePath}. It may not be valid Excel file format";
 
-         public static string TableShouldBeNColumns(int n)
-         {
-            return $"Table should be {n} columns or more";
-         }
+         public static string TableShouldBeNColumns(int n) => $"Table should be {n} columns or more";
 
-         public static string ColumnNMustBeNumeric(string columnValue, int N)
-         {
-            return string.Format("Column {1} must be numeric type: {0}", columnValue, N);
-         }
+         public static string ColumnNMustBeNumeric(string columnValue, int N) => $"Column {N} must be numeric type: {columnValue}";
 
-         public static string ProjectWillBeOpenedAsReadOnly(string errorMessage)
-         {
-            return $"{errorMessage}\nAny change made to the project will not be saved.";
-         }
+         public static string ProjectWillBeOpenedAsReadOnly(string errorMessage) => $"{errorMessage}\nAny change made to the project will not be saved.";
 
          public static string InvalidStartValuesConfiguration(string startValuesBuildingBlock, string buildingBlockType)
          {
             return $"Selected {buildingBlockType.ToLower()} '{startValuesBuildingBlock}' does not match the selected {ObjectTypes.MoleculeBuildingBlock.ToLower()} and {ObjectTypes.SpatialStructure.ToLower()}.";
          }
 
-         public static string CouldNotFindAReporterFor(Type type)
-         {
-            return $"Unable to find a reporter for {type.Name}";
-         }
+         public static string CouldNotFindAReporterFor(Type type) => $"Unable to find a reporter for {type.Name}";
 
-         public static string UnknownProjectItem(Type type)
-         {
-            return $"Unable to find presenter for '{type.Name}'";
-         }
+         public static string UnknownProjectItem(Type type) => $"Unable to find presenter for '{type.Name}'";
 
-         public static string UnknownDistributedFormula(Type type)
-         {
-            return $"Unknown Distributed Formula Type {type.Name}";
-         }
+         public static string UnknownDistributedFormula(Type type) => $"Unknown Distributed Formula Type '{type.Name}'";
 
-         public static string EmptyCollection(string collectionName)
-         {
-            return $"{collectionName} contains no Elements";
-         }
+         public static string EmptyCollection(string collectionName) => $"{collectionName} contains no Elements";
 
          public static string NoInformationFoundException(string fileName, string lookForElementName, string rootElementName)
          {
@@ -1901,8 +1853,6 @@ namespace MoBi.Assets
          }
       }
 
-      public static readonly string TableAlias = "TABLE";
-
       public static readonly string TimeColumName = "Simulationtime";
 
       public static readonly string ResultName = "Results ";
@@ -1998,20 +1948,15 @@ namespace MoBi.Assets
       };
 
 
-      public static readonly string CouplingCompleted = "Coupling completed!";
       public static readonly string None = "<None>";
-      public static readonly string NeyKeyButton = "&New Key";
-      public static readonly string ReadOnlyButton = "&Read-Only";
       public static readonly string PKSimTopContainer = "Organism";
-      public static string ParameterIdentificationResults = "Parameter Identification Results";
-      public static string AmountAlias = "M";
-      public static int ObseverPathLengthDistance = 2;
-      public static string NeighborhoodTag = "Neighborhood";
-      public static string OutputIntervalId = "OutputIntervalId";
-      public static string SolverSettingsId = "SolverSettingsId";
-      public static string SimulationSettingsId = "SimulationSettingsId";
-      public static string OffsetAlias = "OFFSET";
-      public static string PKSimRegPath = @"Open Systems Pharmacology\PK-Sim\";
+      public static readonly string AmountAlias = "M";
+      public static readonly string NeighborhoodTag = "Neighborhood";
+      public static readonly string OutputIntervalId = "OutputIntervalId";
+      public static readonly string SolverSettingsId = "SolverSettingsId";
+      public static readonly string SimulationSettingsId = "SimulationSettingsId";
+      public static readonly string OffsetAlias = "OFFSET";
+      public static readonly string TableAlias = "TABLE";
       public static readonly string Param = "Param";
       public static readonly string RHSFormula = "RHS Formula";
 

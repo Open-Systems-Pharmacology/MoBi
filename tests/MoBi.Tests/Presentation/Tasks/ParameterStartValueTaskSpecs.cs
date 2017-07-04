@@ -11,7 +11,6 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
@@ -49,7 +48,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_updating_parameter_start_values_from_template : concern_for_ParameterStartValuesTask
+   public class When_updating_parameter_start_values_from_template : concern_for_ParameterStartValuesTask
    {
       private IParameterStartValuesBuildingBlock _templateStartValues;
       private ObjectPath _containerPath;
@@ -93,7 +92,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_retrieving_default_dimension_for_Parameters : concern_for_ParameterStartValuesTask
+   public class When_retrieving_default_dimension_for_Parameters : concern_for_ParameterStartValuesTask
    {
       private IDimension _result;
 
@@ -109,7 +108,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_comparing_start_value_to_original_parameter : concern_for_ParameterStartValuesTask
+   public class When_comparing_start_value_to_original_parameter : concern_for_ParameterStartValuesTask
    {
       private IParameterStartValue _parameterStartValue;
       private const string _name = "Name";
@@ -139,7 +138,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_original_parameter_cannot_be_found : when_comparing_start_value_to_original_parameter
+   public class When_original_parameter_cannot_be_found : When_comparing_start_value_to_original_parameter
    {
       [Observation]
       public void should_test_as_not_equivalent()
@@ -148,7 +147,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_original_parameter_can_be_found : when_comparing_start_value_to_original_parameter
+   public class When_original_parameter_can_be_found : When_comparing_start_value_to_original_parameter
    {
       protected override void Context()
       {
@@ -163,7 +162,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_importing_multiple_parameter_start_values : concern_for_ParameterStartValuesTask
+   public class When_importing_multiple_parameter_start_values : concern_for_ParameterStartValuesTask
    {
       private IList<ImportedQuantityDTO> _parameterStartValues;
       private IParameterStartValue _firstStartValueRef;
@@ -232,7 +231,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_removing_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
+   public class When_removing_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
    {
       private ParameterStartValue _startValue;
 
@@ -250,7 +249,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_appending_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
+   public class When_appending_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
    {
       private ParameterStartValue _startValue;
 
@@ -268,7 +267,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_replacing_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
+   public class When_replacing_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
    {
       private ParameterStartValue _startValue;
 
@@ -286,7 +285,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_replacing_an_element_outside_parameter_start_value_path_range : concern_for_ParameterStartValuesTask
+   public class When_replacing_an_element_outside_parameter_start_value_path_range : concern_for_ParameterStartValuesTask
    {
       private ParameterStartValue _startValue;
 

@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_updating_parameter_start_values : concern_for_UpdateParameterStartValuesInBuildingBlockCommand
+   public class When_updating_parameter_start_values : concern_for_UpdateParameterStartValuesInBuildingBlockCommand
    {
       protected override void Because()
       {
@@ -53,7 +53,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_retrieving_inverse : concern_for_UpdateParameterStartValuesInBuildingBlockCommand
+   public class When_retrieving_inverse : concern_for_UpdateParameterStartValuesInBuildingBlockCommand
    {
       protected override void Because()
       {

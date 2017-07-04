@@ -33,7 +33,7 @@ namespace MoBi.Core.Mapper
       }
    }
 
-   public class when_mapping_table_with_n_start_values : concern_for_MoleculeStartValuesBuildingBlockToParameterDataTableMapper
+   public class When_mapping_table_with_n_start_values : concern_for_MoleculeStartValuesBuildingBlockToParameterDataTableMapper
    {
       protected override void Context()
       {

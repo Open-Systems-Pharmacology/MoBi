@@ -33,7 +33,7 @@ namespace MoBi.Core.Mapper
       }
    }
 
-   public class when_mapping_multiple_reactions : concern_for_ReactionBuildingBlockToReactionDataTableMapper
+   public class When_mapping_multiple_reactions : concern_for_ReactionBuildingBlockToReactionDataTableMapper
    {
       protected override void Context()
       {

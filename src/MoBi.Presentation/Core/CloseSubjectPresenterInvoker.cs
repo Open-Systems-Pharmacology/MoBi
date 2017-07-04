@@ -5,7 +5,10 @@ using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.Core
 {
-   public interface ICloseSubjectPresenterInvoker : ICloseSubjectPresenterInvokerBase, IListener<ProjectClosedEvent>, IListener<RemovedEvent>, IListener<SimulationRemovedEvent>
+   public interface ICloseSubjectPresenterInvoker : ICloseSubjectPresenterInvokerBase, 
+      IListener<ProjectClosedEvent>,
+      IListener<RemovedEvent>, 
+      IListener<SimulationRemovedEvent>
    {
    }
 

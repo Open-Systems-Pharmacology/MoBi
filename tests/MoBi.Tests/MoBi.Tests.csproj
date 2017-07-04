@@ -185,6 +185,9 @@
       <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.105.2\lib\net451\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -202,31 +205,37 @@
     <Compile Include="..\..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="Application\AddBuildingBlockCommandSpecs.cs" />
-    <Compile Include="Application\BaseForSpecs.cs" />
-    <Compile Include="Application\BuildConfigurationUpdaterSpecs.cs" />
-    <Compile Include="Application\BuildingBlockVersionUpdaterSpecs.cs" />
-    <Compile Include="Application\CheckNameVisitorSpecs.cs" />
-    <Compile Include="Application\DimensionConverterSpecs.cs" />
-    <Compile Include="Application\EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommandSpecs.cs" />
-    <Compile Include="Application\EditUseDerivedValuesCommandSpecs.cs" />
-    <Compile Include="Application\EntityExtensionSpecs.cs" />
-    <Compile Include="Application\MoBiContextSpecs.cs" />
-    <Compile Include="Application\MoBiCoreGlobalsForSpecs.cs" />
-    <Compile Include="Application\MoBiDimensionFactorySpecs.cs" />
-    <Compile Include="Application\MoBiMergedDimensionFactorySpecs.cs" />
-    <Compile Include="Application\MoleculeBuilderToDtoMoleculeBuilderMapperSpecs.cs" />
-    <Compile Include="Application\MolWeightConverterSpecs.cs" />
-    <Compile Include="Application\ProjectMetaDataSpecs.cs" />
-    <Compile Include="Application\ProjectUpdate\DimensionRetrieverSpecs.cs" />
-    <Compile Include="Application\ProjectUpdate\ParameterStarValuesUpdaterSpecs.cs" />
-    <Compile Include="Application\ProjectUpdate\ProjectUpdaterSpecs.cs" />
-    <Compile Include="Application\ProjectUpdate\SpatialStructureUpdaterSpecs.cs" />
-    <Compile Include="Application\ReactionToDTOReactionMapperSpecs.cs" />
-    <Compile Include="Application\StoichiometricStringCreaterSpecs.cs" />
-    <Compile Include="Application\DimensionValidatorSpecs.cs" />
+    <Compile Include="Core\Commands\AddBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\BaseForSpecs.cs" />
+    <Compile Include="Core\BuildConfigurationUpdaterSpecs.cs" />
+    <Compile Include="Core\BuildingBlockVersionUpdaterSpecs.cs" />
+    <Compile Include="Core\CheckNameVisitorSpecs.cs" />
+    <Compile Include="Core\DimensionConverterSpecs.cs" />
+    <Compile Include="Core\Commands\EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommandSpecs.cs" />
+    <Compile Include="Core\Commands\EditUseDerivedValuesCommandSpecs.cs" />
+    <Compile Include="Core\EntityExtensionSpecs.cs" />
+    <Compile Include="Core\MoBiContextSpecs.cs" />
+    <Compile Include="Core\MoBiCoreGlobalsForSpecs.cs" />
+    <Compile Include="Core\MoBiDimensionFactorySpecs.cs" />
+    <Compile Include="Core\MoBiMergedDimensionFactorySpecs.cs" />
+    <Compile Include="Core\MoleculeBuilderToDtoMoleculeBuilderMapperSpecs.cs" />
+    <Compile Include="Core\MolWeightConverterSpecs.cs" />
+    <Compile Include="Core\ProjectMetaDataSpecs.cs" />
+    <Compile Include="Core\ValidationSettingsSpecs.cs" />
+    <Compile Include="Presentation\CloseSubjectPresenterInvokerSpecs.cs" />
+    <Compile Include="Presentation\OutputSelectionsRetrieverSpecs.cs" />
+    <Compile Include="Presentation\StartValueFormatterSpecs.cs" />
+    <Compile Include="Presentation\ValidationOptionsPresenterSpecs.cs" />
+    <Compile Include="Presentation\ValuePointFormatterSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_1\ParameterStartValueDimensionRetrieverSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_1\ParameterStarValuesUpdaterSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_1\ProjectUpdaterSpecs.cs" />
+    <Compile Include="ProjectConversion\v3_1\SpatialStructureUpdaterSpecs.cs" />
+    <Compile Include="Core\ReactionToDTOReactionMapperSpecs.cs" />
+    <Compile Include="Core\StoichiometricStringCreaterSpecs.cs" />
+    <Compile Include="Core\DimensionValidatorSpecs.cs" />
     <Compile Include="ContainerExtensionForSpecs.cs" />
-    <Compile Include="Core\AddChartTemplateToBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\AddChartTemplateToBuildingBlockCommandSpecs.cs" />
     <Compile Include="Core\BuildConfigurationFactorySpecs.cs" />
     <Compile Include="Core\Commands\AddChartTemplateToSimulationSettingsCommandSpecs.cs" />
     <Compile Include="Core\Commands\AddFormulaUsablePathCommandSpecs.cs" />
@@ -329,7 +338,7 @@
     <Compile Include="Core\ProjectClassifiableUpdaterAfterDeserializationSpecs.cs" />
     <Compile Include="Core\ProjectConverterLoggerSpecs.cs" />
     <Compile Include="Core\QuantityTaskSpecs.cs" />
-    <Compile Include="Core\RemoveChartTemplateFromBuildingBlockCommandSpecs.cs" />
+    <Compile Include="Core\Commands\RemoveChartTemplateFromBuildingBlockCommandSpecs.cs" />
     <Compile Include="Core\SBML\AssignmentImporterSpecs.cs" />
     <Compile Include="Core\SBML\ASTHandlerSpecs.cs" />
     <Compile Include="Core\SBML\CompartmentImporterSpecs.cs" />
@@ -370,7 +379,7 @@
     <Compile Include="Core\Service\TagTaskSpecs.cs" />
     <Compile Include="Core\SessionFactoryProviderHelperForSpecs.cs" />
     <Compile Include="Core\SessionFactoryProviderSpecs.cs" />
-    <Compile Include="Core\SetCreateProcessRateParameterCommandSpecs.cs" />
+    <Compile Include="Core\Commands\SetCreateProcessRateParameterCommandSpecs.cs" />
     <Compile Include="Core\SimulationLoaderSpecs.cs" />
     <Compile Include="Core\SpatialStructureExtensionsSpecs.cs" />
     <Compile Include="Core\TypeDictionarySpecs.cs" />

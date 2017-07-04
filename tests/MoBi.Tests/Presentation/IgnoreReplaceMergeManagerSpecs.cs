@@ -9,7 +9,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Services;
+using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
 
@@ -52,7 +52,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_resolving_conflicts_on_objects : concern_for_IgnoreReplaceMergeManager
+   public class When_resolving_conflicts_on_objects : concern_for_IgnoreReplaceMergeManager
    {
       private ICache<string, FakeObject> _mergeCache;
       private ICache<string, FakeObject> _targetCache;
@@ -73,7 +73,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_canceling_conflict_resolution : concern_for_IgnoreReplaceMergeManager
+   public class When_canceling_conflict_resolution : concern_for_IgnoreReplaceMergeManager
    {
       private Action _cancelAction;
 
@@ -97,7 +97,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_applying_conflict_resolution_to_all : concern_for_IgnoreReplaceMergeManager
+   public class When_applying_conflict_resolution_to_all : concern_for_IgnoreReplaceMergeManager
    {
       private ICache<string, FakeObject> _mergeCache;
       private ICache<string, FakeObject> _targetCache;

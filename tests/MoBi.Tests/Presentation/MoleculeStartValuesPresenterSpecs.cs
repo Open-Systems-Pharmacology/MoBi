@@ -293,7 +293,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class when_deleting_unresolved_start_values_from_building_block : When_deleting_start_values_from_building_block
+   internal class When_deleting_unresolved_start_values_from_building_block : When_deleting_start_values_from_building_block
    {
       protected override void Context()
       {
@@ -309,7 +309,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class when_deleting_selected_start_values_from_building_block : When_deleting_start_values_from_building_block
+   internal class When_deleting_selected_start_values_from_building_block : When_deleting_start_values_from_building_block
    {
       protected override void Context()
       {
@@ -327,7 +327,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class when_changing_name_of_start_value_not_in_building_block : concern_for_MoleculeStartValuesPresenter
+   internal class When_changing_name_of_start_value_not_in_building_block : concern_for_MoleculeStartValuesPresenter
    {
       protected override void Context()
       {

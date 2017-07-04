@@ -12,5 +12,7 @@ namespace MoBi.Core.Services
       OutputSelections OutputSelectionsFor(IMoBiSimulation simulation);
 
       QuantitySelection SelectionFrom(IQuantity quantity);
+
+      void UpdatePersistableOutputsIn(IMoBiSimulation simulation);
    }
 }

@@ -1,26 +1,20 @@
-using MoBi.Assets;
-using OSPSuite.Utility.Format;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Formatters
 {
-   public class ValuePointFormatter : NumericFormatter<double>
+   public class ValuePointFormatter : UnitFormatter
    {
-      private readonly ValuePointParameterDTO _dtoValuePointParameter;
+      private readonly ValuePointParameterDTO _valuePointParameterDTO;
 
-      public ValuePointFormatter(ValuePointParameterDTO dtoValuePointParameter)
-         : base(NumericFormatterOptions.Instance)
+      public ValuePointFormatter(ValuePointParameterDTO valuePointParameterDTO)
       {
-         _dtoValuePointParameter = dtoValuePointParameter;
+         _valuePointParameterDTO = valuePointParameterDTO;
       }
 
       public override string Format(double valueToFormat)
       {
-         if (double.IsNaN(valueToFormat))
-            return AppConstants.NaN;
-
-         var formattedValue = base.Format(valueToFormat);
-         return $"{formattedValue} {_dtoValuePointParameter.DisplayUnit}";
+         return base.Format(valueToFormat, _valuePointParameterDTO.DisplayUnit);
       }
    }
 }

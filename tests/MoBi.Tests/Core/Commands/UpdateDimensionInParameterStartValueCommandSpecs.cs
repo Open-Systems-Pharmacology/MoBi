@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_converting_dimensions_on_parameter_start_value : concern_for_UpdateDimensionInParameterStartValueCommand
+   public class When_converting_dimensions_on_parameter_start_value : concern_for_UpdateDimensionInParameterStartValueCommand
    {
       protected override void Because()
       {
@@ -54,7 +54,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_reversing_dimension_change : concern_for_UpdateDimensionInParameterStartValueCommand
+   public class When_reversing_dimension_change : concern_for_UpdateDimensionInParameterStartValueCommand
    {
       protected override void Because()
       {

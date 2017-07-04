@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_event_builder : concern_for_EventGroupBuilderToObjectBaseSummaryDTOMapper
+   public class When_mapping_event_builder : concern_for_EventGroupBuilderToObjectBaseSummaryDTOMapper
    {
       private ObjectBaseSummaryDTO _result;
 

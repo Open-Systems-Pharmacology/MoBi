@@ -15,7 +15,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_retrieving_non_empty_excel_sheets : concern_for_ImportFromExcelTask
+   public class When_retrieving_non_empty_excel_sheets : concern_for_ImportFromExcelTask
    {
       private IEnumerable<string> _result;
 
@@ -32,7 +32,7 @@ namespace MoBi.Presentation
 
    }
 
-   public class when_retrieving_all_excel_sheets : concern_for_ImportFromExcelTask
+   public class When_retrieving_all_excel_sheets : concern_for_ImportFromExcelTask
    {
       private IEnumerable<string> _result;
 
@@ -49,7 +49,7 @@ namespace MoBi.Presentation
 
    }
 
-   public class when_importing_excel_using_no_specific_sheet_name : concern_for_ImportFromExcelTask
+   public class When_importing_excel_using_no_specific_sheet_name : concern_for_ImportFromExcelTask
    {
       private IEnumerable<DataTable> _results;
 
@@ -59,13 +59,13 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_import_multiple_tables_when_asked_for_no_specific_sheet()
+      public void should_import_multiple_tables_When_asked_for_no_specific_sheet()
       {
          _results.Count().ShouldBeEqualTo(5);
       }
    }
 
-   public class when_importing_excel_using_non_existing_sheet_name : concern_for_ImportFromExcelTask
+   public class When_importing_excel_using_non_existing_sheet_name : concern_for_ImportFromExcelTask
    {
       private DataTable _results;
 
@@ -81,7 +81,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_importing_excel_using_specific_sheet_name : concern_for_ImportFromExcelTask
+   public class When_importing_excel_using_specific_sheet_name : concern_for_ImportFromExcelTask
    {
       private DataTable _results;
 

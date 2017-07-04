@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_molecule_start_value_to_dto : concern_for_MoleculeStartValueToObjectBaseSummaryDTOMapper
+   public class When_mapping_molecule_start_value_to_dto : concern_for_MoleculeStartValueToObjectBaseSummaryDTOMapper
    {
       private ObjectBaseSummaryDTO _result;
 

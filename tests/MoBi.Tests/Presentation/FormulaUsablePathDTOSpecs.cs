@@ -21,7 +21,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class should_pass_validation_when_rules_are_not_broken : concern_for_FormulaUsablePathDTO
+   public class should_pass_validation_When_rules_are_not_broken : concern_for_FormulaUsablePathDTO
    {
       protected override void Context()
       {
@@ -36,7 +36,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class should_pass_validation_when_the_formula_usable_path_does_not_belong_in_the_formula : concern_for_FormulaUsablePathDTO
+   public class should_pass_validation_When_the_formula_usable_path_does_not_belong_in_the_formula : concern_for_FormulaUsablePathDTO
    {
       [Observation]
       public void passes_validation()

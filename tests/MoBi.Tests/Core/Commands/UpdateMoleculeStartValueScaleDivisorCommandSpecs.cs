@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   class when_executing_command_to_modify_scale_factor : concern_for_UpdateMoleculeStartValueScaleDivisorCommand
+   class When_executing_command_to_modify_scale_factor : concern_for_UpdateMoleculeStartValueScaleDivisorCommand
    {
       protected override void Context()
       {
@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   class when_reverting_command_to_modify_scale_factor : concern_for_UpdateMoleculeStartValueScaleDivisorCommand
+   class When_reverting_command_to_modify_scale_factor : concern_for_UpdateMoleculeStartValueScaleDivisorCommand
    {
       protected override void Because()
       {

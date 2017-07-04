@@ -6,7 +6,6 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IValidationOptionsPresenter : IPresenter<IValidationOptionsView>
    {
-      void ValidateDimensionsChanged(bool newValue);
       void Edit(ValidationSettings validationOptions);
    }
 
@@ -16,15 +15,9 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      public void ValidateDimensionsChanged(bool newValue)
-      {
-         _view.EnableDisableValidationSubOptions(newValue);
-      }
-
       public void Edit(ValidationSettings validationOptions)
       {
-         _view.EnableDisableValidationSubOptions(validationOptions.CheckDimensions);
-         _view.Show(validationOptions);
+         _view.BindTo(validationOptions);
       }
    }
 }

@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_updating_molecule_start_values : concern_for_UpdateMoleculeStartValuesInBuildingBlockCommand
+   public class When_updating_molecule_start_values : concern_for_UpdateMoleculeStartValuesInBuildingBlockCommand
    {
       protected override void Because()
       {
@@ -74,7 +74,7 @@ namespace MoBi.Core.Commands
    }
 
 
-   public class when_retrieving_molecule_inverse : concern_for_UpdateMoleculeStartValuesInBuildingBlockCommand
+   public class When_retrieving_molecule_inverse : concern_for_UpdateMoleculeStartValuesInBuildingBlockCommand
    {
       protected override void Because()
       {

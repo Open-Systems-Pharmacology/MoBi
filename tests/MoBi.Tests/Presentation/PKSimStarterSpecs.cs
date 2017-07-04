@@ -2,8 +2,8 @@
 using FakeItEasy;
 using MoBi.Core;
 using MoBi.Core.Services;
-using MoBi.Presentation.Services;
 using MoBi.Presentation.Settings;
+using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;

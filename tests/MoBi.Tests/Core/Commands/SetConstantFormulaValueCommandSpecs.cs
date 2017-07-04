@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
       
    }
 
-   public class when_reverting_value_for_constant_formula : concern_for_SetConstantFormulaValueCommand
+   public class When_reverting_value_for_constant_formula : concern_for_SetConstantFormulaValueCommand
    {
       protected override void Because()
       {
@@ -48,7 +48,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_setting_value_for_constant_formula : concern_for_SetConstantFormulaValueCommand
+   public class When_setting_value_for_constant_formula : concern_for_SetConstantFormulaValueCommand
    {
       protected override void Because()
       {

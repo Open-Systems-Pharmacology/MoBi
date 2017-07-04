@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   class when_inverting_a_psv_change_command : concern_for_ChangeStartValueFormulaCommand
+   class When_inverting_a_psv_change_command : concern_for_ChangeStartValueFormulaCommand
    {
       protected IMoBiContext _context;
       protected override void Context()

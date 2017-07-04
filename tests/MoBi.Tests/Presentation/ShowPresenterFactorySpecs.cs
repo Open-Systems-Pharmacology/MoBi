@@ -1,10 +1,10 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Application;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using IoC = OSPSuite.Utility.Container.IContainer;
 using FakeItEasy;
+using MoBi.Core;
 
 namespace MoBi.Presentation
 {

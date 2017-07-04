@@ -1,6 +1,6 @@
-using OSPSuite.Utility;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -34,6 +34,4 @@ namespace MoBi.Presentation.Mappers
          return Map<ObjectBaseDTO>(objectBase);
       }
    }
-
-
 }

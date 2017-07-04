@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_reaction_builder_to_dto : concern_for_ReactionBuilderToObjectBaseSummaryDTOMapper
+   public class When_mapping_reaction_builder_to_dto : concern_for_ReactionBuilderToObjectBaseSummaryDTOMapper
    {
       private ObjectBaseSummaryDTO _result;
 

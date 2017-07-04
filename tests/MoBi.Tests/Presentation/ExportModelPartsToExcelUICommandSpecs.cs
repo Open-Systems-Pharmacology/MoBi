@@ -29,7 +29,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_creating_export_where_project_has_no_path : ExportModelPartsToExcelUICommandSpecs
+   public class When_creating_export_where_project_has_no_path : ExportModelPartsToExcelUICommandSpecs
    {
       protected override void Because()
       {
@@ -43,7 +43,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_creatign_export_where_project_has_path : ExportModelPartsToExcelUICommandSpecs
+   public class When_creatign_export_where_project_has_path : ExportModelPartsToExcelUICommandSpecs
    {
       private IMoBiProject _project;
       private string _defaultFileName;

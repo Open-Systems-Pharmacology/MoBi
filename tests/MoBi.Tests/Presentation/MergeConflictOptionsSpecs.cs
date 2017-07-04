@@ -1,4 +1,4 @@
-﻿using MoBi.Presentation.Services;
+﻿using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 
@@ -8,7 +8,7 @@ namespace MoBi.Presentation
    {
    }
 
-   public class when_option_is_skip : concern_for_MergeConflictOptions
+   public class When_option_is_skip : concern_for_MergeConflictOptions
    {
       protected override void Because()
       {
@@ -31,7 +31,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_option_is_skip_all : concern_for_MergeConflictOptions
+   public class When_option_is_skip_all : concern_for_MergeConflictOptions
    {
       protected override void Because()
       {
@@ -59,7 +59,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_option_is_replace : concern_for_MergeConflictOptions
+   public class When_option_is_replace : concern_for_MergeConflictOptions
    {
       protected override void Because()
       {
@@ -82,7 +82,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_option_is_replace_all : concern_for_MergeConflictOptions
+   public class When_option_is_replace_all : concern_for_MergeConflictOptions
    {
       protected override void Because()
       {
@@ -109,7 +109,7 @@ namespace MoBi.Presentation
          sut.IsSkip().ShouldBeFalse();
       }
 
-      public class when_option_is_merge : concern_for_MergeConflictOptions
+      public class When_option_is_merge : concern_for_MergeConflictOptions
       {
          protected override void Because()
          {
@@ -132,7 +132,7 @@ namespace MoBi.Presentation
          }
       }
 
-      public class when_option_is_merge_all : concern_for_MergeConflictOptions
+      public class When_option_is_merge_all : concern_for_MergeConflictOptions
       {
          protected override void Because()
          {
@@ -164,7 +164,7 @@ namespace MoBi.Presentation
 
 
 
-      public class when_option_is_clone : concern_for_MergeConflictOptions
+      public class When_option_is_clone : concern_for_MergeConflictOptions
       {
          protected override void Because()
          {
@@ -187,7 +187,7 @@ namespace MoBi.Presentation
          }
       }
 
-      public class when_option_is_clone_all : concern_for_MergeConflictOptions
+      public class When_option_is_clone_all : concern_for_MergeConflictOptions
       {
          protected override void Because()
          {
