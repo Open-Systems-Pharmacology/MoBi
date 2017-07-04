@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 using System.Collections.Generic;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Commands
 {
@@ -37,6 +38,7 @@ namespace MoBi.Core.Commands
       private IProject _project;
       private ParameterIdentification _parameterIdentification;
       private ISimulationReferenceUpdater _simulationReferenceUpdater;
+      private ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
 
       protected override void Context()
       {
@@ -45,11 +47,14 @@ namespace MoBi.Core.Commands
          _parameterIdentification = A.Fake<ParameterIdentification>();
          _context = A.Fake<IMoBiContext>();
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
+         _simulationParameterOriginIdUpdater= A.Fake<ISimulationParameterOriginIdUpdater>();
+
          A.CallTo(() => _context.PublishEvent(A<SimulationUnloadEvent>._))
             .Invokes(x => _event = x.GetArgument<SimulationUnloadEvent>(0));
 
          A.CallTo(() => _context.Project).Returns(_project);
          A.CallTo(() => _context.Resolve<ISimulationReferenceUpdater>()).Returns(_simulationReferenceUpdater);
+         A.CallTo(() => _context.Resolve<ISimulationParameterOriginIdUpdater>()).Returns(_simulationParameterOriginIdUpdater);
          A.CallTo(() => _project.AllParameterIdentifications).Returns(new[] {_parameterIdentification});
          _parameterIdentification.AddSimulation(_simulation);
       }
@@ -63,6 +68,12 @@ namespace MoBi.Core.Commands
       public void should_replace_the_simulation_references_in_the_simulation_being_updated()
       {
          A.CallTo(() => _simulationReferenceUpdater.SwapSimulationInParameterAnalysables(_simulation, _simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_the_simulation_origin_id_in_all_parameters_of_the_simulation()
+      {
+         A.CallTo(() => _simulationParameterOriginIdUpdater.UpdateSimulationId(_simulation)).MustHaveHappened();
       }
 
       [Observation]

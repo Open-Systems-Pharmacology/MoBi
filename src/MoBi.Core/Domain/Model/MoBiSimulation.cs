@@ -17,7 +17,7 @@ namespace MoBi.Core.Domain.Model
       CurveChart Chart { get; set; }
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
       string ParameterIdentificationWorkingDirectory { get; set; }
-      void Update(IMoBiBuildConfiguration updatedBuildConfiguration, IModel model);
+      void Update(IMoBiBuildConfiguration buildConfiguration, IModel model);
       bool HasChanged { get; set; }
 
       SolverSettings Solver { get; }
@@ -91,9 +91,9 @@ namespace MoBi.Core.Domain.Model
          Chart?.AcceptVisitor(visitor);
       }
 
-      public void Update(IMoBiBuildConfiguration updatedBuildConfiguration, IModel model)
+      public void Update(IMoBiBuildConfiguration buildConfiguration, IModel model)
       {
-         BuildConfiguration = updatedBuildConfiguration;
+         BuildConfiguration = buildConfiguration;
          Model = model;
       }
 
