@@ -42,13 +42,27 @@ namespace MoBi.Assets
       public static readonly string IssueTrackerUrl = "http://www.open-systems-pharmacology.org/mobi/issues";
       public static readonly string Persitable = "Persitable";
       public static readonly string CVODE_1002_2_SOLVER = "CVODE1002_2";
-      public static int MAX_PATH_DEPTH = 10;
+      public static readonly int MAX_PATH_DEPTH = 10;
       public static readonly string CONCENTRATION_FORMULA = "ConcFormula";
 
       public static class Parameters
       {
          public static readonly string CONCENTRATION = "Concentration";
          public static readonly string MOLECULAR_WEIGHT = "Molecular weight";
+         public static readonly string EFFECTIVE_MOLECULAR_WEIGHT = "Effective molecular weight";
+         public static readonly string SURFACE_AREA_INTERSTITIAL_INTRACELLULAR = "Surface area (interstitial/intracellular)";
+         public static readonly string BSA = "BSA";
+         public static readonly string PERMEABILITY = "Permeability";
+         public static readonly string SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR = "Specific intestinal permeability (transcellular)";
+         public static readonly string RADIUS_SOLUTE = "Radius (solute)";
+         public static readonly string SECRETION_OF_LIQUID = "Secretion of liquid";
+         public static readonly string RELEASE_RATE_OF_TABLET = "Release rate of the tablet";
+         public static readonly string V_MAX = "Vmax";
+         public static readonly string LYMPH_FLOW_RATE = "Lymph flow rate";
+         public static readonly string LYMPH_FLOW_RATE_INCL_MUCOSA = "Lymph flow rate (incl. mucosa)";
+         public static readonly string FLUID_RECIRCULATION_FLOW_RATE = "Fluid recirculation flow rate";
+         public static readonly string FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA = "Fluid recirculation flow rate (incl. mucosa)";
+         public static readonly string CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR= "Calculated specific intestinal permeability (transcellular)";
       }
 
       public static class Groups
@@ -1023,10 +1037,13 @@ namespace MoBi.Assets
          public static readonly string MASS_CONCENTRATION = "Concentration (mass)";
          public static readonly string FRACTION = "Fraction";
          public static readonly string INVERSED_LENGTH = "Inversed length";
+         public static readonly string LENGTH = "Length";
+         public static readonly string FLOW = "Flow";
          public static readonly string MOL_WEIGHT = "Molecular weight";
          public static readonly string VELOCITY = "Velocity";
          public static readonly string INVERSED_VOLUME = "Inversed volume";
-         public static readonly string Mass = "Mass";
+         public static readonly string MASS = "Mass";
+         public static readonly string AREA = "Area";
       }
 
       public class Messages
@@ -1853,8 +1870,10 @@ namespace MoBi.Assets
 
          public static string FormulaDimensionMismatch(string displayPath, string dimensionName)
          {
-            return $"The formula of '{displayPath}' does not evaluate to the dimension '{dimensionName}'";
+            return $"The formula of '{displayPath}' {DoesNotEvaluateTo(dimensionName)}";
          }
+
+         public static string DoesNotEvaluateTo(string dimensionName) => $"does not evaluate to the dimension '{dimensionName}'";
 
          public static string PathIsIdenticalToExistingPath(IObjectPath path)
          {
