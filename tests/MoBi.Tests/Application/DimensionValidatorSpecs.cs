@@ -33,7 +33,7 @@ namespace MoBi.Application
       }
    }
 
-   internal class When_validating_a_parameter_from_pksim_that_should_not_be_show_in_the_default_validatopm : concern_for_DimensionValidator
+   internal class When_validating_a_parameter_from_pksim_that_should_not_be_shown_in_the_default_validaton : concern_for_DimensionValidator
    {
       private IContainer _root;
       private ValidationResult _result;
