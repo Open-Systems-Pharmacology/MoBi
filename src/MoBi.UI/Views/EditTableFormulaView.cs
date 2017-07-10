@@ -132,9 +132,9 @@ namespace MoBi.UI.Views
          _presenter.SetXValue(valuePoint, newXDisplayValue);
       }
 
-      private void setUseDerivedValues(TableFormulaBuilderDTO dtoTableFormula, PropertyValueSetEventArgs<bool> arg2)
+      private void setUseDerivedValues(TableFormulaBuilderDTO dtoTableFormula, PropertyValueSetEventArgs<bool> e)
       {
-         _presenter.SetUseDerivedValuesFor(dtoTableFormula, arg2.NewValue, arg2.OldValue);
+         _presenter.SetUseDerivedValuesFor(dtoTableFormula, e.NewValue, e.OldValue);
       }
 
       private UxRepositoryItemButtonEdit createButtonRepository()

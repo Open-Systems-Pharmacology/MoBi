@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_executing_inverse_of_edit_parameter_path : concern_for_EditParameterStartValuePathCommand
+   public class When_executing_inverse_of_edit_parameter_path : concern_for_EditParameterStartValuePathCommand
    {
       protected override void Context()
       {
@@ -48,7 +48,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_appending_new_element_to_container_path : concern_for_EditParameterStartValuePathCommand
+   public class When_appending_new_element_to_container_path : concern_for_EditParameterStartValuePathCommand
    {
       protected override void Context()
       {

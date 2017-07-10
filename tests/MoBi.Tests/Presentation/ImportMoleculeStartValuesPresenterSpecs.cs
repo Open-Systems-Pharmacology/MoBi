@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using OSPSuite.BDDHelper;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -12,12 +9,15 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {
-   public class concern_for_ImportMoleculeStartValuesPresenter : ContextSpecification<ImportMoleculeStartValuePresenter>
+   public abstract class concern_for_ImportMoleculeStartValuesPresenter : ContextSpecification<ImportMoleculeStartValuePresenter>
    {
       protected IImportQuantityView _view;
       protected IDialogCreator _dialogCreator;
@@ -26,6 +26,8 @@ namespace MoBi.Presentation
       protected IMoleculeStartValuesBuildingBlock _buildingBlock;
       private IMoBiContext _context;
       private IImportFromExcelTask _excelTask;
+      protected QuantityImporterDTO _quantityImporterDTO;
+
       protected override void Context()
       {
          base.Context();
@@ -39,22 +41,13 @@ namespace MoBi.Presentation
          _excelTask = A.Fake<IImportFromExcelTask>();
          sut = new ImportMoleculeStartValuePresenter(_view, _dialogCreator, _context, _excelTask, _startValuesTask, _dataTableToImportQuantityDTOMapperForMolecules);
          sut.Initialize();
-      }
-   }
 
-   public class setup_for_general_import_case : concern_for_ImportMoleculeStartValuesPresenter
-   {
-      protected QuantityImporterDTO _quantityImporterDTO;
-
-      protected override void Context()
-      {
-         base.Context();
          _quantityImporterDTO = new QuantityImporterDTO();
-         
+
          new List<ImportedQuantityDTO>
          {
-            new ImportedQuantityDTO {Name =  "drug", ContainerPath = new ObjectPath("First")},
-            new ImportedQuantityDTO {Name =  "drug", ContainerPath = new ObjectPath("Second")},
+            new ImportedQuantityDTO {Name = "drug", ContainerPath = new ObjectPath("First")},
+            new ImportedQuantityDTO {Name = "drug", ContainerPath = new ObjectPath("Second")},
          }.Each(_quantityImporterDTO.QuantitDTOs.Add);
 
          A.CallTo(() => _dataTableToImportQuantityDTOMapperForMolecules.MapFrom(A<DataTable>._, _buildingBlock)).Returns(_quantityImporterDTO);
@@ -65,20 +58,20 @@ namespace MoBi.Presentation
             sut.TransferImportedQuantities();
          });
       }
+   }
 
+   public class When_the_import_molecule_start_values_presenter_is_starting_the_import_workflow : concern_for_ImportMoleculeStartValuesPresenter
+   {
       protected override void Because()
       {
          sut.ImportStartValuesForBuildingBlock(_buildingBlock);
       }
-   }
 
-   public class when_validating_for_update : setup_for_general_import_case
-   {
       protected override void Context()
       {
          base.Context();
-         _buildingBlock.Add(new MoleculeStartValue{ContainerPath = new ObjectPath("First"), Name = "drug"});
-         _buildingBlock.Add(new MoleculeStartValue{ContainerPath = new ObjectPath("Second"), Name = "drug"});
+         _buildingBlock.Add(new MoleculeStartValue {ContainerPath = new ObjectPath("First"), Name = "drug"});
+         _buildingBlock.Add(new MoleculeStartValue {ContainerPath = new ObjectPath("Second"), Name = "drug"});
 
          // These are both valid update scenarios. The first scenario without start value specified is only valid for update, not insert
          _quantityImporterDTO.QuantitDTOs[0].QuantityInBaseUnit = double.NaN;
@@ -92,10 +85,7 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _view.BindTo(A<QuantityImporterDTO>.That.Matches(dto => dto.Count.Equals(2)))).MustHaveHappened();
       }
-   }
-   
-   public class after_msv_successful_import : setup_for_general_import_case
-   {
+
       [Observation]
       public void results_in_imported_values_returned()
       {
@@ -108,6 +98,4 @@ namespace MoBi.Presentation
          A.CallTo(() => _view.BindTo(A<QuantityImporterDTO>.That.Matches(dto => dto.Count.Equals(2)))).MustHaveHappened();
       }
    }
-
-
 }

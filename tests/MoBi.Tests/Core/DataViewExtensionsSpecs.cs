@@ -6,7 +6,7 @@ using MoBi.Core.Extensions;
 
 namespace MoBi.Core
 {
-   public class when_using_data_view_extensions : StaticContextSpecification
+   public class When_using_data_view_extensions : StaticContextSpecification
    {
       private DataTable _table;
       private DataTable _childTable;

@@ -115,7 +115,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_selecting_a_parmaeter_in_the_reaction_builder_presenter : concern_for_EditReactionBuilderPresenter
+   public class When_selecting_a_parmaeter_in_the_reaction_builder_presenter : concern_for_EditReactionBuilderPresenter
    {
       private IParameter _parameter;
 

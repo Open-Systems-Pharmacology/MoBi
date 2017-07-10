@@ -29,6 +29,8 @@ namespace MoBi
 
       public static IDimension ConcentrationDimension { get; } = new Dimension(new BaseDimensionRepresentation {LengthExponent = -3, MassExponent = 1, TimeExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
 
+      public static IDimension FractionDimension { get; } = new Dimension(new BaseDimensionRepresentation() , Constants.Dimension.FRACTION, "");
+
       public static IDimension ConcentrationPerTimeDimension { get; } = new Dimension(new BaseDimensionRepresentation {LengthExponent = -3, AmountExponent = 1, TimeExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME, "µmol/l/min");
 
       public static IDimension AmountPerTimeDimension { get; } = new Dimension(new BaseDimensionRepresentation {AmountExponent = 1, TimeExponent = -1}, Constants.Dimension.AMOUNT_PER_TIME, "µmol/min");

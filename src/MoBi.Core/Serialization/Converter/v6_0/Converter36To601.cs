@@ -15,6 +15,7 @@ namespace MoBi.Core.Serialization.Converter.v6_0
    {
       private readonly Converter56To601 _coreConverter56To601;
       private static readonly string RHS_DIMENSION_OLD_SUFFIX = " per Time";
+      private static readonly string MOL_WEIGHT = "MolWeight";
 
       public Converter36To601(Converter56To601 coreConverter56To601)
       {
@@ -73,10 +74,10 @@ namespace MoBi.Core.Serialization.Converter.v6_0
       }
 
       public void Visit(IMoBiProject project)
-      {
+      { 
          foreach (var observedData in project.AllObservedData)
          {
-            observedData.ExtendedProperties.Remove(AppConstants.MolWeight);
+            observedData.ExtendedProperties.Remove(MOL_WEIGHT);
             updateObservedDataPaths(observedData);
          }
       }

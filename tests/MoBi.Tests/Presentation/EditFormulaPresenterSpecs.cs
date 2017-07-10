@@ -141,7 +141,7 @@ namespace MoBi.Presentation
          //add so that it will be found when setting the value in the parameter
          _buidingBlockWithFormulaCache.AddFormula(_explicitFormula);
          A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache))
-            .Returns(new Tuple<IMoBiCommand, IFormula>(A.Fake<IMoBiCommand>(), _explicitFormula));
+            .Returns((A.Fake<IMoBiCommand>(), _explicitFormula));
       }
 
       protected override void Because()
@@ -184,7 +184,7 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache))
             .Invokes(x => _availableFormulaNames = x.GetArgument<IEnumerable<string>>(2))
-            .Returns(new Tuple<IMoBiCommand, IFormula>(A.Fake<IMoBiCommand>(), null));
+            .Returns((A.Fake<IMoBiCommand>(), null));
 
 
          sut.Init(_parameter, _buidingBlockWithFormulaCache, new UsingFormulaDecoder());

@@ -1,5 +1,5 @@
 using MoBi.Assets;
-using OSPSuite.Core.Domain;
+using MoBi.Presentation.DTO;
 
 namespace MoBi.Presentation.Formatters
 {
@@ -10,10 +10,8 @@ namespace MoBi.Presentation.Formatters
          return !valueToFormat.HasValue || double.IsNaN(valueToFormat.Value) ? AppConstants.Captions.StartValueNotAvailable : base.Format(valueToFormat);
       }
 
-      public StartValueFormatter(IWithDisplayUnit moleculeStartValue)
-         : base(moleculeStartValue)
+      public StartValueFormatter(IStartValueDTO startValueDTO) : base(startValueDTO)
       {
-
       }
    }
 }

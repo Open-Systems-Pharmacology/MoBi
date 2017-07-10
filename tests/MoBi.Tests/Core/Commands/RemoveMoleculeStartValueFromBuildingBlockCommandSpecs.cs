@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_removing_molecule_start_value_from_path : concern_for_RemoveMoleculeStartValueFromBuildingBlockCommand
+   public class When_removing_molecule_start_value_from_path : concern_for_RemoveMoleculeStartValueFromBuildingBlockCommand
    {
       protected override void Because()
       {
@@ -45,7 +45,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_retrieving_the_inverse_command : concern_for_RemoveMoleculeStartValueFromBuildingBlockCommand
+   public class When_retrieving_the_inverse_command : concern_for_RemoveMoleculeStartValueFromBuildingBlockCommand
    {
       protected override void Because()
       {

@@ -40,7 +40,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecules_that_dont_have_an_existing_name_from_the_building_block : concern_for_MoleculeResolver
+   public class When_resolving_molecules_that_dont_have_an_existing_name_from_the_building_block : concern_for_MoleculeResolver
    {
       protected override void Context()
       {
@@ -55,7 +55,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecules_with_path_that_doesnt_exist : concern_for_MoleculeResolver
+   public class When_resolving_molecules_with_path_that_doesnt_exist : concern_for_MoleculeResolver
    {
       protected override void Context()
       {
@@ -70,7 +70,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecules_with_path_that_leads_to_logical_container : concern_for_MoleculeResolver
+   public class When_resolving_molecules_with_path_that_leads_to_logical_container : concern_for_MoleculeResolver
    {
       protected override void Context()
       {
@@ -85,7 +85,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_resolving_molecules_with_paths_that_lead_to_physical_containers : concern_for_MoleculeResolver
+   public class When_resolving_molecules_with_paths_that_lead_to_physical_containers : concern_for_MoleculeResolver
    {
       [Observation]
       public void should_resolve_a_molecule_only_if_the_molecule_exists_and_the_spatial_structure_exists()

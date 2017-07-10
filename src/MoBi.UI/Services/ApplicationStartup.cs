@@ -186,7 +186,7 @@ namespace MoBi.UI.Services
 
       private static void setUpDimensionMergings(IDimensionFactory factory)
       {
-         var concentrationDimension = factory.Dimension(AppConstants.DimensionNames.MASS_CONCENTRATION);
+         var concentrationDimension = factory.Dimension(Constants.Dimension.MASS_CONCENTRATION);
          var molarConcentrationDimomension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
 
          factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimomension,

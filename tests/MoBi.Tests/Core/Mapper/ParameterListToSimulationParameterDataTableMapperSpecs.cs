@@ -33,7 +33,7 @@ namespace MoBi.Core.Mapper
       }
    }
 
-   public class when_mapping_multiple_parameters : concern_for_ParameterListToSimulationParameterDataTableMapper
+   public class When_mapping_multiple_parameters : concern_for_ParameterListToSimulationParameterDataTableMapper
    {
       protected override void Context()
       {

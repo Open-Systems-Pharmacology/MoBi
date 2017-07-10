@@ -47,7 +47,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_performing_merge_for_multiple_building_blocks_ : concern_for_BuildingBlockMergePresenter
+   public class When_performing_merge_for_multiple_building_blocks_ : concern_for_BuildingBlockMergePresenter
    {
       protected override void Context()
       {
@@ -67,7 +67,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_performing_merge_on_a_single_building_block : concern_for_BuildingBlockMergePresenter
+   public class When_performing_merge_on_a_single_building_block : concern_for_BuildingBlockMergePresenter
    {
       protected override void Context()
       {
@@ -87,7 +87,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_adding_pkml_file_to_merge_presenter : concern_for_BuildingBlockMergePresenter
+   public class When_adding_pkml_file_to_merge_presenter : concern_for_BuildingBlockMergePresenter
    {
       private string _pkmlFileName;
       private Action<IBuildingBlockMergePresenter, IBuildingBlock> _mergeConfigurationAction;

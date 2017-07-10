@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Mapper
    }
 
 
-   public class when_mapping_start_value_with_formulat : concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs
+   public class When_mapping_start_value_with_formulat : concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs
    {
       private ObjectBaseSummaryDTO _result;
 
@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_start_value_with_startvalue : concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs
+   public class When_mapping_start_value_with_startvalue : concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs
    {
       private ObjectBaseSummaryDTO _result;
 

@@ -1,6 +1,5 @@
 using OSPSuite.Utility.Format;
 using MoBi.Presentation.DTO;
-using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.Formatters
 {

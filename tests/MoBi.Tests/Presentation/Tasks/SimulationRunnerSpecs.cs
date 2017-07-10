@@ -1,41 +1,47 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Assets;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Core.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
+using SimModelNET;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
 
 namespace MoBi.Presentation.Tasks
 {
    public abstract class concern_for_SimulationRunner : ContextSpecification<ISimulationRunner>
    {
-      private IMoBiContext _context;
+      protected IMoBiContext _context;
       protected IOutputSelectionsRetriever _outputSelectionsRetriever;
-      private ISimModelExporter _simModelExporter;
-      private IDataNamingService _dataNamingService;
-      private ISimulationPersistableUpdater _simulationPersistableUpdater;
-      private IDisplayUnitUpdater _displayUnitUpdater;
+      protected ISimulationPersistableUpdater _simulationPersistableUpdater;
+      protected IDisplayUnitUpdater _displayUnitUpdater;
       private IMoBiApplicationController _applicationController;
-      private IDisplayUnitRetriever _displayUnitRetreiver;
-      private ISimModelSimulationFactory _simModelSimulationFactory;
+      protected ISimModelManagerFactory _simModelManagerFactory;
+      protected IKeyPathMapper _keyPathMapper;
 
       protected override void Context()
       {
-         _displayUnitRetreiver = A.Fake<IDisplayUnitRetriever>();
          _context = A.Fake<IMoBiContext>();
          _outputSelectionsRetriever = A.Fake<IOutputSelectionsRetriever>();
-         _simModelExporter = A.Fake<ISimModelExporter>();
-         _dataNamingService = A.Fake<IDataNamingService>();
          _simulationPersistableUpdater = A.Fake<ISimulationPersistableUpdater>();
          _displayUnitUpdater = A.Fake<IDisplayUnitUpdater>();
          _applicationController = A.Fake<IMoBiApplicationController>();
-         _simModelSimulationFactory= A.Fake<ISimModelSimulationFactory>();
+         _simModelManagerFactory = A.Fake<ISimModelManagerFactory>();
+         _keyPathMapper= A.Fake<IKeyPathMapper>();
 
          sut = new SimulationRunner(_context, _applicationController,
-            _outputSelectionsRetriever, _simModelExporter, _dataNamingService, _simulationPersistableUpdater, _displayUnitUpdater,  _displayUnitRetreiver, _simModelSimulationFactory);
+            _outputSelectionsRetriever, _simulationPersistableUpdater, _displayUnitUpdater, _simModelManagerFactory,_keyPathMapper);
       }
    }
 
@@ -65,40 +71,8 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_running_a_simulation_with_persistable_parameters : concern_for_SimulationRunner
-   {
-      private IMoBiSimulation _simulation;
-      private Parameter _p1;
-      private QuantitySelection _selection;
-      private OutputSelections _outputSelections;
-
-      protected override void Context()
-      {
-         base.Context();
-         _outputSelections = A.Fake<OutputSelections>();
-         _simulation = A.Fake<IMoBiSimulation>();
-         _p1 = new Parameter {Persistable = true};
-         _simulation.Model.Root = new Container();
-         _selection = new QuantitySelection("A", QuantityType.Parameter);
-         _simulation.Model.Root.Add(_p1);
-         A.CallTo(() => _outputSelectionsRetriever.SelectionFrom(_p1)).Returns(_selection);
-         A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).Returns(null);
-         A.CallTo(() => _simulation.OutputSelections).Returns(_outputSelections);
-      }
-
-      protected override void Because()
-      {
-         sut.RunSimulation(_simulation);
-      }
-
-      [Observation]
-      public void should_add_the_parameters_to_the_output_selection()
-      {
-         A.CallTo(() => _outputSelections.AddOutput(_selection)).MustHaveHappened();
-      }
-   }
-
-   public class When_running_a_simulation_and_forcing_settings_selection : concern_for_SimulationRunner
+ 
+   public class When_running_a_simulation_and_forcing_settings_selection_and_the_user_cancels_the_selection : concern_for_SimulationRunner
    {
       private IMoBiSimulation _simulation;
       private OutputSelections _outputSelections;
@@ -122,6 +96,166 @@ namespace MoBi.Presentation.Tasks
       public void should_retrieve_the_settings_for_the_simulation_even_if_some_where_previously_defined()
       {
          A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_run_the_simulation()
+      {
+         A.CallTo(() => _simModelManagerFactory.Create()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_running_a_simulation_and_forcing_settings_selection_and_the_user_accepts_the_new_the_selection : concern_for_SimulationRunner
+   {
+      private IMoBiSimulation _simulation;
+      private OutputSelections _outputSelections;
+      private OutputSelections _newOutputSelection;
+
+      protected override void Context()
+      {
+         base.Context();
+         _outputSelections = new OutputSelections();
+         _outputSelections.AddOutput(new QuantitySelection("A", QuantityType.Drug));
+
+         _newOutputSelection = new OutputSelections();
+         _newOutputSelection.AddOutput(new QuantitySelection("B", QuantityType.Drug));
+
+         _simulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _simulation.OutputSelections).Returns(_outputSelections);
+         A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).Returns(_newOutputSelection);
+      }
+
+      protected override void Because()
+      {
+         sut.RunSimulation(_simulation, defineSettings: true);
+      }
+
+      [Observation]
+      public void should_retrieve_the_settings_for_the_simulation_even_if_some_where_previously_defined()
+      {
+         A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_record_a_command_to_update_the_new_simulation_output_in_the_simulation()
+      {
+         A.CallTo(() => _context.AddToHistory(A<ICommand>.That.Matches(x => x.IsAnImplementationOf<UpdateOutputSelectionsInSimulationCommand>()))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_have_updated_the_simulation_output_selection()
+      {
+         _simulation.Settings.OutputSelections.ShouldBeEqualTo(_newOutputSelection);
+      }
+
+      [Observation]
+      public void should_run_the_simulation()
+      {
+         A.CallTo(() => _simModelManagerFactory.Create()).MustHaveHappened();
+      }
+   }
+
+
+   public class When_the_simulation_runner_is_running_a_simulation : concern_for_SimulationRunner
+   {
+      private MoBiSimulation _simulation;
+      private OutputSelections _outputSelections;
+      private ISimModelManager _simModelManager;
+      private SimulationRunResults _simulationResults;
+      private DataRepository _newResults;
+      private DataRepository _oldResults;
+      private IMoleculeBuilder _drug;
+      private DataColumn _concentrationColumn;
+      private DataColumn _fractionColumn;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation= new MoBiSimulation();
+         _simModelManager= A.Fake<ISimModelManager>();
+         _outputSelections = new OutputSelections();
+         _drug = new MoleculeBuilder().WithName("DRUG");
+         _drug.AddParameter(new Parameter().WithName(AppConstants.Parameters.MOLECULAR_WEIGHT).WithFormula(new ConstantFormula(400)));
+         _outputSelections.AddOutput(new QuantitySelection("A", QuantityType.Drug));
+         _simulation.BuildConfiguration = new MoBiBuildConfiguration
+         {
+            SimulationSettings = new SimulationSettings
+            {
+               OutputSelections = _outputSelections
+            },
+            Molecules = new MoleculeBuildingBlock
+            {
+               _drug
+            }
+         };
+
+         A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
+         _oldResults = new DataRepository("OLD");
+         _simulation.Results = _oldResults;
+
+         _newResults = new DataRepository("NEW");
+         _simulationResults = new SimulationRunResults(success:true, warnings: Enumerable.Empty<ISolverWarning>(), results: _newResults);
+         A.CallTo(() => _simModelManager.RunSimulation(_simulation)).Returns(_simulationResults);
+         var baseGrid = new BaseGrid("Time", HelperForSpecs.TimeDimension);
+          _concentrationColumn = new DataColumn("Drug", HelperForSpecs.ConcentrationDimension, baseGrid);
+         _fractionColumn = new DataColumn("Fraction", HelperForSpecs.FractionDimension, baseGrid);
+         _newResults.Add(_concentrationColumn);
+         _newResults.Add(_fractionColumn);
+         A.CallTo(() => _keyPathMapper.MoleculeNameFrom(_concentrationColumn)).Returns(_drug.Name);
+      }
+
+      protected override void Because()
+      {
+         sut.RunSimulation(_simulation);
+      }
+
+      [Observation]
+      public void should_publish_the_simulation_started_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<SimulationRunStartedEvent>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_the_simulation_settings_from_the_selected_output()
+      {
+         A.CallTo(() => _simulationPersistableUpdater.UpdatePersistableFromSettings(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_run_the_simulation()
+      {
+         A.CallTo(() => _simModelManager.RunSimulation(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_move_the_previous_results_as_historical_results_in_the_simulation()
+      {
+         _simulation.HistoricResults.ShouldContain(_oldResults);
+      }
+
+      [Observation]
+      public void should_set_the_newly_calculated_results_as_new_results()
+      {
+         _simulation.Results.ShouldBeEqualTo(_newResults);
+      }
+
+      [Observation]
+      public void should_have_updated_the_display_unit_in_the_new_results()
+      {
+         A.CallTo(() => _displayUnitUpdater.UpdateDisplayUnitsIn(_newResults)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_pulish_the_simulation_run_finished_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<SimulationRunFinishedEvent>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_the_molecule_weight_of_all_concentration_columns_related_to_a_molecule_with_a_mol_weight_parameter()
+      {
+         _concentrationColumn.DataInfo.MolWeight.ShouldBeEqualTo(_drug.Parameter(AppConstants.Parameters.MOLECULAR_WEIGHT).Value);
+         _fractionColumn.DataInfo.MolWeight.ShouldBeNull();
       }
    }
 }

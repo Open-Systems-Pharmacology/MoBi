@@ -39,7 +39,7 @@ namespace MoBi.Core
       }
    }
 
-   public class when_resolving_referred_spatial_structure_blocks : concern_for_MoBiProject
+   public class When_resolving_referred_spatial_structure_blocks : concern_for_MoBiProject
    {
       private IReadOnlyList<IBuildingBlock> _result;
       private SpatialStructure _spatialStructureBuildingBlock;
@@ -64,7 +64,7 @@ namespace MoBi.Core
       }
    }
 
-   public class when_resolving_referred_molecule_building_blocks : concern_for_MoBiProject
+   public class When_resolving_referred_molecule_building_blocks : concern_for_MoBiProject
    {
       private MoleculeBuildingBlock _moleculeBuildingBlock;
       private IReadOnlyList<IBuildingBlock> _result;

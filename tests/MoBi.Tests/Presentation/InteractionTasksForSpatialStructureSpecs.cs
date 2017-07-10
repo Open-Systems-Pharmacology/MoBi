@@ -22,7 +22,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_removing_spatial_structure_building_block_that_is_referred_to_in_another_building_block : concern_for_InteractionTasksForSpatialStructure
+   public class When_removing_spatial_structure_building_block_that_is_referred_to_in_another_building_block : concern_for_InteractionTasksForSpatialStructure
    {
       private IMoBiSpatialStructure _spatialStructure;
       private IMoBiProject _project;

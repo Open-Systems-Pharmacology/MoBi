@@ -12,7 +12,6 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Diagram;
 using OSPSuite.Assets;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 

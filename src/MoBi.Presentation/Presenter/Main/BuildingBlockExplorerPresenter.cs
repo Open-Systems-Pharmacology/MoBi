@@ -117,11 +117,15 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(AddedEvent eventToHandle)
       {
-         if (eventToHandle.AddedObject.IsAnImplementationOf<IBuildingBlock>())
-            addBuildingBlock(eventToHandle.AddedObject as IBuildingBlock);
-
-         else if (eventToHandle.AddedObject.IsAnImplementationOf<IMoleculeBuilder>())
-            addMoleculeBuilder(eventToHandle.AddedObject.DowncastTo<IMoleculeBuilder>(), eventToHandle.Parent.DowncastTo<IMoleculeBuildingBlock>());
+         switch (eventToHandle.AddedObject)
+         {
+            case IBuildingBlock buildingBlock:
+               addBuildingBlock(buildingBlock);
+               break;
+            case IMoleculeBuilder moleculeBuilder:
+               addMoleculeBuilder(moleculeBuilder, eventToHandle.Parent.DowncastTo<IMoleculeBuildingBlock>());
+               break;
+         }
       }
 
       private ITreeNode addMoleculeBuilder(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock moleculeBuildingBlock)

@@ -36,20 +36,18 @@ namespace MoBi.Presentation.Tasks
          _dialogCreator = dialogCreator;
        }
 
-      public bool EditFormula(IFormula formula, ICommandCollector command, IBuildingBlock buildingBlock, IParameter parameter)
+      public bool EditNewFormula(IFormula formula, ICommandCollector command, IBuildingBlock buildingBlock, IParameter parameter)
       {
-         using (var newFormulaPresenter = _applicationController.Start<INewFormulaPresenter>())
+         using (var presenter = _applicationController.Start<INewFormulaPresenter>())
          {
-            newFormulaPresenter.InitializeWith(command);
-            return newFormulaPresenter.Edit(formula, buildingBlock, parameter);
+            presenter.InitializeWith(command);
+            return presenter.Edit(formula, buildingBlock, parameter);
          }
       }
 
       public IMoBiCommand AddFormulaToCacheOrFixReferenceCommand(IBuildingBlock targetBuildingBlock, IUsingFormula usingFormulaObject)
       {
-         var decoder = new UsingFormulaDecoder();
-
-         return AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, usingFormulaObject, decoder);
+         return AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, usingFormulaObject, new UsingFormulaDecoder());
       }
 
       public IMoBiCommand AddFormulaToCacheOrFixReferenceCommand<T>(IBuildingBlock targetBuildingBlock, T usingFormulaObject, FormulaDecoder<T> decoder)
@@ -104,12 +102,12 @@ namespace MoBi.Presentation.Tasks
          return new EditFormulaAliasCommand(formula, newAlias, oldAlias, buildingBlock).Run(_context);
       }
 
-      public ICommand SetFormulaPathDimension(ExplicitFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock)
+      public IMoBiCommand SetFormulaPathDimension(ExplicitFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock)
       {
          return new UpdateDimensionOfFormulaUsablePathCommand(newDimension, formula, alias, buildingBlock).Run(_context);
       }
 
-      public ICommand RemoveFormulaUsablePath(ExplicitFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand RemoveFormulaUsablePath(ExplicitFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          return new RemoveFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
       }
@@ -159,15 +157,15 @@ namespace MoBi.Presentation.Tasks
          return new SetConstantFormulaValueCommand(formula, kernelValue, newDisplayUnit, oldDisplayUnit, buildingBlock, formulaOwner).Run(_context);
       }
 
-      public Tuple<IMoBiCommand, IFormula> CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock)
+      public (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock)
       {
          var newName = _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, existingFormulaNames);
          if (string.IsNullOrEmpty(newName))
-            return new Tuple<IMoBiCommand, IFormula>(new MoBiEmptyCommand(), null);
+            return (new MoBiEmptyCommand(), null);
 
          var formula = CreateNewFormula(formulaType, formulaDimension).WithName(newName);
 
-         return new Tuple<IMoBiCommand, IFormula>(new AddFormulaToFormulaCacheCommand(buildingBlock, formula).Run(_context), formula);
+         return (new AddFormulaToFormulaCacheCommand(buildingBlock, formula).Run(_context), formula);
       }
 
       public IFormula CreateNewFormula(Type formulaType, IDimension formulaDimension)
@@ -196,24 +194,27 @@ namespace MoBi.Presentation.Tasks
             return _context.Create<BlackBoxFormula>();
 
          if (formulaType == typeof (TableFormula))
-            return getTableFormula();
+            return createTableFormula();
 
          if (formulaType == typeof (SumFormula))
             return _context.Create<SumFormula>();
 
-         if (formulaType == typeof (TableFormulaWithOffset))
-         {
-            var tableFormulaWithOffset = _context.Create<TableFormulaWithOffset>();
-            tableFormulaWithOffset.OffsetObjectAlias = AppConstants.OffsetAlias;
-            tableFormulaWithOffset.TableObjectAlias = AppConstants.TableAlias;
-            return tableFormulaWithOffset;
-         }
+         if (formulaType == typeof(TableFormulaWithOffset))
+            return createTableFormulaWithOffset();
 
          //default
          return _context.Create<ExplicitFormula>();
       }
 
-      private IFormula getTableFormula()
+      private IFormula createTableFormulaWithOffset()
+      {
+         var tableFormulaWithOffset = _context.Create<TableFormulaWithOffset>();
+         tableFormulaWithOffset.OffsetObjectAlias = AppConstants.OffsetAlias;
+         tableFormulaWithOffset.TableObjectAlias = AppConstants.TableAlias;
+         return tableFormulaWithOffset;
+      }
+
+      private IFormula createTableFormula()
       {
          var newFormula = _context.Create<TableFormula>();
          newFormula.UseDerivedValues = false;
