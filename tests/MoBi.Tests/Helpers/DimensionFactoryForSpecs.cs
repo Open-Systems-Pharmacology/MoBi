@@ -2,7 +2,7 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 
-namespace MoBi
+namespace MoBi.Helpers
 {
    public static class DimensionFactoryForSpecs
    {

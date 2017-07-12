@@ -18,13 +18,13 @@ namespace MoBi.Presentation
    {
       protected IContainer _container;
       protected IEventPublisher _eventPublisher;
-      protected IRegisterAllVisitor _registerTask;
+      protected IRegisterTask _registerTask;
 
       protected override void Context()
       {
          _container = A.Fake<IContainer>();
          _eventPublisher = A.Fake<IEventPublisher>();
-         _registerTask = A.Fake<IRegisterAllVisitor>();
+         _registerTask = A.Fake<IRegisterTask>();
          sut = new MoBiApplicationController(_container, _eventPublisher, new ObjectTypeResolver(), _registerTask);
       }
    }

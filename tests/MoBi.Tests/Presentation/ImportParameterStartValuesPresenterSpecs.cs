@@ -8,6 +8,7 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -58,7 +59,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _allSheets = new List<string> {"Sheet1", "Sheet2"};
-         _path = HelperForSpecs.TestFileFullPath("psv.xlsx");
+         _path = DomainHelperForSpecs.TestFileFullPath("psv.xlsx");
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_path);
          A.CallTo(() => _excelTask.RetrieveExcelSheets(_path, true)).Returns(_allSheets);
          sut.ImportStartValuesForBuildingBlock(_buildingBlock);

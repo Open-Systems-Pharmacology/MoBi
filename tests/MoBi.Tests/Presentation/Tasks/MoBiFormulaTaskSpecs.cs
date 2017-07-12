@@ -8,6 +8,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -101,7 +102,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _formulaDimension = HelperForSpecs.ConcentrationDimension;
+         _formulaDimension = DomainHelperForSpecs.ConcentrationDimension;
          _existingNames = new List<string>();
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(null);
       }
@@ -134,7 +135,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _formulaDimension = HelperForSpecs.ConcentrationDimension;
+         _formulaDimension = DomainHelperForSpecs.ConcentrationDimension;
          _existingNames = new List<string>();
          A.CallTo(() => _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, _existingNames, null)).Returns("FORMULA");
       }
@@ -177,8 +178,8 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _formulaDimension = HelperForSpecs.ConcentrationDimension;
-         _timeDimension = HelperForSpecs.TimeDimension;
+         _formulaDimension = DomainHelperForSpecs.ConcentrationDimension;
+         _timeDimension = DomainHelperForSpecs.TimeDimension;
          A.CallTo(() => _context.DimensionFactory.Dimension(Constants.Dimension.TIME)).Returns(_timeDimension);
          A.CallTo(() => _context.Create<TableFormula>()).Returns(new TableFormula());
       }

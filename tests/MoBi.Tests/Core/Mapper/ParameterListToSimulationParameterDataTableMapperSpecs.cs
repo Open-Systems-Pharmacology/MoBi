@@ -6,6 +6,7 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Mappers;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;

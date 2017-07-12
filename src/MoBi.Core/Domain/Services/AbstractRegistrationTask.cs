@@ -6,14 +6,14 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Domain.Services
 {
-   public abstract class MoBiRegisterTasksVisitorBase : 
+   public abstract class AbstractRegistrationTask : 
       IVisitor<IUsingFormula>,
       IVisitor<IMoleculeBuilder>,
       IVisitor<IWithId>
    {
       protected IWithIdRepository _withIdRepository;
 
-      protected MoBiRegisterTasksVisitorBase(IWithIdRepository withIdRepository)
+      protected AbstractRegistrationTask(IWithIdRepository withIdRepository)
       {
          _withIdRepository = withIdRepository;
       }

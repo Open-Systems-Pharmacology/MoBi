@@ -57,8 +57,8 @@ namespace MoBi.Core.Domain.Model
    {
       private readonly IXmlSerializationService _serializationService;
       private readonly IHistoryManagerFactory _historyManagerFactory;
-      private readonly IRegisterAllVisitor _registerAllVisitor;
-      private readonly IUnregisterVisitor _unregisterVisitor;
+      private readonly IRegisterTask _registerTask;
+      private readonly IUnregisterTask _unregisterTask;
       private readonly IClipboardManager _clipboardManager;
       private readonly IContainer _container;
       private readonly IObjectTypeResolver _objectTypeResolver;
@@ -75,7 +75,7 @@ namespace MoBi.Core.Domain.Model
 
       public MoBiContext(IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory dimensionFactory, IEventPublisher eventPublisher,
          IXmlSerializationService serializationService, IObjectPathFactory objectPathFactory, IWithIdRepository objectBaseRepository,
-         IHistoryManagerFactory historyManagerFactory, IRegisterAllVisitor registerAllVisitor, IUnregisterVisitor unregisterVisitor,
+         IHistoryManagerFactory historyManagerFactory, IRegisterTask registerTask, IUnregisterTask unregisterTask,
          IClipboardManager clipboardManager, IContainer container, IObjectTypeResolver objectTypeResolver,
          ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask) : base(eventPublisher, journalSession, fileLocker)
       {
@@ -90,8 +90,8 @@ namespace MoBi.Core.Domain.Model
          _cloneManager = cloneManager;
          _lazyLoadTask = lazyLoadTask;
          _historyManagerFactory = historyManagerFactory;
-         _registerAllVisitor = registerAllVisitor;
-         _unregisterVisitor = unregisterVisitor;
+         _registerTask = registerTask;
+         _unregisterTask = unregisterTask;
          _clipboardManager = clipboardManager;
       }
 
@@ -181,12 +181,12 @@ namespace MoBi.Core.Domain.Model
 
       public void Register(IWithId objectBase)
       {
-         _registerAllVisitor.RegisterAllIn(objectBase);
+         _registerTask.RegisterAllIn(objectBase);
       }
 
       public void Unregister(IWithId objectBase)
       {
-         _unregisterVisitor.UnregisterAllIn(objectBase);
+         _unregisterTask.UnregisterAllIn(objectBase);
       }
 
       public T Resolve<T>()
@@ -198,7 +198,7 @@ namespace MoBi.Core.Domain.Model
       {
          DimensionFactory.ProjectFactory = project.DimensionFactory;
          CurrentProject = project;
-         _registerAllVisitor.Register(project);
+         _registerTask.Register(project);
       }
 
       public string SerializeValue(object value)

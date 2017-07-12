@@ -365,9 +365,9 @@
     <Compile Include="Domain\Repository\GroupRepository.cs" />
     <Compile Include="Domain\Services\CloneManagerForSimulation.cs" />
     <Compile Include="Domain\Services\DataNamingService.cs" />
-    <Compile Include="Domain\Services\MoBiRegisterTasksVisitorBase.cs" />
-    <Compile Include="Domain\Services\MoBiUnregisterVisitor.cs" />
-    <Compile Include="Domain\Services\MoBiRegisterAllVisitor.cs" />
+    <Compile Include="Domain\Services\AbstractRegistrationTask.cs" />
+    <Compile Include="Domain\Services\UnregisterTask.cs" />
+    <Compile Include="Domain\Services\RegisterTask.cs" />
     <Compile Include="Domain\Services\SimulationFactory.cs" />
     <Compile Include="Domain\StringChange.cs" />
     <Compile Include="Domain\StringChanges.cs" />

@@ -6,11 +6,11 @@ namespace MoBi.Core.Domain.Services
 {
    public class LazyLoadTask : ILazyLoadTask
    {
-      private readonly IRegisterAllVisitor _registerAllVisitor;
+      private readonly IRegisterTask _registerTask;
 
-      public LazyLoadTask(IRegisterAllVisitor registerAllVisitor)
+      public LazyLoadTask(IRegisterTask registerTask)
       {
-         _registerAllVisitor = registerAllVisitor;
+         _registerTask = registerTask;
       }
 
       public void Load<TObject>(TObject objectToLoad) where TObject : class, ILazyLoadable
@@ -20,7 +20,7 @@ namespace MoBi.Core.Domain.Services
             return;
 
          //simulation are not loaded when project is laoded. Register them
-         _registerAllVisitor.RegisterAllIn(simulation);
+         _registerTask.RegisterAllIn(simulation);
       }
    }
 }

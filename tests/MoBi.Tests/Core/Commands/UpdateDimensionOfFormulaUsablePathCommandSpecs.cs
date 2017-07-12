@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -22,12 +23,12 @@ namespace MoBi.Core.Commands
          _buildingBlock = A.Fake<IBuildingBlock>();
          _alias = "alias";
          _formula = new ExplicitFormula("string");
-         _formula.AddObjectPath(new FormulaUsablePath { Alias = _alias, Dimension = HelperForSpecs.AmountDimension });
-         _newDimension = HelperForSpecs.ConcentrationDimension;
+         _formula.AddObjectPath(new FormulaUsablePath { Alias = _alias, Dimension = DomainHelperForSpecs.AmountDimension });
+         _newDimension = DomainHelperForSpecs.ConcentrationDimension;
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<IFormula>(_formula.Id)).Returns(_formula);
          A.CallTo(() => _context.DimensionFactory.Dimension(_newDimension.ToString())).Returns(_newDimension);
-         A.CallTo(() => _context.DimensionFactory.Dimension(HelperForSpecs.AmountDimension.ToString())).Returns(HelperForSpecs.AmountDimension);
+         A.CallTo(() => _context.DimensionFactory.Dimension(DomainHelperForSpecs.AmountDimension.ToString())).Returns(DomainHelperForSpecs.AmountDimension);
 
          sut = new UpdateDimensionOfFormulaUsablePathCommand(_newDimension, _formula, _alias, _buildingBlock);
       }
@@ -43,7 +44,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_the_usable_path_dimension()
       {
-         _formula.FormulaUsablePathBy(_alias).Dimension.ShouldBeEqualTo(HelperForSpecs.ConcentrationDimension);
+         _formula.FormulaUsablePathBy(_alias).Dimension.ShouldBeEqualTo(DomainHelperForSpecs.ConcentrationDimension);
       }
    }
 
@@ -57,7 +58,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_the_usable_path_dimension()
       {
-         _formula.FormulaUsablePathBy(_alias).Dimension.ShouldBeEqualTo(HelperForSpecs.AmountDimension);
+         _formula.FormulaUsablePathBy(_alias).Dimension.ShouldBeEqualTo(DomainHelperForSpecs.AmountDimension);
       }
    }
 }

@@ -4,11 +4,11 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 
-namespace MoBi
+namespace MoBi.Helpers
 {
-   public static class HelperForSpecs
+   public static class DomainHelperForSpecs
    {
-      static HelperForSpecs()
+      static DomainHelperForSpecs()
       {
          TimeDimension.AddUnit(new Unit("seconds", 1 / 60.0, 0.0));
          AmountDimension.AddUnit(new Unit("mmol", 1000.0, 0.0));

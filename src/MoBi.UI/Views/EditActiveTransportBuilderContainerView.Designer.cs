@@ -98,7 +98,6 @@
          this.btTransportName.Size = new System.Drawing.Size(578, 20);
          this.btTransportName.StyleController = this.layoutControlProperties;
          this.btTransportName.TabIndex = 8;
-         this.btTransportName.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.btTransporName_ButtonClick);
          // 
          // btEditName
          // 
@@ -109,7 +108,6 @@
          this.btEditName.Size = new System.Drawing.Size(578, 20);
          this.btEditName.StyleController = this.layoutControlProperties;
          this.btEditName.TabIndex = 7;
-         this.btEditName.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(this.btEditName_ButtonClick);
          // 
          // htmlEditor
          // 
@@ -170,7 +168,7 @@
          // 
          this.tabParameter.Name = "tabParameter";
          this.tabParameter.Size = new System.Drawing.Size(761, 316);
-         this.tabParameter.Text = "Parameter";
+         this.tabParameter.Text = "tabParameter";
          // 
          // EditActiveTransportBuilderContainerView
          // 

@@ -28,8 +28,8 @@ namespace MoBi.Core
       private IObjectPathFactory _objectPathFactory;
       protected IWithIdRepository _objectBaseRepository;
       private IHistoryManagerFactory _moBiHistoryManagerFacory;
-      private IRegisterAllVisitor _registerAllVisitor;
-      protected IUnregisterVisitor _unregisterAllVisitor;
+      private IRegisterTask _registerTask;
+      protected IUnregisterTask _unregisterTask;
       private IClipboardManager _clipboardManager;
       private IContainer _container;
       protected IObjectTypeResolver _objectTypeResolver;
@@ -43,12 +43,12 @@ namespace MoBi.Core
          _dimensionFactory = A.Fake<IMoBiDimensionFactory>();
          _eventPublisher = A.Fake<IEventPublisher>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
-         _registerAllVisitor = A.Fake<IRegisterAllVisitor>();
+         _registerTask = A.Fake<IRegisterTask>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
          _moBiHistoryManagerFacory = A.Fake<IHistoryManagerFactory>();
          _serializationService = A.Fake<IXmlSerializationService>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
-         _unregisterAllVisitor = A.Fake<IUnregisterVisitor>();
+         _unregisterTask = A.Fake<IUnregisterTask>();
          _clipboardManager = A.Fake<IClipboardManager>();
          _container = A.Fake<IContainer>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
@@ -59,7 +59,7 @@ namespace MoBi.Core
 
          sut = new MoBiContext(_objectBaseFactory, _dimensionFactory, _eventPublisher,
             _serializationService, _objectPathFactory, _objectBaseRepository,
-            _moBiHistoryManagerFacory, _registerAllVisitor, _unregisterAllVisitor,
+            _moBiHistoryManagerFacory, _registerTask, _unregisterTask,
             _clipboardManager, _container,
             _objectTypeResolver, _cloneManager,
             _journalSession, _fileLocker, _lazyLoadTask);
@@ -254,14 +254,14 @@ namespace MoBi.Core
       [Observation]
       public void should_unregister_the_simulation()
       {
-         A.CallTo(() => _unregisterAllVisitor.UnregisterAllIn(_simulation)).MustHaveHappened();
+         A.CallTo(() => _unregisterTask.UnregisterAllIn(_simulation)).MustHaveHappened();
       }
 
       [Observation]
       public void should_also_unregister_all_cachable_formula()
       {
-         A.CallTo(() => _unregisterAllVisitor.UnregisterAllIn(_explicitFormula)).MustHaveHappened();
-         A.CallTo(() => _unregisterAllVisitor.UnregisterAllIn(_explicitFormulaInNeighborhood)).MustHaveHappened();
+         A.CallTo(() => _unregisterTask.UnregisterAllIn(_explicitFormula)).MustHaveHappened();
+         A.CallTo(() => _unregisterTask.UnregisterAllIn(_explicitFormulaInNeighborhood)).MustHaveHappened();
       }
    }
 }

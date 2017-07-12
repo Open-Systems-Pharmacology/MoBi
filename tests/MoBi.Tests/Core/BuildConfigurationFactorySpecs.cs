@@ -7,22 +7,21 @@ using NUnit.Framework;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using IRegisterAllVisitor = MoBi.Core.Domain.Services.IRegisterAllVisitor;
 
 namespace MoBi.Core
 {
    public abstract class concern_for_BuildConfigurationFactory : ContextSpecification<IBuildConfigurationFactory>
    {
-      private IRegisterAllVisitor _registerAllVisitor;
+      private IRegisterTask _registerTask;
       private ICloneManagerForBuildingBlock _cloneManager;
       private ICoreCalculationMethodRepository _calculationMethodRepository;
 
       protected override void Context()
       {
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
-         _registerAllVisitor = A.Fake<IRegisterAllVisitor>();
+         _registerTask = A.Fake<IRegisterTask>();
          _calculationMethodRepository = A.Fake<ICoreCalculationMethodRepository>();
-         sut = new BuildConfigurationFactory(_registerAllVisitor, _cloneManager, _calculationMethodRepository);
+         sut = new BuildConfigurationFactory(_registerTask, _cloneManager, _calculationMethodRepository);
       }
    }
 

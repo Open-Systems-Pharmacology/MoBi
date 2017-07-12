@@ -221,6 +221,9 @@
     <Compile Include="Core\MolWeightConverterSpecs.cs" />
     <Compile Include="Core\ProjectMetaDataSpecs.cs" />
     <Compile Include="Core\ValidationSettingsSpecs.cs" />
+    <Compile Include="Helpers\DomainFactoryForSpecs.cs" />
+    <Compile Include="IntegrationTests\ContextForSimulationIntegration.cs" />
+    <Compile Include="IntegrationTests\ModelConstructionSpecs.cs" />
     <Compile Include="Presentation\CloseSubjectPresenterInvokerSpecs.cs" />
     <Compile Include="Presentation\OutputSelectionsRetrieverSpecs.cs" />
     <Compile Include="Presentation\StartValueFormatterSpecs.cs" />
@@ -233,7 +236,7 @@
     <Compile Include="Core\ReactionToDTOReactionMapperSpecs.cs" />
     <Compile Include="Core\StoichiometricStringCreaterSpecs.cs" />
     <Compile Include="Core\DimensionValidatorSpecs.cs" />
-    <Compile Include="ContainerExtensionForSpecs.cs" />
+    <Compile Include="Helpers\ContainerExtensionForSpecs.cs" />
     <Compile Include="Core\Commands\AddChartTemplateToBuildingBlockCommandSpecs.cs" />
     <Compile Include="Core\BuildConfigurationFactorySpecs.cs" />
     <Compile Include="Core\Commands\AddChartTemplateToSimulationSettingsCommandSpecs.cs" />
@@ -382,8 +385,8 @@
     <Compile Include="Core\SimulationLoaderSpecs.cs" />
     <Compile Include="Core\SpatialStructureExtensionsSpecs.cs" />
     <Compile Include="Core\TypeDictionarySpecs.cs" />
-    <Compile Include="DimensionFactoryForSpecs.cs" />
-    <Compile Include="HelperForSpecs.cs" />
+    <Compile Include="Helpers\DimensionFactoryForSpecs.cs" />
+    <Compile Include="Helpers\DomainHelperForSpecs.cs" />
     <Compile Include="IntegrationTests\CoreRegisterSpecs.cs" />
     <Compile Include="IntegrationTests\MoBiReactionBuildingBlockLoadSpecs.cs" />
     <Compile Include="Presentation\ImportFromExcelTaskSpecs.cs" />

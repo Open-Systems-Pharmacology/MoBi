@@ -13,6 +13,7 @@ using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Serialization.Services;
 using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Helpers;
 using MoBi.Presentation;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain;
@@ -73,7 +74,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         _result = sut.LoadMany<IEventGroupBuildingBlock>(HelperForSpecs.TestFileFullPath("Events.pkml"), false);
+         _result = sut.LoadMany<IEventGroupBuildingBlock>(DomainHelperForSpecs.TestFileFullPath("Events.pkml"), false);
       }
 
       [Observation]

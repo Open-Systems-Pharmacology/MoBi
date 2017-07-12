@@ -35,9 +35,9 @@ namespace MoBi.Presentation
       private readonly IContainer _container;
       private readonly IEventPublisher _eventPublisher;
       private readonly IObjectTypeResolver _objectTypeResolver;
-      private readonly IRegisterAllVisitor _registerTask;
+      private readonly IRegisterTask _registerTask;
 
-      public MoBiApplicationController(IContainer container, IEventPublisher eventPublisher, IObjectTypeResolver objectTypeResolver, IRegisterAllVisitor registerTask)
+      public MoBiApplicationController(IContainer container, IEventPublisher eventPublisher, IObjectTypeResolver objectTypeResolver, IRegisterTask registerTask)
          : base(container, eventPublisher)
       {
          _container = container;

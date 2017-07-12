@@ -17,11 +17,12 @@ namespace MoBi.UI.Views
    public partial class EditActiveTransportBuilderContainerView : BaseUserControl, IEditActiveTransportBuilderContainerView
    {
       private IEditTransporterMoleculeContainerPresenter _presenter;
-      private ScreenBinder<TransporterMoleculeContainerDTO> _screenBinder;
+      private readonly ScreenBinder<TransporterMoleculeContainerDTO> _screenBinder;
 
       public EditActiveTransportBuilderContainerView()
       {
          InitializeComponent();
+         _screenBinder = new ScreenBinder<TransporterMoleculeContainerDTO>();
       }
 
       protected override int TopicId => HelpId.MoBi_ModelBuilding_ActiveTransporterMolecules;
@@ -34,17 +35,20 @@ namespace MoBi.UI.Views
          layoutControlItemTranportName.OptionsToolTip.ToolTip = ToolTips.TransporterName;
          layoutControlItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
          layoutControlItemDescription.OptionsToolTip.ToolTip = ToolTips.Description;
+         tabParameter.Text = AppConstants.Captions.Parameters;
       }
 
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         _screenBinder = new ScreenBinder<TransporterMoleculeContainerDTO>();
          _screenBinder.Bind(dto => dto.Name).To(btEditName);
          _screenBinder.Bind(dto => dto.TransportName).To(btTransportName);
          _screenBinder.Bind(dto => dto.Description).To(htmlEditor);
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
-    
+
+         btTransportName.ButtonClick += (o,e)=> OnEvent(_presenter.ChangeTransportName);
+         btEditName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
+
          btEditName.Properties.ReadOnly = true;
          btTransportName.Properties.ReadOnly = true;
       }
@@ -69,19 +73,7 @@ namespace MoBi.UI.Views
          tabParameter.Show();
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError;
 
-      private void btTransporName_ButtonClick(object sender, ButtonPressedEventArgs e)
-      {
-         this.DoWithinExceptionHandler(_presenter.ChangeTransportName);
-      }
-
-      private void btEditName_ButtonClick(object sender, ButtonPressedEventArgs e)
-      {
-         this.DoWithinExceptionHandler(_presenter.RenameSubject);
-      }
    }
 }
