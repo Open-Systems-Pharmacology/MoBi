@@ -1,9 +1,7 @@
 ﻿using OSPSuite.BDDHelper;
 using FakeItEasy;
-using MoBi.Core;
 using MoBi.Core.Events;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
@@ -16,7 +14,7 @@ namespace MoBi.Presentation
    {
       protected IEditPassiveTransportBuildingBlockView _view;
       private ITransportBuilderToDTOTransportBuilderMapper _mapper;
-      private IEditTransportBuilderPresenter _transporterBuilderPresenter;
+      protected IEditTransportBuilderPresenter _transporterBuilderPresenter;
       private IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
       protected IFormulaCachePresenter _formulaCachePresenter;
@@ -33,6 +31,15 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_creating_the_edit_passive_transport_building_block_presenter : concern_for_EditPassiveTransportBuildingBlockPresenter
+   {
+      [Observation]
+      public void should_remove_formula_types_that_do_not_make_sense_for_passive_transports()
+      {
+         A.CallTo(() => _transporterBuilderPresenter.RemoveFormulaType<SumFormula>()).MustHaveHappened();
+         A.CallTo(() => _transporterBuilderPresenter.RemoveFormulaType<TableFormulaWithOffset>()).MustHaveHappened();
+      }
+   }
    public class When_handling_the_selecting_event_for_a_formula_that_is_in_the_formula_cache : concern_for_EditPassiveTransportBuildingBlockPresenter
    {
       private IFormula _formula;

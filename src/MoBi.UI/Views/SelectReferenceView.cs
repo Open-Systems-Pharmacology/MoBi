@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors.Controls;
-using DevExpress.XtraTreeList.Nodes;
 using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Presentation.DTO;
