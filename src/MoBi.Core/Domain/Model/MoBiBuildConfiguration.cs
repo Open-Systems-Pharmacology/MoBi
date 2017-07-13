@@ -51,56 +51,56 @@ namespace MoBi.Core.Domain.Model
 
       public override IMoleculeBuildingBlock Molecules
       {
-         get { return MoleculesInfo.BuildingBlock; }
-         set { MoleculesInfo.BuildingBlock = value; }
+         get => MoleculesInfo.BuildingBlock;
+         set => MoleculesInfo.BuildingBlock = value;
       }
 
       public override IReactionBuildingBlock Reactions
       {
-         get { return ReactionsInfo.BuildingBlock; }
-         set { ReactionsInfo.BuildingBlock = value.DowncastTo<IMoBiReactionBuildingBlock>(); }
+         get => ReactionsInfo.BuildingBlock;
+         set => ReactionsInfo.BuildingBlock = value.DowncastTo<IMoBiReactionBuildingBlock>();
       }
 
       public override IPassiveTransportBuildingBlock PassiveTransports
       {
-         get { return PassiveTransportsInfo.BuildingBlock; }
-         set { PassiveTransportsInfo.BuildingBlock = value; }
+         get => PassiveTransportsInfo.BuildingBlock;
+         set => PassiveTransportsInfo.BuildingBlock = value;
       }
 
       public override ISpatialStructure SpatialStructure
       {
-         get { return SpatialStructureInfo.BuildingBlock; }
-         set { SpatialStructureInfo.BuildingBlock = value.DowncastTo<IMoBiSpatialStructure>(); }
+         get => SpatialStructureInfo.BuildingBlock;
+         set => SpatialStructureInfo.BuildingBlock = value.DowncastTo<IMoBiSpatialStructure>();
       }
 
       public override IMoleculeStartValuesBuildingBlock MoleculeStartValues
       {
-         get { return MoleculeStartValuesInfo.BuildingBlock; }
-         set { MoleculeStartValuesInfo.BuildingBlock = value; }
+         get => MoleculeStartValuesInfo.BuildingBlock;
+         set => MoleculeStartValuesInfo.BuildingBlock = value;
       }
 
       public override IParameterStartValuesBuildingBlock ParameterStartValues
       {
-         get { return ParameterStartValuesInfo.BuildingBlock; }
-         set { ParameterStartValuesInfo.BuildingBlock = value; }
+         get => ParameterStartValuesInfo.BuildingBlock;
+         set => ParameterStartValuesInfo.BuildingBlock = value;
       }
 
       public override IObserverBuildingBlock Observers
       {
-         get { return ObserversInfo.BuildingBlock; }
-         set { ObserversInfo.BuildingBlock = value; }
+         get => ObserversInfo.BuildingBlock;
+         set => ObserversInfo.BuildingBlock = value;
       }
 
       public override IEventGroupBuildingBlock EventGroups
       {
-         get { return EventGroupsInfo.BuildingBlock; }
-         set { EventGroupsInfo.BuildingBlock = value; }
+         get => EventGroupsInfo.BuildingBlock;
+         set => EventGroupsInfo.BuildingBlock = value;
       }
 
       public override ISimulationSettings SimulationSettings
       {
-         get { return SimulationSettingsInfo.BuildingBlock; }
-         set { SimulationSettingsInfo.BuildingBlock = value; }
+         get => SimulationSettingsInfo.BuildingBlock;
+         set => SimulationSettingsInfo.BuildingBlock = value;
       }
 
       public override void ClearCache()
@@ -138,14 +138,14 @@ namespace MoBi.Core.Domain.Model
 
       public IMoBiSpatialStructure MoBiSpatialStructure
       {
-         get { return SpatialStructure as IMoBiSpatialStructure; }
-         set { SpatialStructure = value; }
+         get => SpatialStructure as IMoBiSpatialStructure;
+         set => SpatialStructure = value;
       }
 
       public IMoBiReactionBuildingBlock MoBiReactions
       {
-         get { return Reactions as IMoBiReactionBuildingBlock; }
-         set { Reactions = value; }
+         get => Reactions as IMoBiReactionBuildingBlock;
+         set => Reactions = value;
       }
    }
 }

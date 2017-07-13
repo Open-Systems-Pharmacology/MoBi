@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using MoBi.Assets;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using MoBi.Presentation.DTO;
@@ -60,7 +61,7 @@ namespace MoBi.Presentation.Mapper
          _builder.Name = "Name";
          _builder.StartValue = 9.0;
          _builder.ContainerPath = new ObjectPath("A");
-         _builder.Dimension = HelperForSpecs.AmountDimension;
+         _builder.Dimension = DomainHelperForSpecs.AmountDimension;
          _builder.DisplayUnit = _builder.Dimension.DefaultUnit;
 
       }

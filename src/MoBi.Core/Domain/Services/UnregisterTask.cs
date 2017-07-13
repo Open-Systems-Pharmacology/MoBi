@@ -3,14 +3,14 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Domain.Services
 {
-   public interface IUnregisterVisitor
+   public interface IUnregisterTask
    {
       void UnregisterAllIn(IWithId objectToUnregister);
    }
 
-   public class UnregisterVisitor : MoBiRegisterTasksVisitorBase, IUnregisterVisitor
+   public class UnregisterTask : AbstractRegistrationTask, IUnregisterTask
    {
-      public UnregisterVisitor(IWithIdRepository withIdRepository) : base(withIdRepository)
+      public UnregisterTask(IWithIdRepository withIdRepository) : base(withIdRepository)
       {
       }
 

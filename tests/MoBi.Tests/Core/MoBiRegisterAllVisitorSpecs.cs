@@ -6,14 +6,14 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_MoBiRegisterAllVisitor : ContextSpecification<RegisterAllVisitor>
+   public abstract class concern_for_MoBiRegisterAllVisitor : ContextSpecification<RegisterTask>
    {
       protected IWithIdRepository _repository;
 
       protected override void Context()
       {
          _repository = A.Fake<IWithIdRepository>();
-         sut = new RegisterAllVisitor(_repository);
+         sut = new RegisterTask(_repository);
       }
    }
 

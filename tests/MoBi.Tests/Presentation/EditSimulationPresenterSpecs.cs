@@ -2,6 +2,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Helpers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
@@ -239,13 +240,13 @@ namespace MoBi.Presentation
          {
             Name = "OBS"
          };
-         var baseGrid = new BaseGrid("baseGrid", HelperForSpecs.TimeDimension)
+         var baseGrid = new BaseGrid("baseGrid", DomainHelperForSpecs.TimeDimension)
          {
             DataInfo = new DataInfo(ColumnOrigins.BaseGrid),
             Repository = observedDataRepository
          };
 
-         var ydata = new DataColumn("ydata", HelperForSpecs.ConcentrationDimension, baseGrid)
+         var ydata = new DataColumn("ydata", DomainHelperForSpecs.ConcentrationDimension, baseGrid)
          {
             DataInfo = new DataInfo(ColumnOrigins.Observation),
             Repository = observedDataRepository

@@ -7,6 +7,7 @@ using OSPSuite.Utility.Events;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;

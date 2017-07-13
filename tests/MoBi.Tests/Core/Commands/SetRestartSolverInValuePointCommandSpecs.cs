@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 
@@ -18,7 +19,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _buildingBlock = A.Fake<IBuildingBlock>();
-         _tableFormula = new TableFormula() {Dimension = HelperForSpecs.AmountDimension, XDimension = HelperForSpecs.TimeDimension};
+         _tableFormula = new TableFormula() {Dimension = DomainHelperForSpecs.AmountDimension, XDimension = DomainHelperForSpecs.TimeDimension};
          _valuePoint = new ValuePoint(1.0, 1.0) { RestartSolver = false };
          _newRestartSolverValue = true;
          _tableFormula.AddPoint(_valuePoint);

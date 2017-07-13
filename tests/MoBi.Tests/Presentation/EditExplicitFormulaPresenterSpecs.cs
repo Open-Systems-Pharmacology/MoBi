@@ -9,6 +9,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -73,7 +74,7 @@ namespace MoBi.Presentation
          sut.Edit(_formula);
          sut.InitializeWith(A.Fake<ICommandCollector>());
          _formula.AddObjectPath(new FormulaUsablePath());
-         A.CallTo(() => _dimensionFactory.Dimension(_userSettings.ParameterDefaultDimension)).Returns(HelperForSpecs.AmountDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(_userSettings.ParameterDefaultDimension)).Returns(DomainHelperForSpecs.AmountDimension);
       }
 
       protected override void Because()
@@ -91,7 +92,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_dimension_is_set_to_user_default_dimension()
       {
-         _formula.ObjectPaths[1].Dimension.ShouldBeEqualTo(HelperForSpecs.AmountDimension);
+         _formula.ObjectPaths[1].Dimension.ShouldBeEqualTo(DomainHelperForSpecs.AmountDimension);
       }
 
       [Observation]

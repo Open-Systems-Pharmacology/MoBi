@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 
@@ -21,8 +22,8 @@ namespace MoBi.Core.Commands
       {
          _context = A.Fake<IMoBiContext>();
          _quantity = new Parameter();
-         _newUnit = HelperForSpecs.AmountDimension.Units.First();
-         _oldUnit = HelperForSpecs.AmountDimension.Units.Last();
+         _newUnit = DomainHelperForSpecs.AmountDimension.Units.First();
+         _oldUnit = DomainHelperForSpecs.AmountDimension.Units.Last();
          _quantity.DisplayUnit = _oldUnit;
          _simulation = new MoBiSimulation
          {

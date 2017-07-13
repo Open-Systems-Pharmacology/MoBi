@@ -6,14 +6,14 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_MoBIUnregisterAllVisitor : ContextSpecification<IUnregisterVisitor>
+   public abstract class concern_for_MoBIUnregisterAllVisitor : ContextSpecification<IUnregisterTask>
    {
       protected IWithIdRepository _objectbaseRepository;
 
       protected override void Context()
       {
          _objectbaseRepository = A.Fake<IWithIdRepository>();
-         sut = new UnregisterVisitor(_objectbaseRepository);
+         sut = new UnregisterTask(_objectbaseRepository);
       }
    }
 

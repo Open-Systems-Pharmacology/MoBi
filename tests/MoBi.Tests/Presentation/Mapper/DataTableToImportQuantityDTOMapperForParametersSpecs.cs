@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.Core.Domain;
@@ -39,8 +40,8 @@ namespace MoBi.Presentation.Mapper
          {
             ContainerPath = ContainerPathFromDataTableRow(_tables, 0),
             Name = "ParameterName",
-            Dimension = HelperForSpecs.AmountPerTimeDimension,
-            DisplayUnit = HelperForSpecs.AmountPerTimeDimension.BaseUnit
+            Dimension = DomainHelperForSpecs.AmountPerTimeDimension,
+            DisplayUnit = DomainHelperForSpecs.AmountPerTimeDimension.BaseUnit
          });
       }
 

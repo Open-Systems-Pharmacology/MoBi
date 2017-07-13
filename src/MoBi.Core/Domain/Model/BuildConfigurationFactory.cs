@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using IRegisterAllVisitor = MoBi.Core.Domain.Services.IRegisterAllVisitor;
 
 namespace MoBi.Core.Domain.Model
 {
@@ -44,13 +44,13 @@ namespace MoBi.Core.Domain.Model
 
    public class BuildConfigurationFactory : IBuildConfigurationFactory
    {
-      private readonly IRegisterAllVisitor _registerAllVisitor;
+      private readonly IRegisterTask _registerTask;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly ICoreCalculationMethodRepository _calculatonMethodRepository;
 
-      public BuildConfigurationFactory(IRegisterAllVisitor registerAllVisitor, ICloneManagerForBuildingBlock cloneManager, ICoreCalculationMethodRepository calculatonMethodRepository)
+      public BuildConfigurationFactory(IRegisterTask registerTask, ICloneManagerForBuildingBlock cloneManager, ICoreCalculationMethodRepository calculatonMethodRepository)
       {
-         _registerAllVisitor = registerAllVisitor;
+         _registerTask = registerTask;
          _cloneManager = cloneManager;
          _calculatonMethodRepository = calculatonMethodRepository;
       }
@@ -107,7 +107,7 @@ namespace MoBi.Core.Domain.Model
          if (templateBuildingBlockInfo.BuildingBlockIsTemplate)
             buildingBlockInfo.SimulationChanges = 0;
 
-         _registerAllVisitor.RegisterAllIn(buildingBlockInfo.BuildingBlock);
+         _registerTask.RegisterAllIn(buildingBlockInfo.BuildingBlock);
       }
 
       private void updateFrom<T>(IBuildingBlockInfo<T> buildingBlockInfo, IBuildingBlockInfo<T> templateBuildingBlockInfo, IBuildingBlock templateBuildingBlock) where T : class, IBuildingBlock

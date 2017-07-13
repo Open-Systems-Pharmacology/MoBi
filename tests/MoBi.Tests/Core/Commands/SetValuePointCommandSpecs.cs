@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 
@@ -22,7 +23,7 @@ namespace MoBi.Core.Commands
          _newValue = 10;
          _tableFormulaId = "FormulaId";
          _valuePoint = new ValuePoint(1, 11);
-         _tableFormula = new TableFormula { Id = _tableFormulaId, Dimension = HelperForSpecs.AmountDimension, XDimension = HelperForSpecs.TimeDimension };
+         _tableFormula = new TableFormula { Id = _tableFormulaId, Dimension = DomainHelperForSpecs.AmountDimension, XDimension = DomainHelperForSpecs.TimeDimension };
          _tableFormula.AddPoint(_valuePoint);
          _tableFormula.AddPoint(2, 22);
          

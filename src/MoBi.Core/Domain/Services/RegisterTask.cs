@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Domain.Services
 {
-   public interface IRegisterAllVisitor
+   public interface IRegisterTask
    {
       /// <summary>
       ///    Registers all objects defined in the given <paramref name="objectToRegister" />
@@ -19,9 +19,9 @@ namespace MoBi.Core.Domain.Services
       void Register(IMoBiProject project);
    }
 
-   public class RegisterAllVisitor : MoBiRegisterTasksVisitorBase, IRegisterAllVisitor
+   public class RegisterTask : AbstractRegistrationTask, IRegisterTask
    {
-      public RegisterAllVisitor(IWithIdRepository withIdRepository) : base(withIdRepository)
+      public RegisterTask(IWithIdRepository withIdRepository) : base(withIdRepository)
       {
       }
 

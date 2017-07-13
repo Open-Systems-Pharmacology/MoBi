@@ -12,6 +12,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
@@ -82,7 +83,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _reactionDimensionRetriever.MoleculeDimension).Returns(HelperForSpecs.AmountDimension);
+         A.CallTo(() => _reactionDimensionRetriever.MoleculeDimension).Returns(DomainHelperForSpecs.AmountDimension);
       }
 
       protected override void Because()
@@ -93,7 +94,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void result_should_be_amount_dimension()
       {
-         _result.ShouldBeEqualTo(HelperForSpecs.AmountDimension);
+         _result.ShouldBeEqualTo(DomainHelperForSpecs.AmountDimension);
       }
    }
 

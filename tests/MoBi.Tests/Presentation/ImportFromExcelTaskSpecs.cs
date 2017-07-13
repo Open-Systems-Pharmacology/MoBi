@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -21,7 +22,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _result = sut.RetrieveExcelSheets(HelperForSpecs.TestFileFullPath("psv.xlsx"), true);
+         _result = sut.RetrieveExcelSheets(DomainHelperForSpecs.TestFileFullPath("psv.xlsx"), true);
       }
 
       [Observation]
@@ -38,7 +39,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _result = sut.RetrieveExcelSheets(HelperForSpecs.TestFileFullPath("psv.xlsx"), false);
+         _result = sut.RetrieveExcelSheets(DomainHelperForSpecs.TestFileFullPath("psv.xlsx"), false);
       }
 
       [Observation]
@@ -55,7 +56,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _results = sut.GetAllDataTables(HelperForSpecs.TestFileFullPath("psv.xlsx"), true);
+         _results = sut.GetAllDataTables(DomainHelperForSpecs.TestFileFullPath("psv.xlsx"), true);
       }
 
       [Observation]
@@ -71,7 +72,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _results = sut.GetDataTables(HelperForSpecs.TestFileFullPath("psv.xlsx"), "not_a_table", true);
+         _results = sut.GetDataTables(DomainHelperForSpecs.TestFileFullPath("psv.xlsx"), "not_a_table", true);
       }
 
       [Observation]
@@ -87,7 +88,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _results = sut.GetDataTables(HelperForSpecs.TestFileFullPath("psv.xlsx"), "Tabelle1", true);
+         _results = sut.GetDataTables(DomainHelperForSpecs.TestFileFullPath("psv.xlsx"), "Tabelle1", true);
       }
 
       [Observation]

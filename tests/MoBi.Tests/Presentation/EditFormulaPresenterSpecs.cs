@@ -8,6 +8,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
+using MoBi.Helpers;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -214,9 +215,9 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _dimParameter = HelperForSpecs.AmountDimension;
+         _dimParameter = DomainHelperForSpecs.AmountDimension;
          _dimEquivalent = new Dimension(_dimParameter.BaseRepresentation, "Equivalent", _dimParameter.BaseUnit.Name);
-         _anotherDimension = HelperForSpecs.TimeDimension;
+         _anotherDimension = DomainHelperForSpecs.TimeDimension;
          _parameter = A.Fake<IParameter>().WithDimension(_dimParameter);
          _parameter.Formula = new ExplicitFormula("1+2").WithDimension(_dimParameter);
          _buidingBlockWithFormulaCache = A.Fake<IBuildingBlock>();
@@ -247,8 +248,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _dimParameter = HelperForSpecs.AmountDimension;
-         _rhsDim = HelperForSpecs.AmountPerTimeDimension;
+         _dimParameter = DomainHelperForSpecs.AmountDimension;
+         _rhsDim = DomainHelperForSpecs.AmountPerTimeDimension;
          _parameter = A.Fake<IParameter>().WithDimension(_dimParameter);
          _parameter.RHSFormula = new ExplicitFormula("1+2").WithDimension(_rhsDim);
 

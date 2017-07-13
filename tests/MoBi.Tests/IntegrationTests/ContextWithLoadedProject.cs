@@ -1,5 +1,6 @@
 ﻿using OSPSuite.Utility.Container;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain.Services;
 
@@ -9,7 +10,7 @@ namespace MoBi.IntegrationTests
    {
       public TObject LoadPKML<TObject>(string pkmlFileName, ReactionDimensionMode reactionDimensionMode = ReactionDimensionMode.AmountBased)
       {
-         var projectFile = HelperForSpecs.TestFileFullPath($"{pkmlFileName}.pkml");
+         var projectFile = DomainHelperForSpecs.TestFileFullPath($"{pkmlFileName}.pkml");
          var serializationTask = IoC.Resolve<ISerializationTask>();
          var context = IoC.Resolve<IMoBiContext>();
          context.NewProject();
@@ -19,7 +20,7 @@ namespace MoBi.IntegrationTests
 
       public IMoBiProject LoadProject(string projectFileName)
       {
-         var projectFile = HelperForSpecs.TestFileFullPath($"{projectFileName}.mbp3");
+         var projectFile = DomainHelperForSpecs.TestFileFullPath($"{projectFileName}.mbp3");
          var serializationTask = IoC.Resolve<ISerializationTask>();
          var context = IoC.Resolve<IMoBiContext>();
          serializationTask.LoadProject(projectFile);

@@ -78,10 +78,7 @@ namespace MoBi.Presentation.Presenter
          return _forbiddenNamesRetriever.For(Simulation);
       }
 
-      public object Subject
-      {
-         get { return Simulation; }
-      }
+      public object Subject => Simulation;
 
       /// <summary>
       ///    Action performed when the wizard finishes.
@@ -149,9 +146,6 @@ namespace MoBi.Presentation.Presenter
          return simulation;
       }
 
-      protected IFinalOptionsPresenter FinalOptionsPresenter
-      {
-         get { return PresenterAt(SimulationItems.FinalOptions); }
-      }
+      protected IFinalOptionsPresenter FinalOptionsPresenter => PresenterAt(SimulationItems.FinalOptions);
    }
 }
