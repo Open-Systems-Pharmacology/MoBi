@@ -32,8 +32,8 @@ namespace MoBi.Presentation
       {
          var notificationItemDTO = new NotificationMessageDTO(A.Fake<NotificationMessage>());
          var notifcationPresenter = A.Fake<INotificationPresenter>();
-         sut.IsSatisfiedBy(A<IViewItem>._, notifcationPresenter).ShouldBeFalse();
-         sut.IsSatisfiedBy(notificationItemDTO, A<IPresenterWithContextMenu<IViewItem>>._).ShouldBeFalse();
+         sut.IsSatisfiedBy(A.Fake<IViewItem>() , notifcationPresenter).ShouldBeFalse();
+         sut.IsSatisfiedBy(notificationItemDTO, A.Fake<IPresenterWithContextMenu<IViewItem>>()).ShouldBeFalse();
       }
    }
 }	
