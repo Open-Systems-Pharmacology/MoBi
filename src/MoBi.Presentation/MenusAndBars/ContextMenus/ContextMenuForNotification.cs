@@ -2,8 +2,6 @@
 using MoBi.Assets;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core;
-using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -40,7 +38,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return objectRequestingContextMenu.IsAnImplementationOf<NotificationMessage>() &&
+         return objectRequestingContextMenu.IsAnImplementationOf<NotificationMessageDTO>() &&
                 presenter.IsAnImplementationOf<INotificationPresenter>();
       }
    }
