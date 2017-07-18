@@ -160,23 +160,44 @@ namespace MoBi.Presentation.Presenter
       public void Handle(EntitySelectedEvent eventToHandle)
       {
          var entity = eventToHandle.ObjectBase as IEntity;
-         if (!shouldShow(entity)) return;
+         if (!shouldShow(entity))
+            return;
+
          _view.Display();
 
-         if (entity.IsAnImplementationOf<IParameter>())
-         {
-            setupEditPresenter(entity, entity.ParentContainer);
-         }
+         var parameter = entity as IParameter;
+         if (parameter != null)
+            setupEditPresenter(parameter, parameter.ParentContainer);
+
          else
-         {
             setupEditPresenter(entity);
-         }
       }
 
-      private void setupEditPresenter(IEntity entity, IContainer parentContainer)
+      private void setupEditPresenter(IParameter parameter, IContainer parentContainer)
       {
          var presenter = setupEditPresenter(parentContainer).DowncastTo<IEditPresenterWithParameters>();
-         presenter.SelectParameter(entity as IParameter);
+         presenter.SelectParameter(parameter);
+      }
+
+      private IEditInSimulationPresenter setupEditPresenter(IEntity entity)
+      {
+         var entityType = entity.GetType();
+         var showPresenter = _cacheShowPresenter[entityType];
+         if (showPresenter == null)
+         {
+            //create a new one and add it to the cache
+            showPresenter = _showPresenterFactory.PresenterFor(entity);
+            if (showPresenter == null)
+               return null;
+
+            showPresenter.InitializeWith(CommandCollector);
+            _cacheShowPresenter.Add(entityType, showPresenter);
+         }
+
+         _view.SetEditView(showPresenter.BaseView);
+         showPresenter.Simulation = _simulation;
+         showPresenter.Edit(entity);
+         return showPresenter;
       }
 
       public void LoadDiagram()
@@ -184,24 +205,6 @@ namespace MoBi.Presentation.Presenter
          if (_diagramLoaded) return;
          _heavyWorkManager.Start(() => _simulationDiagramPresenter.Edit(_simulation), AppConstants.Captions.LoadingDiagram);
          _diagramLoaded = true;
-      }
-
-      private IEditInSimulationPresenter setupEditPresenter(IEntity entity)
-      {
-         var showPresenter = _cacheShowPresenter[entity.GetType()];
-         if (showPresenter == null)
-         {
-            //create a new one and add it to the cache
-            showPresenter = _showPresenterFactory.PresenterFor(entity);
-            if (showPresenter == null) return null;
-            showPresenter.InitializeWith(CommandCollector);
-            _cacheShowPresenter.Add(entity.GetType(), showPresenter);
-         }
-
-         _view.SetEditView(showPresenter.BaseView);
-         showPresenter.Simulation = _simulation;
-         showPresenter.Edit(entity);
-         return showPresenter;
       }
 
       private bool shouldShow(IEntity entity)

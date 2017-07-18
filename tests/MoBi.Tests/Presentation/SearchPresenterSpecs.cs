@@ -20,7 +20,7 @@ namespace MoBi.Presentation
    {
       protected IMoBiContext _context;
       protected IMoBiApplicationController _applicationController;
-      private ISearchTasks _searchTask;
+      private ISearchTask _searchTask;
       private ISearchResultToDTOSearchResultMapper _searchResultMapper;
       private IActiveSubjectRetriever _activeSubjectRetriever;
       private IRegionResolver _regionResolver;
@@ -32,7 +32,7 @@ namespace MoBi.Presentation
          _regionResolver = A.Fake<IRegionResolver>();
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
          _searchResultMapper = A.Fake<ISearchResultToDTOSearchResultMapper>();
-         _searchTask = A.Fake<ISearchTasks>();
+         _searchTask = A.Fake<ISearchTask>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _context = A.Fake<IMoBiContext>();
          sut = new SearchPresenter(_view, _regionResolver, _activeSubjectRetriever, _searchResultMapper, _searchTask, _applicationController, _context);

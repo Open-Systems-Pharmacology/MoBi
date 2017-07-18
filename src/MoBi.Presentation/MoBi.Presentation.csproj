@@ -203,20 +203,20 @@
       <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.2.0.63, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.63\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.2.0.65, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.65\lib\net452\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.2.0.63, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.63\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.2.0.65, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.65\lib\net452\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.2.0.63, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.2.0.63\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.2.0.65, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.2.0.65\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.2.0.63, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.63\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.2.0.65, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.65\lib\net452\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.0.1\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -288,6 +288,7 @@
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForHistoricalResultsNode.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSensitivityAnalysis.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSimulationFavoritesNode.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\MdiChildViewContextMenu.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ReactionProductPartnerContextMenuSpecificationFactory.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ReactionModifierContextMenuSpecificationFactory.cs" />
     <Compile Include="MenusAndBars\ContextMenus\RootContextMenuForParameterIdentification.cs" />
@@ -725,7 +726,7 @@
     <Compile Include="Tasks\Interaction\RenameTask.cs" />
     <Compile Include="Tasks\MergeTask.cs" />
     <Compile Include="Tasks\PKSimExportTask.cs" />
-    <Compile Include="Tasks\SearchTasks.cs" />
+    <Compile Include="Tasks\SearchTask.cs" />
     <Compile Include="Tasks\SimulationRunner.cs" />
     <Compile Include="Tasks\OutputSelectionsRetriever.cs" />
     <Compile Include="Tasks\SimulationUpdateTask.cs" />
