@@ -66,12 +66,12 @@ namespace MoBi.Core.Domain.Model
       private readonly ILazyLoadTask _lazyLoadTask;
 
       public IMoBiHistoryManager HistoryManager { get; set; }
-      public IMoBiDimensionFactory DimensionFactory { get; private set; }
-      public IObjectBaseFactory ObjectBaseFactory { get; private set; }
-      public IObjectPathFactory ObjectPathFactory { get; private set; }
+      public IMoBiDimensionFactory DimensionFactory { get; }
+      public IObjectBaseFactory ObjectBaseFactory { get; }
+      public IObjectPathFactory ObjectPathFactory { get; }
       public ICoreCalculationMethodRepository CalculatonMethodRepository { get; set; }
-      public IEventPublisher EventPublisher { get; private set; }
-      public IWithIdRepository ObjectRepository { get; private set; }
+      public IEventPublisher EventPublisher { get; }
+      public IWithIdRepository ObjectRepository { get; }
 
       public MoBiContext(IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory dimensionFactory, IEventPublisher eventPublisher,
          IXmlSerializationService serializationService, IObjectPathFactory objectPathFactory, IWithIdRepository objectBaseRepository,
@@ -97,8 +97,8 @@ namespace MoBi.Core.Domain.Model
 
       public IMoBiProject CurrentProject
       {
-         get { return _project; }
-         set { _project = value; }
+         get => _project;
+         set => _project = value;
       }
 
       public T Create<T>() where T : IObjectBase
@@ -123,7 +123,7 @@ namespace MoBi.Core.Domain.Model
 
       public void AddToHistory(ICommand command)
       {
-         HistoryManager.AddCommand(command);
+         HistoryManager?.AddCommand(command);
       }
 
       public void ProjectChanged()

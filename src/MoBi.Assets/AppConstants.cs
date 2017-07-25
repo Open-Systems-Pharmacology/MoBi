@@ -1549,6 +1549,9 @@ namespace MoBi.Assets
          public static readonly string LoadingApplication = "Loading Application...";
          public static readonly string PKSimPath = "PK-Sim executable path";
          public static readonly string SelectPKSimExecutablePath = "Select PK-Sim executable path";
+         public static readonly string CloseView = "Close";
+         public static readonly string CloseAll = "Close All Documents";
+         public static readonly string CloseAllButThis = "Close All But This";
 
          public static string ManageDisplayUnits(string type)
          {

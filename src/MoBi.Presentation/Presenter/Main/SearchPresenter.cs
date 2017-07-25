@@ -33,12 +33,12 @@ namespace MoBi.Presentation.Presenter.Main
       private IRegion _region;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
       private readonly ISearchResultToDTOSearchResultMapper _searchResultsToDTOSearchResultsMapper;
-      private readonly ISearchTasks _searchTask;
+      private readonly ISearchTask _searchTask;
       private readonly IMoBiApplicationController _applicationController;
       private readonly IMoBiContext _context;
 
       public SearchPresenter(ISearchView view, IRegionResolver regionResolver, IActiveSubjectRetriever activeSubjectRetriever,
-         ISearchResultToDTOSearchResultMapper searchResultsToDTOSearchResultsMapper, ISearchTasks searchTask, IMoBiApplicationController applicationController, IMoBiContext context) : base(view)
+         ISearchResultToDTOSearchResultMapper searchResultsToDTOSearchResultsMapper, ISearchTask searchTask, IMoBiApplicationController applicationController, IMoBiContext context) : base(view)
       {
          _regionResolver = regionResolver;
          _context = context;

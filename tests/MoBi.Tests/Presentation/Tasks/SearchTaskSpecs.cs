@@ -10,7 +10,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_SearchTaskSpecs : ContextSpecification<ISearchTasks>
+   public abstract class concern_for_SearchTaskSpecs : ContextSpecification<ISearchTask>
    {
       protected ISearchVisitor _searchVisitor;
       protected IMoBiContext _context;
@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Tasks
       {
          _searchVisitor = A.Fake<ISearchVisitor>();
          _context = A.Fake<IMoBiContext>();
-         sut = new SearchTasks(_searchVisitor,_context);
+         sut = new SearchTask(_searchVisitor,_context);
       }
    }
 

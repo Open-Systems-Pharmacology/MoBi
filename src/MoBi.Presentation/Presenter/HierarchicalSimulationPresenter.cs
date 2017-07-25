@@ -9,7 +9,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -98,16 +97,16 @@ namespace MoBi.Presentation.Presenter
          return base.GetChildObjects(dto, predicate);
       }
 
-      public override void Select(IObjectBaseDTO dtoObjectBase)
+      public override void Select(IObjectBaseDTO objectBaseDTO)
       {
-         if (string.Equals(dtoObjectBase.Id, AppConstants.OutputIntervalId))
+         if (string.Equals(objectBaseDTO.Id, AppConstants.OutputIntervalId))
             ShowOutputSchema();
-         else if (string.Equals(dtoObjectBase.Id, AppConstants.SolverSettingsId))
+         else if (string.Equals(objectBaseDTO.Id, AppConstants.SolverSettingsId))
             ShowSolverSettings();
-         else if (string.Equals(dtoObjectBase.Id, AppConstants.SimulationSettingsId))
+         else if (string.Equals(objectBaseDTO.Id, AppConstants.SimulationSettingsId))
             return;
          else
-            base.Select(dtoObjectBase);
+            base.Select(objectBaseDTO);
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
@@ -118,10 +117,15 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         if (eventToHandle.Sender == this) return;
+         if (eventToHandle.Sender == this)
+            return;
+
          var entity = eventToHandle.ObjectBase as IEntity;
-         if (entity == null) return;
-         if (!selectedEntityIsInSimulation(entity)) return;
+         if (entity == null)
+            return;
+
+         if (!selectedEntityIsInSimulation(entity))
+            return;
 
          var entityToSelect = entity.IsAnImplementationOf<IParameter>() ? entity.ParentContainer : entity;
          _view.Select(entityToSelect.Id);

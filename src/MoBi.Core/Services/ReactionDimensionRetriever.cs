@@ -19,12 +19,12 @@ namespace MoBi.Core.Services
 
       public IDimension MoleculeDimension => getDimension(Constants.Dimension.AMOUNT, Constants.Dimension.MOLAR_CONCENTRATION);
 
-      public ReactionDimensionMode SelectedDimensionMode => _projectRetriever.Current.ReactionDimensionMode;
+      public ReactionDimensionMode SelectedDimensionMode => _projectRetriever.Current?.ReactionDimensionMode ?? ReactionDimensionMode.AmountBased;
 
       private IDimension getDimension(string amountBased, string concentrationBased)
       {
          if (SelectedDimensionMode == ReactionDimensionMode.AmountBased)
-               return _dimensionFactory.Dimension(amountBased);
+            return _dimensionFactory.Dimension(amountBased);
 
          return _dimensionFactory.Dimension(concentrationBased);
       }

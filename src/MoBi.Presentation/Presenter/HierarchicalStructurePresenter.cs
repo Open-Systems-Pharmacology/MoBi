@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Presenter
    public interface IHierarchicalStructurePresenter : IPresenterWithContextMenu<IViewItem>
    {
       IReadOnlyList<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto, Func<IEntity, bool> predicate);
-      void Select(IObjectBaseDTO dtoObjectBase);
+      void Select(IObjectBaseDTO objectBaseDTO);
       void Clear();
    }
 
@@ -60,12 +60,12 @@ namespace MoBi.Presentation.Presenter
          return container?.ContainerType ?? ContainerType.Other;
       }
 
-      public virtual void Select(IObjectBaseDTO dtoObjectBase)
+      public virtual void Select(IObjectBaseDTO objectBaseDTO)
       {
-         if (dtoObjectBase.Equals(_favorites.TagAsObject))
+         if (objectBaseDTO.Equals(_favorites.TagAsObject))
             RaiseFavoritesSelectedEvent();
          else
-            raiseEntitySelectedEvent(dtoObjectBase);
+            raiseEntitySelectedEvent(objectBaseDTO);
       }
 
       private void raiseEntitySelectedEvent(IObjectBaseDTO dtoObjectBase)
