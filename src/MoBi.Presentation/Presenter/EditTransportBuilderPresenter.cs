@@ -25,7 +25,6 @@ namespace MoBi.Presentation.Presenter
    {
       void SetCreateProcessRateParameter(bool createProccessRate);
       void SetPlotProcessRateParameter(bool plotProcessRate);
-      void RemoveFormulaType<TFormulaType>();
    }
 
    public class EditTransportBuilderPresenter : AbstractSubPresenterWithFormula<IEditTransportBuilderView, IEditTransportBuilderPresenter>, IEditTransportBuilderPresenter
@@ -72,6 +71,8 @@ namespace MoBi.Presentation.Presenter
          _selectReferencePresenter = selectReferencePresenter;
          editFormulaPresenter.ReferencePresenter = _selectReferencePresenter;
          editFormulaPresenter.RemoveFormulaType<TableFormula>();
+         editFormulaPresenter.RemoveFormulaType<TableFormulaWithOffset>();
+         editFormulaPresenter.RemoveFormulaType<SumFormula>();
          editFormulaPresenter.SetDefaultFormulaType<ExplicitFormula>();
          View.SetParameterView(_editParameterListPresenter.BaseView);
          View.SetFormulaView(_editFormulaPresenter.BaseView);
@@ -162,11 +163,6 @@ namespace MoBi.Presentation.Presenter
          _transportBuilder.ProcessRateParameterPersistable = plotProcessRate;
       }
 
-      public void RemoveFormulaType<TFormulaType>()
-      {
-         _editFormulaPresenter.RemoveFormulaType<TFormulaType>();
-      }
-
       public void SelectParameter(IParameter parameter)
       {
          _view.ShowParamters();
@@ -184,9 +180,6 @@ namespace MoBi.Presentation.Presenter
          return FormulaCache.Select(formula => _formulaToDTOFormulaBuidlerMapper.MapFrom(formula));
       }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
    }
 }

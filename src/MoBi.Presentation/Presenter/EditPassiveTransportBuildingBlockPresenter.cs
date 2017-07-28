@@ -45,8 +45,6 @@ namespace MoBi.Presentation.Presenter
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _editTransportBuilderPresenter = editTransportBuilderPresenter;
          _transportBuilderToDTOTransportBuilderMapper = transportBuilderToDTOTransportBuilderMapper;
-         _editTransportBuilderPresenter.RemoveFormulaType<TableFormulaWithOffset>();
-         _editTransportBuilderPresenter.RemoveFormulaType<SumFormula>();
          AddSubPresenters(_editTransportBuilderPresenter);
       }
 
