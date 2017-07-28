@@ -11,7 +11,6 @@ namespace MoBi.UI.Views
    public partial class EditTableFormulaWithOffSetFormulaView : BaseUserControl, IEditTableFormulaWithOffSetFormulaView
    {
       private IEditTableFormulaWithOffSetFormulaPresenter _presenter;
-      private TableFormulaWithOffsetDTO _dto;
       public bool ReadOnly { get; set; }
 
       public EditTableFormulaWithOffSetFormulaView()
@@ -36,37 +35,28 @@ namespace MoBi.UI.Views
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         btEditOffsetObjectPath.ButtonClick += (o, e) => OnEvent(btEditOffsetObjectPathOnButtonClick);
-         btEditTableObjectPath.ButtonClick += (o, e) => OnEvent(btEditTableObjectPathOnButtonClick);
+         btEditOffsetObjectPath.ButtonClick += (o, e) => OnEvent(_presenter.SetOffsetFormulaPath);
+         btEditTableObjectPath.ButtonClick += (o, e) => OnEvent(_presenter.SetTableObjectPath);
       }
 
-      private void btEditOffsetObjectPathOnButtonClick()
+      public void BindTo(TableFormulaWithOffsetDTO tableFormulaWithOffsetDTO)
       {
-         _presenter.SetOffsetFormulaPath(_dto.OffsetObjectPath);
-      }
-
-      private void btEditTableObjectPathOnButtonClick()
-      {
-         _presenter.SetTableObjectPath(_dto.OffsetObjectPath);
-      }
-
-      public void Show(TableFormulaWithOffsetDTO dtoTableFormulaWithOffset)
-      {
-         ShowOffsetObjectPath(dtoTableFormulaWithOffset.OffsetObjectPath);
-         ShowTableObjectPath(dtoTableFormulaWithOffset.TableObjectPath);
-         _dto = dtoTableFormulaWithOffset;
+         showOffsetObjectPath(tableFormulaWithOffsetDTO.OffsetObjectPath);
+         showTableObjectPath(tableFormulaWithOffsetDTO.TableObjectPath);
       }
 
       protected override int TopicId => HelpId.MoBi_ModelBuilding_ParametersTableFormulaOffset;
 
-      public void ShowOffsetObjectPath(FormulaUsablePathDTO dtoFormulaUsablePath)
+      private void showOffsetObjectPath(FormulaUsablePathDTO forrmulaUsablePathDTO)
       {
-         if (dtoFormulaUsablePath != null) btEditOffsetObjectPath.Text = dtoFormulaUsablePath.Path;
+         if (forrmulaUsablePathDTO != null)
+            btEditOffsetObjectPath.Text = forrmulaUsablePathDTO.Path;
       }
 
-      public void ShowTableObjectPath(FormulaUsablePathDTO dtoFormulaUsablePath)
+      private void showTableObjectPath(FormulaUsablePathDTO forrmulaUsablePathDTO)
       {
-         if (dtoFormulaUsablePath != null) btEditTableObjectPath.Text = dtoFormulaUsablePath.Path;
+         if (forrmulaUsablePathDTO != null)
+            btEditTableObjectPath.Text = forrmulaUsablePathDTO.Path;
       }
    }
 }

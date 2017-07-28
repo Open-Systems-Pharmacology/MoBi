@@ -73,10 +73,7 @@ namespace MoBi.Presentation.Presenter
          _view.SetEditView(_favoritesPresenter.BaseView);
       }
 
-      public override object Subject
-      {
-         get { return _spatialStructure; }
-      }
+      public override object Subject => _spatialStructure;
 
       protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
       {

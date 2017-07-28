@@ -545,7 +545,7 @@
     <Compile Include="Mappers\StringChangeToSelectDTOStringChangeMapper.cs" />
     <Compile Include="Mappers\SumFormulaToDTOSumFormulaMapper.cs" />
     <Compile Include="Mappers\TableFormulaToDTOTableFormulaMapper.cs" />
-    <Compile Include="Mappers\TableFormulaWithOffsetToDtoTableFormulaWithOffsetMapper.cs" />
+    <Compile Include="Mappers\TableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper.cs" />
     <Compile Include="Mappers\TagToTagDTOMapper.cs" />
     <Compile Include="Mappers\TransportBuilderToDTOTransportBuilderMapper.cs" />
     <Compile Include="Mappers\TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper.cs" />

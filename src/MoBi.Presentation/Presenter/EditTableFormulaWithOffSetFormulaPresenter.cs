@@ -1,6 +1,5 @@
 ﻿using System;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.DTO;
@@ -8,6 +7,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 
@@ -15,76 +15,78 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditTableFormulaWithOffSetFormulaPresenter : IEditTypedFormulaPresenter
    {
-      void SetOffsetFormulaPath(FormulaUsablePathDTO formulaUsablePath);
-      void SetTableObjectPath(FormulaUsablePathDTO formulaUsablePath);
+      void SetOffsetFormulaPath();
+      void SetTableObjectPath();
    }
 
    public class EditTableFormulaWithOffSetFormulaPresenter : EditTypedFormulaPresenter<IEditTableFormulaWithOffSetFormulaView,
       IEditTableFormulaWithOffSetFormulaPresenter, TableFormulaWithOffset>, IEditTableFormulaWithOffSetFormulaPresenter
    {
-      private readonly ITableFormulaWithOffsetToDTOTableFormulaWithOffsetMapper _mapper;
-      private readonly IMoBiContext _context;
-      private readonly IFormulaUsablePathToFormulaUsablePathDTOMapper _formulaUsablePathMapper;
-      private TableFormulaWithOffsetDTO _dto;
+      private readonly ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper _mapper;
+      private TableFormulaWithOffsetDTO _tableFormulaWithOffsetDTO;
       private readonly IMoBiFormulaTask _moBiFormulaTask;
       private readonly IApplicationController _applicationController;
       private readonly ISelectReferencePresenterFactory _selectReferencePresenterFactory;
+      private readonly IDimension _timeDimension;
 
-      public EditTableFormulaWithOffSetFormulaPresenter(IEditTableFormulaWithOffSetFormulaView view, ITableFormulaWithOffsetToDTOTableFormulaWithOffsetMapper mapper, IMoBiContext context,
-         IFormulaUsablePathToFormulaUsablePathDTOMapper formulaUsablePathMapper, IMoBiFormulaTask moBiFormulaTask, IDisplayUnitRetriever displayUnitRetriever,
-         IApplicationController applicationController, ISelectReferencePresenterFactory selectReferencePresenterFactory) : base(view, displayUnitRetriever)
+      public EditTableFormulaWithOffSetFormulaPresenter(IEditTableFormulaWithOffSetFormulaView view, ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper mapper, IMoBiContext context,
+         IMoBiFormulaTask moBiFormulaTask, IDisplayUnitRetriever displayUnitRetriever, IApplicationController applicationController, ISelectReferencePresenterFactory selectReferencePresenterFactory) : base(view, displayUnitRetriever)
       {
          _mapper = mapper;
-         _context = context;
-         _formulaUsablePathMapper = formulaUsablePathMapper;
          _moBiFormulaTask = moBiFormulaTask;
          _applicationController = applicationController;
          _selectReferencePresenterFactory = selectReferencePresenterFactory;
+         _timeDimension = context.DimensionFactory.Dimension(Constants.Dimension.TIME);
       }
 
-      public override void Edit(TableFormulaWithOffset objectToEdit)
+      public override void Edit(TableFormulaWithOffset tableFormulaWithOffset)
       {
-         _formula = objectToEdit;
-         _dto = _mapper.MapFrom(_formula);
-         _view.Show(_dto);
+         _formula = tableFormulaWithOffset;
+         _tableFormulaWithOffsetDTO = _mapper.MapFrom(_formula);
+         _view.BindTo(_tableFormulaWithOffsetDTO);
       }
 
-      public void SetOffsetFormulaPath(FormulaUsablePathDTO formulaUsablePath)
+      private void rebind()
       {
-         var path = selectFormulaUseablePath(formulaUsablePath, isValideOffsetObject, AppConstants.Captions.OffsetObjectPath);
+         Edit(_formula);
+      }
+
+      public void SetOffsetFormulaPath()
+      {
+         var path = selectFormulaUseablePath(_tableFormulaWithOffsetDTO.OffsetObjectPath, isValidOffsetObject, AppConstants.Captions.OffsetObjectPath);
          if (path == null) return;
 
          AddCommand(_moBiFormulaTask.ChangeOffsetObject(_formula, path, BuildingBlock));
-         _view.ShowOffsetObjectPath(_formulaUsablePathMapper.MapFrom(path, _formula));
+         rebind();
       }
 
-      private bool isValideOffsetObject(IObjectBase para)
+      private bool isValidOffsetObject(IObjectBase objectBase)
       {
-         var time = _context.DimensionFactory.Dimension(Constants.Dimension.TIME);
-         return para.IsAnImplementationOf<IParameter>() && ((IParameter) para).Dimension.Equals(time);
+         var parameter = objectBase as IParameter;
+         return parameter != null && Equals(parameter.Dimension, _timeDimension);
       }
 
-      public void SetTableObjectPath(FormulaUsablePathDTO formulaUsablePath)
+      public void SetTableObjectPath()
       {
-         var path = selectFormulaUseablePath(formulaUsablePath, isValideTableObject, AppConstants.Captions.TableObjectPath);
+         var path = selectFormulaUseablePath(_tableFormulaWithOffsetDTO.TableObjectPath, isValidTableObject, AppConstants.Captions.TableObjectPath);
          if (path == null) return;
 
          AddCommand(_moBiFormulaTask.ChangeTableObject(_formula, path, BuildingBlock));
-         _view.ShowTableObjectPath(_formulaUsablePathMapper.MapFrom(path, _formula));
+         rebind();
       }
 
-      private bool isValideTableObject(IObjectBase para)
+      private bool isValidTableObject(IObjectBase objectBase)
       {
-         if (!para.IsAnImplementationOf<IParameter>()) return false;
-         return ((IParameter) para).Formula.IsTable();
+         var parameter = objectBase as IParameter;
+         return parameter?.Formula.IsTable() ?? false;
       }
 
       private IFormulaUsablePath selectFormulaUseablePath(FormulaUsablePathDTO initPath, Func<IObjectBase, bool> predicate, string caption)
       {
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {
-            var refererncePresneter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject.ParentContainer);
-            presenter.Init(predicate, UsingObject, new[] { UsingObject.RootContainer }, caption, refererncePresneter);
+            var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject.ParentContainer);
+            presenter.Init(predicate, UsingObject, new[] {UsingObject.RootContainer}, caption, referencePresenter);
             return presenter.GetSelection();
          }
       }

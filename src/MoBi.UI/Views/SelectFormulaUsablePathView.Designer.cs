@@ -31,8 +31,8 @@ namespace MoBi.UI.Views
       private void InitializeComponent()
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.panelView = new DevExpress.XtraEditors.PanelControl();
+         this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemPanelView = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
          this.layoutControlBase.SuspendLayout();
@@ -44,8 +44,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelView)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPanelView)).BeginInit();
          this.SuspendLayout();
          // 
@@ -106,6 +106,13 @@ namespace MoBi.UI.Views
          this.layoutControl1.TabIndex = 1;
          this.layoutControl1.Text = "layoutControl1";
          // 
+         // panelView
+         // 
+         this.panelView.Location = new System.Drawing.Point(105, 2);
+         this.panelView.Name = "panelView";
+         this.panelView.Size = new System.Drawing.Size(341, 343);
+         this.panelView.TabIndex = 4;
+         // 
          // layoutControlGroup1
          // 
          this.layoutControlGroup1.CustomizationFormText = "layoutControlGroup1";
@@ -115,22 +122,16 @@ namespace MoBi.UI.Views
             this.layoutItemPanelView});
          this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup1.Name = "layoutControlGroup1";
+         this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup1.Size = new System.Drawing.Size(448, 347);
          this.layoutControlGroup1.TextVisible = false;
-         // 
-         // panelView
-         // 
-         this.panelView.Location = new System.Drawing.Point(115, 12);
-         this.panelView.Name = "panelView";
-         this.panelView.Size = new System.Drawing.Size(321, 323);
-         this.panelView.TabIndex = 4;
          // 
          // layoutItemPanelView
          // 
          this.layoutItemPanelView.Control = this.panelView;
          this.layoutItemPanelView.Location = new System.Drawing.Point(0, 0);
          this.layoutItemPanelView.Name = "layoutItemPanelView";
-         this.layoutItemPanelView.Size = new System.Drawing.Size(428, 327);
+         this.layoutItemPanelView.Size = new System.Drawing.Size(448, 347);
          this.layoutItemPanelView.TextSize = new System.Drawing.Size(100, 13);
          // 
          // SelectFormulaUsablePathView
@@ -154,10 +155,11 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelView)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPanelView)).EndInit();
          this.ResumeLayout(false);
+         this.PerformLayout();
 
       }
 

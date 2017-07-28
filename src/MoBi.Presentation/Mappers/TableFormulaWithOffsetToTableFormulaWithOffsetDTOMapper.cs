@@ -6,15 +6,15 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface ITableFormulaWithOffsetToDTOTableFormulaWithOffsetMapper : IMapper<TableFormulaWithOffset, TableFormulaWithOffsetDTO>
+   public interface ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper : IMapper<TableFormulaWithOffset, TableFormulaWithOffsetDTO>
    {
    }
 
-   internal class TableFormulaWithOffsetToDTOTableFormulaWithOffsetMapper : ObjectBaseToObjectBaseDTOMapperBase, ITableFormulaWithOffsetToDTOTableFormulaWithOffsetMapper
+   internal class TableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper
    {
       private readonly IFormulaUsablePathToFormulaUsablePathDTOMapper _mapper;
 
-      public TableFormulaWithOffsetToDTOTableFormulaWithOffsetMapper(IFormulaUsablePathToFormulaUsablePathDTOMapper mapper)
+      public TableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper(IFormulaUsablePathToFormulaUsablePathDTOMapper mapper)
       {
          _mapper = mapper;
       }

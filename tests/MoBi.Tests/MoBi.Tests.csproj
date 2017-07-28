@@ -227,6 +227,7 @@
     <Compile Include="IntegrationTests\SearchIntegrationTests.cs" />
     <Compile Include="Presentation\CloseSubjectPresenterInvokerSpecs.cs" />
     <Compile Include="Presentation\ContextMenuForNotificationFactorySpecs.cs" />
+    <Compile Include="Presentation\EditTableFormulaWithOffSetFormulaPresenterSpecs.cs" />
     <Compile Include="Presentation\OutputSelectionsRetrieverSpecs.cs" />
     <Compile Include="Presentation\StartValueFormatterSpecs.cs" />
     <Compile Include="Presentation\ValidationOptionsPresenterSpecs.cs" />
