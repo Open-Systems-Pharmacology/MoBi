@@ -31,15 +31,6 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_creating_the_edit_passive_transport_building_block_presenter : concern_for_EditPassiveTransportBuildingBlockPresenter
-   {
-      [Observation]
-      public void should_remove_formula_types_that_do_not_make_sense_for_passive_transports()
-      {
-         A.CallTo(() => _transporterBuilderPresenter.RemoveFormulaType<SumFormula>()).MustHaveHappened();
-         A.CallTo(() => _transporterBuilderPresenter.RemoveFormulaType<TableFormulaWithOffset>()).MustHaveHappened();
-      }
-   }
    public class When_handling_the_selecting_event_for_a_formula_that_is_in_the_formula_cache : concern_for_EditPassiveTransportBuildingBlockPresenter
    {
       private IFormula _formula;
