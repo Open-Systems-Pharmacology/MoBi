@@ -16,3 +16,6 @@
 [submodule "examples/ManualModel"]
 	path = examples/ManualModel
 	url = https://github.com/Open-Systems-Pharmacology/Example_ManualModel.git
+[submodule "simmodel.schema"]
+	path = simmodel.schema
+	url = https://github.com/Open-Systems-Pharmacology/OSPSuite.SimModel.Schema.git
