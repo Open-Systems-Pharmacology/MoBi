@@ -1,12 +1,10 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using MoBi.Assets;
-using OSPSuite.Serializer.Xml.Extensions;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Converter.v5_5;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -14,7 +12,9 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml.Extensions;
-using OSPSuite.Assets;
+using OSPSuite.Serializer.Xml.Extensions;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Serialization.Converter.v3_5
 {
@@ -42,10 +42,12 @@ namespace MoBi.Core.Serialization.Converter.v3_5
       //in the latter, we do not add the template simulation settings to the project
       private bool _loadingMoBiSimulation;
 
-      private const string EffectiveSurfaceAreaVariabilityFactor = "Effective surface area variability factor";
-      private const string EffectiveSurfaceAreaEnhancementFactor = "Effective surface area enhancement factor";
-      private const string EffectiveSurfaceArea = "Effective surface area";
-      private const string GeometricSurfaceArea = "Geometric surface area";
+      private bool _converted;
+
+      private const string EFFECTIVE_SURFACE_AREA_VARIABILITY_FACTOR = "Effective surface area variability factor";
+      private const string EFFECTIVE_SURFACE_AREA_ENHANCEMENT_FACTOR = "Effective surface area enhancement factor";
+      private const string EFFECTIVE_SURFACE_AREA = "Effective surface area";
+      private const string GEOMETRIC_SURFACE_AREA = "Geometric surface area";
 
       public Converter341To351(Converter541To551 coreConverter, ICloneManagerForSimulation cloneManager,
          IParameterFactory parameterFactory, ISimulationSettingsFactory simulationSettingsFactory,
@@ -63,19 +65,17 @@ namespace MoBi.Core.Serialization.Converter.v3_5
          _objectPathFactory = objectPathFactory;
       }
 
-      public  bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V3_4_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V3_4_1;
 
-      public  int Convert(object objectToUpdate, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project)
       {
          try
          {
             _project = project;
-            _coreConverter.Convert(objectToUpdate);
+            _converted = false;
+            var (_, coreConversionHappened) = _coreConverter.Convert(objectToUpdate);
             this.Visit(objectToUpdate);
-            return ProjectVersions.V3_5_1;
+            return (ProjectVersions.V3_5_1, _converted || coreConversionHappened);
          }
          finally
          {
@@ -83,7 +83,7 @@ namespace MoBi.Core.Serialization.Converter.v3_5
          }
       }
 
-      public  int ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
       {
          _coreConverter.ConvertXml(element);
 
@@ -93,7 +93,8 @@ namespace MoBi.Core.Serialization.Converter.v3_5
          //only happens when loading an actual MoBiSimulation from a project
          _loadingMoBiSimulation = (element.Name == AppConstants.XmlNames.MoBiSimulation);
 
-         return ProjectVersions.V3_5_1;
+         //too many conversion happening here! set to true for compatibility
+         return (ProjectVersions.V3_5_1, true);
       }
 
       private void convertBuildConfigurationElement(XElement buildConfigurationElement)
@@ -101,6 +102,8 @@ namespace MoBi.Core.Serialization.Converter.v3_5
          if (buildConfigurationElement == null) return;
          //create an empty element. This is enough to instantiate the object 
          buildConfigurationElement.Add(new XElement(AppConstants.XmlNames.SimulationSettingsInfo));
+         _converted = true;
+
       }
 
       private void convertMoBiSimulationElement(XElement element)
@@ -187,7 +190,6 @@ namespace MoBi.Core.Serialization.Converter.v3_5
          convertFormulaReferencingAeffIn(spatialStructure);
       }
 
-
       private static void replaceAgeomXAeffFactorWithAeffIn(ExplicitFormula formula)
       {
          if (!formula.FormulaString.Contains("Ageom * AeffFactor") && !formula.FormulaString.Contains("Ageom*AeffFactor")) return;
@@ -196,8 +198,8 @@ namespace MoBi.Core.Serialization.Converter.v3_5
 
          formula.FormulaString = formula.FormulaString.Replace("Ageom * AeffFactor", "Aeff").Replace("Ageom*AeffFactor", "Aeff");
          var objectPath = formula.ObjectPaths.Find(x => x.Alias == "Ageom");
-         objectPath.Remove(GeometricSurfaceArea);
-         objectPath.Add(EffectiveSurfaceArea);
+         objectPath.Remove(GEOMETRIC_SURFACE_AREA);
+         objectPath.Add(EFFECTIVE_SURFACE_AREA);
          objectPath.Alias = "Aeff";
 
          var aeffFactorObjectPath = formula.ObjectPaths.Find(x => x.Alias == "AeffFactor");
@@ -221,21 +223,21 @@ namespace MoBi.Core.Serialization.Converter.v3_5
          var lumen = organism.EntityAt<IContainer>("Lumen");
          if (lumen == null) return;
 
-         var variabilityFactor = lumen.EntityAt<IParameter>(EffectiveSurfaceAreaVariabilityFactor);
+         var variabilityFactor = lumen.EntityAt<IParameter>(EFFECTIVE_SURFACE_AREA_VARIABILITY_FACTOR);
          var area = _dimensionFactory.Dimension("Area");
-         foreach (var containerWithSurfaceArea in organism.GetAllChildren<IContainer>(c => c.ContainsName(EffectiveSurfaceAreaEnhancementFactor)))
+         foreach (var containerWithSurfaceArea in organism.GetAllChildren<IContainer>(c => c.ContainsName(EFFECTIVE_SURFACE_AREA_ENHANCEMENT_FACTOR)))
          {
             var effectiveSurfaceArea = _objectBaseFactory.Create<IParameter>()
-               .WithName(EffectiveSurfaceArea)
+               .WithName(EFFECTIVE_SURFACE_AREA)
                .WithDimension(area)
                .WithGroup("GI_ANATOMY_AREA")
                .WithDescription("Effective surface area of GI segment");
 
-            var geometricSurfaceArea = containerWithSurfaceArea.EntityAt<IParameter>(GeometricSurfaceArea);
+            var geometricSurfaceArea = containerWithSurfaceArea.EntityAt<IParameter>(GEOMETRIC_SURFACE_AREA);
             if (geometricSurfaceArea == null)
                continue;
 
-            var effectiveSurfaceAreaEnahncementFactor = containerWithSurfaceArea.EntityAt<IParameter>(EffectiveSurfaceAreaEnhancementFactor);
+            var effectiveSurfaceAreaEnahncementFactor = containerWithSurfaceArea.EntityAt<IParameter>(EFFECTIVE_SURFACE_AREA_ENHANCEMENT_FACTOR);
 
             containerWithSurfaceArea.Add(effectiveSurfaceArea);
 
@@ -263,7 +265,7 @@ namespace MoBi.Core.Serialization.Converter.v3_5
          if (lumen == null) return;
 
          var parameter = _objectBaseFactory.Create<IDistributedParameter>()
-            .WithName(EffectiveSurfaceAreaVariabilityFactor)
+            .WithName(EFFECTIVE_SURFACE_AREA_VARIABILITY_FACTOR)
             .WithDescription("Effective surface area variability factor");
 
          parameter.WithGroup("GI_ANATOMY_AEFF_FACTOR");
