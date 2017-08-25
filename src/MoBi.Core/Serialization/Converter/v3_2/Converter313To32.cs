@@ -44,6 +44,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
       private readonly IEventPublisher _eventPublisher;
       private readonly ObjectTypeResolver _objectTypeResolver;
       private bool _suspendWarning;
+      private bool _converted;
 
       public Converter313To32(IDimensionConverter dimensionConverter, IMoBiDimensionFactory dimensionFactory,
                               IObjectBaseFactory objectBaseFactory, IFormulaMapper formulaMapper, IDimensionMapper dimensionMapper, IEventPublisher eventPublisher)
@@ -63,13 +64,14 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          return version == ProjectVersions.V3_1_3;
       }
 
-      public int Convert(object objectToConvert, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, IMoBiProject project)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V3_2_1;
+         return (ProjectVersions.V3_2_1, _converted);
       }
 
-      public int ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
       {
          _dimensionConverter.ConvertDimensionIn(element);
          convertOutputSchemaForSimulations(element);
@@ -81,7 +83,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          convetSimulation(element);
          convertObservers(element);
          
-         return ProjectVersions.V3_2_1;
+         return (ProjectVersions.V3_2_1, true);
       }
 
       private void convertPassiveTransportsToChildren(XElement element)
@@ -231,6 +233,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
       public void Visit(DataRepository dataRepository)
       {
          _dimensionConverter.ConvertDimensionIn(dataRepository);
+         _converted = true;
       }
 
       private void convert<T>(IBuildingBlock<T> buildingBlock) where T : class, IObjectBase
@@ -244,12 +247,14 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          convert(spatialStructure);
          spatialStructure.TopContainers.Each(convertSpecialParametersIn);
          updateForPKSimChanges(spatialStructure);
+         _converted = true;
       }
 
       public void Visit(IMoleculeBuildingBlock moleculeBuildingBlock)
       {
          convert(moleculeBuildingBlock);
          updateForPKSimChanges(moleculeBuildingBlock);
+         _converted = true;
       }
 
       private void updateForPKSimChanges(IMoleculeBuildingBlock moleculeBuildingBlock)
@@ -408,6 +413,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
       {
          convert(parameterStartValuesBuildingBlock);
          convertSpecialParametersIn(parameterStartValuesBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
@@ -415,21 +421,25 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          
          moleculeStartValuesBuildingBlock.Each(msv=>msv.Dimension = _dimensionFactory.Dimension(Constants.Dimension.AMOUNT));
          convert(moleculeStartValuesBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IPassiveTransportBuildingBlock passiveTransportBuildingBlock)
       {
          convert(passiveTransportBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IObserverBuildingBlock observerBuildingBlock)
       {
          convert(observerBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IReactionBuildingBlock reactionBuildingBlock)
       {
          convert(reactionBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IEventGroupBuildingBlock eventGroupBuildingBlock)
@@ -437,6 +447,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          convert(eventGroupBuildingBlock);
          var inversedVolume = _dimensionFactory.Dimension(AppConstants.DimensionNames.INVERSED_VOLUME);
          eventGroupBuildingBlock.Each(eg => convertSpecialParameter(eg, "Number_Of_Particles_Factor",1000,inversedVolume));
+         _converted = true;
       }
 
       public void Visit(IMoBiSimulation simulation)
@@ -451,6 +462,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
 
             convertSpecialParametersIn(simulation.Model.Root);
             simulation.HasChanged = true;
+            _converted = true;
          }
          finally
          {
@@ -488,10 +500,11 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          }
       }
 
-      public void Visit(SimulationTransfer objToVisit)
+      public void Visit(SimulationTransfer simulationTransfer)
       {
-         Visit((IMoBiSimulation) objToVisit.Simulation);
-         objToVisit.AllObservedData.Each(_dimensionConverter.ConvertDimensionIn);
+         Visit((IMoBiSimulation) simulationTransfer.Simulation);
+         simulationTransfer.AllObservedData.Each(_dimensionConverter.ConvertDimensionIn);
+         _converted = true;
       }
 
       private void createDimensionWarningsForBuildingBlock(IBuildingBlock buildingBlock)
@@ -556,9 +569,10 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          parameterStartValue.StartValue = parameterStartValue.StartValue * conversionFactor;
       }
 
-      public void Visit(IMoBiProject objToVisit)
+      public void Visit(IMoBiProject project)
       {
-         objToVisit.AllObservedData.Each(Visit);
+         project.AllObservedData.Each(Visit);
+         _converted = true;
       }
    }
 }

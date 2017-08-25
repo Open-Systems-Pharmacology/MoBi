@@ -28,7 +28,7 @@ namespace MoBi.Core.Serialization.Converter.v3_1
          sim.HasChanged = true;
       }
 
-      public int Convert(object objectToUpdate, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project)
       {
          if (objectToUpdate.IsAnImplementationOf<IParameterStartValuesBuildingBlock>())
          {
@@ -65,13 +65,13 @@ namespace MoBi.Core.Serialization.Converter.v3_1
             }
          }
 
-
-         return ProjectVersions.V3_1_3;
+         //Almost every single object is being converted here. Returns true for compatibility reasons
+         return (ProjectVersions.V3_1_3, true);
       }
 
-      public int ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
       {
-         return ProjectVersions.V3_1_3;
+         return (ProjectVersions.V3_1_3, false);
       }
 
       public  bool IsSatisfiedBy(int version)

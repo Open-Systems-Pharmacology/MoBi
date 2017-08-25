@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Serialization.Converter.v6_1
 {
@@ -15,6 +15,7 @@ namespace MoBi.Core.Serialization.Converter.v6_1
       IVisitor<IModelCoreSimulation>
    {
       private readonly OSPSuite.Core.Converter.v6_1.Converter60To61 _coreConverter60To61;
+      private bool _converted;
 
       public Converter60To61(OSPSuite.Core.Converter.v6_1.Converter60To61 coreConverter60To61)
       {
@@ -26,17 +27,19 @@ namespace MoBi.Core.Serialization.Converter.v6_1
          return item == ProjectVersions.V6_0_1;
       }
 
-      public int Convert(object objectToUpdate, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project)
       {
-         _coreConverter60To61.Convert(objectToUpdate);
+         _converted = false;
+         var (_, coreConversionHappened) = _coreConverter60To61.Convert(objectToUpdate);
          this.Visit(objectToUpdate);
-         return ProjectVersions.V6_1_1;
+         return (ProjectVersions.V6_1_1, _converted || coreConversionHappened);
       }
 
-      public int ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
       {
+         _converted = false;
          convertPreviousMissedPerTimeDimension(element);
-         return ProjectVersions.V6_1_1;
+         return (ProjectVersions.V6_1_1, _converted);
       }
 
       private void convertPreviousMissedPerTimeDimension(XElement element)
@@ -53,7 +56,10 @@ namespace MoBi.Core.Serialization.Converter.v6_1
          {
             string attributeValue = attribute.Value;
             if (attributeValue.IsOneOf("MassAmount per Time", "MassAmount per time"))
+            {
                attribute.SetValue("Amount per time");
+               _converted = true;
+            }
          }
       }
 
@@ -65,16 +71,19 @@ namespace MoBi.Core.Serialization.Converter.v6_1
       public void Visit(IPassiveTransportBuildingBlock passiveTransportBuildingBlock)
       {
          passiveTransportBuildingBlock.Each(convertPreviousProblemWithPassiveTransportParametersGlobals);
+         _converted = true;
       }
 
       public void Visit(IBuildConfiguration buildConfiguration)
       {
          Visit(buildConfiguration.PassiveTransports);
+         _converted = true;
       }
 
       public void Visit(IModelCoreSimulation modelCoreSimulation)
       {
          Visit(modelCoreSimulation.BuildConfiguration);
+         _converted = true;
       }
    }
 }
