@@ -207,6 +207,10 @@
       <Link>OSPSuite.PKParameters.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\pre\libsbmlcs.dll">
+      <Link>libsbmlcs.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Data\GroupRepository.xml">
       <Link>GroupRepository.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
