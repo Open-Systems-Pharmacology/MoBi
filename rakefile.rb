@@ -34,7 +34,8 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'pkparameters/*.xml',
 		'setup/setup.wxs',
 		'log4net.config.xml',
-		'setup/**/*.{msm,rtf,bmp}'
+		'setup/**/*.{msm,rtf,bmp}',
+		'Open Systems Pharmacology Suite License.pdf'
 	]
 
 	Rake::Task['setup:create'].execute(OpenStruct.new(
