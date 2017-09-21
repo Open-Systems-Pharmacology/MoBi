@@ -32,7 +32,7 @@
               <Extension Id="mbp3" ContentType="application/mbp3">
                 <Verb Id="open" Command="Open" TargetFile="MoBi.exe" Argument='"%1"' />
               </Extension>
-            </ProgId> 
+            </ProgId>   
 
             <File Name="PKML.ico" Id="PKML.ico" Source="$(var.DeployDir)\PKML.ico" />
             <ProgId Id="PKMLFile" Description="Shared Modeling File" Icon="PKML.ico" IconIndex="0">
@@ -45,7 +45,7 @@
             <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\MoBi\$(var.ProductReleaseVersion)" Name="InstallDir" Type="string" KeyPath="no" Value="[INSTALLDIR]" />
           </Component>
 
-          <Component Id="OSPSuiteLicense" Guid="2947C6C5-4641-404D-B78B-4B9DC351F830'">
+          <Component Id="OSPSuiteLicense" Guid="2947C6C5-4641-404D-B78B-4B9DC351F830">
             <File Name="Open Systems Pharmacology Suite License.pdf" Id="OSPSuiteLicense" Source="$(var.DeployDir)/Open Systems Pharmacology Suite License.pdf" KeyPath="yes" />
           </Component>
 
