@@ -82,7 +82,6 @@ namespace MoBi.UI.Settings
       public OutputSelections OutputSelections { get; set; }
       public DisplayUnitsManager DisplayUnits { get; set; }
       private readonly INumericFormatterOptions _numericFormatterOptions;
-      private string _pkSimPath;
       public bool ShowAdvancedParameters { get; set; }
       public bool GroupParameters { get; set; }
       public string ChartEditorLayout { get; set; }
@@ -168,12 +167,7 @@ namespace MoBi.UI.Settings
          set => _numericFormatterOptions.DecimalPlace = value;
       }
 
-      public string PKSimPath
-      {
-         get => _pkSimPath;
-         set => SetProperty(ref _pkSimPath, value);
-      }
-
+   
       public DirectoryMapSettings DirectoryMapSettings { get; }
 
       public IEnumerable<DirectoryMap> UsedDirectories => DirectoryMapSettings.UsedDirectories;

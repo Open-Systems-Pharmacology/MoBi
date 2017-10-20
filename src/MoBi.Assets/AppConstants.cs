@@ -1210,7 +1210,6 @@ namespace MoBi.Assets
          public static readonly string HistoryBrowser = "History";
          public static readonly string NameInUse = "New Name";
          public static readonly string ReanameWizardCaption = "Rename also";
-         public static readonly string UserSettings = "User Settings";
          public static readonly string AddReactionMolecule = "Molecule Name";
          public static readonly string NewName = "New Name";
          public static readonly string Tag = "Tag";
@@ -1428,6 +1427,7 @@ namespace MoBi.Assets
          public static readonly string AddUnitMap = "Add Unit";
          public static readonly string DisplayUnit = "Display Unit";
          public static readonly string DefaultDisplayUnits = "Default Display Units";
+         public static readonly string ApplicationSettings = "Application";
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string StartImport = "Start Import";
          public static readonly string ImportParameterStartValues = "Import Parameter Start Values";
@@ -1548,6 +1548,8 @@ namespace MoBi.Assets
          public static readonly string SelectMolecules = "Select Molecules";
          public static readonly string LoadingApplication = "Loading Application...";
          public static readonly string PKSimPath = "PK-Sim executable path";
+         public static readonly string UseWatermark = "Use watermark";
+         public static readonly string WatermarkText = "Watermark";
          public static readonly string SelectPKSimExecutablePath = "Select PK-Sim executable path";
          public static readonly string CloseView = "Close";
          public static readonly string CloseAll = "Close All Documents";

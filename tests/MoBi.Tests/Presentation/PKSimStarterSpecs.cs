@@ -2,7 +2,6 @@
 using FakeItEasy;
 using MoBi.Core;
 using MoBi.Core.Services;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -16,15 +15,15 @@ namespace MoBi.Presentation
    {
       protected IMoBiConfiguration _configuration;
       protected IStartableProcessFactory _startableProcessFactory;
-      protected IUserSettings _userSettings;
+      protected IApplicationSettings _applicationSettings;
       protected string _simuationFile = "SimFile.pkml";
 
       protected override void Context()
       {
          _configuration = A.Fake<IMoBiConfiguration>();
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
-         _userSettings = A.Fake<IUserSettings>();
-         sut = new PKSimStarter(_configuration, _userSettings, _startableProcessFactory);
+         _applicationSettings = A.Fake<IApplicationSettings>();
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory);
       }
    }
 
@@ -79,7 +78,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _userSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
+         A.CallTo(() => _applicationSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
       }
 
       protected override void Because()

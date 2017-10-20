@@ -8,17 +8,16 @@ using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.SBML;
-using MoBi.Core.Serialization.Xml;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
+using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using MoBi.UI.Diagram;
 using MoBi.UI.Settings;
 using MoBi.UI.Views;
-using Northwoods.Go;
 using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
@@ -42,7 +41,9 @@ using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using OSPSuite.Utility.Logging;
+using ApplicationSettings = MoBi.Core.ApplicationSettings;
 using CoreRegister = OSPSuite.Core.CoreRegister;
+using IApplicationSettings = OSPSuite.Core.IApplicationSettings;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.UI.Services
@@ -67,7 +68,7 @@ namespace MoBi.UI.Services
             using (container.OptimizeDependencyResolution())
             {
                showStatusMessage(progress, "Init Core");
-               registerUserSettings(container);
+               registerSettings(container);
                registerCoreComponents(container);
 
                showStatusMessage(progress, "Init Presenter");
@@ -104,7 +105,7 @@ namespace MoBi.UI.Services
          container.AddRegister(x => x.FromType<DiagramRegister>());
       }
 
-      private static void registerUserSettings(IContainer container)
+      private static void registerSettings(IContainer container)
       {
          container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
       }
@@ -112,8 +113,13 @@ namespace MoBi.UI.Services
       private void initContext(IContainer container)
       {
          InitDimensions(container);
-         var userSettingsPersistor = container.Resolve<IUserSettingsPersistor>();
+
+         var userSettingsPersistor = container.Resolve<ISettingsPersistor<IUserSettings>>();
          userSettingsPersistor.Load();
+
+         var applicationSettingsPersistor = container.Resolve<ISettingsPersistor<Core.IApplicationSettings>>();
+         applicationSettingsPersistor.Load();
+
          InitCalculationMethodRepository(container);
          initGroupRepository(container);
 

@@ -29,12 +29,14 @@ namespace MoBi.Core
       public override ApplicationIcon Icon { get; } = ApplicationIcons.MoBi;
       protected override string[] LatestVersionWithOtherMajor { get; } = { "3.6", "6.3" };
       public override string UserSettingsFileName { get; } = "Settings.xml";
+      public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
       public override string IssueTrackerUrl { get; } = AppConstants.IssueTrackerUrl;
       public string GroupRepositoryFile { get; }
       public string TemplateFolder { get; }
       public string SpaceOrganismUserTemplate { get; }
       public string SpaceOrganismBaseTemplate { get; }
       public string StandardMoleculeTemplateFile { get; }
+      public override string WatermarkOptionLocation { get; } = "Utilties -> Options -> Application";
       public override string ApplicationFolderPathName { get; } = AppConstants.SpecialFileNames.APPLICATION_FOLDER_PATH;
 
       public MoBiConfiguration()
