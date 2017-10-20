@@ -49,6 +49,7 @@ namespace MoBi.UI.Views
          WindowState = FormWindowState.Maximized;
          base.OnLoad(e);
          _presenter.RestoreLayout();
+         _presenter.Run();
          ResumeLayout();
          _presenter.Run();
          Refresh();
