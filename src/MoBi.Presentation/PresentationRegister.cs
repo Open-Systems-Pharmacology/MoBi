@@ -13,7 +13,9 @@ using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Presenter.SpaceDiagram;
+using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Serialization.Xml.Serializer;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
@@ -40,6 +42,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Container.Conventions;
 using OSPSuite.Utility.Extensions;
+using IApplicationSettings = MoBi.Core.IApplicationSettings;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using JournalDiagramMainPresenter = MoBi.Presentation.Presenter.Main.JournalDiagramMainPresenter;
 using JournalPresenter = MoBi.Presentation.Presenter.Main.JournalPresenter;
@@ -108,6 +111,9 @@ namespace MoBi.Presentation
 
          container.Register<ICreateStartValuesPresenter<IMoleculeStartValuesBuildingBlock>, CreateMoleculeStartValuesPresenter>();
          container.Register<ICreateStartValuesPresenter<IParameterStartValuesBuildingBlock>, CreateParameterStartValuesPresenter>();
+
+         container.Register<ISettingsPersistor<IUserSettings>, UserSettingsPersistor>();
+         container.Register<ISettingsPersistor<IApplicationSettings>, ApplicationSettingsPersistor>();
 
          container.Register(typeof(IItemToListItemMapper<>), typeof(ItemToListItemMapper<>));
          container.RegisterFactory<IHeavyWorkPresenterFactory>();

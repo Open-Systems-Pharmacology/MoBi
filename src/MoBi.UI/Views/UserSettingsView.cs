@@ -31,10 +31,8 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.MRUListItemCount).To(tbMRUFiles);
          _screenBinder.Bind(x => x.DecimalPlace).To(tbDecimalPlace);
          _screenBinder.Bind(x => x.MaximumNumberOfCoresToUse).To(tbNumberOfProcessors);
-         _screenBinder.Bind(x => x.PKSimPath).To(buttonPKSimPath);
 
          RegisterValidationFor(_screenBinder);
-         buttonPKSimPath.ButtonClick += (o, e) => OnEvent(_presenter.SelectPKSimPath);
       }
 
       public void BindTo(IUserSettings userSettings)
@@ -65,7 +63,12 @@ namespace MoBi.UI.Views
       public void SetDisplayUnitsView(IView view)
       {
          tabDisplayUnits.FillWith(view);
-      }  
+      }
+
+      public void SetApplicationSettingsView(IView view)
+      {
+         tabApplicationSettings.FillWith(view);
+      }
 
       public bool LayoutViewVisible
       {
@@ -81,13 +84,13 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Caption = AppConstants.Captions.UserSettings;
+         Caption = AppConstants.Captions.Options;
          layoutItemDecimalPlace.Text = AppConstants.Captions.DecimalPlace.FormatForLabel();
          layoutGroupValidationItems.Text = AppConstants.Captions.ValidationOptions;
          layoutItemNumberOfRecentProjects.Text = AppConstants.Captions.MRUListItemCount.FormatForLabel();
-         layoutItemPKSimPath.Text = AppConstants.Captions.PKSimPath.FormatForLabel(checkCase:false);
          CancelVisible = false;
          tabDisplayUnits.Text = AppConstants.Captions.DefaultDisplayUnits;
+         tabApplicationSettings.Text = AppConstants.Captions.ApplicationSettings;
          Icon = ApplicationIcons.Settings;
          layoutItemNumberOfProcessors.Text = Captions.NumberOfProcessors.FormatForLabel();
       }

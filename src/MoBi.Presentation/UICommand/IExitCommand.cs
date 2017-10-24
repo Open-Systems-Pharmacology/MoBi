@@ -1,7 +1,9 @@
 using System.Windows.Forms;
-using OSPSuite.Presentation.MenuAndBars;
-using MoBi.Core.Serialization.Xml;
+using MoBi.Core;
+using MoBi.Presentation.Serialization.Xml;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
+using OSPSuite.Presentation.MenuAndBars;
 
 namespace MoBi.Presentation.UICommand
 {
@@ -13,13 +15,15 @@ namespace MoBi.Presentation.UICommand
    public class ExitCommand : IExitCommand
    {
       private readonly IProjectTask _projectTask;
-      private readonly IUserSettingsPersistor _userSettingsPersistor;
+      private readonly ISettingsPersistor<IUserSettings> _userSettingsPersistor;
+      private readonly ISettingsPersistor<IApplicationSettings> _applicationSettingsPersistor;
       public bool Canceled { get; private set; }
 
-      public ExitCommand(IProjectTask projectTask, IUserSettingsPersistor userSettingsPersistor)
+      public ExitCommand(IProjectTask projectTask, ISettingsPersistor<IUserSettings> userSettingsPersistor, ISettingsPersistor<IApplicationSettings> applicationSettingsPersistor)
       {
          _projectTask = projectTask;
          _userSettingsPersistor = userSettingsPersistor;
+         _applicationSettingsPersistor = applicationSettingsPersistor;
       }
 
       public void Execute()
@@ -28,6 +32,7 @@ namespace MoBi.Presentation.UICommand
          if (Canceled) return;
 
          _userSettingsPersistor.Save();
+         _applicationSettingsPersistor.Save();
 
          Application.Exit();
       }

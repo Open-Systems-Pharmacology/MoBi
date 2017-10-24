@@ -2,7 +2,6 @@
 using MoBi.Core;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
-using MoBi.Presentation.Settings;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -12,14 +11,14 @@ namespace MoBi.Presentation.Tasks
    public class PKSimStarter : IPKSimStarter
    {
       private readonly IMoBiConfiguration _configuration;
+      private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
-      private readonly IUserSettings _userSettings;
 
-      public PKSimStarter(IMoBiConfiguration configuration, IUserSettings userSettings, IStartableProcessFactory startableProcessFactory)
+      public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory)
       {
          _configuration = configuration;
+         _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
-         _userSettings = userSettings;
       }
 
       public void StartPopulationSimulationWithSimulationFile(string simulationFilePath)
@@ -52,8 +51,8 @@ namespace MoBi.Presentation.Tasks
          if (FileHelper.FileExists(_configuration.PKSimPath))
             return _configuration.PKSimPath;
 
-         if (FileHelper.FileExists(_userSettings.PKSimPath))
-            return _userSettings.PKSimPath;
+         if (FileHelper.FileExists(_applicationSettings.PKSimPath))
+            return _applicationSettings.PKSimPath;
 
          throw new MoBiException(AppConstants.PKSim.NotInstalled);
       }

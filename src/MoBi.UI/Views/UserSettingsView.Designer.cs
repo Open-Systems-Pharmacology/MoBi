@@ -34,7 +34,6 @@ namespace MoBi.UI.Views
          this.tabControl = new DevExpress.XtraTab.XtraTabControl();
          this.tabGeneral = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.buttonPKSimPath = new DevExpress.XtraEditors.ButtonEdit();
          this.tbNumberOfProcessors = new DevExpress.XtraEditors.TextEdit();
          this.pnlValidationOptions = new DevExpress.XtraEditors.PanelControl();
          this.tbDecimalPlace = new DevExpress.XtraEditors.TextEdit();
@@ -44,14 +43,14 @@ namespace MoBi.UI.Views
          this.layoutControlItemRenameDependent = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemDecimalPlace = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemNumberOfRecentProjects = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemValidationItems = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemNumberOfProcessors = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemPKSimPath = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutGroupValidationItems = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemValidationItems = new DevExpress.XtraLayout.LayoutControlItem();
          this.tabDiagramOptions = new DevExpress.XtraTab.XtraTabPage();
          this.tabFlowLayout = new DevExpress.XtraTab.XtraTabPage();
          this.tabChartOptions = new DevExpress.XtraTab.XtraTabPage();
          this.tabDisplayUnits = new DevExpress.XtraTab.XtraTabPage();
-         this.layoutGroupValidationItems = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.tabApplicationSettings = new DevExpress.XtraTab.XtraTabPage();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
          this.layoutControlBase.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
@@ -65,7 +64,6 @@ namespace MoBi.UI.Views
          this.tabGeneral.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.buttonPKSimPath.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbNumberOfProcessors.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.pnlValidationOptions)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbDecimalPlace.Properties)).BeginInit();
@@ -75,10 +73,9 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemRenameDependent)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDecimalPlace)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfRecentProjects)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationItems)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfProcessors)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemPKSimPath)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupValidationItems)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationItems)).BeginInit();
          this.SuspendLayout();
          // 
          // btnCancel
@@ -139,7 +136,8 @@ namespace MoBi.UI.Views
             this.tabDiagramOptions,
             this.tabFlowLayout,
             this.tabChartOptions,
-            this.tabDisplayUnits});
+            this.tabDisplayUnits,
+            this.tabApplicationSettings});
          // 
          // tabGeneral
          // 
@@ -151,7 +149,6 @@ namespace MoBi.UI.Views
          // layoutControl1
          // 
          this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.buttonPKSimPath);
          this.layoutControl1.Controls.Add(this.tbNumberOfProcessors);
          this.layoutControl1.Controls.Add(this.pnlValidationOptions);
          this.layoutControl1.Controls.Add(this.tbDecimalPlace);
@@ -165,16 +162,6 @@ namespace MoBi.UI.Views
          this.layoutControl1.TabIndex = 8;
          this.layoutControl1.Text = "layoutControl1";
          // 
-         // buttonPKSimPath
-         // 
-         this.buttonPKSimPath.Location = new System.Drawing.Point(189, 107);
-         this.buttonPKSimPath.Name = "buttonPKSimPath";
-         this.buttonPKSimPath.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.buttonPKSimPath.Size = new System.Drawing.Size(590, 20);
-         this.buttonPKSimPath.StyleController = this.layoutControl1;
-         this.buttonPKSimPath.TabIndex = 10;
-         // 
          // tbNumberOfProcessors
          // 
          this.tbNumberOfProcessors.Location = new System.Drawing.Point(189, 83);
@@ -185,9 +172,9 @@ namespace MoBi.UI.Views
          // 
          // pnlValidationOptions
          // 
-         this.pnlValidationOptions.Location = new System.Drawing.Point(24, 161);
+         this.pnlValidationOptions.Location = new System.Drawing.Point(24, 137);
          this.pnlValidationOptions.Name = "pnlValidationOptions";
-         this.pnlValidationOptions.Size = new System.Drawing.Size(743, 238);
+         this.pnlValidationOptions.Size = new System.Drawing.Size(743, 262);
          this.pnlValidationOptions.TabIndex = 8;
          // 
          // tbDecimalPlace
@@ -236,7 +223,6 @@ namespace MoBi.UI.Views
             this.layoutItemDecimalPlace,
             this.layoutItemNumberOfRecentProjects,
             this.layoutItemNumberOfProcessors,
-            this.layoutItemPKSimPath,
             this.layoutGroupValidationItems});
          this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup1.Name = "layoutControlGroup1";
@@ -271,16 +257,6 @@ namespace MoBi.UI.Views
          this.layoutItemNumberOfRecentProjects.Size = new System.Drawing.Size(771, 24);
          this.layoutItemNumberOfRecentProjects.TextSize = new System.Drawing.Size(174, 13);
          // 
-         // layoutItemValidationItems
-         // 
-         this.layoutItemValidationItems.Control = this.pnlValidationOptions;
-         this.layoutItemValidationItems.CustomizationFormText = "layoutItemValidationItems";
-         this.layoutItemValidationItems.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemValidationItems.Name = "layoutItemValidationItems";
-         this.layoutItemValidationItems.Size = new System.Drawing.Size(747, 242);
-         this.layoutItemValidationItems.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemValidationItems.TextVisible = false;
-         // 
          // layoutItemNumberOfProcessors
          // 
          this.layoutItemNumberOfProcessors.Control = this.tbNumberOfProcessors;
@@ -289,13 +265,23 @@ namespace MoBi.UI.Views
          this.layoutItemNumberOfProcessors.Size = new System.Drawing.Size(771, 24);
          this.layoutItemNumberOfProcessors.TextSize = new System.Drawing.Size(174, 13);
          // 
-         // layoutItemPKSimPath
+         // layoutGroupValidationItems
          // 
-         this.layoutItemPKSimPath.Control = this.buttonPKSimPath;
-         this.layoutItemPKSimPath.Location = new System.Drawing.Point(0, 95);
-         this.layoutItemPKSimPath.Name = "layoutItemPKSimPath";
-         this.layoutItemPKSimPath.Size = new System.Drawing.Size(771, 24);
-         this.layoutItemPKSimPath.TextSize = new System.Drawing.Size(174, 13);
+         this.layoutGroupValidationItems.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutItemValidationItems});
+         this.layoutGroupValidationItems.Location = new System.Drawing.Point(0, 95);
+         this.layoutGroupValidationItems.Name = "layoutGroupValidationItems";
+         this.layoutGroupValidationItems.Size = new System.Drawing.Size(771, 308);
+         // 
+         // layoutItemValidationItems
+         // 
+         this.layoutItemValidationItems.Control = this.pnlValidationOptions;
+         this.layoutItemValidationItems.CustomizationFormText = "layoutItemValidationItems";
+         this.layoutItemValidationItems.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemValidationItems.Name = "layoutItemValidationItems";
+         this.layoutItemValidationItems.Size = new System.Drawing.Size(747, 266);
+         this.layoutItemValidationItems.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemValidationItems.TextVisible = false;
          // 
          // tabDiagramOptions
          // 
@@ -322,13 +308,11 @@ namespace MoBi.UI.Views
          this.tabDisplayUnits.Size = new System.Drawing.Size(791, 423);
          this.tabDisplayUnits.Text = "tabDisplayUnits";
          // 
-         // layoutGroupValidationItems
+         // tabApplicationSettings
          // 
-         this.layoutGroupValidationItems.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemValidationItems});
-         this.layoutGroupValidationItems.Location = new System.Drawing.Point(0, 119);
-         this.layoutGroupValidationItems.Name = "layoutGroupValidationItems";
-         this.layoutGroupValidationItems.Size = new System.Drawing.Size(771, 284);
+         this.tabApplicationSettings.Name = "tabApplicationSettings";
+         this.tabApplicationSettings.Size = new System.Drawing.Size(791, 423);
+         this.tabApplicationSettings.Text = "tabApplicationSettings";
          // 
          // UserSettingsView
          // 
@@ -352,7 +336,6 @@ namespace MoBi.UI.Views
          this.tabGeneral.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.buttonPKSimPath.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbNumberOfProcessors.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.pnlValidationOptions)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbDecimalPlace.Properties)).EndInit();
@@ -362,10 +345,9 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemRenameDependent)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDecimalPlace)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfRecentProjects)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationItems)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfProcessors)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemPKSimPath)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupValidationItems)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationItems)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -391,8 +373,7 @@ namespace MoBi.UI.Views
       private UxCheckEdit chkRenameDependent;
       private DevExpress.XtraEditors.TextEdit tbNumberOfProcessors;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemNumberOfProcessors;
-      private DevExpress.XtraEditors.ButtonEdit buttonPKSimPath;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemPKSimPath;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupValidationItems;
+      private DevExpress.XtraTab.XtraTabPage tabApplicationSettings;
    }
 }
