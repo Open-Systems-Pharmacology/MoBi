@@ -68,7 +68,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createAddExistingFromTemplateItemFor<T>(TContainer parent) where T : class
       {
          var typeName = _objectTypeResolver.TypeFor<T>();
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(ObjectTypeName))
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(typeName))
             .WithIcon(ApplicationIcons.LoadTemplateIconFor(typeName))
             .WithCommandFor<AddExistingFromTemplateCommandFor<IContainer, T>, IContainer>(parent);
       }
