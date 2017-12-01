@@ -58,9 +58,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             _allMenuItems.Add(CreateReportItemFor(objectBase));
             return this;
          }
-         catch (InterfaceResolutionException interfaceResolutionException)
+         catch (InterfaceResolutionException)
          {
-            interfaceResolutionException.Log();
             return new EmptyContextMenu();
          }
       }

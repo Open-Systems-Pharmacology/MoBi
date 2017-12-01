@@ -1,10 +1,7 @@
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Serialization.ORM;
 using NHibernate;
-using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Utility;
 
 namespace MoBi.Core
 {
@@ -21,9 +18,6 @@ namespace MoBi.Core
 
          _dataBaseFile = FileHelper.GenerateTemporaryFileName();
          _sessionFactory = _sessionFactoryProvider.InitalizeSessionFactoryFor(_dataBaseFile);
-
-         this.LogDebug("Database file {0}", _dataBaseFile);
-
       }
 
       public override void GlobalCleanup()
@@ -35,4 +29,4 @@ namespace MoBi.Core
          FileHelper.DeleteFile(_dataBaseFile);
       }
    }
-}	
+}

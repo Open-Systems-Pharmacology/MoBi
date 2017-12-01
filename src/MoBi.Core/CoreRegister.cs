@@ -19,6 +19,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Services;
@@ -47,6 +48,7 @@ namespace MoBi.Core
             scan.ExcludeType<GroupRepository>();
             scan.ExcludeType<ClipboardManager>();
             scan.ExcludeType<ApplicationSettings>();
+            scan.ExcludeType<MoBiLogger>();
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
             scan.ExcludeNamespaceContainingType<ProjectReporter>();
             scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();

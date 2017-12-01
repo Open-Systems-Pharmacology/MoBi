@@ -33,7 +33,6 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
 		'setup/setup.wxs',
-		'log4net.config.xml',
 		'setup/**/*.{msm,rtf,bmp}',
 		'Open Systems Pharmacology Suite License.pdf'
 	]
@@ -60,7 +59,6 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 		'pkparameters/*.xml',
 		'src/Data/*.xml',
 		'setup/**/*.{rtf}',
-		'log4net.config.xml',
 	]
 
 	setup_folders = [
