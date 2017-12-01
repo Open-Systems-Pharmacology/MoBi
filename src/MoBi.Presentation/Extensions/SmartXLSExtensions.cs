@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
+using OSPSuite.Core.Domain;
 using SmartXLS;
-using OSPSuite.Utility.Resources;
 
 namespace MoBi.Presentation.Extensions
 {
@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Extensions
 
          using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
          {
-            if (!string.IsNullOrEmpty(extension) && extension.Equals(Constants.XLSXExtension, StringComparison.CurrentCultureIgnoreCase))
+            if (!string.IsNullOrEmpty(extension) && extension.Equals(Constants.Filter.XLSX_EXTENSION, StringComparison.CurrentCultureIgnoreCase))
                workBook.readXLSX(fs);
             else
                workBook.read(fs);
