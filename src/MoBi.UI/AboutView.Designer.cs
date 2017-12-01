@@ -100,20 +100,22 @@
          // 
          // _websiteLink
          // 
-         this._websiteLink.EditValue = "_websiteLink";
-         this._websiteLink.Location = new System.Drawing.Point(424, 165);
+         this._websiteLink.EditValue = "www.open-systems-pharmacology.org";
+         this._websiteLink.Location = new System.Drawing.Point(377, 165);
          this._websiteLink.Name = "_websiteLink";
+         this._websiteLink.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
+         this._websiteLink.Properties.Appearance.Options.UseBackColor = true;
          this._websiteLink.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-         this._websiteLink.Size = new System.Drawing.Size(182, 18);
-         this._websiteLink.TabIndex = 2;
+         this._websiteLink.Size = new System.Drawing.Size(205, 18);
+         this._websiteLink.TabIndex = 100;
          // 
          // licenseAgreementLink
          // 
          this.licenseAgreementLink.EditValue = "licenseAgreementLink";
-         this.licenseAgreementLink.Location = new System.Drawing.Point(424, 186);
+         this.licenseAgreementLink.Location = new System.Drawing.Point(377, 186);
          this.licenseAgreementLink.Name = "licenseAgreementLink";
          this.licenseAgreementLink.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-         this.licenseAgreementLink.Size = new System.Drawing.Size(182, 18);
+         this.licenseAgreementLink.Size = new System.Drawing.Size(229, 18);
          this.licenseAgreementLink.TabIndex = 38;
          // 
          // AboutView

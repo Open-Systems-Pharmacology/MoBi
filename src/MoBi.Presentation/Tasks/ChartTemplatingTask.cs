@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Mappers;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
@@ -16,6 +13,8 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -26,20 +25,18 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       ICommand ReplaceTemplatesInBuildingBlockCommand(ISimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates);
 
-      void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, ICurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually);
+      void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually, bool propogateChartChangeEvent = true);
    }
 
    public class ChartTemplatingTask : OSPSuite.Presentation.Services.Charts.ChartTemplatingTask, IChartTemplatingTask
    {
-      private readonly IDialogCreator _dialogCreator;
       private readonly IMoBiContext _context;
 
       public ChartTemplatingTask(IChartTemplatePersistor chartTemplatePersistor, IChartFromTemplateService chartFromTemplateService,
          ICurveChartToCurveChartTemplateMapper chartTemplateMapper, IMoBiApplicationController applicationController,
-         IDialogCreator dialogCreator, ICloneManagerForModel cloneManager, IMoBiContext context)
-         : base(applicationController, chartTemplatePersistor, cloneManager, chartTemplateMapper, chartFromTemplateService)
+         IDialogCreator dialogCreator, ICloneManagerForModel cloneManager, IMoBiContext context, IChartUpdater chartUpdater)
+         : base(applicationController, chartTemplatePersistor, cloneManager, chartTemplateMapper, chartFromTemplateService, chartUpdater, dialogCreator)
       {
-         _dialogCreator = dialogCreator;
          _context = context;
       }
 
@@ -48,26 +45,21 @@ namespace MoBi.Presentation.Tasks
          return new AddChartTemplateToSimulationSettingsCommand(template, withSimulationSettings as IMoBiSimulation).Run(_context);
       }
 
-      protected override string AskForInput(string caption, string s, string defaultName, List<string> usedNames)
-      {
-         return _dialogCreator.AskForInput(caption, s, defaultName, usedNames);
-      }
-
       public ICommand ReplaceTemplatesInBuildingBlockCommand(ISimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates)
       {
          return new ReplaceBuildingBlockTemplatesCommand(simulationSettings, curveChartTemplates).Run(_context);
       }
 
-      public void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, ICurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually)
+      public void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually, bool propogateChartChangeEvent = true)
       {
-         var allAvailableColumns = chartEditorPresenter.GetAllDataColumns().ToList();
+         var allAvailableColumns = chartEditorPresenter.AllDataColumns.ToList();
          if (chartTemplate == null)
          {
             UpdateDefaultSettings(chartEditorPresenter, allAvailableColumns, simulations);
             return;
          }
 
-         InitializeChartFromTemplate(chart, allAvailableColumns, chartTemplate, curveNameDefinition, triggeredManually);
+         InitializeChartFromTemplate(chart, allAvailableColumns, chartTemplate, curveNameDefinition, triggeredManually, propogateChartChangeEvent);
 
          if (!chart.Curves.Any() && !triggeredManually)
             UpdateDefaultSettings(chartEditorPresenter, allAvailableColumns, simulations);

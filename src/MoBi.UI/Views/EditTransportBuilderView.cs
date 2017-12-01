@@ -83,11 +83,11 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<TransportBuilderDTO>();
-         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueSet += onValueSet;
-         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueSet += onValueSet;
-         _screenBinder.Bind(dto => dto.CreateProcessRateParameter).To(chkCreateParameter).OnValueSet +=
+         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueUpdating += OnValueUpdating;
+         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueUpdating += OnValueUpdating;
+         _screenBinder.Bind(dto => dto.CreateProcessRateParameter).To(chkCreateParameter).OnValueUpdating +=
             onCreateParameterSet;
-         _screenBinder.Bind(dto => dto.ProcessRateParameterPersistable).To(chkPlotParameter).OnValueSet += onPlotParameterSet;
+         _screenBinder.Bind(dto => dto.ProcessRateParameterPersistable).To(chkPlotParameter).OnValueUpdating += onPlotParameterSet;
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
@@ -114,7 +114,7 @@ namespace MoBi.UI.Views
          ActiveControl = btName;
       }
 
-      private void onValueSet<T>(TransportBuilderDTO transportBuilder, PropertyValueSetEventArgs<T> e)
+      private void OnValueUpdating<T>(TransportBuilderDTO transportBuilder, PropertyValueSetEventArgs<T> e)
       {
          this.DoWithinExceptionHandler(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }

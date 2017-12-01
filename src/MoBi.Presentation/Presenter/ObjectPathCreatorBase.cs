@@ -173,7 +173,7 @@ namespace MoBi.Presentation.Presenter
          }
 
          path.Alias = _aliasCreator.CreateAliasFrom(dtoObjectBase.Name);
-         path.Dimension = _context.DimensionFactory.GetDimension(Constants.Dimension.AMOUNT);
+         path.Dimension = _context.DimensionFactory.Dimension(Constants.Dimension.AMOUNT);
          path.Add(dtoObjectBase.Name);
 
          return new ReferenceDTO {Path = path};
@@ -194,7 +194,7 @@ namespace MoBi.Presentation.Presenter
 
       protected IFormulaUsablePath CreateFormulaUsablePathFrom(IEnumerable<string> paths , string alias, string dimensionName)
       {
-         return CreateFormulaUsablePathFrom(paths, alias, _context.DimensionFactory.GetDimension(dimensionName));
+         return CreateFormulaUsablePathFrom(paths, alias, _context.DimensionFactory.Dimension(dimensionName));
       }
 
       protected IFormulaUsablePath CreateFormulaUsablePathFrom(IEnumerable<string> paths, string alias, IDimension dimension)

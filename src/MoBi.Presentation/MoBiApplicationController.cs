@@ -1,12 +1,10 @@
 ﻿using System;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
@@ -18,6 +16,8 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ObservedData;
 using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation
@@ -35,9 +35,9 @@ namespace MoBi.Presentation
       private readonly IContainer _container;
       private readonly IEventPublisher _eventPublisher;
       private readonly IObjectTypeResolver _objectTypeResolver;
-      private readonly IRegisterAllVisitor _registerTask;
+      private readonly IRegisterTask _registerTask;
 
-      public MoBiApplicationController(IContainer container, IEventPublisher eventPublisher, IObjectTypeResolver objectTypeResolver, IRegisterAllVisitor registerTask)
+      public MoBiApplicationController(IContainer container, IEventPublisher eventPublisher, IObjectTypeResolver objectTypeResolver, IRegisterTask registerTask)
          : base(container, eventPublisher)
       {
          _container = container;
@@ -123,7 +123,7 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<ISimulationSettings>())
             return Start<IEditSimulationSettingsPresenter>();
 
-         if (subject.IsAnImplementationOf<ICurveChart>())
+         if (subject.IsAnImplementationOf<CurveChart>())
             return Start<IProjectChartPresenter>();
 
          if (subject.IsAnImplementationOf<DataRepository>())

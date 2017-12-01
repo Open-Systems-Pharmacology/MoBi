@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_observer_builder_to_dto : concern_for_ObserverBuilderToObjectBaseSummaryDTOMapper
+   public class When_mapping_observer_builder_to_dto : concern_for_ObserverBuilderToObjectBaseSummaryDTOMapper
    {
       private ObjectBaseSummaryDTO _result;
 

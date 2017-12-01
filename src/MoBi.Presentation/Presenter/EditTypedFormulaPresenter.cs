@@ -65,8 +65,8 @@ namespace MoBi.Presentation.Presenter
 
       public bool ReadOnly
       {
-         get { return _view.ReadOnly; }
-         set { _view.ReadOnly = value; }
+         get => _view.ReadOnly;
+         set => _view.ReadOnly = value;
       }
 
       public override object Subject => _formula;

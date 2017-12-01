@@ -12,7 +12,7 @@ namespace MoBi.Presentation.DTO
 
       public virtual double KernelValue
       {
-         get { return _kernelValue; }
+         get => _kernelValue;
          set
          {
             _kernelValue = value;
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.DTO
 
       public double Value
       {
-         get { return valueToDisplayValue(KernelValue); }
+         get => valueToDisplayValue(KernelValue);
          set
          {
             KernelValue = displayValueToValue(value);
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.DTO
 
       public Unit DisplayUnit
       {
-         get { return _displayUnit; }
+         get => _displayUnit;
          set
          {
             //the unit was set. We have to update the value 
@@ -45,7 +45,7 @@ namespace MoBi.Presentation.DTO
 
       public virtual IDimension Dimension
       {
-         get { return _dimension; }
+         get => _dimension;
          set
          {
             _dimension = value;

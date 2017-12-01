@@ -55,7 +55,7 @@ namespace MoBi.UI.Views
       {
          _screenBinder.Bind(dto => dto.ForAll)
             .To(chkForAll)
-            .OnValueSet += (o, e) => OnEvent(onForAllSet, e);
+            .OnValueUpdating += (o, e) => OnEvent(onForAllSet, e);
 
          initializeBinder(_gridViewIncludedBinder, _presenter.RemoveFromIncludeList);
          initializeBinder(_gridViewExcludedBinder, _presenter.RemoveFromExcludeList);

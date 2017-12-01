@@ -96,9 +96,10 @@ namespace MoBi.Core.Serialization.Xml.Services
       private object deserialize(XElement element, IMoBiProject project, int version, Type type = null, SerializationContext parentSerializationContext = null)
       {
          object deserializedObject;
+         bool conversionHappened = false;
          using (var serializationContext = _serializationContextFactory.Create(parentSerializationContext))
          {
-            convertXml(element, version, project);
+            conversionHappened = convertXml(element, version, project);
 
             IXmlSerializer<SerializationContext> serializer;
             Type deserializeType;
@@ -115,14 +116,15 @@ namespace MoBi.Core.Serialization.Xml.Services
             }
 
             var formulaCacheElement = getFormulaCacheElementFor(element, deserializeType);
-            convertXml(formulaCacheElement, version, project);
+            conversionHappened = convertXml(formulaCacheElement, version, project) || conversionHappened;
             deserializeFormula(formulaCacheElement, version, project, serializationContext);
 
             deserializedObject = serializer.Deserialize(element, serializationContext);
          }
 
          //Performs the conversion to the latest project version
-         var conversionHappened = convert(deserializedObject, version, project);
+         conversionHappened = convert(deserializedObject, version, project) || conversionHappened;
+
          //Once the project was converted, update all formula references
          _deserializedReferenceResolver.ResolveFormulaAndTemplateReferences(deserializedObject, project);
 
@@ -132,12 +134,15 @@ namespace MoBi.Core.Serialization.Xml.Services
          return deserializedObject;
       }
 
-      private void convertXml(XElement sourceElement, int version, IMoBiProject project)
+      private bool convertXml(XElement sourceElement, int version, IMoBiProject project)
       {
-         if (sourceElement == null) return;
+         if (sourceElement == null)
+            return false;
+
          //set version to avoid double conversion in the case of multiple load
-         convert(sourceElement, project, version, x => x.ConvertXml);
+         var conversionHappened = convert(sourceElement, project, version, x => x.ConvertXml);
          sourceElement.SetAttributeValue(Constants.Serialization.Attribute.VERSION, ProjectVersions.CurrentAsString);
+         return conversionHappened;
       }
 
       /// <summary>
@@ -146,26 +151,29 @@ namespace MoBi.Core.Serialization.Xml.Services
       /// <returns><c>true</c> if a conversion was performed otherwise <c>false</c></returns>
       private bool convert(object deserializedObject, int objectVersion, IMoBiProject project)
       {
-         var hasChanged = convert(deserializedObject, project, objectVersion, x => x.Convert);
+         var conversionHappened = convert(deserializedObject, project, objectVersion, x => x.Convert);
          var simulation = deserializedObject as IMoBiSimulation;
 
          //Ensure that a simulation is marked as changed so that converted changes will also be persisted when the project is saved
          if (simulation != null)
-            simulation.HasChanged = hasChanged;
+            simulation.HasChanged = conversionHappened;
 
-         return hasChanged;
+         return conversionHappened;
       }
 
-      private bool convert<T>(T objectToConvert, IMoBiProject project, int objectVersion, Func<IMoBiObjectConverter, Func<T, IMoBiProject, int>> converterAction)
+      private bool convert<T>(T objectToConvert, IMoBiProject project, int originalVersion, Func<IMoBiObjectConverter, Func<T, IMoBiProject, (int, bool)>> converterAction)
       {
-         int version = objectVersion;
+         int version = originalVersion;
+         bool conversionHappened = false;
          while (version != ProjectVersions.Current)
          {
             var converter = _objectConverterFinder.FindConverterFor(version);
-            version = converterAction(converter).Invoke(objectToConvert, project);
+            var (convertedVersion, converted) = converterAction(converter).Invoke(objectToConvert, project);
+            version = convertedVersion;
+            conversionHappened = conversionHappened || converted;
          }
 
-         return objectVersion != ProjectVersions.Current;
+         return originalVersion != ProjectVersions.Current && conversionHappened;
       }
 
       private bool areFormulasAlreadyHandled(Type deserializeType)

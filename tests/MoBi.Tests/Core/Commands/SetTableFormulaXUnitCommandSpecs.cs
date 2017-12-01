@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -21,9 +22,9 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _buildingBlock = A.Fake<IBuildingBlock>();
-         _newUnit = HelperForSpecs.TimeDimension.Unit("seconds");
-         _oldUnit = HelperForSpecs.TimeDimension.Unit("min");
-         _tableFormula = new TableFormula { XDimension = HelperForSpecs.TimeDimension };
+         _newUnit = DomainHelperForSpecs.TimeDimension.Unit("seconds");
+         _oldUnit = DomainHelperForSpecs.TimeDimension.Unit("min");
+         _tableFormula = new TableFormula { XDimension = DomainHelperForSpecs.TimeDimension };
          _xValueInMinutes = 1.0;
          _tableFormula.AddPoint(new ValuePoint(_xValueInMinutes, 1.0));
          _context = A.Fake<IMoBiContext>();

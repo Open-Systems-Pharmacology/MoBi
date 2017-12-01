@@ -12,8 +12,8 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Helpers;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Tasks
    /// <summary>
    ///    Making sure that the execute is actually called as part of the specs. Command is actually tested elsewhere
    /// </summary>
-   public class when_updating_scale_divisor : concern_for_MoleculeStartValuesTask
+   public class When_updating_scale_divisor : concern_for_MoleculeStartValuesTask
    {
       private IMoleculeStartValue _moleculeStartValue;
 
@@ -76,14 +76,14 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_retrieving_default_dimension : concern_for_MoleculeStartValuesTask
+   public class When_retrieving_default_dimension : concern_for_MoleculeStartValuesTask
    {
       private IDimension _result;
 
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _reactionDimensionRetriever.MoleculeDimension).Returns(HelperForSpecs.AmountDimension);
+         A.CallTo(() => _reactionDimensionRetriever.MoleculeDimension).Returns(DomainHelperForSpecs.AmountDimension);
       }
 
       protected override void Because()
@@ -94,11 +94,11 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void result_should_be_amount_dimension()
       {
-         _result.ShouldBeEqualTo(HelperForSpecs.AmountDimension);
+         _result.ShouldBeEqualTo(DomainHelperForSpecs.AmountDimension);
       }
    }
 
-   public class when_removing_building_block_referenced_by_simulation : concern_for_MoleculeStartValuesTask
+   public class When_removing_building_block_referenced_by_simulation : concern_for_MoleculeStartValuesTask
    {
       private IMoBiProject _project;
       private IMoBiSimulation _simulation;
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_comparing_start_value_to_original_builder : concern_for_MoleculeStartValuesTask
+   public class When_comparing_start_value_to_original_builder : concern_for_MoleculeStartValuesTask
    {
       private IMoleculeStartValue _moleculeStartValue;
       private const string _name = "Name";
@@ -145,7 +145,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _dimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         _dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
          _moleculeStartValue = new MoleculeStartValue {Dimension = _dimension, Name = _name, Formula = null};
 
          _builder = new MoleculeBuilder
@@ -161,7 +161,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_original_buidler_cannot_be_found : when_comparing_start_value_to_original_builder
+   public class When_original_buidler_cannot_be_found : When_comparing_start_value_to_original_builder
    {
       [Observation]
       public void should_test_as_not_equivalent()
@@ -170,7 +170,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_original_builder_can_be_found : when_comparing_start_value_to_original_builder
+   public class When_original_builder_can_be_found : When_comparing_start_value_to_original_builder
    {
       protected override void Context()
       {
@@ -185,7 +185,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_importing_multiple_molecule_start_values : concern_for_MoleculeStartValuesTask
+   public class When_importing_multiple_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
       private IList<ImportedQuantityDTO> _moleculeStartValues;
       private IMoleculeStartValue _firstStartValueRef;
@@ -195,7 +195,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _firstStartValueRef = new MoleculeStartValue {Path = new ObjectPath("this", "path", "C1"), StartValue = -1.0, IsPresent = true};
-         IDimension d = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         IDimension d = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
          _moleculeStartValues = new List<ImportedQuantityDTO>
          {
@@ -328,7 +328,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_removing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
+   public class When_removing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
 
@@ -346,7 +346,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_appending_an_element_of_start_value : concern_for_MoleculeStartValuesTask
+   public class When_appending_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
 
@@ -364,7 +364,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_replacing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
+   public class When_replacing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
 
@@ -382,7 +382,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_replacing_an_element_outside_start_value_path_range : concern_for_MoleculeStartValuesTask
+   public class When_replacing_an_element_outside_start_value_path_range : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
 
@@ -425,7 +425,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_updating_a_molecule_start_value_with_new_display_unit : concern_for_MoleculeStartValuesTask
+   public class When_updating_a_molecule_start_value_with_new_display_unit : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _startValue;
       private IDimension _dim;
@@ -435,7 +435,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _dim = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         _dim = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
          _startValue = new MoleculeStartValue {Dimension = _dim, StartValue = _targetDisplayValue, DisplayUnit = _dim.Unit("g")};
       }
@@ -463,7 +463,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class when_updating_a_molecule_start_value_from_original_building_block_when_the_start_value_has_changed : concern_for_MoleculeStartValuesTask
+   public class When_updating_a_molecule_start_value_from_original_building_block_When_the_start_value_has_changed : concern_for_MoleculeStartValuesTask
    {
       protected override void Context()
       {

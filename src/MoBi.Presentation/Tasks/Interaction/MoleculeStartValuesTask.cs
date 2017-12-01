@@ -11,7 +11,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Helpers;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;

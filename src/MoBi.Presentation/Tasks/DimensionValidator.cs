@@ -9,9 +9,12 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.FuncParser;
 using OSPSuite.Utility.Extensions;
 using DimensionInfo = OSPSuite.FuncParser.DimensionInfo;
+using static MoBi.Assets.AppConstants.Parameters;
+using static MoBi.Assets.AppConstants.DimensionNames;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -33,32 +36,32 @@ namespace MoBi.Presentation.Tasks
          _userSettings = userSettings;
          _hiddenNotifications = new Dictionary<string, string>
          {
-            {"Surface area (interstitial/intracellular)", "does not evaluate to the dimension 'Area'"},
-            {"Permeability", "does not evaluate to the dimension 'Velocity'"},
-            {"Specific intestinal permeability (transcellular)", "does not evaluate to the dimension 'Velocity'"},
-            {"Radius (solute)", "does not evaluate to the dimension 'Length'"},
-            {"Secretion of liquid", "does not evaluate to the dimension 'Flow'"},
-            {"Volume", "Organism|Saliva|Volume' does not evaluate to the dimension 'Volume'"},
-            {"Effective molecular weight", "Arguments of MINUS-function must have the same dimension (Formula: MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098)"},
-            {"Release rate of the tablet", "does not evaluate to the dimension 'Amount per time'"},
-            {"Vmax", "does not evaluate to the dimension 'Concentration (molar) per time'"},
-            {"Lymph flow rate", "does not evaluate to the dimension 'Flow'"},
-            {"Lymph flow rate (incl. mucosa)", "does not evaluate to the dimension 'Flow'"},
-            {"Fluid recirculation flow rate", "does not evaluate to the dimension 'Flow'"},
-            {"Fluid recirculation flow rate (incl. mucosa)", "does not evaluate to the dimension 'Flow'"},
-            {"Calculated specific intestinal permeability (transcellular)", "does not evaluate to the dimension 'Velocity'"}
+            {SURFACE_AREA_INTERSTITIAL_INTRACELLULAR, dimensionAreaMessage},
+            {BSA, dimensionAreaMessage},
+            {PERMEABILITY, dimensionVelocityMessage},
+            {SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
+            {RADIUS_SOLUTE, dimensionValidationMessage(LENGTH)},
+            {SECRETION_OF_LIQUID, dimensionFlowMessage},
+            {Constants.Parameters.VOLUME, $"Organism|Saliva|Volume' {dimensionValidationMessage(Constants.Dimension.VOLUME)}"},
+            {RELEASE_RATE_OF_TABLET, dimensionValidationMessage(Constants.Dimension.AMOUNT_PER_TIME)},
+            {V_MAX, dimensionValidationMessage(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME)},
+            {LYMPH_FLOW_RATE, dimensionFlowMessage},
+            {LYMPH_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
+            {FLUID_RECIRCULATION_FLOW_RATE, dimensionFlowMessage},
+            {FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
+            {CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
+            {EFFECTIVE_MOLECULAR_WEIGHT, "Arguments of MINUS-function must have the same dimension (Formula: MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098)"}
          };
       }
 
-      public Task<ValidationResult> Validate(IContainer container, IBuildConfiguration buildConfiguration)
-      {
-         return Validate(new[] { container }, buildConfiguration);
-      }
+      private static string dimensionValidationMessage(string dimensionName) => AppConstants.Validation.DoesNotEvaluateTo(dimensionName);
+      private static string dimensionFlowMessage { get; } =  AppConstants.Validation.DoesNotEvaluateTo(FLOW);
+      private static string dimensionVelocityMessage { get; } =  AppConstants.Validation.DoesNotEvaluateTo(VELOCITY);
+      private static string dimensionAreaMessage { get; } =  AppConstants.Validation.DoesNotEvaluateTo(AREA);
 
-      public Task<ValidationResult> Validate(IModel model, IBuildConfiguration buildConfiguration)
-      {
-         return Validate(new[] { model.Root, model.Neighborhoods }, buildConfiguration);
-      }
+      public Task<ValidationResult> Validate(IContainer container, IBuildConfiguration buildConfiguration) => Validate(new[] { container }, buildConfiguration);
+
+      public Task<ValidationResult> Validate(IModel model, IBuildConfiguration buildConfiguration) => Validate(new[] { model.Root, model.Neighborhoods }, buildConfiguration);
 
       public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, IBuildConfiguration buildConfiguration)
       {
@@ -84,10 +87,8 @@ namespace MoBi.Presentation.Tasks
       public void Visit(IEntity entity)
       {
          if (!_checkRules) return;
-         foreach (var message in entity.Rules.BrokenBy(entity).Messages)
-         {
-            addNotification(NotificationType.Warning, entity, message);
-         }
+
+         entity.Rules.BrokenBy(entity).Messages.Each(x=> addNotification(NotificationType.Warning, entity, x));
       }
 
       public void Visit(IUsingFormula entityUsingFormula)
@@ -104,7 +105,7 @@ namespace MoBi.Presentation.Tasks
             var displayPath = _objectPathFactory.CreateAbsoluteObjectPath(entityUsingFormula).PathAsString;
             if (entityUsingFormula.Dimension == null)
             {
-               addNotification(NotificationType.Warning, entityUsingFormula, AppConstants.Validation.NoDimensionSet(displayPath));
+               addWarning(entityUsingFormula, AppConstants.Validation.NoDimensionSet(displayPath));
                return;
             }
             checkFormula(entityUsingFormula, displayPath);
@@ -118,41 +119,48 @@ namespace MoBi.Presentation.Tasks
 
       private void checkRHSFormula(IParameter parameter, string displayPath)
       {
-         if (parameter == null) return;
-         var rhsFormula = parameter.RHSFormula;
+         var rhsFormula = parameter?.RHSFormula;
          if (rhsFormula == null) return;
 
          var rhsDimBaseRep = new BaseDimensionRepresentation(parameter.Dimension.BaseRepresentation);
          rhsDimBaseRep.TimeExponent = rhsDimBaseRep.TimeExponent - 1;
 
          if (!Equals(rhsDimBaseRep, rhsFormula.Dimension.BaseRepresentation))
-            addNotification(NotificationType.Warning, parameter, AppConstants.Validation.RHSDimensionMismatch(displayPath, rhsFormula.Name));
+            addWarning( parameter, AppConstants.Validation.RHSDimensionMismatch(displayPath, rhsFormula.Name));
 
          checkExplicitFormula(parameter, displayPath, rhsDimBaseRep, rhsFormula as ExplicitFormula);
       }
 
+      private void addWarning(IObjectBase entityToValidate, string warning) => addNotification(NotificationType.Warning, entityToValidate, warning);
+
       private void addNotification(NotificationType notificationType, IObjectBase entityToValidate, string notification)
       {
          var builder = _buildConfiguration.BuilderFor(entityToValidate);
-         if (shouldShowNotifiction(entityToValidate, notification))
-         {
-            _result.AddMessage(notificationType, builder, notification);
-         }
+         if (!shouldShowNotifiction(entityToValidate, notification))
+            return;
+
+         _result.AddMessage(notificationType, builder, notification);
       }
 
       private bool shouldShowNotifiction(IObjectBase entityToValidate, string notification)
       {
-         if (_userSettings.ShowPKSimDimensionProblemWarnings) return true;
-         if (!_hiddenNotifications.Keys.Contains(entityToValidate.Name)) return true;
+         if (_userSettings.ShowPKSimDimensionProblemWarnings)
+            return true;
+
+         if (!_hiddenNotifications.Keys.Contains(entityToValidate.Name))
+            return true;
+
          var messageEnd = _hiddenNotifications[entityToValidate.Name];
-         if (notification.EndsWith(messageEnd)) return false;
+         if (notification.EndsWith(messageEnd))
+            return false;
+
          return true;
       }
 
       private void checkFormula(IUsingFormula entityUsingFormula, string displayPath)
       {
          if (!Equals(entityUsingFormula.Dimension, entityUsingFormula.Formula.Dimension))
-            addNotification(NotificationType.Warning, entityUsingFormula, AppConstants.Validation.DimensionMismatch(displayPath, entityUsingFormula.Formula.Name));
+            addWarning(entityUsingFormula, AppConstants.Validation.DimensionMismatch(displayPath, entityUsingFormula.Formula.Name));
 
          checkExplicitFormula(entityUsingFormula, displayPath, entityUsingFormula.Dimension.BaseRepresentation, entityUsingFormula.Formula as ExplicitFormula);
       }
@@ -169,7 +177,7 @@ namespace MoBi.Presentation.Tasks
          {
             var pathDim = explicitFormula.ObjectPaths.Where(path => path.Alias.Equals(objectReference.Alias)).Select(path => path.Dimension).FirstOrDefault();
             if (!Equals(objectReference.Object.Dimension, pathDim))
-               addNotification(NotificationType.Warning, entityUsingFormula, AppConstants.Validation.ReferenceDimensionMissmatch(displayPath, objectReference, pathDim));
+               addWarning(entityUsingFormula, AppConstants.Validation.ReferenceDimensionMissmatch(displayPath, objectReference, pathDim));
 
             dimensionInfos.Add(new QuantityDimensionInfo(objectReference.Alias, createDimensionInfoFromBaseRepresentation(objectReference.Object.Dimension.BaseRepresentation)));
          }
@@ -188,24 +196,23 @@ namespace MoBi.Presentation.Tasks
 
             if (ed.ErrorNumber != errNumber.err_CANNOTCALC_DIMENSION || (_userSettings.ShowCannotCalcErrors && ed.ErrorNumber == errNumber.err_CANNOTCALC_DIMENSION))
             {
-               addNotification(
-                  ed.ErrorNumber.Equals(errNumber.err_DIMENSION) ||
-                  ed.ErrorNumber.Equals(errNumber.err_CANNOTCALC_DIMENSION)
-                     ? NotificationType.Warning
-                     : NotificationType.Error,
-                  entityUsingFormula, ed.Description);
+               var notificationType = ed.ErrorNumber.IsOneOf(errNumber.err_DIMENSION, errNumber.err_CANNOTCALC_DIMENSION)
+                  ? NotificationType.Warning
+                  : NotificationType.Error;
+
+               addNotification( notificationType, entityUsingFormula, ed.Description);
             }
          }
 
          else if (!verifyDimension.AreEquals(createDimensionInfoFromBaseRepresentation(baseDimensionRepresentation)))
-            addNotification(NotificationType.Warning, entityUsingFormula,
-               AppConstants.Validation.FormulaDimensionMismatch(displayPath, explicitFormula.Dimension.Name));
+         {
+            addWarning(entityUsingFormula, AppConstants.Validation.FormulaDimensionMismatch(displayPath, explicitFormula.Dimension.Name));
+         }
       }
 
       private bool isDoubleString(string stringTocheck)
       {
-         double value;
-         return double.TryParse(stringTocheck, out value);
+         return double.TryParse(stringTocheck, out double value);
       }
 
       private DimensionInfo createDimensionInfoFromBaseRepresentation(BaseDimensionRepresentation baseRepresentation)

@@ -12,7 +12,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Helpers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
@@ -345,7 +344,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          macroCommand.AddCommand(new AddFormulaToFormulaCacheCommand(startValuesBuildingBlock, newFormula).Run(Context));
 
-         if (!_moBiFormulaTask.EditFormula(newFormula, macroCommand, startValuesBuildingBlock, referenceParameter))
+         if (!_moBiFormulaTask.EditNewFormula(newFormula, macroCommand, startValuesBuildingBlock, referenceParameter))
             return CancelCommand(macroCommand);
 
          macroCommand.Add(SetFormula(startValuesBuildingBlock, startValue, newFormula));

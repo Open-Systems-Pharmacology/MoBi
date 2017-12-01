@@ -40,7 +40,7 @@ namespace MoBi.BatchTool.Runners
                return;
             }
 
-            var allProjectFiles = inputDirectory.GetFiles(AppConstants.FileFilter.MOBI_PROJECT_FILTER);
+            var allProjectFiles = inputDirectory.GetFiles(AppConstants.Filter.MOBI_PROJECT_FILTER);
             if (allProjectFiles.Length == 0)
             {
                _logger.AddError($"No MoBi file found in '{inputFolder}'");

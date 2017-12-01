@@ -41,10 +41,10 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<ApplicationBuilderDTO>();
-         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueSet += onValueSet;
-         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueSet += onValueSet;
+         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueUpdating += OnValueUpdating;
+         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueUpdating += OnValueUpdating;
          _screenBinder.Bind(dto => dto.MoleculeName).To(cbApplicatedMoleculeName).WithValues(dto => getMoleculeNames())
-            .OnValueSet += onValueSet;
+            .OnValueUpdating += OnValueUpdating;
 
          cbApplicatedMoleculeName.Properties.TextEditStyle = TextEditStyles.Standard;
 
@@ -53,13 +53,13 @@ namespace MoBi.UI.Views
          var column = _gridMoleculesBinder.Bind(dto => dto.RelativeContainerPath)
             .WithCaption(AppConstants.Captions.RelativeContainerPath)
             .WithRepository(selectPathRepository)
-            .WithOnValueSet((o, e) => OnEvent(() => _presenter.SetRelativeContainerPath(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetRelativeContainerPath(o, e.NewValue)));
 
          column.XtraColumn.ToolTip = ToolTips.Applications.ApplicationMoleculeBuilderPath;
 
          var colFormula = _gridMoleculesBinder.Bind(dto => dto.Formula)
             .WithRepository(createFormulaComboboxRepositoryItem)
-            .WithOnValueSet(onApplicationMoleculeBuilderFormulaSet)
+            .WithOnValueUpdating(onApplicationMoleculeBuilderFormulaSet)
             .WithToolTip(ToolTips.Applications.ApplicationMoleculeBuilderFormula);
 
          var buttonRepository = createAddRemoveButtonRepository();
@@ -97,7 +97,7 @@ namespace MoBi.UI.Views
          return _presenter.GetMoleculeNamesWithSelf();
       }
 
-      private void onValueSet<T>(ApplicationBuilderDTO applicationBuilderDTO, PropertyValueSetEventArgs<T> e)
+      private void OnValueUpdating<T>(ApplicationBuilderDTO applicationBuilderDTO, PropertyValueSetEventArgs<T> e)
       {
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }

@@ -1,22 +1,21 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Classifications;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -24,7 +23,8 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 using SimulationStatusChangedEvent = MoBi.Core.Events.SimulationStatusChangedEvent;
 
@@ -51,8 +51,8 @@ namespace MoBi.Presentation.Presenter.Main
          IMoBiContext context, IClassificationPresenter classificationPresenter,
          IToolTipPartCreator toolTipPartCreator, IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory,
          IProjectRetriever projectRetriever, IInteractionTasksForSimulation interactionTasksForSimulation, IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter) :
-            base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.SimulationExplorer,
-               classificationPresenter, toolTipPartCreator, multipleTreeNodeContextMenuFactory, projectRetriever)
+         base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.SimulationExplorer,
+            classificationPresenter, toolTipPartCreator, multipleTreeNodeContextMenuFactory, projectRetriever)
       {
          _interactionTasksForSimulation = interactionTasksForSimulation;
          _parameterAnalysablesInExplorerPresenter = parameterAnalysablesInExplorerPresenter;
@@ -117,7 +117,7 @@ namespace MoBi.Presentation.Presenter.Main
          return simulationNode;
       }
 
-      private void addChartTreeNode(ICurveChart chart)
+      private void addChartTreeNode(CurveChart chart)
       {
          _view.AddNode(_treeNodeFactory.CreateFor(chart));
       }

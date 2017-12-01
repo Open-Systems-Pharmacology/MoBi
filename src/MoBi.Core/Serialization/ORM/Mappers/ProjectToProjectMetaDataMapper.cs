@@ -63,7 +63,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          return simulationMetaData;
       }
 
-      private EntityMetaData mapFrom(ICurveChart chart)
+      private EntityMetaData mapFrom(CurveChart chart)
       {
          var entityMetaData = new EntityMetaData {Id = ShortGuid.NewGuid()};
          serialize(entityMetaData, chart);

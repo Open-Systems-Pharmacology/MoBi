@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Tasks
    }
 
    [Ignore("TODO THOMAS")]
-   internal class when_asking_for_forbidden_names_without_self_with_like_named_entity : concern_for_EditTasksForApplicationBuilderSpecs
+   internal class When_asking_for_forbidden_names_without_self_with_like_named_entity : concern_for_EditTasksForApplicationBuilderSpecs
    {
       private IEnumerable<string> _result;
       private Container _parentContainer;
@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   internal class when_asking_for_forbidden_names_without_self_only_self_added : concern_for_EditTasksForApplicationBuilderSpecs
+   internal class When_asking_for_forbidden_names_without_self_only_self_added : concern_for_EditTasksForApplicationBuilderSpecs
    {
       private IContainer _parentContainer;
       private IEnumerable<string> _result;

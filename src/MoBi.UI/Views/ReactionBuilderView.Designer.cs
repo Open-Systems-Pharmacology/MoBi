@@ -31,7 +31,7 @@
       {
          this.components = new System.ComponentModel.Container();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.gridControl = new DevExpress.XtraGrid.GridControl();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.gridLayoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();

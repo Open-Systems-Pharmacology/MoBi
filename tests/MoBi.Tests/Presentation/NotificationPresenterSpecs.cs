@@ -201,9 +201,11 @@ namespace MoBi.Presentation
          _userSettings.ShowPKSimObserverMessages = false;
          _validationResult = new ValidationResult();
 
-         var observer = A.Fake<IObserverBuilder>().WithId("1").WithName(AppConstants.DefaultNames.PKSimObservers[0]);
+         var staticObserver = A.Fake<IObserverBuilder>().WithId("1").WithName(AppConstants.DefaultNames.PKSimStaticObservers[0]);
+         var dynamicObserver = A.Fake<IObserverBuilder>().WithId("2").WithName($"{AppConstants.DefaultNames.PKSimDynamicObservers[0]}-HELLO");
 
-         _validationResult.AddMessage(NotificationType.Error, observer, string.Empty);
+         _validationResult.AddMessage(NotificationType.Error, staticObserver, string.Empty);
+         _validationResult.AddMessage(NotificationType.Error, dynamicObserver, string.Empty);
          _validationResult.AddMessage(NotificationType.Warning, A.Fake<IObjectBase>().WithId("2"), string.Empty);
       }
 

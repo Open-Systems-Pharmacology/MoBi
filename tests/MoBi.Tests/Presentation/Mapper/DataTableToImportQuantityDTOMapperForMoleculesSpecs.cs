@@ -85,8 +85,8 @@ namespace MoBi.Presentation.Mapper
          A.CallTo(() => _dimensionFactory.DimensionForUnit("s")).Returns(_timeDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("")).Throws<Exception>();
 
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.AMOUNT)).Returns(_amountDimension);
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION)).Returns(_concentrationDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_amountDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION)).Returns(_concentrationDimension);
 
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.AmountBased);
 
@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_converting_and_validating_rows_without_container_path : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_rows_without_container_path : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
       private DataTable _tables;
@@ -121,7 +121,7 @@ namespace MoBi.Presentation.Mapper
    }
 
 
-   public class when_converting_and_validating_rows_resulting_in_duplicated_entriues: concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_rows_resulting_in_duplicated_entriues: concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
       private DataTable _tables;
@@ -147,7 +147,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_converting_and_validating_rows_without_name : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_rows_without_name : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
       private DataTable _tables;
@@ -173,7 +173,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_converting_and_validating_rows_without_scale_divisor : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_rows_without_scale_divisor : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
       private DataTable _tables;
@@ -200,7 +200,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_converting_and_validating_rows_without_negative_value_allowed : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_rows_without_negative_value_allowed : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
       private DataTable _tables;
@@ -227,7 +227,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_converting_and_validating_without_value : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_without_value : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
       private DataTable _tables;
@@ -248,13 +248,13 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void should_not_allow_mapping_when_no_quantity_is_specified()
+      public void should_not_allow_mapping_When_no_quantity_is_specified()
       {
          _result.QuantitDTOs.ShouldBeEmpty();
       }
    }
 
-   public class when_converting_and_validating_for_full_insert : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_for_full_insert : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
       private DataTable _tables;
@@ -275,13 +275,13 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void should_fail_to_validate_when_missing_a_quantity()
+      public void should_fail_to_validate_When_missing_a_quantity()
       {
          _result.QuantitDTOs.ShouldBeEmpty();
       }
    }
 
-   public class when_converting_and_validating_for_update_existing : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_for_update_existing : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private DataTable _tables;
       private QuantityImporterDTO _result;
@@ -305,7 +305,7 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void should_allow_import_of_new_values_without_quantity_when_updating_only()
+      public void should_allow_import_of_new_values_without_quantity_When_updating_only()
       {
          string.Equals(_result.QuantitDTOs[0].ContainerPath.ToString(), ContainerPathFromDataTableRow(_tables, 0).ToString()).ShouldBeTrue();
       }
@@ -318,7 +318,7 @@ namespace MoBi.Presentation.Mapper
    }
 
 
-   public class when_converting_msv_data_table_to_import_quantity_dto_that_match_specs : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_msv_data_table_to_import_quantity_dto_that_match_specs : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
 
@@ -328,7 +328,7 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void should_convert_values_to_base_units_when_necessary()
+      public void should_convert_values_to_base_units_When_necessary()
       {
          _result.QuantitDTOs[1].QuantityInBaseUnit.ShouldBeEqualTo(2 / 1000.0);
       }
@@ -340,7 +340,7 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void is_present_is_converted_when_true()
+      public void is_present_is_converted_When_true()
       {
          _result.QuantitDTOs[0].IsPresent.ShouldBeTrue();
          _result.QuantitDTOs[2].IsPresent.ShouldBeTrue();
@@ -348,7 +348,7 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void is_present_is_converted_when_false()
+      public void is_present_is_converted_When_false()
       {
          _result.QuantitDTOs[1].IsPresent.ShouldBeFalse();
          _result.QuantitDTOs[3].IsPresent.ShouldBeFalse();
@@ -371,7 +371,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_converting_table_to_import_quantity_dto_with_no_display_unit_and_specifying_new_quantity : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_table_to_import_quantity_dto_with_no_display_unit_and_specifying_new_quantity : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private DataTable _importTables;
       private QuantityImporterDTO _result;
@@ -390,13 +390,13 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void must_not_allow_import_when_the_quantity()
+      public void must_not_allow_import_When_the_quantity()
       {
          _result.QuantitDTOs.ShouldBeEmpty();
       }
    }
 
-   public class when_converting_table_to_import_quantity_dto_with_no_display_unit_and_not_specifying_quantity : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_table_to_import_quantity_dto_with_no_display_unit_and_not_specifying_quantity : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private DataTable _importTables;
       private QuantityImporterDTO _result;
@@ -418,13 +418,13 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void must_not_allow_import_when_the_quantity()
+      public void must_not_allow_import_When_the_quantity()
       {
          _result.QuantitDTOs[0].IsQuantitySpecified.ShouldBeFalse();
       }
    }
 
-   public class when_converting_table_to_import_quantity_dto_with_mismatching_dimension_modes : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_table_to_import_quantity_dto_with_mismatching_dimension_modes : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
 

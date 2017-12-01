@@ -45,7 +45,7 @@ namespace MoBi.UI.Views
 
       public bool NewVisible
       {
-         set { layoutItemNew.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
+         set => layoutItemNew.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       public void BindTo(BuildingBlockSelectionDTO buildingBlockSelectionDTO)
@@ -61,7 +61,7 @@ namespace MoBi.UI.Views
 
       public void AdjustHeight()
       {
-         HeightChanged(this, new ViewResizedEventArgs(layoutItemNew.MaxSize.Height));
+         HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
       public void Repaint()
@@ -69,15 +69,9 @@ namespace MoBi.UI.Views
          Refresh();
       }
 
-      public int OptimalHeight
-      {
-         get { return layoutItemComboBox.Height; }
-      }
+      public int OptimalHeight => layoutItemComboBox.Height;
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public override void InitializeResources()
       {

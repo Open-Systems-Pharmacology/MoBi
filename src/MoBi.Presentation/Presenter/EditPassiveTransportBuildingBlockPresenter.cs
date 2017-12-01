@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -79,12 +76,8 @@ namespace MoBi.Presentation.Presenter
          _editTransportBuilderPresenter.Edit(passiveTransports);
       }
 
-      public override object Subject
-      {
-         get { return _passiveTransports; }
-      }
+      public override object Subject => _passiveTransports;
 
-  
       protected override void UpdateCaption()
       {
          _view.Caption = AppConstants.Captions.PassiveTransportCaption(_passiveTransports.Name);
@@ -107,10 +100,7 @@ namespace MoBi.Presentation.Presenter
          return FormulaCache.MapAllUsing(_formulaToFormulaDTOBuilderMapper);
       }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
       private ITransportBuilder builderFrom(TransportBuilderDTO transportBuilder)
       {
@@ -132,11 +122,11 @@ namespace MoBi.Presentation.Presenter
       {
          if (_passiveTransports == null) return;
          var addedObject = eventToHandle.AddedObject;
-         if (shouldHandleAdd(addedObject, eventToHandle.Parent))
-         {
-            refresh(_passiveTransports);
-            editChild(addedObject as ITransportBuilder);
-         }
+         if (!shouldHandleAdd(addedObject, eventToHandle.Parent))
+            return;
+
+         refresh(_passiveTransports);
+         editChild(addedObject as ITransportBuilder);
       }
 
       private bool shouldHandleAdd(IObjectBase addedObject, IObjectBase parent)

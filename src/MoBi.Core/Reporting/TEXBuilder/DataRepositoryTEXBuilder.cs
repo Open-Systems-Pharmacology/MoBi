@@ -49,7 +49,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
             var geometricStdDevError = createRelatedColumnFor(table, col, AuxiliaryType.GeometricStdDev, Constants.GEOMETRIC_STD_DEV);
             var arithmeticStdDevError = createRelatedColumnFor(table, col, AuxiliaryType.ArithmeticStdDev, Constants.ARITHMETRIC_STD_DEV);
 
-            var dimension = _dimensionFactory.GetMergedDimensionFor(col);
+            var dimension = _dimensionFactory.MergedDimensionFor(col);
             var baseGridUnit = _reportingHelper.GetDisplayUnitFor(col.BaseGrid.Dimension.Unit(col.BaseGrid.DataInfo.DisplayUnitName), col.BaseGrid.Dimension);
             var colUnit = _reportingHelper.GetDisplayUnitFor(dimension.Unit(col.DataInfo.DisplayUnitName), dimension);
 
@@ -96,7 +96,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          if (dataColumn == null)
             return;
 
-         var dimension = _dimensionFactory.GetMergedDimensionFor(dataColumn);
+         var dimension = _dimensionFactory.MergedDimensionFor(dataColumn);
          row[dataColumn.Name] = _reportingHelper.ConvertToDisplayUnit(dimension.Unit(dataColumn.DataInfo.DisplayUnitName), dimension, dataColumn.Values[index]);
       }
 
@@ -104,7 +104,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
       {
          if (col.DataInfo.MolWeight == null) return;
 
-         var dimension = _dimensionFactory.GetDimension(AppConstants.Parameters.MOLECULAR_WEIGHT);
+         var dimension = _dimensionFactory.Dimension(AppConstants.Parameters.MOLECULAR_WEIGHT);
          var displayUnit = _reportingHelper.GetDisplayUnitFor(dimension);
          column.SetNotes(new[]
          {

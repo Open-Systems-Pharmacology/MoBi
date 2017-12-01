@@ -1,4 +1,6 @@
+using Castle.Core.Configuration;
 using MoBi.Assets;
+using MoBi.Core;
 using OSPSuite.TeXReporting.Events;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
@@ -7,6 +9,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Services;
@@ -31,15 +34,26 @@ namespace MoBi.Presentation.Presenter
       private readonly ISkinManager _skinManager;
       private readonly IExitCommand _exitCommand;
       private readonly IUserSettings _userSettings;
+      private readonly IMoBiConfiguration _configuration;
+      private readonly IWatermarkStatusChecker _watermarkStatusChecker;
 
-      public MoBiMainViewPresenter(IMoBiMainView view, IRepository<IMainViewItemPresenter> allMainViewItemPresenters,
-         IProjectTask projectTask, ISkinManager skinManager, IExitCommand exitCommand,
-         IEventPublisher eventPublisher, IUserSettings userSettings,
-         ITabbedMdiChildViewContextMenuFactory contextMenuFactory) : base(view, eventPublisher, contextMenuFactory)
+      public MoBiMainViewPresenter(
+         IMoBiMainView view, 
+         IRepository<IMainViewItemPresenter> allMainViewItemPresenters,
+         IProjectTask projectTask, 
+         ISkinManager skinManager, 
+         IExitCommand exitCommand,
+         IEventPublisher eventPublisher, 
+         IUserSettings userSettings,
+         ITabbedMdiChildViewContextMenuFactory contextMenuFactory, 
+         IMoBiConfiguration configuration, 
+         IWatermarkStatusChecker watermarkStatusChecker) : base(view, eventPublisher, contextMenuFactory)
       {
          _skinManager = skinManager;
          _exitCommand = exitCommand;
          _userSettings = userSettings;
+         _configuration = configuration;
+         _watermarkStatusChecker = watermarkStatusChecker;
          _allMainViewItemPresenters = allMainViewItemPresenters;
          _projectTask = projectTask;
          _view.AttachPresenter(this);
@@ -49,12 +63,14 @@ namespace MoBi.Presentation.Presenter
       public override void Initialize()
       {
          _view.Initialize();
+         View.Caption = _configuration.ProductDisplayName;
          _allMainViewItemPresenters.All().Each(x => x.Initialize());
          _skinManager.ActivateSkin(_userSettings, _userSettings.ActiveSkin);
       }
 
       public override void Run()
       {
+         _watermarkStatusChecker.CheckWatermarkStatus();
       }
 
       public override void RemoveAlert()

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -17,6 +14,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Presenter
       IDiagramBuildingBlockPresenter, IListener<SimulationRunFinishedEvent>, IListener<EntitySelectedEvent>, IListener<SimulationReloadEvent>, IListener<FavoritesSelectedEvent>
    {
       void LoadDiagram();
-      void ShowData();
+      string CreateResultTabCaption(string viewCaption);
    }
 
    public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter
@@ -40,7 +40,6 @@ namespace MoBi.Presentation.Presenter
       private bool _diagramLoaded;
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IChartFactory _chartFactory;
-      private bool _dataShown;
       private readonly IEditFavoritesInSimulationPresenter _favoritesPresenter;
       private readonly IChartTasks _chartTask;
 
@@ -65,9 +64,14 @@ namespace MoBi.Presentation.Presenter
          _hierarchicalPresenter.ShowOutputSchema = showOutputSchema;
          _hierarchicalPresenter.ShowSolverSettings = showSolverSettings;
          _hierarchicalPresenter.SimulationFavorites = () => _favoritesPresenter.Favorites();
-         _view.SetChartView(chartPresenter.BaseView);
+         _view.SetChartView(chartPresenter.View);
          AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter, _favoritesPresenter);
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> {OnMissingKey = x => null};
+      }
+
+      public string CreateResultTabCaption(string chartName)
+      {
+         return string.IsNullOrWhiteSpace(chartName) ? AppConstants.Captions.Results : chartName;
       }
 
       private void showSolverSettings()
@@ -94,13 +98,14 @@ namespace MoBi.Presentation.Presenter
          _solverSettingsPresenter.Edit(_simulation);
          _editOutputSchemaPresenter.Edit(_simulation);
          _favoritesPresenter.Edit(_simulation);
-         _chartPresenter.UpdateTemplatesBasedOn(_simulation);
+         _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
          UpdateCaption();
          _view.Display();
+         loadChart();
       }
 
-      private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<ICurve> curves)
+      private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
       {
          foreach (var curve in curves.Where(c => c.IsObserved()))
          {
@@ -114,72 +119,85 @@ namespace MoBi.Presentation.Presenter
          Edit(subject.DowncastTo<IMoBiSimulation>());
       }
 
-      public override object Subject
-      {
-         get { return _simulation; }
-      }
+      public override object Subject => _simulation;
 
-      public void ShowData()
+      private void loadChart()
       {
-         if (_dataShown) return;
          CurveChartTemplate defaultTemplate = null;
 
-         _dataShown = true;
          var data = new List<DataRepository>();
          if (_simulation.Results != null)
             data.Add(_simulation.Results);
 
          if (_simulation.Chart == null)
          {
-            _simulation.Chart = _chartFactory.Create<ICurveChart>().WithAxes();
+            _simulation.Chart = _chartFactory.Create<CurveChart>().WithAxes();
             _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);
          }
 
          // Whether or not the chart is new, if it has no curves
          // we apply the simulation default template
-         if(_simulation.Chart.Curves.Count == 0)
+         if (_simulation.Chart.Curves.Count == 0)
             defaultTemplate = _simulation.DefaultChartTemplate;
 
          addObservedDataRepositories(data, _simulation.Chart.Curves);
          _chartPresenter.Show(_simulation.Chart, data, defaultTemplate);
       }
 
-  
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
          if (!_simulation.Equals(eventToHandle.Simulation))
             return;
-
-         _dataShown = false;
 
          if (!_view.ShowsResults)
             _view.ShowResultsTab();
 
          _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);
 
-         ShowData();
+         loadChart();
       }
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
          var entity = eventToHandle.ObjectBase as IEntity;
-         if (!shouldShow(entity)) return;
+         if (!shouldShow(entity))
+            return;
+
          _view.Display();
 
-         if (entity.IsAnImplementationOf<IParameter>())
-         {
-            setupEditPresenter(entity, entity.ParentContainer);
-         }
+         var parameter = entity as IParameter;
+         if (parameter != null)
+            setupEditPresenter(parameter, parameter.ParentContainer);
+
          else
-         {
             setupEditPresenter(entity);
-         }
       }
 
-      private void setupEditPresenter(IEntity entity, IContainer parentContainer)
+      private void setupEditPresenter(IParameter parameter, IContainer parentContainer)
       {
          var presenter = setupEditPresenter(parentContainer).DowncastTo<IEditPresenterWithParameters>();
-         presenter.SelectParameter(entity as IParameter);
+         presenter.SelectParameter(parameter);
+      }
+
+      private IEditInSimulationPresenter setupEditPresenter(IEntity entity)
+      {
+         var entityType = entity.GetType();
+         var showPresenter = _cacheShowPresenter[entityType];
+         if (showPresenter == null)
+         {
+            //create a new one and add it to the cache
+            showPresenter = _showPresenterFactory.PresenterFor(entity);
+            if (showPresenter == null)
+               return null;
+
+            showPresenter.InitializeWith(CommandCollector);
+            _cacheShowPresenter.Add(entityType, showPresenter);
+         }
+
+         _view.SetEditView(showPresenter.BaseView);
+         showPresenter.Simulation = _simulation;
+         showPresenter.Edit(entity);
+         return showPresenter;
       }
 
       public void LoadDiagram()
@@ -187,24 +205,6 @@ namespace MoBi.Presentation.Presenter
          if (_diagramLoaded) return;
          _heavyWorkManager.Start(() => _simulationDiagramPresenter.Edit(_simulation), AppConstants.Captions.LoadingDiagram);
          _diagramLoaded = true;
-      }
-
-      private IEditInSimulationPresenter setupEditPresenter(IEntity entity)
-      {
-         var showPresenter = _cacheShowPresenter[entity.GetType()];
-         if (showPresenter == null)
-         {
-            //create a new one and add it to the cache
-            showPresenter = _showPresenterFactory.PresenterFor(entity);
-            if (showPresenter == null) return null;
-            showPresenter.InitializeWith(CommandCollector);
-            _cacheShowPresenter.Add(entity.GetType(), showPresenter);
-         }
-
-         _view.SetEditView(showPresenter.BaseView);
-         showPresenter.Simulation = _simulation;
-         showPresenter.Edit(entity);
-         return showPresenter;
       }
 
       private bool shouldShow(IEntity entity)
@@ -247,7 +247,6 @@ namespace MoBi.Presentation.Presenter
       private void reloadAll()
       {
          _hierarchicalPresenter.Clear();
-         _dataShown = false;
          _diagramLoaded = false;
          Edit(_simulation);
       }

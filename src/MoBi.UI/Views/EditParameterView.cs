@@ -39,51 +39,51 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          _screenBinder.Bind(dto => dto.Name)
             .To(btName)
-            .OnValueSet += onNameSet;
+            .OnValueUpdating += onNameSet;
 
          _screenBinder.Bind(dto => dto.ValueDescription)
             .To(tbValueDescription)
-            .OnValueSet += onValueDescriptionSet;
+            .OnValueUpdating += onValueDescriptionSet;
 
          _screenBinder.Bind(dto => dto.Group)
             .To(cbGroup)
             .WithValues(dto => _presenter.AllGroups())
             .AndDisplays(g => _presenter.DisplayFor(g))
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetGroup(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetGroup(e.NewValue));
 
          _screenBinder.Bind(dto => dto.Dimension)
             .To(cbDimension)
             .WithValues(dto => _presenter.AllDimensions())
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetDimension(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetDimension(e.NewValue));
 
          _screenBinder.Bind(dto => dto.HasRHS)
             .To(chkHasRHS)
-            .OnValueSet += (o, e) => OnEvent(() => onRHSValueValueSet(o, e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => onRHSValueValueSet(o, e.NewValue));
 
          _screenBinder.Bind(dto => dto.Persistable)
             .To(chkPersistable)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetPersistable(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetPersistable(e.NewValue));
 
          _screenBinder.Bind(dto => dto.BuildMode)
             .To(cbParameterBuildMode)
             .WithValues(x => _presenter.ParameterBuildModes)
-            .OnValueSet += onBuildModeSet;
+            .OnValueUpdating += onBuildModeSet;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
-            .OnValueSet += onDescriptionSet;
+            .OnValueUpdating += onDescriptionSet;
 
          _screenBinder.Bind(dto => dto.IsAdvancedParameter)
             .To(chkAdvancedParameter)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetIsAdvancedParameter(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsAdvancedParameter(e.NewValue));
 
          _screenBinder.Bind(dto => dto.CanBeVariedInPopulation)
             .To(chkCanBeVariedInPopulation)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetIsVariablePopulation(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsVariablePopulation(e.NewValue));
 
          _screenBinder.Bind(dto => dto.IsFavorite)
             .To(chkIsFavorite)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetIsFavorite(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsFavorite(e.NewValue));
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 

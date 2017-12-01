@@ -42,7 +42,7 @@ namespace MoBi.UI.Views
          _dimensionComboBoxRepository.FillComboBoxRepositoryWith(_dimensionFactory.Dimensions);
 
          var colName = _gridViewBinder.AutoBind(dto => dto.Name)
-            .WithCaption(AppConstants.Captions.ParameterName).WithOnValueSet((o,e) => OnEvent(() => OnNameSet(o,e)));
+            .WithCaption(AppConstants.Captions.ParameterName).WithOnValueUpdating((o,e) => OnEvent(() => OnNameSet(o,e)));
 
          //to put the name in the first column
          colName.XtraColumn.VisibleIndex = 0;
@@ -52,15 +52,15 @@ namespace MoBi.UI.Views
             .WithFormat(dto => dto.ParameterStartValueFormatter())
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueSet(onParameterStartValueSet);
+            .WithOnValueUpdating(onParameterStartValueSet);
 
          InitializeValueDescriptionBinding();
 
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())
-            .WithOnValueSet((o, e) => parameterStartValuesPresenter.SetFormula(o, e.NewValue.Formula));
+            .WithOnValueUpdating((o, e) => parameterStartValuesPresenter.SetFormula(o, e.NewValue.Formula));
 
-         _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository).WithOnValueSet((o,e) => OnEvent(() => onDimensionSet(o,e)));
+         _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository).WithOnValueUpdating((o,e) => OnEvent(() => onDimensionSet(o,e)));
 
          gridView.HiddenEditor += (o, e) => hideEditor();
       }

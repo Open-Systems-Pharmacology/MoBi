@@ -25,7 +25,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewFromSelection)
             .WithIcon(ApplicationIcons.Molecule)
-            .WithCommand<AddNewMoleculeBuildingBlockFromSelectionUiCommand>();
+            .WithCommand<AddNewMoleculeBuildingBlockFromSelectionUICommand>();
       }
    }
 }

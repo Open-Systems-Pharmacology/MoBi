@@ -2,7 +2,6 @@
 using System.Drawing;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -25,7 +24,7 @@ namespace MoBi.Presentation.Presenter
       IPresenterWithFormulaCache
    {
       void SetCreateProcessRateParameter(bool createProccessRate);
-      void SetPlotProcessRateParameter(bool plotProcessRAae);
+      void SetPlotProcessRateParameter(bool plotProcessRate);
    }
 
    public class EditTransportBuilderPresenter : AbstractSubPresenterWithFormula<IEditTransportBuilderView, IEditTransportBuilderPresenter>, IEditTransportBuilderPresenter
@@ -46,7 +45,7 @@ namespace MoBi.Presentation.Presenter
 
       public virtual IBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
+         get => _buildingBlock;
          set
          {
             _buildingBlock = value;
@@ -72,6 +71,8 @@ namespace MoBi.Presentation.Presenter
          _selectReferencePresenter = selectReferencePresenter;
          editFormulaPresenter.ReferencePresenter = _selectReferencePresenter;
          editFormulaPresenter.RemoveFormulaType<TableFormula>();
+         editFormulaPresenter.RemoveFormulaType<TableFormulaWithOffset>();
+         editFormulaPresenter.RemoveFormulaType<SumFormula>();
          editFormulaPresenter.SetDefaultFormulaType<ExplicitFormula>();
          View.SetParameterView(_editParameterListPresenter.BaseView);
          View.SetFormulaView(_editFormulaPresenter.BaseView);
@@ -157,9 +158,9 @@ namespace MoBi.Presentation.Presenter
          _view.EnableDisablePlotProcessRateParameter(createProcessRate);
       }
 
-      public void SetPlotProcessRateParameter(bool plotProcessRatee)
+      public void SetPlotProcessRateParameter(bool plotProcessRate)
       {
-         _transportBuilder.ProcessRateParameterPersistable = plotProcessRatee;
+         _transportBuilder.ProcessRateParameterPersistable = plotProcessRate;
       }
 
       public void SelectParameter(IParameter parameter)
@@ -179,9 +180,6 @@ namespace MoBi.Presentation.Presenter
          return FormulaCache.Select(formula => _formulaToDTOFormulaBuidlerMapper.MapFrom(formula));
       }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
    }
 }

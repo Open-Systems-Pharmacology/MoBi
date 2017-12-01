@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_builder_to_dto : concern_for_MoleculeBuilderToObjectBaseSummaryDTOMapper
+   public class When_mapping_builder_to_dto : concern_for_MoleculeBuilderToObjectBaseSummaryDTOMapper
    {
       private ObjectBaseSummaryDTO _result;
 

@@ -29,7 +29,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_for_float : concern_for_ReportingHelper
+   public class When_using_reporting_helper_for_float : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -44,7 +44,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_for_double : concern_for_ReportingHelper
+   public class When_using_reporting_helper_for_double : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -59,7 +59,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_for_null : concern_for_ReportingHelper
+   public class When_using_reporting_helper_for_null : concern_for_ReportingHelper
    {
       [Observation]
       public void should_convert_as_expected()
@@ -72,7 +72,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_without_unit_double : concern_for_ReportingHelper
+   public class When_using_reporting_helper_without_unit_double : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -87,7 +87,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_without_unit_float : concern_for_ReportingHelper
+   public class When_using_reporting_helper_without_unit_float : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -102,7 +102,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_without_unit_double_without_display_unit_setup : concern_for_ReportingHelper
+   public class When_using_reporting_helper_without_unit_double_without_display_unit_setup : concern_for_ReportingHelper
    {
       protected override void Context()
       {
@@ -123,7 +123,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_without_unit_float_without_display_unit_setup : concern_for_ReportingHelper
+   public class When_using_reporting_helper_without_unit_float_without_display_unit_setup : concern_for_ReportingHelper
    {
       protected override void Context()
       {
@@ -144,7 +144,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_with_unit_double : concern_for_ReportingHelper
+   public class When_using_reporting_helper_with_unit_double : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -159,7 +159,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_with_object_double : concern_for_ReportingHelper
+   public class When_using_reporting_helper_with_object_double : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -174,7 +174,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_with_unit_float : concern_for_ReportingHelper
+   public class When_using_reporting_helper_with_unit_float : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -189,7 +189,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_with_object_float : concern_for_ReportingHelper
+   public class When_using_reporting_helper_with_object_float : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -204,7 +204,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_using_reporting_helper_without_unit_float_with_display_unit_defined_for_dimension : concern_for_ReportingHelper
+   public class When_using_reporting_helper_without_unit_float_with_display_unit_defined_for_dimension : concern_for_ReportingHelper
    {
       protected override void Because()
       {
@@ -219,7 +219,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_getting_display_unit_for : concern_for_ReportingHelper
+   public class When_getting_display_unit_for : concern_for_ReportingHelper
    {
       [Observation]
       public void should_get_unit_back()
@@ -240,7 +240,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_no_display_unit_defined_and_getting_display_unit_for : concern_for_ReportingHelper
+   public class When_no_display_unit_defined_and_getting_display_unit_for : concern_for_ReportingHelper
    {
       protected override void Context()
       {

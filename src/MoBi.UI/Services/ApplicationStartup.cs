@@ -8,17 +8,16 @@ using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.SBML;
-using MoBi.Core.Serialization.Xml;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
+using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using MoBi.UI.Diagram;
 using MoBi.UI.Settings;
 using MoBi.UI.Views;
-using Northwoods.Go;
 using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
@@ -42,7 +41,9 @@ using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using OSPSuite.Utility.Logging;
+using ApplicationSettings = MoBi.Core.ApplicationSettings;
 using CoreRegister = OSPSuite.Core.CoreRegister;
+using IApplicationSettings = OSPSuite.Core.IApplicationSettings;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.UI.Services
@@ -67,7 +68,7 @@ namespace MoBi.UI.Services
             using (container.OptimizeDependencyResolution())
             {
                showStatusMessage(progress, "Init Core");
-               registerUserSettings(container);
+               registerSettings(container);
                registerCoreComponents(container);
 
                showStatusMessage(progress, "Init Presenter");
@@ -104,7 +105,7 @@ namespace MoBi.UI.Services
          container.AddRegister(x => x.FromType<DiagramRegister>());
       }
 
-      private static void registerUserSettings(IContainer container)
+      private static void registerSettings(IContainer container)
       {
          container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
       }
@@ -112,8 +113,13 @@ namespace MoBi.UI.Services
       private void initContext(IContainer container)
       {
          InitDimensions(container);
-         var userSettingsPersistor = container.Resolve<IUserSettingsPersistor>();
+
+         var userSettingsPersistor = container.Resolve<ISettingsPersistor<IUserSettings>>();
          userSettingsPersistor.Load();
+
+         var applicationSettingsPersistor = container.Resolve<ISettingsPersistor<Core.IApplicationSettings>>();
+         applicationSettingsPersistor.Load();
+
          InitCalculationMethodRepository(container);
          initGroupRepository(container);
 
@@ -141,7 +147,7 @@ namespace MoBi.UI.Services
          var configuration = container.Resolve<IMoBiConfiguration>();
          var dimFactory = container.Resolve<IMoBiDimensionFactory>();
          var persister = container.Resolve<IDimensionFactoryPersistor>();
-         persister.Load(dimFactory.BaseFactory, configuration.DimensionFactoryFile);
+         persister.Load(dimFactory.BaseFactory, configuration.DimensionFilePath);
          dimFactory.BaseFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
          container.RegisterImplementationOf<IDimensionFactory>(dimFactory);
          setUpDimensionMergings(dimFactory.BaseFactory);
@@ -186,8 +192,8 @@ namespace MoBi.UI.Services
 
       private static void setUpDimensionMergings(IDimensionFactory factory)
       {
-         var concentrationDimension = factory.GetDimension(AppConstants.DimensionNames.MASS_CONCENTRATION);
-         var molarConcentrationDimomension = factory.GetDimension(Constants.Dimension.MOLAR_CONCENTRATION);
+         var concentrationDimension = factory.Dimension(Constants.Dimension.MASS_CONCENTRATION);
+         var molarConcentrationDimomension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
 
          factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimomension,
             new MolWeightDimensonConverterForFormulaUseable(concentrationDimension, molarConcentrationDimomension)));
@@ -221,7 +227,6 @@ namespace MoBi.UI.Services
 
          container.RegisterImplementationOf(this);
 
-         container.Register<IToolTipCreator, ToolTipCreator>(LifeStyle.Singleton);
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
          container.Register<ISplashScreen, SplashScreen>();
@@ -235,8 +240,7 @@ namespace MoBi.UI.Services
 
          //Register log4Net factory and set the path to configuration file
          var log4NetLogFactory = new Log4NetLogFactory();
-
-         log4NetLogFactory.Configure(new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log4net.config.xml")));
+         log4NetLogFactory.Configure(new FileInfo(config.LogConfigurationFile));
          log4NetLogFactory.UpdateLogFileLocation(config.AllUsersFolderPath);
          container.RegisterImplementationOf((ILogFactory) log4NetLogFactory);
 

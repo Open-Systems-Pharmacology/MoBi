@@ -50,6 +50,7 @@ namespace MoBi.UI.Views
          base.OnLoad(e);
          _presenter.RestoreLayout();
          ResumeLayout();
+         _presenter.Run();
          Refresh();
       }
 

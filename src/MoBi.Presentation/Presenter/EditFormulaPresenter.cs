@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -12,15 +9,17 @@ using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -125,7 +124,7 @@ namespace MoBi.Presentation.Presenter
          _circularReferenceChecker = circularReferenceChecker;
          _context = context;
          _formulaPresenterCache = formulaPresenterCache;
-         _allFormulaType = new HashSet<Type> {typeof (ConstantFormula), typeof (TableFormula), typeof (ExplicitFormula), typeof (TableFormulaWithOffset), typeof (SumFormula)};
+         _allFormulaType = new HashSet<Type> {typeof(ConstantFormula), typeof(TableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(SumFormula)};
          _defaultFormulaType = _allFormulaType.First();
       }
 
@@ -138,7 +137,7 @@ namespace MoBi.Presentation.Presenter
          where TObjectWithFormula : IEntity, IWithDimension
       {
          _formulaOwner = formulaOwner;
-         _formulaPropertyName = formulaDecoder.PropertyName();
+         _formulaPropertyName = formulaDecoder.PropertyName;
          _formula = formulaDecoder.GetFormula(formulaOwner);
          _buildingBlock = buildingBlock;
          _constantFormula = null;
@@ -240,7 +239,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool hasCircularReference(IFormulaUsablePath path)
       {
-         return _formulaOwner != null && !IsRHS && _circularReferenceChecker.HasCircularReference( path, _formulaOwner);
+         return _formulaOwner != null && !IsRHS && _circularReferenceChecker.HasCircularReference(path, _formulaOwner);
       }
 
       private void setFormulaInOwner(IFormula newFormula)
@@ -255,7 +254,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool needsName(Type type)
       {
-         return !(type == typeof (ConstantFormula) || type == typeof (DistributionFormula));
+         return !(type == typeof(ConstantFormula) || type == typeof(DistributionFormula));
       }
 
       private IFormula getConstantFormula()
@@ -329,7 +328,7 @@ namespace MoBi.Presentation.Presenter
 
       public ISelectReferencePresenter ReferencePresenter
       {
-         get { return _referencePresenter; }
+         get => _referencePresenter;
          set
          {
             _referencePresenter = value;
@@ -340,12 +339,11 @@ namespace MoBi.Presentation.Presenter
       public void AddNewFormula()
       {
          var formulaType = _formulaDTO == null ? defaultFormulaType() : _formulaDTO.Type;
-         var addFormula = _formulaTask.CreateNewFormulaInBuildingBlock(formulaType, formulaDimension, allFormulaNames(), _buildingBlock);
-         var formula = addFormula.Item2;
+         (var command, var formula) = _formulaTask.CreateNewFormulaInBuildingBlock(formulaType, formulaDimension, allFormulaNames(), _buildingBlock);
          if (formula == null)
             return;
 
-         AddCommand(addFormula.Item1);
+         AddCommand(command);
 
          selectFormula(formula);
          updateFormula();
@@ -363,7 +361,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetDefaultFormulaType<TFormulaType>()
       {
-         _defaultFormulaType = typeof (TFormulaType);
+         _defaultFormulaType = typeof(TFormulaType);
       }
 
       private IFormula getFormulaFromFormulaCache(Type type, string formulaName)
@@ -375,7 +373,7 @@ namespace MoBi.Presentation.Presenter
 
       public void AddFormulaType<TFormulaType>()
       {
-         _allFormulaType.Add(typeof (TFormulaType));
+         _allFormulaType.Add(typeof(TFormulaType));
       }
 
       private bool isComplexFormula(IFormula formula)
@@ -423,7 +421,7 @@ namespace MoBi.Presentation.Presenter
 
       public void RemoveFormulaType<TFormulaType>()
       {
-         _allFormulaType.Remove(typeof (TFormulaType));
+         _allFormulaType.Remove(typeof(TFormulaType));
       }
 
       public string DisplayFor(Type formulaType)

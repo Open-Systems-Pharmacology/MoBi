@@ -1,14 +1,21 @@
+using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 
 namespace MoBi.Core.Events
 {
    public class ParameterChangedEvent
    {
-      public ParameterChangedEvent(IParameter parameter)
+      public IReadOnlyList<IParameter> Parameters { get; }
+
+      public ParameterChangedEvent(IParameter parameter) : this(new List<IParameter> { parameter })
       {
-         Parameter = parameter;
+         ;
       }
 
-      public IParameter Parameter { get; private set; }
+      public ParameterChangedEvent(IReadOnlyList<IParameter> parameters)
+      {
+         Parameters = parameters;
+      }
+
    }
 }

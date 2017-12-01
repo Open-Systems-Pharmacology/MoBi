@@ -36,9 +36,9 @@ namespace MoBi.UI.Views
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnAddToExcludeList = new DevExpress.XtraEditors.SimpleButton();
          this.btnAddToIncludeList = new DevExpress.XtraEditors.SimpleButton();
-         this.gridIncludedMolecules = new DevExpress.XtraGrid.GridControl();
+         this.gridIncludedMolecules = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewIncludedMolecules = new MoBi.UI.Views.UxGridView();
-         this.gridExcludedMolecules = new DevExpress.XtraGrid.GridControl();
+         this.gridExcludedMolecules = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewExcludedMolecules = new MoBi.UI.Views.UxGridView();
          this.chkForAll = new UxCheckEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();

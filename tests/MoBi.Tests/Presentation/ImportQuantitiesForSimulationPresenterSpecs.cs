@@ -30,7 +30,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_initializing_presenter : concern_for_ImportQuantitiesForSimulationPresenter
+   public class When_initializing_presenter : concern_for_ImportQuantitiesForSimulationPresenter
    {
       protected override void Because()
       {
@@ -56,7 +56,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_starting_dialog : concern_for_ImportQuantitiesForSimulationPresenter
+   public class When_starting_dialog : concern_for_ImportQuantitiesForSimulationPresenter
    {
       private IMoBiSimulation _simulation;
 

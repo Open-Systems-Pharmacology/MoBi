@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_setting_new_dimension_for_parameter_without_right_hand_side : concern_for_SetParameterDimensionInBuildingBlockCommand
+   public class When_setting_new_dimension_for_parameter_without_right_hand_side : concern_for_SetParameterDimensionInBuildingBlockCommand
    {
       private Unit _newDisplayUnit;
 
@@ -60,7 +60,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_setting_new_dimension_for_parameter_with_right_hand_side : concern_for_SetParameterDimensionInBuildingBlockCommand
+   public class When_setting_new_dimension_for_parameter_with_right_hand_side : concern_for_SetParameterDimensionInBuildingBlockCommand
    {
       private IDimension _newRightHandSideDimension;
       private Unit _newDisplayUnit;
@@ -107,7 +107,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_reverting_command_to_update_dimension_on_parameter : concern_for_SetParameterDimensionInBuildingBlockCommand
+   public class When_reverting_command_to_update_dimension_on_parameter : concern_for_SetParameterDimensionInBuildingBlockCommand
    {
       private IDimension _newRightHandSideDimension;
       private Unit _newDisplayUnit;

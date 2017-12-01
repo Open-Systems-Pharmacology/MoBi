@@ -30,7 +30,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_addding_molecule_start_value : concern_for_AddMoleculeStartValueToBuildingBlockCommand
+   public class When_addding_molecule_start_value : concern_for_AddMoleculeStartValueToBuildingBlockCommand
    {
       protected override void Context()
       {

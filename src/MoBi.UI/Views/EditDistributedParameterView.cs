@@ -41,7 +41,7 @@ namespace MoBi.UI.Views
       {
          _screenBinder = new ScreenBinder<DistributedParameterDTO>();
          _screenBinder.Bind(dto => dto.Name).To(btName)
-            .OnValueSet += onValueSet;
+            .OnValueUpdating += OnValueUpdating;
 
          _screenBinder.Bind(x => x.FormulaType)
             .To(cbFormulaType)
@@ -67,7 +67,7 @@ namespace MoBi.UI.Views
          bindDisitributionParameter(dto => dto.GeometricDeviation, veGeoStd);
 
          _screenBinder.Bind(dto => dto.Description)
-            .To(htmlEditor).OnValueSet += onValueSet;
+            .To(htmlEditor).OnValueUpdating += OnValueUpdating;
 
          RegisterValidationFor(_screenBinder,NotifyViewChanged);
 
@@ -122,7 +122,7 @@ namespace MoBi.UI.Views
          OnEvent(() => _presenter.SetParameterUnit(valueEditDTO.DowncastTo<DistributionParameterDTO>(), unit));
       }
 
-      private void onValueSet<T>(DistributedParameterDTO distributedParameter, PropertyValueSetEventArgs<T> e)
+      private void OnValueUpdating<T>(DistributedParameterDTO distributedParameter, PropertyValueSetEventArgs<T> e)
       {
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }

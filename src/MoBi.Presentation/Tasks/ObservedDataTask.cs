@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = interactionTask;
          _dimensionFactory = dimensionFactory;
          _context = context;
-         _molWeightDimension = dimensionFactory.GetDimension(AppConstants.DimensionNames.MOL_WEIGHT);
+         _molWeightDimension = dimensionFactory.Dimension(AppConstants.DimensionNames.MOL_WEIGHT);
       }
 
       public void AddObservedDataToProject()
@@ -146,7 +146,7 @@ namespace MoBi.Presentation.Tasks
          var settings = new DataImporterSettings
          {
             Icon = ApplicationIcons.MoBi,
-            Caption = $"{AppConstants.ProductName} - {AppConstants.Captions.ImportObservedData}"
+            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
          };
          settings.AddNamingPatternMetaData(Constants.FILE);
          return settings;
@@ -154,16 +154,16 @@ namespace MoBi.Presentation.Tasks
 
       private void adjustMolWeight(DataRepository observedData)
       {
-         if (!observedData.ExtendedProperties.Contains(AppConstants.MolWeight))
+         if (!observedData.ExtendedProperties.Contains(AppConstants.Parameters.MOLECULAR_WEIGHT))
             return;
 
          // molweight is provided in default unit should be saved in core unit
-         var molWeightExtendedProperty = observedData.ExtendedProperties[AppConstants.MolWeight].DowncastTo<IExtendedProperty<double>>();
+         var molWeightExtendedProperty = observedData.ExtendedProperties[AppConstants.Parameters.MOLECULAR_WEIGHT].DowncastTo<IExtendedProperty<double>>();
          var molWeight = _molWeightDimension.UnitValueToBaseUnitValue(_molWeightDimension.DefaultUnit, molWeightExtendedProperty.Value);
          observedData.AllButBaseGrid().Each(x => x.DataInfo.MolWeight = molWeight);
 
          //Remove Molweight extended properties
-         observedData.ExtendedProperties.Remove(AppConstants.MolWeight);
+         observedData.ExtendedProperties.Remove(AppConstants.Parameters.MOLECULAR_WEIGHT);
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -239,7 +239,7 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<ColumnInfo> createColumnInfos()
       {
-         var timeDimension = _dimensionFactory.GetDimension(CoreConstants.Dimension.TIME);
+         var timeDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.TIME);
          var timeColumn = new ColumnInfo
          {
             DefaultDimension = timeDimension,
@@ -253,7 +253,7 @@ namespace MoBi.Presentation.Tasks
          timeColumn.DimensionInfos.Add(new DimensionInfo {Dimension = timeDimension, IsMainDimension = true});
          yield return timeColumn;
 
-         var mainDimension = _dimensionFactory.GetDimension(CoreConstants.Dimension.MOLAR_CONCENTRATION);
+         var mainDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.MOLAR_CONCENTRATION);
          var measurementInfo = new ColumnInfo
          {
             DefaultDimension = mainDimension,
@@ -286,7 +286,7 @@ namespace MoBi.Presentation.Tasks
 
       private void addDimensionsTo(ColumnInfo columnInfo, IDimension mainDimension)
       {
-         var timeDimension = _dimensionFactory.GetDimension(CoreConstants.Dimension.TIME);
+         var timeDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.TIME);
 
          foreach (var dimension in _dimensionFactory.Dimensions.Where(x => x != timeDimension))
          {
@@ -302,7 +302,7 @@ namespace MoBi.Presentation.Tasks
       {
          yield return new MetaDataCategory
          {
-            Name = AppConstants.MolWeight,
+            Name = AppConstants.Parameters.MOLECULAR_WEIGHT,
             DisplayName = $"{AppConstants.Parameters.MOLECULAR_WEIGHT} [{_molWeightDimension.DefaultUnit}]",
             Description = AppConstants.Parameters.MOLECULAR_WEIGHT,
             MetaDataType = typeof(double),

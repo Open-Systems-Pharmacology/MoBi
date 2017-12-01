@@ -8,6 +8,7 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -49,7 +50,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_retrieiving_sheets_from_excel_file : concern_for_ImportParameterStartValuesPresenter
+   public class When_retrieiving_sheets_from_excel_file : concern_for_ImportParameterStartValuesPresenter
    {
       private string _path;
       private IReadOnlyList<string> _allSheets;
@@ -58,7 +59,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _allSheets = new List<string> {"Sheet1", "Sheet2"};
-         _path = HelperForSpecs.TestFileFullPath("psv.xlsx");
+         _path = DomainHelperForSpecs.TestFileFullPath("psv.xlsx");
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_path);
          A.CallTo(() => _excelTask.RetrieveExcelSheets(_path, true)).Returns(_allSheets);
          sut.ImportStartValuesForBuildingBlock(_buildingBlock);
@@ -83,7 +84,7 @@ namespace MoBi.Presentation
    }
 
 
-   public class Selecting_file : concern_for_ImportParameterStartValuesPresenter
+   public class When_the_import_start_value_presenter_is_importing_values_for_a_given_building_block : concern_for_ImportParameterStartValuesPresenter
    {
       protected override void Context()
       {
@@ -97,13 +98,25 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void dialog_creator_must_have_been_called()
+      public void should_ask_the_user_to_select_a_file()
       {
          A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.BrowseForFile, Constants.Filter.EXCEL_OPEN_FILE_FILTER, Constants.DirectoryKey.XLS_IMPORT, null, null)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_display_the_view()
+      {
+         A.CallTo(() => _view.Display()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void view_must_be_bound_to_dto()
+      {
+         A.CallTo(() => _view.BindTo(A<ImportExcelSheetSelectionDTO>._)).MustHaveHappened();
+      }
    }
 
-   public class After_successful_import : concern_for_ImportParameterStartValuesPresenter
+   public class When_the_import_start_value_presenter_is_importing_values_for_a_given_building_block_and_the_import_is_successful : concern_for_ImportParameterStartValuesPresenter
    {
       protected QuantityImporterDTO _quantityImporterDTO;
 
@@ -139,7 +152,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_canceling_import : concern_for_ImportParameterStartValuesPresenter
+   public class When_the_import_start_value_presenter_is_importing_values_for_a_given_building_block_and_the_import_is_cancelled : concern_for_ImportParameterStartValuesPresenter
    {
       protected override void Context()
       {
@@ -157,26 +170,6 @@ namespace MoBi.Presentation
       public void returns_empty_list_of_imported_start_values()
       {
          A.CallTo(() => _startValuesTask.AddStartValueToBuildingBlock(_buildingBlock, A<IParameterStartValue>.Ignored)).MustNotHaveHappened();
-      }
-   }
-
-   public class When_importing_start_values : concern_for_ImportParameterStartValuesPresenter
-   {
-      protected override void Because()
-      {
-         sut.ImportStartValuesForBuildingBlock(_buildingBlock);
-      }
-
-      [Observation]
-      public void view_display() 
-      {
-         A.CallTo(() => _view.Display()).MustHaveHappened();
-      }
-
-      [Observation]
-      public void view_must_be_bound_to_dto()
-      {
-         A.CallTo(() => _view.BindTo(A<ImportExcelSheetSelectionDTO>._)).MustHaveHappened();
       }
    }
 }

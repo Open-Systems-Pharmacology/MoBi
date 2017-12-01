@@ -34,7 +34,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class when_mapping_model_parts : concern_for_ModelPartsToExcelExporterTask
+   public class When_mapping_model_parts : concern_for_ModelPartsToExcelExporterTask
    {
       private MoBiReactionBuildingBlock _moBiReactionBuildingBlock;
       private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;

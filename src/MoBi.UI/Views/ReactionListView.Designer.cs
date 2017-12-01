@@ -30,7 +30,7 @@
       private void InitializeComponent()
       {
          this.components = new System.ComponentModel.Container();
-         this.grdReactionList = new DevExpress.XtraGrid.GridControl();
+         this.grdReactionList = new OSPSuite.UI.Controls.UxGridControl();
          this.grdViewReactionList = new MoBi.UI.Views.UxGridView();
          this.barManager = new DevExpress.XtraBars.BarManager(this.components);
          this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();

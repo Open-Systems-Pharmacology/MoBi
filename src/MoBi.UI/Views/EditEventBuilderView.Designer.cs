@@ -35,7 +35,7 @@ namespace MoBi.UI.Views
          this.tabControl = new DevExpress.XtraTab.XtraTabControl();
          this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+         this.gridControl1 = new OSPSuite.UI.Controls.UxGridControl();
          this.grdAssingments = new MoBi.UI.Views.UxGridView();
          this.btnAddAssignment = new DevExpress.XtraEditors.SimpleButton();
          this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();

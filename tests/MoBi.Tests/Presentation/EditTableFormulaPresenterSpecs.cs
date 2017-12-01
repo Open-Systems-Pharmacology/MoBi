@@ -70,7 +70,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_removing_a_point_from_the_table_formula : concern_for_EditTableFormulaPresenter
+   public class When_removing_a_point_from_the_table_formula : concern_for_EditTableFormulaPresenter
    {
       private TableFormula _tableFormula;
       private DTOValuePoint _removedPointDTO;

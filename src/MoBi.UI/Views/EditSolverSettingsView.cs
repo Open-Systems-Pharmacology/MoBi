@@ -30,13 +30,13 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<SolverSettingsDTO>();
          _screenBinder.Bind(dto => dto.Name).To(cbSolver)
             .WithValues(_presenter.GetSolverNames())
-            .OnValueSet += onSolverChanged;
+            .OnValueUpdating += onSolverChanged;
 
          _gridBinder = new GridViewBinder<ISolverOptionDTO>(gridView);
          _gridBinder.Bind(dtoOption => dtoOption.Name).AsReadOnly();
          _gridBinder.Bind(dtoOption => dtoOption.Value)
             .WithEditRepository(getOptionEditrepositoryItem)
-            .OnValueSet += onOptionChanged;
+            .OnValueUpdating += onOptionChanged;
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }

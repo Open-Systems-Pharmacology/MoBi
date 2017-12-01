@@ -6,6 +6,7 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Mappers;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
@@ -33,7 +34,7 @@ namespace MoBi.Core.Mapper
       }
    }
 
-   public class when_mapping_multiple_parameters : concern_for_ParameterListToSimulationParameterDataTableMapper
+   public class When_mapping_multiple_parameters : concern_for_ParameterListToSimulationParameterDataTableMapper
    {
       protected override void Context()
       {
@@ -72,7 +73,7 @@ namespace MoBi.Core.Mapper
                Value = 2.0,
                Formula = new ExplicitFormula("F=MA"),
                RHSFormula = new ExplicitFormula("i*i=-1"),
-               DisplayUnit = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass).DefaultUnit,
+               DisplayUnit = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass).DefaultUnit,
                Description = "description"
             },
             new Parameter()

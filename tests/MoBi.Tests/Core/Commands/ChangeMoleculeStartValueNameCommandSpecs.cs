@@ -30,7 +30,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_changing_name_of_start_value : concern_for_ChangeMoleculeStartValueNameCommand
+   public class When_changing_name_of_start_value : concern_for_ChangeMoleculeStartValueNameCommand
    {
       protected override void Context()
       {
@@ -50,7 +50,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_changing_name_of_molecule_start_value : concern_for_ChangeMoleculeStartValueNameCommand
+   public class When_changing_name_of_molecule_start_value : concern_for_ChangeMoleculeStartValueNameCommand
    {
       protected override void Because()
       {
@@ -70,7 +70,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_reverting_command_for_rename_of_molecule_start_value : concern_for_ChangeMoleculeStartValueNameCommand
+   public class When_reverting_command_for_rename_of_molecule_start_value : concern_for_ChangeMoleculeStartValueNameCommand
    {
       protected override void Because()
       {

@@ -3,6 +3,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -28,6 +29,16 @@ namespace MoBi.Presentation.Tasks
       public QuantitySelection SelectionFrom(IQuantity quantity)
       {
          return new QuantitySelection(_entityPathResolver.PathFor(quantity), quantity.QuantityType);
+      }
+
+      public void UpdatePersistableOutputsIn(IMoBiSimulation simulation)
+      {
+         if (simulation.Settings == null)
+            return;
+
+         var allPersistableParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.Persistable);
+         allPersistableParameters.Each(p => { simulation.OutputSelections.AddOutput(SelectionFrom(p)); });
+
       }
    }
 }

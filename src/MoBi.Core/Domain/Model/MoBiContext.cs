@@ -57,8 +57,8 @@ namespace MoBi.Core.Domain.Model
    {
       private readonly IXmlSerializationService _serializationService;
       private readonly IHistoryManagerFactory _historyManagerFactory;
-      private readonly IRegisterAllVisitor _registerAllVisitor;
-      private readonly IUnregisterVisitor _unregisterVisitor;
+      private readonly IRegisterTask _registerTask;
+      private readonly IUnregisterTask _unregisterTask;
       private readonly IClipboardManager _clipboardManager;
       private readonly IContainer _container;
       private readonly IObjectTypeResolver _objectTypeResolver;
@@ -66,16 +66,16 @@ namespace MoBi.Core.Domain.Model
       private readonly ILazyLoadTask _lazyLoadTask;
 
       public IMoBiHistoryManager HistoryManager { get; set; }
-      public IMoBiDimensionFactory DimensionFactory { get; private set; }
-      public IObjectBaseFactory ObjectBaseFactory { get; private set; }
-      public IObjectPathFactory ObjectPathFactory { get; private set; }
+      public IMoBiDimensionFactory DimensionFactory { get; }
+      public IObjectBaseFactory ObjectBaseFactory { get; }
+      public IObjectPathFactory ObjectPathFactory { get; }
       public ICoreCalculationMethodRepository CalculatonMethodRepository { get; set; }
-      public IEventPublisher EventPublisher { get; private set; }
-      public IWithIdRepository ObjectRepository { get; private set; }
+      public IEventPublisher EventPublisher { get; }
+      public IWithIdRepository ObjectRepository { get; }
 
       public MoBiContext(IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory dimensionFactory, IEventPublisher eventPublisher,
          IXmlSerializationService serializationService, IObjectPathFactory objectPathFactory, IWithIdRepository objectBaseRepository,
-         IHistoryManagerFactory historyManagerFactory, IRegisterAllVisitor registerAllVisitor, IUnregisterVisitor unregisterVisitor,
+         IHistoryManagerFactory historyManagerFactory, IRegisterTask registerTask, IUnregisterTask unregisterTask,
          IClipboardManager clipboardManager, IContainer container, IObjectTypeResolver objectTypeResolver,
          ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask) : base(eventPublisher, journalSession, fileLocker)
       {
@@ -90,15 +90,15 @@ namespace MoBi.Core.Domain.Model
          _cloneManager = cloneManager;
          _lazyLoadTask = lazyLoadTask;
          _historyManagerFactory = historyManagerFactory;
-         _registerAllVisitor = registerAllVisitor;
-         _unregisterVisitor = unregisterVisitor;
+         _registerTask = registerTask;
+         _unregisterTask = unregisterTask;
          _clipboardManager = clipboardManager;
       }
 
       public IMoBiProject CurrentProject
       {
-         get { return _project; }
-         set { _project = value; }
+         get => _project;
+         set => _project = value;
       }
 
       public T Create<T>() where T : IObjectBase
@@ -123,7 +123,7 @@ namespace MoBi.Core.Domain.Model
 
       public void AddToHistory(ICommand command)
       {
-         HistoryManager.AddCommand(command);
+         HistoryManager?.AddCommand(command);
       }
 
       public void ProjectChanged()
@@ -181,12 +181,12 @@ namespace MoBi.Core.Domain.Model
 
       public void Register(IWithId objectBase)
       {
-         _registerAllVisitor.RegisterAllIn(objectBase);
+         _registerTask.RegisterAllIn(objectBase);
       }
 
       public void Unregister(IWithId objectBase)
       {
-         _unregisterVisitor.UnregisterAllIn(objectBase);
+         _unregisterTask.UnregisterAllIn(objectBase);
       }
 
       public T Resolve<T>()
@@ -198,7 +198,7 @@ namespace MoBi.Core.Domain.Model
       {
          DimensionFactory.ProjectFactory = project.DimensionFactory;
          CurrentProject = project;
-         _registerAllVisitor.Register(project);
+         _registerTask.Register(project);
       }
 
       public string SerializeValue(object value)
@@ -236,7 +236,7 @@ namespace MoBi.Core.Domain.Model
             return ObjectRepository.Get(valueAsString);
 
          if (propertyType.IsAnImplementationOf<IDimension>())
-            return DimensionFactory.GetDimension(valueAsString);
+            return DimensionFactory.Dimension(valueAsString);
 
          if (propertyType.IsAnImplementationOf<IObjectPath>())
             return ObjectPathFactory.CreateObjectPathFrom(valueAsString.ToPathArray());

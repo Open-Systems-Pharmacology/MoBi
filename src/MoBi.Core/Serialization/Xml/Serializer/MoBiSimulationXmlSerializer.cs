@@ -36,7 +36,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          var chartSerializer = SerializerRepository.SerializerFor<CurveChart>();
          var chartElement = outputToDeserialize.Element(chartSerializer.ElementName);
          if (chartElement != null)
-            simulation.Chart = chartSerializer.Deserialize<ICurveChart>(outputToDeserialize.Element(chartSerializer.ElementName), serializationContext);
+            simulation.Chart = chartSerializer.Deserialize<CurveChart>(outputToDeserialize.Element(chartSerializer.ElementName), serializationContext);
 
          var diagramSerializer = serializationContext.Resolve<IDiagramModelToXmlMapper>();
 

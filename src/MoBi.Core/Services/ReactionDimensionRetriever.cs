@@ -15,27 +15,18 @@ namespace MoBi.Core.Services
          _projectRetriever = projectRetriever;
       }
 
-      public IDimension ReactionDimension
-      {
-         get { return getDimension(Constants.Dimension.AMOUNT_PER_TIME, Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME);}
-      }
+      public IDimension ReactionDimension => getDimension(Constants.Dimension.AMOUNT_PER_TIME, Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME);
 
-      public IDimension MoleculeDimension
-      {
-         get { return getDimension(Constants.Dimension.AMOUNT, Constants.Dimension.MOLAR_CONCENTRATION); }
-      }
+      public IDimension MoleculeDimension => getDimension(Constants.Dimension.AMOUNT, Constants.Dimension.MOLAR_CONCENTRATION);
 
-      public ReactionDimensionMode SelectedDimensionMode
-      {
-         get { return _projectRetriever.Current.ReactionDimensionMode; }
-      }
+      public ReactionDimensionMode SelectedDimensionMode => _projectRetriever.Current?.ReactionDimensionMode ?? ReactionDimensionMode.AmountBased;
 
       private IDimension getDimension(string amountBased, string concentrationBased)
       {
          if (SelectedDimensionMode == ReactionDimensionMode.AmountBased)
-               return _dimensionFactory.GetDimension(amountBased);
+            return _dimensionFactory.Dimension(amountBased);
 
-         return _dimensionFactory.GetDimension(concentrationBased);
+         return _dimensionFactory.Dimension(concentrationBased);
       }
    }
 }

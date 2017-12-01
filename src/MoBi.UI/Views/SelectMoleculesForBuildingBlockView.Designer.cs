@@ -32,7 +32,7 @@
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.gridControlMolecules = new DevExpress.XtraGrid.GridControl();
+         this.gridControlMolecules = new OSPSuite.UI.Controls.UxGridControl();
          this.gridMolecules = new DevExpress.XtraGrid.Views.Grid.GridView();
          this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
          this.layoutControlItemMolecules = new DevExpress.XtraLayout.LayoutControlItem();

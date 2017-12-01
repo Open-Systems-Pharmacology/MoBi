@@ -1,5 +1,4 @@
-﻿using MoBi.Presentation.Helpers;
-using MoBi.Presentation.Tasks.Edit;
+﻿using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction

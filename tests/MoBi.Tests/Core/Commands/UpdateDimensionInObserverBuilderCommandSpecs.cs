@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -21,8 +22,8 @@ namespace MoBi.Core.Commands
       {
          _buildingBlock = new ObserverBuildingBlock();
          _context = A.Fake<IMoBiContext>();
-         _newDimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass);
-         _oldDimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Concentration);
+         _newDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
+         _oldDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Concentration);
 
          _observedBuilder = new ObserverBuilder
          {
@@ -34,7 +35,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_converting_dimensions_on_observer_builder : concern_for_UpdateDimensionInObserverBuilderCommand
+   public class When_converting_dimensions_on_observer_builder : concern_for_UpdateDimensionInObserverBuilderCommand
    {
       protected override void Because()
       {
@@ -49,7 +50,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_reversing_dimension_change_on_observer_builder : concern_for_UpdateDimensionInObserverBuilderCommand
+   public class When_reversing_dimension_change_on_observer_builder : concern_for_UpdateDimensionInObserverBuilderCommand
    {
       protected override void Context()
       {

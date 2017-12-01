@@ -230,7 +230,7 @@ namespace MoBi.Core.SBML
             if (_dimensionDictionary.ContainsKey(dimName))
                 return _dimensionDictionary[dimName];
             if (_moBiDimensionFactory.Dimensions.Any(dim => dim.Name == dimName))
-                return _moBiDimensionFactory.GetDimension(dimName);
+                return _moBiDimensionFactory.Dimension(dimName);
              
             var newBaseDimRepresentation = CreateNewBaseDimRepresentation(amountDimension.BaseRepresentation, sizeDimension.BaseRepresentation);
             var newFactor = GetNewFactor(amountDimension, sizeDimension); //Faktoren dividieren

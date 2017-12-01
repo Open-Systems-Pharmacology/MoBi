@@ -8,6 +8,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
+using MoBi.Helpers;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -141,7 +142,7 @@ namespace MoBi.Presentation
          //add so that it will be found when setting the value in the parameter
          _buidingBlockWithFormulaCache.AddFormula(_explicitFormula);
          A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache))
-            .Returns(new Tuple<IMoBiCommand, IFormula>(A.Fake<IMoBiCommand>(), _explicitFormula));
+            .Returns((A.Fake<IMoBiCommand>(), _explicitFormula));
       }
 
       protected override void Because()
@@ -184,7 +185,7 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache))
             .Invokes(x => _availableFormulaNames = x.GetArgument<IEnumerable<string>>(2))
-            .Returns(new Tuple<IMoBiCommand, IFormula>(A.Fake<IMoBiCommand>(), null));
+            .Returns((A.Fake<IMoBiCommand>(), null));
 
 
          sut.Init(_parameter, _buidingBlockWithFormulaCache, new UsingFormulaDecoder());
@@ -214,9 +215,9 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _dimParameter = HelperForSpecs.AmountDimension;
+         _dimParameter = DomainHelperForSpecs.AmountDimension;
          _dimEquivalent = new Dimension(_dimParameter.BaseRepresentation, "Equivalent", _dimParameter.BaseUnit.Name);
-         _anotherDimension = HelperForSpecs.TimeDimension;
+         _anotherDimension = DomainHelperForSpecs.TimeDimension;
          _parameter = A.Fake<IParameter>().WithDimension(_dimParameter);
          _parameter.Formula = new ExplicitFormula("1+2").WithDimension(_dimParameter);
          _buidingBlockWithFormulaCache = A.Fake<IBuildingBlock>();
@@ -247,8 +248,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _dimParameter = HelperForSpecs.AmountDimension;
-         _rhsDim = HelperForSpecs.AmountPerTimeDimension;
+         _dimParameter = DomainHelperForSpecs.AmountDimension;
+         _rhsDim = DomainHelperForSpecs.AmountPerTimeDimension;
          _parameter = A.Fake<IParameter>().WithDimension(_dimParameter);
          _parameter.RHSFormula = new ExplicitFormula("1+2").WithDimension(_rhsDim);
 

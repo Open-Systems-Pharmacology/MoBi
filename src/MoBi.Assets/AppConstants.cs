@@ -16,7 +16,6 @@ namespace MoBi.Assets
    public static class AppConstants
    {
       public static readonly int LayoutVersion = 24;
-      public static readonly string MolWeight = "MolWeight";
       public static readonly string NotMatch = "not tagged with";
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
@@ -36,19 +35,33 @@ namespace MoBi.Assets
       public static readonly int NotificationToolTipDelay = 30000;
       public static readonly int NotFoundIndex = -1;
       public static readonly string NullString = "null";
-      public static readonly string ProductName = "MoBi";
+      public static readonly string PRODUCT_NAME = "MoBi";
       public static readonly string Website = "www.open-systems-pharmacology.org";
       public static readonly string ProductSiteDownload = "http://setup.open-systems-pharmacology.org";
       public static readonly string IssueTrackerUrl = "http://www.open-systems-pharmacology.org/mobi/issues";
       public static readonly string Persitable = "Persitable";
       public static readonly string CVODE_1002_2_SOLVER = "CVODE1002_2";
-      public static int MAX_PATH_DEPTH = 10;
+      public static readonly int MAX_PATH_DEPTH = 10;
       public static readonly string CONCENTRATION_FORMULA = "ConcFormula";
 
       public static class Parameters
       {
          public static readonly string CONCENTRATION = "Concentration";
          public static readonly string MOLECULAR_WEIGHT = "Molecular weight";
+         public static readonly string EFFECTIVE_MOLECULAR_WEIGHT = "Effective molecular weight";
+         public static readonly string SURFACE_AREA_INTERSTITIAL_INTRACELLULAR = "Surface area (interstitial/intracellular)";
+         public static readonly string BSA = "BSA";
+         public static readonly string PERMEABILITY = "Permeability";
+         public static readonly string SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR = "Specific intestinal permeability (transcellular)";
+         public static readonly string RADIUS_SOLUTE = "Radius (solute)";
+         public static readonly string SECRETION_OF_LIQUID = "Secretion of liquid";
+         public static readonly string RELEASE_RATE_OF_TABLET = "Release rate of the tablet";
+         public static readonly string V_MAX = "Vmax";
+         public static readonly string LYMPH_FLOW_RATE = "Lymph flow rate";
+         public static readonly string LYMPH_FLOW_RATE_INCL_MUCOSA = "Lymph flow rate (incl. mucosa)";
+         public static readonly string FLUID_RECIRCULATION_FLOW_RATE = "Fluid recirculation flow rate";
+         public static readonly string FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA = "Fluid recirculation flow rate (incl. mucosa)";
+         public static readonly string CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR= "Calculated specific intestinal permeability (transcellular)";
       }
 
       public static class Groups
@@ -58,16 +71,6 @@ namespace MoBi.Assets
          public static readonly string ReportCreationStarted = "Report creation started...";
          public static readonly string ReportCreationFinished = "Report created!";
          public static readonly string Concentration = "Concentration";
-
-         public static string ReportCreationStartedMessage(string reportFullPath)
-         {
-            return "This might take a while...";
-         }
-
-         public static string ReportCreationFinishedMessage(string reportFullPath)
-         {
-            return $"Report can be found at {reportFullPath}";
-         }
       }
 
       public static class Organs
@@ -93,22 +96,31 @@ namespace MoBi.Assets
          public static string EmptyCalculationMethodDescription = "";
 
          public static readonly string GlobalEventTag = "Events";
-         public static readonly string[] PKSimObservers = {"Plasma (Peripheral Venous Blood)", "Plasma Unbound (Peripheral Venous Blood)", "Tissue", "Fraction excreted"};
+
+         public static readonly IReadOnlyList<string> PKSimStaticObservers = new []
+         {
+            "Plasma (Peripheral Venous Blood)",
+            "Plasma Unbound (Peripheral Venous Blood)",
+            "Tissue",
+            "Fraction excreted"
+         };
+
+         public static readonly IReadOnlyList<string> PKSimDynamicObservers = new[]
+         {
+            "Fraction of dose"
+         };
       }
 
       public static class SpecialFileNames
       {
-         public static readonly string CompanyFolderName = "Open Systems Pharmacology";
-         public static readonly string ApplicationFolderPath = Path.Combine(CompanyFolderName, ProductName);
-         public static readonly string LayoutFileNamePattern = "*.xml";
-         public static readonly string MatlabSimulationFiles = "Simulationfiles";
-         public static readonly string TemplatesFolder = "Templates";
-
-         public static readonly string XmlSchemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OSPSuite.SimModel.xsd");
-         public static readonly string DimensionFactoryFileName = "OSPSuite.Dimensions.xml";
-         public static readonly string PKParametersFileName = "OSPSuite.PKParameters.xml";
-         public static readonly string GroupRepositoryFileName = "GroupRepository.xml";
-         public static readonly string CalculationMethodRepositoryFileName = "AllCalculationMethods.pkml";
+         public static readonly string COMPANY_FOLDER_NAME = "Open Systems Pharmacology";
+         public static readonly string APPLICATION_FOLDER_PATH = Path.Combine(COMPANY_FOLDER_NAME, PRODUCT_NAME);
+         public static readonly string TEMPLATES_FOLDER = "Templates";
+         public static readonly string LOCAL_TEX_TEMPLATE_FOLDER_NAME = "Templates";
+         public static readonly string GROUP_REPOSITORY_FILE_NAME = "GroupRepository.xml";
+         public static readonly string CALCULATION_METHOD_REPOSITORY_FILE_NAME = "AllCalculationMethods.pkml";
+         public static readonly string SPATIAL_STRUCTURE_TEMPLATE = "SpaceOrganismTemplate.mbdt";
+         public static readonly string STANDARD_MOLECULE = "Standard Molecule.pkml";
       }
 
       public static class XmlNames
@@ -850,7 +862,7 @@ namespace MoBi.Assets
 
       }
 
-      public static class FileFilter
+      public static class Filter
       {
          public static readonly string MOBI_PROJECT_EXTENSION = ".mbp3";
          public static readonly string MOBI_DIAGRAM_TEMPLATE_EXTENSION = ".mbdt";
@@ -861,6 +873,7 @@ namespace MoBi.Assets
          public static readonly string LICENSE_FILE_FILTER = Constants.Filter.FileFilter("MoBi License", Constants.Filter.TEXT_EXTENSION);
          public static readonly string MOBI2_PROJECT_FILTER = Constants.Filter.FileFilter("MoBi 2 Project", ".mbp");
          public static readonly string SBML_MODEL_FILE_FILTER = Constants.Filter.XmlFilter("SBML");
+         public static readonly string PKSIM_FILE_FILTER = Constants.Filter.FileFilter("PKSim", ".exe");
       }
 
       public static class DirectoryKey
@@ -992,31 +1005,24 @@ namespace MoBi.Assets
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
 
-         public static string AddNew(string objectTypeName)
-         {
-            return $"Create {objectTypeName}...";
-         }
+         public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
-         public static string AddExisting(string objectTypeName)
-         {
-            return $"Load {objectTypeName}...";
-         }
+         public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
 
-         public static string AddExistingFromTemplate(string objectTypeName)
-         {
-            return $"Load {objectTypeName} from Template...";
-         }
+         public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
       }
 
       public static class DimensionNames
       {
-         public static readonly string MASS_CONCENTRATION = "Concentration (mass)";
          public static readonly string FRACTION = "Fraction";
          public static readonly string INVERSED_LENGTH = "Inversed length";
+         public static readonly string LENGTH = "Length";
+         public static readonly string FLOW = "Flow";
          public static readonly string MOL_WEIGHT = "Molecular weight";
          public static readonly string VELOCITY = "Velocity";
          public static readonly string INVERSED_VOLUME = "Inversed volume";
-         public static readonly string Mass = "Mass";
+         public static readonly string MASS = "Mass";
+         public static readonly string AREA = "Area";
       }
 
       public class Messages
@@ -1074,60 +1080,33 @@ namespace MoBi.Assets
          public static readonly string MoleculeNodeMissingInLink = "Molecule Node missing in Link";
          public static readonly string FileInNotAnExcelFile = "File is not an Excel file";
 
-         public static string DuplicatedImportedStartValue(string path)
-         {
-            return $"Duplicated entry for imported start value with path '{path}'";
-         }
+         public static string DuplicatedImportedStartValue(string path) => $"Duplicated entry for imported start value with path '{path}'";
 
          public static string CannotConvertAConcentrationModelBasedIntoAnAmountBasedModel(string modelType)
          {
             return string.Format("Cannot convert concentration {0} into amount {0}.", modelType.ToLowerInvariant());
          }
 
-         public static string CannotImportFromExcelFile(string filePath)
-         {
-            return $"Failed to import from {filePath}. It may not be valid Excel file format";
-         }
+         public static string CannotImportFromExcelFile(string filePath) => $"Failed to import from {filePath}. It may not be valid Excel file format";
 
-         public static string TableShouldBeNColumns(int n)
-         {
-            return $"Table should be {n} columns or more";
-         }
+         public static string TableShouldBeNColumns(int n) => $"Table should be {n} columns or more";
 
-         public static string ColumnNMustBeNumeric(string columnValue, int N)
-         {
-            return string.Format("Column {1} must be numeric type: {0}", columnValue, N);
-         }
+         public static string ColumnNMustBeNumeric(string columnValue, int N) => $"Column {N} must be numeric type: {columnValue}";
 
-         public static string ProjectWillBeOpenedAsReadOnly(string errorMessage)
-         {
-            return $"{errorMessage}\nAny change made to the project will not be saved.";
-         }
+         public static string ProjectWillBeOpenedAsReadOnly(string errorMessage) => $"{errorMessage}\nAny change made to the project will not be saved.";
 
          public static string InvalidStartValuesConfiguration(string startValuesBuildingBlock, string buildingBlockType)
          {
             return $"Selected {buildingBlockType.ToLower()} '{startValuesBuildingBlock}' does not match the selected {ObjectTypes.MoleculeBuildingBlock.ToLower()} and {ObjectTypes.SpatialStructure.ToLower()}.";
          }
 
-         public static string CouldNotFindAReporterFor(Type type)
-         {
-            return $"Unable to find a reporter for {type.Name}";
-         }
+         public static string CouldNotFindAReporterFor(Type type) => $"Unable to find a reporter for {type.Name}";
 
-         public static string UnknownProjectItem(Type type)
-         {
-            return $"Unable to find presenter for '{type.Name}'";
-         }
+         public static string UnknownProjectItem(Type type) => $"Unable to find presenter for '{type.Name}'";
 
-         public static string UnknownDistributedFormula(Type type)
-         {
-            return $"Unknown Distributed Formula Type {type.Name}";
-         }
+         public static string UnknownDistributedFormula(Type type) => $"Unknown Distributed Formula Type '{type.Name}'";
 
-         public static string EmptyCollection(string collectionName)
-         {
-            return $"{collectionName} contains no Elements";
-         }
+         public static string EmptyCollection(string collectionName) => $"{collectionName} contains no Elements";
 
          public static string NoInformationFoundException(string fileName, string lookForElementName, string rootElementName)
          {
@@ -1231,7 +1210,6 @@ namespace MoBi.Assets
          public static readonly string HistoryBrowser = "History";
          public static readonly string NameInUse = "New Name";
          public static readonly string ReanameWizardCaption = "Rename also";
-         public static readonly string UserSettings = "User Settings";
          public static readonly string AddReactionMolecule = "Molecule Name";
          public static readonly string NewName = "New Name";
          public static readonly string Tag = "Tag";
@@ -1449,6 +1427,7 @@ namespace MoBi.Assets
          public static readonly string AddUnitMap = "Add Unit";
          public static readonly string DisplayUnit = "Display Unit";
          public static readonly string DefaultDisplayUnits = "Default Display Units";
+         public static readonly string ApplicationSettings = "Application";
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string StartImport = "Start Import";
          public static readonly string ImportParameterStartValues = "Import Parameter Start Values";
@@ -1567,6 +1546,14 @@ namespace MoBi.Assets
          public static readonly string MoleculeObserver = "Molecule Observer";
          public static readonly string ContainerObserver = "Container Observer";
          public static readonly string SelectMolecules = "Select Molecules";
+         public static readonly string LoadingApplication = "Loading Application...";
+         public static readonly string PKSimPath = "PK-Sim executable path";
+         public static readonly string UseWatermark = "Use watermark";
+         public static readonly string WatermarkText = "Watermark";
+         public static readonly string SelectPKSimExecutablePath = "Select PK-Sim executable path";
+         public static readonly string CloseView = "Close";
+         public static readonly string CloseAll = "Close All Documents";
+         public static readonly string CloseAllButThis = "Close All But This";
 
          public static string ManageDisplayUnits(string type)
          {
@@ -1840,8 +1827,10 @@ namespace MoBi.Assets
 
          public static string FormulaDimensionMismatch(string displayPath, string dimensionName)
          {
-            return $"The formula of '{displayPath}' does not evaluate to the dimension '{dimensionName}'";
+            return $"The formula of '{displayPath}' {DoesNotEvaluateTo(dimensionName)}";
          }
+
+         public static string DoesNotEvaluateTo(string dimensionName) => $"does not evaluate to the dimension '{dimensionName}'";
 
          public static string PathIsIdenticalToExistingPath(IObjectPath path)
          {
@@ -1868,8 +1857,6 @@ namespace MoBi.Assets
             return $"A start value with the name '{name}' already exists for the container {containerPath}";
          }
       }
-
-      public static readonly string TableAlias = "TABLE";
 
       public static readonly string TimeColumName = "Simulationtime";
 
@@ -1966,20 +1953,15 @@ namespace MoBi.Assets
       };
 
 
-      public static readonly string CouplingCompleted = "Coupling completed!";
       public static readonly string None = "<None>";
-      public static readonly string NeyKeyButton = "&New Key";
-      public static readonly string ReadOnlyButton = "&Read-Only";
       public static readonly string PKSimTopContainer = "Organism";
-      public static string ParameterIdentificationResults = "Parameter Identification Results";
-      public static string AmountAlias = "M";
-      public static int ObseverPathLengthDistance = 2;
-      public static string NeighborhoodTag = "Neighborhood";
-      public static string OutputIntervalId = "OutputIntervalId";
-      public static string SolverSettingsId = "SolverSettingsId";
-      public static string SimulationSettingsId = "SimulationSettingsId";
-      public static string OffsetAlias = "OFFSET";
-      public static string PKSimRegPath = @"Open Systems Pharmacology\PK-Sim\";
+      public static readonly string AmountAlias = "M";
+      public static readonly string NeighborhoodTag = "Neighborhood";
+      public static readonly string OutputIntervalId = "OutputIntervalId";
+      public static readonly string SolverSettingsId = "SolverSettingsId";
+      public static readonly string SimulationSettingsId = "SimulationSettingsId";
+      public static readonly string OffsetAlias = "OFFSET";
+      public static readonly string TableAlias = "TABLE";
       public static readonly string Param = "Param";
       public static readonly string RHSFormula = "RHS Formula";
 
@@ -2030,11 +2012,11 @@ namespace MoBi.Assets
          return $"For more information, please contact your {productDisplayName} support ({support})";
       }
 
-      public class PKSim
+      public static class PKSim
       {
          public static readonly string PopulationSimulationArgument = "/pop";
          public static readonly string JournalFileArgument = "/j";
-         public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup.";
+         public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup. Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
       }
 
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)

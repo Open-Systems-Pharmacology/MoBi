@@ -50,7 +50,7 @@ namespace MoBi.UI.Views
          this.lblMass = new DevExpress.XtraEditors.LabelControl();
          this.labelControl8 = new DevExpress.XtraEditors.LabelControl();
          this.lblPrefix = new DevExpress.XtraEditors.LabelControl();
-         this.grdUnits = new DevExpress.XtraGrid.GridControl();
+         this.grdUnits = new OSPSuite.UI.Controls.UxGridControl();
          this.grdViewUnits = new MoBi.UI.Views.UxGridView();
          this.btAddUnit = new DevExpress.XtraEditors.SimpleButton();
          this.btRemoveUnit = new DevExpress.XtraEditors.SimpleButton();

@@ -46,6 +46,7 @@ namespace MoBi.Core
             scan.ExcludeType<FormulaTypeCaptionRepository>();
             scan.ExcludeType<GroupRepository>();
             scan.ExcludeType<ClipboardManager>();
+            scan.ExcludeType<ApplicationSettings>();
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
             scan.ExcludeNamespaceContainingType<ProjectReporter>();
             scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
@@ -53,6 +54,7 @@ namespace MoBi.Core
          });
 
          container.Register<IMoBiContext, IOSPSuiteExecutionContext, IWorkspace, MoBiContext>(LifeStyle.Singleton);
+         container.Register<OSPSuite.Core.IApplicationSettings, IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
          container.Register<IMoBiDimensionFactory, IDimensionFactory, MoBiDimensionFactory>(LifeStyle.Singleton);
          container.Register<IObjectTypeResolver, ObjectTypeResolver>(LifeStyle.Singleton);
          container.Register<FormulaTypeCaptionRepository, FormulaTypeCaptionRepository>(LifeStyle.Singleton);
@@ -76,7 +78,9 @@ namespace MoBi.Core
          //Register abstract factories
          container.RegisterFactory<IHistoryManagerFactory>();
          container.RegisterFactory<IDiagramManagerFactory>();
-         XMLSchemaCache.InitializeFromFile(AppConstants.SpecialFileNames.XmlSchemaPath);
+
+         var config = container.Resolve<IMoBiConfiguration>();
+         XMLSchemaCache.InitializeFromFile(config.SimModelSchemaFilePath);
 
          registerReporters(container);
 

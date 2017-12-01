@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using Microsoft.Win32;
 using MoBi.Assets;
-using OSPSuite.Utility;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Infrastructure.Configuration;
@@ -12,65 +11,44 @@ namespace MoBi.Core
 {
    public interface IMoBiConfiguration : IApplicationConfiguration
    {
-      bool IsToken { get; set; }
-      string AllUsersFolderPath { get; }
       string SpaceOrganismUserTemplate { get; }
       string SpaceOrganismBaseTemplate { get; }
-      string UserSettings { get; }
-      string CurrentUserFolderPath { get; }
-      string AllUsersFile(string fileName);
-      string CurrentUserFile(string fileName);
       string PKSimPath { get; }
-      string TemplateFile(string fileName);
       string TemplateFolder { get; }
       string CalculationMethodRepositoryFile { get; set; }
       string GroupRepositoryFile { get; }
       string StandardMoleculeTemplateFile { get; }
-      string DimensionFactoryFile { get; set; }
    }
 
    public class MoBiConfiguration : OSPSuiteConfiguration, IMoBiConfiguration
    {
-      private static readonly string[] LATEST_VERSION_WITH_OTHER_MAJOR = {"3.6"};
-      public bool IsToken { get; set; }
       public string CalculationMethodRepositoryFile { get; set; }
-      public string DimensionFactoryFile { get; set; }
+      public override string ProductName { get; } = AppConstants.PRODUCT_NAME;
+      public override Origin Product { get; } = Origins.MoBi;
+      public override string ProductNameWithTrademark { get; } = AppConstants.PRODUCT_NAME;
+      public override ApplicationIcon Icon { get; } = ApplicationIcons.MoBi;
+      protected override string[] LatestVersionWithOtherMajor { get; } = { "3.6", "6.3" };
+      public override string UserSettingsFileName { get; } = "Settings.xml";
+      public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
+      public override string IssueTrackerUrl { get; } = AppConstants.IssueTrackerUrl;
+      public string GroupRepositoryFile { get; }
+      public string TemplateFolder { get; }
+      public string SpaceOrganismUserTemplate { get; }
+      public string SpaceOrganismBaseTemplate { get; }
+      public string StandardMoleculeTemplateFile { get; }
+      public override string WatermarkOptionLocation { get; } = "Utilties -> Options -> Application";
+      public override string ApplicationFolderPathName { get; } = AppConstants.SpecialFileNames.APPLICATION_FOLDER_PATH;
 
       public MoBiConfiguration()
       {
-         CalculationMethodRepositoryFile = AllUsersFile(AppConstants.SpecialFileNames.CalculationMethodRepositoryFileName);
-         DimensionFactoryFile = AllUsersFile(AppConstants.SpecialFileNames.DimensionFactoryFileName);
-         PKParametersFilePath = AllUsersFile(AppConstants.SpecialFileNames.PKParametersFileName);
+         CalculationMethodRepositoryFile = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.CALCULATION_METHOD_REPOSITORY_FILE_NAME);
+         GroupRepositoryFile = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.GROUP_REPOSITORY_FILE_NAME);
+         TemplateFolder =  AllUsersOrLocalPathForFolder(AppConstants.SpecialFileNames.TEMPLATES_FOLDER, AppConstants.SpecialFileNames.TEMPLATES_FOLDER);
+         SpaceOrganismUserTemplate = CurrentUserFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
+         SpaceOrganismBaseTemplate = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
+         StandardMoleculeTemplateFile = templateFile(AppConstants.SpecialFileNames.STANDARD_MOLECULE);
+         
       }
-
-      protected override string ApplicationFolderPathWithRevision(string revision)
-      {
-         return Path.Combine(AppConstants.SpecialFileNames.ApplicationFolderPath, revision);
-      }
-
-      protected override string[] LatestVersionWithOtherMajor => LATEST_VERSION_WITH_OTHER_MAJOR;
-
-      public override string ProductName { get; } = AppConstants.ProductName;
-
-      public override Origin Product { get; } = Origins.MoBi;
-   
-      public override string ProductNameWithTrademark { get; } = AppConstants.ProductName;
-
-      public override ApplicationIcon Icon { get; } = ApplicationIcons.MoBi;
-
-      public override string UserSettingsFileName { get; } = "Settings.xml";
-
-      public string CurrentUserFolderPath => dataFolderFor(EnvironmentHelper.UserApplicationDataFolder());
-
-      public string AllUsersFolderPath => dataFolderFor(EnvironmentHelper.ApplicationDataFolder());
-
-      private string dataFolderFor(string topPath) => Path.Combine(topPath, AppConstants.SpecialFileNames.ApplicationFolderPath, MajorVersion);
-
-      public override string TEXTemplateFolderPath => Path.Combine(AllUsersFolderPath, "TEXTemplates");
-
-      public string AllUsersFile(string fileName) => Path.Combine(AllUsersFolderPath, fileName);
-
-      public string CurrentUserFile(string fileName) => Path.Combine(CurrentUserFolderPath, fileName);
 
       public string PKSimPath
       {
@@ -78,7 +56,7 @@ namespace MoBi.Core
          {
             try
             {
-              return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{AppConstants.PKSimRegPath}{MajorVersion}", "InstallPath", null);
+              return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.PKSIM_REG_PATH}{MajorVersion}", Constants.RegistryPaths.INSTALL_PATH, null);
             }
             catch (Exception)
             {
@@ -87,25 +65,6 @@ namespace MoBi.Core
          }
       }
 
-      public string StandardMoleculeTemplateFile => TemplateFile("Standard Molecule.pkml");
-
-      public string GroupRepositoryFile => AllUsersFile(AppConstants.SpecialFileNames.GroupRepositoryFileName);
-
-      public string TemplateFile(string fileName)
-      {
-         return Path.Combine(TemplateFolder, fileName);
-      }
-
-      public string TemplateFolder => Path.Combine(AllUsersFolderPath, AppConstants.SpecialFileNames.TemplatesFolder);
-
-      public override string ChartLayoutTemplateFolderPath => AllUsersFile("ChartLayouts");
-
-      public string SpaceOrganismUserTemplate => CurrentUserFile("SpaceOrganismTemplate.mbdt");
-
-      public string SpaceOrganismBaseTemplate => AllUsersFile("SpaceOrganismTemplate.mbdt");
-
-      public string UserSettings => CurrentUserFile(UserSettingsFileName);
-
-      public override string IssueTrackerUrl { get; } = AppConstants.IssueTrackerUrl;
+      private string templateFile(string fileName) => Path.Combine(TemplateFolder, fileName);
    }
 }

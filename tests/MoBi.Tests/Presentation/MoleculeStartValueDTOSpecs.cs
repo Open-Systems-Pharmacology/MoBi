@@ -20,7 +20,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_validating_a_start_value_with_propsed_path_element_removed_from_end : concern_for_MoleculeStartValueDTO
+   public class When_validating_a_start_value_with_propsed_path_element_removed_from_end : concern_for_MoleculeStartValueDTO
    {
       protected override void Context()
       {
@@ -41,7 +41,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class when_validating_molecule_start_value_with_path_elements_empty : concern_for_MoleculeStartValueDTO
+   public class When_validating_molecule_start_value_with_path_elements_empty : concern_for_MoleculeStartValueDTO
    {
       protected override void Context()
       {

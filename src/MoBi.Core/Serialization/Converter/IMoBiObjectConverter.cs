@@ -6,20 +6,20 @@ namespace MoBi.Core.Serialization.Converter
 {
    public interface IMoBiObjectConverter : ISpecification<int>
    {
-      int Convert(object objectToUpdate, IMoBiProject project);
-      int ConvertXml(XElement element, IMoBiProject project);
+      (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project);
+      (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project);
    }
 
     internal class MoBiNullConverter : IMoBiObjectConverter
    {
-      public int Convert(object objectToUpdate, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project)
       {
-         return ProjectVersions.Current;
+         return (ProjectVersions.Current, false);
       }
 
-      public int ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
       {
-         return ProjectVersions.Current;
+         return (ProjectVersions.Current, false);
       }
 
       public bool IsSatisfiedBy(int item)

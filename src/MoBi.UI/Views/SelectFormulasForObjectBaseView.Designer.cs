@@ -28,7 +28,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.gridControlSelections = new DevExpress.XtraGrid.GridControl();
+         this.gridControlSelections = new OSPSuite.UI.Controls.UxGridControl();
          this.grdSelections = new DevExpress.XtraGrid.Views.Grid.GridView();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControlSelections)).BeginInit();

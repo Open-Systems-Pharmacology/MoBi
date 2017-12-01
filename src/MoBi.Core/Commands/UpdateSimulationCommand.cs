@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Assets;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Commands
 {
@@ -58,8 +59,7 @@ namespace MoBi.Core.Commands
 
          _simulationToUpdate.Update(_updatedBuildConfiguration, _newModel);
 
-         var simulationReferenceUpdater = context.Resolve<ISimulationReferenceUpdater>();
-         simulationReferenceUpdater.SwapSimulationInParameterAnalysables(_simulationToUpdate, _simulationToUpdate);
+         updateReferencesToSimulation(context);
 
          if (_simulationToUpdate.DiagramModel != null)
             replaceDiagramModelNodeIds(_simulationToUpdate.DiagramModel, oldIdCache, getEntityIdCache(_simulationToUpdate));
@@ -73,6 +73,14 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new SimulationReloadEvent(_simulationToUpdate));
       }
 
+      private void updateReferencesToSimulation(IMoBiContext context)
+      {
+         var simulationReferenceUpdater = context.Resolve<ISimulationReferenceUpdater>();
+         simulationReferenceUpdater.SwapSimulationInParameterAnalysables(_simulationToUpdate, _simulationToUpdate);
+
+         var simulationParameterOriginIdUpdater = context.Resolve<ISimulationParameterOriginIdUpdater>();
+         simulationParameterOriginIdUpdater.UpdateSimulationId(_simulationToUpdate);
+      }
 
       private static Dictionary<string, string> makeReplacementDictionary(ICache<string, string> oldIdCache, ICache<string, string> newIdCache)
       {
@@ -95,7 +103,6 @@ namespace MoBi.Core.Commands
       private static void replaceDiagramModelNodeIds(IDiagramModel diagramModel, ICache<string, string> oldIdCache, ICache<string, string> newIdCache)
       {
          var replacementDictionary = makeReplacementDictionary(oldIdCache, newIdCache);
-
          diagramModel.ReplaceNodeIds(replacementDictionary);
       }
 

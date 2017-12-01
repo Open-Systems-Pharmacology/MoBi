@@ -35,7 +35,7 @@
          this.tabMolecules = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelDescriptorCriteria = new DevExpress.XtraEditors.PanelControl();
-         this.gridControlMolecules = new DevExpress.XtraGrid.GridControl();
+         this.gridControlMolecules = new OSPSuite.UI.Controls.UxGridControl();
          this.grdMoleculeBuilder = new MoBi.UI.Views.UxGridView();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.cbApplicatedMoleculeName = new DevExpress.XtraEditors.ComboBoxEdit();

@@ -1,10 +1,10 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Application;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using IoC = OSPSuite.Utility.Container.IContainer;
 using FakeItEasy;
+using MoBi.Core;
 
 namespace MoBi.Presentation
 {
@@ -28,7 +28,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_creating_a_show_presenter : concern_for_ShowPresenterFactory
+   public class When_the_simulation_presenter_factory_is_creating_a_presenter_for_an_entity : concern_for_ShowPresenterFactory
    {
       [Observation]
       public void should_return_the_registered_presenter_for_a_quantity()

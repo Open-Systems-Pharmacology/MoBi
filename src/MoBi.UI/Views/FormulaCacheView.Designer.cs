@@ -32,7 +32,7 @@ namespace MoBi.UI.Views
       private void InitializeComponent()
       {
          this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
-         this.gridControl1 = new DevExpress.XtraGrid.GridControl();
+         this.gridControl1 = new OSPSuite.UI.Controls.UxGridControl();
          this.grdFormulaList = new MoBi.UI.Views.UxGridView();
          this.gridView2 = new MoBi.UI.Views.UxGridView();
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();

@@ -9,7 +9,6 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Helper;
-using MoBi.Presentation.Helpers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
@@ -33,8 +32,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<IMoleculeBuildingBlock> editTask,
          IInteractionTasksForBuilder<IMoleculeBuilder> builderTask,
-         IMoleculeBuildingBlockCloneManager moleculeBuildingBlockCloneManager,
-         IMoBiFormulaTask moBiFormulaTask)
+         IMoleculeBuildingBlockCloneManager moleculeBuildingBlockCloneManager)
          : base(interactionTaskContext, editTask, builderTask, moleculeBuildingBlockCloneManager)
       {
          _editTaskForBuildingBlock = editTask;

@@ -38,11 +38,11 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<ValueEditDTO>();
 
          _screenBinder.Bind(p => p.Value)
-            .To(tbValue).OnValueSet += (o, e) => ValueChanged(o, e.NewValue);
+            .To(tbValue).OnValueUpdating += (o, e) => ValueChanged(o, e.NewValue);
 
          _screenBinder.Bind(p => p.DisplayUnit).To(cbUnit)
             .WithValues(p => p.Dimension.Units)
-            .OnValueSet += (o, e) => UnitChanged(o, e.NewValue);
+            .OnValueUpdating += (o, e) => UnitChanged(o, e.NewValue);
 
          _screenBinder.Changed += () => Changed();
 

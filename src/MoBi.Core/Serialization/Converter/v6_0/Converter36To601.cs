@@ -15,32 +15,43 @@ namespace MoBi.Core.Serialization.Converter.v6_0
    {
       private readonly Converter56To601 _coreConverter56To601;
       private static readonly string RHS_DIMENSION_OLD_SUFFIX = " per Time";
+      private static readonly string MOL_WEIGHT = "MolWeight";
+      private bool _converted;
 
       public Converter36To601(Converter56To601 coreConverter56To601)
       {
          _coreConverter56To601 = coreConverter56To601;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V3_6_1;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V3_6_1;
 
-      public int Convert(object objectToUpdate, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project)
       {
-         _coreConverter56To601.Convert(objectToUpdate);
+         _converted = false;
+         var (_, coreConversionHappened) = _coreConverter56To601.Convert(objectToUpdate);
          this.Visit(objectToUpdate);
-         return ProjectVersions.V6_0_1;
+         return (ProjectVersions.V6_0_1, _converted || coreConversionHappened);
       }
 
-      public int ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
       {
-         _coreConverter56To601.ConvertXml(element);
+         _converted = false;
+         var (_, coreConversionHappened) = _coreConverter56To601.ConvertXml(element);
          element.DescendantsAndSelfNamed("DisplayUnitMap").Each(displayUnitMapElement => convertPerTimeDimension(displayUnitMapElement, "dimension"));
          element.DescendantsAndSelfNamed("Formula").Each(displayUnitMapElement => convertPerTimeDimension(displayUnitMapElement, "dim"));
          element.DescendantsAndSelfNamed("Map").Each(displayUnitMapElement => convertPerTimeDimension(displayUnitMapElement, "s"));
          element.DescendantsAndSelfNamed("Parameter").Each(convertParameterQuantityType);
-         return ProjectVersions.V6_0_1;
+         return (ProjectVersions.V6_0_1, _converted || coreConversionHappened);
+      }
+
+      public void Visit(IMoBiProject project)
+      {
+         foreach (var observedData in project.AllObservedData)
+         {
+            observedData.ExtendedProperties.Remove(MOL_WEIGHT);
+            updateObservedDataPaths(observedData);
+            _converted = true;
+         }
       }
 
       private void convertParameterQuantityType(XElement parameterElement)
@@ -50,6 +61,7 @@ namespace MoBi.Core.Serialization.Converter.v6_0
             return;
 
          quantityTypeAttribute.SetValue(QuantityType.Parameter.ToString());
+         _converted = true;
       }
 
       private void convertPerTimeDimension(XElement displayUnitMapElement, XName dimensionAttributeName)
@@ -59,6 +71,7 @@ namespace MoBi.Core.Serialization.Converter.v6_0
             return;
 
          dimensionAttribute.SetValue(dimensionNameFrom(dimensionAttribute.Value));
+         _converted = true;
       }
 
       private string dimensionNameFrom(string dimensionName)
@@ -70,15 +83,6 @@ namespace MoBi.Core.Serialization.Converter.v6_0
             return dimensionName;
 
          return dimensionName.Replace(RHS_DIMENSION_OLD_SUFFIX, AppConstants.RHSDimensionSuffix);
-      }
-
-      public void Visit(IMoBiProject project)
-      {
-         foreach (var observedData in project.AllObservedData)
-         {
-            observedData.ExtendedProperties.Remove(AppConstants.MolWeight);
-            updateObservedDataPaths(observedData);
-         }
       }
 
       private void updateObservedDataPaths(DataRepository repository)

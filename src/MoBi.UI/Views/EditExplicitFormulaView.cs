@@ -79,19 +79,19 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          _screenBinder.Bind(item => item.FormulaString)
             .To(txtFormulaString)
-            .OnValueSet += (o, e) => OnEvent(() => _presenter.SetFormulaString(e.NewValue, e.OldValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetFormulaString(e.NewValue, e.OldValue));
 
          _colAlias = _gridBinder.Bind(x => x.Alias)
-            .WithOnValueSet((formulaUsablePathDTO, e) => OnEvent(() => _presenter.SetAlias(e.NewValue, e.OldValue, formulaUsablePathDTO.FormulaUsablePath)))
+            .WithOnValueUpdating((formulaUsablePathDTO, e) => OnEvent(() => _presenter.SetAlias(e.NewValue, e.OldValue, formulaUsablePathDTO.FormulaUsablePath)))
             .WithToolTip(ToolTips.Formula.ReferenceAlias);
 
          _colPath = _gridBinder.Bind(x => x.Path)
-            .WithOnValueSet((dto, e) => OnEvent(() => _presenter.SetFormulaUsablePath(e.NewValue, dto)))
+            .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.SetFormulaUsablePath(e.NewValue, dto)))
             .WithToolTip(ToolTips.Formula.ReferencePath);
 
          _colDimension = _gridBinder.Bind(x => x.Dimension)
             .WithRepository(dto => createDimensionRepository())
-            .WithOnValueSet((formulaUsablePathDTO, e) => OnEvent(() => _presenter.SetFormulaPathDimension(e.NewValue, e.OldValue, formulaUsablePathDTO)))
+            .WithOnValueUpdating((formulaUsablePathDTO, e) => OnEvent(() => _presenter.SetFormulaPathDimension(e.NewValue, e.OldValue, formulaUsablePathDTO)))
             .WithToolTip(ToolTips.Formula.ReferenceDimension);
 
          _colRemoveButton = _gridBinder.AddUnboundColumn()

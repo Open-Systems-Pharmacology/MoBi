@@ -44,6 +44,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
       private readonly IEventPublisher _eventPublisher;
       private readonly ObjectTypeResolver _objectTypeResolver;
       private bool _suspendWarning;
+      private bool _converted;
 
       public Converter313To32(IDimensionConverter dimensionConverter, IMoBiDimensionFactory dimensionFactory,
                               IObjectBaseFactory objectBaseFactory, IFormulaMapper formulaMapper, IDimensionMapper dimensionMapper, IEventPublisher eventPublisher)
@@ -63,13 +64,14 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          return version == ProjectVersions.V3_1_3;
       }
 
-      public int Convert(object objectToConvert, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, IMoBiProject project)
       {
+         _converted = false;
          this.Visit(objectToConvert);
-         return ProjectVersions.V3_2_1;
+         return (ProjectVersions.V3_2_1, _converted);
       }
 
-      public int ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
       {
          _dimensionConverter.ConvertDimensionIn(element);
          convertOutputSchemaForSimulations(element);
@@ -81,7 +83,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          convetSimulation(element);
          convertObservers(element);
          
-         return ProjectVersions.V3_2_1;
+         return (ProjectVersions.V3_2_1, true);
       }
 
       private void convertPassiveTransportsToChildren(XElement element)
@@ -231,6 +233,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
       public void Visit(DataRepository dataRepository)
       {
          _dimensionConverter.ConvertDimensionIn(dataRepository);
+         _converted = true;
       }
 
       private void convert<T>(IBuildingBlock<T> buildingBlock) where T : class, IObjectBase
@@ -244,12 +247,14 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          convert(spatialStructure);
          spatialStructure.TopContainers.Each(convertSpecialParametersIn);
          updateForPKSimChanges(spatialStructure);
+         _converted = true;
       }
 
       public void Visit(IMoleculeBuildingBlock moleculeBuildingBlock)
       {
          convert(moleculeBuildingBlock);
          updateForPKSimChanges(moleculeBuildingBlock);
+         _converted = true;
       }
 
       private void updateForPKSimChanges(IMoleculeBuildingBlock moleculeBuildingBlock)
@@ -257,7 +262,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          var calculatedSpecificIntestinalPermeabilityTranscellularFormula =
             moleculeBuildingBlock.FormulaCache.FindByName("PARAM_P_int_InVitro");
          if (calculatedSpecificIntestinalPermeabilityTranscellularFormula == null) return;
-         var velocity = _dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY);
+         var velocity = _dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY);
          moleculeBuildingBlock.Each(mb=>addCalculatedSpecificIntestinalPermeabilityTranscellularParameterTo(mb,calculatedSpecificIntestinalPermeabilityTranscellularFormula,velocity));
       }
 
@@ -313,7 +318,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          return _objectBaseFactory.Create<IParameter>().WithName("Default Intestinal permeability (transcellular)")
             .WithMode(ParameterBuildMode.Global)
             .WithFormula(formula)
-            .WithDimension(_dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY));
+            .WithDimension(_dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY));
       }
 
       private IParameter createMucosaPermeabilityScaleFactorTranscellularParameter(IFormula mucosaPermeabilityScaleFactorTranscellularFormula)
@@ -326,7 +331,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
 
       private IFormula creteDefaultIntestinalPermeabilityTranscellularFormula()
       {
-         var velocity = _dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY);
+         var velocity = _dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY);
          IFormula defaultIntestinalPermeabilityTranscellularFormula = _objectBaseFactory
             .Create<ExplicitFormula>()
             .WithFormulaString("P_int_InVitro")
@@ -346,9 +351,9 @@ namespace MoBi.Core.Serialization.Converter.v3_2
             .WithDimension(Constants.Dimension.NO_DIMENSION)
             .WithName("PARAM_P_int_scalefactor");
          mucosaPermeabilityScaleFactor_transcellularFormula.AddObjectPath(
-            createFormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Default Intestinal permeability (transcellular)" },"P_int_trans_default",_dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY)));
+            createFormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Default Intestinal permeability (transcellular)" },"P_int_trans_default",_dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY)));
          mucosaPermeabilityScaleFactor_transcellularFormula.AddObjectPath(
-            createFormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Intestinal permeability (transcellular)" }, "P_int_trans", _dimensionFactory.GetDimension(AppConstants.DimensionNames.VELOCITY)));
+            createFormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Intestinal permeability (transcellular)" }, "P_int_trans", _dimensionFactory.Dimension(AppConstants.DimensionNames.VELOCITY)));
          return mucosaPermeabilityScaleFactor_transcellularFormula;
       }
 
@@ -364,9 +369,9 @@ namespace MoBi.Core.Serialization.Converter.v3_2
             .WithDimension(Constants.Dimension.NO_DIMENSION)
             .WithName("PARAM_Blood2Plasma");
          blood2PlasmaFormula.AddObjectPath(
-            createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Fraction unbound (plasma)"}, "fu", _dimensionFactory.GetDimension(AppConstants.DimensionNames.FRACTION)));
+            createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Fraction unbound (plasma)"}, "fu", _dimensionFactory.Dimension(AppConstants.DimensionNames.FRACTION)));
          blood2PlasmaFormula.AddObjectPath(
-            createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Lipophilicity"}, "LogP", _dimensionFactory.GetDimension("Log Units")));
+            createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Lipophilicity"}, "LogP", _dimensionFactory.Dimension("Log Units")));
          blood2PlasmaFormula.AddObjectPath(
             createFormulaUsablePath(new[] {ObjectPathKeywords.MOLECULE, "Partition coefficient (water/protein)"}, "KProt", Constants.Dimension.NO_DIMENSION));
          blood2PlasmaFormula.AddObjectPath(
@@ -408,35 +413,41 @@ namespace MoBi.Core.Serialization.Converter.v3_2
       {
          convert(parameterStartValuesBuildingBlock);
          convertSpecialParametersIn(parameterStartValuesBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
       {
          
-         moleculeStartValuesBuildingBlock.Each(msv=>msv.Dimension = _dimensionFactory.GetDimension(Constants.Dimension.AMOUNT));
+         moleculeStartValuesBuildingBlock.Each(msv=>msv.Dimension = _dimensionFactory.Dimension(Constants.Dimension.AMOUNT));
          convert(moleculeStartValuesBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IPassiveTransportBuildingBlock passiveTransportBuildingBlock)
       {
          convert(passiveTransportBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IObserverBuildingBlock observerBuildingBlock)
       {
          convert(observerBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IReactionBuildingBlock reactionBuildingBlock)
       {
          convert(reactionBuildingBlock);
+         _converted = true;
       }
 
       public void Visit(IEventGroupBuildingBlock eventGroupBuildingBlock)
       {
          convert(eventGroupBuildingBlock);
-         var inversedVolume = _dimensionFactory.GetDimension(AppConstants.DimensionNames.INVERSED_VOLUME);
+         var inversedVolume = _dimensionFactory.Dimension(AppConstants.DimensionNames.INVERSED_VOLUME);
          eventGroupBuildingBlock.Each(eg => convertSpecialParameter(eg, "Number_Of_Particles_Factor",1000,inversedVolume));
+         _converted = true;
       }
 
       public void Visit(IMoBiSimulation simulation)
@@ -451,6 +462,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
 
             convertSpecialParametersIn(simulation.Model.Root);
             simulation.HasChanged = true;
+            _converted = true;
          }
          finally
          {
@@ -460,7 +472,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
 
       private void convertSpecialParametersIn(IContainer container)
       {
-         var inversedLength = _dimensionFactory.GetDimension(AppConstants.DimensionNames.INVERSED_LENGTH);
+         var inversedLength = _dimensionFactory.Dimension(AppConstants.DimensionNames.INVERSED_LENGTH);
          convertSpecialParameter(container, "Surface/Volume ratio (blood cells)", 10, inversedLength);
          convertSpecialParameter(container, "SA proportionality factor", 1.0 / 100, inversedLength);
       }
@@ -488,10 +500,11 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          }
       }
 
-      public void Visit(SimulationTransfer objToVisit)
+      public void Visit(SimulationTransfer simulationTransfer)
       {
-         Visit((IMoBiSimulation) objToVisit.Simulation);
-         objToVisit.AllObservedData.Each(_dimensionConverter.ConvertDimensionIn);
+         Visit((IMoBiSimulation) simulationTransfer.Simulation);
+         simulationTransfer.AllObservedData.Each(_dimensionConverter.ConvertDimensionIn);
+         _converted = true;
       }
 
       private void createDimensionWarningsForBuildingBlock(IBuildingBlock buildingBlock)
@@ -535,7 +548,7 @@ namespace MoBi.Core.Serialization.Converter.v3_2
 
       private void convertSpecialParametersIn(IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
       {
-         var inversedLength = _dimensionFactory.GetDimension(AppConstants.DimensionNames.INVERSED_LENGTH);
+         var inversedLength = _dimensionFactory.Dimension(AppConstants.DimensionNames.INVERSED_LENGTH);
          convertSpecialParameter(parameterStartValuesBuildingBlock, "Organism|Surface/Volume ratio (blood cells)", 10, inversedLength);
          convertSpecialParameter(parameterStartValuesBuildingBlock, "Organism|SA proportionality factor", 1.0 / 100, inversedLength);
       }
@@ -556,9 +569,10 @@ namespace MoBi.Core.Serialization.Converter.v3_2
          parameterStartValue.StartValue = parameterStartValue.StartValue * conversionFactor;
       }
 
-      public void Visit(IMoBiProject objToVisit)
+      public void Visit(IMoBiProject project)
       {
-         objToVisit.AllObservedData.Each(Visit);
+         project.AllObservedData.Each(Visit);
+         _converted = true;
       }
    }
 }

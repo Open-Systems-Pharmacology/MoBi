@@ -161,7 +161,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       {
          if (string.IsNullOrEmpty(diagramTemplateXmlFilePath))
          {
-            diagramTemplateXmlFilePath = _dialogCreator.AskForFileToSave(AppConstants.Captions.SaveLayoutToFile, AppConstants.FileFilter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);
+            diagramTemplateXmlFilePath = _dialogCreator.AskForFileToSave(AppConstants.Captions.SaveLayoutToFile, AppConstants.Filter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);
          }
 
          if (string.IsNullOrEmpty(diagramTemplateXmlFilePath)) return;
@@ -173,7 +173,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       {
          if (string.IsNullOrEmpty(diagramTemplateXmlFilePath))
          {
-            diagramTemplateXmlFilePath = _dialogCreator.AskForFileToOpen(AppConstants.Captions.OpenLayoutFromFile, AppConstants.FileFilter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);
+            diagramTemplateXmlFilePath = _dialogCreator.AskForFileToOpen(AppConstants.Captions.OpenLayoutFromFile, AppConstants.Filter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);
          }
 
          if (string.IsNullOrEmpty(diagramTemplateXmlFilePath))
@@ -201,7 +201,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       public void ApplyLayoutTemplateToSelection()
       {
-         string diagramTemplateXmlFilePath = _dialogCreator.AskForFileToOpen("Open Named LayoutTemplate", AppConstants.FileFilter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);
+         string diagramTemplateXmlFilePath = _dialogCreator.AskForFileToOpen("Open Named LayoutTemplate", AppConstants.Filter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);
          if (string.IsNullOrEmpty(diagramTemplateXmlFilePath))
             return;
 

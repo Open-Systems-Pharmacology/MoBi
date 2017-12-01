@@ -7,7 +7,9 @@ using OSPSuite.Utility.Events;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
@@ -38,7 +40,7 @@ namespace MoBi.Presentation.Tasks
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _context = A.Fake<IMoBiContext>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _dataRepository = new DataRepository {new BaseGrid("", DimensionFactoryForSpecs.Factory.GetDimension("Time"))};
+         _dataRepository = new DataRepository {new BaseGrid("", DimensionFactoryForSpecs.Factory.Dimension("Time"))};
          _interactionTask = A.Fake<IInteractionTask>();
          _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
          _containerTask = A.Fake<IContainerTask>();
@@ -88,6 +90,7 @@ namespace MoBi.Presentation.Tasks
    internal class When_renaming_a_observed_data_Repository : concern_for_ObservedDataTask
    {
       private string _newName;
+      private IDataRepositoryNamer _dataRepositoryNamer;
 
       protected override void Context()
       {
@@ -95,6 +98,8 @@ namespace MoBi.Presentation.Tasks
          _dataRepository.Name = "OLD";
          _newName = "New";
          A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._)).Returns(_newName);
+         _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
+         A.CallTo(() => _context.Resolve<IDataRepositoryNamer>()).Returns(_dataRepositoryNamer);
       }
 
       protected override void Because()
@@ -103,9 +108,9 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_change_Name_of_data_repository_to_new_name()
+      public void should_use_the_data_repository_renamer_to_update_data_repository_name()
       {
-         _dataRepository.Name.ShouldBeEqualTo(_newName);
+         A.CallTo(() => _dataRepositoryNamer.Rename(_dataRepository, _newName)).MustHaveHappened();
       }
    }
 
@@ -165,7 +170,7 @@ namespace MoBi.Presentation.Tasks
             DimensionFactoryForSpecs.TimeDimension,
             Constants.Dimension.NO_DIMENSION
          });
-         A.CallTo(() => _dimensionFactory.GetDimension(Constants.Dimension.TIME)).Returns(DimensionFactoryForSpecs.TimeDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.TIME)).Returns(DimensionFactoryForSpecs.TimeDimension);
 
          A.CallTo(_dataImporter)
             .WithReturnType<IEnumerable<DataRepository>>()

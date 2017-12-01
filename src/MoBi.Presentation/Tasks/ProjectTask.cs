@@ -171,7 +171,7 @@ namespace MoBi.Presentation.Tasks
          bool readyForOpen = CloseProject();
          if (!readyForOpen) return;
 
-         string fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSBMLProject, AppConstants.FileFilter.SBML_MODEL_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
+         string fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSBMLProject, AppConstants.Filter.SBML_MODEL_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
          if (fileName.IsNullOrEmpty()) return;
 
          _context.NewProject();
@@ -185,7 +185,7 @@ namespace MoBi.Presentation.Tasks
          if (!readyForOpen)
             return false;
 
-         string fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject, AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT);
+         string fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT);
 
          if (fileName.IsNullOrEmpty())
             return false;
@@ -207,7 +207,7 @@ namespace MoBi.Presentation.Tasks
          var defaultFileName = defaultNameIsUndefined ? string.Empty : _context.CurrentProject.Name;
 
          var newFilePath = _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-            AppConstants.FileFilter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, defaultFileName);
+            AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, defaultFileName);
 
          if (string.IsNullOrEmpty(newFilePath))
             return false;

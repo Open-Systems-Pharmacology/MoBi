@@ -1,9 +1,7 @@
 ﻿using OSPSuite.BDDHelper;
 using FakeItEasy;
-using MoBi.Core;
 using MoBi.Core.Events;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
@@ -16,7 +14,7 @@ namespace MoBi.Presentation
    {
       protected IEditPassiveTransportBuildingBlockView _view;
       private ITransportBuilderToDTOTransportBuilderMapper _mapper;
-      private IEditTransportBuilderPresenter _transporterBuilderPresenter;
+      protected IEditTransportBuilderPresenter _transporterBuilderPresenter;
       private IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
       protected IFormulaCachePresenter _formulaCachePresenter;

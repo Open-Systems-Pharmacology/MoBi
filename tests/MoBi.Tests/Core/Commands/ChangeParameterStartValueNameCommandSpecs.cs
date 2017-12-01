@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_changing_name_of_parameter_start_value : concern_for_ChangeParameterStartValueNameCommand
+   public class When_changing_name_of_parameter_start_value : concern_for_ChangeParameterStartValueNameCommand
    {
       protected override void Because()
       {
@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class when_reverting_command_for_rename_of_parameter_start_value : concern_for_ChangeParameterStartValueNameCommand
+   public class When_reverting_command_for_rename_of_parameter_start_value : concern_for_ChangeParameterStartValueNameCommand
    {
       protected override void Because()
       {

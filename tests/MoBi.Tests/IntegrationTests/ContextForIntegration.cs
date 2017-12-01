@@ -9,6 +9,7 @@ using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.SBML;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
@@ -22,6 +23,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Diagram;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Services;
@@ -34,6 +36,7 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.FileLocker;
 using CoreRegister = OSPSuite.Core.CoreRegister;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.IntegrationTests
 {
@@ -110,20 +113,27 @@ namespace MoBi.IntegrationTests
       private static void setupCalculationMethods(IContainer container)
       {
          var configuration = IoC.Resolve<IMoBiConfiguration>();
-         configuration.CalculationMethodRepositoryFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.SpecialFileNames.CalculationMethodRepositoryFileName);
+         configuration.CalculationMethodRepositoryFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.SpecialFileNames.CALCULATION_METHOD_REPOSITORY_FILE_NAME);
          ApplicationStartup.InitCalculationMethodRepository(container);
       }
 
       private static void setupDimensions(IContainer container)
       {
-         var configuration = IoC.Resolve<IMoBiConfiguration>();
-         configuration.DimensionFactoryFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConstants.SpecialFileNames.DimensionFactoryFileName);
          ApplicationStartup.InitDimensions(container);
       }
 
       protected override void Context()
       {
          sut = IoC.Resolve<T>();
+      }
+
+      protected void Unregister(IWithId objectWithId)
+      {
+         if (objectWithId == null)
+            return;
+
+         var unregisterTask = IoC.Resolve<IUnregisterTask>();
+         unregisterTask.UnregisterAllIn(objectWithId);
       }
    }
 }

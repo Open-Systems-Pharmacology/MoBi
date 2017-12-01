@@ -7,6 +7,7 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Mappers;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -33,7 +34,7 @@ namespace MoBi.Core.Mapper
       }
    }
 
-   public class when_mapping_table_with_n_start_values : concern_for_MoleculeStartValuesBuildingBlockToParameterDataTableMapper
+   public class When_mapping_table_with_n_start_values : concern_for_MoleculeStartValuesBuildingBlockToParameterDataTableMapper
    {
       protected override void Context()
       {
@@ -84,8 +85,8 @@ namespace MoBi.Core.Mapper
             ContainerPath = new ObjectPath("path1", "path2"), 
             Name = "name",
             Description = "description",
-            Dimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass),
-            DisplayUnit = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Mass).DefaultUnit,
+            Dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass),
+            DisplayUnit = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass).DefaultUnit,
             Formula = null,
             IsPresent = true,
             StartValue = 5.0
@@ -96,8 +97,8 @@ namespace MoBi.Core.Mapper
             ContainerPath = new ObjectPath("path3", "path4"),
             Name = "name1",
             Description = "",
-            Dimension = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Concentration),
-            DisplayUnit = DimensionFactoryForSpecs.Factory.GetDimension(DimensionFactoryForSpecs.DimensionNames.Concentration).DefaultUnit,
+            Dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Concentration),
+            DisplayUnit = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Concentration).DefaultUnit,
             Formula = new ExplicitFormula("M/V"),
             IsPresent = true,
             ScaleDivisor = 4.3,

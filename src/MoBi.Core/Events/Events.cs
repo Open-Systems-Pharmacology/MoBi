@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core;
 using OSPSuite.Core.Chart;
@@ -7,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Events
 {
@@ -31,7 +31,7 @@ namespace MoBi.Core.Events
          Simulation = simulation;
       }
 
-      public IMoBiSimulation Simulation { get; private set; }
+      public IMoBiSimulation Simulation { get; }
    }
 
    public class EntitySelectedEvent
@@ -54,8 +54,8 @@ namespace MoBi.Core.Events
          Parent = parent;
       }
 
-      public IObjectBase AddedObject { get; private set; }
-      public IObjectBase Parent { get; private set; }
+      public IObjectBase AddedObject { get; }
+      public IObjectBase Parent { get; }
    }
 
    public class AddedEvent<T> : AddedEvent where T : IObjectBase
@@ -64,16 +64,13 @@ namespace MoBi.Core.Events
       {
       }
 
-      public new T AddedObject
-      {
-         get { return base.AddedObject.DowncastTo<T>(); }
-      }
+      public new T AddedObject => base.AddedObject.DowncastTo<T>();
    }
 
    public class ObjectConvertedEvent
    {
-      public object ConvertedObject { get; private set; }
-      public ProjectVersion FromVersion { get; private set; }
+      public object ConvertedObject { get; }
+      public ProjectVersion FromVersion { get; }
 
       public ObjectConvertedEvent(object convertedObject, ProjectVersion fromVersion)
       {
@@ -84,10 +81,10 @@ namespace MoBi.Core.Events
 
    public class RemovedEvent
    {
-      public IEnumerable<IObjectBase> RemovedObjects { get; private set; }
+      public IEnumerable<IObjectBase> RemovedObjects { get; }
 
       // Parent  is only available if only one object was removed
-      public IObjectBase Parent { get; private set; }
+      public IObjectBase Parent { get; }
 
       public RemovedEvent(IEnumerable<IObjectBase> removedObjects)
       {
@@ -127,7 +124,7 @@ namespace MoBi.Core.Events
 
    public class ShowValidationResultsEvent
    {
-      public ValidationResult ValidationResult { get; private set; }
+      public ValidationResult ValidationResult { get; }
 
       public ShowValidationResultsEvent(ValidationResult validationResult)
       {
@@ -137,8 +134,8 @@ namespace MoBi.Core.Events
 
    public class FormulaValidEvent
    {
-      public IFormula Formula { get; private set; }
-      public IBuildingBlock BuildingBlock { get; private set; }
+      public IFormula Formula { get; }
+      public IBuildingBlock BuildingBlock { get; }
 
       public FormulaValidEvent(IFormula formula, IBuildingBlock buildingBlock)
       {
@@ -149,9 +146,9 @@ namespace MoBi.Core.Events
 
    public class FormulaInvalidEvent
    {
-      public IFormula Formula { get; private set; }
-      public string Message { get; private set; }
-      public IBuildingBlock BuildingBlock { get; private set; }
+      public IFormula Formula { get; }
+      public string Message { get; }
+      public IBuildingBlock BuildingBlock { get; }
 
       public FormulaInvalidEvent(IFormula formula, IBuildingBlock buildingBlock, string message)
       {
@@ -163,7 +160,7 @@ namespace MoBi.Core.Events
 
    public class ShowNotificationsEvent
    {
-      public IReadOnlyList<NotificationMessage> NotificationMessages { get; private set; }
+      public IReadOnlyList<NotificationMessage> NotificationMessages { get; }
 
       public ShowNotificationsEvent(NotificationMessage notification) : this(new[] {notification})
       {
@@ -179,7 +176,7 @@ namespace MoBi.Core.Events
    /// </summary>
    public class SimulationStatusChangedEvent
    {
-      public IMoBiSimulation Simulation { private set; get; }
+      public IMoBiSimulation Simulation { get; }
 
       public SimulationStatusChangedEvent(IMoBiSimulation simulation)
       {
@@ -189,7 +186,7 @@ namespace MoBi.Core.Events
 
    public class SimulationReloadEvent
    {
-      public IMoBiSimulation Simulation { private set; get; }
+      public IMoBiSimulation Simulation { get; }
 
       public SimulationReloadEvent(IMoBiSimulation simulation)
       {
@@ -199,7 +196,7 @@ namespace MoBi.Core.Events
 
    public class SimulationUnloadEvent
    {
-      public IMoBiSimulation Simulation { private set; get; }
+      public IMoBiSimulation Simulation { get; }
 
       public SimulationUnloadEvent(IMoBiSimulation simulation)
       {
@@ -209,7 +206,7 @@ namespace MoBi.Core.Events
 
    public abstract class TagConditionEvent
    {
-      public IObjectBase TaggedObject { get; private set; }
+      public IObjectBase TaggedObject { get; }
 
       protected TagConditionEvent(IObjectBase taggedObject)
       {
@@ -233,9 +230,9 @@ namespace MoBi.Core.Events
 
    public class ChartAddedEvent
    {
-      public ICurveChart Chart { get; private set; }
+      public CurveChart Chart { get; }
 
-      public ChartAddedEvent(ICurveChart chart)
+      public ChartAddedEvent(CurveChart chart)
       {
          Chart = chart;
       }
@@ -243,9 +240,9 @@ namespace MoBi.Core.Events
 
    public class ChartDeletedEvent
    {
-      public ICurveChart Chart { get; private set; }
+      public CurveChart Chart { get; }
 
-      public ChartDeletedEvent(ICurveChart chart)
+      public ChartDeletedEvent(CurveChart chart)
       {
          Chart = chart;
       }

@@ -14,7 +14,9 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
-   public abstract class EditBuildingBlockPresenterBase<TView, TPresenter, TBuildingBlock, TBuilder> : SingleStartPresenter<TView, TPresenter>, ISingleStartPresenter<TBuildingBlock>, IListener<EntitySelectedEvent>
+   public abstract class EditBuildingBlockPresenterBase<TView, TPresenter, TBuildingBlock, TBuilder> : SingleStartPresenter<TView, TPresenter>, 
+      ISingleStartPresenter<TBuildingBlock>, 
+      IListener<EntitySelectedEvent>
       where TView : IView<TPresenter>, IEditBuildingBlockBaseView
       where TPresenter : IPresenter, ISingleStartPresenter
       where TBuildingBlock : IBuildingBlock<TBuilder>
@@ -40,10 +42,7 @@ namespace MoBi.Presentation.Presenter
          Edit(objectToEdit.DowncastTo<TBuildingBlock>());
       }
 
-      protected TBuildingBlock BuildingBlock
-      {
-         get { return Subject.DowncastTo<TBuildingBlock>(); }
-      }
+      protected TBuildingBlock BuildingBlock => Subject.DowncastTo<TBuildingBlock>();
 
       protected virtual Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
       {

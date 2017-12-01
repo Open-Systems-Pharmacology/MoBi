@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using MoBi.Assets;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using MoBi.Presentation.DTO;
@@ -23,7 +24,7 @@ namespace MoBi.Presentation.Mapper
    }
 
 
-   public class when_mapping_start_value_with_formulat : concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs
+   public class When_mapping_start_value_with_formulat : concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs
    {
       private ObjectBaseSummaryDTO _result;
 
@@ -50,7 +51,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class when_mapping_start_value_with_startvalue : concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs
+   public class When_mapping_start_value_with_startvalue : concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs
    {
       private ObjectBaseSummaryDTO _result;
 
@@ -60,7 +61,7 @@ namespace MoBi.Presentation.Mapper
          _builder.Name = "Name";
          _builder.StartValue = 9.0;
          _builder.ContainerPath = new ObjectPath("A");
-         _builder.Dimension = HelperForSpecs.AmountDimension;
+         _builder.Dimension = DomainHelperForSpecs.AmountDimension;
          _builder.DisplayUnit = _builder.Dimension.DefaultUnit;
 
       }

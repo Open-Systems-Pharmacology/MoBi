@@ -1,11 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -15,25 +10,28 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Assets;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
    public interface IChartTasks
    {
-      void ShowChart(ICurveChart chart, IReadOnlyList<DataRepository> data);
-      void ShowChart(ICurveChart chart);
+      void ShowChart(CurveChart chart, IReadOnlyList<DataRepository> data);
+      void ShowChart(CurveChart chart);
       void ShowData(IReadOnlyList<DataRepository> data);
       void ShowData(DataRepository dataRepository);
-      void Remove(ICurveChart initializer);
-      void ExportToPDF(ICurveChart chart);
+      void Remove(CurveChart initializer);
+      void ExportToPDF(CurveChart chart);
 
       /// <summary>
-      /// Removes the <paramref name="charts"/> from the project
+      ///    Removes the <paramref name="charts" /> from the project
       /// </summary>
-      void RemoveMultipleSummaryCharts(IReadOnlyList<ICurveChart> charts);
+      void RemoveMultipleSummaryCharts(IReadOnlyList<CurveChart> charts);
 
-      void SetOriginText(string simulationName, ICurveChart chart);
+      void SetOriginText(string simulationName, CurveChart chart);
    }
 
    public class ChartTasks : IChartTasks
@@ -60,14 +58,14 @@ namespace MoBi.Presentation.Tasks
 
       public void ShowData(IReadOnlyList<DataRepository> data)
       {
-         var chart = _chartFactory.Create<ICurveChart>().WithAxes();
+         var chart = _chartFactory.Create<CurveChart>().WithAxes();
          chart.Id = ShortGuid.NewGuid();
          chart.Name = getChartName(data);
          addChartToProject(chart);
          ShowChart(chart, data);
       }
 
-      private void addChartToProject(ICurveChart chart)
+      private void addChartToProject(CurveChart chart)
       {
          _context.CurrentProject.AddChart(chart);
          _context.ProjectChanged();
@@ -80,39 +78,39 @@ namespace MoBi.Presentation.Tasks
          ShowData(new List<DataRepository> {dataRepository});
       }
 
-      public void RemoveMultipleSummaryCharts(IReadOnlyList<ICurveChart> charts)
+      public void RemoveMultipleSummaryCharts(IReadOnlyList<CurveChart> charts)
       {
          if (_dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveSelectedResultsFromProject) != ViewResult.Yes)
             return;
          charts.Each(remove);
       }
 
-      public void SetOriginText(string simulationName, ICurveChart chart)
+      public void SetOriginText(string simulationName, CurveChart chart)
       {
          chart.SetOriginTextFor(_projectRetriever.CurrentProject.Name, simulationName);
       }
 
-      public void Remove(ICurveChart chart)
+      public void Remove(CurveChart chart)
       {
          if (_dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveSelectedResultsFromProject) != ViewResult.Yes)
             return;
          remove(chart);
       }
 
-      private void remove(ICurveChart chart)
+      private void remove(CurveChart chart)
       {
          _applicationController.Close(chart);
          _context.CurrentProject.RemoveChart(chart);
          _eventPublisher.PublishEvent(new ChartDeletedEvent(chart));
       }
 
-      public void ShowChart(ICurveChart chart, IReadOnlyList<DataRepository> data)
+      public void ShowChart(CurveChart chart, IReadOnlyList<DataRepository> data)
       {
-         var presenter = _applicationController.Open<IProjectChartPresenter, ICurveChart>(chart, _context.HistoryManager);
+         var presenter = _applicationController.Open<IProjectChartPresenter, CurveChart>(chart, _context.HistoryManager);
          presenter.Show(chart, data);
       }
 
-      public void ShowChart(ICurveChart chart)
+      public void ShowChart(CurveChart chart)
       {
          var data = new List<DataRepository>();
          foreach (var curve in chart.Curves)
@@ -123,7 +121,7 @@ namespace MoBi.Presentation.Tasks
          ShowChart(chart, data);
       }
 
-      public void ExportToPDF(ICurveChart chart)
+      public void ExportToPDF(CurveChart chart)
       {
          _exportChartToPDFCommand.Subject = chart;
          _exportChartToPDFCommand.Execute();
