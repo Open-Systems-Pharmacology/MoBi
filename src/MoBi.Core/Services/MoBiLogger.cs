@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
+using Microsoft.Extensions.Logging;
+using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace MoBi.Core.Services
 {
    public class MoBiLogger : ILogger
    {
-      public void AddToLog(string message, NotificationType messageStatus = NotificationType.None)
+      public void AddToLog(string message, LogLevel logLevel, string categoryName)
       {
-         Debug.Print($"{messageStatus} - {message}");
+         Debug.Print($"{logLevel} - {message}");
       }
    }
 }

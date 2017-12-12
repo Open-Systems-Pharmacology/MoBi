@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Core.Domain;
+using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
+using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace MoBi.BatchTool.Services
 {
@@ -22,18 +23,18 @@ namespace MoBi.BatchTool.Services
          _eventPublisher = eventPublisher;
       }
 
-      public void AddToLog(string message, NotificationType messageStatus = NotificationType.None)
-      {
-         var logEntry = new LogEntry(messageStatus, message);
-         _entries.Add(logEntry.Display);
-         _eventPublisher.PublishEvent(new LogEntryEvent(logEntry));
-      }
-
       public void Clear()
       {
          _entries.Clear();
       }
 
       public IEnumerable<string> Entries => _entries;
+
+      public void AddToLog(string message, LogLevel logLevel, string categoryName)
+      {
+         var logEntry = new LogEntry(logLevel, message);
+         _entries.Add(logEntry.Display);
+         _eventPublisher.PublishEvent(new LogEntryEvent(logEntry));
+      }
    }
 }

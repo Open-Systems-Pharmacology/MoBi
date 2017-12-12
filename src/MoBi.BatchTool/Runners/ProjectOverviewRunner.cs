@@ -47,7 +47,7 @@ namespace MoBi.BatchTool.Runners
 
             var outputFile = Path.Combine(inputFolder, "output.json");
 
-            _logger.AddInSeparator($"Starting project overview run for {allProjectFiles.Length} projects: {DateTime.Now.ToIsoFormat()}");
+            _logger.AddInfo($"Starting project overview run for {allProjectFiles.Length} projects: {DateTime.Now.ToIsoFormat()}");
 
             var begin = DateTime.UtcNow;
 
@@ -61,14 +61,14 @@ namespace MoBi.BatchTool.Runners
             var end = DateTime.UtcNow;
             var timeSpent = end - begin;
 
-            _logger.AddInSeparator($"Finished project overview run for {allProjectFiles.Length} projects in {timeSpent.ToDisplay()}'");
+            _logger.AddInfo($"Finished project overview run for {allProjectFiles.Length} projects in {timeSpent.ToDisplay()}'");
          });
       }
 
       private ProjectInfo addProjectInfo(FileInfo projectFile)
       {
          var projectInfo = new ProjectInfo {FullPath = projectFile.FullName, Name = projectFile.Name};
-         _logger.AddInSeparator($"Loading project file '{projectFile.FullName}'");
+         _logger.AddInfo($"Loading project file '{projectFile.FullName}'");
 
          try
          {

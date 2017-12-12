@@ -31,7 +31,7 @@ namespace MoBi.BatchTool.Runners
          var inputFolder = parameters.inputFolder;
          return Task.Run(() =>
          {
-            _logger.AddInSeparator($"Starting batch run: {DateTime.Now.ToIsoFormat(withSeconds: true)}");
+            _logger.AddInfo($"Starting batch run: {DateTime.Now.ToIsoFormat(withSeconds: true)}");
             var inputDirectory = new DirectoryInfo(inputFolder);
 
             if (!inputDirectory.Exists)
@@ -61,8 +61,8 @@ namespace MoBi.BatchTool.Runners
             }
             var end = DateTime.UtcNow;
             var timeSpent = end - begin;
-            _logger.AddInSeparator($"{allProjectFiles.Length} projects computed in '{timeSpent.ToDisplay()}'");
-            _logger.AddInSeparator($"Batch run finished: {DateTime.Now.ToIsoFormat(withSeconds: true)}");
+            _logger.AddInfo($"{allProjectFiles.Length} projects computed in '{timeSpent.ToDisplay()}'");
+            _logger.AddInfo($"Batch run finished: {DateTime.Now.ToIsoFormat(withSeconds: true)}");
          });
       }
 
