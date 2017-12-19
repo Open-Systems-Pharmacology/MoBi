@@ -236,7 +236,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SX, Version=2.6.5.9, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-    <Reference Include="SX">
       <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.5.9\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
