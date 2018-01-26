@@ -18,6 +18,7 @@
             components.Dispose();
          }
          _gridViewBinder.Dispose();
+         _valueOriginBinder.Dispose();
          base.Dispose(disposing);
       }
 

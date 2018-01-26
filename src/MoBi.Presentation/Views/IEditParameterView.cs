@@ -9,5 +9,6 @@ namespace MoBi.Presentation.Views
       void Show(ParameterDTO parameterDTO);
       void AddRHSView(IView rhsView);
       bool ShowBuildMode { set; }
+      void AddValueOriginView(IView view);
    }
 }

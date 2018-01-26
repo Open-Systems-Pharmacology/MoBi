@@ -40,10 +40,15 @@ namespace MoBi.UI.Views
       private readonly RepositoryItemTextEdit _stantdardParameterEditRepository = new RepositoryItemTextEdit();
       private readonly UxRepositoryItemCheckEdit _favoriteRepository;
       private readonly IToolTipCreator _toolTipCreator;
+      private ValueOriginBinder<FavoriteParameterDTO> _valueOriginBinder;
 
-      public EditFavoritesView(PathElementsBinder<FavoriteParameterDTO> pathBinder, IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator)
+      public EditFavoritesView(PathElementsBinder<FavoriteParameterDTO> pathBinder, 
+         IImageListRetriever imageListRetriever, 
+         IToolTipCreator toolTipCreator,
+         ValueOriginBinder<FavoriteParameterDTO> valueOriginBinder )
       {
          InitializeComponent();
+         _valueOriginBinder = valueOriginBinder;
          _gridViewBinder = new GridViewBinder<FavoriteParameterDTO>(_gridView);
          _unitControl = new UxComboBoxUnit<FavoriteParameterDTO>(_gridControl);
          _pathBinder = pathBinder;
@@ -111,6 +116,7 @@ namespace MoBi.UI.Views
       public override void InitializeBinding()
       {
          base.InitializeBinding();
+
          createResetButtonItem();
 
          _pathBinder.InitializeBinding(_gridViewBinder);
@@ -130,9 +136,7 @@ namespace MoBi.UI.Views
       
          colDim.Visible = false;
 
-         _gridViewBinder.Bind(dto => dto.ValueDescription)
-            .WithShowInColumnChooser(true)
-            .WithOnValueUpdating(onParameterValueDescriptionSet);
+         _valueOriginBinder.InitializeBinding(_gridViewBinder, onParameterValueOriginSet);
 
          _gridViewBinder.Bind(dto => dto.Description)
             .AsReadOnly().WithShowInColumnChooser(true);
@@ -190,9 +194,9 @@ namespace MoBi.UI.Views
          this.DoWithinExceptionHandler(() => _presenter.OnParameterValueSet(parameter, e.NewValue));
       }
 
-      private void onParameterValueDescriptionSet(FavoriteParameterDTO parameter, PropertyValueSetEventArgs<string> e)
+      private void onParameterValueOriginSet(FavoriteParameterDTO parameter, ValueOrigin valueOrigin)
       {
-         OnEvent(() => _presenter.OnParameterValueDescriptionSet(parameter, e.NewValue));
+         OnEvent(() => _presenter.OnParameterValueOriginSet(parameter, valueOrigin));
       }
 
       private void setParameterUnit(FavoriteParameterDTO parameter, Unit unit)

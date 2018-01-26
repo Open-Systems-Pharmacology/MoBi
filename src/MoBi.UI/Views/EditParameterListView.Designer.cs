@@ -19,6 +19,7 @@ namespace MoBi.UI.Views
          {
             components.Dispose();
          }
+         _valueOriginBinder.Dispose();
          _gridViewBinder.Dispose();
          base.Dispose(disposing);
       }

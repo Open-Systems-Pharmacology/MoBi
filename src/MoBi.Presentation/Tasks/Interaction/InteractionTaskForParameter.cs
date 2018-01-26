@@ -3,10 +3,12 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -55,9 +57,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetDescriptionForParameter(IParameter parameter, string newDescription, IBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Sets the value description for a parameter
+      ///    Sets the value origin for a parameter
       /// </summary>
-      IMoBiCommand SetValueDescriptionForParameter(IParameter parameter, string valueDescription);
+      ICommand SetValueOriginForParameter(IParameter parameter, ValueOrigin valueOrigin);
    }
 
    public class InteractionTasksForParameter : InteractionTasksForChildren<IContainer, IParameter>, IInteractionTasksForParameter
@@ -123,11 +125,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new EditParameterDescriptionInBuildingBlockComand(newDescription, parameter.Description, parameter, buildingBlock);
       }
 
-      public IMoBiCommand SetValueDescriptionForParameter(IParameter parameter, string valueDescription)
+      public ICommand SetValueOriginForParameter(IParameter parameter, ValueOrigin valueOrigin)
       {
-         //no need for command here
-         parameter.ValueDescription = valueDescription;
-         return new MoBiEmptyCommand();
+         return new UpdateValueOriginCommand(valueOrigin, parameter, Context).Run(Context);
       }
 
       private bool parameterCanBeRemoved(IParameter parameter, IContainer container)

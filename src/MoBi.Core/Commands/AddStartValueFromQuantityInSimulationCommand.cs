@@ -84,7 +84,7 @@ namespace MoBi.Core.Commands
          var name = containerPath[lastIndex];
          containerPath.RemoveAt(lastIndex);
 
-         return moleculeStartValueCreator.CreateMoleculeStartValue(containerPath, name, _quantity.Dimension, _quantity.DisplayUnit, _quantity.ValueDescription);
+         return moleculeStartValueCreator.CreateMoleculeStartValue(containerPath, name, _quantity.Dimension, _quantity.DisplayUnit, _quantity.ValueOrigin);
       }
    }
 }

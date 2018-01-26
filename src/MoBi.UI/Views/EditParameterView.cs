@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using ToolTips = MoBi.Assets.ToolTips;
 
@@ -40,10 +41,6 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.Name)
             .To(btName)
             .OnValueUpdating += onNameSet;
-
-         _screenBinder.Bind(dto => dto.ValueDescription)
-            .To(tbValueDescription)
-            .OnValueUpdating += onValueDescriptionSet;
 
          _screenBinder.Bind(dto => dto.Group)
             .To(cbGroup)
@@ -142,9 +139,10 @@ namespace MoBi.UI.Views
          layoutControlItemTags.TextLocation = Locations.Top;
          layoutControlItemTags.Text = AppConstants.Captions.Tags;
          layoutItemGroup.Text = AppConstants.Captions.Group.FormatForLabel();
-         layoutItemValueDescription.Text = AppConstants.Captions.ValueDescription.FormatForLabel();
+         layoutItemValueOrigin.Text = AppConstants.Captions.ValueDescription.FormatForLabel();
          chkIsFavorite.Text = Captions.Favorite;
          layoutGroupProperties.Text = AppConstants.Captions.Properties;
+         layoutItemValueOrigin.AdjustControlHeight(layoutItemGroup.Control.Height);
       }
 
       public void Activate()
@@ -174,11 +172,6 @@ namespace MoBi.UI.Views
       private void onNameSet(ParameterDTO parameterDTO, PropertyValueSetEventArgs<string> propertySetEventArgs)
       {
          OnEvent(() => _presenter.SetName(parameterDTO, propertySetEventArgs.NewValue));
-      }
-
-      private void onValueDescriptionSet(ParameterDTO parameterDTO, PropertyValueSetEventArgs<string> propertySetEventArgs)
-      {
-         OnEvent(() => _presenter.SetValueDescription(parameterDTO, propertySetEventArgs.NewValue));
       }
 
       public void AttachPresenter(IEditParameterPresenter presenter)
@@ -218,7 +211,12 @@ namespace MoBi.UI.Views
 
       public bool ShowBuildMode
       {
-         set { layoutItemParameterType.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
+         set => layoutItemParameterType.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+      }
+
+      public void AddValueOriginView(IView view)
+      {
+         panelOrigiView.FillWith(view);
       }
 
       private bool showRHSPanel
@@ -231,9 +229,6 @@ namespace MoBi.UI.Views
          }
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError;
    }
 }

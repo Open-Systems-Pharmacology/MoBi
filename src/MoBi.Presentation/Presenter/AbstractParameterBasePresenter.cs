@@ -42,8 +42,8 @@ namespace MoBi.Presentation.Presenter
 
       public virtual IBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
-         set { _buildingBlock = value; }
+         get => _buildingBlock;
+         set => _buildingBlock = value;
       }
 
       public IFormulaCache FormulaCache => BuildingBlock?.FormulaCache;
@@ -68,10 +68,10 @@ namespace MoBi.Presentation.Presenter
             (p, bb) => _quantityTask.SetQuantityDisplayValue(p, valueInGuiUnit, bb));
       }
 
-      public void OnParameterValueDescriptionSet(IParameterDTO parameterDTO, string valueDescription)
+      public void OnParameterValueOriginSet(IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
          var parameter = GetParameterFrom(parameterDTO);
-         AddCommand(_parameterTask.SetValueDescriptionForParameter(parameter, valueDescription));
+         AddCommand(_parameterTask.SetValueOriginForParameter(parameter, valueOrigin));
       }
 
       protected IParameter GetParameterFrom(IParameterDTO parameterDTO)

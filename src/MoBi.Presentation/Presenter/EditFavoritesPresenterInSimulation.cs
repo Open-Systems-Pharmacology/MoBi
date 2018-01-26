@@ -44,8 +44,8 @@ namespace MoBi.Presentation.Presenter
 
       public IMoBiSimulation Simulation
       {
-         get { return _projectItem; }
-         set { _projectItem = value; }
+         get => _projectItem;
+         set => _projectItem = value;
       }
 
       public IEnumerable<IParameter> Favorites()

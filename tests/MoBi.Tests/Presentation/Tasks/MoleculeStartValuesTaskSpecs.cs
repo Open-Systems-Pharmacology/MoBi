@@ -217,7 +217,7 @@ namespace MoBi.Presentation.Tasks
          for (var i = 1; i < 3; i++)
          {
             var dto = _moleculeStartValues[i];
-            A.CallTo(() => _moleculeStartValuesCreator.CreateMoleculeStartValue(dto.ContainerPath, dto.Name, A<IDimension>._, A<Unit>._, A<string>._)).Returns(
+            A.CallTo(() => _moleculeStartValuesCreator.CreateMoleculeStartValue(dto.ContainerPath, dto.Name, A<IDimension>._, A<Unit>._, A<ValueOrigin>._)).Returns(
                new MoleculeStartValue
                {
                   ContainerPath = dto.ContainerPath,

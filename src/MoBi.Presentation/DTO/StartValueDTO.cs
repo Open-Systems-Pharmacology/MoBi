@@ -17,9 +17,8 @@ using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IStartValueDTO : IBreadCrumbsDTO, IWithDisplayUnitDTO
+   public interface IStartValueDTO : IBreadCrumbsDTO, IWithDisplayUnitDTO, IWithValueOrigin
    {
-      string ValueDescription { get; set; }
    }
 
    public abstract class StartValueDTO<T> : BreadCrumbsDTO<T>, IStartValueDTO where T : class, IStartValue
@@ -79,15 +78,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public string ValueDescription
-      {
-         get { return StartValueObject.ValueDescription; }
-         set
-         {
-            // We don't want the binding to set the value in the underlying object, only the command should do that
-         }
-      }
-
+      public ValueOrigin ValueOrigin => StartValueObject.ValueOrigin;
 
       public IEnumerable<Unit> AllUnits
       {
@@ -100,7 +91,7 @@ namespace MoBi.Presentation.DTO
 
       public StartValueFormulaDTO Formula
       {
-         get { return _formula; }
+         get => _formula;
          set
          {
             _formula = value;
