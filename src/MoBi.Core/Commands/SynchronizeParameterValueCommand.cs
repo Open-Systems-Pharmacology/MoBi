@@ -24,7 +24,7 @@ namespace MoBi.Core.Commands
       {
          _targetParameter.Dimension = _sourceParameter.Dimension;
          _targetParameter.DisplayUnit = _sourceParameter.DisplayUnit;
-         _targetParameter.ValueDescription = _sourceParameter.ValueDescription;
+         _targetParameter.ValueOrigin.UpdateFrom(_sourceParameter.ValueOrigin);
          _targetParameter.UpdateQuantityValue(_sourceParameter.Value);
       }
 

@@ -15,6 +15,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
@@ -258,9 +259,9 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_startValueDTOs);
       }
 
-      public void SetValueDescription(TStartValueDTO startValueDTO, string newValueDescription)
+      public void SetValueOrigin(TStartValueDTO startValueDTO, ValueOrigin newValueOrigin)
       {
-         AddCommand(_startValuesTask.SetValueDescription(_buildingBlock, newValueDescription, StartValueFrom(startValueDTO)));
+         AddCommand(_startValuesTask.SetValueOrigin(_buildingBlock, newValueOrigin, StartValueFrom(startValueDTO)));
       }
 
       public void SetValue(TStartValueDTO startValueDTO, double? valueInDisplayUnit)

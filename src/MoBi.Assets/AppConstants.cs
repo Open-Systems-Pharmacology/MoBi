@@ -597,7 +597,7 @@ namespace MoBi.Assets
 
          public static string SetConstantValueFormula(string objectType, ConstantFormula constantFormula, string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
          {
-            return string.Format("Value of {3} '{2}' to {0} from {1}", newValueInDisplayUnits, oldValueInDisplayUnits, ownerIdentifier, objectType);
+            return string.Format("Value of {3} '{2}' set from '{1}' to '{0}'", newValueInDisplayUnits, oldValueInDisplayUnits, ownerIdentifier, objectType.ToLowerInvariant());
          }
 
          public static string UpdateFromParameterIdentification(IModelCoreSimulation simulation)

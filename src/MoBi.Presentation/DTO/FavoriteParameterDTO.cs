@@ -59,11 +59,7 @@ namespace MoBi.Presentation.DTO
 
       public bool IsFavorite { get; set; }
 
-      public string ValueDescription
-      {
-         get { return Parameter.ValueDescription; }
-         set { }
-      }
+      public ValueOrigin ValueOrigin => Parameter.ValueOrigin;
 
       public bool IsDiscrete => false;
       public ICache<double, string> ListOfValues { get; }
@@ -76,14 +72,14 @@ namespace MoBi.Presentation.DTO
 
       public string Name
       {
-         get { return PathElements[PathElement.Name].DisplayName; }
-         set { PathElements[PathElement.Name].DisplayName = value; }
+         get => PathElements[PathElement.Name].DisplayName;
+         set => PathElements[PathElement.Name].DisplayName = value;
       }
 
       public string Description
       {
-         get { return Parameter.Description; }
-         set { Parameter.Description = value; }
+         get => Parameter.Description;
+         set => Parameter.Description = value;
       }
 
       public FavoriteParameterDTO(IParameter parameter)

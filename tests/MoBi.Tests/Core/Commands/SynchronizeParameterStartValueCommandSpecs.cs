@@ -31,7 +31,8 @@ namespace MoBi.Core.Commands
          _parameter.Value = 5;
          _parameter.Dimension = A.Fake<IDimension>();
          ;
-         _parameter.ValueDescription = "BLA BLA";
+         _parameter.ValueOrigin.Description = "BLA BLA";
+         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
          _parameter.DisplayUnit = A.Fake<Unit>();
          ;
       }
@@ -62,7 +63,8 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_the_value_description()
       {
-         _parameterStartValue.ValueDescription.ShouldBeEqualTo(_parameter.ValueDescription);
+         _parameterStartValue.ValueOrigin.Description.ShouldBeEqualTo(_parameter.ValueOrigin.Description);
+         _parameterStartValue.ValueOrigin.Method.ShouldBeEqualTo(_parameter.ValueOrigin.Method);
       }
    }
 }

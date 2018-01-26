@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
@@ -22,14 +16,22 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
    public abstract partial class BaseStartValuesView<TStartValue> : BaseUserControl, IStartValuesView<TStartValue> where TStartValue : class, IStartValueDTO
    {
+      private readonly ValueOriginBinder<TStartValue> _valueOriginBinder;
       protected readonly GridViewBinder<TStartValue> _gridViewBinder;
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
       protected IStartValuesPresenter<TStartValue> _presenter;
@@ -42,8 +44,9 @@ namespace MoBi.UI.Views
       private IGridViewColumn<TStartValue> _deleteColumn;
       public bool CanCreateNewFormula { get; set; }
 
-      protected BaseStartValuesView()
+      protected BaseStartValuesView(ValueOriginBinder<TStartValue> valueOriginBinder)
       {
+         _valueOriginBinder = valueOriginBinder;
          InitializeComponent();
          configureGridView();
          _gridViewBinder = new GridViewBinder<TStartValue>(gridView);
@@ -169,7 +172,7 @@ namespace MoBi.UI.Views
 
       public TStartValue FocusedStartValue
       {
-         get { return _gridViewBinder.FocusedElement; }
+         get => _gridViewBinder.FocusedElement;
          set
          {
             if (value == null)
@@ -178,7 +181,6 @@ namespace MoBi.UI.Views
             gridView.FocusedRowHandle = _gridViewBinder.RowHandleFor(value);
          }
       }
-
 
       protected virtual bool IsEditable(GridColumn column)
       {
@@ -219,12 +221,9 @@ namespace MoBi.UI.Views
          _screenBinder.BindToSource(_presenter);
       }
 
-      protected void InitializeValueDescriptionBinding()
+      protected void InitializeValueOriginBinding()
       {
-         _gridViewBinder.AutoBind(param => param.ValueDescription)
-            .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
-            .WithCaption(AppConstants.Captions.ValueDescription)
-            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetValueDescription(o, e.NewValue)));
+         _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));
       }
 
       private void removeStartValue(TStartValue elementToRemove)
@@ -232,20 +231,11 @@ namespace MoBi.UI.Views
          _presenter.RemoveStartValue(elementToRemove);
       }
 
-      public GridControl GridControl
-      {
-         get { return gridControl; }
-      }
+      public GridControl GridControl => gridControl;
 
-      public GridView GridView
-      {
-         get { return gridView; }
-      }
+      public GridView GridView => gridView;
 
-      public GridViewBinder<TStartValue> Binder
-      {
-         get { return _gridViewBinder; }
-      }
+      public GridViewBinder<TStartValue> Binder => _gridViewBinder;
 
       public void OnPathElementSet(TStartValue startValue, PropertyValueSetEventArgs<string> eventArgs, int index)
       {
@@ -305,7 +295,7 @@ namespace MoBi.UI.Views
 
       private void configureGridView()
       {
-         gridView.RowStyle += (o,e) => OnEvent(updateRowStyle,o, e);
+         gridView.RowStyle += (o, e) => OnEvent(updateRowStyle, o, e);
          gridView.ShouldUseColorForDisabledCell = false;
          gridView.OptionsSelection.MultiSelect = true;
          gridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;

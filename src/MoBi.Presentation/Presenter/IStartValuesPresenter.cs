@@ -5,6 +5,7 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
@@ -100,9 +101,9 @@ namespace MoBi.Presentation.Presenter
       bool ShouldShow(TStartValueDTO startValue);
 
       /// <summary>
-      ///    Sets a new value description for a start value.
+      ///    Sets a new value origin for a start value.
       /// </summary>
-      void SetValueDescription(TStartValueDTO startValueDTO, string newValueDescription);
+      void SetValueOrigin(TStartValueDTO startValueDTO, ValueOrigin newValueOrigin);
 
       /// <summary>
       ///    Function returns the background color used to display the  start value.

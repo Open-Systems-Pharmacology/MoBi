@@ -27,6 +27,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using ToolTips = MoBi.Assets.ToolTips;
 
@@ -35,6 +36,7 @@ namespace MoBi.UI.Views
    public partial class EditParameterListView : BaseUserControl, IEditParameterListView
    {
       private readonly IToolTipCreator _toolTipCreator;
+      private readonly ValueOriginBinder<ParameterDTO> _valueOriginBinder;
       private IEditParameterListPresenter _presenter;
       private GridViewBinder<ParameterDTO> _gridViewBinder;
       private IGridViewColumn _colValue;
@@ -54,9 +56,10 @@ namespace MoBi.UI.Views
       private RepositoryItemButtonEdit _nameButtonRepository;
       private readonly UxRepositoryItemCheckEdit _checkBoxRepository;
 
-      public EditParameterListView(IToolTipCreator toolTipCreator)
+      public EditParameterListView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          _toolTipCreator = toolTipCreator;
+         _valueOriginBinder = valueOriginBinder;
          InitializeComponent();
          var toolTipController = new ToolTipController {AllowHtmlText = true};
          _unitControl = new UxComboBoxUnit<ParameterDTO>(gridControl);
@@ -122,10 +125,7 @@ namespace MoBi.UI.Views
             .WithOnValueUpdating(onParameterValueSet)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
-         _gridViewBinder.Bind(dto => dto.ValueDescription)
-            .WithCaption(AppConstants.Captions.ValueDescription)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_DESCRIPTION_WIDTH)
-            .WithOnValueUpdating(onParameterValueDescriptionSet);
+         _valueOriginBinder.InitializeBinding(_gridViewBinder, onParameterValueOriginSet);
 
          _unitControl.ParameterUnitSet += setParameterUnit;
 
@@ -238,9 +238,9 @@ namespace MoBi.UI.Views
          OnEvent(() => _presenter.OnParameterValueSet(parameter, e.NewValue));
       }
 
-      private void onParameterValueDescriptionSet(ParameterDTO parameter, PropertyValueSetEventArgs<string> e)
+      private void onParameterValueOriginSet(ParameterDTO parameter, ValueOrigin valueOrigin)
       {
-         OnEvent(() => _presenter.OnParameterValueDescriptionSet(parameter, e.NewValue));
+         OnEvent(() => _presenter.OnParameterValueOriginSet(parameter, valueOrigin));
       }
 
       private RepositoryItem repositoryForValue(ParameterDTO parameter)

@@ -351,10 +351,12 @@ namespace MoBi.Presentation
    internal class When_changing_the_value_description_of_a_start_value : concern_for_MoleculeStartValuesPresenter
    {
       private MoleculeStartValue _startValue;
+      private ValueOrigin _valueOrigin;
 
       protected override void Context()
       {
          base.Context();
+         _valueOrigin = new ValueOrigin();
          _startValue = new MoleculeStartValue { Name = "startValue" };
          _moleculeStartValueBuildingBlock.Add(_startValue);
          sut.Edit(_moleculeStartValueBuildingBlock);
@@ -362,13 +364,13 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetValueDescription(new MoleculeStartValueDTO(_startValue, _moleculeStartValueBuildingBlock), "TOTO");
+         sut.SetValueOrigin(new MoleculeStartValueDTO(_startValue, _moleculeStartValueBuildingBlock), _valueOrigin);
       }
 
       [Observation]
       public void should_updae_the_value_description_in_the_start_value()
       {
-         A.CallTo(() => _moleculeStartValueTask.SetValueDescription(_moleculeStartValueBuildingBlock, "TOTO", _startValue)).MustHaveHappened();
+         A.CallTo(() => _moleculeStartValueTask.SetValueOrigin(_moleculeStartValueBuildingBlock, _valueOrigin, _startValue)).MustHaveHappened();
       }
    }
 

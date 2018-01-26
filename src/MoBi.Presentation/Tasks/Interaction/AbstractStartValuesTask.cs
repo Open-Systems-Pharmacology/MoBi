@@ -2,10 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -14,11 +10,16 @@ using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -275,11 +276,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateDimensionInStartValueCommand<TStartValue>(startValue, newDimension, _interactionTaskContext.DisplayUnitFor(newDimension), startValuesBuildingBlock).Run(Context);
       }
 
-      public IMoBiCommand SetValueDescription(TBuildingBlock buildingBlock, string valueDescription, TStartValue startValue)
+      public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TStartValue startValue)
       {
-         //no command required here
-         startValue.ValueDescription = valueDescription;
-         return new MoBiEmptyCommand();
+         return new UpdateValueOriginCommand(valueOrigin, startValue, Context).Run(Context);
       }
 
       public IMoBiCommand SetUnit(TBuildingBlock buildingBlock, TStartValue startValue, Unit newUnit)

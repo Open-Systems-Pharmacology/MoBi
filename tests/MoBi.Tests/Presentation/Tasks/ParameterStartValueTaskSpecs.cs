@@ -186,7 +186,7 @@ namespace MoBi.Presentation.Tasks
          for (var i = 1; i < 3; i++)
          {
             var dto = _parameterStartValues[i];
-            A.CallTo(() => _parameterStartValuesCreator.CreateParameterStartValue(dto.Path, dto.QuantityInBaseUnit, A<IDimension>._, A<Unit>._, A<string>._)).Returns(
+            A.CallTo(() => _parameterStartValuesCreator.CreateParameterStartValue(dto.Path, dto.QuantityInBaseUnit, A<IDimension>._, A<Unit>._, A<ValueOrigin>._,A<bool>._)).Returns(
                new ParameterStartValue
                {
                   ContainerPath = dto.ContainerPath,
@@ -307,18 +307,26 @@ namespace MoBi.Presentation.Tasks
    public class When_updating_the_value_description_of_a_start_value : concern_for_ParameterStartValuesTask
    {
       private ParameterStartValue _startValue;
+      private ValueOrigin _valueOrigin;
 
       protected override void Because()
       {
          _startValue = new ParameterStartValue();
          _parameterStartValueBuildingBlock.Add(_startValue);
-         sut.SetValueDescription(_parameterStartValueBuildingBlock,"TOTO", _startValue);
+         _valueOrigin = new ValueOrigin
+         {
+            Method = ValueOriginDeterminationMethods.Assumption,
+            Description = "hello"
+         };
+
+         sut.SetValueOrigin(_parameterStartValueBuildingBlock,_valueOrigin, _startValue);
       }
 
       [Observation]
       public void should_update_the_start_value_description()
       {
-         _startValue.ValueDescription.ShouldBeEqualTo("TOTO");
+         _startValue.ValueOrigin.Description.ShouldBeEqualTo(_valueOrigin.Description);
+         _startValue.ValueOrigin.Method.ShouldBeEqualTo(_valueOrigin.Method);
       }
    }
 }

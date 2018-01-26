@@ -12,6 +12,7 @@ using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 
 namespace MoBi.UI.Views
@@ -22,7 +23,7 @@ namespace MoBi.UI.Views
       private readonly IDimensionFactory _dimensionFactory;
       private readonly UxRepositoryItemComboBox _dimensionComboBoxRepository;
 
-      public ParameterStartValuesView(IDimensionFactory dimensionFactory)
+      public ParameterStartValuesView(IDimensionFactory dimensionFactory, ValueOriginBinder<ParameterStartValueDTO> valueOriginBinder):base(valueOriginBinder)
       {
          InitializeComponent();
          _unitControl = new UxComboBoxUnit<ParameterStartValueDTO>(gridControl);
@@ -54,7 +55,7 @@ namespace MoBi.UI.Views
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnValueUpdating(onParameterStartValueSet);
 
-         InitializeValueDescriptionBinding();
+         InitializeValueOriginBinding();
 
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
 using MoBi.Core.Helper;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
@@ -28,9 +28,9 @@ namespace MoBi.Presentation.DTO
       public bool IsFavorite { get; set; }
       public string DisplayName { get; set; }
       public FormulaType FormulaType { get; set; }
-      public int  Sequence { get; set; }
+      public int Sequence { get; set; }
       public double Percentile { get; set; }
-      public PathElements PathElements { get; set; }= new PathElements();
+      public PathElements PathElements { get; set; } = new PathElements();
       public PathElementDTO SimulationPathElement => PathElements[PathElement.Simulation];
       public PathElementDTO TopContainerPathElement => PathElements[PathElement.TopContainer];
       public PathElementDTO ContainerPathElement => PathElements[PathElement.Container];
@@ -95,8 +95,8 @@ namespace MoBi.Presentation.DTO
 
       public virtual bool Persistable
       {
-         get { return Parameter.Persistable; }
-         set { Parameter.Persistable = value; }
+         get => Parameter.Persistable;
+         set => Parameter.Persistable = value;
       }
 
       public virtual ParameterBuildMode BuildMode
@@ -126,14 +126,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public virtual string ValueDescription
-      {
-         get { return Parameter.ValueDescription; }
-         set
-         {
-            /*nothing to do here since the unit should be set in the command*/
-         }
-      }
+      public virtual ValueOrigin ValueOrigin => Parameter.ValueOrigin;
 
       public bool IsDiscrete => false;
       public ICache<double, string> ListOfValues { get; }

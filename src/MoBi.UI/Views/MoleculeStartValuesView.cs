@@ -13,6 +13,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 
@@ -23,7 +24,7 @@ namespace MoBi.UI.Views
       private readonly UxComboBoxUnit<MoleculeStartValueDTO> _unitControl;
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
 
-      public MoleculeStartValuesView()
+      public MoleculeStartValuesView(ValueOriginBinder<MoleculeStartValueDTO> valueOriginBinder):base(valueOriginBinder)
       {
          InitializeComponent();
          _unitControl = new UxComboBoxUnit<MoleculeStartValueDTO>(gridControl);
@@ -50,8 +51,7 @@ namespace MoBi.UI.Views
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnValueUpdating((o, e) => OnEvent(() => moleculeStartValuePresenter.SetValue(o, e.NewValue)));
 
-         InitializeValueDescriptionBinding();
-
+         InitializeValueOriginBinding();
 
          _gridViewBinder.AutoBind(dto => dto.ScaleDivisor)
             .WithCaption(AppConstants.Captions.ScaleDivisor)
