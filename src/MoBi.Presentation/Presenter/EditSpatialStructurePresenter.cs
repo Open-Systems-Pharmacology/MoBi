@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -11,6 +9,9 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -24,7 +25,7 @@ namespace MoBi.Presentation.Presenter
       void LoadDiagram();
    }
 
-   public class EditSpatialStructurePresenter : EditBuildingBlockPresenterBase<IEditSpatialStructureView, IEditSpatialStructurePresenter, IMoBiSpatialStructure, IContainer>,
+   public class EditSpatialStructurePresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditSpatialStructureView, IEditSpatialStructurePresenter, IMoBiSpatialStructure, IContainer>,
       IEditSpatialStructurePresenter
    {
       private IMoBiSpatialStructure _spatialStructure;
@@ -33,25 +34,27 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditContainerPresenter _editPresenter;
       private bool _diagramLoaded;
       private readonly IHeavyWorkManager _heavyWorkManager;
-      private readonly IEditFavoritesInSpatialStructurePresenter _favoritesPresenter;
 
-      public EditSpatialStructurePresenter(IEditSpatialStructureView view,
+      public EditSpatialStructurePresenter(
+         IEditSpatialStructureView view,
          IHierarchicalSpatialStructurePresenter hierarchicalSpatialStructurePresenter,
-         IFormulaCachePresenter formulaCachePresenter, IEditContainerPresenter editPresenter,
-         ISpatialStructureDiagramPresenter spatialStructureDiagramPresenter, IHeavyWorkManager heavyWorkManager,
-         IEditFavoritesInSpatialStructurePresenter favoritesPresenter) :
-            base(view, formulaCachePresenter)
+         IFormulaCachePresenter formulaCachePresenter,
+         IEditContainerPresenter editPresenter,
+         ISpatialStructureDiagramPresenter spatialStructureDiagramPresenter,
+         IHeavyWorkManager heavyWorkManager,
+         IEditFavoritesInSpatialStructurePresenter favoritesPresenter,
+         IUserDefinedParametersPresenter userDefinedParametersPresenter) :
+         base(view, formulaCachePresenter, favoritesPresenter, userDefinedParametersPresenter)
       {
          _hierarchicalSpatialStructurePresenter = hierarchicalSpatialStructurePresenter;
          _spatialStructureDiagramPresenter = spatialStructureDiagramPresenter;
          _heavyWorkManager = heavyWorkManager;
-         _favoritesPresenter = favoritesPresenter;
-         _favoritesPresenter.ShouldHandleRemovedEvent = shouldHandleRemoved;
+         favoritesPresenter.ShouldHandleRemovedEvent = shouldHandleRemoved;
          _editPresenter = editPresenter;
          _view.SetEditView(_editPresenter.BaseView);
          _view.SetHierarchicalStructureView(_hierarchicalSpatialStructurePresenter.BaseView);
          _view.SetSpaceDiagramView(spatialStructureDiagramPresenter.View);
-         AddSubPresenters(editPresenter, hierarchicalSpatialStructurePresenter, spatialStructureDiagramPresenter, _favoritesPresenter);
+         AddSubPresenters(editPresenter, hierarchicalSpatialStructurePresenter, spatialStructureDiagramPresenter);
       }
 
       public override void Edit(IMoBiSpatialStructure spatialStructure)
@@ -60,7 +63,6 @@ namespace MoBi.Presentation.Presenter
          _spatialStructure = spatialStructure;
          EditFormulas(spatialStructure);
          _editPresenter.BuildingBlock = _spatialStructure;
-         _favoritesPresenter.BuildingBlock = _spatialStructure;
          _hierarchicalSpatialStructurePresenter.Edit(spatialStructure);
          _view.SetEditView(_favoritesPresenter.BaseView);
          _favoritesPresenter.Edit(spatialStructure);
@@ -86,6 +88,7 @@ namespace MoBi.Presentation.Presenter
          var specificCanHandle = SpecificCanHandle(selectedObject);
          if (specificCanHandle.Item1)
             return specificCanHandle;
+
          return base.CanHandle(selectedObject);
       }
 
@@ -111,7 +114,8 @@ namespace MoBi.Presentation.Presenter
 
       private bool shoudHandleSelection(IEntity entity)
       {
-         return entity.IsAnImplementationOf<IContainer>() && !entity.IsAnImplementationOf<IDistributedParameter>() &&
+         return entity.IsAnImplementationOf<IContainer>() &&
+                !entity.IsAnImplementationOf<IDistributedParameter>() &&
                 IsInSubject((IContainer) entity);
       }
 
@@ -147,10 +151,10 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(RemovedEvent eventToHandle)
       {
-         if (eventToHandle.RemovedObjects.Any(shouldHandleRemoved))
-         {
-            setInitalView();
-         }
+         if (!eventToHandle.RemovedObjects.Any(shouldHandleRemoved))
+            return;
+
+         setInitalView();
       }
 
       private bool shouldHandleRemoved(IObjectBase objectBase)
@@ -165,25 +169,9 @@ namespace MoBi.Presentation.Presenter
          _diagramLoaded = true;
       }
 
-      public void Handle(FavoritesSelectedEvent eventToHandle)
+      protected override void ShowView(IView viewToShow)
       {
-         if (!canHandle(eventToHandle))
-            return;
-
-         _view.SetEditView(_favoritesPresenter.BaseView);
-      }
-
-      public void Handle(UserDefinedSelectedEvent eventToHandle)
-      {
-         if (!canHandle(eventToHandle))
-            return;
-
-         _view.SetEditView(_userDefinedParameterPresenter.BaseView);
-      }
-
-      private bool canHandle(IObjectBaseEvent objectBaseEvent)
-      {
-         return Equals(objectBaseEvent.ObjectBase, _spatialStructure);
+         _view.SetEditView(viewToShow);
       }
    }
 }

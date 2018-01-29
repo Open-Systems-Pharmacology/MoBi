@@ -16,7 +16,7 @@ namespace MoBi.Presentation
       protected IEditContainerView _view;
       private IContainerToContainerDTOMapper _containerMapper;
       private IEditTaskForContainer _editTasks;
-      protected IEditParameterListPresenter _parameterListPresenter;
+      protected IEditParametersInContainerPresenter _parametersInContainerPresenter;
       private IMoBiContext _context;
 
       protected override void Context()
@@ -24,10 +24,10 @@ namespace MoBi.Presentation
          _view = A.Fake<IEditContainerView>();
          _containerMapper = A.Fake<IContainerToContainerDTOMapper>();
          _editTasks = A.Fake<IEditTaskForContainer>();
-         _parameterListPresenter = A.Fake<IEditParameterListPresenter>();
+         _parametersInContainerPresenter = A.Fake<IEditParametersInContainerPresenter>();
          _context = A.Fake<IMoBiContext>();
          _enityTask = A.Fake<IEntityTask>();
-         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parameterListPresenter, _context, _enityTask);
+         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _enityTask);
       }
    }
 
@@ -55,7 +55,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_tell_parameter_presenter_to_select_parameter()
       {
-         A.CallTo(() => _parameterListPresenter.Select(_parameter));
+         A.CallTo(() => _parametersInContainerPresenter.Select(_parameter));
       }
    }
 }

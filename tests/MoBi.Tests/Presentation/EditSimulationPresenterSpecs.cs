@@ -28,6 +28,7 @@ namespace MoBi.Presentation
       protected IEditInSimulationPresenterFactory _presenterFactory;
       protected IEditFavoritesInSimulationPresenter _editFavoritePresenter;
       protected IChartTasks _chartTasks;
+      protected IUserDefinedParametersPresenter _userDefinedParametersPresenter;
 
       protected override void Context()
       {
@@ -40,10 +41,10 @@ namespace MoBi.Presentation
          _presenterFactory = A.Fake<IEditInSimulationPresenterFactory>();
          _editFavoritePresenter = A.Fake<IEditFavoritesInSimulationPresenter>();
          _chartTasks = A.Fake<IChartTasks>();
-
+         _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
-            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks);
+            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter);
       }
    }
 
@@ -57,7 +58,7 @@ namespace MoBi.Presentation
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Edit(_simulation);
-         _favoritesView = A.Fake<IEditFavoritesView>();
+         _favoritesView = A.Fake<IEditParameterListView>();
          A.CallTo(() => _editFavoritePresenter.BaseView).Returns(_favoritesView);
       }
 

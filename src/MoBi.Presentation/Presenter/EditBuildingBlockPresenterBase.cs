@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Linq;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -11,11 +7,13 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public abstract class EditBuildingBlockPresenterBase<TView, TPresenter, TBuildingBlock, TBuilder> : SingleStartPresenter<TView, TPresenter>, 
-      ISingleStartPresenter<TBuildingBlock>, 
+   public abstract class EditBuildingBlockPresenterBase<TView, TPresenter, TBuildingBlock, TBuilder> : SingleStartPresenter<TView, TPresenter>,
+      ISingleStartPresenter<TBuildingBlock>,
       IListener<EntitySelectedEvent>
       where TView : IView<TPresenter>, IEditBuildingBlockBaseView
       where TPresenter : IPresenter, ISingleStartPresenter
@@ -23,6 +21,7 @@ namespace MoBi.Presentation.Presenter
       where TBuilder : class, IObjectBase
    {
       private readonly IFormulaCachePresenter _formulaCachePresenter;
+
       public abstract void Edit(TBuildingBlock objectToEdit);
 
       protected EditBuildingBlockPresenterBase(TView view, IFormulaCachePresenter formulaCachePresenter) : base(view)
@@ -117,6 +116,11 @@ namespace MoBi.Presentation.Presenter
             return false;
 
          return BuildingBlock.Contains(builder);
+      }
+
+      internal virtual bool CanHandle(IObjectBaseEvent objectBaseEvent)
+      {
+         return Equals(objectBaseEvent.ObjectBase, BuildingBlock);
       }
    }
 }

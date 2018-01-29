@@ -26,11 +26,11 @@ namespace MoBi.Presentation
       protected IFavoriteTask _favoriteTask;
       protected IInteractionTasksForParameter _interactionTasksForParameter;
       protected IFavoriteRepository _favoriteRepository;
-      protected IEditFavoritesView _view;
+      protected IEditParameterListView _view;
       protected IQuantityTask _quantityTask;
       protected IInteractionTaskContext _interactionTaskContext;
       protected IFormulaToFormulaBuilderDTOMapper _formulaToFormulaBuilderDTOMapper;
-      protected IParameterToFavoriteParameterDTOMapper _parameterToFavoriteParameterDTOMapper;
+      protected IParameterToParameterDTOMapper _parameterToFavoriteParameterDTOMapper;
 
       protected override void Context()
       {
@@ -39,11 +39,11 @@ namespace MoBi.Presentation
          _favoriteTask = A.Fake<IFavoriteTask>();
          _interactionTasksForParameter = A.Fake<IInteractionTasksForParameter>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
-         _view = A.Fake<IEditFavoritesView>();
+         _view = A.Fake<IEditParameterListView>();
          _quantityTask = A.Fake<IQuantityTask>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _formulaToFormulaBuilderDTOMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _parameterToFavoriteParameterDTOMapper = A.Fake<IParameterToFavoriteParameterDTOMapper>();
+         _parameterToFavoriteParameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
          sut = new EditFavoritesInSimulationPresenter(_view, _quantityTask, _interactionTaskContext, _formulaToFormulaBuilderDTOMapper, _parameterToFavoriteParameterDTOMapper,
             _favoriteRepository, _interactionTasksForParameter, _favoriteTask, _entityPathResolver, _viewItemContextMenuFactory);
       }
@@ -53,14 +53,14 @@ namespace MoBi.Presentation
    {
       private IParameter _quantity;
       private IMoBiSimulation _simulation;
-      private FavoriteParameterDTO _favoriteParameterDTO;
+      private ParameterDTO _favoriteParameterDTO;
 
       protected override void Context()
       {
          base.Context();
          _quantity = new Parameter();
          A.CallTo(() => _favoriteRepository.All()).Returns(new[] {string.Empty});
-         _favoriteParameterDTO = new FavoriteParameterDTO(_quantity);
+         _favoriteParameterDTO = new ParameterDTO(_quantity);
          A.CallTo(() => _parameterToFavoriteParameterDTOMapper.MapFrom(_quantity)).Returns(_favoriteParameterDTO);
          
          _simulation = new MoBiSimulation
@@ -83,7 +83,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_view_should_be_rebound()
       {
-         A.CallTo(() => _view.Show(A<IEnumerable<FavoriteParameterDTO>>._)).MustHaveHappened();
+         A.CallTo(() => _view.BindTo(A<IEnumerable<ParameterDTO>>._)).MustHaveHappened();
       }
    }
 }

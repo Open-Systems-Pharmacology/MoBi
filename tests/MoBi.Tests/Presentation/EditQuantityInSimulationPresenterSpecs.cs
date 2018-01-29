@@ -19,7 +19,7 @@ namespace MoBi.Presentation
       protected IEditQuantityInSimulationView _view;
       private IQuantityToQuantityDTOMapper _mapper;
       private IFormulaPresenterCache _presenterCache;
-      protected IEditParameterListPresenter _parametrPresenters;
+      protected IEditParametersInContainerPresenter _parametrPresenters;
       private IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IQuantityTask _quantityTask;
 
@@ -28,7 +28,7 @@ namespace MoBi.Presentation
          _view = A.Fake<IEditQuantityInSimulationView>();
          _mapper = A.Fake<IQuantityToQuantityDTOMapper>();
          _presenterCache = A.Fake<IFormulaPresenterCache>();
-         _parametrPresenters = A.Fake<IEditParameterListPresenter>();
+         _parametrPresenters = A.Fake<IEditParametersInContainerPresenter>();
          _quantityTask = A.Fake<IQuantityTask>();
          _reactionDimensionRetriever= A.Fake<IReactionDimensionRetriever>();
 

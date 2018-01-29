@@ -19,10 +19,10 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditEventBuilderPresenterSpecs : ContextSpecification<IEditEventBuilderPresenter>
    {
       private IEditEventBuilderView _view;
-      private IEventBuilderToDTOEventBuilderMapper _eventBuilderMapper;
+      private IEventBuilderToEventBuilderDTOMapper _eventBuilderMapper;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
       private IEditTaskFor<IEventBuilder> _eventBuilderTasks;
-      private IEditParameterListPresenter _parameterPresenter;
+      private IEditParametersInContainerPresenter _parameterPresenter;
       private IInteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder> _assingmentBuilderTasks;
       private IEditExplicitFormulaPresenter _formulaPresenter;
       protected IMoBiContext _context;
@@ -33,10 +33,10 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _view = A.Fake<IEditEventBuilderView>();
-         _eventBuilderMapper=A.Fake<IEventBuilderToDTOEventBuilderMapper>();
+         _eventBuilderMapper=A.Fake<IEventBuilderToEventBuilderDTOMapper>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _eventBuilderTasks = A.Fake<IEditTaskFor<IEventBuilder>>();
-         _parameterPresenter = A.Fake<IEditParameterListPresenter>();
+         _parameterPresenter = A.Fake<IEditParametersInContainerPresenter>();
          _assingmentBuilderTasks = A.Fake<IInteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder>>();
          _formulaPresenter = A.Fake<IEditExplicitFormulaPresenter>();
          _context = A.Fake<IMoBiContext>();

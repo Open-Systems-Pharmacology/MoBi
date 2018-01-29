@@ -20,7 +20,9 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<ISpatialStructure>,
       IHierarchicalStructurePresenter,
-      IListener<AddedEvent>, IListener<RemovedEvent>, IListener<EntitySelectedEvent>
+      IListener<AddedEvent>, 
+      IListener<RemovedEvent>, 
+      IListener<EntitySelectedEvent>
    {
       void Select(IEntity entity);
    }

@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter
@@ -32,50 +31,64 @@ namespace MoBi.Presentation.Presenter
    public class EventGroupListPresenter : AbstractEditPresenter<IEventGroupsListView, IEventGroupListPresenter, IEventGroupBuildingBlock>, IEventGroupListPresenter
    {
       private IEventGroupBuildingBlock _eventGroupBuildingBlock;
-      private readonly IEventGroupBuilderToDTOEventGroupBuilderMapper _eventGroupToDTOEventGroupMapper;
+      private readonly IEventGroupBuilderToEventGroupBuilderDTOMapper _eventGroupBuilderDTOMapper;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
-      private readonly IApplicationBuilderToDTOApplicationBuilderMapper _applicationBuilderToDTOApplicationBuilderMapper;
+      private readonly IApplicationBuilderToApplicationBuilderDTOMapper _applicationBuilderToDTOApplicationBuilderMapper;
       private readonly IMoBiContext _context;
-      private readonly ITreeNode _favorites;
+      private readonly ITreeNode _favoritesNodes;
+      private readonly ITreeNode _userDefinedNodes;
 
-      public EventGroupListPresenter(IEventGroupsListView view, IEventGroupBuilderToDTOEventGroupBuilderMapper eventGroupToDTOEventGroupMapper, IViewItemContextMenuFactory viewItemContextMenuFactory, IApplicationBuilderToDTOApplicationBuilderMapper applicationBuilderToDTOApplicationBuilderMapper, IMoBiContext context, ITreeNodeFactory treeNodeFactory) : base(view)
+      public EventGroupListPresenter(IEventGroupsListView view, IEventGroupBuilderToEventGroupBuilderDTOMapper eventGroupBuilderDTOMapper, IViewItemContextMenuFactory viewItemContextMenuFactory, IApplicationBuilderToApplicationBuilderDTOMapper applicationBuilderToDTOApplicationBuilderMapper, IMoBiContext context, ITreeNodeFactory treeNodeFactory) : base(view)
       {
          _context = context;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
-         _eventGroupToDTOEventGroupMapper = eventGroupToDTOEventGroupMapper;
+         _eventGroupBuilderDTOMapper = eventGroupBuilderDTOMapper;
          _applicationBuilderToDTOApplicationBuilderMapper = applicationBuilderToDTOApplicationBuilderMapper;
-         _favorites = treeNodeFactory.CreateForFavorites();
+         _favoritesNodes = treeNodeFactory.CreateForFavorites();
+         _userDefinedNodes = treeNodeFactory.CreateForUserDefined();
       }
 
-      public override void Edit(IEventGroupBuildingBlock objectToEdit)
+      public override void Edit(IEventGroupBuildingBlock eventGroupBuildingBlock)
       {
-         _eventGroupBuildingBlock = objectToEdit;
-         var events = _eventGroupBuildingBlock.Where(item => !item.IsAnImplementationOf<IApplicationBuilder>()).MapAllUsing(
-            _eventGroupToDTOEventGroupMapper).ToList();
+         _eventGroupBuildingBlock = eventGroupBuildingBlock;
+
+         var events = _eventGroupBuildingBlock
+            .Where(item => !item.IsAnImplementationOf<IApplicationBuilder>())
+            .MapAllUsing(_eventGroupBuilderDTOMapper)
+            .ToList();
 
          var applications = from groupBuilder in _eventGroupBuildingBlock
             where groupBuilder.IsAnImplementationOf<IApplicationBuilder>()
             let applicationBuilder = groupBuilder as IApplicationBuilder
             select applicationBuilder;
 
-         var dtoApplications = applications.MapAllUsing(_applicationBuilderToDTOApplicationBuilderMapper);
-         dtoApplications.Each(events.Add);
+         var applicationDTOList = applications.MapAllUsing(_applicationBuilderToDTOApplicationBuilderMapper);
+         events.AddRange(applicationDTOList);
+
          _view.Clear();
-         _view.AddNode(_favorites);
+         _view.AddNode(_favoritesNodes);
+         _view.AddNode(_userDefinedNodes);
          _view.Show(events);
       }
 
-      public void Select(IObjectBaseDTO dtoObjectBase)
+      public void Select(IObjectBaseDTO objectBaseDTO)
       {
-         if (dtoObjectBase.Equals(_favorites.TagAsObject))
+         if (objectBaseDTO.Equals(_favoritesNodes.TagAsObject))
             raiseFavoritesSelectedEvent();
+         else if (objectBaseDTO.Equals(_userDefinedNodes.TagAsObject))
+            raiseUserDefinedSelectedEvent();
          else
-            raiseEntitySelectedEvent(dtoObjectBase);
+            raiseEntitySelectedEvent(objectBaseDTO);
       }
 
       private void raiseFavoritesSelectedEvent()
       {
          _context.PublishEvent(new FavoritesSelectedEvent(_eventGroupBuildingBlock));
+      }
+
+      private void raiseUserDefinedSelectedEvent()
+      {
+         _context.PublishEvent(new UserDefinedSelectedEvent(_eventGroupBuildingBlock));
       }
 
       private void raiseEntitySelectedEvent(IObjectBaseDTO dtoObjectBase)
@@ -89,10 +102,7 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new EntitySelectedEvent(objectBase, this));
       }
 
-      public override object Subject
-      {
-         get { return _eventGroupBuildingBlock; }
-      }
+      public override object Subject => _eventGroupBuildingBlock;
 
       public void InitializeWith(IEnumerable<IEventGroupBuilder> initializer)
       {
@@ -107,14 +117,13 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(AddedEvent eventToHandle)
       {
-         if (_eventGroupBuildingBlock == null) return;
-         this.DoWithinExceptionHandler(() =>
-         {
-            if (shouldShow(eventToHandle.Parent))
-            {
-               Edit(_eventGroupBuildingBlock);
-            }
-         });
+         if (_eventGroupBuildingBlock == null)
+            return;
+
+         if (!shouldShow(eventToHandle.Parent))
+            return;
+
+         Edit(_eventGroupBuildingBlock);
       }
 
       private bool shouldShow(IObjectBase testObject)
@@ -127,11 +136,13 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(RemovedEvent eventToHandle)
       {
-         if (_eventGroupBuildingBlock == null) return;
-         if (eventToHandle.RemovedObjects.Any(shouldShow))
-         {
-            Edit(_eventGroupBuildingBlock);
-         }
+         if (_eventGroupBuildingBlock == null)
+            return;
+
+         if (!eventToHandle.RemovedObjects.Any(shouldShow))
+            return;
+
+         Edit(_eventGroupBuildingBlock);
       }
    }
 }

@@ -9,7 +9,10 @@ using OSPSuite.Core.Domain.UnitSystem;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Utility.Extensions;
+using IParameterToParameterDTOMapper = MoBi.Presentation.Mappers.IParameterToParameterDTOMapper;
 
 namespace MoBi.Core.Mapper
 {
@@ -20,6 +23,7 @@ namespace MoBi.Core.Mapper
       protected IGroupRepository _groupRepository;
       protected IFavoriteRepository _favoriteRepository;
       protected IEntityPathResolver _entityPathResolver;
+      protected IPathToPathElementsMapper _pathToPathElementsMapper;
 
       protected override void Context()
       {
@@ -28,7 +32,8 @@ namespace MoBi.Core.Mapper
          _groupRepository= A.Fake<IGroupRepository>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         sut = new ParameterToParameterDTOMapper(_formulaMapper,_tagMappper,_groupRepository,_favoriteRepository,_entityPathResolver);
+         _pathToPathElementsMapper= A.Fake<IPathToPathElementsMapper>();
+         sut = new ParameterToParameterDTOMapper(_formulaMapper,_tagMappper,_groupRepository,_favoriteRepository,_entityPathResolver, _pathToPathElementsMapper);
       }
    }
 
@@ -43,6 +48,7 @@ namespace MoBi.Core.Mapper
       protected Tag _tag;
       protected Tag _otherTag;
       private IGroup _group;
+      private PathElements _pathElements;
 
       protected override void Context()
       {
@@ -64,6 +70,8 @@ namespace MoBi.Core.Mapper
          _tag = new Tag("Unsinn");
          _otherTag = new Tag("Quatsch");
          _parameter.CanBeVariedInPopulation = true;
+         _pathElements = new PathElements();
+         A.CallTo(() => _pathToPathElementsMapper.MapFrom(_parameter)).Returns(_pathElements);
          A.CallTo(() => _parameter.Tags).Returns(new Tags(new[] {_tag, _otherTag}));
          A.CallTo(() => _groupRepository.GroupByName(_parameter.GroupName)).Returns(_group);
       }
@@ -79,7 +87,7 @@ namespace MoBi.Core.Mapper
          A.CallTo(() => _formulaMapper.MapFrom(_formula)).MustHaveHappened();
       }
       [Observation]
-      public void should_ask_map_all_Tags()
+      public void should_ask_map_all_tags()
       {
          A.CallTo(() => _tagMappper.MapFrom(_tag)).MustHaveHappened();
          A.CallTo(() => _tagMappper.MapFrom(_otherTag)).MustHaveHappened();
@@ -96,6 +104,7 @@ namespace MoBi.Core.Mapper
          _result.HasRHS.ShouldBeFalse();
          _result.CanBeVariedInPopulation.ShouldBeTrue();
          _result.Group.ShouldBeEqualTo(_group);
+         _result.PathElements.ShouldBeEqualTo(_pathElements);
       }
    }
 

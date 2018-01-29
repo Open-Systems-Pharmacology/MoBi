@@ -29,14 +29,14 @@ namespace MoBi.Presentation.Presenter
 
    public class EditPassiveTransportBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditPassiveTransportBuildingBlockView, IEditPassiveTransportBuildingBlockPresenter, IPassiveTransportBuildingBlock, ITransportBuilder>, IEditPassiveTransportBuildingBlockPresenter
    {
-      private readonly ITransportBuilderToDTOTransportBuilderMapper _transportBuilderToDTOTransportBuilderMapper;
+      private readonly ITransportBuilderToTransportBuilderDTOMapper _transportBuilderToDTOTransportBuilderMapper;
       private readonly IEditTransportBuilderPresenter _editTransportBuilderPresenter;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToFormulaDTOBuilderMapper;
       private IPassiveTransportBuildingBlock _passiveTransports;
 
       public EditPassiveTransportBuildingBlockPresenter(IEditPassiveTransportBuildingBlockView view,
-         ITransportBuilderToDTOTransportBuilderMapper transportBuilderToDTOTransportBuilderMapper,
+         ITransportBuilderToTransportBuilderDTOMapper transportBuilderToDTOTransportBuilderMapper,
          IEditTransportBuilderPresenter editTransportBuilderPresenter, IViewItemContextMenuFactory viewItemContextMenuFactory,
          IFormulaToFormulaBuilderDTOMapper formulaToFormulaDTOBuilderMapper, IFormulaCachePresenter formulaCachePresenter)
          : base(view, formulaCachePresenter)

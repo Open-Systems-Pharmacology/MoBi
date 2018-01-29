@@ -20,11 +20,11 @@ namespace MoBi.Presentation
 {
    public abstract class concern_for_EditFavoritesPresenter : ContextSpecification<IEditFavoritesInSpatialStructurePresenter>
    {
-      protected IEditFavoritesView _view;
+      protected IEditParameterListView _view;
       protected IQuantityTask _quantityTask;
       protected IInteractionTaskContext _interactionTaskContext;
       protected IFormulaToFormulaBuilderDTOMapper _formulaMapper;
-      protected IParameterToFavoriteParameterDTOMapper _favoriteMapper;
+      protected IParameterToParameterDTOMapper _favoriteMapper;
       protected IFavoriteRepository _favoriteRepository;
       protected IInteractionTasksForParameter _parameterTask;
       protected IFavoriteTask _favoriteTask;
@@ -34,11 +34,11 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _view = A.Fake<IEditFavoritesView>();
+         _view = A.Fake<IEditParameterListView>();
          _quantityTask = A.Fake<IQuantityTask>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _favoriteMapper = A.Fake<IParameterToFavoriteParameterDTOMapper>();
+         _favoriteMapper = A.Fake<IParameterToParameterDTOMapper>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _parameterTask = A.Fake<IInteractionTasksForParameter>();
          _favoriteTask = A.Fake<IFavoriteTask>();
@@ -53,7 +53,7 @@ namespace MoBi.Presentation
 
    class When_go_to_is_called_for_a_favorite : concern_for_EditFavoritesPresenter
    {
-      private FavoriteParameterDTO _favoriteDTO;
+      private ParameterDTO _favoriteDTO;
       private IParameter _parameter;
 
       protected override void Context()
@@ -61,7 +61,7 @@ namespace MoBi.Presentation
          
          base.Context();
          _parameter = new Parameter().WithName("P");
-         _favoriteDTO = new FavoriteParameterDTO(_parameter);
+         _favoriteDTO = new ParameterDTO(_parameter);
       }
 
       protected override void Because()

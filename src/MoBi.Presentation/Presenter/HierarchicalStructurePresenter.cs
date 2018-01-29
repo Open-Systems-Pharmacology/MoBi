@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Presenter
             RaiseFavoritesSelectedEvent();
 
          else if(objectBaseDTO == _userDefinedNode.TagAsObject)
-            RaiseFavoritesSelectedEvent();
+            RaiseUserDefinedSelectedEvent();
     
          else
             raiseEntitySelectedEvent(objectBaseDTO);

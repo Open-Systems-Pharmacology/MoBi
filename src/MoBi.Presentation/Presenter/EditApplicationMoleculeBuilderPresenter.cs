@@ -27,14 +27,14 @@ namespace MoBi.Presentation.Presenter
    {
       private IApplicationMoleculeBuilder _applicationMoleculeBuilder;
       private readonly IEditTaskFor<IApplicationMoleculeBuilder> _editTask;
-      private readonly IApplicationMoleculeBuilderToDTOApplicationMoleculeBuilder _applicationMoleculeMapper;
+      private readonly IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper _applicationMoleculeMapper;
       private readonly IEditFormulaPresenter _editFormulaPresenter;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IMoBiContext _context;
       private readonly ISelectReferencePresenterAtApplicationBuilder _selectItemPresenter;
 
       public EditApplicationMoleculeBuilderPresenter(IEditApplicationMoleculeBuilderView view, IEditTaskFor<IApplicationMoleculeBuilder> editTask,
-         IApplicationMoleculeBuilderToDTOApplicationMoleculeBuilder applicationMoleculeMapper, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
+         IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper applicationMoleculeMapper, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
          IEditFormulaPresenter editFormulaPresenter, IMoBiContext context, ISelectReferencePresenterAtApplicationBuilder selectItemPresenter)
          : base(view)
       {

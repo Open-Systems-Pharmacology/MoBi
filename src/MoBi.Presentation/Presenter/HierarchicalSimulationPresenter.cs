@@ -19,7 +19,9 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IHierarchicalSimulationPresenter : IHierarchicalStructurePresenter, IEditPresenter<IMoBiSimulation>,
+   public interface IHierarchicalSimulationPresenter : 
+      IHierarchicalStructurePresenter, 
+      IEditPresenter<IMoBiSimulation>,
       IListener<EntitySelectedEvent>
    {
       Action ShowSolverSettings { set; get; }

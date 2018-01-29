@@ -25,16 +25,14 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditFavoritesPresenter : IParameterPresenter,
+   public interface IEditFavoritesPresenter : IEditParameterListPresenter,
       IListener<AddParameterToFavoritesEvent>,
       IListener<RemoveParameterFromFavoritesEvent>,
       IListener<FavoritesLoadedEvent>,
       IListener<AddedEvent>,
-      IListener<RemovedEvent>,
-      IPresenterWithContextMenu<IViewItem>
+      IListener<RemovedEvent>
    {
-      void Select(FavoriteParameterDTO parameterDTO);
-      void GoTo(FavoriteParameterDTO favoriteParameterDTO);
+      void Select(ParameterDTO parameterDTO);
       Func<IObjectBase, bool> ShouldHandleRemovedEvent { set; }
    }
 
@@ -42,44 +40,45 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   public abstract class EditFavoritesPresenter<T> : AbstractParameterBasePresenter<IEditFavoritesView, IEditFavoritesPresenter>,
+   public abstract class EditFavoritesPresenter<T> : AbstractParameterBasePresenter<IEditParameterListView, IEditParameterListPresenter>,
       IEditFavoritesPresenter<T> where T : IObjectBase
    {
-      private readonly IParameterToFavoriteParameterDTOMapper _favoriteMapper;
-      protected readonly List<FavoriteParameterDTO> _favorites;
+      private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
+      protected readonly List<ParameterDTO> _favorites;
       private readonly IFavoriteRepository _favoriteRepository;
       protected Cache<string, IParameter> _parameterCache;
       protected readonly IEntityPathResolver _entityPathResolver;
       private readonly IMoBiContext _context;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       protected T _projectItem;
+      public Func<IObjectBase, bool> ShouldHandleRemovedEvent { protected get; set; }
 
-      protected EditFavoritesPresenter(IEditFavoritesView view, IQuantityTask quantityTask,
+      protected EditFavoritesPresenter(IEditParameterListView view, IQuantityTask quantityTask,
          IInteractionTaskContext interactionTaskContext, IFormulaToFormulaBuilderDTOMapper formulaMapper,
-         IParameterToFavoriteParameterDTOMapper favoriteMapper, IFavoriteRepository favoriteRepository,
+         IParameterToParameterDTOMapper parameterDTOMapper, IFavoriteRepository favoriteRepository,
          IInteractionTasksForParameter parameterTask, IFavoriteTask favoriteTask, IEntityPathResolver entityPathResolver, IViewItemContextMenuFactory viewItemContextMenuFactory)
          : base(
             view, quantityTask, interactionTaskContext,
             formulaMapper, parameterTask, favoriteTask)
       {
-         _favoriteMapper = favoriteMapper;
+         _parameterDTOMapper = parameterDTOMapper;
          _favoriteRepository = favoriteRepository;
          _entityPathResolver = entityPathResolver;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _parameterCache = new Cache<string, IParameter>(p => _entityPathResolver.PathFor(p), s => null);
-         _favorites = new List<FavoriteParameterDTO>();
+         _favorites = new List<ParameterDTO>();
          _context = interactionTaskContext.Context;
       }
 
       protected abstract void CacheParameters(T projectItem);
 
-      protected override void UpdateView(IParameterDTO parameterDTO)
+      protected override void RefreshViewAndSelect(IParameterDTO parameterDTO)
       {
          updateFavorites();
-         Select(parameterDTO.DowncastTo<FavoriteParameterDTO>());
+         Select(parameterDTO.DowncastTo<ParameterDTO>());
       }
 
-      public void Select(FavoriteParameterDTO parameterDTO)
+      public void Select(ParameterDTO parameterDTO)
       {
          _view.Select(parameterDTO);
       }
@@ -90,12 +89,12 @@ namespace MoBi.Presentation.Presenter
          releaseFavorites();
       }
 
-      public void GoTo(FavoriteParameterDTO favoriteParameterDTO)
+      public void GoTo(ParameterDTO parameterDTO)
       {
-         if (favoriteParameterDTO == null)
+         if (parameterDTO == null)
             return;
 
-         var parameter = GetParameterFrom(favoriteParameterDTO);
+         var parameter = GetParameterFrom(parameterDTO);
          _context.PublishEvent(new EntitySelectedEvent(parameter, this));
       }
 
@@ -120,16 +119,17 @@ namespace MoBi.Presentation.Presenter
          releaseFavorites();
          _favorites.Clear();
 
-         foreach (var path in _favoriteRepository.All())
-         {
-            var parameter = _parameterCache[path];
-            if (parameter != null)
-               _favorites.Add(_favoriteMapper.MapFrom(parameter));
-         }
+         var allFavoritesParameters = _favoriteRepository.All().Select(path => _parameterCache[path]).Where(p => p != null);
+         _favorites.AddRange(allFavoritesParameters.Select(favoriteDTOFrom));
 
          EnumHelper.AllValuesFor<PathElement>().Each(updateColumnVisibility);
          UpdateSpecialColumnsVisibility();
-         _view.Show(_favorites);
+         _view.BindTo(_favorites);
+      }
+
+      private ParameterDTO favoriteDTOFrom(IParameter parameter)
+      {
+         return _parameterDTOMapper.MapFrom(parameter).DowncastTo<ParameterDTO>();
       }
 
       private void releaseFavorites()
@@ -197,7 +197,5 @@ namespace MoBi.Presentation.Presenter
 
          refresh();
       }
-
-      public Func<IObjectBase, bool> ShouldHandleRemovedEvent { protected get; set; }
    }
 }

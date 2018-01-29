@@ -22,33 +22,37 @@ namespace MoBi.Presentation.Presenter
    {
       private IEventGroupBuilder _eventGroupBuilder;
       private readonly IEditTaskFor<IEventGroupBuilder> _editTask;
-      private readonly IEventGroupBuilderToDTOEventGroupBuilderMapper _eventGroupBuilderToDTOEventGroupBuilderMapper;
+      private readonly IEventGroupBuilderToEventGroupBuilderDTOMapper _eventGroupBuilderDTOMapper;
       private readonly IMoBiContext _context;
       private readonly IDescriptorConditionListPresenter<IEventGroupBuilder> _descriptorConditionListPresenter;
-      private readonly IEditParameterListPresenter _parameterListPresenter;
+      private readonly IEditParametersInContainerPresenter _parametersInContainerPresenter;
       private IBuildingBlock _buildingBlock;
 
-      public EditEventGroupPresenter(IEditEventGroupView view, IEditTaskFor<IEventGroupBuilder> editTask, IEditParameterListPresenter parameterListPresenter,
-         IEventGroupBuilderToDTOEventGroupBuilderMapper eventGroupBuilderToDTOEventGroupBuilderMapper, IMoBiContext context,
+      public EditEventGroupPresenter(
+         IEditEventGroupView view, 
+         IEditTaskFor<IEventGroupBuilder> editTask, 
+         IEditParametersInContainerPresenter parametersInContainerPresenter,
+         IEventGroupBuilderToEventGroupBuilderDTOMapper eventGroupBuilderDTOMapper, 
+         IMoBiContext context,
          IDescriptorConditionListPresenter<IEventGroupBuilder> descriptorConditionListPresenter)
          : base(view)
       {
          _descriptorConditionListPresenter = descriptorConditionListPresenter;
          _context = context;
-         _eventGroupBuilderToDTOEventGroupBuilderMapper = eventGroupBuilderToDTOEventGroupBuilderMapper;
-         _parameterListPresenter = parameterListPresenter;
-         _view.AddParametersView(parameterListPresenter.BaseView);
+         _eventGroupBuilderDTOMapper = eventGroupBuilderDTOMapper;
+         _parametersInContainerPresenter = parametersInContainerPresenter;
+         _view.AddParametersView(parametersInContainerPresenter.BaseView);
          _view.AddDescriptorConditionListView(_descriptorConditionListPresenter.View);
          _editTask = editTask;
-         AddSubPresenters(_parameterListPresenter, _descriptorConditionListPresenter);
+         AddSubPresenters(_parametersInContainerPresenter, _descriptorConditionListPresenter);
       }
 
       public override void Edit(IEventGroupBuilder eventGroupBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          _eventGroupBuilder = eventGroupBuilder;
-         _parameterListPresenter.Edit(eventGroupBuilder);
+         _parametersInContainerPresenter.Edit(eventGroupBuilder);
          _view.EnableDescriptors = eventGroupBuilder.ParentContainer == null;
-         var dto = _eventGroupBuilderToDTOEventGroupBuilderMapper.MapFrom(_eventGroupBuilder);
+         var dto = _eventGroupBuilderDTOMapper.MapFrom(_eventGroupBuilder);
          dto.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(eventGroupBuilder, existingObjectsInParent));
          _view.BindTo(dto);
          _descriptorConditionListPresenter.Edit(eventGroupBuilder,x => x.SourceCriteria, _buildingBlock);
@@ -57,7 +61,7 @@ namespace MoBi.Presentation.Presenter
       public void SelectParameter(IParameter parameter)
       {
          _view.ShowParameters();
-         _parameterListPresenter.Select(parameter);
+         _parametersInContainerPresenter.Select(parameter);
       }
 
       public override object Subject => _eventGroupBuilder;
@@ -80,11 +84,11 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
+         get => _buildingBlock;
          set
          {
             _buildingBlock = value;
-            _parameterListPresenter.BuildingBlock = value;
+            _parametersInContainerPresenter.BuildingBlock = value;
          }
       }
 

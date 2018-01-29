@@ -266,7 +266,6 @@
     <Compile Include="Core\Workspace.cs" />
     <Compile Include="DTO\ApplicationSettingsDTO.cs" />
     <Compile Include="DTO\EmptyFormulaUsableDTO.cs" />
-    <Compile Include="DTO\FavoriteParameterDTO.cs" />
     <Compile Include="DTO\IMoBiParameterDTO.cs" />
     <Compile Include="DTO\LegendItemDTO.cs" />
     <Compile Include="DTO\RenameObjectDTOFactory.cs" />
@@ -274,13 +273,16 @@
     <Compile Include="DTO\ValueOriginDTO.cs" />
     <Compile Include="Extensions\HistoricalResultsNodeExtensions.cs" />
     <Compile Include="Extensions\SmartXLSExtensions.cs" />
+    <Compile Include="Mappers\ApplicationBuilderToApplicationBuilderDTOMapper.cs" />
+    <Compile Include="Mappers\ApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper.cs" />
     <Compile Include="Mappers\DataTableToImportQuantityDTOMapperForSimulations.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Mappers\EventAssignmentBuilderToEventAssignmentDTOMapper.cs" />
+    <Compile Include="Mappers\EventBuilderToEventBuilderDTOMapper.cs" />
     <Compile Include="Mappers\IOutputIntervalToOutputIntervalDTOMapper.cs" />
     <Compile Include="Mappers\MoBiQuantityPathToQuantityDisplayPathMapper.cs" />
     <Compile Include="Mappers\ObjectBaseDTOToReferenceNodeMapper.cs" />
-    <Compile Include="Mappers\ParameterToFavoriteParameterDTOMapper.cs" />
     <Compile Include="Mappers\TransportMoleculeContainerToObjectBaseDTOMapper.cs" />
     <Compile Include="Mappers\UsedCalcualtionMethodToUsedCalcualtionMethodDTOMapper.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForEductBuilder.cs" />
@@ -371,7 +373,10 @@
     <Compile Include="Formatters\StartValueFormatter.cs" />
     <Compile Include="Formatters\NullableWithDisplayUnitFormatter.cs" />
     <Compile Include="Formatters\ValuePointFormatter.cs" />
+    <Compile Include="Presenter\EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase.cs" />
     <Compile Include="Presenter\EditValueOriginPresenter.cs" />
+    <Compile Include="Presenter\IEditParameterListPresenter.cs" />
+    <Compile Include="Presenter\UserDefinedParametersPresenter.cs" />
     <Compile Include="Serialization\Xml\ApplicationSettingsPersistor.cs" />
     <Compile Include="Serialization\Xml\Serializer\ApplicationSettingsXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\SettingsPersistor.cs" />
@@ -498,7 +503,7 @@
     <Compile Include="Views\IApplyToSelectionView.cs" />
     <Compile Include="Views\IEditBlackBoxFormulaView.cs" />
     <Compile Include="Views\IEditContainerInSimulationView.cs" />
-    <Compile Include="Views\IEditFavoritesView.cs" />
+    <Compile Include="Views\IEditParameterListView.cs" />
     <Compile Include="Views\IEditValueOriginView.cs" />
     <Compile Include="Views\ILegendView.cs" />
     <Compile Include="Views\IEditChartTemplateManagerView.cs" />
@@ -521,7 +526,7 @@
     <Compile Include="Mappers\MoleculeBuilderDTOToTreeNodeMapper.cs" />
     <Compile Include="Mappers\ObjectBaseDTOToSpatialStructureNodeMapper.cs" />
     <Compile Include="Mappers\DataTableToImportQuantityDTOMapperForMolecules.cs" />
-    <Compile Include="Mappers\EventGroupBuilderToDTOEventGroupBuilderMapper.cs" />
+    <Compile Include="Mappers\EventGroupBuilderToEventGroupBuilderDTOMapper.cs" />
     <Compile Include="Mappers\ExplicitFormulaToExplicitFormulaDTOMapper.cs" />
     <Compile Include="Mappers\FormulaToFormulaInfoDTOMapper.cs" />
     <Compile Include="Mappers\FormulaToFormulaBuilderDTOMapper.cs" />
@@ -557,7 +562,7 @@
     <Compile Include="Mappers\TableFormulaToDTOTableFormulaMapper.cs" />
     <Compile Include="Mappers\TableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper.cs" />
     <Compile Include="Mappers\TagToTagDTOMapper.cs" />
-    <Compile Include="Mappers\TransportBuilderToDTOTransportBuilderMapper.cs" />
+    <Compile Include="Mappers\TransportBuilderToTransportBuilderDTOMapper.cs" />
     <Compile Include="Mappers\TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper.cs" />
     <Compile Include="Mappers\TransportToTransportDTOMapper.cs" />
     <Compile Include="Mappers\UnitToDTOUnitMapper.cs" />
@@ -619,7 +624,7 @@
     <Compile Include="Presenter\ExportSelectedQuantitiesPresenter.cs" />
     <Compile Include="Presenter\FormulaCachePresenter.cs" />
     <Compile Include="Presenter\EditFormulaPresenter.cs" />
-    <Compile Include="Presenter\EditParameterListPresenter.cs" />
+    <Compile Include="Presenter\EditParametersInContainerPresenter.cs" />
     <Compile Include="Presenter\EditTableFormulaPresenter.cs" />
     <Compile Include="Presenter\FormulaPresenterCache.cs" />
     <Compile Include="Presenter\IBreadCrumbsPresenter.cs" />
@@ -843,7 +848,7 @@
     <Compile Include="Views\IEditEventAssignmentBuilderView.cs" />
     <Compile Include="Views\IEditFormulaView.cs" />
     <Compile Include="Views\IEditOutputSchemaView.cs" />
-    <Compile Include="Views\IEditParameterListView.cs" />
+    <Compile Include="Views\IEditParametersInContainerView.cs" />
     <Compile Include="Views\IEditQuantityInSimulationView.cs" />
     <Compile Include="Views\IEditSimulationSettingsView.cs" />
     <Compile Include="Views\IEditSumFormulaView.cs" />

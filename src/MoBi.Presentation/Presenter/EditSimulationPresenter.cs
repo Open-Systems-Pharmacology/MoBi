@@ -20,8 +20,15 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditSimulationPresenter : IPresenter<IEditSimulationView>, ISingleStartPresenter<IMoBiSimulation>,
-      IDiagramBuildingBlockPresenter, IListener<SimulationRunFinishedEvent>, IListener<EntitySelectedEvent>, IListener<SimulationReloadEvent>, IListener<FavoritesSelectedEvent>
+   public interface IEditSimulationPresenter :
+      IPresenter<IEditSimulationView>,
+      ISingleStartPresenter<IMoBiSimulation>,
+      IDiagramBuildingBlockPresenter,
+      IListener<SimulationRunFinishedEvent>,
+      IListener<EntitySelectedEvent>,
+      IListener<SimulationReloadEvent>,
+      IListener<FavoritesSelectedEvent>,
+      IListener<UserDefinedSelectedEvent>
    {
       void LoadDiagram();
       string CreateResultTabCaption(string viewCaption);
@@ -41,12 +48,13 @@ namespace MoBi.Presentation.Presenter
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IChartFactory _chartFactory;
       private readonly IEditFavoritesInSimulationPresenter _favoritesPresenter;
+      private readonly IUserDefinedParametersPresenter _userDefinedParametersPresenter;
       private readonly IChartTasks _chartTask;
 
       public EditSimulationPresenter(IEditSimulationView view, ISimulationChartPresenter chartPresenter, IHierarchicalSimulationPresenter hierarchicalPresenter, ISimulationDiagramPresenter simulationDiagramPresenter,
          IEditSolverSettingsPresenter solverSettingsPresenter, IEditOutputSchemaPresenter editOutputSchemaPresenter,
          IEditInSimulationPresenterFactory showPresenterFactory, IHeavyWorkManager heavyWorkManager, IChartFactory chartFactory,
-         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask)
+         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask, IUserDefinedParametersPresenter userDefinedParametersPresenter)
          : base(view)
       {
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
@@ -55,6 +63,7 @@ namespace MoBi.Presentation.Presenter
          _chartFactory = chartFactory;
          _favoritesPresenter = favoritesPresenter;
          _chartTask = chartTask;
+         _userDefinedParametersPresenter = userDefinedParametersPresenter;
          _solverSettingsPresenter = solverSettingsPresenter;
          _hierarchicalPresenter = hierarchicalPresenter;
          _simulationDiagramPresenter = simulationDiagramPresenter;
@@ -65,7 +74,7 @@ namespace MoBi.Presentation.Presenter
          _hierarchicalPresenter.ShowSolverSettings = showSolverSettings;
          _hierarchicalPresenter.SimulationFavorites = () => _favoritesPresenter.Favorites();
          _view.SetChartView(chartPresenter.View);
-         AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter, _favoritesPresenter);
+         AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter, _favoritesPresenter, _userDefinedParametersPresenter);
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> {OnMissingKey = x => null};
       }
 
@@ -253,8 +262,24 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(FavoritesSelectedEvent eventToHandle)
       {
-         if (_simulation.Equals(eventToHandle.ObjectBase))
-            _view.SetEditView(_favoritesPresenter.BaseView);
+         if (!canHandle(eventToHandle))
+            return;
+
+         _view.SetEditView(_favoritesPresenter.BaseView);
+      }
+
+      public void Handle(UserDefinedSelectedEvent eventToHandle)
+      {
+         if (!canHandle(eventToHandle))
+            return;
+
+         _userDefinedParametersPresenter.ShowUserDefinedParametersIn(_simulation.Model.Root);
+         _view.SetEditView(_userDefinedParametersPresenter.BaseView);
+      }
+
+      private bool canHandle(IObjectBaseEvent objectBaseEvent)
+      {
+         return Equals(_simulation, objectBaseEvent.ObjectBase);
       }
    }
 }

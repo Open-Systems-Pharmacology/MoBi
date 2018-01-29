@@ -29,12 +29,12 @@ namespace MoBi.Presentation.Presenter
 
    public class EditTransportBuilderPresenter : AbstractSubPresenterWithFormula<IEditTransportBuilderView, IEditTransportBuilderPresenter>, IEditTransportBuilderPresenter
    {
-      protected readonly ITransportBuilderToDTOTransportBuilderMapper _transportBuilderToDTOTransportBuilderMapper;
+      protected readonly ITransportBuilderToTransportBuilderDTOMapper _transportBuilderToDTOTransportBuilderMapper;
       private ITransportBuilder _transportBuilder;
       protected readonly IEditTaskFor<ITransportBuilder> _editTasks;
       protected readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuidlerMapper;
-      private readonly IEditParameterListPresenter _editParameterListPresenter;
+      private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
       private readonly ISelectReferenceAtTransportPresenter _selectReferencePresenter;
       private readonly IMoBiContext _context;
       private TransportBuilderDTO _transportBuilderDTO;
@@ -53,9 +53,9 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public EditTransportBuilderPresenter(IEditTransportBuilderView view, ITransportBuilderToDTOTransportBuilderMapper transportBuilderToDTOTransportBuilderMapper,
+      public EditTransportBuilderPresenter(IEditTransportBuilderView view, ITransportBuilderToTransportBuilderDTOMapper transportBuilderToDTOTransportBuilderMapper,
          IEditTaskFor<ITransportBuilder> editTasks, IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuidlerMapper, IEditParameterListPresenter editParameterListPresenter,
+         IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuidlerMapper, IEditParametersInContainerPresenter editParametersInContainerPresenter,
          IEditFormulaPresenter editFormulaPresenter, ISelectReferenceAtTransportPresenter selectReferencePresenter, IMoBiContext context,
          IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<ITransportBuilder> sourceCriteriaPresenter,
          IDescriptorConditionListPresenter<ITransportBuilder> targetCriteriaPresenter)
@@ -64,7 +64,7 @@ namespace MoBi.Presentation.Presenter
          _transportBuilderToDTOTransportBuilderMapper = transportBuilderToDTOTransportBuilderMapper;
          _context = context;
 
-         _editParameterListPresenter = editParameterListPresenter;
+         _editParametersInContainerPresenter = editParametersInContainerPresenter;
          _formulaToDTOFormulaBuidlerMapper = formulaToDTOFormulaBuidlerMapper;
          _editTasks = editTasks;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
@@ -74,12 +74,12 @@ namespace MoBi.Presentation.Presenter
          editFormulaPresenter.RemoveFormulaType<TableFormulaWithOffset>();
          editFormulaPresenter.RemoveFormulaType<SumFormula>();
          editFormulaPresenter.SetDefaultFormulaType<ExplicitFormula>();
-         View.SetParameterView(_editParameterListPresenter.BaseView);
+         View.SetParameterView(_editParametersInContainerPresenter.BaseView);
          View.SetFormulaView(_editFormulaPresenter.BaseView);
          _moleculeListPresenter = moleculeListPresenter;
          _sourceCriteriaPresenter = sourceCriteriaPresenter;
          _targetCriteriaPresenter = targetCriteriaPresenter;
-         AddSubPresenters(moleculeListPresenter, _sourceCriteriaPresenter, _targetCriteriaPresenter, editParameterListPresenter);
+         AddSubPresenters(moleculeListPresenter, _sourceCriteriaPresenter, _targetCriteriaPresenter, editParametersInContainerPresenter);
          _view.AddMoleculeSelectionView(_moleculeListPresenter.View);
          _view.AddSourceCriteriaView(_sourceCriteriaPresenter.View);
          _view.AddTargetCriteriaView(_targetCriteriaPresenter.View);
@@ -132,8 +132,8 @@ namespace MoBi.Presentation.Presenter
 
       private void setUpEditParameterListView()
       {
-         _editParameterListPresenter.BuildingBlock = BuildingBlock;
-         _editParameterListPresenter.Edit(_transportBuilder);
+         _editParametersInContainerPresenter.BuildingBlock = BuildingBlock;
+         _editParametersInContainerPresenter.Edit(_transportBuilder);
       }
 
       private void setUpFormulaEditView()
@@ -166,7 +166,7 @@ namespace MoBi.Presentation.Presenter
       public void SelectParameter(IParameter parameter)
       {
          _view.ShowParamters();
-         _editParameterListPresenter.Select(parameter);
+         _editParametersInContainerPresenter.Select(parameter);
       }
 
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)

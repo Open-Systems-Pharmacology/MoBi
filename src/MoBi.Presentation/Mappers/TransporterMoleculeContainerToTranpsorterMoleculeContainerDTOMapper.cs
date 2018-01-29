@@ -12,10 +12,10 @@ namespace MoBi.Presentation.Mappers
 
    internal class TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper
    {
-      private readonly ITransportBuilderToDTOTransportBuilderMapper _activeTransportToDTOActiveTransportBuilderMapper;
+      private readonly ITransportBuilderToTransportBuilderDTOMapper _activeTransportToDTOActiveTransportBuilderMapper;
       private readonly IParameterToParameterDTOMapper _parameterBuilderToDTOParameterBuilderMapper;
 
-      public TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper(ITransportBuilderToDTOTransportBuilderMapper activeTransportToDTOActiveTransportBuilderMapper, IParameterToParameterDTOMapper parameterBuilderTodtoParameterBuilderMapper)
+      public TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper(ITransportBuilderToTransportBuilderDTOMapper activeTransportToDTOActiveTransportBuilderMapper, IParameterToParameterDTOMapper parameterBuilderTodtoParameterBuilderMapper)
       {
          _activeTransportToDTOActiveTransportBuilderMapper = activeTransportToDTOActiveTransportBuilderMapper;
          _parameterBuilderToDTOParameterBuilderMapper = parameterBuilderTodtoParameterBuilderMapper;

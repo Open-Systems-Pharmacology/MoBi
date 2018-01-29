@@ -18,8 +18,8 @@ namespace MoBi.Presentation.Presenter
    internal class EditFavoritesInSpatialStructurePresenter : EditFavoritesInBuildindBlockPresenter<IContainer>,
       IEditFavoritesInSpatialStructurePresenter
    {
-      public EditFavoritesInSpatialStructurePresenter(IEditFavoritesView view, IQuantityTask quantityTask, IInteractionTaskContext interactionTaskContext, IFormulaToFormulaBuilderDTOMapper formulaMapper, IParameterToFavoriteParameterDTOMapper favoriteMapper, IFavoriteRepository favoriteRepository, IInteractionTasksForParameter parameterTask, IFavoriteTask favoriteTask, IEntityPathResolver entityPathResolver, IViewItemContextMenuFactory contextMenuFactory)
-         : base(view, quantityTask, interactionTaskContext, formulaMapper, favoriteMapper,
+      public EditFavoritesInSpatialStructurePresenter(IEditParameterListView view, IQuantityTask quantityTask, IInteractionTaskContext interactionTaskContext, IFormulaToFormulaBuilderDTOMapper formulaMapper, IParameterToParameterDTOMapper parameterDTOMapper, IFavoriteRepository favoriteRepository, IInteractionTasksForParameter parameterTask, IFavoriteTask favoriteTask, IEntityPathResolver entityPathResolver, IViewItemContextMenuFactory contextMenuFactory)
+         : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterDTOMapper,
             favoriteRepository, parameterTask, favoriteTask, entityPathResolver, contextMenuFactory)
       {
       }

@@ -20,11 +20,18 @@ namespace MoBi.Presentation.Presenter
 
    public class EditFavoritesInSimulationPresenter : EditFavoritesPresenter<IMoBiSimulation>, IEditFavoritesInSimulationPresenter
    {
-      public EditFavoritesInSimulationPresenter(IEditFavoritesView view, IQuantityTask quantityTask,
-         IInteractionTaskContext interactionTaskContext, IFormulaToFormulaBuilderDTOMapper formulaMapper,
-         IParameterToFavoriteParameterDTOMapper favoriteMapper, IFavoriteRepository favoriteRepository,
-         IInteractionTasksForParameter parameterTask, IFavoriteTask favoriteTask, IEntityPathResolver entityPathResolver, IViewItemContextMenuFactory contextMenusFactory)
-         : base(view, quantityTask, interactionTaskContext, formulaMapper, favoriteMapper,
+      public EditFavoritesInSimulationPresenter(
+         IEditParameterListView view, 
+         IQuantityTask quantityTask,
+         IInteractionTaskContext interactionTaskContext, 
+         IFormulaToFormulaBuilderDTOMapper formulaMapper,
+         IParameterToParameterDTOMapper parameterDTOMapper, 
+         IFavoriteRepository favoriteRepository,
+         IInteractionTasksForParameter parameterTask, 
+         IFavoriteTask favoriteTask, 
+         IEntityPathResolver entityPathResolver, 
+         IViewItemContextMenuFactory contextMenusFactory)
+         : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterDTOMapper,
             favoriteRepository, parameterTask, favoriteTask, entityPathResolver, contextMenusFactory)
       {
          ShouldHandleRemovedEvent = x => false; //Can not remove in Simulation

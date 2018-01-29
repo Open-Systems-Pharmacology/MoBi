@@ -40,26 +40,26 @@ namespace MoBi.Presentation.Presenter
       private ContainerDTO _containerDTO;
       private readonly IMoBiContext _context;
       private readonly IEntityTask _entityTask;
-      private readonly IEditParameterListPresenter _editParameterListPresenter;
+      private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
 
       public EditContainerPresenter(IEditContainerView view, IContainerToContainerDTOMapper containerToDtoContainerMapper, IEditTaskForContainer editTasks,
-         IEditParameterListPresenter editParameterListPresenter, IMoBiContext context, IEntityTask entityTask)
+         IEditParametersInContainerPresenter editParametersInContainerPresenter, IMoBiContext context, IEntityTask entityTask)
          : base(view)
       {
          _containerToDTOContainerMapper = containerToDtoContainerMapper;
          _entityTask = entityTask;
          _context = context;
-         _editParameterListPresenter = editParameterListPresenter;
+         _editParametersInContainerPresenter = editParametersInContainerPresenter;
          _editTasks = editTasks;
-         _view.SetParameterView(editParameterListPresenter.BaseView);
-         AddSubPresenters(_editParameterListPresenter);
+         _view.SetParameterView(editParametersInContainerPresenter.BaseView);
+         AddSubPresenters(_editParametersInContainerPresenter);
          initParameterListPresenter();
       }
 
       private void initParameterListPresenter()
       {
-         _editParameterListPresenter.BlackBoxAllowed = true;
-         _editParameterListPresenter.ChangeLocalisationAllowed = false;
+         _editParametersInContainerPresenter.BlackBoxAllowed = true;
+         _editParametersInContainerPresenter.ChangeLocalisationAllowed = false;
       }
 
       public string ContainerModeDisplayFor(ContainerMode mode)
@@ -105,8 +105,8 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock
       {
-         get { return _editParameterListPresenter.BuildingBlock; }
-         set { _editParameterListPresenter.BuildingBlock = value; }
+         get { return _editParametersInContainerPresenter.BuildingBlock; }
+         set { _editParametersInContainerPresenter.BuildingBlock = value; }
       }
 
       public IFormulaCache FormulaCache
@@ -117,12 +117,12 @@ namespace MoBi.Presentation.Presenter
       public void SelectParameter(IParameter childParameter)
       {
          _view.ShowParameters();
-         _editParameterListPresenter.Select(childParameter);
+         _editParametersInContainerPresenter.Select(childParameter);
       }
 
       public IEnumerable<FormulaBuilderDTO> GetFormulas()
       {
-         return _editParameterListPresenter.GetFormulas();
+         return _editParametersInContainerPresenter.GetFormulas();
       }
 
       public void RenameSubject()
@@ -135,7 +135,7 @@ namespace MoBi.Presentation.Presenter
          _container = container;
          _containerDTO = _containerToDTOContainerMapper.MapFrom(_container);
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));
-         _editParameterListPresenter.Edit(_container);
+         _editParametersInContainerPresenter.Edit(_container);
          _view.BindTo(_containerDTO);
          _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();
       }
@@ -147,7 +147,7 @@ namespace MoBi.Presentation.Presenter
 
       public EditParameterMode EditMode
       {
-         set { _editParameterListPresenter.EditMode = value; }
+         set { _editParametersInContainerPresenter.EditMode = value; }
       }
 
       public bool ReadOnly

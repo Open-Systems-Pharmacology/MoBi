@@ -501,11 +501,11 @@
     <Compile Include="Views\EditEventGroupView.Designer.cs">
       <DependentUpon>EditEventGroupView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditFavoritesView.cs">
+    <Compile Include="Views\EditParameterListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\EditFavoritesView.Designer.cs">
-      <DependentUpon>EditFavoritesView.cs</DependentUpon>
+    <Compile Include="Views\EditParameterListView.Designer.cs">
+      <DependentUpon>EditParameterListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\EditFormulaView.cs">
       <SubType>UserControl</SubType>
@@ -537,11 +537,11 @@
     <Compile Include="Views\EditOutputSchemaView.Designer.cs">
       <DependentUpon>EditOutputSchemaView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditParameterListView.cs">
+    <Compile Include="Views\EditParametersInContainerView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\EditParameterListView.Designer.cs">
-      <DependentUpon>EditParameterListView.cs</DependentUpon>
+    <Compile Include="Views\EditParametersInContainerView.Designer.cs">
+      <DependentUpon>EditParametersInContainerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\EditPassiveTransportBuildingBlockView.cs">
       <SubType>Form</SubType>
@@ -1040,8 +1040,8 @@
     <EmbeddedResource Include="Views\EditContainerInSimulationView.resx">
       <DependentUpon>EditContainerInSimulationView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\EditFavoritesView.resx">
-      <DependentUpon>EditFavoritesView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\EditParameterListView.resx">
+      <DependentUpon>EditParameterListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\EditSimulationSettingsView.resx">
       <DependentUpon>EditSimulationSettingsView.cs</DependentUpon>
@@ -1163,8 +1163,8 @@
       <DependentUpon>EditOutputSchemaView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\EditParameterListView.resx">
-      <DependentUpon>EditParameterListView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\EditParametersInContainerView.resx">
+      <DependentUpon>EditParametersInContainerView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\EditParameterStartValuesView.resx">

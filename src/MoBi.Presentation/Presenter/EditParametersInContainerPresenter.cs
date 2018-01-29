@@ -24,7 +24,7 @@ using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditParameterListPresenter : IParameterPresenter,
+   public interface IEditParametersInContainerPresenter : IParameterPresenter,
       IListener<AddedEvent>,
       IListener<RemovedEvent>,
       IListener<QuantityChangedEvent>,
@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Presenter
       bool ShowBuildMode { set; }
       bool BlackBoxAllowed { set; }
       void Edit(IContainer container);
-      IEditParameterListView View { get; }
+      IEditParametersInContainerView View { get; }
       bool ChangeLocalisationAllowed { set; }
       EditParameterMode EditMode { set; }
       IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Presenter
       void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable);
    }
 
-   public class EditParameterListPresenter : AbstractParameterBasePresenter<IEditParameterListView, IEditParameterListPresenter>, IEditParameterListPresenter
+   public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
    {
       private readonly IClipboardManager _clipboardManager;
       private readonly IParameterToParameterDTOMapper _parameterToDTOParameterMapper;
@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Presenter
       private bool _ignoreAddEvents;
       public bool ChangeLocalisationAllowed { set; private get; }
 
-      public EditParameterListPresenter(IEditParameterListView view,
+      public EditParametersInContainerPresenter(IEditParametersInContainerView view,
          IFormulaToFormulaBuilderDTOMapper formulaMapper,
          IParameterToParameterDTOMapper parameterToDTOParameterMapper,
          IInteractionTasksForParameter parameterTask,
@@ -129,7 +129,7 @@ namespace MoBi.Presentation.Presenter
 
       public EditParameterMode EditMode
       {
-         set { View.EditMode = value; }
+         set => View.EditMode = value;
       }
 
       public IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
@@ -170,24 +170,24 @@ namespace MoBi.Presentation.Presenter
 
       public bool ShowBuildMode
       {
-         set { View.ShowBuildMode = value; }
+         set => View.ShowBuildMode = value;
       }
 
       public ISelectReferenceAtParameterPresenter ValueReference
       {
-         get { return _editParameterPresenter.ValueReferencesPresenter; }
-         set { _editParameterPresenter.ValueReferencesPresenter = value; }
+         get => _editParameterPresenter.ValueReferencesPresenter;
+         set => _editParameterPresenter.ValueReferencesPresenter = value;
       }
 
       public ISelectReferenceAtParameterPresenter RhsReference
       {
-         get { return _editParameterPresenter.RhsReferencesPresenter; }
-         set { _editParameterPresenter.RhsReferencesPresenter = value; }
+         get => _editParameterPresenter.RhsReferencesPresenter;
+         set => _editParameterPresenter.RhsReferencesPresenter = value;
       }
 
       public override IBuildingBlock BuildingBlock
       {
-         get { return base.BuildingBlock; }
+         get => base.BuildingBlock;
          set
          {
             base.BuildingBlock = value;
@@ -242,7 +242,7 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_parameterTask.AddExisting(_container, BuildingBlock));
       }
 
-      protected override void UpdateView(IParameterDTO parameterDTO)
+      protected override void RefreshViewAndSelect(IParameterDTO parameterDTO)
       {
          Edit(_container);
          Select((ParameterDTO) parameterDTO);
@@ -250,7 +250,7 @@ namespace MoBi.Presentation.Presenter
 
       public bool ShowAdvancedParameters
       {
-         get { return userSettings.ShowAdvancedParameters; }
+         get => userSettings.ShowAdvancedParameters;
          set
          {
             userSettings.ShowAdvancedParameters = value;
@@ -260,7 +260,7 @@ namespace MoBi.Presentation.Presenter
 
       public bool GroupParameters
       {
-         get { return userSettings.GroupParameters; }
+         get => userSettings.GroupParameters;
          set
          {
             userSettings.GroupParameters = value;
@@ -268,10 +268,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private IUserSettings userSettings
-      {
-         get { return _interactionTaskContext.UserSettings; }
-      }
+      private IUserSettings userSettings => _interactionTaskContext.UserSettings;
 
       public void SetBuildModeFor(ParameterDTO parameterDTO, ParameterBuildMode newMode)
       {
@@ -371,7 +368,7 @@ namespace MoBi.Presentation.Presenter
 
       public bool BlackBoxAllowed
       {
-         set { _editParameterPresenter.BlackBoxAllowed = value; }
+         set => _editParameterPresenter.BlackBoxAllowed = value;
       }
 
       public void Handle(ParameterChangedEvent eventToHandle)

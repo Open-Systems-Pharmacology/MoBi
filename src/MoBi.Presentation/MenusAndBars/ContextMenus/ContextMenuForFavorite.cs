@@ -1,23 +1,22 @@
 using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class ContextMenuForFavorite : ContextMenuBase
    {
-
-      private readonly FavoriteParameterDTO _favoriteParameterDTO;
+      private readonly ParameterDTO _favoriteParameterDTO;
       private readonly IEditFavoritesPresenter _presenter;
 
-      public ContextMenuForFavorite(FavoriteParameterDTO favoriteParameterDTO, IEditFavoritesPresenter presenter)
+      public ContextMenuForFavorite(ParameterDTO favoriteParameterDTO, IEditFavoritesPresenter presenter)
       {
          _favoriteParameterDTO = favoriteParameterDTO;
          _presenter = presenter;
@@ -35,12 +34,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return new ContextMenuForFavorite(viewItem.DowncastTo<FavoriteParameterDTO>(), presenter.DowncastTo<IEditFavoritesPresenter>());
+         return new ContextMenuForFavorite(viewItem.DowncastTo<ParameterDTO>(), presenter.DowncastTo<IEditFavoritesPresenter>());
       }
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return objectRequestingContextMenu.IsAnImplementationOf<FavoriteParameterDTO>() &&
+         return objectRequestingContextMenu.IsAnImplementationOf<ParameterDTO>() &&
                 presenter.IsAnImplementationOf<IEditFavoritesPresenter>();
       }
    }
