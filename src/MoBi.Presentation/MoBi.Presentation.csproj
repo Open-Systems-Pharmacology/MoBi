@@ -267,6 +267,7 @@
     <Compile Include="DTO\ApplicationSettingsDTO.cs" />
     <Compile Include="DTO\EmptyFormulaUsableDTO.cs" />
     <Compile Include="DTO\FavoriteParameterDTO.cs" />
+    <Compile Include="DTO\IMoBiParameterDTO.cs" />
     <Compile Include="DTO\LegendItemDTO.cs" />
     <Compile Include="DTO\RenameObjectDTOFactory.cs" />
     <Compile Include="DTO\SolverSettingsDTO.cs" />

@@ -351,6 +351,7 @@
   <ItemGroup>
     <Content Include="..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x86\SQLite.Interop.dll">
       <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -22,6 +18,10 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -168,10 +168,10 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(AddedEvent eventToHandle)
       {
-         if (ShouldHandleEvent(eventToHandle.Parent))
-         {
-            refresh();
-         }
+         if (!ShouldHandleEvent(eventToHandle.Parent))
+            return;
+
+         refresh();
       }
 
       private void refresh()
@@ -192,8 +192,9 @@ namespace MoBi.Presentation.Presenter
       {
          var removedObjects = eventToHandle.RemovedObjects.ToList();
 
-         if (!removedObjects.Any(ShouldHandleRemovedEvent)) return;
-         
+         if (!removedObjects.Any(ShouldHandleRemovedEvent))
+            return;
+
          refresh();
       }
 

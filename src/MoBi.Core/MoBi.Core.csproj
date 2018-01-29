@@ -383,12 +383,14 @@
     <Compile Include="Domain\UnitSystem\MoBiMergedDimensionFactory.cs" />
     <Compile Include="Events\Events.cs" />
     <Compile Include="Events\BulkUpdateEvents.cs" />
+    <Compile Include="Events\IObjectBaseEvent.cs" />
     <Compile Include="Events\ParameterChangedEvent.cs" />
     <Compile Include="Events\RemovedValuePointEvent.cs" />
     <Compile Include="Events\TableFormulaEvent.cs" />
     <Compile Include="Events\TableFormulaRestartSolverChangedEvent.cs" />
     <Compile Include="Events\TableFormulaUnitChangedEvent.cs" />
     <Compile Include="Events\TableFormulaValueChangedEvent.cs" />
+    <Compile Include="Events\UserDefinedSelectedEvent.cs" />
     <Compile Include="Exceptions\MoBiException.cs" />
     <Compile Include="Extensions\CommandExtensions.cs" />
     <Compile Include="Extensions\DataRowExtensions.cs" />

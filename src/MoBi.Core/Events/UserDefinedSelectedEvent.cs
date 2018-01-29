@@ -2,11 +2,11 @@
 
 namespace MoBi.Core.Events
 {
-   public class FavoritesSelectedEvent : IObjectBaseEvent
+   public class UserDefinedSelectedEvent : IObjectBaseEvent
    {
       public IObjectBase ObjectBase { get; }
 
-      public FavoritesSelectedEvent(IObjectBase objectBase)
+      public UserDefinedSelectedEvent(IObjectBase objectBase)
       {
          ObjectBase = objectBase;
       }

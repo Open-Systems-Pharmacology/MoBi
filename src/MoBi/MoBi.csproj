@@ -200,6 +200,7 @@
     </Content>
     <Content Include="..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\x86\SQLite.Interop.dll">
       <Link>SQLite.Interop.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml">
       <Link>OSPSuite.PKParameters.xml</Link>

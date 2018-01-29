@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Presenter
          _moleculeBuilderToDTOMoleculeBuilderMapper = moleculeBuilderToDTOMoleculeBuilderMapper;
          _context = context;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
-         _favorites = treeNodeFactory.CreateGroupFavorites();
+         _favorites = treeNodeFactory.CreateForFavorites();
       }
 
       public override void Edit(IMoleculeBuildingBlock objectToEdit)

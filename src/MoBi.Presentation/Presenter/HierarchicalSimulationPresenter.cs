@@ -51,6 +51,11 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new FavoritesSelectedEvent(_simulation));
       }
 
+      protected override void RaiseUserDefinedSelectedEvent()
+      {
+         _context.PublishEvent(new UserDefinedSelectedEvent(_simulation));
+      }
+
       public override void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
       {
          if (!SimulationFavorites().Any())
@@ -63,10 +68,13 @@ namespace MoBi.Presentation.Presenter
       public void Edit(IMoBiSimulation simulation)
       {
          _simulation = simulation;
+         _view.AddNode(_favoritesNode);
+         _view.AddNode(_userDefinedNode);
+
          var roots = new List<IObjectBaseDTO> {_simulationSettingsMapper.MapFrom(simulation.Settings)};
          roots.AddRange(rootContainers());
-         _view.AddNode(_favorites);
          _view.Show(roots);
+
          ShowOutputSchema();
       }
 

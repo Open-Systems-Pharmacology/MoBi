@@ -1,26 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IMoBiParameterDTO : IParameterDTO
-   {
-      FormulaBuilderDTO RHSFormula { get; set; }
-      FormulaBuilderDTO Formula { get; set; }
-   }
-
    public class FavoriteParameterDTO : PathRepresentableDTO, IViewItem, IMoBiParameterDTO
    {
       public IDimension Dimension { get; set; }
       public FormulaBuilderDTO RHSFormula { get; set; }
       public FormulaBuilderDTO Formula { get; set; }
+
+      public FavoriteParameterDTO(IParameter parameter)
+      {
+         Parameter = parameter;
+         Parameter.PropertyChanged += HandlePropertyChanged;
+         ListOfValues = new Cache<double, string>();
+      }
 
       public virtual Unit DisplayUnit
       {
@@ -80,13 +81,6 @@ namespace MoBi.Presentation.DTO
       {
          get => Parameter.Description;
          set => Parameter.Description = value;
-      }
-
-      public FavoriteParameterDTO(IParameter parameter)
-      {
-         Parameter = parameter;
-         Parameter.PropertyChanged += HandlePropertyChanged;
-         ListOfValues = new Cache<double, string>();
       }
 
       public IEnumerable<Unit> AllUnits

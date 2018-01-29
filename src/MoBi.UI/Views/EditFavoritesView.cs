@@ -1,12 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -14,17 +7,21 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 using IToolTipCreator = MoBi.UI.Services.IToolTipCreator;
 using ToolTips = MoBi.Assets.ToolTips;
 
@@ -40,12 +37,12 @@ namespace MoBi.UI.Views
       private readonly RepositoryItemTextEdit _stantdardParameterEditRepository = new RepositoryItemTextEdit();
       private readonly UxRepositoryItemCheckEdit _favoriteRepository;
       private readonly IToolTipCreator _toolTipCreator;
-      private ValueOriginBinder<FavoriteParameterDTO> _valueOriginBinder;
+      private readonly ValueOriginBinder<FavoriteParameterDTO> _valueOriginBinder;
 
-      public EditFavoritesView(PathElementsBinder<FavoriteParameterDTO> pathBinder, 
-         IImageListRetriever imageListRetriever, 
+      public EditFavoritesView(PathElementsBinder<FavoriteParameterDTO> pathBinder,
+         IImageListRetriever imageListRetriever,
          IToolTipCreator toolTipCreator,
-         ValueOriginBinder<FavoriteParameterDTO> valueOriginBinder )
+         ValueOriginBinder<FavoriteParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
          _valueOriginBinder = valueOriginBinder;
@@ -133,7 +130,7 @@ namespace MoBi.UI.Views
          var colDim = _gridViewBinder.AutoBind(dto => dto.Dimension)
             .AsReadOnly()
             .WithShowInColumnChooser(true);
-      
+
          colDim.Visible = false;
 
          _valueOriginBinder.InitializeBinding(_gridViewBinder, onParameterValueOriginSet);
@@ -168,7 +165,6 @@ namespace MoBi.UI.Views
          _presenter.SetIsFavorite(parameterDTO, newValue);
       }
 
- 
       private void createResetButtonItem()
       {
          _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset,

@@ -18,7 +18,8 @@ namespace MoBi.Presentation.Presenter
       IDiagramBuildingBlockPresenter,
       IListener<EntitySelectedEvent>,
       IListener<RemovedEvent>,
-      IListener<FavoritesSelectedEvent>
+      IListener<FavoritesSelectedEvent>,
+      IListener<UserDefinedSelectedEvent>
    {
       void LoadDiagram();
    }
@@ -166,8 +167,23 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(FavoritesSelectedEvent eventToHandle)
       {
-         if (Equals(eventToHandle.ObjectBase, _spatialStructure))
-            _view.SetEditView(_favoritesPresenter.BaseView);
+         if (!canHandle(eventToHandle))
+            return;
+
+         _view.SetEditView(_favoritesPresenter.BaseView);
+      }
+
+      public void Handle(UserDefinedSelectedEvent eventToHandle)
+      {
+         if (!canHandle(eventToHandle))
+            return;
+
+         _view.SetEditView(_userDefinedParameterPresenter.BaseView);
+      }
+
+      private bool canHandle(IObjectBaseEvent objectBaseEvent)
+      {
+         return Equals(objectBaseEvent.ObjectBase, _spatialStructure);
       }
    }
 }

@@ -1359,7 +1359,6 @@ namespace MoBi.Assets
          public static readonly string NewMatchTagCondition = "New match tag condition";
          public static readonly string NewNotMatchTagCondition = "New not match tag condition";
          public static readonly string AddMatchAllCondition = "Add match all tag condition";
-
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
@@ -1374,9 +1373,7 @@ namespace MoBi.Assets
          public static readonly string MoleculeType = "Molecule Type";
          public static readonly string IncludeList = "Include List";
          public static readonly string ExcludeList = "Exclude List";
-
-         public static readonly string OneTimeEvent = "One Time";
-
+         public static readonly string OneTimeEvent = "One Time";    
          public static readonly string Settings = "Settings";
          public static readonly string SolverSettings = "Solver Settings";
          public static readonly string FinalOptions = "Final Options";
@@ -1384,9 +1381,7 @@ namespace MoBi.Assets
          public static readonly string Amount = "Amount";
          public static readonly string Concentration = "Concentration";
          public static readonly string UsedCalculationMethods = "Used Calculation Methods";
-
          public static readonly string DisplayNameYValue = "Y-Value";
-
          public static readonly string NewValuePoint = "New Value Point";
          public static readonly string RealativeContainerPath = "Change Realtive Container Path";
          public static readonly string Details = "Details";
@@ -1554,6 +1549,8 @@ namespace MoBi.Assets
          public static readonly string CloseView = "Close";
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
+         //TODO MOVE TO CORE
+         public static readonly string UserDefined = "User Defined";
 
          public static string ManageDisplayUnits(string type)
          {

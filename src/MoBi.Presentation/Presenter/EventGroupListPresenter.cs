@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Presenter
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _eventGroupToDTOEventGroupMapper = eventGroupToDTOEventGroupMapper;
          _applicationBuilderToDTOApplicationBuilderMapper = applicationBuilderToDTOApplicationBuilderMapper;
-         _favorites = treeNodeFactory.CreateGroupFavorites();
+         _favorites = treeNodeFactory.CreateForFavorites();
       }
 
       public override void Edit(IEventGroupBuildingBlock objectToEdit)

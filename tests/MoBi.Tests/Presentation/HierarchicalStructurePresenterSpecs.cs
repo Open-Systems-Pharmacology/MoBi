@@ -32,6 +32,7 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _simulationSettingsMapper = A.Fake<ISimulationSettingsToObjectBaseDTOMapper>();
          _dtoMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
+
          _favorites = new ObjectBaseDTO()
          {
             Name = Captions.Favorites,
@@ -39,8 +40,10 @@ namespace MoBi.Presentation
             Id = Captions.Favorites
          };
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
-         A.CallTo(() => _treeNodeFactory.CreateGroupFavorites())
+
+         A.CallTo(() => _treeNodeFactory.CreateForFavorites())
             .Returns(new ObjectWithIdAndNameNode<IObjectBaseDTO>(_favorites));
+
          _contextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
 
          sut = new HierarchicalSimulationPresenter(_view, _context, _dtoMapper, _simulationSettingsMapper,

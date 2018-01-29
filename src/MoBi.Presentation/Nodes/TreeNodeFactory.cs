@@ -1,4 +1,5 @@
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using OSPSuite.Assets;
@@ -26,7 +27,8 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(IMoleculeBuildingBlock moleculeBuildingBlock);
       ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder);
       ITreeNode CreateFor(IBuildingBlockInfo buildingBlockInfo);
-      ITreeNode CreateGroupFavorites();
+      ITreeNode CreateForFavorites();
+      ITreeNode CreateForUserDefined();
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -35,10 +37,7 @@ namespace MoBi.Presentation.Nodes
       {
       }
 
-      public ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode)
-      {
-         return new RootNode(rootNode);
-      }
+      public ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode) => new RootNode(rootNode);
 
       public ITreeNode CreateFor(IObjectBaseDTO objectBase)
       {
@@ -139,14 +138,24 @@ namespace MoBi.Presentation.Nodes
          return new ChartNode(chart).WithIcon(ApplicationIcons.SimulationComparison);
       }
 
-      public ITreeNode CreateGroupFavorites()
+      public ITreeNode CreateForFavorites()
       {
-         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(new FavoritesBaseDTO
+         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(new FavoritesNodeViewItem
          {
             Name = Captions.Favorites,
             Icon = ApplicationIcons.Favorites.IconName,
             Id = Captions.Favorites
          }) {Icon = ApplicationIcons.Favorites};
+      }
+
+      public ITreeNode CreateForUserDefined()
+      {
+         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(new UserDefinedNodeViewItem
+            {
+               Name = AppConstants.Captions.UserDefined,
+               Icon = ApplicationIcons.UserDefinedVariability.IconName,
+               Id = AppConstants.Captions.UserDefined
+         }){ Icon = ApplicationIcons.UserDefinedVariability };
       }
    }
 }
