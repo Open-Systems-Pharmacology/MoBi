@@ -79,7 +79,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_Editing_favorites : concern_for_EditFavoritesPresenter
+   internal class When_editing_the_spatial_structure : concern_for_EditFavoritesPresenter
    {
       private IMoBiSpatialStructure _spatialStructure;
       private IParameter _para;
@@ -94,6 +94,7 @@ namespace MoBi.Presentation
          _fav = new Parameter().WithName("F").WithParentContainer(cont);
          _spatialStructure.AddTopContainer(cont);
          A.CallTo(() => _favoriteRepository.All()).Returns(new[] {_entityPathResolver.PathFor(_fav)});
+         A.CallTo(() => _favoriteMapper.MapFrom(_fav)).Returns(new ParameterDTO(_fav));
       }
 
       protected override void Because()
@@ -102,7 +103,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_only_map_favorite_parameter_to_dto()
+      public void should_show_the_favorites()
       {
          A.CallTo(() => _favoriteMapper.MapFrom(_fav)).MustHaveHappened();
          A.CallTo(() => _favoriteMapper.MapFrom(_para)).MustNotHaveHappened();

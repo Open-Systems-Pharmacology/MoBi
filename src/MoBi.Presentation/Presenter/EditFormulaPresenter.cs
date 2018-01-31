@@ -100,7 +100,6 @@ namespace MoBi.Presentation.Presenter
       private IFormula _formula;
       private IEditTypedFormulaPresenter _formulaPresenter;
       private IEntity _formulaOwner;
-      private string _formulaPropertyName;
       private readonly IMoBiContext _context;
       private IBuildingBlock _buildingBlock;
       private readonly IFormulaToFormulaInfoDTOMapper _formulaDTOMapper;
@@ -113,6 +112,7 @@ namespace MoBi.Presentation.Presenter
       private bool _isRHS;
       private readonly IMoBiFormulaTask _formulaTask;
       private readonly ICircularReferenceChecker _circularReferenceChecker;
+      private FormulaDecoder _formulaDecoder;
 
       public EditFormulaPresenter(IEditFormulaView view, IFormulaPresenterCache formulaPresenterCache, IMoBiContext context,
          IFormulaToFormulaInfoDTOMapper formulaDTOMapper, FormulaTypeCaptionRepository formulaTypeCaptionRepository,
@@ -137,7 +137,7 @@ namespace MoBi.Presentation.Presenter
          where TObjectWithFormula : IEntity, IWithDimension
       {
          _formulaOwner = formulaOwner;
-         _formulaPropertyName = formulaDecoder.PropertyName;
+         _formulaDecoder = formulaDecoder;
          _formula = formulaDecoder.GetFormula(formulaOwner);
          _buildingBlock = buildingBlock;
          _constantFormula = null;
@@ -244,7 +244,7 @@ namespace MoBi.Presentation.Presenter
 
       private void setFormulaInOwner(IFormula newFormula)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_formulaPropertyName, newFormula, _formula, _formulaOwner, _buildingBlock).Run(_context));
+         AddCommand(_formulaTask.UpdateFormula(_formulaOwner, _formula, newFormula, _formulaDecoder, _buildingBlock));
       }
 
       private bool formulaIsDefined()

@@ -64,7 +64,6 @@ namespace MoBi.Presentation.Presenter
          EditFormulas(spatialStructure);
          _editPresenter.BuildingBlock = _spatialStructure;
          _hierarchicalSpatialStructurePresenter.Edit(spatialStructure);
-         _view.SetEditView(_favoritesPresenter.BaseView);
          _favoritesPresenter.Edit(spatialStructure);
          setInitalView();
          UpdateCaption();
@@ -73,7 +72,7 @@ namespace MoBi.Presentation.Presenter
 
       private void setInitalView()
       {
-         _view.SetEditView(_favoritesPresenter.BaseView);
+         ShowView(_favoritesPresenter.BaseView);
       }
 
       public override object Subject => _spatialStructure;
@@ -94,7 +93,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
       {
-         _view.SetEditView(_editPresenter.BaseView);
+         ShowView(_editPresenter.BaseView);
          _editPresenter.Edit(parentObject);
          _editPresenter.SelectParameter(parameter);
       }

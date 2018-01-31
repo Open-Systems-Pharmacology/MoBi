@@ -5,21 +5,28 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Helper
 {
+
    /// <summary>
    ///    Encapsulates a setter and getter method providing read and write access to an IFormula field
    /// </summary>
-   /// <typeparam name="T">The type that has a property of type IFormula that should be accessed</typeparam>
-   public abstract class FormulaDecoder<T>
+   public abstract class FormulaDecoder
    {
-      public Func<T, IFormula> GetFormula { get; protected set; }
-
-      public Action<IFormula, T> SetFormula { get; protected set; }
-
       /// <summary>
       ///    Extracts the name of the property being used to supply the formula
       /// </summary>
       /// <returns>A string representing the property name</returns>
       public abstract string PropertyName { get; }
+   }
+   
+   /// <summary>
+   ///    Encapsulates a setter and getter method providing read and write access to an IFormula field
+   /// </summary>
+   /// <typeparam name="T">The type that has a property of type IFormula that should be accessed</typeparam>
+   public abstract class FormulaDecoder<T> : FormulaDecoder
+   {
+      public Func<T, IFormula> GetFormula { get; protected set; }
+
+      public Action<IFormula, T> SetFormula { get; protected set; }
    }
 
    /// <summary>

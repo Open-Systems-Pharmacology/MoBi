@@ -212,6 +212,7 @@
     <Compile Include="Core\DimensionConverterSpecs.cs" />
     <Compile Include="Core\Commands\EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommandSpecs.cs" />
     <Compile Include="Core\Commands\EditUseDerivedValuesCommandSpecs.cs" />
+    <Compile Include="Core\EntitiesInBuildingBlockRetrieverSpecs.cs" />
     <Compile Include="Core\EntityExtensionSpecs.cs" />
     <Compile Include="Core\MoBiContextSpecs.cs" />
     <Compile Include="Core\MoBiCoreGlobalsForSpecs.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="Presentation\EditTransportBuilderPresenterSpecs.cs" />
     <Compile Include="Presentation\OutputSelectionsRetrieverSpecs.cs" />
     <Compile Include="Presentation\StartValueFormatterSpecs.cs" />
+    <Compile Include="Presentation\UserDefinedParametersPresenterSpecs.cs" />
     <Compile Include="Presentation\ValidationOptionsPresenterSpecs.cs" />
     <Compile Include="Presentation\ValuePointFormatterSpecs.cs" />
     <Compile Include="ProjectConversion\v3_1\ParameterStartValueDimensionRetrieverSpecs.cs" />

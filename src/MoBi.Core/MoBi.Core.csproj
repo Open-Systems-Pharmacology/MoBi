@@ -223,6 +223,7 @@
     <Compile Include="Domain\Extensions\MoBiObjectBaseExtensions.cs" />
     <Compile Include="Domain\Model\ClassifiableSimulation.cs" />
     <Compile Include="Domain\Model\Diagram\IMoBiReactionDiagramManager.cs" />
+    <Compile Include="Domain\Services\EntitiesInBuildingBlockRetriever.cs" />
     <Compile Include="Domain\Services\IMoBiFormulaTask.cs" />
     <Compile Include="Domain\Comparison\MoBiSimulationDiffBuilder.cs" />
     <Compile Include="Domain\Services\LazyLoadTask.cs" />

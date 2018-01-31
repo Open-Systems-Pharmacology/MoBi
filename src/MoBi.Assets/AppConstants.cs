@@ -1347,7 +1347,6 @@ namespace MoBi.Assets
          public static readonly string ChangedEntity = "Changed entity";
          public static readonly string NewFormula = "New formula";
          public static readonly string StartValue = "Start Value";
-         public static readonly string ValueDescription = "Value Description";
          public static readonly string ScaleDivisor = "Scale Divisor";
          public static readonly string IsPresent = "Is Present";
          public static readonly string NegativeValuesAllowed = "Neg. Values Allowed";

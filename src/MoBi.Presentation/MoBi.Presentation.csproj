@@ -289,7 +289,7 @@
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForModifierBuilder.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForObjectBaseDTOSpecificationFactory.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForEmptyFormulaUsablePath.cs" />
-    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForFavorite.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForParameterInList.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForHistoricalResultsNode.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSensitivityAnalysis.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSimulationFavoritesNode.cs" />
@@ -391,7 +391,6 @@
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForContainer.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForContainerInEvents.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForNeighborhoodBuilder.cs" />
-    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForParameter.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuSpecificationFactoryForInteractionContainer.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuSpecifictaionFactoryForEventGroupBuilder.cs" />
     <Compile Include="MenusAndBars\ContextMenus\IContextMenu.cs" />

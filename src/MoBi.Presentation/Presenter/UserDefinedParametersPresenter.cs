@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -10,6 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
@@ -23,6 +25,8 @@ namespace MoBi.Presentation.Presenter
    public class UserDefinedParametersPresenter : AbstractParameterBasePresenter<IEditParameterListView, IEditParameterListPresenter>, IUserDefinedParametersPresenter
    {
       private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
+      private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
+
       private IEnumerable<IContainer> _containers;
 
       public UserDefinedParametersPresenter(IEditParameterListView view,
@@ -31,9 +35,11 @@ namespace MoBi.Presentation.Presenter
          IFormulaToFormulaBuilderDTOMapper formulaMapper,
          IInteractionTasksForParameter parameterTask,
          IFavoriteTask favoriteTask,
-         IParameterToParameterDTOMapper parameterDTOMapper) : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
+         IParameterToParameterDTOMapper parameterDTOMapper,
+         IViewItemContextMenuFactory viewItemContextMenuFactory) : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _parameterDTOMapper = parameterDTOMapper;
+         _viewItemContextMenuFactory = viewItemContextMenuFactory;
       }
 
       protected override void RefreshViewAndSelect(IParameterDTO parameterDTO)
@@ -54,18 +60,27 @@ namespace MoBi.Presentation.Presenter
 
       private void refreshView()
       {
-         var parameters = _containers.SelectMany(c => c.GetAllChildren<IParameter>(x => !x.IsDefault).MapAllUsing(_parameterDTOMapper)).Cast<ParameterDTO>().ToList();
+         var parameters = _containers
+            .SelectMany(c => c.GetAllChildren<IParameter>(x => !x.IsDefault))
+            .MapAllUsing(_parameterDTOMapper)
+            .Cast<ParameterDTO>().ToList();
+
          _view.BindTo(parameters);
       }
 
-      public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
+      public void ShowContextMenu(IViewItem viewItem, Point popupLocation)
       {
-         //TODO
+         var contextMenu = _viewItemContextMenuFactory.CreateFor(viewItem, this);
+         contextMenu.Show(_view, popupLocation);
       }
 
       public void GoTo(ParameterDTO parameterDTO)
       {
-         //TODO
+         if (parameterDTO == null)
+            return;
+
+         var parameter = GetParameterFrom(parameterDTO);
+         _interactionTaskContext.Context.PublishEvent(new EntitySelectedEvent(parameter, this));
       }
    }
 }

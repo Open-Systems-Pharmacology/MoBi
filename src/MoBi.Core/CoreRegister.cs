@@ -4,6 +4,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Comparison;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Helper;
 using MoBi.Core.Reporting;
@@ -75,6 +76,7 @@ namespace MoBi.Core
 
          //Register opened types generics
          container.Register(typeof(IRepository<>), typeof(ImplementationRepository<>));
+         container.Register(typeof(IEntitiesInBuildingBlockRetriever<>), typeof(EntitiesInBuildingBlockRetriever<>));
          container.Register<IList<IDimensionMergingInformation>, List<IDimensionMergingInformation>>(LifeStyle.Singleton);
 
          //Register abstract factories

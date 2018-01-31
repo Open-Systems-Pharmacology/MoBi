@@ -54,20 +54,24 @@ namespace MoBi.Presentation.Presenter
          _editEventBuilderPresenter = editEventBuilderPresenter;
          _editEventGroupPresenter = editEventGroupPresenter;
          _editApplicationBuilderPresenter = editApplicationBuilderPresenter;
+
          _view.SetListView(_eventGroupListPresenter.BaseView);
          _view.SetEditView(_favoritesPresenter.BaseView);
+
          _favoritesPresenter.ShouldHandleRemovedEvent = isShowableType;
 
          AddSubPresenters(_editApplicationTransportBuilderPresenter, _editContainerPresenter, _editEventBuilderPresenter,
-            _editEventGroupPresenter, _eventGroupListPresenter, _editApplicationBuilderPresenter, _favoritesPresenter);
+            _editEventGroupPresenter, _eventGroupListPresenter, _editApplicationBuilderPresenter);
       }
 
       public override void Edit(IEventGroupBuildingBlock eventToEdit)
       {
          _eventGroupBuildingBlock = eventToEdit;
          _eventGroupListPresenter.Edit(eventToEdit);
+
          allPresenterImplementing<IPresenterWithFormulaCache>()
             .Each(x => x.BuildingBlock = _eventGroupBuildingBlock);
+
          setupEditPresenterFor(eventToEdit.FirstOrDefault());
          _favoritesPresenter.Edit(eventToEdit);
          EditFormulas(eventToEdit);
@@ -116,7 +120,7 @@ namespace MoBi.Presentation.Presenter
       private void showPresenter<T>(IEditPresenterWithParameters<T> presenter, T objectToEdit, IParameter parameter)
       {
          presenter.Edit(objectToEdit);
-         _view.SetEditView(presenter.BaseView);
+         ShowView(presenter.BaseView);
 
          if (parameter != null)
             presenter.SelectParameter(parameter);

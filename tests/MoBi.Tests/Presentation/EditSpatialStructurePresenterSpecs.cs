@@ -82,7 +82,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_selecting_the_favorites_of_a_simulation : concern_for_EditSpatialStructurePresenterSpecs
+   internal class When_selecting_the_favorites_of_a_simulation_but_the_view_is_editing_a_spatial_structure : concern_for_EditSpatialStructurePresenterSpecs
    {
       protected override void Context()
       {
@@ -98,7 +98,8 @@ namespace MoBi.Presentation
       [Observation]
       public void should_not_select_the_favorite_view()
       {
-         A.CallTo(() => _view.SetEditView(_favoritesPresenter.BaseView)).MustNotHaveHappened();
+         //Once because favorite view is the default view
+         A.CallTo(() => _view.SetEditView(_favoritesPresenter.BaseView)).MustHaveHappened(Repeated.Exactly.Once);
       }
    }
 
