@@ -1,14 +1,15 @@
-﻿using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
+﻿using System;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
 {
@@ -82,7 +83,7 @@ namespace MoBi.Core.Services
       public ICommand SetQuantityDisplayValue(IQuantity quantity, double valueInDisplayUnit, IBuildingBlock buildingBlock)
       {
          var valueInBaseUnit = quantity.ConvertToBaseUnit(valueInDisplayUnit);
-         return withUpdatedDefaultStateAndValue(new SetQuantityValueInBuildingBlockCommand(quantity, valueInBaseUnit, buildingBlock).Run(_context), quantity);
+         return withUpdatedDefaultStateAndValue(new SetQuantityValueInBuildingBlockCommand(quantity, valueInBaseUnit, buildingBlock).Run(_context), quantity, buildingBlock);
       }
 
       public ICommand SetQuantityDisplayValue(IQuantity quantity, double valueInDisplayUnit, IMoBiSimulation simulation)
@@ -98,7 +99,7 @@ namespace MoBi.Core.Services
 
       public ICommand SetQuantityDisplayUnit(IQuantity quantity, Unit displayUnit, IBuildingBlock buildingBlock)
       {
-         return withUpdatedDefaultStateAndValue(new SetQuantityUnitInBuildingBlockCommand(quantity, displayUnit, buildingBlock).Run(_context), quantity);
+         return withUpdatedDefaultStateAndValue(new SetQuantityUnitInBuildingBlockCommand(quantity, displayUnit, buildingBlock).Run(_context), quantity, buildingBlock);
       }
 
       public ICommand SetQuantityDisplayUnit(IQuantity quantity, Unit displayUnit, IMoBiSimulation simulation)
@@ -106,24 +107,45 @@ namespace MoBi.Core.Services
          return synchronizedCommand(quantity, simulation, new SetQuantityUnitInSimulationCommand(quantity, displayUnit, simulation));
       }
 
-      private ICommand withUpdatedDefaultStateAndValue(ICommand command, IQuantity quantity)
+      private ICommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand executedCommand, IQuantity quantity, IBuildingBlock buildingBlock)
       {
-         if (command.IsEmpty())
-            return command;
+         return withUpdatedDefaultStateAndValue(executedCommand, quantity, buildingBlock, setParameterDefaultStateInBuildingBlock, setParameterValueOriginInBuildingBlock);
+      }
+
+      private ICommand withUpdatedDefaultStateAndValue(IOSPSuiteCommand executedCommand, IQuantity quantity, IMoBiSimulation simulation)
+      {
+         return withUpdatedDefaultStateAndValue(executedCommand, quantity, simulation, setParameterDefaultStateInSimulation, setParameterValueOriginInSimulation);
+      }
+
+      private ICommand withUpdatedDefaultStateAndValue<T>(
+         IOSPSuiteCommand executedCommand,
+         IQuantity quantity,
+         T buildingBlockOrSimulation,
+         Func<IParameter, bool, T, ICommand> setParameterDefaultStateFunc,
+         Func<IParameter, ValueOrigin, T, ICommand> setParameterValueOriginFunc
+      )
+      {
+         var parameter = quantity as IParameter;
+
+         if (executedCommand.IsEmpty() || parameter == null || !parameter.IsDefault)
+            return executedCommand;
+
+
+         var macroCommand = new MoBiMacroCommand().WithHistoryEntriesFrom(executedCommand);
+         macroCommand.Add(executedCommand);
+         macroCommand.Add(setParameterDefaultStateFunc(parameter, false, buildingBlockOrSimulation)); // TODO .AsHidden());
 
          if (!valueOriginShouldBeUpdatedAutomatically(quantity.ValueOrigin))
-            return command;
+            return executedCommand;
 
-         var macroCommand = new MoBiMacroCommand();
-         macroCommand.Add(command);
-         
+
          var undefinedValueOrigin = new ValueOrigin
          {
             Source = ValueOriginSources.Unknown,
             Method = ValueOriginDeterminationMethods.Undefined
          };
 
-         var setValueOriginCommand = setParameterValueOrigin(quantity, undefinedValueOrigin).AsHidden();
+         var setValueOriginCommand = setParameterValueOriginFunc(parameter, undefinedValueOrigin, buildingBlockOrSimulation); // TODO .AsHidden();
          macroCommand.Add(setValueOriginCommand);
          return macroCommand;
       }
@@ -134,9 +156,24 @@ namespace MoBi.Core.Services
                 valueOrigin.Method == ValueOriginDeterminationMethods.Undefined;
       }
 
-      private ICommand setParameterValueOrigin(IQuantity quantity, ValueOrigin newValueOrigin)
+      private ICommand setParameterValueOriginInBuildingBlock(IParameter parameter, ValueOrigin newValueOrigin, IBuildingBlock buildingBlock)
       {
-         return new UpdateValueOriginCommand(newValueOrigin, quantity, _context).Run(_context);
+         return new UpdateValueOriginInBuildingBlockCommand(parameter, newValueOrigin, buildingBlock).Run(_context);
+      }
+
+      private ICommand setParameterValueOriginInSimulation(IParameter parameter, ValueOrigin newValueOrigin, IMoBiSimulation simulation)
+      {
+         return new UpdateValueOriginInSimulationCommand(parameter, newValueOrigin, simulation).Run(_context);
+      }
+
+      private ICommand setParameterDefaultStateInBuildingBlock(IParameter parameter, bool defaultState, IBuildingBlock buildingBlock)
+      {
+         return new SetParameterDefaultStateInBuildingBlockCommand(parameter, defaultState, buildingBlock).Run(_context);
+      }
+
+      private ICommand setParameterDefaultStateInSimulation(IParameter parameter, bool defaultState, IMoBiSimulation simulation)
+      {
+         return new SetParameterDefaultStateInSimulationCommand(parameter, defaultState, simulation).Run(_context);
       }
 
       private ICommand synchronizedCommand(IQuantity quantity, IMoBiSimulation simulation, IMoBiCommand simulationCommand)
@@ -145,7 +182,7 @@ namespace MoBi.Core.Services
 
          //add one before setting the value in the simulation to enable correct undo
          macroCommand.Add(_quantitySynchronizer.Synchronize(quantity, simulation));
-         macroCommand.Add(withUpdatedDefaultStateAndValue(simulationCommand.AsHidden().Run(_context), quantity));
+         macroCommand.Add(withUpdatedDefaultStateAndValue(simulationCommand.AsHidden().Run(_context), quantity, simulation));
          macroCommand.Add(_quantitySynchronizer.Synchronize(quantity, simulation));
 
          //needs to be done at the end because description might be set only after run

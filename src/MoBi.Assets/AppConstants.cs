@@ -587,7 +587,7 @@ namespace MoBi.Assets
 
          public static string UpdateDimensions(string objectName, string objectType, IDimension oldDimension, IDimension newDimension, string buildingBlockName)
          {
-            return string.Format("Changing dimension of {1} '{0}' from '{2}' to '{3}'", objectName, objectType.ToLowerInvariant(), oldDimension, newDimension, buildingBlockName);
+            return string.Format("Changing dimension of {1} '{0}' from '{2}' to '{3}' in building block {4}", objectName, objectType.ToLowerInvariant(), oldDimension, newDimension, buildingBlockName);
          }
 
          public static string CreateFormula(string formulaName)
@@ -692,32 +692,62 @@ namespace MoBi.Assets
 
          public static string UpdateParameterBuildMode(string parameterName, string newBuildMode, string oldBuildMode, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newBuildMode, oldBuildMode, buildingBlockName, "build mode");
+            return updateParameterPropertyInBuildingBlock(parameterName, newBuildMode, oldBuildMode, buildingBlockName, "build mode");
          }
 
-         private static string updateParameterProperty(string parameterName, string newValue, string oldValue, string buildingBlockName, string propertyName)
+         private static string updateParameterPropertyInBuildingBlock(string parameterName, string newValue, string oldValue, string buildingBlockName, string propertyName)
          {
-            return string.Format("Changed parameter {0} {4} from '{1}' to '{2}' in building block {3}", parameterName, oldValue, newValue, buildingBlockName, propertyName);
+            return updateParameterPropertyIn(parameterName, newValue, oldValue, buildingBlockName, propertyName, "building block");
+         }
+
+         private static string updateParameterPropertyInSimulation(string parameterName, string newValue, string oldValue, string simulationName, string propertyName)
+         {
+            return updateParameterPropertyIn(parameterName, newValue, oldValue, simulationName, propertyName, "simulation");
+         }
+
+         private static string updateParameterPropertyIn(string parameterName, string newValue, string oldValue, string containerName, string propertyName, string containerType )
+         {
+            return $"Changed parameter {parameterName} {propertyName} from '{oldValue}' to '{newValue}' in {containerType} {containerName}";
          }
 
          public static string ChangeParameterDescription(string parameterName, string oldDescription, string newDescription, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newDescription, oldDescription, buildingBlockName, "description");
+            return updateParameterPropertyInBuildingBlock(parameterName, newDescription, oldDescription, buildingBlockName, "description");
          }
 
          public static string ChangeParameterName(string parameterName, string oldName, string newName, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newName, oldName, buildingBlockName, "name");
+            return updateParameterPropertyInBuildingBlock(parameterName, newName, oldName, buildingBlockName, "name");
          }
 
          public static string ChangeParameterRHSFormula(string parameterName, string newFormulaName, string oldFormulaName, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newFormulaName, oldFormulaName, buildingBlockName, "RHS formula");
+            return updateParameterPropertyInBuildingBlock(parameterName, newFormulaName, oldFormulaName, buildingBlockName, "RHS formula");
          }
 
          public static string ChangeParameterFormula(string parameterName, string newFormulaName, string oldFormulaName, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newFormulaName, oldFormulaName, buildingBlockName, "formula");
+            return updateParameterPropertyInBuildingBlock(parameterName, newFormulaName, oldFormulaName, buildingBlockName, "formula");
+         }
+
+         public static string SetParameterDefaultStateInBuildingBlock(string parameterName, bool oldIsDefault, bool newIsDefault, string buildingBlockName)
+         {
+            return updateParameterPropertyInBuildingBlock(parameterName, newIsDefault.ToString(), oldIsDefault.ToString(), buildingBlockName, "default state");
+         }
+
+         public static string SetParameterDefaultStateInSimulation(string parameterName, bool oldIsDefault, bool newIsDefault, string simulationName)
+         {
+            return updateParameterPropertyInSimulation(parameterName, newIsDefault.ToString(), oldIsDefault.ToString(), simulationName, "default state");
+         }
+
+         public static string UpdateParameterValueOriginInBuildingBlock(string parameterName, string oldValueOrigin, string newValueOrigin, string buildingBlockName)
+         {
+            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin);
+         }
+
+         public static string UpdateParameterValueOriginInSimulation(string parameterName, string oldValueOrigin, string newValueOrigin, string simulationName)
+         {
+            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin);
          }
       }
 
