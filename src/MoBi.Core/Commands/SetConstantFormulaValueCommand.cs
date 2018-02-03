@@ -58,13 +58,14 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         var owner = context.Get<IEntity>(_ownerId);
+
          Description = AppConstants.Commands.SetConstantValueFormula(
             ObjectType, 
             _constantFormula, 
             formatForDisplay(_newValue, _displayUnit), 
-            formatForDisplay(_constantFormula.Value, _oldDisplayUnit), 
-            owner == null? string.Empty : owner.EntityPath());
+            formatForDisplay(_constantFormula.Value, _oldDisplayUnit),
+            _owner == null? string.Empty : _owner.EntityPath());
+
          _constantFormula.Value = _newValue;
       }
 

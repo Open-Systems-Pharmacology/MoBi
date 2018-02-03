@@ -587,7 +587,7 @@ namespace MoBi.Assets
 
          public static string UpdateDimensions(string objectName, string objectType, IDimension oldDimension, IDimension newDimension, string buildingBlockName)
          {
-            return string.Format("Changing dimension of {1} '{0}' from '{2}' to '{3}'", objectName, objectType.ToLowerInvariant(), oldDimension, newDimension, buildingBlockName);
+            return string.Format("Changing dimension of {1} '{0}' from '{2}' to '{3}' in building block {4}", objectName, objectType.ToLowerInvariant(), oldDimension, newDimension, buildingBlockName);
          }
 
          public static string CreateFormula(string formulaName)
@@ -692,32 +692,62 @@ namespace MoBi.Assets
 
          public static string UpdateParameterBuildMode(string parameterName, string newBuildMode, string oldBuildMode, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newBuildMode, oldBuildMode, buildingBlockName, "build mode");
+            return updateParameterPropertyInBuildingBlock(parameterName, newBuildMode, oldBuildMode, buildingBlockName, "build mode");
          }
 
-         private static string updateParameterProperty(string parameterName, string newValue, string oldValue, string buildingBlockName, string propertyName)
+         private static string updateParameterPropertyInBuildingBlock(string parameterName, string newValue, string oldValue, string buildingBlockName, string propertyName)
          {
-            return string.Format("Changed parameter {0} {4} from '{1}' to '{2}' in building block {3}", parameterName, oldValue, newValue, buildingBlockName, propertyName);
+            return updateParameterPropertyIn(parameterName, newValue, oldValue, buildingBlockName, propertyName, "building block");
+         }
+
+         private static string updateParameterPropertyInSimulation(string parameterName, string newValue, string oldValue, string simulationName, string propertyName)
+         {
+            return updateParameterPropertyIn(parameterName, newValue, oldValue, simulationName, propertyName, "simulation");
+         }
+
+         private static string updateParameterPropertyIn(string parameterName, string newValue, string oldValue, string containerName, string propertyName, string containerType )
+         {
+            return $"Changed parameter {parameterName} {propertyName} from '{oldValue}' to '{newValue}' in {containerType} {containerName}";
          }
 
          public static string ChangeParameterDescription(string parameterName, string oldDescription, string newDescription, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newDescription, oldDescription, buildingBlockName, "description");
+            return updateParameterPropertyInBuildingBlock(parameterName, newDescription, oldDescription, buildingBlockName, "description");
          }
 
          public static string ChangeParameterName(string parameterName, string oldName, string newName, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newName, oldName, buildingBlockName, "name");
+            return updateParameterPropertyInBuildingBlock(parameterName, newName, oldName, buildingBlockName, "name");
          }
 
          public static string ChangeParameterRHSFormula(string parameterName, string newFormulaName, string oldFormulaName, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newFormulaName, oldFormulaName, buildingBlockName, "RHS formula");
+            return updateParameterPropertyInBuildingBlock(parameterName, newFormulaName, oldFormulaName, buildingBlockName, "RHS formula");
          }
 
          public static string ChangeParameterFormula(string parameterName, string newFormulaName, string oldFormulaName, string buildingBlockName)
          {
-            return updateParameterProperty(parameterName, newFormulaName, oldFormulaName, buildingBlockName, "formula");
+            return updateParameterPropertyInBuildingBlock(parameterName, newFormulaName, oldFormulaName, buildingBlockName, "formula");
+         }
+
+         public static string SetParameterDefaultStateInBuildingBlock(string parameterName, bool oldIsDefault, bool newIsDefault, string buildingBlockName)
+         {
+            return updateParameterPropertyInBuildingBlock(parameterName, newIsDefault.ToString(), oldIsDefault.ToString(), buildingBlockName, "default state");
+         }
+
+         public static string SetParameterDefaultStateInSimulation(string parameterName, bool oldIsDefault, bool newIsDefault, string simulationName)
+         {
+            return updateParameterPropertyInSimulation(parameterName, newIsDefault.ToString(), oldIsDefault.ToString(), simulationName, "default state");
+         }
+
+         public static string UpdateParameterValueOriginInBuildingBlock(string parameterName, string oldValueOrigin, string newValueOrigin, string buildingBlockName)
+         {
+            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin);
+         }
+
+         public static string UpdateParameterValueOriginInSimulation(string parameterName, string oldValueOrigin, string newValueOrigin, string simulationName)
+         {
+            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin);
          }
       }
 
@@ -1317,7 +1347,6 @@ namespace MoBi.Assets
          public static readonly string ChangedEntity = "Changed entity";
          public static readonly string NewFormula = "New formula";
          public static readonly string StartValue = "Start Value";
-         public static readonly string ValueDescription = "Value Description";
          public static readonly string ScaleDivisor = "Scale Divisor";
          public static readonly string IsPresent = "Is Present";
          public static readonly string NegativeValuesAllowed = "Neg. Values Allowed";
@@ -1359,7 +1388,6 @@ namespace MoBi.Assets
          public static readonly string NewMatchTagCondition = "New match tag condition";
          public static readonly string NewNotMatchTagCondition = "New not match tag condition";
          public static readonly string AddMatchAllCondition = "Add match all tag condition";
-
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
@@ -1374,9 +1402,7 @@ namespace MoBi.Assets
          public static readonly string MoleculeType = "Molecule Type";
          public static readonly string IncludeList = "Include List";
          public static readonly string ExcludeList = "Exclude List";
-
-         public static readonly string OneTimeEvent = "One Time";
-
+         public static readonly string OneTimeEvent = "One Time";    
          public static readonly string Settings = "Settings";
          public static readonly string SolverSettings = "Solver Settings";
          public static readonly string FinalOptions = "Final Options";
@@ -1384,9 +1410,7 @@ namespace MoBi.Assets
          public static readonly string Amount = "Amount";
          public static readonly string Concentration = "Concentration";
          public static readonly string UsedCalculationMethods = "Used Calculation Methods";
-
          public static readonly string DisplayNameYValue = "Y-Value";
-
          public static readonly string NewValuePoint = "New Value Point";
          public static readonly string RealativeContainerPath = "Change Realtive Container Path";
          public static readonly string Details = "Details";
@@ -1554,6 +1578,8 @@ namespace MoBi.Assets
          public static readonly string CloseView = "Close";
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
+         //TODO MOVE TO CORE
+         public static readonly string UserDefined = "User Defined";
 
          public static string ManageDisplayUnits(string type)
          {

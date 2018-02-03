@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Presenter
       private IQuantity _quantity;
       private readonly IQuantityToQuantityDTOMapper _quantityToQuantityDTOMapper;
       private readonly IFormulaPresenterCache _formulaPresenterCache;
-      private readonly IEditParameterListPresenter _parameterPresenter;
+      private readonly IEditParametersInContainerPresenter _parameterPresenter;
       private readonly IQuantityTask _quantityTask;
       private QuantityDTO _quantityDTO;
       private IQuantity _quantityToEdit;
@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Presenter
       public IMoBiSimulation Simulation { get; set; }
 
       public EditQuantityInSimulationPresenter(IEditQuantityInSimulationView view, IQuantityToQuantityDTOMapper quantityToQuantityDTOMapper,
-         IFormulaPresenterCache formulaPresenterCache, IEditParameterListPresenter parameterPresenter, IQuantityTask quantityTask, IReactionDimensionRetriever reactionDimensionRetriever)
+         IFormulaPresenterCache formulaPresenterCache, IEditParametersInContainerPresenter parameterPresenter, IQuantityTask quantityTask, IReactionDimensionRetriever reactionDimensionRetriever)
          : base(view)
       {
          _quantityTask = quantityTask;

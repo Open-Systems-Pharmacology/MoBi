@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.Presenter;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -31,6 +33,8 @@ namespace MoBi.Presentation.Tasks
       protected UsingFormulaDecoder _withFormulaDecoder;
       protected IUsingFormula _usingFormulaObject;
       protected IDialogCreator _dialogCreator;
+      protected IQuantityTask _quantityTask;
+      protected IEntitiesInBuildingBlockRetriever<IParameter> _parametersInBuildingBlockRetriever;
 
       protected override void Context()
       {
@@ -42,16 +46,18 @@ namespace MoBi.Presentation.Tasks
          _applicationController = A.Fake<IMoBiApplicationController>();
          _formulaTask = A.Fake<IFormulaTask>();
          _nameCorrector = A.Fake<INameCorrector>();
+         _quantityTask = A.Fake<IQuantityTask>();
+         _parametersInBuildingBlockRetriever = A.Fake<IEntitiesInBuildingBlockRetriever<IParameter>>();
 
-         sut = new MoBiFormulaTask(_context, _applicationController, _formulaTask, _nameCorrector, _dialogCreator);
+         sut = new MoBiFormulaTask(_context, _applicationController, _formulaTask, _nameCorrector, _dialogCreator, _quantityTask, _parametersInBuildingBlockRetriever);
 
          _usingFormulaObject = A.Fake<IUsingFormula>();
          _usingFormulaObject.Formula = MvExplicitFormula();
       }
 
-      protected static ExplicitFormula MvExplicitFormula() => new ExplicitFormula("M/V") { Name = "MOverV" };
+      protected static ExplicitFormula MvExplicitFormula() => new ExplicitFormula("M/V") {Name = "MOverV"};
 
-      protected static ExplicitFormula MvExplicitFormula2() => new ExplicitFormula("M/V/V") { Name = "MOverV" };
+      protected static ExplicitFormula MvExplicitFormula2() => new ExplicitFormula("M/V/V") {Name = "MOverV"};
    }
 
    public class When_the_formulat_task_is_editing_a_new_formula : concern_for_MoBiFormulaTask
@@ -65,18 +71,18 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _commandCollector= A.Fake<ICommandCollector>();
-         _formula= A.Fake<IFormula>();
-         _parameter= A.Fake<IParameter>();
-         _editNewFormulaPresenter= A.Fake<INewFormulaPresenter>();
+         _commandCollector = A.Fake<ICommandCollector>();
+         _formula = A.Fake<IFormula>();
+         _parameter = A.Fake<IParameter>();
+         _editNewFormulaPresenter = A.Fake<INewFormulaPresenter>();
          A.CallTo(() => _applicationController.Start<INewFormulaPresenter>()).Returns(_editNewFormulaPresenter);
          A.CallTo(_editNewFormulaPresenter).WithReturnType<bool>().Returns(true);
-
       }
+
       protected override void Because()
       {
          _result = sut.EditNewFormula(_formula, _commandCollector, _buildingBlock, _parameter);
-      }  
+      }
 
       [Observation]
       public void should_retrieve_a_new_formula_presenter_and_edit_the_new_formula()
@@ -220,7 +226,6 @@ namespace MoBi.Presentation.Tasks
          tableFormula.AllPoints().Count().ShouldBeEqualTo(1);
       }
 
-
       [Observation]
       public void should_return_a_table_formula_with_off_set_and_default_properties_for_table_formula_with_offset_type()
       {
@@ -291,6 +296,7 @@ namespace MoBi.Presentation.Tasks
    public class When_fixing_references_to_existing_equivalent_formula : concern_for_MoBiFormulaTask
    {
       private IFormula _cachedFormula;
+
       protected override void Context()
       {
          base.Context();
@@ -325,7 +331,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _formula = new ExplicitFormula { Id = "id" };
+         _formula = new ExplicitFormula {Id = "id"};
          _formulaUsablePath = new FormulaUsablePath("A", "B").WithAlias("OLD");
          _formula.AddObjectPath(_formulaUsablePath);
          A.CallTo(() => _context.Get<IFormula>(_formula.Id)).Returns(_formula);
@@ -340,6 +346,134 @@ namespace MoBi.Presentation.Tasks
       public void should_set_the_alias_in_the_given_formula_path_if_the_alias_is_unique()
       {
          _formula.FormulaUsablePathBy("NEW").ShouldNotBeNull();
+      }
+   }
+
+   public class When_adding_a_formula_path_to_an_explicit_formula : concern_for_MoBiFormulaTask
+   {
+      private ExplicitFormula _formula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _formula = new ExplicitFormula("1+2");
+         _formula.AddObjectPath(new FormulaUsablePath());
+      }
+
+      protected override void Because()
+      {
+         sut.AddFormulaUsablePath(_formula, new FormulaUsablePath(), _buildingBlock);
+      }
+
+      [Observation]
+      public void a_new_empty_path_is_created_in_the_formula()
+      {
+         _formula.ObjectPaths.Count.ShouldBeEqualTo(2);
+         string.IsNullOrEmpty(_formula.ObjectPaths[1].PathAsString).ShouldBeTrue();
+      }
+   }
+
+   public class When_retrieving_the_formula_caption : concern_for_MoBiFormulaTask
+   {
+      [Observation]
+      public void should_return_the_expected_caption_for_a_transport_builder()
+      {
+         sut.GetFormulaCaption(A.Fake<ITransportBuilder>(), ReactionDimensionMode.ConcentrationBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
+      }
+
+      [Observation]
+      public void should_return_the_expected_caption_for_a_parameter_with_RHS()
+      {
+         var parameter = new Parameter().WithName("P");
+         sut.GetFormulaCaption(parameter, ReactionDimensionMode.AmountBased, true).ShouldBeEqualTo(AppConstants.Captions.ParameterRightHandSide(parameter.Name));
+      }
+
+      [Observation]
+      public void should_return_an_amount_based_caption_for_a_reaction_in_amount_base_mode()
+      {
+         sut.GetFormulaCaption(A.Fake<IReactionBuilder>(), ReactionDimensionMode.AmountBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
+      }
+
+      [Observation]
+      public void should_return_a_concentration_based_caption_for_a_reaction_in_amount_base_mode()
+      {
+         sut.GetFormulaCaption(A.Fake<IReactionBuilder>(), ReactionDimensionMode.ConcentrationBased, false).ShouldBeEqualTo(AppConstants.Captions.ConcentrationRightHandSide);
+      }
+   }
+
+   public class When_updating_the_formula_of_an_explicit_formula_used_by_some_parameters : concern_for_MoBiFormulaTask
+   {
+      private ExplicitFormula _formula;
+      private IParameter _parameter1;
+      private IParameter _parameter2;
+      private MoBiMacroCommand _command;
+      private ICommand _updateCommand1;
+      private ICommand _updateCommand2;
+
+      protected override void Context()
+      {
+         base.Context();
+         _formula = new ExplicitFormula("1+3");
+         _parameter1 = new Parameter().WithName("P1");
+         _parameter2 = new Parameter().WithName("P1");
+
+         A.CallTo(() => _parametersInBuildingBlockRetriever.AllFrom(_buildingBlock, A<Func<IParameter, bool>>._)).Returns(new[] {_parameter1, _parameter2});
+         _updateCommand1 = A.Fake<IMoBiCommand>();
+         A.CallTo(() => _quantityTask.UpdateDefaultStateAndValueOriginFor(_parameter1, _buildingBlock)).Returns(_updateCommand1);
+
+         _updateCommand2 = new MoBiEmptyCommand();
+         A.CallTo(() => _quantityTask.UpdateDefaultStateAndValueOriginFor(_parameter2, _buildingBlock)).Returns(_updateCommand2);
+      }
+
+      protected override void Because()
+      {
+         _command = sut.SetFormulaString(_formula, "1+2", _formula.FormulaString, _buildingBlock).DowncastTo<MoBiMacroCommand>();
+      }
+
+      [Observation]
+      public void should_update_the_default_state_and_value_origin_of_parameters_using_the_formula_by_leverage_the_quantity_task_command()
+      {
+         _command.IsEmtpy.ShouldBeFalse();
+         _command.All().ShouldContain(_updateCommand1);
+      }
+
+      [Observation]
+      public void should_not_add_command_for_parameters_for_which_no_update_command_was_performed()
+      {
+         _command.All().ShouldNotContain(_updateCommand2);
+      }
+   }
+
+   public class When_updating_the_constant_formula_of_a_formula_used_by_one_non_default_parameters : concern_for_MoBiFormulaTask
+   {
+      private ConstantFormula _formula;
+      private IParameter _parameter;
+      private IMoBiCommand _command;
+      private ICommand _updateCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _formula = new ConstantFormula(1);
+         _parameter = new Parameter().WithName("P1");
+         _parameter.Dimension = DomainHelperForSpecs.AmountDimension;
+         _parameter.DisplayUnit = _parameter.Dimension.DefaultUnit;
+         _parameter.IsDefault = false;
+
+         A.CallTo(() => _parametersInBuildingBlockRetriever.AllFrom(_buildingBlock, A<Func<IParameter, bool>>._)).Returns(new[] {_parameter});
+         _updateCommand = new MoBiEmptyCommand();
+         A.CallTo(() => _quantityTask.UpdateDefaultStateAndValueOriginFor(_parameter, _buildingBlock)).Returns(_updateCommand);
+      }
+
+      protected override void Because()
+      {
+         _command = sut.SetConstantFormulaValue(_formula, 4, _parameter.DisplayUnit, _parameter.DisplayUnit, _buildingBlock, _parameter);
+      }
+
+      [Observation]
+      public void should_not_return_any_special_command_to_update_the_parameter_and_instead_should_only_return_the_update_formula_command()
+      {
+         _command.ShouldBeAnInstanceOf<SetConstantFormulaValueCommand>();
       }
    }
 }

@@ -28,7 +28,8 @@ namespace MoBi.Presentation.Presenter
    {
       protected readonly IMoBiContext _context;
       protected IObjectBaseToObjectBaseDTOMapper _objectBaseMapper;
-      protected ITreeNode _favorites;
+      protected ITreeNode _favoritesNode;
+      protected ITreeNode _userDefinedNode;
 
       protected HierarchicalStructurePresenter(IHierarchicalStructureView view, IMoBiContext context,
          IObjectBaseToObjectBaseDTOMapper objectBaseMapper, ITreeNodeFactory treeNodeFactory)
@@ -36,7 +37,8 @@ namespace MoBi.Presentation.Presenter
       {
          _context = context;
          _objectBaseMapper = objectBaseMapper;
-         _favorites = treeNodeFactory.CreateGroupFavorites();
+         _favoritesNode = treeNodeFactory.CreateForFavorites();
+         _userDefinedNode = treeNodeFactory.CreateForUserDefined();
       }
 
       public virtual IReadOnlyList<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto, Func<IEntity, bool> predicate)
@@ -62,8 +64,12 @@ namespace MoBi.Presentation.Presenter
 
       public virtual void Select(IObjectBaseDTO objectBaseDTO)
       {
-         if (objectBaseDTO.Equals(_favorites.TagAsObject))
+         if (objectBaseDTO ==_favoritesNode.TagAsObject)
             RaiseFavoritesSelectedEvent();
+
+         else if(objectBaseDTO == _userDefinedNode.TagAsObject)
+            RaiseUserDefinedSelectedEvent();
+    
          else
             raiseEntitySelectedEvent(objectBaseDTO);
       }
@@ -86,6 +92,8 @@ namespace MoBi.Presentation.Presenter
       }
 
       protected abstract void RaiseFavoritesSelectedEvent();
+
+      protected abstract void RaiseUserDefinedSelectedEvent();
 
       public abstract void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation);
    }

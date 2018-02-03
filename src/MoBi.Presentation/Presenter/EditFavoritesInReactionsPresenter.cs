@@ -21,9 +21,9 @@ namespace MoBi.Presentation.Presenter
    internal class EditFavoritesInReactionsPresenter : EditFavoritesInBuildindBlockPresenter<IReactionBuilder>,
       IEditFavoritesInReactionsPresenter
    {
-      public EditFavoritesInReactionsPresenter(IEditFavoritesView view, IQuantityTask quantityTask, IInteractionTaskContext interactionTaskContext, IFormulaToFormulaBuilderDTOMapper formulaMapper, IParameterToFavoriteParameterDTOMapper favoriteMapper, IFavoriteRepository favoriteRepository, IInteractionTasksForParameter parameterTask, IFavoriteTask favoriteTask, IEntityPathResolver entityPathResolver, IViewItemContextMenuFactory contextMenuFactory)
+      public EditFavoritesInReactionsPresenter(IEditParameterListView view, IQuantityTask quantityTask, IInteractionTaskContext interactionTaskContext, IFormulaToFormulaBuilderDTOMapper formulaMapper, IParameterToParameterDTOMapper parameterDTOMapper, IFavoriteRepository favoriteRepository, IInteractionTasksForParameter parameterTask, IFavoriteTask favoriteTask, IEntityPathResolver entityPathResolver, IViewItemContextMenuFactory contextMenuFactory)
          : base(
-            view, quantityTask, interactionTaskContext, formulaMapper, favoriteMapper, favoriteRepository, parameterTask,
+            view, quantityTask, interactionTaskContext, formulaMapper, parameterDTOMapper, favoriteRepository, parameterTask,
             favoriteTask, entityPathResolver, contextMenuFactory)
       {
          var captions = new Dictionary<PathElement, string> {{PathElement.TopContainer, ObjectTypes.Reaction } };

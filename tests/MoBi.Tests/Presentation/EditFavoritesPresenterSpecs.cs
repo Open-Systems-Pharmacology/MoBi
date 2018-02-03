@@ -20,11 +20,11 @@ namespace MoBi.Presentation
 {
    public abstract class concern_for_EditFavoritesPresenter : ContextSpecification<IEditFavoritesInSpatialStructurePresenter>
    {
-      protected IEditFavoritesView _view;
+      protected IEditParameterListView _view;
       protected IQuantityTask _quantityTask;
       protected IInteractionTaskContext _interactionTaskContext;
       protected IFormulaToFormulaBuilderDTOMapper _formulaMapper;
-      protected IParameterToFavoriteParameterDTOMapper _favoriteMapper;
+      protected IParameterToParameterDTOMapper _favoriteMapper;
       protected IFavoriteRepository _favoriteRepository;
       protected IInteractionTasksForParameter _parameterTask;
       protected IFavoriteTask _favoriteTask;
@@ -34,11 +34,11 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _view = A.Fake<IEditFavoritesView>();
+         _view = A.Fake<IEditParameterListView>();
          _quantityTask = A.Fake<IQuantityTask>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _favoriteMapper = A.Fake<IParameterToFavoriteParameterDTOMapper>();
+         _favoriteMapper = A.Fake<IParameterToParameterDTOMapper>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _parameterTask = A.Fake<IInteractionTasksForParameter>();
          _favoriteTask = A.Fake<IFavoriteTask>();
@@ -53,7 +53,7 @@ namespace MoBi.Presentation
 
    class When_go_to_is_called_for_a_favorite : concern_for_EditFavoritesPresenter
    {
-      private FavoriteParameterDTO _favoriteDTO;
+      private ParameterDTO _favoriteDTO;
       private IParameter _parameter;
 
       protected override void Context()
@@ -61,7 +61,7 @@ namespace MoBi.Presentation
          
          base.Context();
          _parameter = new Parameter().WithName("P");
-         _favoriteDTO = new FavoriteParameterDTO(_parameter);
+         _favoriteDTO = new ParameterDTO(_parameter);
       }
 
       protected override void Because()
@@ -79,7 +79,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_Editing_favorites : concern_for_EditFavoritesPresenter
+   internal class When_editing_the_spatial_structure : concern_for_EditFavoritesPresenter
    {
       private IMoBiSpatialStructure _spatialStructure;
       private IParameter _para;
@@ -94,6 +94,7 @@ namespace MoBi.Presentation
          _fav = new Parameter().WithName("F").WithParentContainer(cont);
          _spatialStructure.AddTopContainer(cont);
          A.CallTo(() => _favoriteRepository.All()).Returns(new[] {_entityPathResolver.PathFor(_fav)});
+         A.CallTo(() => _favoriteMapper.MapFrom(_fav)).Returns(new ParameterDTO(_fav));
       }
 
       protected override void Because()
@@ -102,7 +103,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_only_map_favorite_parameter_to_dto()
+      public void should_show_the_favorites()
       {
          A.CallTo(() => _favoriteMapper.MapFrom(_fav)).MustHaveHappened();
          A.CallTo(() => _favoriteMapper.MapFrom(_para)).MustNotHaveHappened();

@@ -91,10 +91,10 @@ namespace MoBi.Presentation.Presenter
       {
          var parameter = GetParameterFrom(parameterDTO);
          AddCommand(_parameterTask.SetDimensionForParameter(parameter, newDimension, BuildingBlock));
-         UpdateView(parameterDTO);
+         RefreshViewAndSelect(parameterDTO);
       }
 
-      protected abstract void UpdateView(IParameterDTO parameterDTO);
+      protected abstract void RefreshViewAndSelect(IParameterDTO parameterDTO);
 
       public IEnumerable<IDimension> GetDimensions()
       {

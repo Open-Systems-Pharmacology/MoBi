@@ -34,12 +34,12 @@ namespace MoBi.Presentation.Presenter
       private IMoleculeBuilder _moleculeBuilder;
       private readonly IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderDTOMapper;
       private readonly IEditTaskFor<IMoleculeBuilder> _editTasks;
-      private readonly IEditParameterListPresenter _editMoleculeParameters;
+      private readonly IEditParametersInContainerPresenter _editMoleculeParameters;
       private readonly IMoBiContext _context;
       private readonly ICoreCalculationMethodRepository _calculationMethodsRepository;
 
       public EditMoleculeBuilderPresenter(IEditMoleculeBuilderView view, IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderDTOMapper,
-         IEditParameterListPresenter editMoleculeParameters, IEditTaskFor<IMoleculeBuilder> editTasks,
+         IEditParametersInContainerPresenter editMoleculeParameters, IEditTaskFor<IMoleculeBuilder> editTasks,
          IEditFormulaPresenter editFormulaPresenter, IMoBiContext context, ISelectReferenceAtMoleculePresenter selectReferencePresenter,
          IReactionDimensionRetriever dimensionRetriever, ICoreCalculationMethodRepository calculationMethodsRepository)
          : base(view, editFormulaPresenter, selectReferencePresenter)

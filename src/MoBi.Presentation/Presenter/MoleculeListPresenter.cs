@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter
@@ -39,14 +38,15 @@ namespace MoBi.Presentation.Presenter
       IMoleculeBuildingBlock MoleculeBuildingBlock { get; }
    }
 
-   internal class MoleculeListPresenter :
-      AbstractEditPresenter<IMoleculeListView, IMoleculeListPresenter, IMoleculeBuildingBlock>, IMoleculeListPresenter
+   internal class MoleculeListPresenter : AbstractEditPresenter<IMoleculeListView, IMoleculeListPresenter, IMoleculeBuildingBlock>,
+      IMoleculeListPresenter
    {
       private readonly IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderToDTOMoleculeBuilderMapper;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IMoBiContext _context;
       private bool _disableEventsForHeavyWork;
-      private readonly ITreeNode _favorites;
+      private readonly ITreeNode _favoritesNode;
+      private readonly ITreeNode _userDefinedParametersNode;
       public IMoleculeBuildingBlock MoleculeBuildingBlock { get; private set; }
 
       public MoleculeListPresenter(IMoleculeListView view,
@@ -57,14 +57,16 @@ namespace MoBi.Presentation.Presenter
          _moleculeBuilderToDTOMoleculeBuilderMapper = moleculeBuilderToDTOMoleculeBuilderMapper;
          _context = context;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
-         _favorites = treeNodeFactory.CreateGroupFavorites();
+         _favoritesNode = treeNodeFactory.CreateForFavorites();
+         _userDefinedParametersNode = treeNodeFactory.CreateForUserDefined();
       }
 
       public override void Edit(IMoleculeBuildingBlock objectToEdit)
       {
          MoleculeBuildingBlock = objectToEdit;
          _view.Clear();
-         _view.AddNode(_favorites);
+         _view.AddNode(_favoritesNode);
+         _view.AddNode(_userDefinedParametersNode);
          _view.Show(moleculesToBindTo());
       }
 
@@ -73,10 +75,7 @@ namespace MoBi.Presentation.Presenter
          return MoleculeBuildingBlock.OrderBy(x => x.Name).MapAllUsing(_moleculeBuilderToDTOMoleculeBuilderMapper);
       }
 
-      public override object Subject
-      {
-         get { return MoleculeBuildingBlock; }
-      }
+      public override object Subject => MoleculeBuildingBlock;
 
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
       {
@@ -86,10 +85,19 @@ namespace MoBi.Presentation.Presenter
 
       public virtual void Select(IObjectBaseDTO dtoObjectBase)
       {
-         if (dtoObjectBase.Equals(_favorites.TagAsObject))
+         if (Equals(dtoObjectBase, _favoritesNode.TagAsObject))
             raiseFavoritesSelectedEvent();
+
+         else if (Equals(dtoObjectBase, _userDefinedParametersNode.TagAsObject))
+            raiseUserDefinedSelectedEvent();
+
          else
             raiseEntitySelectedEvent(dtoObjectBase);
+      }
+
+      private void raiseUserDefinedSelectedEvent()
+      {
+         _context.PublishEvent(new UserDefinedSelectedEvent(MoleculeBuildingBlock));
       }
 
       private void raiseFavoritesSelectedEvent()
@@ -97,9 +105,9 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new FavoritesSelectedEvent(MoleculeBuildingBlock));
       }
 
-      private void raiseEntitySelectedEvent(IObjectBaseDTO dtoObjectBase)
+      private void raiseEntitySelectedEvent(IObjectBaseDTO objectBaseDTO)
       {
-         var objectBase = _context.Get<IObjectBase>(dtoObjectBase.Id);
+         var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
          _context.PublishEvent(new EntitySelectedEvent(objectBase, this));
       }
 
@@ -113,9 +121,9 @@ namespace MoBi.Presentation.Presenter
          _view.SelectItem(addedObject);
       }
 
-      private bool canHandle(IObjectBase obj)
+      private bool canHandle(IObjectBase objectBase)
       {
-         return obj.CouldBeInMoleculeBuildingBlock();
+         return objectBase.CouldBeInMoleculeBuildingBlock();
       }
 
       public void Handle(RemovedEvent eventToHandle)
@@ -133,9 +141,11 @@ namespace MoBi.Presentation.Presenter
       {
          if (MoleculeBuildingBlock == null) return;
          if (eventToHandle.Sender == this) return;
+
          var selectedObjectBase = eventToHandle.ObjectBase;
          if (!canHandle(selectedObjectBase))
             return;
+
          if (isParameterInMoleculeBuildingBlock(selectedObjectBase))
             _view.SelectItem(((IEntity) selectedObjectBase).ParentContainer);
          else
@@ -151,10 +161,10 @@ namespace MoBi.Presentation.Presenter
       public void Handle(MoleculeIconChangedEvent eventToHandle)
       {
          if (MoleculeBuildingBlock == null) return;
-         if (canHandle(eventToHandle.MoleculeBuilder))
-         {
-            Edit(MoleculeBuildingBlock);
-         }
+         if (!canHandle(eventToHandle.MoleculeBuilder))
+            return;
+
+         Edit(MoleculeBuildingBlock);
       }
 
       public void Handle(BulkUpdateStartedEvent eventToHandle)

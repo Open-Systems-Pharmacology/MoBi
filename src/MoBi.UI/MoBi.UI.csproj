@@ -239,11 +239,11 @@
       <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.24\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.26\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.24\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.26\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.DataBinding, Version=2.2.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DataBinding.2.2.0.1\lib\net462\OSPSuite.DataBinding.dll</HintPath>
@@ -254,11 +254,11 @@
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.24\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.26\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.24\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.26\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -269,8 +269,8 @@
     <Reference Include="OSPSuite.TeXReporting, Version=2.0.1.7, Culture=neutral, processorArchitecture=x86">
       <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.1.7\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.UI, Version=7.3.0.24, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.UI.7.3.0.24\lib\net462\OSPSuite.UI.dll</HintPath>
+    <Reference Include="OSPSuite.UI, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.UI.7.3.0.26\lib\net462\OSPSuite.UI.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.1\lib\net462\OSPSuite.Utility.dll</HintPath>
@@ -501,11 +501,11 @@
     <Compile Include="Views\EditEventGroupView.Designer.cs">
       <DependentUpon>EditEventGroupView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditFavoritesView.cs">
+    <Compile Include="Views\EditParameterListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\EditFavoritesView.Designer.cs">
-      <DependentUpon>EditFavoritesView.cs</DependentUpon>
+    <Compile Include="Views\EditParameterListView.Designer.cs">
+      <DependentUpon>EditParameterListView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\EditFormulaView.cs">
       <SubType>UserControl</SubType>
@@ -537,11 +537,11 @@
     <Compile Include="Views\EditOutputSchemaView.Designer.cs">
       <DependentUpon>EditOutputSchemaView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditParameterListView.cs">
+    <Compile Include="Views\EditParametersInContainerView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\EditParameterListView.Designer.cs">
-      <DependentUpon>EditParameterListView.cs</DependentUpon>
+    <Compile Include="Views\EditParametersInContainerView.Designer.cs">
+      <DependentUpon>EditParametersInContainerView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\EditPassiveTransportBuildingBlockView.cs">
       <SubType>Form</SubType>
@@ -1040,8 +1040,8 @@
     <EmbeddedResource Include="Views\EditContainerInSimulationView.resx">
       <DependentUpon>EditContainerInSimulationView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\EditFavoritesView.resx">
-      <DependentUpon>EditFavoritesView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\EditParameterListView.resx">
+      <DependentUpon>EditParameterListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\EditSimulationSettingsView.resx">
       <DependentUpon>EditSimulationSettingsView.cs</DependentUpon>
@@ -1163,8 +1163,8 @@
       <DependentUpon>EditOutputSchemaView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\EditParameterListView.resx">
-      <DependentUpon>EditParameterListView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\EditParametersInContainerView.resx">
+      <DependentUpon>EditParametersInContainerView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\EditParameterStartValuesView.resx">

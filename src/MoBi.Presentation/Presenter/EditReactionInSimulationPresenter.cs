@@ -15,28 +15,28 @@ namespace MoBi.Presentation.Presenter
    public class EditReactionInSimulationPresenter : AbstractEditPresenter<IEditReactionInSimulationView, IEditReactionInSimulationPresenter, IReaction>, IEditReactionInSimulationPresenter
    {
       private IReaction _reaction;
-      private readonly IEditParameterListPresenter _editParameterListPresenter;
+      private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
       private readonly IReactionToReactionDTOMapper _reactionToReactionDTOMapper;
       private readonly IFormulaPresenterCache _formulaPresenterCache;
       private IEditTypedFormulaPresenter _formulaPresenter;
       public IMoBiSimulation Simulation { get; set; }
 
-      public EditReactionInSimulationPresenter(IEditReactionInSimulationView view, IEditParameterListPresenter editParameterListPresenter, IReactionToReactionDTOMapper reactionToReactionDTOMapper,
+      public EditReactionInSimulationPresenter(IEditReactionInSimulationView view, IEditParametersInContainerPresenter editParametersInContainerPresenter, IReactionToReactionDTOMapper reactionToReactionDTOMapper,
          IFormulaPresenterCache formulaPresenterCache)
          : base(view)
       {
-         _editParameterListPresenter = editParameterListPresenter;
+         _editParametersInContainerPresenter = editParametersInContainerPresenter;
          _formulaPresenterCache = formulaPresenterCache;
          _reactionToReactionDTOMapper = reactionToReactionDTOMapper;
-         _editParameterListPresenter.EditMode = EditParameterMode.ValuesOnly;
-         _view.SetParameterView(_editParameterListPresenter.BaseView);
-         AddSubPresenters(_editParameterListPresenter);
+         _editParametersInContainerPresenter.EditMode = EditParameterMode.ValuesOnly;
+         _view.SetParameterView(_editParametersInContainerPresenter.BaseView);
+         AddSubPresenters(_editParametersInContainerPresenter);
       }
 
       public void Edit(IReaction reaction, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          _reaction = reaction;
-         _editParameterListPresenter.Edit(_reaction);
+         _editParametersInContainerPresenter.Edit(_reaction);
          _view.BindTo(_reactionToReactionDTOMapper.MapFrom(_reaction));
          initializeFormulaPresenter(reaction);
       }
@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Presenter
       public void SelectParameter(IParameter parameter)
       {
          _view.ShowParameters();
-         _editParameterListPresenter.Select(parameter);
+         _editParametersInContainerPresenter.Select(parameter);
       }
    }
 }

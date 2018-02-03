@@ -14,11 +14,11 @@ using OSPSuite.Core.Domain.Builder;
 namespace MoBi.Core.Mapper
 {
  
-   public abstract class concern_for_ApplicationBuilderToDTOApplicationBuilderMapperIntegrationTests : ContextForIntegration<IApplicationBuilderToDTOApplicationBuilderMapper>
+   public abstract class concern_for_ApplicationBuilderToDTOApplicationBuilderMapperIntegrationTests : ContextForIntegration<IApplicationBuilderToApplicationBuilderDTOMapper>
    {
       protected override void Context()
       {
-         sut = IoC.Resolve<IApplicationBuilderToDTOApplicationBuilderMapper>();
+         sut = IoC.Resolve<IApplicationBuilderToApplicationBuilderDTOMapper>();
       }
    }
 

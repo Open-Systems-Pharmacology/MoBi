@@ -13,12 +13,12 @@ namespace MoBi.Presentation.Mapper
    public abstract class concern_for_ITransporterMoleculeContainerToDTOTranpsorterMoleculeContainerMapper : ContextSpecification<ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper>
    {
       protected IParameterToParameterDTOMapper _parameterToParameterDTOMapper;
-      protected ITransportBuilderToDTOTransportBuilderMapper _transportBuilderToDTOTransporterBuilderMapper;
+      protected ITransportBuilderToTransportBuilderDTOMapper _transportBuilderToDTOTransporterBuilderMapper;
 
       protected override void Context()
       {
          _parameterToParameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
-         _transportBuilderToDTOTransporterBuilderMapper = A.Fake<ITransportBuilderToDTOTransportBuilderMapper>();
+         _transportBuilderToDTOTransporterBuilderMapper = A.Fake<ITransportBuilderToTransportBuilderDTOMapper>();
          sut = new TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper(_transportBuilderToDTOTransporterBuilderMapper,_parameterToParameterDTOMapper);
       }
    }

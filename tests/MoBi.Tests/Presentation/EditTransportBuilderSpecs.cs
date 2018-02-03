@@ -14,12 +14,12 @@ namespace MoBi.Presentation
 {
    public abstract class concern_for_EditTransportBuilderSpecs : ContextSpecification<IEditTransportBuilderPresenter>
    {
-      private ITransportBuilderToDTOTransportBuilderMapper _transporBuilderMapper;
+      private ITransportBuilderToTransportBuilderDTOMapper _transporBuilderMapper;
       private IEditTaskFor<ITransportBuilder> _taskForPassiveTranportBuilder;
       private IViewItemContextMenuFactory _contexteMenuFactory;
       protected IEditTransportBuilderView _view;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
-      protected IEditParameterListPresenter _parameterPresenter;
+      protected IEditParametersInContainerPresenter _parameterPresenter;
       private IEditFormulaPresenter _formulaPresenter;
       private ISelectReferenceAtTransportPresenter _referencePresenter;
       private IMoBiContext _context;
@@ -29,12 +29,12 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _transporBuilderMapper=A.Fake<ITransportBuilderToDTOTransportBuilderMapper>();
+         _transporBuilderMapper=A.Fake<ITransportBuilderToTransportBuilderDTOMapper>();
          _taskForPassiveTranportBuilder= A.Fake<IEditTasksForBuildingBlock<ITransportBuilder>>();
          _contexteMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _view= A.Fake<IEditTransportBuilderView>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _parameterPresenter = A.Fake<IEditParameterListPresenter>();
+         _parameterPresenter = A.Fake<IEditParametersInContainerPresenter>();
          _formulaPresenter = A.Fake<IEditFormulaPresenter>();
          _referencePresenter= A.Fake<ISelectReferenceAtTransportPresenter>();
          _context = A.Fake<IMoBiContext>();

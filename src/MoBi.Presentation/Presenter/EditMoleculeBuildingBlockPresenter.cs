@@ -1,27 +1,31 @@
 using System;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditMoleculeBuildingBlockPresenter : ISingleStartPresenter<IMoleculeBuildingBlock>,
-      IListener<EntitySelectedEvent>, IListener<RemovedEvent>, IListener<BulkUpdateFinishedEvent>,
-      IListener<BulkUpdateStartedEvent>, IListener<FavoritesSelectedEvent>
+   public interface IEditMoleculeBuildingBlockPresenter :
+      ISingleStartPresenter<IMoleculeBuildingBlock>,
+      IListener<EntitySelectedEvent>,
+      IListener<RemovedEvent>,
+      IListener<BulkUpdateFinishedEvent>,
+      IListener<BulkUpdateStartedEvent>,
+      IListener<FavoritesSelectedEvent>,
+      IListener<UserDefinedSelectedEvent>
    {
    }
 
-   public class EditMoleculeBuildingBlockPresenter :
-      EditBuildingBlockPresenterBase
-         <IEditMoleculesBuildingBlockView, IEditMoleculeBuildingBlockPresenter, IMoleculeBuildingBlock, IMoleculeBuilder
-            >, IEditMoleculeBuildingBlockPresenter
+   public class EditMoleculeBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditMoleculesBuildingBlockView, IEditMoleculeBuildingBlockPresenter, IMoleculeBuildingBlock, IMoleculeBuilder>,
+      IEditMoleculeBuildingBlockPresenter
    {
       private readonly IMoleculeListPresenter _moleculeListPresenter;
       private IMoleculeBuildingBlock _moleculeBuildingBlock;
@@ -30,7 +34,6 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditTransportBuilderPresenter _editTransportBuilderPresenter;
       private bool _disableEventsForHeavyWork;
       private readonly IEditContainerPresenter _editInteractionContainerPresenter;
-      private readonly IEditFavoritesInMoleculesPresenter _editFavoritesPresenter;
 
       public EditMoleculeBuildingBlockPresenter(IEditMoleculesBuildingBlockView view,
          IMoleculeListPresenter moleculeListPresenter, IFormulaCachePresenter formulaCachePresenter,
@@ -38,19 +41,21 @@ namespace MoBi.Presentation.Presenter
          IEditTransporterMoleculeContainerPresenter editTransporterMoleculeContainerPresenter,
          IEditTransportBuilderPresenter editTransportBuilderPresenter,
          IEditContainerPresenter editInteractionContainerPresenter,
-         IEditFavoritesInMoleculesPresenter editFavoritesPresenter)
-         : base(view, formulaCachePresenter)
+         IEditFavoritesInMoleculesPresenter favoritesPresenter,
+         IUserDefinedParametersPresenter userDefinedParametersPresenter
+      )
+         : base(view, formulaCachePresenter, favoritesPresenter, userDefinedParametersPresenter)
       {
          _editTransportBuilderPresenter = editTransportBuilderPresenter;
          _editTransporterMoleculeContainerPresenter = editTransporterMoleculeContainerPresenter;
          _editMoleculeBuilderPresenter = editMoleculeBuilderPresenter;
          _moleculeListPresenter = moleculeListPresenter;
          _editInteractionContainerPresenter = editInteractionContainerPresenter;
-         _editFavoritesPresenter = editFavoritesPresenter;
-         _editFavoritesPresenter.ShouldHandleRemovedEvent = shouldHandleType;
+         _favoritesPresenter.ShouldHandleRemovedEvent = shouldHandleType;
          _view.SetListView(_moleculeListPresenter.BaseView);
+
          AddSubPresenters(_editTransportBuilderPresenter, _editTransporterMoleculeContainerPresenter,
-            _editMoleculeBuilderPresenter, _moleculeListPresenter, _editInteractionContainerPresenter, _editFavoritesPresenter);
+            _editMoleculeBuilderPresenter, _moleculeListPresenter, _editInteractionContainerPresenter);
       }
 
       protected override void UpdateCaption()
@@ -58,10 +63,7 @@ namespace MoBi.Presentation.Presenter
          _view.Caption = AppConstants.Captions.MoleculesBuildingBlockCaption(_moleculeBuildingBlock.Name);
       }
 
-      public override object Subject
-      {
-         get { return _moleculeBuildingBlock; }
-      }
+      public override object Subject => _moleculeBuildingBlock;
 
       public override void Edit(IMoleculeBuildingBlock moleculeBuildingBlockToEdit)
       {
@@ -71,44 +73,44 @@ namespace MoBi.Presentation.Presenter
          _editTransporterMoleculeContainerPresenter.BuildingBlock = _moleculeBuildingBlock;
          _editInteractionContainerPresenter.BuildingBlock = _moleculeBuildingBlock;
          _editMoleculeBuilderPresenter.BuildingBlock = _moleculeBuildingBlock;
-         _editFavoritesPresenter.Edit(moleculeBuildingBlockToEdit);
+         _favoritesPresenter.Edit(moleculeBuildingBlockToEdit);
          EditFormulas(moleculeBuildingBlockToEdit);
-         _view.SetEditView(_editFavoritesPresenter.BaseView);
+         _view.SetEditView(_favoritesPresenter.BaseView);
          UpdateCaption();
          _view.Display();
       }
 
       private void refresh(IMoleculeBuildingBlock moleculeBuildingBlockToEdit)
       {
-         setUpEditPresenterFor(moleculeBuildingBlockToEdit.FirstOrDefault());
+         setupEditPresenterFor(moleculeBuildingBlockToEdit.FirstOrDefault());
          UpdateCaption();
       }
 
-      private void setUpEditPresenterFor(IObjectBase objectBase)
+      private void setupEditPresenterFor(IObjectBase objectBase, IParameter parameter = null)
       {
-         setUpEditPresenterFor(objectBase, null);
+         switch (objectBase)
+         {
+            case IMoleculeBuilder moleculeBuilder:
+               editPresenter(moleculeBuilder, _editMoleculeBuilderPresenter, parameter);
+               return;
+            case TransporterMoleculeContainer transporterMoleculeContainer:
+               editPresenter(transporterMoleculeContainer, _editTransporterMoleculeContainerPresenter, parameter);
+               return;
+
+            case ITransportBuilder transportBuilder:
+               editPresenter(transportBuilder, _editTransportBuilderPresenter, parameter);
+               return;
+
+            case InteractionContainer interactionContainer:
+               editPresenter(interactionContainer, _editInteractionContainerPresenter, parameter);
+               return;
+         }
       }
 
-      private void setUpEditPresenterFor(IObjectBase objectBase, IParameter parameter)
-      {
-         if (objectBase.IsAnImplementationOf<IMoleculeBuilder>())
-            editPresenter(objectBase, _editMoleculeBuilderPresenter, parameter);
-
-         else if (objectBase.IsAnImplementationOf<TransporterMoleculeContainer>())
-            editPresenter(objectBase, _editTransporterMoleculeContainerPresenter, parameter);
-
-         else if (objectBase.IsAnImplementationOf<ITransportBuilder>())
-            editPresenter(objectBase, _editTransportBuilderPresenter, parameter);
-
-         else if (objectBase.IsAnImplementationOf<InteractionContainer>())
-            editPresenter(objectBase, _editInteractionContainerPresenter, parameter);
-      }
-
-      private void editPresenter<T>(IObjectBase objectBase, IEditPresenterWithParameters<T> editPresenter,
-         IParameter parameter)
+      private void editPresenter<T>(T objectBase, IEditPresenterWithParameters<T> editPresenter, IParameter parameter)
       {
          _view.SetEditView(editPresenter.BaseView);
-         editPresenter.Edit(objectBase.DowncastTo<T>());
+         editPresenter.Edit(objectBase);
          if (parameter != null)
             editPresenter.SelectParameter(parameter);
       }
@@ -123,12 +125,12 @@ namespace MoBi.Presentation.Presenter
 
       protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
       {
-         setUpEditPresenterFor(parentObject, parameter);
+         setupEditPresenterFor(parentObject, parameter);
       }
 
       protected override void SelectBuilder(IMoleculeBuilder builder)
       {
-         setUpEditPresenterFor(builder);
+         setupEditPresenterFor(builder);
       }
 
       private bool shouldHandleType(IObjectBase selectedEntity)
@@ -154,16 +156,16 @@ namespace MoBi.Presentation.Presenter
       {
          if (_disableEventsForHeavyWork)
             return;
+
          if (eventToHandle.RemovedObjects.Any(shouldHandleType))
          {
             refresh(_moleculeBuildingBlock);
          }
       }
 
-      public void Handle(FavoritesSelectedEvent eventToHandle)
+      protected override void ShowView(IView viewToShow)
       {
-         if (eventToHandle.ObjectBase.Equals(_moleculeBuildingBlock))
-            _view.SetEditView(_editFavoritesPresenter.BaseView);
+         _view.SetEditView(viewToShow);
       }
    }
 }
