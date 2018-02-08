@@ -13,4 +13,6 @@ namespace MoBi.Presentation.Views
       void SetCaptions(IDictionary<PathElement, string> captions);
       void SetVisibility(PathElement pathElement, bool isVisible);
    }
+
+
 }

@@ -10,5 +10,6 @@ namespace MoBi.Presentation.Views
       void SetReactionListView(IView view);
       void SetReactionDiagram(IView view);
       void SetFavoritesReactionView(IView view);
+      void SetUserDefinedParametersView(IView view);
    }
 }

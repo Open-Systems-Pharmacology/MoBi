@@ -227,7 +227,6 @@ namespace MoBi.Assets
          public static readonly string CommitCommand = "Commit";
          public static readonly string UpdateManyParameterStartValues = "Update some Parameter Start Values";
          public static readonly string UpdateManyMoleculeStartValues = "Update some Molecule Start Values";
-
          public static readonly string UpdateCommand = "Update";
          public static readonly string ImportCommand = "Import";
          public static readonly string MergeBuildingBlocks = "Merging two building blocks";
@@ -246,6 +245,10 @@ namespace MoBi.Assets
          public static readonly string RemoveSimulationsFromProject = "Remove simulations from project";
          public static readonly string RemoveMultipleResultsFromSimulations = "Remove multiple results from simulations";
          public static readonly string RemoveMultipleStartValues = "Remove multiple start values";
+         public static readonly string SimulationType = "simulation";
+         public static readonly string BuildingBlockType = "building block";
+         public static readonly string ParameterType = "parameter";
+
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
@@ -632,7 +635,7 @@ namespace MoBi.Assets
 
          public static string ChangeFormulaAlias(string formulaName, string oldAlias, string newAlias, string buildingBlockName)
          {
-            return $"Changed formula alias from '{oldAlias}' to '{newAlias}' for formula named '{formulaName}' in building block '{buildingBlockName}'";
+            return $"Changed formula alias from '{oldAlias}' to '{newAlias}' for formula named '{formulaName}' in {BuildingBlockType} '{buildingBlockName}'";
          }
 
          public static string ChangeFormulaPathDimension(string formulaName, string oldDimension, string newDimension, string buildingBlockName, string alias)
@@ -647,12 +650,12 @@ namespace MoBi.Assets
 
          public static string ChangeFormulaString(string formulaName, string newFormulaString, string oldFormulaString, string buildingBlockName)
          {
-            return $"Changed formula string from '{oldFormulaString}' to '{newFormulaString}' for formula named '{formulaName}' in building block '{buildingBlockName}'";
+            return $"Changed formula string from '{oldFormulaString}' to '{newFormulaString}' for formula named '{formulaName}' in {BuildingBlockType} '{buildingBlockName}'";
          }
 
          public static string AddTagToEntity(string tag, string entityName, string containerPath, string buildingBlockName)
          {
-            return $"Adding tag '{tag}' to entity named '{entityName}' in container path '{containerPath}' in building block '{buildingBlockName}'";
+            return $"Adding tag '{tag}' to entity named '{entityName}' in container path '{containerPath}' in {BuildingBlockType} '{buildingBlockName}'";
          }
 
          public static string AddParameterToContainerDescription(string containerPath, string parameterName, string buildingBlockName)
@@ -672,17 +675,17 @@ namespace MoBi.Assets
 
          public static string SetTableFormulaYDisplayUnits(string tableFormulaName, string oldUnit, string newUnit, string buildingBlockName)
          {
-            return $"Changed Y axis display units for table formula named '{tableFormulaName}' from '{oldUnit}' to '{newUnit}' in building block '{buildingBlockName}'";
+            return $"Changed Y axis display units for table formula named '{tableFormulaName}' from '{oldUnit}' to '{newUnit}' in {BuildingBlockType} '{buildingBlockName}'";
          }
 
          public static string SetTableFormulaXDisplayUnits(string tableFormulaName, string oldUnit, string newUnit, string buildingBlockName)
          {
-            return $"Changed X axis units for table formula named '{tableFormulaName}' from '{oldUnit}' to '{newUnit}' in building block '{buildingBlockName}'";
+            return $"Changed X axis units for table formula named '{tableFormulaName}' from '{oldUnit}' to '{newUnit}' in {BuildingBlockType} '{buildingBlockName}'";
          }
 
          public static string SetRestartSolverInValuePoint(string tableFormulaName, string xCoordinate, string yCoordinate, bool newRestartSolverValue, bool oldRestartSolverValue, string buildingBlockName)
          {
-            return $"Changed restart solver value in table formula '{tableFormulaName}' from '{oldRestartSolverValue}' to '{newRestartSolverValue}' for point '{xCoordinate},{yCoordinate}' in building block {buildingBlockName}";
+            return $"Changed restart solver value in table formula '{tableFormulaName}' from '{oldRestartSolverValue}' to '{newRestartSolverValue}' for point '{xCoordinate},{yCoordinate}' in {BuildingBlockType} {buildingBlockName}";
          }
 
          public static string SetValuePointValueCommand(string tableFormulaName, string oldXCoordinate, string oldYCoordinate, string newXCoordinate, string newYCoordinate, string buildingBlockName)
@@ -697,17 +700,17 @@ namespace MoBi.Assets
 
          private static string updateParameterPropertyInBuildingBlock(string parameterName, string newValue, string oldValue, string buildingBlockName, string propertyName)
          {
-            return updateParameterPropertyIn(parameterName, newValue, oldValue, buildingBlockName, propertyName, "building block");
+            return updateParameterPropertyIn(parameterName, newValue, oldValue, buildingBlockName, propertyName, BuildingBlockType);
          }
 
          private static string updateParameterPropertyInSimulation(string parameterName, string newValue, string oldValue, string simulationName, string propertyName)
          {
-            return updateParameterPropertyIn(parameterName, newValue, oldValue, simulationName, propertyName, "simulation");
+            return updateParameterPropertyIn(parameterName, newValue, oldValue, simulationName, propertyName, SimulationType);
          }
 
          private static string updateParameterPropertyIn(string parameterName, string newValue, string oldValue, string containerName, string propertyName, string containerType )
          {
-            return $"Changed parameter {parameterName} {propertyName} from '{oldValue}' to '{newValue}' in {containerType} {containerName}";
+            return $"Changed {ParameterType} {parameterName} {propertyName} from '{oldValue}' to '{newValue}' in {containerType} {containerName}";
          }
 
          public static string ChangeParameterDescription(string parameterName, string oldDescription, string newDescription, string buildingBlockName)
@@ -740,14 +743,19 @@ namespace MoBi.Assets
             return updateParameterPropertyInSimulation(parameterName, newIsDefault.ToString(), oldIsDefault.ToString(), simulationName, "default state");
          }
 
-         public static string UpdateParameterValueOriginInBuildingBlock(string parameterName, string oldValueOrigin, string newValueOrigin, string buildingBlockName)
+         public static string UpdateQuantityValueOriginInBuildingBlock(string parameterName, string oldValueOrigin, string newValueOrigin, string quantityType, string buildingBlockName)
          {
-            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin);
+            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin, quantityType, parameterName, BuildingBlockType, buildingBlockName);
          }
 
-         public static string UpdateParameterValueOriginInSimulation(string parameterName, string oldValueOrigin, string newValueOrigin, string simulationName)
+         public static string UpdateQuantityValueOriginInSimulation(string parameterName, string oldValueOrigin, string newValueOrigin, string quantityType, string simulationName)
          {
-            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin);
+            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin, quantityType, parameterName, SimulationType, simulationName);
+         }
+
+         public static string UpdateStartValueValueOrigin(string startValuePath, string oldValueOrigin, string newValueOrigin, string startValueType, string startValueBuildingBlockName)
+         {
+            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin, startValueType, startValuePath, BuildingBlockType, startValueBuildingBlockName);
          }
       }
 
@@ -1578,6 +1586,8 @@ namespace MoBi.Assets
          public static readonly string CloseView = "Close";
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
+         public static readonly string Chart = "Chart";
+         public static readonly string List = "List";
          //TODO MOVE TO CORE
          public static readonly string UserDefined = "User Defined";
 

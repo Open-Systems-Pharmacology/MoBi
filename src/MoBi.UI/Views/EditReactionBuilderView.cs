@@ -87,7 +87,7 @@ namespace MoBi.UI.Views
 
       public bool PlotProcessRateParameterEnabled
       {
-         set { chkPlotParameter.Enabled = value; }
+         set => chkPlotParameter.Enabled = value;
       }
 
       public void SetEductView(IView view)
@@ -112,8 +112,8 @@ namespace MoBi.UI.Views
 
          _screenBinder = new ScreenBinder<ReactionBuilderDTO>();
          _screenBinder.Bind(item => item.StoichiometricFormula).To(lblStoichiometricFormula);
-         _screenBinder.Bind(item => item.Name).To(btName).OnValueUpdating += OnValueUpdating;
-         _screenBinder.Bind(item => item.Description).To(htmlEditor).OnValueUpdating += OnValueUpdating;
+         _screenBinder.Bind(item => item.Name).To(btName).OnValueUpdating += onValueUpdating;
+         _screenBinder.Bind(item => item.Description).To(htmlEditor).OnValueUpdating += onValueUpdating;
          _screenBinder.Bind(item => item.CreateProcessRateParameter).To(chkCreateParmeter).OnValueUpdating += onCreateParameterSet;
          _screenBinder.Bind(item => item.ProcessRateParameterPersistable).To(chkPlotParameter).OnValueUpdating += onPlotParameterSet;
 
@@ -132,7 +132,7 @@ namespace MoBi.UI.Views
          OnEvent(() => _presenter.SetCreateProcessRateParameter(e.NewValue));
       }
 
-      private void OnValueUpdating<T>(ReactionBuilderDTO reactionBuilder, PropertyValueSetEventArgs<T> e)
+      private void onValueUpdating<T>(ReactionBuilderDTO reactionBuilder, PropertyValueSetEventArgs<T> e)
       {
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }

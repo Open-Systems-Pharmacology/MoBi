@@ -37,7 +37,7 @@ namespace MoBi.Presentation.DTO
 
       public string Name
       {
-         get { return StartValueObject.Name; }
+         get => StartValueObject.Name;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -62,7 +62,7 @@ namespace MoBi.Presentation.DTO
 
       public IDimension Dimension
       {
-         get { return StartValueObject.Dimension; }
+         get => StartValueObject.Dimension;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -71,18 +71,29 @@ namespace MoBi.Presentation.DTO
 
       public Unit DisplayUnit
       {
-         get { return StartValueObject.DisplayUnit; }
+         get => StartValueObject.DisplayUnit;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
          }
       }
 
-      public ValueOrigin ValueOrigin => StartValueObject.ValueOrigin;
+
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
+      {
+         StartValueObject.UpdateValueOriginFrom(ValueOrigin);
+      }
+
+      public virtual ValueOrigin ValueOrigin
+      {
+         get => StartValueObject.ValueOrigin;
+         set => UpdateValueOriginFrom(value);
+      }
+
 
       public IEnumerable<Unit> AllUnits
       {
-         get { return Dimension.Units; }
+         get => Dimension.Units;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that

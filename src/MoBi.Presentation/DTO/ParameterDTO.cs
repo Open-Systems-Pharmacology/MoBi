@@ -48,7 +48,7 @@ namespace MoBi.Presentation.DTO
 
       public IEnumerable<Unit> AllUnits
       {
-         get { return Dimension.Units; }
+         get => Dimension.Units;
          set
          {
             /*nothing to do here*/
@@ -101,7 +101,7 @@ namespace MoBi.Presentation.DTO
 
       public virtual ParameterBuildMode BuildMode
       {
-         get { return Parameter.BuildMode; }
+         get => Parameter.BuildMode;
          set
          {
             /*nothing to do here since the BuildMode should be set in the command*/
@@ -110,7 +110,7 @@ namespace MoBi.Presentation.DTO
 
       public virtual IDimension Dimension
       {
-         get { return Parameter.Dimension; }
+         get => Parameter.Dimension;
          set
          {
             /*nothing to do here since the Dimension should be set in the command*/
@@ -119,14 +119,23 @@ namespace MoBi.Presentation.DTO
 
       public virtual Unit DisplayUnit
       {
-         get { return Parameter.DisplayUnit; }
+         get => Parameter.DisplayUnit;
          set
          {
             /*nothing to do here since the unit should be set in the command*/
          }
       }
 
-      public virtual ValueOrigin ValueOrigin => Parameter.ValueOrigin;
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
+      {
+         Parameter.UpdateValueOriginFrom(ValueOrigin);
+      }
+
+      public virtual ValueOrigin ValueOrigin
+      {
+         get=> Parameter.ValueOrigin;
+         set => UpdateValueOriginFrom(value);
+      } 
 
       public bool IsDiscrete => false;
       public ICache<double, string> ListOfValues { get; }

@@ -163,9 +163,8 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      protected override void ShowView(IView viewToShow)
-      {
-         _view.SetEditView(viewToShow);
-      }
+      protected override void ShowView(IView viewToShow) => _view.SetEditView(viewToShow);
+
+      protected override Action ColumnConfiguration(IUserDefinedParametersPresenter userDefinedParametersPresenter) => userDefinedParametersPresenter.ConfigureForMolecule;
    }
 }

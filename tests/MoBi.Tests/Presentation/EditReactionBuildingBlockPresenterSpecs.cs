@@ -1,11 +1,10 @@
-﻿using OSPSuite.BDDHelper;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ReactionDiagram;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -13,12 +12,13 @@ namespace MoBi.Presentation
 {
    public abstract class concern_for_EditReactionBuildingBlockPresenter : ContextSpecification<EditReactionBuildingBlockPresenter>
    {
-      private IEditFavoritesInReactionsPresenter _editFavoritesInReactionsPresenter;
+      protected IEditFavoritesInReactionsPresenter _editFavoritesInReactionsPresenter;
       protected IReactionsListSubPresenter _reactionListPresenter;
       private IEditReactionBuildingBlockView _view;
       protected IReactionDiagramPresenter _reactionDiagramPresenter;
       protected IEditReactionBuilderPresenter _editReactionBuilderPresenter;
-      private IFormulaCachePresenter _formulaCachePresenter;
+      protected IFormulaCachePresenter _formulaCachePresenter;
+      protected IUserDefinedParametersPresenter _userDefinedParametersPresenter;
 
       protected override void Context()
       {
@@ -28,8 +28,82 @@ namespace MoBi.Presentation
          _view = A.Fake<IEditReactionBuildingBlockView>();
          _editReactionBuilderPresenter = A.Fake<IEditReactionBuilderPresenter>();
          _formulaCachePresenter = A.Fake<IFormulaCachePresenter>();
+         _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
 
-         sut = new EditReactionBuildingBlockPresenter(_view, _reactionListPresenter, _reactionDiagramPresenter, _editReactionBuilderPresenter, _formulaCachePresenter, _editFavoritesInReactionsPresenter);
+         sut = new EditReactionBuildingBlockPresenter(_view, _reactionListPresenter, _reactionDiagramPresenter,
+            _editReactionBuilderPresenter, _formulaCachePresenter,
+            _editFavoritesInReactionsPresenter, _userDefinedParametersPresenter);
+      }
+   }
+
+   public class When_editing_a_reaction_building_block_presenter : concern_for_EditReactionBuildingBlockPresenter
+   {
+      private IMoBiReactionBuildingBlock _reactionBuildingBlock;
+      private IReactionBuilder _reaction;
+
+      protected override void Context()
+      {
+         base.Context();
+         _reaction = new ReactionBuilder();
+         _reactionBuildingBlock = new MoBiReactionBuildingBlock {_reaction};
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_reactionBuildingBlock);
+      }
+
+      [Observation]
+      public void should_display_the_list_of_all_rections_defined_in_the_building_block()
+      {
+         A.CallTo(() => _reactionListPresenter.Edit(_reactionBuildingBlock)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_display_the_diagram_of_all_rections_defined_in_the_building_block()
+      {
+         A.CallTo(() => _reactionDiagramPresenter.Edit(_reactionBuildingBlock)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_edit_the_first_reaction_of_the_reaciton_building_block_if_defined()
+      {
+         A.CallTo(() => _editReactionBuilderPresenter.Edit(_reaction)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_display_the_favorites_defined_in_the_reaciton_building_blocks()
+      {
+         A.CallTo(() => _editFavoritesInReactionsPresenter.Edit(_reactionBuildingBlock)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_display_the_user_defined_paramters_defined_in_the_reaction_building_block()
+      {
+         A.CallTo(() => _userDefinedParametersPresenter.ShowUserDefinedParametersIn(_reactionBuildingBlock)).MustHaveHappened();
+      }
+   }
+
+   public class When_the_edit_reaction_building_block_presenter_is_updating_the_list_of_user_defined_parameters : concern_for_EditReactionBuildingBlockPresenter
+   {
+      private IMoBiReactionBuildingBlock _reactionBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _reactionBuildingBlock = new MoBiReactionBuildingBlock();
+         sut.Edit(_reactionBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateUserDefinedParameters();
+      }
+
+      [Observation]
+      public void should_refresh_the_user_defined_parmaeters_defined_in_the_edited_reaction_building_block()
+      {
+         A.CallTo(() => _userDefinedParametersPresenter.ShowUserDefinedParametersIn(_reactionBuildingBlock)).MustHaveHappened();
       }
    }
 
@@ -106,7 +180,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_edit_the_reaction_in_the_reaction_presenter()
       {
-         A.CallTo(() => _editReactionBuilderPresenter.Edit(_reaction)).MustHaveHappened();   
+         A.CallTo(() => _editReactionBuilderPresenter.Edit(_reaction)).MustHaveHappened();
       }
 
       [Observation]
@@ -114,6 +188,5 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _reactionDiagramPresenter.Select(_reaction)).MustHaveHappened();
       }
-
    }
 }

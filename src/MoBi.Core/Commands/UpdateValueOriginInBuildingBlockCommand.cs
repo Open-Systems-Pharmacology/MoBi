@@ -6,12 +6,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateValueOriginInBuildingBlockCommand : EditQuantityInBuildingBlockCommand<IParameter>
+   public class UpdateValueOriginInBuildingBlockCommand : EditQuantityInBuildingBlockCommand<IQuantity>
    {
       private ValueOrigin _valueOrigin;
       private ValueOrigin _oldValueOrigin;
 
-      public UpdateValueOriginInBuildingBlockCommand(IParameter quantity, ValueOrigin valueOrigin, IBuildingBlock buildingBlock) : base(quantity, buildingBlock)
+      public UpdateValueOriginInBuildingBlockCommand(IQuantity quantity, ValueOrigin valueOrigin, IBuildingBlock buildingBlock) : base(quantity, buildingBlock)
       {
          _valueOrigin = valueOrigin;
       }
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          _oldValueOrigin = _quantity.ValueOrigin.Clone();
          _quantity.ValueOrigin.UpdateFrom(_valueOrigin);
-         Description = AppConstants.Commands.UpdateParameterValueOriginInSimulation(_quantity.EntityPath(), _oldValueOrigin.ToString(), _valueOrigin.ToString(), _buildingBlock.Name);
+         Description = AppConstants.Commands.UpdateQuantityValueOriginInSimulation(_quantity.EntityPath(), _oldValueOrigin.ToString(), _valueOrigin.ToString(), ObjectType, _buildingBlock.Name);
       }
 
       protected override void ClearReferences()

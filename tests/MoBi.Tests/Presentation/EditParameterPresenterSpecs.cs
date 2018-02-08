@@ -15,6 +15,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation
 {
@@ -144,14 +145,17 @@ namespace MoBi.Presentation
       private IParameter _parameter;
       private ParameterDTO _parameterDTO;
       private ValueOrigin _valueOrigin;
+      private IBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          base.Context();
+         _buildingBlock= A.Fake<IBuildingBlock>(); 
          _valueOrigin = new ValueOrigin();
          _parameter = new Parameter().WithId("Para");
          _parameterDTO = new ParameterDTO(_parameter);
          A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(_parameterDTO);
+         sut.BuildingBlock  =_buildingBlock;
          sut.Edit(_parameter);
       }
 
@@ -163,7 +167,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_call_the_parameter_task()
       {
-         A.CallTo(() => _parameterTask.SetValueOriginForParameter(_parameter, _valueOrigin)).MustHaveHappened();
+         A.CallTo(() => _parameterTask.SetValueOriginForParameter(_parameter, _valueOrigin, _buildingBlock)).MustHaveHappened();
       }
    }
 

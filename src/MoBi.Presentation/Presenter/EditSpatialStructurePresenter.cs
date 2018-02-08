@@ -168,9 +168,6 @@ namespace MoBi.Presentation.Presenter
          _diagramLoaded = true;
       }
 
-      protected override void ShowView(IView viewToShow)
-      {
-         _view.SetEditView(viewToShow);
-      }
+      protected override void ShowView(IView viewToShow) => _view.SetEditView(viewToShow);
    }
 }

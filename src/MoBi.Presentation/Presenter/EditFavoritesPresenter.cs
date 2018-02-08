@@ -123,6 +123,10 @@ namespace MoBi.Presentation.Presenter
          _favorites.AddRange(allFavoritesParameters.Select(favoriteDTOFrom));
 
          EnumHelper.AllValuesFor<PathElement>().Each(updateColumnVisibility);
+
+         //name always visible
+         _view.SetVisibility(PathElement.Name, isVisible: true);
+
          UpdateSpecialColumnsVisibility();
          _view.BindTo(_favorites);
       }
@@ -137,11 +141,7 @@ namespace MoBi.Presentation.Presenter
          _favorites.Each(dto => dto.Release());
       }
 
-      protected virtual void UpdateSpecialColumnsVisibility()
-      {
-         //name always visible
-         _view.SetVisibility(PathElement.Name, isVisible: true);
-      }
+      protected virtual Action UpdateSpecialColumnsVisibility { get; set; } = () => { };
 
       private void updateColumnVisibility(PathElement pathElement)
       {

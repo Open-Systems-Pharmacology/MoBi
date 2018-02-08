@@ -1,15 +1,15 @@
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter.ReactionDiagram;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -20,6 +20,7 @@ namespace MoBi.Presentation.Presenter
    {
       void LayoutInLayers();
       void AddReactionMoleculeNode();
+      void UpdateUserDefinedParameters();
    }
 
    public class EditReactionBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditReactionBuildingBlockView, IEditReactionBuildingBlockPresenter, IMoBiReactionBuildingBlock, IReactionBuilder>,
@@ -29,24 +30,32 @@ namespace MoBi.Presentation.Presenter
       private readonly IReactionDiagramPresenter _reactionDiagramPresenter;
       private readonly IEditReactionBuilderPresenter _editReactionBuilderPresenter;
       private readonly IEditFavoritesInReactionsPresenter _editFavoritesInReactionsPresenter;
+      private readonly IUserDefinedParametersPresenter _userDefinedParametersPresenter;
       private IMoBiReactionBuildingBlock _reactionBuildingBlock;
 
       public EditReactionBuildingBlockPresenter(IEditReactionBuildingBlockView view,
-         IReactionsListSubPresenter reactionListPresenter, IReactionDiagramPresenter reactionDiagramPresenter,
-         IEditReactionBuilderPresenter editReactionBuilderPresenter, IFormulaCachePresenter formulaCachePresenter,
-         IEditFavoritesInReactionsPresenter editFavoritesInReactionsPresenter)
+         IReactionsListSubPresenter reactionListPresenter,
+         IReactionDiagramPresenter reactionDiagramPresenter,
+         IEditReactionBuilderPresenter editReactionBuilderPresenter,
+         IFormulaCachePresenter formulaCachePresenter,
+         IEditFavoritesInReactionsPresenter editFavoritesInReactionsPresenter,
+         IUserDefinedParametersPresenter userDefinedParametersPresenter
+      )
          : base(view, formulaCachePresenter)
       {
          _editReactionBuilderPresenter = editReactionBuilderPresenter;
          _editFavoritesInReactionsPresenter = editFavoritesInReactionsPresenter;
+         _userDefinedParametersPresenter = userDefinedParametersPresenter;
          _reactionDiagramPresenter = reactionDiagramPresenter;
          _reactionListPresenter = reactionListPresenter;
          _view.SetEditReactionView(_editReactionBuilderPresenter.BaseView);
          _view.SetReactionListView(_reactionListPresenter.BaseView);
          _view.SetReactionDiagram(_reactionDiagramPresenter.BaseView);
          _view.SetFavoritesReactionView(_editFavoritesInReactionsPresenter.BaseView);
+         _view.SetUserDefinedParametersView(_userDefinedParametersPresenter.BaseView);
          _editFavoritesInReactionsPresenter.ShouldHandleRemovedEvent = shouldHandleRemoved;
-         AddSubPresenters(_editReactionBuilderPresenter, _reactionDiagramPresenter, _reactionListPresenter, _editFavoritesInReactionsPresenter);
+         _userDefinedParametersPresenter.ColumnConfiguration = _userDefinedParametersPresenter.ConfigureForReaction;
+         AddSubPresenters(_editReactionBuilderPresenter, _reactionDiagramPresenter, _reactionListPresenter, _editFavoritesInReactionsPresenter, _userDefinedParametersPresenter);
       }
 
       public override object Subject => _reactionBuildingBlock;
@@ -54,12 +63,14 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(IMoBiReactionBuildingBlock reactionBuildingBlock)
       {
          _reactionBuildingBlock = reactionBuildingBlock;
-         _editReactionBuilderPresenter.BuildingBlock = reactionBuildingBlock;
-         EditFormulas(reactionBuildingBlock);
-         _reactionListPresenter.Edit(reactionBuildingBlock);
-         _reactionDiagramPresenter.Edit(reactionBuildingBlock);
-         _editReactionBuilderPresenter.Edit(reactionBuildingBlock.FirstOrDefault());
+         _editReactionBuilderPresenter.BuildingBlock = _reactionBuildingBlock;
+         EditFormulas(_reactionBuildingBlock);
+         _reactionListPresenter.Edit(_reactionBuildingBlock);
+         _reactionDiagramPresenter.Edit(_reactionBuildingBlock);
+         _editReactionBuilderPresenter.Edit(_reactionBuildingBlock.FirstOrDefault());
          _editFavoritesInReactionsPresenter.Edit(reactionBuildingBlock);
+         UpdateUserDefinedParameters();
+
          UpdateCaption();
          _view.Display();
       }
@@ -92,6 +103,11 @@ namespace MoBi.Presentation.Presenter
       public void AddReactionMoleculeNode()
       {
          _reactionDiagramPresenter.AddMoleculeNode();
+      }
+
+      public void UpdateUserDefinedParameters()
+      {
+         _userDefinedParametersPresenter.ShowUserDefinedParametersIn(_reactionBuildingBlock);
       }
 
       public void LayoutInLayers()
