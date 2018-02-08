@@ -209,6 +209,7 @@
     <Compile Include="Core\BuildConfigurationUpdaterSpecs.cs" />
     <Compile Include="Core\BuildingBlockVersionUpdaterSpecs.cs" />
     <Compile Include="Core\CheckNameVisitorSpecs.cs" />
+    <Compile Include="Core\Commands\UpdateValueOriginInStartValueCommandSpecs.cs" />
     <Compile Include="Core\DimensionConverterSpecs.cs" />
     <Compile Include="Core\Commands\EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommandSpecs.cs" />
     <Compile Include="Core\Commands\EditUseDerivedValuesCommandSpecs.cs" />
