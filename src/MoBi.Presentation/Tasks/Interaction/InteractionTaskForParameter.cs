@@ -7,6 +7,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
@@ -59,19 +60,26 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <summary>
       ///    Sets the value origin for a parameter
       /// </summary>
-      ICommand SetValueOriginForParameter(IParameter parameter, ValueOrigin valueOrigin);
+      ICommand SetValueOriginForParameter(IParameter parameter, ValueOrigin valueOrigin, IBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForParameter : InteractionTasksForChildren<IContainer, IParameter>, IInteractionTasksForParameter
    {
       private readonly IMoBiDimensionFactory _dimensionFactory;
       private readonly IMoBiFormulaTask _formulaTask;
+      private readonly IQuantityTask _quantityTask;
 
-      public InteractionTasksForParameter(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IParameter> editTasks, IMoBiDimensionFactory dimensionFactory, IMoBiFormulaTask formulaTask) :
+      public InteractionTasksForParameter(
+         IInteractionTaskContext interactionTaskContext, 
+         IEditTaskFor<IParameter> editTasks, 
+         IMoBiDimensionFactory dimensionFactory, 
+         IMoBiFormulaTask formulaTask,
+         IQuantityTask quantityTask) :
          base(interactionTaskContext, editTasks)
       {
          _dimensionFactory = dimensionFactory;
          _formulaTask = formulaTask;
+         _quantityTask = quantityTask;
       }
 
       public override IParameter CreateNewEntity(IContainer parent)
@@ -125,9 +133,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new EditParameterDescriptionInBuildingBlockComand(newDescription, parameter.Description, parameter, buildingBlock);
       }
 
-      public ICommand SetValueOriginForParameter(IParameter parameter, ValueOrigin valueOrigin)
+      public ICommand SetValueOriginForParameter(IParameter parameter, ValueOrigin valueOrigin, IBuildingBlock buildingBlock)
       {
-         return new UpdateValueOriginCommand(valueOrigin, parameter, Context).Run(Context);
+         return _quantityTask.UpdateQuantityValueOriginInBuildingBlock(parameter, valueOrigin, buildingBlock);
       }
 
       private bool parameterCanBeRemoved(IParameter parameter, IContainer container)

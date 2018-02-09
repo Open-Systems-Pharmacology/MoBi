@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Core.Events;
@@ -20,14 +21,15 @@ namespace MoBi.Presentation.Presenter
    {
       void ShowUserDefinedParametersIn(IContainer container);
       void ShowUserDefinedParametersIn(IEnumerable<IContainer> containers);
+      Action ColumnConfiguration { get; set; }
    }
 
    public class UserDefinedParametersPresenter : AbstractParameterBasePresenter<IEditParameterListView, IEditParameterListPresenter>, IUserDefinedParametersPresenter
    {
       private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
-
       private IEnumerable<IContainer> _containers;
+      public Action ColumnConfiguration { get; set; } = () => { };
 
       public UserDefinedParametersPresenter(IEditParameterListView view,
          IQuantityTask quantityTask,
@@ -66,6 +68,8 @@ namespace MoBi.Presentation.Presenter
             .Cast<ParameterDTO>().ToList();
 
          _view.BindTo(parameters);
+
+         ColumnConfiguration();
       }
 
       public void ShowContextMenu(IViewItem viewItem, Point popupLocation)

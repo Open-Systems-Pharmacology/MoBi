@@ -1,4 +1,5 @@
-﻿using MoBi.Core.Events;
+﻿using System;
+using MoBi.Core.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -29,7 +30,7 @@ namespace MoBi.Presentation.Presenter
       {
          _favoritesPresenter = favoritesPresenter;
          _userDefinedParametersPresenter = userDefinedParametersPresenter;
-
+         _userDefinedParametersPresenter.ColumnConfiguration = ColumnConfiguration(_userDefinedParametersPresenter);
          AddSubPresenters(favoritesPresenter, userDefinedParametersPresenter);
       }
 
@@ -51,5 +52,7 @@ namespace MoBi.Presentation.Presenter
       }
 
       protected abstract void ShowView(IView viewToShow);
+
+      protected virtual Action ColumnConfiguration(IUserDefinedParametersPresenter userDefinedParametersPresenter) => () => { };
    }
 }

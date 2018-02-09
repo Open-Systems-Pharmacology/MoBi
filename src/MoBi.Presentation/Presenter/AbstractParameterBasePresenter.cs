@@ -70,8 +70,9 @@ namespace MoBi.Presentation.Presenter
 
       public void OnParameterValueOriginSet(IParameterDTO parameterDTO, ValueOrigin valueOrigin)
       {
-         var parameter = GetParameterFrom(parameterDTO);
-         AddCommand(_parameterTask.SetValueOriginForParameter(parameter, valueOrigin));
+         ExecuteQuantityTaskAction(parameterDTO,
+            (p, sim) => _quantityTask.UpdateQuantityValueOriginInSimulation(p, valueOrigin, sim),
+            (p, bb) => _quantityTask.UpdateQuantityValueOriginInBuildingBlock(p, valueOrigin, bb));
       }
 
       protected IParameter GetParameterFrom(IParameterDTO parameterDTO)

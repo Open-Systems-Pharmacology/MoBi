@@ -203,20 +203,20 @@
       <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.26\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.27\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.26\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.27\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser">
       <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.26\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.27\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.3.0.26, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.26\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.27, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.27\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -231,8 +231,8 @@
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.1\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SX, Version=2.6.6.0, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.6\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.6.4, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.6.4\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -270,7 +270,6 @@
     <Compile Include="DTO\LegendItemDTO.cs" />
     <Compile Include="DTO\RenameObjectDTOFactory.cs" />
     <Compile Include="DTO\SolverSettingsDTO.cs" />
-    <Compile Include="DTO\ValueOriginDTO.cs" />
     <Compile Include="Extensions\HistoricalResultsNodeExtensions.cs" />
     <Compile Include="Extensions\SmartXLSExtensions.cs" />
     <Compile Include="Mappers\ApplicationBuilderToApplicationBuilderDTOMapper.cs" />
@@ -374,7 +373,6 @@
     <Compile Include="Formatters\NullableWithDisplayUnitFormatter.cs" />
     <Compile Include="Formatters\ValuePointFormatter.cs" />
     <Compile Include="Presenter\EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase.cs" />
-    <Compile Include="Presenter\EditValueOriginPresenter.cs" />
     <Compile Include="Presenter\IEditParameterListPresenter.cs" />
     <Compile Include="Presenter\UserDefinedParametersPresenter.cs" />
     <Compile Include="Serialization\Xml\ApplicationSettingsPersistor.cs" />
@@ -498,12 +496,12 @@
     <Compile Include="UICommand\RenameObjectCommand.cs" />
     <Compile Include="UICommand\ShowBuildingBlockDiffUICommand.cs" />
     <Compile Include="Views\BaseDiagram\IMoBiBaseDiagramView.cs" />
+    <Compile Include="Presenter\EditParameterListPresenterExtensions.cs" />
     <Compile Include="Views\IApplicationSettingsView.cs" />
     <Compile Include="Views\IApplyToSelectionView.cs" />
     <Compile Include="Views\IEditBlackBoxFormulaView.cs" />
     <Compile Include="Views\IEditContainerInSimulationView.cs" />
     <Compile Include="Views\IEditParameterListView.cs" />
-    <Compile Include="Views\IEditValueOriginView.cs" />
     <Compile Include="Views\ILegendView.cs" />
     <Compile Include="Views\IEditChartTemplateManagerView.cs" />
     <Compile Include="Views\INewFormulaView.cs" />

@@ -35,6 +35,8 @@ namespace MoBi.UI.Views
          this.tabFlowChart = new DevExpress.XtraTab.XtraTabPage();
          this.tabList = new DevExpress.XtraTab.XtraTabPage();
          this.tabFavorites = new DevExpress.XtraTab.XtraTabPage();
+         this.tabUserDefined = new DevExpress.XtraTab.XtraTabPage();
+
          ((System.ComponentModel.ISupportInitialize)(this.tabPagesControl)).BeginInit();
          this.tabPagesControl.SuspendLayout();
          this.tabEditBuildingBlock.SuspendLayout();
@@ -84,25 +86,34 @@ namespace MoBi.UI.Views
          this.tabOverviewControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.tabFlowChart,
             this.tabList,
-            this.tabFavorites});
+            this.tabFavorites,
+            this.tabUserDefined
+         });
          // 
          // tabFlowChart
          // 
          this.tabFlowChart.Name = "tabFlowChart";
          this.tabFlowChart.Size = new System.Drawing.Size(845, 329);
-         this.tabFlowChart.Text = "Chart";
+         this.tabFlowChart.Text = "tabFlowChart";
          // 
          // tabList
          // 
          this.tabList.Name = "tabList";
          this.tabList.Size = new System.Drawing.Size(845, 329);
-         this.tabList.Text = "List";
+         this.tabList.Text = "tabList";
          // 
          // tabFavorites
          // 
          this.tabFavorites.Name = "tabFavorites";
          this.tabFavorites.Size = new System.Drawing.Size(845, 329);
-         this.tabFavorites.Text = "fav";
+         this.tabFavorites.Text = "tabFavorites";
+         // 
+         // tabFavorites
+         // 
+         this.tabUserDefined.Name = "tabUserDefined";
+         this.tabUserDefined.Size = new System.Drawing.Size(845, 329);
+         this.tabUserDefined.Text = "tabUserDefined";
+
          // 
          // EditReactionBuildingBlockView
          // 
@@ -131,5 +142,6 @@ namespace MoBi.UI.Views
       private DevExpress.XtraTab.XtraTabPage tabFlowChart;
       private DevExpress.XtraTab.XtraTabPage tabList;
       private DevExpress.XtraTab.XtraTabPage tabFavorites;
+      private DevExpress.XtraTab.XtraTabPage tabUserDefined;
    }
 }

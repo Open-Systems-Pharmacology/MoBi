@@ -278,7 +278,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TStartValue startValue)
       {
-         return new UpdateValueOriginCommand(valueOrigin, startValue, Context).Run(Context);
+         return new UpdateValueOriginInStartValueCommand<TStartValue>(startValue, valueOrigin, buildingBlock).Run(Context);
       }
 
       public IMoBiCommand SetUnit(TBuildingBlock buildingBlock, TStartValue startValue, Unit newUnit)
@@ -364,7 +364,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected void GetImportStartValuesMacroCommand(TBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues, BulkUpdateMacroCommand macroCommand)
       {
-         EnumerableExtensions.Each(startValues, startValueDTO =>
+         startValues.Each(startValueDTO =>
          {
             var startValue = startValuesBuildingBlock[startValueDTO.Path];
 

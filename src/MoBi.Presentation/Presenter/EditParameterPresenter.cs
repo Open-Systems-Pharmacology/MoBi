@@ -184,7 +184,7 @@ namespace MoBi.Presentation.Presenter
 
       private void setValueOrigin(ValueOrigin newValueOrigin)
       {
-         AddCommand(_parameterTask.SetValueOriginForParameter(_parameter, newValueOrigin));
+         AddCommand(_parameterTask.SetValueOriginForParameter(_parameter, newValueOrigin, BuildingBlock));
       }
 
       public ISelectReferenceAtParameterPresenter ValueReferencesPresenter

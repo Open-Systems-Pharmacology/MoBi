@@ -100,7 +100,6 @@ namespace MoBi.UI.Views
          this.btAddNew.StyleController = this.layoutControl1;
          this.btAddNew.TabIndex = 5;
          this.btAddNew.Text = "Add To List";
-         this.btAddNew.Click += new System.EventHandler(this.addNewClick);
          // 
          // layoutControlGroup1
          // 

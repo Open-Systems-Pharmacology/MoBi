@@ -64,17 +64,17 @@ namespace MoBi.Presentation.Presenter
             _editEventGroupPresenter, _eventGroupListPresenter, _editApplicationBuilderPresenter);
       }
 
-      public override void Edit(IEventGroupBuildingBlock eventToEdit)
+      public override void Edit(IEventGroupBuildingBlock eventGroupBuildingBlock)
       {
-         _eventGroupBuildingBlock = eventToEdit;
-         _eventGroupListPresenter.Edit(eventToEdit);
+         _eventGroupBuildingBlock = eventGroupBuildingBlock;
+         _eventGroupListPresenter.Edit(_eventGroupBuildingBlock);
 
          allPresenterImplementing<IPresenterWithFormulaCache>()
             .Each(x => x.BuildingBlock = _eventGroupBuildingBlock);
 
-         setupEditPresenterFor(eventToEdit.FirstOrDefault());
-         _favoritesPresenter.Edit(eventToEdit);
-         EditFormulas(eventToEdit);
+         setupEditPresenterFor(_eventGroupBuildingBlock.FirstOrDefault());
+         _favoritesPresenter.Edit(_eventGroupBuildingBlock);
+         EditFormulas(_eventGroupBuildingBlock);
          UpdateCaption();
          _view.Display();
       }
@@ -246,5 +246,7 @@ namespace MoBi.Presentation.Presenter
       {
          _view.SetEditView(viewToShow);
       }
+
+      protected override Action ColumnConfiguration(IUserDefinedParametersPresenter userDefinedParametersPresenter) => userDefinedParametersPresenter.ConfigureForEvent;
    }
 }
