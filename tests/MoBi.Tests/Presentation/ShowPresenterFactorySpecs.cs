@@ -1,10 +1,9 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using FakeItEasy;
 using MoBi.Presentation.Presenter;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using IoC = OSPSuite.Utility.Container.IContainer;
-using FakeItEasy;
-using MoBi.Core;
 
 namespace MoBi.Presentation
 {
@@ -51,7 +50,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_return_null_for_an_entity_that_is_not_a_container()
       {
-         sut.PresenterFor(new PureEntity()).ShouldBeNull();
+         sut.PresenterFor(A.Fake<IEntity>()).ShouldBeNull();
       }
    }
 }

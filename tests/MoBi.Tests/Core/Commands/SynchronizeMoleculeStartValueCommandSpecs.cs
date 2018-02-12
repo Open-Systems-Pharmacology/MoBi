@@ -33,6 +33,10 @@ namespace MoBi.Core.Commands
 
          _moleculeAmount.ScaleDivisor = 5;
 
+         _moleculeAmount.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
+         _moleculeAmount.ValueOrigin.Source = ValueOriginSources.Internet;
+         _moleculeAmount.ValueOrigin.Description = "Hello";
+
          _moleculeStartValue = new MoleculeStartValue();
          sut = new SynchronizeMoleculeStartValueCommand(_moleculeAmount, _moleculeStartValue);
 
@@ -48,6 +52,7 @@ namespace MoBi.Core.Commands
          _moleculeStartValue.Dimension = _dimension1;
          _moleculeStartValue.DisplayUnit = _displayUnit2;
          _moleculeStartValue.StartValue = 20;
+         _moleculeStartValue.ValueOrigin.Method  = ValueOriginDeterminationMethods.InVitro;
       }
 
       protected override void Because()
@@ -71,6 +76,12 @@ namespace MoBi.Core.Commands
       public void should_update_the_scale_divisor()
       {
          _moleculeStartValue.ScaleDivisor.ShouldBeEqualTo(_moleculeAmount.ScaleDivisor);
+      }
+
+      [Observation]
+      public void should_update_the_value_origin_from_the_molecule_amount()
+      {
+         _moleculeStartValue.ValueOrigin.ShouldBeEqualTo(_moleculeAmount.ValueOrigin);
       }
    }
 

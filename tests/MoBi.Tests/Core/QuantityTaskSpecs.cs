@@ -191,7 +191,6 @@ namespace MoBi.Core
       }
    }
 
-
    public class When_updating_the_value_of_a_parameter_in_a_building_block_that_is_not_default_and_for_which_the_value_origin_was_defined : concern_for_QuantityTask
    {
       protected override void Context()
@@ -341,7 +340,6 @@ namespace MoBi.Core
       }
    }
 
-
    public class When_updating_default_state_and_value_origin_for_a_quantity_that_is_default_with_defined_value_origin : concern_for_QuantityTask
    {
       protected override void Context()
@@ -393,7 +391,7 @@ namespace MoBi.Core
          macro.All().ElementAt(0).ShouldBeAnInstanceOf<SetParameterDefaultStateInBuildingBlockCommand>();
          macro.All().ElementAt(1).ShouldBeAnInstanceOf<UpdateValueOriginInBuildingBlockCommand>();
       }
-      
+
       [Observation]
       public void should_have_set_the_default_flag_to_false()
       {
@@ -404,6 +402,42 @@ namespace MoBi.Core
       public void should_have_updated_the_value_origin()
       {
          _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
+      }
+   }
+
+   public class When_updating_the_value_origin_of_a_quantity_defined_in_a_simulation : concern_for_QuantityTask
+   {
+      private IQuantity _quantity;
+      private ValueOrigin _newValueOrigin;
+      private IMoBiCommand _synchronizeCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _synchronizeCommand = A.Fake<IMoBiCommand>();
+         _quantity = new Parameter();
+         _newValueOrigin = new ValueOrigin {Method = ValueOriginDeterminationMethods.InVitro};
+         A.CallTo(() => _quantitySynchronizer.Synchronize(_quantity, _simulation)).Returns(_synchronizeCommand);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.UpdateQuantityValueOriginInSimulation(_quantity, _newValueOrigin, _simulation);
+      }
+
+      [Observation]
+      public void should_update_the_value_origin_in_the_quantity()
+      {
+         _quantity.ValueOrigin.ShouldBeEqualTo(_newValueOrigin);
+      }
+
+      [Observation]
+      public void should_synchronize_the_value_origin_in_the_corresponding_blocks()
+      {
+         var macroComamnd = _result.DowncastTo<MoBiMacroCommand>();
+         macroComamnd.Count.ShouldBeEqualTo(3);
+         macroComamnd.All().ElementAt(0).ShouldBeEqualTo(_synchronizeCommand);
+         macroComamnd.All().ElementAt(2).ShouldBeEqualTo(_synchronizeCommand);
       }
    }
 }

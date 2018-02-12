@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Services
 {
@@ -179,7 +178,7 @@ namespace MoBi.Core.Services
 
       private ICommand setSynchronizeCommand(IParameter buildingBlockParameter)
       {
-         _command = buildingBlockParameter != null ? new SynchronizeParameterValueCommand(_parameter, buildingBlockParameter) : (IMoBiCommand)new MoBiEmptyCommand();
+         _command = buildingBlockParameter != null ? new SynchronizeParameterValueCommand(_parameter, buildingBlockParameter) : (IMoBiCommand) new MoBiEmptyCommand();
          return _command;
       }
    }

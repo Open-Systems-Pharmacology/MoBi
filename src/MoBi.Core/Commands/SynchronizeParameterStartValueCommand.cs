@@ -23,7 +23,7 @@ namespace MoBi.Core.Commands
          _parameterStartValue.StartValue = _parameter.Value;
          _parameterStartValue.Dimension = _parameter.Dimension;
          _parameterStartValue.DisplayUnit = _parameter.DisplayUnit;
-         _parameterStartValue.ValueOrigin.UpdateFrom(_parameter.ValueOrigin);
+         _parameterStartValue.UpdateValueOriginFrom(_parameter.ValueOrigin);
       }
 
       protected override void ClearReferences()
