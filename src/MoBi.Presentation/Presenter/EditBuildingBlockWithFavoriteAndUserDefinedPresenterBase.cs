@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Presenter
       {
          _favoritesPresenter = favoritesPresenter;
          _userDefinedParametersPresenter = userDefinedParametersPresenter;
-         _userDefinedParametersPresenter.ColumnConfiguration = ColumnConfiguration(_userDefinedParametersPresenter);
+         _userDefinedParametersPresenter.ColumnConfiguration = ColumnConfiguration();
          AddSubPresenters(favoritesPresenter, userDefinedParametersPresenter);
       }
 
@@ -53,6 +53,6 @@ namespace MoBi.Presentation.Presenter
 
       protected abstract void ShowView(IView viewToShow);
 
-      protected virtual Action ColumnConfiguration(IUserDefinedParametersPresenter userDefinedParametersPresenter) => () => { };
+      protected virtual Action<IEditParameterListPresenter> ColumnConfiguration() => x => { };
    }
 }

@@ -16,12 +16,10 @@ namespace MoBi.Presentation.Presenter
 
    internal class EditFavoritesInMoleculesPresenter : EditFavoritesInBuildindBlockPresenter<IMoleculeBuilder>, IEditFavoritesInMoleculesPresenter
    {
-      public EditFavoritesInMoleculesPresenter(IEditParameterListView view, IQuantityTask quantityTask, IInteractionTaskContext interactionTaskContext, IFormulaToFormulaBuilderDTOMapper formulaMapper, IParameterToParameterDTOMapper parameterDTOMapper, IFavoriteRepository favoriteRepository, IInteractionTasksForParameter parameterTask, IFavoriteTask favoriteTask, IEntityPathResolver entityPathResolver, IViewItemContextMenuFactory contextMenuFactory)
-         : base(
-            view, quantityTask, interactionTaskContext, formulaMapper, parameterDTOMapper, favoriteRepository, parameterTask,
-            favoriteTask, entityPathResolver, contextMenuFactory)
+      public EditFavoritesInMoleculesPresenter(IEditFavoritesView view, IFavoriteRepository favoriteRepository, IEntityPathResolver entityPathResolver, IEditParameterListPresenter editParameterListPresenter, IFavoriteTask favoriteTask)
+         : base(view, favoriteRepository,entityPathResolver,editParameterListPresenter, favoriteTask)
       {
-         UpdateSpecialColumnsVisibility = this.ConfigureForMolecule;
+         UpdateSpecialColumnsVisibility = _editParameterListPresenter.ConfigureForMolecule;
       }
    }
 }

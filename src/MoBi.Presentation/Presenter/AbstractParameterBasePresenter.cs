@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
@@ -57,7 +58,7 @@ namespace MoBi.Presentation.Presenter
 
       public bool IsFixedValue(IParameterDTO parameterDTO)
       {
-         var parameter = GetParameterFrom(parameterDTO);
+         var parameter = ParameterFrom(parameterDTO);
          return parameter.IsFixedValue && !parameter.IsDistributed();
       }
 
@@ -75,9 +76,14 @@ namespace MoBi.Presentation.Presenter
             (p, bb) => _quantityTask.UpdateQuantityValueOriginInBuildingBlock(p, valueOrigin, bb));
       }
 
-      protected IParameter GetParameterFrom(IParameterDTO parameterDTO)
+      protected IParameter ParameterFrom(IParameterDTO parameterDTO)
       {
          return parameterDTO?.Parameter;
+      }
+
+      protected virtual IEnumerable<IParameter> ParametersFrom(IEnumerable<IParameterDTO> parametersDTO)
+      {
+         return parametersDTO.Select(ParameterFrom);
       }
 
       public IEnumerable<FormulaBuilderDTO> GetFormulas()
@@ -88,14 +94,6 @@ namespace MoBi.Presentation.Presenter
          return FormulaCache.MapAllUsing(_formulaMapper);
       }
 
-      public void SetDimensionFor(IParameterDTO parameterDTO, IDimension newDimension)
-      {
-         var parameter = GetParameterFrom(parameterDTO);
-         AddCommand(_parameterTask.SetDimensionForParameter(parameter, newDimension, BuildingBlock));
-         RefreshViewAndSelect(parameterDTO);
-      }
-
-      protected abstract void RefreshViewAndSelect(IParameterDTO parameterDTO);
 
       public IEnumerable<IDimension> GetDimensions()
       {
@@ -104,14 +102,14 @@ namespace MoBi.Presentation.Presenter
 
       public void SetIsFavorite(IParameterDTO parameterDTO, bool isFavorite)
       {
-         _favoriteTask.SetParameterFavorite(GetParameterFrom(parameterDTO), isFavorite);
+         _favoriteTask.SetParameterFavorite(ParameterFrom(parameterDTO), isFavorite);
       }
 
       public void ResetValueFor(IParameterDTO parameterDTO)
       {
          try
          {
-            var parameter = GetParameterFrom(parameterDTO);
+            var parameter = ParameterFrom(parameterDTO);
             ExecuteQuantityTaskAction(parameterDTO, _quantityTask.ResetQuantityValue, _quantityTask.ResetQuantityValue);
             parameterDTO.Value = parameter.ValueInDisplayUnit;
          }
@@ -123,7 +121,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void ExecuteQuantityTaskAction(IParameterDTO parameterDTO, Func<IParameter, IMoBiSimulation, ICommand> simulationActionFunc, Func<IParameter, IBuildingBlock, ICommand> buildingBlockActionFunc)
       {
-         var parameter = GetParameterFrom(parameterDTO);
+         var parameter = ParameterFrom(parameterDTO);
          if (BuildingBlock != null)
          {
             AddCommand(buildingBlockActionFunc(parameter, BuildingBlock));

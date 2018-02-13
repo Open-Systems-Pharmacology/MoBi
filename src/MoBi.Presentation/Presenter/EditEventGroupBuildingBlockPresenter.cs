@@ -197,6 +197,7 @@ namespace MoBi.Presentation.Presenter
             if (eventGroup.GetAllChildren<IApplicationBuilder>().Any(ab => ab.Transports.Contains(tranportBuilder)))
                return true;
          }
+
          return false;
       }
 
@@ -247,6 +248,6 @@ namespace MoBi.Presentation.Presenter
          _view.SetEditView(viewToShow);
       }
 
-      protected override Action ColumnConfiguration(IUserDefinedParametersPresenter userDefinedParametersPresenter) => userDefinedParametersPresenter.ConfigureForEvent;
+      protected override Action<IEditParameterListPresenter> ColumnConfiguration() => x => x.ConfigureForEvent();
    }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
@@ -215,10 +216,30 @@ namespace MoBi.UI.Views
          _pathBinder.SetVisibility(pathElement, isVisible);
       }
 
+      public IReadOnlyList<ParameterDTO> SelectedParameters
+      {
+         get { return _gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
+         set
+         {
+            if (!value.Any())
+               return;
+
+            //Need to clear selection before setting another one programatically. Otherwise they overlap
+            _gridView.ClearSelection();
+
+            var firstRowHandle = _gridViewBinder.RowHandleFor(value.First());
+            var lastRowHandle = _gridViewBinder.RowHandleFor(value.Last());
+            _gridView.SelectRows(firstRowHandle, lastRowHandle);
+
+            //Required to ensure that the background is still selected
+            if (firstRowHandle == lastRowHandle)
+               _gridView.FocusedRowHandle = firstRowHandle;
+         }
+      }
+
       private void hideEditor()
       {
          _unitControl.Hide();
       }
-
    }
 }

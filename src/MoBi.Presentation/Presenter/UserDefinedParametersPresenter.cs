@@ -1,52 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using MoBi.Core.Events;
-using MoBi.Core.Services;
-using MoBi.Presentation.DTO;
-using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IUserDefinedParametersPresenter : IEditParameterListPresenter
+   public interface IUserDefinedParametersPresenter : IPresenter<IUserDefinedParametersView>
    {
       void ShowUserDefinedParametersIn(IContainer container);
       void ShowUserDefinedParametersIn(IEnumerable<IContainer> containers);
-      Action ColumnConfiguration { get; set; }
+      Action<IEditParameterListPresenter> ColumnConfiguration { get; set; }
    }
 
-   public class UserDefinedParametersPresenter : AbstractParameterBasePresenter<IEditParameterListView, IEditParameterListPresenter>, IUserDefinedParametersPresenter
+   public class UserDefinedParametersPresenter : AbstractCommandCollectorPresenter<IUserDefinedParametersView, IUserDefinedParametersPresenter>, IUserDefinedParametersPresenter
    {
-      private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
-      private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
+      private readonly IEditParameterListPresenter _editParameterListPresenter;
       private IEnumerable<IContainer> _containers;
-      public Action ColumnConfiguration { get; set; } = () => { };
+      public Action<IEditParameterListPresenter> ColumnConfiguration { get; set; } = (x) => { };
 
-      public UserDefinedParametersPresenter(IEditParameterListView view,
-         IQuantityTask quantityTask,
-         IInteractionTaskContext interactionTaskContext,
-         IFormulaToFormulaBuilderDTOMapper formulaMapper,
-         IInteractionTasksForParameter parameterTask,
-         IFavoriteTask favoriteTask,
-         IParameterToParameterDTOMapper parameterDTOMapper,
-         IViewItemContextMenuFactory viewItemContextMenuFactory) : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
+      public UserDefinedParametersPresenter(
+         IUserDefinedParametersView view,
+         IEditParameterListPresenter editParameterListPresenter) : base(view)
       {
-         _parameterDTOMapper = parameterDTOMapper;
-         _viewItemContextMenuFactory = viewItemContextMenuFactory;
-      }
-
-      protected override void RefreshViewAndSelect(IParameterDTO parameterDTO)
-      {
-         refreshView();
+         _editParameterListPresenter = editParameterListPresenter;
+         View.AddParametersView(_editParameterListPresenter.BaseView);
+         AddSubPresenters(_editParameterListPresenter);
       }
 
       public void ShowUserDefinedParametersIn(IContainer container)
@@ -63,28 +43,11 @@ namespace MoBi.Presentation.Presenter
       private void refreshView()
       {
          var parameters = _containers
-            .SelectMany(c => c.GetAllChildren<IParameter>(x => !x.IsDefault))
-            .MapAllUsing(_parameterDTOMapper)
-            .Cast<ParameterDTO>().ToList();
+            .SelectMany(c => c.GetAllChildren<IParameter>(x => !x.IsDefault));
 
-         _view.BindTo(parameters);
+         _editParameterListPresenter.Edit(parameters);
 
-         ColumnConfiguration();
-      }
-
-      public void ShowContextMenu(IViewItem viewItem, Point popupLocation)
-      {
-         var contextMenu = _viewItemContextMenuFactory.CreateFor(viewItem, this);
-         contextMenu.Show(_view, popupLocation);
-      }
-
-      public void GoTo(ParameterDTO parameterDTO)
-      {
-         if (parameterDTO == null)
-            return;
-
-         var parameter = GetParameterFrom(parameterDTO);
-         _interactionTaskContext.Context.PublishEvent(new EntitySelectedEvent(parameter, this));
+         ColumnConfiguration(_editParameterListPresenter);
       }
    }
 }
