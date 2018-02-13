@@ -71,7 +71,7 @@ namespace MoBi.Core
          container.Register<IProjectRetriever, MoBiProjectRetriever>();
          container.Register<IHistoryManager, MoBiHistoryManager>();
          container.Register<IObjectIdResetter, ObjectIdResetter>();
-         container.Register<ISetParameterTask, QuantityTask>();
+         container.Register<ISetParameterTask, ParameterTask>();
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IMoBiContext>>();
 
          //Register opened types generics

@@ -489,6 +489,7 @@
     <Compile Include="Services\MoleculeResolver.cs" />
     <Compile Include="Services\OutputSchemaTask.cs" />
     <Compile Include="Services\ParameterAnalysableParameterSelector.cs" />
+    <Compile Include="Services\ParameterTask.cs" />
     <Compile Include="Services\RemoveMoleculeFromReactionBuildingBlockCommand.cs" />
     <Compile Include="Services\SimulationSelector.cs" />
     <Compile Include="Services\ParameterStartValueSynchronizer.cs" />
