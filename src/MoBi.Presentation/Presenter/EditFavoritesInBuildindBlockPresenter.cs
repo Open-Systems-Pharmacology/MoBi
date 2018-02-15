@@ -1,45 +1,39 @@
 using System.Linq;
-using MoBi.Core.Services;
-using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
    public class EditFavoritesInBuildindBlockPresenter<T> : EditFavoritesPresenter<IBuildingBlock<T>>
       where T : class, IContainer
    {
-      public EditFavoritesInBuildindBlockPresenter(IEditParameterListView view, IQuantityTask quantityTask, IInteractionTaskContext interactionTaskContext, IFormulaToFormulaBuilderDTOMapper formulaMapper, IParameterToParameterDTOMapper parameterDTOMapper, IFavoriteRepository favoriteRepository, IInteractionTasksForParameter parameterTask, IFavoriteTask favoriteTask, IEntityPathResolver entityPathResolver, IViewItemContextMenuFactory contextMenuFactory)
-         : base(
-            view, quantityTask, interactionTaskContext, formulaMapper, parameterDTOMapper, favoriteRepository, parameterTask,
-            favoriteTask, entityPathResolver, contextMenuFactory)
+      public EditFavoritesInBuildindBlockPresenter(IEditFavoritesView view, IFavoriteRepository favoriteRepository, IEntityPathResolver entityPathResolver, IEditParameterListPresenter editParameterListPresenter, IFavoriteTask favoriteTask)
+         : base(view, favoriteRepository, entityPathResolver, editParameterListPresenter, favoriteTask)
       {
       }
 
       public override void Edit(IBuildingBlock<T> buildingBlock)
       {
          base.Edit(buildingBlock);
-         BuildingBlock = buildingBlock;
+         _editParameterListPresenter.BuildingBlock = buildingBlock;
       }
 
-      protected override void CacheParameters(IBuildingBlock<T> projectItem)
+      protected override void CacheParameters(IBuildingBlock<T> buildingBlock)
       {
-         foreach (var topBuilder in projectItem)
+         foreach (var builder in buildingBlock)
          {
-            _parameterCache.AddRange(topBuilder.GetAllChildren<IParameter>());
+            _parameterCache.AddRange(builder.GetAllChildren<IParameter>());
          }
       }
 
       protected override bool IsAddedToParent(IObjectBase parent)
       {
          var typedParent = parent as T;
-         return typedParent != null && _projectItem.Any(topBuilder => topBuilder.GetAllContainersAndSelf<IContainer>().Contains(typedParent));
+         return typedParent != null && _projectItem.Any(builder => builder.GetAllContainersAndSelf<IContainer>().Contains(typedParent));
       }
    }
 }

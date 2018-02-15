@@ -12,7 +12,6 @@ namespace MoBi.Presentation.Views
       void Select(ParameterDTO parameterDTO);
       void SetCaptions(IDictionary<PathElement, string> captions);
       void SetVisibility(PathElement pathElement, bool isVisible);
+      IReadOnlyList<ParameterDTO> SelectedParameters { get; set; }
    }
-
-
 }

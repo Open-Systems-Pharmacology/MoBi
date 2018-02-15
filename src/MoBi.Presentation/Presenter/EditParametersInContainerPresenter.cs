@@ -2,29 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditParametersInContainerPresenter : IParameterPresenter,
+      IPresenter<IEditParametersInContainerView>,
       IListener<AddedEvent>,
       IListener<RemovedEvent>,
       IListener<QuantityChangedEvent>,
@@ -44,12 +45,12 @@ namespace MoBi.Presentation.Presenter
       bool ShowBuildMode { set; }
       bool BlackBoxAllowed { set; }
       void Edit(IContainer container);
-      IEditParametersInContainerView View { get; }
       bool ChangeLocalisationAllowed { set; }
       EditParameterMode EditMode { set; }
       IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
       void SetBuildModeFor(ParameterDTO parameterDTO, ParameterBuildMode newMode);
       void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable);
+      void SetDimensionFor(ParameterDTO parameterDTO, IDimension newDimension);
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
@@ -112,6 +113,13 @@ namespace MoBi.Presentation.Presenter
          releaseParameters();
       }
 
+      public void SetDimensionFor(ParameterDTO parameterDTO, IDimension newDimension)
+      {
+         var parameter = ParameterFrom(parameterDTO);
+         AddCommand(_parameterTask.SetDimensionForParameter(parameter, newDimension, BuildingBlock));
+         refreshViewAndSelect(parameterDTO);
+      }
+
       private void createParameterCache(IEnumerable<IParameter> parametersToEdit)
       {
          _parameters.Clear();
@@ -160,7 +168,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool shouldShowParameter(ParameterDTO parameterDTO)
       {
-         return ShowAdvancedParameters || GetParameterFrom(parameterDTO).Visible;
+         return ShowAdvancedParameters || ParameterFrom(parameterDTO).Visible;
       }
 
       private void refreshList()
@@ -198,13 +206,13 @@ namespace MoBi.Presentation.Presenter
 
       public void Rename(ParameterDTO parameterDTO)
       {
-         var parameter = GetParameterFrom(parameterDTO);
+         var parameter = ParameterFrom(parameterDTO);
          _editTask.Rename(parameter, BuildingBlock);
       }
 
       public void Select(ParameterDTO selectedParameter)
       {
-         var parameter = GetParameterFrom(selectedParameter);
+         var parameter = ParameterFrom(selectedParameter);
          setupEditPresenter(parameter);
       }
 
@@ -216,12 +224,12 @@ namespace MoBi.Presentation.Presenter
 
       public void CopyToClipBoard(ParameterDTO parameterDTO)
       {
-         _clipboardManager.CopyToClipBoard(GetParameterFrom(parameterDTO));
+         _clipboardManager.CopyToClipBoard(ParameterFrom(parameterDTO));
       }
 
       public void CutToClipBoard(ParameterDTO parameterDTO)
       {
-         _clipboardManager.CutToClipBoard(GetParameterFrom(parameterDTO),
+         _clipboardManager.CutToClipBoard(ParameterFrom(parameterDTO),
             para => AddCommand(_parameterTask.Remove(para, _container, buildingBlock: _buildingBlock, silent: true)));
       }
 
@@ -233,7 +241,11 @@ namespace MoBi.Presentation.Presenter
             _clipboardManager.PasteFromClipBoard<IParameter>(
                para => AddCommand(_parameterTask.AddToProject(para, _container, BuildingBlock)));
          }
-         finally { _ignoreAddEvents = false; }
+         finally
+         {
+            _ignoreAddEvents = false;
+         }
+
          Edit(_container);
       }
 
@@ -242,10 +254,10 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_parameterTask.AddExisting(_container, BuildingBlock));
       }
 
-      protected override void RefreshViewAndSelect(IParameterDTO parameterDTO)
+      private void refreshViewAndSelect(ParameterDTO parameterDTO)
       {
          Edit(_container);
-         Select((ParameterDTO) parameterDTO);
+         Select(parameterDTO);
       }
 
       public bool ShowAdvancedParameters
@@ -272,7 +284,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetBuildModeFor(ParameterDTO parameterDTO, ParameterBuildMode newMode)
       {
-         var parameter = GetParameterFrom(parameterDTO);
+         var parameter = ParameterFrom(parameterDTO);
          AddCommand(_parameterTask.SetBuildModeForParameter(parameter, newMode, BuildingBlock).Run(_interactionTaskContext.Context));
          _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Validation.ChangeBuildModeWarning);
          Select(parameterDTO);
@@ -285,7 +297,7 @@ namespace MoBi.Presentation.Presenter
 
       public void RemoveParameter(ParameterDTO parameterDTO)
       {
-         AddCommand(_parameterTask.Remove(GetParameterFrom(parameterDTO), _container, BuildingBlock));
+         AddCommand(_parameterTask.Remove(ParameterFrom(parameterDTO), _container, BuildingBlock));
       }
 
       private bool shouldHandleRemove(RemovedEvent eventToHandle)
@@ -301,8 +313,8 @@ namespace MoBi.Presentation.Presenter
          //do not handle the event if the parameter is already available in the edited list
          var addedParameter = eventToHandle.AddedObject as IParameter;
          return !_ignoreAddEvents && addedParameter != null
-                && Equals(eventToHandle.Parent, _container)
-                && !_parameters.ContainsItem(addedParameter);
+                                  && Equals(eventToHandle.Parent, _container)
+                                  && !_parameters.ContainsItem(addedParameter);
       }
 
       public void Handle(AddedEvent eventToHandle)
@@ -328,7 +340,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool shouldHandleSelect(IQuantity quantity)
       {
-         if (!quantity.IsAnImplementationOf<IParameter>()) 
+         if (!quantity.IsAnImplementationOf<IParameter>())
             return false;
 
          return _parameters.Contains(quantity.DowncastTo<IParameter>());

@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
-using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -21,18 +17,12 @@ namespace MoBi.Presentation.Presenter
    public class EditFavoritesInSimulationPresenter : EditFavoritesPresenter<IMoBiSimulation>, IEditFavoritesInSimulationPresenter
    {
       public EditFavoritesInSimulationPresenter(
-         IEditParameterListView view, 
-         IQuantityTask quantityTask,
-         IInteractionTaskContext interactionTaskContext, 
-         IFormulaToFormulaBuilderDTOMapper formulaMapper,
-         IParameterToParameterDTOMapper parameterDTOMapper, 
+         IEditFavoritesView view,
          IFavoriteRepository favoriteRepository,
-         IInteractionTasksForParameter parameterTask, 
-         IFavoriteTask favoriteTask, 
-         IEntityPathResolver entityPathResolver, 
-         IViewItemContextMenuFactory contextMenusFactory)
-         : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterDTOMapper,
-            favoriteRepository, parameterTask, favoriteTask, entityPathResolver, contextMenusFactory)
+         IEntityPathResolver entityPathResolver,
+         IEditParameterListPresenter editParameterListPresenter,
+         IFavoriteTask favoriteTask)
+         : base(view,favoriteRepository, entityPathResolver, editParameterListPresenter, favoriteTask)
       {
          ShouldHandleRemovedEvent = x => false; //Can not remove in Simulation
       }
@@ -57,7 +47,7 @@ namespace MoBi.Presentation.Presenter
 
       public IEnumerable<IParameter> Favorites()
       {
-         return _favorites.Select(x => x.Parameter);
+         return _editParameterListPresenter.EditedParameters;
       }
    }
 }

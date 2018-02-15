@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Presenter
          _view.SetFavoritesReactionView(_editFavoritesInReactionsPresenter.BaseView);
          _view.SetUserDefinedParametersView(_userDefinedParametersPresenter.BaseView);
          _editFavoritesInReactionsPresenter.ShouldHandleRemovedEvent = shouldHandleRemoved;
-         _userDefinedParametersPresenter.ColumnConfiguration = _userDefinedParametersPresenter.ConfigureForReaction;
+         _userDefinedParametersPresenter.ColumnConfiguration = x => x.ConfigureForReaction();
          AddSubPresenters(_editReactionBuilderPresenter, _reactionDiagramPresenter, _reactionListPresenter, _editFavoritesInReactionsPresenter, _userDefinedParametersPresenter);
       }
 

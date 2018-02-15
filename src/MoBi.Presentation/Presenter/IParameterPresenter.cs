@@ -12,7 +12,6 @@ namespace MoBi.Presentation.Presenter
       bool IsFixedValue(IParameterDTO parameterDTO);
       void OnParameterValueSet(IParameterDTO parameterDTO, double valueInGuiUnit);
       void OnParameterValueOriginSet(IParameterDTO parameterDTO, ValueOrigin valueOrigin);
-      void SetDimensionFor(IParameterDTO parameterDTO, IDimension newDimension);
       IEnumerable<IDimension> GetDimensions();
       void SetIsFavorite(IParameterDTO parameterDTO, bool isFavorite);
       void ResetValueFor(IParameterDTO parameterDTO);
