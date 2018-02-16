@@ -129,16 +129,17 @@ namespace MoBi.UI.Views
 
          _unitControl.ParameterUnitSet += setParameterUnit;
 
-         var colDim = _gridViewBinder.AutoBind(dto => dto.Dimension)
+         _gridViewBinder.AutoBind(dto => dto.Dimension)
+            .AsHidden()
             .AsReadOnly()
             .WithShowInColumnChooser(true);
-
-         colDim.Visible = false;
 
          _valueOriginBinder.InitializeBinding(_gridViewBinder, onParameterValueOriginSet);
 
          _gridViewBinder.Bind(dto => dto.Description)
-            .AsReadOnly().WithShowInColumnChooser(true);
+            .AsHidden()
+            .AsReadOnly()
+            .WithShowInColumnChooser(true);
 
          _gridViewBinder.Bind(dto => dto.IsFavorite)
             .WithCaption(Captions.Favorites)
@@ -147,8 +148,7 @@ namespace MoBi.UI.Views
             .WithToolTip(OSPSuite.Assets.ToolTips.FavoritesToolTip)
             .WithOnValueUpdating((o, e) => onIsFavoriteSet(o, e.NewValue));
 
-         _isFixedParameterEditRepository.ButtonClick +=
-            (o, e) => this.DoWithinExceptionHandler(() => onResetValue(_gridViewBinder.FocusedElement));
+         _isFixedParameterEditRepository.ButtonClick += (o, e) => OnEvent(() => onResetValue(_gridViewBinder.FocusedElement));
 
          _pathBinder.SetVisibility(PathElement.Simulation, visible: false);
       }

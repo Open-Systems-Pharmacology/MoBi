@@ -1,9 +1,13 @@
-﻿using OSPSuite.Utility.Extensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MoBi.Core.Services;
 using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Core.Serialization.Services
 {
@@ -17,26 +21,50 @@ namespace MoBi.Core.Serialization.Services
       private readonly ISerializationDimensionFactory _dimensionFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly ICloneManagerForModel _cloneManagerForModel;
+      private readonly IContainer _container;
 
-      public SerializationContextFactory(ISerializationDimensionFactory dimensionFactory, IObjectBaseFactory objectBaseFactory,
-         ICloneManagerForModel cloneManagerForModel)
+      public SerializationContextFactory(
+         ISerializationDimensionFactory dimensionFactory,
+         IObjectBaseFactory objectBaseFactory,
+         ICloneManagerForModel cloneManagerForModel,
+         IContainer container
+      )
       {
          _dimensionFactory = dimensionFactory;
          _objectBaseFactory = objectBaseFactory;
          _cloneManagerForModel = cloneManagerForModel;
+         _container = container;
       }
 
       public SerializationContext Create(SerializationContext parentSerializationContext = null)
       {
-         var serializationContext = SerializationTransaction.Create(_dimensionFactory, _objectBaseFactory, new WithIdRepository(), _cloneManagerForModel);
+         var projectRetriever = _container.Resolve<IMoBiProjectRetriever>();
+         var project = projectRetriever.Current;
+
+         var idRepository = new WithIdRepository();
+         var allRepositories = new List<DataRepository>();
 
          if (parentSerializationContext != null)
          {
-            parentSerializationContext.Repositories.Each(serializationContext.AddRepository);
-            parentSerializationContext.IdRepository.All().Each(serializationContext.Register);
+            allRepositories.AddRange(parentSerializationContext.Repositories);
+            parentSerializationContext.IdRepository.All().Each(idRepository.Register);
+         }
+         
+         //if project is defined, retrieved all available results from existing simulation. Required to ensure correct deserialization
+         if (project != null)
+         {
+            var allSimulations = project.Simulations;
+            var allSimulationResults = allSimulations.Where(s => s.HasResults).Select(s => s.Results);
+            allRepositories.AddRange(allSimulationResults.Union(project.AllObservedData));
+
+            //Also register simulations to ensure that they are available as well for deserialization
+            allSimulations.Each(idRepository.Register);
          }
 
-         return serializationContext;
+         allRepositories.Each(idRepository.Register);
+
+
+         return new SerializationContext(_dimensionFactory, _objectBaseFactory, idRepository, allRepositories, _cloneManagerForModel, _container);
       }
    }
 }

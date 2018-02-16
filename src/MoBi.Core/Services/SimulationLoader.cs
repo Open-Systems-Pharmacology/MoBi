@@ -36,7 +36,8 @@ namespace MoBi.Core.Services
       public ICommand AddSimulationToProject(IMoBiSimulation simulation)
       {
          var loadCommand = createLoadCommand(simulation);
-         addSimulationToProject(simulation, loadCommand);
+         var shouldCloneSimulation = _context.CurrentProject.Simulations.ExistsById(simulation.Id);
+         addSimulationToProject(simulation, loadCommand, shouldCloneSimulation);
          return loadCommand.Run(_context);
       }
 
@@ -48,14 +49,14 @@ namespace MoBi.Core.Services
          };
       }
 
-      private void addSimulationToProject(IMoBiSimulation simulation, MoBiMacroCommand loadCommand)
+      private void addSimulationToProject(IMoBiSimulation simulation, MoBiMacroCommand loadCommand, bool shouldCloneSimulation)
       {
          var moBiSimulation = simulation;
 
          simulation.MoBiBuildConfiguration.AllBuildingBlockInfos().Each(checkTemplateBuildingBlock);
          var project = _context.CurrentProject;
 
-         if (!project.IsEmpty)
+         if (shouldCloneSimulation)
             moBiSimulation = cloneSimulation(moBiSimulation);
 
          addBuildConfigurationToProject(project, moBiSimulation.MoBiBuildConfiguration, loadCommand);
@@ -74,7 +75,7 @@ namespace MoBi.Core.Services
          project.Favorites.AddFavorites(simulationTransfer.Favorites);
          var simulation = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
          var loadCommand = createLoadCommand(simulation);
-         addSimulationToProject(simulation, loadCommand);
+         addSimulationToProject(simulation, loadCommand,  shouldCloneSimulation: !project.IsEmpty);
          addObservedDataToProject(simulationTransfer.AllObservedData, loadCommand);
          return loadCommand.Run(_context);
       }

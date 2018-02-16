@@ -1232,6 +1232,11 @@ namespace MoBi.Assets
          {
             return $"The imported dimension is not correct. The dimension must be {dimensionName}. The possible units are: {unitNames.ToString(",")}";
          }
+
+         public static string CannotLoadRelatedItemAsObjectAlreadyExistInProject(string objectType, string objectName)
+         {
+            return $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
+         }
       }
 
       public static class Captions

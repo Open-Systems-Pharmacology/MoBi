@@ -151,6 +151,7 @@ namespace MoBi.UI.Views
             .WithShowInColumnChooser(true);
 
          _colDescription = _gridViewBinder.Bind(dto => dto.Description)
+            .AsHidden()
             .AsReadOnly()
             .WithShowInColumnChooser(true);
 
@@ -198,12 +199,12 @@ namespace MoBi.UI.Views
       {
          if (e.SelectedControl != _gridView.GridControl) return;
 
-         var hi = _gridView.CalcHitInfo(e.ControlMousePosition);
 
          var parameterDTO = _gridViewBinder.ElementAt(e);
          if (parameterDTO == null) return;
 
          //check if subclass want to display a tool tip as well
+         var hi = _gridView.CalcHitInfo(e.ControlMousePosition);
          var superToolTip = GetToolTipFor(parameterDTO, hi);
 
          //An object that uniquely identifies a row cell
@@ -212,10 +213,7 @@ namespace MoBi.UI.Views
 
       protected virtual SuperToolTip GetToolTipFor(ParameterDTO parameterDTO, GridHitInfo hi)
       {
-         if (hi.Column == _colFormula.XtraColumn)
-            return _toolTipCreator.ToolTipFor(parameterDTO);
-
-         return null;
+         return _toolTipCreator.ToolTipFor(parameterDTO);
       }
 
       private void setParameterUnit(ParameterDTO parameter, Unit unit)
@@ -323,7 +321,7 @@ namespace MoBi.UI.Views
 
       public EditParameterMode EditMode
       {
-         get { return _editMode; }
+         get => _editMode;
          set
          {
             _editMode = value;
@@ -335,7 +333,6 @@ namespace MoBi.UI.Views
                   _colRHSFormula.Visible = false;
                   _colButtons.Visible = true;
                   _colDimension.ReadOnly = false;
-                  _colDescription.Visible = false;
                   _colPersistable.Visible = false;
                   btAddParameter.Visible = true;
                   btAddParameter.Enabled = true;
@@ -350,7 +347,6 @@ namespace MoBi.UI.Views
                   _colRHSFormula.Visible = false;
                   _colButtons.Visible = false;
                   _colDimension.ReadOnly = true;
-                  _colDescription.Visible = true;
                   btAddParameter.Enabled = false;
                   btLoadParameter.Enabled = false;
                   layoutControlItemAddParameter.Visibility = LayoutVisibility.Never;
@@ -365,7 +361,6 @@ namespace MoBi.UI.Views
                   _colFormula.Visible = true;
                   _colRHSFormula.Visible = true;
                   _colDimension.ReadOnly = true;
-                  _colDescription.Visible = true;
                   btAddParameter.Enabled = false;
                   btLoadParameter.Enabled = false;
                   layoutControlItemAddParameter.Visibility = LayoutVisibility.Never;
@@ -380,13 +375,13 @@ namespace MoBi.UI.Views
 
       public bool ShowBuildMode
       {
-         set { _colBuildMode.Visible = value; }
+         set => _colBuildMode.Visible = value;
          get { return _colBuildMode.Visible; }
       }
 
       public string ParentName
       {
-         set { lblParentName.Text = value.FormatForLabel(checkCase: false); }
+         set => lblParentName.Text = value.FormatForLabel(checkCase: false);
       }
 
       public void SetEditParameterView(IView subView)
