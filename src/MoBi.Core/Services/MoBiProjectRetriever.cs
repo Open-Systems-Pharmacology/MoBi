@@ -19,29 +19,17 @@ namespace MoBi.Core.Services
          _moBiContext = moBiContext;
       }
 
-      public IMoBiProject Current
-      {
-         get { return _moBiContext.CurrentProject; }
-      }
+      public IMoBiProject Current => _moBiContext.CurrentProject;
 
       public void AddToHistory(ICommand command)
       {
          _moBiContext.AddToHistory(command); 
       }
 
-      public IProject CurrentProject
-      {
-         get { return Current; }
-      }
+      public IProject CurrentProject => Current;
 
-      public string ProjectName
-      {
-         get { return Current.Name; }
-      }
+      public string ProjectName => Current.Name;
 
-      public string ProjectFullPath
-      {
-         get { return Current.FilePath; }
-      }
+      public string ProjectFullPath => Current.FilePath;
    }
 }

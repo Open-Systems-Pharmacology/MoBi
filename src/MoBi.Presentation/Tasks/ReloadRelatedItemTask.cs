@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System;
+using MoBi.Assets;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Visitor;
 using MoBi.Core.Commands;
@@ -16,6 +17,7 @@ using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.SensitivityAnalyses;
 using OSPSuite.Core.Journal;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Exceptions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -37,12 +39,21 @@ namespace MoBi.Presentation.Tasks
       private readonly IParameterIdentificationTask _parameterIdentificationTask;
       private readonly ISensitivityAnalysisTask _sensitivityAnalysisTask;
 
-      public ReloadRelatedItemTask(IApplicationConfiguration applicationConfiguration, IContentLoader contentLoader,
-         IDialogCreator dialogCreator, IRelatedItemSerializer relatedItemSerializer,
-         IMoBiContext context, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
-         IBuildingBlockTaskRetriever taskRetriever, IPKSimExportTask pkSimExportTask, ISimulationLoader simulationLoader,
-         IObservedDataTask observedDataTask, IObjectIdResetter objectIdResetter, IParameterIdentificationTask parameterIdentificationTask, ISensitivityAnalysisTask sensitivityAnalysisTask) :
-            base(applicationConfiguration, contentLoader, dialogCreator)
+      public ReloadRelatedItemTask(
+         IApplicationConfiguration applicationConfiguration, 
+         IContentLoader contentLoader,
+         IDialogCreator dialogCreator, 
+         IRelatedItemSerializer relatedItemSerializer,
+         IMoBiContext context, 
+         ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
+         IBuildingBlockTaskRetriever taskRetriever, 
+         IPKSimExportTask pkSimExportTask, 
+         ISimulationLoader simulationLoader,
+         IObservedDataTask observedDataTask, 
+         IObjectIdResetter objectIdResetter, 
+         IParameterIdentificationTask parameterIdentificationTask, 
+         ISensitivityAnalysisTask sensitivityAnalysisTask
+         ) : base(applicationConfiguration, contentLoader, dialogCreator)
       {
          _relatedItemSerializer = relatedItemSerializer;
          _context = context;
@@ -63,8 +74,16 @@ namespace MoBi.Presentation.Tasks
 
       protected override void LoadOwnContent(RelatedItem relatedItem)
       {
-         var relatedItemObject = _relatedItemSerializer.Deserialize(relatedItem);
-         this.Visit(relatedItemObject);
+         try
+         {
+            var relatedItemObject = _relatedItemSerializer.Deserialize(relatedItem);
+            this.Visit(relatedItemObject);
+         }
+         catch (NotUniqueIdException)
+         {
+            //Probably trying to load an object that was already loaded. Show a message to the user
+            throw new OSPSuiteException(AppConstants.Exceptions.CannotLoadRelatedItemAsObjectAlreadyExistInProject(relatedItem.ItemType, relatedItem.Name));
+         }
       }
 
       protected override bool RelatedItemCanBeLaunchedBySisterApplication(RelatedItem relatedItem)
@@ -99,7 +118,6 @@ namespace MoBi.Presentation.Tasks
 
       public void Visit(DataRepository observedData)
       {
-         _objectIdResetter.ResetIdFor(observedData);
          _observedDataTask.AddObservedDataToProject(observedData);
       }
 
