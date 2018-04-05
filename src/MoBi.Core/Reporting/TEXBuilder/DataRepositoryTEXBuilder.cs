@@ -11,6 +11,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Data;
 using OSPSuite.TeXReporting.Items;
+using OSPSuite.Utility.Extensions;
 using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 
 namespace MoBi.Core.Reporting.TEXBuilder
