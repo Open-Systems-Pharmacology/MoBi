@@ -60,13 +60,14 @@ namespace MoBi.Presentation
 
          _validationVisitor = A.Fake<IDimensionValidator>();
          _userSettings = A.Fake<IUserSettings>();
+         _userSettings.CheckCircularReference = true;
          _simulationFactory = A.Fake<ISimulationFactory>();
          _buildConfigurationFactory = A.Fake<IBuildConfigurationFactory>();
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
          _forbiddenNameRetriever = A.Fake<IForbiddenNamesRetriever>();
          sut = new CreateSimulationPresenter(_view, _context, _modelConstructor, _validationVisitor,
             _simulationFactory, _buildConfigurationFactory, _heavyWorkManager, _subPresenterManager, _dialogCreator, 
-            _forbiddenNameRetriever);
+            _forbiddenNameRetriever,_userSettings);
 
          _simulation = A.Fake<IMoBiSimulation>();
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
@@ -154,7 +155,12 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _modelConstructor.CreateModelFrom(_newBuildConfiguration, A<string>._)).MustHaveHappened();
       }
-
+      
+      [Observation]
+      public void should_set_the_check_circular_reference_according_to_value_in_user_settings()
+      {
+         _buildConfiguration.PerformCircularReferenceCheck.ShouldBeEqualTo(_userSettings.CheckCircularReference);
+      }
 
       [Observation]
       public void should_generate_a_correct_buildconfiguration()

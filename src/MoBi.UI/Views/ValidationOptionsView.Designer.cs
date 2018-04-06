@@ -44,6 +44,8 @@ namespace MoBi.UI.Views
          this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemPKSIMWarnings = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.chkPerformCircularReferenceCheck = new DevExpress.XtraEditors.CheckEdit();
+         this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -58,11 +60,14 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPKSIMWarnings)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkPerformCircularReferenceCheck.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.chkPerformCircularReferenceCheck);
          this.layoutControl.Controls.Add(this.chkValidateRules);
          this.layoutControl.Controls.Add(this.chkShowPKSimWarnings);
          this.layoutControl.Controls.Add(this.chkShowUnableToCalculateWarnings);
@@ -135,7 +140,8 @@ namespace MoBi.UI.Views
             this.layoutControlItem2,
             this.layoutControlItem3,
             this.layoutItemPKSIMWarnings,
-            this.layoutControlItem4});
+            this.layoutControlItem4,
+            this.layoutControlItem5});
          this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
@@ -187,9 +193,27 @@ namespace MoBi.UI.Views
          this.layoutControlItem4.Control = this.chkValidateRules;
          this.layoutControlItem4.Location = new System.Drawing.Point(0, 92);
          this.layoutControlItem4.Name = "layoutControlItem4";
-         this.layoutControlItem4.Size = new System.Drawing.Size(331, 151);
+         this.layoutControlItem4.Size = new System.Drawing.Size(331, 23);
          this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem4.TextVisible = false;
+         // 
+         // chkPerformCircularReferenceCheck
+         // 
+         this.chkPerformCircularReferenceCheck.Location = new System.Drawing.Point(2, 117);
+         this.chkPerformCircularReferenceCheck.Name = "chkPerformCircularReferenceCheck";
+         this.chkPerformCircularReferenceCheck.Properties.Caption = "chkPerformCircularReferenceCheck";
+         this.chkPerformCircularReferenceCheck.Size = new System.Drawing.Size(327, 19);
+         this.chkPerformCircularReferenceCheck.StyleController = this.layoutControl;
+         this.chkPerformCircularReferenceCheck.TabIndex = 9;
+         // 
+         // layoutControlItem5
+         // 
+         this.layoutControlItem5.Control = this.chkPerformCircularReferenceCheck;
+         this.layoutControlItem5.Location = new System.Drawing.Point(0, 115);
+         this.layoutControlItem5.Name = "layoutControlItem5";
+         this.layoutControlItem5.Size = new System.Drawing.Size(331, 128);
+         this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem5.TextVisible = false;
          // 
          // ValidationOptionsView
          // 
@@ -212,6 +236,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPKSIMWarnings)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkPerformCircularReferenceCheck.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -230,5 +256,7 @@ namespace MoBi.UI.Views
       private UxCheckEdit chkValiadatePkSimStandardObserver;
       private DevExpress.XtraEditors.CheckEdit chkValidateRules;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
+      private DevExpress.XtraEditors.CheckEdit chkPerformCircularReferenceCheck;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
    }
 }

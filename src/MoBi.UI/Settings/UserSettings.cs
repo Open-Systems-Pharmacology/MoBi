@@ -112,7 +112,7 @@ namespace MoBi.UI.Settings
          ShowAdvancedParameters = true;
          GroupParameters = false;
          VisibleNotification = NotificationType.Warning | NotificationType.Error;
-         ValidationSettings = new ValidationSettings {CheckDimensions = true};
+         ValidationSettings = new ValidationSettings {CheckDimensions = true, CheckCircularReference = true};
          DisplayUnits = new DisplayUnitsManager();
          DefaultChartYScaling = Scalings.Log;
          IconSizeTreeView = IconSizes.Size24x24;
@@ -157,6 +157,12 @@ namespace MoBi.UI.Settings
       {
          get => ValidationSettings.CheckRules;
          set => ValidationSettings.CheckRules = value;
+      }
+
+      public bool CheckCircularReference
+      {
+         get => ValidationSettings.CheckCircularReference;
+         set => ValidationSettings.CheckCircularReference = value;
       }
 
       public ValidationSettings ValidationSettings { get; }

@@ -9,6 +9,7 @@ namespace MoBi.Core
       private bool _showCannotCalcErrors;
       private bool _showPKSimObserverMessages;
       private bool _checkRules;
+      private bool _checkCircularReference;
 
       public bool CheckDimensions
       {
@@ -45,6 +46,12 @@ namespace MoBi.Core
       {
          get => _checkRules;
          set => SetProperty(ref _checkRules, value);
+      }
+
+      public bool CheckCircularReference
+      {
+         get => _checkCircularReference;
+         set => SetProperty(ref _checkCircularReference, value);
       }
    }
 }

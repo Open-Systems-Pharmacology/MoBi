@@ -1579,6 +1579,7 @@ namespace MoBi.Assets
          public static readonly string ExportObservedDataToExcel = "Export observed data to Excel";
          public static readonly string ContainerPath = "Container Path";
          public static readonly string ValidateRules = "Validate value constraints";
+         public static readonly string PerformCircularReferenceCheck = "Perform circular reference check (uncheck only if you have some performance issue while creating a model)";
          public static readonly string OpenAnyway = "&Open Anyway";
          public static readonly string MoleculeObserver = "Molecule Observer";
          public static readonly string ContainerObserver = "Container Observer";

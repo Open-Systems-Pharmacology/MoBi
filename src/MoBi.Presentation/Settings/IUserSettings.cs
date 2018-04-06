@@ -47,6 +47,7 @@ namespace MoBi.Presentation.Settings
       bool ShowCannotCalcErrors { get; set; }
       bool ShowPKSimObserverMessages { get; set; }
       bool CheckRules { get; set; }
+      bool CheckCircularReference { get; set; }
       bool GroupParameters { get; set; }
 
       ValidationSettings ValidationSettings { get; }
