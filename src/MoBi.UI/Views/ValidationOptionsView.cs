@@ -45,6 +45,9 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.CheckRules)
             .To(chkValidateRules);
 
+         _screenBinder.Bind(x => x.CheckCircularReference)
+            .To(chkPerformCircularReferenceCheck);
+
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
@@ -56,6 +59,7 @@ namespace MoBi.UI.Views
          chkShowPKSimWarnings.Text = AppConstants.Captions.ShowPKSimParameterWarnings;
          chkShowUnableToCalculateWarnings.Text = AppConstants.Captions.ShowUnableCalculateWarnings;
          chkValidateRules.Text = AppConstants.Captions.ValidateRules;
+         chkPerformCircularReferenceCheck.Text = AppConstants.Captions.PerformCircularReferenceCheck;
       }
 
       public void AttachPresenter(IValidationOptionsPresenter presenter)

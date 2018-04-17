@@ -4,7 +4,6 @@ using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.UI.Controls;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 
@@ -28,10 +27,7 @@ namespace MoBi.UI.Views
          layoutItemValidationOptions.TextVisible = false;
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return _presenter.Icon; }
-      }
+      public override ApplicationIcon ApplicationIcon => _presenter.Icon;
 
       public void AttachPresenter(IFinalOptionsPresenter presenter)
       {
