@@ -103,7 +103,7 @@ namespace MoBi.Presentation
          _selectedPath = A.Fake<IFormulaUsablePath>();
          sut.Edit(_tableFormulaWithXArgument, _parameter);
          A.CallTo(() => _selectFormulaUsablePathPresenter.GetSelection()).Returns(_selectedPath);
-         A.CallTo(() => _formulaTask.ChangeTableObject(_tableFormulaWithXArgument, _selectedPath, _buildingBlock)).Returns(_command);
+         A.CallTo(() => _formulaTask.ChangeXArgumentObject(_tableFormulaWithXArgument, _selectedPath, _buildingBlock)).Returns(_command);
       }
 
       protected override void Because()
@@ -114,7 +114,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_let_the_user_select_a_new_path_and_updated_the_selected_path()
       {
-         A.CallTo(() => _formulaTask.ChangeTableObject(_tableFormulaWithXArgument, _selectedPath, _buildingBlock)).MustHaveHappened();
+         A.CallTo(() => _formulaTask.ChangeXArgumentObject(_tableFormulaWithXArgument, _selectedPath, _buildingBlock)).MustHaveHappened();
       }
 
       [Observation]
