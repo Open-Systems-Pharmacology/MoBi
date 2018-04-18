@@ -133,7 +133,9 @@ namespace MoBi.UI.Views
          chkPersistable.ToolTip = ToolTips.ParameterView.Persistable;
          chkCanBeVariedInPopulation.Text = AppConstants.Captions.CanBeVariedInPopulation;
          tabProperties.Text = AppConstants.Captions.Properties;
+         tabProperties.Image = ApplicationIcons.Properties;
          tabTags.Text = AppConstants.Captions.Tags;
+         tabTags.Image = ApplicationIcons.Tag;
          btAddTag.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddTag);
          layoutControlItemAddTag.AdjustButtonSize();
          layoutControlItemTags.TextLocation = Locations.Top;

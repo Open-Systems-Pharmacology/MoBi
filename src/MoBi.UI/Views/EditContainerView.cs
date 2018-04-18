@@ -87,6 +87,8 @@ namespace MoBi.UI.Views
          btAddTag.InitWithImage(ApplicationIcons.Add, text: AppConstants.Captions.AddTag, toolTip: ToolTips.Container.AddTag);
          btName.ToolTip = ToolTips.Container.ContainerName;
          layoutItemContainerTags.Text = AppConstants.Captions.ContainerTags.FormatForLabel();
+         tabProperties.Image = ApplicationIcons.Properties;
+         tabParameters.Image = ApplicationIcons.Parameter;
       }
 
       private void onNameSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)
@@ -136,24 +138,18 @@ namespace MoBi.UI.Views
          btName.Properties.ReadOnly = !isInit;
       }
 
-      private EditorButton editNameButton
-      {
-         get { return btName.Properties.Buttons[0]; }
-      }
+      private EditorButton editNameButton => btName.Properties.Buttons[0];
 
       public void SetParameterView(IView view)
       {
          tabParameters.FillWith(view);
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError || _gridBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError || _gridBinder.HasError;
 
       public virtual bool ReadOnly
       {
-         get { return _readOnly; }
+         get => _readOnly;
          set
          {
             _readOnly = value;
@@ -165,7 +161,7 @@ namespace MoBi.UI.Views
 
       public bool ContainerPropertiesEditable
       {
-         get { return cbContainerType.Enabled; }
+         get => cbContainerType.Enabled;
          set
          {
             cbContainerType.Enabled = value;
