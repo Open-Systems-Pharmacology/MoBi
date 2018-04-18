@@ -1,38 +1,35 @@
 ﻿using System;
 using MoBi.Assets;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditTableFormulaWithOffsetFormulaPresenter : IEditTypedFormulaPresenter
+   public interface IEditTableFormulaWithXArgumentFormulaPresenter : IEditTypedFormulaPresenter
    {
-      void SetOffsetFormulaPath();
+      void SetXArgumentFormulaPath();
       void SetTableObjectPath();
    }
 
-   public class EditTableFormulaWithOffsetFormulaPresenter : EditTypedFormulaPresenter<IEditTableFormulaWithOffsetFormulaView,
-      IEditTableFormulaWithOffsetFormulaPresenter, TableFormulaWithOffset>, IEditTableFormulaWithOffsetFormulaPresenter
+   public class EditTableFormulaWithXArgumentFormulaPresenter :
+      EditTypedFormulaPresenter<IEditTableFormulaWithXArgumentFormulaView, IEditTableFormulaWithXArgumentFormulaPresenter, TableFormulaWithXArgument>,
+      IEditTableFormulaWithXArgumentFormulaPresenter
    {
-      private readonly ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper _mapper;
-      private TableFormulaWithOffsetDTO _tableFormulaWithOffsetDTO;
+      private readonly ITableFormulaWithXArgumentToTableFormulaWithXArgumentDTOMapper _mapper;
+      private TableFormulaWithXArgumentDTO _tableFormulaWithXArgumentDTO;
       private readonly IMoBiFormulaTask _moBiFormulaTask;
       private readonly IApplicationController _applicationController;
       private readonly ISelectReferencePresenterFactory _selectReferencePresenterFactory;
-      private readonly IDimension _timeDimension;
 
-      public EditTableFormulaWithOffsetFormulaPresenter(
-         IEditTableFormulaWithOffsetFormulaView view,
-         ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper mapper,
-         IMoBiContext context,
+      public EditTableFormulaWithXArgumentFormulaPresenter(
+         IEditTableFormulaWithXArgumentFormulaView view,
+         ITableFormulaWithXArgumentToTableFormulaWithXArgumentDTOMapper mapper,
          IMoBiFormulaTask moBiFormulaTask,
          IDisplayUnitRetriever displayUnitRetriever,
          IApplicationController applicationController,
@@ -42,39 +39,38 @@ namespace MoBi.Presentation.Presenter
          _moBiFormulaTask = moBiFormulaTask;
          _applicationController = applicationController;
          _selectReferencePresenterFactory = selectReferencePresenterFactory;
-         _timeDimension = context.DimensionFactory.Dimension(Constants.Dimension.TIME);
       }
 
-      public override void Edit(TableFormulaWithOffset tableFormulaWithOffset)
+      public override void Edit(TableFormulaWithXArgument tableFormulaWithXArgument)
       {
-         _formula = tableFormulaWithOffset;
+         _formula = tableFormulaWithXArgument;
          bindToView();
       }
 
       private void bindToView()
       {
-         _tableFormulaWithOffsetDTO = _mapper.MapFrom(_formula);
-         _view.BindTo(_tableFormulaWithOffsetDTO);
+         _tableFormulaWithXArgumentDTO = _mapper.MapFrom(_formula);
+         _view.BindTo(_tableFormulaWithXArgumentDTO);
       }
 
-      public void SetOffsetFormulaPath()
+      public void SetXArgumentFormulaPath()
       {
-         var path = selectFormulaUseablePath(isValidOffsetObject, AppConstants.Captions.OffsetObjectPath);
+         var path = selectFormulaUsablePath(isValidXArgumentObject, AppConstants.Captions.OffsetObjectPath);
          if (path == null) return;
 
-         AddCommand(_moBiFormulaTask.ChangeOffsetObject(_formula, path, BuildingBlock));
+         AddCommand(_moBiFormulaTask.ChangeXArgumentObject(_formula, path, BuildingBlock));
          bindToView();
       }
 
-      private bool isValidOffsetObject(IObjectBase objectBase)
+      private bool isValidXArgumentObject(IObjectBase objectBase)
       {
          var parameter = objectBase as IParameter;
-         return parameter != null && Equals(parameter.Dimension, _timeDimension);
+         return parameter != null;
       }
 
       public void SetTableObjectPath()
       {
-         var path = selectFormulaUseablePath(isValidTableObject, AppConstants.Captions.TableObjectPath);
+         var path = selectFormulaUsablePath(isValidTableObject, AppConstants.Captions.TableObjectPath);
          if (path == null) return;
 
          AddCommand(_moBiFormulaTask.ChangeTableObject(_formula, path, BuildingBlock));
@@ -87,7 +83,7 @@ namespace MoBi.Presentation.Presenter
          return parameter?.Formula.IsTable() ?? false;
       }
 
-      private IFormulaUsablePath selectFormulaUseablePath(Func<IObjectBase, bool> predicate, string caption)
+      private IFormulaUsablePath selectFormulaUsablePath(Func<IObjectBase, bool> predicate, string caption)
       {
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {

@@ -95,13 +95,13 @@ namespace MoBi.Core.Domain.UnitSystem
       protected abstract double? GetFactor();
    }
 
-   public class MolWeightDimensonConverterForFormulaUseable : DimensionConverterFor<IQuantity>
+   public class MolWeightDimensonConverterForFormulaUsable : DimensionConverterFor<IQuantity>
    {
       private IQuantity _formulaUsable;
       private IObjectPath _useablePath;
       private readonly ObjectPathFactory _pathFactory;
 
-      public MolWeightDimensonConverterForFormulaUseable(IDimension sourceDimension, IDimension targetDimension) : base(sourceDimension, targetDimension)
+      public MolWeightDimensonConverterForFormulaUsable(IDimension sourceDimension, IDimension targetDimension) : base(sourceDimension, targetDimension)
       {
          _pathFactory = new ObjectPathFactory(new AliasCreator());
       }

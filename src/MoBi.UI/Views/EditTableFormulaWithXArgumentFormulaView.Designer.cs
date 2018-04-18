@@ -1,6 +1,6 @@
 ﻿namespace MoBi.UI.Views
 {
-   partial class EditTableFormulaWithOffsetFormulaView
+   partial class EditTableFormulaWithXArgumentFormulaView
    {
       /// <summary> 
       /// Required designer variable.
@@ -30,15 +30,15 @@
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.btEditOffsetObjectPath = new DevExpress.XtraEditors.ButtonEdit();
-         this.layoutControlItemOffsetObjectPath = new DevExpress.XtraLayout.LayoutControlItem();
+         this.btEditXArgumentObjectPath = new DevExpress.XtraEditors.ButtonEdit();
+         this.layoutControlItemXArgumentObjectPath = new DevExpress.XtraLayout.LayoutControlItem();
          this.btEditTableObjectPath = new DevExpress.XtraEditors.ButtonEdit();
          this.layoutControlItemTableObjectPath = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.btEditOffsetObjectPath.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemOffsetObjectPath)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.btEditXArgumentObjectPath.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemXArgumentObjectPath)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.btEditTableObjectPath.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemTableObjectPath)).BeginInit();
          this.SuspendLayout();
@@ -46,7 +46,7 @@
          // layoutControl1
          // 
          this.layoutControl1.Controls.Add(this.btEditTableObjectPath);
-         this.layoutControl1.Controls.Add(this.btEditOffsetObjectPath);
+         this.layoutControl1.Controls.Add(this.btEditXArgumentObjectPath);
          this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl1.Location = new System.Drawing.Point(0, 0);
          this.layoutControl1.Name = "layoutControl1";
@@ -61,7 +61,7 @@
          this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup1.GroupBordersVisible = false;
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItemOffsetObjectPath,
+            this.layoutControlItemXArgumentObjectPath,
             this.layoutControlItemTableObjectPath});
          this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup1.Name = "layoutControlGroup1";
@@ -71,23 +71,23 @@
          // 
          // btEditOffsetObjectPath
          // 
-         this.btEditOffsetObjectPath.Location = new System.Drawing.Point(188, 36);
-         this.btEditOffsetObjectPath.Name = "btEditOffsetObjectPath";
-         this.btEditOffsetObjectPath.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+         this.btEditXArgumentObjectPath.Location = new System.Drawing.Point(188, 36);
+         this.btEditXArgumentObjectPath.Name = "btEditXArgumentObjectPath";
+         this.btEditXArgumentObjectPath.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.btEditOffsetObjectPath.Size = new System.Drawing.Size(134, 20);
-         this.btEditOffsetObjectPath.StyleController = this.layoutControl1;
-         this.btEditOffsetObjectPath.TabIndex = 4;
+         this.btEditXArgumentObjectPath.Size = new System.Drawing.Size(134, 20);
+         this.btEditXArgumentObjectPath.StyleController = this.layoutControl1;
+         this.btEditXArgumentObjectPath.TabIndex = 4;
          // 
          // layoutControlItemOffsetObjectPath
          // 
-         this.layoutControlItemOffsetObjectPath.Control = this.btEditOffsetObjectPath;
-         this.layoutControlItemOffsetObjectPath.CustomizationFormText = "layoutControlItemOffsetObjectPath";
-         this.layoutControlItemOffsetObjectPath.Location = new System.Drawing.Point(0, 24);
-         this.layoutControlItemOffsetObjectPath.Name = "layoutControlItemOffsetObjectPath";
-         this.layoutControlItemOffsetObjectPath.Size = new System.Drawing.Size(314, 106);
-         this.layoutControlItemOffsetObjectPath.Text = "layoutControlItemOffsetObjectPath";
-         this.layoutControlItemOffsetObjectPath.TextSize = new System.Drawing.Size(172, 13);
+         this.layoutControlItemXArgumentObjectPath.Control = this.btEditXArgumentObjectPath;
+         this.layoutControlItemXArgumentObjectPath.CustomizationFormText = "layoutControlItemOffsetObjectPath";
+         this.layoutControlItemXArgumentObjectPath.Location = new System.Drawing.Point(0, 24);
+         this.layoutControlItemXArgumentObjectPath.Name = "layoutControlItemXArgumentObjectPath";
+         this.layoutControlItemXArgumentObjectPath.Size = new System.Drawing.Size(314, 106);
+         this.layoutControlItemXArgumentObjectPath.Text = "layoutControlItemOffsetObjectPath";
+         this.layoutControlItemXArgumentObjectPath.TextSize = new System.Drawing.Size(172, 13);
          // 
          // btEditTableObjectPath
          // 
@@ -119,8 +119,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.btEditOffsetObjectPath.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemOffsetObjectPath)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.btEditXArgumentObjectPath.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemXArgumentObjectPath)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.btEditTableObjectPath.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemTableObjectPath)).EndInit();
          this.ResumeLayout(false);
@@ -132,8 +132,8 @@
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.ButtonEdit btEditTableObjectPath;
-      private DevExpress.XtraEditors.ButtonEdit btEditOffsetObjectPath;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemOffsetObjectPath;
+      private DevExpress.XtraEditors.ButtonEdit btEditXArgumentObjectPath;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemXArgumentObjectPath;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemTableObjectPath;
    }
 }

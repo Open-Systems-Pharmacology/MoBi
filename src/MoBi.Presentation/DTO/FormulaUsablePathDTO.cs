@@ -32,7 +32,7 @@ namespace MoBi.Presentation.DTO
          return _formula.ObjectPaths.Where(x => !ReferenceEquals(x, FormulaUsablePath))
             .All(usablePath => !string.Equals(usablePath.Alias, alias));
       }
-
+         
       private static class AllRules
       {
          private static IBusinessRule notEmptyNameRule { get; } = GenericRules.NonEmptyRule<FormulaUsablePathDTO>(x => x.Alias, AppConstants.Validation.EmptyAlias);
