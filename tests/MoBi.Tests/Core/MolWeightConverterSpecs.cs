@@ -66,7 +66,7 @@ namespace MoBi.Core
       }
    }
 
-   public abstract class concern_for_type_MolWeightDimensionConverterForFormulaUsable : ContextSpecification<MolWeightDimensonConverterForFormulaUsable>
+   public abstract class concern_for_type_MolWeightDimensionConverterForFormulaUsable : ContextSpecification<MolWeightDimensionConverterForFormulaUsable>
    {
       protected IQuantity _formulaUsable;
       protected double _mw;
@@ -84,7 +84,7 @@ namespace MoBi.Core
          _target = new Dimension(new BaseDimensionRepresentation(), "Target", "mol");
          _target.AddUnit("mmol", 300, 0);
          _target.DefaultUnit = _target.Unit("mmol");
-         sut = new MolWeightDimensonConverterForFormulaUsable(_source, _target);
+         sut = new MolWeightDimensionConverterForFormulaUsable(_source, _target);
          sut.SetRefObject(_formulaUsable);
       }
    }

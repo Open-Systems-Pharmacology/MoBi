@@ -58,26 +58,18 @@ namespace MoBi.Core.Domain.UnitSystem
       {
          var factor = GetFactor();
          if (factor.HasValue && !Double.IsNaN(factor.Value))
-         {
             return sourceBaseUnitValue * factor.Value;
-         }
-         else
-         {
-            throw new MoBiException();
-         }
+
+         throw new MoBiException();
       }
 
       public double ConvertToSourceBaseUnit(double targetBaseUnitValue)
       {
          var factor = GetFactor();
          if (factor.HasValue && !Double.IsNaN(factor.Value))
-         {
             return targetBaseUnitValue / factor.Value;
-         }
-         else
-         {
-            throw new MoBiException();
-         }
+
+         throw new MoBiException();
       }
 
       public bool CanConvertTo(IDimension dimension)
@@ -95,23 +87,20 @@ namespace MoBi.Core.Domain.UnitSystem
       protected abstract double? GetFactor();
    }
 
-   public class MolWeightDimensonConverterForFormulaUsable : DimensionConverterFor<IQuantity>
+   public class MolWeightDimensionConverterForFormulaUsable : DimensionConverterFor<IQuantity>
    {
       private IQuantity _formulaUsable;
       private IObjectPath _useablePath;
       private readonly ObjectPathFactory _pathFactory;
 
-      public MolWeightDimensonConverterForFormulaUsable(IDimension sourceDimension, IDimension targetDimension) : base(sourceDimension, targetDimension)
+      public MolWeightDimensionConverterForFormulaUsable(IDimension sourceDimension, IDimension targetDimension) : base(sourceDimension, targetDimension)
       {
          _pathFactory = new ObjectPathFactory(new AliasCreator());
       }
 
       public override bool CanResolveParameters()
       {
-         if (_formulaUsable == null)
-            return false;
-
-         var root = _formulaUsable.RootContainer;
+         var root = _formulaUsable?.RootContainer;
          if (root == null)
             return false;
 
@@ -124,10 +113,7 @@ namespace MoBi.Core.Domain.UnitSystem
          _formulaUsable = refObject;
       }
 
-      public override string UnableToResolveParametersMessage
-      {
-         get { return String.Format("Could not resolve path {0}", _useablePath); }
-      }
+      public override string UnableToResolveParametersMessage => $"Could not resolve path {_useablePath}";
 
       protected override double? GetFactor()
       {
@@ -153,10 +139,7 @@ namespace MoBi.Core.Domain.UnitSystem
       {
       }
 
-      public override string UnableToResolveParametersMessage
-      {
-         get { return "MolWeight not set at DataColumn"; }
-      }
+      public override string UnableToResolveParametersMessage => "MolWeight not set at DataColumn";
 
       public override void SetRefObject(DataColumn refObject)
       {

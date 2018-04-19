@@ -20,7 +20,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutControlItemXArgumentObjectPath.Text = AppConstants.Captions.XArgumentObjectPath.FormatForLabel();
+         layoutControlItemXArgumentObjectPath.Text = AppConstants.Captions.XArgumentObjectPath.FormatForLabel(checkCase: false);
          layoutControlItemTableObjectPath.Text = AppConstants.Captions.TableObjectPath.FormatForLabel();
          btEditXArgumentObjectPath.Properties.ReadOnly = true;
          btEditTableObjectPath.Properties.ReadOnly = true;

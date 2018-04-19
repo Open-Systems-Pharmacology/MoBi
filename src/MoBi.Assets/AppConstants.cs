@@ -1392,7 +1392,7 @@ namespace MoBi.Assets
          public static readonly string AddValuePoint = "Add Point";
          public static readonly string UseDerivedValues = "Use derivative values";
          public static readonly string OffsetObjectPath = "Path to offset object";
-         public static readonly string XArgumentObjectPath = "Path to x-argument object";
+         public static readonly string XArgumentObjectPath = "Path to X-Argument object";
          public static readonly string TableObjectPath = "Path to table object";
          public static readonly string TableFormulaWithOffset = "Table Formula with Offset";
          public static readonly string TableFormulaWithXArgument = "Table Formula with X-Argument";
