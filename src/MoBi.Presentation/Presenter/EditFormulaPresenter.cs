@@ -124,7 +124,7 @@ namespace MoBi.Presentation.Presenter
          _circularReferenceChecker = circularReferenceChecker;
          _context = context;
          _formulaPresenterCache = formulaPresenterCache;
-         _allFormulaType = new HashSet<Type> {typeof(ConstantFormula), typeof(TableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(SumFormula)};
+         _allFormulaType = new HashSet<Type> {typeof(ConstantFormula), typeof(TableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(TableFormulaWithXArgument), typeof(SumFormula)};
          _defaultFormulaType = _allFormulaType.First();
       }
 
@@ -289,7 +289,7 @@ namespace MoBi.Presentation.Presenter
 
             _isRHS = value;
          }
-         get { return _isRHS; }
+         get => _isRHS;
       }
 
       public override bool CanClose
@@ -429,10 +429,7 @@ namespace MoBi.Presentation.Presenter
          return _formulaTypeCaptionRepository[formulaType];
       }
 
-      public object Subject
-      {
-         get { return _formula; }
-      }
+      public object Subject => _formula;
 
       public void Handle(RemovedEvent eventToHandle)
       {

@@ -1392,8 +1392,10 @@ namespace MoBi.Assets
          public static readonly string AddValuePoint = "Add Point";
          public static readonly string UseDerivedValues = "Use derivative values";
          public static readonly string OffsetObjectPath = "Path to offset object";
+         public static readonly string XArgumentObjectPath = "Path to X-Argument object";
          public static readonly string TableObjectPath = "Path to table object";
          public static readonly string TableFormulaWithOffset = "Table Formula with Offset";
+         public static readonly string TableFormulaWithXArgument = "Table Formula with X-Argument";
          public static readonly string VariableName = "Variable name";
          public static readonly string SumFormula = "Sum Formula";
          public static readonly string Criteria = "Parameter criteria";
@@ -2002,8 +2004,9 @@ namespace MoBi.Assets
       public static readonly string OutputIntervalId = "OutputIntervalId";
       public static readonly string SolverSettingsId = "SolverSettingsId";
       public static readonly string SimulationSettingsId = "SimulationSettingsId";
-      public static readonly string OffsetAlias = "OFFSET";
-      public static readonly string TableAlias = "TABLE";
+      public static readonly string OFFSET_ALIAS = "OFFSET";
+      public static readonly string TABLE_ALIAS = "TABLE";
+      public static readonly string X_ARGUMENT_ALIAS = "X_ARGUMENT";
       public static readonly string Param = "Param";
       public static readonly string RHSFormula = "RHS Formula";
 

@@ -20,9 +20,9 @@ using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditTableFormulaWithOffSetFormulaPresenter : ContextSpecification<IEditTableFormulaWithOffSetFormulaPresenter>
+   public abstract class concern_for_EditTableFormulaWithOffSetFormulaPresenter : ContextSpecification<IEditTableFormulaWithOffsetFormulaPresenter>
    {
-      protected IEditTableFormulaWithOffSetFormulaView _view;
+      protected IEditTableFormulaWithOffsetFormulaView _view;
       protected ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper _mapper;
       protected IMoBiContext _context;
       protected IMoBiFormulaTask _mobiFormulaTask;
@@ -41,7 +41,7 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _view = A.Fake<IEditTableFormulaWithOffSetFormulaView>();
+         _view = A.Fake<IEditTableFormulaWithOffsetFormulaView>();
          _mapper = A.Fake<ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper>();
          _context = A.Fake<IMoBiContext>();
          _mobiFormulaTask = A.Fake<IMoBiFormulaTask>();
@@ -51,7 +51,7 @@ namespace MoBi.Presentation
          _timeDimension = DomainHelperForSpecs.TimeDimension;
          A.CallTo(() => _context.DimensionFactory.Dimension(Constants.Dimension.TIME)).Returns(_timeDimension);
 
-         sut = new EditTableFormulaWithOffSetFormulaPresenter(_view, _mapper, _context, _mobiFormulaTask, _displayUnitRetriever, _applicationController, _selectReferencePresenterFactory);
+         sut = new EditTableFormulaWithOffsetFormulaPresenter(_view, _mapper, _context, _mobiFormulaTask, _displayUnitRetriever, _applicationController, _selectReferencePresenterFactory);
 
          _commandCollector = A.Fake<ICommandCollector>();
          _buildingBlock = A.Fake<IBuildingBlock>();

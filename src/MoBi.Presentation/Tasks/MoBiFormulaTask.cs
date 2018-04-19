@@ -191,6 +191,18 @@ namespace MoBi.Presentation.Tasks
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
+      public IMoBiCommand ChangeXArgumentObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      {
+         var command = new ChangeTableFormulaWithXArgumentXArgumentObjectPathCommand(formula, path, buildingBlock).Run(_context);
+         return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
+      }
+
+      public IMoBiCommand ChangeTableObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      {
+         var command = new ChangeTableFormulaWithXArgumentTableObjectPathCommand(formula, path, buildingBlock).Run(_context);
+         return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
+      }
+      
       public IMoBiCommand SetConstantFormulaValue(ConstantFormula formula, double kernelValue, Unit newDisplayUnit, Unit oldDisplayUnit, IBuildingBlock buildingBlock, IEntity formulaOwner)
       {
          var command = new SetConstantFormulaValueCommand(formula, kernelValue, newDisplayUnit, oldDisplayUnit, buildingBlock, formulaOwner).Run(_context);
@@ -260,28 +272,39 @@ namespace MoBi.Presentation.Tasks
          if (formulaType == typeof(TableFormulaWithOffset))
             return createTableFormulaWithOffset();
 
+         if (formulaType == typeof(TableFormulaWithXArgument))
+            return createTableFormulaWithXArgument();
+
          //default
          return _context.Create<ExplicitFormula>();
       }
 
       private IFormula createTableFormulaWithOffset()
       {
-         var tableFormulaWithOffset = _context.Create<TableFormulaWithOffset>();
-         tableFormulaWithOffset.OffsetObjectAlias = AppConstants.OffsetAlias;
-         tableFormulaWithOffset.TableObjectAlias = AppConstants.TableAlias;
-         return tableFormulaWithOffset;
+         var formula = _context.Create<TableFormulaWithOffset>();
+         formula.OffsetObjectAlias = AppConstants.OFFSET_ALIAS;
+         formula.TableObjectAlias = AppConstants.TABLE_ALIAS;
+         return formula;
+      }
+
+      private IFormula createTableFormulaWithXArgument()
+      {
+         var formula = _context.Create<TableFormulaWithXArgument>();
+         formula.XArgumentAlias = AppConstants.X_ARGUMENT_ALIAS;
+         formula.TableObjectAlias = AppConstants.TABLE_ALIAS;
+         return formula;
       }
 
       private IFormula createTableFormula()
       {
-         var newFormula = _context.Create<TableFormula>();
-         newFormula.UseDerivedValues = false;
-         newFormula.XDimension = _context.DimensionFactory.Dimension(Constants.Dimension.TIME);
-         newFormula.XDisplayUnit = newFormula.XDimension.DefaultUnit;
-         newFormula.XName = newFormula.XDimension.DisplayName;
-         newFormula.YName = AppConstants.Captions.DisplayNameYValue;
-         newFormula.AddPoint(0, 0);
-         return newFormula;
+         var formula = _context.Create<TableFormula>();
+         formula.UseDerivedValues = false;
+         formula.XDimension = _context.DimensionFactory.Dimension(Constants.Dimension.TIME);
+         formula.XDisplayUnit = formula.XDimension.DefaultUnit;
+         formula.XName = formula.XDimension.DisplayName;
+         formula.YName = AppConstants.Captions.DisplayNameYValue;
+         formula.AddPoint(0, 0);
+         return formula;
       }
    }
 }

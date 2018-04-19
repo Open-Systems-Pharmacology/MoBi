@@ -27,8 +27,9 @@ namespace MoBi.Presentation
       [TestCase(typeof(ExplicitFormula), typeof(IEditExplicitFormulaPresenter))]
       [TestCase(typeof(BlackBoxFormula), typeof(IEditBlackBoxFormulaPresenter))]
       [TestCase(typeof(TableFormula), typeof(IEditTableFormulaPresenter))]
-      [TestCase(typeof(TableFormulaWithOffset), typeof(IEditTableFormulaWithOffSetFormulaPresenter))]
+      [TestCase(typeof(TableFormulaWithOffset), typeof(IEditTableFormulaWithOffsetFormulaPresenter))]
       [TestCase(typeof(SumFormula), typeof(IEditSumFormulaPresenter))]
+      [TestCase(typeof(TableFormulaWithXArgument), typeof(IEditTableFormulaWithXArgumentFormulaPresenter))]
       public void should_return_the_expected_presenter_type(Type formulaType, Type expectedPresenterType)
       {
          sut.PresenterFor(formulaType).IsAnImplementationOf(expectedPresenterType).ShouldBeTrue();

@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _oldPath = A.Fake<IFormulaUsablePath>();
-         _oldPath.Alias = AppConstants.TableAlias;
+         _oldPath.Alias = AppConstants.TABLE_ALIAS;
          _tableFormulaWithOffset = new TableFormulaWithOffset();
          _tableFormulaWithOffset.AddTableObjectPath(_oldPath);
          _context = A.Fake<IMoBiContext>();

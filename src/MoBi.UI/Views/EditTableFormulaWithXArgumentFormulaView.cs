@@ -2,18 +2,17 @@
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 
 namespace MoBi.UI.Views
 {
-   public partial class EditTableFormulaWithOffsetFormulaView : BaseUserControl, IEditTableFormulaWithOffsetFormulaView
+   public partial class EditTableFormulaWithXArgumentFormulaView : BaseUserControl, IEditTableFormulaWithXArgumentFormulaView
    {
-      private IEditTableFormulaWithOffsetFormulaPresenter _presenter;
+      private IEditTableFormulaWithXArgumentFormulaPresenter _presenter;
       public bool ReadOnly { get; set; }
 
-      public EditTableFormulaWithOffsetFormulaView()
+      public EditTableFormulaWithXArgumentFormulaView()
       {
          InitializeComponent();
       }
@@ -21,13 +20,13 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutControlItemOffsetObjectPath.Text = AppConstants.Captions.OffsetObjectPath.FormatForLabel();
+         layoutControlItemXArgumentObjectPath.Text = AppConstants.Captions.XArgumentObjectPath.FormatForLabel(checkCase: false);
          layoutControlItemTableObjectPath.Text = AppConstants.Captions.TableObjectPath.FormatForLabel();
-         btEditOffsetObjectPath.Properties.ReadOnly = true;
+         btEditXArgumentObjectPath.Properties.ReadOnly = true;
          btEditTableObjectPath.Properties.ReadOnly = true;
       }
 
-      public void AttachPresenter(IEditTableFormulaWithOffsetFormulaPresenter presenter)
+      public void AttachPresenter(IEditTableFormulaWithXArgumentFormulaPresenter presenter)
       {
          _presenter = presenter;
       }
@@ -35,22 +34,20 @@ namespace MoBi.UI.Views
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         btEditOffsetObjectPath.ButtonClick += (o, e) => OnEvent(_presenter.SetOffsetFormulaPath);
+         btEditXArgumentObjectPath.ButtonClick += (o, e) => OnEvent(_presenter.SetXArgumentFormulaPath);
          btEditTableObjectPath.ButtonClick += (o, e) => OnEvent(_presenter.SetTableObjectPath);
       }
 
-      public void BindTo(TableFormulaWithOffsetDTO tableFormulaWithOffsetDTO)
+      public void BindTo(TableFormulaWithXArgumentDTO tableFormulaWithXArgumentDTO)
       {
-         showOffsetObjectPath(tableFormulaWithOffsetDTO.OffsetObjectPath);
-         showTableObjectPath(tableFormulaWithOffsetDTO.TableObjectPath);
+         showXArgumentObjectPath(tableFormulaWithXArgumentDTO.XArgumentObjectPath);
+         showTableObjectPath(tableFormulaWithXArgumentDTO.TableObjectPath);
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ParametersTableFormulaOffset;
-
-      private void showOffsetObjectPath(FormulaUsablePathDTO forrmulaUsablePathDTO)
+      private void showXArgumentObjectPath(FormulaUsablePathDTO forrmulaUsablePathDTO)
       {
          if (forrmulaUsablePathDTO != null)
-            btEditOffsetObjectPath.Text = forrmulaUsablePathDTO.Path;
+            btEditXArgumentObjectPath.Text = forrmulaUsablePathDTO.Path;
       }
 
       private void showTableObjectPath(FormulaUsablePathDTO forrmulaUsablePathDTO)

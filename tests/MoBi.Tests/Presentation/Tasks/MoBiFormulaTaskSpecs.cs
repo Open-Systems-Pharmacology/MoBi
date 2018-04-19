@@ -230,8 +230,8 @@ namespace MoBi.Presentation.Tasks
       public void should_return_a_table_formula_with_off_set_and_default_properties_for_table_formula_with_offset_type()
       {
          var tableFormulaWithOffset = validateFormula<TableFormulaWithOffset>();
-         tableFormulaWithOffset.OffsetObjectAlias.ShouldBeEqualTo(AppConstants.OffsetAlias);
-         tableFormulaWithOffset.TableObjectAlias.ShouldBeEqualTo(AppConstants.TableAlias);
+         tableFormulaWithOffset.OffsetObjectAlias.ShouldBeEqualTo(AppConstants.OFFSET_ALIAS);
+         tableFormulaWithOffset.TableObjectAlias.ShouldBeEqualTo(AppConstants.TABLE_ALIAS);
       }
 
       [Observation]

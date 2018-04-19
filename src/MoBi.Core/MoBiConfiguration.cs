@@ -41,11 +41,11 @@ namespace MoBi.Core
 
       public MoBiConfiguration()
       {
-         CalculationMethodRepositoryFile = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.CALCULATION_METHOD_REPOSITORY_FILE_NAME);
-         GroupRepositoryFile = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.GROUP_REPOSITORY_FILE_NAME);
-         TemplateFolder =  AllUsersOrLocalPathForFolder(AppConstants.SpecialFileNames.TEMPLATES_FOLDER, AppConstants.SpecialFileNames.TEMPLATES_FOLDER);
+         CalculationMethodRepositoryFile = LocalOrAllUsersPathForFile(AppConstants.SpecialFileNames.CALCULATION_METHOD_REPOSITORY_FILE_NAME);
+         GroupRepositoryFile = LocalOrAllUsersPathForFile(AppConstants.SpecialFileNames.GROUP_REPOSITORY_FILE_NAME);
+         TemplateFolder =  LocalOrAllUsersPathForFolder(AppConstants.SpecialFileNames.TEMPLATES_FOLDER, AppConstants.SpecialFileNames.TEMPLATES_FOLDER);
          SpaceOrganismUserTemplate = CurrentUserFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
-         SpaceOrganismBaseTemplate = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
+         SpaceOrganismBaseTemplate = LocalOrAllUsersPathForFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
          StandardMoleculeTemplateFile = templateFile(AppConstants.SpecialFileNames.STANDARD_MOLECULE);
          
       }

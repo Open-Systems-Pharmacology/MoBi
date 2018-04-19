@@ -47,8 +47,11 @@ namespace MoBi.Presentation.Presenter
          if (formulaType == typeof (TableFormula))
             return presenterFor<IEditTableFormulaPresenter>(formulaType);
 
+         if (formulaType == typeof(TableFormulaWithXArgument))
+            return presenterFor<IEditTableFormulaWithXArgumentFormulaPresenter>(formulaType);
+
          if (formulaType == typeof (TableFormulaWithOffset))
-            return presenterFor<IEditTableFormulaWithOffSetFormulaPresenter>(formulaType);
+            return presenterFor<IEditTableFormulaWithOffsetFormulaPresenter>(formulaType);
 
          if (formulaType == typeof (SumFormula))
             return presenterFor<IEditSumFormulaPresenter>(formulaType);
