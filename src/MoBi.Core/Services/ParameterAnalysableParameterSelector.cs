@@ -7,8 +7,8 @@ namespace MoBi.Core.Services
    {
       public override bool CanUseParameter(IParameter parameter)
       {
-         //in MoBi, you can use any parameter except table parameters and categorial parameters
-         return !ParameterIsTable(parameter) 
+         return parameter.CanBeVaried
+                && !ParameterIsTable(parameter)
                 && !ParameterIsCategorial(parameter);
       }
 

@@ -221,6 +221,7 @@
     <Compile Include="Core\MoBiMergedDimensionFactorySpecs.cs" />
     <Compile Include="Core\MoleculeBuilderToDtoMoleculeBuilderMapperSpecs.cs" />
     <Compile Include="Core\MolWeightConverterSpecs.cs" />
+    <Compile Include="Core\ParameterAnalysableParameterSelectorSpecs.cs" />
     <Compile Include="Core\ProjectMetaDataSpecs.cs" />
     <Compile Include="Core\SerializationContextFactorySpecs.cs" />
     <Compile Include="Core\ValidationSettingsSpecs.cs" />
