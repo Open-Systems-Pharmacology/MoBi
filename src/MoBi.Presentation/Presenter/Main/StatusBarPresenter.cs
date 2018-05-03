@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Presenter.Main
          StatusBarElements.All().Each(_view.AddItem);
          updateProjectInfo(AppConstants.None, string.Empty, string.Empty, false);
          update(StatusBarElements.Version)
-            .WithCaption(_moBiConfiguration.FullVersion);
+            .WithCaption(_moBiConfiguration.FullVersionDisplay);
          hideProgressBar();
       }
 
