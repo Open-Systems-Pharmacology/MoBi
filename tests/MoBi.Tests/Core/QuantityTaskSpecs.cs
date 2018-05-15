@@ -110,9 +110,10 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_not_update_the_value_origin()
+      public void should_update_the_value_origin()
       {
-         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Internet);
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Undefined);
       }
 
       [Observation]
@@ -239,9 +240,10 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_not_update_the_value_origin()
+      public void should_update_the_value_origin()
       {
-         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Internet);
+         _parameter.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Unknown);
+         _parameter.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.Undefined);
       }
 
       [Observation]
@@ -355,11 +357,12 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_return_a_macro_command_containing_only_the_set_default_command()
+      public void should_return_a_macro_command_containing_only_the_default_command_and_the_update_command()
       {
          var macro = _result.DowncastTo<MoBiMacroCommand>();
-         macro.Count.ShouldBeEqualTo(1);
+         macro.Count.ShouldBeEqualTo(2);
          macro.All().ElementAt(0).ShouldBeAnInstanceOf<SetParameterDefaultStateInBuildingBlockCommand>();
+         macro.All().ElementAt(1).ShouldBeAnInstanceOf<UpdateValueOriginInBuildingBlockCommand>();
       }
 
       [Observation]
