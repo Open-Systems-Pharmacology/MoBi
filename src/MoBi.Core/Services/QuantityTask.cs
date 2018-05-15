@@ -183,16 +183,7 @@ namespace MoBi.Core.Services
          var setParameterDefaultStateCommand = setParameterDefaultStateFunc(parameter, false, buildingBlockOrSimulation).AsHidden();
          macroCommand.Add(setParameterDefaultStateCommand);
 
-         if (!parameter.ValueOrigin.IsUndefined)
-            return;
-
-         var undefinedValueOrigin = new ValueOrigin
-         {
-            Source = ValueOriginSources.Unknown,
-            Method = ValueOriginDeterminationMethods.Undefined
-         };
-
-         var setValueOriginCommand = setParameterValueOriginFunc(parameter, undefinedValueOrigin, buildingBlockOrSimulation).AsHidden();
+    var setValueOriginCommand = setParameterValueOriginFunc(parameter, ValueOrigin.Unknown, buildingBlockOrSimulation).AsHidden();
          macroCommand.Add(setValueOriginCommand);
       }
 

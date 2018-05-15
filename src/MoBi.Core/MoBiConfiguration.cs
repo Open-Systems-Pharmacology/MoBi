@@ -38,6 +38,7 @@ namespace MoBi.Core
       public string StandardMoleculeTemplateFile { get; }
       public override string WatermarkOptionLocation { get; } = "Utilties -> Options -> Application";
       public override string ApplicationFolderPathName { get; } = AppConstants.SpecialFileNames.APPLICATION_FOLDER_PATH;
+      public override int InternalVersion { get; } = ProjectVersions.Current;
 
       public MoBiConfiguration()
       {
