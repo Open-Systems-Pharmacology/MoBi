@@ -36,9 +36,21 @@ namespace MoBi.Presentation.Serialization.Xml
          {
             var serializer = _serializerRepository.SerializerFor(_settings);
             var xml = serializer.Serialize(_settings, serializationContext);
-            var doc = XDocument.Load(new StringReader(xml.ToString()));
-            doc.Save(SettingsFilePath);
+            saveSerializedSettingsToFile(xml);
          }
+      }
+
+      private void saveSerializedSettingsToFile(XElement xml)
+      {
+         ensureSettingsFileDirectoryExists();
+         var doc = XDocument.Load(new StringReader(xml.ToString()));
+         doc.Save(SettingsFilePath);
+      }
+
+      private void ensureSettingsFileDirectoryExists()
+      {
+         var directory = Path.GetDirectoryName(SettingsFilePath);
+         DirectoryHelper.CreateDirectory(directory);
       }
 
       protected abstract string SettingsFilePath { get; }
