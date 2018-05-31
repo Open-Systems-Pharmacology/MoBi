@@ -122,7 +122,9 @@ namespace MoBi.Core.Serialization.ORM
       {
          var journal = _journalLoader.Load(journalPath, projectFullPath);
          context.Journal = journal;
-         _journalTask.ShowJournal();
+
+         if (showJournal)
+            _journalTask.ShowJournal();
       }
    }
 }

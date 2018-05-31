@@ -108,6 +108,9 @@ namespace MoBi.Presentation.Tasks
 
       public void LoadJournal(string journalPath, string projectFullPath = null, bool showJournal = false)
       {
+         if (string.IsNullOrEmpty(journalPath))
+            return;
+
          _contextPersistor.LoadJournal(_context, journalPath, projectFullPath, showJournal);
       }
 
