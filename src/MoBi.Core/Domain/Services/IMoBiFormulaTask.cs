@@ -79,7 +79,11 @@ namespace MoBi.Core.Domain.Services
       IMoBiCommand RemoveValuePointFromTableFormula(TableFormula formula, ValuePoint valuePoint, IBuildingBlock buildingBlock);
       IMoBiCommand ChangeOffsetObject(TableFormulaWithOffset formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
       IMoBiCommand ChangeTableObject(TableFormulaWithOffset formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangeXArgumentObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangeTableObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
       IMoBiCommand SetConstantFormulaValue(ConstantFormula formula, double kernelValue, Unit newDisplayUnit, Unit oldDisplayUnit, IBuildingBlock buildingBlock, IEntity formulaOwner);
+
+      IMoBiCommand UpdateFormula(IEntity usingFormula, IFormula oldFormula, IFormula newFormula, FormulaDecoder decoder, IBuildingBlock buildingBlock);
 
       (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock);
 

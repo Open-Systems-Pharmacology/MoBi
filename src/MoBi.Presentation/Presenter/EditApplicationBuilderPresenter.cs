@@ -44,11 +44,11 @@ namespace MoBi.Presentation.Presenter
    {
       private IApplicationBuilder _applicationBuilder;
       private readonly IEditTaskFor<IApplicationBuilder> _editTasks;
-      private readonly IApplicationBuilderToDTOApplicationBuilderMapper _applicationBuilderToDTOApllicationBuilderMapper;
+      private readonly IApplicationBuilderToApplicationBuilderDTOMapper _applicationBuilderToDTOApllicationBuilderMapper;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> _interactionTasksForApplicationMoleculeBuilder;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
-      private readonly IEditParameterListPresenter _editParameterListPresenter;
+      private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
       private readonly IMoBiContext _context;
       private readonly IDescriptorConditionListPresenter<IApplicationBuilder> _descriptorConditionListPresenter;
       private readonly IApplicationController _applicationController;
@@ -56,18 +56,18 @@ namespace MoBi.Presentation.Presenter
 
       public EditApplicationBuilderPresenter(IEditApplicationBuilderView view, IEditTaskFor<IApplicationBuilder> editTasks, 
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IApplicationBuilderToDTOApplicationBuilderMapper applicationBuilderToDTOApllicationBuilderMapper, 
+         IApplicationBuilderToApplicationBuilderDTOMapper applicationBuilderToDTOApllicationBuilderMapper, 
          IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> interactionTasksForApplicationMoleculeBuilder,
          IViewItemContextMenuFactory viewItemContextMenuFactory, 
-         IEditParameterListPresenter editParameterListPresenter, IMoBiContext context,
+         IEditParametersInContainerPresenter editParametersInContainerPresenter, IMoBiContext context,
          IDescriptorConditionListPresenter<IApplicationBuilder> descriptorConditionListPresenter, IApplicationController applicationController)
          : base(view)
       {
          _descriptorConditionListPresenter = descriptorConditionListPresenter;
          _applicationController = applicationController;
          _context = context;
-         _editParameterListPresenter = editParameterListPresenter;
-         _view.SetParametersView(_editParameterListPresenter.BaseView);
+         _editParametersInContainerPresenter = editParametersInContainerPresenter;
+         _view.SetParametersView(_editParametersInContainerPresenter.BaseView);
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _interactionTasksForApplicationMoleculeBuilder = interactionTasksForApplicationMoleculeBuilder;
          _applicationBuilderToDTOApllicationBuilderMapper = applicationBuilderToDTOApllicationBuilderMapper;
@@ -76,19 +76,19 @@ namespace MoBi.Presentation.Presenter
          _view.AddDescriptorConditionListView(_descriptorConditionListPresenter.View);
          _formulaPropertyName = MoBiReflectionHelper.PropertyName<IApplicationMoleculeBuilder>(x => x.Formula);
 
-         AddSubPresenters(_editParameterListPresenter, _descriptorConditionListPresenter);
+         AddSubPresenters(_editParametersInContainerPresenter, _descriptorConditionListPresenter);
       }
 
       public override void Edit(IApplicationBuilder applicationBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          _applicationBuilder = applicationBuilder;
-         _editParameterListPresenter.BuildingBlock = BuildingBlock;
+         _editParametersInContainerPresenter.BuildingBlock = BuildingBlock;
          _view.EnableDescriptors = (applicationBuilder.ParentContainer == null);
          var dto = _applicationBuilderToDTOApllicationBuilderMapper.MapFrom(applicationBuilder);
          dto.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(applicationBuilder, existingObjectsInParent));
          dto.GetMoleculeNames(GetMoleculeNames);
          _view.BindTo(dto);
-         _editParameterListPresenter.Edit(applicationBuilder);
+         _editParametersInContainerPresenter.Edit(applicationBuilder);
          _descriptorConditionListPresenter.Edit(_applicationBuilder,  x=> x.SourceCriteria, BuildingBlock);
       }
 
@@ -100,7 +100,7 @@ namespace MoBi.Presentation.Presenter
       public void SelectParameter(IParameter parameter)
       {
          _view.ShowParameters();
-         _editParameterListPresenter.Select(parameter);
+         _editParametersInContainerPresenter.Select(parameter);
       }
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)

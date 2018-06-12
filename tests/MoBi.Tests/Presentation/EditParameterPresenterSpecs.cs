@@ -15,6 +15,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation
 {
@@ -31,6 +32,7 @@ namespace MoBi.Presentation
       protected IFavoriteTask _favoriteTask;
       protected IInteractionTasksForParameter _parameterTask;
       protected ICommandCollector _commandCollector;
+      protected IEditValueOriginPresenter _editValueOriginPresenter;
 
       protected override void Context()
       {
@@ -44,8 +46,9 @@ namespace MoBi.Presentation
          _editTasks = A.Fake<IEditTaskFor<IParameter>>();
          _favoriteTask = A.Fake<IFavoriteTask>();
          _parameterTask = A.Fake<IInteractionTasksForParameter>();
+         _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();
          sut = new EditParameterPresenter(_view, _editFormulaPresenter, _parameterMapper, _editRHSPresenter, _interactionTasksContext,
-            _entityTaks, _groupRepository, _editTasks, _parameterTask, new ContextSpecificReferencesRetriever(), _favoriteTask)
+            _entityTaks, _groupRepository, _editTasks, _parameterTask, new ContextSpecificReferencesRetriever(), _favoriteTask,_editValueOriginPresenter)
          {
             BuildingBlock = A.Fake<IBuildingBlock>()
          };
@@ -141,25 +144,30 @@ namespace MoBi.Presentation
    {
       private IParameter _parameter;
       private ParameterDTO _parameterDTO;
+      private ValueOrigin _valueOrigin;
+      private IBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          base.Context();
+         _buildingBlock= A.Fake<IBuildingBlock>(); 
+         _valueOrigin = new ValueOrigin();
          _parameter = new Parameter().WithId("Para");
          _parameterDTO = new ParameterDTO(_parameter);
          A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(_parameterDTO);
+         sut.BuildingBlock  =_buildingBlock;
          sut.Edit(_parameter);
       }
 
       protected override void Because()
       {
-         sut.SetValueDescription(_parameterDTO, "TOTO");
+         _editValueOriginPresenter.ValueOriginUpdated(_valueOrigin);
       }
 
       [Observation]
       public void should_call_the_parameter_task()
       {
-         A.CallTo(() => _parameterTask.SetValueDescriptionForParameter(_parameter, "TOTO")).MustHaveHappened();
+         A.CallTo(() => _parameterTask.SetValueOriginForParameter(_parameter, _valueOrigin, _buildingBlock)).MustHaveHappened();
       }
    }
 

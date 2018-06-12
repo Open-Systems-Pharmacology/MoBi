@@ -2,6 +2,8 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -126,10 +128,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// Sets the value of a start value
       /// </summary>
       /// <param name="buildingBlock">The building block that contains the start value</param>
-      /// <param name="valueDescription">The new value description</param>
+      /// <param name="valueOrigin">The new value origin</param>
       /// <param name="startValue">The start value being modified</param>
       /// <returns>The command used to modify the start value</returns>
-      IMoBiCommand SetValueDescription(TBuildingBlock buildingBlock, string valueDescription, TStartValue startValue);
+      ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TStartValue startValue);
 
       /// <summary>
       /// Sets the display unit of a start value

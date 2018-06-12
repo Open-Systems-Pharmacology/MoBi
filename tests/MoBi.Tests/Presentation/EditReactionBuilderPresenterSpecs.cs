@@ -24,7 +24,7 @@ namespace MoBi.Presentation
       private IEditTaskFor<IReactionBuilder> _editTasks;
       private IMoBiContext _context;
       private IFormulaToFormulaBuilderDTOMapper _formulaBuilderMapper;
-      protected IEditParameterListPresenter _editReactionParameters;
+      protected IEditParametersInContainerPresenter _editReactionParameters;
       private IDescriptorConditionListPresenter<IReactionBuilder> _containerCriteriaPresenter;
       protected IReactionEductsPresenter _reactionEductsPresenter;
       protected IReactionProductsPresenter _reactionProductsPresenter;
@@ -40,7 +40,7 @@ namespace MoBi.Presentation
          _editTasks = A.Fake<IEditTaskFor<IReactionBuilder>>();
          _context = A.Fake<IMoBiContext>();
          _formulaBuilderMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _editReactionParameters = A.Fake<IEditParameterListPresenter>();
+         _editReactionParameters = A.Fake<IEditParametersInContainerPresenter>();
          _containerCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<IReactionBuilder>>();
          _reactionEductsPresenter = A.Fake<IReactionEductsPresenter>();
          _reactionProductsPresenter = A.Fake<IReactionProductsPresenter>();

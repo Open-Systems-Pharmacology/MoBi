@@ -1,10 +1,10 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.Core.Services;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -13,10 +13,12 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.SensitivityAnalyses;
 using OSPSuite.Core.Journal;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Exceptions;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_ReloadRelatedItemTaskSpecs : ContextSpecification<IReloadRelatedItemTask>
+   public abstract class concern_for_ReloadRelatedItemTask : ContextSpecification<IReloadRelatedItemTask>
    {
       protected IApplicationConfiguration _applicationConfiguration;
       protected IContentLoader _contentLoader;
@@ -48,10 +50,10 @@ namespace MoBi.Presentation.Tasks
          _simulationLoader = A.Fake<ISimulationLoader>();
          _objectIdResetter = A.Fake<IObjectIdResetter>();
          _observedDataTask = A.Fake<IObservedDataTask>();
-         _parameterIdentificationTask= A.Fake<IParameterIdentificationTask>();
-         _sensitivityAnalysisTask= A.Fake<ISensitivityAnalysisTask>();
+         _parameterIdentificationTask = A.Fake<IParameterIdentificationTask>();
+         _sensitivityAnalysisTask = A.Fake<ISensitivityAnalysisTask>();
          sut = new ReloadRelatedItemTask(_applicationConfiguration, _contentLoader, _dialogCreator,
-            _relatedItemSerializer, _context, _cloneManager, _taskRetriever, _pkSimExportTask, _simulationLoader, _observedDataTask, _objectIdResetter,_parameterIdentificationTask,_sensitivityAnalysisTask);
+            _relatedItemSerializer, _context, _cloneManager, _taskRetriever, _pkSimExportTask, _simulationLoader, _observedDataTask, _objectIdResetter, _parameterIdentificationTask, _sensitivityAnalysisTask);
          _relatedItem = A.Fake<RelatedItem>();
       }
 
@@ -61,9 +63,9 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   internal class When_reloading_a_simulation : concern_for_ReloadRelatedItemTaskSpecs
+   internal class When_reloading_a_simulation : concern_for_ReloadRelatedItemTask
    {
-      private IMoBiSimulation _simulation; 
+      private IMoBiSimulation _simulation;
 
       protected override void Context()
       {
@@ -80,7 +82,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   internal class When_reloading_a_building_block : concern_for_ReloadRelatedItemTaskSpecs
+   internal class When_reloading_a_building_block : concern_for_ReloadRelatedItemTask
    {
       private readonly IBuildingBlock _buildingBlock = new ReactionBuildingBlock();
       private readonly IInteractionTasksForBuildingBlock _task = A.Fake<IInteractionTasksForBuildingBlock>();
@@ -123,7 +125,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   internal class When_reloading_some_observed_data : concern_for_ReloadRelatedItemTaskSpecs
+   internal class When_reloading_some_observed_data : concern_for_ReloadRelatedItemTask
    {
       private readonly IMoBiCommand _addCommand = A.Fake<IMoBiCommand>();
       private DataRepository _observedData;
@@ -137,15 +139,31 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_reset_the_id_for_the_observed_data()
-      {
-         A.CallTo(() => _objectIdResetter.ResetIdFor(_observedData)).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_execute_the_correct_add_to_project_method()
       {
          A.CallTo(() => _observedDataTask.AddObservedDataToProject(_observedData)).MustHaveHappened();
+      }
+   }
+
+   public class When_reloading_an_object_whose_deserialization_process_results_in_an_not_unique_id_exception_being_thrown : concern_for_ReloadRelatedItemTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _relatedItem.ItemType = "Simulation";
+         _relatedItem.Name = "MySim";
+         A.CallTo(() => _relatedItemSerializer.Deserialize(_relatedItem)).Throws(new NotUniqueIdException("id"));
+      }
+
+      protected override void Because()
+      {
+         //override because of exception
+      }
+
+      [Observation]
+      public void should_throw_an_information_exception_explaining_to_the_user_that_the_object_cannot_be_loaeder()
+      {
+         The.Action(() => sut.Load(_relatedItem)).ShouldThrowAn<OSPSuiteException>();
       }
    }
 }

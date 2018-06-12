@@ -9,6 +9,6 @@ namespace MoBi.Presentation.Tasks
       void CloseProject();
       void NewProject();
       IEnumerable<T> LoadMany<T>(string fileName, bool resetIds = false);
-      void LoadJournal(string journalPath,  string projectFullPath=null, bool showJournal = false);
+      void LoadJournal(string journalPath, string projectFullPath = null, bool showJournal = false);
    }
 }

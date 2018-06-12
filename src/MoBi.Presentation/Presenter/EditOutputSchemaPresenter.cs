@@ -94,14 +94,11 @@ namespace MoBi.Presentation.Presenter
          return _allIntervals[outputIntervalDTO];
       }
 
-      public override ApplicationIcon Icon
-      {
-         get { return ApplicationIcons.OutputInterval; }
-      }
+      public override ApplicationIcon Icon => ApplicationIcons.OutputInterval;
 
       public bool ShowGroupCaption
       {
-         set { View.ShowGroupCaption = value; }
+         set => View.ShowGroupCaption = value;
       }
    }
 }

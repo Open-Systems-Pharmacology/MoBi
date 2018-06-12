@@ -38,6 +38,8 @@ namespace MoBi.Core.Commands
 
       private void updateStartValue()
       {
+         _moleculeStartValue.UpdateValueOriginFrom(_quantity.ValueOrigin);
+
          //we are dealing with a quantity in simulation that was initialized with a constant value, we can update 
          if (_quantity.Formula.IsConstant())
          {

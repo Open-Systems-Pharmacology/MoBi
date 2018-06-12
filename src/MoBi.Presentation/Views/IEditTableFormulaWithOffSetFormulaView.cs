@@ -4,7 +4,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IEditTableFormulaWithOffSetFormulaView : IView<IEditTableFormulaWithOffSetFormulaPresenter>, IEditTypedFormulaView
+   public interface IEditTableFormulaWithOffsetFormulaView : IView<IEditTableFormulaWithOffsetFormulaPresenter>, IEditTypedFormulaView
    {
       void BindTo(TableFormulaWithOffsetDTO tableFormulaWithOffsetDTO);
    }

@@ -124,6 +124,7 @@ namespace MoBi.Presentation
       private IParameter _parameter;
       private IBuildingBlock _buidingBlockWithFormulaCache;
       private ExplicitFormula _explicitFormula;
+      private IFormula _oldFormula;
 
       protected override void Context()
       {
@@ -132,15 +133,17 @@ namespace MoBi.Presentation
          _buidingBlockWithFormulaCache = new ParameterStartValuesBuildingBlock();
 
 
-         _parameter.Formula = new ExplicitFormula();
+         _oldFormula = new ExplicitFormula("1+2").WithId("OLD_FORMULA");
+         _parameter.Formula = _oldFormula;
          _explicitFormula = new ExplicitFormula {Id = "Formula", Name = "toto"};
+         A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_oldFormula.Id)).Returns(true);
          A.CallTo(() => _formulaTask.CreateNewFormula(typeof(ExplicitFormula), _parameter.Dimension)).Returns(_explicitFormula);
 
          sut.Init(_parameter, _buidingBlockWithFormulaCache);
-         sut.FormulaSelectionChanged(string.Empty);
 
          //add so that it will be found when setting the value in the parameter
          _buidingBlockWithFormulaCache.AddFormula(_explicitFormula);
+
          A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache))
             .Returns((A.Fake<IMoBiCommand>(), _explicitFormula));
       }
@@ -160,7 +163,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_change_parents_formula_to_new_formula()
       {
-         _parameter.Formula.ShouldBeEqualTo(_explicitFormula);
+         A.CallTo(() => _formulaTask.UpdateFormula(_parameter, _oldFormula, _explicitFormula, A<FormulaDecoder>._, _buidingBlockWithFormulaCache)).MustHaveHappened();
       }
    }
 

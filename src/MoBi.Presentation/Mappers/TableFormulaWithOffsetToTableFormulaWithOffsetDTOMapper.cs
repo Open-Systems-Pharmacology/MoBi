@@ -1,8 +1,8 @@
 using System.Linq;
-using OSPSuite.Utility;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Mappers
    {
    }
 
-   internal class TableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper
+   public class TableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper
    {
       private readonly IFormulaUsablePathToFormulaUsablePathDTOMapper _mapper;
 
@@ -34,6 +34,7 @@ namespace MoBi.Presentation.Mappers
          {
             dto.TableObjectPath = _mapper.MapFrom(tableObjectPath, tableFormulaWithOffset);
          }
+
          return dto;
       }
 

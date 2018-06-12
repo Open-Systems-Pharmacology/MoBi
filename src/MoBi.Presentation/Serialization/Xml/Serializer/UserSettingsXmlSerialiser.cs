@@ -30,6 +30,7 @@ namespace MoBi.Presentation.Serialization.Xml.Serializer
          Map(x => x.ShowPKSimDimensionProblemWarnings);
          Map(x => x.ShowPKSimObserverMessages);
          Map(x => x.CheckRules);
+         Map(x => x.CheckCircularReference);
          Map(x => x.GroupParameters);
          Map(x => x.DisplayUnits);
          Map(x => x.ComparerSettings);

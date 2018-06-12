@@ -13,14 +13,14 @@ using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditTableFormulaWithOffSetFormulaPresenter : IEditTypedFormulaPresenter
+   public interface IEditTableFormulaWithOffsetFormulaPresenter : IEditTypedFormulaPresenter
    {
       void SetOffsetFormulaPath();
       void SetTableObjectPath();
    }
 
-   public class EditTableFormulaWithOffSetFormulaPresenter : EditTypedFormulaPresenter<IEditTableFormulaWithOffSetFormulaView,
-      IEditTableFormulaWithOffSetFormulaPresenter, TableFormulaWithOffset>, IEditTableFormulaWithOffSetFormulaPresenter
+   public class EditTableFormulaWithOffsetFormulaPresenter : EditTypedFormulaPresenter<IEditTableFormulaWithOffsetFormulaView,
+      IEditTableFormulaWithOffsetFormulaPresenter, TableFormulaWithOffset>, IEditTableFormulaWithOffsetFormulaPresenter
    {
       private readonly ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper _mapper;
       private TableFormulaWithOffsetDTO _tableFormulaWithOffsetDTO;
@@ -29,8 +29,14 @@ namespace MoBi.Presentation.Presenter
       private readonly ISelectReferencePresenterFactory _selectReferencePresenterFactory;
       private readonly IDimension _timeDimension;
 
-      public EditTableFormulaWithOffSetFormulaPresenter(IEditTableFormulaWithOffSetFormulaView view, ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper mapper, IMoBiContext context,
-         IMoBiFormulaTask moBiFormulaTask, IDisplayUnitRetriever displayUnitRetriever, IApplicationController applicationController, ISelectReferencePresenterFactory selectReferencePresenterFactory) : base(view, displayUnitRetriever)
+      public EditTableFormulaWithOffsetFormulaPresenter(
+         IEditTableFormulaWithOffsetFormulaView view,
+         ITableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper mapper,
+         IMoBiContext context,
+         IMoBiFormulaTask moBiFormulaTask,
+         IDisplayUnitRetriever displayUnitRetriever,
+         IApplicationController applicationController,
+         ISelectReferencePresenterFactory selectReferencePresenterFactory) : base(view, displayUnitRetriever)
       {
          _mapper = mapper;
          _moBiFormulaTask = moBiFormulaTask;
@@ -42,22 +48,22 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(TableFormulaWithOffset tableFormulaWithOffset)
       {
          _formula = tableFormulaWithOffset;
+         bindToView();
+      }
+
+      private void bindToView()
+      {
          _tableFormulaWithOffsetDTO = _mapper.MapFrom(_formula);
          _view.BindTo(_tableFormulaWithOffsetDTO);
       }
 
-      private void rebind()
-      {
-         Edit(_formula);
-      }
-
       public void SetOffsetFormulaPath()
       {
-         var path = selectFormulaUseablePath(_tableFormulaWithOffsetDTO.OffsetObjectPath, isValidOffsetObject, AppConstants.Captions.OffsetObjectPath);
+         var path = selectFormulaUseablePath(isValidOffsetObject, AppConstants.Captions.OffsetObjectPath);
          if (path == null) return;
 
          AddCommand(_moBiFormulaTask.ChangeOffsetObject(_formula, path, BuildingBlock));
-         rebind();
+         bindToView();
       }
 
       private bool isValidOffsetObject(IObjectBase objectBase)
@@ -68,11 +74,11 @@ namespace MoBi.Presentation.Presenter
 
       public void SetTableObjectPath()
       {
-         var path = selectFormulaUseablePath(_tableFormulaWithOffsetDTO.TableObjectPath, isValidTableObject, AppConstants.Captions.TableObjectPath);
+         var path = selectFormulaUseablePath(isValidTableObject, AppConstants.Captions.TableObjectPath);
          if (path == null) return;
 
          AddCommand(_moBiFormulaTask.ChangeTableObject(_formula, path, BuildingBlock));
-         rebind();
+         bindToView();
       }
 
       private bool isValidTableObject(IObjectBase objectBase)
@@ -81,7 +87,7 @@ namespace MoBi.Presentation.Presenter
          return parameter?.Formula.IsTable() ?? false;
       }
 
-      private IFormulaUsablePath selectFormulaUseablePath(FormulaUsablePathDTO initPath, Func<IObjectBase, bool> predicate, string caption)
+      private IFormulaUsablePath selectFormulaUseablePath(Func<IObjectBase, bool> predicate, string caption)
       {
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {

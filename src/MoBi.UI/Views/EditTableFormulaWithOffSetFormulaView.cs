@@ -8,12 +8,12 @@ using OSPSuite.UI.Controls;
 
 namespace MoBi.UI.Views
 {
-   public partial class EditTableFormulaWithOffSetFormulaView : BaseUserControl, IEditTableFormulaWithOffSetFormulaView
+   public partial class EditTableFormulaWithOffsetFormulaView : BaseUserControl, IEditTableFormulaWithOffsetFormulaView
    {
-      private IEditTableFormulaWithOffSetFormulaPresenter _presenter;
+      private IEditTableFormulaWithOffsetFormulaPresenter _presenter;
       public bool ReadOnly { get; set; }
 
-      public EditTableFormulaWithOffSetFormulaView()
+      public EditTableFormulaWithOffsetFormulaView()
       {
          InitializeComponent();
       }
@@ -27,7 +27,7 @@ namespace MoBi.UI.Views
          btEditTableObjectPath.Properties.ReadOnly = true;
       }
 
-      public void AttachPresenter(IEditTableFormulaWithOffSetFormulaPresenter presenter)
+      public void AttachPresenter(IEditTableFormulaWithOffsetFormulaPresenter presenter)
       {
          _presenter = presenter;
       }

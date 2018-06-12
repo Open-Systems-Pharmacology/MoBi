@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
 using MoBi.Core.Helper;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
@@ -28,9 +28,9 @@ namespace MoBi.Presentation.DTO
       public bool IsFavorite { get; set; }
       public string DisplayName { get; set; }
       public FormulaType FormulaType { get; set; }
-      public int  Sequence { get; set; }
+      public int Sequence { get; set; }
       public double Percentile { get; set; }
-      public PathElements PathElements { get; set; }= new PathElements();
+      public PathElements PathElements { get; set; } = new PathElements();
       public PathElementDTO SimulationPathElement => PathElements[PathElement.Simulation];
       public PathElementDTO TopContainerPathElement => PathElements[PathElement.TopContainer];
       public PathElementDTO ContainerPathElement => PathElements[PathElement.Container];
@@ -48,7 +48,7 @@ namespace MoBi.Presentation.DTO
 
       public IEnumerable<Unit> AllUnits
       {
-         get { return Dimension.Units; }
+         get => Dimension.Units;
          set
          {
             /*nothing to do here*/
@@ -95,13 +95,13 @@ namespace MoBi.Presentation.DTO
 
       public virtual bool Persistable
       {
-         get { return Parameter.Persistable; }
-         set { Parameter.Persistable = value; }
+         get => Parameter.Persistable;
+         set => Parameter.Persistable = value;
       }
 
       public virtual ParameterBuildMode BuildMode
       {
-         get { return Parameter.BuildMode; }
+         get => Parameter.BuildMode;
          set
          {
             /*nothing to do here since the BuildMode should be set in the command*/
@@ -110,7 +110,7 @@ namespace MoBi.Presentation.DTO
 
       public virtual IDimension Dimension
       {
-         get { return Parameter.Dimension; }
+         get => Parameter.Dimension;
          set
          {
             /*nothing to do here since the Dimension should be set in the command*/
@@ -119,21 +119,23 @@ namespace MoBi.Presentation.DTO
 
       public virtual Unit DisplayUnit
       {
-         get { return Parameter.DisplayUnit; }
+         get => Parameter.DisplayUnit;
          set
          {
             /*nothing to do here since the unit should be set in the command*/
          }
       }
 
-      public virtual string ValueDescription
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
       {
-         get { return Parameter.ValueDescription; }
-         set
-         {
-            /*nothing to do here since the unit should be set in the command*/
-         }
+         Parameter.UpdateValueOriginFrom(ValueOrigin);
       }
+
+      public virtual ValueOrigin ValueOrigin
+      {
+         get=> Parameter.ValueOrigin;
+         set => UpdateValueOriginFrom(value);
+      } 
 
       public bool IsDiscrete => false;
       public ICache<double, string> ListOfValues { get; }

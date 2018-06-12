@@ -60,14 +60,8 @@ namespace MoBi.UI.Views
 
       }
 
-      public override XtraTabControl TabControl
-      {
-         get { return tabWizard; }
-      }
+      public override XtraTabControl TabControl => tabWizard;
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
    }
 }

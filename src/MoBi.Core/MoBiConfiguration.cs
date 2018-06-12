@@ -38,14 +38,15 @@ namespace MoBi.Core
       public string StandardMoleculeTemplateFile { get; }
       public override string WatermarkOptionLocation { get; } = "Utilties -> Options -> Application";
       public override string ApplicationFolderPathName { get; } = AppConstants.SpecialFileNames.APPLICATION_FOLDER_PATH;
+      public override int InternalVersion { get; } = ProjectVersions.Current;
 
       public MoBiConfiguration()
       {
-         CalculationMethodRepositoryFile = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.CALCULATION_METHOD_REPOSITORY_FILE_NAME);
-         GroupRepositoryFile = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.GROUP_REPOSITORY_FILE_NAME);
-         TemplateFolder =  AllUsersOrLocalPathForFolder(AppConstants.SpecialFileNames.TEMPLATES_FOLDER, AppConstants.SpecialFileNames.TEMPLATES_FOLDER);
+         CalculationMethodRepositoryFile = LocalOrAllUsersPathForFile(AppConstants.SpecialFileNames.CALCULATION_METHOD_REPOSITORY_FILE_NAME);
+         GroupRepositoryFile = LocalOrAllUsersPathForFile(AppConstants.SpecialFileNames.GROUP_REPOSITORY_FILE_NAME);
+         TemplateFolder =  LocalOrAllUsersPathForFolder(AppConstants.SpecialFileNames.TEMPLATES_FOLDER, AppConstants.SpecialFileNames.TEMPLATES_FOLDER);
          SpaceOrganismUserTemplate = CurrentUserFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
-         SpaceOrganismBaseTemplate = AllUsersOrLocalPathForFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
+         SpaceOrganismBaseTemplate = LocalOrAllUsersPathForFile(AppConstants.SpecialFileNames.SPATIAL_STRUCTURE_TEMPLATE);
          StandardMoleculeTemplateFile = templateFile(AppConstants.SpecialFileNames.STANDARD_MOLECULE);
          
       }

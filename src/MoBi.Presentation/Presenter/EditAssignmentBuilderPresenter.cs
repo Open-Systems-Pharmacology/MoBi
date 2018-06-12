@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Presenter
    public class EditAssignmentBuilderPresenter : AbstractEntityEditPresenter<IEditEventAssignmentBuilderView, IEditAssignmentBuilderPresenter, IEventAssignmentBuilder>, IEditAssignmentBuilderPresenter
    {
       private IEventAssignmentBuilder _eventAssignmentBuilder;
-      private readonly IEventAssignmentBuilderToDTOEventAssignmentMapper _eventAssingnmentToDTOAssignmentMapper;
+      private readonly IEventAssignmentBuilderToEventAssignmentDTOMapper _eventAssingnmentToDTOAssignmentMapper;
       private readonly IEditTaskFor<IEventAssignmentBuilder> _editTasksForAssignment;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IEditFormulaPresenter _editFormulaPresenter;
@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiApplicationController _applicationController;
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public EditAssignmentBuilderPresenter(IEditEventAssignmentBuilderView view, IEventAssignmentBuilderToDTOEventAssignmentMapper eventAssingnmentToDTOAssignmentMapper,
+      public EditAssignmentBuilderPresenter(IEditEventAssignmentBuilderView view, IEventAssignmentBuilderToEventAssignmentDTOMapper eventAssingnmentToDTOAssignmentMapper,
          IEditTaskFor<IEventAssignmentBuilder> editTasksForAssignment, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
          IEditFormulaPresenter editFormulaPresenter, IMoBiContext context,
          ISelectReferenceAtEventAssignmentPresenter selectReferencePresenter,

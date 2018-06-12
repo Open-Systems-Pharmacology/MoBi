@@ -16,7 +16,7 @@ namespace MoBi.Presentation
    {
       protected IEditActiveTransportBuilderContainerView _view;
       protected IEditTasksForTransporterMoleculeContainer _interactionTasks;
-      protected IEditParameterListPresenter _editParameterPresenter;
+      protected IEditParametersInContainerPresenter _editParameterPresenter;
       protected ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
       protected IMoBiContext _context;
 
@@ -24,7 +24,7 @@ namespace MoBi.Presentation
       {
          _view = A.Fake<IEditActiveTransportBuilderContainerView>();
          _interactionTasks = A.Fake<IEditTasksForTransporterMoleculeContainer>();
-         _editParameterPresenter = A.Fake<IEditParameterListPresenter>();
+         _editParameterPresenter = A.Fake<IEditParametersInContainerPresenter>();
          _transporterMoleculeContainerMapper = A.Fake<ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper>();
          _context = A.Fake<IMoBiContext>();
          sut = new EditTransporterMoleculeContainerPresenter(_view, _interactionTasks, _editParameterPresenter, _transporterMoleculeContainerMapper, _context);

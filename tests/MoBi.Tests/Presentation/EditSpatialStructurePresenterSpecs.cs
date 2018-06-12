@@ -1,14 +1,12 @@
-﻿using OSPSuite.BDDHelper;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.SpaceDiagram;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation
 {
@@ -21,6 +19,7 @@ namespace MoBi.Presentation
       protected IEditContainerPresenter _containerPresenter;
       protected ISpatialStructureDiagramPresenter _diagramPresenter;
       protected IEditFavoritesInSpatialStructurePresenter _favoritesPresenter;
+      protected IUserDefinedParametersPresenter _userDefinedParametersPresenter;
 
       protected override void Context()
       {
@@ -30,23 +29,21 @@ namespace MoBi.Presentation
          _containerPresenter = A.Fake<IEditContainerPresenter>();
          _diagramPresenter = A.Fake<ISpatialStructureDiagramPresenter>();
          _favoritesPresenter = A.Fake<IEditFavoritesInSpatialStructurePresenter>();
+         _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
          sut = new EditSpatialStructurePresenter(_view, _hierarchicalPresenter, _formulaCachePresenter,
-            _containerPresenter, _diagramPresenter, new HeavyWorkManagerForSpecs(), _favoritesPresenter);
+            _containerPresenter, _diagramPresenter, new HeavyWorkManagerForSpecs(), _favoritesPresenter, _userDefinedParametersPresenter);
       }
    }
 
    internal class When_selecting_the_favorites : concern_for_EditSpatialStructurePresenterSpecs
    {
       private IMoBiSpatialStructure _spSt;
-      private IView _favoritesView;
 
       protected override void Context()
       {
          base.Context();
          _spSt = A.Fake<IMoBiSpatialStructure>();
-         _favoritesView = A.Fake<IEditFavoritesView>();
          sut.Edit(_spSt);
-         A.CallTo(() => _favoritesPresenter.BaseView).Returns(_favoritesView);
       }
 
       protected override void Because()
@@ -57,22 +54,40 @@ namespace MoBi.Presentation
       [Observation]
       public void should_set_edit_view_to_favorites()
       {
-         A.CallTo(() => _view.SetEditView(_favoritesView)).MustHaveHappened();
+         A.CallTo(() => _view.SetEditView(_favoritesPresenter.BaseView)).MustHaveHappened();
       }
    }
 
-   internal class When_selecting_the_favorites_of_a_simulation : concern_for_EditSpatialStructurePresenterSpecs
+   internal class When_selecting_the_user_defined_nodes : concern_for_EditSpatialStructurePresenterSpecs
    {
       private IMoBiSpatialStructure _spSt;
-      private IView _favoritesView;
 
       protected override void Context()
       {
          base.Context();
          _spSt = A.Fake<IMoBiSpatialStructure>();
-         _favoritesView = A.Fake<IEditFavoritesView>();
          sut.Edit(_spSt);
-         A.CallTo(() => _favoritesPresenter.BaseView).Returns(_favoritesView);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new UserDefinedSelectedEvent(_spSt));
+      }
+
+      [Observation]
+      public void should_display_the_user_defined_parameters_defined_in_the_spatial_structure()
+      {
+         A.CallTo(() => _userDefinedParametersPresenter.ShowUserDefinedParametersIn(_spSt)).MustHaveHappened();
+         A.CallTo(() => _view.SetEditView(_userDefinedParametersPresenter.BaseView)).MustHaveHappened();
+      }
+   }
+
+   internal class When_selecting_the_favorites_of_a_simulation_but_the_view_is_editing_a_spatial_structure : concern_for_EditSpatialStructurePresenterSpecs
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(A.Fake<IMoBiSpatialStructure>());
       }
 
       protected override void Because()
@@ -81,9 +96,10 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_set_edit_view_to_favorites()
+      public void should_not_select_the_favorite_view()
       {
-         A.CallTo(() => _view.SetEditView(_favoritesView)).MustNotHaveHappened();
+         //Once because favorite view is the default view
+         A.CallTo(() => _view.SetEditView(_favoritesPresenter.BaseView)).MustHaveHappened(Repeated.Exactly.Once);
       }
    }
 
@@ -110,7 +126,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_call_edit_for_parent_container()
       {
-         A.CallTo(() => _containerPresenter.Edit((IObjectBase)_parent)).MustHaveHappened();
+         A.CallTo(() => _containerPresenter.Edit((IObjectBase) _parent)).MustHaveHappened();
       }
 
       [Observation]

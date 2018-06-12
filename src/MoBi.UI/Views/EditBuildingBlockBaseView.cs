@@ -20,12 +20,12 @@ namespace MoBi.UI.Views
 
       public string EditCaption
       {
-         set { tabEditBuildingBlock.Text = value; }
+         set => tabEditBuildingBlock.Text = value;
       }
 
       public ApplicationIcon EditIcon
       {
-         set { tabEditBuildingBlock.Image = value.ToImage(IconSizes.Size16x16); }
+         set => tabEditBuildingBlock.Image = value.ToImage(IconSizes.Size16x16);
       }
 
       public void ShowFormulas()

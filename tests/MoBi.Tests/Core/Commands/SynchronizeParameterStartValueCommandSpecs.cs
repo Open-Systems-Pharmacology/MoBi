@@ -1,7 +1,7 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -16,8 +16,8 @@ namespace MoBi.Core.Commands
 
       protected override void Context()
       {
-         _parameter = A.Fake<IParameter>();
-         _parameterStartValue = A.Fake<IParameterStartValue>();
+         _parameter = new Parameter();
+         _parameterStartValue = new ParameterStartValue();
          _context = A.Fake<IMoBiContext>();
          sut = new SynchronizeParameterStartValueCommand(_parameter, _parameterStartValue);
       }
@@ -30,10 +30,9 @@ namespace MoBi.Core.Commands
          base.Context();
          _parameter.Value = 5;
          _parameter.Dimension = A.Fake<IDimension>();
-         ;
-         _parameter.ValueDescription = "BLA BLA";
+         _parameter.ValueOrigin.Description = "BLA BLA";
+         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
          _parameter.DisplayUnit = A.Fake<Unit>();
-         ;
       }
 
       protected override void Because()
@@ -62,7 +61,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_the_value_description()
       {
-         _parameterStartValue.ValueDescription.ShouldBeEqualTo(_parameter.ValueDescription);
+         _parameterStartValue.ValueOrigin.ShouldBeEqualTo(_parameter.ValueOrigin);
       }
    }
 }

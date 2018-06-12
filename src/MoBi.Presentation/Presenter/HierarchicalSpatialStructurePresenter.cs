@@ -1,27 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<ISpatialStructure>,
       IHierarchicalStructurePresenter,
-      IListener<AddedEvent>, IListener<RemovedEvent>, IListener<EntitySelectedEvent>
+      IListener<AddedEvent>, 
+      IListener<RemovedEvent>, 
+      IListener<EntitySelectedEvent>
    {
       void Select(IEntity entity);
    }
@@ -42,13 +43,18 @@ namespace MoBi.Presentation.Presenter
       public void InitializeWith(ISpatialStructure spatialStructure)
       {
          _spatialStructure = spatialStructure;
+
+         _view.AddNode(_favoritesNode);
+         _view.AddNode(_userDefinedNode);
+
          var roots = new List<IObjectBaseDTO> {_objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties)};
          spatialStructure.TopContainers.Each(x => roots.Add(_objectBaseMapper.MapFrom(x)));
-         var dtoNeighborhood = _objectBaseMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
-         dtoNeighborhood.Description = OSPSuite.Assets.ToolTips.BuildingBlockSpatialStructure.HowToCreateNeighborhood;
 
-         roots.Add(dtoNeighborhood);
-         _view.AddNode(_favorites);
+         var neighborhood = _objectBaseMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
+         neighborhood.Description = ToolTips.BuildingBlockSpatialStructure.HowToCreateNeighborhood;
+
+         roots.Add(neighborhood);
+
          _view.Show(roots);
       }
 
@@ -67,6 +73,11 @@ namespace MoBi.Presentation.Presenter
       protected override void RaiseFavoritesSelectedEvent()
       {
          _context.PublishEvent(new FavoritesSelectedEvent(_spatialStructure));
+      }
+
+      protected override void RaiseUserDefinedSelectedEvent()
+      {
+         _context.PublishEvent(new UserDefinedSelectedEvent(_spatialStructure));
       }
 
       public override void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)

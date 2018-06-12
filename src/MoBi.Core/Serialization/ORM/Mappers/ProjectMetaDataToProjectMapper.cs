@@ -28,7 +28,10 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       private readonly IDeserializedReferenceResolver _deserializedReferenceResolver;
       private IMoBiProject _project;
 
-      public ProjectMetaDataToProjectMapper(IXmlSerializationService serializationService, ISerializationContextFactory serializationContextFactory, IDeserializedReferenceResolver deserializedReferenceResolver)
+      public ProjectMetaDataToProjectMapper(
+         IXmlSerializationService serializationService, 
+         ISerializationContextFactory serializationContextFactory, 
+         IDeserializedReferenceResolver deserializedReferenceResolver)
       {
          _serializationService = serializationService;
          _serializationContextFactory = serializationContextFactory;

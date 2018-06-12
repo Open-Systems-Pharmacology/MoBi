@@ -33,7 +33,6 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
 		'setup/setup.wxs',
-		'log4net.config.xml',
 		'setup/**/*.{msm,rtf,bmp}',
 		'Open Systems Pharmacology Suite License.pdf'
 	]
@@ -60,7 +59,6 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 		'pkparameters/*.xml',
 		'src/Data/*.xml',
 		'setup/**/*.{rtf}',
-		'log4net.config.xml',
 	]
 
 	setup_folders = [
@@ -102,7 +100,7 @@ task :postclean do |t, args|
 	packages_dir =  File.join(solution_dir, 'packages')
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.2')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.3')
 
 	copy_depdencies solution_dir,  all_users_application_dir do
 		copy_files 'Data', ['xml', 'mbdt']

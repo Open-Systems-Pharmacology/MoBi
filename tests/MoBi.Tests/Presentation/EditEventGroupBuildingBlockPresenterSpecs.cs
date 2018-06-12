@@ -1,13 +1,9 @@
 ﻿using FakeItEasy;
-
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using NHibernate.Dialect.Schema;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-
 
 namespace MoBi.Presentation
 {
@@ -22,10 +18,11 @@ namespace MoBi.Presentation
       private IEditTransportBuilderPresenter _transportBuilderPresenter;
       private IEditContainerPresenter _containerPresenter;
       private IEditFavoritesInEventGroupsPresenter _favoritesPresenter;
+      private IUserDefinedParametersPresenter _userDefinedParametersPresenter;
 
       protected override void Context()
       {
-         _view=A.Fake<IEditEventGroupBuildingBlockView>();
+         _view = A.Fake<IEditEventGroupBuildingBlockView>();
          _presenter = A.Fake<IEventGroupListPresenter>();
          _formulaCachePresenter = A.Fake<IFormulaCachePresenter>();
          _applicationPresenter = A.Fake<IEditApplicationBuilderPresenter>();
@@ -34,11 +31,15 @@ namespace MoBi.Presentation
          _transportBuilderPresenter = A.Fake<IEditTransportBuilderPresenter>();
          _containerPresenter = A.Fake<IEditContainerPresenter>();
          _favoritesPresenter = A.Fake<IEditFavoritesInEventGroupsPresenter>();
-         sut = new EditEventGroupBuildingBlockPresenter(_view, _presenter, _formulaCachePresenter, _applicationPresenter, _eventGroupPresenter, _eventBuilderPresenter, _transportBuilderPresenter, _containerPresenter, _favoritesPresenter);
+         _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
+
+         sut = new EditEventGroupBuildingBlockPresenter(_view, _presenter, _formulaCachePresenter, _applicationPresenter,
+            _eventGroupPresenter, _eventBuilderPresenter, _transportBuilderPresenter, _containerPresenter,
+            _favoritesPresenter, _userDefinedParametersPresenter);
       }
    }
 
-   class When_a_event_group_builder_is_selected : concern_for_EditEventGroupBuildingBlockPresenter
+   public class When_a_event_group_builder_is_selected : concern_for_EditEventGroupBuildingBlockPresenter
    {
       private IEventGroupBuildingBlock _eventGroupBuildingBlock;
       private EventGroupBuilder _eventGroup;
@@ -50,7 +51,6 @@ namespace MoBi.Presentation
          _eventGroup = new EventGroupBuilder().WithName("EG");
          _eventGroupBuildingBlock.Add(_eventGroup);
          var parameter = new Parameter().WithName("P1").WithParentContainer(_eventGroup);
-
       }
 
       protected override void Because()
@@ -67,8 +67,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_not_select_any_parameter()
       {
-         A.CallTo(() => _eventGroupPresenter.SelectParameter(A<IParameter>._)).MustNotHaveHappened();  
+         A.CallTo(() => _eventGroupPresenter.SelectParameter(A<IParameter>._)).MustNotHaveHappened();
       }
-
    }
-}	
+}

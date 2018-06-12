@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MoBi.Presentation</RootNamespace>
     <AssemblyName>MoBi.Presentation</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -52,9 +52,8 @@
       <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.BonusSkins.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DevExpress.17.1.5\lib\net45\DevExpress.BonusSkins.v17.1.dll</HintPath>
@@ -145,7 +144,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="FakeItEasy, Version=4.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FakeItEasy.4.0.0\lib\net45\FakeItEasy.dll</HintPath>
+      <HintPath>..\..\packages\FakeItEasy.4.5.1\lib\net45\FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
@@ -158,18 +157,18 @@
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Iesi.Collections.4.0.2\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.4.4.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=4.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
@@ -203,45 +202,47 @@
       <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.2.0.86\lib\net452\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.3.0.81\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Core.7.2.0.86\lib\net452\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Core.7.3.0.81\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.FuncParser">
-      <HintPath>..\..\packages\OSPSuite.FuncParser.2.0.0.1\lib\net45\OSPSuite.FuncParser.dll</HintPath>
+    <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.0.6\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.2.0.86\lib\net452\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.3.0.81\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.2.0.86, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.2.0.86\lib\net452\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.3.0.81, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.3.0.81\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.SimModel, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.SimModel.2.2.0.6\lib\net45\OSPSuite.SimModel.dll</HintPath>
+      <HintPath>..\..\packages\OSPSuite.SimModel.3.0.0.16\lib\net45\OSPSuite.SimModel.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.TeXReporting, Version=2.0.1.7, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.0.1.7\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
+    <Reference Include="OSPSuite.TeXReporting, Version=2.1.0.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.2.1.0.8\lib\net45\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Utility, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Utility.2.0.1.4\lib\net452\OSPSuite.Utility.dll</HintPath>
+    <Reference Include="OSPSuite.Utility, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.3\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SX">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.5.9\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.7.6, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.7.6\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.SQLite, Version=1.0.105.2, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.105.2\lib\net451\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -266,26 +267,31 @@
     <Compile Include="Core\Workspace.cs" />
     <Compile Include="DTO\ApplicationSettingsDTO.cs" />
     <Compile Include="DTO\EmptyFormulaUsableDTO.cs" />
-    <Compile Include="DTO\FavoriteParameterDTO.cs" />
+    <Compile Include="DTO\IMoBiParameterDTO.cs" />
     <Compile Include="DTO\LegendItemDTO.cs" />
     <Compile Include="DTO\RenameObjectDTOFactory.cs" />
     <Compile Include="DTO\SolverSettingsDTO.cs" />
+    <Compile Include="DTO\TableFormulaWithXArgumentDTO.cs" />
     <Compile Include="Extensions\HistoricalResultsNodeExtensions.cs" />
     <Compile Include="Extensions\SmartXLSExtensions.cs" />
+    <Compile Include="Mappers\ApplicationBuilderToApplicationBuilderDTOMapper.cs" />
+    <Compile Include="Mappers\ApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper.cs" />
     <Compile Include="Mappers\DataTableToImportQuantityDTOMapperForSimulations.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Mappers\EventAssignmentBuilderToEventAssignmentDTOMapper.cs" />
+    <Compile Include="Mappers\EventBuilderToEventBuilderDTOMapper.cs" />
     <Compile Include="Mappers\IOutputIntervalToOutputIntervalDTOMapper.cs" />
     <Compile Include="Mappers\MoBiQuantityPathToQuantityDisplayPathMapper.cs" />
     <Compile Include="Mappers\ObjectBaseDTOToReferenceNodeMapper.cs" />
-    <Compile Include="Mappers\ParameterToFavoriteParameterDTOMapper.cs" />
+    <Compile Include="Mappers\TableFormulaWithXArgumentToTableFormulaWithXArgumentDTOMapper.cs" />
     <Compile Include="Mappers\TransportMoleculeContainerToObjectBaseDTOMapper.cs" />
     <Compile Include="Mappers\UsedCalcualtionMethodToUsedCalcualtionMethodDTOMapper.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForEductBuilder.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForModifierBuilder.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForObjectBaseDTOSpecificationFactory.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForEmptyFormulaUsablePath.cs" />
-    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForFavorite.cs" />
+    <Compile Include="MenusAndBars\ContextMenus\ContextMenuForParameterInList.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForHistoricalResultsNode.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSensitivityAnalysis.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuForSimulationFavoritesNode.cs" />
@@ -369,6 +375,11 @@
     <Compile Include="Formatters\StartValueFormatter.cs" />
     <Compile Include="Formatters\NullableWithDisplayUnitFormatter.cs" />
     <Compile Include="Formatters\ValuePointFormatter.cs" />
+    <Compile Include="Presenter\EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase.cs" />
+    <Compile Include="Presenter\EditParameterListPresenter.cs" />
+    <Compile Include="Presenter\EditTableFormulaWithXArgumentFormulaPresenter.cs" />
+    <Compile Include="Presenter\IEditParameterListPresenter.cs" />
+    <Compile Include="Presenter\UserDefinedParametersPresenter.cs" />
     <Compile Include="Serialization\Xml\ApplicationSettingsPersistor.cs" />
     <Compile Include="Serialization\Xml\Serializer\ApplicationSettingsXmlSerializer.cs" />
     <Compile Include="Serialization\Xml\SettingsPersistor.cs" />
@@ -383,7 +394,6 @@
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForContainer.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForContainerInEvents.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForNeighborhoodBuilder.cs" />
-    <Compile Include="MenusAndBars\ContextMenus\ContextMenuFactoryForParameter.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuSpecificationFactoryForInteractionContainer.cs" />
     <Compile Include="MenusAndBars\ContextMenus\ContextMenuSpecifictaionFactoryForEventGroupBuilder.cs" />
     <Compile Include="MenusAndBars\ContextMenus\IContextMenu.cs" />
@@ -491,11 +501,14 @@
     <Compile Include="UICommand\RenameObjectCommand.cs" />
     <Compile Include="UICommand\ShowBuildingBlockDiffUICommand.cs" />
     <Compile Include="Views\BaseDiagram\IMoBiBaseDiagramView.cs" />
+    <Compile Include="Presenter\EditParameterListPresenterExtensions.cs" />
     <Compile Include="Views\IApplicationSettingsView.cs" />
     <Compile Include="Views\IApplyToSelectionView.cs" />
     <Compile Include="Views\IEditBlackBoxFormulaView.cs" />
     <Compile Include="Views\IEditContainerInSimulationView.cs" />
     <Compile Include="Views\IEditFavoritesView.cs" />
+    <Compile Include="Views\IEditParameterListView.cs" />
+    <Compile Include="Views\IEditTableFormulaWithXArgumentFormulaView.cs" />
     <Compile Include="Views\ILegendView.cs" />
     <Compile Include="Views\IEditChartTemplateManagerView.cs" />
     <Compile Include="Views\INewFormulaView.cs" />
@@ -517,7 +530,7 @@
     <Compile Include="Mappers\MoleculeBuilderDTOToTreeNodeMapper.cs" />
     <Compile Include="Mappers\ObjectBaseDTOToSpatialStructureNodeMapper.cs" />
     <Compile Include="Mappers\DataTableToImportQuantityDTOMapperForMolecules.cs" />
-    <Compile Include="Mappers\EventGroupBuilderToDTOEventGroupBuilderMapper.cs" />
+    <Compile Include="Mappers\EventGroupBuilderToEventGroupBuilderDTOMapper.cs" />
     <Compile Include="Mappers\ExplicitFormulaToExplicitFormulaDTOMapper.cs" />
     <Compile Include="Mappers\FormulaToFormulaInfoDTOMapper.cs" />
     <Compile Include="Mappers\FormulaToFormulaBuilderDTOMapper.cs" />
@@ -553,7 +566,7 @@
     <Compile Include="Mappers\TableFormulaToDTOTableFormulaMapper.cs" />
     <Compile Include="Mappers\TableFormulaWithOffsetToTableFormulaWithOffsetDTOMapper.cs" />
     <Compile Include="Mappers\TagToTagDTOMapper.cs" />
-    <Compile Include="Mappers\TransportBuilderToDTOTransportBuilderMapper.cs" />
+    <Compile Include="Mappers\TransportBuilderToTransportBuilderDTOMapper.cs" />
     <Compile Include="Mappers\TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper.cs" />
     <Compile Include="Mappers\TransportToTransportDTOMapper.cs" />
     <Compile Include="Mappers\UnitToDTOUnitMapper.cs" />
@@ -615,7 +628,7 @@
     <Compile Include="Presenter\ExportSelectedQuantitiesPresenter.cs" />
     <Compile Include="Presenter\FormulaCachePresenter.cs" />
     <Compile Include="Presenter\EditFormulaPresenter.cs" />
-    <Compile Include="Presenter\EditParameterListPresenter.cs" />
+    <Compile Include="Presenter\EditParametersInContainerPresenter.cs" />
     <Compile Include="Presenter\EditTableFormulaPresenter.cs" />
     <Compile Include="Presenter\FormulaPresenterCache.cs" />
     <Compile Include="Presenter\IBreadCrumbsPresenter.cs" />
@@ -839,7 +852,7 @@
     <Compile Include="Views\IEditEventAssignmentBuilderView.cs" />
     <Compile Include="Views\IEditFormulaView.cs" />
     <Compile Include="Views\IEditOutputSchemaView.cs" />
-    <Compile Include="Views\IEditParameterListView.cs" />
+    <Compile Include="Views\IEditParametersInContainerView.cs" />
     <Compile Include="Views\IEditQuantityInSimulationView.cs" />
     <Compile Include="Views\IEditSimulationSettingsView.cs" />
     <Compile Include="Views\IEditSumFormulaView.cs" />
@@ -874,6 +887,7 @@
     <Compile Include="Views\ISplashScreen.cs" />
     <Compile Include="Views\IStartValuesView.cs" />
     <Compile Include="Views\IProjectChartView.cs" />
+    <Compile Include="Views\IUserDefinedParametersView.cs" />
     <Compile Include="Views\IUserSettingsView.cs" />
     <Compile Include="Presenter\EditEventGroupBuildingBlockPresenter.cs" />
     <Compile Include="Presenter\EditEventGroupPresenter.cs" />
@@ -1005,13 +1019,13 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.105.2\build\net451\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

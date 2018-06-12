@@ -27,10 +27,7 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public override bool HasError
-      {
-         get { return moleculeErrorProvider.HasErrors; }
-      }
+      public override bool HasError => moleculeErrorProvider.HasErrors;
 
       public void SetListView(IView view)
       {
@@ -42,9 +39,6 @@ namespace MoBi.UI.Views
          splitContainer.Panel2.FillWith(editEventView);
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Molecule; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Molecule;
    }
 }

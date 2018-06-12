@@ -3,10 +3,13 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -55,21 +58,28 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetDescriptionForParameter(IParameter parameter, string newDescription, IBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Sets the value description for a parameter
+      ///    Sets the value origin for a parameter
       /// </summary>
-      IMoBiCommand SetValueDescriptionForParameter(IParameter parameter, string valueDescription);
+      ICommand SetValueOriginForParameter(IParameter parameter, ValueOrigin valueOrigin, IBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForParameter : InteractionTasksForChildren<IContainer, IParameter>, IInteractionTasksForParameter
    {
       private readonly IMoBiDimensionFactory _dimensionFactory;
       private readonly IMoBiFormulaTask _formulaTask;
+      private readonly IQuantityTask _quantityTask;
 
-      public InteractionTasksForParameter(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IParameter> editTasks, IMoBiDimensionFactory dimensionFactory, IMoBiFormulaTask formulaTask) :
+      public InteractionTasksForParameter(
+         IInteractionTaskContext interactionTaskContext, 
+         IEditTaskFor<IParameter> editTasks, 
+         IMoBiDimensionFactory dimensionFactory, 
+         IMoBiFormulaTask formulaTask,
+         IQuantityTask quantityTask) :
          base(interactionTaskContext, editTasks)
       {
          _dimensionFactory = dimensionFactory;
          _formulaTask = formulaTask;
+         _quantityTask = quantityTask;
       }
 
       public override IParameter CreateNewEntity(IContainer parent)
@@ -123,11 +133,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new EditParameterDescriptionInBuildingBlockComand(newDescription, parameter.Description, parameter, buildingBlock);
       }
 
-      public IMoBiCommand SetValueDescriptionForParameter(IParameter parameter, string valueDescription)
+      public ICommand SetValueOriginForParameter(IParameter parameter, ValueOrigin valueOrigin, IBuildingBlock buildingBlock)
       {
-         //no need for command here
-         parameter.ValueDescription = valueDescription;
-         return new MoBiEmptyCommand();
+         return _quantityTask.UpdateQuantityValueOriginInBuildingBlock(parameter, valueOrigin, buildingBlock);
       }
 
       private bool parameterCanBeRemoved(IParameter parameter, IContainer container)

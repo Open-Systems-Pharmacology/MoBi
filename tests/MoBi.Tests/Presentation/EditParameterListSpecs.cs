@@ -21,9 +21,9 @@ using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditParameterListPresenter : ContextSpecification<IEditParameterListPresenter>
+   public abstract class concern_for_EditParameterListPresenter : ContextSpecification<IEditParametersInContainerPresenter>
    {
-      protected IEditParameterListView _view;
+      protected IEditParametersInContainerView _view;
       protected IFormulaToFormulaBuilderDTOMapper _formulaMapper;
       protected IParameterToParameterDTOMapper _parameterMapper;
       protected IInteractionTasksForParameter _inteactionTasks;
@@ -40,7 +40,7 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _view = A.Fake<IEditParameterListView>();
+         _view = A.Fake<IEditParametersInContainerView>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
          _inteactionTasks = A.Fake<IInteractionTasksForParameter>();
@@ -56,7 +56,7 @@ namespace MoBi.Presentation
          _editTask = A.Fake<IEditTaskFor<IParameter>>();
          _selectReferencePresenterFactory = A.Fake<ISelectReferencePresenterFactory>();
          _favoriteTask = A.Fake<IFavoriteTask>();
-         sut = new EditParameterListPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
             _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }

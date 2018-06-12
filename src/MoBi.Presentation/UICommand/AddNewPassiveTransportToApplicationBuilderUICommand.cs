@@ -1,6 +1,4 @@
 ﻿using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
@@ -15,7 +13,7 @@ namespace MoBi.Presentation.UICommand
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
       public AddNewPassiveTransportToApplicationBuilderUICommand(IInteractionTasksForChildren<IApplicationBuilder, ITransportBuilder> interactionTasks,
-                                                                 IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
+         IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
       {
          _interactionTasks = interactionTasks;
          _context = context;
@@ -26,7 +24,6 @@ namespace MoBi.Presentation.UICommand
       {
          _context.AddToHistory(_interactionTasks.AddNew(Subject, _activeSubjectRetriever.Active<IBuildingBlock>()));
       }
-
    }
 
    internal class AddExistingPassiveTransportToApplicationBuilderUICommand : ObjectUICommand<IApplicationBuilder>
@@ -46,6 +43,5 @@ namespace MoBi.Presentation.UICommand
       {
          _context.AddToHistory(_interactionTasks.AddExisting(Subject, _activeSubjectRetriever.Active<IBuildingBlock>()));
       }
-
    }
 }

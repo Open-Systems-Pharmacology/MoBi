@@ -172,8 +172,6 @@ namespace MoBi.Core.Events
       }
    }
 
-   /// <summary>
-   /// </summary>
    public class SimulationStatusChangedEvent
    {
       public IMoBiSimulation Simulation { get; }

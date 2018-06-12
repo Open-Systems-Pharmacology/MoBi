@@ -91,11 +91,6 @@
                 <File Name="OSPSuite.PKParameters.xml" Id="OSPSuite.PKParameters.xml" Source="$(var.DeployDir)/OSPSuite.PKParameters.xml" KeyPath="yes" />
               </Component>
 
-
-              <Component Id='log4net.config.xml' Guid='DFCFEDFA-2B88-4FFD-BA64-D4D108D98FD1'>
-                <File Name='log4net.config.xml' Id='log4net.config.xml' Source='$(var.DeployDir)/log4net.config.xml' KeyPath='yes' />
-              </Component>
-
               <Directory Id="ExamplesFolder" Name="Examples">
                 <Component Id="ExamplesFolder" Guid="E20EF070-7E5F-4429-8A2D-584057D8AF13">
                   <CreateFolder Directory="ExamplesFolder">
@@ -171,7 +166,6 @@
       <ComponentGroupRef Id="Templates" />
 
       <ComponentRef Id="MoBi.exe" />
-      <ComponentRef Id="log4net.config.xml" />
       <ComponentRef Id="OSPSuite.Dimensions.xml" />
       <ComponentRef Id="OSPSuite.PKParameters.xml" />
       <ComponentRef Id="SpaceOrganismTemplate.mbdt" />

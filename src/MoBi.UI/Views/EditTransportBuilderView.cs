@@ -70,6 +70,8 @@ namespace MoBi.UI.Views
          chkCreateParameter.Text = AppConstants.Captions.CreateProcessRateParameter;
          chkPlotParameter.Text = AppConstants.Captions.PlotProcessRateParameter;
          tabKinetic.Text = AppConstants.Captions.Kinetic;
+         tabParameters.Image = ApplicationIcons.Parameter;
+         tabProperties.Image = ApplicationIcons.Properties;
          _errorImage = ApplicationIcons.DxError.ToImage();
          _passiveTransportImage = ApplicationIcons.PassiveTransport.ToImage();
          splitContainerControl1.PanelVisibility = SplitPanelVisibility.Panel1;

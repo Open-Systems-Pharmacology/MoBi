@@ -31,6 +31,9 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNameToList(string newItem)
       {
+         if(string.IsNullOrWhiteSpace(newItem))
+            return;
+         
          _view.AddItem(newItem);
          _view.NewItem = string.Empty;
       }

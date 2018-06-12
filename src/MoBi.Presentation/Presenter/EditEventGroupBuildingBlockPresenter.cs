@@ -2,27 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditEventGroupBuildingBlockPresenter : ISingleStartPresenter<IEventGroupBuildingBlock>,
-      IListener<EntitySelectedEvent>, IListener<AddedEvent>, IListener<RemovedEvent>, IListener<FavoritesSelectedEvent>
+   public interface IEditEventGroupBuildingBlockPresenter :
+      ISingleStartPresenter<IEventGroupBuildingBlock>,
+      IListener<EntitySelectedEvent>,
+      IListener<AddedEvent>,
+      IListener<RemovedEvent>,
+      IListener<FavoritesSelectedEvent>,
+      IListener<UserDefinedSelectedEvent>
 
    {
    }
 
-   public class EditEventGroupBuildingBlockPresenter :
-      EditBuildingBlockPresenterBase
-         <IEditEventGroupBuildingBlockView, IEditEventGroupBuildingBlockPresenter, IEventGroupBuildingBlock,
-            IEventGroupBuilder>,
+   public class EditEventGroupBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditEventGroupBuildingBlockView, IEditEventGroupBuildingBlockPresenter, IEventGroupBuildingBlock, IEventGroupBuilder>,
       IEditEventGroupBuildingBlockPresenter
    {
       private IEventGroupBuildingBlock _eventGroupBuildingBlock;
@@ -32,7 +35,6 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditEventBuilderPresenter _editEventBuilderPresenter;
       private readonly IEditTransportBuilderPresenter _editApplicationTransportBuilderPresenter;
       private readonly IEditContainerPresenter _editContainerPresenter;
-      private readonly IEditFavoritesInEventGroupsPresenter _editFavoritesPresenter;
 
       public EditEventGroupBuildingBlockPresenter(IEditEventGroupBuildingBlockView view,
          IEventGroupListPresenter eventGroupListPresenter,
@@ -41,48 +43,48 @@ namespace MoBi.Presentation.Presenter
          IEditEventGroupPresenter editEventGroupPresenter,
          IEditEventBuilderPresenter editEventBuilderPresenter,
          IEditTransportBuilderPresenter editApplicationTransportBuilderPresenter,
-         IEditContainerPresenter editContainerPresenter, IEditFavoritesInEventGroupsPresenter editFavoritesPresenter)
-         : base(view, formulaCachePresenter)
+         IEditContainerPresenter editContainerPresenter,
+         IEditFavoritesInEventGroupsPresenter favoritesPresenter,
+         IUserDefinedParametersPresenter userDefinedParametersPresenter)
+         : base(view, formulaCachePresenter, favoritesPresenter, userDefinedParametersPresenter)
       {
          _eventGroupListPresenter = eventGroupListPresenter;
          _editContainerPresenter = editContainerPresenter;
-         _editFavoritesPresenter = editFavoritesPresenter;
          _editApplicationTransportBuilderPresenter = editApplicationTransportBuilderPresenter;
          _editEventBuilderPresenter = editEventBuilderPresenter;
          _editEventGroupPresenter = editEventGroupPresenter;
          _editApplicationBuilderPresenter = editApplicationBuilderPresenter;
+
          _view.SetListView(_eventGroupListPresenter.BaseView);
-         _view.SetEditView(_editFavoritesPresenter.BaseView);
-         _editFavoritesPresenter.ShouldHandleRemovedEvent = isShowableType;
+         _view.SetEditView(_favoritesPresenter.BaseView);
+
+         _favoritesPresenter.ShouldHandleRemovedEvent = isShowableType;
+
          AddSubPresenters(_editApplicationTransportBuilderPresenter, _editContainerPresenter, _editEventBuilderPresenter,
-            _editEventGroupPresenter, _eventGroupListPresenter, _editApplicationBuilderPresenter, _editFavoritesPresenter);
+            _editEventGroupPresenter, _eventGroupListPresenter, _editApplicationBuilderPresenter);
       }
 
-      public override void Edit(IEventGroupBuildingBlock eventToEdit)
+      public override void Edit(IEventGroupBuildingBlock eventGroupBuildingBlock)
       {
-         _eventGroupBuildingBlock = eventToEdit;
-         _eventGroupListPresenter.Edit(eventToEdit);
+         _eventGroupBuildingBlock = eventGroupBuildingBlock;
+         _eventGroupListPresenter.Edit(_eventGroupBuildingBlock);
+
          allPresenterImplementing<IPresenterWithFormulaCache>()
             .Each(x => x.BuildingBlock = _eventGroupBuildingBlock);
-         setUpEditPresenterFor(eventToEdit.FirstOrDefault());
-         _editFavoritesPresenter.Edit(eventToEdit);
-         EditFormulas(eventToEdit);
+
+         setupEditPresenterFor(_eventGroupBuildingBlock.FirstOrDefault());
+         _favoritesPresenter.Edit(_eventGroupBuildingBlock);
+         EditFormulas(_eventGroupBuildingBlock);
          UpdateCaption();
          _view.Display();
       }
-
 
       protected override void UpdateCaption()
       {
          _view.Caption = AppConstants.Captions.EventsBuildingBlockCaption(_eventGroupBuildingBlock.Name);
       }
 
-      private void setUpEditPresenterFor(IObjectBase objectToEdit)
-      {
-         setUpEditPresenterFor(objectToEdit, null);
-      }
-
-      private void setUpEditPresenterFor(IObjectBase objectToEdit, IParameter parameter)
+      private void setupEditPresenterFor(IObjectBase objectToEdit, IParameter parameter = null)
       {
          if (objectToEdit == null)
          {
@@ -90,66 +92,41 @@ namespace MoBi.Presentation.Presenter
             return;
          }
 
-         if (objectToEdit.IsAnImplementationOf<IApplicationMoleculeBuilder>())
+         switch (objectToEdit)
          {
-            setUpEditPresenterFor(((IApplicationMoleculeBuilder) objectToEdit).ParentContainer);
-            return;
+            case IApplicationMoleculeBuilder applicationMoleculeBuilder:
+               setupEditPresenterFor(applicationMoleculeBuilder.ParentContainer);
+               return;
+            case IApplicationBuilder applicationBuilder:
+               showPresenter(_editApplicationBuilderPresenter, applicationBuilder, parameter);
+               return;
+            case IEventGroupBuilder eventGroupBuilder:
+               showPresenter(_editEventGroupPresenter, eventGroupBuilder, parameter);
+               return;
+            case IEventBuilder eventBuilder:
+               showPresenter(_editEventBuilderPresenter, eventBuilder, parameter);
+               return;
+            case ITransportBuilder transportBuilder:
+               showPresenter(_editApplicationTransportBuilderPresenter, transportBuilder, parameter);
+               return;
+            case IContainer container:
+               showPresenter(_editContainerPresenter, container, parameter);
+               return;
+            default:
+               throw new MoBiException(AppConstants.Exceptions.NoEditPresenterFoundFor(objectToEdit));
          }
-         IEditPresenterWithParameters presenter = null;
-         if (objectToEdit.IsAnImplementationOf<IApplicationBuilder>())
-         {
-            presenter = _editApplicationBuilderPresenter;
-            _editApplicationBuilderPresenter.Edit((IApplicationBuilder) objectToEdit);
-         }
-         else if (objectToEdit.IsAnImplementationOf<IEventGroupBuilder>())
-         {
-            presenter = _editEventGroupPresenter;
-            _editEventGroupPresenter.Edit((IEventGroupBuilder) objectToEdit);
-         }
-         else if (objectToEdit.IsAnImplementationOf<IEventBuilder>())
-         {
-            presenter = _editEventBuilderPresenter;
-            _editEventBuilderPresenter.Edit((IEventBuilder) objectToEdit);
-         }
-         else if (objectToEdit.IsAnImplementationOf<ITransportBuilder>())
-         {
-            presenter = _editApplicationTransportBuilderPresenter;
-            var transportBuilder = (ITransportBuilder) objectToEdit;
-            _editApplicationTransportBuilderPresenter.Edit(transportBuilder);
-         }
-         else if (objectToEdit.IsAnImplementationOf<IContainer>())
-         {
-            presenter = _editContainerPresenter;
-            _editContainerPresenter.Edit(objectToEdit);
-         }
+      }
 
-         if (presenter == null)
-            throw new MoBiException(AppConstants.Exceptions.NoEditPresenterFoundFor(objectToEdit));
-         _view.SetEditView(presenter.BaseView);
+      private void showPresenter<T>(IEditPresenterWithParameters<T> presenter, T objectToEdit, IParameter parameter)
+      {
+         presenter.Edit(objectToEdit);
+         ShowView(presenter.BaseView);
 
-         if(parameter!=null)
+         if (parameter != null)
             presenter.SelectParameter(parameter);
       }
 
-      private IApplicationBuilder getApplicationBuilder(ITransportBuilder transportBuilder)
-      {
-         foreach (var eventGroup in _eventGroupBuildingBlock)
-         {
-            var applicationBuilder = eventGroup
-               .GetAllContainersAndSelf<IApplicationBuilder>()
-               .FirstOrDefault(ab => ab.Transports.Contains(transportBuilder));
-            if (applicationBuilder != null)
-            {
-               return applicationBuilder;
-            }
-         }
-         return null;
-      }
-
-      public override object Subject
-      {
-         get { return _eventGroupBuildingBlock; }
-      }
+      public override object Subject => _eventGroupBuildingBlock;
 
       private IEnumerable<T> allPresenterImplementing<T>()
       {
@@ -163,41 +140,48 @@ namespace MoBi.Presentation.Presenter
 
       protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
       {
-         setUpEditPresenterFor(parentObject, parameter);
+         setupEditPresenterFor(parentObject, parameter);
       }
 
       protected override void SelectBuilder(IEventGroupBuilder builder)
       {
-         setUpEditPresenterFor(builder);
+         setupEditPresenterFor(builder);
       }
 
       public void Handle(AddedEvent eventToHandle)
       {
          var addedObject = eventToHandle.AddedObject;
-         if (shouldShow(addedObject))
-         {
-            setUpEditPresenterFor(addedObject);
-            _eventGroupListPresenter.Edit(_eventGroupBuildingBlock);
-            _eventGroupListPresenter.Select(addedObject);
-         }
+         if (!shouldShow(addedObject))
+            return;
+
+         setupEditPresenterFor(addedObject);
+         _eventGroupListPresenter.Edit(_eventGroupBuildingBlock);
+         _eventGroupListPresenter.Select(addedObject);
       }
 
       private bool eventGroupBuildingBlockContains(IObjectBase objectBase)
       {
-         if (_eventGroupBuildingBlock.Equals(objectBase)) return true;
+         if (_eventGroupBuildingBlock.Equals(objectBase))
+            return true;
+
          var testEntity = objectBase as IEntity;
          if (testEntity != null)
-         {
             return eventGroupContainsEntity(testEntity);
-         }
-         if (!objectBase.IsAnImplementationOf<ITransportBuilder>()) return false;
+
+         if (!objectBase.IsAnImplementationOf<ITransportBuilder>())
+            return false;
+
          return eventGroupContainesTranportBuilder(objectBase);
       }
 
       private bool eventGroupContainsEntity(IEntity testEntity)
       {
-         if (_eventGroupBuildingBlock.Any(eg => eg.Equals(testEntity))) return true;
-         if (_eventGroupBuildingBlock.Any(eg => eg.GetAllChildren<IEntity>().Contains(testEntity))) return true;
+         if (_eventGroupBuildingBlock.Any(eg => eg.Equals(testEntity)))
+            return true;
+
+         if (_eventGroupBuildingBlock.Any(eg => eg.GetAllChildren<IEntity>().Contains(testEntity)))
+            return true;
+
          return false;
       }
 
@@ -207,20 +191,24 @@ namespace MoBi.Presentation.Presenter
          foreach (var eventGroup in _eventGroupBuildingBlock)
          {
             var applicationBuilder = eventGroup as IApplicationBuilder;
-            if (applicationBuilder != null && applicationBuilder.Transports.Contains(tranportBuilder)) return true;
+            if (applicationBuilder != null && applicationBuilder.Transports.Contains(tranportBuilder))
+               return true;
+
             if (eventGroup.GetAllChildren<IApplicationBuilder>().Any(ab => ab.Transports.Contains(tranportBuilder)))
                return true;
          }
+
          return false;
       }
 
       private bool shouldShow(IObjectBase addedObject)
       {
-         if (_eventGroupBuildingBlock == null) return false;
+         if (_eventGroupBuildingBlock == null)
+            return false;
+
          if (isShowableType(addedObject))
-         {
             return eventGroupBuildingBlockContains(addedObject);
-         }
+
          return false;
       }
 
@@ -235,14 +223,14 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(RemovedEvent eventToHandle)
       {
-         if (eventToHandle.RemovedObjects.Any(isShowableType))
+         if (!eventToHandle.RemovedObjects.Any(isShowableType))
+            return;
+
+         //If only a Application Molecule Builder is removed we do not need to update the edit presenter
+         if (eventToHandle.RemovedObjects.Count() != 1 ||
+             !eventToHandle.RemovedObjects.First().IsAnImplementationOf<IApplicationMoleculeBuilder>())
          {
-            //If only a Application Molecule Builder is removed we do not need to update the edit presenter
-            if (eventToHandle.RemovedObjects.Count() != 1 ||
-                !eventToHandle.RemovedObjects.First().IsAnImplementationOf<IApplicationMoleculeBuilder>())
-            {
-               setUpEditPresenterFor(_eventGroupBuildingBlock.FirstOrDefault());
-            }
+            setupEditPresenterFor(_eventGroupBuildingBlock.FirstOrDefault());
          }
       }
 
@@ -255,10 +243,11 @@ namespace MoBi.Presentation.Presenter
          return base.CanHandle(selectedObject);
       }
 
-      public void Handle(FavoritesSelectedEvent eventToHandle)
+      protected override void ShowView(IView viewToShow)
       {
-         if (eventToHandle.ObjectBase.Equals(_eventGroupBuildingBlock))
-            _view.SetEditView(_editFavoritesPresenter.BaseView);
+         _view.SetEditView(viewToShow);
       }
+
+      protected override Action<IEditParameterListPresenter> ColumnConfiguration() => x => x.ConfigureForEvent();
    }
 }

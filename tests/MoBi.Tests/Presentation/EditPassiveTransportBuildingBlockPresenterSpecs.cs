@@ -13,7 +13,7 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditPassiveTransportBuildingBlockPresenter : ContextSpecification<IEditPassiveTransportBuildingBlockPresenter>
    {
       protected IEditPassiveTransportBuildingBlockView _view;
-      private ITransportBuilderToDTOTransportBuilderMapper _mapper;
+      private ITransportBuilderToTransportBuilderDTOMapper _mapper;
       protected IEditTransportBuilderPresenter _transporterBuilderPresenter;
       private IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
@@ -22,7 +22,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _view = A.Fake<IEditPassiveTransportBuildingBlockView>();
-         _mapper = A.Fake<ITransportBuilderToDTOTransportBuilderMapper>();
+         _mapper = A.Fake<ITransportBuilderToTransportBuilderDTOMapper>();
          _transporterBuilderPresenter = A.Fake<IEditTransportBuilderPresenter>();
          _viewItemContextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();

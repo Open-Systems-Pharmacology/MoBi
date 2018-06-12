@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.4
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi", "src\MoBi\MoBi.csproj", "{B831E5E2-431A-4627-B58C-3CE3F5002E42}"
 EndProject
@@ -22,7 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor-coverage.yml = appveyor-coverage.yml
 		appveyor-nightly.yml = appveyor-nightly.yml
 		appveyor.yml = appveyor.yml
-		log4net.config.xml = log4net.config.xml
 		postclean.bat = postclean.bat
 		rakefile.rb = rakefile.rb
 		README.md = README.md
@@ -127,5 +126,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C33C05C2-2549-4699-9F93-C5D8264B44E8}
 	EndGlobalSection
 EndGlobal

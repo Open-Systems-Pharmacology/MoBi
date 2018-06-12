@@ -74,12 +74,6 @@ namespace MoBi.Presentation.Presenter
       void SetName(ParameterDTO parameterDTO, string newName);
 
       /// <summary>
-      ///    Sets a new value description in the parameter
-      /// </summary>
-      void SetValueDescription(ParameterDTO parameterDTO, string newValueDescription);
-
-
-      /// <summary>
       /// Build modes that can be used in this use case
       /// </summary>
       IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
@@ -103,35 +97,51 @@ namespace MoBi.Presentation.Presenter
       private readonly IInteractionTasksForParameter _parameterTask;
       private readonly IContextSpecificReferencesRetriever _contextSpecificReferencesRetriever;
       private readonly IFavoriteTask _favoriteTask;
+      private readonly IEditValueOriginPresenter _editValueOriginPresenter;
       public IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
       public bool WarnOnBuildModeChange { get; set; }
 
-      public EditParameterPresenter(IEditParameterView view, IEditFormulaPresenter editValueFormulaPresenter, IParameterToParameterDTOMapper parameterMapper,
-         IEditFormulaPresenter editRhsFormulaPresenter, IInteractionTaskContext interactionTaskContext, IEntityTask entityTask, IGroupRepository groupRepository, IEditTaskFor<IParameter> editTasks,
-         IInteractionTasksForParameter parameterTask, IContextSpecificReferencesRetriever contextSpecificReferencesRetriever, IFavoriteTask favoriteTask)
+      public EditParameterPresenter(IEditParameterView view, 
+         IEditFormulaPresenter editValueFormulaPresenter, 
+         IParameterToParameterDTOMapper parameterMapper,
+         IEditFormulaPresenter editRhsFormulaPresenter, 
+         IInteractionTaskContext interactionTaskContext, 
+         IEntityTask entityTask, 
+         IGroupRepository groupRepository, 
+         IEditTaskFor<IParameter> editTasks,
+         IInteractionTasksForParameter parameterTask, 
+         IContextSpecificReferencesRetriever contextSpecificReferencesRetriever, 
+         IFavoriteTask favoriteTask,
+         IEditValueOriginPresenter editValueOriginPresenter
+         )
          : base(view)
       {
          _editValueFormulaPresenter = editValueFormulaPresenter;
          _parameterTask = parameterTask;
          _contextSpecificReferencesRetriever = contextSpecificReferencesRetriever;
          _favoriteTask = favoriteTask;
+         _editValueOriginPresenter = editValueOriginPresenter;
          _parameterMapper = parameterMapper;
          _entityTask = entityTask;
          _groupRepository = groupRepository;
          _editTasks = editTasks;
          _editRHSFormulaPresenter = editRhsFormulaPresenter;
          _interactionTaskContext = interactionTaskContext;
-         _editRHSFormulaPresenter.IsRHS = true;
          _view.SetFormulaView(_editValueFormulaPresenter.BaseView);
          _view.AddRHSView(_editRHSFormulaPresenter.BaseView);
-         AddSubPresenters(editRhsFormulaPresenter, editValueFormulaPresenter);
+         _view.AddValueOriginView(_editValueOriginPresenter.BaseView);
 
+         AddSubPresenters(editRhsFormulaPresenter, editValueFormulaPresenter, _editValueOriginPresenter);
+
+         _editRHSFormulaPresenter.IsRHS = true;
          _editRHSFormulaPresenter.RemoveAllFormulaTypes();
          _editRHSFormulaPresenter.AddFormulaType<ConstantFormula>();
          _editRHSFormulaPresenter.AddFormulaType<ExplicitFormula>();
          _editRHSFormulaPresenter.SetDefaultFormulaType<ExplicitFormula>();
          ParameterBuildModes = EnumHelper.AllValuesFor<ParameterBuildMode>();
          WarnOnBuildModeChange = true;
+         _editValueOriginPresenter.ValueOriginUpdated += setValueOrigin;
+         _editValueOriginPresenter.ShowCaption = false;
       }
 
       public void SetPropertyValueFromView<TProp>(string propertyName, TProp newValue, TProp oldValue)
@@ -172,21 +182,21 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_parameterTask.SetNameForParameter(parameterDTO.Parameter, newName, BuildingBlock).Run(_interactionTaskContext.Context));
       }
 
-      public void SetValueDescription(ParameterDTO parameterDTO, string newValueDescription)
+      private void setValueOrigin(ValueOrigin newValueOrigin)
       {
-         AddCommand(_parameterTask.SetValueDescriptionForParameter(parameterDTO.Parameter, newValueDescription).Run(_interactionTaskContext.Context));
+         AddCommand(_parameterTask.SetValueOriginForParameter(_parameter, newValueOrigin, BuildingBlock));
       }
 
       public ISelectReferenceAtParameterPresenter ValueReferencesPresenter
       {
-         set { _editValueFormulaPresenter.ReferencePresenter = value; }
-         get { return _editValueFormulaPresenter.ReferencePresenter.DowncastTo<ISelectReferenceAtParameterPresenter>(); }
+         set => _editValueFormulaPresenter.ReferencePresenter = value;
+         get => _editValueFormulaPresenter.ReferencePresenter.DowncastTo<ISelectReferenceAtParameterPresenter>();
       }
 
       public ISelectReferenceAtParameterPresenter RhsReferencesPresenter
       {
-         set { _editRHSFormulaPresenter.ReferencePresenter = value; }
-         get { return _editRHSFormulaPresenter.ReferencePresenter.DowncastTo<ISelectReferenceAtParameterPresenter>(); }
+         set => _editRHSFormulaPresenter.ReferencePresenter = value;
+         get => _editRHSFormulaPresenter.ReferencePresenter.DowncastTo<ISelectReferenceAtParameterPresenter>();
       }
 
       public bool BlackBoxAllowed
@@ -203,7 +213,7 @@ namespace MoBi.Presentation.Presenter
          _parameter = parameter;
          _editValueFormulaPresenter.Init(_parameter, BuildingBlock);
          _editValueFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(parameter), _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
-
+         _editValueOriginPresenter.Edit(parameter);
          if (hasRHS(parameter))
             initRHSPresenter();
 
@@ -229,20 +239,14 @@ namespace MoBi.Presentation.Presenter
          _editRHSFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(_parameter), _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
       }
 
-      public override object Subject
-      {
-         get { return _parameter; }
-      }
+      public override object Subject => _parameter;
 
       public IEnumerable<FormulaBuilderDTO> GetFormulas()
       {
          yield break;
       }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
       public void SetUseRHSFormula(bool useRHS)
       {
@@ -313,7 +317,7 @@ namespace MoBi.Presentation.Presenter
 
       public bool CanSetBuildMode
       {
-         set { _view.ShowBuildMode = value; }
+         set => _view.ShowBuildMode = value;
       }
 
       public override bool CanClose

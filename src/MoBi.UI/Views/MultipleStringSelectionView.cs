@@ -32,6 +32,7 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          selectionList.SelectedIndexChanged += updateStatus;
          txtNewName.TextChanged += updateStatus;
+         btAddNew.Click += addNewClick;
       }
 
       private void updateStatus(object sender, EventArgs e)
@@ -41,13 +42,13 @@ namespace MoBi.UI.Views
 
       public string AddToListToolTip
       {
-         get { return btAddNew.ToolTip; }
-         set { btAddNew.ToolTip = value; }
+         get => btAddNew.ToolTip;
+         set => btAddNew.ToolTip = value;
       }
 
       public IEnumerable<string> SelectedItems()
       {
-         return selectionList.SelectedItems.Cast<object>().Select(selectedItem => selectedItem.ToString()).ToList();
+         return selectionList.SelectedItems.Select(selectedItem => selectedItem.ToString()).ToList();
       }
 
       public void AddItem(string newItem)
@@ -64,8 +65,8 @@ namespace MoBi.UI.Views
 
       public string NewItem
       {
-         get { return txtNewName.Text; }
-         set { txtNewName.Text = value; }
+         get => txtNewName.Text;
+         set => txtNewName.Text = value;
       }
 
       public IEnumerable<string> ValueList
@@ -79,7 +80,7 @@ namespace MoBi.UI.Views
 
       public string DisplayText
       {
-         set { lblDescription.Text = value; }
+         set => lblDescription.Text = value;
       }
 
       public void AttachPresenter(IMultipleStringSelectionPresenter presenter)
@@ -98,10 +99,7 @@ namespace MoBi.UI.Views
          layoutControlItemAddButton.AdjustButtonSize();
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || !hasSelection(); }
-      }
+      public override bool HasError => base.HasError || !hasSelection();
 
       private bool hasSelection()
       {

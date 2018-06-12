@@ -15,8 +15,8 @@ namespace MoBi.Core.Commands
       private readonly Unit _oldDisplayUnit;
       private readonly Unit _newDisplayUnit;
 
-      public UpdateDimensionInStartValueCommand(T startValue, IDimension newDimension, Unit newDisplayUnit, IStartValuesBuildingBlock<T> parameterStartValuesBuildingBlock)
-         : base(parameterStartValuesBuildingBlock)
+      public UpdateDimensionInStartValueCommand(T startValue, IDimension newDimension, Unit newDisplayUnit, IStartValuesBuildingBlock<T> startValuesBuildingBlock)
+         : base(startValuesBuildingBlock)
       {
          _startValue = startValue;
          _oldDimension = startValue.Dimension;
@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
 
          ObjectType = new ObjectTypeResolver().TypeFor(startValue);
          CommandType = AppConstants.Commands.EditCommand;
-         Description = AppConstants.Commands.UpdateDimensions(startValue.Path.PathAsString, ObjectType, _oldDimension, newDimension, parameterStartValuesBuildingBlock.Name);
+         Description = AppConstants.Commands.UpdateDimensions(startValue.Path.PathAsString, ObjectType, _oldDimension, newDimension, startValuesBuildingBlock.Name);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

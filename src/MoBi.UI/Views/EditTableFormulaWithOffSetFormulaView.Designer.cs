@@ -1,6 +1,6 @@
 ﻿namespace MoBi.UI.Views
 {
-   partial class EditTableFormulaWithOffSetFormulaView
+   partial class EditTableFormulaWithOffsetFormulaView
    {
       /// <summary> 
       /// Required designer variable.
@@ -114,7 +114,7 @@
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl1);
-         this.Name = "EditTableFormulaWithOffSetFormulaView";
+         this.Name = "EditTableFormulaWithOffsetFormulaView";
          this.Size = new System.Drawing.Size(334, 150);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);

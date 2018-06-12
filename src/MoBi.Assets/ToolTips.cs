@@ -69,11 +69,12 @@ namespace MoBi.Assets
          public static readonly string CreateObserversBB = "Create a new Observers Building Block";
          public static readonly string CreateSimulationSettingsBB = "Create a new Simulation Settings Building Block";
       }
+
       public static class EditRibbon
       {
          public static readonly string UndoDescription = "Undo the last action";
-
       }
+
       public static class FileRibbon
       {
          public static readonly string AboutThisApplication = "About this application...";
@@ -118,8 +119,8 @@ namespace MoBi.Assets
          public static readonly string ViewBBs = "Show or hide the building blocks explorer";
          public static readonly string ViewSims = "Show or hide the simulations explorer";
          public static readonly string ViewsHistoryManager = "Show or hide the history";
-         public static readonly string ViewSearch ="Show or hide the search window";
-         public static readonly string ViewNotification="Show or hide the notifications window";
+         public static readonly string ViewSearch = "Show or hide the search window";
+         public static readonly string ViewNotification = "Show or hide the notifications window";
          public static readonly string ViewComparison = "Show or hide the comparison window";
       }
 
@@ -132,11 +133,10 @@ namespace MoBi.Assets
       public class WorkFlowRibbon
       {
          public static readonly string Merge = $"Merge an existing Simulation (*{Constants.Filter.PKML_FILE_FILTER}) into Project";
-         
       }
 
       public static readonly string Description = "Free text for background information on the here defined object";
-      public static string TransporterName="Name used in Simulation";
+      public static string TransporterName = "Name used in Simulation";
       public static string MultipleParameterChangesView = "More then on value found for a parameter changed in simulation. Select one to commit to builder in building block";
 
       public static class ParameterView
@@ -153,6 +153,8 @@ namespace MoBi.Assets
          public static readonly string DeleteParameter = "Delete Parameter from list";
          public static readonly string SetParameterValue = "Set a new parameter value \n \n Formulas, even Constants are overruled but not overwritten";
          public static readonly string NewParameterName = "Define a new name for the Parameter";
+         public static readonly string MoveUp = "Move Up";
+         public static readonly string MoveDown = "Move Down";
       }
 
       public static class FormulaList
@@ -181,6 +183,7 @@ namespace MoBi.Assets
                return sb.ToString();
             }
          }
+
          public static readonly string FormulaName = "Define a name for the Formula";
          public static readonly string ConstantValue = "Set a numeric value";
          public static readonly string X = "Point in time";
@@ -209,7 +212,7 @@ namespace MoBi.Assets
          public static readonly string DistributionCellular = "Specify calculation method for vascular-intracellular space partition coefficient";
          public static readonly string DiffusionIntCell = "  Specify calculation method for diffusion between interstitial and intracellular space ";
          public static readonly string DistributionInterstitial = "  Specify calculation method for interstitial-intracellular space partition coefficient";
-         public static readonly string MoleculeType ="Molecule Type for informational use";
+         public static readonly string MoleculeType = "Molecule Type for informational use";
       }
 
       public static class Observer
@@ -245,7 +248,7 @@ namespace MoBi.Assets
 
       public static class SolverOptions
       {
-         public static readonly string AbsTol="Max. absolute error during solving ode";
+         public static readonly string AbsTol = "Max. absolute error during solving ode";
          public static readonly string RelTol = "Max. relative error during solving ode";
          public static readonly string H0 = "Initial step size";
          public static readonly string HMin = "Minimum step size";

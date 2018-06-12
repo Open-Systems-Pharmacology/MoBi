@@ -30,6 +30,8 @@ namespace MoBi.Core.Domain.Model
       bool IsCreatedBy(IBuildingBlock templateBuildingBlock);
 
       void MarkResultsOutOfDate();
+
+      bool HasResults { get; }
    }
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
@@ -180,6 +182,8 @@ namespace MoBi.Core.Domain.Model
       {
          HasUpToDateResults = false;
       }
+
+      public bool HasResults => Results != null;
 
       public override DataRepository Results
       {

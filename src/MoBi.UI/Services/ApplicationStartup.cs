@@ -9,6 +9,7 @@ using MoBi.Core;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.SBML;
 using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
@@ -27,10 +28,10 @@ using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Importer;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Core.Services;
 using OSPSuite.FuncParser;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
-using OSPSuite.Infrastructure.Logging.Log4NetLogging;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
 using OSPSuite.UI;
@@ -40,10 +41,8 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
-using OSPSuite.Utility.Logging;
-using ApplicationSettings = MoBi.Core.ApplicationSettings;
 using CoreRegister = OSPSuite.Core.CoreRegister;
-using IApplicationSettings = OSPSuite.Core.IApplicationSettings;
+using IApplicationSettings = MoBi.Core.IApplicationSettings;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.UI.Services
@@ -117,7 +116,7 @@ namespace MoBi.UI.Services
          var userSettingsPersistor = container.Resolve<ISettingsPersistor<IUserSettings>>();
          userSettingsPersistor.Load();
 
-         var applicationSettingsPersistor = container.Resolve<ISettingsPersistor<Core.IApplicationSettings>>();
+         var applicationSettingsPersistor = container.Resolve<ISettingsPersistor<IApplicationSettings>>();
          applicationSettingsPersistor.Load();
 
          InitCalculationMethodRepository(container);
@@ -196,7 +195,7 @@ namespace MoBi.UI.Services
          var molarConcentrationDimomension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
 
          factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimomension,
-            new MolWeightDimensonConverterForFormulaUseable(concentrationDimension, molarConcentrationDimomension)));
+            new MolWeightDimensionConverterForFormulaUsable(concentrationDimension, molarConcentrationDimomension)));
 
          factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(concentrationDimension, molarConcentrationDimomension,
             new ConcentrationToMolarConcentrationConverterForDataColumn(concentrationDimension, molarConcentrationDimomension)));
@@ -229,20 +228,13 @@ namespace MoBi.UI.Services
 
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
+         container.Register<ILogger, MoBiLogger>(LifeStyle.Singleton);
          container.Register<ISplashScreen, SplashScreen>();
          container.Register<ISplashScreenPresenter, SplashScreenPresenter>();
          container.Register<IProgressUpdater, ProgressUpdater>();
          container.RegisterFactory<IProgressManager>();
 
          container.Register<IMoBiConfiguration, IApplicationConfiguration, MoBiConfiguration>(LifeStyle.Singleton);
-
-         var config = container.Resolve<IMoBiConfiguration>();
-
-         //Register log4Net factory and set the path to configuration file
-         var log4NetLogFactory = new Log4NetLogFactory();
-         log4NetLogFactory.Configure(new FileInfo(config.LogConfigurationFile));
-         log4NetLogFactory.UpdateLogFileLocation(config.AllUsersFolderPath);
-         container.RegisterImplementationOf((ILogFactory) log4NetLogFactory);
 
          registerRunOptionsIn(container);
 

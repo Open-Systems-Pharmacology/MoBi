@@ -37,12 +37,12 @@ namespace MoBi.Presentation.Presenter
 
    public class EditEventBuilderPresenter : AbstractCommandCollectorPresenter<IEditEventBuilderView, IEditEventBuilderPresenter>, IEditEventBuilderPresenter
    {
-      private readonly IEventBuilderToDTOEventBuilderMapper _eventToEventBuilderMapper;
+      private readonly IEventBuilderToEventBuilderDTOMapper _eventToEventBuilderMapper;
       private IEventBuilder _eventBuilder;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IEditTaskFor<IEventBuilder> _editTasks;
       private readonly IInteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder> _interactionTasksForEventAssignmentBuilder;
-      private readonly IEditParameterListPresenter _editParametersPresenter;
+      private readonly IEditParametersInContainerPresenter _editParametersPresenter;
       private readonly ISelectReferenceAtEventPresenter _selectReferencePresenter;
       private IBuildingBlock _buildingBlock;
       private readonly IEditExplicitFormulaPresenter _editFormulaPresenter;
@@ -51,9 +51,9 @@ namespace MoBi.Presentation.Presenter
       private readonly string _formulaPropertyName;
       private readonly IDialogCreator _dialogCreator;
 
-      public EditEventBuilderPresenter(IEditEventBuilderView view, IEventBuilderToDTOEventBuilderMapper eventToEventBuilderMapper,
+      public EditEventBuilderPresenter(IEditEventBuilderView view, IEventBuilderToEventBuilderDTOMapper eventToEventBuilderMapper,
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IEditTaskFor<IEventBuilder> editTasks, IEditParameterListPresenter editParametersPresenter,
+         IEditTaskFor<IEventBuilder> editTasks, IEditParametersInContainerPresenter editParametersPresenter,
          IInteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder> interactionTasksForEventAssignmentBuilder,
          IEditExplicitFormulaPresenter editFormulaPresenter, IMoBiContext context,
          ISelectReferenceAtEventPresenter selectReferencePresenter,

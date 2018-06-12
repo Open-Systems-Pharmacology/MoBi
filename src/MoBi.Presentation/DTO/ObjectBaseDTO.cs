@@ -130,8 +130,13 @@ namespace MoBi.Presentation.DTO
       }
    }
 
-   public class FavoritesBaseDTO : ObjectBaseDTO
+   public class FavoritesNodeViewItem : ObjectBaseDTO
    {
+   }
+
+   public class UserDefinedNodeViewItem : ObjectBaseDTO
+   {
+      
    }
 
    public class BuildingBlockInfoViewItem : ObjectBaseDTO

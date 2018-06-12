@@ -4,6 +4,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Comparison;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Helper;
 using MoBi.Core.Reporting;
@@ -19,6 +20,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Services;
@@ -47,6 +49,7 @@ namespace MoBi.Core
             scan.ExcludeType<GroupRepository>();
             scan.ExcludeType<ClipboardManager>();
             scan.ExcludeType<ApplicationSettings>();
+            scan.ExcludeType<MoBiLogger>();
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
             scan.ExcludeNamespaceContainingType<ProjectReporter>();
             scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
@@ -68,11 +71,12 @@ namespace MoBi.Core
          container.Register<IProjectRetriever, MoBiProjectRetriever>();
          container.Register<IHistoryManager, MoBiHistoryManager>();
          container.Register<IObjectIdResetter, ObjectIdResetter>();
-         container.Register<ISetParameterTask, QuantityTask>();
+         container.Register<ISetParameterTask, ParameterTask>();
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IMoBiContext>>();
 
          //Register opened types generics
          container.Register(typeof(IRepository<>), typeof(ImplementationRepository<>));
+         container.Register(typeof(IEntitiesInBuildingBlockRetriever<>), typeof(EntitiesInBuildingBlockRetriever<>));
          container.Register<IList<IDimensionMergingInformation>, List<IDimensionMergingInformation>>(LifeStyle.Singleton);
 
          //Register abstract factories

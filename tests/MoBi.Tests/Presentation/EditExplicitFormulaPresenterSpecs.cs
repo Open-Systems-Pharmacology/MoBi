@@ -1,22 +1,19 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using MoBi.Assets;
-using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.Services;
 using MoBi.Helpers;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Tasks;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -37,7 +34,7 @@ namespace MoBi.Presentation
       protected IDialogCreator _dialogCreator;
       protected IInteractionTasksForChildren<IFormula, IFormulaUsablePath> _interactionTask;
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
-      protected IMoBiFormulaTask _moBiFormulaTasks;
+      protected IMoBiFormulaTask _moBiFormulaTask;
       private IDisplayUnitRetriever _displayUnitRetriever;
       protected IDimensionFactory _dimensionFactory;
       protected IUserSettings _userSettings;
@@ -57,15 +54,16 @@ namespace MoBi.Presentation
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _userSettings = A.Fake<IUserSettings>();
          _viewItemContextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
-         _moBiFormulaTasks = new MoBiFormulaTask(_context, A.Fake<IMoBiApplicationController>(), A.Fake<IFormulaTask>(), A.Fake<INameCorrector>(), _dialogCreator);
+         _moBiFormulaTask = A.Fake<IMoBiFormulaTask>();
          sut = new EditExplicitFormulaPresenter(_view, _explicitFormulaMapper, _activeSubjectRetriever, _context, _formulaChecker,
-            _moBiFormulaTasks, _reactionDimensionRetriever, _displayUnitRetriever, _viewItemContextMenuFactory, _userSettings, _dimensionFactory);
+            _moBiFormulaTask, _reactionDimensionRetriever, _displayUnitRetriever, _viewItemContextMenuFactory, _userSettings, _dimensionFactory);
       }
    }
 
    internal class When_adding_a_ReferencePath : concern_for_EditExplicitFormulaPresenter
    {
       private ExplicitFormula _formula;
+      private IFormulaUsablePath _newFormulaPath;
 
       protected override void Context()
       {
@@ -75,6 +73,8 @@ namespace MoBi.Presentation
          sut.InitializeWith(A.Fake<ICommandCollector>());
          _formula.AddObjectPath(new FormulaUsablePath());
          A.CallTo(() => _dimensionFactory.Dimension(_userSettings.ParameterDefaultDimension)).Returns(DomainHelperForSpecs.AmountDimension);
+         A.CallTo(() => _moBiFormulaTask.AddFormulaUsablePath(_formula, A<IFormulaUsablePath>._, A<IBuildingBlock>._))
+            .Invokes(x=>_newFormulaPath = x.GetArgument<IFormulaUsablePath>(1));
       }
 
       protected override void Because()
@@ -83,16 +83,15 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void a_new_empty_path_is_created_in_the_formula()
+      public void should_delegate_to_the_formula_task_to_add_a_new_path_to_the_formula()
       {
-         _formula.ObjectPaths.Count.ShouldBeEqualTo(2);
-         string.IsNullOrEmpty(_formula.ObjectPaths[1].PathAsString).ShouldBeTrue();
+         _newFormulaPath.ShouldNotBeNull();
       }
 
       [Observation]
       public void the_dimension_is_set_to_user_default_dimension()
       {
-         _formula.ObjectPaths[1].Dimension.ShouldBeEqualTo(DomainHelperForSpecs.AmountDimension);
+         _newFormulaPath.Dimension.ShouldBeEqualTo(DomainHelperForSpecs.AmountDimension);
       }
 
       [Observation]
@@ -100,7 +99,7 @@ namespace MoBi.Presentation
       {
          // started the test with an existing path with empty alias, the new one
          // will have the old name with a "1" appended
-         _formula.ObjectPaths[1].Alias.ShouldBeEqualTo("1");
+         _newFormulaPath.Alias.ShouldBeEqualTo("1");
       }
    }
 
@@ -111,21 +110,26 @@ namespace MoBi.Presentation
       private IFormulaUsablePath _formulaUsablePath;
       private FormulaUsablePathDTO _formulaUsablePathDTO;
       private ICommandCollector _commandCollector;
+      private IFormulaUsablePath _newFormulaPath;
 
       protected override void Context()
       {
          base.Context();
          _commandCollector = A.Fake<ICommandCollector>();
          _formula = new ExplicitFormula();
-         _formulaUsablePath = new FormulaUsablePath("path") { Alias = "alias", Dimension = DimensionFactoryForSpecs.MassDimension };
+         _formulaUsablePath = new FormulaUsablePath("path") {Alias = "alias", Dimension = DimensionFactoryForSpecs.MassDimension};
          _formula.AddObjectPath(_formulaUsablePath);
 
          var formulaUsablePath = new FormulaUsablePath("path") {Alias = "alias"};
          _formulaUsablePathDTO = new FormulaUsablePathDTO(formulaUsablePath, _formula);
-         _dto = new ExplicitFormulaBuilderDTO { ObjectPaths = new List<FormulaUsablePathDTO> { _formulaUsablePathDTO } };
+         _dto = new ExplicitFormulaBuilderDTO {ObjectPaths = new List<FormulaUsablePathDTO> {_formulaUsablePathDTO}};
          A.CallTo(() => _explicitFormulaMapper.MapFrom(_formula, A<IUsingFormula>._)).Returns(_dto);
          sut.Edit(_formula);
          sut.InitializeWith(_commandCollector);
+
+         A.CallTo(() => _moBiFormulaTask.AddFormulaUsablePath(_formula, A<IFormulaUsablePath>._, A<IBuildingBlock>._))
+            .Invokes(x => _newFormulaPath = x.GetArgument<IFormulaUsablePath>(1));
+
       }
 
       protected override void Because()
@@ -136,9 +140,9 @@ namespace MoBi.Presentation
       [Observation]
       public void the_newly_added_path_should_be_a_clone_of_the_original_with_unique_alias()
       {
-         _formula.ObjectPaths[1].PathAsString.ShouldBeEqualTo(_formulaUsablePath.PathAsString);
-         _formula.ObjectPaths[1].Dimension.ShouldBeEqualTo(_formulaUsablePath.Dimension);
-         _formula.ObjectPaths[1].Alias.ShouldNotBeEqualTo(_formulaUsablePath.Alias);
+         _newFormulaPath.PathAsString.ShouldBeEqualTo(_formulaUsablePath.PathAsString);
+         _newFormulaPath.Dimension.ShouldBeEqualTo(_formulaUsablePath.Dimension);
+         _newFormulaPath.Alias.ShouldNotBeEqualTo(_formulaUsablePath.Alias);
       }
    }
 
@@ -147,16 +151,20 @@ namespace MoBi.Presentation
       private FormulaUsablePathDTO _pathDTO;
       private ExplicitFormula _formula;
       private IFormulaUsablePath _pathToRemove;
+      private IMoBiCommand _removeCommand;
 
       protected override void Context()
       {
          base.Context();
          _formula = new ExplicitFormula().WithName("Test");
-         _pathToRemove = new FormulaUsablePath("..", "ToRemove") { Alias = "ToRemove" };
+         _pathToRemove = new FormulaUsablePath("..", "ToRemove") {Alias = "ToRemove"};
          _pathDTO = new FormulaUsablePathDTO(_pathToRemove, _formula);
          _formula.AddObjectPath(_pathToRemove);
          sut.InitializeWith(A.Fake<ICommandCollector>());
          sut.Edit(_formula);
+
+         _removeCommand= A.Fake<IMoBiCommand>();
+         A.CallTo(() => _moBiFormulaTask.RemoveFormulaUsablePath(_formula, _pathToRemove, A<IBuildingBlock>._)).Returns(_removeCommand);
       }
 
       protected override void Because()
@@ -173,7 +181,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_add_the_command_to_the_history()
       {
-         A.CallTo(() => sut.CommandCollector.AddCommand(A<RemoveFormulaUsablePathCommand>._)).MustHaveHappened();
+         A.CallTo(() => sut.CommandCollector.AddCommand(_removeCommand)).MustHaveHappened();
       }
    }
 
@@ -188,6 +196,7 @@ namespace MoBi.Presentation
          _formula = new ExplicitFormula("TOTO");
          _parameter = A.Fake<IParameter>().WithName("PARA");
          sut.IsRHS = true;
+         A.CallTo(() => _moBiFormulaTask.GetFormulaCaption(_parameter, A<ReactionDimensionMode>._, true)).Returns("THE_RHS_CAPTION");
       }
 
       protected override void Because()
@@ -198,7 +207,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_set_the_formulation_caption_using_the_parameter_name()
       {
-         A.CallTo(() => _view.SetFormulaCaption(AppConstants.Captions.ParameterRightHandSide("PARA"))).MustHaveHappened();
+         A.CallTo(() => _view.SetFormulaCaption("THE_RHS_CAPTION")).MustHaveHappened();
       }
    }
 
@@ -229,75 +238,77 @@ namespace MoBi.Presentation
    public class When_editing_a_transport_formula : concern_for_EditExplicitFormulaPresenter
    {
       private IFormula _formula;
-      private IUsingFormula _parameter;
+      private IUsingFormula _transportBuilder;
 
       protected override void Context()
       {
          base.Context();
          _formula = new ExplicitFormula("TOTO");
-         _parameter = A.Fake<ITransportBuilder>();
+         _transportBuilder = A.Fake<ITransportBuilder>();
+         A.CallTo(() => _moBiFormulaTask.GetFormulaCaption(_transportBuilder, A<ReactionDimensionMode>._, false)).Returns("THE_RHS_CAPTION");
       }
 
       protected override void Because()
       {
-         sut.Edit(_formula, _parameter);
+         sut.Edit(_formula, _transportBuilder);
       }
 
       [Observation]
       public void should_show_the_amount_formula_caption()
       {
-         A.CallTo(() => _view.SetFormulaCaption(AppConstants.Captions.AmountRightHandSide)).MustHaveHappened();
+         A.CallTo(() => _view.SetFormulaCaption("THE_RHS_CAPTION")).MustHaveHappened();
       }
    }
 
    public class When_editing_a_reaction_formula_in_amount_based_mode : concern_for_EditExplicitFormulaPresenter
    {
       private IFormula _formula;
-      private IUsingFormula _parameter;
+      private IUsingFormula _reactionBuilder;
 
       protected override void Context()
       {
          base.Context();
          _formula = new ExplicitFormula("TOTO");
-         _parameter = A.Fake<IReactionBuilder>();
+         _reactionBuilder = A.Fake<IReactionBuilder>();
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.AmountBased);
+         A.CallTo(() => _moBiFormulaTask.GetFormulaCaption(_reactionBuilder, ReactionDimensionMode.AmountBased, false)).Returns("THE_RHS_CAPTION");
       }
 
       protected override void Because()
       {
-         sut.Edit(_formula, _parameter);
+         sut.Edit(_formula, _reactionBuilder);
       }
 
       [Observation]
       public void should_show_the_forula_caption_depepding_on_the_project_reaction_dimension_mode()
       {
-         A.CallTo(() => _view.SetFormulaCaption(AppConstants.Captions.AmountRightHandSide)).MustHaveHappened();
+         A.CallTo(() => _view.SetFormulaCaption("THE_RHS_CAPTION")).MustHaveHappened();
       }
    }
 
    public class When_editing_a_reaction_formula_in_concentration_based_mode : concern_for_EditExplicitFormulaPresenter
    {
       private IFormula _formula;
-      private IUsingFormula _parameter;
+      private IUsingFormula _reactionBuilder;
 
       protected override void Context()
       {
          base.Context();
          _formula = new ExplicitFormula("TOTO");
-         _parameter = A.Fake<IReactionBuilder>();
+         _reactionBuilder = A.Fake<IReactionBuilder>();
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.ConcentrationBased);
+         A.CallTo(() => _moBiFormulaTask.GetFormulaCaption(_reactionBuilder, ReactionDimensionMode.ConcentrationBased, false)).Returns("THE_RHS_CAPTION");
       }
 
       protected override void Because()
       {
-         sut.Edit(_formula, _parameter);
+         sut.Edit(_formula, _reactionBuilder);
       }
 
       [Observation]
       public void should_show_the_forula_caption_depepding_on_the_project_reaction_dimension_mode()
       {
-         A.CallTo(() => _view.SetFormulaCaption(AppConstants.Captions.ConcentrationRightHandSide)).MustHaveHappened();
+         A.CallTo(() => _view.SetFormulaCaption("THE_RHS_CAPTION")).MustHaveHappened();
       }
    }
-
 }

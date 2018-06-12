@@ -9,6 +9,7 @@ using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter.Simulation;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -33,20 +34,28 @@ namespace MoBi.Presentation.Presenter
       private ObjectBaseDTO _simulationDTO;
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
+      private readonly IUserSettings _userSettings;
       private IMoBiBuildConfiguration _buildConfiguration;
       public IMoBiSimulation Simulation { get; private set; }
 
-      public CreateSimulationPresenter(ICreateSimulationView view,
-         IMoBiContext context, IModelConstructor modelConstructor,
-         IDimensionValidator dimensionValidator, ISimulationFactory simulationFactory,
-         IBuildConfigurationFactory buildConfigurationFactory, IHeavyWorkManager heavyWorkManager,
-         ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager, IDialogCreator dialogCreator,
-         IForbiddenNamesRetriever forbiddenNamesRetriever)
+      public CreateSimulationPresenter(
+         ICreateSimulationView view,
+         IMoBiContext context, 
+         IModelConstructor modelConstructor,
+         IDimensionValidator dimensionValidator, 
+         ISimulationFactory simulationFactory,
+         IBuildConfigurationFactory buildConfigurationFactory, 
+         IHeavyWorkManager heavyWorkManager,
+         ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager, 
+         IDialogCreator dialogCreator,
+         IForbiddenNamesRetriever forbiddenNamesRetriever,
+         IUserSettings userSettings)
          : base(view, subPresenterManager, dialogCreator, buildConfigurationFactory, context, SimulationItems.All)
       {
          _simulationFactory = simulationFactory;
          _heavyWorkManager = heavyWorkManager;
          _forbiddenNamesRetriever = forbiddenNamesRetriever;
+         _userSettings = userSettings;
          _dimensionValidator = dimensionValidator;
          _modelConstructor = modelConstructor;
       }
@@ -85,7 +94,7 @@ namespace MoBi.Presentation.Presenter
       /// </summary>
       private void finish()
       {
-         SaveBuildConfiguration();
+         saveBuildConfiguration();
          CreationResult result = null;
 
          _heavyWorkManager.Start(() => { result = createModel(); }, AppConstants.Captions.CreatingSimulation);
@@ -94,8 +103,6 @@ namespace MoBi.Presentation.Presenter
             throw new MoBiException(AppConstants.Exceptions.CoundNotCreateSimulation);
 
          Simulation = createSimulation(result.Model);
-
-         FinalOptionsPresenter.DoFinalActions(Simulation);
 
          validateDimensions(Simulation.Model);
       }
@@ -116,8 +123,6 @@ namespace MoBi.Presentation.Presenter
             return null;
 
          showWarnings(result.ValidationResult);
-         if (result.IsInvalid)
-            return result;
 
          return result;
       }
@@ -127,7 +132,7 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new ShowValidationResultsEvent(validationResult));
       }
 
-      protected void SaveBuildConfiguration()
+      private void saveBuildConfiguration()
       {
          ValidateStartValues();
 
@@ -135,6 +140,7 @@ namespace MoBi.Presentation.Presenter
          UpdateStartValueInfo<IParameterStartValuesBuildingBlock, IParameterStartValue>(_buildConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
 
          _buildConfiguration.ShouldValidate = true;
+         _buildConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
       }
 
       private IMoBiSimulation createSimulation(IModel model)

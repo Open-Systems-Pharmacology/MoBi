@@ -17,9 +17,8 @@ using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IStartValueDTO : IBreadCrumbsDTO, IWithDisplayUnitDTO
+   public interface IStartValueDTO : IBreadCrumbsDTO, IWithDisplayUnitDTO, IWithValueOrigin
    {
-      string ValueDescription { get; set; }
    }
 
    public abstract class StartValueDTO<T> : BreadCrumbsDTO<T>, IStartValueDTO where T : class, IStartValue
@@ -38,7 +37,7 @@ namespace MoBi.Presentation.DTO
 
       public string Name
       {
-         get { return StartValueObject.Name; }
+         get => StartValueObject.Name;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -63,7 +62,7 @@ namespace MoBi.Presentation.DTO
 
       public IDimension Dimension
       {
-         get { return StartValueObject.Dimension; }
+         get => StartValueObject.Dimension;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -72,26 +71,29 @@ namespace MoBi.Presentation.DTO
 
       public Unit DisplayUnit
       {
-         get { return StartValueObject.DisplayUnit; }
+         get => StartValueObject.DisplayUnit;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
          }
       }
 
-      public string ValueDescription
+
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
       {
-         get { return StartValueObject.ValueDescription; }
-         set
-         {
-            // We don't want the binding to set the value in the underlying object, only the command should do that
-         }
+         StartValueObject.UpdateValueOriginFrom(ValueOrigin);
+      }
+
+      public virtual ValueOrigin ValueOrigin
+      {
+         get => StartValueObject.ValueOrigin;
+         set => UpdateValueOriginFrom(value);
       }
 
 
       public IEnumerable<Unit> AllUnits
       {
-         get { return Dimension.Units; }
+         get => Dimension.Units;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -100,7 +102,7 @@ namespace MoBi.Presentation.DTO
 
       public StartValueFormulaDTO Formula
       {
-         get { return _formula; }
+         get => _formula;
          set
          {
             _formula = value;

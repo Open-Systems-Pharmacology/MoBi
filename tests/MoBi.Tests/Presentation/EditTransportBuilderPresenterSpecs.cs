@@ -15,11 +15,11 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditTransportBuilderPresenter : ContextSpecification<IEditTransportBuilderPresenter>
    {
       protected IEditTransportBuilderView _view;
-      protected ITransportBuilderToDTOTransportBuilderMapper _transportBuilderMapper;
+      protected ITransportBuilderToTransportBuilderDTOMapper _transportBuilderMapper;
       protected IEditTaskFor<ITransportBuilder> _editTask;
       protected IViewItemContextMenuFactory _contextMenuFactory;
       protected IFormulaToFormulaBuilderDTOMapper _formulaBuilderDTOMapper;
-      protected IEditParameterListPresenter _editParameterListPresenter;
+      protected IEditParametersInContainerPresenter _editParametersInContainerPresenter;
       protected IEditFormulaPresenter _editFormulaPresenter;
       protected ISelectReferenceAtTransportPresenter _selectReferenceAtTransportPresenter;
       protected IMoBiContext _context;
@@ -30,11 +30,11 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _view = A.Fake<IEditTransportBuilderView>();
-         _transportBuilderMapper = A.Fake<ITransportBuilderToDTOTransportBuilderMapper>();
+         _transportBuilderMapper = A.Fake<ITransportBuilderToTransportBuilderDTOMapper>();
          _editTask = A.Fake<IEditTaskFor<ITransportBuilder>>();
          _contextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _formulaBuilderDTOMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _editParameterListPresenter = A.Fake<IEditParameterListPresenter>();
+         _editParametersInContainerPresenter = A.Fake<IEditParametersInContainerPresenter>();
          _editFormulaPresenter = A.Fake<IEditFormulaPresenter>();
          _selectReferenceAtTransportPresenter = A.Fake<ISelectReferenceAtTransportPresenter>();
          _context = A.Fake<IMoBiContext>();
@@ -43,7 +43,7 @@ namespace MoBi.Presentation
          _targetCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<ITransportBuilder>>();
 
          sut = new EditTransportBuilderPresenter(_view,_transportBuilderMapper,_editTask,_contextMenuFactory,
-            _formulaBuilderDTOMapper,_editParameterListPresenter,_editFormulaPresenter,_selectReferenceAtTransportPresenter,
+            _formulaBuilderDTOMapper,_editParametersInContainerPresenter,_editFormulaPresenter,_selectReferenceAtTransportPresenter,
             _context,_moleculeListPresenter,_sourceCriteriaPresenter,_targetCriteriaPresenter);
       }
    }
