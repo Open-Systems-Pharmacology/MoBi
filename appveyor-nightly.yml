@@ -20,6 +20,9 @@ cache:
   packages -> **\packages.config 
 
 install:
+- ps: | 
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 - git submodule update --init --recursive
 - gem install xml-simple
 - ps: >-
