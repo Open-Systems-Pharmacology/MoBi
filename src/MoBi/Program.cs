@@ -2,9 +2,7 @@ using System;
 using System.Windows.Forms;
 using MoBi.UI.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi
 {
