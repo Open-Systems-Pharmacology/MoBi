@@ -21,7 +21,7 @@ cache:
 
 install:
 - ps: | 
-      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls
 
 - git submodule update --init --recursive
 - gem install xml-simple
