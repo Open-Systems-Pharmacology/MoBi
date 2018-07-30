@@ -92,6 +92,10 @@ end
 def update_smart_xls(args) 
 	require_relative 'scripts/smartxls'
 
+	if (!args.smart_xls_package || !args.smart_xls_version)
+		return
+	end
+
 	src_dir = src_dir_for(args.configuration)
 	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
 end

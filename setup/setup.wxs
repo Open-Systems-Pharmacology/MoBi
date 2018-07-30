@@ -17,7 +17,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="OSP_SUITE" Name="$(var.Manufacturer)">
         <Directory Id="INSTALLDIR" Name="$(var.ProductFullName)">
-          <Component Id="MoBi.exe" Guid="7E30E944-CA31-4330-93E7-A6F4F4AE4663">
+          <Component Id="MoBi.exe" Guid="7E30E944-CA31-4330-93E7-A6F4F4AE4663" Win64="yes">
             <File Name="MoBi.exe" Id="MoBi.exe" KeyPath="yes" Source="$(var.DeployDir)/MoBi.exe">
               <Shortcut Name="$(var.ProductName)" Id="MoBiShortcut" Icon="MoBiIcon.exe" Directory="OSPSuiteMenuDir" WorkingDirectory="INSTALLDIR" Advertise="yes" />
             </File>
@@ -92,7 +92,7 @@
                   </CreateFolder>
                 </Component>
 
-                <Component Id="ExampleFolderShortCut" Guid="E06963EF-70EE-4DC1-9F40-32A0F9B36854">
+                <Component Id="ExampleFolderShortCut" Guid="E06963EF-70EE-4DC1-9F40-32A0F9B36854" Win64="yes">
                   <Shortcut Id="ExampleFolderShortCut" Name="$(var.ProductName) Examples" Directory="OSPSuiteMenuDir" />
                   <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="Examples" KeyPath="yes" />
                 </Component>
@@ -129,7 +129,7 @@
       <!--Start menu Programms -->
       <Directory Id="ProgramMenuFolder">
         <Directory Id="OSPSuiteMenuDir" Name="$(var.SuiteName) $(var.ProductReleaseVersion)">
-          <Component Id="OSPSuiteMenuDir" Guid="900D79D0-22A3-47BF-AA4A-FE0C082575C1">
+          <Component Id="OSPSuiteMenuDir" Guid="900D79D0-22A3-47BF-AA4A-FE0C082575C1" Win64="yes">
             <RemoveFolder Id="OSPSuiteMenuDir" On="uninstall" />
             <RegistryValue Root="HKMU" Key="Software\[Manufacturer]\[ProductName]\OSP" Type="string" Value="" KeyPath="yes" />
           </Component>
