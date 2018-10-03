@@ -13,14 +13,17 @@ namespace MoBi.Core.Serialization.ORM
       {
          var cfg = createSqlLiteConfigurationFor(dataSource);
          //Create schema for database
-         new SchemaExport(cfg).Execute(false, true, false);
+         new SchemaExport(cfg).Execute(useStdOut: false, execute: true, justDrop: false);
 
          return cfg.BuildSessionFactory();
       }
 
       public ISessionFactory OpenSessionFactoryFor(string dataSource)
       {
-         return createSqlLiteConfigurationFor(dataSource).BuildSessionFactory();
+         var cfg = createSqlLiteConfigurationFor(dataSource);
+         var update = new SchemaUpdate(cfg);
+         update.Execute(useStdOut: false, doUpdate: true);
+         return cfg.BuildSessionFactory();
       }
 
       public SchemaExport GetSchemaExport(string dataSource)
@@ -39,7 +42,7 @@ namespace MoBi.Core.Serialization.ORM
          configuration.SetProperty("dialect", "NHibernate.Dialect.SQLiteDialect");
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
-         configuration.SetProperty("connection.connection_string", string.Format("Data Source={0};Version=3;New=False;Compress=True;", path));
+         configuration.SetProperty("connection.connection_string", $"Data Source={path};Version=3;New=False;Compress=True;");
 
          return Fluently.Configure(configuration)
             .Mappings(cfg => cfg.FluentMappings.AddFromAssemblyOf<SessionFactoryProvider>()).BuildConfiguration();
