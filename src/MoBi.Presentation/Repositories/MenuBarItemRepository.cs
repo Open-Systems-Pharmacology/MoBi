@@ -487,6 +487,7 @@ namespace MoBi.Presentation.Repositories
          yield return CommonMenuBarButtons.UpdateAllToDisplayUnits(MenuBarItemIds.UpdateAllToDisplayUnits);
          yield return CommonMenuBarButtons.LoadFavoritesFromFile(MenuBarItemIds.LoadFavorites);
          yield return CommonMenuBarButtons.SaveFavoritesToFile(MenuBarItemIds.SaveFavorites);
+         yield return CommonMenuBarButtons.ClearHistory(MenuBarItemIds.ClearHistory);
 
          yield return JournalMenuBarButtons.JournalView(MenuBarItemIds.JournalView);
          yield return JournalMenuBarButtons.CreateJournalPage(MenuBarItemIds.CreateJournalPage);

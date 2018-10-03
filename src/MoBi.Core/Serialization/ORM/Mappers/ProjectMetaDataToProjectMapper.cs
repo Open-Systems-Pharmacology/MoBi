@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 

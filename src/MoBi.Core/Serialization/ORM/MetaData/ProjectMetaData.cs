@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Serialization.ORM.MetaData.Extensions;
 using NHibernate;
+using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 
 namespace MoBi.Core.Serialization.ORM.MetaData
 {
-   public class ProjectMetaData:MetaDataWithContent<int>
+   public class ProjectMetaData : MetaDataWithContent<int>
    {
       public virtual string Name { get; set; }
       public virtual string Description { get; set; }
@@ -27,7 +27,7 @@ namespace MoBi.Core.Serialization.ORM.MetaData
       {
          Version = projectMetaData.Version;
          UpdateContentFrom(projectMetaData);
-         Children.UpdateFrom<string, EntityMetaData>(projectMetaData.Children,session);
+         Children.UpdateFrom<string, EntityMetaData>(projectMetaData.Children, session);
       }
 
       public virtual IEnumerable<SimulationMetaData> Simulations => Children.OfType<SimulationMetaData>();

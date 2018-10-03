@@ -60,8 +60,8 @@
       <HintPath>..\..\packages\Castle.Windsor.3.4.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
+    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Data.v17.1, Version=17.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.17.1.5\lib\net45\DevExpress.Data.v17.1.dll</HintPath>
@@ -75,9 +75,8 @@
       <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.0.999, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpZipLib.1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Iesi.Collections.4.0.2\lib\net40\Iesi.Collections.dll</HintPath>
@@ -85,12 +84,12 @@
     <Reference Include="libsbmlcsP">
       <HintPath>..\..\pre\libsbmlcsP.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.4.4.0\lib\net461\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.4.5.1\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.1.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
@@ -102,20 +101,20 @@
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.4.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.1\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.4.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.4.0.5\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.4.0.1, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Core.7.4.0.1\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.4.0.5, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Core.7.4.0.5\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.FuncParser, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\..\packages\OSPSuite.FuncParser.3.0.1.9\lib\net45\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.4.0.1, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.4.0.1\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.4.0.5, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.4.0.5\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.4.0.1, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.4.0.1\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.4.0.5, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.4.0.5\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -130,8 +129,8 @@
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.0.3\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SX, Version=2.6.8.2, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.8.2\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.6.8.5, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.8.5\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -451,7 +450,7 @@
     <Compile Include="Serialization\Converter\v6_2\Converter62To63.cs" />
     <Compile Include="Serialization\Converter\v7_1\Converter63To710.cs" />
     <Compile Include="Serialization\Converter\v7_3\Converter710To730.cs" />
-    <Compile Include="Serialization\ORM\MetaData\MetaDataWithContent.cs" />
+    <Compile Include="Serialization\ORM\Mapping\CommandPropertyMetaDataMapping.cs" />
     <Compile Include="Serialization\Services\PostSerializationStepsMaker.cs" />
     <Compile Include="Serialization\Services\ProjectClassifiableUpdaterAfterDeserialization.cs" />
     <Compile Include="Serialization\Services\DeserializedReferenceResolver.cs" />
@@ -484,6 +483,7 @@
     <Compile Include="Services\CreateCommitChangesToReactionBuildingBlockCommandTask.cs" />
     <Compile Include="Services\CreateCommitChangesToSimulationSettingsBuildingBlockCommandTask.cs" />
     <Compile Include="Services\CreateCommitChangesToSpatialStructureCommandTask.cs" />
+    <Compile Include="Services\HistoryManagerRetriever.cs" />
     <Compile Include="Services\IDiagramManagerFactory.cs" />
     <Compile Include="Services\IDiagramTask.cs" />
     <Compile Include="Services\IDiagramUpdater.cs" />
@@ -577,8 +577,6 @@
     <Compile Include="Serialization\ORM\Mapping\SimulationMetaDataMapping.cs" />
     <Compile Include="Serialization\ORM\MetaData\DataRepositoryMetaData.cs" />
     <Compile Include="Serialization\ORM\MetaData\EntityMetaData.cs" />
-    <Compile Include="Serialization\ORM\MetaData\Extensions\UpdatableCollectionExtensions.cs" />
-    <Compile Include="Serialization\ORM\MetaData\IUpdatableFrom.cs" />
     <Compile Include="Serialization\ORM\MetaData\SimulationMetaData.cs" />
     <Compile Include="Serialization\Converter\MoBiObjectConverterFinder.cs" />
     <Compile Include="Serialization\Converter\IMoBiObjectConverter.cs" />
@@ -610,7 +608,6 @@
     <Compile Include="Serialization\ORM\Mapping\CommandMetaDataMapping.cs" />
     <Compile Include="Serialization\ORM\Mapping\MetaDataContentMapping.cs" />
     <Compile Include="Serialization\ORM\Mapping\HistoryItemMetaDataMapping.cs" />
-    <Compile Include="Serialization\ORM\MetaData\MetaDataContent.cs" />
     <Compile Include="Serialization\ORM\MetaData\ProjectMetaData.cs" />
     <Compile Include="Serialization\ORM\Mapping\ProjectMetaDataMapping.cs" />
     <Compile Include="Serialization\ORM\ProjectPersistor.cs" />

@@ -8,6 +8,8 @@ using MoBi.Core.Serialization.Xml.Services;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
+using DataRepositoryMetaData = MoBi.Core.Serialization.ORM.MetaData.DataRepositoryMetaData;
 
 namespace MoBi.Core.Serialization.ORM.Mappers
 {
