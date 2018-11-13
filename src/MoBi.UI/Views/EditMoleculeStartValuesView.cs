@@ -15,8 +15,6 @@ namespace MoBi.UI.Views
          InitializeComponent();
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_MoleculeStartValues;
-
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.MoleculeStartValues;
 
       public void AttachPresenter(IEditMoleculeStartValuesPresenter presenter)

@@ -34,8 +34,6 @@ namespace MoBi.UI.Views
          _barManager = new BarManager {Form = this, Images = imageListRetriever.AllImages16x16};
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_AdditionalFeaturesReactionEditing;
-
       public override void InitializeBinding()
       {
          base.InitializeBinding();

@@ -203,7 +203,5 @@ namespace MoBi.UI.Views
          _colRestartSolver.ReadOnly = readOnly;
          _colButtons.Visible = !readOnly;
       }
-
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ParametersTables;
    }
 }

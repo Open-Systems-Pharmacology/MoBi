@@ -21,8 +21,6 @@ namespace MoBi.UI.Views
          layoutControl.Images = imageListRetriever.AllImages16x16;
       }
 
-      protected override int TopicId => HelpId.MoBi_SettingUpSimulation;
-
       public void AttachPresenter(IEditBuildConfigurationPresenter presenter)
       {
       }

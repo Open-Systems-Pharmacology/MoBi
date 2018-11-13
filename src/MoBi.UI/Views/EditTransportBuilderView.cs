@@ -35,8 +35,6 @@ namespace MoBi.UI.Views
          barManager.Images = imageListRetriever.AllImages16x16;
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_TransportProcesses;
-
       public bool FormulaHasError
       {
          set

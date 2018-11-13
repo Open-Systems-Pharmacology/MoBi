@@ -142,8 +142,6 @@ namespace MoBi.UI.Views
                                        || _presenter.HasEductsError
                                        || _presenter.HasProductsError;
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ReactionComponents;
-
       public override void InitializeResources()
       {
          base.InitializeResources();

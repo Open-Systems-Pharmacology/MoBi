@@ -33,8 +33,6 @@ namespace MoBi.UI.Views
          _comboBoxUnit = new UxComboBoxUnit<ParameterDTO>(gridControl);
       }
 
-      protected override int TopicId => HelpId.MoBi_SettingUpSimulation;
-
       public override void InitializeBinding()
       {
          _gridViewBinder = new GridViewBinder<OutputIntervalDTO>(gridViewIntervals) {BindingMode = BindingMode.OneWay, ValidationMode = ValidationMode.LeavingRow};

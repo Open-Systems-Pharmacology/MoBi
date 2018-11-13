@@ -33,8 +33,6 @@ namespace MoBi.UI.Views
          InitializeComponent();
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Observers;
-
       public bool FormulaHasError
       {
          set

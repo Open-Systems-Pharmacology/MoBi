@@ -56,7 +56,7 @@ namespace MoBi.UI.Views
 
       public bool ReadOnly
       {
-         get { return _readOnly; }
+         get => _readOnly;
          set
          {
             _readOnly = value;
@@ -64,7 +64,5 @@ namespace MoBi.UI.Views
             panelCriteria.Enabled = !value;
          }
       }
-
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ParametersSumFormulas;
    }
 }

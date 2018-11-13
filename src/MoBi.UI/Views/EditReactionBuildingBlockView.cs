@@ -39,8 +39,6 @@ namespace MoBi.UI.Views
             reactionBuildingBlockPresenter.UpdateUserDefinedParameters();
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Reactions;
-
       private IEditReactionBuildingBlockPresenter reactionBuildingBlockPresenter => _presenter.DowncastTo<IEditReactionBuildingBlockPresenter>();
 
       public void AttachPresenter(IEditReactionBuildingBlockPresenter presenter)

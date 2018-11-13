@@ -45,8 +45,6 @@ namespace MoBi.UI.Views
          showTableObjectPath(tableFormulaWithOffsetDTO.TableObjectPath);
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ParametersTableFormulaOffset;
-
       private void showOffsetObjectPath(FormulaUsablePathDTO forrmulaUsablePathDTO)
       {
          if (forrmulaUsablePathDTO != null)

@@ -55,8 +55,6 @@ namespace MoBi.UI.Views
          e.Info = new ToolTipControlInfo(usedCalculationMethodDTO, string.Empty) {SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip};
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Molecules;
-
       public override void InitializeBinding()
       {
          base.InitializeBinding();

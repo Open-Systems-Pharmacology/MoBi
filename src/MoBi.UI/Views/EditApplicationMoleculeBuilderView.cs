@@ -39,8 +39,6 @@ namespace MoBi.UI.Views
          btContainerPath.ButtonClick += selectContainerPath;
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Applications;
-
       public void Activate()
       {
          ActiveControl = btContainerPath;
