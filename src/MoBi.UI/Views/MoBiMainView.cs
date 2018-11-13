@@ -76,8 +76,6 @@ namespace MoBi.UI.Views
          RegisterRegion(_panelJournalDiagram, RegionNames.JournalDiagram);
       }
 
-      protected override int AppHelpId => HelpId.MoBi;
-
       public override void InitializeBinding()
       {
          base.InitializeBinding();

@@ -41,8 +41,6 @@ namespace MoBi.UI.Views
          barManager.Images = imageListRetriever.AllImages16x16;
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Events;
-
       private void onMouseClick(object sender, MouseEventArgs e)
       {
          this.DoWithinExceptionHandler(() =>

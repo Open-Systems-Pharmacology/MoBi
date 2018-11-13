@@ -31,8 +31,6 @@ namespace MoBi.UI.Views
          _checkItemRepository = new UxRepositoryItemCheckEdit(gridView);
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_MoleculeStartValues;
-
       protected override void DoInitializeBinding()
       {
          _unitControl.ParameterUnitSet += setParameterUnit;

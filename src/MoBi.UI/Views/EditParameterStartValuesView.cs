@@ -15,8 +15,6 @@ namespace MoBi.UI.Views
          InitializeComponent();
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ParameterStartValues;
-
       public void AttachPresenter(IEditParameterStartValuesPresenter presenter)
       {
          _presenter = presenter;

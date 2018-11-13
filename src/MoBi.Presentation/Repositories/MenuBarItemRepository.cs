@@ -457,12 +457,6 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.ExtendParameterStartValues)
             .WithCommand<ParameterStartValuesExtendUICommand>();
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Help)
-            .WithId(MenuBarItemIds.Help)
-            .WithIcon(ApplicationIcons.Help)
-            .WithCommand<ShowHelpCommand>()
-            .WithShortcut(Keys.F1);
-
          yield return CreateMenuButton
             .WithCaption(AppConstants.MenuNames.NewParameterStartValue)
             .WithId(MenuBarItemIds.NewParameterStartValue)
@@ -488,6 +482,7 @@ namespace MoBi.Presentation.Repositories
          yield return CommonMenuBarButtons.LoadFavoritesFromFile(MenuBarItemIds.LoadFavorites);
          yield return CommonMenuBarButtons.SaveFavoritesToFile(MenuBarItemIds.SaveFavorites);
          yield return CommonMenuBarButtons.ClearHistory(MenuBarItemIds.ClearHistory);
+         yield return CommonMenuBarButtons.Help(MenuBarItemIds.Help);
 
          yield return JournalMenuBarButtons.JournalView(MenuBarItemIds.JournalView);
          yield return JournalMenuBarButtons.CreateJournalPage(MenuBarItemIds.CreateJournalPage);

@@ -38,8 +38,6 @@ namespace MoBi.UI.Views
          _moleculeBuilderToTreeNodeMapper = moleculeBuilderToTreeNodeMapper;
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Molecules;
-
       private void selectedNodeChanged(ITreeNode selectedNode)
       {
          if (selectedNode == null) return;

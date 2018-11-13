@@ -25,8 +25,6 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<TransporterMoleculeContainerDTO>();
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ActiveTransporterMolecules;
-
       public override void InitializeResources()
       {
          base.InitializeResources();

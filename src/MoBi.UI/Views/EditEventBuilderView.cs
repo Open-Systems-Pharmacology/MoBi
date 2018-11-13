@@ -32,8 +32,6 @@ namespace MoBi.UI.Views
          InitializeComponent();
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Events;
-
       public override void InitializeResources()
       {
          base.InitializeResources();

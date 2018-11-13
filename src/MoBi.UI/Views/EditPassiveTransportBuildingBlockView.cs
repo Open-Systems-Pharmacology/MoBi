@@ -32,8 +32,6 @@ namespace MoBi.UI.Views
          _gridBinder = new GridViewBinder<TransportBuilderDTO>(gridView);
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_PassiveTransports;
-
       public override void InitializeResources()
       {
          base.InitializeResources();
