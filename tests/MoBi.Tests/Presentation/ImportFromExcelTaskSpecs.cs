@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 
@@ -16,6 +17,7 @@ namespace MoBi.Presentation
       }
    }
 
+   [Ignore("ISSUE WITH SMARTXLS")]
    public class When_retrieving_non_empty_excel_sheets : concern_for_ImportFromExcelTask
    {
       private IEnumerable<string> _result;
@@ -33,6 +35,7 @@ namespace MoBi.Presentation
 
    }
 
+   [Ignore("ISSUE WITH SMARTXLS")]
    public class When_retrieving_all_excel_sheets : concern_for_ImportFromExcelTask
    {
       private IEnumerable<string> _result;
@@ -50,6 +53,7 @@ namespace MoBi.Presentation
 
    }
 
+   [Ignore("ISSUE WITH SMARTXLS")]
    public class When_importing_excel_using_no_specific_sheet_name : concern_for_ImportFromExcelTask
    {
       private IEnumerable<DataTable> _results;
@@ -66,6 +70,7 @@ namespace MoBi.Presentation
       }
    }
 
+   [Ignore("ISSUE WITH SMARTXLS")]
    public class When_importing_excel_using_non_existing_sheet_name : concern_for_ImportFromExcelTask
    {
       private DataTable _results;
@@ -82,6 +87,7 @@ namespace MoBi.Presentation
       }
    }
 
+   [Ignore("ISSUE WITH SMARTXLS")]
    public class When_importing_excel_using_specific_sheet_name : concern_for_ImportFromExcelTask
    {
       private DataTable _results;
