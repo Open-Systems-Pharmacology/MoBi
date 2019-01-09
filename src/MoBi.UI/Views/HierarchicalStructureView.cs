@@ -32,8 +32,6 @@ namespace MoBi.UI.Views
          barManager.Images = imageListRetriever.AllImages16x16;
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_SpatialStructures;
-
       private void onMouseClicked(object sender, MouseEventArgs mouseEventArgs)
       {
          var hitInfo = treeView.CalcHitInfo(mouseEventArgs.Location);

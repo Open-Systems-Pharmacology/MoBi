@@ -1018,7 +1018,6 @@ namespace MoBi.Assets
          public static readonly string NewTopContainer = AddNew("Top Container");
          public static readonly string LoadTopContainer = AddExisting("Top Container");
          public static readonly string LoadTopContainerFromTemplate = AddExistingFromTemplate("Top Container");
-         public static readonly string Help = "Help";
          public static readonly string SearchView = "Search";
          public static readonly string NotificationView = "Notifications";
          public static readonly string ComparisonView = "Comparison";

@@ -51,7 +51,7 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<ConstantFormulaBuilderDTO>();
          _screenBinder.Bind(x => x.Value).To(valueEdit);
-         valueEdit.ValueChanged += OnValueUpdating;
+         valueEdit.ValueChanged += onValueUpdating;
          valueEdit.UnitChanged += onUnitChange;
 
 
@@ -63,11 +63,9 @@ namespace MoBi.UI.Views
          this.DoWithinExceptionHandler(() => _presenter.SetDisplayUnit(valueEditDTO, unit));
       }
 
-      private void OnValueUpdating(ValueEditDTO valueEditDTO, double value)
+      private void onValueUpdating(ValueEditDTO valueEditDTO, double value)
       {
          this.DoWithinExceptionHandler(() => _presenter.SetDisplayValue(valueEditDTO, value));
       }
-
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ParametersConstants;
    }
 }

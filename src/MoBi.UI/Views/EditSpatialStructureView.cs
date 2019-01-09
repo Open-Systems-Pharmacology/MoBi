@@ -49,8 +49,6 @@ namespace MoBi.UI.Views
          EditIcon = ApplicationIcons.Parameter;
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_SpatialStructures;
-
       public void AttachPresenter(IEditSpatialStructurePresenter presenter)
       {
          _presenter = presenter;

@@ -59,8 +59,6 @@ namespace MoBi.UI.Views
          }
       }
 
-      protected override int TopicId => HelpId.MoBi_Tools_Search;
-
       private void gridDoubleClick(object sender, MouseEventArgs e)
       {
          this.DoWithinExceptionHandler(() => _presenter.Select(_gridResultBinder.FocusedElement));

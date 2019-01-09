@@ -92,6 +92,10 @@ end
 def update_smart_xls(args) 
 	require_relative 'scripts/smartxls'
 
+	if (!args.smart_xls_package || !args.smart_xls_version)
+		return
+	end
+
 	src_dir = src_dir_for(args.configuration)
 	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
 end
@@ -100,7 +104,7 @@ task :postclean do |t, args|
 	packages_dir =  File.join(solution_dir, 'packages')
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.3')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '7.4')
 
 	copy_depdencies solution_dir,  all_users_application_dir do
 		copy_files 'Data', ['xml', 'mbdt']

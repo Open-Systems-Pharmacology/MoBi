@@ -6,7 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_ProjectMetaDataSpecs : ContextSpecification<ProjectMetaData>
+   public abstract class concern_for_ProjectMetaData : ContextSpecification<ProjectMetaData>
    {
       protected override void Context()
       {
@@ -14,7 +14,7 @@ namespace MoBi.Core
       }
    }
 
-   class When_updateing_Properties : concern_for_ProjectMetaDataSpecs
+   public class When_updating_Properties : concern_for_ProjectMetaData
    {
       private ProjectMetaData _orgMetaData;
       private ISession _session;
@@ -25,13 +25,11 @@ namespace MoBi.Core
          _orgMetaData = new ProjectMetaData();
          _session = A.Fake<ISession>();
          _orgMetaData.Version = 1;
-         _orgMetaData.Content = A.Fake<MetaDataContent>();
-
       }
 
       protected override void Because()
       {
-         sut.UpdateFrom(_orgMetaData,_session);
+         sut.UpdateFrom(_orgMetaData, _session);
       }
 
       [Observation]
@@ -40,6 +38,4 @@ namespace MoBi.Core
          sut.Version.ShouldBeEqualTo(_orgMetaData.Version);
       }
    }
-
-   
-}	
+}

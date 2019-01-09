@@ -29,8 +29,6 @@ namespace MoBi.UI.Views
          barManager.Images = imageListRetriever.AllImages16x16;
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Events;
-
       public override void InitializeBinding()
       {
          base.InitializeBinding();

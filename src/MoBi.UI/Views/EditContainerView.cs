@@ -31,8 +31,6 @@ namespace MoBi.UI.Views
          InitializeComponent();
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_SpatialStructures;
-
       public override void InitializeBinding()
       {
          base.InitializeBinding();

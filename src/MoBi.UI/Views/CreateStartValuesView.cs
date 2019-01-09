@@ -26,8 +26,6 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_MoleculeStartValues;
-
       protected override void SetActiveControl()
       {
          ActiveControl = txtName;

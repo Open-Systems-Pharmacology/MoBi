@@ -87,6 +87,7 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Tools), AppConstants.RibbonPages.Utilities);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.DisplayUnits), AppConstants.RibbonPages.Utilities);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Favorites), AppConstants.RibbonPages.Utilities);
+         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.History), AppConstants.RibbonPages.Utilities);
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.View), AppConstants.RibbonPages.Views);
 
@@ -268,6 +269,7 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.ParameterIdentificationFeedbackView].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.CreateSensitivityAnalysis].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SensitivityAnalysisFeedbackView].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.ClearHistory].Enabled = enabled;
          }
       }
 
@@ -289,7 +291,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public bool SimulationRunEnabeld
       {
-         set { enableActiveSimulationItems = value; }
+         set => enableActiveSimulationItems = value;
       }
 
       public void Handle(ScreenActivatedEvent screenActivatedEvent)

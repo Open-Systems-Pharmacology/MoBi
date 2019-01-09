@@ -25,8 +25,6 @@ namespace MoBi.UI.Views
 
       }
 
-      protected override int TopicId => HelpId.MoBi_SettingUpSimulation;
-
       protected override void SetActiveControl()
       {
          ActiveControl = tbName;

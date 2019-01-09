@@ -26,6 +26,14 @@ namespace MoBi.Core.Serialization.ORM.Mapping
             .Not.LazyLoad()
             .Column("ParentId")
             .Fetch.Join();
+
+         HasMany(x => x.Properties)
+            .LazyLoad()
+            .Fetch.Subselect()
+            .Cascade.AllDeleteOrphan()
+            .AsMap(x => x.Name)
+            .KeyColumn("CommandId");
+
       }
    }
 }

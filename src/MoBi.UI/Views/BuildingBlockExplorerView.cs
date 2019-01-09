@@ -16,8 +16,6 @@ namespace MoBi.UI.Views
          treeView.CompareNodeValues += compareNodeValues;
       }
 
-      protected override int TopicId => HelpId.MoBi_Quicktour;
-
       public void AttachPresenter(IBuildingBlockExplorerPresenter presenter)
       {
          base.AttachPresenter(presenter);

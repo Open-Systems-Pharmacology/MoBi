@@ -1,10 +1,9 @@
 ﻿using MoBi.Assets;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
@@ -21,8 +20,6 @@ namespace MoBi.UI.Views
       {
          InitializeComponent();
       }
-
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_Events;
 
       public override void InitializeBinding()
       {

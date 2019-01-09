@@ -141,7 +141,6 @@ namespace MoBi.Core.Service
 
    public class When_loading_a_simulation_defined_in_concentration : concern_for_ProjectTask
    {
-      private bool _exceptionRaised;
       private SimulationTransfer _simulationTransfer;
       private string _fileName;
 
@@ -153,14 +152,9 @@ namespace MoBi.Core.Service
          _simulationTransfer.Simulation = A.Fake<IMoBiSimulation>().WithName("Sim");
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
          A.CallTo(() => _serializationTask.Load<SimulationTransfer>(_fileName, false))
-            .Invokes(() =>
-            {
-               //makes sure that the exception is raised once only so that the second time is successful
-               if (_exceptionRaised) return;
-               _exceptionRaised = true;
-               throw new CannotConvertConcentrationToAmountException("object");
-            })
-            .Returns(_simulationTransfer);
+            .Throws(() => new CannotConvertConcentrationToAmountException("object"))
+            .Once()
+            .Then.Returns(_simulationTransfer);
       }
 
       protected override void Because()

@@ -47,8 +47,6 @@ namespace MoBi.UI.Views
          _presenter.SelectionChanged(treeNode);
       }
 
-      protected override int TopicId => HelpId.MoBi_ModelBuilding_ReactionKinetics;
-
       public override void InitializeResources()
       {
           base.InitializeResources();
