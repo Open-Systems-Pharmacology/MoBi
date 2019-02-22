@@ -38,7 +38,7 @@ namespace MoBi.Assets
       public static readonly string PRODUCT_NAME = "MoBi";
       public static readonly string Website = "www.open-systems-pharmacology.org";
       public static readonly string ProductSiteDownload = "http://setup.open-systems-pharmacology.org";
-      public static readonly string IssueTrackerUrl = "http://www.open-systems-pharmacology.org/mobi/issues";
+      public static readonly string IssueTrackerUrl = "https://github.com/open-systems-pharmacology/mobi/issues";
       public static readonly string Persitable = "Persitable";
       public static readonly string CVODE_1002_2_SOLVER = "CVODE1002_2";
       public static readonly int MAX_PATH_DEPTH = 10;
