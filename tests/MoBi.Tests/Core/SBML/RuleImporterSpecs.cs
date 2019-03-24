@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using MoBi.Engine.Sbml;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;

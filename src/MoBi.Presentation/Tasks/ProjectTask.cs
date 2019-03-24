@@ -8,7 +8,6 @@ using MoBi.Core;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
-using MoBi.Core.SBML;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -45,13 +44,13 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
       private readonly ISimulationSettingsFactory _simulationSettingsFactory;
       private readonly ISimulationLoader _simulationLoader;
-      private readonly ISBMLTask _sbmlTask;
+      private readonly ISbmlTask _sbmlTask;
       private readonly IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
 
       public ProjectTask(IMoBiContext context, ISerializationTask serializationTask, IDialogCreator dialogCreator,
          IMRUProvider mruProvider, IMoBiSpatialStructureFactory spatialStructureFactory,
          IHeavyWorkManager heavyWorkManager, ISimulationSettingsFactory simulationSettingsFactory,
-         ISimulationLoader simulationLoader, ISBMLTask sbmlTask, IReactionBuildingBlockFactory reactionBuildingBlockFactory)
+         ISimulationLoader simulationLoader, ISbmlTask sbmlTask, IReactionBuildingBlockFactory reactionBuildingBlockFactory)
       {
          _context = context;
          _simulationSettingsFactory = simulationSettingsFactory;
@@ -175,7 +174,7 @@ namespace MoBi.Presentation.Tasks
          if (fileName.IsNullOrEmpty()) return;
 
          _context.NewProject();
-         _context.AddToHistory(_sbmlTask.ImportModelFromSBML(fileName, _context.CurrentProject));
+         _context.AddToHistory(_sbmlTask.ImportModelFromSbml(fileName, _context.CurrentProject));
          notifyProjectLoaded();
       }
 
@@ -298,7 +297,7 @@ namespace MoBi.Presentation.Tasks
          addDefault(AppConstants.DefaultNames.SimulationSettings, _simulationSettingsFactory.CreateDefault);
       }
 
-      private void addDefault<T>(string defaultName) where T : IBuildingBlock
+      private void addDefault<T>(string defaultName) where T : class, IBuildingBlock
       {
          addDefault(defaultName, _context.Create<T>);
       }

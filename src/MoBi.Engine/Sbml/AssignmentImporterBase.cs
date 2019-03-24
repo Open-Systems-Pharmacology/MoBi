@@ -1,11 +1,12 @@
 using System.Linq;
 using libsbmlcs;
+using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using Model = libsbmlcs.Model;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
    public abstract class AssignmentImporterBase : SBMLImporter
    {

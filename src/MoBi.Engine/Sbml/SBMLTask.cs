@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using OSPSuite.Utility.Extensions;
 using libsbmlcs;
 using MoBi.Assets;
+using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using Model = libsbmlcs.Model;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
-   public interface ISBMLTask
-   {
-      IMoBiCommand ImportModelFromSBML(string filename, IMoBiProject project);
-      SBMLInformation SBMLInformation { get; }
-   }
-
-   public class SBMLTask : ISBMLTask
+   public class SbmlTask : ISbmlTask
    {
       public SBMLInformation SBMLInformation { get; private set; }
 
@@ -27,15 +23,17 @@ namespace MoBi.Core.SBML
       private readonly SBMLImporterRepository _importerRepository;
       private IMoBiDimensionFactory _moBiDimensionFactory;
 
-      public SBMLTask(IMoBiContext moBiContext,
-         SBMLImporterRepository importerRepository, IMoBiDimensionFactory moBiDimensionFactory)
+      public SbmlTask(
+         IMoBiContext moBiContext,
+         SBMLImporterRepository importerRepository,
+         IMoBiDimensionFactory moBiDimensionFactory)
       {
          _mobiContext = moBiContext;
          _importerRepository = importerRepository;
          _moBiDimensionFactory = moBiDimensionFactory;
       }
 
-      public IMoBiCommand ImportModelFromSBML(string filename, IMoBiProject project)
+      public IMoBiCommand ImportModelFromSbml(string filename, IMoBiProject project)
       {
          var command = new MoBiMacroCommand()
          {
@@ -55,6 +53,7 @@ namespace MoBi.Core.SBML
          {
             importer.DoImport(model, project, SBMLInformation, command);
          }
+
          ShowNotificationsMessages();
          return command;
       }

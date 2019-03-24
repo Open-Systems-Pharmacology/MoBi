@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using libsbmlcs;
+using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
    public class ASTHandler
    {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
    static class SBMLConstants
    {

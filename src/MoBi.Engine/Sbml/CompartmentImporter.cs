@@ -1,17 +1,17 @@
-﻿using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using libsbmlcs;
+﻿using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 using Model = libsbmlcs.Model;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
    public class CompartmentImporter : SBMLImporter
    {

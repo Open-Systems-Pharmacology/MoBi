@@ -3,6 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
+using MoBi.Engine.Tasks;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;

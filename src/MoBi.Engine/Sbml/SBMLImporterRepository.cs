@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Utility.Container;
 using libsbmlcs;
+using OSPSuite.Utility.Container;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
     public class SBMLImporterRepository
     {
