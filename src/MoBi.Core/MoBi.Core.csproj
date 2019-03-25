@@ -115,17 +115,17 @@
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.20\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.22\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.20\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.22\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.20\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.22\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.5.0.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.20\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.22\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -441,10 +441,8 @@
     <Compile Include="Helper\ReportingHelper.cs" />
     <Compile Include="Helper\ObjectTypeResolver.cs" />
     <Compile Include="Reporting\Items\DistributionFormulaTextBox.cs" />
-    <Compile Include="Reporting\Items\FormulaTextBox.cs" />
     <Compile Include="Reporting\ObserverBuilderReporter.cs" />
     <Compile Include="Reporting\TEXBuilder\DistributionFormulaTextBoxTEXBuilder.cs" />
-    <Compile Include="Reporting\TEXBuilder\FormulaTextBoxTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\LogNormalDistributionFormulaTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\UniformDistributionFormulaTEXBuilder.cs" />
     <Compile Include="Repositories\CompoundCalculationMethodRepository.cs" />
@@ -550,22 +548,18 @@
     <Compile Include="Reporting\TEXBuilder\BlackBoxFormulaTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\ConstantFormulaTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\ContainerTEXBuilder.cs" />
-    <Compile Include="Reporting\TEXBuilder\DescriptorCriteriaTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\DiscreteDistributionFormulaTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\EntityTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\EventAssignmentBuilderTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\EventBuilderTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\EventGroupBuilderTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\ExplicitFormulaTEXBuilder.cs" />
-    <Compile Include="Reporting\TEXBuilder\FormulaTEXBuilder.cs" />
-    <Compile Include="Reporting\TEXBuilder\FormulaUsablePathsTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\MoleculeBuilderTEXBuilder.cs" />
     <Compile Include="Reporting\MoleculeBuildingBlockReporter.cs" />
     <Compile Include="Reporting\MoleculeBuildingBlocksReporter.cs" />
     <Compile Include="Reporting\TEXBuilder\NeighborhoodBuilderTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\NeighborhoodsBuilderTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\NormalDistributionFormulaTEXBuilder.cs" />
-    <Compile Include="Reporting\TEXBuilder\ObserverBuilderTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\ParametersTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\ReactionBuilderTEXBuilder.cs" />
     <Compile Include="Reporting\TEXBuilder\SumFormulaTEXBuilder.cs" />
