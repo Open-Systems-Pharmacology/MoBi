@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Reporting;
+using MoBi.Engine.Sbml;
 
 namespace MoBi.Core.SBML
 {

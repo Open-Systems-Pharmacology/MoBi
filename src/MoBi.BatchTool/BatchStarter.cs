@@ -1,5 +1,5 @@
 ﻿using MoBi.BatchTool.Services;
-using MoBi.Core.SBML;
+using MoBi.Engine;
 using MoBi.Presentation;
 using MoBi.Presentation.Serialization;
 using MoBi.Presentation.Settings;
@@ -31,8 +31,8 @@ namespace MoBi.BatchTool
                x.FromType<CoreRegister>();
                x.FromType<OSPSuite.Core.CoreRegister>();
                x.FromType<BatchRegister>();
+               x.FromType<EngineRegister>();
                x.FromType<InfrastructureRegister>();
-               x.FromType<SBMLImportRegister>();
                x.FromInstance(new PresentationRegister(false));
                x.FromInstance(register);
             });

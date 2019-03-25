@@ -7,6 +7,7 @@ using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
+using MoBi.Engine.Sbml;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using Model = libsbmlcs.Model;

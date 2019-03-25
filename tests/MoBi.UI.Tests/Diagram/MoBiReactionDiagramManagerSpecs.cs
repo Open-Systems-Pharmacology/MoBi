@@ -4,7 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Extensions;
 
-namespace MoBi.UI.Tests.Diagram
+namespace MoBi.UI.Diagram
 {
    public abstract class concern_for_MoBiReactionDiagramManager : ContextSpecification<MoBiReactionDiagramManager>
    {

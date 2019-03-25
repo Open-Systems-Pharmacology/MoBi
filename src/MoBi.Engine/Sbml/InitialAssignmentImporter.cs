@@ -4,7 +4,7 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using Model = libsbmlcs.Model;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
     public class InitialAssignmentImporter : AssignmentImporterBase
     {

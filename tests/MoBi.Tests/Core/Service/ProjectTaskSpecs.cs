@@ -37,7 +37,7 @@ namespace MoBi.Core.Service
       protected ICloneManagerForSimulation _cloneManager;
       protected ISimulationSettingsFactory _simSettingsFactory;
       protected IMoBiApplicationController _appController;
-      protected ISBMLTask _sbmlTask;
+      protected ISbmlTask _sbmlTask;
       private IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
 
       protected override void Context()
@@ -53,7 +53,7 @@ namespace MoBi.Core.Service
          _cloneManager = A.Fake<ICloneManagerForSimulation>();
          _simSettingsFactory = A.Fake<ISimulationSettingsFactory>();
          _appController = A.Fake<IMoBiApplicationController>();
-         _sbmlTask = A.Fake<ISBMLTask>();
+         _sbmlTask = A.Fake<ISbmlTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
          sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _spatialStructureFactory, new HeavyWorkManagerForSpecs(), 
             _simSettingsFactory, new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _reactionBuildingBlockFactory);

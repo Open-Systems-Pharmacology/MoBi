@@ -25,10 +25,9 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
 using OSPSuite.UI.Diagram.Elements;
-using OSPSuite.UI.Diagram.Managers;
 using OSPSuite.Utility.Extensions;
 
-namespace MoBi.UI.Tests.Diagram
+namespace MoBi.UI.Diagram
 {
    public abstract class concern_for_ReactionDiagramPresenter : ContextSpecification<ReactionDiagramPresenter>
    {

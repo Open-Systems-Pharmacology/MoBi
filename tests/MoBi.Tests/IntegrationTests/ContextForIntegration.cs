@@ -13,6 +13,7 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.SBML;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
+using MoBi.Engine.Sbml;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;

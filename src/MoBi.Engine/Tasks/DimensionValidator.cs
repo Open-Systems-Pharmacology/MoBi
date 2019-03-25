@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
+using MoBi.Engine.Extensions;
 using MoBi.Presentation.Settings;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -12,11 +13,10 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.FuncParser;
 using OSPSuite.Utility.Extensions;
-using DimensionInfo = OSPSuite.FuncParser.DimensionInfo;
 using static MoBi.Assets.AppConstants.Parameters;
 using static MoBi.Assets.AppConstants.DimensionNames;
 
-namespace MoBi.Presentation.Tasks
+namespace MoBi.Engine.Tasks
 {
    public class DimensionValidator : IDimensionValidator
    {
@@ -55,13 +55,13 @@ namespace MoBi.Presentation.Tasks
       }
 
       private static string dimensionValidationMessage(string dimensionName) => AppConstants.Validation.DoesNotEvaluateTo(dimensionName);
-      private static string dimensionFlowMessage { get; } =  AppConstants.Validation.DoesNotEvaluateTo(FLOW);
-      private static string dimensionVelocityMessage { get; } =  AppConstants.Validation.DoesNotEvaluateTo(VELOCITY);
-      private static string dimensionAreaMessage { get; } =  AppConstants.Validation.DoesNotEvaluateTo(AREA);
+      private static string dimensionFlowMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(FLOW);
+      private static string dimensionVelocityMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(VELOCITY);
+      private static string dimensionAreaMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AREA);
 
-      public Task<ValidationResult> Validate(IContainer container, IBuildConfiguration buildConfiguration) => Validate(new[] { container }, buildConfiguration);
+      public Task<ValidationResult> Validate(IContainer container, IBuildConfiguration buildConfiguration) => Validate(new[] {container}, buildConfiguration);
 
-      public Task<ValidationResult> Validate(IModel model, IBuildConfiguration buildConfiguration) => Validate(new[] { model.Root, model.Neighborhoods }, buildConfiguration);
+      public Task<ValidationResult> Validate(IModel model, IBuildConfiguration buildConfiguration) => Validate(new[] {model.Root, model.Neighborhoods}, buildConfiguration);
 
       public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, IBuildConfiguration buildConfiguration)
       {
@@ -88,7 +88,7 @@ namespace MoBi.Presentation.Tasks
       {
          if (!_checkRules) return;
 
-         entity.Rules.BrokenBy(entity).Messages.Each(x=> addNotification(NotificationType.Warning, entity, x));
+         entity.Rules.BrokenBy(entity).Messages.Each(x => addNotification(NotificationType.Warning, entity, x));
       }
 
       public void Visit(IUsingFormula entityUsingFormula)
@@ -108,6 +108,7 @@ namespace MoBi.Presentation.Tasks
                addWarning(entityUsingFormula, AppConstants.Validation.NoDimensionSet(displayPath));
                return;
             }
+
             checkFormula(entityUsingFormula, displayPath);
             checkRHSFormula(entityUsingFormula as IParameter, displayPath);
          }
@@ -126,7 +127,7 @@ namespace MoBi.Presentation.Tasks
          rhsDimBaseRep.TimeExponent = rhsDimBaseRep.TimeExponent - 1;
 
          if (!Equals(rhsDimBaseRep, rhsFormula.Dimension.BaseRepresentation))
-            addWarning( parameter, AppConstants.Validation.RHSDimensionMismatch(displayPath, rhsFormula.Name));
+            addWarning(parameter, AppConstants.Validation.RHSDimensionMismatch(displayPath, rhsFormula.Name));
 
          checkExplicitFormula(parameter, displayPath, rhsDimBaseRep, rhsFormula as ExplicitFormula);
       }
@@ -200,7 +201,7 @@ namespace MoBi.Presentation.Tasks
                   ? NotificationType.Warning
                   : NotificationType.Error;
 
-               addNotification( notificationType, entityUsingFormula, ed.Description);
+               addNotification(notificationType, entityUsingFormula, ed.Description);
             }
          }
 

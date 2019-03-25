@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using libsbmlcs;
+using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -15,7 +16,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using Model = libsbmlcs.Model;
 using Reaction = libsbmlcs.Reaction;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
    public class ReactionImporter : SBMLImporter
    {

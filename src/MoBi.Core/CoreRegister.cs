@@ -11,7 +11,6 @@ using MoBi.Core.Reporting;
 using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Serialization.Converter.v3_5;
 using MoBi.Core.Services;
-using SimModelNET;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
@@ -20,7 +19,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Services;
@@ -82,9 +80,6 @@ namespace MoBi.Core
          //Register abstract factories
          container.RegisterFactory<IHistoryManagerFactory>();
          container.RegisterFactory<IDiagramManagerFactory>();
-
-         var config = container.Resolve<IMoBiConfiguration>();
-         XMLSchemaCache.InitializeFromFile(config.SimModelSchemaFilePath);
 
          registerReporters(container);
 

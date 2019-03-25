@@ -9,7 +9,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using Model = libsbmlcs.Model;
 using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
     public class UnitDefinitionImporter : SBMLImporter
     {

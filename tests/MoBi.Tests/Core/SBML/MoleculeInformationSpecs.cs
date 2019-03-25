@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Services;
+using MoBi.Engine.Sbml;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 
 namespace MoBi.Core.SBML
 {
-   public class MoleculeInformationTests : ContextForSBMLIntegration<ISBMLTask>
+   public class MoleculeInformationTests : ContextForSBMLIntegration<ISbmlTask>
    {
       private List<MoleculeInformation> _moleculeInformation;
 

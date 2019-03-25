@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
     public class MoleculeInformation
     {

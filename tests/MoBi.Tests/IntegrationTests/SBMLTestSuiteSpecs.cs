@@ -4,27 +4,29 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.SBML;
+using MoBi.Core.Services;
+using MoBi.Engine.Sbml;
 using NUnit.Framework;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Engine.Domain;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.IntegrationTests
 {
-   public class SBMLTestSuiteSpecs : ContextForSBMLIntegration<ISBMLTask>
+   public class SBMLTestSuiteSpecs : ContextForSBMLIntegration<ISbmlTask>
    {
       private static string _directory;
       private IBuildConfigurationFactory _buildConfigurationFactory;
@@ -50,31 +52,32 @@ namespace MoBi.IntegrationTests
          var messages = new List<string>();
          foreach (var directory in directories)
          {
-            _sbmlTask = IoC.Resolve<ISBMLTask>();
+            _sbmlTask = IoC.Resolve<ISbmlTask>().DowncastTo<SbmlTask>();
             var caseName = directory.Name;
             Debug.Print(caseName);
-            var fileName = Path.Combine(directory.FullName, String.Format("{0}-sbml-l3v1.xml", caseName));
+            var fileName = Path.Combine(directory.FullName, $"{caseName}-sbml-l3v1.xml");
             var context = IoC.Resolve<IMoBiContext>();
             context.NewProject();
             var project = context.CurrentProject;
             IMoBiCommand command;
             try
             {
-               command = _sbmlTask.ImportModelFromSBML(fileName, project);
+               command = _sbmlTask.ImportModelFromSbml(fileName, project);
             }
             catch (Exception e)
             {
-               messages.Add(String.Format("Import: {0} {1}:", caseName, e.Message));
+               messages.Add($"Import: {caseName} {e.Message}:");
                continue;
             }
 
             if (command.IsEmpty())
             {
-               messages.Add(String.Format("Import: {0}", caseName));
+               messages.Add($"Import: {caseName}");
                continue;
             }
+
             addjEmptyBBIfneeded(project);
-            addSettings(project, Path.Combine(directory.FullName, String.Format("{0}-settings.txt", caseName)));
+            addSettings(project, Path.Combine(directory.FullName, $"{caseName}-settings.txt"));
             var buildConfigurtion = genreateBuildConfiguration(project);
             var result = _modelConstructor.CreateModelFrom(buildConfigurtion, caseName);
             if (result.IsInvalid)
@@ -82,19 +85,22 @@ namespace MoBi.IntegrationTests
                messages.Add(caseName);
                continue;
             }
+
             var simulation = new MoBiSimulation {BuildConfiguration = buildConfigurtion, Model = result.Model};
-            var simModelManager = new SimModelManager(_simModelExporter, new SimModelSimulationFactory(), 
-               new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), new SBMLTestDataNamingService(), IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IDisplayUnitRetriever>()));
+            var simModelManager = new SimModelManager(_simModelExporter, new SimModelSimulationFactory(),
+               new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), new SBMLTestDataNamingService(), IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IDisplayUnitRetriever>(), IoC.Resolve<IDataRepositoryTask>()));
             var runResults = simModelManager.RunSimulation(simulation);
             if (!runResults.Success)
             {
                messages.Add(caseName);
                continue;
             }
+
             var dt = _dateRepositoryTask.ToDataTable(runResults.Results);
-            dt.First().ExportToCSV(Path.Combine(directory.FullName, String.Format("{0}-result_mobi.csv", caseName)));
+            dt.First().ExportToCSV(Path.Combine(directory.FullName, $"{caseName}-result_mobi.csv"));
             _sbmlTask = null;
          }
+
          messages.Count.ShouldBeEqualTo(0, messages.ToString("\n"));
       }
 

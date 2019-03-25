@@ -1,17 +1,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Events;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -23,7 +20,9 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -201,7 +200,7 @@ namespace MoBi.Presentation.Presenter
             _view.SetParserError(null);
             _context.PublishEvent(new FormulaValidEvent(_formula, BuildingBlock));
          }
-         catch (FuncParserException parserException)
+         catch (OSPSuiteException parserException)
          {
             _view.SetParserError(parserException.Message);
             _context.PublishEvent(new FormulaInvalidEvent(_formula, BuildingBlock, parserException.Message));
@@ -308,6 +307,7 @@ namespace MoBi.Presentation.Presenter
             alias = $"{path.Alias}{i}";
             i++;
          }
+
          path.Alias = alias;
       }
    }

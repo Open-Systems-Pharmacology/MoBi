@@ -32,7 +32,7 @@ namespace MoBi.Presentation
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       private IHeavyWorkManager _heavyWorkManager;
       protected ISimulationSettingsFactory _simulationSettingsFactory;
-      private ISBMLTask _sbmlTask;
+      private ISbmlTask _sbmlTask;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
 
       protected override void Context()
@@ -47,7 +47,7 @@ namespace MoBi.Presentation
          _mruProvider = A.Fake<IMRUProvider>();
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _simulationSettingsFactory = A.Fake<ISimulationSettingsFactory>();
-         _sbmlTask = A.Fake<ISBMLTask>();
+         _sbmlTask = A.Fake<ISbmlTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
          sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _spatialStructureFactory, _heavyWorkManager, _simulationSettingsFactory, 
             new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _reactionBuildingBlockFactory);

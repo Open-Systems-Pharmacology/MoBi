@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using libsbmlcs;
+using MoBi.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using Model = libsbmlcs.Model;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
     public class SBMLInformation
     {

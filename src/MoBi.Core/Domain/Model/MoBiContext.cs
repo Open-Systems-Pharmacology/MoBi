@@ -1,8 +1,4 @@
 ﻿using System;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.FileLocker;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
@@ -10,6 +6,7 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -19,6 +16,9 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.FileLocker;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Core.Domain.Model
@@ -28,8 +28,8 @@ namespace MoBi.Core.Domain.Model
       IMoBiDimensionFactory DimensionFactory { get; }
       IObjectBaseFactory ObjectBaseFactory { get; }
       IWithIdRepository ObjectRepository { get; }
-      T Create<T>(string id) where T : IObjectBase;
-      T Create<T>() where T : IObjectBase;
+      T Create<T>(string id) where T : class, IObjectBase;
+      T Create<T>() where T : class, IObjectBase;
 
       IMoBiHistoryManager HistoryManager { get; set; }
       IObjectPathFactory ObjectPathFactory { get; }
@@ -101,7 +101,7 @@ namespace MoBi.Core.Domain.Model
          set => _project = value;
       }
 
-      public T Create<T>() where T : IObjectBase
+      public T Create<T>() where T : class, IObjectBase
       {
          return ObjectBaseFactory.Create<T>();
       }
@@ -116,7 +116,7 @@ namespace MoBi.Core.Domain.Model
          return ObjectRepository.Get(id);
       }
 
-      public T Create<T>(string id) where T : IObjectBase
+      public T Create<T>(string id) where T : class, IObjectBase
       {
          return id != null ? ObjectBaseFactory.Create<T>(id) : ObjectBaseFactory.Create<T>();
       }
@@ -143,7 +143,6 @@ namespace MoBi.Core.Domain.Model
       }
 
       public IProject Project => CurrentProject;
-
 
       public void NewProject()
       {

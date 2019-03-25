@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper.Extensions;
 using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Engine.Sbml;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using Model = libsbmlcs.Model;

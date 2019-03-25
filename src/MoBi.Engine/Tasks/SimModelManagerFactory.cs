@@ -1,15 +1,12 @@
 ﻿using MoBi.Core.Domain.Model;
+using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Engine.Domain;
 
-namespace MoBi.Presentation.Tasks
+namespace MoBi.Engine.Tasks
 {
-   public interface ISimModelManagerFactory
-   {
-      ISimModelManager Create();
-   }
-
    public class SimModelManagerFactory : ISimModelManagerFactory
    {
       private readonly ISimModelExporter _simModelExporter;
@@ -17,14 +14,16 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiContext _context;
       private readonly IDataNamingService _dataNamingService;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
+      private readonly IDataRepositoryTask _dataRepositoryTask;
 
-      public SimModelManagerFactory(ISimModelExporter simModelExporter, ISimModelSimulationFactory simModelSimulationFactory, IMoBiContext context, IDataNamingService dataNamingService, IDisplayUnitRetriever displayUnitRetriever)
+      public SimModelManagerFactory(ISimModelExporter simModelExporter, ISimModelSimulationFactory simModelSimulationFactory, IMoBiContext context, IDataNamingService dataNamingService, IDisplayUnitRetriever displayUnitRetriever, IDataRepositoryTask dataRepositoryTask)
       {
          _simModelExporter = simModelExporter;
          _simModelSimulationFactory = simModelSimulationFactory;
          _context = context;
          _dataNamingService = dataNamingService;
          _displayUnitRetriever = displayUnitRetriever;
+         _dataRepositoryTask = dataRepositoryTask;
       }
 
       public ISimModelManager Create()
@@ -34,7 +33,7 @@ namespace MoBi.Presentation.Tasks
 
       private DataFactory createDataFactory()
       {
-         return new DataFactory(_context.DimensionFactory, _dataNamingService, _context.ObjectPathFactory, _displayUnitRetriever);
+         return new DataFactory(_context.DimensionFactory, _dataNamingService, _context.ObjectPathFactory, _displayUnitRetriever, _dataRepositoryTask);
       }
    }
 }

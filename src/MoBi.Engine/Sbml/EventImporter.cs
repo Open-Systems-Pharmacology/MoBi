@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.Core.Commands.Core;
 using libsbmlcs;
+using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -12,7 +13,7 @@ using Event = libsbmlcs.Event;
 using EventAssignment = libsbmlcs.EventAssignment;
 using Model = libsbmlcs.Model;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
    public class EventImporter : SBMLImporter
    {

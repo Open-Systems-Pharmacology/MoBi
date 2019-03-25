@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Formulas;
 using Parameter = libsbmlcs.Parameter;
 using SBMLModel = libsbmlcs.Model;
 
-namespace MoBi.Core.SBML
+namespace MoBi.Engine.Sbml
 {
     public class ParameterImporter : SBMLImporter
     {
