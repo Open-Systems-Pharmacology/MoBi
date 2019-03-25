@@ -337,14 +337,11 @@ namespace MoBi.Presentation.Presenter
          return startValue == null ? null : _startValueDTOs.FirstOrDefault(dto => Equals(StartValueFrom(dto), startValue));
       }
 
-      public override object Subject
-      {
-         get { return _buildingBlock; }
-      }
+      public override object Subject => _buildingBlock;
 
-      protected void AddCommand(Func<ICommand> commandAction)
+      public override void AddCommand(Func<ICommand> commandAction)
       {
-         this.DoWithinLatch(() => AddCommand(commandAction()));
+         this.DoWithinLatch(() => base.AddCommand(commandAction));
       }
 
       public IEnumerable<StartValueFormulaDTO> AllFormulas()
