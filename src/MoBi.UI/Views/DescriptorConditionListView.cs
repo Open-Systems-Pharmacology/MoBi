@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using DevExpress.XtraBars;
+using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -21,6 +22,7 @@ namespace MoBi.UI.Views
       private IDescriptorConditionListPresenter _presenter;
       private readonly GridViewBinder<IDescriptorConditionDTO> _gridViewBinder;
       public BarManager PopupBarManager { get; private set; }
+      private readonly UxRemoveButtonRepository _removeButtonRepository = new UxRemoveButtonRepository();
 
       public DescriptorConditionListView(IImageListRetriever imageListRetriever)
       {
@@ -54,7 +56,14 @@ namespace MoBi.UI.Views
          _gridViewBinder.Bind(dto => dto.Tag)
             .OnValueUpdating += (o, e) => OnEvent(() => onCriteriaTagChanged(o, e));
 
+         _gridViewBinder.AddUnboundColumn()
+            .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways)
+            .WithRepository(x => _removeButtonRepository)
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+
          gridControl.MouseClick += (o, e) => OnEvent(onGridClick, e);
+         _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveCondition(_gridViewBinder.FocusedElement));
       }
 
       private void onCriteriaTagChanged(IDescriptorConditionDTO descriptorCondition, PropertyValueSetEventArgs<string> e)
