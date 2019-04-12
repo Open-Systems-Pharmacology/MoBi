@@ -1,4 +1,3 @@
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain.Builder;
@@ -6,6 +5,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -32,11 +32,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          var subject = presenter.Subject;
 
-         bool doNotAddAllCondition = (subject.IsAnImplementationOf<SumFormula>() ||
-                                      subject.IsAnImplementationOf<ITransportBuilder>() ||
-                                      subject.IsAnImplementationOf<IContainerObserverBuilder>());
+         var doNotAddAllCondition = (subject.IsAnImplementationOf<SumFormula>() ||
+                                     subject.IsAnImplementationOf<ITransportBuilder>() ||
+                                     subject.IsAnImplementationOf<IContainerObserverBuilder>());
 
-         return new ContextMenuForDescriptorCondition(presenter, viewItem, allowAddAllConditon: !doNotAddAllCondition);
+         return new ContextMenuForDescriptorCondition(presenter, viewItem, allowAddAllCondition: !doNotAddAllCondition);
       }
    }
 }

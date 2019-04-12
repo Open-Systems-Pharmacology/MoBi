@@ -12,13 +12,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       protected readonly IDescriptorConditionListPresenter _presenter;
       private readonly IViewItem _viewItem;
-      private readonly bool _allowAddAllConditon;
+      private readonly bool _allowAddAllCondition;
 
-      public ContextMenuForDescriptorCondition(IDescriptorConditionListPresenter presenter, IViewItem viewItem, bool allowAddAllConditon = false)
+      public ContextMenuForDescriptorCondition(IDescriptorConditionListPresenter presenter, IViewItem viewItem, bool allowAddAllCondition = false)
       {
          _presenter = presenter;
          _viewItem = viewItem;
-         _allowAddAllConditon = allowAddAllConditon;
+         _allowAddAllCondition = allowAddAllCondition;
       }
 
       protected virtual IMenuBarItem CreateRemoveCommand(IDescriptorConditionDTO dto)
@@ -46,15 +46,22 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithActionCommand(() => _presenter.NewNotMatchTagCondition());
       }
 
+      protected virtual IMenuBarItem CreateAddNewInContainerCondition()
+      {
+         return CreateMenuButton.WithCaption(AppConstants.Captions.NewInContainerCondition)
+            .WithActionCommand(() => _presenter.NewInContainerCondition());
+      }
+
       public override IEnumerable<IMenuBarItem> AllMenuItems()
       {
          var allItems = new List<IMenuBarItem>
          {
             CreateAddNewMatchCondition(),
-            CreateAddNewNotMatchTagCondition()
+            CreateAddNewNotMatchTagCondition(),
+            CreateAddNewInContainerCondition()
          };
 
-         if (_allowAddAllConditon)
+         if (_allowAddAllCondition)
             allItems.Add(CreateAddAllCondition());
 
          var dto = _viewItem as IDescriptorConditionDTO;

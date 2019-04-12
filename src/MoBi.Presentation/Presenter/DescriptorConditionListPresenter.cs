@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -17,6 +15,8 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -32,6 +32,7 @@ namespace MoBi.Presentation.Presenter
       void NewMatchTagCondition();
       void NewMatchAllCondition();
       void NewNotMatchTagCondition();
+      void NewInContainerCondition();
    }
 
    public interface IDescriptorConditionListPresenter<T> : IDescriptorConditionListPresenter where T : IObjectBase
@@ -106,14 +107,9 @@ namespace MoBi.Presentation.Presenter
          updateCriteriaDescription();
       }
 
-      public void NewMatchTagCondition()
-      {
-         addCondition(TagType.Match);
-      }
-
       private void addCondition(TagType tagType)
       {
-         string tag = getNewTagName(tagType);
+         var tag = getNewTagName(tagType);
          if (string.IsNullOrEmpty(tag))
             return;
 
@@ -122,43 +118,38 @@ namespace MoBi.Presentation.Presenter
 
       private string getNewTagName(TagType tagType)
       {
-         if (tagType == TagType.MatchAll)
-            return AppConstants.MatchAll;
-
-         IEnumerable<string> forbidenTags;
-         string caption;
-         if (tagType == TagType.Match)
+         switch (tagType)
          {
-            caption = AppConstants.Dialog.NewMatchTag;
-            forbidenTags = _descriptorCriteria.OfType<MatchTagCondition>().Select(x => x.Tag);
+            case TagType.MatchAll:
+               return AppConstants.MatchAll;
+            case TagType.Match:
+               return getNewTagName<MatchTagCondition>(AppConstants.Dialog.NewMatchTag);
+            case TagType.NotMatch:
+               return getNewTagName<NotMatchTagCondition>(AppConstants.Dialog.NewNotMatchTag);
+            case TagType.InContainer:
+               return getNewTagName<InContainerCondition>(AppConstants.Dialog.NewInContainerTag);
+            default:
+               return string.Empty;
          }
-         else
-         {
-            caption = AppConstants.Dialog.NewNotMatchTag;
-            forbidenTags = _descriptorCriteria.OfType<NotMatchTagCondition>().Select(x => x.Tag);
-         }
-         return _dialogCreator.AskForInput(caption, AppConstants.Captions.Tag, String.Empty, forbidenTags, getUsedTags());
       }
 
-      private IEnumerable<string> getUsedTags()
+      private string getNewTagName<T>(string caption) where T : ITagCondition
       {
-         return _tagVisitor.AllTags();
+         var forbiddenTags = _descriptorCriteria.OfType<T>().Select(x => x.Tag);
+         return _dialogCreator.AskForInput(caption, AppConstants.Captions.Tag, String.Empty, forbiddenTags, getUsedTags());
       }
 
-      public void NewMatchAllCondition()
-      {
-         addCondition(TagType.MatchAll);
-      }
+      private IEnumerable<string> getUsedTags() => _tagVisitor.AllTags();
 
-      public void NewNotMatchTagCondition()
-      {
-         addCondition(TagType.NotMatch);
-      }
+      public void NewMatchTagCondition() => addCondition(TagType.Match);
 
-      public IObjectBase Subject
-      {
-         get { return _taggedObject; }
-      }
+      public void NewMatchAllCondition() => addCondition(TagType.MatchAll);
+
+      public void NewNotMatchTagCondition() => addCondition(TagType.NotMatch);
+
+      public void NewInContainerCondition() => addCondition(TagType.InContainer);
+
+      public IObjectBase Subject => _taggedObject;
 
       public void Handle(AddTagConditionEvent eventToHandle)
       {

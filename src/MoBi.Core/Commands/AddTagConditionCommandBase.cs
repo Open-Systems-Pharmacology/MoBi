@@ -67,7 +67,7 @@ namespace MoBi.Core.Commands
          return new RemoveMatchTagConditionCommandBase<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
    }
-
+    
    public class AddNotMatchTagConditionCommandBase<T> : AddTagConditionCommandBase<T> where T : class, IObjectBase
    {
       public AddNotMatchTagConditionCommandBase(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
@@ -84,6 +84,25 @@ namespace MoBi.Core.Commands
       protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveNotMatchTagConditionCommandBase<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+      }
+   }
+
+   public class AddInContainerConditionCommandBase<T> : AddTagConditionCommandBase<T> where T : class, IObjectBase
+   {
+      public AddInContainerConditionCommandBase(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
+         : base(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever)
+      {
+         ObjectType = AppConstants.Commands.InContainerCondition;
+      }
+
+      protected override ITagCondition CreateNewTagCondition()
+      {
+         return new InContainerCondition(_tag);
+      }
+
+      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new RemoveInContainerConditionCommandBase<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
    }
 }

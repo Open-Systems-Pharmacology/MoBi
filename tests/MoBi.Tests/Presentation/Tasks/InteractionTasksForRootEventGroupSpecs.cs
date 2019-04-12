@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Tasks
          var applications = _eventGroupBuilder.FindByName(Constants.APPLICATIONS);
          applications.ShouldNotBeNull();
          var tags = new Tags(new[] { new Tag(Constants.ROOT_CONTAINER_TAG)});
-         applications.SourceCriteria.IsSatisfiedBy(tags).ShouldBeTrue();
+         applications.SourceCriteria.IsSatisfiedBy(new EntityDescriptor{Tags = tags}).ShouldBeTrue();
       }
    }
 }

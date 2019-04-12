@@ -1,12 +1,12 @@
 ﻿using System;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -86,6 +86,25 @@ namespace MoBi.Core.Commands
       protected override void RemoveTagCondition(DescriptorCriteria descriptorCriteria)
       {
          descriptorCriteria.RemoveByTag<NotMatchTagCondition>(_tag);
+      }
+   }
+
+   public class RemoveInContainerConditionCommandBase<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
+   {
+      public RemoveInContainerConditionCommandBase(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
+         : base(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever)
+      {
+         ObjectType = AppConstants.Commands.InContainerCondition;
+      }
+
+      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new AddInContainerConditionCommandBase<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+      }
+
+      protected override void RemoveTagCondition(DescriptorCriteria descriptorCriteria)
+      {
+         descriptorCriteria.RemoveByTag<InContainerCondition>(_tag);
       }
    }
 }
