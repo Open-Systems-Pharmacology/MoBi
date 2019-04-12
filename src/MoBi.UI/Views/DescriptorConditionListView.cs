@@ -60,7 +60,7 @@ namespace MoBi.UI.Views
             .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeButtonRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
          gridControl.MouseClick += (o, e) => OnEvent(onGridClick, e);
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveCondition(_gridViewBinder.FocusedElement));

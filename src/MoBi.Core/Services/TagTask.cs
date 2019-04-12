@@ -69,13 +69,13 @@ namespace MoBi.Core.Services
          switch (tagType)
          {
             case TagType.Match:
-               return new AddMatchTagConditionCommandBase<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddMatchTagConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
             case TagType.NotMatch:
-               return new AddNotMatchTagConditionCommandBase<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddNotMatchTagConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
             case TagType.MatchAll:
-               return new AddMatchAllConditionCommandBase<T>(taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddMatchAllConditionCommand<T>(taggedObject, buildingBlock, descriptorCriteriaRetriever);
             case TagType.InContainer:
-               return new AddInContainerConditionCommandBase<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddInContainerConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
             default:
                throw new ArgumentOutOfRangeException(nameof(tagType));
          }
@@ -86,13 +86,13 @@ namespace MoBi.Core.Services
          switch (tagType)
          {
             case TagType.Match:
-               return new RemoveMatchTagConditionCommandBase<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveMatchTagConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
             case TagType.NotMatch:
-               return new RemoveNotMatchTagConditionCommandBase<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveNotMatchTagConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
             case TagType.MatchAll:
-               return new RemoveMatchAllConditionCommandBase<T>(taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveMatchAllConditionCommand<T>(taggedObject, buildingBlock, descriptorCriteriaRetriever);
             case TagType.InContainer:
-               return new RemoveInContainerConditionCommandBase<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveInContainerConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
             default:
                throw new ArgumentOutOfRangeException(nameof(tagType));
          }

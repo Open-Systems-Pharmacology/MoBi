@@ -4,7 +4,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddSourceMatchTagConditionToTransportBuilderCommand : AddMatchTagConditionCommandBase<ITransportBuilder>
+   public class AddSourceMatchTagConditionToTransportBuilderCommand : AddMatchTagConditionCommand<ITransportBuilder>
    {
       public AddSourceMatchTagConditionToTransportBuilderCommand(string tag, ITransportBuilder transportBuilder, IBuildingBlock buildingBlock)
          : base(tag, transportBuilder, buildingBlock, x => x.SourceCriteria)
@@ -17,7 +17,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddSourceNotMatchTagConditionToTransportBuilderCommand : AddNotMatchTagConditionCommandBase<ITransportBuilder>
+   public class AddSourceNotMatchTagConditionToTransportBuilderCommand : AddNotMatchTagConditionCommand<ITransportBuilder>
    {
       public AddSourceNotMatchTagConditionToTransportBuilderCommand(string tag, ITransportBuilder transportBuilder, IBuildingBlock buildingBlock)
          : base(tag, transportBuilder, buildingBlock, x => x.SourceCriteria)
@@ -30,7 +30,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddTargetMatchTagConditionToTransportBuilderCommand : AddMatchTagConditionCommandBase<ITransportBuilder>
+   public class AddTargetMatchTagConditionToTransportBuilderCommand : AddMatchTagConditionCommand<ITransportBuilder>
    {
       public AddTargetMatchTagConditionToTransportBuilderCommand(string tag, ITransportBuilder transportBuilder, IBuildingBlock buildingBlock)
          : base(tag, transportBuilder, buildingBlock, x => x.TargetCriteria)
@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddTargetNotMatchTagConditionToTransportBuilderCommand : AddNotMatchTagConditionCommandBase<ITransportBuilder>
+   public class AddTargetNotMatchTagConditionToTransportBuilderCommand : AddNotMatchTagConditionCommand<ITransportBuilder>
    {
       public AddTargetNotMatchTagConditionToTransportBuilderCommand(string tag, ITransportBuilder transportBuilder, IBuildingBlock buildingBlock)
          : base(tag, transportBuilder, buildingBlock, x => x.TargetCriteria)
@@ -56,7 +56,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveSourceMatchTagConditionFromTranportBuilderCommand : RemoveMatchTagConditionCommandBase<ITransportBuilder>
+   public class RemoveSourceMatchTagConditionFromTranportBuilderCommand : RemoveMatchTagConditionCommand<ITransportBuilder>
    {
       public RemoveSourceMatchTagConditionFromTranportBuilderCommand(string tag, ITransportBuilder transportBuilder, IBuildingBlock buildingBlock)
          : base(tag, transportBuilder, buildingBlock, x => x.SourceCriteria)
@@ -69,7 +69,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveSourceNotMatchTagConditionFromTranportBuilderCommand : RemoveNotMatchTagConditionCommandBase<ITransportBuilder>
+   public class RemoveSourceNotMatchTagConditionFromTranportBuilderCommand : RemoveNotMatchTagConditionCommand<ITransportBuilder>
    {
       public RemoveSourceNotMatchTagConditionFromTranportBuilderCommand(string tag, ITransportBuilder transportBuilder, IBuildingBlock buildingBlock)
          : base(tag, transportBuilder, buildingBlock, x => x.SourceCriteria)
@@ -82,7 +82,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveTargetMatchTagConditionFromTranportBuilderCommand : RemoveMatchTagConditionCommandBase<ITransportBuilder>
+   public class RemoveTargetMatchTagConditionFromTranportBuilderCommand : RemoveMatchTagConditionCommand<ITransportBuilder>
    {
       public RemoveTargetMatchTagConditionFromTranportBuilderCommand(string tag, ITransportBuilder transportBuilder, IBuildingBlock buildingBlock)
          : base(tag, transportBuilder, buildingBlock, x => x.TargetCriteria)
@@ -95,7 +95,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveTargetNotMatchTagConditionFromTransportBuilderCommand : RemoveNotMatchTagConditionCommandBase<ITransportBuilder>
+   public class RemoveTargetNotMatchTagConditionFromTransportBuilderCommand : RemoveNotMatchTagConditionCommand<ITransportBuilder>
    {
       public RemoveTargetNotMatchTagConditionFromTransportBuilderCommand(string tag, ITransportBuilder transportBuilder, IBuildingBlock buildingBlock)
          : base(tag, transportBuilder, buildingBlock, x => x.TargetCriteria)

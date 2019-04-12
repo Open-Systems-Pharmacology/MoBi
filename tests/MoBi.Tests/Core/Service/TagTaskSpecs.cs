@@ -37,7 +37,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_add_the_tag_to_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<AddMatchTagConditionCommandBase<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<AddMatchTagConditionCommand<IObserverBuilder>>();
       }
    }
 
@@ -53,7 +53,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_add_the_tag_to_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<AddNotMatchTagConditionCommandBase<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<AddNotMatchTagConditionCommand<IObserverBuilder>>();
       }
    }
 
@@ -69,7 +69,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_add_the_tag_to_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<AddMatchAllConditionCommandBase<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<AddMatchAllConditionCommand<IObserverBuilder>>();
       }
    }
 
@@ -91,7 +91,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_remove_the_tag_from_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<RemoveNotMatchTagConditionCommandBase<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<RemoveNotMatchTagConditionCommand<IObserverBuilder>>();
       }
    }
 
@@ -114,7 +114,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_remove_the_tag_from_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<RemoveMatchTagConditionCommandBase<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<RemoveMatchTagConditionCommand<IObserverBuilder>>();
       }
    }
 

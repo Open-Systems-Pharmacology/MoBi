@@ -133,9 +133,9 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private string getNewTagName<T>(string caption) where T : ITagCondition
+      private string getNewTagName<TTagCondition>(string caption) where TTagCondition : ITagCondition
       {
-         var forbiddenTags = _descriptorCriteria.OfType<T>().Select(x => x.Tag);
+         var forbiddenTags = _descriptorCriteria.OfType<TTagCondition>().Select(x => x.Tag);
          return _dialogCreator.AskForInput(caption, AppConstants.Captions.Tag, String.Empty, forbiddenTags, getUsedTags());
       }
 

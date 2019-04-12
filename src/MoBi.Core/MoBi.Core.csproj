@@ -322,7 +322,6 @@
     <Compile Include="Commands\ICommandCollector.cs" />
     <Compile Include="Commands\MoBiMacroCommand.cs" />
     <Compile Include="Commands\MoveDiagramNodeCommand.cs" />
-    <Compile Include="Commands\ObserverBuilderTagCommands.cs" />
     <Compile Include="Commands\OutputIntervalInSimulationCommand.cs" />
     <Compile Include="Commands\ReactionBuilderItemCommands.cs" />
     <Compile Include="Commands\RemoveBuildingBlockCommand.cs" />

@@ -30,9 +30,9 @@ namespace MoBi.Core.Commands
       protected abstract void RemoveTagCondition(DescriptorCriteria descriptorCriteria);
    }
 
-   public class RemoveMatchAllConditionCommandBase<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
+   public class RemoveMatchAllConditionCommand<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
    {
-      public RemoveMatchAllConditionCommandBase(T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
+      public RemoveMatchAllConditionCommand(T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
          : base(string.Empty, taggedObject, buildingBlock, descriptorCriteriaRetriever)
       {
          ObjectType = AppConstants.Commands.MatchAllCondition;
@@ -40,7 +40,7 @@ namespace MoBi.Core.Commands
 
       protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new AddMatchAllConditionCommandBase<T>(_taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+         return new AddMatchAllConditionCommand<T>(_taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
 
       protected override void RemoveTagCondition(DescriptorCriteria descriptorCriteria)
@@ -51,9 +51,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveMatchTagConditionCommandBase<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
+   public class RemoveMatchTagConditionCommand<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
    {
-      public RemoveMatchTagConditionCommandBase(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
+      public RemoveMatchTagConditionCommand(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
          : base(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever)
       {
          ObjectType = AppConstants.Commands.MatchTagCondition;
@@ -61,7 +61,7 @@ namespace MoBi.Core.Commands
 
       protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new AddMatchTagConditionCommandBase<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+         return new AddMatchTagConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
 
       protected override void RemoveTagCondition(DescriptorCriteria descriptorCriteria)
@@ -70,9 +70,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveNotMatchTagConditionCommandBase<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
+   public class RemoveNotMatchTagConditionCommand<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
    {
-      public RemoveNotMatchTagConditionCommandBase(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
+      public RemoveNotMatchTagConditionCommand(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
          : base(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever)
       {
          ObjectType = AppConstants.Commands.NotMatchTagCondition;
@@ -80,7 +80,7 @@ namespace MoBi.Core.Commands
 
       protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new AddNotMatchTagConditionCommandBase<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+         return new AddNotMatchTagConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
 
       protected override void RemoveTagCondition(DescriptorCriteria descriptorCriteria)
@@ -89,9 +89,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveInContainerConditionCommandBase<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
+   public class RemoveInContainerConditionCommand<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
    {
-      public RemoveInContainerConditionCommandBase(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
+      public RemoveInContainerConditionCommand(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
          : base(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever)
       {
          ObjectType = AppConstants.Commands.InContainerCondition;
@@ -99,7 +99,7 @@ namespace MoBi.Core.Commands
 
       protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new AddInContainerConditionCommandBase<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+         return new AddInContainerConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
 
       protected override void RemoveTagCondition(DescriptorCriteria descriptorCriteria)

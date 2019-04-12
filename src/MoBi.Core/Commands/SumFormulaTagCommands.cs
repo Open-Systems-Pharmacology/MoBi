@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
-   public class AddParameterMatchTagConditionToSumFormulaCommand : AddMatchTagConditionCommandBase<SumFormula>
+   public class AddParameterMatchTagConditionToSumFormulaCommand : AddMatchTagConditionCommand<SumFormula>
    {
       public AddParameterMatchTagConditionToSumFormulaCommand(string tag, SumFormula sumFormula, IBuildingBlock buildingBlock)
          : base(tag, sumFormula, buildingBlock, x => x.Criteria)
@@ -18,7 +18,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveParameterMatchTagConditionFromSumFormulaCommand : RemoveMatchTagConditionCommandBase<SumFormula>
+   public class RemoveParameterMatchTagConditionFromSumFormulaCommand : RemoveMatchTagConditionCommand<SumFormula>
    {
       public RemoveParameterMatchTagConditionFromSumFormulaCommand(string tag, SumFormula sumFormula, IBuildingBlock buildingBlock)
          : base(tag, sumFormula, buildingBlock, x => x.Criteria)
@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddParameterNotMatchTagConditionToSumFormulaCommand : AddNotMatchTagConditionCommandBase<SumFormula>
+   public class AddParameterNotMatchTagConditionToSumFormulaCommand : AddNotMatchTagConditionCommand<SumFormula>
    {
       public AddParameterNotMatchTagConditionToSumFormulaCommand(string tag, SumFormula sumFormula, IBuildingBlock buildingBlock)
          : base(tag, sumFormula, buildingBlock, x => x.Criteria)
@@ -44,7 +44,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveParameterNotMatchTagConditionFromSumFormulaCommand : RemoveNotMatchTagConditionCommandBase<SumFormula>
+   public class RemoveParameterNotMatchTagConditionFromSumFormulaCommand : RemoveNotMatchTagConditionCommand<SumFormula>
    {
       public RemoveParameterNotMatchTagConditionFromSumFormulaCommand(string tag, SumFormula sumFormula, IBuildingBlock buildingBlock)
          : base(tag, sumFormula, buildingBlock, x => x.Criteria)
