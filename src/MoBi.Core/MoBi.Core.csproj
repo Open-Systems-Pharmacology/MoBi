@@ -356,10 +356,8 @@
     <Compile Include="Commands\SimulationChangeCommandBase.cs" />
     <Compile Include="Commands\SimulationChangeCommandBaseExtensions.cs" />
     <Compile Include="Commands\StartValueValueOrUnitChangedCommand.cs" />
-    <Compile Include="Commands\SumFormulaTagCommands.cs" />
     <Compile Include="Commands\SwapBuildingBlockCommand.cs" />
     <Compile Include="Commands\TagConditionCommandBase.cs" />
-    <Compile Include="Commands\TransportBuilderTagCommands.cs" />
     <Compile Include="Commands\UpdateDimensionInStartValueCommand.cs" />
     <Compile Include="Commands\UpdateMoleculeAmountScaleDivisorInSimulationCommand.cs" />
     <Compile Include="Commands\UpdateMoleculeAmountScaleDivisorsInSimulationCommand.cs" />
