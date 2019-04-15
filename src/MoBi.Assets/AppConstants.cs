@@ -19,6 +19,7 @@ namespace MoBi.Assets
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
       public static readonly string InContainer = "in container";
+      public static readonly string NotInContainer = "not in container";
       public static readonly string NullFormulaDescription = "No Formula";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
@@ -234,6 +235,7 @@ namespace MoBi.Assets
          public static readonly string MatchTagCondition = "Match Tag Condition";
          public static readonly string NotMatchTagCondition = "Not Match Tag Condition";
          public static readonly string InContainerCondition = "In Container Condition";
+         public static readonly string NotInContainerCondition = "Not In Container Condition";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
          public static readonly string RefreshStartValuesFromBuildingBlocks = "Refreshing start values from original building blocks";
@@ -848,7 +850,8 @@ namespace MoBi.Assets
 
          public static readonly string NewMatchTag = "Tag to match";
          public static readonly string NewNotMatchTag = "Tag not to match";
-         public static readonly string NewInContainerTag = "Name of container";
+         public static readonly string NewInContainerTag = "Tag of container hierarchy to match";
+         public static readonly string NewNotInContainerTag = "Tag of container hierarchy not to match";
          public static readonly string AskForPopulationWorkingDirectory = "Select Working Directory for Population Simulation";
          public static readonly string AskForParameterIdentificationWorkingDirectory = "Select Working Directory for Parameter Identification";
          public static readonly string AskForSave = "Save as ";
@@ -1339,13 +1342,13 @@ namespace MoBi.Assets
          public static readonly string SaveLayoutToFile = "Save Layout Template...";
          public static readonly string Stoichiometry = "Stoichiometry";
          public static readonly string AboutProduct = "About...";
-         public static readonly string SelectChangedEntiy = "Select changed entity";
+         public static readonly string SelectChangedEntity = "Select changed entity";
          public static readonly string TransporterName = "Transporter alias";
          public static readonly string CalculatedForFollowingMolecules = "Calculated for following molecules";
          public const string Description = "Description";
          public static readonly string Assignment = "Assignment";
          public static readonly string Condition = "Condition";
-         public static readonly string TranporterMoleculeName = "Transporter molecule name";
+         public static readonly string TransporterMoleculeName = "Transporter molecule name";
          public static readonly string Reset = "Reset";
          public static readonly string EnterNewFormulaName = "Enter new name for formula";
          public static readonly string CloneFormulaTitle = "Clone formula";
@@ -1401,10 +1404,11 @@ namespace MoBi.Assets
          public static readonly string SumFormula = "Sum Formula";
          public static readonly string Criteria = "Parameter criteria";
          public static readonly string RemoveCondition = "Remove condition";
-         public static readonly string NewMatchTagCondition = "New match tag condition";
-         public static readonly string NewNotMatchTagCondition = "New not match tag condition";
-         public static readonly string NewInContainerCondition = "New in container condition";
-         public static readonly string AddMatchAllCondition = "Add match all tag condition";
+         public static readonly string NewMatchTagCondition = "New \"Match tag\" condition";
+         public static readonly string NewNotMatchTagCondition = "New \"Not match tag\" condition";
+         public static readonly string NewInContainerCondition = "New \"In container\" condition";
+         public static readonly string NewNotInContainerCondition = "New \"Not in container\" condition";
+         public static readonly string AddMatchAllCondition = "Add \"Match all tag\" condition";
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
@@ -1429,7 +1433,7 @@ namespace MoBi.Assets
          public static readonly string UsedCalculationMethods = "Used Calculation Methods";
          public static readonly string DisplayNameYValue = "Y-Value";
          public static readonly string NewValuePoint = "New Value Point";
-         public static readonly string RealativeContainerPath = "Change Realtive Container Path";
+         public static readonly string ChangeRelativeContainerPath = "Change Relative Container Path";
          public static readonly string Details = "Details";
          public static readonly string LoadingDiagram = "Loading Diagram...";
          public static readonly string LoadingProject = "Loading Project...";

@@ -51,6 +51,15 @@ namespace MoBi.Presentation.DTO
       public string TagDescription => AppConstants.InContainer;
    }
 
+   internal class NotInContainerConditionDTO : IDescriptorConditionDTO
+   {
+      public string Tag { get; set; }
+
+      public TagType TagType => TagType.NotInContainer;
+
+      public string TagDescription => AppConstants.NotInContainer;
+   }
+
    public class ContainerDescriptorRootItem : IRootViewItem<IDescriptorConditionDTO>
    {
    }

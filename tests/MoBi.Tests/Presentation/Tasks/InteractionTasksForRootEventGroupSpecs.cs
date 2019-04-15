@@ -68,8 +68,9 @@ namespace MoBi.Presentation.Tasks
       {
          var applications = _eventGroupBuilder.FindByName(Constants.APPLICATIONS);
          applications.ShouldNotBeNull();
-         var tags = new Tags(new[] { new Tag(Constants.ROOT_CONTAINER_TAG)});
-         applications.SourceCriteria.IsSatisfiedBy(new EntityDescriptor{Tags = tags}).ShouldBeTrue();
+         var rootContainer = new Container();
+         rootContainer.AddTag(Constants.ROOT_CONTAINER_TAG);
+         applications.SourceCriteria.IsSatisfiedBy(new EntityDescriptor(rootContainer)).ShouldBeTrue();
       }
    }
 }

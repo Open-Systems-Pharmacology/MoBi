@@ -1,8 +1,8 @@
 ﻿using System;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -67,7 +67,7 @@ namespace MoBi.Core.Commands
          return new RemoveMatchTagConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
    }
-    
+
    public class AddNotMatchTagConditionCommand<T> : AddTagConditionCommandBase<T> where T : class, IObjectBase
    {
       public AddNotMatchTagConditionCommand(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
@@ -103,6 +103,25 @@ namespace MoBi.Core.Commands
       protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveInContainerConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+      }
+   }
+
+   public class AddNotInContainerConditionCommand<T> : AddTagConditionCommandBase<T> where T : class, IObjectBase
+   {
+      public AddNotInContainerConditionCommand(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
+         : base(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever)
+      {
+         ObjectType = AppConstants.Commands.NotInContainerCondition;
+      }
+
+      protected override ITagCondition CreateNewTagCondition()
+      {
+         return new NotInContainerCondition(_tag);
+      }
+
+      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new RemoveNotInContainerConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
    }
 }

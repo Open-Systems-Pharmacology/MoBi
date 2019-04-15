@@ -107,4 +107,24 @@ namespace MoBi.Core.Commands
          descriptorCriteria.RemoveByTag<InContainerCondition>(_tag);
       }
    }
+
+
+   public class RemoveNotInContainerConditionCommand<T> : RemoveTagConditionCommandBase<T> where T : class, IObjectBase
+   {
+      public RemoveNotInContainerConditionCommand(string tag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever)
+         : base(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever)
+      {
+         ObjectType = AppConstants.Commands.NotInContainerCondition;
+      }
+
+      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new AddNotInContainerConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+      }
+
+      protected override void RemoveTagCondition(DescriptorCriteria descriptorCriteria)
+      {
+         descriptorCriteria.RemoveByTag<NotInContainerCondition>(_tag);
+      }
+   }
 }

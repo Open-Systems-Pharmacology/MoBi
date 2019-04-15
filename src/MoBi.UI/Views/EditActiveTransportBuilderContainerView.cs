@@ -28,7 +28,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutControlItemName.Text = AppConstants.Captions.TranporterMoleculeName.FormatForLabel();
+         layoutControlItemName.Text = AppConstants.Captions.TransporterMoleculeName.FormatForLabel();
          layoutControlItemTranportName.Text = AppConstants.Captions.TransporterName.FormatForLabel();
          layoutControlItemTranportName.OptionsToolTip.ToolTip = ToolTips.TransporterName;
          layoutControlItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();

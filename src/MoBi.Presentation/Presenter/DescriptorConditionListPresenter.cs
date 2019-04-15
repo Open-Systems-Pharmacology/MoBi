@@ -33,6 +33,7 @@ namespace MoBi.Presentation.Presenter
       void NewMatchAllCondition();
       void NewNotMatchTagCondition();
       void NewInContainerCondition();
+      void NewNotInContainerCondition();
    }
 
    public interface IDescriptorConditionListPresenter<T> : IDescriptorConditionListPresenter where T : IObjectBase
@@ -128,6 +129,8 @@ namespace MoBi.Presentation.Presenter
                return getNewTagName<NotMatchTagCondition>(AppConstants.Dialog.NewNotMatchTag);
             case TagType.InContainer:
                return getNewTagName<InContainerCondition>(AppConstants.Dialog.NewInContainerTag);
+            case TagType.NotInContainer:
+               return getNewTagName<NotInContainerCondition>(AppConstants.Dialog.NewNotInContainerTag);
             default:
                return string.Empty;
          }
@@ -148,6 +151,8 @@ namespace MoBi.Presentation.Presenter
       public void NewNotMatchTagCondition() => addCondition(TagType.NotMatch);
 
       public void NewInContainerCondition() => addCondition(TagType.InContainer);
+
+      public void NewNotInContainerCondition() => addCondition(TagType.NotInContainer);
 
       public IObjectBase Subject => _taggedObject;
 

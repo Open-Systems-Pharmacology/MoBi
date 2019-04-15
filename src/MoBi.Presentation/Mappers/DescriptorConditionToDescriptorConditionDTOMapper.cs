@@ -23,6 +23,8 @@ namespace MoBi.Presentation.Mappers
                return new MatchConditionDTO {Tag = matchTagCondition.Tag};
             case NotMatchTagCondition notMatchTagCondition:
                return new NotMatchConditionDTO {Tag = notMatchTagCondition.Tag};
+            case NotInContainerCondition notInContainerCondition:
+               return new NotInContainerConditionDTO {Tag = notInContainerCondition.Tag};
             default:
                throw new ArgumentException($"Cannot create descriptor condition for {descriptorCondition.GetType().Name}");
          }

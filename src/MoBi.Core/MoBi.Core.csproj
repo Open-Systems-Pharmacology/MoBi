@@ -115,17 +115,17 @@
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.31, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.31\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.33\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.31, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.31\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.33\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.31, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.31\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.33\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.5.0.31, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.31\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.33\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -282,7 +282,7 @@
     <Compile Include="Commands\AddParameterBuilderCommand.cs" />
     <Compile Include="Commands\AddPassiveTransportBuilderCommand.cs" />
     <Compile Include="Commands\AddTagCommand.cs" />
-    <Compile Include="Commands\AddTagConditionCommandBase.cs" />
+    <Compile Include="Commands\AddTagConditionCommand.cs" />
     <Compile Include="Commands\AddTopContainerCommand.cs" />
     <Compile Include="Commands\AddValuePointCommand.cs" />
     <Compile Include="Commands\BuildingBlockChangeBaseCommandExtensions.cs" />
@@ -330,7 +330,7 @@
     <Compile Include="Commands\RemoveStartValueFromBuildingBlockCommand.cs" />
     <Compile Include="Commands\RemoveObjectBaseCommand.cs" />
     <Compile Include="Commands\RemoveHistoricResultFromSimulationCommand.cs" />
-    <Compile Include="Commands\RemoveTagConditionCommandBase.cs" />
+    <Compile Include="Commands\RemoveTagConditionCommand.cs" />
     <Compile Include="Commands\RenameModelCommand.cs" />
     <Compile Include="Commands\RenameObjectBaseCommand.cs" />
     <Compile Include="Commands\RenameSimulationResultsCommand.cs" />

@@ -52,13 +52,22 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithActionCommand(() => _presenter.NewInContainerCondition());
       }
 
+
+      protected virtual IMenuBarItem CreateAddNewNotInContainerCondition()
+      {
+         return CreateMenuButton.WithCaption(AppConstants.Captions.NewNotInContainerCondition)
+            .WithActionCommand(() => _presenter.NewNotInContainerCondition());
+      }
+
+
       public override IEnumerable<IMenuBarItem> AllMenuItems()
       {
          var allItems = new List<IMenuBarItem>
          {
             CreateAddNewMatchCondition(),
             CreateAddNewNotMatchTagCondition(),
-            CreateAddNewInContainerCondition()
+            CreateAddNewInContainerCondition().AsGroupStarter(),
+            CreateAddNewNotInContainerCondition(),
          };
 
          if (_allowAddAllCondition)
