@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Assets;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Assets
@@ -19,6 +18,8 @@ namespace MoBi.Assets
       public static readonly string NotMatch = "not tagged with";
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
+      public static readonly string InContainer = "in container";
+      public static readonly string NotInContainer = "not in container";
       public static readonly string NullFormulaDescription = "No Formula";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
@@ -61,7 +62,7 @@ namespace MoBi.Assets
          public static readonly string LYMPH_FLOW_RATE_INCL_MUCOSA = "Lymph flow rate (incl. mucosa)";
          public static readonly string FLUID_RECIRCULATION_FLOW_RATE = "Fluid recirculation flow rate";
          public static readonly string FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA = "Fluid recirculation flow rate (incl. mucosa)";
-         public static readonly string CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR= "Calculated specific intestinal permeability (transcellular)";
+         public static readonly string CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR = "Calculated specific intestinal permeability (transcellular)";
       }
 
       public static class Groups
@@ -97,7 +98,7 @@ namespace MoBi.Assets
 
          public static readonly string GlobalEventTag = "Events";
 
-         public static readonly IReadOnlyList<string> PKSimStaticObservers = new []
+         public static readonly IReadOnlyList<string> PKSimStaticObservers = new[]
          {
             "Plasma (Peripheral Venous Blood)",
             "Plasma Unbound (Peripheral Venous Blood)",
@@ -233,6 +234,8 @@ namespace MoBi.Assets
          public static readonly string MatchAllCondition = "Match All Condition";
          public static readonly string MatchTagCondition = "Match Tag Condition";
          public static readonly string NotMatchTagCondition = "Not Match Tag Condition";
+         public static readonly string InContainerCondition = "In Container Condition";
+         public static readonly string NotInContainerCondition = "Not In Container Condition";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
          public static readonly string RefreshStartValuesFromBuildingBlocks = "Refreshing start values from original building blocks";
@@ -248,7 +251,6 @@ namespace MoBi.Assets
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
-
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
@@ -390,6 +392,7 @@ namespace MoBi.Assets
             {
                display = display.Remove(display.Count() - 2);
             }
+
             return $"Create new {ObjectTypes.MoleculeBuildingBlock}: '{name}' from {display}";
          }
 
@@ -708,7 +711,7 @@ namespace MoBi.Assets
             return updateParameterPropertyIn(parameterName, newValue, oldValue, simulationName, propertyName, SimulationType);
          }
 
-         private static string updateParameterPropertyIn(string parameterName, string newValue, string oldValue, string containerName, string propertyName, string containerType )
+         private static string updateParameterPropertyIn(string parameterName, string newValue, string oldValue, string containerName, string propertyName, string containerType)
          {
             return $"Changed {ParameterType} {parameterName} {propertyName} from '{oldValue}' to '{newValue}' in {containerType} {containerName}";
          }
@@ -847,6 +850,8 @@ namespace MoBi.Assets
 
          public static readonly string NewMatchTag = "Tag to match";
          public static readonly string NewNotMatchTag = "Tag not to match";
+         public static readonly string NewInContainerTag = "Tag of container hierarchy to match";
+         public static readonly string NewNotInContainerTag = "Tag of container hierarchy not to match";
          public static readonly string AskForPopulationWorkingDirectory = "Select Working Directory for Population Simulation";
          public static readonly string AskForParameterIdentificationWorkingDirectory = "Select Working Directory for Parameter Identification";
          public static readonly string AskForSave = "Save as ";
@@ -897,7 +902,6 @@ namespace MoBi.Assets
          {
             return string.Format("Commited new values To {0}: '{1}'. Changes made at the {0} are still present", typeName, name);
          }
-
       }
 
       public static class Filter
@@ -1199,6 +1203,7 @@ namespace MoBi.Assets
             {
                display = display.Remove(display.Count() - 2);
             }
+
             return $"'{display}' are not imported to prevent errors, because it is already imported as child of another Container. \n You may add them in a second step if necessary";
          }
 
@@ -1337,13 +1342,13 @@ namespace MoBi.Assets
          public static readonly string SaveLayoutToFile = "Save Layout Template...";
          public static readonly string Stoichiometry = "Stoichiometry";
          public static readonly string AboutProduct = "About...";
-         public static readonly string SelectChangedEntiy = "Select changed entity";
+         public static readonly string SelectChangedEntity = "Select changed entity";
          public static readonly string TransporterName = "Transporter alias";
          public static readonly string CalculatedForFollowingMolecules = "Calculated for following molecules";
          public const string Description = "Description";
          public static readonly string Assignment = "Assignment";
          public static readonly string Condition = "Condition";
-         public static readonly string TranporterMoleculeName = "Transporter molecule name";
+         public static readonly string TransporterMoleculeName = "Transporter molecule name";
          public static readonly string Reset = "Reset";
          public static readonly string EnterNewFormulaName = "Enter new name for formula";
          public static readonly string CloneFormulaTitle = "Clone formula";
@@ -1386,7 +1391,7 @@ namespace MoBi.Assets
          public static readonly string Kinetic = "Kinetic";
          public static readonly string ShowAdvancedParameters = "Show advanced parameters";
          public static readonly string GroupParameters = "Group parameters";
-         public static readonly string IsAdvancedParamerter = "Advanced parameter";
+         public static readonly string IsAdvancedParameter = "Advanced parameter";
          public static readonly string CaseSensitive = "Match case";
          public static readonly string AddValuePoint = "Add Point";
          public static readonly string UseDerivedValues = "Use derivative values";
@@ -1399,9 +1404,11 @@ namespace MoBi.Assets
          public static readonly string SumFormula = "Sum Formula";
          public static readonly string Criteria = "Parameter criteria";
          public static readonly string RemoveCondition = "Remove condition";
-         public static readonly string NewMatchTagCondition = "New match tag condition";
-         public static readonly string NewNotMatchTagCondition = "New not match tag condition";
-         public static readonly string AddMatchAllCondition = "Add match all tag condition";
+         public static readonly string NewMatchTagCondition = "New \"Match tag\" condition";
+         public static readonly string NewNotMatchTagCondition = "New \"Not match tag\" condition";
+         public static readonly string NewInContainerCondition = "New \"In container\" condition";
+         public static readonly string NewNotInContainerCondition = "New \"Not in container\" condition";
+         public static readonly string AddMatchAllCondition = "Add \"Match all tag\" condition";
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
@@ -1416,7 +1423,7 @@ namespace MoBi.Assets
          public static readonly string MoleculeType = "Molecule Type";
          public static readonly string IncludeList = "Include List";
          public static readonly string ExcludeList = "Exclude List";
-         public static readonly string OneTimeEvent = "One Time";    
+         public static readonly string OneTimeEvent = "One Time";
          public static readonly string Settings = "Settings";
          public static readonly string SolverSettings = "Solver Settings";
          public static readonly string FinalOptions = "Final Options";
@@ -1426,7 +1433,7 @@ namespace MoBi.Assets
          public static readonly string UsedCalculationMethods = "Used Calculation Methods";
          public static readonly string DisplayNameYValue = "Y-Value";
          public static readonly string NewValuePoint = "New Value Point";
-         public static readonly string RealativeContainerPath = "Change Realtive Container Path";
+         public static readonly string ChangeRelativeContainerPath = "Change Relative Container Path";
          public static readonly string Details = "Details";
          public static readonly string LoadingDiagram = "Loading Diagram...";
          public static readonly string LoadingProject = "Loading Project...";
@@ -1594,7 +1601,9 @@ namespace MoBi.Assets
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
          public static readonly string Chart = "Chart";
+
          public static readonly string List = "List";
+
          //TODO MOVE TO CORE
          public static readonly string UserDefined = "User Defined";
 
@@ -1994,7 +2003,6 @@ namespace MoBi.Assets
          "TANH",
          "NEQ"
       };
-
 
       public static readonly string None = "<None>";
       public static readonly string PKSimTopContainer = "Organism";

@@ -15,7 +15,7 @@ namespace MoBi.Presentation.DTO
    {
       public string Tag
       {
-         get { return string.Empty; }
+         get => string.Empty;
          set { }
       }
 
@@ -24,7 +24,7 @@ namespace MoBi.Presentation.DTO
       public string TagDescription => AppConstants.MatchAll;
    }
 
-   internal class MatchConnditionDTO : IDescriptorConditionDTO
+   internal class MatchConditionDTO : IDescriptorConditionDTO
    {
       public string Tag { get; set; }
 
@@ -33,13 +33,31 @@ namespace MoBi.Presentation.DTO
       public string TagDescription => AppConstants.Match;
    }
 
-   internal class NotMatchConnditionDTO : IDescriptorConditionDTO
+   internal class NotMatchConditionDTO : IDescriptorConditionDTO
    {
       public string Tag { get; set; }
 
       public TagType TagType => TagType.NotMatch;
 
       public string TagDescription => AppConstants.NotMatch;
+   }
+
+   internal class InContainerConditionDTO : IDescriptorConditionDTO
+   {
+      public string Tag { get; set; }
+
+      public TagType TagType => TagType.InContainer;
+
+      public string TagDescription => AppConstants.InContainer;
+   }
+
+   internal class NotInContainerConditionDTO : IDescriptorConditionDTO
+   {
+      public string Tag { get; set; }
+
+      public TagType TagType => TagType.NotInContainer;
+
+      public string TagDescription => AppConstants.NotInContainer;
    }
 
    public class ContainerDescriptorRootItem : IRootViewItem<IDescriptorConditionDTO>

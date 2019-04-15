@@ -37,7 +37,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Text = AppConstants.Captions.SelectChangedEntiy;
+         Text = AppConstants.Captions.SelectChangedEntity;
       }
 
       public void BindTo(IEnumerable<IObjectBaseDTO> dtos)

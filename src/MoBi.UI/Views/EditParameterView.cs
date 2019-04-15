@@ -128,7 +128,7 @@ namespace MoBi.UI.Views
          cbDimension.ToolTip = ToolTips.ParameterView.ParameterDimension;
          htmlEditor.ToolTip = ToolTips.Description;
          chkHasRHS.ToolTip = ToolTips.ParameterView.IsStateVariable;
-         chkAdvancedParameter.Text = AppConstants.Captions.IsAdvancedParamerter;
+         chkAdvancedParameter.Text = AppConstants.Captions.IsAdvancedParameter;
          chkPersistable.Text = AppConstants.Captions.Persistable;
          chkPersistable.ToolTip = ToolTips.ParameterView.Persistable;
          chkCanBeVariedInPopulation.Text = AppConstants.Captions.CanBeVariedInPopulation;

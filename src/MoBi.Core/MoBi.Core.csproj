@@ -115,17 +115,17 @@
       <HintPath>..\..\packages\NHibernate.4.1.1.4000\lib\net40\NHibernate.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.22\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.33\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.22\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.33\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.22\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.33\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.5.0.22, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.22\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.33\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -137,8 +137,8 @@
       <HintPath>..\..\packages\OSPSuite.Utility.3.0.1.7\lib\net462\OSPSuite.Utility.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="SX, Version=2.6.9.7, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.6.9.7\lib\net45\SX.dll</HintPath>
+    <Reference Include="SX, Version=2.7.0.0, Culture=neutral, PublicKeyToken=882b9c044052e7f6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.SmartXLS.2.7.0\lib\net45\SX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -282,7 +282,7 @@
     <Compile Include="Commands\AddParameterBuilderCommand.cs" />
     <Compile Include="Commands\AddPassiveTransportBuilderCommand.cs" />
     <Compile Include="Commands\AddTagCommand.cs" />
-    <Compile Include="Commands\AddTagConditionCommandBase.cs" />
+    <Compile Include="Commands\AddTagConditionCommand.cs" />
     <Compile Include="Commands\AddTopContainerCommand.cs" />
     <Compile Include="Commands\AddValuePointCommand.cs" />
     <Compile Include="Commands\BuildingBlockChangeBaseCommandExtensions.cs" />
@@ -322,7 +322,6 @@
     <Compile Include="Commands\ICommandCollector.cs" />
     <Compile Include="Commands\MoBiMacroCommand.cs" />
     <Compile Include="Commands\MoveDiagramNodeCommand.cs" />
-    <Compile Include="Commands\ObserverBuilderTagCommands.cs" />
     <Compile Include="Commands\OutputIntervalInSimulationCommand.cs" />
     <Compile Include="Commands\ReactionBuilderItemCommands.cs" />
     <Compile Include="Commands\RemoveBuildingBlockCommand.cs" />
@@ -331,7 +330,7 @@
     <Compile Include="Commands\RemoveStartValueFromBuildingBlockCommand.cs" />
     <Compile Include="Commands\RemoveObjectBaseCommand.cs" />
     <Compile Include="Commands\RemoveHistoricResultFromSimulationCommand.cs" />
-    <Compile Include="Commands\RemoveTagConditionCommandBase.cs" />
+    <Compile Include="Commands\RemoveTagConditionCommand.cs" />
     <Compile Include="Commands\RenameModelCommand.cs" />
     <Compile Include="Commands\RenameObjectBaseCommand.cs" />
     <Compile Include="Commands\RenameSimulationResultsCommand.cs" />
@@ -357,10 +356,8 @@
     <Compile Include="Commands\SimulationChangeCommandBase.cs" />
     <Compile Include="Commands\SimulationChangeCommandBaseExtensions.cs" />
     <Compile Include="Commands\StartValueValueOrUnitChangedCommand.cs" />
-    <Compile Include="Commands\SumFormulaTagCommands.cs" />
     <Compile Include="Commands\SwapBuildingBlockCommand.cs" />
     <Compile Include="Commands\TagConditionCommandBase.cs" />
-    <Compile Include="Commands\TransportBuilderTagCommands.cs" />
     <Compile Include="Commands\UpdateDimensionInStartValueCommand.cs" />
     <Compile Include="Commands\UpdateMoleculeAmountScaleDivisorInSimulationCommand.cs" />
     <Compile Include="Commands\UpdateMoleculeAmountScaleDivisorsInSimulationCommand.cs" />
