@@ -148,7 +148,7 @@ namespace MoBi.Presentation.Tasks
             showWarnings(results.ValidationResult);
 
          if (results == null || results.IsInvalid)
-            throw new MoBiException(AppConstants.Exceptions.CoundNotCreateSimulation);
+            throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
 
          var model = results.Model;
 

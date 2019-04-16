@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
@@ -16,6 +17,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -124,9 +126,9 @@ namespace MoBi.Presentation.Tasks
          return macroCommand;
       }
 
-      public IMoBiCommand SetFormulaString(ExplicitFormula formula, string newFormulaString, string oldFormulaString, IBuildingBlock buildingBlock)
+      public IMoBiCommand SetFormulaString(FormulaWithFormulaString formula, string newFormulaString, IBuildingBlock buildingBlock)
       {
-         var command = new EditFormulaStringCommand(newFormulaString, oldFormulaString, formula, buildingBlock).Run(_context);
+         var command = new EditFormulaStringCommand(newFormulaString, formula, buildingBlock).Run(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
@@ -145,6 +147,21 @@ namespace MoBi.Presentation.Tasks
          return new RemoveFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
       }
 
+      public (bool valid, string validationMessage) Validate(string formulaString, FormulaWithFormulaString formula, IBuildingBlock buildingBlock)
+      {
+         try
+         {
+            formula.Validate(formulaString);
+            _context.PublishEvent(new FormulaValidEvent(formula, buildingBlock));
+            return (true, string.Empty);
+         }
+         catch (OSPSuiteException parserException)
+         {
+            _context.PublishEvent(new FormulaInvalidEvent(formula, buildingBlock, parserException.Message));
+            return (false, parserException.Message);
+         }
+      }
+
       public IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
       {
          var command = new EditPathAtUsablePathCommand(formula, newPath, formulaUsablePath, buildingBlock).Run(_context);
@@ -156,9 +173,9 @@ namespace MoBi.Presentation.Tasks
          return new AddFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
       }
 
-      public IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName, string oldVariableName, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName,  IBuildingBlock buildingBlock)
       {
-         return new ChangeVariableNameCommand(formula, newVariableName, oldVariableName, buildingBlock).Run(_context);
+         return new ChangeVariableNameCommand(formula, newVariableName, buildingBlock).Run(_context);
       }
 
       public IMoBiCommand AddValuePoint(TableFormula formula, ValuePoint newValuePoint, IBuildingBlock buildingBlock)
@@ -202,7 +219,7 @@ namespace MoBi.Presentation.Tasks
          var command = new ChangeTableFormulaWithXArgumentTableObjectPathCommand(formula, path, buildingBlock).Run(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
-      
+
       public IMoBiCommand SetConstantFormulaValue(ConstantFormula formula, double kernelValue, Unit newDisplayUnit, Unit oldDisplayUnit, IBuildingBlock buildingBlock, IEntity formulaOwner)
       {
          var command = new SetConstantFormulaValueCommand(formula, kernelValue, newDisplayUnit, oldDisplayUnit, buildingBlock, formulaOwner).Run(_context);

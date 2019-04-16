@@ -27,7 +27,7 @@ using OSPSuite.Utility.Exceptions;
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditFormulaPathListPresenter :
-      ICommandCollectorPresenter,
+      IEditPresenter<IFormula>,
       IPresenter<IEditFormulaPathListView>,
       IPresenterWithContextMenu<IViewItem>,
       IListener<FormulaChangedEvent>
@@ -77,7 +77,7 @@ namespace MoBi.Presentation.Presenter
       void Edit(IFormula formula, IUsingFormula formulaOwner);
    }
 
-   public class EditFormulaPathListPresenter : AbstractEditPresenter<IEditFormulaPathListView, IEditFormulaPathListPresenter, FormulaWithFormulaString>, IEditFormulaPathListPresenter
+   public class EditFormulaPathListPresenter : AbstractEditPresenter<IEditFormulaPathListView, IEditFormulaPathListPresenter, IFormula>, IEditFormulaPathListPresenter
    {
       private readonly IMoBiFormulaTask _moBiFormulaTask;
       private readonly IMoBiContext _context;
@@ -87,7 +87,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IFormulaUsablePathToFormulaUsablePathDTOMapper _formulaUsablePathDTOMapper;
       private readonly IUserSettings _userSettings;
       public bool CheckCircularReference { get; set; } = true;
-      private FormulaWithFormulaString _formula;
+      private IFormula _formula;
       private IUsingFormula _formulaOwner;
       public IBuildingBlock BuildingBlock { set; protected get; }
       public Func<ReferenceDTO, bool> DragDropAllowedFor { get; set; } = x => false;
@@ -158,13 +158,13 @@ namespace MoBi.Presentation.Presenter
       public void Edit(IFormula formula, IUsingFormula formulaOwner)
       {
          _formulaOwner = formulaOwner;
-         Edit(formula);
-      }
-
-      public override void Edit(FormulaWithFormulaString formula)
-      {
          _formula = formula;
          _view.BindTo(_formulaUsablePathDTOMapper.MapFrom(formula, _formulaOwner));
+      }
+
+      public override void Edit(IFormula formula)
+      {
+         Edit(formula, null);
       }
 
       public override object Subject => _formula;

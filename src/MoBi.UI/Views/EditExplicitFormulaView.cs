@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Threading.Tasks;
 using DevExpress.XtraEditors.DXErrorProvider;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Views;
@@ -34,16 +34,11 @@ namespace MoBi.UI.Views
       public void Show(ExplicitFormulaBuilderDTO dto)
       {
          _screenBinder.BindToSource(dto);
-         txtFormulaString.TextChanged += formulaStringChanging;
       }
 
-      private async void formulaStringChanging(object sender, EventArgs e)
+      private async void formulaStringChanging(EventArgs e)
       {
-         int startLength = txtFormulaString.Text.Length;
-         //Add some debouncing capability to ensure that we do not call the validation all the time that a key stroke is pressed
-         await Task.Delay(300);
-         if (startLength == txtFormulaString.Text.Length)
-            formulaStringChanged();
+         await txtFormulaString.Debounce(formulaStringChanged);
       }
 
       public override void InitializeBinding()
@@ -51,9 +46,12 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          _screenBinder.Bind(item => item.FormulaString)
             .To(txtFormulaString)
-            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetFormulaString(e.NewValue, e.OldValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetFormulaString(e.NewValue));
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
+
+         txtFormulaString.TextChanged += (o, e) => OnEvent(formulaStringChanging, e);
+
          ReadOnly = false;
       }
 
@@ -64,7 +62,7 @@ namespace MoBi.UI.Views
          _presenter.Validate(txtFormulaString.Text);
       }
 
-      public void SetParserError(string parserError)
+      public void SetValidationMessage(string parserError)
       {
          if (string.IsNullOrEmpty(parserError))
             _warningProvider.SetError(txtFormulaString, null);

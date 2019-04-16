@@ -135,7 +135,7 @@ namespace MoBi.Core.Services
          _projectRetriever.Current.AddBuildingBlock(passiveTransportBuildingBlock);
          var notification = new NotificationMessage(passiveTransportBuildingBlock, MessageOrigin.Simulation, passiveTransportBuildingBlock, NotificationType.Info)
          {
-            Message = AppConstants.Warnings.PassiveTransporBuildingBlockCreatedAutomatically(passiveTransportBuildingBlock.Name),
+            Message = AppConstants.Warnings.PassiveTransportBuildingBlockCreatedAutomatically(passiveTransportBuildingBlock.Name),
             ObjectType = ObjectTypes.PassiveTransportBuildingBlock,
             BuildingBlockType = ObjectTypes.PassiveTransportBuildingBlock,
          };

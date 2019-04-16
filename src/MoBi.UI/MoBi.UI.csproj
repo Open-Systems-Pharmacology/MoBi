@@ -349,6 +349,7 @@
     <Compile Include="Diagram\DiagramRegister.cs" />
     <Compile Include="Diagram\Nodes\ParameterNode.cs" />
     <Compile Include="Extensions\TabPageExtensions.cs" />
+    <Compile Include="Extensions\TextEditExtensions.cs" />
     <Compile Include="Presenters\ReactionDiagramPresenter.cs" />
     <Compile Include="Services\DiagramUpdater.cs" />
     <Compile Include="Services\MoBiApplication.cs" />

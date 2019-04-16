@@ -7,7 +7,7 @@ namespace MoBi.Presentation.Views
    public interface IEditExplicitFormulaView : IView<IEditExplicitFormulaPresenter>, IEditTypedFormulaView
    {
       void Show(ExplicitFormulaBuilderDTO dto);
-      void SetParserError(string text);
+      void SetValidationMessage(string text);
       bool Enabled { get; set; }
       void SetFormulaCaption(string caption);
       void HideFormulaCaption();

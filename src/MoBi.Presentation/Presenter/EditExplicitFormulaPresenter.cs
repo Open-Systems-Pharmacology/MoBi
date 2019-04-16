@@ -25,8 +25,7 @@ namespace MoBi.Presentation.Presenter
       ///    Sets the formula string to a new value from the old value
       /// </summary>
       /// <param name="newFormulaString">The new value</param>
-      /// <param name="oldFormulaString">The old value</param>
-      void SetFormulaString(string newFormulaString, string oldFormulaString);
+      void SetFormulaString(string newFormulaString);
    }
 
    public class EditExplicitFormulaPresenter : EditTypedFormulaPresenter<IEditExplicitFormulaView, IEditExplicitFormulaPresenter, ExplicitFormula>,
@@ -112,10 +111,9 @@ namespace MoBi.Presentation.Presenter
          updateFormulaCaption();
       }
 
-      public void SetFormulaString(string newFormulaString, string oldFormulaString)
+      public void SetFormulaString(string newFormulaString)
       {
-         if (string.Equals(newFormulaString, oldFormulaString)) return;
-         AddCommand(_moBiFormulaTask.SetFormulaString(_formula, newFormulaString, oldFormulaString, BuildingBlock));
+         AddCommand(_moBiFormulaTask.SetFormulaString(_formula, newFormulaString, BuildingBlock));
       }
 
       public bool DragDropAllowedFor(ReferenceDTO droppedReferenceDTO)
@@ -139,17 +137,8 @@ namespace MoBi.Presentation.Presenter
 
       public void Validate(string formulaString)
       {
-         try
-         {
-            _formula.Validate(formulaString);
-            _view.SetParserError(null);
-            _context.PublishEvent(new FormulaValidEvent(_formula, BuildingBlock));
-         }
-         catch (OSPSuiteException parserException)
-         {
-            _view.SetParserError(parserException.Message);
-            _context.PublishEvent(new FormulaInvalidEvent(_formula, BuildingBlock, parserException.Message));
-         }
+         var (_, message) = _moBiFormulaTask.Validate(formulaString, _formula, BuildingBlock);
+         _view.SetValidationMessage(message);
       }
 
       public override void Edit(IFormula formula, IEntity formulaOwner = null)
