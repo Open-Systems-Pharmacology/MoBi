@@ -17,7 +17,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -149,17 +148,14 @@ namespace MoBi.Presentation.Tasks
 
       public (bool valid, string validationMessage) Validate(string formulaString, FormulaWithFormulaString formula, IBuildingBlock buildingBlock)
       {
-         try
-         {
-            formula.Validate(formulaString);
+         var (valid, validationMessage) = formula.IsValid(formulaString);
+
+         if (valid)
             _context.PublishEvent(new FormulaValidEvent(formula, buildingBlock));
-            return (true, string.Empty);
-         }
-         catch (OSPSuiteException parserException)
-         {
-            _context.PublishEvent(new FormulaInvalidEvent(formula, buildingBlock, parserException.Message));
-            return (false, parserException.Message);
-         }
+         else
+            _context.PublishEvent(new FormulaInvalidEvent(formula, buildingBlock, validationMessage));
+
+         return (valid, validationMessage);
       }
 
       public IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
@@ -173,7 +169,7 @@ namespace MoBi.Presentation.Tasks
          return new AddFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
       }
 
-      public IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName,  IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName, IBuildingBlock buildingBlock)
       {
          return new ChangeVariableNameCommand(formula, newVariableName, buildingBlock).Run(_context);
       }

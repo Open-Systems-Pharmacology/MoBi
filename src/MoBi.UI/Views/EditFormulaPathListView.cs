@@ -125,11 +125,6 @@ namespace MoBi.UI.Views
          return repository;
       }
 
-      public void SetParserError(string error)
-      {
-         //tODO
-      }
-
       public bool ReadOnly
       {
          get => _readOnly;
