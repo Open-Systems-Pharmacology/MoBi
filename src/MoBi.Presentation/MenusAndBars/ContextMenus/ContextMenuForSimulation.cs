@@ -40,8 +40,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             createEditItem(simulation),
             createRenameItem(simulation),
-            
 
+            createConfigure(simulation),
+            
             createNewSimulationMenuBarItem(),
             createAddExistingSimulationMenuBarItem(),
 
@@ -170,6 +171,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
             .WithIcon(ApplicationIcons.Edit)
             .WithCommandFor<EditSimulationUICommand, IMoBiSimulation>(simulation);
+      }
+
+      private IMenuBarItem createConfigure(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Configure)
+            .WithIcon(ApplicationIcons.SimulationConfigure)
+            .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation);
       }
 
       private IMenuBarItem createAddExistingSimulationMenuBarItem()

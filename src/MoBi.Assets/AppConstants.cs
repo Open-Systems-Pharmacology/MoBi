@@ -952,6 +952,7 @@ namespace MoBi.Assets
          public static readonly string Exit = "E&xit";
          public static readonly string RecentProjects = "&Recent Projects";
          public static readonly string Edit = "Edit...";
+         public static readonly string Configure = "Configure...";
          public static readonly string Rename = "Rename...";
          public static readonly string Remove = OSPSuite.Assets.MenuNames.Remove;
          public static readonly string Delete = OSPSuite.Assets.MenuNames.Delete;

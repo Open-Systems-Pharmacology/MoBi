@@ -17,7 +17,5 @@ namespace MoBi.Presentation.UICommand
       {
          _simulationTasks.Edit(Subject);
       }
-
    }
 }
-

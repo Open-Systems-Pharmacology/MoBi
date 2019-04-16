@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Tasks.Edit
       void ExportMatlabDifferentialSystem(IMoBiSimulation simulation);
       void ExportSimModelXml(IMoBiSimulation simulation);
       void CalculateScaleFactors(IMoBiSimulation simulation);
-      void AddCommand(IMoBiCommand command);
+      void Configure(IMoBiSimulation simulation);
    }
 
    public class EditTasksForSimulation : EditTasksForBuildingBlock<IMoBiSimulation>, IEditTasksForSimulation
@@ -114,7 +114,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (string.IsNullOrEmpty(newName))
             return;
 
-         AddCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).Run(_context));
+         addCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).Run(_context));
       }
 
       public void ExportMatlabDifferentialSystem(IMoBiSimulation simulation)
@@ -132,8 +132,13 @@ namespace MoBi.Presentation.Tasks.Edit
             if (command.IsEmpty())
                return;
 
-            AddCommand(command);
+            addCommand(command);
          }
+      }
+
+      public void Configure(IMoBiSimulation simulation)
+      {
+         throw new System.NotImplementedException();
       }
 
       private IEnumerable<string> allUsedResultsNameIn(IMoBiSimulation simulation)
@@ -141,7 +146,7 @@ namespace MoBi.Presentation.Tasks.Edit
          return simulation.HistoricResults.Select(x => x.Name).Union(new[] {simulation.Results.Name});
       }
 
-      public void AddCommand(IMoBiCommand command)
+      private void addCommand(IMoBiCommand command)
       {
          _context.AddToHistory(command);
       }

@@ -432,6 +432,7 @@
     <Compile Include="UICommand\AddNewApplicationsEventGroup.cs" />
     <Compile Include="UICommand\AddReactionBuilderUICommand.cs" />
     <Compile Include="UICommand\ApplicationSettingsPresenter.cs" />
+    <Compile Include="UICommand\ConfigureSimulationUICommand.cs" />
     <Compile Include="UICommand\DeleteAllResultsInAllSimulationsUICommand.cs" />
     <Compile Include="UICommand\DeleteAllResultsInSimulationUICommand.cs" />
     <Compile Include="UICommand\EditObservedDataUICommand.cs" />
