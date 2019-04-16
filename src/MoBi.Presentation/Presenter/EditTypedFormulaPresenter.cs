@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Presenter
       where TFormula : IFormula
    {
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
-      public bool IsRHS { get; set; }
+      public virtual bool IsRHS { get; set; }
 
       public virtual IBuildingBlock BuildingBlock { set; get; }
 
@@ -42,7 +42,6 @@ namespace MoBi.Presentation.Presenter
       protected EditTypedFormulaPresenter(TView view, IDisplayUnitRetriever displayUnitRetriever) : base(view)
       {
          _displayUnitRetriever = displayUnitRetriever;
-         IsRHS = false;
       }
 
       /// <summary>

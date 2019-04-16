@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
 
       protected readonly string _parentId;
 
-      protected AddItemCommand(TParent parent, TChild itemToAdd, TBuildingBlock buidingBlock): base(buidingBlock)
+      protected AddItemCommand(TParent parent, TChild itemToAdd, TBuildingBlock buildingBlock): base(buildingBlock)
       {
          CommandType = AppConstants.Commands.AddCommand;
          ObjectType = new ObjectTypeResolver().TypeFor<TChild>();

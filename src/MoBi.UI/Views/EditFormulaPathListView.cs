@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
+using DevExpress.XtraBars;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
@@ -13,10 +14,12 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views
 {
-   public partial class EditFormulaPathListView : BaseUserControl, IEditFormulaPathListView
+   public partial class EditFormulaPathListView : BaseUserControl, IEditFormulaPathListView, IViewWithPopup
    {
       private readonly GridViewBinder<FormulaUsablePathDTO> _gridViewBinder;
       private IGridViewColumn _colAlias;
@@ -28,13 +31,15 @@ namespace MoBi.UI.Views
       private IGridViewColumn<FormulaUsablePathDTO> _colAddButton;
       private IEditFormulaPathListPresenter _presenter;
       private bool _readOnly;
+      public BarManager PopupBarManager { get; }
 
-      public EditFormulaPathListView()
+      public EditFormulaPathListView(IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
          _gridViewBinder = new GridViewBinder<FormulaUsablePathDTO>(gridView);
          gridView.AllowsFiltering = false;
          gridControl.AllowDrop = true;
+         PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImages16x16};
       }
 
       public void AttachPresenter(IEditFormulaPathListPresenter presenter)
@@ -134,6 +139,8 @@ namespace MoBi.UI.Views
             setColumnsReadonly(_readOnly);
          }
       }
+
+      public override bool HasError => base.HasError && _gridViewBinder.HasError;
 
       public void BindTo(IReadOnlyList<FormulaUsablePathDTO> formulaUsablePathDTOs)
       {

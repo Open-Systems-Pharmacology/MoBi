@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
@@ -16,21 +17,27 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Exceptions;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditFormulaPathListPresenter :
+      ICommandCollectorPresenter,
       IPresenter<IEditFormulaPathListView>,
       IPresenterWithContextMenu<IViewItem>,
-      IListener<AddedFormulaUsablePathEvent>,
-      IListener<RemovedFormulaUsablePathEvent>,
       IListener<FormulaChangedEvent>
    {
       IBuildingBlock BuildingBlock { set; }
+
+      /// <summary>
+      ///    Sets to <c>true</c> (default), circular reference check will be performed every time a path is added or edited.
+      /// </summary>
+      bool CheckCircularReference { get; set; }
 
       /// <summary>
       ///    Sets the alias of the <paramref name="formulaUsablePath" /> being edited to <paramref name="newAlias" /> from
@@ -76,9 +83,10 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiContext _context;
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
+      private readonly ICircularReferenceChecker _circularReferenceChecker;
       private readonly IFormulaUsablePathToFormulaUsablePathDTOMapper _formulaUsablePathDTOMapper;
       private readonly IUserSettings _userSettings;
-
+      public bool CheckCircularReference { get; set; } = true;
       private FormulaWithFormulaString _formula;
       private IUsingFormula _formulaOwner;
       public IBuildingBlock BuildingBlock { set; protected get; }
@@ -91,6 +99,7 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IUserSettings userSettings,
          IViewItemContextMenuFactory contextMenuFactory,
+         ICircularReferenceChecker circularReferenceChecker,
          IFormulaUsablePathToFormulaUsablePathDTOMapper formulaUsablePathDTOMapper) : base(view)
       {
          _moBiFormulaTask = moBiFormulaTask;
@@ -98,6 +107,7 @@ namespace MoBi.Presentation.Presenter
          _dimensionFactory = dimensionFactory;
          _userSettings = userSettings;
          _contextMenuFactory = contextMenuFactory;
+         _circularReferenceChecker = circularReferenceChecker;
          _formulaUsablePathDTOMapper = formulaUsablePathDTOMapper;
       }
 
@@ -107,7 +117,6 @@ namespace MoBi.Presentation.Presenter
             return;
 
          AddCommand(_moBiFormulaTask.EditAliasInFormula(_formula, newAlias, oldAlias, formulaUsablePath, BuildingBlock));
-         notifyFormulaChanged();
       }
 
       public void SetFormulaUsablePath(string newPath, FormulaUsablePathDTO dto)
@@ -121,7 +130,6 @@ namespace MoBi.Presentation.Presenter
       public void SetFormulaPathDimension(IDimension newValue, IDimension oldValue, FormulaUsablePathDTO formulaUsablePathDTO)
       {
          AddCommand(_moBiFormulaTask.SetFormulaPathDimension(_formula, newValue, formulaUsablePathDTO.Alias, BuildingBlock));
-         notifyFormulaChanged();
       }
 
       public void RemovePath(FormulaUsablePathDTO formulaUsablePathDTO)
@@ -161,17 +169,25 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _formula;
 
-      private void notifyFormulaChanged()
-      {
-         _context.PublishEvent(new FormulaChangedEvent(_formula));
-      }
-
       public void AddPathToFormula(IFormulaUsablePath path)
       {
          if (path == null) return;
 
+         checkForCircularReference(path);
+
          makeAliasUnique(path, _formula.ObjectPaths);
          AddCommand(_moBiFormulaTask.AddFormulaUsablePath(_formula, path, BuildingBlock));
+      }
+
+      private void checkForCircularReference(IFormulaUsablePath path)
+      {
+         if (hasCircularReference(path))
+            throw new OSPSuiteException(AppConstants.Exceptions.CircularReferenceException(path, _formula));
+      }
+
+      private bool hasCircularReference(IFormulaUsablePath path)
+      {
+         return CheckCircularReference && _formulaOwner != null && _circularReferenceChecker.HasCircularReference(path, _formulaOwner);
       }
 
       public bool ReadOnly
@@ -214,17 +230,7 @@ namespace MoBi.Presentation.Presenter
          return _context.DimensionFactory.Dimensions;
       }
 
-      public void Handle(AddedFormulaUsablePathEvent eventToHandle)
-      {
-         handle(eventToHandle);
-      }
-
       public void Handle(FormulaChangedEvent eventToHandle)
-      {
-         handle(eventToHandle);
-      }
-
-      public void Handle(RemovedFormulaUsablePathEvent eventToHandle)
       {
          handle(eventToHandle);
       }
