@@ -5,6 +5,8 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -55,15 +57,18 @@ namespace MoBi.Presentation.Presenter
          _formulaPresenter.Edit(reaction.Formula, reaction);
       }
 
-      public override object Subject
-      {
-         get { return _reaction; }
-      }
+      public override object Subject => _reaction;
 
       public void SelectParameter(IParameter parameter)
       {
          _view.ShowParameters();
          _editParametersInContainerPresenter.Select(parameter);
+      }
+
+      public override void ReleaseFrom(IEventPublisher eventPublisher)
+      {
+         base.ReleaseFrom(eventPublisher);
+         _formulaPresenterCache.ReleaseFrom(eventPublisher);
       }
    }
 }

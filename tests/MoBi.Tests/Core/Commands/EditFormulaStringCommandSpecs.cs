@@ -24,7 +24,7 @@ namespace MoBi.Core.Commands
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<ExplicitFormula>(_formula.Id)).Returns(_formula);
 
-         sut = new EditFormulaStringCommand(_newFormulaString, _oldFormulaString, _formula, _buildingBlock);
+         sut = new EditFormulaStringCommand(_newFormulaString, _formula, _buildingBlock);
       }
    }
 

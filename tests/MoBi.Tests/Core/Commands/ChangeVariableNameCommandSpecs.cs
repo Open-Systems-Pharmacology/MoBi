@@ -20,7 +20,7 @@ namespace MoBi.Core.Commands
          _newName = "NEW";
          _oldName = "OLD";
          _sumFormula = A.Fake<SumFormula>().WithId("SUMFORMULA").WithName(_oldName);
-         sut = new ChangeVariableNameCommand(_sumFormula, _newName, _oldName, A.Fake<IBuildingBlock>());
+         sut = new ChangeVariableNameCommand(_sumFormula, _newName, A.Fake<IBuildingBlock>());
       }
    }
 
