@@ -39,6 +39,7 @@ namespace MoBi.Presentation
       protected IDimensionFactory _dimensionFactory;
       protected IUserSettings _userSettings;
       private IViewItemContextMenuFactory _viewItemContextMenuFactory;
+      private IEditFormulaPathListPresenter _editFormulaPathListPresenter;
 
       protected override void Context()
       {
@@ -55,8 +56,11 @@ namespace MoBi.Presentation
          _userSettings = A.Fake<IUserSettings>();
          _viewItemContextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _moBiFormulaTask = A.Fake<IMoBiFormulaTask>();
-         sut = new EditExplicitFormulaPresenter(_view, _explicitFormulaMapper, _activeSubjectRetriever, _context, _formulaChecker,
-            _moBiFormulaTask, _reactionDimensionRetriever, _displayUnitRetriever, _viewItemContextMenuFactory, _userSettings, _dimensionFactory);
+         _editFormulaPathListPresenter= A.Fake<IEditFormulaPathListPresenter>();
+         sut = new EditExplicitFormulaPresenter(
+            _view, _explicitFormulaMapper, _activeSubjectRetriever, _context, _formulaChecker,
+            _moBiFormulaTask, _reactionDimensionRetriever, _displayUnitRetriever, _viewItemContextMenuFactory, _userSettings, _dimensionFactory,
+            _editFormulaPathListPresenter);
       }
    }
 

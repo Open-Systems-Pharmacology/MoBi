@@ -521,6 +521,12 @@
     <Compile Include="Views\EditFavoritesView.Designer.cs">
       <DependentUpon>EditFavoritesView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\EditFormulaPathListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\EditFormulaPathListView.Designer.cs">
+      <DependentUpon>EditFormulaPathListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditParameterListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1069,6 +1075,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\EditFavoritesView.resx">
       <DependentUpon>EditFavoritesView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditFormulaPathListView.resx">
+      <DependentUpon>EditFormulaPathListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\EditParameterListView.resx">
       <DependentUpon>EditParameterListView.cs</DependentUpon>

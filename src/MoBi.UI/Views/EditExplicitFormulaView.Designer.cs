@@ -37,6 +37,8 @@
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemFormulaPathGrid = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemFormulaString = new DevExpress.XtraLayout.LayoutControlItem();
+         this.panelReferencePaths = new DevExpress.XtraEditors.PanelControl();
+         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.grdObjectPaths)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewReferencePaths)).BeginInit();
@@ -46,6 +48,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemFormulaPathGrid)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemFormulaString)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelReferencePaths)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
          // 
          // grdObjectPaths
@@ -53,7 +57,7 @@
          this.grdObjectPaths.Location = new System.Drawing.Point(2, 2);
          this.grdObjectPaths.MainView = this.gridViewReferencePaths;
          this.grdObjectPaths.Name = "grdObjectPaths";
-         this.grdObjectPaths.Size = new System.Drawing.Size(599, 394);
+         this.grdObjectPaths.Size = new System.Drawing.Size(599, 179);
          this.grdObjectPaths.TabIndex = 7;
          this.grdObjectPaths.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridViewReferencePaths});
@@ -63,6 +67,7 @@
          this.gridViewReferencePaths.AllowsFiltering = true;
          this.gridViewReferencePaths.EnableColumnContextMenu = true;
          this.gridViewReferencePaths.GridControl = this.grdObjectPaths;
+         this.gridViewReferencePaths.MultiSelect = false;
          this.gridViewReferencePaths.Name = "gridViewReferencePaths";
          this.gridViewReferencePaths.OptionsView.ShowGroupPanel = false;
          // 
@@ -78,6 +83,8 @@
          // 
          // layoutControl1
          // 
+         this.layoutControl1.AllowCustomization = false;
+         this.layoutControl1.Controls.Add(this.panelReferencePaths);
          this.layoutControl1.Controls.Add(this.txtFormulaString);
          this.layoutControl1.Controls.Add(this.grdObjectPaths);
          this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -95,12 +102,11 @@
          this.layoutControlGroup.GroupBordersVisible = false;
          this.layoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemFormulaPathGrid,
-            this.layoutItemFormulaString});
-         this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
+            this.layoutItemFormulaString,
+            this.layoutControlItem1});
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup.Size = new System.Drawing.Size(603, 422);
-         this.layoutControlGroup.Text = "layoutControlGroup";
          this.layoutControlGroup.TextVisible = false;
          // 
          // layoutItemFormulaPathGrid
@@ -109,10 +115,8 @@
          this.layoutItemFormulaPathGrid.CustomizationFormText = "layoutItemFormulaPathGrid";
          this.layoutItemFormulaPathGrid.Location = new System.Drawing.Point(0, 0);
          this.layoutItemFormulaPathGrid.Name = "layoutItemFormulaPathGrid";
-         this.layoutItemFormulaPathGrid.Size = new System.Drawing.Size(603, 398);
-         this.layoutItemFormulaPathGrid.Text = "layoutItemFormulaPathGrid";
+         this.layoutItemFormulaPathGrid.Size = new System.Drawing.Size(603, 183);
          this.layoutItemFormulaPathGrid.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemFormulaPathGrid.TextToControlDistance = 0;
          this.layoutItemFormulaPathGrid.TextVisible = false;
          // 
          // layoutItemFormulaString
@@ -122,8 +126,23 @@
          this.layoutItemFormulaString.Location = new System.Drawing.Point(0, 398);
          this.layoutItemFormulaString.Name = "layoutItemFormulaString";
          this.layoutItemFormulaString.Size = new System.Drawing.Size(603, 24);
-         this.layoutItemFormulaString.Text = "layoutItemFormulaString";
          this.layoutItemFormulaString.TextSize = new System.Drawing.Size(118, 13);
+         // 
+         // panelReferencePaths
+         // 
+         this.panelReferencePaths.Location = new System.Drawing.Point(2, 185);
+         this.panelReferencePaths.Name = "panelReferencePaths";
+         this.panelReferencePaths.Size = new System.Drawing.Size(599, 211);
+         this.panelReferencePaths.TabIndex = 8;
+         // 
+         // layoutControlItem1
+         // 
+         this.layoutControlItem1.Control = this.panelReferencePaths;
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 183);
+         this.layoutControlItem1.Name = "layoutControlItem1";
+         this.layoutControlItem1.Size = new System.Drawing.Size(603, 215);
+         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem1.TextVisible = false;
          // 
          // EditExplicitFormulaView
          // 
@@ -141,18 +160,21 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemFormulaPathGrid)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemFormulaString)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelReferencePaths)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          this.ResumeLayout(false);
 
       }
 
       #endregion
-
-      private DevExpress.XtraGrid.GridControl grdObjectPaths;
       private MoBi.UI.Views.UxGridView gridViewReferencePaths;
       private DevExpress.XtraEditors.TextEdit txtFormulaString;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemFormulaPathGrid;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemFormulaString;
+      private DevExpress.XtraEditors.PanelControl panelReferencePaths;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+      private OSPSuite.UI.Controls.UxGridControl grdObjectPaths;
    }
 }

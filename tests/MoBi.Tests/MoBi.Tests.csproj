@@ -273,6 +273,7 @@
     <Compile Include="Presentation\EditTableFormulaWithOffSetFormulaPresenterSpecs.cs" />
     <Compile Include="Presentation\EditTableFormulaWithXArgumentFormulaPresenterSpecs.cs" />
     <Compile Include="Presentation\EditTransportBuilderPresenterSpecs.cs" />
+    <Compile Include="Presentation\Mapper\FormulaUsablePathToFormulaUsablePathDTOMapperSpecs.cs" />
     <Compile Include="Presentation\OutputSelectionsRetrieverSpecs.cs" />
     <Compile Include="Presentation\StartValueFormatterSpecs.cs" />
     <Compile Include="Presentation\UserDefinedParametersPresenterSpecs.cs" />

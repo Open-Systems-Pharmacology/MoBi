@@ -1,5 +1,4 @@
-﻿using MoBi.Assets;
-using MoBi.Core.Services;
+﻿using MoBi.Core.Services;
 using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.DTO
@@ -11,53 +10,18 @@ namespace MoBi.Presentation.DTO
       string TagDescription { get; }
    }
 
-   internal class MatchAllConditionDTO : IDescriptorConditionDTO
+   public class DescriptorConditionDTO : IDescriptorConditionDTO
    {
-      public string Tag
+      public TagType TagType { get; }
+      public string Tag { get; set; }
+      public string TagDescription { get; }
+
+      public DescriptorConditionDTO(string tag, TagType tagType, string tagDescription)
       {
-         get => string.Empty;
-         set { }
+         TagType = tagType;
+         Tag = tag;
+         TagDescription = tagDescription;
       }
-
-      public TagType TagType => TagType.MatchAll;
-
-      public string TagDescription => AppConstants.MatchAll;
-   }
-
-   internal class MatchConditionDTO : IDescriptorConditionDTO
-   {
-      public string Tag { get; set; }
-
-      public TagType TagType => TagType.Match;
-
-      public string TagDescription => AppConstants.Match;
-   }
-
-   internal class NotMatchConditionDTO : IDescriptorConditionDTO
-   {
-      public string Tag { get; set; }
-
-      public TagType TagType => TagType.NotMatch;
-
-      public string TagDescription => AppConstants.NotMatch;
-   }
-
-   internal class InContainerConditionDTO : IDescriptorConditionDTO
-   {
-      public string Tag { get; set; }
-
-      public TagType TagType => TagType.InContainer;
-
-      public string TagDescription => AppConstants.InContainer;
-   }
-
-   internal class NotInContainerConditionDTO : IDescriptorConditionDTO
-   {
-      public string Tag { get; set; }
-
-      public TagType TagType => TagType.NotInContainer;
-
-      public string TagDescription => AppConstants.NotInContainer;
    }
 
    public class ContainerDescriptorRootItem : IRootViewItem<IDescriptorConditionDTO>

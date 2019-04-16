@@ -15,6 +15,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
@@ -136,10 +137,7 @@ namespace MoBi.UI.Views
          _presenter.RemovePath(focusedElement);
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError || _gridBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError || _gridBinder.HasError;
 
       private RepositoryItem createDimensionRepository()
       {
@@ -177,6 +175,11 @@ namespace MoBi.UI.Views
       public void HideFormulaCaption()
       {
          SetFormulaCaption(string.Empty);
+      }
+
+      public void AddFormulaPathListView(IView view)
+      {
+         panelReferencePaths.FillWith(view);
       }
 
       public bool ReadOnly

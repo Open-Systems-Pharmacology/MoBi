@@ -130,28 +130,28 @@ namespace MoBi.Presentation.Tasks
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand EditAliasInFormula(ExplicitFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
+      public IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
       {
          return new EditFormulaAliasCommand(formula, newAlias, oldAlias, buildingBlock).Run(_context);
       }
 
-      public IMoBiCommand SetFormulaPathDimension(ExplicitFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock)
+      public IMoBiCommand SetFormulaPathDimension(IFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock)
       {
          return new UpdateDimensionOfFormulaUsablePathCommand(newDimension, formula, alias, buildingBlock).Run(_context);
       }
 
-      public IMoBiCommand RemoveFormulaUsablePath(ExplicitFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand RemoveFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          return new RemoveFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
       }
 
-      public IMoBiCommand ChangePathInFormula(ExplicitFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
       {
          var command = new EditPathAtUsablePathCommand(formula, newPath, formulaUsablePath, buildingBlock).Run(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand AddFormulaUsablePath(ExplicitFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand AddFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          return new AddFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
       }

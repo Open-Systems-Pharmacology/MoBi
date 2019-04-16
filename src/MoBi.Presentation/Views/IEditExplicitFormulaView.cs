@@ -11,5 +11,6 @@ namespace MoBi.Presentation.Views
       bool Enabled { get; set; }
       void SetFormulaCaption(string caption);
       void HideFormulaCaption();
+      void AddFormulaPathListView(IView view);
    }
 }

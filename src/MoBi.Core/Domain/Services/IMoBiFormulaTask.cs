@@ -71,8 +71,8 @@ namespace MoBi.Core.Domain.Services
       /// Changes the <paramref name="formulaUsablePath"/> in the <paramref name="formula"/> to <paramref name="newPath"/>
       /// </summary>
       /// <returns>The command that was run to change the path</returns>
-      IMoBiCommand ChangePathInFormula(ExplicitFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
-      IMoBiCommand AddFormulaUsablePath(ExplicitFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
+      IMoBiCommand AddFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
       IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName, string oldVariableName, IBuildingBlock buildingBlock);
       IMoBiCommand AddValuePoint(TableFormula formula, ValuePoint newValuePoint, IBuildingBlock buildingBlock);
       IMoBiCommand EditUseDerivedValues(TableFormula formula, bool newValue, bool oldValue, IBuildingBlock buildingBlock);
@@ -97,18 +97,18 @@ namespace MoBi.Core.Domain.Services
       /// is used to identify the location of the formula.
       /// </summary>
       /// <returns>The command that was run to change the alias</returns>
-      IMoBiCommand EditAliasInFormula(ExplicitFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
+      IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
 
       /// <summary>
       /// Sets the dimension for the formula usable path with <paramref name="alias"/> to <paramref name="newDimension"/> on the <paramref name="formula"/> in the <paramref name="buildingBlock"/>
       /// </summary>
       /// <returns>The command that was run to change the dimension</returns>
-      IMoBiCommand SetFormulaPathDimension(ExplicitFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock);
+      IMoBiCommand SetFormulaPathDimension(IFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock);
 
       /// <summary>
       /// Removes <paramref name="path"/> from the <paramref name="formula"/>
       /// </summary>
       /// <returns>The command that was run to remove the path from the formula</returns>
-      IMoBiCommand RemoveFormulaUsablePath(ExplicitFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand RemoveFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
    }
 }
