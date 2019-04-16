@@ -1,8 +1,7 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -14,13 +13,18 @@ namespace MoBi.Core.Commands
       protected SumFormula _sumFormula;
       protected string _newName;
       protected string _oldName;
+      protected IMoBiContext _context;
 
       protected override void Context()
       {
          _newName = "NEW";
          _oldName = "OLD";
-         _sumFormula = A.Fake<SumFormula>().WithId("SUMFORMULA").WithName(_oldName);
+         _sumFormula = new SumFormula().WithId("SUMFORMULA").WithName(_oldName);
+         _sumFormula.Variable = _oldName;
+
          sut = new ChangeVariableNameCommand(_sumFormula, _newName, A.Fake<IBuildingBlock>());
+
+         _context= A.Fake<IMoBiContext>();
       }
    }
 
@@ -28,7 +32,7 @@ namespace MoBi.Core.Commands
    {
       protected override void Because()
       {
-         sut.Execute(A.Fake<IMoBiContext>());
+         sut.Execute(_context);
       }
 
       [Observation]
@@ -40,14 +44,6 @@ namespace MoBi.Core.Commands
 
    public class When_restoring_execution_Data : concern_for_ChangeVariableNameCommandSpecs
    {
-      private IMoBiContext _context;
-
-      protected override void Context()
-      {
-         base.Context();
-         _context = A.Fake<IMoBiContext>();
-      }
-
       protected override void Because()
       {
          sut.RestoreExecutionData(_context);
@@ -60,31 +56,31 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_asking_for_inverse_Command : concern_for_ChangeVariableNameCommandSpecs
+   public class When_executing_the_inverse_command : concern_for_ChangeVariableNameCommandSpecs
    {
       private ChangeVariableNameCommand _inverseCommand;
 
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _context.Get<SumFormula>(_sumFormula.Id)).Returns(_sumFormula);
+      }
+
       protected override void Because()
       {
-         _inverseCommand = sut.InverseCommand(A.Fake<IMoBiContext>()).DowncastTo<ChangeVariableNameCommand>();
+         _inverseCommand = sut.ExecuteAndInvokeInverse(_context) as ChangeVariableNameCommand;
       }
 
       [Observation]
-      public void The_InverseCommand_should_modifie_the_same_formula()
+      public void the_inverse_command_should_be_a_change_variable_command()
       {
-         _inverseCommand.ChangedFormulaId.ShouldBeEqualTo(_sumFormula.Id);
+         _inverseCommand.ShouldNotBeNull();
       }
 
       [Observation]
-      public void The_InverseCommands_new_varaible_name_property_should_be_old_name()
+      public void should_have_reset_the_formula_to_its_original_value()
       {
-         _inverseCommand.NewVariableName.ShouldBeEqualTo(_oldName);
-      }
-
-      [Observation]
-      public void The_InverseCommands_old_varaible_name_property_should_be_new_name()
-      {
-         _inverseCommand.OldVariableName.ShouldBeEqualTo(_newName);
+         _sumFormula.Variable.ShouldBeEqualTo(_oldName);
       }
    }
 }
