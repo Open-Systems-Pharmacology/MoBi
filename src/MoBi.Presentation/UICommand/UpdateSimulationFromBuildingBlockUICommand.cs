@@ -12,14 +12,14 @@ namespace MoBi.Presentation.UICommand
       private IBuildingBlock _changedBuildingBlock;
       private IMoBiSimulation _simulationToUpdate;
 
-      private readonly ISimulationUpdateTask _simualtionUpdateTask;
+      private readonly ISimulationUpdateTask _simulationUpdateTask;
       private readonly IMoBiContext _context;
       private readonly INotificationPresenter _notificationPresenter;
 
-      public UpdateSimulationFromBuildingBlockUICommand(IMoBiContext context, ISimulationUpdateTask simualtionUpdateTask, INotificationPresenter notificationPresenter)
+      public UpdateSimulationFromBuildingBlockUICommand(IMoBiContext context, ISimulationUpdateTask simulationUpdateTask, INotificationPresenter notificationPresenter)
       {
          _context = context;
-         _simualtionUpdateTask = simualtionUpdateTask;
+         _simulationUpdateTask = simulationUpdateTask;
          _notificationPresenter = notificationPresenter;
       }
 
@@ -33,7 +33,7 @@ namespace MoBi.Presentation.UICommand
       public void Execute()
       {
          _notificationPresenter.ClearNotifications(MessageOrigin.Simulation);
-         _context.AddToHistory(_simualtionUpdateTask.UpdateSimulationFrom(_simulationToUpdate, _changedBuildingBlock));
+         _context.AddToHistory(_simulationUpdateTask.UpdateSimulationFrom(_simulationToUpdate, _changedBuildingBlock));
       }
    }
 }

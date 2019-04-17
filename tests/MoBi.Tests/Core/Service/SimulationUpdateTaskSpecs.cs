@@ -51,7 +51,7 @@ namespace MoBi.Core.Service
 
    internal class When_updating_an_changed_simulation_where_changed_object_is_removed_by_update : concern_for_SimulationUpdateTask
    {
-      private ICommand<IMoBiContext> _resultCommand;
+      private ICommand _resultCommand;
       private IMoBiSimulation _simulationToUpdate;
       private ISpatialStructure _templateBuildingBlock;
       private IMoBiBuildConfiguration _updatedBuildConfiguration;
@@ -73,7 +73,7 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_reuturn_an_update_simulation_command()
+      public void should_return_an_update_simulation_command()
       {
          var allCommands = _resultCommand.DowncastTo<MoBiMacroCommand>();
          allCommands.ShouldNotBeNull();
@@ -90,7 +90,7 @@ namespace MoBi.Core.Service
 
    public class When_updating_an_unchanged_simualtion_with_a_changed_buildingBlock : concern_for_SimulationUpdateTask
    {
-      private ICommand<IMoBiContext> _resultCommand;
+      private ICommand _resultCommand;
       private IMoBiSimulation _simulationToUpdate;
       private IBuildingBlock _templateBuildingBlock;
       private IMoBiBuildConfiguration _updatedBuildConfiguration;
@@ -111,7 +111,7 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_reuturn_An_update_simulation_command()
+      public void should_return_an_update_simulation_command()
       {
          _resultCommand.ShouldNotBeNull();
          _resultCommand.ShouldBeAnInstanceOf<MoBiMacroCommand>();

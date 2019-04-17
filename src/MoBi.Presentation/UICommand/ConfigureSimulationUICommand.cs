@@ -1,4 +1,7 @@
-﻿using MoBi.Core.Domain.Model;
+﻿using MoBi.Core;
+using MoBi.Core.Domain.Model;
+using MoBi.Presentation.Presenter.Main;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
@@ -7,16 +10,25 @@ namespace MoBi.Presentation.UICommand
 {
    public class ConfigureSimulationUICommand : ActiveObjectUICommand<IMoBiSimulation>
    {
-      private readonly IEditTasksForSimulation _simulationTask;
+      private readonly ISimulationUpdateTask _simulationUpdateTask;
+      private readonly INotificationPresenter _notificationPresenter;
+      private readonly IMoBiContext _context;
 
-      public ConfigureSimulationUICommand(IEditTasksForSimulation simulationTask, IActiveSubjectRetriever activeSubjectRetriever):base(activeSubjectRetriever)
+      public ConfigureSimulationUICommand(
+         ISimulationUpdateTask simulationUpdateTask, 
+         INotificationPresenter notificationPresenter, 
+         IMoBiContext context,
+         IActiveSubjectRetriever activeSubjectRetriever):base(activeSubjectRetriever)
       {
-         _simulationTask = simulationTask;
+         _simulationUpdateTask = simulationUpdateTask;
+         _notificationPresenter = notificationPresenter;
+         _context = context;
       }
 
       protected override void PerformExecute()
       {
-         _simulationTask.Configure(Subject);
+         _notificationPresenter.ClearNotifications(MessageOrigin.Simulation);
+         _context.AddToHistory(_simulationUpdateTask.ConfigureSimulation(Subject));
       }
    }
 }

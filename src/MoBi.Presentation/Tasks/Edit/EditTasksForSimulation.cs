@@ -29,26 +29,25 @@ namespace MoBi.Presentation.Tasks.Edit
       void ExportMatlabDifferentialSystem(IMoBiSimulation simulation);
       void ExportSimModelXml(IMoBiSimulation simulation);
       void CalculateScaleFactors(IMoBiSimulation simulation);
-      void Configure(IMoBiSimulation simulation);
    }
 
    public class EditTasksForSimulation : EditTasksForBuildingBlock<IMoBiSimulation>, IEditTasksForSimulation
    {
       private readonly ISimulationPersistor _simulationPersistor;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IForbiddenNamesRetriever _forbiddenNamesRetriver;
+      private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
       private readonly IModelReportCreator _reportCreator;
       private readonly IDataRepositoryTask _dataRepositoryTask;
       private readonly ISimModelExporter _simModelExporter;
       private readonly IDimensionFactory _dimensionFactory;
 
       public EditTasksForSimulation(IInteractionTaskContext interactionTaskContext, ISimulationPersistor simulationPersistor, IDialogCreator dialogCreator,
-         IForbiddenNamesRetriever forbiddenNamesRetriver, IDataRepositoryTask dataRepositoryTask,
+         IForbiddenNamesRetriever forbiddenNamesRetriever, IDataRepositoryTask dataRepositoryTask,
          IModelReportCreator reportCreator, ISimModelExporter simModelExporter, IDimensionFactory dimensionFactory) : base(interactionTaskContext)
       {
          _simulationPersistor = simulationPersistor;
          _dialogCreator = dialogCreator;
-         _forbiddenNamesRetriver = forbiddenNamesRetriver;
+         _forbiddenNamesRetriever = forbiddenNamesRetriever;
          _dataRepositoryTask = dataRepositoryTask;
          _reportCreator = reportCreator;
          _simModelExporter = simModelExporter;
@@ -153,7 +152,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       protected override IEnumerable<string> GetUnallowedNames(IMoBiSimulation simulation, IEnumerable<IObjectBase> existingObjectsInParent)
       {
-         return _forbiddenNamesRetriver.For(simulation);
+         return _forbiddenNamesRetriever.For(simulation);
       }
 
       public override void Save(IMoBiSimulation simulation)

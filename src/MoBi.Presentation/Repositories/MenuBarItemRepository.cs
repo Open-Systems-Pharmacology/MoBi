@@ -118,6 +118,12 @@ namespace MoBi.Presentation.Repositories
             .WithCommand<RunActiveSimulationWithSettingsCommand>()
             .WithIcon(ApplicationIcons.ConfigureAndRun);
 
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ConfigureShortMenu)
+            .WithId(MenuBarItemIds.ConfigureActiveSimulation)
+            .WithDescription(ToolTips.SimulationRibbon.ConfigureSimulationDescription)
+            .WithCommand<ConfigureSimulationUICommand>()
+            .WithIcon(ApplicationIcons.SimulationConfigure);
+         
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.CalculateScaleDivisor)
             .WithId(MenuBarItemIds.CalculateScaleFactors)
             .WithDescription(ToolTips.SimulationRibbon.CalculateScaleFactors)
@@ -498,7 +504,7 @@ namespace MoBi.Presentation.Repositories
          yield return ParameterIdentificationMenuBarButtons.StopParameterIdentification(MenuBarItemIds.StopParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.TimeProfileParameterIdentification(MenuBarItemIds.TimeProfileParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.PredictedVsObservedParameterIdentification(MenuBarItemIds.PredictedVsObservedParameterIdentification);
-         yield return ParameterIdentificationMenuBarButtons.ResidualsVsTimeParameterIdentifcation(MenuBarItemIds.ResidualsVsTimeParameterIdentifcation);
+         yield return ParameterIdentificationMenuBarButtons.ResidualsVsTimeParameterIdentifcation(MenuBarItemIds.ResidualsVsTimeParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.ResidualHistogramParameterIdentification(MenuBarItemIds.ResidualHistogramParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.CorrelationMatrixParameterIdentification(MenuBarItemIds.CorrelationMatrixParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.CovarianceMatrixParameterIdentification(MenuBarItemIds.CovarianceMatrixParameterIdentification);

@@ -28,6 +28,12 @@ namespace MoBi.Core.Commands
       private readonly string _changedBuildingBlockName;
       private readonly string _changedBuildingBlockType;
 
+      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IMoBiBuildConfiguration updatedBuildConfiguration)
+         : this(simulationToUpdate, newModel, updatedBuildConfiguration, true,string.Empty, string.Empty)
+      {
+         Description = AppConstants.Commands.ConfigureSimulationDescription(_simulationToUpdate.Name);
+      }
+
       public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IMoBiBuildConfiguration updatedBuildConfiguration, IBuildingBlock templateBuildingBlock)
          : this(simulationToUpdate, newModel, updatedBuildConfiguration, true, templateBuildingBlock.Name, string.Empty)
       {
@@ -46,6 +52,7 @@ namespace MoBi.Core.Commands
          _changedBuildingBlockType = changedBuildingBlockType;
          ObjectType = ObjectTypes.Simulation;
          CommandType = AppConstants.Commands.UpdateCommand;
+         Description = AppConstants.Commands.UpdateCommandDescription(_simulationToUpdate.Name, _changedBuildingBlockName, _changedBuildingBlockType);
       }
 
       protected override void ExecuteWith(IMoBiContext context)
@@ -68,7 +75,6 @@ namespace MoBi.Core.Commands
          _wasChanged = _simulationToUpdate.HasChanged;
          _simulationToUpdate.HasChanged = _hasChanged;
 
-         Description = AppConstants.Commands.UpdateCommandDescription(_changedBuildingBlockName, _simulationToUpdate, _changedBuildingBlockType);
 
          context.PublishEvent(new SimulationReloadEvent(_simulationToUpdate));
       }

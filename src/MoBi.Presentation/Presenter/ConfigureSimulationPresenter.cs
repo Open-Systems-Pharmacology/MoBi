@@ -15,6 +15,7 @@ namespace MoBi.Presentation.Presenter
    public interface IConfigureSimulationPresenter : IWizardPresenter
    {
       IMoBiCommand CreateBuildConfigurationBaseOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock);
+      IMoBiCommand CreateBuildConfiguration(IMoBiSimulation simulation);
       IMoBiBuildConfiguration BuildConfiguration { get; }
    }
 
@@ -23,16 +24,21 @@ namespace MoBi.Presentation.Presenter
       private readonly IDiagramManagerFactory _diagramManagerFactory;
       public IMoBiBuildConfiguration BuildConfiguration { get; private set; }
 
+
       public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, IDialogCreator dialogCreator, IBuildConfigurationFactory buildConfigurationFactory, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory)
          : base(view, subPresenterSubjectManager, dialogCreator, buildConfigurationFactory, context, SimulationItems.AllConfigure)
       {
          _diagramManagerFactory = diagramManagerFactory;
       }
 
+      public IMoBiCommand CreateBuildConfiguration(IMoBiSimulation simulation) => CreateBuildConfigurationBaseOn(simulation, null);
+
+
       public IMoBiCommand CreateBuildConfigurationBaseOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
-         //we create a build configuration where all current building block are referencing template building blocks
+         //we create a build configuration where all current building blocks are referencing template building blocks
          BuildConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.MoBiBuildConfiguration, templateBuildingBlock);
+
          var tmpSimulation = new MoBiSimulation()
          {
             DiagramManager = _diagramManagerFactory.Create<ISimulationDiagramManager>(),

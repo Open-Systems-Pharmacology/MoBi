@@ -1,16 +1,16 @@
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -24,8 +24,15 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       /// <param name="simulationToUpdate">The simulation to update.</param>
       /// <param name="templateBuildingBlock">The changed building block.</param>
-      /// <returns>Command to perform the Update</returns>
-      ICommand<IMoBiContext> UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock);
+      /// <returns>Executed command representing the update performed on the simulation</returns>
+      ICommand UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock);
+
+      /// <summary>
+      ///    Configures the simulation (e.g. Allows the user to update the current simulation with other building blocks)
+      /// </summary>
+      /// <param name="simulationToConfigure"></param>
+      /// <returns></returns>
+      ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure);
    }
 
    internal class SimulationUpdateTask : ISimulationUpdateTask
@@ -50,16 +57,7 @@ namespace MoBi.Presentation.Tasks
          _affectedBuildingBlockRetriever = affectedBuildingBlockRetriever;
       }
 
-      /// <summary>
-      ///    Updates the simulation according to changes in building Block. All changes that are not related to the building
-      ///    block are kept
-      /// </summary>
-      /// <param name="simulationToUpdate">The simulation to update.</param>
-      /// <param name="templateBuildingBlock">The building block that will be used to update the simulation.</param>
-      /// <returns>
-      ///    Command to perform the Update
-      /// </returns>
-      public ICommand<IMoBiContext> UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock)
+      public ICommand UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock)
       {
          IMoBiBuildConfiguration buildConfigurationReferencingTemplate;
          IMoBiCommand configurationCommands = null;
@@ -82,19 +80,42 @@ namespace MoBi.Presentation.Tasks
             fixedValueQuantities.AddRange(simulationToUpdate.Model.Root.GetAllChildren<IQuantity>(x => x.IsFixedValue));
          }
 
-         return updateSimulation(simulationToUpdate, templateBuildingBlock, buildConfigurationReferencingTemplate, configurationCommands, fixedValueQuantities);
+         return updateSimulation(simulationToUpdate, buildConfigurationReferencingTemplate, configurationCommands, templateBuildingBlock, fixedValueQuantities);
       }
 
-      private ICommand<IMoBiContext> updateSimulation(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock, IMoBiBuildConfiguration buildConfigurationReferencingTemplates, IMoBiCommand configurationCommands, PathCache<IQuantity> fixedValueQuantities)
+      public ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure)
+      {
+         using (var presenter = _applicationController.Start<IConfigureSimulationPresenter>())
+         {
+            var configurationCommands = presenter.CreateBuildConfiguration(simulationToConfigure);
+            if (configurationCommands.IsEmpty())
+               return new MoBiEmptyCommand();
+
+            var buildConfigurationReferencingTemplate = presenter.BuildConfiguration;
+            return updateSimulation(simulationToConfigure, buildConfigurationReferencingTemplate, configurationCommands);
+         }
+      }
+
+      private ICommand<IMoBiContext> updateSimulation(
+         IMoBiSimulation simulationToUpdate,
+         IMoBiBuildConfiguration buildConfigurationReferencingTemplates,
+         IMoBiCommand configurationCommands,
+         IBuildingBlock templateBuildingBlock = null,
+         PathCache<IQuantity> fixedValueQuantities = null)
       {
          //create model using referencing templates
          var model = createModelAndValidate(simulationToUpdate.Model.Name, buildConfigurationReferencingTemplates);
 
          var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(buildConfigurationReferencingTemplates);
 
-         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration, templateBuildingBlock).Run(_context);
+         var updateSimulationCommand = templateBuildingBlock == null
+            ? // is null when we configure a simulation
+            new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration)
+            : new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration, templateBuildingBlock);
 
-         synchronizeFixedParameterValues(simulationToUpdate, fixedValueQuantities, templateBuildingBlock);
+         updateSimulationCommand.Run(_context);
+
+         synchronizeFixedParameterValues(simulationToUpdate, templateBuildingBlock, fixedValueQuantities);
 
          var macro = new MoBiMacroCommand
          {
@@ -102,13 +123,17 @@ namespace MoBi.Presentation.Tasks
             CommandType = updateSimulationCommand.CommandType,
             ObjectType = updateSimulationCommand.ObjectType
          };
+
          macro.Add(configurationCommands);
          macro.Add(updateSimulationCommand);
          return macro;
       }
 
-      private void synchronizeFixedParameterValues(IMoBiSimulation simulationToUpdate, PathCache<IQuantity> fixedValueQuantities, IBuildingBlock templateBuildingBlock)
+      private void synchronizeFixedParameterValues(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock, PathCache<IQuantity> fixedValueQuantities)
       {
+         if (fixedValueQuantities == null)
+            return;
+
          var currentQuantities = new PathCache<IQuantity>(_entityPathResolver);
          currentQuantities.AddRange(simulationToUpdate.Model.Root.GetAllChildren<IQuantity>());
 
