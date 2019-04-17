@@ -15,12 +15,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return new ContextMenuForFormulaUsablePath(viewItem.DowncastTo<FormulaUsablePathDTO>(), presenter.DowncastTo<IEditExplicitFormulaPresenter>());
+         return new ContextMenuForFormulaUsablePath(viewItem.DowncastTo<FormulaUsablePathDTO>(), presenter.DowncastTo<IEditFormulaPathListPresenter>());
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return presenter.IsAnImplementationOf<IEditExplicitFormulaPresenter>() && viewItem.IsAnImplementationOf<FormulaUsablePathDTO>();
+         return presenter.IsAnImplementationOf<IEditFormulaPathListPresenter>() && viewItem.IsAnImplementationOf<FormulaUsablePathDTO>();
       }
    }
 
@@ -28,13 +28,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private readonly IList<IMenuBarItem> _allMenuItems;
 
-      public ContextMenuForFormulaUsablePath(FormulaUsablePathDTO formulaUsablePathDTO, IEditExplicitFormulaPresenter editExplicitFormulaPresenter)
+      public ContextMenuForFormulaUsablePath(FormulaUsablePathDTO formulaUsablePathDTO, IEditFormulaPathListPresenter editFormulaPathListPresenter)
       {
          _allMenuItems = new List<IMenuBarItem>
          {
-            CreateMenuButton.WithCaption((AppConstants.MenuNames.Delete)).
-               WithActionCommand(() => editExplicitFormulaPresenter.RemovePath(formulaUsablePathDTO)).
-               WithIcon(ApplicationIcons.Delete)
+            CreateMenuButton.WithCaption((AppConstants.MenuNames.Delete))
+               .WithActionCommand(() => editFormulaPathListPresenter.RemovePath(formulaUsablePathDTO))
+               .WithIcon(ApplicationIcons.Delete)
          };
 
       }

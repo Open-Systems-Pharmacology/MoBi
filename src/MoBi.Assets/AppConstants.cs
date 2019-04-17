@@ -1073,7 +1073,7 @@ namespace MoBi.Assets
 
       public class Warnings
       {
-         public static string PassiveTransporBuildingBlockCreatedAutomatically(string name)
+         public static string PassiveTransportBuildingBlockCreatedAutomatically(string name)
          {
             return $"A passive transport building block named '{name}' was generated to account for changes in passive processes usage.";
          }
@@ -1109,8 +1109,8 @@ namespace MoBi.Assets
          public static readonly string SourceBuildingBlockNotInProject = "Building Block used to create start values is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";
          public static readonly string ErrorInFormula = "Error in Formula";
-         public static readonly string ApplicatedMoleculeNotInProject = "Applicated Molecule is not in Project";
-         public static readonly string CoundNotCreateSimulation = "Unable to create the simulation. Please check warnings or errors in the notification view.";
+         public static readonly string AppliedMoleculeNotInProject = "Applied Molecule is not in Project";
+         public static readonly string CouldNotCreateSimulation = "Unable to create the simulation. Please check warnings or errors in the notification view.";
          public static readonly string TemplateShouldContainAtLeastOneCurve = "Template should contain at least one curve.";
          public static readonly string StartValueDimensionModeDoesNotMatchBuildingBlockDimensionMode = "The imported start value dimension mode does not match the building block dimension mode. Modify the start value or the building block so that they are both concentration based, or amount based";
          public static readonly string FrameworkExceptionOccurred = "An exception occurred";
@@ -1256,7 +1256,7 @@ namespace MoBi.Assets
          public static readonly string WarningsCaption = "Solver Warnings";
          public static readonly string HistoryBrowser = "History";
          public static readonly string NameInUse = "New Name";
-         public static readonly string ReanameWizardCaption = "Rename also";
+         public static readonly string RenameWizardCaption = "Rename also";
          public static readonly string AddReactionMolecule = "Molecule Name";
          public static readonly string NewName = "New Name";
          public static readonly string Tag = "Tag";
@@ -1402,6 +1402,7 @@ namespace MoBi.Assets
          public static readonly string TableFormulaWithXArgument = "Table Formula with X-Argument";
          public static readonly string VariableName = "Variable name";
          public static readonly string SumFormula = "Sum Formula";
+         public static readonly string SumOfAll = "∑ of all";
          public static readonly string Criteria = "Parameter criteria";
          public static readonly string RemoveCondition = "Remove condition";
          public static readonly string NewMatchTagCondition = "New \"Match tag\" condition";
@@ -1606,6 +1607,9 @@ namespace MoBi.Assets
 
          //TODO MOVE TO CORE
          public static readonly string UserDefined = "User Defined";
+
+         public static string SumFormulaDescription(string iterationPattern) => $"This is a description of Sum formula using {iterationPattern}: TODO. This is a description of Sum formula : TODO";
+
 
          public static string ManageDisplayUnits(string type)
          {

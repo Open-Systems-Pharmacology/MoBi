@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -45,6 +46,12 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
          formula.Name = dto.Name;
          return !_view.Canceled;
+      }
+
+      public override void ReleaseFrom(IEventPublisher eventPublisher)
+      {
+         base.ReleaseFrom(eventPublisher);
+         _formulaPresenterCache.ReleaseFrom(eventPublisher);
       }
    }
 }

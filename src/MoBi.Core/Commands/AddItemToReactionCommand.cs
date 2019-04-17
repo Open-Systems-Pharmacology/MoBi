@@ -61,6 +61,7 @@ namespace MoBi.Core.Commands
 
          formula.AddObjectPath(formulaUsablePath);
          context.PublishEvent(new AddedFormulaUsablePathEvent(formula, formulaUsablePath));
+         context.PublishEvent(new FormulaChangedEvent(formula));
       }
 
       private IFormulaUsablePath createPath(string moleculeName, IEnumerable<string> usedAliases, IMoBiContext context)

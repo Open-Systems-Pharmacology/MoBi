@@ -100,7 +100,7 @@ namespace MoBi.Presentation.Presenter
          _heavyWorkManager.Start(() => { result = createModel(); }, AppConstants.Captions.CreatingSimulation);
 
          if (result == null || result.IsInvalid)
-            throw new MoBiException(AppConstants.Exceptions.CoundNotCreateSimulation);
+            throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
 
          Simulation = createSimulation(result.Model);
 

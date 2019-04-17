@@ -25,6 +25,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.RemoveFromDescription(ObjectType, _itemToRemove.Alias, _parent.Name);
          _parent.RemoveObjectPath(_itemToRemove);
          context.PublishEvent(new RemovedFormulaUsablePathEvent(_parent, _itemToRemove));
+         context.PublishEvent(new FormulaChangedEvent(_parent));
       }
    }
 }

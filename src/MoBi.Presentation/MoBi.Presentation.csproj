@@ -138,17 +138,17 @@
       <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.33\lib\net462\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=7.5.0.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.7.5.0.35\lib\net462\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.33\lib\net462\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=7.5.0.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.7.5.0.35\lib\net462\OSPSuite.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.33\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=7.5.0.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.7.5.0.35\lib\net462\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=7.5.0.33, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.33\lib\net462\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=7.5.0.35, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.7.5.0.35\lib\net462\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=2.0.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.2.0.1.4\lib\net45\OSPSuite.Serializer.dll</HintPath>
@@ -325,6 +325,7 @@
     <Compile Include="Formatters\NullableWithDisplayUnitFormatter.cs" />
     <Compile Include="Formatters\ValuePointFormatter.cs" />
     <Compile Include="Presenter\EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase.cs" />
+    <Compile Include="Presenter\EditFormulaPathListPresenter.cs" />
     <Compile Include="Presenter\EditParameterListPresenter.cs" />
     <Compile Include="Presenter\EditTableFormulaWithXArgumentFormulaPresenter.cs" />
     <Compile Include="Presenter\IEditParameterListPresenter.cs" />
@@ -455,6 +456,7 @@
     <Compile Include="Views\IEditBlackBoxFormulaView.cs" />
     <Compile Include="Views\IEditContainerInSimulationView.cs" />
     <Compile Include="Views\IEditFavoritesView.cs" />
+    <Compile Include="Views\IEditFormulaPathListView.cs" />
     <Compile Include="Views\IEditParameterListView.cs" />
     <Compile Include="Views\IEditTableFormulaWithXArgumentFormulaView.cs" />
     <Compile Include="Views\ILegendView.cs" />

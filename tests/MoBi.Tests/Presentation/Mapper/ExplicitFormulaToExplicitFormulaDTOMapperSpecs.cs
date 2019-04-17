@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using FakeItEasy;
+using MoBi.Assets;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -14,8 +15,6 @@ namespace MoBi.Presentation.Mapper
    public abstract class concern_for_ExplicitFormulaToExplicitFormulaDTOMapper : ContextSpecification<IExplicitFormulaToExplicitFormulaDTOMapper>
    {
       private IFormulaUsablePathToFormulaUsablePathDTOMapper _formulaUsablePathMapper;
-      private IObjectPathFactory _objectPathFactory;
-      protected IEntityPathResolver _entityPathResolver;
       private IContainer _topContainer;
       private IContainer _parentContainer;
       protected IParameter _parameter;
@@ -24,10 +23,8 @@ namespace MoBi.Presentation.Mapper
 
       protected override void Context()
       {
-         _formulaUsablePathMapper = new FormulaUsablePathToFormulaUsablePathDTOMapper();
-         _objectPathFactory = new ObjectPathFactory(new AliasCreator());
-         _entityPathResolver = new EntityPathResolver(_objectPathFactory);
-         sut = new ExplicitFormulaToExplicitFormulaDTOMapper(_formulaUsablePathMapper, _objectPathFactory, _entityPathResolver);
+         _formulaUsablePathMapper = A.Fake<IFormulaUsablePathToFormulaUsablePathDTOMapper>();
+         sut = new ExplicitFormulaToExplicitFormulaDTOMapper(_formulaUsablePathMapper);
 
          _explicitFormula = new ExplicitFormula();
          _explicitFormula.AddObjectPath(
@@ -49,45 +46,5 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class When_mapping_an_explicit_formula_to_an_explicit_formula_dto_using_an_undefined_using_formula : concern_for_ExplicitFormulaToExplicitFormulaDTOMapper
-   {
-      private ExplicitFormulaBuilderDTO _dto;
-
-      protected override void Because()
-      {
-         _dto = sut.MapFrom(_explicitFormula, null);
-      }
-
-      [Observation]
-      public void should_return_a_dto_containing_unchanged_object_paths()
-      {
-         _dto.ObjectPaths.Count.ShouldBeEqualTo(1);
-         _dto.ObjectPaths[0].Path.ShouldBeEqualTo(new[] {ObjectPath.PARENT_CONTAINER, "P2"}.ToPathString());
-      }
-   }
-
-   public class When_mapping_an_explicit_formula_to_an_explicit_formula_dto_using_a_defined_using_formula : concern_for_ExplicitFormulaToExplicitFormulaDTOMapper
-   {
-      private ExplicitFormulaBuilderDTO _dto;
-
-      protected override void Context()
-      {
-         base.Context();
-         _explicitFormula.ResolveObjectPathsFor(_parameter);
-      }
-
-      protected override void Because()
-      {
-         _dto = sut.MapFrom(_explicitFormula, _parameter);
-      }
-
-      [Observation]
-      public void should_return_a_dto_containing_absolute_path_for_object_paths_that_could_be_resolved()
-      {
-         _dto.ObjectPaths.Count.ShouldBeEqualTo(1);
-         _dto.ObjectPaths[0].Path.ShouldBeEqualTo(_entityPathResolver.PathFor(_parameter2));
-         _dto.ObjectPaths[0].Alias.ShouldBeEqualTo(AppConstants.Param);
-         _dto.ObjectPaths[0].Dimension.ShouldBeEqualTo(DimensionFactoryForSpecs.MassDimension);
-      }
-   }
+  
 }

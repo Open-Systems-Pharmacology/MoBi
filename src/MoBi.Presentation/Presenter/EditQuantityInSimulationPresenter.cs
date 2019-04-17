@@ -60,8 +60,7 @@ namespace MoBi.Presentation.Presenter
       {
          base.ReleaseFrom(eventPublisher);
          _formulaPresenterCache.ReleaseFrom(eventPublisher);
-         if (_formulaPresenter != null)
-            _formulaPresenter.ReleaseFrom(eventPublisher);
+         _formulaPresenter?.ReleaseFrom(eventPublisher);
       }
 
       public override void Edit(IQuantity objectToEdit)

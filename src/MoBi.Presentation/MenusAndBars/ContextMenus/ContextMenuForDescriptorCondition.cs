@@ -71,7 +71,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          };
 
          if (_allowAddAllCondition)
-            allItems.Add(CreateAddAllCondition());
+            allItems.Add(CreateAddAllCondition().AsGroupStarter());
 
          var dto = _viewItem as IDescriptorConditionDTO;
          if (dto != null)

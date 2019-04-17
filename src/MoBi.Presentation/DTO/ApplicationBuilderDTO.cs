@@ -23,7 +23,7 @@ namespace MoBi.Presentation.DTO
          return CreateRule.For<ApplicationBuilderDTO>()
             .Property(x => x.MoleculeName)
             .WithRule((dto, moleculeName) => _getMoleculeNames().Contains(moleculeName))
-            .WithError(AppConstants.Exceptions.ApplicatedMoleculeNotInProject);
+            .WithError(AppConstants.Exceptions.AppliedMoleculeNotInProject);
       }
 
       public void GetMoleculeNames(Func<IEnumerable<string>> getMoleculeNames)
