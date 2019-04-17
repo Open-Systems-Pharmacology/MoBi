@@ -1,9 +1,4 @@
 ﻿using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -12,10 +7,15 @@ using MoBi.Helpers;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Service
 {
@@ -88,7 +88,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class When_updating_an_unchanged_simualtion_with_a_changed_buildingBlock : concern_for_SimulationUpdateTask
+   public class When_updating_an_unchanged_simulation_with_a_changed_buildingBlock : concern_for_SimulationUpdateTask
    {
       private ICommand _resultCommand;
       private IMoBiSimulation _simulationToUpdate;
@@ -191,6 +191,43 @@ namespace MoBi.Core.Service
       public void should_update_all_quantity_affected_by_the_updated_()
       {
          _updatedParameterFixedUpdatedByTemplate.IsFixedValue.ShouldBeFalse();
+      }
+   }
+
+   public class When_configuration_a_simulation : concern_for_SimulationUpdateTask
+   {
+      private IMoBiSimulation _simulationToConfigure;
+      private IMoBiCommand _command;
+      private CreationResult _creationResult;
+      private IModel _model;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationToConfigure = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
+         _model = new Model().WithName("NEW MODEL");
+         _model.Root = new Container();
+         _creationResult = new CreationResult(_model);
+         _command = new MoBiMacroCommand();
+         A.CallTo(() => _configurePresenter.CreateBuildConfiguration(_simulationToConfigure)).Returns(_command);
+         A.CallTo(() => _modelConstructor.CreateModelFrom(_configurePresenter.BuildConfiguration, _simulationToConfigure.Model.Name)).Returns(_creationResult);
+      }
+
+      protected override void Because()
+      {
+         sut.ConfigureSimulation(_simulationToConfigure);
+      }
+
+      [Observation]
+      public void should_start_the_configure_workflow_for_the_user()
+      {
+         A.CallTo(() => _configurePresenter.CreateBuildConfiguration(_simulationToConfigure)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_create_a_new_simulation_using_the_build_configuration_setup_by_the_user()
+      {
+         _simulationToConfigure.Model.ShouldBeEqualTo(_model);
       }
    }
 }

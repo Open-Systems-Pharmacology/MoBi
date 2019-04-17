@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -12,6 +9,9 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -73,7 +73,6 @@ namespace MoBi.Presentation
       public void should_not_throw_an_exception()
       {
       }
-      
    }
 
    public class When_pasting_from_clipboard : concern_for_EditParameterListPresenter
@@ -96,11 +95,11 @@ namespace MoBi.Presentation
       public void edit_must_be_called_after_pasting()
       {
          // This test ensures that the edit is called twice 
-         A.CallTo(() => _selectReferencePresenterFactory.ReferenceAtParameterFor(_container)).MustHaveHappened(Repeated.Exactly.Times(4));
+         A.CallTo(() => _selectReferencePresenterFactory.ReferenceAtParameterFor(_container)).MustHaveHappenedANumberOfTimesMatching(x => x == 4);
       }
    }
 
-   public class When_told_to_set_parameter_value_in_a_buildingblock : concern_for_EditParameterListPresenter
+   public class When_told_to_set_parameter_value_in_a_building_block : concern_for_EditParameterListPresenter
    {
       private ParameterDTO _parameterDTO;
       private double _newDisplayValue;
@@ -138,7 +137,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _buildingBlock= A.Fake<IBuildingBlock>();
+         _buildingBlock = A.Fake<IBuildingBlock>();
          _parameter = new Parameter().WithName("p")
             .WithDimension(new Dimension(new BaseDimensionRepresentation(), "Dim", "unit"))
             .WithFormula(new ConstantFormula(_value));

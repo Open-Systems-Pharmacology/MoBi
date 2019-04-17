@@ -129,10 +129,10 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_initialise_hirarchical_presenter()
+      public void should_initialise_hierarchical_presenter()
       {
-         // Needs to be at least twice because first time it's calles during set up.
-         A.CallTo(() => _hierarchicalSimulationPresenter.Edit(_simulation)).MustHaveHappened(Repeated.AtLeast.Twice);
+         // Needs to be at least twice because first time it's called during set up.
+         A.CallTo(() => _hierarchicalSimulationPresenter.Edit(_simulation)).MustHaveHappenedTwiceOrMore();
       }
    }
 

@@ -2,7 +2,6 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Tasks;
-using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.UICommand;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Commands.Core;
@@ -21,10 +20,10 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _simulationUpdateTask = A.Fake<ISimulationUpdateTask>();
-         _activeSubjectRetriever= A.Fake<IActiveSubjectRetriever>();
-         _notificationPresenter= A.Fake<INotificationPresenter>();
-         _context= A.Fake<IMoBiContext>();
-         sut = new ConfigureSimulationUICommand(_simulationUpdateTask,_notificationPresenter, _context,_activeSubjectRetriever);
+         _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
+         _notificationPresenter = A.Fake<INotificationPresenter>();
+         _context = A.Fake<IMoBiContext>();
+         sut = new ConfigureSimulationUICommand(_simulationUpdateTask, _notificationPresenter, _context, _activeSubjectRetriever);
 
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Subject = _simulation;
@@ -38,9 +37,10 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _updateCommand= A.Fake<ICommand>();
-         A.CallTo(_simulation).WithReturnType<ICommand>().Returns(_updateCommand);
+         _updateCommand = A.Fake<ICommand>();
+         A.CallTo(_simulationUpdateTask).WithReturnType<ICommand>().Returns(_updateCommand);
       }
+
       protected override void Because()
       {
          sut.Execute();

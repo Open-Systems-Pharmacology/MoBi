@@ -111,7 +111,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_refresh_the_edited_parameters()
       {
-         A.CallTo(() => _editParameterListPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _editParameterListPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappenedTwiceExactly() ;
       }
    }
 }

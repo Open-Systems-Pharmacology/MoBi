@@ -125,14 +125,15 @@ namespace MoBi.Presentation
       [Observation]
       public void should_show_dialog_only_once()
       {
-         A.CallTo(() => _mergeConflictResolverPresenter.ShowConflict(A<IObjectBase>.Ignored, A<IObjectBase>.Ignored, A<int>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
+         A.CallTo(() => _mergeConflictResolverPresenter.ShowConflict(A<IObjectBase>.Ignored, A<IObjectBase>.Ignored, A<int>.Ignored))
+            .MustHaveHappenedOnceExactly();
       }
 
       [Observation]
       public void calls_to_replace_all_elements_should_result()
       {
-         A.CallTo(() => _addAction(A<FakeObject>.Ignored)).MustHaveHappened(Repeated.Exactly.Times(3));
-         A.CallTo(() => _removeAction(A<FakeObject>.Ignored)).MustHaveHappened(Repeated.Exactly.Times(3));
+         A.CallTo(() => _addAction(A<FakeObject>.Ignored)).MustHaveHappenedANumberOfTimesMatching(x => x == 3);
+         A.CallTo(() => _removeAction(A<FakeObject>.Ignored)).MustHaveHappenedANumberOfTimesMatching(x => x == 3);
       }
    }
 

@@ -91,8 +91,7 @@ namespace MoBi.Presentation.Tasks
             if (configurationCommands.IsEmpty())
                return new MoBiEmptyCommand();
 
-            var buildConfigurationReferencingTemplate = presenter.BuildConfiguration;
-            return updateSimulation(simulationToConfigure, buildConfigurationReferencingTemplate, configurationCommands);
+            return updateSimulation(simulationToConfigure, presenter.BuildConfiguration, configurationCommands);
          }
       }
 
@@ -109,7 +108,7 @@ namespace MoBi.Presentation.Tasks
          var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(buildConfigurationReferencingTemplates);
 
          var updateSimulationCommand = templateBuildingBlock == null
-            ? // is null when we configure a simulation
+            ? // is null when we a simulation is being configured. Otherwise this is the template building block to user
             new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration)
             : new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration, templateBuildingBlock);
 

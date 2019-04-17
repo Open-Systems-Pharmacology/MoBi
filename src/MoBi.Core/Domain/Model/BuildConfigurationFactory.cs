@@ -103,7 +103,7 @@ namespace MoBi.Core.Domain.Model
 
          update(buildingBlockInfo, templateBuildingBlockInfo, buildingBlockToUse);
 
-         //since we are using the templatate building block, we reset the simulation change counter
+         //since we are using the template building block, we reset the simulation change counter
          if (templateBuildingBlockInfo.BuildingBlockIsTemplate)
             buildingBlockInfo.SimulationChanges = 0;
 
@@ -118,7 +118,7 @@ namespace MoBi.Core.Domain.Model
 
          update(buildingBlockInfo, templateBuildingBlockInfo, buildingBlockToUse);
 
-         //since we are using the templatate building block, we reset the simulation change counter
+         //since we are using the template building block, we reset the simulation change counter
          if (shouldUseTemplate)
             buildingBlockInfo.SimulationChanges = 0;
       }

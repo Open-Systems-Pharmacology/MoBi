@@ -2,7 +2,6 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Tasks;
-using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
 
@@ -15,10 +14,10 @@ namespace MoBi.Presentation.UICommand
       private readonly IMoBiContext _context;
 
       public ConfigureSimulationUICommand(
-         ISimulationUpdateTask simulationUpdateTask, 
-         INotificationPresenter notificationPresenter, 
+         ISimulationUpdateTask simulationUpdateTask,
+         INotificationPresenter notificationPresenter,
          IMoBiContext context,
-         IActiveSubjectRetriever activeSubjectRetriever):base(activeSubjectRetriever)
+         IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
       {
          _simulationUpdateTask = simulationUpdateTask;
          _notificationPresenter = notificationPresenter;
