@@ -93,13 +93,12 @@ namespace MoBi.Assets
 
       public static class SimulationRibbon
       {
-         public static readonly string CreateSimulation = "Create a new Simulation from existing Building Blocks";
-         public static readonly string RunSimulation = "Simulate the selected Simulation";
+         public static readonly string CreateSimulation = "Create a new simulation from existing building blocks";
+         public static readonly string RunSimulation = "Simulate the selected simulation";
          public static readonly string RunWithSettingsDescription = "Select simulation settings and simulate the active simulation";
-         public static readonly string StopSimulation = "Stop the currently running Simulation";
+         public static readonly string StopSimulation = "Stop the currently running simulation";
          public static readonly string CalculateScaleFactors = "Calculate scale factors";
-         public static readonly string ConfigureSimulationDescription = "Configure Simulation";
-
+         public static readonly string ConfigureSimulationDescription = "Configure simulation";
       }
 
       public static class ImportRibbon

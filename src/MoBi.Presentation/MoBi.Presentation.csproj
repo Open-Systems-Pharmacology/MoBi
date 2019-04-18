@@ -412,7 +412,6 @@
     <Compile Include="Tasks\CheckNameVisitor.cs" />
     <Compile Include="Tasks\ImportFromExcelTask.cs" />
     <Compile Include="Tasks\Edit\EditTaskForInteractionContainer.cs" />
-    <Compile Include="Tasks\Edit\EditTaskForSimulation.cs" />
     <Compile Include="Tasks\FullPathDisplayResolver.cs" />
     <Compile Include="Tasks\Interaction\AbstractStartValuePathTask.cs" />
     <Compile Include="Tasks\Interaction\DiagramTask.cs" />

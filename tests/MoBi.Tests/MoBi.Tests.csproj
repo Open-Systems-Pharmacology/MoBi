@@ -517,7 +517,6 @@
     <Compile Include="Presentation\Tasks\EditTaskForContainerSpecs.cs" />
     <Compile Include="Presentation\Tasks\EditTaskForEventBuilderSpecs.cs" />
     <Compile Include="Presentation\Tasks\EditTaskForInteractionContainerSpecs.cs" />
-    <Compile Include="Presentation\Tasks\EditTaskForSimualtionTaskSpecs.cs" />
     <Compile Include="Presentation\Tasks\EditTasksForAmountObserverBuilderSpecs.cs" />
     <Compile Include="Presentation\Tasks\EditTasksForSimulationSpecs.cs" />
     <Compile Include="Presentation\Tasks\InteractionTasksForActiveTransportBuilderSpecs.cs" />
