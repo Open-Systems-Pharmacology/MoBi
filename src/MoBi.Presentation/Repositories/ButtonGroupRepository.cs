@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Repositories
       private IButtonGroup parameterIdentificationAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterIdentificationAnalyses)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.TimeProfileParameterIdentification)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.PredictedVsObservedParameterIdentification)))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ResidualsVsTimeParameterIdentifcation)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ResidualsVsTimeParameterIdentification)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ResidualHistogramParameterIdentification)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CovarianceMatrixParameterIdentification)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CorrelationMatrixParameterIdentification)))
@@ -204,6 +204,7 @@ namespace MoBi.Presentation.Repositories
       private IButtonGroup simulationButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Simulation)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Run)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.RunWithSettings)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ConfigureActiveSimulation)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Stop)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CalculateScaleFactors)))
          .WithId(ButtonGroupIds.Simulation);

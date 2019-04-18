@@ -57,8 +57,8 @@
     <Reference Include="DevExpress.Utils.v18.2, Version=18.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DevExpress.Presentation.18.2.7\lib\net45\DevExpress.Utils.v18.2.dll</HintPath>
     </Reference>
-    <Reference Include="FakeItEasy, Version=4.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FakeItEasy.4.9.1\lib\net45\FakeItEasy.dll</HintPath>
+    <Reference Include="FakeItEasy, Version=5.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FakeItEasy.5.1.1\lib\net45\FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
@@ -269,6 +269,7 @@
     <Compile Include="IntegrationTests\ModelConstructionSpecs.cs" />
     <Compile Include="IntegrationTests\SearchIntegrationTests.cs" />
     <Compile Include="Presentation\CloseSubjectPresenterInvokerSpecs.cs" />
+    <Compile Include="Presentation\ConfigureSimulationUICommandSpecs.cs" />
     <Compile Include="Presentation\ContextMenuForNotificationFactorySpecs.cs" />
     <Compile Include="Presentation\EditFormulaPathListPresenterSpecs.cs" />
     <Compile Include="Presentation\EditTableFormulaWithOffSetFormulaPresenterSpecs.cs" />
@@ -516,7 +517,6 @@
     <Compile Include="Presentation\Tasks\EditTaskForContainerSpecs.cs" />
     <Compile Include="Presentation\Tasks\EditTaskForEventBuilderSpecs.cs" />
     <Compile Include="Presentation\Tasks\EditTaskForInteractionContainerSpecs.cs" />
-    <Compile Include="Presentation\Tasks\EditTaskForSimualtionTaskSpecs.cs" />
     <Compile Include="Presentation\Tasks\EditTasksForAmountObserverBuilderSpecs.cs" />
     <Compile Include="Presentation\Tasks\EditTasksForSimulationSpecs.cs" />
     <Compile Include="Presentation\Tasks\InteractionTasksForActiveTransportBuilderSpecs.cs" />

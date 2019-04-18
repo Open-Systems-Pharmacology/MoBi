@@ -478,12 +478,17 @@ namespace MoBi.Assets
 
          public static string CommitCommandDescription(IBuildingBlock buildingBlock, IModelCoreSimulation simulation, string buildingBlockType)
          {
-            return string.Format("Commit changes made in Simulation: '{0}' to {2}: '{1}'", simulation.Name, buildingBlock.Name, buildingBlockType);
+            return $"Commit changes made in Simulation: '{simulation.Name}' to {buildingBlockType}: '{buildingBlock.Name}'";
          }
 
-         public static string UpdateCommandDescription(string buildingBlockName, IModelCoreSimulation simulation, string buildingBlockType)
+         public static string UpdateCommandDescription(string simulationName, string buildingBlockName, string buildingBlockType)
          {
-            return string.Format("Updates simulation: '{0}' with actual information from {2}: '{1}'", simulation.Name, buildingBlockName, buildingBlockType);
+            return $"Updates simulation: '{simulationName}' with actual information from {buildingBlockType}: '{buildingBlockName}'";
+         }
+
+         public static string ConfigureSimulationDescription(string simulationName)
+         {
+            return $"Configure simulation: '{simulationName}' was updated.";
          }
 
          public static string EditDescriptionMoleculeList(string objectType, MoleculeList newMoleculeList, string name)
@@ -939,6 +944,7 @@ namespace MoBi.Assets
          public static readonly string Options = "Options";
          public static readonly string Run = "Run";
          public static readonly string RunWithSettings = "Define Settings and Run";
+         public static readonly string ConfigureShortMenu = "Configure";
          public static readonly string CalculateScaleDivisor = "Calculate Scale Divisor";
          public static readonly string AddLabel = "Add Label";
          public static readonly string Undo = "Undo";
@@ -952,6 +958,7 @@ namespace MoBi.Assets
          public static readonly string Exit = "E&xit";
          public static readonly string RecentProjects = "&Recent Projects";
          public static readonly string Edit = "Edit...";
+         public static readonly string Configure = "Configure...";
          public static readonly string Rename = "Rename...";
          public static readonly string Remove = OSPSuite.Assets.MenuNames.Remove;
          public static readonly string Delete = OSPSuite.Assets.MenuNames.Delete;

@@ -197,6 +197,7 @@ namespace MoBi.Presentation.Presenter.Main
          {
             _menuBarItemRepository[MenuBarItemIds.Run].Enabled = value;
             _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = value;
+            _menuBarItemRepository[MenuBarItemIds.ConfigureActiveSimulation].Enabled = value;
             _menuBarItemRepository[MenuBarItemIds.CalculateScaleFactors].Enabled = value;
          }
       }
@@ -289,7 +290,7 @@ namespace MoBi.Presentation.Presenter.Main
          _menuBarItemRepository[MenuBarItemIds.CalculateScaleFactors].Enabled = true;
       }
 
-      public bool SimulationRunEnabeld
+      public bool SimulationRunEnabled
       {
          set => enableActiveSimulationItems = value;
       }
@@ -373,7 +374,7 @@ namespace MoBi.Presentation.Presenter.Main
          _menuBarItemRepository[MenuBarItemIds.PredictedVsObservedParameterIdentification].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.CorrelationMatrixParameterIdentification].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.CovarianceMatrixParameterIdentification].Enabled = hasResult;
-         _menuBarItemRepository[MenuBarItemIds.ResidualsVsTimeParameterIdentifcation].Enabled = hasResult;
+         _menuBarItemRepository[MenuBarItemIds.ResidualsVsTimeParameterIdentification].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.ResidualHistogramParameterIdentification].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.TimeProfilePredictionInterval].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.TimeProfileConfidenceInterval].Enabled = hasResult;

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
@@ -15,9 +13,11 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -40,13 +40,13 @@ namespace MoBi.Presentation.Presenter
 
       public CreateSimulationPresenter(
          ICreateSimulationView view,
-         IMoBiContext context, 
+         IMoBiContext context,
          IModelConstructor modelConstructor,
-         IDimensionValidator dimensionValidator, 
+         IDimensionValidator dimensionValidator,
          ISimulationFactory simulationFactory,
-         IBuildConfigurationFactory buildConfigurationFactory, 
+         IBuildConfigurationFactory buildConfigurationFactory,
          IHeavyWorkManager heavyWorkManager,
-         ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager, 
+         ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager,
          IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriever,
          IUserSettings userSettings)

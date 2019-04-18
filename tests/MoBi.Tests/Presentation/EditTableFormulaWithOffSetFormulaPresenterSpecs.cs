@@ -134,73 +134,73 @@ namespace MoBi.Presentation
       [Observation]
       public void should_rebind_to_the_view()
       {
-         A.CallTo(() => _view.BindTo(A<TableFormulaWithOffsetDTO>._)).MustHaveHappened(Repeated.Exactly.Twice);
-      }
-   }
-
-   public class When_the_user_is_selecting_a_new_offset_formula_for_the_edited_table_formula_and_the_selection_is_canceled : concern_for_EditTableFormulaWithOffSetFormulaPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _selectFormulaUsablePathPresenter.GetSelection()).Returns(null);
-         sut.Edit(_formula, _usingFormula);
+         A.CallTo(() => _view.BindTo(A<TableFormulaWithOffsetDTO>._)).MustHaveHappenedTwiceExactly();
       }
 
-      protected override void Because()
+      public class When_the_user_is_selecting_a_new_offset_formula_for_the_edited_table_formula_and_the_selection_is_canceled : concern_for_EditTableFormulaWithOffSetFormulaPresenter
       {
-         sut.SetOffsetFormulaPath();
+         protected override void Context()
+         {
+            base.Context();
+            A.CallTo(() => _selectFormulaUsablePathPresenter.GetSelection()).Returns(null);
+            sut.Edit(_formula, _usingFormula);
+         }
+
+         protected override void Because()
+         {
+            sut.SetOffsetFormulaPath();
+         }
+
+         [Observation]
+         public void should_not_add_a_command_to_the_history()
+         {
+            A.CallTo(() => _commandCollector.AddCommand(A<ICommand>._)).MustNotHaveHappened();
+         }
       }
 
-      [Observation]
-      public void should_not_add_a_command_to_the_history()
+      public class When_the_user_is_selecting_a_new_table_object_for_the_edited_table_formula : concern_for_EditTableFormulaWithOffSetFormulaPresenter
       {
-         A.CallTo(() => _commandCollector.AddCommand(A<ICommand>._)).MustNotHaveHappened();
-      }
-   }
+         private IObjectBase _tableParameter;
+         private IObjectBase _anotherParameter;
+         private IObjectBase _notAParameter;
+         private IFormulaUsablePath _selectedFormulaUsablePath;
 
-   public class When_the_user_is_selecting_a_new_table_object_for_the_edited_table_formula : concern_for_EditTableFormulaWithOffSetFormulaPresenter
-   {
-      private IObjectBase _tableParameter;
-      private IObjectBase _anotherParameter;
-      private IObjectBase _notAParameter;
-      private IFormulaUsablePath _selectedFormulaUsablePath;
+         protected override void Context()
+         {
+            base.Context();
+            _tableParameter = new Parameter().WithFormula(new TableFormula());
+            _anotherParameter = new Parameter().WithFormula(new ConstantFormula());
+            _notAParameter = A.Fake<IObjectBase>();
+            _selectedFormulaUsablePath = new FormulaUsablePath();
+            A.CallTo(() => _selectFormulaUsablePathPresenter.GetSelection()).Returns(_selectedFormulaUsablePath);
+            sut.Edit(_formula, _usingFormula);
+         }
 
-      protected override void Context()
-      {
-         base.Context();
-         _tableParameter = new Parameter().WithFormula(new TableFormula());
-         _anotherParameter = new Parameter().WithFormula(new ConstantFormula());
-         _notAParameter = A.Fake<IObjectBase>();
-         _selectedFormulaUsablePath = new FormulaUsablePath();
-         A.CallTo(() => _selectFormulaUsablePathPresenter.GetSelection()).Returns(_selectedFormulaUsablePath);
-         sut.Edit(_formula, _usingFormula);
-      }
+         protected override void Because()
+         {
+            sut.SetTableObjectPath();
+         }
 
-      protected override void Because()
-      {
-         sut.SetTableObjectPath();
-      }
+         [Observation]
+         public void should_only_allow_selection_of_parameters_with_the_time_dimension()
+         {
+            _predicate(_tableParameter).ShouldBeTrue();
+            _predicate(_anotherParameter).ShouldBeFalse();
+            _predicate(_notAParameter).ShouldBeFalse();
+         }
 
-      [Observation]
-      public void should_only_allow_selection_of_parameters_with_the_time_dimension()
-      {
-         _predicate(_tableParameter).ShouldBeTrue();
-         _predicate(_anotherParameter).ShouldBeFalse();
-         _predicate(_notAParameter).ShouldBeFalse();
-      }
+         [Observation]
+         public void should_register_a_command_in_the_history()
+         {
+            A.CallTo(() => _mobiFormulaTask.ChangeTableObject(_formula, _selectedFormulaUsablePath, _buildingBlock)).MustHaveHappened();
+            A.CallTo(() => _commandCollector.AddCommand(A<ICommand>._)).MustHaveHappened();
+         }
 
-      [Observation]
-      public void should_register_a_command_in_the_history()
-      {
-         A.CallTo(() => _mobiFormulaTask.ChangeTableObject(_formula, _selectedFormulaUsablePath, _buildingBlock)).MustHaveHappened();
-         A.CallTo(() => _commandCollector.AddCommand(A<ICommand>._)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_rebind_to_the_view()
-      {
-         A.CallTo(() => _view.BindTo(A<TableFormulaWithOffsetDTO>._)).MustHaveHappened(Repeated.Exactly.Twice);
+         [Observation]
+         public void should_rebind_to_the_view()
+         {
+            A.CallTo(() => _view.BindTo(A<TableFormulaWithOffsetDTO>._)).MustHaveHappenedTwiceExactly();
+         }
       }
    }
 }
