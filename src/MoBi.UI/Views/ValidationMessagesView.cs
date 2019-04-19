@@ -44,7 +44,7 @@ namespace MoBi.UI.Views
          _gridViewBinder.Bind(x => x.NotificationType)
             .WithRepository(configureStatusRepository)
             .WithCaption("Type")
-            .WithFixedWidth(UIConstants.StatusWidth)
+            .WithFixedWidth(UIConstants.STATUS_WIDTH)
             .AsReadOnly();
 
          _gridViewBinder.Bind(x => x.Text)

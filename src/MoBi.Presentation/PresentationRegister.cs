@@ -30,6 +30,7 @@ using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Comparisons;
@@ -122,6 +123,7 @@ namespace MoBi.Presentation
          container.Register<IPathToPathElementsMapper, PathToPathElementsMapper>();
          container.Register<IDataColumnToPathElementsMapper, DataColumnToPathElementsMapper>();
          container.Register<IDisplayNameProvider, DisplayNameProvider>();
+         container.Register<IRenameObjectDTOFactory, RenameObjectDTOFactory>();
 
          registerTasks(container);
          registerContextMenus(container);
@@ -188,7 +190,7 @@ namespace MoBi.Presentation
          {
             scan.AssemblyContainingType<PresentationRegister>();
             scan.IncludeNamespaceContainingType<AboutPresenter>();
-            scan.WithConvention<RegiterCreateAndEditPresenterConvention>();
+            scan.WithConvention<RegisterCreateAndEditPresenterConvention>();
          });
       }
 
@@ -260,7 +262,7 @@ namespace MoBi.Presentation
          container.Register<ContextMenuFactoryForBuildingBlock<T>, IContextMenuSpecificationFactory<IViewItem>, ContextMenuFactoryForBuildingBlock<T>>(LifeStyle.Singleton);
       }
 
-      public class RegiterCreateAndEditPresenterConvention : IRegistrationConvention
+      public class RegisterCreateAndEditPresenterConvention : IRegistrationConvention
       {
          public void Process(Type concreteType, IContainer container, LifeStyle lifeStyle)
          {
