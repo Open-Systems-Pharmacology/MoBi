@@ -11,7 +11,7 @@ namespace MoBi.UI.Views
       public ConfigureSimulationView()
       {
          InitializeComponent();
-         ClientSize = new System.Drawing.Size(UIConstants.UI.SIMULATION_VIEW_WITDH, UIConstants.UI.SIMULATION_VIEW_HEIGHT);
+         ClientSize = new System.Drawing.Size(UIConstants.UI.SIMULATION_VIEW_WIDTH, UIConstants.UI.SIMULATION_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(IConfigureSimulationPresenter presenter)

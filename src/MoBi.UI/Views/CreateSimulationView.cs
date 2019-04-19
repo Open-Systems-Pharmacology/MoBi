@@ -1,12 +1,12 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Assets;
+﻿using System.Drawing;
 using DevExpress.XtraTab;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
@@ -21,8 +21,7 @@ namespace MoBi.UI.Views
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<IObjectBaseDTO>();
-         ClientSize = new System.Drawing.Size(UIConstants.UI.SIMULATION_VIEW_WITDH, UIConstants.UI.SIMULATION_VIEW_HEIGHT);
-
+         ClientSize = new Size(UIConstants.UI.SIMULATION_VIEW_WIDTH, UIConstants.UI.SIMULATION_VIEW_HEIGHT);
       }
 
       protected override void SetActiveControl()
@@ -55,7 +54,6 @@ namespace MoBi.UI.Views
          Icon = ApplicationIcons.Simulation.WithSize(IconSizes.Size16x16);
          Caption = AppConstants.Captions.SimulationCreationCaption;
          this.ReziseForCurrentScreen(fractionHeight: UIConstants.UI.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.UI.SCREEN_RESIZE_FRACTION);
-
       }
 
       public override XtraTabControl TabControl => tabWizard;
