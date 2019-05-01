@@ -257,7 +257,7 @@ namespace MoBi.Presentation.Tasks
          return _simulationLoader.AddSimulationToProject(simulationTransfer);
       }
 
-      // Check if TemplateBuildinhgBlock ID is set, and if not set it to th e used Building Block
+      // Check if TemplateBuildingBlock ID is set, and if not set it to th e used Building Block
       // Needed when importing from PK-Sim 
 
       private bool askForSaveProject()

@@ -84,7 +84,7 @@ namespace MoBi.Core
       {
          base.Context();
          sut = new LocalSearchVisitor(_searchExpression.ToUpper());
-         sut.CaseSensitiv = true;
+         sut.CaseSensitive = true;
       }
 
       protected override void Because()
@@ -201,7 +201,7 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         sut.CaseSensitiv = true;
+         sut.CaseSensitive = true;
       }
 
       protected override void Because()
@@ -248,7 +248,7 @@ namespace MoBi.Core
          base.Context();
          sut.SearchFor = "P.*";
          sut.RegExSearch = true;
-         sut.CaseSensitiv = true;
+         sut.CaseSensitive = true;
       }
 
       protected override void Because()
@@ -271,7 +271,7 @@ namespace MoBi.Core
       {
          base.Context();
          sut.WholeWord = true;
-         sut.CaseSensitiv = true;
+         sut.CaseSensitive = true;
       }
 
       protected override void Because()

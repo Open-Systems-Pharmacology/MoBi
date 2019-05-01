@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_set_the_options_of_the_search_visitor()
       {
-         _searchVisitor.CaseSensitiv.ShouldBeEqualTo(_options.CaseSensitive);
+         _searchVisitor.CaseSensitive.ShouldBeEqualTo(_options.CaseSensitive);
          _searchVisitor.RegExSearch.ShouldBeEqualTo(_options.RegEx);
          _searchVisitor.SearchFor.ShouldBeEqualTo(_options.Expression);
          _searchVisitor.WholeWord.ShouldBeEqualTo(_options.WholeWord);
@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_set_the_options_of_the_search_visitor()
       {
-         _searchVisitor.CaseSensitiv.ShouldBeEqualTo(_options.CaseSensitive);
+         _searchVisitor.CaseSensitive.ShouldBeEqualTo(_options.CaseSensitive);
          _searchVisitor.RegExSearch.ShouldBeEqualTo(_options.RegEx);
          _searchVisitor.SearchFor.ShouldBeEqualTo(_options.Expression);
          _searchVisitor.WholeWord.ShouldBeEqualTo(_options.WholeWord);
@@ -124,7 +124,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_set_the_options_of_the_search_visitor()
       {
-         _searchVisitor.CaseSensitiv.ShouldBeEqualTo(_options.CaseSensitive);
+         _searchVisitor.CaseSensitive.ShouldBeEqualTo(_options.CaseSensitive);
          _searchVisitor.RegExSearch.ShouldBeEqualTo(_options.RegEx);
          _searchVisitor.SearchFor.ShouldBeEqualTo(_options.Expression);
          _searchVisitor.WholeWord.ShouldBeEqualTo(_options.WholeWord);
@@ -171,7 +171,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_set_the_options_of_the_search_visitor()
       {
-         _searchVisitor.CaseSensitiv.ShouldBeEqualTo(_options.CaseSensitive);
+         _searchVisitor.CaseSensitive.ShouldBeEqualTo(_options.CaseSensitive);
          _searchVisitor.RegExSearch.ShouldBeEqualTo(_options.RegEx);
          _searchVisitor.SearchFor.ShouldBeEqualTo(_options.Expression);
          _searchVisitor.WholeWord.ShouldBeEqualTo(_options.WholeWord);
@@ -206,7 +206,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_set_the_options_of_the_search_visitor()
       {
-         _searchVisitor.CaseSensitiv.ShouldBeEqualTo(_options.CaseSensitive);
+         _searchVisitor.CaseSensitive.ShouldBeEqualTo(_options.CaseSensitive);
          _searchVisitor.RegExSearch.ShouldBeEqualTo(_options.RegEx);
          _searchVisitor.SearchFor.ShouldBeEqualTo(_options.Expression);
          _searchVisitor.WholeWord.ShouldBeEqualTo(_options.WholeWord);

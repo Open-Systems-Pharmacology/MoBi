@@ -35,13 +35,9 @@ namespace MoBi.IntegrationTests
          {
             Title = "Testing Reports",
             Author = "Unit Tests Engine",
-            Keywords = new[] {"Tests", "PKReporting", "SBSuite"},
-            Software = "SBSuite",
             SubTitle = "SubTitle",
-            SoftwareVersion = "5.2",
-            ContentFileName = "Content",
             DeleteWorkingDir = true,
-            ColorStyle = ReportSettings.ReportColorStyles.Color
+            ColorStyle = ReportColorStyles.Color
          };
 
          _reportConfiguration.Template = new ReportTemplate {Path = TEXTemplateFolder()};

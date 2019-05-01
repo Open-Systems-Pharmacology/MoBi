@@ -11,7 +11,7 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_MultipleBuildingBlockInfoNodeContextMenuFactory : ContextSpecificationWithLocalContainer<MultipleBuildingBlockInfoNodeContextMenuFactory>
+   public abstract class concern_for_MultipleBuildingBlockInfoNodeContextMenuFactory : ContextSpecification<MultipleBuildingBlockInfoNodeContextMenuFactory>
    {
       private IMoBiContext _context;
       protected List<ITreeNode> _treeNodes;
