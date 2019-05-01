@@ -459,8 +459,6 @@
     <Compile Include="Presentation\AddEductUICommandSpecs.cs" />
     <Compile Include="Presentation\BuildingBlockMergePresenterSpecs.cs" />
     <Compile Include="Presentation\BuildingBlockSelectionPresenterSpecs.cs" />
-    <Compile Include="Presentation\ContextMenuFactoryForDescriptorConditionSpecs.cs" />
-    <Compile Include="Presentation\ContextSpecificationWithLocalContainer.cs" />
     <Compile Include="Presentation\CreateBuildingBlockMergePresenterSpecs.cs" />
     <Compile Include="Presentation\CreatePKSimMoleculePresenterSpecs.cs" />
     <Compile Include="Presentation\DTOValuePointSpecs.cs" />

@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_ProductReactionPartnerContextMenuSpecificationFactory : ContextSpecificationWithLocalContainer<IReactionProductContextMenuSpecificationFactory>
+   public abstract class concern_for_ProductReactionPartnerContextMenuSpecificationFactory : ContextSpecification<IReactionProductContextMenuSpecificationFactory>
    {
       protected IReactionProductsPresenter _reactionProductsPresenter;
       protected override void Context()
@@ -31,31 +31,6 @@ namespace MoBi.Presentation
       public void should_return_true()
       {
          _result.ShouldBeTrue();
-      }
-   }
-
-   public class When_creating_a_context_menu_for_the_product_of_a_reaction : concern_for_ProductReactionPartnerContextMenuSpecificationFactory
-   {
-      
-      private IReactionBuilder _reactionBuilder;
-      private ReactionPartnerBuilderDTO _dto;
-
-      protected override void Context()
-      {
-         base.Context();
-         
-         _reactionBuilder = new ReactionBuilder();
-         var reactionPartnerBuilder = new ReactionPartnerBuilder("A", 1);
-         _reactionBuilder.AddProduct(reactionPartnerBuilder);
-         _dto = new ReactionPartnerBuilderDTO(reactionPartnerBuilder);
-
-         A.CallTo(() => _reactionProductsPresenter.Subject).Returns(_reactionBuilder);
-      }
-
-      [Observation]
-      public void should_return_a_context_menu_for_product()
-      {
-         sut.CreateFor(_dto, _reactionProductsPresenter).ShouldBeAnInstanceOf<ContextMenuForProductBuilder>();
       }
    }
 }

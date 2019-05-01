@@ -13,6 +13,7 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.SBML;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
+using MoBi.Engine;
 using MoBi.Engine.Sbml;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
@@ -32,9 +33,11 @@ using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Presentation.Views.ContextMenus;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -48,13 +51,11 @@ namespace MoBi.IntegrationTests
       {
          base.GlobalContext();
 
-         if (IoC.Container != null) return;
-
          var container = new CastleWindsorContainer();
-
-         container.WindsorContainer.AddFacility<TypedFactoryFacility>();
          IoC.InitializeWith(container);
          IoC.RegisterImplementationOf(container);
+         container.RegisterImplementationOf(container.DowncastTo<IContainer>());
+         container.WindsorContainer.AddFacility<TypedFactoryFacility>();
 
          //need to register these services for which the default implementation is in the UI
          using (container.OptimizeDependencyResolution())
@@ -69,6 +70,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IDiagramModel>());
             container.RegisterImplementationOf(A.Fake<IDiagramTask>());
             container.RegisterImplementationOf(A.Fake<IMRUProvider>());
+            container.RegisterImplementationOf(A.Fake<IContextMenuView>());
             container.RegisterImplementationOf(A.Fake<IFileLocker>());
             container.RegisterImplementationOf(A.Fake<IDisplayUnitRetriever>());
             container.RegisterImplementationOf(A.Fake<IJournalDiagramManagerFactory>());
@@ -94,8 +96,8 @@ namespace MoBi.IntegrationTests
                x.FromType<CoreRegister>();
                x.FromType<Core.CoreRegister>();
                x.FromInstance(new PresentationRegister(false));
-               x.FromType<SBMLImportRegister>();
                x.FromType<InfrastructureRegister>();
+               x.FromType<EngineRegister>();
                x.FromInstance(register);
             });
             register.PerformMappingForSerializerIn(container);
