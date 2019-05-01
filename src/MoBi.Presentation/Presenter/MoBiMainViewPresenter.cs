@@ -19,7 +19,9 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IMoBiMainViewPresenter : IMainViewPresenter,
       IListener<SimulationRunStartedEvent>,
-      IListener<SimulationRunFinishedEvent>
+      IListener<SimulationRunFinishedEvent>,
+      IListener<ReportCreationStartedEvent>,
+      IListener<ReportCreationFinishedEvent>
 
    {
       void Run(StartOptions startOptions);
@@ -105,13 +107,13 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public override void Handle(ReportCreationStartedEvent reportStartedEvent)
+      public void Handle(ReportCreationStartedEvent reportStartedEvent)
       {
          _view.DisplayNotification(AppConstants.Captions.ReportCreationStarted,
             AppConstants.Captions.ReportCreationStartedMessage(reportStartedEvent.ReportFullPath), string.Empty);
       }
 
-      public override void Handle(ReportCreationFinishedEvent reportFinishedEvent)
+      public void Handle(ReportCreationFinishedEvent reportFinishedEvent)
       {
          _view.DisplayNotification(AppConstants.Captions.ReportCreationFinished,
             AppConstants.Captions.ReportCreationFinishedMessage(reportFinishedEvent.ReportFullPath), reportFinishedEvent.ReportFullPath);

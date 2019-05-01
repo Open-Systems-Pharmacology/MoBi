@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
-using NHibernate.Util;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Services
 {
-   public interface ISearchVisitor : IVisitor<IBuildingBlock>,IVisitor<IModelCoreSimulation>,IVisitor<IMoBiProject>
+   public interface ISearchVisitor : IVisitor<IBuildingBlock>, IVisitor<IModelCoreSimulation>, IVisitor<IMoBiProject>
    {
       string SearchFor { get; set; }
       bool WholeWord { get; set; }
       bool RegExSearch { get; set; }
       IEnumerable<SearchResult> Result { get; }
-      bool CaseSensitiv { get; set; }
-      IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget,IMoBiProject project);
+      bool CaseSensitive { get; set; }
+      IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, IMoBiProject project);
    }
 
    class SearchVisitor : ISearchVisitor
@@ -39,47 +38,47 @@ namespace MoBi.Core.Services
          {
             _searchExpression = createSearchExpressionFrom(SearchFor);
          }
+
          return _searchExpression;
       }
 
       private string createSearchExpressionFrom(string searchFor)
       {
          string searchExpression = searchFor;
-         if (!CaseSensitiv)
+         if (!CaseSensitive)
          {
             searchExpression = searchExpression.ToLower();
          }
-         if(!RegExSearch)
+
+         if (!RegExSearch)
          {
             searchExpression = Regex.Escape(searchExpression);
          }
-         if(WholeWord)
+
+         if (WholeWord)
          {
-            searchExpression = string.Format("\\b{0}\\b", searchExpression);
+            searchExpression = $"\\b{searchExpression}\\b";
          }
+
          _searchExpressionCreated = true;
          return searchExpression;
       }
 
-      public bool CaseSensitiv { get; set; }
-      public string SearchFor{get;set;}
+      public bool CaseSensitive { get; set; }
+      public string SearchFor { get; set; }
       public bool WholeWord { get; set; }
       public bool RegExSearch { get; set; }
 
+      public IEnumerable<SearchResult> Result => _result;
 
-      public IEnumerable<SearchResult> Result
-      {
-         get { return _result; }
-      }
-
-      public IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget,IMoBiProject project)
+      public IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, IMoBiProject project)
       {
          try
          {
             _result = new List<SearchResult>();
             _allBuildingBlocks = project.AllBuildingBlocks();
             _searchExpressionCreated = false;
-            _localVisitor = new LocalSearchVisitor(getSearchExpression()){CaseSensitiv = CaseSensitiv};
+            _localVisitor = new LocalSearchVisitor(getSearchExpression()) {CaseSensitive = CaseSensitive};
             searchTarget.AcceptVisitor(this);
             return Result;
          }
@@ -89,7 +88,6 @@ namespace MoBi.Core.Services
             _localVisitor = null;
             _allBuildingBlocks = null;
          }
-
       }
 
       public void Visit(IBuildingBlock objToVisit)
@@ -105,31 +103,33 @@ namespace MoBi.Core.Services
          _result.AddRange(_localVisitor.SearchIn(objToVisit, projectItem));
       }
 
-
       public void Visit(IModelCoreSimulation objToVisit)
       {
          _projectItem = objToVisit;
-         searchObjectBase(objToVisit.Model,_projectItem);
+         searchObjectBase(objToVisit.Model, _projectItem);
       }
 
       public void Visit(IMoBiProject objToVisit)
       {
-            // Do Nothing dont check the Project it self.
+         // Do Nothing don't check the Project it self.
       }
    }
 
-   public class LocalSearchVisitor:IVisitor<IObjectBase>
+   public class LocalSearchVisitor : IVisitor<IObjectBase>
    {
-      private string _searchExpression;
+      private readonly string _searchExpression;
       private IObjectBase _projectItem;
       private List<SearchResult> _result;
+      public bool CaseSensitive { get; set; }
+
+      public IList<SearchResult> Result => _result;
 
       public LocalSearchVisitor(string searchExpression)
       {
          _searchExpression = searchExpression;
       }
 
-      public IList<SearchResult> SearchIn(IObjectBase objectBase,IObjectBase projectItem)
+      public IList<SearchResult> SearchIn(IObjectBase objectBase, IObjectBase projectItem)
       {
          _result = new List<SearchResult>();
          _projectItem = projectItem;
@@ -159,23 +159,13 @@ namespace MoBi.Core.Services
 
       private bool searchForIsIn(string lookIn)
       {
-         if (lookIn.IsNullOrEmpty()) return false;
+         if (lookIn.IsNullOrEmpty())
+            return false;
 
-         if (CaseSensitiv)
-         {
-            return Regex.Matches(lookIn, _searchExpression).Any();
-         }
-         else
-         {
-            return Regex.Matches(lookIn.ToLower(), _searchExpression).Any();
-         }
-      }
+         if (CaseSensitive)
+            return Regex.Matches(lookIn, _searchExpression).Count > 0;
 
-      public bool CaseSensitiv { get; set; }
-
-      public IList<SearchResult> Result
-      {
-         get { return _result; }
+         return Regex.Matches(lookIn.ToLower(), _searchExpression).Count > 0;
       }
    }
 }

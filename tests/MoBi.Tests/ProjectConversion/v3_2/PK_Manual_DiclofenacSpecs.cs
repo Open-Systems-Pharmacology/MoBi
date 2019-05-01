@@ -45,14 +45,14 @@ namespace MoBi.ProjectConversion.v3_2
       private IModelConstructor _modelConstructor;
       private IMoBiBuildConfiguration _buildConfiguration;
       private CreationResult _results;
-      private ISimModelManager _simModelManeger;
+      private ISimModelManager _simModelManager;
       private IMoBiContext _context;
 
       protected override void Context()
       {
          base.Context();
          _modelConstructor = IoC.Resolve<IModelConstructor>();
-         _simModelManeger = IoC.Resolve<ISimModelManager>();
+         _simModelManager = IoC.Resolve<ISimModelManager>();
          _buildConfiguration = IoC.Resolve<IBuildConfigurationFactory>().CreateFromReferencesUsedIn(_project.Simulations.Last().MoBiBuildConfiguration);
          _buildConfiguration.ShowProgress = false;
          _context = IoC.Resolve<IMoBiContext>();
@@ -70,7 +70,7 @@ namespace MoBi.ProjectConversion.v3_2
          _simulation = new MoBiSimulation {BuildConfiguration = _buildConfiguration, Model = _results.Model};
          _simulation.Id = "Sim";
          _context.Register(_simulation);
-         _simModelManeger.RunSimulation(_simulation);
+         _simModelManager.RunSimulation(_simulation);
       }
    }
 
@@ -80,17 +80,17 @@ namespace MoBi.ProjectConversion.v3_2
       private IModelConstructor _modelConstructor;
       private IMoBiBuildConfiguration _buildConfiguration;
       private CreationResult _results;
-      private ISimModelManager _simModelManeger;
+      private ISimModelManager _simModelManager;
       private IMoBiContext _context;
-      private ICoreCalculationMethodRepository _calculatonMethodRepository;
+      private ICoreCalculationMethodRepository _calculationMethodRepository;
 
       protected override void Context()
       {
          base.Context();
          _modelConstructor = IoC.Resolve<IModelConstructor>();
-         _simModelManeger = IoC.Resolve<ISimModelManager>();
+         _simModelManager = IoC.Resolve<ISimModelManager>();
          _context = IoC.Resolve<IMoBiContext>();
-         _calculatonMethodRepository = IoC.Resolve<ICoreCalculationMethodRepository>();
+         _calculationMethodRepository = IoC.Resolve<ICoreCalculationMethodRepository>();
          _buildConfiguration = createBuildConfiguration();
       }
 
@@ -108,7 +108,7 @@ namespace MoBi.ProjectConversion.v3_2
             ParameterStartValues = _project.ParametersStartValueBlockCollection.First(),
             SimulationSettings = _project.SimulationSettingsCollection.First()
          };
-         _calculatonMethodRepository.All().Each(moBiBuildConfiguration.AddCalculationMethod);
+         _calculationMethodRepository.All().Each(moBiBuildConfiguration.AddCalculationMethod);
          moBiBuildConfiguration.ShowProgress = false;
          moBiBuildConfiguration.ShouldValidate = true;
          return moBiBuildConfiguration;
@@ -126,7 +126,7 @@ namespace MoBi.ProjectConversion.v3_2
          _simulation = new MoBiSimulation {BuildConfiguration = _buildConfiguration, Model = _results.Model};
          _simulation.Id = "Sim";
          _context.Register(_simulation);
-         _simModelManeger.RunSimulation(_simulation);
+         _simModelManager.RunSimulation(_simulation);
       }
    }
 

@@ -48,10 +48,11 @@ namespace MoBi.IntegrationTests
       {
          base.GlobalContext();
 
-         var windsorContainer = new CastleWindsorContainer();
-         IContainer container = windsorContainer;
+         if (IoC.Container != null) return;
 
-         windsorContainer.WindsorContainer.AddFacility<TypedFactoryFacility>();
+         var container = new CastleWindsorContainer();
+
+         container.WindsorContainer.AddFacility<TypedFactoryFacility>();
          IoC.InitializeWith(container);
          IoC.RegisterImplementationOf(container);
 
