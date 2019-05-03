@@ -1969,7 +1969,11 @@ namespace MoBi.Assets
 
       public static string RHSDefaultUnitName(IDimension dimension)
       {
-         return $"{dimension.BaseUnit.Name}/min";
+         var numerator = string.IsNullOrEmpty(dimension.BaseUnit.Name) ? "1" : dimension.BaseUnit.Name;
+         if (string.Equals(numerator, "min"))
+            return string.Empty;
+
+         return $"{numerator}/min";
       }
 
       public static string RHSDimensionSuffix = " per time";

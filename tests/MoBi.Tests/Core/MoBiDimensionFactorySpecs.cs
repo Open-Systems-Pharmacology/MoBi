@@ -3,6 +3,7 @@ using MoBi.Assets;
 using MoBi.Core.Domain.UnitSystem;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core
@@ -12,6 +13,8 @@ namespace MoBi.Core
       protected Dimension _drugMassDimension;
       protected Dimension _volumeDimension;
       protected Dimension _flowDimension;
+      protected Dimension _timeDimension;
+      protected Dimension _inversedTimeDimension;
 
       protected override void Context()
       {
@@ -20,14 +23,19 @@ namespace MoBi.Core
          _drugMassDimension = new Dimension(new BaseDimensionRepresentation(), "DrugMass", "g");
          _volumeDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3}, "Volume", "l");
          _flowDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3, TimeExponent = -1}, "flow", "l/min");
+         _timeDimension = new Dimension(new BaseDimensionRepresentation { TimeExponent = 1}, "Time", "min");
+         _inversedTimeDimension = new Dimension(new BaseDimensionRepresentation{ TimeExponent = -1}, "InversedTime", "1/min");
 
          sut.AddDimension(_drugMassDimension);
          sut.AddDimension(_volumeDimension);
          sut.AddDimension(_flowDimension);
+         sut.AddDimension(_timeDimension);
+         sut.AddDimension(_inversedTimeDimension);
+         sut.AddDimension(Constants.Dimension.NO_DIMENSION);
       }
    }
 
-   public abstract class When_retreiving_dimension_from_unit_with_multiple_matching_units : concern_for_MoBiDimensionFactory
+   public abstract class When_retrieving_dimension_from_unit_with_multiple_matching_units : concern_for_MoBiDimensionFactory
    {
       protected IDimension _result;
       protected Dimension _accelerationDimension;
@@ -46,7 +54,7 @@ namespace MoBi.Core
       }
    }
 
-   public class retreive_upper_case_unit_from_multiple_matching_units : When_retreiving_dimension_from_unit_with_multiple_matching_units
+   public class When_retrieving_upper_case_unit_from_multiple_matching_units : When_retrieving_dimension_from_unit_with_multiple_matching_units
    {
       protected override string ConvertUnitCase(string unit)
       {
@@ -60,7 +68,7 @@ namespace MoBi.Core
       }
    }
 
-   public class retreive_lower_case_unit_from_multiple_matching_units : When_retreiving_dimension_from_unit_with_multiple_matching_units
+   public class When_retrieving_lower_case_unit_from_multiple_matching_units : When_retrieving_dimension_from_unit_with_multiple_matching_units
    {
       protected override string ConvertUnitCase(string unit)
       {
@@ -89,6 +97,27 @@ namespace MoBi.Core
       public void should_return_a_new_dimension()
       {
          sut.Dimension(AppConstants.RHSDimensionName(_drugMassDimension)).ShouldNotBeNull();
+      }
+   }
+
+
+   public class When_told_to_retrieve_the_RHS_dimension_for_the_dimensionless_dimension : concern_for_MoBiDimensionFactory
+   {
+      [Observation]
+      public void should_return_the_per_time_dimension()
+      {
+         var rhsDimension = sut.RHSDimensionFor(Constants.Dimension.NO_DIMENSION);
+         rhsDimension.ShouldBeEqualTo(_inversedTimeDimension);
+      }
+   }
+
+   public class When_told_to_retrieve_the_RHS_dimension_for_the_time_dimension : concern_for_MoBiDimensionFactory
+   {
+      [Observation]
+      public void should_return_the_fraction_dimension()
+      {
+         var rhsDimension = sut.RHSDimensionFor(_timeDimension);
+         rhsDimension.ShouldBeEqualTo(Constants.Dimension.NO_DIMENSION);
       }
    }
 
