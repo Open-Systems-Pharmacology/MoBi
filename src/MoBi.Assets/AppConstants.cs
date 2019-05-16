@@ -37,6 +37,7 @@ namespace MoBi.Assets
       public static readonly int NotFoundIndex = -1;
       public static readonly string NullString = "null";
       public static readonly string PRODUCT_NAME = "MoBi";
+      public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "MoBi®";
       public static readonly string Website = "www.open-systems-pharmacology.org";
       public static readonly string ProductSiteDownload = "http://setup.open-systems-pharmacology.org";
       public static readonly string IssueTrackerUrl = "https://github.com/open-systems-pharmacology/mobi/issues";

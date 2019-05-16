@@ -25,7 +25,7 @@ namespace MoBi.Core
       public string CalculationMethodRepositoryFile { get; set; }
       public override string ProductName { get; } = AppConstants.PRODUCT_NAME;
       public override Origin Product { get; } = Origins.MoBi;
-      public override string ProductNameWithTrademark { get; } = AppConstants.PRODUCT_NAME;
+      public override string ProductNameWithTrademark { get; } = AppConstants.PRODUCT_NAME_WITH_TRADEMARK;
       public override ApplicationIcon Icon { get; } = ApplicationIcons.MoBi;
       protected override string[] LatestVersionWithOtherMajor { get; } = {"7.4", "6.3", "3.6" };
       public override string UserSettingsFileName { get; } = "Settings.xml";
