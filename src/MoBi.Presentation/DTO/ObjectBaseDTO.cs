@@ -88,7 +88,7 @@ namespace MoBi.Presentation.DTO
          private static IBusinessRule uniqueNameRule { get; } = CreateRule.For<IObjectBaseDTO>()
             .Property(x => x.Name)
             .WithRule((dto, name) => dto.IsNameUnique(name))
-            .WithError(AppConstants.Validation.NameAllreadyUsed);
+            .WithError(AppConstants.Validation.NameAlreadyUsed);
 
          public static IEnumerable<IBusinessRule> All()
          {

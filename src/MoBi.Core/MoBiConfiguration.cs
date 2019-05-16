@@ -27,7 +27,7 @@ namespace MoBi.Core
       public override Origin Product { get; } = Origins.MoBi;
       public override string ProductNameWithTrademark { get; } = AppConstants.PRODUCT_NAME;
       public override ApplicationIcon Icon { get; } = ApplicationIcons.MoBi;
-      protected override string[] LatestVersionWithOtherMajor { get; } = { "3.6", "6.3" };
+      protected override string[] LatestVersionWithOtherMajor { get; } = {"7.4", "6.3", "3.6" };
       public override string UserSettingsFileName { get; } = "Settings.xml";
       public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
       public override string IssueTrackerUrl { get; } = AppConstants.IssueTrackerUrl;
@@ -36,7 +36,7 @@ namespace MoBi.Core
       public string SpaceOrganismUserTemplate { get; }
       public string SpaceOrganismBaseTemplate { get; }
       public string StandardMoleculeTemplateFile { get; }
-      public override string WatermarkOptionLocation { get; } = "Utilties -> Options -> Application";
+      public override string WatermarkOptionLocation { get; } = "Utilities -> Options -> Application";
       public override string ApplicationFolderPathName { get; } = AppConstants.SpecialFileNames.APPLICATION_FOLDER_PATH;
       public override int InternalVersion { get; } = ProjectVersions.Current;
 
@@ -57,7 +57,7 @@ namespace MoBi.Core
          {
             try
             {
-              return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.PKSIM_REG_PATH}{MajorVersion}", Constants.RegistryPaths.INSTALL_PATH, null);
+              return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.PKSIM_REG_PATH}{Version}", Constants.RegistryPaths.INSTALL_PATH, null);
             }
             catch (Exception)
             {

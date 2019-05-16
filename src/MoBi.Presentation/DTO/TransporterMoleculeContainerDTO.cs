@@ -30,7 +30,7 @@ namespace MoBi.Presentation.DTO
          return CreateRule.For<TransporterMoleculeContainerDTO>()
             .Property(x => x.TransportName)
             .WithRule((dto, name) => dto.IsNameUnique(name))
-            .WithError(AppConstants.Validation.TransportNameAllreadyUsed);
+            .WithError(AppConstants.Validation.TransportNameAlreadyUsed);
       }
    }
 }

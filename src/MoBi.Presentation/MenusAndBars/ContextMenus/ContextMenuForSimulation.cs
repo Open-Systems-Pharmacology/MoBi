@@ -120,7 +120,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createStartPopulationSimulation(IMoBiSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.StartPopulationSimualtion)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.StartPopulationSimulation)
             .AsGroupStarter()
             .WithIcon(ApplicationIcons.PopulationSimulation)
             .WithCommandFor<SendSimulationToPKSimUICommand, IMoBiSimulation>(simulation)

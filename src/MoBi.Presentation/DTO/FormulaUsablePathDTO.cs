@@ -43,7 +43,7 @@ namespace MoBi.Presentation.DTO
             CreateRule.For<FormulaUsablePathDTO>()
                .Property(x => x.Alias)
                .WithRule((dto, alias) => dto.isAliasUnique(alias))
-               .WithError(AppConstants.Validation.AliasAllreadyUsed);
+               .WithError(AppConstants.Validation.AliasAlreadyUsed);
 
          public static IEnumerable<IBusinessRule> AllDefault()
          {
