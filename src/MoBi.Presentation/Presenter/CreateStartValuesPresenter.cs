@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Presenter
          _startValuesCreator = startValuesCreator;
          _unallowedNames.AddRange(_context.CurrentProject.MoleculeStartValueBlockCollection.Select(x => x.Name));
          view.ApplicationIcon = ApplicationIcons.MoleculeStartValues;
-         view.Caption = AppConstants.Captions.NewMolculeStartValues;
+         view.Caption = AppConstants.Captions.NewMoleculeStartValues;
       }
 
       protected override IMoleculeStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
