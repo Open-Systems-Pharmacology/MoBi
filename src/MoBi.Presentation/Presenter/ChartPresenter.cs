@@ -232,10 +232,10 @@ namespace MoBi.Presentation.Presenter
          try
          {
             clearNoCurvesHint();
+            InitializeAnalysis(chart);
             //do not validate template when showing a chart as the chart might well be without curves when initialized for the first time.
             var currentTemplate = defaultTemplate ?? _chartTemplatingTask.TemplateFrom(chart, validateTemplate: false);
             replaceSimulationRepositories(dataRepositories);
-            InitializeAnalysis(chart);
             LoadFromTemplate(currentTemplate, triggeredManually: false, propogateChartChangeEvent: false);
             addObservedDataIfNeeded(dataRepositories);
          }
