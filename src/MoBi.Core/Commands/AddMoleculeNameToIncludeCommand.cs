@@ -11,8 +11,8 @@ namespace MoBi.Core.Commands
    {
       private readonly string _listType;
 
-      protected AddMoleculeNameCommand(IMoleculeDependentBuilder moleculeDependentBuilder, string itemToAdd, IBuildingBlock buidingBlock, string listType)
-         : base(moleculeDependentBuilder, itemToAdd, buidingBlock)
+      protected AddMoleculeNameCommand(IMoleculeDependentBuilder moleculeDependentBuilder, string itemToAdd, IBuildingBlock buildingBlock, string listType)
+         : base(moleculeDependentBuilder, itemToAdd, buildingBlock)
       {
          _listType = listType;
       }
@@ -31,8 +31,8 @@ namespace MoBi.Core.Commands
 
    public class AddMoleculeNameToIncludeCommand : AddMoleculeNameCommand
    {
-      public AddMoleculeNameToIncludeCommand(IMoleculeDependentBuilder parent, string itemToAdd, IBuildingBlock buidingBlock)
-         : base(parent, itemToAdd, buidingBlock,AppConstants.Captions.IncludeList)
+      public AddMoleculeNameToIncludeCommand(IMoleculeDependentBuilder parent, string itemToAdd, IBuildingBlock buildingBlock)
+         : base(parent, itemToAdd, buildingBlock,AppConstants.Captions.IncludeList)
       {
       }
 
@@ -49,8 +49,8 @@ namespace MoBi.Core.Commands
 
    public class AddMoleculeNameToExcludeCommand : AddMoleculeNameCommand
    {
-      public AddMoleculeNameToExcludeCommand(IMoleculeDependentBuilder parent, string itemToAdd, IBuildingBlock buidingBlock)
-         : base(parent, itemToAdd, buidingBlock,AppConstants.Captions.ExcludeList)
+      public AddMoleculeNameToExcludeCommand(IMoleculeDependentBuilder parent, string itemToAdd, IBuildingBlock buildingBlock)
+         : base(parent, itemToAdd, buildingBlock,AppConstants.Captions.ExcludeList)
       {
       }
 

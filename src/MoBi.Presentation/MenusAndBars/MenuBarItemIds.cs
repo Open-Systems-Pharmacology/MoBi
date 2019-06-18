@@ -77,6 +77,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId NotificationView = createMenuBarItemId("NotificationView");
       public static MenuBarItemId ComparisonView = createMenuBarItemId("ComparisonView");
       public static MenuBarItemId RunWithSettings = createMenuBarItemId("RunWithSettings");
+      public static MenuBarItemId ConfigureActiveSimulation = createMenuBarItemId("ConfigureActiveSimulation");
       public static MenuBarItemId ManageProjectDisplayUnits = createMenuBarItemId("ManageProjectDisplayUnits");
       public static MenuBarItemId ManageUserDisplayUnits = createMenuBarItemId("ManageUserDisplayUnits");
       public static MenuBarItemId UpdateAllToDisplayUnits = createMenuBarItemId("UpdateAllToDisplayUnits");
@@ -98,7 +99,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId StopParameterIdentification = createMenuBarItemId("StopParameterIdentification");
       public static MenuBarItemId TimeProfileParameterIdentification = createMenuBarItemId("TimeProfileParameterIdentification");
       public static MenuBarItemId PredictedVsObservedParameterIdentification = createMenuBarItemId("PredictedVsObservedParameterIdentification");
-      public static MenuBarItemId ResidualsVsTimeParameterIdentifcation = createMenuBarItemId("ResidualsVsTimeParameterIdentifcation");
+      public static MenuBarItemId ResidualsVsTimeParameterIdentification = createMenuBarItemId("ResidualsVsTimeParameterIdentification");
       public static MenuBarItemId ResidualHistogramParameterIdentification = createMenuBarItemId("ResidualHistogramParameterIdentification");
       public static MenuBarItemId ParameterIdentificationFeedbackView = createMenuBarItemId("ParameterIdentificationFeedbackView");
       public static MenuBarItemId CorrelationMatrixParameterIdentification = createMenuBarItemId("CorrelationMatrixParameterIdentification");

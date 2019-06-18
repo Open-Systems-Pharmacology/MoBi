@@ -31,8 +31,10 @@ namespace MoBi.Presentation.Presenter
       where TFormula : IFormula
    {
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
-      public bool IsRHS { get; set; }
-      public IBuildingBlock BuildingBlock { set; protected get; }
+      public virtual bool IsRHS { get; set; }
+
+      public virtual IBuildingBlock BuildingBlock { set; get; }
+
       public bool IsLatched { get; set; }
       protected TFormula _formula;
       protected IEntity _formulaOwner;
@@ -40,7 +42,6 @@ namespace MoBi.Presentation.Presenter
       protected EditTypedFormulaPresenter(TView view, IDisplayUnitRetriever displayUnitRetriever) : base(view)
       {
          _displayUnitRetriever = displayUnitRetriever;
-         IsRHS = false;
       }
 
       /// <summary>
@@ -55,7 +56,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public void Edit(IFormula formula, IEntity formulaOwner = null)
+      public virtual void Edit(IFormula formula, IEntity formulaOwner = null)
       {
          _formulaOwner = formulaOwner;
          base.Edit(formula);
@@ -63,7 +64,7 @@ namespace MoBi.Presentation.Presenter
 
       protected IUsingFormula UsingObject => _formulaOwner as IUsingFormula;
 
-      public bool ReadOnly
+      public virtual bool ReadOnly
       {
          get => _view.ReadOnly;
          set => _view.ReadOnly = value;

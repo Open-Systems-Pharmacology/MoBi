@@ -75,7 +75,7 @@ namespace MoBi.Presentation
       public void should_not_rebind_to_the_view()
       {
          // There will be an initial call to bind, but the view should not be rebound in response to the event
-         A.CallTo(() => _editObserverBuilderView.BindTo(A<ObserverBuilderDTO>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
+         A.CallTo(() => _editObserverBuilderView.BindTo(A<ObserverBuilderDTO>.Ignored)).MustHaveHappenedOnceExactly();
       }
    }
 
@@ -98,7 +98,7 @@ namespace MoBi.Presentation
       public void should_refresh_the_formula_view()
       {
          // There will be an initial call when the view is being bound and there should be another one to update the formula
-         A.CallTo(() => _editFormulaPresenter.Init(_observerBuilder, _buildingBlock)).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _editFormulaPresenter.Init(_observerBuilder, _buildingBlock)).MustHaveHappenedTwiceExactly();
       }
    }
    public class When_responding_to_an_event_where_the_context_matches : concern_for_EditObserverBuilderPresenter
@@ -115,7 +115,7 @@ namespace MoBi.Presentation
       public void should_respond_to_event_by_rebinding_view()
       {
          // Called once for initial binding, then once more when responding to the event
-         A.CallTo(() => _editObserverBuilderView.BindTo(A<ObserverBuilderDTO>.Ignored)).MustHaveHappened(Repeated.Exactly.Twice);
+         A.CallTo(() => _editObserverBuilderView.BindTo(A<ObserverBuilderDTO>.Ignored)).MustHaveHappenedTwiceExactly();
       }
    }
 }

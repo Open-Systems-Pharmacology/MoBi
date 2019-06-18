@@ -6,6 +6,7 @@ using OSPSuite.Utility.Container;
 using libsbmlcs;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Helper;
+using MoBi.Engine.Sbml;
 using MoBi.IntegrationTests;
 using OSPSuite.Core.Domain;
 

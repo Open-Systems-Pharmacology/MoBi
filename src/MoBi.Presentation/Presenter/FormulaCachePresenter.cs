@@ -82,10 +82,7 @@ namespace MoBi.Presentation.Presenter
          _view.Show(_dtoFormulaBuilders);
       }
 
-      public override object Subject
-      {
-         get { return _cache; }
-      }
+      public override object Subject => _cache;
 
       private void addToParent(IFormula formula)
       {
@@ -147,6 +144,12 @@ namespace MoBi.Presentation.Presenter
          var cloneFormula = _cloneManager.Clone(formula, new FormulaCache());
          cloneFormula.Name = newName;
          addToParent(cloneFormula);
+      }
+
+      public override void ReleaseFrom(IEventPublisher eventPublisher)
+      {
+         base.ReleaseFrom(eventPublisher);
+         _formulaPresenterCache.ReleaseFrom(eventPublisher);
       }
 
       public void Select(IFormula formula)

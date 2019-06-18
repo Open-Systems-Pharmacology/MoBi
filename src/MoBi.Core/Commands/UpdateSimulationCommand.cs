@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -27,6 +27,11 @@ namespace MoBi.Core.Commands
       private byte[] _modelSerialization;
       private readonly string _changedBuildingBlockName;
       private readonly string _changedBuildingBlockType;
+
+      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IMoBiBuildConfiguration updatedBuildConfiguration)
+         : this(simulationToUpdate, newModel, updatedBuildConfiguration, true, string.Empty, string.Empty)
+      {
+      }
 
       public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IMoBiBuildConfiguration updatedBuildConfiguration, IBuildingBlock templateBuildingBlock)
          : this(simulationToUpdate, newModel, updatedBuildConfiguration, true, templateBuildingBlock.Name, string.Empty)
@@ -46,6 +51,11 @@ namespace MoBi.Core.Commands
          _changedBuildingBlockType = changedBuildingBlockType;
          ObjectType = ObjectTypes.Simulation;
          CommandType = AppConstants.Commands.UpdateCommand;
+
+         if (string.IsNullOrEmpty(_changedBuildingBlockName))
+            Description = AppConstants.Commands.ConfigureSimulationDescription(_simulationToUpdate.Name);
+         else
+            Description = AppConstants.Commands.UpdateCommandDescription(_simulationToUpdate.Name, _changedBuildingBlockName, _changedBuildingBlockType);
       }
 
       protected override void ExecuteWith(IMoBiContext context)
@@ -68,7 +78,6 @@ namespace MoBi.Core.Commands
          _wasChanged = _simulationToUpdate.HasChanged;
          _simulationToUpdate.HasChanged = _hasChanged;
 
-         Description = AppConstants.Commands.UpdateCommandDescription(_changedBuildingBlockName, _simulationToUpdate, _changedBuildingBlockType);
 
          context.PublishEvent(new SimulationReloadEvent(_simulationToUpdate));
       }
@@ -126,4 +135,4 @@ namespace MoBi.Core.Commands
          _updatedBuildConfiguration = null;
       }
    }
-}  
+}

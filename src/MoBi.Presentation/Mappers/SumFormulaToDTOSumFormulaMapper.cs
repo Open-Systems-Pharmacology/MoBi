@@ -1,7 +1,7 @@
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -11,19 +11,21 @@ namespace MoBi.Presentation.Mappers
 
    internal class SumFormulaToDTOSumFormulaMapper : ObjectBaseToObjectBaseDTOMapperBase, ISumFormulaToDTOSumFormulaMapper
    {
-      private readonly IDescriptorConditionToDescriptorConditionDTOMapper _descriptorConditionToDTODescriptorConditionMapper;
+      private readonly IDescriptorConditionToDescriptorConditionDTOMapper _descriptorConditionDTOMapper;
 
-      public SumFormulaToDTOSumFormulaMapper(IDescriptorConditionToDescriptorConditionDTOMapper descriptorConditionToDTODescriptorConditionMapper)
+      public SumFormulaToDTOSumFormulaMapper(IDescriptorConditionToDescriptorConditionDTOMapper descriptorConditionDTOMapper)
       {
-         _descriptorConditionToDTODescriptorConditionMapper = descriptorConditionToDTODescriptorConditionMapper;
+         _descriptorConditionDTOMapper = descriptorConditionDTOMapper;
       }
 
       public SumFormulaDTO MapFrom(SumFormula sumFormula)
       {
          var dto = Map<SumFormulaDTO>(sumFormula);
          dto.Variable = sumFormula.Variable;
+         dto.Dimension = sumFormula.Dimension;
          dto.VariablePattern = sumFormula.VariablePattern;
-         dto.VariableCriteria = sumFormula.Criteria.MapAllUsing(_descriptorConditionToDTODescriptorConditionMapper);
+         dto.VariableCriteria = sumFormula.Criteria.MapAllUsing(_descriptorConditionDTOMapper);
+         dto.FormulaString = sumFormula.FormulaString;
          return dto;
       }
    }

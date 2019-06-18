@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Helper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -53,7 +53,7 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       /// <param name="usingObject">The object that is using the reaction</param>
       /// <param name="reactionMode">The reaction mode, either amount or concentration based</param>
-      /// <param name="isRHS">inidcates if the formula is right-hand-side</param>
+      /// <param name="isRHS">indicates if the formula is right-hand-side</param>
       /// <returns>The caption. If a caption is not defined for the combination of parameters, then empty string is returned</returns>
       string GetFormulaCaption(IUsingFormula usingObject, ReactionDimensionMode reactionMode, bool isRHS);
 
@@ -62,18 +62,18 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       /// <param name="formula">The formula being modified</param>
       /// <param name="newFormulaString">The new formula string</param>
-      /// <param name="oldFormulaString">The old formula string</param>
-      /// <param name="buildingBlock">The building block containing the formula</param>
+     /// <param name="buildingBlock">The building block containing the formula</param>
       /// <returns></returns>
-      IMoBiCommand SetFormulaString(ExplicitFormula formula, string newFormulaString, string oldFormulaString, IBuildingBlock buildingBlock);
+      IMoBiCommand SetFormulaString(FormulaWithFormulaString formula, string newFormulaString,  IBuildingBlock buildingBlock);
 
       /// <summary>
-      /// Changes the <paramref name="formulaUsablePath"/> in the <paramref name="formula"/> to <paramref name="newPath"/>
+      ///    Changes the <paramref name="formulaUsablePath" /> in the <paramref name="formula" /> to <paramref name="newPath" />
       /// </summary>
       /// <returns>The command that was run to change the path</returns>
-      IMoBiCommand ChangePathInFormula(ExplicitFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
-      IMoBiCommand AddFormulaUsablePath(ExplicitFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
-      IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName, string oldVariableName, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
+
+      IMoBiCommand AddFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName,  IBuildingBlock buildingBlock);
       IMoBiCommand AddValuePoint(TableFormula formula, ValuePoint newValuePoint, IBuildingBlock buildingBlock);
       IMoBiCommand EditUseDerivedValues(TableFormula formula, bool newValue, bool oldValue, IBuildingBlock buildingBlock);
       IMoBiCommand RemoveValuePointFromTableFormula(TableFormula formula, ValuePoint valuePoint, IBuildingBlock buildingBlock);
@@ -93,22 +93,26 @@ namespace MoBi.Core.Domain.Services
       IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, IDistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock);
 
       /// <summary>
-      /// Changes the <paramref name="oldAlias"/> to <paramref name="newAlias"/> in the <paramref name="formula"/>. The <paramref name="buildingBlock"/>
-      /// is used to identify the location of the formula.
+      ///    Changes the <paramref name="oldAlias" /> to <paramref name="newAlias" /> in the <paramref name="formula" />. The
+      ///    <paramref name="buildingBlock" />
+      ///    is used to identify the location of the formula.
       /// </summary>
       /// <returns>The command that was run to change the alias</returns>
-      IMoBiCommand EditAliasInFormula(ExplicitFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
+      IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
 
       /// <summary>
-      /// Sets the dimension for the formula usable path with <paramref name="alias"/> to <paramref name="newDimension"/> on the <paramref name="formula"/> in the <paramref name="buildingBlock"/>
+      ///    Sets the dimension for the formula usable path with <paramref name="alias" /> to <paramref name="newDimension" /> on
+      ///    the <paramref name="formula" /> in the <paramref name="buildingBlock" />
       /// </summary>
       /// <returns>The command that was run to change the dimension</returns>
-      IMoBiCommand SetFormulaPathDimension(ExplicitFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock);
+      IMoBiCommand SetFormulaPathDimension(IFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock);
 
       /// <summary>
-      /// Removes <paramref name="path"/> from the <paramref name="formula"/>
+      ///    Removes <paramref name="path" /> from the <paramref name="formula" />
       /// </summary>
       /// <returns>The command that was run to remove the path from the formula</returns>
-      IMoBiCommand RemoveFormulaUsablePath(ExplicitFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand RemoveFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+
+      (bool valid, string validationMessage) Validate(string formulaString, FormulaWithFormulaString formula, IBuildingBlock buildingBlock);
    }
 }

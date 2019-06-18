@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Presenter
 
       public override void Initialize()
       {
-         _view.Product = AppConstants.PRODUCT_NAME;
+         _view.Product = _configuration.ProductNameWithTrademark;
          _view.VersionInformation = $"Version {_configuration.FullVersionDisplay}";
          _view.Display();
       }

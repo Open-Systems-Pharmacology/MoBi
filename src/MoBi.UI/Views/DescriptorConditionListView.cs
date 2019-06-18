@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI;
-using OSPSuite.UI.Extensions;
 using DevExpress.XtraBars;
+using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 
@@ -22,6 +22,7 @@ namespace MoBi.UI.Views
       private IDescriptorConditionListPresenter _presenter;
       private readonly GridViewBinder<IDescriptorConditionDTO> _gridViewBinder;
       public BarManager PopupBarManager { get; private set; }
+      private readonly UxRemoveButtonRepository _removeButtonRepository = new UxRemoveButtonRepository();
 
       public DescriptorConditionListView(IImageListRetriever imageListRetriever)
       {
@@ -43,7 +44,7 @@ namespace MoBi.UI.Views
 
       public string CriteriaDescription
       {
-         set { lblCriteriaDescription.Text = value.FormatForDescription(); }
+         set => lblCriteriaDescription.Text = value.FormatForDescription();
       }
 
       public override void InitializeBinding()
@@ -53,12 +54,19 @@ namespace MoBi.UI.Views
             .AsReadOnly();
 
          _gridViewBinder.Bind(dto => dto.Tag)
-            .OnValueUpdating += (o, e) => OnEvent(() => onCritiraTagChanged(o, e));
+            .OnValueUpdating += (o, e) => OnEvent(() => onCriteriaTagChanged(o, e));
+
+         _gridViewBinder.AddUnboundColumn()
+            .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways)
+            .WithRepository(x => _removeButtonRepository)
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
          gridControl.MouseClick += (o, e) => OnEvent(onGridClick, e);
+         _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveCondition(_gridViewBinder.FocusedElement));
       }
 
-      private void onCritiraTagChanged(IDescriptorConditionDTO descriptorCondition, PropertyValueSetEventArgs<string> e)
+      private void onCriteriaTagChanged(IDescriptorConditionDTO descriptorCondition, PropertyValueSetEventArgs<string> e)
       {
          _presenter.UpdateCriteriaTag(descriptorCondition, e.NewValue);
       }

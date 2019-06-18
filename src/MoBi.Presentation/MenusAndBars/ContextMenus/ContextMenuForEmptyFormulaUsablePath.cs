@@ -15,12 +15,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return new ContextMenuForEmptyFormulaUsablePath(presenter.DowncastTo<IEditExplicitFormulaPresenter>());
+         return new ContextMenuForEmptyFormulaUsablePath(presenter.DowncastTo<IEditFormulaPathListPresenter>());
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return presenter.IsAnImplementationOf<IEditExplicitFormulaPresenter>() && viewItem.IsAnImplementationOf<EmptyFormulaUsableDTO>();
+         return presenter.IsAnImplementationOf<IEditFormulaPathListPresenter>() && viewItem.IsAnImplementationOf<EmptyFormulaUsableDTO>();
       }
    }
 
@@ -28,11 +28,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private readonly IList<IMenuBarItem> _allMenuItems;
 
-      public ContextMenuForEmptyFormulaUsablePath(IEditExplicitFormulaPresenter editExplicitFormulaPresenter)
+      public ContextMenuForEmptyFormulaUsablePath(IEditFormulaPathListPresenter editFormulaPathListPresenter)
       {
          _allMenuItems = new List<IMenuBarItem>{
             CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew("Reference")).
-               WithActionCommand(editExplicitFormulaPresenter.CreateNewPath).
+               WithActionCommand(editFormulaPathListPresenter.CreateNewPath).
                WithIcon(ApplicationIcons.Add)};
       }
 

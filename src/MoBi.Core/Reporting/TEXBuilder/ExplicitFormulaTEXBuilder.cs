@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.TeXReporting.Builder;
-using MoBi.Core.Reporting.Items;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Infrastructure.Reporting;
+using OSPSuite.Infrastructure.Reporting.Items;
+using OSPSuite.TeXReporting.Builder;
 
 namespace MoBi.Core.Reporting.TEXBuilder
 {
@@ -21,9 +21,9 @@ namespace MoBi.Core.Reporting.TEXBuilder
          if (String.IsNullOrEmpty(explicitFormula.Name)) return;
 
          var listToReport = new List<object>
-                               {
-                                  new FormulaTextBox(Constants.EXPLICIT_FORMULA, explicitFormula)
-                               };
+         {
+            new FormulaTextBox(Constants.EXPLICIT_FORMULA, explicitFormula)
+         };
 
          _builderRepository.Report(listToReport, buildTracker);
       }

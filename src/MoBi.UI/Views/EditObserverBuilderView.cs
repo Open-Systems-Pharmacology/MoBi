@@ -87,6 +87,7 @@ namespace MoBi.UI.Views
          layoutItemMoleculeList.TextVisible = false;
          layoutItemDescriptorConditionList.TextVisible = false;
          layoutGroupInContainerWith.Text = AppConstants.Captions.InContainerWith.FormatForLabel();
+         tabProperties.Image = ApplicationIcons.Properties.ToImage();
       }
 
       public void Activate()

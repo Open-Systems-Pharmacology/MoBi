@@ -1,51 +1,52 @@
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
    public class ChangeVariableNameCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
-      private SumFormula _changedFormula;
-      public string NewVariableName { get; set; }
-      public string OldVariableName { get; set; }
-      public string ChangedFormulaId { get; set; }
+      private SumFormula _sumFormula;
+      private readonly string _newVariableName;
+      private readonly string _oldVariableName;
+      private readonly string _sumFormulaId;
 
-      public ChangeVariableNameCommand(SumFormula changedFormula, string newVariableName, string oldVariableName, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public ChangeVariableNameCommand(SumFormula sumFormula, string newVariableName, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
-         _changedFormula = changedFormula;
-         ChangedFormulaId = changedFormula.Id;
-         NewVariableName = newVariableName;
-         OldVariableName = oldVariableName;
+         _sumFormula = sumFormula;
+         _sumFormulaId = sumFormula.Id;
+         _newVariableName = newVariableName;
+         _oldVariableName = sumFormula.Variable;
          ObjectType = ObjectTypes.SumFormula;
          CommandType = AppConstants.Commands.EditCommand;
-         Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.VariableName, oldVariableName, newVariableName, _changedFormula.Name);
+         Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.VariableName, _oldVariableName, newVariableName, _sumFormula.Name);
       }
 
       protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return CommandExtensions.AsInverseFor(new ChangeVariableNameCommand(_changedFormula, OldVariableName, NewVariableName, _buildingBlock), this);
+         return new ChangeVariableNameCommand(_sumFormula, _oldVariableName, _buildingBlock).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
       {
          base.ClearReferences();
-         _changedFormula = null;
+         _sumFormula = null;
       }
 
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         _changedFormula.Variable = NewVariableName;
-         _changedFormula.FormulaString = _changedFormula.VariablePattern;
+         _sumFormula.Variable = _newVariableName;
+         context.PublishEvent(new FormulaChangedEvent(_sumFormula));
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
-         _changedFormula = context.Get<SumFormula>(ChangedFormulaId);
+         _sumFormula = context.Get<SumFormula>(_sumFormulaId);
       }
    }
 }

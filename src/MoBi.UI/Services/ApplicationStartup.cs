@@ -7,7 +7,6 @@ using Castle.Facilities.TypedFactory;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain.UnitSystem;
-using MoBi.Core.SBML;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation;
@@ -29,7 +28,6 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Importer;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
-using OSPSuite.FuncParser;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Presentation;
@@ -49,9 +47,9 @@ namespace MoBi.UI.Services
 {
    public class ApplicationStartup
    {
-      public static void Initialize()
+      public static void Initialize(Action<IContainer> registrationAction = null)
       {
-         new ApplicationStartup().InitializeForStartup();
+         new ApplicationStartup().InitializeForStartup(registrationAction);
       }
 
       /// <summary>
@@ -204,7 +202,7 @@ namespace MoBi.UI.Services
             new MolarConcentrationToConcentrationConverterForDataColumn(molarConcentrationDimomension, concentrationDimension)));
       }
 
-      public void InitializeForStartup()
+      public void InitializeForStartup(Action<IContainer> registrationAction)
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
@@ -239,6 +237,8 @@ namespace MoBi.UI.Services
          registerRunOptionsIn(container);
 
          EnvironmentHelper.ApplicationName = () => "mobi";
+
+         registrationAction?.Invoke(container);
       }
 
       private static void registerRunOptionsIn(IContainer container)
@@ -262,14 +262,12 @@ namespace MoBi.UI.Services
          container.AddRegister(x => x.FromType<CoreRegister>());
          container.AddRegister(x => x.FromType<Core.CoreRegister>());
          container.AddRegister(x => x.FromType<InfrastructureRegister>());
-         container.Register<IDimensionParser, DimensionParser>();
       }
 
       private static void registerImport(IContainer container)
       {
          var mobiDataImprterSettings = new DataImporterSettings {Icon = ApplicationIcons.MoBi, Caption = "MoBi Data Import"};
          container.RegisterImplementationOf(mobiDataImprterSettings);
-         container.AddRegister(x => x.FromType<SBMLImportRegister>());
       }
 
       private static void registerPresenter(IContainer container)
@@ -298,6 +296,7 @@ namespace MoBi.UI.Services
             context = new WindowsFormsSynchronizationContext();
             SynchronizationContext.SetSynchronizationContext(context);
          }
+
          return SynchronizationContext.Current;
       }
    }

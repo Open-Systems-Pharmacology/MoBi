@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
-using OSPSuite.Core.Domain;
+using OSPSuite.Assets;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.UICommands;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -40,10 +38,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             createEditItem(simulation),
             createRenameItem(simulation),
-            
 
-            createNewSimulationMenuBarItem(),
-            createAddExistingSimulationMenuBarItem(),
+            createConfigure(simulation),
 
             createRunItem(simulation),
             createParameterIdentificationItem(simulation),
@@ -105,7 +101,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createParameterIdentificationItem(IMoBiSimulation simulation)
       {
-         return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(new[] { simulation });
+         return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(new[] {simulation});
       }
 
       private IMenuBarItem createDebugReportItem(IMoBiSimulation simulation)
@@ -124,7 +120,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createStartPopulationSimulation(IMoBiSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.StartPopulationSimualtion)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.StartPopulationSimulation)
             .AsGroupStarter()
             .WithIcon(ApplicationIcons.PopulationSimulation)
             .WithCommandFor<SendSimulationToPKSimUICommand, IMoBiSimulation>(simulation)
@@ -172,18 +168,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<EditSimulationUICommand, IMoBiSimulation>(simulation);
       }
 
-      private IMenuBarItem createAddExistingSimulationMenuBarItem()
+      private IMenuBarItem createConfigure(IMoBiSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.Simulation))
-            .WithCommand<LoadProjectUICommand>()
-            .WithIcon(ApplicationIcons.SimulationLoad);
-      }
-
-      private IMenuBarItem createNewSimulationMenuBarItem()
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Simulation))
-            .WithIcon(ApplicationIcons.Simulation)
-            .WithCommand<NewSimulationCommand>()
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Configure)
+            .WithIcon(ApplicationIcons.SimulationConfigure)
+            .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation)
             .AsGroupStarter();
       }
 

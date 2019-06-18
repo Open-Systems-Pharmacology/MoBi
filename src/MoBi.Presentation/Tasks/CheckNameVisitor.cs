@@ -146,7 +146,7 @@ namespace MoBi.Presentation.Tasks
             return;
 
          var newFormulaString = wordReplace(explicitFormula.FormulaString, oldAlias, newAlias);
-         var editFormulaStringCommand = new EditFormulaStringCommand(newFormulaString, explicitFormula.FormulaString, explicitFormula, _buildingBlock);
+         var editFormulaStringCommand = new EditFormulaStringCommand(newFormulaString, explicitFormula, _buildingBlock);
          _changes.Add(formula, _buildingBlock,
             editFormulaStringCommand,
             editFormulaStringCommand.Description);

@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Tasks
          _searchVisitor.SearchFor = options.Expression;
          _searchVisitor.RegExSearch = options.RegEx;
          _searchVisitor.WholeWord = options.WholeWord;
-         _searchVisitor.CaseSensitiv = options.CaseSensitive;
+         _searchVisitor.CaseSensitive = options.CaseSensitive;
 
          var project = _context.CurrentProject;
 

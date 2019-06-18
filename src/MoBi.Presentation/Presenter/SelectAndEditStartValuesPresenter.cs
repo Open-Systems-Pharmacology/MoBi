@@ -103,7 +103,7 @@ namespace MoBi.Presentation.Presenter
 
          StartValues = _startValuesTask.CreateStartValuesForSimulation(_buildConfiguration);
          StartValues.Version = startValueBuildingBlockInfo.TemplateBuildingBlock.Version;
-         _view.Description = AppConstants.Captions.TemporaireStartValuesBasedOn(_objectTypeResolver.TypeFor(StartValues), StartValues.Name);
+         _view.Description = AppConstants.Captions.TemporaryStartValuesBasedOn(_objectTypeResolver.TypeFor(StartValues), StartValues.Name);
       }
    }
 }

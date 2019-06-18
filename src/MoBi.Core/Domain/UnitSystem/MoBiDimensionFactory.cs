@@ -37,7 +37,7 @@ namespace MoBi.Core.Domain.UnitSystem
    public class MoBiDimensionFactory : IMoBiDimensionFactory
    {
       private IDimensionFactory _projectFactory;
-      public IDimensionFactory BaseFactory { get; private set; }
+      public IDimensionFactory BaseFactory { get; }
 
       public IDimensionFactory ProjectFactory
       {

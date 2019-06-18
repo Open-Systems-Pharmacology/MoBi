@@ -46,13 +46,13 @@ namespace MoBi.Core.Domain.Model
    {
       private readonly IRegisterTask _registerTask;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
-      private readonly ICoreCalculationMethodRepository _calculatonMethodRepository;
+      private readonly ICoreCalculationMethodRepository _calculationMethodRepository;
 
-      public BuildConfigurationFactory(IRegisterTask registerTask, ICloneManagerForBuildingBlock cloneManager, ICoreCalculationMethodRepository calculatonMethodRepository)
+      public BuildConfigurationFactory(IRegisterTask registerTask, ICloneManagerForBuildingBlock cloneManager, ICoreCalculationMethodRepository calculationMethodRepository)
       {
          _registerTask = registerTask;
          _cloneManager = cloneManager;
-         _calculatonMethodRepository = calculatonMethodRepository;
+         _calculationMethodRepository = calculationMethodRepository;
       }
 
       public IMoBiBuildConfiguration Create()
@@ -103,7 +103,7 @@ namespace MoBi.Core.Domain.Model
 
          update(buildingBlockInfo, templateBuildingBlockInfo, buildingBlockToUse);
 
-         //since we are using the templatate building block, we reset the simulation change counter
+         //since we are using the template building block, we reset the simulation change counter
          if (templateBuildingBlockInfo.BuildingBlockIsTemplate)
             buildingBlockInfo.SimulationChanges = 0;
 
@@ -118,7 +118,7 @@ namespace MoBi.Core.Domain.Model
 
          update(buildingBlockInfo, templateBuildingBlockInfo, buildingBlockToUse);
 
-         //since we are using the templatate building block, we reset the simulation change counter
+         //since we are using the template building block, we reset the simulation change counter
          if (shouldUseTemplate)
             buildingBlockInfo.SimulationChanges = 0;
       }
@@ -141,7 +141,7 @@ namespace MoBi.Core.Domain.Model
 
       public void AddCalculationMethodsToBuildConfiguration(IBuildConfiguration buildConfiguration)
       {
-         _calculatonMethodRepository.All().Each(
+         _calculationMethodRepository.All().Each(
             cm => buildConfiguration.AddCalculationMethod(_cloneManager.Clone(cm, new FormulaCache())));
 
          correctPathsInCalculationMethods(buildConfiguration.AllCalculationMethods(), firstTopContainerName(buildConfiguration));

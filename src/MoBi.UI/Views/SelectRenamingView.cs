@@ -53,7 +53,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Text = AppConstants.Captions.ReanameWizardCaption;
+         Text = AppConstants.Captions.RenameWizardCaption;
          chkShouldRename.Text = AppConstants.Captions.ShouldRenameDependentObjects;
       }
 

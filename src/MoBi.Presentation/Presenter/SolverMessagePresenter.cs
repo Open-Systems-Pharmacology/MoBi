@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
-using SimModelNET;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface ISolverMessagePresenter : IDisposablePresenter
    {
-      void Show(IEnumerable<ISolverWarning> warnings);
+      void Show(IEnumerable<SolverWarning> warnings);
    }
 
    internal class SolverMessagePresenter : AbstractDisposablePresenter<ISolverMessageView, ISolverMessagePresenter>, ISolverMessagePresenter
@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Presenter
          _view.Caption = AppConstants.Captions.WarningsCaption;
       }
 
-      public void Show(IEnumerable<ISolverWarning> warnings)
+      public void Show(IEnumerable<SolverWarning> warnings)
       {
          _view.BindTo(warnings);
          _view.Display();

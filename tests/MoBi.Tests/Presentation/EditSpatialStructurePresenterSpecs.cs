@@ -99,7 +99,7 @@ namespace MoBi.Presentation
       public void should_not_select_the_favorite_view()
       {
          //Once because favorite view is the default view
-         A.CallTo(() => _view.SetEditView(_favoritesPresenter.BaseView)).MustHaveHappened(Repeated.Exactly.Once);
+         A.CallTo(() => _view.SetEditView(_favoritesPresenter.BaseView)).MustHaveHappenedOnceExactly();
       }
    }
 
@@ -107,15 +107,15 @@ namespace MoBi.Presentation
    {
       private IDistributedParameter _distributedParameter;
       private IContainer _parent;
-      private IMoBiSpatialStructure _spatilStructure;
+      private IMoBiSpatialStructure _spatialStructure;
 
       protected override void Context()
       {
          base.Context();
          _parent = new Container().WithName("bla");
          _distributedParameter = new DistributedParameter().WithName("Dis").WithParentContainer(_parent);
-         _spatilStructure = new MoBiSpatialStructure().WithTopContainer(_parent);
-         sut.Edit(_spatilStructure);
+         _spatialStructure = new MoBiSpatialStructure().WithTopContainer(_parent);
+         sut.Edit(_spatialStructure);
       }
 
       protected override void Because()

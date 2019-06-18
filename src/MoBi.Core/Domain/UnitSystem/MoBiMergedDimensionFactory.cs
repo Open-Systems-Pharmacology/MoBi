@@ -9,14 +9,11 @@ namespace MoBi.Core.Domain.UnitSystem
 {
    public class MoBiMergedDimensionFactory : DimensionFactory
    {
-      private IEnumerable<IMoBiDimensionMergingInformation> mobiDimensionMergingInformations
-      {
-         get { return AllMergingInformation.Cast<IMoBiDimensionMergingInformation>(); }
-      }
+      private IEnumerable<IMoBiDimensionMergingInformation> mobiDimensionMergingInformationList => AllMergingInformation.Cast<IMoBiDimensionMergingInformation>();
 
       protected override IDimensionConverterFor CreateConverterFor<T>(IDimension dimension, IDimension dimensionToMerge, T hasDimension)
       {
-         var converter = (from mergeInfo in mobiDimensionMergingInformations
+         var converter = (from mergeInfo in mobiDimensionMergingInformationList
             where mergeInfo.Matches(dimension, dimensionToMerge, hasDimension)
             select mergeInfo.Converter).SingleOrDefault();
 
@@ -49,7 +46,7 @@ namespace MoBi.Core.Domain.UnitSystem
    public interface IMoBiDimensionMergingInformation : IDimensionMergingInformation
    {
       IMoBiDimensionConverterFor Converter { get; }
-      bool Matches(IDimension sourceDimension, IDimension targedDimension, IWithDimension withDimension);
+      bool Matches(IDimension sourceDimension, IDimension targetDimension, IWithDimension withDimension);
    }
 
    public class MoBiDimensionMergingInformation<T> : IMoBiDimensionMergingInformation where T : IWithDimension
@@ -57,10 +54,10 @@ namespace MoBi.Core.Domain.UnitSystem
       public IDimension SourceDimension { get; private set; }
       public IDimension TargetDimension { get; private set; }
       public IMoBiDimensionConverterFor Converter { get; private set; }
-      public bool Matches(IDimension sourceDimension, IDimension targedDimension, IWithDimension withDimension)
+      public bool Matches(IDimension sourceDimension, IDimension targetDimension, IWithDimension withDimension)
       {
          return SourceDimension.Equals(sourceDimension) &&
-                TargetDimension.Equals(targedDimension) &&
+                TargetDimension.Equals(targetDimension) &&
                 Converter.CanBeUsedFor(withDimension);
 
       }

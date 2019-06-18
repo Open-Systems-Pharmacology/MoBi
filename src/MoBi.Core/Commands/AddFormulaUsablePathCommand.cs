@@ -1,7 +1,7 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
    {
       private readonly IFormulaUsablePath _pathToAdd;
 
-      public AddFormulaUsablePathCommand(IFormula parent, IFormulaUsablePath itemToAdd, IBuildingBlock buidingBlock) : base(parent, itemToAdd, buidingBlock)
+      public AddFormulaUsablePathCommand(IFormula parent, IFormulaUsablePath itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
       {
          _pathToAdd = itemToAdd;
       }
@@ -28,6 +28,7 @@ namespace MoBi.Core.Commands
          _parent.AddObjectPath(_pathToAdd);
          Description = AppConstants.Commands.AddToDescription(ObjectType, _pathToAdd.Alias, _parent.Name);
          context.PublishEvent(new AddedFormulaUsablePathEvent(_parent, _pathToAdd));
+         context.PublishEvent(new FormulaChangedEvent(_parent));
       }
    }
 }

@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using libsbmlcs;
+using MoBi.Engine.Sbml;
 using MoBi.IntegrationTests;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using Model = libsbmlcs.Model;

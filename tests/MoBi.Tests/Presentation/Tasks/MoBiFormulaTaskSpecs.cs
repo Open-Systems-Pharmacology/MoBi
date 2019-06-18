@@ -427,7 +427,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.SetFormulaString(_formula, "1+2", _formula.FormulaString, _buildingBlock).DowncastTo<MoBiMacroCommand>();
+         _command = sut.SetFormulaString(_formula, "1+2", _buildingBlock).DowncastTo<MoBiMacroCommand>();
       }
 
       [Observation]

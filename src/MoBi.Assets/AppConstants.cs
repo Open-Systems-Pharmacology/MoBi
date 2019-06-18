@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Assets;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Assets
@@ -19,6 +18,8 @@ namespace MoBi.Assets
       public static readonly string NotMatch = "not tagged with";
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
+      public static readonly string InContainer = "in container";
+      public static readonly string NotInContainer = "not in container";
       public static readonly string NullFormulaDescription = "No Formula";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
@@ -36,9 +37,10 @@ namespace MoBi.Assets
       public static readonly int NotFoundIndex = -1;
       public static readonly string NullString = "null";
       public static readonly string PRODUCT_NAME = "MoBi";
+      public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "MoBi®";
       public static readonly string Website = "www.open-systems-pharmacology.org";
       public static readonly string ProductSiteDownload = "http://setup.open-systems-pharmacology.org";
-      public static readonly string IssueTrackerUrl = "http://www.open-systems-pharmacology.org/mobi/issues";
+      public static readonly string IssueTrackerUrl = "https://github.com/open-systems-pharmacology/mobi/issues";
       public static readonly string Persitable = "Persitable";
       public static readonly string CVODE_1002_2_SOLVER = "CVODE1002_2";
       public static readonly int MAX_PATH_DEPTH = 10;
@@ -61,7 +63,7 @@ namespace MoBi.Assets
          public static readonly string LYMPH_FLOW_RATE_INCL_MUCOSA = "Lymph flow rate (incl. mucosa)";
          public static readonly string FLUID_RECIRCULATION_FLOW_RATE = "Fluid recirculation flow rate";
          public static readonly string FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA = "Fluid recirculation flow rate (incl. mucosa)";
-         public static readonly string CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR= "Calculated specific intestinal permeability (transcellular)";
+         public static readonly string CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR = "Calculated specific intestinal permeability (transcellular)";
       }
 
       public static class Groups
@@ -97,7 +99,7 @@ namespace MoBi.Assets
 
          public static readonly string GlobalEventTag = "Events";
 
-         public static readonly IReadOnlyList<string> PKSimStaticObservers = new []
+         public static readonly IReadOnlyList<string> PKSimStaticObservers = new[]
          {
             "Plasma (Peripheral Venous Blood)",
             "Plasma Unbound (Peripheral Venous Blood)",
@@ -233,6 +235,8 @@ namespace MoBi.Assets
          public static readonly string MatchAllCondition = "Match All Condition";
          public static readonly string MatchTagCondition = "Match Tag Condition";
          public static readonly string NotMatchTagCondition = "Not Match Tag Condition";
+         public static readonly string InContainerCondition = "In Container Condition";
+         public static readonly string NotInContainerCondition = "Not In Container Condition";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
          public static readonly string RefreshStartValuesFromBuildingBlocks = "Refreshing start values from original building blocks";
@@ -248,7 +252,6 @@ namespace MoBi.Assets
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
-
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
@@ -390,6 +393,7 @@ namespace MoBi.Assets
             {
                display = display.Remove(display.Count() - 2);
             }
+
             return $"Create new {ObjectTypes.MoleculeBuildingBlock}: '{name}' from {display}";
          }
 
@@ -440,7 +444,7 @@ namespace MoBi.Assets
 
          public static string ResetValuesCommandDescription(string simulationName)
          {
-            return $"Reseting all values in Simulation: '{simulationName}' to values from last build.";
+            return $"Resetting all values in Simulation: '{simulationName}' to values from last build.";
          }
 
          public static string UnDoResetValuesCommandDescription(string simulationName)
@@ -475,12 +479,17 @@ namespace MoBi.Assets
 
          public static string CommitCommandDescription(IBuildingBlock buildingBlock, IModelCoreSimulation simulation, string buildingBlockType)
          {
-            return string.Format("Commit changes made in Simulation: '{0}' to {2}: '{1}'", simulation.Name, buildingBlock.Name, buildingBlockType);
+            return $"Commit changes made in Simulation: '{simulation.Name}' to {buildingBlockType}: '{buildingBlock.Name}'";
          }
 
-         public static string UpdateCommandDescription(string buildingBlockName, IModelCoreSimulation simulation, string buildingBlockType)
+         public static string UpdateCommandDescription(string simulationName, string buildingBlockName, string buildingBlockType)
          {
-            return string.Format("Updates simulation: '{0}' with actual information from {2}: '{1}'", simulation.Name, buildingBlockName, buildingBlockType);
+            return $"Updates simulation: '{simulationName}' with actual information from {buildingBlockType}: '{buildingBlockName}'";
+         }
+
+         public static string ConfigureSimulationDescription(string simulationName)
+         {
+            return $"Configure simulation: '{simulationName}' was updated.";
          }
 
          public static string EditDescriptionMoleculeList(string objectType, MoleculeList newMoleculeList, string name)
@@ -613,7 +622,7 @@ namespace MoBi.Assets
             return $"Update dimension for parameter '{parameterPath}' from '{oldDimensionName}' to '{newDimensionName}'";
          }
 
-         public static string UpdateAssigmentObjectPath(string assignmentPath, string path)
+         public static string UpdateAssignmentObjectPath(string assignmentPath, string path)
          {
             return $"Update object path for assignment '{assignmentPath}' to '{path}'";
          }
@@ -708,7 +717,7 @@ namespace MoBi.Assets
             return updateParameterPropertyIn(parameterName, newValue, oldValue, simulationName, propertyName, SimulationType);
          }
 
-         private static string updateParameterPropertyIn(string parameterName, string newValue, string oldValue, string containerName, string propertyName, string containerType )
+         private static string updateParameterPropertyIn(string parameterName, string newValue, string oldValue, string containerName, string propertyName, string containerType)
          {
             return $"Changed {ParameterType} {parameterName} {propertyName} from '{oldValue}' to '{newValue}' in {containerType} {containerName}";
          }
@@ -847,6 +856,8 @@ namespace MoBi.Assets
 
          public static readonly string NewMatchTag = "Tag to match";
          public static readonly string NewNotMatchTag = "Tag not to match";
+         public static readonly string NewInContainerTag = "Tag of container hierarchy to match";
+         public static readonly string NewNotInContainerTag = "Tag of container hierarchy not to match";
          public static readonly string AskForPopulationWorkingDirectory = "Select Working Directory for Population Simulation";
          public static readonly string AskForParameterIdentificationWorkingDirectory = "Select Working Directory for Parameter Identification";
          public static readonly string AskForSave = "Save as ";
@@ -895,9 +906,8 @@ namespace MoBi.Assets
 
          public static string PendingBuildingBlockChangesInfo(string typeName, string name)
          {
-            return string.Format("Commited new values To {0}: '{1}'. Changes made at the {0} are still present", typeName, name);
+            return string.Format("Committed new values To {0}: '{1}'. Changes made at the {0} are still present", typeName, name);
          }
-
       }
 
       public static class Filter
@@ -935,6 +945,7 @@ namespace MoBi.Assets
          public static readonly string Options = "Options";
          public static readonly string Run = "Run";
          public static readonly string RunWithSettings = "Define Settings and Run";
+         public static readonly string ConfigureShortMenu = "Configure";
          public static readonly string CalculateScaleDivisor = "Calculate Scale Divisor";
          public static readonly string AddLabel = "Add Label";
          public static readonly string Undo = "Undo";
@@ -948,6 +959,7 @@ namespace MoBi.Assets
          public static readonly string Exit = "E&xit";
          public static readonly string RecentProjects = "&Recent Projects";
          public static readonly string Edit = "Edit...";
+         public static readonly string Configure = "Configure...";
          public static readonly string Rename = "Rename...";
          public static readonly string Remove = OSPSuite.Assets.MenuNames.Remove;
          public static readonly string Delete = OSPSuite.Assets.MenuNames.Delete;
@@ -969,7 +981,7 @@ namespace MoBi.Assets
          public static readonly string RelativePath = "Relative Path";
          public static readonly string AbsolutePath = "Absolute Path";
          public static readonly string ExportHistory = Captions.ExportHistory;
-         public static readonly string StartPopulationSimualtion = "Send Simulation to PK-Sim for Population Simulation...";
+         public static readonly string StartPopulationSimulation = "Send Simulation to PK-Sim for Population Simulation...";
          public static readonly string ExportSimModelXml = "Export Simulation for Matlab®/R...";
          public static readonly string BuildingBlockExplorer = "Building Blocks";
          public static readonly string SimulationExplorer = "Simulations";
@@ -1069,7 +1081,7 @@ namespace MoBi.Assets
 
       public class Warnings
       {
-         public static string PassiveTransporBuildingBlockCreatedAutomatically(string name)
+         public static string PassiveTransportBuildingBlockCreatedAutomatically(string name)
          {
             return $"A passive transport building block named '{name}' was generated to account for changes in passive processes usage.";
          }
@@ -1105,8 +1117,8 @@ namespace MoBi.Assets
          public static readonly string SourceBuildingBlockNotInProject = "Building Block used to create start values is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";
          public static readonly string ErrorInFormula = "Error in Formula";
-         public static readonly string ApplicatedMoleculeNotInProject = "Applicated Molecule is not in Project";
-         public static readonly string CoundNotCreateSimulation = "Unable to create the simulation. Please check warnings or errors in the notification view.";
+         public static readonly string AppliedMoleculeNotInProject = "Applied Molecule is not in Project";
+         public static readonly string CouldNotCreateSimulation = "Unable to create the simulation. Please check warnings or errors in the notification view.";
          public static readonly string TemplateShouldContainAtLeastOneCurve = "Template should contain at least one curve.";
          public static readonly string StartValueDimensionModeDoesNotMatchBuildingBlockDimensionMode = "The imported start value dimension mode does not match the building block dimension mode. Modify the start value or the building block so that they are both concentration based, or amount based";
          public static readonly string FrameworkExceptionOccurred = "An exception occurred";
@@ -1199,6 +1211,7 @@ namespace MoBi.Assets
             {
                display = display.Remove(display.Count() - 2);
             }
+
             return $"'{display}' are not imported to prevent errors, because it is already imported as child of another Container. \n You may add them in a second step if necessary";
          }
 
@@ -1251,14 +1264,14 @@ namespace MoBi.Assets
          public static readonly string WarningsCaption = "Solver Warnings";
          public static readonly string HistoryBrowser = "History";
          public static readonly string NameInUse = "New Name";
-         public static readonly string ReanameWizardCaption = "Rename also";
+         public static readonly string RenameWizardCaption = "Rename also";
          public static readonly string AddReactionMolecule = "Molecule Name";
          public static readonly string NewName = "New Name";
          public static readonly string Tag = "Tag";
          public static readonly string ValidationMessages = "Validation Results";
          public static readonly string SelectReferencesView = "References to add";
          public static readonly string References = "References";
-         public static readonly string NewMolculeStartValues = "Create New Molecule Start Values";
+         public static readonly string NewMoleculeStartValues = "Create New Molecule Start Values";
          public static readonly string NewParameterStartValues = "Create New Parameter Start values";
          public static readonly string ExportHistory = "Export History";
          public static readonly string MoleculeNames = "Molecule Name";
@@ -1309,7 +1322,7 @@ namespace MoBi.Assets
          public static readonly string SimulationSettingsDescription = "Select the curves that will be generated by the simulation.";
          public static readonly string ShouldRenameDependentObjects = "Rename Dependent Objects";
          public static readonly string SimulationPathForMerge = "Simulation path";
-         public static readonly string SourceSimulationFileForMerge = "Select simulation file containg the building blocks to merge";
+         public static readonly string SourceSimulationFileForMerge = "Select simulation file containing the building blocks to merge";
          public static readonly string BuildingBlockToMerge = "Source building block";
          public static readonly string TargetBuildingBlock = "Embed in target building block";
          public static readonly string MergeSimulationIntoProject = "Merge Simulation into Project";
@@ -1337,13 +1350,13 @@ namespace MoBi.Assets
          public static readonly string SaveLayoutToFile = "Save Layout Template...";
          public static readonly string Stoichiometry = "Stoichiometry";
          public static readonly string AboutProduct = "About...";
-         public static readonly string SelectChangedEntiy = "Select changed entity";
+         public static readonly string SelectChangedEntity = "Select changed entity";
          public static readonly string TransporterName = "Transporter alias";
          public static readonly string CalculatedForFollowingMolecules = "Calculated for following molecules";
          public const string Description = "Description";
          public static readonly string Assignment = "Assignment";
          public static readonly string Condition = "Condition";
-         public static readonly string TranporterMoleculeName = "Transporter molecule name";
+         public static readonly string TransporterMoleculeName = "Transporter molecule name";
          public static readonly string Reset = "Reset";
          public static readonly string EnterNewFormulaName = "Enter new name for formula";
          public static readonly string CloneFormulaTitle = "Clone formula";
@@ -1386,7 +1399,7 @@ namespace MoBi.Assets
          public static readonly string Kinetic = "Kinetic";
          public static readonly string ShowAdvancedParameters = "Show advanced parameters";
          public static readonly string GroupParameters = "Group parameters";
-         public static readonly string IsAdvancedParamerter = "Advanced parameter";
+         public static readonly string IsAdvancedParameter = "Advanced parameter";
          public static readonly string CaseSensitive = "Match case";
          public static readonly string AddValuePoint = "Add Point";
          public static readonly string UseDerivedValues = "Use derivative values";
@@ -1397,11 +1410,14 @@ namespace MoBi.Assets
          public static readonly string TableFormulaWithXArgument = "Table Formula with X-Argument";
          public static readonly string VariableName = "Variable name";
          public static readonly string SumFormula = "Sum Formula";
+         public static readonly string SumOfAll = "∑ of all";
          public static readonly string Criteria = "Parameter criteria";
          public static readonly string RemoveCondition = "Remove condition";
-         public static readonly string NewMatchTagCondition = "New match tag condition";
-         public static readonly string NewNotMatchTagCondition = "New not match tag condition";
-         public static readonly string AddMatchAllCondition = "Add match all tag condition";
+         public static readonly string NewMatchTagCondition = "New \"Match tag\" condition";
+         public static readonly string NewNotMatchTagCondition = "New \"Not match tag\" condition";
+         public static readonly string NewInContainerCondition = "New \"In container\" condition";
+         public static readonly string NewNotInContainerCondition = "New \"Not in container\" condition";
+         public static readonly string AddMatchAllCondition = "Add \"Match all tag\" condition";
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
@@ -1416,7 +1432,7 @@ namespace MoBi.Assets
          public static readonly string MoleculeType = "Molecule Type";
          public static readonly string IncludeList = "Include List";
          public static readonly string ExcludeList = "Exclude List";
-         public static readonly string OneTimeEvent = "One Time";    
+         public static readonly string OneTimeEvent = "One Time";
          public static readonly string Settings = "Settings";
          public static readonly string SolverSettings = "Solver Settings";
          public static readonly string FinalOptions = "Final Options";
@@ -1426,7 +1442,7 @@ namespace MoBi.Assets
          public static readonly string UsedCalculationMethods = "Used Calculation Methods";
          public static readonly string DisplayNameYValue = "Y-Value";
          public static readonly string NewValuePoint = "New Value Point";
-         public static readonly string RealativeContainerPath = "Change Realtive Container Path";
+         public static readonly string ChangeRelativeContainerPath = "Change Relative Container Path";
          public static readonly string Details = "Details";
          public static readonly string LoadingDiagram = "Loading Diagram...";
          public static readonly string LoadingProject = "Loading Project...";
@@ -1440,23 +1456,6 @@ namespace MoBi.Assets
          public static readonly string DecimalPlace = "Decimal place";
          public static readonly string SelectDataToExport = "Select data to Export";
          public static readonly string ReportFile = "File";
-         public static readonly string ReportVerbose = "Verbose output (Descriptions, images etc..)";
-         public static readonly string ReportDeleteWorkingFolder = "Delete working folder";
-         public static readonly string ReportFirstPageSettings = "First page settings";
-         public static readonly string ReportOptions = "Options";
-         public static readonly string ReportOutput = "Output settings";
-         public static readonly string ReportAuthor = "Author";
-         public static readonly string ReportTitle = "Title";
-         public static readonly string ReportType = "Type";
-         public static readonly string ReportSubtitle = "Subtitle";
-         public static readonly string ReportOutputFile = "File";
-         public static readonly string ReportColor = "Color";
-         public static readonly string ReportGrayScale = "Grayscale";
-         public static readonly string ReportBlackAndWhite = "Black & White";
-         public static readonly string ReportToPDFTitle = "Create PDF Report...";
-         public static readonly string SelectReportFile = "Select report file...";
-         public static readonly string ReportTemplateSelection = "Template selection";
-         public static readonly string ReportTemplate = "Template";
          public static readonly string ValidateDimensions = "Validate dimensions";
          public static readonly string Tree = "Tree";
          public static readonly string MessageOrigin = "Origin";
@@ -1594,9 +1593,14 @@ namespace MoBi.Assets
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
          public static readonly string Chart = "Chart";
+
          public static readonly string List = "List";
+
          //TODO MOVE TO CORE
          public static readonly string UserDefined = "User Defined";
+
+         public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
+
 
          public static string ManageDisplayUnits(string type)
          {
@@ -1703,7 +1707,7 @@ namespace MoBi.Assets
             return $"New {objectName}";
          }
 
-         public static string TemporaireStartValuesBasedOn(string startValueType, string name)
+         public static string TemporaryStartValuesBasedOn(string startValueType, string name)
          {
             return $"{startValueType} used in simulation based on '{name}'";
          }
@@ -1738,9 +1742,9 @@ namespace MoBi.Assets
             return $"Commiting changes to building block: '{buildingBlock.Name}'";
          }
 
-         public static string ConfigureSimulation(string simulatioName)
+         public static string ConfigureSimulation(string simulationName)
          {
-            return $"Configure Simulation: {simulatioName}";
+            return $"Configure Simulation: {simulationName}";
          }
 
          public const string StartValueNotAvailable = "<Not Available>";
@@ -1758,7 +1762,7 @@ namespace MoBi.Assets
 
          public static string SourceBuildingBlockFileForMerge(string buildingBlockType)
          {
-            return $"Select file containg the {buildingBlockType.ToLowerInvariant()} to merge";
+            return $"Select file containing the {buildingBlockType.ToLowerInvariant()} to merge";
          }
 
          public static string UpdatingMoleculeStartValue(IObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeStartValueAllowed)
@@ -1803,14 +1807,14 @@ namespace MoBi.Assets
          public static readonly string EmptyFormula = "Formula has to be specified";
          public static readonly string UndefinedParameter = "Parameter value is not defined, may cause error during computation";
          public static readonly string ChangedEntityNotSet = "Changed entity has to be set";
-         public static readonly string NameAllreadyUsed = "Name already in use";
-         public static readonly string TransportNameAllreadyUsed = "Transport name already in use";
+         public static readonly string NameAlreadyUsed = "Name already in use";
+         public static readonly string TransportNameAlreadyUsed = "Transport name already in use";
          public static readonly string ChangeBuildModeWarning = "Changing build mode may corrupt references to this parameter.";
          public static readonly string FixedValueSimulationWarning = "Default is overridden";
-         public static readonly string RelativeContainerPathNotSet = "Realtive Container Path has to be specified";
+         public static readonly string RelativeContainerPathNotSet = "Relative Container Path has to be specified";
          public static readonly string CannotSetPathElementWhenPreviousElementsAreEmpty = "The path element cannot be set when previous elements in the path are empty";
          public static readonly string EmptyAlias = "Alias has to be specified";
-         public static readonly string AliasAllreadyUsed = "Alias is already in use";
+         public static readonly string AliasAlreadyUsed = "Alias is already in use";
          public static readonly string EmptyPath = "Path has to be specified";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
@@ -1949,7 +1953,11 @@ namespace MoBi.Assets
 
       public static string RHSDefaultUnitName(IDimension dimension)
       {
-         return $"{dimension.BaseUnit.Name}/min";
+         var numerator = string.IsNullOrEmpty(dimension.BaseUnit.Name) ? "1" : dimension.BaseUnit.Name;
+         if (string.Equals(numerator, "min"))
+            return string.Empty;
+
+         return $"{numerator}/min";
       }
 
       public static string RHSDimensionSuffix = " per time";
@@ -1995,7 +2003,6 @@ namespace MoBi.Assets
          "NEQ"
       };
 
-
       public static readonly string None = "<None>";
       public static readonly string PKSimTopContainer = "Organism";
       public static readonly string AmountAlias = "M";
@@ -2019,10 +2026,10 @@ namespace MoBi.Assets
          return $"{name1}-{name2}";
       }
 
-      public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string dowloadUrl)
+      public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string downloadUrl)
       {
          if (projectVersion > currentVersion)
-            return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {dowloadUrl}";
+            return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}";
 
          return $"Work in progress.\nThis project file is too old (version {projectVersion}) and cannot be loaded.\nSorry :-(";
       }
@@ -2042,7 +2049,7 @@ namespace MoBi.Assets
 
          public static string UpdateErrors(string projectName, IEnumerable<string> messages)
          {
-            return messages.Aggregate($"Error(s) during upate of project: '{projectName}'\n", (current, m) => string.Concat(current, $"\n{m}"));
+            return messages.Aggregate($"Error(s) during update of project: '{projectName}'\n", (current, m) => string.Concat(current, $"\n{m}"));
          }
 
          public static string UpdateErrors(IEnumerable<string> messages)
@@ -2087,7 +2094,7 @@ namespace MoBi.Assets
 
          public static string VersionDescription(string s)
          {
-            return $"Left buildingblock {s.ToLower()} then right one";
+            return $"Left building block {s.ToLower()} then right one";
          }
       }
 

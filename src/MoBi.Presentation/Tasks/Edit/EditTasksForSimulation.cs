@@ -2,21 +2,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.SimModel.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -29,40 +30,46 @@ namespace MoBi.Presentation.Tasks.Edit
       void ExportMatlabDifferentialSystem(IMoBiSimulation simulation);
       void ExportSimModelXml(IMoBiSimulation simulation);
       void CalculateScaleFactors(IMoBiSimulation simulation);
-      void AddCommand(IMoBiCommand command);
    }
 
    public class EditTasksForSimulation : EditTasksForBuildingBlock<IMoBiSimulation>, IEditTasksForSimulation
    {
       private readonly ISimulationPersistor _simulationPersistor;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IForbiddenNamesRetriever _forbiddenNamesRetriver;
       private readonly IModelReportCreator _reportCreator;
       private readonly IDataRepositoryTask _dataRepositoryTask;
       private readonly ISimModelExporter _simModelExporter;
       private readonly IDimensionFactory _dimensionFactory;
+      private readonly IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
 
-      public EditTasksForSimulation(IInteractionTaskContext interactionTaskContext, ISimulationPersistor simulationPersistor, IDialogCreator dialogCreator,
-         IForbiddenNamesRetriever forbiddenNamesRetriver, IDataRepositoryTask dataRepositoryTask,
-         IModelReportCreator reportCreator, ISimModelExporter simModelExporter, IDimensionFactory dimensionFactory) : base(interactionTaskContext)
+      public EditTasksForSimulation(
+         IInteractionTaskContext interactionTaskContext,
+         ISimulationPersistor simulationPersistor,
+         IDialogCreator dialogCreator,
+         IDataRepositoryTask dataRepositoryTask,
+         IModelReportCreator reportCreator,
+         ISimModelExporter simModelExporter,
+         IDimensionFactory dimensionFactory,
+         IParameterIdentificationSimulationPathUpdater parameterIdentificationSimulationPathUpdater) : base(interactionTaskContext)
       {
          _simulationPersistor = simulationPersistor;
          _dialogCreator = dialogCreator;
-         _forbiddenNamesRetriver = forbiddenNamesRetriver;
          _dataRepositoryTask = dataRepositoryTask;
          _reportCreator = reportCreator;
          _simModelExporter = simModelExporter;
          _dimensionFactory = dimensionFactory;
+         _parameterIdentificationSimulationPathUpdater = parameterIdentificationSimulationPathUpdater;
       }
 
       public void CreateReport(IModelCoreSimulation simulation)
       {
-         var exportFile = _interactionTask.AskForFileToSave(AppConstants.Dialog.ExportSimulationModelToFileTitle, Constants.Filter.TEXT_FILE_FILTER,Constants.DirectoryKey.REPORT, simulation.Name);
+         var exportFile = _interactionTask.AskForFileToSave(AppConstants.Dialog.ExportSimulationModelToFileTitle, Constants.Filter.TEXT_FILE_FILTER, Constants.DirectoryKey.REPORT, simulation.Name);
          if (exportFile.IsNullOrEmpty()) return;
          using (var writer = new StreamWriter(exportFile))
          {
             writer.Write(_reportCreator.ModelReport(simulation.Model, true, true, true));
          }
+
          //now try to open the file
          FileHelper.TryOpenFile(exportFile);
       }
@@ -96,7 +103,12 @@ namespace MoBi.Presentation.Tasks.Edit
 
       private void exportDataRepository(string fileName, IEnumerable<DataColumn> dataRepository)
       {
-         var dataTables = _dataRepositoryTask.ToDataTable(dataRepository, x => x.QuantityInfo.PathAsString, _dimensionFactory.MergedDimensionFor);
+         var dataTables = _dataRepositoryTask.ToDataTable(dataRepository, new DataColumnExportOptions
+         {
+            ColumnNameRetriever = x => x.QuantityInfo.PathAsString,
+            DimensionRetriever = _dimensionFactory.MergedDimensionFor
+         });
+
          _dataRepositoryTask.ExportToExcel(dataTables, fileName, true);
       }
 
@@ -108,7 +120,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (string.IsNullOrEmpty(newName))
             return;
 
-         AddCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).Run(_context));
+         addCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).Run(_context));
       }
 
       public void ExportMatlabDifferentialSystem(IMoBiSimulation simulation)
@@ -126,7 +138,7 @@ namespace MoBi.Presentation.Tasks.Edit
             if (command.IsEmpty())
                return;
 
-            AddCommand(command);
+            addCommand(command);
          }
       }
 
@@ -135,19 +147,19 @@ namespace MoBi.Presentation.Tasks.Edit
          return simulation.HistoricResults.Select(x => x.Name).Union(new[] {simulation.Results.Name});
       }
 
-      public void AddCommand(IMoBiCommand command)
+      private void addCommand(IMoBiCommand command)
       {
          _context.AddToHistory(command);
       }
 
       protected override IEnumerable<string> GetUnallowedNames(IMoBiSimulation simulation, IEnumerable<IObjectBase> existingObjectsInParent)
       {
-         return _forbiddenNamesRetriver.For(simulation);
+         return _context.CurrentProject.Simulations.Select(bb => bb.Name);
       }
 
       public override void Save(IMoBiSimulation simulation)
       {
-         var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART,  simulation.Name);
+         var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, simulation.Name);
          if (fileName.IsNullOrEmpty()) return;
          _simulationPersistor.Save(new SimulationTransfer {Simulation = simulation}, fileName);
       }
@@ -157,6 +169,19 @@ namespace MoBi.Presentation.Tasks.Edit
          var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, AppConstants.Filter.SIM_MODEL_FILE_FILTER, Constants.DirectoryKey.SIM_MODEL_XML, simulation.Name);
          if (fileName.IsNullOrEmpty()) return;
          _simModelExporter.Export(simulation, fileName);
+      }
+
+      public override void Rename(IMoBiSimulation simulationToRename, IEnumerable<IObjectBase> existingObjectsInParent, IBuildingBlock buildingBlock)
+      {
+         string oldName = simulationToRename.Name;
+         base.Rename(simulationToRename, existingObjectsInParent, buildingBlock);
+
+         //It was not renamed after all
+         if (string.Equals(oldName, simulationToRename.Name))
+            return;
+
+         _parameterIdentificationSimulationPathUpdater.UpdatePathsForRenamedSimulation(simulationToRename, oldName, simulationToRename.Name);
+         simulationToRename.HasChanged = true;
       }
    }
 }

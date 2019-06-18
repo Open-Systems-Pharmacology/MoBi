@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using MoBi.Engine;
 using MoBi.UI.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
@@ -18,7 +19,7 @@ namespace MoBi
          Application.SetCompatibleTextRenderingDefault(false);
          try
          {
-            ApplicationStartup.Initialize();
+            ApplicationStartup.Initialize(registrationAction);
             IoC.Container.Register<MoBiApplication, MoBiApplication>(LifeStyle.Singleton);
             IoC.Resolve<MoBiApplication>().Run(args);
          }
@@ -26,6 +27,11 @@ namespace MoBi
          {
             MessageBox.Show(e.ExceptionMessageWithStackTrace(), "Unhandled Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
+      }
+
+      private static void registrationAction(IContainer container)
+      {
+         container.AddRegister(x => x.FromType<EngineRegister>());
       }
    }
 }

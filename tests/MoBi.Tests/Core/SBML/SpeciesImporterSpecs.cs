@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
+using MoBi.Engine.Sbml;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 

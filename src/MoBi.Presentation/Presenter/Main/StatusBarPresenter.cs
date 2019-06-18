@@ -61,8 +61,8 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void updateProjectInfo(IProject project, bool enabled)
       {
-         var dimensionModeCatpion = project.DowncastTo<IMoBiProject>().ReactionDimensionMode == ReactionDimensionMode.AmountBased ? AppConstants.Captions.AmountBasedModel : AppConstants.Captions.ConcentrationBasedModel;
-         updateProjectInfo(project.Name, project.FilePath, dimensionModeCatpion, enabled);
+         var dimensionModeCaption = project.DowncastTo<IMoBiProject>().ReactionDimensionMode == ReactionDimensionMode.AmountBased ? AppConstants.Captions.AmountBasedModel : AppConstants.Captions.ConcentrationBasedModel;
+         updateProjectInfo(project.Name, project.FilePath, dimensionModeCaption, enabled);
       }
 
       private void updateProjectInfo(string projectName, string projectPath, string reactionDimensionMode, bool enabled)
@@ -147,15 +147,9 @@ namespace MoBi.Presentation.Presenter.Main
          //nothing to do
       }
 
-      public bool CanClose
-      {
-         get { return true; }
-      }
+      public bool CanClose => true;
 
-      public IView BaseView
-      {
-         get { return null; }
-      }
+      public IView BaseView => null;
 
       public void Handle(ProjectClosedEvent eventToHandle)
       {

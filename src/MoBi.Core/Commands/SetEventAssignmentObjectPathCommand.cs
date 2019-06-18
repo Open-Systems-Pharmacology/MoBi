@@ -30,7 +30,7 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _assignment.ObjectPath = _newObjectPath;
-         Description = AppConstants.Commands.UpdateAssigmentObjectPath(_assignment.EntityPath(), (_newObjectPath ?? new FormulaUsablePath()).ToPathString());
+         Description = AppConstants.Commands.UpdateAssignmentObjectPath(_assignment.EntityPath(), (_newObjectPath ?? new FormulaUsablePath()).ToPathString());
          if (_newObjectPath == null) return;
          updateDimension(_assignment);
          updateDimension(_assignment.Formula);

@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
    {
       private ValuePoint _valuePoint;
 
-      public AddValuePointCommand(TableFormula tableFormula, ValuePoint valuePoint, IBuildingBlock changedBuidingBlock) : base(tableFormula, valuePoint, changedBuidingBlock)
+      public AddValuePointCommand(TableFormula tableFormula, ValuePoint valuePoint, IBuildingBlock changedBuildingBlock) : base(tableFormula, valuePoint, changedBuildingBlock)
       {
          _valuePoint = valuePoint;
       }
