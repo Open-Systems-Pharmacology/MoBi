@@ -2,7 +2,6 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -57,6 +56,12 @@ namespace MoBi.Core.Commands
       public void dimension_of_parameter_changes()
       {
          _parameter.Dimension.ShouldBeEqualTo(_newDimension);
+      }
+
+      [Observation]
+      public void should_not_add_the_dimension_of_the_right_hand_side_to_the_dimension_factory()
+      {
+         A.CallTo(() => _context.DimensionFactory.RHSDimensionFor(_newDimension)).MustNotHaveHappened();
       }
    }
 
