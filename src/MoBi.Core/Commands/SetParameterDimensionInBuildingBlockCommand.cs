@@ -1,13 +1,14 @@
-﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
+﻿using System;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
-using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
@@ -28,7 +29,7 @@ namespace MoBi.Core.Commands
          _oldDimension = parameter.Dimension;
          _oldDisplayUnit = _parameter.DisplayUnit;
          _newDisplayUnit = null;
-         ObjectType =ObjectTypes.Parameter;
+         ObjectType = ObjectTypes.Parameter;
          CommandType = AppConstants.Commands.EditCommand;
       }
 
@@ -39,17 +40,19 @@ namespace MoBi.Core.Commands
          _parameter.Dimension = _newDimension;
          _parameter.DisplayUnit = _newDisplayUnit ?? displayUnitRetriever.PreferredUnitFor(_parameter);
 
-         updateFormulaDimension(_parameter.Formula, _newDimension, context);
-         updateFormulaDimension(_parameter.RHSFormula, context.DimensionFactory.RHSDimensionFor(_newDimension), context);
+         updateFormulaDimension(_parameter.Formula, () => _newDimension, context);
+
+         updateFormulaDimension(_parameter.RHSFormula, () => context.DimensionFactory.RHSDimensionFor(_newDimension), context);
 
          Description = AppConstants.Commands.SetParameterDimension(_parameter.EntityPath(), _oldDimension.Name, _newDimension.Name);
          context.PublishEvent(new QuantityChangedEvent(_parameter));
       }
 
-      private void updateFormulaDimension(IFormula formula, IDimension dimension, IMoBiContext context)
+      // Note": We use a function here to ensure that evaluation of RHSDimension is only performed if there is a RHS 
+      private void updateFormulaDimension(IFormula formula, Func<IDimension> dimensionRetriever, IMoBiContext context)
       {
          if (formula == null) return;
-         formula.Dimension = dimension;
+         formula.Dimension = dimensionRetriever();
          context.PublishEvent(new FormulaChangedEvent(_parameter.Formula));
       }
 

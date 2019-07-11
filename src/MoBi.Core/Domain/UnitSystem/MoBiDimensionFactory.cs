@@ -156,14 +156,8 @@ namespace MoBi.Core.Domain.UnitSystem
          return rhsDimension;
       }
 
-      private IDimension findFirstEquivalentDimension(Dimension rhsDimension, string unitName)
-      {
-         var equivalentRHSDimension = Dimensions.FirstOrDefault(x => x.IsEquivalentTo(rhsDimension));
-         if (equivalentRHSDimension != null && equivalentRHSDimension.HasUnit(unitName))
-            return equivalentRHSDimension;
-
-         return null;
-      }
+      private IDimension findFirstEquivalentDimension(Dimension rhsDimension, string unitName) =>
+         Dimensions.FirstOrDefault(x => x.IsEquivalentTo(rhsDimension) && x.HasUnit(unitName));
 
       public IEnumerable<IDimension> Dimensions
       {
@@ -191,9 +185,6 @@ namespace MoBi.Core.Domain.UnitSystem
          return ProjectFactory.MergedDimensionFor(hasDimension);
       }
 
-      public void AddMergingInformation(IDimensionMergingInformation mergingInforamtion)
-      {
-         ProjectFactory.AddMergingInformation(mergingInforamtion);
-      }
+      public void AddMergingInformation(IDimensionMergingInformation mergingInformation) => ProjectFactory.AddMergingInformation(mergingInformation);
    }
 }

@@ -15,6 +15,7 @@ namespace MoBi.Core
       protected Dimension _flowDimension;
       protected Dimension _timeDimension;
       protected Dimension _inversedTimeDimension;
+      private Dimension _anotherDimensionThatLooksLikeVolumeWithADifferentUnit;
 
       protected override void Context()
       {
@@ -22,6 +23,7 @@ namespace MoBi.Core
 
          _drugMassDimension = new Dimension(new BaseDimensionRepresentation(), "DrugMass", "g");
          _volumeDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3}, "Volume", "l");
+         _anotherDimensionThatLooksLikeVolumeWithADifferentUnit = new Dimension(new BaseDimensionRepresentation {MassExponent = 3, TimeExponent = -1}, "01_OTHER", "");
          _flowDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3, TimeExponent = -1}, "flow", "l/min");
          _timeDimension = new Dimension(new BaseDimensionRepresentation { TimeExponent = 1}, "Time", "min");
          _inversedTimeDimension = new Dimension(new BaseDimensionRepresentation{ TimeExponent = -1}, "InversedTime", "1/min");
@@ -29,6 +31,7 @@ namespace MoBi.Core
          sut.AddDimension(_drugMassDimension);
          sut.AddDimension(_volumeDimension);
          sut.AddDimension(_flowDimension);
+         sut.AddDimension(_anotherDimensionThatLooksLikeVolumeWithADifferentUnit);
          sut.AddDimension(_timeDimension);
          sut.AddDimension(_inversedTimeDimension);
          sut.AddDimension(Constants.Dimension.NO_DIMENSION);
