@@ -111,33 +111,26 @@
     <Reference Include="NHibernate, Version=5.2.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NHibernate.5.2.5\lib\net461\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Draw, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Draw.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Draw, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Draw.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Instruments, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Instruments.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Instruments, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Instruments.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Layout, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Layout.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Layout, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Layout.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Pdf, Version=5.1.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Pdf.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Pdf, Version=5.1.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Pdf.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Svg, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Svg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Svg, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Svg.dll</HintPath>
     </Reference>
-    <Reference Include="Northwoods.Go.Xml, Version=5.2.0.45, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net45\Northwoods.Go.Xml.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Northwoods.Go.Xml, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Xml.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Assets, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Assets.9.0.8\lib\netstandard2.0\OSPSuite.Assets.dll</HintPath>
