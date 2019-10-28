@@ -101,17 +101,19 @@ namespace MoBi.Presentation.Tasks
          {
             addEvents();
             updatePersistableFor(simulation);
-            var results = _simModelManager.RunSimulation(_simulation);
+            var simulationRunResults = _simModelManager.RunSimulation(_simulation);
             _simulation.HasChanged = true;
-            showWarningsIfAny(results);
+            showWarningsIfAny(simulationRunResults);
 
-            if (results.Success)
+            if (simulationRunResults.Success)
             {
-               _displayUnitUpdater.UpdateDisplayUnitsIn(results.Results);
-               copyResultsToSimulation(results, _simulation);
+               var results = simulationRunResults.Results;
+               results.Name = getNewRepositoryName();
+               _displayUnitUpdater.UpdateDisplayUnitsIn(results);
+               copyResultsToSimulation(simulationRunResults, _simulation);
             }
 
-            addCommand(getSimulationResultLabel(results));
+            addCommand(getSimulationResultLabel(simulationRunResults));
          }
          finally
          {
@@ -119,6 +121,11 @@ namespace MoBi.Presentation.Tasks
             _context.PublishEvent(new SimulationRunFinishedEvent(_simulation));
             _simulation = null;
          }
+      }
+
+      private string getNewRepositoryName()
+      {
+         return AppConstants.ResultName + DateTime.Now.ToIsoFormat(withSeconds: true);
       }
 
       private void addCommand(ICommand command)
