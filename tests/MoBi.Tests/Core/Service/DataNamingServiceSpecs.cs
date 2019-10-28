@@ -1,7 +1,6 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -9,7 +8,7 @@ using OSPSuite.BDDHelper.Extensions;
 
 namespace MoBi.Core.Service
 {
-   public abstract class concern_for_DataNamingService : ContextSpecification<IDataNamingService>
+   public abstract class concern_for_DataNamingService : ContextSpecification<DataNamingService>
    {
       protected IMoBiContext _context;
 

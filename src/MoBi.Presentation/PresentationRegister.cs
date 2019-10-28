@@ -55,15 +55,15 @@ namespace MoBi.Presentation
 {
    public class PresentationRegister : Register
    {
-      private readonly bool _registerMainViewpresenter;
+      private readonly bool _registerMainViewPresenter;
 
       public PresentationRegister() : this(true)
       {
       }
 
-      public PresentationRegister(bool registerMainViewpresenter)
+      public PresentationRegister(bool registerMainViewPresenter)
       {
-         _registerMainViewpresenter = registerMainViewpresenter;
+         _registerMainViewPresenter = registerMainViewPresenter;
       }
 
       public override void RegisterInContainer(IContainer container)
@@ -125,6 +125,7 @@ namespace MoBi.Presentation
          container.Register<IDisplayNameProvider, DisplayNameProvider>();
          container.Register<IRenameObjectDTOFactory, RenameObjectDTOFactory>();
 
+         container.AddRegister(x=>x.FromType<OSPSuite.Presentation.Importer.PresentationImporterRegister>());
          registerTasks(container);
          registerContextMenus(container);
 
@@ -159,7 +160,7 @@ namespace MoBi.Presentation
 
       private void registerMainPresenters(IContainer container)
       {
-         if (_registerMainViewpresenter)
+         if (_registerMainViewPresenter)
             container.Register<IMainViewPresenter, IChangePropagator, MoBiMainViewPresenter>(LifeStyle.Singleton);
 
          container.Register<IBuildingBlockExplorerPresenter, IMainViewItemPresenter, BuildingBlockExplorerPresenter>(LifeStyle.Singleton);

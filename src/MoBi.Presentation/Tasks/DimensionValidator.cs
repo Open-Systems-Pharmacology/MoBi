@@ -4,23 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
-using MoBi.Engine.Extensions;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Settings;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 using OSPSuite.FuncParser;
 using OSPSuite.Utility.Extensions;
-using static MoBi.Assets.AppConstants.Parameters;
-using static MoBi.Assets.AppConstants.DimensionNames;
 
-namespace MoBi.Engine.Tasks
+namespace MoBi.Presentation.Tasks
 {
    public class DimensionValidator : IDimensionValidator
    {
-      private readonly IDimensionParser _dimensionParser;
+      private readonly DimensionParser _dimensionParser;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IUserSettings _userSettings;
       private bool _checkDimensions;
@@ -29,35 +26,35 @@ namespace MoBi.Engine.Tasks
       private readonly IDictionary<string, string> _hiddenNotifications;
       private bool _checkRules;
 
-      public DimensionValidator(IDimensionParser dimensionParser, IObjectPathFactory objectPathFactory, IUserSettings userSettings)
+      public DimensionValidator(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, IUserSettings userSettings)
       {
          _dimensionParser = dimensionParser;
          _objectPathFactory = objectPathFactory;
          _userSettings = userSettings;
          _hiddenNotifications = new Dictionary<string, string>
          {
-            {SURFACE_AREA_INTERSTITIAL_INTRACELLULAR, dimensionAreaMessage},
-            {BSA, dimensionAreaMessage},
-            {PERMEABILITY, dimensionVelocityMessage},
-            {SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
-            {RADIUS_SOLUTE, dimensionValidationMessage(LENGTH)},
-            {SECRETION_OF_LIQUID, dimensionFlowMessage},
+            {AppConstants.Parameters.SURFACE_AREA_INTERSTITIAL_INTRACELLULAR, dimensionAreaMessage},
+            {AppConstants.Parameters.BSA, dimensionAreaMessage},
+            {AppConstants.Parameters.PERMEABILITY, dimensionVelocityMessage},
+            {AppConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
+            {AppConstants.Parameters.RADIUS_SOLUTE, dimensionValidationMessage(AppConstants.DimensionNames.LENGTH)},
+            {AppConstants.Parameters.SECRETION_OF_LIQUID, dimensionFlowMessage},
             {Constants.Parameters.VOLUME, $"Organism|Saliva|Volume' {dimensionValidationMessage(Constants.Dimension.VOLUME)}"},
-            {RELEASE_RATE_OF_TABLET, dimensionValidationMessage(Constants.Dimension.AMOUNT_PER_TIME)},
-            {V_MAX, dimensionValidationMessage(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME)},
-            {LYMPH_FLOW_RATE, dimensionFlowMessage},
-            {LYMPH_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
-            {FLUID_RECIRCULATION_FLOW_RATE, dimensionFlowMessage},
-            {FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
-            {CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
-            {EFFECTIVE_MOLECULAR_WEIGHT, "Arguments of MINUS-function must have the same dimension (Formula: MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098)"}
+            {AppConstants.Parameters.RELEASE_RATE_OF_TABLET, dimensionValidationMessage(Constants.Dimension.AMOUNT_PER_TIME)},
+            {AppConstants.Parameters.V_MAX, dimensionValidationMessage(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME)},
+            {AppConstants.Parameters.LYMPH_FLOW_RATE, dimensionFlowMessage},
+            {AppConstants.Parameters.LYMPH_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
+            {AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE, dimensionFlowMessage},
+            {AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
+            {AppConstants.Parameters.CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
+            {AppConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT, "Arguments of MINUS-function must have the same dimension (Formula: MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098)"}
          };
       }
 
       private static string dimensionValidationMessage(string dimensionName) => AppConstants.Validation.DoesNotEvaluateTo(dimensionName);
-      private static string dimensionFlowMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(FLOW);
-      private static string dimensionVelocityMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(VELOCITY);
-      private static string dimensionAreaMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AREA);
+      private static string dimensionFlowMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.FLOW);
+      private static string dimensionVelocityMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.VELOCITY);
+      private static string dimensionAreaMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.AREA);
 
       public Task<ValidationResult> Validate(IContainer container, IBuildConfiguration buildConfiguration) => Validate(new[] {container}, buildConfiguration);
 
@@ -137,13 +134,13 @@ namespace MoBi.Engine.Tasks
       private void addNotification(NotificationType notificationType, IObjectBase entityToValidate, string notification)
       {
          var builder = _buildConfiguration.BuilderFor(entityToValidate);
-         if (!shouldShowNotifiction(entityToValidate, notification))
+         if (!shouldShowNotification(entityToValidate, notification))
             return;
 
          _result.AddMessage(notificationType, builder, notification);
       }
 
-      private bool shouldShowNotifiction(IObjectBase entityToValidate, string notification)
+      private bool shouldShowNotification(IObjectBase entityToValidate, string notification)
       {
          if (_userSettings.ShowPKSimDimensionProblemWarnings)
             return true;
@@ -170,7 +167,7 @@ namespace MoBi.Engine.Tasks
       {
          if (explicitFormula == null) return;
 
-         var dimensionInfos = new List<IQuantityDimensionInfo>();
+         var dimensionInfos = new List<QuantityDimensionInformation>();
          if (isDoubleString(explicitFormula.FormulaString))
             return;
 
@@ -180,45 +177,45 @@ namespace MoBi.Engine.Tasks
             if (!Equals(objectReference.Object.Dimension, pathDim))
                addWarning(entityUsingFormula, AppConstants.Validation.ReferenceDimensionMissmatch(displayPath, objectReference, pathDim));
 
-            dimensionInfos.Add(new QuantityDimensionInfo(objectReference.Alias, createDimensionInfoFromBaseRepresentation(objectReference.Object.Dimension.BaseRepresentation)));
+            dimensionInfos.Add(new QuantityDimensionInformation(objectReference.Alias, createDimensionInfoFromBaseRepresentation(objectReference.Object.Dimension.BaseRepresentation)));
          }
 
-         IFuncParserErrorData ed = new FuncParserErrorData();
-         var verifyDimension = _dimensionParser.GetDimensionInfoFor(explicitFormula.FormulaString, dimensionInfos, ed);
+         var (dimInfo, parseSuccess, calculateDimensionSuccess, errorMessage ) = _dimensionParser.GetDimensionInformationFor(explicitFormula.FormulaString, dimensionInfos);
 
-         if (!ed.ErrorNumber.Equals(errNumber.err_OK))
+         if (!parseSuccess)
          {
-            //ignore some dimension check errors.
-            //Reason: some formulas are written so that dimension exponents cannot be calculated, e.g.
-            //x^y where y is not dimensionless. 
-            //
-            //In this case, err_CANNOTCALC_DIMENSION is returned. 
-            //In all other cases, generate error or warning, depending on the error number returned
+            addNotification(NotificationType.Error, entityUsingFormula, errorMessage);
+            return;
+         }
 
-            if (ed.ErrorNumber != errNumber.err_CANNOTCALC_DIMENSION || (_userSettings.ShowCannotCalcErrors && ed.ErrorNumber == errNumber.err_CANNOTCALC_DIMENSION))
+
+         if (calculateDimensionSuccess)
+         {
+            if (!dimInfo.AreEquals(createDimensionInfoFromBaseRepresentation(baseDimensionRepresentation)))
             {
-               var notificationType = ed.ErrorNumber.IsOneOf(errNumber.err_DIMENSION, errNumber.err_CANNOTCALC_DIMENSION)
-                  ? NotificationType.Warning
-                  : NotificationType.Error;
-
-               addNotification(notificationType, entityUsingFormula, ed.Description);
+               addWarning(entityUsingFormula, AppConstants.Validation.FormulaDimensionMismatch(displayPath, explicitFormula.Dimension.Name));
             }
+
+            return;
          }
 
-         else if (!verifyDimension.AreEquals(createDimensionInfoFromBaseRepresentation(baseDimensionRepresentation)))
+         //ignore some dimension check errors.
+         //Reason: some formulas are written so that dimension exponents cannot be calculated, e.g.
+         //x^y where y is not dimensionless. 
+         if (_userSettings.ShowCannotCalcErrors)
          {
-            addWarning(entityUsingFormula, AppConstants.Validation.FormulaDimensionMismatch(displayPath, explicitFormula.Dimension.Name));
+            addWarning(entityUsingFormula, errorMessage);
          }
       }
 
-      private bool isDoubleString(string stringTocheck)
+      private bool isDoubleString(string stringToCheck)
       {
-         return double.TryParse(stringTocheck, out double value);
+         return double.TryParse(stringToCheck, out _);
       }
 
-      private DimensionInfo createDimensionInfoFromBaseRepresentation(BaseDimensionRepresentation baseRepresentation)
+      private DimensionInformation createDimensionInfoFromBaseRepresentation(BaseDimensionRepresentation baseRepresentation)
       {
-         return new DimensionInfo(baseRepresentation.LengthExponent,
+         return new DimensionInformation(baseRepresentation.LengthExponent,
             baseRepresentation.MassExponent,
             baseRepresentation.TimeExponent,
             baseRepresentation.ElectricCurrentExponent,

@@ -11,7 +11,7 @@ using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Domain.Model
 {
-   public interface IMoBiSimulation : IModelCoreSimulation, IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
+   public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
    {
       ICache<string, DataRepository> HistoricResults { get; }
       CurveChart Chart { get; set; }
@@ -22,10 +22,9 @@ namespace MoBi.Core.Domain.Model
 
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
-      ISimulationSettings Settings { get; }
 
       /// <summary>
-      ///    Returns true if the simulation as created using the <paramref name="templateBuildingBlock" /> otherwise fasle.
+      ///    Returns true if the simulation as created using the <paramref name="templateBuildingBlock" /> otherwise false.
       /// </summary>
       bool IsCreatedBy(IBuildingBlock templateBuildingBlock);
 
@@ -54,18 +53,16 @@ namespace MoBi.Core.Domain.Model
          set => _hasChanged = value;
       }
 
-      public ISimulationSettings Settings => MoBiBuildConfiguration.SimulationSettings;
-
-      public OutputSchema OutputSchema => Settings.OutputSchema;
+      public OutputSchema OutputSchema => SimulationSettings.OutputSchema;
 
       public CurveChartTemplate ChartTemplateByName(string chartTemplate)
       {
-         return Settings.ChartTemplateByName(chartTemplate);
+         return SimulationSettings.ChartTemplateByName(chartTemplate);
       }
 
       public void RemoveAllChartTemplates()
       {
-         Settings.RemoveAllChartTemplates();
+         SimulationSettings.RemoveAllChartTemplates();
       }
 
       public bool IsCreatedBy(IBuildingBlock templateBuildingBlock)
@@ -73,7 +70,7 @@ namespace MoBi.Core.Domain.Model
          return MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock) != null;
       }
 
-      public SolverSettings Solver => Settings.Solver;
+      public SolverSettings Solver => SimulationSettings.Solver;
 
       public bool UsesObservedData(DataRepository dataRepository)
       {
@@ -84,8 +81,6 @@ namespace MoBi.Core.Domain.Model
       {
          return curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
       }
-
-      public OutputSelections OutputSelections => Settings.OutputSelections;
 
       public override void AcceptVisitor(IVisitor visitor)
       {
@@ -122,24 +117,14 @@ namespace MoBi.Core.Domain.Model
          return null;
       }
 
-      /// <summary>
-      ///    Returns the endtime of the simulation in kernel unit
-      /// </summary>
-      public virtual double? EndTime
-      {
-         get { return OutputSchema.Intervals.Select(x => x.EndTime.Value).Max(); }
-      }
-
       public IEnumerable<CurveChart> Charts
       {
          get { yield return Chart; }
       }
 
-      public ISimulationSettings SimulationSettings => BuildConfiguration.SimulationSettings;
-
       public IReadOnlyList<string> CompoundNames => BuildConfiguration.AllPresentMolecules().Select(x => x.Name).ToList();
 
-      public IReactionBuildingBlock Reactions
+      public new IReactionBuildingBlock Reactions
       {
          get => BuildConfiguration.Reactions;
          set => BuildConfiguration.Reactions = value;

@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
       public void Edit(IMoBiSimulation simulation)
       {
          _simulation = simulation;
-         Edit(_simulation.Settings);
+         Edit(_simulation.SimulationSettings);
       }
 
       public void Edit(ISimulationSettings simulationSettings)

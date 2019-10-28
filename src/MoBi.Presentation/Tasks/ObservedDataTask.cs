@@ -49,8 +49,15 @@ namespace MoBi.Presentation.Tasks
       private readonly IDimension _molWeightDimension;
       private readonly IDialogCreator _mobiDialogCreator;
 
-      public ObservedDataTask(IDataImporter dataImporter, IDimensionFactory dimensionFactory, IMoBiContext context,
-         IDialogCreator dialogCreator, IInteractionTask interactionTask, IDataRepositoryTask dataRepositoryTask, IContainerTask containerTask, IObjectTypeResolver objectTypeResolver) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
+      public ObservedDataTask(
+         IDataImporter dataImporter, 
+         IDimensionFactory dimensionFactory, 
+         IMoBiContext context,
+         IDialogCreator dialogCreator, 
+         IInteractionTask interactionTask, 
+         IDataRepositoryExportTask dataRepositoryTask, 
+         IContainerTask containerTask, 
+         IObjectTypeResolver objectTypeResolver) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _dataImporter = dataImporter;
          _mobiDialogCreator = dialogCreator;
@@ -127,7 +134,7 @@ namespace MoBi.Presentation.Tasks
 
       private static MoBiMacroCommand deleteAllResultsFromSimulationCommand(IMoBiSimulation simulation)
       {
-         var macoCommand = new MoBiMacroCommand
+         var macroCommand = new MoBiMacroCommand
          {
             CommandType = Command.CommandTypeDelete,
             ObjectType = ObjectTypes.ObservedData,
@@ -135,17 +142,17 @@ namespace MoBi.Presentation.Tasks
          };
 
          if (simulation.Results != null)
-            macoCommand.AddCommand(new ClearResultsCommand(simulation));
+            macroCommand.AddCommand(new ClearResultsCommand(simulation));
 
-         simulation.HistoricResults.Each(x => macoCommand.Add(new RemoveHistoricResultFromSimulationCommand(simulation, x)));
-         return macoCommand;
+         simulation.HistoricResults.Each(x => macroCommand.Add(new RemoveHistoricResultFromSimulationCommand(simulation, x)));
+         return macroCommand;
       }
 
       private DataImporterSettings createDataImportSettings()
       {
          var settings = new DataImporterSettings
          {
-            Icon = ApplicationIcons.MoBi,
+            IconName = ApplicationIcons.MoBi.IconName,
             Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
          };
          settings.AddNamingPatternMetaData(Constants.FILE);
@@ -390,7 +397,7 @@ namespace MoBi.Presentation.Tasks
 
          var icon = ApplicationIcons.IconByName(container.Icon);
          if (icon != ApplicationIcons.EmptyIcon)
-            metaDataCategory.ListOfImages.Add(container.Name, icon);
+            metaDataCategory.ListOfImages.Add(container.Name, icon.IconName);
       }
 
       private MetaDataCategory createMetaDataCategory<T>(string categoryName, bool isMandatory = false, bool isListOfValuesFixed = false, Action<MetaDataCategory> fixedValuesRetriever = null, string description = null)

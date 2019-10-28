@@ -20,7 +20,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Engine.Domain;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 
@@ -32,7 +31,7 @@ namespace MoBi.IntegrationTests
       private IBuildConfigurationFactory _buildConfigurationFactory;
       private IModelConstructor _modelConstructor;
       private ISimModelExporter _simModelExporter;
-      private IDataRepositoryTask _dateRepositoryTask;
+      private IDataRepositoryExportTask _dateRepositoryTask;
 
       protected override void Context()
       {
@@ -41,7 +40,7 @@ namespace MoBi.IntegrationTests
          _buildConfigurationFactory = IoC.Resolve<IBuildConfigurationFactory>();
          _modelConstructor = IoC.Resolve<IModelConstructor>();
          _simModelExporter = IoC.Resolve<ISimModelExporter>();
-         _dateRepositoryTask = IoC.Resolve<IDataRepositoryTask>();
+         _dateRepositoryTask = IoC.Resolve<IDataRepositoryExportTask>();
          _directory = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\.."), "Core", "SBML", "Testfiles", "SBMLTestSuite"))));
       }
 
@@ -88,7 +87,7 @@ namespace MoBi.IntegrationTests
 
             var simulation = new MoBiSimulation {BuildConfiguration = buildConfigurtion, Model = result.Model};
             var simModelManager = new SimModelManager(_simModelExporter, new SimModelSimulationFactory(),
-               new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), new SBMLTestDataNamingService(), IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IDisplayUnitRetriever>(), IoC.Resolve<IDataRepositoryTask>()));
+               new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IDisplayUnitRetriever>(), IoC.Resolve<IDataRepositoryTask>()));
             var runResults = simModelManager.RunSimulation(simulation);
             if (!runResults.Success)
             {
@@ -138,24 +137,6 @@ namespace MoBi.IntegrationTests
             project.AddBuildingBlock(new MoleculeStartValuesBuildingBlock().WithName("Empty"));
          if (!project.ParametersStartValueBlockCollection.Any())
             project.AddBuildingBlock(new ParameterStartValuesBuildingBlock().WithName("Empty"));
-      }
-   }
-
-   internal class SBMLTestDataNamingService : IDataNamingService
-   {
-      public string GetTimeName()
-      {
-         return AppConstants.TimeColumName;
-      }
-
-      public string GetNewRepositoryName()
-      {
-         return "results";
-      }
-
-      public string GetEntityName(string id)
-      {
-         return id;
       }
    }
 }

@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Tasks
          if (defineSettings)
             return true;
 
-         if (simulation.Settings == null)
+         if (simulation.SimulationSettings == null)
             return true;
 
          return !simulation.OutputSelections.HasSelection;

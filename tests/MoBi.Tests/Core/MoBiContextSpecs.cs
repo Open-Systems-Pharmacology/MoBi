@@ -11,7 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Infrastructure.Journal;
+using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.FileLocker;
@@ -27,7 +27,7 @@ namespace MoBi.Core
       private IXmlSerializationService _serializationService;
       private IObjectPathFactory _objectPathFactory;
       protected IWithIdRepository _objectBaseRepository;
-      private IHistoryManagerFactory _moBiHistoryManagerFacory;
+      private IHistoryManagerFactory _moBiHistoryManagerFactory;
       private IRegisterTask _registerTask;
       protected IUnregisterTask _unregisterTask;
       private IClipboardManager _clipboardManager;
@@ -45,7 +45,7 @@ namespace MoBi.Core
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _registerTask = A.Fake<IRegisterTask>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
-         _moBiHistoryManagerFacory = A.Fake<IHistoryManagerFactory>();
+         _moBiHistoryManagerFactory = A.Fake<IHistoryManagerFactory>();
          _serializationService = A.Fake<IXmlSerializationService>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
          _unregisterTask = A.Fake<IUnregisterTask>();
@@ -59,12 +59,12 @@ namespace MoBi.Core
 
          sut = new MoBiContext(_objectBaseFactory, _dimensionFactory, _eventPublisher,
             _serializationService, _objectPathFactory, _objectBaseRepository,
-            _moBiHistoryManagerFacory, _registerTask, _unregisterTask,
+            _moBiHistoryManagerFactory, _registerTask, _unregisterTask,
             _clipboardManager, _container,
             _objectTypeResolver, _cloneManager,
             _journalSession, _fileLocker, _lazyLoadTask);
 
-         A.CallTo(() => _moBiHistoryManagerFacory.Create()).Returns(A.Fake<MoBiHistoryManager>());
+         A.CallTo(() => _moBiHistoryManagerFactory.Create()).Returns(A.Fake<MoBiHistoryManager>());
       }
    }
 

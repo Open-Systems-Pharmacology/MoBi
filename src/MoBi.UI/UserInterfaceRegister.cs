@@ -40,6 +40,8 @@ namespace MoBi.UI
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
 
+
+         container.AddRegister(x=>x.FromType<OSPSuite.UI.UIImporterRegister>());
          container.Register<IMoBiMainView, IShell, IMainView, MoBiMainView>(LifeStyle.Singleton);
 
          container.Register<IContainerModalView, ModalForm>(LifeStyle.Transient);

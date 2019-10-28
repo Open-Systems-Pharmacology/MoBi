@@ -73,7 +73,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_favoritesNode);
          _view.AddNode(_userDefinedNode);
 
-         var roots = new List<IObjectBaseDTO> {_simulationSettingsMapper.MapFrom(simulation.Settings)};
+         var roots = new List<IObjectBaseDTO> {_simulationSettingsMapper.MapFrom(simulation.SimulationSettings) };
          roots.AddRange(rootContainers());
          _view.Show(roots);
 

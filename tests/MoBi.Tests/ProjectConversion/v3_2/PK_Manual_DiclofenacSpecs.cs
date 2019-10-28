@@ -149,7 +149,7 @@ namespace MoBi.ProjectConversion.v3_2
       [Observation]
       public void should_have_converted_the_existing_intervals()
       {
-         _intervals = _project.Simulations.First().Settings.OutputSchema.Intervals.ToList();
+         _intervals = _project.Simulations.First().SimulationSettings.OutputSchema.Intervals.ToList();
          _intervals.Count.ShouldBeEqualTo(1);
          var interval = _intervals[0];
          interval.GetSingleChildByName<IParameter>(Constants.Parameters.START_TIME).Value.ShouldBeEqualTo(0);

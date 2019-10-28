@@ -147,7 +147,7 @@ namespace MoBi.UI.Services
          persister.Load(dimFactory.BaseFactory, configuration.DimensionFilePath);
          dimFactory.BaseFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
          container.RegisterImplementationOf<IDimensionFactory>(dimFactory);
-         setUpDimensionMergings(dimFactory.BaseFactory);
+         setupDimensionMergings(dimFactory.BaseFactory);
       }
 
       // because Setup cannot copy into each user profile app data, copy has to be done here
@@ -187,19 +187,19 @@ namespace MoBi.UI.Services
          return cm;
       }
 
-      private static void setUpDimensionMergings(IDimensionFactory factory)
+      private static void setupDimensionMergings(IDimensionFactory factory)
       {
          var concentrationDimension = factory.Dimension(Constants.Dimension.MASS_CONCENTRATION);
-         var molarConcentrationDimomension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
+         var molarConcentrationDimension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
 
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimomension,
-            new MolWeightDimensionConverterForFormulaUsable(concentrationDimension, molarConcentrationDimomension)));
+         factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimension,
+            new MolWeightDimensionConverterForFormulaUsable(concentrationDimension, molarConcentrationDimension)));
 
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(concentrationDimension, molarConcentrationDimomension,
-            new ConcentrationToMolarConcentrationConverterForDataColumn(concentrationDimension, molarConcentrationDimomension)));
+         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(concentrationDimension, molarConcentrationDimension,
+            new ConcentrationToMolarConcentrationConverterForDataColumn(concentrationDimension, molarConcentrationDimension)));
 
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(molarConcentrationDimomension, concentrationDimension,
-            new MolarConcentrationToConcentrationConverterForDataColumn(molarConcentrationDimomension, concentrationDimension)));
+         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(molarConcentrationDimension, concentrationDimension,
+            new MolarConcentrationToConcentrationConverterForDataColumn(molarConcentrationDimension, concentrationDimension)));
       }
 
       public void InitializeForStartup(Action<IContainer> registrationAction)
@@ -266,8 +266,8 @@ namespace MoBi.UI.Services
 
       private static void registerImport(IContainer container)
       {
-         var mobiDataImprterSettings = new DataImporterSettings {Icon = ApplicationIcons.MoBi, Caption = "MoBi Data Import"};
-         container.RegisterImplementationOf(mobiDataImprterSettings);
+         var mobiDataImporterSettings = new DataImporterSettings {IconName = ApplicationIcons.MoBi.IconName, Caption = "MoBi Data Import"};
+         container.RegisterImplementationOf(mobiDataImporterSettings);
       }
 
       private static void registerPresenter(IContainer container)
@@ -282,7 +282,7 @@ namespace MoBi.UI.Services
 
       private static void registerSerializationDependencies(IContainer container)
       {
-         //create serializer repository for xml persisentence and register all available serializer
+         //create serializer repository for xml persistence and register all available serializer
          var register = new SerializerRegister();
          container.AddRegister(x => x.FromInstance(register));
          register.PerformMappingForSerializerIn(container);
