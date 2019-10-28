@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _schema = _simulation.Settings.OutputSchema;
+         _schema = _simulation.OutputSchema;
       }
 
       protected override void ClearReferences()

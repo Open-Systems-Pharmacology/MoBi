@@ -3,7 +3,7 @@ using MoBi.Core.Exceptions;
 using MoBi.Core.Serialization.ORM.Mappers;
 using MoBi.Core.Serialization.ORM.MetaData;
 using MoBi.Core.Serialization.Services;
-using OSPSuite.Infrastructure.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace MoBi.Core.Serialization.ORM
 {

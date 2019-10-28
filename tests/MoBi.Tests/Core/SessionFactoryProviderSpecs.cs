@@ -1,6 +1,6 @@
 using OSPSuite.BDDHelper;
 using MoBi.Core.Serialization.ORM.MetaData;
-using OSPSuite.Infrastructure.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace MoBi.Core
 {

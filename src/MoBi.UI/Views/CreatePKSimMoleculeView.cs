@@ -6,6 +6,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -48,7 +49,7 @@ namespace MoBi.UI.Views
          _gridViewBinder.AutoBind(x => x.Value)
             .WithFormat(x => x.ParameterFormatter())
             .WithCaption(AppConstants.Captions.Value)
-            .WithEditorConfiguration((activeEditor, parmeterDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, parmeterDTO))
+            .WithEditorConfiguration((activeEditor, parameterDTO) => _comboBoxUnit.UpdateUnitsFor(activeEditor, parameterDTO))
             .WithOnValueUpdating((p, e) => setParameterValue(p, e.NewValue))
             .OnChanged += p => NotifyViewChanged();
 

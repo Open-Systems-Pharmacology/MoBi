@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.SimModel;
 
 namespace MoBi.Presentation.Presenter
 {

@@ -1,8 +1,8 @@
 configuration: Debug
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 environment:
-  app_version: '8.0'
+  app_version: '9.0'
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
 
 version: '$(app_version).{build}'

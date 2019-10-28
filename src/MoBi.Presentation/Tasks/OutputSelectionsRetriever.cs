@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Tasks
 
       public void UpdatePersistableOutputsIn(IMoBiSimulation simulation)
       {
-         if (simulation.Settings == null)
+         if (simulation.SimulationSettings == null)
             return;
 
          var allPersistableParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.Persistable);

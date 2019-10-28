@@ -37,7 +37,7 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly ISimulationPersistor _simulationPersistor;
       private readonly IDialogCreator _dialogCreator;
       private readonly IModelReportCreator _reportCreator;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryTask;
       private readonly ISimModelExporter _simModelExporter;
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Tasks.Edit
          IInteractionTaskContext interactionTaskContext,
          ISimulationPersistor simulationPersistor,
          IDialogCreator dialogCreator,
-         IDataRepositoryTask dataRepositoryTask,
+         IDataRepositoryExportTask dataRepositoryTask,
          IModelReportCreator reportCreator,
          ISimModelExporter simModelExporter,
          IDimensionFactory dimensionFactory,

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Views;
+using OSPSuite.SimModel;
 using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views

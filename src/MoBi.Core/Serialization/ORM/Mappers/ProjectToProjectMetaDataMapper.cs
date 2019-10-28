@@ -1,6 +1,4 @@
 using System.Linq;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM.MetaData;
@@ -9,6 +7,8 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using DataRepositoryMetaData = MoBi.Core.Serialization.ORM.MetaData.DataRepositoryMetaData;
 
 namespace MoBi.Core.Serialization.ORM.Mappers

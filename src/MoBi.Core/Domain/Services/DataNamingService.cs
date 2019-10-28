@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Domain.Services
 {
-   internal class DataNamingService : IDataNamingService
+   public class DataNamingService 
    {
       private readonly IMoBiContext _context;
 

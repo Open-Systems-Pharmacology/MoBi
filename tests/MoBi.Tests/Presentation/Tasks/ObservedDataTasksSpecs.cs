@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Tasks
       protected DataRepository _dataRepository;
       protected IMoBiProject _project;
       private IInteractionTask _interactionTask;
-      private IDataRepositoryTask _dataRepositoryTask;
+      private IDataRepositoryExportTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
       private IObjectTypeResolver _objectTypeResolver;
 
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Tasks
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataRepository = new DataRepository {new BaseGrid("", DimensionFactoryForSpecs.Factory.Dimension("Time"))};
          _interactionTask = A.Fake<IInteractionTask>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _containerTask = A.Fake<IContainerTask>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_dataImporter, _dimensionFactory, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver);

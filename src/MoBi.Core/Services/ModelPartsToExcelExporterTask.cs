@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Mappers;
 using OSPSuite.Core.Domain;
+using OSPSuite.Infrastructure.Export;
 using OSPSuite.Infrastructure.Services;
 
 namespace MoBi.Core.Services

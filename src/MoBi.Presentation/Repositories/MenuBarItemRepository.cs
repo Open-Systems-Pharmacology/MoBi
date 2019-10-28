@@ -13,8 +13,8 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Assets;
+using Keys = OSPSuite.Presentation.Core.Keys;
 using ToolTips = MoBi.Assets.ToolTips;
-
 namespace MoBi.Presentation.Repositories
 {
    public class MenuBarItemRepository : OSPSuite.Presentation.Repositories.MenuBarItemRepository
@@ -504,7 +504,7 @@ namespace MoBi.Presentation.Repositories
          yield return ParameterIdentificationMenuBarButtons.StopParameterIdentification(MenuBarItemIds.StopParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.TimeProfileParameterIdentification(MenuBarItemIds.TimeProfileParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.PredictedVsObservedParameterIdentification(MenuBarItemIds.PredictedVsObservedParameterIdentification);
-         yield return ParameterIdentificationMenuBarButtons.ResidualsVsTimeParameterIdentifcation(MenuBarItemIds.ResidualsVsTimeParameterIdentification);
+         yield return ParameterIdentificationMenuBarButtons.ResidualsVsTimeParameterIdentification(MenuBarItemIds.ResidualsVsTimeParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.ResidualHistogramParameterIdentification(MenuBarItemIds.ResidualHistogramParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.CorrelationMatrixParameterIdentification(MenuBarItemIds.CorrelationMatrixParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.CovarianceMatrixParameterIdentification(MenuBarItemIds.CovarianceMatrixParameterIdentification);

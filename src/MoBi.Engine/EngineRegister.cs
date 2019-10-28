@@ -1,9 +1,7 @@
 ﻿using MoBi.Core;
 using MoBi.Engine.Sbml;
 using OSPSuite.Core;
-using OSPSuite.FuncParser;
 using OSPSuite.Utility.Container;
-using SimModelNET;
 
 namespace MoBi.Engine
 {
@@ -11,11 +9,6 @@ namespace MoBi.Engine
    {
       public override void RegisterInContainer(IContainer container)
       {
-         container.AddRegister(x => x.FromType<OSPSuite.Engine.EngineRegister>());
-         var pkSimConfiguration = container.Resolve<IMoBiConfiguration>();
-         XMLSchemaCache.InitializeFromFile(pkSimConfiguration.SimModelSchemaFilePath);
-
-         container.Register<IDimensionParser, DimensionParser>();
 
          container.AddRegister(x => x.FromType<SBMLImportRegister>());
 

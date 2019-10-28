@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTaskContext _context;
       private ISimulationPersistor _simulationPersistor;
       private IDialogCreator _dialogCreator;
-      private IDataRepositoryTask _dataRepositoryTask;
+      private IDataRepositoryExportTask _dataRepositoryTask;
       private ISimModelExporter _simulationModelExporter;
       private IModelReportCreator _reportCreator;
       private IDimensionFactory _dimensionFactory;
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Tasks
          _context = A.Fake<IInteractionTaskContext>();
          _simulationPersistor = A.Fake<ISimulationPersistor>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _simulationModelExporter = A.Fake<ISimModelExporter>();
          _reportCreator = A.Fake<IModelReportCreator>();
          _dimensionFactory = A.Fake<IDimensionFactory>();

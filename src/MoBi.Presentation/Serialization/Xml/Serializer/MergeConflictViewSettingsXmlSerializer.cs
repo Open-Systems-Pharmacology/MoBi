@@ -1,4 +1,3 @@
-
 using OSPSuite.Presentation.Serialization;
 using MergeConflictViewSettings = MoBi.Presentation.Settings.MergeConflictViewSettings;
 
