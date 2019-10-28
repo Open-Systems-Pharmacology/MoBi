@@ -121,6 +121,27 @@
     <Reference Include="NHibernate, Version=5.2.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NHibernate.5.2.5\lib\net461\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="Northwoods.Go, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.dll</HintPath>
+    </Reference>
+    <Reference Include="Northwoods.Go.Draw, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Draw.dll</HintPath>
+    </Reference>
+    <Reference Include="Northwoods.Go.Instruments, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Instruments.dll</HintPath>
+    </Reference>
+    <Reference Include="Northwoods.Go.Layout, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Layout.dll</HintPath>
+    </Reference>
+    <Reference Include="Northwoods.Go.Pdf, Version=5.1.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Northwoods.Go.Svg, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Svg.dll</HintPath>
+    </Reference>
+    <Reference Include="Northwoods.Go.Xml, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Xml.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.11.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.3.11.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
