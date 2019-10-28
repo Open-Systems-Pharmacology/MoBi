@@ -20,7 +20,7 @@ namespace MoBi.Core
    public abstract class concern_for_DimensionValidator : ContextSpecification<IDimensionValidator>
    {
       protected ObjectPathFactory _pathFactory;
-      private IUserSettings _userSettings;
+      protected IUserSettings _userSettings;
       protected IBuildConfiguration _buildConfiguration;
 
       protected override void Context()
@@ -294,7 +294,7 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_return_valide_with_warnings()
+      public void should_return_valid_with_warnings()
       {
          _result.ValidationState.ShouldBeEqualTo(ValidationState.ValidWithWarnings);
       }
@@ -306,7 +306,7 @@ namespace MoBi.Core
       }
    }
 
-   public class When_validating_a_Formula_using_object_dimension_and_formula_with_missmatching_dimensions : concern_for_DimensionValidator
+   public class When_validating_a_Formula_using_object_dimension_and_formula_with_miss_matching_dimensions : concern_for_DimensionValidator
    {
       private IContainer _root;
       private IParameter _para;
@@ -333,6 +333,8 @@ namespace MoBi.Core
          _para.Formula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, a));
          _para.Formula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, b));
          _para.Formula.ResolveObjectPathsFor(_para);
+
+         _userSettings.ShowCannotCalcErrors = true;
       }
 
       protected override void Because()
@@ -349,7 +351,7 @@ namespace MoBi.Core
       [Observation]
       public void should_have_the_correct_messages()
       {
-         _result.Messages.Single().Text.ShouldBeEqualTo(String.Format("Arguments of PLUS-function must have the same dimension (Formula: {0})", _formulaString));
+         _result.Messages.Single().Text.ShouldBeEqualTo($"Arguments of PLUS-function must have the same dimension (Formula: {_formulaString})");
       }
    }
 
