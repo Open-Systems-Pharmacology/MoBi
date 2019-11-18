@@ -2,8 +2,7 @@
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Settings;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
+using OSPSuite.Core.Domain.Mappers;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -18,19 +17,19 @@ namespace MoBi.Presentation.Mappers
          _userSettings = userSettings;
       }
 
-      protected override IEnumerable<PathElement> DefaultPathElementsToUse(bool addTopContainerName, PathElements pathElements)
+      protected override IEnumerable<PathElementId> DefaultPathElementsToUse(bool addTopContainerName, PathElements pathElements)
       {
          if (addTopContainerName || chartOptions.SimulationInCurveName)
-            yield return PathElement.Simulation;
+            yield return PathElementId.Simulation;
 
-         //Observed data repository name is stored in PathElement.TopContainer. So if the top container name is to be displayed, we need to add it as well 
+         //Observed data repository name is stored in PathElementId.TopContainer. So if the top container name is to be displayed, we need to add it as well 
          if (addTopContainerName || chartOptions.TopContainerInCurveName)
-            yield return PathElement.TopContainer;
+            yield return PathElementId.TopContainer;
 
-         yield return PathElement.Container;
-         yield return PathElement.BottomCompartment;
-         yield return PathElement.Molecule;
-         yield return PathElement.Name;
+         yield return PathElementId.Container;
+         yield return PathElementId.BottomCompartment;
+         yield return PathElementId.Molecule;
+         yield return PathElementId.Name;
       }
    }
 }

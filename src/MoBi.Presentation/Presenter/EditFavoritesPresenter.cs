@@ -91,7 +91,7 @@ namespace MoBi.Presentation.Presenter
          _editParameterListPresenter.Edit(allFavoritesParameters);
 
          //name always visible
-         _editParameterListPresenter.SetVisibility(PathElement.Name, isVisible: true);
+         _editParameterListPresenter.SetVisibility(PathElementId.Name, isVisible: true);
 
          UpdateSpecialColumnsVisibility();
       }

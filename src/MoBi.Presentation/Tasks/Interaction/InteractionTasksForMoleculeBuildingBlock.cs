@@ -2,10 +2,8 @@
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Helper;
@@ -14,7 +12,6 @@ using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Infrastructure.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {

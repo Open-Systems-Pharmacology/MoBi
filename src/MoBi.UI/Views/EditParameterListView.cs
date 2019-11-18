@@ -151,7 +151,7 @@ namespace MoBi.UI.Views
 
          _isFixedParameterEditRepository.ButtonClick += (o, e) => OnEvent(() => onResetValue(_gridViewBinder.FocusedElement));
 
-         _pathBinder.SetVisibility(PathElement.Simulation, visible: false);
+         _pathBinder.SetVisibility(PathElementId.Simulation, visible: false);
       }
 
       private void onResetValue(ParameterDTO favoriteParameterDTO)
@@ -207,12 +207,12 @@ namespace MoBi.UI.Views
          });
       }
 
-      public void SetCaptions(IDictionary<PathElement, string> captions)
+      public void SetCaptions(IDictionary<PathElementId, string> captions)
       {
          captions.Each(kv => _pathBinder.SetCaption(kv.Key, kv.Value));
       }
 
-      public void SetVisibility(PathElement pathElement, bool isVisible)
+      public void SetVisibility(PathElementId pathElement, bool isVisible)
       {
          _pathBinder.SetVisibility(pathElement, isVisible);
       }

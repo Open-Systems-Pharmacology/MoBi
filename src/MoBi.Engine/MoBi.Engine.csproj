@@ -1,120 +1,54 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{15ED932C-EDEC-407B-91D9-7BCB8E7F95F5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MoBi.Engine</RootNamespace>
-    <AssemblyName>MoBi.Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
+    <TargetFramework>net472</TargetFramework>
+    <Version>9.0.0</Version>
+    <PackageVersion>9.0.0</PackageVersion>
+    <AssemblyVersion>9.0.0</AssemblyVersion>
+    <FileVersion>9.0.0</FileVersion>
+    <InformationalVersion>9.0.0</InformationalVersion>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
+    <Description>Core functionalities for PK-Sim</Description>
+    <Authors>Open-Systems-Pharmacology</Authors>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <OutputPath>bin\$(Configuration)</OutputPath>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PKSim.Core.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="libsbmlcsP, Version=5.11.4.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
+    <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OSPSuite.Core" Version="9.0.34" />
+    <PackageReference Include="OSPSuite.Assets" Version="9.0.34" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
+    <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="libsbmlcsP">
       <HintPath>..\..\pre\libsbmlcsP.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.4.8.1\lib\net461\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Extensions.Logging.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="MPFitLib, Version=1.1.1.0, Culture=neutral, PublicKeyToken=be1b3c0b5819660a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\csmpfit.1.1.1\lib\net20\MPFitLib.dll</HintPath>
-    </Reference>
-    <Reference Include="OSPSuite.Assets, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.9.0.8\lib\netstandard2.0\OSPSuite.Assets.dll</HintPath>
-    </Reference>
-    <Reference Include="OSPSuite.Core, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.9.0.8\lib\netstandard2.0\OSPSuite.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="OSPSuite.FuncParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.FuncParser.4.0.0.42\lib\netstandard2.0\OSPSuite.FuncParser.dll</HintPath>
-    </Reference>
-    <Reference Include="OSPSuite.Serializer, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Serializer.3.0.0.1\lib\netstandard2.0\OSPSuite.Serializer.dll</HintPath>
-    </Reference>
-    <Reference Include="OSPSuite.SimModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.SimModel.4.0.0.29\lib\netstandard2.0\OSPSuite.SimModel.dll</HintPath>
-    </Reference>
-    <Reference Include="OSPSuite.Utility, Version=4.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Utility.4.0.0.1\lib\netstandard2.0\OSPSuite.Utility.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\SolutionInfo.cs">
-      <Link>Properties\SolutionInfo.cs</Link>
-    </Compile>
-    <Compile Include="Sbml\AssignmentImporter.cs" />
-    <Compile Include="Sbml\AssignmentImporterBase.cs" />
-    <Compile Include="Sbml\ASTHandler.cs" />
-    <Compile Include="Sbml\CompartmentImporter.cs" />
-    <Compile Include="Sbml\EventImporter.cs" />
-    <Compile Include="Sbml\FunctionDefinitionImporter.cs" />
-    <Compile Include="Sbml\InitialAssignmentImporter.cs" />
-    <Compile Include="Sbml\MoleculeInformation.cs" />
-    <Compile Include="Sbml\ParameterImporter.cs" />
-    <Compile Include="Sbml\ReactionImporter.cs" />
-    <Compile Include="Sbml\RuleImporter.cs" />
-    <Compile Include="Sbml\SBMLConstants.cs" />
-    <Compile Include="Sbml\SBMLImporter.cs" />
-    <Compile Include="Sbml\SBMLImporterRepository.cs" />
-    <Compile Include="Sbml\SBMLImportRegister.cs" />
-    <Compile Include="Sbml\SBMLInformation.cs" />
-    <Compile Include="Sbml\SbmlTask.cs" />
-    <Compile Include="Sbml\SpeciesImporter.cs" />
-    <Compile Include="Sbml\UnitDefinitionImporter.cs" />
-    <Compile Include="EngineRegister.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj">
-      <Project>{3c65ffc2-d9ec-4951-8c35-04854ad34e52}</Project>
-      <Name>MoBi.Assets</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj">
-      <Project>{2DBF50BE-A749-421C-B526-8BDA31CFE7B3}</Project>
-      <Name>MoBi.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+
 </Project>

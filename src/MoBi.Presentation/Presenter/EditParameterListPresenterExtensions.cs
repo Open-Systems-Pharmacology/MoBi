@@ -10,37 +10,37 @@ namespace MoBi.Presentation.Presenter
       public static void ConfigureForReaction(this IEditParameterListPresenter presenter)
       {
          var view = presenter.View;
-         var captions = new Dictionary<PathElement, string> {{PathElement.TopContainer, ObjectTypes.Reaction}};
+         var captions = new Dictionary<PathElementId, string> {{ PathElementId.TopContainer, ObjectTypes.Reaction}};
          view.SetCaptions(captions);
 
-         view.SetVisibility(PathElement.BottomCompartment, isVisible: false);
-         view.SetVisibility(PathElement.Container, isVisible: false);
-         view.SetVisibility(PathElement.Molecule, isVisible: false);
+         view.SetVisibility(PathElementId.BottomCompartment, isVisible: false);
+         view.SetVisibility(PathElementId.Container, isVisible: false);
+         view.SetVisibility(PathElementId.Molecule, isVisible: false);
       }
 
       public static void ConfigureForEvent(this IEditParameterListPresenter presenter)
       {
          var view = presenter.View;
-         view.SetVisibility(PathElement.Molecule, isVisible: false);
+         view.SetVisibility(PathElementId.Molecule, isVisible: false);
       }
 
       public static void ConfigureForMolecule(this IEditParameterListPresenter presenter)
       {
          var view = presenter.View;
-         var captions = new Dictionary<PathElement, string>
+         var captions = new Dictionary<PathElementId, string>
          {
-            {PathElement.TopContainer, AppConstants.Captions.Molecule},
-            {PathElement.Container, $"{ObjectTypes.TransporterMoleculeContainer}/{ObjectTypes.InteractionContainer}"},
-            {PathElement.BottomCompartment, ObjectTypes.ActiveTransport}
+            {PathElementId.TopContainer, AppConstants.Captions.Molecule},
+            {PathElementId.Container, $"{ObjectTypes.TransporterMoleculeContainer}/{ObjectTypes.InteractionContainer}"},
+            {PathElementId.BottomCompartment, ObjectTypes.ActiveTransport}
          };
          view.SetCaptions(captions);
-         view.SetVisibility(PathElement.Molecule, isVisible: false);
+         view.SetVisibility(PathElementId.Molecule, isVisible: false);
       }
 
       public static void ShowNameColumn(this IEditParameterListPresenter presenter)
       {
          var view = presenter.View;
-         view.SetVisibility(PathElement.Name, isVisible: true);
+         view.SetVisibility(PathElementId.Name, isVisible: true);
       }
    }
 }

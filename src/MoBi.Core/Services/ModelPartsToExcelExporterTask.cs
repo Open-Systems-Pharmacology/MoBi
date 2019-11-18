@@ -5,19 +5,18 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Mappers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Infrastructure.Export;
-using OSPSuite.Infrastructure.Services;
 
 namespace MoBi.Core.Services
 {
    public interface IModelPartsToExcelExporterTask
    {
       /// <summary>
-      /// Export parts of a simulation model to an Excel file
+      ///    Export parts of a simulation model to an Excel file
       /// </summary>
       /// <param name="excelFileName">The name of the excel file</param>
       /// <param name="simulation">The simulation that is being exported</param>
       /// <param name="openExcel">true if an an attempt to open excel should be made after export</param>
-      void ExportModelPartsToExcelFile (string excelFileName, IMoBiSimulation simulation, bool openExcel);
+      void ExportModelPartsToExcelFile(string excelFileName, IMoBiSimulation simulation, bool openExcel);
    }
 
    public class ModelPartsToExcelExporterTask : IModelPartsToExcelExporterTask

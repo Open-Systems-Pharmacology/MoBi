@@ -129,8 +129,8 @@
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MathNet.Numerics.4.8.1\lib\net461\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.4.9.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Extensions.Configuration.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
@@ -194,14 +194,14 @@
     <Reference Include="Northwoods.Go.Xml, Version=5.2.0.46, Culture=neutral, PublicKeyToken=a4e3b7b70161cfe8, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Northwoods.GoWin.5.2.0\lib\net46\Northwoods.Go.Xml.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.9.0.8\lib\netstandard2.0\OSPSuite.Assets.dll</HintPath>
+    <Reference Include="OSPSuite.Assets, Version=9.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.9.0.34\lib\netstandard2.0\OSPSuite.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Assets.Images, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Assets.Images.9.0.8\lib\netstandard2.0\OSPSuite.Assets.Images.dll</HintPath>
+    <Reference Include="OSPSuite.Assets.Images, Version=9.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Assets.Images.9.0.34\lib\netstandard2.0\OSPSuite.Assets.Images.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Core, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Core.9.0.8\lib\netstandard2.0\OSPSuite.Core.dll</HintPath>
+    <Reference Include="OSPSuite.Core, Version=9.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Core.9.0.34\lib\netstandard2.0\OSPSuite.Core.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.DataBinding, Version=2.3.0.3, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.DataBinding.2.3.0.3\lib\net462\OSPSuite.DataBinding.dll</HintPath>
@@ -212,11 +212,11 @@
     <Reference Include="OSPSuite.FuncParser, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.FuncParser.4.0.0.42\lib\netstandard2.0\OSPSuite.FuncParser.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Infrastructure, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Infrastructure.9.0.8\lib\netstandard2.0\OSPSuite.Infrastructure.dll</HintPath>
+    <Reference Include="OSPSuite.Infrastructure, Version=9.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Infrastructure.9.0.34\lib\netstandard2.0\OSPSuite.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.Presentation, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.Presentation.9.0.8\lib\netstandard2.0\OSPSuite.Presentation.dll</HintPath>
+    <Reference Include="OSPSuite.Presentation, Version=9.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.Presentation.9.0.34\lib\netstandard2.0\OSPSuite.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Serializer, Version=3.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Serializer.3.0.0.1\lib\netstandard2.0\OSPSuite.Serializer.dll</HintPath>
@@ -224,11 +224,11 @@
     <Reference Include="OSPSuite.SimModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.SimModel.4.0.0.29\lib\netstandard2.0\OSPSuite.SimModel.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.TeXReporting, Version=3.0.0.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.TeXReporting.3.0.0.3\lib\net472\OSPSuite.TeXReporting.dll</HintPath>
+    <Reference Include="OSPSuite.TeXReporting, Version=3.0.0.4, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.TeXReporting.3.0.0.4\lib\net472\OSPSuite.TeXReporting.dll</HintPath>
     </Reference>
-    <Reference Include="OSPSuite.UI, Version=9.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\OSPSuite.UI.9.0.8\lib\net472\OSPSuite.UI.dll</HintPath>
+    <Reference Include="OSPSuite.UI, Version=9.0.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OSPSuite.UI.9.0.34\lib\net472\OSPSuite.UI.dll</HintPath>
     </Reference>
     <Reference Include="OSPSuite.Utility, Version=4.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\OSPSuite.Utility.4.0.0.1\lib\netstandard2.0\OSPSuite.Utility.dll</HintPath>
