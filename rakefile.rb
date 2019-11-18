@@ -111,27 +111,27 @@ def update_smart_xls(args)
 end
 
 task :postclean do |t, args| 
-	packages_dir =  File.join(solution_dir, 'packages')
+	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
 	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '9.0')
 
-	copy_depdencies solution_dir,  all_users_application_dir do
+	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_files 'Data', ['xml', 'mbdt']
 		copy_file 'src/Data/AllCalculationMethods.pkml'
 		copy_dimensions_xml
 		copy_pkparameters_xml
 	end
 
-	copy_depdencies solution_dir,  File.join(all_users_application_dir, 'Templates') do
+	copy_dependencies solution_dir,  File.join(all_users_application_dir, 'Templates') do
 		copy_templates_pkml
 	end
 
-	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
+	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
 		copy_files 'OSPSuite.Presentation', 'xml'
 	end
 
-	copy_depdencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
+	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
 		copy_files 'StandardTemplate', '*'
 	end
 end
