@@ -18,11 +18,9 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
 	src_dir = src_dir_for(args.configuration)
 	relative_src_dir = relative_src_dir_for(args.configuration)
 
-
 	#Ignore files from automatic harvesting that will be installed specifically
 	harvest_ignored_files = [
-		'MoBi.exe',
-		'Standard Molecule.pkml'
+    'MoBi.exe'
 	]
 
 	#Files required for setup creation only
