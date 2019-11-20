@@ -21,7 +21,7 @@ namespace MoBi.Helpers
       /// <returns>The full path including the name and extension</returns>
       public static string TestFileFullPath(string fileName)
       {
-         var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "TestFiles");
+         var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestFiles");
          return Path.Combine(dataFolder, fileName);
       }
 

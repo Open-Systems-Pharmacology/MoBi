@@ -1,4 +1,3 @@
-using Castle.Core.Configuration;
 using MoBi.Assets;
 using MoBi.Core;
 using OSPSuite.TeXReporting.Events;

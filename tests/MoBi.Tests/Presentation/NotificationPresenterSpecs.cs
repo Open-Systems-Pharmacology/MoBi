@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core;
@@ -12,16 +8,20 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Main;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Regions;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation
@@ -57,7 +57,7 @@ namespace MoBi.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _notificationMessageMapper = new NotificationMessageMapper(new ObjectTypeResolver(), _buildingBlockRetriever);
          A.CallTo(() => _regionResolver.RegionWithName(RegionNames.NotificationList)).Returns(_region);
-         sut = new NotificationPresenter(_view, _regionResolver, _userSettings, _notificationMessageMapper,_viewItemContextMenuFactory,_applicationController,_context,_dialogCreator);
+         sut = new NotificationPresenter(_view, _regionResolver, _userSettings, _notificationMessageMapper, _viewItemContextMenuFactory, _applicationController, _context, _dialogCreator);
          A.CallTo(() => _view.BindTo(A<NotifyList<NotificationMessageDTO>>._))
             .Invokes(x => _allNotifications = x.GetArgument<IEnumerable<NotificationMessageDTO>>(0));
 
@@ -215,7 +215,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_only_add_visible_notificaiton()
+      public void should_only_add_visible_notification()
       {
          _allNotifications.Count().ShouldBeEqualTo(1);
       }
@@ -239,7 +239,7 @@ namespace MoBi.Presentation
          _settingsToUse = NotificationType.Error | NotificationType.Info;
          base.Context();
          _visibleNotification = new NotificationMessageDTO(new NotificationMessage(A.Fake<IObjectBase>(), MessageOrigin.Simulation, A.Fake<IBuildingBlock>(), NotificationType.Error));
-         _hiddenNotification = new NotificationMessageDTO(new NotificationMessage(A.Fake<IObjectBase>(), MessageOrigin.Simulation, A.Fake<IBuildingBlock>(), NotificationType.Warning)); ;
+         _hiddenNotification = new NotificationMessageDTO(new NotificationMessage(A.Fake<IObjectBase>(), MessageOrigin.Simulation, A.Fake<IBuildingBlock>(), NotificationType.Warning));
       }
 
       [Observation]
@@ -265,7 +265,7 @@ namespace MoBi.Presentation
          base.Context();
          _existingInvalidFormula = A.Fake<IFormula>().WithId("EXISTING");
          _newInvalidFormula = A.Fake<IFormula>().WithId("NEW");
-         sut.Handle(new FormulaInvalidEvent(_existingInvalidFormula, _buildingBlock,"EXISTING OLD"));
+         sut.Handle(new FormulaInvalidEvent(_existingInvalidFormula, _buildingBlock, "EXISTING OLD"));
       }
 
       protected override void Because()
@@ -297,13 +297,13 @@ namespace MoBi.Presentation
          base.Context();
          _validFormula = A.Fake<IFormula>().WithId("VALID");
          _invalidFormula = A.Fake<IFormula>().WithId("INVALID");
-         sut.Handle(new FormulaInvalidEvent(_validFormula,_buildingBlock, "VALID_MESSAGE"));
-         sut.Handle(new FormulaInvalidEvent(_invalidFormula,_buildingBlock, "INVALID_MESSAGE"));
+         sut.Handle(new FormulaInvalidEvent(_validFormula, _buildingBlock, "VALID_MESSAGE"));
+         sut.Handle(new FormulaInvalidEvent(_invalidFormula, _buildingBlock, "INVALID_MESSAGE"));
       }
 
       protected override void Because()
       {
-         sut.Handle(new FormulaValidEvent(_validFormula,_buildingBlock));
+         sut.Handle(new FormulaValidEvent(_validFormula, _buildingBlock));
       }
 
       [Observation]
@@ -319,7 +319,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_notification_presenter_is_told_to_clear_the_notifcations_of_a_given_origin : concern_for_NotificationPresenter
+   public class When_the_notification_presenter_is_told_to_clear_the_notifications_of_a_given_origin : concern_for_NotificationPresenter
    {
       protected override void Context()
       {
@@ -343,13 +343,13 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_notification_presenter_is_told_to_clear_all_notifcations : concern_for_NotificationPresenter
+   public class When_the_notification_presenter_is_told_to_clear_all_notifications : concern_for_NotificationPresenter
    {
       protected override void Context()
       {
          base.Context();
          var validationResult = new ValidationResult();
-         validationResult.AddMessage(NotificationType.Error, A.Fake<IObjectBase>(),"TOTO");
+         validationResult.AddMessage(NotificationType.Error, A.Fake<IObjectBase>(), "TOTO");
          sut.Handle(new ShowValidationResultsEvent(validationResult));
          sut.Handle(new FormulaInvalidEvent(A.Fake<IFormula>().WithId("INVALID"), _buildingBlock, "INVALID_MESSAGE"));
       }
@@ -372,7 +372,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          var validationResult = new ValidationResult();
-         validationResult.AddMessage(NotificationType.Error, A.Fake<IObjectBase>(),"TOTO");
+         validationResult.AddMessage(NotificationType.Error, A.Fake<IObjectBase>(), "TOTO");
          sut.Handle(new ShowValidationResultsEvent(validationResult));
          sut.Handle(new FormulaInvalidEvent(A.Fake<IFormula>().WithId("INVALID"), _buildingBlock, "INVALID_MESSAGE"));
       }
@@ -389,7 +389,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_notification_presenter_is_notified_that_an_buildgingblock_was_removed_for_which_a_notification_was_available : concern_for_NotificationPresenter
+   public class When_the_notification_presenter_is_notified_that_an_building_block_was_removed_for_which_a_notification_was_available : concern_for_NotificationPresenter
    {
       protected override void Context()
       {
@@ -435,15 +435,15 @@ namespace MoBi.Presentation
    public class When_the_notification_presenter_is_asked_to_select_the_item_corresponding_to_a_notification : concern_for_NotificationPresenter
    {
       private NotificationMessageDTO _notificationMessage;
-      private IObjectBase _obectBase;
+      private IObjectBase _objectBase;
 
       protected override void Context()
       {
          base.Context();
-         _obectBase = A.Fake<IObjectBase>();
+         _objectBase = A.Fake<IObjectBase>();
          _buildingBlock = A.Fake<IBuildingBlock>();
          A.CallTo(() => _context.HistoryManager).Returns(A.Fake<IMoBiHistoryManager>());
-         _notificationMessage = new NotificationMessageDTO(new NotificationMessage(_obectBase, MessageOrigin.Simulation, _buildingBlock, NotificationType.Error));
+         _notificationMessage = new NotificationMessageDTO(new NotificationMessage(_objectBase, MessageOrigin.Simulation, _buildingBlock, NotificationType.Error));
       }
 
       protected override void Because()
@@ -454,7 +454,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_select_the_item_in_the_view()
       {
-         A.CallTo(() => _applicationController.Select(_obectBase, _buildingBlock, _context.HistoryManager)).MustHaveHappened();
+         A.CallTo(() => _applicationController.Select(_objectBase, _buildingBlock, _context.HistoryManager)).MustHaveHappened();
       }
    }
 
@@ -474,7 +474,6 @@ namespace MoBi.Presentation
       [Observation]
       public void should_not_export_anything()
       {
-         
       }
    }
 

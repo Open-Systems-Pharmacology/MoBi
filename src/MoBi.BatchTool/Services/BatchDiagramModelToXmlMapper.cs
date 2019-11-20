@@ -28,9 +28,6 @@ namespace MoBi.BatchTool.Services
 
       }
 
-      public string ElementName
-      {
-         get { return "DiagramModel"; }
-      }
+      public string ElementName => "DiagramModel";
    }
 }

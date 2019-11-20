@@ -1,9 +1,9 @@
 ﻿using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers

@@ -31,12 +31,12 @@ namespace MoBi.Presentation.DTO
       public int Sequence { get; set; }
       public double Percentile { get; set; }
       public PathElements PathElements { get; set; } = new PathElements();
-      public PathElementDTO SimulationPathElement => PathElements[PathElement.Simulation];
-      public PathElementDTO TopContainerPathElement => PathElements[PathElement.TopContainer];
-      public PathElementDTO ContainerPathElement => PathElements[PathElement.Container];
-      public PathElementDTO BottomCompartmentPathElement => PathElements[PathElement.BottomCompartment];
-      public PathElementDTO MoleculePathElement => PathElements[PathElement.Molecule];
-      public PathElementDTO NamePathElement => PathElements[PathElement.Name];
+      public PathElement SimulationPathElement => PathElements[PathElementId.Simulation];
+      public PathElement TopContainerPathElement => PathElements[PathElementId.TopContainer];
+      public PathElement ContainerPathElement => PathElements[PathElementId.Container];
+      public PathElement BottomCompartmentPathElement => PathElements[PathElementId.BottomCompartment];
+      public PathElement MoleculePathElement => PathElements[PathElementId.Molecule];
+      public PathElement NamePathElement => PathElements[PathElementId.Name];
 
       public string Category { get; }
       public string DisplayPathAsString => PathElements.Select(x => x.DisplayName).ToString(Constants.DISPLAY_PATH_SEPARATOR);

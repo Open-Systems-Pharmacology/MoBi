@@ -202,7 +202,7 @@ namespace MoBi.Presentation.Tasks
 
       public bool SaveAs()
       {
-         bool defaultNameIsUndefined = string.Equals(Constants.ProjectUndefined, _context.CurrentProject.Name);
+         bool defaultNameIsUndefined = string.Equals(Constants.PROJECT_UNDEFINED, _context.CurrentProject.Name);
          var defaultFileName = defaultNameIsUndefined ? string.Empty : _context.CurrentProject.Name;
 
          var newFilePath = _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,

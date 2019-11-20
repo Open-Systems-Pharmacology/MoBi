@@ -93,8 +93,8 @@ namespace MoBi.Presentation.Presenter.Main
 
          initializeDynamicPages();
 
-         _view.AddQuickAcccessButton(_menuBarItemRepository[MenuBarItemIds.OpenProject]);
-         _view.AddQuickAcccessButton(_menuBarItemRepository[MenuBarItemIds.SaveProject]);
+         _view.AddQuickAccessButton(_menuBarItemRepository[MenuBarItemIds.OpenProject]);
+         _view.AddQuickAccessButton(_menuBarItemRepository[MenuBarItemIds.SaveProject]);
          _view.AddPageHeaderItemLinks(_menuBarItemRepository[MenuBarItemIds.Help]);
       }
 

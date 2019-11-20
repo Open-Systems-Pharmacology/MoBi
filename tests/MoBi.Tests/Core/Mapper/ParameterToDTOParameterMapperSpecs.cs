@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Utility.Extensions;
@@ -19,7 +20,7 @@ namespace MoBi.Core.Mapper
    public abstract class concern_for_ParameterToDTOParameterMapper : ContextSpecification<IParameterToParameterDTOMapper>
    {
       protected IFormulaToFormulaBuilderDTOMapper _formulaMapper;
-      protected ITagToTagDTOMapper _tagMappper;
+      protected ITagToTagDTOMapper _tagMapper;
       protected IGroupRepository _groupRepository;
       protected IFavoriteRepository _favoriteRepository;
       protected IEntityPathResolver _entityPathResolver;
@@ -28,12 +29,12 @@ namespace MoBi.Core.Mapper
       protected override void Context()
       {
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _tagMappper = A.Fake<ITagToTagDTOMapper>();
+         _tagMapper = A.Fake<ITagToTagDTOMapper>();
          _groupRepository= A.Fake<IGroupRepository>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _pathToPathElementsMapper= A.Fake<IPathToPathElementsMapper>();
-         sut = new ParameterToParameterDTOMapper(_formulaMapper,_tagMappper,_groupRepository,_favoriteRepository,_entityPathResolver, _pathToPathElementsMapper);
+         sut = new ParameterToParameterDTOMapper(_formulaMapper,_tagMapper,_groupRepository,_favoriteRepository,_entityPathResolver, _pathToPathElementsMapper);
       }
    }
 
@@ -89,8 +90,8 @@ namespace MoBi.Core.Mapper
       [Observation]
       public void should_ask_map_all_tags()
       {
-         A.CallTo(() => _tagMappper.MapFrom(_tag)).MustHaveHappened();
-         A.CallTo(() => _tagMappper.MapFrom(_otherTag)).MustHaveHappened();
+         A.CallTo(() => _tagMapper.MapFrom(_tag)).MustHaveHappened();
+         A.CallTo(() => _tagMapper.MapFrom(_otherTag)).MustHaveHappened();
       }
 
       [Observation]
@@ -157,8 +158,8 @@ namespace MoBi.Core.Mapper
       [Observation]
       public void should_ask_map_all_Tags()
       {
-         A.CallTo(() => _tagMappper.MapFrom(_tag)).MustHaveHappened();
-         A.CallTo(() => _tagMappper.MapFrom(_otherTag)).MustHaveHappened();
+         A.CallTo(() => _tagMapper.MapFrom(_tag)).MustHaveHappened();
+         A.CallTo(() => _tagMapper.MapFrom(_otherTag)).MustHaveHappened();
       }
 
       [Observation]
@@ -221,8 +222,8 @@ namespace MoBi.Core.Mapper
       [Observation]
       public void should_ask_map_all_Tags()
       {
-         A.CallTo(() => _tagMappper.MapFrom(_tag)).MustHaveHappened();
-         A.CallTo(() => _tagMappper.MapFrom(_otherTag)).MustHaveHappened();
+         A.CallTo(() => _tagMapper.MapFrom(_tag)).MustHaveHappened();
+         A.CallTo(() => _tagMapper.MapFrom(_otherTag)).MustHaveHappened();
       }
 
       [Observation]

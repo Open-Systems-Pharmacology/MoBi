@@ -1,5 +1,4 @@
-﻿using MoBi.Core;
-using MoBi.Engine.Sbml;
+﻿using MoBi.Engine.Sbml;
 using OSPSuite.Core;
 using OSPSuite.Utility.Container;
 

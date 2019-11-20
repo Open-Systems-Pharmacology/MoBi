@@ -64,15 +64,15 @@ namespace MoBi.Presentation.Presenter
 
          _view.BindTo(_parameterDTOs);
 
-         EnumHelper.AllValuesFor<PathElement>().Each(updateColumnVisibility);
+         EnumHelper.AllValuesFor<PathElementId>().Each(updateColumnVisibility);
       }
 
-      private void updateColumnVisibility(PathElement pathElement)
+      private void updateColumnVisibility(PathElementId pathElement)
       {
          SetVisibility(pathElement, !_parameterDTOs.HasOnlyEmptyValuesAt(pathElement));
       }
 
-      public void SetVisibility(PathElement pathElement, bool isVisible)
+      public void SetVisibility(PathElementId pathElement, bool isVisible)
       {
          View.SetVisibility(pathElement, isVisible);
       }
