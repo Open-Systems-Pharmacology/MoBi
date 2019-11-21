@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
+using MoBi.Core.Domain.Model;
+using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
-using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Tasks;
 
 namespace MoBi.IntegrationTests
 {
@@ -17,7 +17,7 @@ namespace MoBi.IntegrationTests
          base.GlobalContext();
          _context = IoC.Resolve<IMoBiContext>();
          sut = IoC.Resolve<IProjectTask>();
-         sut.OpenProjectFrom(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\TestFiles\\PK_Manual_Diclofenac.mbp3"));
+         sut.OpenProjectFrom(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestFiles", "PK_Manual_Diclofenac.mbp3"));
       }
 
       [Observation]
