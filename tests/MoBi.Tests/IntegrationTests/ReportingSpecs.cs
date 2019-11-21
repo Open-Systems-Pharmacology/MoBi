@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.TeXReporting;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using MoBi.Core.Domain.Model;
