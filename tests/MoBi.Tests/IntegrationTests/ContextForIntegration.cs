@@ -78,7 +78,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IContainerBaseLayouter>());
             container.RegisterImplementationOf(A.Fake<ILayerLayouter>());
 
-            container.Register<IDiagramModelToXmlMapper, DiagramModelForSpecs>();
+            container.Register<IDiagramModelToXmlMapper, DiagramModelToXmlMapperForSpecs>();
             container.Register<IMoBiConfiguration, MoBiConfiguration>(LifeStyle.Singleton);
             container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
             IHeavyWorkManager heavyWorkManager = new HeavyWorkManagerForSpecs();
