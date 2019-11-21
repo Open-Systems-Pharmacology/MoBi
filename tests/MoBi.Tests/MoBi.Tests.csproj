@@ -72,6 +72,15 @@
     <None Include="..\..\pre\libsbmlcs.dll" Link="libsbmlcs.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\src\Data\AllCalculationMethods.pkml" Link="AllCalculationMethods.pkml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\src\Data\SpaceOrganismTemplate.mbdt" Link="SpaceOrganismTemplate.mbdt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\src\Data\GroupRepository.xml" Link="GroupRepository.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 
