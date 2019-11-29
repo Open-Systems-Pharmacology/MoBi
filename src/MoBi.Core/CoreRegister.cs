@@ -57,7 +57,6 @@ namespace MoBi.Core
          container.Register<IMoBiDimensionFactory, IDimensionFactory, MoBiDimensionFactory>(LifeStyle.Singleton);
          container.Register<IObjectTypeResolver, ObjectTypeResolver>(LifeStyle.Singleton);
          container.Register<FormulaTypeCaptionRepository, FormulaTypeCaptionRepository>(LifeStyle.Singleton);
-         container.Register<IObjectBaseFactory, ObjectBaseFactory>(LifeStyle.Singleton);
          container.Register<IGroupRepository, GroupRepository>(LifeStyle.Singleton);
          container.Register<IClipboardManager, ClipboardManager>(LifeStyle.Singleton);
          container.Register<ICloneManager, CloneManagerForBuildingBlock>(LifeStyle.Singleton);
@@ -67,6 +66,11 @@ namespace MoBi.Core
          container.Register<IObjectIdResetter, ObjectIdResetter>();
          container.Register<ISetParameterTask, ParameterTask>();
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IMoBiContext>>();
+
+         //Register application specific core objects
+         container.Register<IObjectBaseFactory, ObjectBaseFactory>(LifeStyle.Singleton);
+         container.Register<IFullPathDisplayResolver, FullPathDisplayResolver>(LifeStyle.Singleton);
+
 
          //Register opened types generics
          container.Register(typeof(IEntitiesInBuildingBlockRetriever<>), typeof(EntitiesInBuildingBlockRetriever<>));

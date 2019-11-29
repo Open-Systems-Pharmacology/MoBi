@@ -38,6 +38,7 @@ namespace MoBi.Core.Domain.Model
    {
       private bool _hasChanged;
       private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
+      private DataRepository _results;
       public IDiagramModel DiagramModel { get; set; }
       public CurveChart Chart { get; set; }
       public string ParameterIdentificationWorkingDirectory { get; set; }
@@ -123,8 +124,6 @@ namespace MoBi.Core.Domain.Model
          get { yield return Chart; }
       }
 
-      public IReadOnlyList<string> CompoundNames => BuildConfiguration.AllPresentMolecules().Select(x => x.Name).ToList();
-
       public new IReactionBuildingBlock Reactions
       {
          get => BuildConfiguration.Reactions;
@@ -171,22 +170,16 @@ namespace MoBi.Core.Domain.Model
 
       public bool HasResults => Results != null;
 
-      public override DataRepository Results
+      public DataRepository Results
       {
-         get => base.Results;
+         get => _results;
          set
          {
-            base.Results = value;
+            _results = value;
             HasUpToDateResults = true;
          }
       }
 
       public bool ComesFromPKSim => Creation.Origin == Origins.PKSim;
-
-      public IEnumerable<T> All<T>() where T : class, IEntity
-      {
-         var root = Model?.Root;
-         return root == null ? Enumerable.Empty<T>() : root.GetAllChildren<T>();
-      }
    }
 }

@@ -293,7 +293,7 @@ namespace MoBi.Presentation
          _project.HasChanged = true;
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject))
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
             .Returns(ViewResult.Yes);
       }
 
@@ -334,7 +334,7 @@ namespace MoBi.Presentation
          _project.HasChanged = true;
          _project.FilePath = "AA";
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject))
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
             .Returns(ViewResult.Yes);
       }
 
@@ -353,7 +353,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_ask_if_project_Should_be_closed()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject))
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
             .MustHaveHappened();
       }
 
@@ -393,7 +393,7 @@ namespace MoBi.Presentation
          _project = A.Fake<IMoBiProject>();
          _project.HasChanged = true;
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject))
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
             .Returns(ViewResult.No);
       }
 
@@ -412,7 +412,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_ask_if_project_Should_be_closed()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject))
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
             .MustHaveHappened();
       }
 
@@ -508,7 +508,7 @@ namespace MoBi.Presentation
          _oldProject.HasChanged = true;
          _oldProject.FilePath = String.Empty;
          A.CallTo(() => _context.CurrentProject).Returns(_oldProject);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject))
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
             .Returns(ViewResult.Yes);
          A.CallTo(
             () =>

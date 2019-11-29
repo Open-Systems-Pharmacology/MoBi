@@ -112,7 +112,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_notify_that_the_project_is_already_open()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, AppConstants.Captions.OpenAnyway, AppConstants.Captions.CancelButton)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, AppConstants.Captions.OpenAnyway, AppConstants.Captions.CancelButton, ViewResult.Yes)).MustHaveHappened();
       }
    }
 
