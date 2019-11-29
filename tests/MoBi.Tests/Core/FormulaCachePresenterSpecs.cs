@@ -62,7 +62,7 @@ namespace MoBi.Core
          _dtoFormula = new FormulaBuilderDTO();
          _dtoFormula.Id = _formula.Id;
          A.CallTo(() => _formulaChecker.FormulaUsedIn(_buildingBlock,_formula)).Returns(false);
-         A.CallTo(() => _messagePresenter.MessageBoxYesNo(AppConstants.Captions.ReallyDeleteFormula(_formula.Name)))
+         A.CallTo(() => _messagePresenter.MessageBoxYesNo(AppConstants.Captions.ReallyDeleteFormula(_formula.Name), ViewResult.Yes))
           .Returns(ViewResult.Yes);
          
       }
