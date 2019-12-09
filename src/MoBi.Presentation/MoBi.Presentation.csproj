@@ -26,12 +26,12 @@
 
   <ItemGroup>
     <PackageReference Include="Northwoods.GoWin" Version="5.2.0" />
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.41" />
-    <PackageReference Include="OSPSuite.Presentation.Importer" Version="9.0.41" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="9.0.41" />
+    <PackageReference Include="OSPSuite.Presentation" Version="9.0.44" />
+    <PackageReference Include="OSPSuite.Presentation.Importer" Version="9.0.44" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="9.0.44" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.41" />
+    <PackageReference Include="OSPSuite.Core" Version="9.0.44" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,12 +44,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
     <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DevExpress.Data.v18.2">
-      <HintPath>..\..\pre\DevExpress.Data.v18.2.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
