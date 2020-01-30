@@ -12,10 +12,7 @@ namespace MoBi.Core.Serialization.Converter.v9
          _coreConverter = coreConverter;
       }
 
-      public bool IsSatisfiedBy(int version)
-      {
-         return version == ProjectVersions.V9_0;
-      }
+      public bool IsSatisfiedBy(int version) => version == ProjectVersions.V7_3_0;
 
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project)
       {
