@@ -8,7 +8,7 @@ namespace MoBi.Core
    {
       private static readonly Cache<int, ProjectVersion> _knownVersions = new Cache<int, ProjectVersion>(x => x.Version);
 
-      public static readonly ProjectVersion UNSUPPORTED = addVersion(PKMLVersion.NON_CONVERTABLE_VERSION, "3.5.1");
+      public const int UNSUPPORTED = PKMLVersion.NON_CONVERTABLE_VERSION;
       // older versions not supported anymore starting V9
 
       public static readonly ProjectVersion V6_0_1 = addVersion(PKMLVersion.V6_0_1, "6.0.1");
