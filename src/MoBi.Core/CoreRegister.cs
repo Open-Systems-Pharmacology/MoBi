@@ -8,7 +8,6 @@ using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Helper;
 using MoBi.Core.Reporting;
 using MoBi.Core.Serialization.Converter;
-using MoBi.Core.Serialization.Converter.v3_5;
 using MoBi.Core.Services;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands;
@@ -139,8 +138,6 @@ namespace MoBi.Core
          {
             scan.AssemblyContainingType<CoreRegister>();
             scan.IncludeNamespaceContainingType<IMoBiObjectConverter>();
-            //this one needs to be global because of required flag during conversion
-            scan.ExcludeType<Converter341To351>();
 
             scan.ExcludeType<MoBiObjectConverterFinder>();
             scan.ExcludeType<ProjectConverterLogger>();
@@ -150,7 +147,6 @@ namespace MoBi.Core
          //Needs to be registered as singleton
          container.Register<IMoBiObjectConverterFinder, MoBiObjectConverterFinder>(LifeStyle.Singleton);
          container.Register<IProjectConverterLogger, ProjectConverterLogger>(LifeStyle.Singleton);
-         container.Register<IMoBiObjectConverter, Converter341To351>(LifeStyle.Singleton);
       }
    }
 }

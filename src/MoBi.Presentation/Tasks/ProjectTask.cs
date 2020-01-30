@@ -140,7 +140,7 @@ namespace MoBi.Presentation.Tasks
             {
                Simulation = _serializationTask.Load<MoBiSimulation>(fileName),
                AllObservedData = new List<DataRepository>(),
-               PkmlVersion = ProjectVersions.V3_0_4
+               PkmlVersion = ProjectVersions.UNSUPPORTED
             };
          }
       }

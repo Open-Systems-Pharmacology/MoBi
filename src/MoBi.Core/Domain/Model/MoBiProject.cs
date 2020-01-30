@@ -14,7 +14,6 @@ namespace MoBi.Core.Domain.Model
 {
    public interface IMoBiProject : IProject
    {
-      IDimensionFactory DimensionFactory { get; set; }
       IReadOnlyList<IMoBiSimulation> Simulations { get; }
       IReadOnlyList<IMoleculeBuildingBlock> MoleculeBlockCollection { get; }
       IReadOnlyList<IMoBiReactionBuildingBlock> ReactionBlockCollection { get; }
@@ -29,7 +28,7 @@ namespace MoBi.Core.Domain.Model
       ReactionDimensionMode ReactionDimensionMode { get; set; }
 
       void AddSimulation(IMoBiSimulation newSimulation);
-      void RemoveSimulation(IMoBiSimulation simualtionToRemove);
+      void RemoveSimulation(IMoBiSimulation simulationToRemove);
       void AddChart(CurveChart chart);
       void RemoveChart(CurveChart chartToRemove);
 
@@ -83,7 +82,6 @@ namespace MoBi.Core.Domain.Model
       private readonly List<IMoBiSimulation> _allSimulations;
 
       public string ChartSettings { get; set; }
-      public IDimensionFactory DimensionFactory { get; set; }
 
       public override bool HasChanged { get; set; }
 
@@ -93,7 +91,6 @@ namespace MoBi.Core.Domain.Model
 
       public MoBiProject()
       {
-         DimensionFactory = new MoBiMergedDimensionFactory();
          _charts = new List<CurveChart>();
          _buildingBlocks = new List<IBuildingBlock>();
          _allSimulations = new List<IMoBiSimulation>();
@@ -145,10 +142,10 @@ namespace MoBi.Core.Domain.Model
          _allSimulations.Add(newSimulation);
       }
 
-      public void RemoveSimulation(IMoBiSimulation simualtionToRemove)
+      public void RemoveSimulation(IMoBiSimulation simulationToRemove)
       {
-         _allSimulations.Remove(simualtionToRemove);
-         RemoveClassifiableForWrappedObject(simualtionToRemove);
+         _allSimulations.Remove(simulationToRemove);
+         RemoveClassifiableForWrappedObject(simulationToRemove);
       }
 
       public void AddChart(CurveChart chart)

@@ -206,7 +206,7 @@ namespace MoBi.Presentation.Presenter
 
       private IDimension rhsDimensionFor(IWithDimension withDimension)
       {
-         return _context.DimensionFactory.RHSDimensionFor(withDimension.Dimension);
+         return _context.DimensionFactory.GetOrAddRHSDimensionFor(withDimension.Dimension);
       }
 
       private void selectFormulaByTypeAndName(Type formulaType, string formulaName)

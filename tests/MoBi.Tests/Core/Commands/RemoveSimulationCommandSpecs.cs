@@ -18,7 +18,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         var simulationTransfer = LoadPKML<SimulationTransfer>("523_Export_S1");
+         var simulationTransfer = LoadPKML<SimulationTransfer>("Sim");
          _context = IoC.Resolve<IMoBiContext>();
          _simulation = simulationTransfer.Simulation as IMoBiSimulation;
          _context.Register(_simulation);

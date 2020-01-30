@@ -1,200 +1,527 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<MoleculeBuildingBlock id="f438ddd6-38ff-41c0-a318-3793fa5c3271" name="Molecules" version="2">
+<MoleculeBuildingBlock id="n5ka-zq8l0qp9ffs1394KA" name="Molecules" icon="Molecule" bbVersion="0" version="13">
+  <Creation createdAt="5248846132857475618" createdBy="Michael" creationMode="New" origin="Other" />
   <Builders>
-    <MoleculeBuilder id="c3e84042-eb4e-4e70-9bca-cb5f51381017" name="Standard Molecule" icon="Drug" mode="Logical" containerType="Other" isFloating="1" quantityType="Drug" defaultStartFormula="730bc622-6fdb-4113-a1be-74479331b8bf">
+    <MoleculeBuilder id="Sw0MLPvOzkmA_VvS4P36PQ" name="Standard Molecule" icon="Drug" mode="Logical" containerType="Other" isFloating="1" quantityType="Drug" isXenobiotic="1" dim="Amount" defaultStartFormula="v4W_hJAbLky9Jzr07Esaiw" displayUnit="µmol">
       <Children>
-        <Parameter id="01ce2981-e50f-48f4-8b81-aae720d5fd32" name="pKa_Acids_Count" description="Number of acidic groups in compound" persistable="0" isFixedValue="0" formula="e5fba224-dd0b-48b9-b2b6-58320cdc413e" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="654e04cf-abe6-45bf-a5ff-4f4fbcd93ce6" name="pKa_pH_WS_sol_K2" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="05f11b57-25ab-40a4-8d35-6c184f907478" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="db84e21f-2126-49d4-a8ee-ed4a8bc8ab43" name="Molecular weight" description="Molecular weight" persistable="0" isFixedValue="0" formula="618eef56-7722-4f75-965c-8d022a8c2a59" dim="MolecularWeight" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="500eaa0c-94a5-4540-93c1-273558b2770a" name="pKa value 0" description="pKa value" persistable="0" isFixedValue="0" formula="aba61122-eb22-4acf-bbbc-15a50afc6d10" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="0c4db0d9-7f09-45dc-84d9-d6133b9c1b95" name="pKa value 1" description="pKa value" persistable="0" isFixedValue="0" formula="b9593c99-6170-48ea-ad27-af5e154fceea" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="e651082f-32cf-4f81-956a-194c9925a99b" name="pKa value 2" description="pKa value" persistable="0" isFixedValue="0" formula="8ea3dd2b-2269-4ee3-8e68-82107cccfc16" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="7adab1bf-621e-45a9-ac74-ff3cef6627a2" name="pKa_Acid_0" description="Smallest acid pKa" persistable="0" isFixedValue="0" formula="4426ebce-4576-4306-ba26-9276ce85e1fc" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="68c87d8c-2b31-465b-8cd8-ced43ca1e440" name="Is triprotic acid" description="Is triprotic acid" persistable="0" isFixedValue="0" formula="23604d2d-cb66-4134-92a0-efd2f8824bf3" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="ebc5e3af-2c1d-4dbc-a922-804144a3fc1c" name="pKa_Acid_2" description="Largest acid pKa" persistable="0" isFixedValue="0" formula="ccba3f94-63e1-4602-abb7-72324672e8ca" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="9600108f-146b-4211-8673-5e4376f6056f" name="Is strong base" description="Supporting parameter for partition coeffs in RR-Modell (at least one basic pKa&gt;=7)" persistable="0" isFixedValue="0" formula="40627d66-82e6-45aa-b770-43173bac6f11" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="f9aa4e17-ee4f-48e5-8735-580ad47b6105" name="pKa_Base_0" description="Smallest base pKa" persistable="0" isFixedValue="0" formula="f08e67b2-3f0f-499e-b30d-e4d0ae2dba59" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="f4ce31e2-6d83-41d0-94a8-74ba0e8cc973" name="pKa_Base_1" description="Middle base pKa" persistable="0" isFixedValue="0" formula="4f957f35-6e5f-4207-9f13-3af45171ac94" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="f58b1d7b-769e-456b-a298-58eca6aa39f8" name="pKa_Base_2" description="Largest base pKa" persistable="0" isFixedValue="0" formula="588827f7-e29d-4247-961c-686244ab7ec6" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="5319bb7f-8f0b-41b8-b1cf-3ad5387b4164" name="pKa_Bases_Count" description="Number of basic groups in compound" persistable="0" isFixedValue="0" formula="4bfaaf73-ce9c-405c-81d1-d5eaeb3ac7e2" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="903eca32-9797-4062-a938-ed5373190860" name="pKa_OneAcid_0" description="Smallest acid pKa for compound with 1 acid group" persistable="0" isFixedValue="0" formula="1ba98e86-dddb-4885-9445-62c22b2cac45" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="02d88bfa-e6ca-4364-921e-0f989552ea9a" name="pKa_OneBase_0" description="Smallest base pKa for compound with 1 base group" persistable="0" isFixedValue="0" formula="603773bf-5e5c-4257-9a53-f1ad8cf91850" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="31f0154e-58fd-4e1a-b414-2f36519ed770" name="pKa_pH_WS_sol_F1" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="c7869dc9-aeea-4dc8-951e-38db528f4222" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="185fbe27-a43c-4082-b3c0-33c33a1f4fcc" name="pKa_pH_WS_sol_F2" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="592d062d-25e4-4383-bffc-0d8e70095d89" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="d3551279-55d1-4f3c-999a-7eca8a026337" name="pKa_pH_WS_sol_F3" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="5a89c8e5-9d1c-48bb-afd9-0a39b820c330" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="34295e39-c646-43e8-8817-47c38899db22" name="pKa_Acid_1" description="Middle acid pKa" persistable="0" isFixedValue="0" formula="13adb5a3-ebe2-47ee-ad79-d6d3b4caecd7" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="a5110495-bf14-4c0a-93ea-5591baf6a42f" name="Compound type 2" description="Compound type (-1: acid, +1: base, 0: neutral)" persistable="0" isFixedValue="0" formula="d7f1091c-e77b-4fe0-9338-a15e0c445b4d" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="48226e61-7c6c-4cdd-8c4f-e1b68a273e5a" name="CT_ACID" description="Constant for compound type acid" persistable="0" isFixedValue="0" formula="147990d4-a6ad-433e-82d2-1660c1ce01d4" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="936afab9-a563-4956-8ac4-93e038e68778" name="CT_BASE" description="Constant for compound type base" persistable="0" isFixedValue="0" formula="a2ae4fcd-4eed-4f6f-b1e7-e6582de15cb5" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="27000530-74d7-4ae7-9a14-82d0c5179022" name="CT_NEUTRAL" description="Constant for compound type neutral" persistable="0" isFixedValue="0" formula="aadd817c-094a-4cfb-851e-970a7ca898c5" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="dda729b6-9f5a-4c26-93eb-64dba8f78a62" name="Effective molecular weight" description="Effective molecular weight" persistable="0" isFixedValue="0" formula="3dfa88c0-e274-4976-8510-e80070e6cbc9" dim="MolecularWeight" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="97841512-4d22-4d10-a4bf-95a129b3490d" name="F" description="Number of fluorine atoms in molecule" persistable="0" isFixedValue="0" formula="e264fd18-e374-40a3-bc28-1984ed5ff212" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="5dabcd69-cba1-4d1a-ae99-0708c243d7b1" name="Is triprotic base" description="Is triprotic base" persistable="0" isFixedValue="0" formula="f9717cac-a14a-47a3-94e2-8a54145ed3f3" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="03fd7b84-f0f6-49a2-b684-fbfb2c1208e7" name="I" description="Number of iodine atoms in molecule" persistable="0" isFixedValue="0" formula="521446e0-b2c6-4375-9915-5da47993b1e6" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="3a1f77c0-3182-44d9-8893-5a3fc7a04f9a" name="pKa_pH_WS_sol_K3" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="00905a5c-afb6-49b3-af8a-d699d3f35392" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="91649095-e78e-4a50-ae8a-3abd39b740a7" name="Is diprotic acid" description="Is diprotic acid" persistable="0" isFixedValue="0" formula="fe011bb9-63bf-4abe-982c-67e714eb9ef2" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="f3e7ec8f-f5e8-4cfd-a53a-77aac74554b9" name="Is diprotic base" description="Is diprotic base" persistable="0" isFixedValue="0" formula="c2f2c8b1-45e2-4467-9ada-a60d8f8b83dc" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="3a9c28af-08a5-43f3-b132-36f273b635d8" name="Is diprotic base monoprotic acid" description="Is diprotic base monoprotic acid" persistable="0" isFixedValue="0" formula="780e828f-b5ee-49fb-9602-df08118794c7" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="15810a1d-5d72-4836-a0f1-0ee547c7252d" name="Is floating in lumen" description="Is floating in lumen" persistable="0" isFixedValue="0" formula="37466c4f-aab5-4555-b551-e396eecef155" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="a017f799-c3d8-4589-8ebd-9d797a344ff9" name="Is monoprotic acid" description="Is monoprotic acid" persistable="0" isFixedValue="0" formula="1ffe8919-ce6b-4d1b-ad0f-025c20b9c1a1" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="e57ae45c-f961-46b7-bec8-1887377f8660" name="Is monoprotic base" description="Is monoprotic base" persistable="0" isFixedValue="0" formula="261c8b1d-4a70-4e5d-8c50-26da11a8ae53" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="2e70f6ec-ab5f-44ea-9c08-7ab175586721" name="Is monoprotic base diprotic acid" description="Is monoprotic base diprotic acid" persistable="0" isFixedValue="0" formula="f807db4d-d64b-471b-9bf1-d0b47f08aa73" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="bbc76b89-d0e1-4522-9a82-4e237e983a48" name="Is monoprotic base monoprotic acid" description="Is monoprotic base monoprotic acid" persistable="0" isFixedValue="0" formula="d747cc1c-f2fc-4731-adb1-99f28358d033" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="e07b973a-7f78-45fd-925a-00f553d6abf7" name="Is neutral" description="Supporting parameter for partition coeffs in RR-Modell" persistable="0" isFixedValue="0" formula="b72804f9-2ec0-46d1-bfb9-b25c304bf709" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="2252670d-efbf-433b-8d72-0bff5fcc20ea" name="Is small molecule" description="Treat compound as small molecule or not (if not, both organ specific and intestinal permeability will be set to zero)" persistable="0" isFixedValue="0" formula="a197b9b3-776f-46ad-89d0-696bc00e08ea" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="5bd5bc48-372d-4820-9cfb-e9d09b290318" name="Has halogens" description="Supporting parameter for compound" persistable="0" isFixedValue="0" formula="d89cc30f-f8cd-4044-93f2-25b9cf93f6e9" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="61bbf1c8-08fa-47ce-8616-e660e80dea65" name="pKa_pH_WS_sol_K1" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="ae8fe106-e589-490e-9b19-025db8e6f438" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="936eb91b-cd57-485d-becd-115365402647" name="pKa_TwoBases_0" description="Smallest base pKa for compound with 2 base groups" persistable="0" isFixedValue="0" formula="cd365569-a477-4848-b37a-f2c2a1ba1bcb" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="65fc36b4-f06e-494b-a249-78868664093d" name="pKa_pH_WS_sol_K4" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="391179c8-77e7-4376-ab6e-a24155a46d5c" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="9fcc7b61-f2fc-47af-8bcb-6b2d978e77cc" name="pKa_pH_WS_sol_K5" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="804656e6-b3ae-4d1a-9bca-1a4527484336" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="583e6c19-fbd2-4e23-a65a-865b131377cc" name="pKa_pH_WS_sol_K6" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="77405460-ed39-481b-9f55-1857229242d0" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="15879acc-7fd2-4a3c-aeaa-d2135b32bc85" name="pKa_pH_WS_sol_K7" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="402da265-25d6-4416-9d3a-4001088a3061" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="50890cf6-9af6-478f-8fb4-8906844bfc69" name="pKa_pH_WS_sol_K8" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="bb5c8e0e-95bb-4bc3-a233-ae80c72d802c" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="bb7afd7a-f528-4d3b-9e1e-528a24bed85d" name="pKa_ThreeAcids_0" description="Smallest acid pKa for compound with 3 acid groups" persistable="0" isFixedValue="0" formula="cbd3e432-f7c0-4c31-894d-42ea90630201" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="e7347654-2834-4517-9a5a-c5f6bf10e99d" name="pKa_ThreeAcids_1" description="Middle acid pKa for compound with 3 acid groups" persistable="0" isFixedValue="0" formula="fa37f31b-967f-45d2-a76b-0eeecdba84fb" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="5ddc8fe4-7cab-4b12-bbff-804d49b83b8b" name="pKa_ThreeBases_0" description="Smallest base pKa for compound with 3 base groups" persistable="0" isFixedValue="0" formula="9bdded95-3c75-4628-b649-6fdf54dfd41f" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="fafeacae-3f4b-4293-90da-943a8ecd9f00" name="pKa_ThreeBases_1" description="Middle base pKa for compound with 3 base groups" persistable="0" isFixedValue="0" formula="f1efd166-55bf-45b7-8a54-2583b96c8cca" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="594bfeb1-15c2-4e6a-950f-6a4e841a890b" name="pKa_TwoAcids_1" description="Middle acid pKa for compound with 2 acid groups" persistable="0" isFixedValue="0" formula="9f4eacd5-1fda-4a28-81b5-0c1cc676f6ff" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="9a938222-566d-4e51-9cae-9db8520431a8" name="pKa_TwoBases_1" description="Middle base pKa for compound with 2 base groups" persistable="0" isFixedValue="0" formula="8ac9f732-b720-44b7-b2d4-86e24cbf2a2b" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="477f0c31-91d0-4a4b-9a70-2187fe310c03" name="Solubility_pKa_pH_Factor" description="pKa/pH-Dependent factor for solubility" persistable="0" isFixedValue="0" formula="1d7f0e1b-a6aa-43ab-91b8-ffa0f43fa938" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="14b019ed-5513-4c48-af86-20c6fc015128" name="Total oral drug mass" description="Total oral drug mass" persistable="0" isFixedValue="0" formula="724e229b-dd56-4945-ad5e-5cd2a340e492" dim="Amount" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="7b12b381-21ab-4c05-a1d3-7c6f9e0adae8" name="pKa_TwoAcids_0" description="Smallest acid pKa for compound with 2 acid groups" persistable="0" isFixedValue="0" formula="fb4dc464-9921-4d36-95f5-087bf530204e" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="91672c6c-499e-494a-a197-00fce82f986b" name="Compound type 0" description="Compound type (-1: acid, +1: base, 0: neutral)" persistable="0" isFixedValue="0" formula="21eea311-5783-49f3-bd2a-7ddcafa488f4" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="176fb2b4-3771-4a83-a94e-d2f9aa8f783c" name="Cl" description="Number of chlorine atoms in molecule" persistable="0" isFixedValue="0" formula="9f2a9f1a-0f43-489d-84e8-cea53bfbe65c" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="a3b55c80-bcd9-406b-8a8f-663f46ab6a4d" name="Compound type 1" description="Compound type (-1: acid, +1: base, 0: neutral)" persistable="0" isFixedValue="0" formula="4bee111b-6310-432d-b1e1-ae79dfec0ec1" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="960b3308-1579-4be4-9010-1c889b916aea" name="base_For_KaPL_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent values of KaPL" persistable="0" isFixedValue="0" formula="0ee8360a-3ba3-4a42-a7e1-07934cabad9f" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="226e2a96-56a1-4a6c-bd61-471fa4c0b7ae" name="base_For_logD_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent logD" persistable="0" isFixedValue="0" formula="d6efbfab-0198-47a9-90c2-529ea9004292" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="e91894cf-97d8-41e7-b424-edacca752ab1" name="base_For_P_cell_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent permeability to/from cells" persistable="0" isFixedValue="0" formula="b0f1f832-4cd7-40a7-a5d0-a89eae4b7d82" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="6ec6dd77-9991-432f-8c92-bef66068da39" name="base_For_Pint_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent intestinal permeability" persistable="0" isFixedValue="0" formula="f0ebb3e5-3a68-41ad-a5d4-e1e2a39d60be" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="2ba3b5a5-f343-43b9-9827-8b7dc3b1fe90" name="Br" description="Number of bromine atoms in molecule" persistable="0" isFixedValue="0" formula="0fb0d6d8-d1a8-4165-a6ab-241525e2fd43" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="394d13a4-cce1-40bd-85eb-1eb92deb584d" name="Lipophilicity" description="Model dependent lipophilicity measure: LogMA / LogP / ..." persistable="0" isFixedValue="0" formula="9b164e8f-d30d-4662-b8c1-3af37bfaa6f9" dim="Lipophilicity" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="17d37da5-2903-47db-a69d-3c023e71fa64" name="Fraction unbound (plasma)" description="Fraction unbound in plasma" persistable="0" isFixedValue="0" formula="19c0252d-bfc6-44e2-9a99-6e2f515f5aba" dim="Fraction" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="259e9a05-ccd3-4e99-837d-e4fca7c14f99" name="Solubility at reference pH" description="Solubility at reference pH" persistable="0" isFixedValue="0" formula="68c0d685-8d53-45db-b8d9-c50fdf78251f" dim="Concentration" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="87cad6ae-95cf-4894-a8a2-35431fa4a7f8" name="Reference pH" description="Reference pH" persistable="0" isFixedValue="0" formula="ccaea30a-61a3-497e-a44e-20d380b63b83" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="dc83a069-bf28-401a-91d3-22c5ca1344a7" name="Solubility gain per charge" description="Supporting parameter for calculation of pKa- and pH- dependent values of intestinal solubilty" persistable="0" isFixedValue="0" formula="a0a16c90-9702-4c12-bd15-0ffe67c68b8a" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="f3e51c6d-57af-42bd-9372-c9888bb604bb" name="Permeability" description="Permeability" persistable="0" isFixedValue="0" formula="95ea7e0e-7821-4825-9019-549a4a893785" dim="Velocity" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="de9b5c40-bb51-4634-8046-66c3980e5faf" name="Specific intestinal permeability (transcellular)" description="Specific intestinal permeability (transcellular)" persistable="0" isFixedValue="0" formula="2e21b031-4150-413c-8bfe-428d023baf36" dim="Velocity" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="319bc9e0-ec1a-4af7-b3d1-79a56f55d8f7" name="Partition coefficient (water/protein)" description="Partition coefficient water to protein" persistable="0" isFixedValue="0" formula="560afe24-0801-4366-90e5-6a213de72ffd" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="fdcc86c8-a27f-455c-ad59-3cdfd37d05df" name="Treat precipitated drug as" description="Treat precipitated drug as either soluble or insoluble" persistable="0" isFixedValue="0" formula="144daa8f-c630-4b32-822a-44e7693f7135" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="3a934922-f698-4d4a-98ed-5599b4c00b8d" name="Aqueous diffusion coefficient" description="Aqueous diffusion coefficient&#xA;of the drug" persistable="0" isFixedValue="0" formula="ecf1d1dd-0642-4c4a-821d-46f238cc8c73" dim="DiffusionCoefficient" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="0392b441-ca7f-449d-8f6c-ee3e15803772" name="Density (drug)" description="Density of drug material" persistable="0" isFixedValue="0" formula="a6006406-3d70-409f-8e4f-6e4752f59efa" dim="Density" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="a1e3da02-b9e3-4621-bc4c-4d3d0ca8ef7f" name="Immediately dissolve particles smaller than" description="Threshold for the particle radius of immediate dissolution" persistable="0" isFixedValue="0" formula="dc3cde42-2729-4533-9a0a-e7e08f63ea0c" dim="Nanolength" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="9f0ea4c2-58b7-4f60-9d6c-760ce930fe1f" name="Radius (solute)" description="Solute radius" persistable="0" isFixedValue="0" formula="9afe72f6-8ce0-430b-981c-6281f680de9f" dim="Nanolength" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="5b0dd5e5-e9c2-441b-a46a-069d22bd1336" name="Kd (FcRn)" description="Dissociation constant for binding of drug to FcRn" persistable="0" isFixedValue="0" formula="032f5c87-ac58-4a59-bae7-151c650eaff2" dim="MolarConcentration" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="97de7fb9-46a3-49b3-9f70-17bb961ed182" name="Use pH- and pKa-dependent penalty factor for charged molecule fraction" description="Penalty factor for charged molecule fraction is used for &quot;Intestinal permeability (transcellular)&quot; only" persistable="0" isFixedValue="0" formula="8b7c4adc-a4b0-4306-be2d-387331cff826" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="57eff736-2503-427b-bd96-8bdb3eec66bb" name="Concentration" persistable="0" isFixedValue="0" formula="e1406baf-c159-4aba-92f0-080bc51c5a56" dim="MolarConcentration" quantityType="0" visible="0" canBeVaried="0" />
-        <TransporterMoleculeContainer id="c5f7deec-12f3-4f36-a120-d9af8c029db0" name="PGP" transportName="PGP">
-          <ActiveTransportRealizations>
-            <TransportBuilder id="f7d942f4-eaeb-4658-ad45-1cc98cde1e29" name="Like" dimension="Dimensionless" createProcessRateParameter="0" formula="a4bf0961-d8d6-4e96-9654-79991ec47f31" transportType="0">
+        <Parameter id="ZK7dbcNYBEq37LDq9_ZMWQ" name="pKa_Acids_Count" description="Number of acidic groups in compound" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="hVFHSgq4mE2pr2wDGly2Kg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="qRMzKEkXtUiEnW8qRmefIA" name="pKa_pH_WS_sol_K2" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="Szzn0TV2zUq4rihK7WPHOA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="lUsowY_b_kqUw3WmPTUePQ" name="Molecular weight" description="Molecular weight" icon="Parameter" persistable="0" isFixedValue="0" dim="Molecular weight" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="4E-07" displayUnit="g/mol">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="o9bIIhMzb0mwYr5bH_cRpA" name="pKa value 0" description="pKa value" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="TXCDJZf_1kuiGZb1FH8L0g" name="pKa value 1" description="pKa value" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="VWXMt_kXfkCsQqbgSqx2_w" name="pKa value 2" description="pKa value" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="OT-EQ4XiMUODXXqqBkSFfQ" name="pKa_Acid_0" description="Smallest acid pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="oPf_Gv2bXUWOWAE-AmELkw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="vqc_S9nfU0Sf57WfzTezZQ" name="Is triprotic acid" description="Is triprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="_EL9ispm0kO1wy6gAxVXkg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="EB7CqGl7Y0iLQJTpMad-Yw" name="pKa_Acid_2" description="Largest acid pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="SVyCFbx1XkyyzC6_Zssh-w" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="uc8ILuWuk0ixCsshQDcL2g" name="Is strong base" description="Supporting parameter for partition coeffs in RR-Modell (at least one basic pKa&gt;=7)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="gxXfWQ5WI0-5Mp5-aksjqg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Yrf_nykThEK-a8rBSQcURw" name="pKa_Base_0" description="Smallest base pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="BU5bAzzxxE2iG6SFmmTDBQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="VhoTU3uaJ0COBBxhhgkYgA" name="pKa_Base_1" description="Middle base pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="M8KJNlRsPUO_m1iltcp6MA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="g2_Kl7tyQkKZcScgp5CSgw" name="pKa_Base_2" description="Largest base pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="5VjEtnaMVkaxMtRdxgTnvw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="nSVnNJXYJ0qYqcGFyRgaaA" name="pKa_Bases_Count" description="Number of basic groups in compound" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="qnQGGHj5N0yYwVLR28J0Jg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="_sY9Xc7zyUSs2TmyYF-KNg" name="pKa_OneAcid_0" description="Smallest acid pKa for compound with 1 acid group" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="HRwuurQc1EaA7ncM4pJB1w" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="SlVjmFkdoU-zlN3CoMUXPQ" name="pKa_OneBase_0" description="Smallest base pKa for compound with 1 base group" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="VgrdscGuxkWoruk0VqGODQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="jyfmnEKP9k-tC1-SMQDD8w" name="pKa_pH_WS_sol_F1" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="0Wd2c452xki5zWpUUc_OWw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="hgHVrc4no0Gos1hCQRR0xA" name="pKa_pH_WS_sol_F2" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="nqxOK6X-ykiHoJUQoY5xHw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="a9u0EV0TAUe8A2YMBo1gUg" name="pKa_pH_WS_sol_F3" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="ISS_B9d4N0aKX_Zb6w1qmA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="2--SV4Ez00me2jI-2aJnRA" name="pKa_Acid_1" description="Middle acid pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="WW5qavloYE-lujFoLxCkaA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="fcMMuVV7B0qpeKfYiif37w" name="Compound type 2" description="Compound type (-1: acid, +1: base, 0: neutral)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="2RA6E8CNA0m4f3wJDOrUQA" name="CT_ACID" description="Constant for compound type acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="-1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="pc73iPFW2EmZTo-F8CUV3w" name="CT_BASE" description="Constant for compound type base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="GZnqrTbVUEmVJGfMT5SgDg" name="CT_NEUTRAL" description="Constant for compound type neutral" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="6HuzS8irnUi66Ou-yHkNwQ" name="Effective molecular weight" description="Effective molecular weight" icon="Parameter" persistable="0" isFixedValue="0" dim="Molecular weight" quantityType="Parameter" negativeValuesAllowed="1" formula="R4B76J5_xES-bwD0V4-Eaw" buildMode="Property" isDefault="1" displayUnit="g/mol">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="C4nLfKGiNEisnfvxaNZWwQ" name="F" description="Number of fluorine atoms in molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="tdaRE3gly0yXH_37QBYFQw" name="Is triprotic base" description="Is triprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="sqs0VyfLeUC2NcI0TsI-jg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="YLYIS7f9K0Kj1-YdTySZOw" name="I" description="Number of iodine atoms in molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="TOaRwbs0YUinfrwe7oS8Fw" name="pKa_pH_WS_sol_K3" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CrwUJZDPdkuxvUw3_MfYvg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="BLXkA86NSEueVgtsKrERUg" name="Is diprotic acid" description="Is diprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="-lEpazMaXECL2cECmijO5w" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="93HvR9TAnkiIOIG5RYYylA" name="Is diprotic base" description="Is diprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="z88_2ktlt0WYVR3zNrEI4w" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="2uRIaK5MmUW1fHW23IjJ8w" name="Is diprotic base monoprotic acid" description="Is diprotic base monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="2kAuN4ISc0mmzBpjfE5exQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Xcq5Ps4cskK4FTwC9RYllA" name="Is floating in lumen" description="Is floating in lumen" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="0FS7jb1T8UCM35aLuDp_lA" name="Is monoprotic acid" description="Is monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="NPqclKDUXEu43HxlSghvTw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="8uQg-JFHwkeYISqhdLW4zQ" name="Is monoprotic base" description="Is monoprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="pEu5n_jVkUmnFyat9x1pOA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="ZwIepSk1TUWllGR8NyHKXw" name="Is monoprotic base diprotic acid" description="Is monoprotic base diprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="McjQLaQlbUStSYVN89VisA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Psu9Bk5RIkaVbPgk1pWqPg" name="Is monoprotic base monoprotic acid" description="Is monoprotic base monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="D3sGK2m-wkmY4S9HAXQqDQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="hF8iQ8Kk8Um_OGws4GW1Cg" name="Is neutral" description="Supporting parameter for partition coeffs in RR-Modell" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="t9A3_RncCEe-6VsJzVVDRw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="zxIeJ58YDEeNVOVkvzbwAQ" name="Is small molecule" description="Treat compound as small molecule or not (if not, both organ specific and intestinal permeability will be set to zero)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="yNUF8-KVw0-CXdxHpQO1_g" name="Has halogens" description="Supporting parameter for compound" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="UgC4FkZ8bUy4VRgrXxBRdg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="PgBpY7d6JUe5uVUC7am09A" name="pKa_pH_WS_sol_K1" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="dY2_MKkdT0mL-wNbBJB2bw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Q2xvm9q3hkO0srg6LdTyJg" name="pKa_TwoBases_0" description="Smallest base pKa for compound with 2 base groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="f7AVAt7mVUezoHQiNVw1iw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="AzizDSh1EUeqNcsLotAC9Q" name="pKa_pH_WS_sol_K4" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="ebR5s5oYGk2nhp7Iotfttw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="uueqHGS8QUeaCc7OAzbbtQ" name="pKa_pH_WS_sol_K5" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="K6Oz-wT3WEuZcxbCaxXV7g" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="kDgAEGqiqU-z0msoMEP2bQ" name="pKa_pH_WS_sol_K6" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="q19OAc-2IEitwwqwqisjJA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="3zSa3J6KCUi6eTB6EAytgQ" name="pKa_pH_WS_sol_K7" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="J-GLHfhTdkaWVR-lyMnR3g" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="8EbNbrsnmkqIGNGhwmcYZg" name="pKa_pH_WS_sol_K8" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="78-kbB0qc0CtHWLIQiWMnA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="1Z6FTfhI8EqRAdrOA8D0LA" name="pKa_ThreeAcids_0" description="Smallest acid pKa for compound with 3 acid groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="vHT9x5jzPEm5GXz_0oOFYQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="1z0_YRXbyE6oB7oAeq0Gtg" name="pKa_ThreeAcids_1" description="Middle acid pKa for compound with 3 acid groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="v4oEcuuGzEC4KPs1famoqw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="vZsq1Y-xxU6N54S4eDQbcw" name="pKa_ThreeBases_0" description="Smallest base pKa for compound with 3 base groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="RPrfJEOyd0u4CcBIIb2hEA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="ha5ooOWny0eDcKUZIDvYMQ" name="pKa_ThreeBases_1" description="Middle base pKa for compound with 3 base groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="Q-1Sy1dGj0qhtdiBpiCSvw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="RhZTPZ2qaEOIZnzvxbFGSQ" name="pKa_TwoAcids_1" description="Middle acid pKa for compound with 2 acid groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="k4dwYQRYEEGdYiS5bqzvQA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="R3S46ldB1UqoKePiX0g5lw" name="pKa_TwoBases_1" description="Middle base pKa for compound with 2 base groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="8uBCH8bTCkWgOgtPqEqf7A" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="DVwoM3nXHk-3g-OXvKkN8w" name="Solubility_pKa_pH_Factor" description="pKa/pH-Dependent factor for solubility" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="hl_xHXhJFE2Adq6jBGTSpA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="zVgfPjERMUumHuAa41wMVQ" name="Total oral drug mass" description="Total oral drug mass" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0" displayUnit="µmol">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="6dtcdR3FcUeCP0CnwOOXmA" name="pKa_TwoAcids_0" description="Smallest acid pKa for compound with 2 acid groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="2xsDcah1h0iQ7F5tc_jRlA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="cZSz4gKeiEq3j3SK5Ql-vQ" name="Compound type 0" description="Compound type (-1: acid, +1: base, 0: neutral)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="PAiMgkJJykGJpbgeNYVTDA" name="Cl" description="Number of chlorine atoms in molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="-ElbCBqfGkO-OKcN-WAfJQ" name="Compound type 1" description="Compound type (-1: acid, +1: base, 0: neutral)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="8TIgPkYkxEWN_qTnmdDf0g" name="base_For_KaPL_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent values of KaPL" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="20">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="PPMMQPLHPk2DKz-JZ2SExQ" name="base_For_logD_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent logD" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.001">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="XmNlTOV4Wk-Wc7XaJ0RJ0g" name="base_For_P_cell_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent permeability to/from cells" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.001">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="qNo57TbzOEmQ9gbLAyeu1g" name="base_For_Pint_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent intestinal permeability" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="8sdWoQO63kWRfVULzowGuw" name="Br" description="Number of bromine atoms in molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="vkxAULwyR0-p3-D5cJgN-Q" name="Lipophilicity" description="Model dependent lipophilicity measure: LogMA / LogP / ..." icon="Parameter" persistable="0" isFixedValue="0" dim="Log Units" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="3" displayUnit="Log Units">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="bSD7Hp1J_0WOeAnBg-1h8A" name="Fraction unbound (plasma)" description="Fraction unbound in plasma" icon="Parameter" persistable="0" isFixedValue="0" dim="Fraction" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="cbBH0E_h9E6vKhFKGFi1aQ" name="Solubility at reference pH" description="Solubility at reference pH" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (mass)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.009999" displayUnit="kg/l">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="5Jx_deenCE27jz5P-jn3xA" name="Reference pH" description="Reference pH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="7">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="2G4VGIXk6k2MtJhs0jnBHg" name="Solubility gain per charge" description="Supporting parameter for calculation of pKa- and pH- dependent values of intestinal solubilty" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1000">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="NSqIjJlk90q2lv3VLcpCVg" name="Permeability" description="Permeability" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="ST9ewPUpnE-YK8yV_YQilg" buildMode="Property" isDefault="1" displayUnit="cm/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="DEpw5hZUwUGDTKx4H5VTYg" name="Specific intestinal permeability (transcellular)" description="Specific intestinal permeability (transcellular)" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="MHOQGqWip0qzqqfWs4Av6A" buildMode="Property" isDefault="1" displayUnit="cm/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="FuuurVVfB0GhRZNxQ8e81w" name="Partition coefficient (water/protein)" description="Partition coefficient water to protein" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="et_Z9z3qrUWQWf_K67ihbA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="IvlKy-86h0ab0LdJE2Hgiw" name="Treat precipitated drug as" description="Treat precipitated drug as either soluble or insoluble" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="eY8CySXiD0SHWg0NOuwXoQ" name="Aqueous diffusion coefficient" description="Aqueous diffusion coefficient&#xA;of the drug" icon="Parameter" persistable="0" isFixedValue="0" dim="Diffusion coefficient" quantityType="Parameter" negativeValuesAllowed="1" formula="txSvdn3Qi0eFz57EAQowQg" buildMode="Property" isDefault="1" displayUnit="dm²/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="7bZ8Kw1SwEOuPS_-nSuTfA" name="Density (drug)" description="Density of drug material" icon="Parameter" persistable="0" isFixedValue="0" dim="Density" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1" displayUnit="g/cm³">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="yy9ls1KVzkajywB311HC7Q" name="Immediately dissolve particles smaller than" description="Threshold for the particle radius of immediate dissolution" icon="Parameter" persistable="0" isFixedValue="0" dim="Length" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1E-07" displayUnit="dm">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="v3SstK-6M0qQyk8-pQmxaw" name="Radius (solute)" description="Solute radius" icon="Parameter" persistable="0" isFixedValue="0" dim="Length" quantityType="Parameter" negativeValuesAllowed="1" formula="D6SIvwugH0GMrd80Qqztiw" buildMode="Property" isDefault="1" displayUnit="dm">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Du7G_FyCBE6n4PxlxXAQLQ" name="Kd (FcRn)" description="Dissociation constant for binding of drug to FcRn" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="999999" displayUnit="µmol/l">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="7MvTTJGHNUukfOOD2J1wbg" name="Use pH- and pKa-dependent penalty factor for charged molecule fraction" description="Penalty factor for charged molecule fraction is used for &quot;Intestinal permeability (transcellular)&quot; only" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="euLgoDMpyEeJoWYR_GybFQ" name="Concentration" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" formula="KS0RvhqdkE6iSD9ZCkuaQA" isDefault="1" displayUnit="µmol/l">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <TransporterMoleculeContainer id="zrqHIUHgHUyjR9qZvaS6Bg" name="PGP" mode="Logical" containerType="Other" transportName="PGP">
+          <Children>
+            <Parameter id="ZDW4LeG3wEeISLFjRY-yLg" name="km" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount per time" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Global" isDefault="1" value="1" displayUnit="µmol/min">
+              <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+            </Parameter>
+            <TransportBuilder id="tsDT3FpX6EWSLFUfQc8SQA" name="Like" mode="Logical" containerType="Other" createProcessRateParameter="0" processRateParameterPersistable="0" formula="1lvsN49MrUCRR_VWS4Pjlg" transportType="0">
+              <Children>
+                <Parameter id="0RsNYNMwdEq63Oml1xTzPQ" name="Tada" icon="Parameter" persistable="0" isFixedValue="0" dim="Density" quantityType="Parameter" negativeValuesAllowed="1" isDefault="1" value="0" displayUnit="g/cm³">
+                  <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+                </Parameter>
+              </Children>
               <SourceCriteria />
               <TargetCriteria />
-              <Parameters>
-                <Parameter id="c20214b1-3d0e-4c30-846a-fa3067d30169" name="Tada" persistable="0" isFixedValue="0" formula="3695e1ef-8108-4afd-b60f-64a1f9e44a90" dim="Density" quantityType="0" visible="1" canBeVaried="1" />
-              </Parameters>
+              <MoleculeList forAll="1" />
             </TransportBuilder>
-          </ActiveTransportRealizations>
-          <Parameters>
-            <Parameter id="3eaa713e-c31c-4802-999b-efa9302c068a" name="km" persistable="0" isFixedValue="0" formula="9f249c31-8c68-4dde-9b4a-4324bb1dcc42" dim="Rate" quantityType="0" buildMode="Global" visible="1" canBeVaried="1" />
-          </Parameters>
+          </Children>
         </TransporterMoleculeContainer>
+        <Parameter id="hp-5NniA_U-1a-KavaIKCg" name="Calculated specific intestinal permeability (transcellular)" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="MHOQGqWip0qzqqfWs4Av6A" buildMode="Global" isDefault="1" displayUnit="cm/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="SlEyldoHrEu9FaTLvbP2wg" name="Total drug mass" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" formula="oosTscPgCUiJqQI_z4d_Ig" buildMode="Property" isDefault="1" displayUnit="µmol">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
       </Children>
       <UsedCalculationMethods>
         <UsedCalculationMethod category="DistributionCellular" calculationMethod="Cellular partition coefficient method - PK-Sim Standard" />
         <UsedCalculationMethod category="DiffusionIntCell" calculationMethod="Cellular permeability - PK-Sim Standard" />
         <UsedCalculationMethod category="DistributionInterstitial" calculationMethod="Interstitial partition coefficient method - Schmitt" />
       </UsedCalculationMethods>
-      <AllPassiveTransports>
-        <TransportBuilder id="5c0c83c4-6c9f-43f9-b741-c5e0ad1c0f7f" name="GFR" dimension="Rate" createProcessRateParameter="0" formula="0c95604c-10fb-40d2-b879-6a886317e4e8" transportType="0">
-          <SourceCriteria />
-          <TargetCriteria />
-          <Parameters>
-            <Parameter id="dbdce0fd-8426-426a-b733-4ff8ec0f9a8a" name="CLSpec" persistable="0" isFixedValue="0" formula="3f93d61b-72e8-4f3b-b2eb-e8efab1d0986" dim="SpecificClearancePerProtein" quantityType="0" visible="1" canBeVaried="1" />
-          </Parameters>
-        </TransportBuilder>
-      </AllPassiveTransports>
     </MoleculeBuilder>
-    <MoleculeBuilder id="00bc72eb-e97c-4c3d-8091-af74bb86c28b" name="PGP" icon="TRANSPORTER" mode="Logical" containerType="Other" isFloating="0" quantityType="Transporter" defaultStartFormula="83dbf546-64c7-4137-b0f0-08f9af5e69ce">
+    <MoleculeBuilder id="Tlpu2Ky_M0WniCVhJk63Pw" name="PGP" icon="TRANSPORTER" mode="Logical" containerType="Other" isFloating="0" quantityType="Transporter" isXenobiotic="1" dim="Amount" defaultStartFormula="afdoe1RXi06lyfYL9riUFQ" displayUnit="µmol">
       <Children>
-        <Parameter id="02a52525-764c-41b0-a632-b2cafa1fbe2f" name="Aqueous diffusion coefficient" description="Aqueous diffusion coefficient&#xA;of the drug" persistable="0" isFixedValue="0" formula="ecf1d1dd-0642-4c4a-821d-46f238cc8c73" dim="DiffusionCoefficient" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="d08495e0-d7bc-4ade-a810-e43f55132e48" name="base_For_KaPL_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent values of KaPL" persistable="0" isFixedValue="0" formula="8e3feaf7-f9b1-4530-86a6-a243e329a360" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="c4ad3d2b-0424-4a81-9b19-522b007b6b2f" name="base_For_logD_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent logD" persistable="0" isFixedValue="0" formula="e114303f-5610-4824-b606-714265fec9b1" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="d8913c7b-812e-4fbc-87c0-0b53635d3c77" name="base_For_P_cell_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent permeability to/from cells" persistable="0" isFixedValue="0" formula="415942b5-7e13-4071-92ec-c577cf0b2191" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="0503a47c-38f6-4a33-adfc-52804df30cd3" name="base_For_Pint_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent intestinal permeability" persistable="0" isFixedValue="0" formula="0acb637a-38ce-4acf-b81d-d2b714073353" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="526adeda-05f7-4fd8-bf2b-e22ba592355a" name="Br" description="Number of bromine atoms in molecule" persistable="0" isFixedValue="0" formula="154bf5c8-4f5b-4e00-a590-c3eaf7917728" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="4645506e-b9b5-4a03-a64d-4a96267de6cb" name="Cl" description="Number of chlorine atoms in molecule" persistable="0" isFixedValue="0" formula="326cf200-b6e7-4c1e-9eb6-506084d02d35" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="c3f0acb7-2fd5-4da5-981a-8c8a69e36800" name="Compound type 0" description="Compound type (-1: acid, +1: base, 0: neutral)" persistable="0" isFixedValue="0" formula="cacca64d-774e-4d1e-8f86-8b90015b649b" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="2f519a34-86d0-4516-9cf3-b6d261279808" name="Compound type 1" description="Compound type (-1: acid, +1: base, 0: neutral)" persistable="0" isFixedValue="0" formula="aebafb5f-66b2-456d-83ca-3f3dd43f980a" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="c4e0eadc-9dc8-4529-a707-fa0a0b63e049" name="Compound type 2" description="Compound type (-1: acid, +1: base, 0: neutral)" persistable="0" isFixedValue="0" formula="354e60d6-2cdc-409d-a47c-c4d8d02eae26" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="05e03724-9e22-4a71-9b65-789d4406d018" name="Concentration" persistable="0" isFixedValue="0" formula="e1406baf-c159-4aba-92f0-080bc51c5a56" dim="MolarConcentration" quantityType="0" visible="0" canBeVaried="0" />
-        <Parameter id="9ddcb092-0962-4e9c-a151-8b40bb674496" name="CT_ACID" description="Constant for compound type acid" persistable="0" isFixedValue="0" formula="df1b5e59-6b80-4ca6-89f1-cc34fc214af8" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="8839da24-f7b7-4cf6-98fa-73969ee5c519" name="CT_BASE" description="Constant for compound type base" persistable="0" isFixedValue="0" formula="7da0517f-c940-4b2f-851d-be1932ff2ee2" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="d6f7df4c-1be4-474b-9f47-15dc2d08f36f" name="CT_NEUTRAL" description="Constant for compound type neutral" persistable="0" isFixedValue="0" formula="47150fcb-c5ee-4fc7-b27d-ca81acf12ae3" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="cd359ea9-199b-42e6-bf1a-fa9f189bd772" name="Density (drug)" description="Density of drug material" persistable="0" isFixedValue="0" formula="2b198812-7b54-4d0e-a6cd-1838f3c06d00" dim="Density" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="19130c95-69a0-4170-8559-2f8a5e67e733" name="Effective molecular weight" description="Effective molecular weight" persistable="0" isFixedValue="0" formula="3dfa88c0-e274-4976-8510-e80070e6cbc9" dim="MolecularWeight" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="f37c3134-50b8-4616-95e0-221168020648" name="F" description="Number of fluorine atoms in molecule" persistable="0" isFixedValue="0" formula="a13ce15f-4da5-4083-88d5-0a5b0b872312" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="843d32c9-e4d7-4ab7-a9e5-c6ef17af44f0" name="Fraction unbound (plasma)" description="Fraction unbound in plasma" persistable="0" isFixedValue="0" formula="59c2e06c-9d9c-4d22-8b8c-b4ec14bbda79" dim="Fraction" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="14380905-dbca-4c75-bbb3-7a92c1496b43" name="Has halogens" description="Supporting parameter for compound" persistable="0" isFixedValue="0" formula="d89cc30f-f8cd-4044-93f2-25b9cf93f6e9" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="bea777de-0ae4-4f0f-9aca-88b973a0bebf" name="I" description="Number of iodine atoms in molecule" persistable="0" isFixedValue="0" formula="e4579c4c-412e-4b77-901f-bf1c6f301066" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="ad2806a5-b4e3-4fdd-86ea-a4f8221acf2b" name="Immediately dissolve particles smaller than" description="Threshold for the particle radius of immediate dissolution" persistable="0" isFixedValue="0" formula="06499842-026e-42d5-8faf-8338daded2c7" dim="Nanolength" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="7d17b3c8-10de-43cb-a040-143f91231282" name="Is diprotic acid" description="Is diprotic acid" persistable="0" isFixedValue="0" formula="fe011bb9-63bf-4abe-982c-67e714eb9ef2" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="9e640f59-0dec-48ca-b30d-29bf5c08b650" name="Is diprotic base" description="Is diprotic base" persistable="0" isFixedValue="0" formula="c2f2c8b1-45e2-4467-9ada-a60d8f8b83dc" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="3ae53513-ad30-4033-b69b-0d29b412d394" name="Is diprotic base monoprotic acid" description="Is diprotic base monoprotic acid" persistable="0" isFixedValue="0" formula="780e828f-b5ee-49fb-9602-df08118794c7" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="efb11591-60be-49e6-bb2f-05930de30462" name="Is floating in lumen" description="Is floating in lumen" persistable="0" isFixedValue="0" formula="c3c57024-3308-4cc7-8372-3a498634ead6" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="c580f07d-47dd-4966-ac33-4950cac0e9bd" name="Is monoprotic acid" description="Is monoprotic acid" persistable="0" isFixedValue="0" formula="1ffe8919-ce6b-4d1b-ad0f-025c20b9c1a1" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="fc56dc75-9bb2-4036-b747-75459e07f672" name="Is monoprotic base" description="Is monoprotic base" persistable="0" isFixedValue="0" formula="261c8b1d-4a70-4e5d-8c50-26da11a8ae53" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="384ea135-0f33-4707-876e-256a5923a13b" name="Is monoprotic base diprotic acid" description="Is monoprotic base diprotic acid" persistable="0" isFixedValue="0" formula="f807db4d-d64b-471b-9bf1-d0b47f08aa73" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="1cf40401-fcfc-4bd9-a881-2d0dc3da26a8" name="Is monoprotic base monoprotic acid" description="Is monoprotic base monoprotic acid" persistable="0" isFixedValue="0" formula="d747cc1c-f2fc-4731-adb1-99f28358d033" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="b0cf8267-e919-4733-b449-86c410179fb3" name="Is neutral" description="Supporting parameter for partition coeffs in RR-Modell" persistable="0" isFixedValue="0" formula="b72804f9-2ec0-46d1-bfb9-b25c304bf709" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="9cf3dc9d-2196-4796-a184-df0aa92e189a" name="Is small molecule" description="Treat compound as small molecule or not (if not, both organ specific and intestinal permeability will be set to zero)" persistable="0" isFixedValue="0" formula="4d0952f5-99e6-40ef-8103-45190d399873" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="959d066d-0e43-4df1-ae98-dd862c72c8ce" name="Is strong base" description="Supporting parameter for partition coeffs in RR-Modell (at least one basic pKa&gt;=7)" persistable="0" isFixedValue="0" formula="40627d66-82e6-45aa-b770-43173bac6f11" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="62351c6f-274f-48e5-9c4d-f44e949f0cc7" name="Is triprotic acid" description="Is triprotic acid" persistable="0" isFixedValue="0" formula="23604d2d-cb66-4134-92a0-efd2f8824bf3" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="7783124f-a92c-4ecf-a32e-bcb0557b9d70" name="Is triprotic base" description="Is triprotic base" persistable="0" isFixedValue="0" formula="f9717cac-a14a-47a3-94e2-8a54145ed3f3" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="386e25dd-6489-49c3-8559-d94e0ebfb4f9" name="Kd (FcRn)" description="Dissociation constant for binding of drug to FcRn" persistable="0" isFixedValue="0" formula="af5c060d-b433-491d-93c8-beb1b785ea4a" dim="MolarConcentration" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="d650769c-5ed0-4bdf-881a-0efe59d50a49" name="Lipophilicity" description="Model dependent lipophilicity measure: LogMA / LogP / ..." persistable="0" isFixedValue="0" formula="0e1e86da-35a7-4cf7-802e-66b42b2a285f" dim="Lipophilicity" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="d35fd10a-c151-43e8-8294-8e9abaec4bee" name="Molecular weight" description="Molecular weight" persistable="0" isFixedValue="0" formula="962377f5-2e59-4bd0-8434-0a53305fb5e1" dim="MolecularWeight" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="c379035c-3282-4d32-bd29-9c2a6a98943b" name="Partition coefficient (water/protein)" description="Partition coefficient water to protein" persistable="0" isFixedValue="0" formula="560afe24-0801-4366-90e5-6a213de72ffd" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="925514f5-e15f-4ae1-8831-0d6d6cf99f28" name="Permeability" description="Permeability" persistable="0" isFixedValue="0" formula="95ea7e0e-7821-4825-9019-549a4a893785" dim="Velocity" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="447d5816-c537-4a77-8dc0-9cc4a51770e5" name="pKa value 0" description="pKa value" persistable="0" isFixedValue="0" formula="70d4ae9f-89f7-4dbf-b378-a0122557bdf4" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="492e7e6a-ff1e-4689-88c4-07ea58b815bb" name="pKa value 1" description="pKa value" persistable="0" isFixedValue="0" formula="8599775f-1cfc-4e49-aac9-5e8d21582aa0" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="8ea452e9-3389-49ff-b64b-7af49650f470" name="pKa value 2" description="pKa value" persistable="0" isFixedValue="0" formula="4bf5cd13-f890-48bc-a749-c7849f209e1c" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="5c8d074f-2db6-420b-8724-3a96bcfe98a9" name="pKa_Acid_0" description="Smallest acid pKa" persistable="0" isFixedValue="0" formula="4426ebce-4576-4306-ba26-9276ce85e1fc" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="7b826e43-8162-43da-9279-aaed62807910" name="pKa_Acid_1" description="Middle acid pKa" persistable="0" isFixedValue="0" formula="13adb5a3-ebe2-47ee-ad79-d6d3b4caecd7" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="f22899d9-b52c-468f-bb26-253fb6a989c5" name="pKa_Acid_2" description="Largest acid pKa" persistable="0" isFixedValue="0" formula="ccba3f94-63e1-4602-abb7-72324672e8ca" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="47c670cf-09d2-458b-a697-c8403f2a888d" name="pKa_Acids_Count" description="Number of acidic groups in compound" persistable="0" isFixedValue="0" formula="e5fba224-dd0b-48b9-b2b6-58320cdc413e" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="1e0c06c8-74cc-4720-8273-b3263d7cfb97" name="pKa_Base_0" description="Smallest base pKa" persistable="0" isFixedValue="0" formula="f08e67b2-3f0f-499e-b30d-e4d0ae2dba59" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="aa134244-f3a8-4d99-a7f8-0024203643ce" name="pKa_Base_1" description="Middle base pKa" persistable="0" isFixedValue="0" formula="4f957f35-6e5f-4207-9f13-3af45171ac94" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="3e77b7c8-e294-4688-bfb3-4d6b4f59ca72" name="pKa_Base_2" description="Largest base pKa" persistable="0" isFixedValue="0" formula="588827f7-e29d-4247-961c-686244ab7ec6" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="c3e002b1-34cd-4f5f-9318-adc7b18edad7" name="pKa_Bases_Count" description="Number of basic groups in compound" persistable="0" isFixedValue="0" formula="4bfaaf73-ce9c-405c-81d1-d5eaeb3ac7e2" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="6fff6c01-e66d-4075-8705-a7132762f747" name="pKa_OneAcid_0" description="Smallest acid pKa for compound with 1 acid group" persistable="0" isFixedValue="0" formula="1ba98e86-dddb-4885-9445-62c22b2cac45" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="64aedf9c-a961-47e1-b841-5963cdc62544" name="pKa_OneBase_0" description="Smallest base pKa for compound with 1 base group" persistable="0" isFixedValue="0" formula="603773bf-5e5c-4257-9a53-f1ad8cf91850" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="3e150ef1-1342-4b84-85e5-13453bda19e2" name="pKa_pH_WS_sol_F1" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="c7869dc9-aeea-4dc8-951e-38db528f4222" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="16993f8c-8db0-47be-ad19-c0cb98ed3f17" name="pKa_pH_WS_sol_F2" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="592d062d-25e4-4383-bffc-0d8e70095d89" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="05d564fc-7fe0-48f3-b2de-78cfb718ab59" name="pKa_pH_WS_sol_F3" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="5a89c8e5-9d1c-48bb-afd9-0a39b820c330" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="364e08b1-0d77-4781-9186-edeed2af9f72" name="pKa_pH_WS_sol_K1" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="ae8fe106-e589-490e-9b19-025db8e6f438" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="6c32233e-cf36-485a-9db9-a13e84da278d" name="pKa_pH_WS_sol_K2" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="05f11b57-25ab-40a4-8d35-6c184f907478" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="f09fe1b2-df7b-4887-a561-210aebf90252" name="pKa_pH_WS_sol_K3" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="00905a5c-afb6-49b3-af8a-d699d3f35392" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="42898c97-6b33-4e9e-8302-d30438161b8c" name="pKa_pH_WS_sol_K4" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="391179c8-77e7-4376-ab6e-a24155a46d5c" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="81a72100-e79b-4336-ad0c-545372dbef52" name="pKa_pH_WS_sol_K5" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="804656e6-b3ae-4d1a-9bca-1a4527484336" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="4c3dbed6-0cba-4e0f-b422-ed519f63dd22" name="pKa_pH_WS_sol_K6" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="77405460-ed39-481b-9f55-1857229242d0" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="941202b8-447c-454c-a52c-cc75ba0cc3f5" name="pKa_pH_WS_sol_K7" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="402da265-25d6-4416-9d3a-4001088a3061" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="859a6791-7e9d-47ad-a9ed-b2c4641277e9" name="pKa_pH_WS_sol_K8" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" persistable="0" isFixedValue="0" formula="bb5c8e0e-95bb-4bc3-a233-ae80c72d802c" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="e4ad2934-b2c2-4c0f-ac67-2db5d3dd12bc" name="pKa_ThreeAcids_0" description="Smallest acid pKa for compound with 3 acid groups" persistable="0" isFixedValue="0" formula="cbd3e432-f7c0-4c31-894d-42ea90630201" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="e18b95c5-5cb4-42de-9b82-456dbca53f3f" name="pKa_ThreeAcids_1" description="Middle acid pKa for compound with 3 acid groups" persistable="0" isFixedValue="0" formula="fa37f31b-967f-45d2-a76b-0eeecdba84fb" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="891a5c96-7842-4f3b-8ea3-f56fb4245c3c" name="pKa_ThreeBases_0" description="Smallest base pKa for compound with 3 base groups" persistable="0" isFixedValue="0" formula="9bdded95-3c75-4628-b649-6fdf54dfd41f" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="4b9f031f-2aea-4552-bdee-9c143f252693" name="pKa_ThreeBases_1" description="Middle base pKa for compound with 3 base groups" persistable="0" isFixedValue="0" formula="f1efd166-55bf-45b7-8a54-2583b96c8cca" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="f23793b7-2573-4921-b5be-b36824541bea" name="pKa_TwoAcids_0" description="Smallest acid pKa for compound with 2 acid groups" persistable="0" isFixedValue="0" formula="fb4dc464-9921-4d36-95f5-087bf530204e" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="62463343-cf2a-42c4-bd69-cd4d06e4d58a" name="pKa_TwoAcids_1" description="Middle acid pKa for compound with 2 acid groups" persistable="0" isFixedValue="0" formula="9f4eacd5-1fda-4a28-81b5-0c1cc676f6ff" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="ea467b34-f3b8-4cab-96f1-59940e7525ed" name="pKa_TwoBases_0" description="Smallest base pKa for compound with 2 base groups" persistable="0" isFixedValue="0" formula="cd365569-a477-4848-b37a-f2c2a1ba1bcb" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="3862a5f7-12c0-4497-90df-147f9e7783b2" name="pKa_TwoBases_1" description="Middle base pKa for compound with 2 base groups" persistable="0" isFixedValue="0" formula="8ac9f732-b720-44b7-b2d4-86e24cbf2a2b" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="c2a9530e-b3d5-4d85-b3be-fe37c2e81b6a" name="Radius (solute)" description="Solute radius" persistable="0" isFixedValue="0" formula="9afe72f6-8ce0-430b-981c-6281f680de9f" dim="Nanolength" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="40079d60-f2d5-496c-9c1c-eb37df335dda" name="Reference pH" description="Reference pH" persistable="0" isFixedValue="0" formula="2785b8c0-2e50-4f79-9942-bfb342bb8ccb" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="9a2f506c-534a-4d95-aba6-9f99d170f392" name="Solubility at reference pH" description="Solubility at reference pH" persistable="0" isFixedValue="0" formula="5a6c5770-8b03-493e-838e-f2b2886ede81" dim="Concentration" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="0fc42bc7-7525-4802-855d-3711894d4752" name="Solubility gain per charge" description="Supporting parameter for calculation of pKa- and pH- dependent values of intestinal solubilty" persistable="0" isFixedValue="0" formula="b6a217e0-8372-417c-bb5f-074803a0da73" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="0" />
-        <Parameter id="778b5630-fd97-4795-8968-392617223b8d" name="Solubility_pKa_pH_Factor" description="pKa/pH-Dependent factor for solubility" persistable="0" isFixedValue="0" formula="1d7f0e1b-a6aa-43ab-91b8-ffa0f43fa938" dim="Dimensionless" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="b0943610-bd54-431d-b9e1-8e4706bbbc40" name="Specific intestinal permeability (transcellular)" description="Specific intestinal permeability (transcellular)" persistable="0" isFixedValue="0" formula="2e21b031-4150-413c-8bfe-428d023baf36" dim="Velocity" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="4695315e-77d2-4d08-b846-0dd0f927f294" name="Total oral drug mass" description="Total oral drug mass" persistable="0" isFixedValue="0" formula="bba2067d-2c4c-4db4-851d-d41cbb10baaf" dim="Amount" quantityType="0" buildMode="Property" visible="0" canBeVaried="0" />
-        <Parameter id="27d28eb4-8fcc-4c18-92c6-475d25f2a148" name="Treat precipitated drug as" description="Treat precipitated drug as either soluble or insoluble" persistable="0" isFixedValue="0" formula="f563d5be-24e3-4a71-a709-1fd8548fed1d" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
-        <Parameter id="e0a736a8-2a70-4f17-b7bc-595bb5bf91d9" name="Use pH- and pKa-dependent penalty factor for charged molecule fraction" description="Penalty factor for charged molecule fraction is used for &quot;Intestinal permeability (transcellular)&quot; only" persistable="0" isFixedValue="0" formula="7d8211a1-d9af-4dbd-a46f-1fd657edf128" dim="Dimensionless" quantityType="0" buildMode="Property" visible="1" canBeVaried="1" />
+        <Parameter id="BQpaTpL08k-79k2fgBWIPg" name="Aqueous diffusion coefficient" description="Aqueous diffusion coefficient&#xA;of the drug" icon="Parameter" persistable="0" isFixedValue="0" dim="Diffusion coefficient" quantityType="Parameter" negativeValuesAllowed="1" formula="txSvdn3Qi0eFz57EAQowQg" buildMode="Property" isDefault="1" displayUnit="dm²/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="z4pnsiwIhE6U5vAB7DlaqQ" name="base_For_KaPL_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent values of KaPL" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="20">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="KtlepVH4e0e57RI6pqil9g" name="base_For_logD_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent logD" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.001">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="SMhpbxgqvk2oTsN6Dh8cxw" name="base_For_P_cell_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent permeability to/from cells" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.001">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="o3oPUNoAGkO4IAqY_8KGKA" name="base_For_Pint_Factor" description="Supporting parameter for calculation of pKa- and pH- dependent intestinal permeability" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="kRf4ZuLFLE6NMqE6-mN7ew" name="Br" description="Number of bromine atoms in molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="95kPZU8vUkGVSvCGTl2s2A" name="Cl" description="Number of chlorine atoms in molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="dbz2DZhBKUuTyTGjtIS8Ag" name="Compound type 0" description="Compound type (-1: acid, +1: base, 0: neutral)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="2byQqRXZ50-UA2PEANJKIQ" name="Compound type 1" description="Compound type (-1: acid, +1: base, 0: neutral)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="7B9IpUe1bEet0OfUXdD5FQ" name="Compound type 2" description="Compound type (-1: acid, +1: base, 0: neutral)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="ldIGomSjj0K1tbtPevFUkQ" name="Concentration" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" formula="KS0RvhqdkE6iSD9ZCkuaQA" isDefault="1" displayUnit="µmol/l">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="2IhG5J-nz0a631y5BenKyw" name="CT_ACID" description="Constant for compound type acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="-1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="0VUqMVFdH0KX91r8TLsUxQ" name="CT_BASE" description="Constant for compound type base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="fXiK6bqag0i1T_jVN_k0vA" name="CT_NEUTRAL" description="Constant for compound type neutral" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="_APGncCuuk-pz4B3dkiJKQ" name="Density (drug)" description="Density of drug material" icon="Parameter" persistable="0" isFixedValue="0" dim="Density" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1" displayUnit="g/cm³">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Wdk_cYqYcUSSgKcL-1F_Sg" name="Effective molecular weight" description="Effective molecular weight" icon="Parameter" persistable="0" isFixedValue="0" dim="Molecular weight" quantityType="Parameter" negativeValuesAllowed="1" formula="R4B76J5_xES-bwD0V4-Eaw" buildMode="Property" isDefault="1" displayUnit="g/mol">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="aix8yID9iEqwbykVSdvg9A" name="F" description="Number of fluorine atoms in molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="wE70an7XPUqYgzgRltmjAA" name="Fraction unbound (plasma)" description="Fraction unbound in plasma" icon="Parameter" persistable="0" isFixedValue="0" dim="Fraction" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Pei0M21f9EapqjvZ-no0Vw" name="Has halogens" description="Supporting parameter for compound" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="UgC4FkZ8bUy4VRgrXxBRdg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="ed2uZX5ptUuZNSO0iz-2Wg" name="I" description="Number of iodine atoms in molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="6BDclEjrsk6G9h61FhJ2tw" name="Immediately dissolve particles smaller than" description="Threshold for the particle radius of immediate dissolution" icon="Parameter" persistable="0" isFixedValue="0" dim="Length" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1E-07" displayUnit="dm">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="ZlSk81ZTYkOdmKqG1EIG_w" name="Is diprotic acid" description="Is diprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="-lEpazMaXECL2cECmijO5w" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="e1py7V8e80CuAmCjvEjzzw" name="Is diprotic base" description="Is diprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="z88_2ktlt0WYVR3zNrEI4w" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="2zm886C91UK0HAPAAHb1YQ" name="Is diprotic base monoprotic acid" description="Is diprotic base monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="2kAuN4ISc0mmzBpjfE5exQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="ps_uZPo_Q0aaW-7DVsNt0A" name="Is floating in lumen" description="Is floating in lumen" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="3OlGc5AHlkuPolAB777-BA" name="Is monoprotic acid" description="Is monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="NPqclKDUXEu43HxlSghvTw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="ydIQhx33tkeH5inv6RFizA" name="Is monoprotic base" description="Is monoprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="pEu5n_jVkUmnFyat9x1pOA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="M7WcSaFp_kazxjn9p2Lo-g" name="Is monoprotic base diprotic acid" description="Is monoprotic base diprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="McjQLaQlbUStSYVN89VisA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="m7-By12iv0WwKBI-8Hi55Q" name="Is monoprotic base monoprotic acid" description="Is monoprotic base monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="D3sGK2m-wkmY4S9HAXQqDQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Vm8IkcsF-Uim_MNTDJV1Rw" name="Is neutral" description="Supporting parameter for partition coeffs in RR-Modell" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="t9A3_RncCEe-6VsJzVVDRw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="TBWWu5it9Uy-s8eWJfmXOQ" name="Is small molecule" description="Treat compound as small molecule or not (if not, both organ specific and intestinal permeability will be set to zero)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="s77Jj3_BCESZaiHrxlQq_g" name="Is strong base" description="Supporting parameter for partition coeffs in RR-Modell (at least one basic pKa&gt;=7)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="gxXfWQ5WI0-5Mp5-aksjqg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="2h4ifoLc8kCsKuH8SoXDlA" name="Is triprotic acid" description="Is triprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="_EL9ispm0kO1wy6gAxVXkg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="9GddVCCnEU2Ar6oEHPnNVw" name="Is triprotic base" description="Is triprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="sqs0VyfLeUC2NcI0TsI-jg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="BnpAH6vTdkyRy-CkU-ErEg" name="Kd (FcRn)" description="Dissociation constant for binding of drug to FcRn" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="999999" displayUnit="µmol/l">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="bcMYkF1StUSWiXgESDyETw" name="Lipophilicity" description="Model dependent lipophilicity measure: LogMA / LogP / ..." icon="Parameter" persistable="0" isFixedValue="0" dim="Log Units" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="3" displayUnit="Log Units">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="tl8v5va9mES2H2KOvMDufw" name="Molecular weight" description="Molecular weight" icon="Parameter" persistable="0" isFixedValue="0" dim="Molecular weight" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="4E-07" displayUnit="g/mol">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="eflAW1tBakKk89N1BjCB9Q" name="Partition coefficient (water/protein)" description="Partition coefficient water to protein" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="et_Z9z3qrUWQWf_K67ihbA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="UScPZ34QJUKvZV-7X_qA4Q" name="Permeability" description="Permeability" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="ST9ewPUpnE-YK8yV_YQilg" buildMode="Property" isDefault="1" displayUnit="cm/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="oHJpfoxqQUevZexdDjEwuA" name="pKa value 0" description="pKa value" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="R3L8zwaf10OZ01fuv4_5ZQ" name="pKa value 1" description="pKa value" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="5yf78pUmgUmbfBoFqyFAtQ" name="pKa value 2" description="pKa value" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="WYMKboSUQka27-oomvBVNw" name="pKa_Acid_0" description="Smallest acid pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="oPf_Gv2bXUWOWAE-AmELkw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="kcAoAsU-h0e85AYGNKNliw" name="pKa_Acid_1" description="Middle acid pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="WW5qavloYE-lujFoLxCkaA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="TFnIzaeivU2b22YOX9Xuow" name="pKa_Acid_2" description="Largest acid pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="SVyCFbx1XkyyzC6_Zssh-w" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="13_l3lwUyEKCz8fo9ZZY7g" name="pKa_Acids_Count" description="Number of acidic groups in compound" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="hVFHSgq4mE2pr2wDGly2Kg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="aWlwCjBArUSX_zDsQ62rBw" name="pKa_Base_0" description="Smallest base pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="BU5bAzzxxE2iG6SFmmTDBQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="wVz7dBEOTEaiopKVPfFk0Q" name="pKa_Base_1" description="Middle base pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="M8KJNlRsPUO_m1iltcp6MA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="hBT6znkzgEqXnGyQr2WC4Q" name="pKa_Base_2" description="Largest base pKa" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="5VjEtnaMVkaxMtRdxgTnvw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="FJAlgwowEUCnsXrd48qo4g" name="pKa_Bases_Count" description="Number of basic groups in compound" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="qnQGGHj5N0yYwVLR28J0Jg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="iUAyh39wVECmMlm47J-NzA" name="pKa_OneAcid_0" description="Smallest acid pKa for compound with 1 acid group" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="HRwuurQc1EaA7ncM4pJB1w" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="uvqwCnzOOkKou53OeRwHxw" name="pKa_OneBase_0" description="Smallest base pKa for compound with 1 base group" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="VgrdscGuxkWoruk0VqGODQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="LgUjIlgAdEya-AjNw6FKsg" name="pKa_pH_WS_sol_F1" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="0Wd2c452xki5zWpUUc_OWw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="LQM0J19gsUu9KT6JgM1jQQ" name="pKa_pH_WS_sol_F2" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="nqxOK6X-ykiHoJUQoY5xHw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="S7jB3vbpx0mbAMgGa0PC1g" name="pKa_pH_WS_sol_F3" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="ISS_B9d4N0aKX_Zb6w1qmA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="f5CyasqTZ0KofwjA1uabfg" name="pKa_pH_WS_sol_K1" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="dY2_MKkdT0mL-wNbBJB2bw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="mdTl40VLZkihvVbWlBP2rQ" name="pKa_pH_WS_sol_K2" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="Szzn0TV2zUq4rihK7WPHOA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="mAGfTg7WzECVSU7EWMl8TA" name="pKa_pH_WS_sol_K3" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CrwUJZDPdkuxvUw3_MfYvg" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Ay6097BKRkKG4x37S-jPEg" name="pKa_pH_WS_sol_K4" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="ebR5s5oYGk2nhp7Iotfttw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="s7DACYIPi0Cz6AAYNffK4g" name="pKa_pH_WS_sol_K5" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="K6Oz-wT3WEuZcxbCaxXV7g" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="3jIxs8Lhfk6J3O8M6rAq8g" name="pKa_pH_WS_sol_K6" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="q19OAc-2IEitwwqwqisjJA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Di01ot0MsESGjn8L1yRVZA" name="pKa_pH_WS_sol_K7" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="J-GLHfhTdkaWVR-lyMnR3g" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="t16Ntysj3EyUSYDX_Gv8pQ" name="pKa_pH_WS_sol_K8" description="Supporting parameter for calculation of pKa- and pH- dependent solubilty scale factor at refPH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="78-kbB0qc0CtHWLIQiWMnA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="f4yQmHxH1Eeg_JB2vJ0_CA" name="pKa_ThreeAcids_0" description="Smallest acid pKa for compound with 3 acid groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="vHT9x5jzPEm5GXz_0oOFYQ" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="Jly0H-pj7kaMs5qwY2D_RA" name="pKa_ThreeAcids_1" description="Middle acid pKa for compound with 3 acid groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="v4oEcuuGzEC4KPs1famoqw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="xd3SD8FrgUujNUh_p60slA" name="pKa_ThreeBases_0" description="Smallest base pKa for compound with 3 base groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="RPrfJEOyd0u4CcBIIb2hEA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="QNFm3rY3tUK3GBL1q1l2gQ" name="pKa_ThreeBases_1" description="Middle base pKa for compound with 3 base groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="Q-1Sy1dGj0qhtdiBpiCSvw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="1j1IN44_fUeLCVaVvYtJHQ" name="pKa_TwoAcids_0" description="Smallest acid pKa for compound with 2 acid groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="2xsDcah1h0iQ7F5tc_jRlA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="JO7ldo8rfEqSeZu0ujMJ9Q" name="pKa_TwoAcids_1" description="Middle acid pKa for compound with 2 acid groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="k4dwYQRYEEGdYiS5bqzvQA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="VSy614dtb0mKrbxkHi8vxQ" name="pKa_TwoBases_0" description="Smallest base pKa for compound with 2 base groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="f7AVAt7mVUezoHQiNVw1iw" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="pQwrX4OkgUy2lrQO1jxRVw" name="pKa_TwoBases_1" description="Middle base pKa for compound with 2 base groups" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="8uBCH8bTCkWgOgtPqEqf7A" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="XNshlk3BgUqbZU7UrqEsJw" name="Radius (solute)" description="Solute radius" icon="Parameter" persistable="0" isFixedValue="0" dim="Length" quantityType="Parameter" negativeValuesAllowed="1" formula="D6SIvwugH0GMrd80Qqztiw" buildMode="Property" isDefault="1" displayUnit="dm">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="sZQXAW3nTUOH1zSBJWvhRA" name="Reference pH" description="Reference pH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="7">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="1QsQkoiP20uxQmKSgVLWxA" name="Solubility at reference pH" description="Solubility at reference pH" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (mass)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.009999" displayUnit="kg/l">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="rwJijcY5fE2FWZVSAZVwjQ" name="Solubility gain per charge" description="Supporting parameter for calculation of pKa- and pH- dependent values of intestinal solubilty" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1000">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="WkM0G56YkEiVNh5Rfeow7Q" name="Solubility_pKa_pH_Factor" description="pKa/pH-Dependent factor for solubility" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="hl_xHXhJFE2Adq6jBGTSpA" buildMode="Property" isDefault="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="KBe3SXkje0GIxXwMpXaZsA" name="Specific intestinal permeability (transcellular)" description="Specific intestinal permeability (transcellular)" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="MHOQGqWip0qzqqfWs4Av6A" buildMode="Property" isDefault="1" displayUnit="cm/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="ZdHbyDZgKEGdOc-fCAoXrA" name="Total oral drug mass" description="Total oral drug mass" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0" displayUnit="µmol">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="h3HiotzX4kmdistmWodWAA" name="Treat precipitated drug as" description="Treat precipitated drug as either soluble or insoluble" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="8F_YE6JfsUGsHY6r0D3ntw" name="Use pH- and pKa-dependent penalty factor for charged molecule fraction" description="Penalty factor for charged molecule fraction is used for &quot;Intestinal permeability (transcellular)&quot; only" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="VF_aeiKgAEWl6vdcd0Kc3g" name="Calculated specific intestinal permeability (transcellular)" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="MHOQGqWip0qzqqfWs4Av6A" buildMode="Global" isDefault="1" displayUnit="cm/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
+        <Parameter id="9OPzn0P2bkSdV3V_8qVZFg" name="Total drug mass" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" formula="oosTscPgCUiJqQI_z4d_Ig" buildMode="Property" isDefault="1" displayUnit="µmol">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
       </Children>
       <UsedCalculationMethods>
         <UsedCalculationMethod category="DistributionCellular" calculationMethod="No Calculation Method" />
@@ -205,7 +532,7 @@
   </Builders>
   <FormulaCache>
     <Formulas>
-      <Formula id="e5fba224-dd0b-48b9-b2b6-58320cdc413e" name="PARAM_pKa_Acids_Count" dim="Dimensionless" formula="(CT0 = CT_ACID ? 1 : 0) + (CT1 = CT_ACID ? 1 : 0) + (CT2 = CT_ACID ? 1 : 0)">
+      <Formula id="hVFHSgq4mE2pr2wDGly2Kg" name="PARAM_pKa_Acids_Count" formula="(CT0 = CT_ACID ? 1 : 0) + (CT1 = CT_ACID ? 1 : 0) + (CT2 = CT_ACID ? 1 : 0)">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -213,27 +540,27 @@
           <Path path="6" as="7" />
         </Paths>
       </Formula>
-      <Formula id="05f11b57-25ab-40a4-8d35-6c184f907478" name="PARAM_pKa_pH_WS_sol_K2" dim="Dimensionless" formula="(1-F1)*F2*F3">
+      <Formula id="Szzn0TV2zUq4rihK7WPHOA" name="PARAM_pKa_pH_WS_sol_K2" formula="(1-F1)*F2*F3">
         <Paths>
           <Path path="8" as="9" />
           <Path path="10" as="11" />
           <Path path="12" as="13" />
         </Paths>
       </Formula>
-      <Formula id="4426ebce-4576-4306-ba26-9276ce85e1fc" name="PARAM_pKa_Acid_0" dim="Dimensionless" formula="pKa_OneAcid_0+pKa_TwoAcids_0+pKa_ThreeAcids_0">
+      <Formula id="oPf_Gv2bXUWOWAE-AmELkw" name="PARAM_pKa_Acid_0" formula="pKa_OneAcid_0+pKa_TwoAcids_0+pKa_ThreeAcids_0">
         <Paths>
           <Path path="14" as="15" />
           <Path path="16" as="17" />
           <Path path="18" as="19" />
         </Paths>
       </Formula>
-      <Formula id="23604d2d-cb66-4134-92a0-efd2f8824bf3" name="PARAM_IsTriproticAcid" dim="Dimensionless" formula="pKa_Acids_Count=3 &amp; pKa_Bases_Count = 0 ? 1 : 0">
+      <Formula id="_EL9ispm0kO1wy6gAxVXkg" name="PARAM_IsTriproticAcid" formula="pKa_Acids_Count=3 &amp; pKa_Bases_Count = 0 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="ccba3f94-63e1-4602-abb7-72324672e8ca" name="PARAM_pKa_Acid_2" dim="Dimensionless" formula="IsTriproticAcid ? Max (pKa_0; Max (pKa_1; pKa_2)) : 0">
+      <Formula id="SVyCFbx1XkyyzC6_Zssh-w" name="PARAM_pKa_Acid_2" formula="IsTriproticAcid ? Max (pKa_0; Max (pKa_1; pKa_2)) : 0">
         <Paths>
           <Path path="24" as="25" />
           <Path path="26" as="27" />
@@ -241,7 +568,7 @@
           <Path path="30" as="31" />
         </Paths>
       </Formula>
-      <Formula id="40627d66-82e6-45aa-b770-43173bac6f11" name="PARAM_HasStrongBase" dim="Dimensionless" formula="(CT_0=1 AND pKa_0&gt;=7) OR (CT_1=1 AND pKa_1&gt;=7) OR (CT_2=1 AND pKa_2&gt;=7)">
+      <Formula id="gxXfWQ5WI0-5Mp5-aksjqg" name="PARAM_HasStrongBase" formula="(CT_0=1 AND pKa_0&gt;=7) OR (CT_1=1 AND pKa_1&gt;=7) OR (CT_2=1 AND pKa_2&gt;=7)">
         <Paths>
           <Path path="0" as="32" />
           <Path path="2" as="33" />
@@ -251,20 +578,20 @@
           <Path path="30" as="31" />
         </Paths>
       </Formula>
-      <Formula id="f08e67b2-3f0f-499e-b30d-e4d0ae2dba59" name="PARAM_pKa_Base_0" dim="Dimensionless" formula="pKa_OneBase_0+pKa_TwoBases_0+pKa_ThreeBases_0">
+      <Formula id="BU5bAzzxxE2iG6SFmmTDBQ" name="PARAM_pKa_Base_0" formula="pKa_OneBase_0+pKa_TwoBases_0+pKa_ThreeBases_0">
         <Paths>
           <Path path="35" as="36" />
           <Path path="37" as="38" />
           <Path path="39" as="40" />
         </Paths>
       </Formula>
-      <Formula id="4f957f35-6e5f-4207-9f13-3af45171ac94" name="PARAM_pKa_Base_1" dim="Dimensionless" formula="pKa_TwoBases_1+pKa_ThreeBases_1">
+      <Formula id="M8KJNlRsPUO_m1iltcp6MA" name="PARAM_pKa_Base_1" formula="pKa_TwoBases_1+pKa_ThreeBases_1">
         <Paths>
           <Path path="41" as="42" />
           <Path path="43" as="44" />
         </Paths>
       </Formula>
-      <Formula id="588827f7-e29d-4247-961c-686244ab7ec6" name="PARAM_pKa_Base_2" dim="Dimensionless" formula="IsTriproticBase ? Max (pKa_0; Max (pKa_1; pKa_2)) : 0">
+      <Formula id="5VjEtnaMVkaxMtRdxgTnvw" name="PARAM_pKa_Base_2" formula="IsTriproticBase ? Max (pKa_0; Max (pKa_1; pKa_2)) : 0">
         <Paths>
           <Path path="45" as="46" />
           <Path path="26" as="27" />
@@ -272,7 +599,7 @@
           <Path path="30" as="31" />
         </Paths>
       </Formula>
-      <Formula id="4bfaaf73-ce9c-405c-81d1-d5eaeb3ac7e2" name="PARAM_pKa_Bases_Count" dim="Dimensionless" formula="(CT0 = CT_BASE ? 1 : 0) + (CT1 = CT_BASE ? 1 : 0) + (CT2 = CT_BASE ? 1 : 0)">
+      <Formula id="qnQGGHj5N0yYwVLR28J0Jg" name="PARAM_pKa_Bases_Count" formula="(CT0 = CT_BASE ? 1 : 0) + (CT1 = CT_BASE ? 1 : 0) + (CT2 = CT_BASE ? 1 : 0)">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -280,7 +607,7 @@
           <Path path="47" as="48" />
         </Paths>
       </Formula>
-      <Formula id="1ba98e86-dddb-4885-9445-62c22b2cac45" name="PARAM_pKa_OneAcid_0" dim="Dimensionless" formula="pKa_Acids_Count=1 ? (CT0=CT_ACID ? pKa_0 : (CT1=CT_ACID ? pKa_1 : pKa_2)) : 0">
+      <Formula id="HRwuurQc1EaA7ncM4pJB1w" name="PARAM_pKa_OneAcid_0" formula="pKa_Acids_Count=1 ? (CT0=CT_ACID ? pKa_0 : (CT1=CT_ACID ? pKa_1 : pKa_2)) : 0">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -291,7 +618,7 @@
           <Path path="20" as="21" />
         </Paths>
       </Formula>
-      <Formula id="603773bf-5e5c-4257-9a53-f1ad8cf91850" name="PARAM_pKa_OneBase_0" dim="Dimensionless" formula="pKa_Bases_Count=1 ? (CT0=CT_BASE ? pKa_0 : (CT1=CT_BASE ? pKa_1 : pKa_2)) : 0">
+      <Formula id="VgrdscGuxkWoruk0VqGODQ" name="PARAM_pKa_OneBase_0" formula="pKa_Bases_Count=1 ? (CT0=CT_BASE ? pKa_0 : (CT1=CT_BASE ? pKa_1 : pKa_2)) : 0">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -302,7 +629,7 @@
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="c7869dc9-aeea-4dc8-951e-38db528f4222" name="PARAM_pKa_pH_WS_sol_F1" dim="Dimensionless" formula="CT0 != CT_NEUTRAL ?  1/(1+10^(CT0*(pKa_0-pH))) : 1">
+      <Formula id="0Wd2c452xki5zWpUUc_OWw" name="PARAM_pKa_pH_WS_sol_F1" formula="CT0 != CT_NEUTRAL ?  1/(1+10^(CT0*(pKa_0-pH))) : 1">
         <Paths>
           <Path path="0" as="1" />
           <Path path="49" as="50" />
@@ -310,7 +637,7 @@
           <Path path="51" as="52" />
         </Paths>
       </Formula>
-      <Formula id="592d062d-25e4-4383-bffc-0d8e70095d89" name="PARAM_pKa_pH_WS_sol_F2" dim="Dimensionless" formula="CT1 != CT_NEUTRAL ?  1/(1+10^(CT1*(pKa_1-pH))) : 1">
+      <Formula id="nqxOK6X-ykiHoJUQoY5xHw" name="PARAM_pKa_pH_WS_sol_F2" formula="CT1 != CT_NEUTRAL ?  1/(1+10^(CT1*(pKa_1-pH))) : 1">
         <Paths>
           <Path path="2" as="3" />
           <Path path="49" as="50" />
@@ -318,7 +645,7 @@
           <Path path="51" as="52" />
         </Paths>
       </Formula>
-      <Formula id="5a89c8e5-9d1c-48bb-afd9-0a39b820c330" name="PARAM_pKa_pH_WS_sol_F3" dim="Dimensionless" formula="CT2 != CT_NEUTRAL ?  1/(1+10^(CT2*(pKa_2-pH))) : 1">
+      <Formula id="ISS_B9d4N0aKX_Zb6w1qmA" name="PARAM_pKa_pH_WS_sol_F3" formula="CT2 != CT_NEUTRAL ?  1/(1+10^(CT2*(pKa_2-pH))) : 1">
         <Paths>
           <Path path="4" as="5" />
           <Path path="49" as="50" />
@@ -326,13 +653,13 @@
           <Path path="51" as="52" />
         </Paths>
       </Formula>
-      <Formula id="13adb5a3-ebe2-47ee-ad79-d6d3b4caecd7" name="PARAM_pKa_Acid_1" dim="Dimensionless" formula="pKa_TwoAcids_1+pKa_ThreeAcids_1">
+      <Formula id="WW5qavloYE-lujFoLxCkaA" name="PARAM_pKa_Acid_1" formula="pKa_TwoAcids_1+pKa_ThreeAcids_1">
         <Paths>
           <Path path="53" as="54" />
           <Path path="55" as="56" />
         </Paths>
       </Formula>
-      <Formula id="3dfa88c0-e274-4976-8510-e80070e6cbc9" name="PARAM_MWEff" dim="MolecularWeight" formula="MW - F * 17 - Cl * 22 - Br * 62 - I * 98">
+      <Formula id="R4B76J5_xES-bwD0V4-Eaw" name="PARAM_MWEff" dim="Molecular weight" formula="MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098">
         <Paths>
           <Path path="57" as="58" />
           <Path path="59" as="60" />
@@ -341,69 +668,69 @@
           <Path path="65" as="66" dim="67" />
         </Paths>
       </Formula>
-      <Formula id="f9717cac-a14a-47a3-94e2-8a54145ed3f3" name="PARAM_IsTriproticBase" dim="Dimensionless" formula="pKa_Acids_Count=0 &amp; pKa_Bases_Count = 3 ? 1 : 0">
+      <Formula id="sqs0VyfLeUC2NcI0TsI-jg" name="PARAM_IsTriproticBase" formula="pKa_Acids_Count=0 &amp; pKa_Bases_Count = 3 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="00905a5c-afb6-49b3-af8a-d699d3f35392" name="PARAM_pKa_pH_WS_sol_K3" dim="Dimensionless" formula="F1*(1-F2)*F3">
+      <Formula id="CrwUJZDPdkuxvUw3_MfYvg" name="PARAM_pKa_pH_WS_sol_K3" formula="F1*(1-F2)*F3">
         <Paths>
           <Path path="8" as="9" />
           <Path path="10" as="11" />
           <Path path="12" as="13" />
         </Paths>
       </Formula>
-      <Formula id="fe011bb9-63bf-4abe-982c-67e714eb9ef2" name="PARAM_IsDiproticAcid" dim="Dimensionless" formula="pKa_Acids_Count=2 &amp; pKa_Bases_Count = 0 ? 1 : 0">
+      <Formula id="-lEpazMaXECL2cECmijO5w" name="PARAM_IsDiproticAcid" formula="pKa_Acids_Count=2 &amp; pKa_Bases_Count = 0 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="c2f2c8b1-45e2-4467-9ada-a60d8f8b83dc" name="PARAM_IsDiproticBase" dim="Dimensionless" formula="pKa_Acids_Count=0 &amp; pKa_Bases_Count = 2 ? 1 : 0">
+      <Formula id="z88_2ktlt0WYVR3zNrEI4w" name="PARAM_IsDiproticBase" formula="pKa_Acids_Count=0 &amp; pKa_Bases_Count = 2 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="780e828f-b5ee-49fb-9602-df08118794c7" name="PARAM_IsDiproticBaseMonoproticAcid" dim="Dimensionless" formula="pKa_Acids_Count=1 &amp; pKa_Bases_Count = 2 ? 1 : 0">
+      <Formula id="2kAuN4ISc0mmzBpjfE5exQ" name="PARAM_IsDiproticBaseMonoproticAcid" formula="pKa_Acids_Count=1 &amp; pKa_Bases_Count = 2 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="1ffe8919-ce6b-4d1b-ad0f-025c20b9c1a1" name="PARAM_IsMonoproticAcid" dim="Dimensionless" formula="pKa_Acids_Count=1 &amp; pKa_Bases_Count = 0 ? 1 : 0">
+      <Formula id="NPqclKDUXEu43HxlSghvTw" name="PARAM_IsMonoproticAcid" formula="pKa_Acids_Count=1 &amp; pKa_Bases_Count = 0 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="261c8b1d-4a70-4e5d-8c50-26da11a8ae53" name="PARAM_IsMonoproticBase" dim="Dimensionless" formula="pKa_Acids_Count=0 &amp; pKa_Bases_Count = 1 ? 1 : 0">
+      <Formula id="pEu5n_jVkUmnFyat9x1pOA" name="PARAM_IsMonoproticBase" formula="pKa_Acids_Count=0 &amp; pKa_Bases_Count = 1 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="f807db4d-d64b-471b-9bf1-d0b47f08aa73" name="PARAM_IsMonoproticBaseDiproticAcid" dim="Dimensionless" formula="pKa_Acids_Count=2 &amp; pKa_Bases_Count = 1 ? 1 : 0">
+      <Formula id="McjQLaQlbUStSYVN89VisA" name="PARAM_IsMonoproticBaseDiproticAcid" formula="pKa_Acids_Count=2 &amp; pKa_Bases_Count = 1 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="d747cc1c-f2fc-4731-adb1-99f28358d033" name="PARAM_IsMonoproticBaseMonoproticAcid" dim="Dimensionless" formula="pKa_Acids_Count=1 &amp; pKa_Bases_Count = 1 ? 1 : 0">
+      <Formula id="D3sGK2m-wkmY4S9HAXQqDQ" name="PARAM_IsMonoproticBaseMonoproticAcid" formula="pKa_Acids_Count=1 &amp; pKa_Bases_Count = 1 ? 1 : 0">
         <Paths>
           <Path path="20" as="21" />
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="b72804f9-2ec0-46d1-bfb9-b25c304bf709" name="PARAM_IsNeutral" dim="Dimensionless" formula="CT_0 = 0 AND CT_1 = 0 AND CT_2 = 0">
+      <Formula id="t9A3_RncCEe-6VsJzVVDRw" name="PARAM_IsNeutral" formula="CT_0 = 0 AND CT_1 = 0 AND CT_2 = 0">
         <Paths>
           <Path path="0" as="32" />
           <Path path="2" as="33" />
           <Path path="4" as="34" />
         </Paths>
       </Formula>
-      <Formula id="d89cc30f-f8cd-4044-93f2-25b9cf93f6e9" name="PARAM_HasHalogens" dim="Dimensionless" formula="Br + Chlor + F + I &gt; 0">
+      <Formula id="UgC4FkZ8bUy4VRgrXxBRdg" name="PARAM_HasHalogens" formula="Br + Chlor + F + I &gt; 0">
         <Paths>
           <Path path="57" as="58" />
           <Path path="59" as="68" />
@@ -411,14 +738,14 @@
           <Path path="63" as="64" />
         </Paths>
       </Formula>
-      <Formula id="ae8fe106-e589-490e-9b19-025db8e6f438" name="PARAM_pKa_pH_WS_sol_K1" dim="Dimensionless" formula="F1*F2*F3">
+      <Formula id="dY2_MKkdT0mL-wNbBJB2bw" name="PARAM_pKa_pH_WS_sol_K1" formula="F1*F2*F3">
         <Paths>
           <Path path="8" as="9" />
           <Path path="10" as="11" />
           <Path path="12" as="13" />
         </Paths>
       </Formula>
-      <Formula id="cd365569-a477-4848-b37a-f2c2a1ba1bcb" name="PARAM_pKa_TwoBases_0" dim="Dimensionless" formula="pKa_Bases_Count=2 ? (CT0 != CT_BASE ? Min(pKa_1;pKa_2) : (CT1 != CT_BASE ? Min(pKa_0;pKa_2) : Min(pKa_0;pKa_1))) : 0">
+      <Formula id="f7AVAt7mVUezoHQiNVw1iw" name="PARAM_pKa_TwoBases_0" formula="pKa_Bases_Count=2 ? (CT0 != CT_BASE ? Min(pKa_1;pKa_2) : (CT1 != CT_BASE ? Min(pKa_0;pKa_2) : Min(pKa_0;pKa_1))) : 0">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -429,42 +756,42 @@
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="391179c8-77e7-4376-ab6e-a24155a46d5c" name="PARAM_pKa_pH_WS_sol_K4" dim="Dimensionless" formula="F1*F2*(1-F3)">
+      <Formula id="ebR5s5oYGk2nhp7Iotfttw" name="PARAM_pKa_pH_WS_sol_K4" formula="F1*F2*(1-F3)">
         <Paths>
           <Path path="8" as="9" />
           <Path path="10" as="11" />
           <Path path="12" as="13" />
         </Paths>
       </Formula>
-      <Formula id="804656e6-b3ae-4d1a-9bca-1a4527484336" name="PARAM_pKa_pH_WS_sol_K5" dim="Dimensionless" formula="(1-F1)*(1-F2)*F3">
+      <Formula id="K6Oz-wT3WEuZcxbCaxXV7g" name="PARAM_pKa_pH_WS_sol_K5" formula="(1-F1)*(1-F2)*F3">
         <Paths>
           <Path path="8" as="9" />
           <Path path="10" as="11" />
           <Path path="12" as="13" />
         </Paths>
       </Formula>
-      <Formula id="77405460-ed39-481b-9f55-1857229242d0" name="PARAM_pKa_pH_WS_sol_K6" dim="Dimensionless" formula="(1-F1)*F2*(1-F3)">
+      <Formula id="q19OAc-2IEitwwqwqisjJA" name="PARAM_pKa_pH_WS_sol_K6" formula="(1-F1)*F2*(1-F3)">
         <Paths>
           <Path path="8" as="9" />
           <Path path="10" as="11" />
           <Path path="12" as="13" />
         </Paths>
       </Formula>
-      <Formula id="402da265-25d6-4416-9d3a-4001088a3061" name="PARAM_pKa_pH_WS_sol_K7" dim="Dimensionless" formula="F1*(1-F2)*(1-F3)">
+      <Formula id="J-GLHfhTdkaWVR-lyMnR3g" name="PARAM_pKa_pH_WS_sol_K7" formula="F1*(1-F2)*(1-F3)">
         <Paths>
           <Path path="8" as="9" />
           <Path path="10" as="11" />
           <Path path="12" as="13" />
         </Paths>
       </Formula>
-      <Formula id="bb5c8e0e-95bb-4bc3-a233-ae80c72d802c" name="PARAM_pKa_pH_WS_sol_K8" dim="Dimensionless" formula="(1-F1)*(1-F2)*(1-F3)">
+      <Formula id="78-kbB0qc0CtHWLIQiWMnA" name="PARAM_pKa_pH_WS_sol_K8" formula="(1-F1)*(1-F2)*(1-F3)">
         <Paths>
           <Path path="8" as="9" />
           <Path path="10" as="11" />
           <Path path="12" as="13" />
         </Paths>
       </Formula>
-      <Formula id="cbd3e432-f7c0-4c31-894d-42ea90630201" name="PARAM_pKa_ThreeAcids_0" dim="Dimensionless" formula="IsTriproticAcid ? Min (pKa_0; Min (pKa_1; pKa_2)) : 0">
+      <Formula id="vHT9x5jzPEm5GXz_0oOFYQ" name="PARAM_pKa_ThreeAcids_0" formula="IsTriproticAcid ? Min (pKa_0; Min (pKa_1; pKa_2)) : 0">
         <Paths>
           <Path path="24" as="25" />
           <Path path="26" as="27" />
@@ -472,7 +799,7 @@
           <Path path="30" as="31" />
         </Paths>
       </Formula>
-      <Formula id="fa37f31b-967f-45d2-a76b-0eeecdba84fb" name="PARAM_pKa_ThreeAcids_1" dim="Dimensionless" formula="IsTriproticAcid ? (pKa_0 &lt;= pKa_Acid_0 ? min(pKa_1; pKa_2) : (pKa_0 &gt;= pKa_Acid_2 ? max(pKa_1; pKa_2) : pKa_0)) : 0">
+      <Formula id="v4oEcuuGzEC4KPs1famoqw" name="PARAM_pKa_ThreeAcids_1" formula="IsTriproticAcid ? (pKa_0 &lt;= pKa_Acid_0 ? min(pKa_1; pKa_2) : (pKa_0 &gt;= pKa_Acid_2 ? max(pKa_1; pKa_2) : pKa_0)) : 0">
         <Paths>
           <Path path="24" as="25" />
           <Path path="26" as="27" />
@@ -482,7 +809,7 @@
           <Path path="71" as="72" />
         </Paths>
       </Formula>
-      <Formula id="9bdded95-3c75-4628-b649-6fdf54dfd41f" name="PARAM_pKa_ThreeBases_0" dim="Dimensionless" formula="IsTriproticBase ? Min (pKa_0; Min (pKa_1; pKa_2)) : 0">
+      <Formula id="RPrfJEOyd0u4CcBIIb2hEA" name="PARAM_pKa_ThreeBases_0" formula="IsTriproticBase ? Min (pKa_0; Min (pKa_1; pKa_2)) : 0">
         <Paths>
           <Path path="45" as="46" />
           <Path path="26" as="27" />
@@ -490,7 +817,7 @@
           <Path path="30" as="31" />
         </Paths>
       </Formula>
-      <Formula id="f1efd166-55bf-45b7-8a54-2583b96c8cca" name="PARAM_pKa_ThreeBases_1" dim="Dimensionless" formula="IsTriproticBase ? (pKa_0 &lt;= pKa_Base_0 ? min(pKa_1; pKa_2) : (pKa_0 &gt;= pKa_Base_2 ? max(pKa_1; pKa_2) : pKa_0)) : 0">
+      <Formula id="Q-1Sy1dGj0qhtdiBpiCSvw" name="PARAM_pKa_ThreeBases_1" formula="IsTriproticBase ? (pKa_0 &lt;= pKa_Base_0 ? min(pKa_1; pKa_2) : (pKa_0 &gt;= pKa_Base_2 ? max(pKa_1; pKa_2) : pKa_0)) : 0">
         <Paths>
           <Path path="45" as="46" />
           <Path path="26" as="27" />
@@ -500,7 +827,7 @@
           <Path path="75" as="76" />
         </Paths>
       </Formula>
-      <Formula id="9f4eacd5-1fda-4a28-81b5-0c1cc676f6ff" name="PARAM_pKa_TwoAcids_1" dim="Dimensionless" formula="pKa_Acids_Count=2 ? (CT0 != CT_ACID ? Max(pKa_1;pKa_2) : (CT1 != CT_ACID ? Max(pKa_0;pKa_2) : Max(pKa_0;pKa_1))) : 0">
+      <Formula id="k4dwYQRYEEGdYiS5bqzvQA" name="PARAM_pKa_TwoAcids_1" formula="pKa_Acids_Count=2 ? (CT0 != CT_ACID ? Max(pKa_1;pKa_2) : (CT1 != CT_ACID ? Max(pKa_0;pKa_2) : Max(pKa_0;pKa_1))) : 0">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -511,7 +838,7 @@
           <Path path="20" as="21" />
         </Paths>
       </Formula>
-      <Formula id="8ac9f732-b720-44b7-b2d4-86e24cbf2a2b" name="PARAM_pKa_TwoBases_1" dim="Dimensionless" formula="pKa_Bases_Count=2 ? (CT0 != CT_BASE ? Max(pKa_1;pKa_2) : (CT1 != CT_BASE ? Max(pKa_0;pKa_2) : Max(pKa_0;pKa_1))) : 0">
+      <Formula id="8uBCH8bTCkWgOgtPqEqf7A" name="PARAM_pKa_TwoBases_1" formula="pKa_Bases_Count=2 ? (CT0 != CT_BASE ? Max(pKa_1;pKa_2) : (CT1 != CT_BASE ? Max(pKa_0;pKa_2) : Max(pKa_0;pKa_1))) : 0">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -522,7 +849,7 @@
           <Path path="22" as="23" />
         </Paths>
       </Formula>
-      <Formula id="1d7f0e1b-a6aa-43ab-91b8-ffa0f43fa938" name="PARAM_Solubility_pKa_RefpH_Factor" dim="Dimensionless" formula="K1+K2/base^(CT0^2)+K3/base^(CT1^2)+K4/base^(CT2^2)+K5/base^max(CT0+CT1;-CT0-CT1)+K6/base^max(CT0+CT2;-CT0-CT2)+K7/base^max(CT1+CT2;-CT1-CT2)+K8/base^max(CT0+CT1+CT2;-CT0-CT1-CT2)">
+      <Formula id="hl_xHXhJFE2Adq6jBGTSpA" name="PARAM_Solubility_pKa_RefpH_Factor" formula="K1+K2/base^(CT0^2)+K3/base^(CT1^2)+K4/base^(CT2^2)+K5/base^max(CT0+CT1;-CT0-CT1)+K6/base^max(CT0+CT2;-CT0-CT2)+K7/base^max(CT1+CT2;-CT1-CT2)+K8/base^max(CT0+CT1+CT2;-CT0-CT1-CT2)">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -538,7 +865,7 @@
           <Path path="93" as="94" />
         </Paths>
       </Formula>
-      <Formula id="fb4dc464-9921-4d36-95f5-087bf530204e" name="PARAM_pKa_TwoAcids_0" dim="Dimensionless" formula="pKa_Acids_Count=2 ? (CT0 != CT_ACID ? Min(pKa_1;pKa_2) : (CT1 != CT_ACID ? Min(pKa_0;pKa_2) : Min(pKa_0;pKa_1))) : 0">
+      <Formula id="2xsDcah1h0iQ7F5tc_jRlA" name="PARAM_pKa_TwoAcids_0" formula="pKa_Acids_Count=2 ? (CT0 != CT_ACID ? Min(pKa_1;pKa_2) : (CT1 != CT_ACID ? Min(pKa_0;pKa_2) : Min(pKa_0;pKa_1))) : 0">
         <Paths>
           <Path path="0" as="1" />
           <Path path="2" as="3" />
@@ -549,110 +876,52 @@
           <Path path="20" as="21" />
         </Paths>
       </Formula>
-      <Formula id="95ea7e0e-7821-4825-9019-549a4a893785" name="PARAM_P" dim="Velocity" formula="IsSmallMolecule ? (MWEff / 336) ^ (-6) * 10^LogMA / 5 * 1E-4 : 0">
+      <Formula id="ST9ewPUpnE-YK8yV_YQilg" name="PARAM_P" dim="Velocity" formula="IsSmallMolecule ? (MWEff *1E9 / 336) ^ (-6) * 10^LogMA / 5 * 1E-4 *1E-1: 0">
         <Paths>
           <Path path="95" as="96" dim="67" />
           <Path path="97" as="98" />
           <Path path="99" as="100" dim="101" />
         </Paths>
       </Formula>
-      <Formula id="2e21b031-4150-413c-8bfe-428d023baf36" name="PARAM_P_int_InVitro" dim="Velocity" formula="IsSmallMolecule ? (266 * (MWEff ^ ( - 4.5) * 10^LogMA))*60 : 0">
+      <Formula id="MHOQGqWip0qzqqfWs4Av6A" name="PARAM_P_int_InVitro" dim="Velocity" formula="IsSmallMolecule ? 266 * (MWEff * 1E9) ^ ( - 4.5) * 10^LogMA * 60 *1E-1 : 0">
         <Paths>
           <Path path="95" as="96" dim="67" />
           <Path path="97" as="98" />
           <Path path="99" as="100" dim="101" />
         </Paths>
       </Formula>
-      <Formula id="560afe24-0801-4366-90e5-6a213de72ffd" name="PARAM_KProt" dim="Dimensionless" formula="(0.81 + 0.11 * 10^LogMA) / 24.92 * 5.0">
+      <Formula id="et_Z9z3qrUWQWf_K67ihbA" name="PARAM_KProt" formula="(0.81 + 0.11 * 10^LogMA) / 24.92 * 5.0">
         <Paths>
           <Path path="99" as="100" dim="101" />
         </Paths>
       </Formula>
-      <Formula id="ecf1d1dd-0642-4c4a-821d-46f238cc8c73" name="PARAM_Aqueous_diffusion_coefficient" dim="DiffusionCoefficient" formula="60 * 10^(-4.113-0.4609*Log10(MW))">
+      <Formula id="txSvdn3Qi0eFz57EAQowQg" name="PARAM_Aqueous_diffusion_coefficient" dim="Diffusion coefficient" formula="60 * 10^(-4.113-0.4609*Log10(MW * 1E9)) *1E-2">
         <Paths>
           <Path path="65" as="66" dim="67" />
         </Paths>
       </Formula>
-      <Formula id="9afe72f6-8ce0-430b-981c-6281f680de9f" name="PARAM_Ae" dim="Nanolength" formula="0,0333 * MW ^ 0,4226">
+      <Formula id="D6SIvwugH0GMrd80Qqztiw" name="PARAM_Ae" dim="Length" formula="0,0333 * (MW * 1E9) ^ 0,4226 * 1E-8">
         <Paths>
           <Path path="65" as="66" dim="67" />
         </Paths>
       </Formula>
-      <Formula id="e1406baf-c159-4aba-92f0-080bc51c5a56" name="ConcFormula" dim="MolarConcentration" formula="M/V">
+      <Formula id="KS0RvhqdkE6iSD9ZCkuaQA" name="ConcFormula" dim="Concentration (molar)" formula="M/V">
         <Paths>
           <Path path="102" as="103" dim="104" />
           <Path path="105" as="106" dim="107" />
         </Paths>
       </Formula>
-      <ConstantFormula id="618eef56-7722-4f75-965c-8d022a8c2a59" dim="MolecularWeight" value="400" />
-      <ConstantFormula id="aba61122-eb22-4acf-bbbc-15a50afc6d10" dim="Dimensionless" value="0" />
-      <ConstantFormula id="b9593c99-6170-48ea-ad27-af5e154fceea" dim="Dimensionless" value="0" />
-      <ConstantFormula id="8ea3dd2b-2269-4ee3-8e68-82107cccfc16" dim="Dimensionless" value="0" />
-      <ConstantFormula id="d7f1091c-e77b-4fe0-9338-a15e0c445b4d" dim="Dimensionless" value="0" />
-      <ConstantFormula id="147990d4-a6ad-433e-82d2-1660c1ce01d4" dim="Dimensionless" value="-1" />
-      <ConstantFormula id="a2ae4fcd-4eed-4f6f-b1e7-e6582de15cb5" dim="Dimensionless" value="1" />
-      <ConstantFormula id="aadd817c-094a-4cfb-851e-970a7ca898c5" dim="Dimensionless" value="0" />
-      <ConstantFormula id="e264fd18-e374-40a3-bc28-1984ed5ff212" dim="Dimensionless" value="0" />
-      <ConstantFormula id="521446e0-b2c6-4375-9915-5da47993b1e6" dim="Dimensionless" value="0" />
-      <ConstantFormula id="37466c4f-aab5-4555-b551-e396eecef155" dim="MolarConcentration" value="1" />
-      <ConstantFormula id="a197b9b3-776f-46ad-89d0-696bc00e08ea" dim="MolarConcentration" value="1" />
-      <ConstantFormula id="724e229b-dd56-4945-ad5e-5cd2a340e492" dim="Dimensionless" value="0" />
-      <ConstantFormula id="21eea311-5783-49f3-bd2a-7ddcafa488f4" dim="Dimensionless" value="0" />
-      <ConstantFormula id="9f2a9f1a-0f43-489d-84e8-cea53bfbe65c" dim="Dimensionless" value="0" />
-      <ConstantFormula id="4bee111b-6310-432d-b1e1-ae79dfec0ec1" dim="Dimensionless" value="0" />
-      <ConstantFormula id="0ee8360a-3ba3-4a42-a7e1-07934cabad9f" dim="Dimensionless" value="20" />
-      <ConstantFormula id="d6efbfab-0198-47a9-90c2-529ea9004292" dim="Dimensionless" value="0.001" />
-      <ConstantFormula id="b0f1f832-4cd7-40a7-a5d0-a89eae4b7d82" dim="Dimensionless" value="0.001" />
-      <ConstantFormula id="f0ebb3e5-3a68-41ad-a5d4-e1e2a39d60be" dim="Dimensionless" value="0.1" />
-      <ConstantFormula id="0fb0d6d8-d1a8-4165-a6ab-241525e2fd43" dim="Dimensionless" value="0" />
-      <ConstantFormula id="9b164e8f-d30d-4662-b8c1-3af37bfaa6f9" dim="Lipophilicity" value="3" />
-      <ConstantFormula id="19c0252d-bfc6-44e2-9a99-6e2f515f5aba" dim="Fraction" value="0.1" />
-      <ConstantFormula id="68c0d685-8d53-45db-b8d9-c50fdf78251f" dim="Concentration" value="9999000" />
-      <ConstantFormula id="ccaea30a-61a3-497e-a44e-20d380b63b83" dim="Dimensionless" value="7" />
-      <ConstantFormula id="a0a16c90-9702-4c12-bd15-0ffe67c68b8a" dim="Dimensionless" value="1000" />
-      <ConstantFormula id="144daa8f-c630-4b32-822a-44e7693f7135" dim="Dimensionless" value="1" />
-      <ConstantFormula id="a6006406-3d70-409f-8e4f-6e4752f59efa" dim="Density" value="1" />
-      <ConstantFormula id="dc3cde42-2729-4533-9a0a-e7e08f63ea0c" dim="Nanolength" value="10" />
-      <ConstantFormula id="032f5c87-ac58-4a59-bae7-151c650eaff2" dim="MolarConcentration" value="999999" />
-      <ConstantFormula id="8b7c4adc-a4b0-4306-be2d-387331cff826" dim="Dimensionless" value="0" />
-      <ConstantFormula id="a4bf0961-d8d6-4e96-9654-79991ec47f31" dim="Dimensionless" value="0" />
-      <ConstantFormula id="3695e1ef-8108-4afd-b60f-64a1f9e44a90" dim="Density" value="0" />
-      <ConstantFormula id="9f249c31-8c68-4dde-9b4a-4324bb1dcc42" dim="Rate" value="1" />
-      <ConstantFormula id="730bc622-6fdb-4113-a1be-74479331b8bf" dim="Amount" value="0" />
-      <ConstantFormula id="0c95604c-10fb-40d2-b879-6a886317e4e8" dim="Rate" value="0" />
-      <ConstantFormula id="3f93d61b-72e8-4f3b-b2eb-e8efab1d0986" dim="SpecificClearancePerProtein" value="1" />
-      <ConstantFormula id="8e3feaf7-f9b1-4530-86a6-a243e329a360" dim="Dimensionless" value="20" />
-      <ConstantFormula id="e114303f-5610-4824-b606-714265fec9b1" dim="Dimensionless" value="0.001" />
-      <ConstantFormula id="415942b5-7e13-4071-92ec-c577cf0b2191" dim="Dimensionless" value="0.001" />
-      <ConstantFormula id="0acb637a-38ce-4acf-b81d-d2b714073353" dim="Dimensionless" value="0.1" />
-      <ConstantFormula id="154bf5c8-4f5b-4e00-a590-c3eaf7917728" dim="Dimensionless" value="0" />
-      <ConstantFormula id="326cf200-b6e7-4c1e-9eb6-506084d02d35" dim="Dimensionless" value="0" />
-      <ConstantFormula id="cacca64d-774e-4d1e-8f86-8b90015b649b" dim="Dimensionless" value="0" />
-      <ConstantFormula id="aebafb5f-66b2-456d-83ca-3f3dd43f980a" dim="Dimensionless" value="0" />
-      <ConstantFormula id="354e60d6-2cdc-409d-a47c-c4d8d02eae26" dim="Dimensionless" value="0" />
-      <ConstantFormula id="df1b5e59-6b80-4ca6-89f1-cc34fc214af8" dim="Dimensionless" value="-1" />
-      <ConstantFormula id="7da0517f-c940-4b2f-851d-be1932ff2ee2" dim="Dimensionless" value="1" />
-      <ConstantFormula id="47150fcb-c5ee-4fc7-b27d-ca81acf12ae3" dim="Dimensionless" value="0" />
-      <ConstantFormula id="2b198812-7b54-4d0e-a6cd-1838f3c06d00" dim="Density" value="1" />
-      <ConstantFormula id="a13ce15f-4da5-4083-88d5-0a5b0b872312" dim="Dimensionless" value="0" />
-      <ConstantFormula id="59c2e06c-9d9c-4d22-8b8c-b4ec14bbda79" dim="Fraction" value="0.1" />
-      <ConstantFormula id="e4579c4c-412e-4b77-901f-bf1c6f301066" dim="Dimensionless" value="0" />
-      <ConstantFormula id="06499842-026e-42d5-8faf-8338daded2c7" dim="Nanolength" value="10" />
-      <ConstantFormula id="c3c57024-3308-4cc7-8372-3a498634ead6" dim="MolarConcentration" value="1" />
-      <ConstantFormula id="4d0952f5-99e6-40ef-8103-45190d399873" dim="MolarConcentration" value="1" />
-      <ConstantFormula id="af5c060d-b433-491d-93c8-beb1b785ea4a" dim="MolarConcentration" value="999999" />
-      <ConstantFormula id="0e1e86da-35a7-4cf7-802e-66b42b2a285f" dim="Lipophilicity" value="3" />
-      <ConstantFormula id="962377f5-2e59-4bd0-8434-0a53305fb5e1" dim="MolecularWeight" value="400" />
-      <ConstantFormula id="70d4ae9f-89f7-4dbf-b378-a0122557bdf4" dim="Dimensionless" value="0" />
-      <ConstantFormula id="8599775f-1cfc-4e49-aac9-5e8d21582aa0" dim="Dimensionless" value="0" />
-      <ConstantFormula id="4bf5cd13-f890-48bc-a749-c7849f209e1c" dim="Dimensionless" value="0" />
-      <ConstantFormula id="2785b8c0-2e50-4f79-9942-bfb342bb8ccb" dim="Dimensionless" value="7" />
-      <ConstantFormula id="5a6c5770-8b03-493e-838e-f2b2886ede81" dim="Concentration" value="9999000" />
-      <ConstantFormula id="b6a217e0-8372-417c-bb5f-074803a0da73" dim="Dimensionless" value="1000" />
-      <ConstantFormula id="bba2067d-2c4c-4db4-851d-d41cbb10baaf" dim="Dimensionless" value="0" />
-      <ConstantFormula id="f563d5be-24e3-4a71-a709-1fd8548fed1d" dim="Dimensionless" value="1" />
-      <ConstantFormula id="7d8211a1-d9af-4dbd-a46f-1fd657edf128" dim="Dimensionless" value="0" />
-      <ConstantFormula id="83dbf546-64c7-4137-b0f0-08f9af5e69ce" dim="Amount" value="0" />
+      <SumFormula id="oosTscPgCUiJqQI_z4d_Ig" name="PARAM_TotalDrugMass" dim="Amount" variable="P" formulaString="P_#i">
+        <Criteria>
+          <DescriptorConditions>
+            <MatchTagCondition tag="MOLECULE" />
+            <MatchTagCondition tag="DrugMass" />
+          </DescriptorConditions>
+        </Criteria>
+      </SumFormula>
+      <ConstantFormula id="1lvsN49MrUCRR_VWS4Pjlg" value="0" />
+      <ConstantFormula id="v4W_hJAbLky9Jzr07Esaiw" dim="Amount" value="0" />
+      <ConstantFormula id="afdoe1RXi06lyfYL9riUFQ" dim="Amount" value="0" />
     </Formulas>
     <StringMap>
       <Map s="..|Compound type 0" id="0" />
@@ -722,7 +991,7 @@
       <Map s="I" id="64" />
       <Map s="..|Molecular weight" id="65" />
       <Map s="MW" id="66" />
-      <Map s="MolecularWeight" id="67" />
+      <Map s="Molecular weight" id="67" />
       <Map s="Chlor" id="68" />
       <Map s="..|pKa_Acid_0" id="69" />
       <Map s="pKa_Acid_0" id="70" />
@@ -756,7 +1025,7 @@
       <Map s="IsSmallMolecule" id="98" />
       <Map s="..|Lipophilicity" id="99" />
       <Map s="LogMA" id="100" />
-      <Map s="Lipophilicity" id="101" />
+      <Map s="Log Units" id="101" />
       <Map s=".." id="102" />
       <Map s="M" id="103" />
       <Map s="Amount" id="104" />

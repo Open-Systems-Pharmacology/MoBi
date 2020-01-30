@@ -76,7 +76,6 @@ namespace MoBi.Core
       {
          base.Context();
          _project = A.Fake<IMoBiProject>();
-         _project.DimensionFactory = A.Fake<IDimensionFactory>();
          _project.Name = "Neu";
          sut.LoadFrom(_project);
       }
@@ -91,7 +90,6 @@ namespace MoBi.Core
       {
          sut.CurrentProject.ShouldBeNull();
          sut.HistoryManager.ShouldBeNull();
-         sut.DimensionFactory.ProjectFactory.ShouldBeNull();
       }
 
       [Observation]
@@ -109,7 +107,6 @@ namespace MoBi.Core
       {
          base.Context();
          var project = A.Fake<IMoBiProject>();
-         project.DimensionFactory = A.Fake<IDimensionFactory>();
          project.Name = "Neu";
          A.CallTo(() => _objectBaseFactory.Create<IMoBiProject>()).Returns(project);
          sut.NewProject();
@@ -136,7 +133,6 @@ namespace MoBi.Core
       {
          base.Context();
          _project = A.Fake<IMoBiProject>();
-         _project.DimensionFactory = A.Fake<IDimensionFactory>();
          _project.Name = "Neu";
          sut.LoadFrom(_project);
          _newObjectBase = A.Fake<IObjectBase>();
@@ -171,7 +167,6 @@ namespace MoBi.Core
       {
          base.Context();
          _project = A.Fake<IMoBiProject>();
-         _project.DimensionFactory = A.Fake<IDimensionFactory>();
          _project.Name = "Neu";
          _newObjectBase = A.Fake<IObjectBase>();
          id = "ID";
@@ -206,7 +201,6 @@ namespace MoBi.Core
       {
          base.Context();
          _newProject = A.Fake<IMoBiProject>();
-         _newProject.DimensionFactory = A.Fake<IDimensionFactory>();
          _newProject.Name = "Neu";
          A.CallTo(() => _objectBaseFactory.Create<IMoBiProject>()).Returns(_newProject);
       }
@@ -220,12 +214,6 @@ namespace MoBi.Core
       public void should_set_current_project_to_the_new_project()
       {
          sut.CurrentProject.ShouldBeEqualTo(_newProject);
-      }
-
-      [Observation]
-      public void should_set_the_Project_dimension_factory_to_the_project_ones()
-      {
-         sut.DimensionFactory.ProjectFactory.ShouldBeEqualTo(_newProject.DimensionFactory);
       }
    }
 

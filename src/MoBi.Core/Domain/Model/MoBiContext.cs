@@ -69,7 +69,7 @@ namespace MoBi.Core.Domain.Model
       public IMoBiDimensionFactory DimensionFactory { get; }
       public IObjectBaseFactory ObjectBaseFactory { get; }
       public IObjectPathFactory ObjectPathFactory { get; }
-      public ICoreCalculationMethodRepository CalculatonMethodRepository { get; set; }
+      public ICoreCalculationMethodRepository CalculationMethodRepository { get; set; }
       public IEventPublisher EventPublisher { get; }
       public IWithIdRepository ObjectRepository { get; }
 
@@ -157,7 +157,6 @@ namespace MoBi.Core.Domain.Model
 
       public override void Clear()
       {
-         DimensionFactory.ProjectFactory = null;
          HistoryManager = null;
          ObjectRepository.Clear();
          _clipboardManager.Clear();
@@ -197,7 +196,6 @@ namespace MoBi.Core.Domain.Model
 
       public void LoadFrom(IMoBiProject project)
       {
-         DimensionFactory.ProjectFactory = project.DimensionFactory;
          CurrentProject = project;
          _registerTask.Register(project);
       }
