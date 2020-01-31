@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Services;
-using OSPSuite.Core.Converter.v5_2;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -18,13 +18,13 @@ namespace MoBi.Core.Serialization.Services
 
    public class SerializationContextFactory : ISerializationContextFactory
    {
-      private readonly ISerializationDimensionFactory _dimensionFactory;
+      private readonly IDimensionFactory _dimensionFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly ICloneManagerForModel _cloneManagerForModel;
       private readonly IContainer _container;
 
       public SerializationContextFactory(
-         ISerializationDimensionFactory dimensionFactory,
+         IDimensionFactory dimensionFactory,
          IObjectBaseFactory objectBaseFactory,
          ICloneManagerForModel cloneManagerForModel,
          IContainer container

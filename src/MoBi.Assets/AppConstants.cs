@@ -1951,22 +1951,6 @@ namespace MoBi.Assets
          }
       }
 
-      public static string RHSDefaultUnitName(IDimension dimension)
-      {
-         var numerator = string.IsNullOrEmpty(dimension.BaseUnit.Name) ? "1" : dimension.BaseUnit.Name;
-         if (string.Equals(numerator, "min"))
-            return string.Empty;
-
-         return $"{numerator}/min";
-      }
-
-      public static string RHSDimensionSuffix = " per time";
-
-      public static string RHSDimensionName(IDimension dimension)
-      {
-         return $"{dimension.Name}{RHSDimensionSuffix}";
-      }
-
       public static readonly IEnumerable<string> UnallowedNames = new List<string>
       {
          string.Empty,

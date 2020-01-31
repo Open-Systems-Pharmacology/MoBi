@@ -206,7 +206,7 @@ namespace MoBi.Core.Serialization.Xml.Services
       {
          string versionString = element.GetAttribute(Constants.Serialization.Attribute.VERSION);
          if (string.IsNullOrEmpty(versionString))
-            return ProjectVersions.V3_0_1_to_3;
+            return ProjectVersions.UNSUPPORTED;
 
          return versionString.ConvertedTo<int>();
       }

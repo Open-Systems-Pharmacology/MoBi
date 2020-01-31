@@ -42,7 +42,7 @@ namespace MoBi.Core.Commands
 
          updateFormulaDimension(_parameter.Formula, () => _newDimension, context);
 
-         updateFormulaDimension(_parameter.RHSFormula, () => context.DimensionFactory.RHSDimensionFor(_newDimension), context);
+         updateFormulaDimension(_parameter.RHSFormula, () => context.DimensionFactory.GetOrAddRHSDimensionFor(_newDimension), context);
 
          Description = AppConstants.Commands.SetParameterDimension(_parameter.EntityPath(), _oldDimension.Name, _newDimension.Name);
          context.PublishEvent(new QuantityChangedEvent(_parameter));

@@ -1,15 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<PassiveTransportBuildingBlock id="4f26635c-b577-4279-ab93-be8cc8967674" name="Passive Transports" bbVersion="2" version="3">
+<PassiveTransportBuildingBlock id="p3neKtXLakOrRZZRkMi5lQ" name="Passive Transports" icon="PassiveTransport" bbVersion="2" version="13">
+  <Creation createdAt="5248846133806172061" createdBy="Michael" creationMode="New" origin="Other" />
   <Builders>
-    <TransportBuilder id="7dd8ec32-3bba-4532-9e8c-546544626dbd" name="PassiveTransport" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="8c095700-2229-4a26-a75e-4b708c20af8a" transportType="0">
+    <TransportBuilder id="oVIFCJ5QeUmb2dmkS5TUoQ" name="PassiveTransport" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="jeoTYEpJr0y_p8_hk3J1Gg" transportType="0">
       <Children>
-        <Parameter id="4f9fc8f7-ac53-4f05-a633-7eaa413abcee" name="K" persistable="0" isFixedValue="0" dim="Second order rate constant" quantityType="Parameter" visible="1" canBeVaried="1" value="0.4" displayUnit="l/µmol/min" />
+        <Parameter id="375QeKIKgUmE9BH2jq4eXQ" name="K" icon="Parameter" persistable="0" isFixedValue="0" dim="Second order rate constant" quantityType="Parameter" negativeValuesAllowed="1" isDefault="1" value="0.4" displayUnit="l/µmol/min">
+          <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+        </Parameter>
       </Children>
       <SourceCriteria />
       <TargetCriteria />
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="7a981397-5e21-469e-89ff-488b9070a35a" name="GallbladderEmptying" mode="Logical" containerType="Other" dimension="Rate" createProcessRateParameter="0" processRateParameterPersistable="0" formula="73f97cbf-9598-4e80-8298-4b80b326b223" transportType="0">
+    <TransportBuilder id="L9wPWtH6OU6D2FMrj2ZvZA" name="GallbladderEmptying" mode="Logical" containerType="Other" dimension="Rate" createProcessRateParameter="0" processRateParameterPersistable="0" formula="zJ6Rj4LPT02_V2sEqDG1xw" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Gallbladder" />
@@ -26,17 +29,27 @@
   </Builders>
   <FormulaCache>
     <Formulas>
-      <Formula id="73f97cbf-9598-4e80-8298-4b80b326b223" name="GallbladderEmptyingRate" dim="Rate" formula="GallbladderEmptyingRate">
+      <Formula id="zJ6Rj4LPT02_V2sEqDG1xw" name="GallbladderEmptyingRate" dim="Rate" formula="EHC_Active ? ln(2) / EHC_Halftime * M * EHC_EjectionFraction : 0">
         <Paths>
           <Path path="0" as="1" dim="2" />
+          <Path path="3" as="4" />
+          <Path path="5" as="6" dim="2" />
+          <Path path="7" as="8" dim="9" />
         </Paths>
       </Formula>
-      <ConstantFormula id="8c095700-2229-4a26-a75e-4b708c20af8a" dim="Amount per time" value="0" />
+      <ConstantFormula id="jeoTYEpJr0y_p8_hk3J1Gg" dim="Amount per time" value="0" />
     </Formulas>
     <StringMap>
-      <Map s="Organism|Gallbladder|Gallbladder emptying rate" id="0" />
-      <Map s="GallbladderEmptyingRate" id="1" />
-      <Map s="Rate" id="2" />
+      <Map s="Organism|Gallbladder|MOLECULE" id="0" />
+      <Map s="M" id="1" />
+      <Map s="Amount" id="2" />
+      <Map s="Organism|Gallbladder|Gallbladder emptying active" id="3" />
+      <Map s="EHC_Active" id="4" />
+      <Map s="Organism|Gallbladder|Gallbladder ejection fraction" id="5" />
+      <Map s="EHC_EjectionFraction" id="6" />
+      <Map s="Organism|Gallbladder|Gallbladder ejection half-time" id="7" />
+      <Map s="EHC_Halftime" id="8" />
+      <Map s="Time" id="9" />
     </StringMap>
   </FormulaCache>
 </PassiveTransportBuildingBlock>

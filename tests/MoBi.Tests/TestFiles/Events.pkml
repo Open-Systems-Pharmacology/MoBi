@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<EventGroupBuildingBlock id="fcc6eade-3812-4406-a0ec-282df785a4a0" name="10 mg IV labeled and 10mg IV unlabeled" version="2">
+<EventGroupBuildingBlock id="xLKzGmJg9UOV--ilcwgK3A" name="10 mg IV labeled and 10mg IV unlabeled" icon="EventGroup" bbVersion="0" version="13">
+  <Creation createdAt="5248846133010497221" createdBy="Michael" creationMode="New" origin="Other" />
   <Builders>
-    <EventGroupBuilder id="2981cbbd-88ae-4567-a459-569fc090472c" name="Applications" icon="Applications" mode="Logical" containerType="Other">
+    <EventGroupBuilder id="5ELk7eoP1kuU0FlRdS9n7Q" name="Applications" icon="Applications" mode="Logical" containerType="Other">
       <Children>
-        <ApplicationBuilder id="750b51c8-f2d8-4df5-853a-bd6958f91097" name="Application_1" icon="Intravenous" mode="Logical" containerType="Other" eventGroupType="Intravenous" moleculeName="MK-7009_labeled">
+        <ApplicationBuilder id="_ZpE5iQxiE2c8wVXiZeHPw" name="Application_1" icon="Intravenous" mode="Logical" containerType="Application" eventGroupType="Intravenous" moleculeName="MK-7009_labeled">
           <Tags>
             <Tag value="Intravenous" />
             <Tag value="Application" />
@@ -11,52 +12,62 @@
             <Tag value="ApplicationRoot" />
           </Tags>
           <Children>
-            <Parameter id="609f6e1c-d6cf-42a0-a0eb-c641e49106fd" name="Application rate" description="Application rate" persistable="0" isFixedValue="0" formula="5d993bc0-41b9-4460-a715-463639bdb265" dim="Rate" quantityType="0" visible="0" canBeVaried="1" />
-            <EventBuilder id="7a25814e-1680-4fff-b4a2-f26ff9b0d984" name="Application_StartEvent" description="Start event for application" oneTime="1" dimension="Dimensionless" formula="19bc8b7a-4394-4926-9f36-cfb4f72998fa">
+            <Parameter id="hvbrSGkGYUKlrkHjf_o2Aw" name="Application rate" description="Application rate" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount per time" quantityType="Parameter" negativeValuesAllowed="1" isDefault="1" value="0" displayUnit="µmol/min">
+              <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+            </Parameter>
+            <EventBuilder id="wQQj2KZpNkKqYM64acopWA" name="Application_StartEvent" description="Start event for application" oneTime="1" formula="kejCELd2IEaPujTR78ClWg">
               <Tags>
                 <Tag value="Application" />
                 <Tag value="Application_1" />
               </Tags>
               <Assignments>
-                <EventAssignmentBuilder id="d42d27c5-9546-4c95-b833-d4d4de3f9316" name="Assignment_1" useAsValue="0" dimension="Dimensionless" formula="9f8719b2-4f13-40ad-a218-066d3d523a9a">
+                <EventAssignmentBuilder id="q8i0KeZrpEG9mR0EZ_4ePw" name="Assignment_1" useAsValue="0" formula="YRjAiG2Qvk-vnaxcwrxwsA">
                   <ObjectPath path="0" />
                 </EventAssignmentBuilder>
               </Assignments>
             </EventBuilder>
-            <EventBuilder id="874edab5-0a25-40ac-bc08-9e59e74e12af" name="Application_StopEvent" description="Stop event for application" oneTime="1" dimension="Dimensionless" formula="98aa6f8f-2538-49a4-81b4-6e83c9f61869">
+            <EventBuilder id="z_uNpE32mUq3aGduRxrYkw" name="Application_StopEvent" description="Stop event for application" oneTime="1" formula="fHLOX9m5UkqmLf1CRNRSsQ">
               <Tags>
                 <Tag value="Application" />
                 <Tag value="Application_1" />
               </Tags>
               <Assignments>
-                <EventAssignmentBuilder id="c9071b8f-3d9e-4cd8-8f04-094708d338c7" name="Assignment_1" useAsValue="0" dimension="Dimensionless" formula="f804a75a-e017-4a0b-afac-d2e6323def38">
+                <EventAssignmentBuilder id="KoX7or0AlEqxwR8V2r5Azw" name="Assignment_1" useAsValue="0" formula="qhzWya-IO0WqZpOGgs3s2A">
                   <ObjectPath path="0" />
                 </EventAssignmentBuilder>
               </Assignments>
             </EventBuilder>
-            <Container id="f4fb0a00-120f-48df-94b8-f4fab38e2df0" name="ProtocolSchemaItem" description="Protocol Schema Item" mode="Logical" containerType="Other">
+            <Container id="1LcyLQOQdU2SqTJ1yYcXuw" name="ProtocolSchemaItem" description="Protocol Schema Item" mode="Logical" containerType="Other">
               <Tags>
                 <Tag value="ProtocolSchemaItem" />
                 <Tag value="Application" />
                 <Tag value="Application_1" />
               </Tags>
               <Children>
-                <Parameter id="11bb569d-0c8f-4857-be18-637c23484224" name="Start time" description="Start time of application" persistable="0" isFixedValue="0" formula="8a8dbe9c-6de2-48d1-9b93-90293b2b957a" dim="Time" quantityType="0" visible="0" canBeVaried="1" />
-                <Parameter id="35ca9e4a-500e-474f-9a45-b32aae77069d" name="DosePerBodyWeight" description="Dose" persistable="0" isFixedValue="0" formula="63388841-73db-4ebf-b1c4-513783162d3b" dim="DosePerBodyWeight" quantityType="0" visible="0" canBeVaried="1" />
-                <Parameter id="52c1cbe0-23d6-444e-979c-23b7d05fada0" name="InputDose" description="Dose" persistable="0" isFixedValue="0" formula="169a9483-566b-49e3-b4c1-4f28ef3cc082" dim="DosePerBodyWeight" quantityType="0" visible="0" canBeVaried="1" />
-                <Parameter id="bb2fa321-0b76-46c0-84a2-4858096c09f2" name="DrugMass" description="Drug mass of application" persistable="0" isFixedValue="0" formula="a961ee51-4c1d-4e73-a649-a388ec690084" dim="Amount" quantityType="0" visible="0" canBeVaried="1" />
-                <Parameter id="facd244e-8cd5-40ef-a43d-c76130c9a018" name="Dose" description="Dose" persistable="0" isFixedValue="0" formula="37054909-bf2d-4750-b503-7c1aa421f37a" dim="MassAmount" quantityType="0" visible="0" canBeVaried="1" />
-                <Parameter id="7e9c6b4d-0825-4a56-9248-80e13f0ff18b" name="Infusion time" description="Infusion time of intravenous infusion" persistable="0" isFixedValue="0" formula="7f80542b-cc27-470c-9e62-7723dedf66c9" dim="Time" quantityType="0" visible="0" canBeVaried="1" />
+                <Parameter id="ftgwwcqBOE2s887SDcxG1g" name="Start time" description="Start time of application" icon="Parameter" persistable="0" isFixedValue="0" dim="Time" quantityType="Parameter" negativeValuesAllowed="1" isDefault="1" value="0" displayUnit="h">
+                  <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+                </Parameter>
+                <Parameter id="-Bs3vGRgt0e_6Iz8UVn9YA" name="DosePerBodyWeight" description="Dose" icon="Parameter" persistable="0" isFixedValue="0" dim="Dose per body weight" quantityType="Parameter" negativeValuesAllowed="1" isDefault="1" value="1E-06" displayUnit="kg/kg">
+                  <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+                </Parameter>
+                <Parameter id="61HsDC0RDk6VBnfA2JUxCA" name="InputDose" description="Dose" icon="Parameter" persistable="0" isFixedValue="0" dim="Dose per body weight" quantityType="Parameter" negativeValuesAllowed="1" isDefault="1" value="1E-05" displayUnit="kg/kg">
+                  <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+                </Parameter>
+                <Parameter id="4zER_jv40kSF8xR64xXnAw" name="DrugMass" description="Drug mass of application" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" formula="UlVUjCO2YkqZqQfACdP0-g" isDefault="1" displayUnit="µmol">
+                  <Tags>
+                    <Tag value="MOLECULE" />
+                  </Tags>
+                  <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+                </Parameter>
+                <Parameter id="URfcgVELp0Oy0I5RzUb01g" name="Dose" description="Dose" icon="Parameter" persistable="0" isFixedValue="0" dim="Mass" quantityType="Parameter" negativeValuesAllowed="1" isDefault="1" value="1E-05" displayUnit="kg">
+                  <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+                </Parameter>
+                <Parameter id="WYfv13f98k-yUj4CFZhMjQ" name="Infusion time" description="Infusion time of intravenous infusion" icon="Parameter" persistable="0" isFixedValue="0" dim="Time" quantityType="Parameter" negativeValuesAllowed="1" isDefault="1" value="15" displayUnit="h">
+                  <Info flag="10" seq="1" ref="0" bb="2" group="143" />
+                </Parameter>
               </Children>
             </Container>
-          </Children>
-          <SourceCriteria>
-            <DescriptorConditions>
-              <MatchTagCondition tag="Applications" />
-            </DescriptorConditions>
-          </SourceCriteria>
-          <Transports>
-            <TransportBuilder id="aaf4f26c-e126-47ad-9e4f-639cc4f7683f" name="Intravenous_Transport" dimension="Dimensionless" createProcessRateParameter="0" formula="f682dc59-d36c-4bb1-b27c-1f917d55ac9a" transportType="Efflux">
+            <TransportBuilder id="JomgDAGESEupod-whKqlCw" name="Intravenous_Transport" mode="Logical" containerType="Other" createProcessRateParameter="0" processRateParameterPersistable="0" formula="sCXLcPGn1EyB6Sdc86852w" transportType="Efflux">
               <SourceCriteria>
                 <DescriptorConditions>
                   <MatchTagCondition tag="Application" />
@@ -70,15 +81,18 @@
                   <MatchTagCondition tag="VenousBlood" />
                 </DescriptorConditions>
               </TargetCriteria>
+              <MoleculeList forAll="1" />
             </TransportBuilder>
-          </Transports>
-          <MoleculeNames>
-            <ApplicationMoleculeBuilder id="51ce0039-f7dc-44f8-8790-9e7979438971" formula="1ec1894d-99f3-4334-bd98-201db85f57d3">
+            <ApplicationMoleculeBuilder id="NZb5FpNJcECqUjm6HkQr0Q" formula="S0s8Dte6LEGXKYR1QzOeig">
               <RelativeContainerPath path="1" />
             </ApplicationMoleculeBuilder>
-          </MoleculeNames>
+          </Children>
+          <SourceCriteria>
+            <DescriptorConditions>
+              <MatchTagCondition tag="Applications" />
+            </DescriptorConditions>
+          </SourceCriteria>
         </ApplicationBuilder>
-        <Parameter id="a0c60f91-762d-4455-9d71-d6ec531aba43" name="TotalDrugMass" persistable="0" isFixedValue="0" formula="5cffd833-220a-4553-a3b2-3cf6cf967d4d" dim="Amount" quantityType="0" visible="0" canBeVaried="1" />
       </Children>
       <SourceCriteria>
         <DescriptorConditions>
@@ -89,54 +103,48 @@
   </Builders>
   <FormulaCache>
     <Formulas>
-      <Formula id="9f8719b2-4f13-40ad-a218-066d3d523a9a" name="ApplicationRate_Intravenous" dim="Rate" formula="DrugMass/InfusionTime">
+      <Formula id="YRjAiG2Qvk-vnaxcwrxwsA" name="ApplicationRate_Intravenous" dim="Amount per time" formula="DrugMass/InfusionTime">
         <Paths>
           <Path path="2" as="3" dim="4" />
           <Path path="5" as="6" dim="7" />
           <TimePath />
         </Paths>
       </Formula>
-      <Formula id="19bc8b7a-4394-4926-9f36-cfb4f72998fa" name="AppStartEventCondition" dim="Dimensionless" formula="Time=StartTime">
+      <Formula id="kejCELd2IEaPujTR78ClWg" name="AppStartEventCondition" formula="Time=StartTime">
         <Paths>
           <Path path="8" as="9" dim="7" />
           <TimePath />
         </Paths>
       </Formula>
-      <Formula id="98aa6f8f-2538-49a4-81b4-6e83c9f61869" name="AppStopEventIVCondition" dim="Dimensionless" formula="Time=StartTime+InfusionTime">
+      <Formula id="fHLOX9m5UkqmLf1CRNRSsQ" name="AppStopEventIVCondition" formula="Time=StartTime+InfusionTime">
         <Paths>
           <Path path="10" as="6" dim="7" />
           <Path path="8" as="9" dim="7" />
           <TimePath />
         </Paths>
       </Formula>
-      <Formula id="a961ee51-4c1d-4e73-a649-a388ec690084" name="PARAM_Application_DrugMass" dim="Amount" formula="Dose / MW * 1000">
+      <Formula id="UlVUjCO2YkqZqQfACdP0-g" name="PARAM_Application_DrugMass" dim="Amount" formula="Dose / MW">
         <Paths>
           <Path path="11" as="12" dim="13" />
           <Path path="14" as="15" dim="16" />
         </Paths>
       </Formula>
-      <Formula id="f682dc59-d36c-4bb1-b27c-1f917d55ac9a" name="ApplicationTransportSimple" dim="Dimensionless" formula="ApplicationRate">
+      <Formula id="sCXLcPGn1EyB6Sdc86852w" name="ApplicationTransportSimple" formula="ApplicationRate">
         <Paths>
           <Path path="0" as="17" dim="18" />
         </Paths>
       </Formula>
-      <Formula id="1ec1894d-99f3-4334-bd98-201db85f57d3" dim="Dimensionless" formula="DrugMass">
+      <Formula id="S0s8Dte6LEGXKYR1QzOeig" formula="DrugMass">
         <Paths>
           <Path path="19" as="3" />
         </Paths>
       </Formula>
-      <Formula id="5cffd833-220a-4553-a3b2-3cf6cf967d4d" name="TotalDrugMass" dim="Amount" formula="M0">
+      <Formula id="BEaV0ahKzkS9Pd-6PWNG7g" name="TotalDrugMass" dim="Amount" formula="M0">
         <Paths>
           <Path path="20" as="21" dim="4" />
         </Paths>
       </Formula>
-      <ConstantFormula id="5d993bc0-41b9-4460-a715-463639bdb265" dim="Rate" value="0" />
-      <ConstantFormula id="f804a75a-e017-4a0b-afac-d2e6323def38" dim="Dimensionless" value="0" />
-      <ConstantFormula id="8a8dbe9c-6de2-48d1-9b93-90293b2b957a" dim="Dimensionless" value="0" />
-      <ConstantFormula id="63388841-73db-4ebf-b1c4-513783162d3b" dim="Dimensionless" value="1" />
-      <ConstantFormula id="169a9483-566b-49e3-b4c1-4f28ef3cc082" dim="Dimensionless" value="10" />
-      <ConstantFormula id="37054909-bf2d-4750-b503-7c1aa421f37a" dim="Dimensionless" value="10" />
-      <ConstantFormula id="7f80542b-cc27-470c-9e62-7723dedf66c9" dim="Dimensionless" value="15" />
+      <ConstantFormula id="qhzWya-IO0WqZpOGgs3s2A" value="0" />
     </Formulas>
     <StringMap>
       <Map s="..|..|Application rate" id="0" />
@@ -152,12 +160,12 @@
       <Map s="..|ProtocolSchemaItem|Infusion time" id="10" />
       <Map s="..|Dose" id="11" />
       <Map s="Dose" id="12" />
-      <Map s="MassAmount" id="13" />
+      <Map s="Mass" id="13" />
       <Map s="MOLECULE|Molecular weight" id="14" />
       <Map s="MW" id="15" />
-      <Map s="MolecularWeight" id="16" />
+      <Map s="Molecular weight" id="16" />
       <Map s="ApplicationRate" id="17" />
-      <Map s="Rate" id="18" />
+      <Map s="Amount per time" id="18" />
       <Map s="..|ProtocolSchemaItem|DrugMass" id="19" />
       <Map s="..|Application_1|ProtocolSchemaItem|DrugMass" id="20" />
       <Map s="M0" id="21" />

@@ -58,11 +58,6 @@ namespace MoBi.Core.Commands
          _parameter.Dimension.ShouldBeEqualTo(_newDimension);
       }
 
-      [Observation]
-      public void should_not_add_the_dimension_of_the_right_hand_side_to_the_dimension_factory()
-      {
-         A.CallTo(() => _context.DimensionFactory.RHSDimensionFor(_newDimension)).MustNotHaveHappened();
-      }
    }
 
    public class When_setting_new_dimension_for_parameter_with_right_hand_side : concern_for_SetParameterDimensionInBuildingBlockCommand
@@ -76,7 +71,7 @@ namespace MoBi.Core.Commands
          _newRightHandSideDimension = A.Fake<IDimension>();
          _newDisplayUnit = A.Fake<Unit>();
          _parameter.RHSFormula= A.Fake<IFormula>();
-         A.CallTo(() => _context.DimensionFactory.RHSDimensionFor(_newDimension)).Returns(_newRightHandSideDimension);
+         A.CallTo(() => _context.DimensionFactory.GetOrAddRHSDimensionFor(_newDimension)).Returns(_newRightHandSideDimension);
          var displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
          A.CallTo(() => _context.Resolve<IDisplayUnitRetriever>()).Returns(displayUnitRetriever);
          A.CallTo(displayUnitRetriever).WithReturnType<Unit>().Returns(_newDisplayUnit);
@@ -122,7 +117,7 @@ namespace MoBi.Core.Commands
          base.Context();
          _newRightHandSideDimension = A.Fake<IDimension>();
          _newDisplayUnit = A.Fake<Unit>();
-         A.CallTo(() => _context.DimensionFactory.RHSDimensionFor(_newDimension)).Returns(_newRightHandSideDimension);
+         A.CallTo(() => _context.DimensionFactory.GetOrAddRHSDimensionFor(_newDimension)).Returns(_newRightHandSideDimension);
          var displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
          A.CallTo(() => _context.Resolve<IDisplayUnitRetriever>()).Returns(displayUnitRetriever);
          A.CallTo(displayUnitRetriever).WithReturnType<Unit>().Returns(_newDisplayUnit);

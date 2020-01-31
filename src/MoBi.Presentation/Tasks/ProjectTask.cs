@@ -1,21 +1,18 @@
 using System;
-using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -133,15 +130,6 @@ namespace MoBi.Presentation.Tasks
          catch (CannotConvertConcentrationToAmountException)
          {
             return loadSimulationTransferFromFileUsingDimensionMode(fileName, ReactionDimensionMode.ConcentrationBased);
-         }
-         catch (NotMatchingSerializationFileException)
-         {
-            return new SimulationTransfer
-            {
-               Simulation = _serializationTask.Load<MoBiSimulation>(fileName),
-               AllObservedData = new List<DataRepository>(),
-               PkmlVersion = ProjectVersions.V3_0_4
-            };
          }
       }
 

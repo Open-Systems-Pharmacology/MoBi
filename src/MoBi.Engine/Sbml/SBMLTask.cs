@@ -44,7 +44,7 @@ namespace MoBi.Engine.Sbml
          var model = GetModel(filename);
          if (model == null) return new MoBiEmptyCommand();
 
-         initialiseDimensionFactory(project);
+         initialiseDimensionFactory();
          project.Name = getProjectName(model);
 
          reportConstraints(project, model);
@@ -70,11 +70,10 @@ namespace MoBi.Engine.Sbml
          }
       }
 
-      private void initialiseDimensionFactory(IMoBiProject project)
+      private void initialiseDimensionFactory()
       {
          _moBiDimensionFactory = new MoBiDimensionFactory();
-         _mobiContext.DimensionFactory.BaseFactory.Dimensions.Each(_moBiDimensionFactory.BaseFactory.AddDimension);
-         project.DimensionFactory.Dimensions.Each(_moBiDimensionFactory.ProjectFactory.AddDimension);
+         _mobiContext.DimensionFactory.Dimensions.Each(_moBiDimensionFactory.AddDimension);
       }
 
       private string getProjectName(Model model)

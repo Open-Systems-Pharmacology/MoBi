@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_MoBiMergedDimensionFactory : ContextSpecification<MoBiMergedDimensionFactory>
+   public abstract class concern_for_MoBiMergedDimensionFactory : ContextSpecification<MoBiDimensionFactory>
    {
       protected IMoBiDimensionConverterFor<IParameter> _converter;
       protected IDimension _source;
@@ -24,7 +24,7 @@ namespace MoBi.Core
          _target.DefaultUnit = _target.Unit("mmol");
          _converter = new TestDimensionConverterFor<IParameter>(_source, _target);
 
-         sut = new MoBiMergedDimensionFactory();
+         sut = new MoBiDimensionFactory();
       }
 
     

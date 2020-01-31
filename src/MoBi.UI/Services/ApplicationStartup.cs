@@ -144,10 +144,10 @@ namespace MoBi.UI.Services
          var configuration = container.Resolve<IMoBiConfiguration>();
          var dimFactory = container.Resolve<IMoBiDimensionFactory>();
          var persister = container.Resolve<IDimensionFactoryPersistor>();
-         persister.Load(dimFactory.BaseFactory, configuration.DimensionFilePath);
-         dimFactory.BaseFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
+         persister.Load(dimFactory, configuration.DimensionFilePath);
+         dimFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
          container.RegisterImplementationOf<IDimensionFactory>(dimFactory);
-         setupDimensionMergings(dimFactory.BaseFactory);
+         setupDimensionMergings(dimFactory);
       }
 
       // because Setup cannot copy into each user profile app data, copy has to be done here
