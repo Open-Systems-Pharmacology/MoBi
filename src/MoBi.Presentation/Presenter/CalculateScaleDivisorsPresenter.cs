@@ -16,6 +16,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Exceptions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -135,6 +136,10 @@ namespace MoBi.Presentation.Presenter
          catch (OperationCanceledException)
          {
             /*canceled*/
+         }
+         catch (Exception e)
+         {
+            throw new OSPSuiteException(e.ExceptionMessage(addContactSupportInfo:false));
          }
          finally
          {
