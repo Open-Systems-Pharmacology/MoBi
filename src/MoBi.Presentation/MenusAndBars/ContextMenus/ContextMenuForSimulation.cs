@@ -50,8 +50,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             createReportItemFor(simulation),
             createAddToJournal(simulation),
             exportSimulationResultsToExcel(simulation),
-            createExportForMatlabItem(simulation),
-            createMatlabODEExportItem(simulation),
+            createExportODEForMatlabItem(simulation),
+            createExportODEForRItem(simulation),
+            createExportForSimModelXmlItem(simulation),
+            createExportForCppItem(simulation),
             createDebugReportItem(simulation),
             createExportModelPartsItem(simulation),
 
@@ -92,11 +94,19 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
                .AsGroupStarter();
       }
 
-      private IMenuBarItem createMatlabODEExportItem(IMoBiSimulation simulation)
+      private IMenuBarItem createExportODEForMatlabItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.MatlabDifferentialSystemExport)
-            .WithCommandFor<ExportMatlabODEUICommand, IMoBiSimulation>(simulation)
+            .WithCommandFor<ExportODEForMatlabUICommand, IMoBiSimulation>(simulation)
             .WithIcon(ApplicationIcons.Matlab);
+      }
+
+      private IMenuBarItem createExportODEForRItem(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.RDifferentialSystemExport)
+            .WithCommandFor<ExportODEForRUICommand, IMoBiSimulation>(simulation)
+            .WithIcon(ApplicationIcons.R)
+            .ForDeveloper();
       }
 
       private IMenuBarItem createParameterIdentificationItem(IMoBiSimulation simulation)
@@ -111,11 +121,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<CreateSimulationReportUICommand, IMoBiSimulation>(simulation);
       }
 
-      private IMenuBarItem createExportForMatlabItem(IMoBiSimulation simulation)
+      private IMenuBarItem createExportForSimModelXmlItem(IMoBiSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportSimModelXml)
+         return CreateMenuButton.WithCaption(MenuNames.ExportSimModelXml)
             .WithCommandFor<ExportSimulationToSimModelXml, IMoBiSimulation>(simulation)
-            .WithIcon(ApplicationIcons.Matlab);
+            .ForDeveloper();
+      }
+
+      private IMenuBarItem createExportForCppItem(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(MenuNames.ExportForCpp)
+            .WithCommandFor<ExportSimulationToSimModelXml, IMoBiSimulation>(simulation)
+            .ForDeveloper();
       }
 
       private IMenuBarItem createStartPopulationSimulation(IMoBiSimulation simulation)

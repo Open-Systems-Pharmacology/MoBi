@@ -6,17 +6,16 @@ namespace MoBi.Presentation.UICommand
 {
    public class ExportSimulationToSimModelXml : ObjectUICommand<IMoBiSimulation>
    {
-      private readonly IEditTasksForSimulation _editTasksesForSimulation;
+      private readonly IEditTasksForSimulation _editTasksForSimulation;
 
       public ExportSimulationToSimModelXml(IEditTasksForSimulation editTasksForSimulation)
       {
-         _editTasksesForSimulation = editTasksForSimulation;
+         _editTasksForSimulation = editTasksForSimulation;
       }
 
       protected override void PerformExecute()
       {
-         _editTasksesForSimulation.ExportSimModelXml(Subject);
+         _editTasksForSimulation.ExportSimModelXml(Subject);
       }
-
    }
 }
