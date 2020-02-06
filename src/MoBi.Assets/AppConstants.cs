@@ -1035,8 +1035,8 @@ namespace MoBi.Assets
          public static readonly string SearchView = "Search";
          public static readonly string NotificationView = "Notifications";
          public static readonly string ComparisonView = "Comparison";
-         public static readonly string MatlabDifferentialSystemExport = "Export Simulation to Matlab® Differential Equations...";
-         public static readonly string RDifferentialSystemExport = AsDeveloperOnly("Export Simulation to R Differential Equations");
+         public static readonly string ExportODEForMatlab = "Export Simulation to Matlab® Differential Equations...";
+         public static readonly string ExportODEForR = AsDeveloperOnly("Export Simulation to R Differential Equations");
          public static readonly string GoTo = "Go To...";
          public static readonly string DiscardResults = "Discard";
          public static readonly string KeepResults = "Keep";
