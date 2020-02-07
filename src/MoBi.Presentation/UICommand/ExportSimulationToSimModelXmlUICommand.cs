@@ -4,11 +4,11 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class ExportSimulationToSimModelXml : ObjectUICommand<IMoBiSimulation>
+   public class ExportSimulationToSimModelXmlUICommand : ObjectUICommand<IMoBiSimulation>
    {
       private readonly IEditTasksForSimulation _editTasksForSimulation;
 
-      public ExportSimulationToSimModelXml(IEditTasksForSimulation editTasksForSimulation)
+      public ExportSimulationToSimModelXmlUICommand(IEditTasksForSimulation editTasksForSimulation)
       {
          _editTasksForSimulation = editTasksForSimulation;
       }

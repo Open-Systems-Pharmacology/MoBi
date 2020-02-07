@@ -124,14 +124,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createExportForSimModelXmlItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(MenuNames.ExportSimModelXml)
-            .WithCommandFor<ExportSimulationToSimModelXml, IMoBiSimulation>(simulation)
+            .WithCommandFor<ExportSimulationToSimModelXmlUICommand, IMoBiSimulation>(simulation)
             .ForDeveloper();
       }
 
       private IMenuBarItem createExportForCppItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(MenuNames.ExportForCpp)
-            .WithCommandFor<ExportSimulationToSimModelXml, IMoBiSimulation>(simulation)
+            .WithCommandFor<ExportSimulationToCppUICommand, IMoBiSimulation>(simulation)
             .ForDeveloper();
       }
 
