@@ -96,14 +96,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createExportODEForMatlabItem(IMoBiSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportODEForMatlab)
+         return CreateMenuButton.WithCaption(MenuNames.ExportODEForMatlab)
             .WithCommandFor<ExportODEForMatlabUICommand, IMoBiSimulation>(simulation)
             .WithIcon(ApplicationIcons.Matlab);
       }
 
       private IMenuBarItem createExportODEForRItem(IMoBiSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportODEForR)
+         return CreateMenuButton.WithCaption(MenuNames.AsDeveloperOnly(MenuNames.ExportODEForR))
             .WithCommandFor<ExportODEForRUICommand, IMoBiSimulation>(simulation)
             .WithIcon(ApplicationIcons.R)
             .ForDeveloper();

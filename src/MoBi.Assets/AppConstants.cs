@@ -889,7 +889,7 @@ namespace MoBi.Assets
          public static readonly string ExportSimulationResultsToExcel = "Export simulation results to Excel®";
          public static readonly string ExportODEForMatlab = "Export simulation to Matlab® ODE";
          public static readonly string ExportODEForR = "Export simulation to R ODE";
-         public static readonly string ExportODEForCpp = "Export simulation to C++ code";
+         public static readonly string ExportSimulationToCppCode = "Export simulation to C++ code";
          public static readonly string LoadSBMLProject = "Load SBML Project";
 
          public static string Load(string objectType)
@@ -1035,8 +1035,6 @@ namespace MoBi.Assets
          public static readonly string SearchView = "Search";
          public static readonly string NotificationView = "Notifications";
          public static readonly string ComparisonView = "Comparison";
-         public static readonly string ExportODEForMatlab = "Export Simulation to Matlab® Differential Equations...";
-         public static readonly string ExportODEForR = AsDeveloperOnly("Export Simulation to R Differential Equations");
          public static readonly string GoTo = "Go To...";
          public static readonly string DiscardResults = "Discard";
          public static readonly string KeepResults = "Keep";
