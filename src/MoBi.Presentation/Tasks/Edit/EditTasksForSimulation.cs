@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Tasks.Edit
       void RenameResults(IMoBiSimulation simulation, DataRepository dataRepository);
       void ExportODEForMatlab(IMoBiSimulation simulation);
       void ExportODEForR(IMoBiSimulation simulation);
-      void ExportSimulationForCpp(IMoBiSimulation simulation);
+      void ExportSimulationToCppCode(IMoBiSimulation simulation);
       void ExportSimModelXml(IMoBiSimulation simulation);
       void CalculateScaleFactors(IMoBiSimulation simulation);
    }
@@ -139,9 +139,9 @@ namespace MoBi.Presentation.Tasks.Edit
          _simModelExporter.ExportODEForR(simulation, exportFolder, FormulaExportMode.Formula);
       }
 
-      public void ExportSimulationForCpp(IMoBiSimulation simulation)
+      public void ExportSimulationToCppCode(IMoBiSimulation simulation)
       {
-         var exportFolder = _interactionTask.AskForFolder(AppConstants.Dialog.ExportODEForCpp, Constants.DirectoryKey.SIM_MODEL_XML);
+         var exportFolder = _interactionTask.AskForFolder(AppConstants.Dialog.ExportSimulationToCppCode, Constants.DirectoryKey.SIM_MODEL_XML);
          if (string.IsNullOrEmpty(exportFolder)) return;
          _simModelExporter.ExportCppCode(simulation, exportFolder, FormulaExportMode.Formula);
       }

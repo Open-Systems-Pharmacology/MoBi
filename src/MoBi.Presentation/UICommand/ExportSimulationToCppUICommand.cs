@@ -15,7 +15,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _editTasksForSimulation.ExportSimulationForCpp(Subject);
+         _editTasksForSimulation.ExportSimulationToCppCode(Subject);
       }
    }
 }
