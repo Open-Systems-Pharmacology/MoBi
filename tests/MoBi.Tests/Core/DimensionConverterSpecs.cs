@@ -9,7 +9,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_DimensionCoverterFor<T> : ContextSpecification<DimensionConverterFor<T>> where T : IWithDimension
+   public abstract class concern_for_DimensionConverterFor<T> : ContextSpecification<DimensionConverter<T>> where T : IWithDimension
 
    {
       private IDimension _source;
@@ -22,7 +22,7 @@ namespace MoBi.Core
          sut = new TestDimensionConverterFor(_source, _target);
       }
 
-      public class TestDimensionConverterFor : DimensionConverterFor<T>
+      public class TestDimensionConverterFor : DimensionConverter<T>
       {
          public TestDimensionConverterFor(IDimension sourceDimension, IDimension targetDimension) : base(sourceDimension, targetDimension)
          {
@@ -45,7 +45,7 @@ namespace MoBi.Core
    }
 
 
-   public class When_a_parameter_converter_is_asked_to_convert_a_Parameter : concern_for_DimensionCoverterFor<IParameter>
+   public class When_a_parameter_converter_is_asked_to_convert_a_Parameter : concern_for_DimensionConverterFor<IParameter>
    {
       private bool _res;
 
@@ -62,7 +62,7 @@ namespace MoBi.Core
       }
    }
 
-   public class When_a_parameter_converter_is_asked_to_convert_a_DataColumn : concern_for_DimensionCoverterFor<IParameter>
+   public class When_a_parameter_converter_is_asked_to_convert_a_DataColumn : concern_for_DimensionConverterFor<IParameter>
    {
       private bool _res;
 

@@ -5,7 +5,7 @@ namespace MoBi.Core.Domain.UnitSystem
 {
    public interface IMoBiDimensionMergingInformation : IDimensionMergingInformation
    {
-      IMoBiDimensionConverterFor Converter { get; }
+      IMoBiDimensionConverter Converter { get; }
       bool Matches(IDimension sourceDimension, IDimension targetDimension, IWithDimension withDimension);
    }
 
@@ -13,7 +13,7 @@ namespace MoBi.Core.Domain.UnitSystem
    {
       public IDimension SourceDimension { get; private set; }
       public IDimension TargetDimension { get; private set; }
-      public IMoBiDimensionConverterFor Converter { get; private set; }
+      public IMoBiDimensionConverter Converter { get; private set; }
 
       public bool Matches(IDimension sourceDimension, IDimension targetDimension, IWithDimension withDimension)
       {
@@ -22,7 +22,7 @@ namespace MoBi.Core.Domain.UnitSystem
                 Converter.CanBeUsedFor(withDimension);
       }
 
-      public MoBiDimensionMergingInformation(IDimension sourceDimension, IDimension targetDimension, IMoBiDimensionConverterFor<T> converter)
+      public MoBiDimensionMergingInformation(IDimension sourceDimension, IDimension targetDimension, IMoBiDimensionConverter<T> converter)
       {
          SourceDimension = sourceDimension;
          TargetDimension = targetDimension;

@@ -23,10 +23,11 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
     'MoBi.exe'
 	]
 
+	copy_templates_files src_dir
+
 	#Files required for setup creation only
 	setup_files	 = [
-		"#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
-		"#{relative_src_dir}/TeXTemplates/**/*.*",
+		"#{setup_temp_dir}/**/*.*",
 		'examples/**/*.{wxs,pkml,mbp3}',
 		'src/Data/**/*.*',
 		'src/MoBi.Assets/Resources/*.ico',
@@ -55,22 +56,22 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	src_dir = src_dir_for(args.configuration)
 	relative_src_dir = relative_src_dir_for(args.configuration)
 
+	copy_templates_files src_dir
+
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
 		'dimensions/*.xml',
 		'pkparameters/*.xml',
-		'src/Data/*.xml',
+		'src/Data/**/*.*',
 		'setup/**/*.{rtf}',
 	]
 
 	setup_folders = [
+		"#{setup_temp_dir}/**/*.*",
 		'examples/**/*.{pkml,mbp3}',
-		"#{relative_src_dir}/ChartLayouts/**/*.{xml}",
-		"#{relative_src_dir}/TeXTemplates/**/*.{json,sty,tex}"
 	]
-
 	Rake::Task['setup:create_portable'].execute(OpenStruct.new(
 		solution_dir: solution_dir,
 		src_dir: src_dir, 
@@ -89,8 +90,18 @@ task :update_go_license, [:file_path, :license] do |t, args|
 	Utils.update_go_diagram_license args.file_path, args.license
 end	
 
+def copy_templates_files(source_dir)
+	FileUtils.mkdir_p setup_temp_dir
+	FileUtils.copy_entry File.join(source_dir, 'TeXTemplates'), File.join(setup_temp_dir, 'TeXTemplates')
+	FileUtils.copy_entry File.join(source_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
+end
+
+def configuration_dir(configuration)
+	File.join( 'src', 'MoBi', 'bin', configuration)
+end
+
 def relative_src_dir_for(configuration)
-	File.join( 'src', 'MoBi', 'bin', configuration, 'net472')
+	File.join(configuration_dir(configuration), 'net472')
 end
 
 def src_dir_for(configuration)
@@ -126,7 +137,7 @@ task :postclean do |t, args|
 	end
 
 	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
-		copy_files 'OSPSuite.Presentation', 'xml'
+		copy_files 'ChartLayouts', 'xml'
 	end
 
 	copy_dependencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
@@ -154,4 +165,8 @@ end
 
 def setup_dir
 	File.join(solution_dir, 'setup')
+end
+
+def setup_temp_dir
+	File.join(setup_dir, 'temp')
 end

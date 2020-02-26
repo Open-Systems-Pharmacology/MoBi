@@ -21,7 +21,7 @@ namespace MoBi.Core.Domain.UnitSystem
          return dimension ?? NoDimension;
       }
 
-      protected override IDimensionConverterFor CreateConverterFor<T>(IDimension dimension, IDimension dimensionToMerge, T hasDimension)
+      protected override IDimensionConverter CreateConverterFor<T>(IDimension dimension, IDimension dimensionToMerge, T hasDimension)
       {
          var converter = (from mergeInfo in mobiDimensionMergingInformationList
             where mergeInfo.Matches(dimension, dimensionToMerge, hasDimension)
@@ -30,7 +30,7 @@ namespace MoBi.Core.Domain.UnitSystem
          if (converter == null)
             return null;
 
-         var usedConverter = Activator.CreateInstance(converter.GetType(), dimension, dimensionToMerge) as IMoBiDimensionConverterFor<T>;
+         var usedConverter = Activator.CreateInstance(converter.GetType(), dimension, dimensionToMerge) as IMoBiDimensionConverter<T>;
          if (usedConverter != null)
          {
             usedConverter.SetRefObject(hasDimension);
