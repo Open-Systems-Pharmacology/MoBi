@@ -8,23 +8,23 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Domain.UnitSystem
 {
-   public interface IMoBiDimensionConverterFor : IDimensionConverterFor
+   public interface IMoBiDimensionConverter : IDimensionConverter
    {
       bool CanBeUsedFor(object refObject);
       void SetRefObject(object refObject);
    }
 
-   public interface IMoBiDimensionConverterFor<T> : IMoBiDimensionConverterFor where T : IWithDimension
+   public interface IMoBiDimensionConverter<T> : IMoBiDimensionConverter where T : IWithDimension
    {
       void SetRefObject(T refObject);
    }
 
-   public abstract class DimensionConverterFor<T> : IMoBiDimensionConverterFor<T> where T : IWithDimension
+   public abstract class DimensionConverter<T> : IMoBiDimensionConverter<T> where T : IWithDimension
    {
       private readonly IDimension _sourceDimension;
       private readonly IDimension _targetDimension;
 
-      protected DimensionConverterFor(IDimension sourceDimension, IDimension targetDimension)
+      protected DimensionConverter(IDimension sourceDimension, IDimension targetDimension)
       {
          _sourceDimension = sourceDimension;
          _targetDimension = targetDimension;
@@ -87,7 +87,7 @@ namespace MoBi.Core.Domain.UnitSystem
       protected abstract double? GetFactor();
    }
 
-   public class MolWeightDimensionConverterForFormulaUsable : DimensionConverterFor<IQuantity>
+   public class MolWeightDimensionConverterForFormulaUsable : DimensionConverter<IQuantity>
    {
       private IQuantity _formulaUsable;
       private IObjectPath _useablePath;
@@ -131,7 +131,7 @@ namespace MoBi.Core.Domain.UnitSystem
    }
 
 
-   public abstract class MolWeightDimensionConverterForDataColumn : DimensionConverterFor<DataColumn>
+   public abstract class MolWeightDimensionConverterForDataColumn : DimensionConverter<DataColumn>
    {
       protected double? _mw;
 
