@@ -23,11 +23,10 @@ task :create_setup, [:product_version, :configuration, :smart_xls_package, :smar
     'MoBi.exe'
 	]
 
-	copy_templates_files src_dir
-
 	#Files required for setup creation only
 	setup_files	 = [
-		"#{setup_temp_dir}/**/*.*",
+		"#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
+		"#{relative_src_dir}/TeXTemplates/**/*.*",
 		'examples/**/*.{wxs,pkml,mbp3}',
 		'src/Data/**/*.*',
 		'src/MoBi.Assets/Resources/*.ico',
@@ -96,12 +95,8 @@ def copy_templates_files(source_dir)
 	FileUtils.copy_entry File.join(source_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
 end
 
-def configuration_dir(configuration)
-	File.join( 'src', 'MoBi', 'bin', configuration)
-end
-
 def relative_src_dir_for(configuration)
-	File.join(configuration_dir(configuration), 'net472')
+	File.join('src', 'MoBi', 'bin', configuration, 'net472')
 end
 
 def src_dir_for(configuration)
