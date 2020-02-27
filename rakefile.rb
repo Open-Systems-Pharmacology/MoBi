@@ -9,7 +9,12 @@ task :cover do
 	filter << "+[MoBi.Assets]*"
 	filter << "+[MoBi.Presentation]*"
 
-	Coverage.cover(filter , "MoBi.Tests.csproj")
+	 targetProjects = [
+		"MoBi.Tests.csproj",
+		"MoBi.UI.Tests.csproj",
+	];
+
+	Coverage.cover(filter , targetProjects)
 end
 
 task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
