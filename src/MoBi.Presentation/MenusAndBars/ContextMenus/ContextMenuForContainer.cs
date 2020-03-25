@@ -1,17 +1,15 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
-using RemoveTopContainerCommand = MoBi.Presentation.UICommand.RemoveTopContainerCommand;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -21,7 +19,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuForContainerBase<TContainer> : ContextMenuFor<TContainer> where TContainer : class, IContainer
    {
-      public ContextMenuForContainerBase(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base( context, objectTypeResolver)
+      public ContextMenuForContainerBase(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
       {
       }
 
@@ -49,8 +47,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          if (objectToRemove.ParentContainer != null)
             return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithCommandFor<RemoveCommandForContainer, IContainer>(objectToRemove)
-            .WithIcon(ApplicationIcons.Delete);
+               .WithCommandFor<RemoveCommandForContainer, IContainer>(objectToRemove)
+               .WithIcon(ApplicationIcons.Delete);
 
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveTopContainerCommand, IContainer>(objectToRemove)
@@ -72,7 +70,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.LoadTemplateIconFor(typeName))
             .WithCommandFor<AddExistingFromTemplateCommandFor<IContainer, T>, IContainer>(parent);
       }
-
 
       protected IMenuBarItem CreateAddNewChild<T>(TContainer container) where T : class, IEntity
       {
@@ -98,6 +95,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             _allMenuItems.Add(CreateAddNewItemFor(container));
             _allMenuItems.Add(CreateAddExistingItemFor(container));
          }
+
          _allMenuItems.Add(CreateAddNewChild<IDistributedParameter>(container));
          return this;
       }
