@@ -14,10 +14,10 @@ namespace MoBi.Core.Serialization.Converter.v6_1
       IVisitor<IBuildConfiguration>,
       IVisitor<IModelCoreSimulation>
    {
-      private readonly OSPSuite.Core.Converter.v6_1.Converter60To61 _coreConverter60To61;
+      private readonly OSPSuite.Core.Converters.v6_1.Converter60To61 _coreConverter60To61;
       private bool _converted;
 
-      public Converter60To61(OSPSuite.Core.Converter.v6_1.Converter60To61 coreConverter60To61)
+      public Converter60To61(OSPSuite.Core.Converters.v6_1.Converter60To61 coreConverter60To61)
       {
          _coreConverter60To61 = coreConverter60To61;
       }
