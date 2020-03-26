@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Presenter
       private void initParameterListPresenter()
       {
          _editParametersInContainerPresenter.BlackBoxAllowed = true;
-         _editParametersInContainerPresenter.ChangeLocalizationAllowed = false;
+         _editParametersInContainerPresenter.ChangeLocalisationAllowed = false;
       }
 
       public string ContainerModeDisplayFor(ContainerMode mode)
