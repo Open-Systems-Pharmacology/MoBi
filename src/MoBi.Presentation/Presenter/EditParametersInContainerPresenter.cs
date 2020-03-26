@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Presenter
       bool ShowBuildMode { set; }
       bool BlackBoxAllowed { set; }
       void Edit(IContainer container);
-      bool ChangeLocalisationAllowed { set; }
+      bool ChangeLocalizationAllowed { set; }
       EditParameterMode EditMode { set; }
       IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
       void SetBuildModeFor(ParameterDTO parameterDTO, ParameterBuildMode newMode);
@@ -67,7 +67,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditDistributedParameterPresenter _editDistributedParameterPresenter;
       private readonly IEditParameterPresenter _editParameterPresenter;
       private bool _ignoreAddEvents;
-      public bool ChangeLocalisationAllowed { set; private get; }
+      public bool ChangeLocalizationAllowed { set; private get; }
 
       public EditParametersInContainerPresenter(IEditParametersInContainerView view,
          IFormulaToFormulaBuilderDTOMapper formulaMapper,
@@ -91,7 +91,7 @@ namespace MoBi.Presentation.Presenter
          _editDistributedParameterPresenter = editDistributedParameterPresenter;
          AddSubPresenters(_editDistributedParameterPresenter, _editParameterPresenter);
          _getParametersFunc = x => x.GetChildrenSortedByName<IParameter>();
-         ChangeLocalisationAllowed = true;
+         ChangeLocalizationAllowed = true;
       }
 
       public void Edit(IContainer container)
@@ -104,7 +104,6 @@ namespace MoBi.Presentation.Presenter
          _view.ParentName = container.Name;
          createParameterCache(_getParametersFunc(container));
          showParameters();
-         setupEditPresenter(_parameters.FirstOrDefault());
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
@@ -145,7 +144,7 @@ namespace MoBi.Presentation.Presenter
       private ISelectReferenceAtParameterPresenter getNewReferencePresenterFor(IContainer container)
       {
          var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(container);
-         referencePresenter.ChangeLocalisationAllowed = ChangeLocalisationAllowed;
+         referencePresenter.ChangeLocalisationAllowed = ChangeLocalizationAllowed;
          return referencePresenter;
       }
 
@@ -162,8 +161,10 @@ namespace MoBi.Presentation.Presenter
 
       private void showParameters()
       {
-         var parametersToShowDTO = _allParametersDTO.Where(shouldShowParameter);
+         var parametersToShowDTO = _allParametersDTO.Where(shouldShowParameter).ToList();
          _view.BindTo(parametersToShowDTO);
+         setupEditPresenter(parametersToShowDTO.FirstOrDefault()?.Parameter);
+
       }
 
       private bool shouldShowParameter(ParameterDTO parameterDTO)
