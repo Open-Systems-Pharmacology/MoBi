@@ -1,13 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -16,12 +11,16 @@ using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -74,7 +73,7 @@ namespace MoBi.Presentation.Presenter
       void SetName(ParameterDTO parameterDTO, string newName);
 
       /// <summary>
-      /// Build modes that can be used in this use case
+      ///    Build modes that can be used in this use case
       /// </summary>
       IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
 
@@ -101,19 +100,19 @@ namespace MoBi.Presentation.Presenter
       public IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
       public bool WarnOnBuildModeChange { get; set; }
 
-      public EditParameterPresenter(IEditParameterView view, 
-         IEditFormulaPresenter editValueFormulaPresenter, 
+      public EditParameterPresenter(IEditParameterView view,
+         IEditFormulaPresenter editValueFormulaPresenter,
          IParameterToParameterDTOMapper parameterMapper,
-         IEditFormulaPresenter editRhsFormulaPresenter, 
-         IInteractionTaskContext interactionTaskContext, 
-         IEntityTask entityTask, 
-         IGroupRepository groupRepository, 
+         IEditFormulaPresenter editRhsFormulaPresenter,
+         IInteractionTaskContext interactionTaskContext,
+         IEntityTask entityTask,
+         IGroupRepository groupRepository,
          IEditTaskFor<IParameter> editTasks,
-         IInteractionTasksForParameter parameterTask, 
-         IContextSpecificReferencesRetriever contextSpecificReferencesRetriever, 
+         IInteractionTasksForParameter parameterTask,
+         IContextSpecificReferencesRetriever contextSpecificReferencesRetriever,
          IFavoriteTask favoriteTask,
          IEditValueOriginPresenter editValueOriginPresenter
-         )
+      )
          : base(view)
       {
          _editValueFormulaPresenter = editValueFormulaPresenter;
@@ -144,16 +143,6 @@ namespace MoBi.Presentation.Presenter
          _editValueOriginPresenter.ShowCaption = false;
       }
 
-      public void SetPropertyValueFromView<TProp>(string propertyName, TProp newValue, TProp oldValue)
-      {
-         if (propertyName.Equals(_parameter.PropertyName(p => p.BuildMode)))
-         {
-            _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Validation.ChangeBuildModeWarning);
-         }
-
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _parameter, BuildingBlock).Run(_interactionTaskContext.Context));
-      }
-
       public void SetIsFavorite(bool isFavorite)
       {
          _favoriteTask.SetParameterFavorite(_parameter, isFavorite);
@@ -166,15 +155,17 @@ namespace MoBi.Presentation.Presenter
 
       public void SetDescription(ParameterDTO parameterDTO, string newDescription)
       {
-         AddCommand(_parameterTask.SetDescriptionForParameter(parameterDTO.Parameter, newDescription, BuildingBlock).Run(_interactionTaskContext.Context));
+         AddCommand(_parameterTask.SetDescriptionForParameter(parameterDTO.Parameter, newDescription, BuildingBlock)
+            .Run(_interactionTaskContext.Context));
       }
 
       public void SetBuildMode(ParameterDTO parameterDTO, ParameterBuildMode newBuildMode)
       {
-         if (WarnOnBuildModeChange) 
+         if (WarnOnBuildModeChange)
             _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Validation.ChangeBuildModeWarning);
 
-         AddCommand(_parameterTask.SetBuildModeForParameter(parameterDTO.Parameter, newBuildMode, BuildingBlock).Run(_interactionTaskContext.Context));
+         AddCommand(_parameterTask.SetBuildModeForParameter(parameterDTO.Parameter, newBuildMode, BuildingBlock)
+            .Run(_interactionTaskContext.Context));
       }
 
       public void SetName(ParameterDTO parameterDTO, string newName)
@@ -212,7 +203,8 @@ namespace MoBi.Presentation.Presenter
       {
          _parameter = parameter;
          _editValueFormulaPresenter.Init(_parameter, BuildingBlock);
-         _editValueFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(parameter), _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
+         _editValueFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(parameter),
+            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
          _editValueOriginPresenter.Edit(parameter);
          if (hasRHS(parameter))
             initRHSPresenter();
@@ -236,7 +228,8 @@ namespace MoBi.Presentation.Presenter
       private void initRHSPresenter()
       {
          _editRHSFormulaPresenter.Init(_parameter, BuildingBlock);
-         _editRHSFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(_parameter), _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
+         _editRHSFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(_parameter),
+            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
       }
 
       public override object Subject => _parameter;
@@ -331,6 +324,5 @@ namespace MoBi.Presentation.Presenter
             return !_view.HasError && _editValueFormulaPresenter.CanClose;
          }
       }
-
    }
 }
