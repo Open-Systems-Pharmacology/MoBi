@@ -4,6 +4,7 @@ using OSPSuite.DataBinding.DevExpress;
 using DevExpress.XtraEditors.DXErrorProvider;
 
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.UI.Controls;
 
@@ -38,7 +39,7 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<ValueEditDTO>();
 
          _screenBinder.Bind(p => p.Value)
-            .To(tbValue).OnValueUpdating += (o, e) => ValueChanged(o, e.NewValue);
+            .To(tbValue).OnValueUpdating += onValueUpdating;
 
          _screenBinder.Bind(p => p.DisplayUnit).To(cbUnit)
             .WithValues(p => p.Dimension.Units)
@@ -51,10 +52,17 @@ namespace MoBi.UI.Views
          tbValue.EnterMoveNextControl = true;
       }
 
-      public override bool HasError
+      private void onValueUpdating(ValueEditDTO dto, PropertyValueSetEventArgs<double> e)
       {
-         get { return _screenBinder.HasError; }
+         // Some artifact with this control when values have a lot of digits could lead to an event being raised even though nothing has changed.
+         // This should be fixed in OSPSuite.DataBinding but we'll be done at another time
+         if (ValueComparer.AreValuesEqual(e.OldValue, e.NewValue))
+            return;
+
+         ValueChanged(dto, e.NewValue);
       }
+
+      public override bool HasError => _screenBinder.HasError;
 
       public void ValidateControl()
       {
@@ -63,8 +71,8 @@ namespace MoBi.UI.Views
 
       public string ToolTip
       {
-         set { tbValue.ToolTip = value; }
-         get { return tbValue.ToolTip; }
+         set => tbValue.ToolTip = value;
+         get => tbValue.ToolTip;
       }
 
       public void SetError(string errorMessage)

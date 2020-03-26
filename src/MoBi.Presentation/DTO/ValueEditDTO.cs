@@ -23,11 +23,8 @@ namespace MoBi.Presentation.DTO
       public double Value
       {
          get => valueToDisplayValue(KernelValue);
-         set
-         {
-            KernelValue = displayValueToValue(value);
-            OnPropertyChanged(() => Value);
-         }
+         //Settings the Kernel Value triggers a Value Change. Event. No need to send it twice
+         set => KernelValue = displayValueToValue(value);
       }
 
       public Unit DisplayUnit
