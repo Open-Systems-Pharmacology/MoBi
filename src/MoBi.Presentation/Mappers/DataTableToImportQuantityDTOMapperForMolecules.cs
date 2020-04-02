@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Mappers
 
       private static string getDimensionConstantForProject(ReactionDimensionMode dimensionMode)
       {
-         return dimensionMode == ReactionDimensionMode.AmountBased ? Constants.Dimension.AMOUNT : Constants.Dimension.MOLAR_CONCENTRATION;
+         return dimensionMode == ReactionDimensionMode.AmountBased ? Constants.Dimension.MOLAR_AMOUNT : Constants.Dimension.MOLAR_CONCENTRATION;
       }
 
       private bool isCorrectDimensionForDimensionMode(ReactionDimensionMode dimensionMode, ImportedQuantityDTO dto)
@@ -93,7 +93,7 @@ namespace MoBi.Presentation.Mappers
          if (dto.Dimension == _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION) && dimensionMode == ReactionDimensionMode.ConcentrationBased)
             return true;
 
-         if (dto.Dimension == _dimensionFactory.Dimension(Constants.Dimension.AMOUNT) && dimensionMode == ReactionDimensionMode.AmountBased)
+         if (dto.Dimension == _dimensionFactory.Dimension(Constants.Dimension.MOLAR_AMOUNT) && dimensionMode == ReactionDimensionMode.AmountBased)
             return true;
 
          return false;

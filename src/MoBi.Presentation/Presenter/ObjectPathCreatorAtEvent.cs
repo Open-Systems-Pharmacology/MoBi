@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Presenter
                else
                {
                   //Molecule replace With Amount
-                  path = CreateFormulaUsablePathFrom(new[] {ObjectPath.PARENT_CONTAINER, formulaUsable.Name}, formulaUsable.Name, Constants.Dimension.AMOUNT);
+                  path = CreateFormulaUsablePathFrom(new[] {ObjectPath.PARENT_CONTAINER, formulaUsable.Name}, formulaUsable.Name, Constants.Dimension.MOLAR_AMOUNT);
                }
                correctPath(path, refObject as IContainer);
             }
