@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Presenter
 
       void RemovePath(FormulaUsablePathDTO formulaUsablePathDTO);
 
-      IEnumerable<IDimension> GetDimensions();
+      IReadOnlyList<IDimension> GetDimensions();
 
       /// <summary>
       ///    Clones the path of <paramref name="formulaUsablePathToClone" /> and adds it to the formula with a unique alias
@@ -225,9 +225,9 @@ namespace MoBi.Presentation.Presenter
          contextMenu.Show(View, popupLocation);
       }
 
-      public IEnumerable<IDimension> GetDimensions()
+      public IReadOnlyList<IDimension> GetDimensions()
       {
-         return _context.DimensionFactory.Dimensions;
+         return _context.DimensionFactory.DimensionsSortedByName;
       }
 
       public void Handle(FormulaChangedEvent eventToHandle)

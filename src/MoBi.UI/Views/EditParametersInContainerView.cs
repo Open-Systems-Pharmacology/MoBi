@@ -222,7 +222,7 @@ namespace MoBi.UI.Views
          OnEvent(() =>
          {
             _gridView.CloseEditor();
-            _presenter.SetParamterUnit(parameter, unit);
+            _presenter.SetParameterUnit(parameter, unit);
          });
       }
 

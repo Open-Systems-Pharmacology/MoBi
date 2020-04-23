@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Presenter
       IPresenterWithFormulaCache
    {
       void SetFormula(ObserverBuilderDTO dtoObserverBuilder, FormulaBuilderDTO newValue, FormulaBuilderDTO oldValue);
-      IEnumerable<IDimension> GetDimensions();
+      IReadOnlyList<IDimension> GetDimensions();
       void SetPropertyValueFromViewFor<T>(IObjectBaseDTO dtoObjectBase, string propertyName, T newValue, T oldValue);
       IEditObserverBuildingBlockPresenter Parent { get; set; }
       void Select(ObserverBuilderDTO dto);
@@ -72,10 +72,7 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
       public void SetFormula(ObserverBuilderDTO dtoObserverBuilder, FormulaBuilderDTO newValue, FormulaBuilderDTO oldValue)
       {
@@ -85,10 +82,7 @@ namespace MoBi.Presentation.Presenter
          AddCommand(new EditObjectBasePropertyInBuildingBlockCommand("Formula", newFormula, oldFormula, observerBuilder, BuildingBlock).Run(_context)); //<IFormula>
       }
 
-      public IEnumerable<IDimension> GetDimensions()
-      {
-         return _dimensionFactory.Dimensions;
-      }
+      public IReadOnlyList<IDimension> GetDimensions() => _dimensionFactory.DimensionsSortedByName;
 
       public void SetPropertyValueFromViewFor<T>(IObjectBaseDTO dtoObserverBuilder, string propertyName, T newValue, T oldValue)
       {

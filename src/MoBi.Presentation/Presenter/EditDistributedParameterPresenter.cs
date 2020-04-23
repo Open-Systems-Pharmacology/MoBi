@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Presenter
       IPresenterWithFormulaCache,
       ICreatePresenter<IDistributedParameter>
    {
-      IEnumerable<IDimension> GetDimensions();
+      IReadOnlyList<IDimension> GetDimensions();
       IDimension PercentDimension { get; }
       IDimension NoDimension { get; }
       void SetPercentile(double newValue);
@@ -94,9 +94,9 @@ namespace MoBi.Presentation.Presenter
          _editTasks.Rename(_distributedParameter, BuildingBlock);
       }
 
-      public IEnumerable<IDimension> GetDimensions()
+      public IReadOnlyList<IDimension> GetDimensions()
       {
-         return _context.DimensionFactory.Dimensions;
+         return _context.DimensionFactory.DimensionsSortedByName;
       }
 
       public override bool CanClose => _distributedParameter == null || base.CanClose;

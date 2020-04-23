@@ -107,7 +107,7 @@ namespace MoBi.UI.Views
          }
       }
 
-      private IEnumerable<IDimension> getDimensions(DistributedParameterDTO dto)
+      private IReadOnlyList<IDimension> getDimensions(DistributedParameterDTO dto)
       {
          return _presenter.GetDimensions();
       }

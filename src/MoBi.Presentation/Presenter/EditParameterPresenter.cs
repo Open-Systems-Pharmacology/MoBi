@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       ICreatePresenter<IParameter>
    {
       void SetUseRHSFormula(bool useRHS);
-      IEnumerable<IDimension> AllDimensions();
+      IReadOnlyList<IDimension> AllDimensions();
       void SetDimension(IDimension dimension);
       IEnumerable<IObjectBase> LocalEntitiesToReference { set; }
       bool CanSetBuildMode { set; }
@@ -287,14 +287,11 @@ namespace MoBi.Presentation.Presenter
          _parameterDTO.Group = group;
       }
 
-      public string DisplayFor(IGroup group)
-      {
-         return group.FullName;
-      }
+      public string DisplayFor(IGroup group) => @group.FullName;
 
-      public IEnumerable<IDimension> AllDimensions()
+      public IReadOnlyList<IDimension> AllDimensions()
       {
-         return _interactionTaskContext.Context.DimensionFactory.Dimensions;
+         return _interactionTaskContext.Context.DimensionFactory.DimensionsSortedByName;
       }
 
       private void addCommandToRun(ICommand<IMoBiContext> command)

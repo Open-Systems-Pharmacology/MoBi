@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Presenter
       IPresenterWithFormulaCache,
       ICreatePresenter<IObserverBuilder>
    {
-      IEnumerable<IDimension> AllDimensions();
+      IReadOnlyList<IDimension> AllDimensions();
       void UpdateDimension(IDimension newDimension);
    }
 
@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
+         get => _buildingBlock;
          set
          {
             _buildingBlock = value;
@@ -109,9 +109,9 @@ namespace MoBi.Presentation.Presenter
 
       protected abstract ObserverBuilderDTO MapFrom(TObserverBuilder observerBuilder);
 
-      public IEnumerable<IDimension> AllDimensions()
+      public IReadOnlyList<IDimension> AllDimensions()
       {
-         return _context.DimensionFactory.Dimensions;
+         return _context.DimensionFactory.DimensionsSortedByName;
       }
 
       public void UpdateDimension(IDimension newDimension)

@@ -212,7 +212,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetParamterUnit(_parameterDTO, _displayUnit);
+         sut.SetParameterUnit(_parameterDTO, _displayUnit);
       }
 
       [Observation]
@@ -241,7 +241,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetParamterUnit(_parameterDTO, _displayUnit);
+         sut.SetParameterUnit(_parameterDTO, _displayUnit);
       }
 
       [Observation]
