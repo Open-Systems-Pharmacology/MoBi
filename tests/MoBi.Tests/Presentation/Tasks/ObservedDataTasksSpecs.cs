@@ -164,7 +164,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dimensionFactory.Dimensions).Returns(new []
+         A.CallTo(() => _dimensionFactory.DimensionsSortedByName).Returns(new []
          {
             DimensionFactoryForSpecs.MassDimension,
             DimensionFactoryForSpecs.TimeDimension,

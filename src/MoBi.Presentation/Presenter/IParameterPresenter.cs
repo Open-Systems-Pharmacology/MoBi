@@ -8,11 +8,11 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IParameterPresenter : IPresenterWithFormulaCache, ICommandCollectorPresenter
    {
-      void SetParamterUnit(IParameterDTO parameterDTO, Unit displayUnit);
+      void SetParameterUnit(IParameterDTO parameterDTO, Unit displayUnit);
       bool IsFixedValue(IParameterDTO parameterDTO);
       void OnParameterValueSet(IParameterDTO parameterDTO, double valueInGuiUnit);
       void OnParameterValueOriginSet(IParameterDTO parameterDTO, ValueOrigin valueOrigin);
-      IEnumerable<IDimension> GetDimensions();
+      IReadOnlyList<IDimension> GetDimensions();
       void SetIsFavorite(IParameterDTO parameterDTO, bool isFavorite);
       void ResetValueFor(IParameterDTO parameterDTO);
    }

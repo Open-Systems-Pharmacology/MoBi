@@ -295,7 +295,7 @@ namespace MoBi.Presentation.Tasks
       {
          var timeDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.TIME);
 
-         foreach (var dimension in _dimensionFactory.Dimensions.Where(x => x != timeDimension))
+         foreach (var dimension in _dimensionFactory.DimensionsSortedByName.Where(x => x != timeDimension))
          {
             columnInfo.DimensionInfos.Add(new DimensionInfo
             {
