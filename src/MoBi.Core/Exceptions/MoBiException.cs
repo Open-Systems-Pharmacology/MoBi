@@ -34,7 +34,8 @@ namespace MoBi.Core.Exceptions
          base(AppConstants.Exceptions.NoInformationFoundException(searchedElement))
       {
       }
-      public NotMatchingSerializationFileException(string fileName,string searchedElement, string foundElement) :
+
+      public NotMatchingSerializationFileException(string fileName, string searchedElement, string foundElement) :
          base(AppConstants.Exceptions.NoInformationFoundException(fileName, searchedElement, foundElement))
       {
       }
@@ -43,7 +44,7 @@ namespace MoBi.Core.Exceptions
    public class InvalidProjectFileException : MoBiException
    {
       public InvalidProjectFileException(int projectVersion)
-         : base(AppConstants.ProjectVersionCannotBeLoaded(projectVersion, ProjectVersions.Current,AppConstants.ProductSiteDownload))
+         : base(AppConstants.ProjectVersionCannotBeLoaded(projectVersion, ProjectVersions.Current, ProjectVersions.ProjectIsTooOld(projectVersion), AppConstants.ProductSiteDownload))
       {
       }
    }
