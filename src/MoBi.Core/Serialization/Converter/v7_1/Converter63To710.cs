@@ -5,9 +5,9 @@ namespace MoBi.Core.Serialization.Converter.v7_1
 {
    public class Converter63To710 : IMoBiObjectConverter
    {
-      private readonly OSPSuite.Core.Converter.v7_1.Converter63To710 _coreConverter;
+      private readonly OSPSuite.Core.Converters.v7_1.Converter63To710 _coreConverter;
 
-      public Converter63To710(OSPSuite.Core.Converter.v7_1.Converter63To710 coreConverter)
+      public Converter63To710(OSPSuite.Core.Converters.v7_1.Converter63To710 coreConverter)
       {
          _coreConverter = coreConverter;
       }

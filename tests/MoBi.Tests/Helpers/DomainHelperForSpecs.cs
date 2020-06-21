@@ -21,11 +21,11 @@ namespace MoBi.Helpers
       /// <returns>The full path including the name and extension</returns>
       public static string TestFileFullPath(string fileName)
       {
-         var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "TestFiles");
+         var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestFiles");
          return Path.Combine(dataFolder, fileName);
       }
 
-      public static IDimension AmountDimension { get; } = new Dimension(new BaseDimensionRepresentation {AmountExponent = 1}, Constants.Dimension.AMOUNT, "µmol");
+      public static IDimension AmountDimension { get; } = new Dimension(new BaseDimensionRepresentation {AmountExponent = 1}, Constants.Dimension.MOLAR_AMOUNT, "µmol");
 
       public static IDimension ConcentrationDimension { get; } = new Dimension(new BaseDimensionRepresentation {LengthExponent = -3, MassExponent = 1, TimeExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
 

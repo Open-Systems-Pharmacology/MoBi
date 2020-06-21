@@ -7,6 +7,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.Presenter.SpaceDiagram;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;

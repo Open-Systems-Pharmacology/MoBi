@@ -8,9 +8,9 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_MoBiMergedDimensionFactory : ContextSpecification<MoBiMergedDimensionFactory>
+   public abstract class concern_for_MoBiMergedDimensionFactory : ContextSpecification<MoBiDimensionFactory>
    {
-      protected IMoBiDimensionConverterFor<IParameter> _converter;
+      protected IMoBiDimensionConverter<IParameter> _converter;
       protected IDimension _source;
       protected IDimension _target;
 
@@ -24,7 +24,7 @@ namespace MoBi.Core
          _target.DefaultUnit = _target.Unit("mmol");
          _converter = new TestDimensionConverterFor<IParameter>(_source, _target);
 
-         sut = new MoBiMergedDimensionFactory();
+         sut = new MoBiDimensionFactory();
       }
 
     
@@ -92,7 +92,7 @@ namespace MoBi.Core
 
    public class When_two_posssible_converter_for_One_conversion_are_present : concern_for_MoBiMergedDimensionFactory
    {
-      private IMoBiDimensionConverterFor<DataColumn> _otherConverter;
+      private IMoBiDimensionConverter<DataColumn> _otherConverter;
       private IParameter _parameter;
       private MergedDimensionFor<IParameter> _res;
 
@@ -132,7 +132,7 @@ namespace MoBi.Core
       }
    }
 
-   internal class TestDimensionConverterFor<T> : DimensionConverterFor<T> where T : IWithDimension
+   internal class TestDimensionConverterFor<T> : DimensionConverter<T> where T : IWithDimension
    {
       public TestDimensionConverterFor(IDimension sourceDimension, IDimension targetDimension)
          : base(sourceDimension, targetDimension)

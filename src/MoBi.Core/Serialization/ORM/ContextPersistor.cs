@@ -8,7 +8,7 @@ using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
-using OSPSuite.Infrastructure.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 

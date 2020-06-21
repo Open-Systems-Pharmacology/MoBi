@@ -161,7 +161,7 @@ namespace MoBi.Presentation
          base.Context();
          var dimensionFactory = A.Fake<IMoBiDimensionFactory>();
          _rightDimension = A.Fake<IDimension>();
-         A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_rightDimension);
+         A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.MOLAR_AMOUNT)).Returns(_rightDimension);
          A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
          _parameterName = "Para";
          var paramterId = _parameterName;

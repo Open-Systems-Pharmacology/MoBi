@@ -86,7 +86,7 @@ namespace MoBi.Helpers
          return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);
       }
 
-      public static IDimension AmountDimension => DimensionByName(Constants.Dimension.AMOUNT);
+      public static IDimension AmountDimension => DimensionByName(Constants.Dimension.MOLAR_AMOUNT);
 
       public static IDimension DimensionByName(string dimensionName) => IoC.Resolve<IDimensionFactory>().Dimension(dimensionName);
    }

@@ -46,7 +46,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _simulations = new List<IMoBiSimulation> { A.Fake<IMoBiSimulation>(), A.Fake<IMoBiSimulation>() };
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.No);
       }
 
       protected override void Because()
@@ -76,7 +76,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _simulations = new List<IMoBiSimulation> {A.Fake<IMoBiSimulation>(), A.Fake<IMoBiSimulation>()};
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
       protected override void Because()

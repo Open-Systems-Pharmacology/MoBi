@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<PassiveTransportBuildingBlock id="PoBrXU4U6ES5NqjqG1XTsg" name="Standard Passive Transports" icon="PassiveTransport" bbVersion="0" version="13">
-  <Creation createdAt="5248308555518922008" createdBy="EZZJY" creationMode="New" origin="PKSim" version="7.3.0" internalVersion="74" />
+<PassiveTransportBuildingBlock id="Wpvx3QeDgE2BL8d-4y3pZA" name="Standard Passive Transports" icon="PassiveTransport" bbVersion="0" version="14">
+  <Creation createdAt="5248852327625094285" createdBy="Michael" creationMode="New" origin="PKSim" version="9.0" internalVersion="77" />
   <Builders>
-    <TransportBuilder id="4MXDjWorXEuA3o91IZuqoA" name="DrugAbsorption_para" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="1" processRateParameterPersistable="0" formula="C6sp_v55Nk-mGZbPEP46hQ" transportType="0">
+    <TransportBuilder id="jTZCAB2v0USj_5yuxS1wDQ" name="DrugAbsorption_para" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="1" processRateParameterPersistable="0" formula="YQ8oNCIeXEWJnJmCaMRtQw" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Lumen" />
@@ -17,7 +17,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="Lr0ySl2eBkeoZWKtUUoodw" name="DrugAbsorption_trans" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="1" processRateParameterPersistable="0" formula="nhYIDOMSPk-VNJJwQ1lBIA" transportType="0">
+    <TransportBuilder id="8QcosnUh4kiIb2e-pUD0lw" name="DrugAbsorption_trans" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="1" processRateParameterPersistable="0" formula="QFrL1YxtmkqXXtDkcCXNGQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <NotMatchTagCondition tag="Feces" />
@@ -32,7 +32,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="4hRtzTkvdkOnv5njq8gA5w" name="LumenDrugTransport_cae" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="FcAZxOY9KE6unwzVVFvC2Q" name="LumenDrugTransport_cae" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="LowerIleum" />
@@ -47,7 +47,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="Hm5c5sLd9USJtNDzK5HONg" name="LumenDrugTransport_colasc" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="8tiob2m79UeRtFj4mGDJ1Q" name="LumenDrugTransport_colasc" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Caecum" />
@@ -62,7 +62,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="Nyr88an36kqyCd8mF77CHg" name="LumenDrugTransport_coldesc" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="xwgjfYPqrUSO7EaWBY_QPA" name="LumenDrugTransport_coldesc" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="ColonTransversum" />
@@ -77,7 +77,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="vU2X1sCfiEajtQ1LqhTMuQ" name="LumenDrugTransport_colsigm" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="Rw6GKSqGjEqsEYueagMNTg" name="LumenDrugTransport_colsigm" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="ColonDescendens" />
@@ -92,7 +92,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="GcsRSrB-xkyzpqENLk4AOw" name="LumenDrugTransport_coltrans" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="uE7BTHuq9UmDWdlxxeEMeg" name="LumenDrugTransport_coltrans" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="ColonAscendens" />
@@ -107,7 +107,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="_0qfw-hrxUm282FPQW8Yrg" name="LumenDrugTransport_duo" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="cVoSgCuMkUCYIsesE2bacg" name="LumenDrugTransport_duo" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Lumen" />
@@ -122,7 +122,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="Yr9lhKzVP02liWNU00L_gQ" name="LumenDrugTransport_fec" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="XTIz1G5HjEyJWkI-BjDc-Q" transportType="0">
+    <TransportBuilder id="VBknut6GxkuHQdSSAkRkhQ" name="LumenDrugTransport_fec" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="kmhZC3HY0kmohXKkRH03ag" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Lumen" />
@@ -137,7 +137,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="IZxW0L5wi0i-Fa-PjbJwCw" name="LumenDrugTransport_lil" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="vxK6t0VXU0CNMy3qHhqBWA" name="LumenDrugTransport_lil" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Lumen" />
@@ -152,7 +152,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="ULWiOBTl2UybAlEhg1I0bA" name="LumenDrugTransport_lje" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="vEyjNZJNQkG8xIDw8e3Taw" name="LumenDrugTransport_lje" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Lumen" />
@@ -167,7 +167,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="o4bjkV7aZkSVxKw1rJbRtg" name="LumenDrugTransport_rect" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="xC9XY0Oj6UW0KKR5N2-BpQ" name="LumenDrugTransport_rect" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="ColonSigmoid" />
@@ -182,7 +182,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="liMLv1SvqESYxYQ1WV1XCw" name="LumenDrugTransport_uil" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="YGXk62xN1kWOdewqwtYaLQ" name="LumenDrugTransport_uil" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="LowerJejunum" />
@@ -197,7 +197,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="YcPhqrP8D0OKJvlqEM16gw" name="LumenDrugTransport_uje" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="RWJ3soL2e02xotxx3DerOg" transportType="0">
+    <TransportBuilder id="WWzKQXzFF0qOhvhRQ7F57w" name="LumenDrugTransport_uje" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="OY4N94OZsEineRcrLbasww" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Duodenum" />
@@ -212,41 +212,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="b38NleNJ4UaBs_R8FGTz0Q" name="MassTransfer_PeriportalToPericentral_BC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="jdIkQXUjBkW1PZEvdqkRHA" transportType="0">
-      <SourceCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="BloodCells" />
-          <MatchTagCondition tag="Liver" />
-          <MatchTagCondition tag="Periportal" />
-        </DescriptorConditions>
-      </SourceCriteria>
-      <TargetCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="BloodCells" />
-          <MatchTagCondition tag="Liver" />
-          <MatchTagCondition tag="Pericentral" />
-        </DescriptorConditions>
-      </TargetCriteria>
-      <MoleculeList forAll="1" />
-    </TransportBuilder>
-    <TransportBuilder id="OSeeYCrkTESHSPb202sChA" name="MassTransfer_PeriportalToPericentral_Plasma" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="U04MRgImN0KZG9cTpq7msQ" transportType="0">
-      <SourceCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="Liver" />
-          <MatchTagCondition tag="Periportal" />
-          <MatchTagCondition tag="Plasma" />
-        </DescriptorConditions>
-      </SourceCriteria>
-      <TargetCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="Liver" />
-          <MatchTagCondition tag="Pericentral" />
-          <MatchTagCondition tag="Plasma" />
-        </DescriptorConditions>
-      </TargetCriteria>
-      <MoleculeList forAll="1" />
-    </TransportBuilder>
-    <TransportBuilder id="D6UuCwHW9Eaa9R-v5ARu_g" name="MassTransferBloodPool2OrgPl" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="Y10Xjt4dh0ubhC1Xog2Oig" transportType="0">
+    <TransportBuilder id="H4nYrjuw5kaEVB7ER-UhSA" name="MassTransferBloodPool2OrgPl" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="yI3_kGM0VEiluXC7Fx9OVQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="ArterialBlood" />
@@ -262,7 +228,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="r1hNJIZWRkq3Fxfte1HpsQ" name="MassTransferBloodPool2OrgPl_liv" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="-FxcEYfqrEa6X8xgicVhZw" transportType="0">
+    <TransportBuilder id="3Qz-NcoAnUq50ShmOgt-tA" name="MassTransferBloodPool2OrgPl_liv" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="FqqH6QMGZkySSDAVip_wQA" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Plasma" />
@@ -277,7 +243,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="D27iWPL_qE6p93JsB2Ejcg" name="MassTransferBloodPool2OrgPl_lng" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="TnD-d_6iYUuedWCGR8j9Og" transportType="0">
+    <TransportBuilder id="_-dUFGH4XkOK06hDuOOJKQ" name="MassTransferBloodPool2OrgPl_lng" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="ZosLRCL7m0yJ8Tdw1lnwxQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Plasma" />
@@ -292,7 +258,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="Nxvf8U704kqiV5jeQTKKqg" name="MassTransferBloodPool2OrgRBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="BbjH60Y1DUqibmx3K3VKXw" transportType="0">
+    <TransportBuilder id="7vq78BGEiUGRldM3ts5nPA" name="MassTransferBloodPool2OrgRBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="1xopEa38v0uYsfAO4rcpUg" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="ArterialBlood" />
@@ -308,7 +274,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="Uy86-PvB7Um5pW6aQjoqrw" name="MassTransferBloodPool2OrgRBC_liv" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="XTgxVyjD6Ui11ybRKajDWg" transportType="0">
+    <TransportBuilder id="oaBSxMJyrkKxvYdf3cubKA" name="MassTransferBloodPool2OrgRBC_liv" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="r46P9x5-YUG-u6CmBBi0lg" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -323,7 +289,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="g5zKGzqOvkK85H3FO54eoQ" name="MassTransferBloodPool2OrgRBC_lng" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="BB62HuXiQUqx3__Xap7VVw" transportType="0">
+    <TransportBuilder id="HZaKhosS_k6BCGXpkofBzA" name="MassTransferBloodPool2OrgRBC_lng" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="sLmvPrc-sUCVloSXfdw_VQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -338,39 +304,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="dniltsGshUCrrKbelEz7Yw" name="MassTransferLinPlasma2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="v050G1l2c0GDIlqkbH2CSw" transportType="0">
-      <SourceCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="LargeIntestine" />
-          <NotMatchTagCondition tag="Mucosa" />
-          <MatchTagCondition tag="Plasma" />
-        </DescriptorConditions>
-      </SourceCriteria>
-      <TargetCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="Plasma" />
-          <MatchTagCondition tag="PortalVein" />
-        </DescriptorConditions>
-      </TargetCriteria>
-      <MoleculeList forAll="1" />
-    </TransportBuilder>
-    <TransportBuilder id="SiORNT3owUetcDWBKF8_gQ" name="MassTransferLinRBC2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="-K_rpC6I6U-WhC90rThnQQ" transportType="0">
-      <SourceCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="BloodCells" />
-          <MatchTagCondition tag="LargeIntestine" />
-          <NotMatchTagCondition tag="Mucosa" />
-        </DescriptorConditions>
-      </SourceCriteria>
-      <TargetCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="BloodCells" />
-          <MatchTagCondition tag="PortalVein" />
-        </DescriptorConditions>
-      </TargetCriteria>
-      <MoleculeList forAll="1" />
-    </TransportBuilder>
-    <TransportBuilder id="9hz6OSaJWEigKheiNE0PMQ" name="MassTransferLINToMucosaBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="18a7-kn5n0ifl2dklhTYuA" transportType="0">
+    <TransportBuilder id="D-teAVs2l0iSHFdxZ-q5GQ" name="MassTransferLINToMucosaBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="dtAJKYRvzkShuOKuVmykqg" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -386,7 +320,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="69bitpOfL0aYuZhtgi1XCw" name="MassTransferLINToMucosaPlasma" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="viF648G3CkeaN2b7RnERYA" transportType="0">
+    <TransportBuilder id="9AuELsjwZUus2zi4uc27Iw" name="MassTransferLINToMucosaPlasma" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="lq474X_Cn0SeIjd4tJrMFQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="LargeIntestine" />
@@ -402,7 +336,39 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="asolub18bkW6uLKvkGcqnw" name="MassTransferMucosaToPveBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="5SxPX-ZeS0W4-yjBHq3e8Q" transportType="0">
+    <TransportBuilder id="ViQ7NeivSkiSwmw8hRKPaA" name="MassTransferLinPlasma2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="-tpUBKGM30mnFtj-GF0dWQ" transportType="0">
+      <SourceCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="LargeIntestine" />
+          <NotMatchTagCondition tag="Mucosa" />
+          <MatchTagCondition tag="Plasma" />
+        </DescriptorConditions>
+      </SourceCriteria>
+      <TargetCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="Plasma" />
+          <MatchTagCondition tag="PortalVein" />
+        </DescriptorConditions>
+      </TargetCriteria>
+      <MoleculeList forAll="1" />
+    </TransportBuilder>
+    <TransportBuilder id="vGvBAySWy0ScFAfYBkfA9Q" name="MassTransferLinRBC2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="6yLx3bzNLEGAOBiBY2rUFg" transportType="0">
+      <SourceCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="BloodCells" />
+          <MatchTagCondition tag="LargeIntestine" />
+          <NotMatchTagCondition tag="Mucosa" />
+        </DescriptorConditions>
+      </SourceCriteria>
+      <TargetCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="BloodCells" />
+          <MatchTagCondition tag="PortalVein" />
+        </DescriptorConditions>
+      </TargetCriteria>
+      <MoleculeList forAll="1" />
+    </TransportBuilder>
+    <TransportBuilder id="UmmMDhactECvBFvDmuChUA" name="MassTransferMucosaToPveBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="1Us1R6yn90G9Rr2BF9kTEQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -417,7 +383,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="vMpNS2wV0EKXiY4vpDMeWA" name="MassTransferMucosaToPvePlasma" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="s0PWlofqXUevOx0bxVnciQ" transportType="0">
+    <TransportBuilder id="CwZhtAp9zUGL7MVhTwz3vQ" name="MassTransferMucosaToPvePlasma" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="gE16Gsjv6ESrKbbdppTiKg" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Mucosa" />
@@ -432,7 +398,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="7Y0HdZuvcEC5s_1Tn7717Q" name="MassTransferOrgPl2BloodPool" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="69TdNTvo_U6kz3FGf4V3og" transportType="0">
+    <TransportBuilder id="qjT04yUhcE6SX9vfuJRtSA" name="MassTransferOrgPl2BloodPool" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="ky7WYH9ymEK2YdzJhHI8YA" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <NotMatchTagCondition tag="Liver" />
@@ -449,7 +415,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="5Ms2F_LMYkOwkR6V2qodpQ" name="MassTransferOrgPl2BloodPool_Liv" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="cVjXgI7DOEa1ncXoGyJKzw" transportType="0">
+    <TransportBuilder id="5YXjyPJRrECEhgYjHuCSlQ" name="MassTransferOrgPl2BloodPool_Liv" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="Ci3yFMPZd0iktOoM8TRc_g" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Liver" />
@@ -465,7 +431,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="4ZtjGs6LEkKOpzI84_OZ6w" name="MassTransferOrgPl2BloodPool_Liv_Pericentral" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="JyHO4GNUFECLeACVTvKGcQ" transportType="0">
+    <TransportBuilder id="qPXVWmQZsUuaoWj6xHxzQg" name="MassTransferOrgPl2BloodPool_Liv_Pericentral" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="-i7bB9QENE2uGszRc4_SRg" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Liver" />
@@ -481,7 +447,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="rPzb_kTcCk6oTyzA1H82FQ" name="MassTransferOrgPl2BloodPool_Lng" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="7CZ6L6_CbE6iasiuCBxI5w" transportType="0">
+    <TransportBuilder id="wjlfB5v9FU-1Vt0TArBLyg" name="MassTransferOrgPl2BloodPool_Lng" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="4MvIF1cPgUmzDJ2zbgRUJQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Lung" />
@@ -496,7 +462,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="aEnrWXbA1kGp-WfgVqyAbg" name="MassTransferOrgPl2BloodPool_pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="QoKRrSK8WEmTsiLhtsZvhg" transportType="0">
+    <TransportBuilder id="l04OFkw8hkaxXpa-12a_IQ" name="MassTransferOrgPl2BloodPool_pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="HDpkpI7cH0uTF_yj5G54qA" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <NotMatchTagCondition tag="LargeIntestine" />
@@ -514,7 +480,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="Zzvb-JLLdEOiTnkcAy8LSA" name="MassTransferOrgRBC2BloodPool" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="l1jWjcGD-0uIHIvLAqd5dQ" transportType="0">
+    <TransportBuilder id="G9HpcwtGikSeWe7IKDV-jA" name="MassTransferOrgRBC2BloodPool" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="VhWmLCAkG0GnN5YyF4f99w" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -531,7 +497,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="1RL6X58VF0Ct1gLgBrFLXg" name="MassTransferOrgRBC2BloodPool_Liv" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="Lq5hdoNTpEWH75FhUTuFBg" transportType="0">
+    <TransportBuilder id="Uk-nDBv9OEGAM9-D3BOAnA" name="MassTransferOrgRBC2BloodPool_Liv" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="xN10-0Qtj0Scobsc1Ojj8g" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -547,7 +513,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="iEfZAUQOqEGVcdZCx1HyIw" name="MassTransferOrgRBC2BloodPool_Liv_Pericentral" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="jAtqRpd3xUKqEjlB06dUxQ" transportType="0">
+    <TransportBuilder id="eGItcVZVIUKqkwwCXc3Qsw" name="MassTransferOrgRBC2BloodPool_Liv_Pericentral" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="YJFd7Pkhhk6qKwR44nSOMA" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -563,7 +529,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="nvPlwY3x0USkF7nuf_ONmQ" name="MassTransferOrgRBC2BloodPool_Lng" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="m6rYoibFLkOvUG0_R0lw4A" transportType="0">
+    <TransportBuilder id="CJy6uVrz3EyAyxPApv2D4A" name="MassTransferOrgRBC2BloodPool_Lng" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="judWqvLS_kqXBu9pGLRI6Q" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -578,7 +544,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="6y9E_FhmT0Cx7tWOU-omBw" name="MassTransferOrgRBC2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="ny0E4VjN6kGOeLjALjbh7g" transportType="0">
+    <TransportBuilder id="IExuhdPoyUaI-CfTGG-rGw" name="MassTransferOrgRBC2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="al1cphoWE0ydFX8487RBIA" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -597,39 +563,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="Q-LGGB9uR0azJAvChICBTg" name="MassTransferSinPlasma2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="v050G1l2c0GDIlqkbH2CSw" transportType="0">
-      <SourceCriteria>
-        <DescriptorConditions>
-          <NotMatchTagCondition tag="Mucosa" />
-          <MatchTagCondition tag="Plasma" />
-          <MatchTagCondition tag="SmallIntestine" />
-        </DescriptorConditions>
-      </SourceCriteria>
-      <TargetCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="Plasma" />
-          <MatchTagCondition tag="PortalVein" />
-        </DescriptorConditions>
-      </TargetCriteria>
-      <MoleculeList forAll="1" />
-    </TransportBuilder>
-    <TransportBuilder id="pdlAF4-ViUqxv5XcSBXyiQ" name="MassTransferSinRBC2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="-K_rpC6I6U-WhC90rThnQQ" transportType="0">
-      <SourceCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="BloodCells" />
-          <NotMatchTagCondition tag="Mucosa" />
-          <MatchTagCondition tag="SmallIntestine" />
-        </DescriptorConditions>
-      </SourceCriteria>
-      <TargetCriteria>
-        <DescriptorConditions>
-          <MatchTagCondition tag="BloodCells" />
-          <MatchTagCondition tag="PortalVein" />
-        </DescriptorConditions>
-      </TargetCriteria>
-      <MoleculeList forAll="1" />
-    </TransportBuilder>
-    <TransportBuilder id="689y4aBIYUeNQAWSKDH1cA" name="MassTransferSINToMucosaBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="18a7-kn5n0ifl2dklhTYuA" transportType="0">
+    <TransportBuilder id="8WVgJuR0Dk-cM3Lxcly7DA" name="MassTransferSINToMucosaBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="dtAJKYRvzkShuOKuVmykqg" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="BloodCells" />
@@ -645,7 +579,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="8iF1RUUOTEOl5uCxqMnvQQ" name="MassTransferSINToMucosaPlasma" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="viF648G3CkeaN2b7RnERYA" transportType="0">
+    <TransportBuilder id="qn-91hZU-UKSgTszJ6tu6Q" name="MassTransferSINToMucosaPlasma" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="lq474X_Cn0SeIjd4tJrMFQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <NotMatchTagCondition tag="Mucosa" />
@@ -661,7 +595,73 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="MS9toclIekemR9ZZkbQvmQ" name="PassiveDiffusionInt2Cell" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="kXYwzLTQ3EaZ1heAkBvo2w" transportType="0">
+    <TransportBuilder id="ey_iqsWOkUWsiB6wJsfVZg" name="MassTransferSinPlasma2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="-tpUBKGM30mnFtj-GF0dWQ" transportType="0">
+      <SourceCriteria>
+        <DescriptorConditions>
+          <NotMatchTagCondition tag="Mucosa" />
+          <MatchTagCondition tag="Plasma" />
+          <MatchTagCondition tag="SmallIntestine" />
+        </DescriptorConditions>
+      </SourceCriteria>
+      <TargetCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="Plasma" />
+          <MatchTagCondition tag="PortalVein" />
+        </DescriptorConditions>
+      </TargetCriteria>
+      <MoleculeList forAll="1" />
+    </TransportBuilder>
+    <TransportBuilder id="97H_q7NOuEuQsUu4fVxejw" name="MassTransferSinRBC2BloodPool_Pve" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="6yLx3bzNLEGAOBiBY2rUFg" transportType="0">
+      <SourceCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="BloodCells" />
+          <NotMatchTagCondition tag="Mucosa" />
+          <MatchTagCondition tag="SmallIntestine" />
+        </DescriptorConditions>
+      </SourceCriteria>
+      <TargetCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="BloodCells" />
+          <MatchTagCondition tag="PortalVein" />
+        </DescriptorConditions>
+      </TargetCriteria>
+      <MoleculeList forAll="1" />
+    </TransportBuilder>
+    <TransportBuilder id="GVufooOkUkuuOtcMtDN9uw" name="MassTransfer_PeriportalToPericentral_BC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="9TMTIfAPVEmuoFZOWLRopQ" transportType="0">
+      <SourceCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="BloodCells" />
+          <MatchTagCondition tag="Liver" />
+          <MatchTagCondition tag="Periportal" />
+        </DescriptorConditions>
+      </SourceCriteria>
+      <TargetCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="BloodCells" />
+          <MatchTagCondition tag="Liver" />
+          <MatchTagCondition tag="Pericentral" />
+        </DescriptorConditions>
+      </TargetCriteria>
+      <MoleculeList forAll="1" />
+    </TransportBuilder>
+    <TransportBuilder id="b__ZiUWjjE-KNBy-FE1QBw" name="MassTransfer_PeriportalToPericentral_Plasma" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="IxEFR9qipkyx1VGW83Zqyg" transportType="0">
+      <SourceCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="Liver" />
+          <MatchTagCondition tag="Periportal" />
+          <MatchTagCondition tag="Plasma" />
+        </DescriptorConditions>
+      </SourceCriteria>
+      <TargetCriteria>
+        <DescriptorConditions>
+          <MatchTagCondition tag="Liver" />
+          <MatchTagCondition tag="Pericentral" />
+          <MatchTagCondition tag="Plasma" />
+        </DescriptorConditions>
+      </TargetCriteria>
+      <MoleculeList forAll="1" />
+    </TransportBuilder>
+    <TransportBuilder id="VFGi26oSAUyIuLuF6MxWUw" name="PassiveDiffusionInt2Cell" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="GC1XkdtgWEOkSPm7yVgtGw" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Interstitial" />
@@ -674,7 +674,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="VJPKwLgoKk-ho-UAdfCAKQ" name="PassiveDiffusionPl2Int" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="0fpOMWyaCEa5IoNVee9XXw" transportType="0">
+    <TransportBuilder id="sQh7Qj8a3U2lfOgU_gZB3Q" name="PassiveDiffusionPl2Int" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="CL-Y2y2R0kyJ-p69S4YgeQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <NotMatchTagCondition tag="ArterialBlood" />
@@ -691,7 +691,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="_ahGwaSwmU6D9TLaUlaedw" name="PassiveDiffusionPl2RBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="WiLogmDBKUurwF7Q3klC0g" transportType="0">
+    <TransportBuilder id="2zBQ-Ocba0m0XREopHOkQg" name="PassiveDiffusionPl2RBC" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="VmjrE0ErB0WyJBIY7d-8Gg" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Plasma" />
@@ -704,7 +704,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="FFh669r8c0iKbVgcNYb5jw" name="PassiveDiffusionPlsToSaliva" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="KawN5BAaREC8eWVnNjRxNQ" transportType="0">
+    <TransportBuilder id="Zrd2etgkIEKLG6Mf7TBRug" name="PassiveDiffusionPlsToSaliva" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="rQHuihnMj0KUKH0eYUtPBQ" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Saliva" />
@@ -719,7 +719,7 @@
       </TargetCriteria>
       <MoleculeList forAll="1" />
     </TransportBuilder>
-    <TransportBuilder id="oRelOFwSNEKM0cylnaxs_Q" name="GallbladderEmptying" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="XGeF5rtzlUKzL58UQwql4Q" transportType="0">
+    <TransportBuilder id="wIqvkyzKvUaSJYy6UPz3RQ" name="GallbladderEmptying" mode="Logical" containerType="Other" dimension="Amount per time" createProcessRateParameter="0" processRateParameterPersistable="0" formula="Iqph7dBe_U2weZVDV75hAA" transportType="0">
       <SourceCriteria>
         <DescriptorConditions>
           <MatchTagCondition tag="Gallbladder" />
@@ -736,17 +736,17 @@
   </Builders>
   <FormulaCache>
     <Formulas>
-      <Formula id="C6sp_v55Nk-mGZbPEP46hQ" name="DrugAbsorption_para" dim="Amount per time" formula="DrugAbsorptionLumenToMucosaRate">
+      <Formula id="YQ8oNCIeXEWJnJmCaMRtQw" name="DrugAbsorption_para" dim="Amount per time" formula="DrugAbsorptionLumenToMucosaRate">
         <Paths>
           <Path path="0" as="1" dim="2" />
         </Paths>
       </Formula>
-      <Formula id="nhYIDOMSPk-VNJJwQ1lBIA" name="DrugAbsorption_trans" dim="Amount per time" formula="DrugAbsorptionLumenToMucosaRate">
+      <Formula id="QFrL1YxtmkqXXtDkcCXNGQ" name="DrugAbsorption_trans" dim="Amount per time" formula="DrugAbsorptionLumenToMucosaRate">
         <Paths>
           <Path path="0" as="1" dim="2" />
         </Paths>
       </Formula>
-      <Formula id="RWJ3soL2e02xotxx3DerOg" name="LumenDrugTransport" dim="Amount per time" formula="(OralApplicationsEnabled AND IsFloatingInLumen) ? w*Drug*FillLevelFlagNext : 0">
+      <Formula id="OY4N94OZsEineRcrLbasww" name="LumenDrugTransport" dim="Amount per time" formula="(OralApplicationsEnabled AND IsFloatingInLumen) ? w*Drug*FillLevelFlagNext : 0">
         <Paths>
           <Path path="3" as="4" />
           <Path path="5" as="6" dim="7" />
@@ -755,188 +755,188 @@
           <Path path="13" as="14" />
         </Paths>
       </Formula>
-      <Formula id="XTIz1G5HjEyJWkI-BjDc-Q" name="LumenDrugTransport_Feces" dim="Amount per time" formula="OralApplicationsEnabled ? w*Drug : 0">
+      <Formula id="kmhZC3HY0kmohXKkRH03ag" name="LumenDrugTransport_Feces" dim="Amount per time" formula="OralApplicationsEnabled ? w*Drug : 0">
         <Paths>
           <Path path="3" as="4" />
           <Path path="5" as="6" dim="7" />
           <Path path="10" as="11" dim="12" />
         </Paths>
       </Formula>
-      <Formula id="jdIkQXUjBkW1PZEvdqkRHA" name="MassTransferPeriportal2PericentralBC_liv" dim="Amount per time" formula="IsLiverZonated ? (Q_liv +Q_pve)*HCT*C_bc : 0">
+      <Formula id="yI3_kGM0VEiluXC7Fx9OVQ" name="MassTransferBloodPool2OrgPl" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
         <Paths>
           <Path path="15" as="16" dim="17" />
           <Path path="18" as="19" dim="20" />
-          <Path path="21" as="22" dim="17" />
-          <Path path="23" as="24" />
-          <Path path="25" as="26" />
+          <Path path="21" as="22" />
         </Paths>
       </Formula>
-      <Formula id="U04MRgImN0KZG9cTpq7msQ" name="MassTransferPeriportal2PericentralPl_liv" dim="Amount per time" formula="IsLiverZonated ? (Q_liv +Q_pve)*(1-HCT)*C_pls : 0">
+      <Formula id="FqqH6QMGZkySSDAVip_wQA" name="MassTransferBloodPool2OrgPl_liv" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
         <Paths>
-          <Path path="15" as="16" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="21" as="22" dim="17" />
-          <Path path="23" as="24" />
-          <Path path="25" as="26" />
-        </Paths>
-      </Formula>
-      <Formula id="Y10Xjt4dh0ubhC1Xog2Oig" name="MassTransferBloodPool2OrgPl" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
-        <Paths>
-          <Path path="28" as="29" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="-FxcEYfqrEa6X8xgicVhZw" name="MassTransferBloodPool2OrgPl_liv" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
-        <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="TnD-d_6iYUuedWCGR8j9Og" name="MassTransferBloodPool2OrgPl_lng" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
-        <Paths>
-          <Path path="28" as="29" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="BbjH60Y1DUqibmx3K3VKXw" name="MassTransferBloodPool2OrgRBC" dim="Amount per time" formula="Q*HCT*C_bc">
-        <Paths>
-          <Path path="28" as="29" dim="17" />
+          <Path path="23" as="16" dim="17" />
           <Path path="18" as="19" dim="20" />
-          <Path path="23" as="24" />
+          <Path path="21" as="22" />
         </Paths>
       </Formula>
-      <Formula id="XTgxVyjD6Ui11ybRKajDWg" name="MassTransferBloodPool2OrgRBC_liv" dim="Amount per time" formula="Q*HCT*C_bc">
-        <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="18" as="19" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="BB62HuXiQUqx3__Xap7VVw" name="MassTransferBloodPool2OrgRBC_lng" dim="Amount per time" formula="Q*HCT*C_bc">
-        <Paths>
-          <Path path="28" as="29" dim="17" />
-          <Path path="18" as="19" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="v050G1l2c0GDIlqkbH2CSw" name="MassTransferSinLinPlasma2BloodPool_Pve" dim="Amount per time" formula="(1-fractQ)*Q*(1-HCT)*C">
-        <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="30" as="31" />
-          <Path path="18" as="32" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="-K_rpC6I6U-WhC90rThnQQ" name="MassTransferSinLinRBC2BloodPool_Pve" dim="Amount per time" formula="(1-fractQ)*Q*HCT*C">
-        <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="30" as="31" />
-          <Path path="18" as="32" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="18a7-kn5n0ifl2dklhTYuA" name="MassTransferIntestineToMucosaBC" dim="Amount per time" formula="MassTransferIntestineToMucosaBCRate">
-        <Paths>
-          <Path path="33" as="34" dim="2" />
-        </Paths>
-      </Formula>
-      <Formula id="viF648G3CkeaN2b7RnERYA" name="MassTransferIntestineToMucosaPlasma" dim="Amount per time" formula="MassTransferIntestineToMucosaPlasmaRate">
-        <Paths>
-          <Path path="35" as="36" dim="2" />
-        </Paths>
-      </Formula>
-      <Formula id="5SxPX-ZeS0W4-yjBHq3e8Q" name="MassTransferMucosaToPveBC" dim="Amount per time" formula="MassTransferMucosaToPveBCRate">
-        <Paths>
-          <Path path="37" as="38" dim="2" />
-        </Paths>
-      </Formula>
-      <Formula id="s0PWlofqXUevOx0bxVnciQ" name="MassTransferMucosaToPvePlasma" dim="Amount per time" formula="MassTransferMucosaToPvePlasmaRate">
-        <Paths>
-          <Path path="39" as="40" dim="2" />
-        </Paths>
-      </Formula>
-      <Formula id="69TdNTvo_U6kz3FGf4V3og" name="MassTransferOrgPl2BloodPool" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
-        <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="cVjXgI7DOEa1ncXoGyJKzw" name="MassTransferOrgPl2BloodPool_Liv" dim="Amount per time" formula="IsLiverZonated ? 0 : (Q_liv +Q_pve)*(1-HCT)*C_pls">
-        <Paths>
-          <Path path="15" as="16" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="23" as="24" />
-          <Path path="25" as="26" />
-          <Path path="21" as="22" dim="17" />
-        </Paths>
-      </Formula>
-      <Formula id="JyHO4GNUFECLeACVTvKGcQ" name="MassTransferOrgPl2BloodPool_Liv_Pericentral" dim="Amount per time" formula="IsLiverZonated ? (Q_liv +Q_pve)*(1-HCT)*C_pls : 0">
-        <Paths>
-          <Path path="15" as="16" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="23" as="24" />
-          <Path path="25" as="26" />
-          <Path path="21" as="22" dim="17" />
-        </Paths>
-      </Formula>
-      <Formula id="7CZ6L6_CbE6iasiuCBxI5w" name="MassTransferOrgPl2BloodPool_Lng" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
-        <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="QoKRrSK8WEmTsiLhtsZvhg" name="MassTransferOrgPl2BloodPool_pve" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
-        <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="18" as="27" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="l1jWjcGD-0uIHIvLAqd5dQ" name="MassTransferOrgRBC2BloodPool" dim="Amount per time" formula="Q*HCT*C_bc">
-        <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="18" as="19" dim="20" />
-          <Path path="23" as="24" />
-        </Paths>
-      </Formula>
-      <Formula id="Lq5hdoNTpEWH75FhUTuFBg" name="MassTransferOrgRBC2BloodPool_Liv" dim="Amount per time" formula="IsLiverZonated ? 0 : (Q_liv +Q_pve)*HCT*C_bc">
+      <Formula id="ZosLRCL7m0yJ8Tdw1lnwxQ" name="MassTransferBloodPool2OrgPl_lng" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
         <Paths>
           <Path path="15" as="16" dim="17" />
           <Path path="18" as="19" dim="20" />
-          <Path path="23" as="24" />
-          <Path path="25" as="26" />
-          <Path path="21" as="22" dim="17" />
+          <Path path="21" as="22" />
         </Paths>
       </Formula>
-      <Formula id="jAtqRpd3xUKqEjlB06dUxQ" name="MassTransferOrgRBC2BloodPool_Liv_Pericentral" dim="Amount per time" formula="IsLiverZonated ? (Q_liv +Q_pve)*HCT*C_bc : 0">
+      <Formula id="1xopEa38v0uYsfAO4rcpUg" name="MassTransferBloodPool2OrgRBC" dim="Amount per time" formula="Q*HCT*C_bc">
         <Paths>
           <Path path="15" as="16" dim="17" />
-          <Path path="18" as="19" dim="20" />
-          <Path path="23" as="24" />
-          <Path path="25" as="26" />
-          <Path path="21" as="22" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="21" as="22" />
         </Paths>
       </Formula>
-      <Formula id="m6rYoibFLkOvUG0_R0lw4A" name="MassTransferOrgRBC2BloodPool_Lng" dim="Amount per time" formula="Q*HCT*C_bc">
+      <Formula id="r46P9x5-YUG-u6CmBBi0lg" name="MassTransferBloodPool2OrgRBC_liv" dim="Amount per time" formula="Q*HCT*C_bc">
         <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="18" as="19" dim="20" />
-          <Path path="23" as="24" />
+          <Path path="23" as="16" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="21" as="22" />
         </Paths>
       </Formula>
-      <Formula id="ny0E4VjN6kGOeLjALjbh7g" name="MassTransferOrgRBC2BloodPool_Pve" dim="Amount per time" formula="Q*HCT*C_bc">
+      <Formula id="sLmvPrc-sUCVloSXfdw_VQ" name="MassTransferBloodPool2OrgRBC_lng" dim="Amount per time" formula="Q*HCT*C_bc">
         <Paths>
-          <Path path="15" as="29" dim="17" />
-          <Path path="18" as="19" dim="20" />
-          <Path path="23" as="24" />
+          <Path path="15" as="16" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="21" as="22" />
         </Paths>
       </Formula>
-      <Formula id="kXYwzLTQ3EaZ1heAkBvo2w" name="PassiveDiffusionInt2Cell" dim="Amount per time" formula="K_water_int * PA_int_cell * C_int - K_water_cell * PA_cell_int * C_cell">
+      <Formula id="dtAJKYRvzkShuOKuVmykqg" name="MassTransferIntestineToMucosaBC" dim="Amount per time" formula="MassTransferIntestineToMucosaBCRate">
+        <Paths>
+          <Path path="25" as="26" dim="2" />
+        </Paths>
+      </Formula>
+      <Formula id="lq474X_Cn0SeIjd4tJrMFQ" name="MassTransferIntestineToMucosaPlasma" dim="Amount per time" formula="MassTransferIntestineToMucosaPlasmaRate">
+        <Paths>
+          <Path path="27" as="28" dim="2" />
+        </Paths>
+      </Formula>
+      <Formula id="-tpUBKGM30mnFtj-GF0dWQ" name="MassTransferSinLinPlasma2BloodPool_Pve" dim="Amount per time" formula="(1-fractQ)*Q*(1-HCT)*C">
+        <Paths>
+          <Path path="23" as="16" dim="17" />
+          <Path path="29" as="30" />
+          <Path path="18" as="31" dim="20" />
+          <Path path="21" as="22" />
+        </Paths>
+      </Formula>
+      <Formula id="6yLx3bzNLEGAOBiBY2rUFg" name="MassTransferSinLinRBC2BloodPool_Pve" dim="Amount per time" formula="(1-fractQ)*Q*HCT*C">
+        <Paths>
+          <Path path="23" as="16" dim="17" />
+          <Path path="29" as="30" />
+          <Path path="18" as="31" dim="20" />
+          <Path path="21" as="22" />
+        </Paths>
+      </Formula>
+      <Formula id="1Us1R6yn90G9Rr2BF9kTEQ" name="MassTransferMucosaToPveBC" dim="Amount per time" formula="MassTransferMucosaToPveBCRate">
+        <Paths>
+          <Path path="32" as="33" dim="2" />
+        </Paths>
+      </Formula>
+      <Formula id="gE16Gsjv6ESrKbbdppTiKg" name="MassTransferMucosaToPvePlasma" dim="Amount per time" formula="MassTransferMucosaToPvePlasmaRate">
+        <Paths>
+          <Path path="34" as="35" dim="2" />
+        </Paths>
+      </Formula>
+      <Formula id="ky7WYH9ymEK2YdzJhHI8YA" name="MassTransferOrgPl2BloodPool" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
+        <Paths>
+          <Path path="23" as="16" dim="17" />
+          <Path path="18" as="19" dim="20" />
+          <Path path="21" as="22" />
+        </Paths>
+      </Formula>
+      <Formula id="Ci3yFMPZd0iktOoM8TRc_g" name="MassTransferOrgPl2BloodPool_Liv" dim="Amount per time" formula="IsLiverZonated ? 0 : (Q_liv +Q_pve)*(1-HCT)*C_pls">
+        <Paths>
+          <Path path="23" as="36" dim="17" />
+          <Path path="18" as="19" dim="20" />
+          <Path path="21" as="22" />
+          <Path path="37" as="38" />
+          <Path path="39" as="40" dim="17" />
+        </Paths>
+      </Formula>
+      <Formula id="-i7bB9QENE2uGszRc4_SRg" name="MassTransferOrgPl2BloodPool_Liv_Pericentral" dim="Amount per time" formula="IsLiverZonated ? (Q_liv +Q_pve)*(1-HCT)*C_pls : 0">
+        <Paths>
+          <Path path="23" as="36" dim="17" />
+          <Path path="18" as="19" dim="20" />
+          <Path path="21" as="22" />
+          <Path path="37" as="38" />
+          <Path path="39" as="40" dim="17" />
+        </Paths>
+      </Formula>
+      <Formula id="4MvIF1cPgUmzDJ2zbgRUJQ" name="MassTransferOrgPl2BloodPool_Lng" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
+        <Paths>
+          <Path path="23" as="16" dim="17" />
+          <Path path="18" as="19" dim="20" />
+          <Path path="21" as="22" />
+        </Paths>
+      </Formula>
+      <Formula id="HDpkpI7cH0uTF_yj5G54qA" name="MassTransferOrgPl2BloodPool_pve" dim="Amount per time" formula="Q*(1-HCT)*C_pls">
+        <Paths>
+          <Path path="23" as="16" dim="17" />
+          <Path path="18" as="19" dim="20" />
+          <Path path="21" as="22" />
+        </Paths>
+      </Formula>
+      <Formula id="VhWmLCAkG0GnN5YyF4f99w" name="MassTransferOrgRBC2BloodPool" dim="Amount per time" formula="Q*HCT*C_bc">
+        <Paths>
+          <Path path="23" as="16" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="21" as="22" />
+        </Paths>
+      </Formula>
+      <Formula id="xN10-0Qtj0Scobsc1Ojj8g" name="MassTransferOrgRBC2BloodPool_Liv" dim="Amount per time" formula="IsLiverZonated ? 0 : (Q_liv +Q_pve)*HCT*C_bc">
+        <Paths>
+          <Path path="23" as="36" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="21" as="22" />
+          <Path path="37" as="38" />
+          <Path path="39" as="40" dim="17" />
+        </Paths>
+      </Formula>
+      <Formula id="YJFd7Pkhhk6qKwR44nSOMA" name="MassTransferOrgRBC2BloodPool_Liv_Pericentral" dim="Amount per time" formula="IsLiverZonated ? (Q_liv +Q_pve)*HCT*C_bc : 0">
+        <Paths>
+          <Path path="23" as="36" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="21" as="22" />
+          <Path path="37" as="38" />
+          <Path path="39" as="40" dim="17" />
+        </Paths>
+      </Formula>
+      <Formula id="judWqvLS_kqXBu9pGLRI6Q" name="MassTransferOrgRBC2BloodPool_Lng" dim="Amount per time" formula="Q*HCT*C_bc">
+        <Paths>
+          <Path path="23" as="16" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="21" as="22" />
+        </Paths>
+      </Formula>
+      <Formula id="al1cphoWE0ydFX8487RBIA" name="MassTransferOrgRBC2BloodPool_Pve" dim="Amount per time" formula="Q*HCT*C_bc">
+        <Paths>
+          <Path path="23" as="16" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="21" as="22" />
+        </Paths>
+      </Formula>
+      <Formula id="9TMTIfAPVEmuoFZOWLRopQ" name="MassTransferPeriportal2PericentralBC_liv" dim="Amount per time" formula="IsLiverZonated ? (Q_liv +Q_pve)*HCT*C_bc : 0">
+        <Paths>
+          <Path path="23" as="36" dim="17" />
+          <Path path="18" as="24" dim="20" />
+          <Path path="39" as="40" dim="17" />
+          <Path path="21" as="22" />
+          <Path path="37" as="38" />
+        </Paths>
+      </Formula>
+      <Formula id="IxEFR9qipkyx1VGW83Zqyg" name="MassTransferPeriportal2PericentralPl_liv" dim="Amount per time" formula="IsLiverZonated ? (Q_liv +Q_pve)*(1-HCT)*C_pls : 0">
+        <Paths>
+          <Path path="23" as="36" dim="17" />
+          <Path path="18" as="19" dim="20" />
+          <Path path="39" as="40" dim="17" />
+          <Path path="21" as="22" />
+          <Path path="37" as="38" />
+        </Paths>
+      </Formula>
+      <Formula id="GC1XkdtgWEOkSPm7yVgtGw" name="PassiveDiffusionInt2Cell" dim="Amount per time" formula="K_water_int * PA_int_cell * C_int - K_water_cell * PA_cell_int * C_cell">
         <Paths>
           <Path path="41" as="42" dim="20" />
           <Path path="18" as="43" dim="20" />
@@ -946,20 +946,20 @@
           <Path path="50" as="51" />
         </Paths>
       </Formula>
-      <Formula id="0fpOMWyaCEa5IoNVee9XXw" name="PassiveDiffusionPl2Int" dim="Amount per time" formula="fu * P_endothelial * SA * (C_pls - C_int / K_int_pls)">
+      <Formula id="CL-Y2y2R0kyJ-p69S4YgeQ" name="PassiveDiffusionPl2Int" dim="Amount per time" formula="fu * P_endothelial * SA * (C_pls - C_int / K_int_pls)">
         <Paths>
           <Path path="41" as="43" dim="20" />
-          <Path path="18" as="27" dim="20" />
+          <Path path="18" as="19" dim="20" />
           <Path path="52" as="53" dim="54" />
           <Path path="55" as="56" dim="57" />
           <Path path="58" as="59" />
           <Path path="60" as="61" dim="62" />
         </Paths>
       </Formula>
-      <Formula id="WiLogmDBKUurwF7Q3klC0g" name="PassiveDiffusionPl2RBC" dim="Amount per time" formula="SA_bc * fu * (P_pls_rbc * C_pls - P_rbc_pls * C_bc  /K_rbc)">
+      <Formula id="VmjrE0ErB0WyJBIY7d-8Gg" name="PassiveDiffusionPl2RBC" dim="Amount per time" formula="SA_bc * fu * (P_pls_rbc * C_pls - P_rbc_pls * C_bc  /K_rbc)">
         <Paths>
-          <Path path="41" as="19" dim="20" />
-          <Path path="18" as="27" dim="20" />
+          <Path path="41" as="24" dim="20" />
+          <Path path="18" as="19" dim="20" />
           <Path path="52" as="53" dim="54" />
           <Path path="63" as="64" dim="57" />
           <Path path="65" as="66" dim="57" />
@@ -967,7 +967,7 @@
           <Path path="69" as="70" dim="62" />
         </Paths>
       </Formula>
-      <Formula id="KawN5BAaREC8eWVnNjRxNQ" name="PassiveDiffusionPlsToSaliva" dim="Amount per time" formula="fu * (C_pls_art - C_slv / K_slv_pls) * Q_slv">
+      <Formula id="rQHuihnMj0KUKH0eYUtPBQ" name="PassiveDiffusionPlsToSaliva" dim="Amount per time" formula="fu * (C_pls_art - C_slv / K_slv_pls) * Q_slv">
         <Paths>
           <Path path="71" as="72" dim="17" />
           <Path path="73" as="74" dim="20" />
@@ -976,7 +976,7 @@
           <Path path="76" as="77" />
         </Paths>
       </Formula>
-      <Formula id="XGeF5rtzlUKzL58UQwql4Q" name="GallbladderEmptyingRate" dim="Amount per time" formula="EHC_Active ? ln(2) / EHC_Halftime * M * EHC_EjectionFraction : 0">
+      <Formula id="Iqph7dBe_U2weZVDV75hAA" name="GallbladderEmptyingRate" dim="Amount per time" formula="EHC_Active ? ln(2) / EHC_Halftime * M * EHC_EjectionFraction : 0">
         <Paths>
           <Path path="78" as="79" dim="7" />
           <Path path="80" as="81" dim="54" />
@@ -1001,32 +1001,32 @@
       <Map s="Inversed time" id="12" />
       <Map s="TARGET|FillLevelFlag" id="13" />
       <Map s="FillLevelFlagNext" id="14" />
-      <Map s="SOURCE|..|Blood flow rate" id="15" />
-      <Map s="Q_liv" id="16" />
+      <Map s="TARGET|..|Blood flow rate" id="15" />
+      <Map s="Q" id="16" />
       <Map s="Flow" id="17" />
       <Map s="SOURCE|MOLECULE|Concentration" id="18" />
-      <Map s="C_bc" id="19" />
+      <Map s="C_pls" id="19" />
       <Map s="Concentration (molar)" id="20" />
-      <Map s="Organism|PortalVein|Blood flow rate" id="21" />
-      <Map s="Q_pve" id="22" />
-      <Map s="Organism|Hematocrit" id="23" />
-      <Map s="HCT" id="24" />
-      <Map s="Organism|Liver|Is liver zonated" id="25" />
-      <Map s="IsLiverZonated" id="26" />
-      <Map s="C_pls" id="27" />
-      <Map s="TARGET|..|Blood flow rate" id="28" />
-      <Map s="Q" id="29" />
-      <Map s="SOURCE|..|Mucosa blood flow fraction" id="30" />
-      <Map s="fractQ" id="31" />
-      <Map s="C" id="32" />
-      <Map s="NEIGHBORHOOD|MOLECULE|Mass transfer rate (intestine to mucosa blood cells)" id="33" />
-      <Map s="MassTransferIntestineToMucosaBCRate" id="34" />
-      <Map s="NEIGHBORHOOD|MOLECULE|Mass transfer rate (intestine to mucosa plasma)" id="35" />
-      <Map s="MassTransferIntestineToMucosaPlasmaRate" id="36" />
-      <Map s="NEIGHBORHOOD|MOLECULE|Mass transfer rate (mucosa to portal vein blood cells)" id="37" />
-      <Map s="MassTransferMucosaToPveBCRate" id="38" />
-      <Map s="NEIGHBORHOOD|MOLECULE|Mass transfer rate (mucosa to portal vein plasma)" id="39" />
-      <Map s="MassTransferMucosaToPvePlasmaRate" id="40" />
+      <Map s="Organism|Hematocrit" id="21" />
+      <Map s="HCT" id="22" />
+      <Map s="SOURCE|..|Blood flow rate" id="23" />
+      <Map s="C_bc" id="24" />
+      <Map s="NEIGHBORHOOD|MOLECULE|Mass transfer rate (intestine to mucosa blood cells)" id="25" />
+      <Map s="MassTransferIntestineToMucosaBCRate" id="26" />
+      <Map s="NEIGHBORHOOD|MOLECULE|Mass transfer rate (intestine to mucosa plasma)" id="27" />
+      <Map s="MassTransferIntestineToMucosaPlasmaRate" id="28" />
+      <Map s="SOURCE|..|Mucosa blood flow fraction" id="29" />
+      <Map s="fractQ" id="30" />
+      <Map s="C" id="31" />
+      <Map s="NEIGHBORHOOD|MOLECULE|Mass transfer rate (mucosa to portal vein blood cells)" id="32" />
+      <Map s="MassTransferMucosaToPveBCRate" id="33" />
+      <Map s="NEIGHBORHOOD|MOLECULE|Mass transfer rate (mucosa to portal vein plasma)" id="34" />
+      <Map s="MassTransferMucosaToPvePlasmaRate" id="35" />
+      <Map s="Q_liv" id="36" />
+      <Map s="Organism|Liver|Is liver zonated" id="37" />
+      <Map s="IsLiverZonated" id="38" />
+      <Map s="Organism|PortalVein|Blood flow rate" id="39" />
+      <Map s="Q_pve" id="40" />
       <Map s="TARGET|MOLECULE|Concentration" id="41" />
       <Map s="C_cell" id="42" />
       <Map s="C_int" id="43" />

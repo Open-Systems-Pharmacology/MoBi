@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Mapper
 
          _concentrationDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLAR_CONCENTRATION, "mol/l");
 
-         _amountDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.AMOUNT, "mol");
+         _amountDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLAR_AMOUNT, "mol");
          _amountDimension.AddUnit("mmol", 0.001, 0);
 
          _timeDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.TIME, "s");
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Mapper
          A.CallTo(() => _dimensionFactory.DimensionForUnit("s")).Returns(_timeDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("")).Throws<Exception>();
 
-         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(_amountDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_AMOUNT)).Returns(_amountDimension);
          A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION)).Returns(_concentrationDimension);
 
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.AmountBased);

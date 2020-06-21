@@ -54,7 +54,7 @@ namespace MoBi.UI.Views
 
       public bool ReadOnly
       {
-         get { return _readOnly; }
+         get => _readOnly;
          set
          {
             _readOnly = value;
@@ -64,7 +64,7 @@ namespace MoBi.UI.Views
 
       public bool AllowValueChange
       {
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutControlItemValue.Visibility); }
+         get => LayoutVisibilityConvertor.ToBoolean(layoutControlItemValue.Visibility);
          set
          {
             layoutControlItemValue.Visibility = LayoutVisibilityConvertor.FromBoolean(value);

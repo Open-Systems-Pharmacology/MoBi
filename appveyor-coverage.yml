@@ -1,9 +1,10 @@
 configuration: Debug
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 environment:
+  app_version: '9.0'
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
-  app_version: '8.0'
+  APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
 
 version: '$(app_version).{build}'
 
@@ -15,17 +16,14 @@ assembly_info:
 
 clone_depth: 1
 
-cache:
-  packages -> **\packages.config 
-
 install:
-- set PATH=C:\Ruby22\bin;C:\\Python34;C:\\Python34\\Scripts;%PATH%"
-- pip install codecov
-- git submodule update --init --recursive
-- ps: >-
-    (new-object net.webclient).DownloadFile('https://github.com/Open-Systems-Pharmacology/MiKTeX/releases/download/v2.9.3/MikTex.2.9.3.msi', 'C:\\MikTex.msi')
+  - set PATH=C:\Ruby22\bin;C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+  - pip install codecov
+  - git submodule update --init --recursive
+  - ps: >-
+     (new-object net.webclient).DownloadFile('https://github.com/Open-Systems-Pharmacology/MiKTeX/releases/download/v2.9.3/MikTex.2.9.3.msi', 'C:\\MikTex.msi')
 
-    Start-Process msiexec.exe -ArgumentList /i, C:\MikTex.msi, /quiet, /qn, /norestart, INSTALLDIR=$env:MIK_TEX_INSTALL_DIR -Wait
+     Start-Process msiexec.exe -ArgumentList /i, C:\MikTex.msi, /quiet, /qn, /norestart, INSTALLDIR=$env:MIK_TEX_INSTALL_DIR -Wait
 
 before_build:
   - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
@@ -38,6 +36,7 @@ before_build:
   - nuget sources add -name simmodel -source https://ci.appveyor.com/nuget/ospsuite-simmodel
   - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
+  - nuget install opencover -OutputDirectory packages
   - nuget restore
 
 build:

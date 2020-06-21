@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Assets.MenuNames;
 
 namespace MoBi.Assets
 {
@@ -871,7 +872,7 @@ namespace MoBi.Assets
 
          public static string AskForNewName(string name)
          {
-            return string.Format("Please enter new name");
+            return "Please enter new name";
          }
 
          public static string AskFileOverride(string fileName)
@@ -886,7 +887,9 @@ namespace MoBi.Assets
 
          public static readonly string ExportSimulationModelToFileTitle = "Export model structure to text file";
          public static readonly string ExportSimulationResultsToExcel = "Export simulation results to Excel®";
-         public static readonly string ExportSimulationMatlabODE = "Export simulation to Matlab® ODE";
+         public static readonly string ExportODEForMatlab = "Export simulation to Matlab® ODE";
+         public static readonly string ExportODEForR = "Export simulation to R ODE";
+         public static readonly string ExportSimulationToCppCode = "Export simulation to C++ code";
          public static readonly string LoadSBMLProject = "Load SBML Project";
 
          public static string Load(string objectType)
@@ -982,7 +985,6 @@ namespace MoBi.Assets
          public static readonly string AbsolutePath = "Absolute Path";
          public static readonly string ExportHistory = Captions.ExportHistory;
          public static readonly string StartPopulationSimulation = "Send Simulation to PK-Sim for Population Simulation...";
-         public static readonly string ExportSimModelXml = "Export Simulation for Matlab®/R...";
          public static readonly string BuildingBlockExplorer = "Building Blocks";
          public static readonly string SimulationExplorer = "Simulations";
          public static readonly string New = "New";
@@ -1033,7 +1035,6 @@ namespace MoBi.Assets
          public static readonly string SearchView = "Search";
          public static readonly string NotificationView = "Notifications";
          public static readonly string ComparisonView = "Comparison";
-         public static readonly string MatlabDifferentialSystemExport = "Export Simulation to Matlab® Differential Equations...";
          public static readonly string GoTo = "Go To...";
          public static readonly string DiscardResults = "Discard";
          public static readonly string KeepResults = "Keep";
@@ -1951,22 +1952,6 @@ namespace MoBi.Assets
          }
       }
 
-      public static string RHSDefaultUnitName(IDimension dimension)
-      {
-         var numerator = string.IsNullOrEmpty(dimension.BaseUnit.Name) ? "1" : dimension.BaseUnit.Name;
-         if (string.Equals(numerator, "min"))
-            return string.Empty;
-
-         return $"{numerator}/min";
-      }
-
-      public static string RHSDimensionSuffix = " per time";
-
-      public static string RHSDimensionName(IDimension dimension)
-      {
-         return $"{dimension.Name}{RHSDimensionSuffix}";
-      }
-
       public static readonly IEnumerable<string> UnallowedNames = new List<string>
       {
          string.Empty,
@@ -2026,8 +2011,12 @@ namespace MoBi.Assets
          return $"{name1}-{name2}";
       }
 
-      public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, string downloadUrl)
+      public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, bool projectIsTooOld, string downloadUrl)
       {
+         if (projectIsTooOld)
+            return $"The project is too old (compatible version {projectVersion}) and cannot be loaded with this version. (compatible version {currentVersion}).\n" +
+                   $"Visit our download page at {downloadUrl} to download an older version of the software compatible with this project.";
+
          if (projectVersion > currentVersion)
             return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}";
 

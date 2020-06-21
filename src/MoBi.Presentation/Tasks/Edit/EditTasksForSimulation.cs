@@ -27,7 +27,9 @@ namespace MoBi.Presentation.Tasks.Edit
       void ExportResultsToExcel(IMoBiSimulation simulation);
       void ExportResultsToExcel(IMoBiSimulation simulation, DataRepository dataRepository);
       void RenameResults(IMoBiSimulation simulation, DataRepository dataRepository);
-      void ExportMatlabDifferentialSystem(IMoBiSimulation simulation);
+      void ExportODEForMatlab(IMoBiSimulation simulation);
+      void ExportODEForR(IMoBiSimulation simulation);
+      void ExportSimulationToCppCode(IMoBiSimulation simulation);
       void ExportSimModelXml(IMoBiSimulation simulation);
       void CalculateScaleFactors(IMoBiSimulation simulation);
    }
@@ -37,7 +39,7 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly ISimulationPersistor _simulationPersistor;
       private readonly IDialogCreator _dialogCreator;
       private readonly IModelReportCreator _reportCreator;
-      private readonly IDataRepositoryTask _dataRepositoryTask;
+      private readonly IDataRepositoryExportTask _dataRepositoryTask;
       private readonly ISimModelExporter _simModelExporter;
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
@@ -46,7 +48,7 @@ namespace MoBi.Presentation.Tasks.Edit
          IInteractionTaskContext interactionTaskContext,
          ISimulationPersistor simulationPersistor,
          IDialogCreator dialogCreator,
-         IDataRepositoryTask dataRepositoryTask,
+         IDataRepositoryExportTask dataRepositoryTask,
          IModelReportCreator reportCreator,
          ISimModelExporter simModelExporter,
          IDimensionFactory dimensionFactory,
@@ -123,11 +125,25 @@ namespace MoBi.Presentation.Tasks.Edit
          addCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).Run(_context));
       }
 
-      public void ExportMatlabDifferentialSystem(IMoBiSimulation simulation)
+      public void ExportODEForMatlab(IMoBiSimulation simulation)
       {
-         var exportFolder = _interactionTask.AskForFolder(AppConstants.Dialog.ExportSimulationMatlabODE, Constants.DirectoryKey.SIM_MODEL_XML);
+         var exportFolder = _interactionTask.AskForFolder(AppConstants.Dialog.ExportODEForMatlab, Constants.DirectoryKey.SIM_MODEL_XML);
          if (string.IsNullOrEmpty(exportFolder)) return;
-         _simModelExporter.ExportODEForMatlab(simulation, exportFolder, MatlabFormulaExportMode.Formula);
+         _simModelExporter.ExportODEForMatlab(simulation, exportFolder, FormulaExportMode.Formula);
+      }
+
+      public void ExportODEForR(IMoBiSimulation simulation)
+      {
+         var exportFolder = _interactionTask.AskForFolder(AppConstants.Dialog.ExportODEForR, Constants.DirectoryKey.SIM_MODEL_XML);
+         if (string.IsNullOrEmpty(exportFolder)) return;
+         _simModelExporter.ExportODEForR(simulation, exportFolder, FormulaExportMode.Formula);
+      }
+
+      public void ExportSimulationToCppCode(IMoBiSimulation simulation)
+      {
+         var exportFolder = _interactionTask.AskForFolder(AppConstants.Dialog.ExportSimulationToCppCode, Constants.DirectoryKey.SIM_MODEL_XML);
+         if (string.IsNullOrEmpty(exportFolder)) return;
+         _simModelExporter.ExportCppCode(simulation, exportFolder, FormulaExportMode.Formula);
       }
 
       public void CalculateScaleFactors(IMoBiSimulation simulation)
@@ -168,7 +184,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, AppConstants.Filter.SIM_MODEL_FILE_FILTER, Constants.DirectoryKey.SIM_MODEL_XML, simulation.Name);
          if (fileName.IsNullOrEmpty()) return;
-         _simModelExporter.Export(simulation, fileName);
+         _simModelExporter.ExportSimModelXml(simulation, fileName);
       }
 
       public override void Rename(IMoBiSimulation simulationToRename, IEnumerable<IObjectBase> existingObjectsInParent, IBuildingBlock buildingBlock)

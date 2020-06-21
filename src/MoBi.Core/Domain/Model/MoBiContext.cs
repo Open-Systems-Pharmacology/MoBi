@@ -13,8 +13,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Infrastructure;
-using OSPSuite.Infrastructure.Journal;
+using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -64,12 +63,13 @@ namespace MoBi.Core.Domain.Model
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly IJournalSession _journalSession;
 
       public IMoBiHistoryManager HistoryManager { get; set; }
       public IMoBiDimensionFactory DimensionFactory { get; }
       public IObjectBaseFactory ObjectBaseFactory { get; }
       public IObjectPathFactory ObjectPathFactory { get; }
-      public ICoreCalculationMethodRepository CalculatonMethodRepository { get; set; }
+      public ICoreCalculationMethodRepository CalculationMethodRepository { get; set; }
       public IEventPublisher EventPublisher { get; }
       public IWithIdRepository ObjectRepository { get; }
 
@@ -77,7 +77,7 @@ namespace MoBi.Core.Domain.Model
          IXmlSerializationService serializationService, IObjectPathFactory objectPathFactory, IWithIdRepository objectBaseRepository,
          IHistoryManagerFactory historyManagerFactory, IRegisterTask registerTask, IUnregisterTask unregisterTask,
          IClipboardManager clipboardManager, IContainer container, IObjectTypeResolver objectTypeResolver,
-         ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask) : base(eventPublisher, journalSession, fileLocker)
+         ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask) : base(eventPublisher, fileLocker)
       {
          ObjectBaseFactory = objectBaseFactory;
          ObjectRepository = objectBaseRepository;
@@ -93,6 +93,7 @@ namespace MoBi.Core.Domain.Model
          _registerTask = registerTask;
          _unregisterTask = unregisterTask;
          _clipboardManager = clipboardManager;
+         _journalSession = journalSession;
       }
 
       public IMoBiProject CurrentProject
@@ -156,10 +157,10 @@ namespace MoBi.Core.Domain.Model
 
       public override void Clear()
       {
-         DimensionFactory.ProjectFactory = null;
          HistoryManager = null;
          ObjectRepository.Clear();
          _clipboardManager.Clear();
+         _journalSession.Close();
          base.Clear();
       }
 
@@ -195,7 +196,6 @@ namespace MoBi.Core.Domain.Model
 
       public void LoadFrom(IMoBiProject project)
       {
-         DimensionFactory.ProjectFactory = project.DimensionFactory;
          CurrentProject = project;
          _registerTask.Register(project);
       }

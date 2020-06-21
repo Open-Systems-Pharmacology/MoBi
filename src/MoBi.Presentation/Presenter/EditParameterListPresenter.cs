@@ -18,12 +18,13 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public class EditParameterListPresenter : AbstractParameterBasePresenter<IEditParameterListView, IEditParameterListPresenter>, IEditParameterListPresenter
+   public class EditParameterListPresenter : AbstractParameterBasePresenter<IEditParameterListView, IEditParameterListPresenter>,
+      IEditParameterListPresenter
    {
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
-      private IEnumerable<IParameter> _parameters;
       private readonly List<ParameterDTO> _parameterDTOs = new List<ParameterDTO>();
+      public IEnumerable<IParameter> EditedParameters { get; private set; }
 
       public EditParameterListPresenter(
          IEditParameterListView view,
@@ -39,7 +40,7 @@ namespace MoBi.Presentation.Presenter
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _parameterDTOMapper = parameterDTOMapper;
       }
-   
+
       public void ShowContextMenu(IViewItem viewItem, Point popupLocation)
       {
          var contextMenu = _viewItemContextMenuFactory.CreateFor(viewItem, this);
@@ -59,24 +60,23 @@ namespace MoBi.Presentation.Presenter
       {
          releaseParameters();
 
-         _parameters = parameters;
-         _parameterDTOs.AddRange(_parameters.MapAllUsing(_parameterDTOMapper).Cast<ParameterDTO>());
+         EditedParameters = parameters;
+         _parameterDTOs.AddRange(EditedParameters.MapAllUsing(_parameterDTOMapper).Cast<ParameterDTO>());
 
          _view.BindTo(_parameterDTOs);
 
-         EnumHelper.AllValuesFor<PathElement>().Each(updateColumnVisibility);
+         EnumHelper.AllValuesFor<PathElementId>().Each(updateColumnVisibility);
       }
 
-      private void updateColumnVisibility(PathElement pathElement)
+      private void updateColumnVisibility(PathElementId pathElement)
       {
          SetVisibility(pathElement, !_parameterDTOs.HasOnlyEmptyValuesAt(pathElement));
       }
 
-      public void SetVisibility(PathElement pathElement, bool isVisible)
+      public void SetVisibility(PathElementId pathElement, bool isVisible)
       {
          View.SetVisibility(pathElement, isVisible);
       }
-
 
       public virtual IReadOnlyList<IParameter> SelectedParameters
       {
@@ -89,8 +89,6 @@ namespace MoBi.Presentation.Presenter
             _view.SelectedParameters = _parameterDTOs.Where(x => value.Contains(x.Parameter)).ToList();
          }
       }
-
-      public IEnumerable<IParameter> EditedParameters => _parameters;
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {

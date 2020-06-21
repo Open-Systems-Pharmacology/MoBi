@@ -13,7 +13,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _tableFormulaBuilderDTO = new TableFormulaBuilderDTO();
-         var timeDimension = DimensionFactoryForSpecs.Factory.TryGetDimension(DimensionFactoryForSpecs.DimensionNames.Time);
+         var timeDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Time);
 
          sut = new DTOValuePoint(_tableFormulaBuilderDTO)
          {

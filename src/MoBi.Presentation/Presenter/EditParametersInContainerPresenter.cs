@@ -104,7 +104,6 @@ namespace MoBi.Presentation.Presenter
          _view.ParentName = container.Name;
          createParameterCache(_getParametersFunc(container));
          showParameters();
-         setupEditPresenter(_parameters.FirstOrDefault());
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
@@ -162,8 +161,10 @@ namespace MoBi.Presentation.Presenter
 
       private void showParameters()
       {
-         var parametersToShowDTO = _allParametersDTO.Where(shouldShowParameter);
+         var parametersToShowDTO = _allParametersDTO.Where(shouldShowParameter).ToList();
          _view.BindTo(parametersToShowDTO);
+         setupEditPresenter(parametersToShowDTO.FirstOrDefault()?.Parameter);
+
       }
 
       private bool shouldShowParameter(ParameterDTO parameterDTO)

@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
       {
          _unitControl.ParameterUnitSet += setParameterUnit;
 
-         _dimensionComboBoxRepository.FillComboBoxRepositoryWith(_dimensionFactory.Dimensions);
+         _dimensionComboBoxRepository.FillComboBoxRepositoryWith(_dimensionFactory.DimensionsSortedByName);
 
          var colName = _gridViewBinder.AutoBind(dto => dto.Name)
             .WithCaption(AppConstants.Captions.ParameterName).WithOnValueUpdating((o,e) => OnEvent(() => OnNameSet(o,e)));

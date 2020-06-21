@@ -4,7 +4,6 @@ using Microsoft.Win32;
 using MoBi.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Infrastructure.Configuration;
 using OSPSuite.Assets;
 
 namespace MoBi.Core
@@ -26,7 +25,7 @@ namespace MoBi.Core
       public override string ProductName { get; } = AppConstants.PRODUCT_NAME;
       public override Origin Product { get; } = Origins.MoBi;
       public override string ProductNameWithTrademark { get; } = AppConstants.PRODUCT_NAME_WITH_TRADEMARK;
-      public override ApplicationIcon Icon { get; } = ApplicationIcons.MoBi;
+      public override string IconName { get; } = ApplicationIcons.MoBi.IconName;
       protected override string[] LatestVersionWithOtherMajor { get; } = {"7.4", "6.3", "3.6" };
       public override string UserSettingsFileName { get; } = "Settings.xml";
       public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";

@@ -14,6 +14,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Binders;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.MenuAndBars;
@@ -158,20 +159,20 @@ namespace MoBi.Presentation.Presenter
          _chartPresenterContext.EditorLayoutTask.InitFromUserSettings(_chartPresenterContext.EditorAndDisplayPresenter);
       }
 
-      protected void LoadFromTemplate(CurveChartTemplate chartTemplate, bool triggeredManually, bool propogateChartChangeEvent = true)
+      protected void LoadFromTemplate(CurveChartTemplate chartTemplate, bool triggeredManually, bool propagateChartChangeEvent = true)
       {
-         _chartTemplatingTask.InitFromTemplate(_dataRepositoryCache, Chart, editorPresenter, chartTemplate, CurveNameDefinition, triggeredManually, propogateChartChangeEvent);
+         _chartTemplatingTask.InitFromTemplate(_dataRepositoryCache, Chart, editorPresenter, chartTemplate, CurveNameDefinition, triggeredManually, propagateChartChangeEvent);
       }
 
-      protected virtual void OnDragOver(object sender, DragEventArgs e)
+      protected virtual void OnDragOver(object sender, IDragEvent e)
       {
          if (simulationResultsIsBeingDragged(e))
-            e.Effect = CanDropSimulation ? DragDropEffects.Move : DragDropEffects.None;
+            e.Effect = CanDropSimulation ? DragEffect.Move : DragEffect.None;
          else
             _observedDataDragDropBinder.PrepareDrag(e);
       }
 
-      private static bool simulationResultsIsBeingDragged(DragEventArgs e)
+      private static bool simulationResultsIsBeingDragged(IDragEvent e)
       {
          var data = e.Data<IList<ITreeNode>>();
          //do not use null propagation as suggested by resharper
@@ -182,7 +183,7 @@ namespace MoBi.Presentation.Presenter
          return data.Count == data.OfType<HistoricalResultsNode>().Count();
       }
 
-      protected virtual void OnDragDrop(object sender, DragEventArgs e)
+      protected virtual void OnDragDrop(object sender, IDragEvent e)
       {
          if (simulationResultsIsBeingDragged(e) && CanDropSimulation)
          {
@@ -236,7 +237,7 @@ namespace MoBi.Presentation.Presenter
             //do not validate template when showing a chart as the chart might well be without curves when initialized for the first time.
             var currentTemplate = defaultTemplate ?? _chartTemplatingTask.TemplateFrom(chart, validateTemplate: false);
             replaceSimulationRepositories(dataRepositories);
-            LoadFromTemplate(currentTemplate, triggeredManually: false, propogateChartChangeEvent: false);
+            LoadFromTemplate(currentTemplate, triggeredManually: false, propagateChartChangeEvent: false);
             addObservedDataIfNeeded(dataRepositories);
          }
          finally

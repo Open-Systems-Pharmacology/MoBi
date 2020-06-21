@@ -11,7 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Infrastructure.Journal;
+using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.FileLocker;
@@ -27,7 +27,7 @@ namespace MoBi.Core
       private IXmlSerializationService _serializationService;
       private IObjectPathFactory _objectPathFactory;
       protected IWithIdRepository _objectBaseRepository;
-      private IHistoryManagerFactory _moBiHistoryManagerFacory;
+      private IHistoryManagerFactory _moBiHistoryManagerFactory;
       private IRegisterTask _registerTask;
       protected IUnregisterTask _unregisterTask;
       private IClipboardManager _clipboardManager;
@@ -45,7 +45,7 @@ namespace MoBi.Core
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _registerTask = A.Fake<IRegisterTask>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
-         _moBiHistoryManagerFacory = A.Fake<IHistoryManagerFactory>();
+         _moBiHistoryManagerFactory = A.Fake<IHistoryManagerFactory>();
          _serializationService = A.Fake<IXmlSerializationService>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
          _unregisterTask = A.Fake<IUnregisterTask>();
@@ -59,12 +59,12 @@ namespace MoBi.Core
 
          sut = new MoBiContext(_objectBaseFactory, _dimensionFactory, _eventPublisher,
             _serializationService, _objectPathFactory, _objectBaseRepository,
-            _moBiHistoryManagerFacory, _registerTask, _unregisterTask,
+            _moBiHistoryManagerFactory, _registerTask, _unregisterTask,
             _clipboardManager, _container,
             _objectTypeResolver, _cloneManager,
             _journalSession, _fileLocker, _lazyLoadTask);
 
-         A.CallTo(() => _moBiHistoryManagerFacory.Create()).Returns(A.Fake<MoBiHistoryManager>());
+         A.CallTo(() => _moBiHistoryManagerFactory.Create()).Returns(A.Fake<MoBiHistoryManager>());
       }
    }
 
@@ -76,7 +76,6 @@ namespace MoBi.Core
       {
          base.Context();
          _project = A.Fake<IMoBiProject>();
-         _project.DimensionFactory = A.Fake<IDimensionFactory>();
          _project.Name = "Neu";
          sut.LoadFrom(_project);
       }
@@ -91,7 +90,6 @@ namespace MoBi.Core
       {
          sut.CurrentProject.ShouldBeNull();
          sut.HistoryManager.ShouldBeNull();
-         sut.DimensionFactory.ProjectFactory.ShouldBeNull();
       }
 
       [Observation]
@@ -109,7 +107,6 @@ namespace MoBi.Core
       {
          base.Context();
          var project = A.Fake<IMoBiProject>();
-         project.DimensionFactory = A.Fake<IDimensionFactory>();
          project.Name = "Neu";
          A.CallTo(() => _objectBaseFactory.Create<IMoBiProject>()).Returns(project);
          sut.NewProject();
@@ -136,7 +133,6 @@ namespace MoBi.Core
       {
          base.Context();
          _project = A.Fake<IMoBiProject>();
-         _project.DimensionFactory = A.Fake<IDimensionFactory>();
          _project.Name = "Neu";
          sut.LoadFrom(_project);
          _newObjectBase = A.Fake<IObjectBase>();
@@ -171,7 +167,6 @@ namespace MoBi.Core
       {
          base.Context();
          _project = A.Fake<IMoBiProject>();
-         _project.DimensionFactory = A.Fake<IDimensionFactory>();
          _project.Name = "Neu";
          _newObjectBase = A.Fake<IObjectBase>();
          id = "ID";
@@ -206,7 +201,6 @@ namespace MoBi.Core
       {
          base.Context();
          _newProject = A.Fake<IMoBiProject>();
-         _newProject.DimensionFactory = A.Fake<IDimensionFactory>();
          _newProject.Name = "Neu";
          A.CallTo(() => _objectBaseFactory.Create<IMoBiProject>()).Returns(_newProject);
       }
@@ -220,12 +214,6 @@ namespace MoBi.Core
       public void should_set_current_project_to_the_new_project()
       {
          sut.CurrentProject.ShouldBeEqualTo(_newProject);
-      }
-
-      [Observation]
-      public void should_set_the_Project_dimension_factory_to_the_project_ones()
-      {
-         sut.DimensionFactory.ProjectFactory.ShouldBeEqualTo(_newProject.DimensionFactory);
       }
    }
 

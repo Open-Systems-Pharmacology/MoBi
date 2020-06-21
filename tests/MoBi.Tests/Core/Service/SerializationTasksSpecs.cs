@@ -31,7 +31,7 @@ namespace MoBi.Core.Service
       protected IProjectConverterLogger _converterLogger;
       protected IMoBiContext _context;
       protected IPostSerializationStepsMaker _postSerializationSteps;
-      protected IHeavyWorkManager _heavyworkManager;
+      protected IHeavyWorkManager _heavyWorkManager;
       protected string _fileToOpen;
       private Func<string, bool> _oldFileExists;
 
@@ -44,9 +44,9 @@ namespace MoBi.Core.Service
          _converterLogger = A.Fake<IProjectConverterLogger>();
          _context = A.Fake<IMoBiContext>();
          _postSerializationSteps = A.Fake<IPostSerializationStepsMaker>();
-         _heavyworkManager = new HeavyWorkManagerForSpecs();
+         _heavyWorkManager = new HeavyWorkManagerForSpecs();
          sut = new SerializationTask(_serializationService, _contextPersistor, new ObjectTypeResolver(), _dialogCreator, _contentSelector, _converterLogger,
-            _context, _postSerializationSteps, _heavyworkManager);
+            _context, _postSerializationSteps, _heavyWorkManager);
 
 
          _fileToOpen = "toto.mbp3";
@@ -78,7 +78,7 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_return_the_desieriliezed_objects()
+      public void should_return_the_deserialized_objects()
       {
          _result.ShouldNotBeNull();
       }
@@ -112,7 +112,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_notify_that_the_project_is_already_open()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, AppConstants.Captions.OpenAnyway, AppConstants.Captions.CancelButton)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, AppConstants.Captions.OpenAnyway, AppConstants.Captions.CancelButton, ViewResult.Yes)).MustHaveHappened();
       }
    }
 

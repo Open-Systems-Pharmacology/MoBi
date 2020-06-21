@@ -15,8 +15,8 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
-using SimModelNET;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
 
 namespace MoBi.Presentation.Tasks
@@ -146,7 +146,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_updated_the_simulation_output_selection()
       {
-         _simulation.Settings.OutputSelections.ShouldBeEqualTo(_newOutputSelection);
+         _simulation.SimulationSettings.OutputSelections.ShouldBeEqualTo(_newOutputSelection);
       }
 
       [Observation]
@@ -196,7 +196,7 @@ namespace MoBi.Presentation.Tasks
 
          _newResults = new DataRepository("NEW");
          _simulationResults = new SimulationRunResults(success:true, warnings: Enumerable.Empty<SolverWarning>(), results: _newResults);
-         A.CallTo(() => _simModelManager.RunSimulation(_simulation)).Returns(_simulationResults);
+         A.CallTo(() => _simModelManager.RunSimulation(_simulation, null)).Returns(_simulationResults);
          var baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimension);
           _concentrationColumn = new DataColumn("Drug", DomainHelperForSpecs.ConcentrationDimension, baseGrid);
          _fractionColumn = new DataColumn("Fraction", DomainHelperForSpecs.FractionDimension, baseGrid);
@@ -225,7 +225,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_run_the_simulation()
       {
-         A.CallTo(() => _simModelManager.RunSimulation(_simulation)).MustHaveHappened();
+         A.CallTo(() => _simModelManager.RunSimulation(_simulation, null)).MustHaveHappened();
       }
 
       [Observation]

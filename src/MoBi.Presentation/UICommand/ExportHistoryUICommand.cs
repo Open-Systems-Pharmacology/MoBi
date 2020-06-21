@@ -12,10 +12,10 @@ namespace MoBi.Presentation.UICommand
   public class ExportHistoryUICommand : IUICommand
    {
       private readonly IMoBiContext _context;
-      private readonly IReportTask _reportTask;
+      private readonly IHistoryExportTask _reportTask;
       private readonly IDialogCreator _dialogCreator;
 
-      public ExportHistoryUICommand(IMoBiContext context, IReportTask reportTask, IDialogCreator dialogCreator)
+      public ExportHistoryUICommand(IMoBiContext context, IHistoryExportTask reportTask, IDialogCreator dialogCreator)
       {
          _context = context;
          _reportTask = reportTask;

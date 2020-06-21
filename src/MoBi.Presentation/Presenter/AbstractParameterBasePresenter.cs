@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Presenter
 
       public IFormulaCache FormulaCache => BuildingBlock?.FormulaCache;
 
-      public void SetParamterUnit(IParameterDTO parameterDTO, Unit displayUnit)
+      public void SetParameterUnit(IParameterDTO parameterDTO, Unit displayUnit)
       {
          ExecuteQuantityTaskAction(parameterDTO,
             (p, sim) => _quantityTask.SetQuantityDisplayUnit(p, displayUnit, sim),
@@ -95,9 +95,9 @@ namespace MoBi.Presentation.Presenter
       }
 
 
-      public IEnumerable<IDimension> GetDimensions()
+      public IReadOnlyList<IDimension> GetDimensions()
       {
-         return _interactionTaskContext.Context.DimensionFactory.Dimensions;
+         return _interactionTaskContext.Context.DimensionFactory.DimensionsSortedByName;
       }
 
       public void SetIsFavorite(IParameterDTO parameterDTO, bool isFavorite)

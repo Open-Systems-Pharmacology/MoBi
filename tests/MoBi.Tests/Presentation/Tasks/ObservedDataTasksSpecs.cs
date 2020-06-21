@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Tasks
       protected DataRepository _dataRepository;
       protected IMoBiProject _project;
       private IInteractionTask _interactionTask;
-      private IDataRepositoryTask _dataRepositoryTask;
+      private IDataRepositoryExportTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
       private IObjectTypeResolver _objectTypeResolver;
 
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Tasks
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataRepository = new DataRepository {new BaseGrid("", DimensionFactoryForSpecs.Factory.Dimension("Time"))};
          _interactionTask = A.Fake<IInteractionTask>();
-         _dataRepositoryTask = A.Fake<IDataRepositoryTask>();
+         _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _containerTask = A.Fake<IContainerTask>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_dataImporter, _dimensionFactory, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver);
@@ -120,7 +120,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _project.AddObservedData(_dataRepository);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.Yes);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
       protected override void Because()
@@ -141,7 +141,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _project.AddObservedData(_dataRepository);
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._)).Returns(ViewResult.No);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.No);
       }
 
       protected override void Because()
@@ -164,7 +164,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _dimensionFactory.Dimensions).Returns(new []
+         A.CallTo(() => _dimensionFactory.DimensionsSortedByName).Returns(new []
          {
             DimensionFactoryForSpecs.MassDimension,
             DimensionFactoryForSpecs.TimeDimension,
@@ -281,7 +281,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_ask_the_user_if_he_really_wants_to_delete_the_results()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveAllResultsFrom(_simulation.Name))).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveAllResultsFrom(_simulation.Name), ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]
@@ -321,7 +321,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_ask_the_user_if_he_really_wants_to_delete_the_results()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveAllResultsFromProject())).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveAllResultsFromProject(), ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]

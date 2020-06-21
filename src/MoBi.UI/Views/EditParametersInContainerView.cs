@@ -21,6 +21,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
@@ -221,7 +222,7 @@ namespace MoBi.UI.Views
          OnEvent(() =>
          {
             _gridView.CloseEditor();
-            _presenter.SetParamterUnit(parameter, unit);
+            _presenter.SetParameterUnit(parameter, unit);
          });
       }
 

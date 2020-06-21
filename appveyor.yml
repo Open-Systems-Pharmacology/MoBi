@@ -1,8 +1,13 @@
 configuration: Debug
-image: Visual Studio 2017
+image: Visual Studio 2019
+
+# hack until donet patching works with PR
+init:
+  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
 
 environment:
-  app_version: '8.0'
+  app_version: '9.0'
+  APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
 
 version: '$(app_version).{build}'
 
@@ -11,14 +16,12 @@ clone_depth: 1
 install:
   - git submodule update --init --recursive
 
-assembly_info:
+dotnet_csproj:
   patch: true
-  file: SolutionInfo.*	
-  assembly_version: "{version}"
-  assembly_file_version: "{version}"	
-
-cache:
-  packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+  file: '**\*.csproj'
+  assembly_version: "$(app_version).$(build_number)"
+  file_version: "$(app_version).$(build_number)"
+  informational_version: "$(app_version).$(build_number)"
 
 before_build:
   - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 

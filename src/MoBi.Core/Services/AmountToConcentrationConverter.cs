@@ -182,12 +182,12 @@ namespace MoBi.Core.Services
 
       private bool conversionRequired(IMoleculeStartValue moleculeStartValue)
       {
-         return conversionRequired(moleculeStartValue, Constants.Dimension.AMOUNT);
+         return conversionRequired(moleculeStartValue, Constants.Dimension.MOLAR_AMOUNT);
       }
 
       private bool conversionRequired(IMoleculeBuilder moleculeBuilder)
       {
-         return conversionRequired(moleculeBuilder, Constants.Dimension.AMOUNT);
+         return conversionRequired(moleculeBuilder, Constants.Dimension.MOLAR_AMOUNT);
       }
 
       private bool conversionRequired(IReactionBuilder reaction)

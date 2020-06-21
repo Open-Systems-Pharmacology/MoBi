@@ -32,7 +32,7 @@ namespace MoBi.Core.Commands
       protected override void DoExecute(IMoBiContext context)
       {
          _oldOutputSelections = _simulation.OutputSelections;
-         _simulation.Settings.OutputSelections = _outputSelections;
+         _simulation.SimulationSettings.OutputSelections = _outputSelections;
          Description = AppConstants.Commands.UpdateOutputSelectionInSimulationDescription(_simulation.Name);
       }
    }

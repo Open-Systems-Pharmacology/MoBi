@@ -17,7 +17,7 @@ namespace MoBi.Core.Services
 
       public IDimension ReactionDimension => getDimension(Constants.Dimension.AMOUNT_PER_TIME, Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME);
 
-      public IDimension MoleculeDimension => getDimension(Constants.Dimension.AMOUNT, Constants.Dimension.MOLAR_CONCENTRATION);
+      public IDimension MoleculeDimension => getDimension(Constants.Dimension.MOLAR_AMOUNT, Constants.Dimension.MOLAR_CONCENTRATION);
 
       public ReactionDimensionMode SelectedDimensionMode => _projectRetriever.Current?.ReactionDimensionMode ?? ReactionDimensionMode.AmountBased;
 

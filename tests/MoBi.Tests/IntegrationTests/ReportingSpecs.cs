@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.TeXReporting;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using MoBi.Core.Domain.Model;
@@ -45,7 +44,7 @@ namespace MoBi.IntegrationTests
 
       private static string TEXTemplateFolder()
       {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..\\Templates", "StandardTemplate");
+         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TeXTemplates", "StandardTemplate");
       }
 
       public void CreateReportAndValidate(IObjectBase objectBase)
@@ -55,7 +54,7 @@ namespace MoBi.IntegrationTests
 
       public void CreateReportAndValidate(object objectToReport, string reportName)
       {
-         _reportConfiguration.ReportFile = Path.Combine(_reportsDir.FullName, string.Format("{0}.pdf", reportName));
+         _reportConfiguration.ReportFile = Path.Combine(_reportsDir.FullName, $"{reportName}.pdf");
          _reportConfiguration.SubTitle = reportName;
          _reportingTask.CreateReportAsync(objectToReport, _reportConfiguration).Wait();
          FileHelper.FileExists(_reportConfiguration.ReportFile).ShouldBeTrue();

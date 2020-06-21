@@ -1,5 +1,3 @@
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -8,6 +6,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
@@ -26,9 +26,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected override bool IsSatisfiedBy(IEntity entity, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return presenter.IsAnImplementationOf<IHierarchicalStructurePresenter>() 
-            && entity.IsAnImplementationOf<IContainer>() 
-            && !entity.IsAnImplementationOf<INeighborhoodBuilder>();
+         return presenter.IsAnImplementationOf<IHierarchicalSpatialStructurePresenter>()
+                && entity.IsAnImplementationOf<IContainer>()
+                && !entity.IsAnImplementationOf<INeighborhoodBuilder>();
       }
    }
 }

@@ -45,7 +45,7 @@ namespace MoBi.Core.Service
          _formulaCache = new FormulaCache();
          _objectTypeResolver=new ObjectTypeResolver();
          A.CallTo(() => _formulaTask.AddParentVolumeReferenceToFormula(A<IFormula>._)).Returns(Constants.VOLUME_ALIAS);
-         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.AMOUNT)).Returns(DomainHelperForSpecs.AmountDimension);
+         A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_AMOUNT)).Returns(DomainHelperForSpecs.AmountDimension);
          A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.AMOUNT_PER_TIME)).Returns(DomainHelperForSpecs.AmountPerTimeDimension);
          A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION)).Returns(DomainHelperForSpecs.ConcentrationDimension);
          A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME)).Returns(DomainHelperForSpecs.ConcentrationPerTimeDimension);
