@@ -2,11 +2,13 @@ configuration: Debug
 image: Visual Studio 2019
 
 environment:
-  app_version: '9.0'
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
-  APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
 
-version: '$(app_version).{build}'
+version: '{build}'
+
+init:
+- ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
+
 
 assembly_info:
   patch: true
@@ -19,7 +21,6 @@ clone_depth: 1
 install:
   - set PATH=C:\Ruby22\bin;C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
-  - git submodule update --init --recursive
   - ps: >-
      (new-object net.webclient).DownloadFile('https://github.com/Open-Systems-Pharmacology/MiKTeX/releases/download/v2.9.3/MikTex.2.9.3.msi', 'C:\\MikTex.msi')
 
@@ -45,8 +46,3 @@ build:
 
 test_script:
   - rake cover
-
-notifications:
-  - provider: Slack
-    incoming_webhook:      
-      secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyFEAs8X080yIO8g1FLt3tNfBN4OpeBnkgrXzf7AqNKV5561x7Coux3ByGrHmsL1sCo=

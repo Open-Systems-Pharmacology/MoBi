@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("Open Systems Pharmacology")]
 [assembly: AssemblyProduct("MoBi")]
-[assembly: AssemblyCopyright("Copyright © 2002-2019 - Open Systems Pharmacology Community")]
+[assembly: AssemblyCopyright("Copyright © 2002-2020 - Open Systems Pharmacology Community")]
 [assembly: ComVisible(false)]
 
 [assembly: InternalsVisibleTo("MoBi.Tests")]
