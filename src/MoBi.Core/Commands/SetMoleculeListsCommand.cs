@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
          _newMoleculeList =newMoleculeList;
          CommandType = AppConstants.Commands.EditCommand;
          ObjectType = new ObjectTypeResolver().TypeFor(targetBuilder);
-         Description = AppConstants.Commands.EditDescriptionMoleculeList(ObjectType,newMoleculeList,_targetBuilder.Name);
+         Description = AppConstants.Commands.EditDescriptionMoleculeList(ObjectType,_targetBuilder.Name);
       }
 
 

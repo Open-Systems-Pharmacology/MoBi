@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Services
 {
-   public class MoBiLogger : ILogger
+   public class MoBiLogger : IOSPLogger
    {
       public void AddToLog(string message, LogLevel logLevel, string categoryName)
       {

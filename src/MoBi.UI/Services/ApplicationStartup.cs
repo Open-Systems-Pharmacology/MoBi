@@ -226,7 +226,7 @@ namespace MoBi.UI.Services
 
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
-         container.Register<ILogger, MoBiLogger>(LifeStyle.Singleton);
+         container.Register<IOSPLogger, MoBiLogger>(LifeStyle.Singleton);
          container.Register<ISplashScreen, SplashScreen>();
          container.Register<ISplashScreenPresenter, SplashScreenPresenter>();
          container.Register<IProgressUpdater, ProgressUpdater>();
