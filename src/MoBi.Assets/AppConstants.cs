@@ -493,7 +493,7 @@ namespace MoBi.Assets
             return $"Configure simulation: '{simulationName}' was updated.";
          }
 
-         public static string EditDescriptionMoleculeList(string objectType, MoleculeList newMoleculeList, string name)
+         public static string EditDescriptionMoleculeList(string objectType, string name)
          {
             return $"Sets property '{ObjectTypes.MoleculeList}' for {objectType} '{name}'";
          }
@@ -608,7 +608,7 @@ namespace MoBi.Assets
             return $"Creating new formula named '{formulaName}'";
          }
 
-         public static string SetConstantValueFormula(string objectType, ConstantFormula constantFormula, string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
+         public static string SetConstantValueFormula(string objectType,  string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
          {
             return string.Format("Value of {3} '{2}' set from '{1}' to '{0}'", newValueInDisplayUnits, oldValueInDisplayUnits, ownerIdentifier, objectType.ToLowerInvariant());
          }

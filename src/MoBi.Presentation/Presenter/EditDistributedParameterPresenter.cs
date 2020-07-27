@@ -238,6 +238,6 @@ namespace MoBi.Presentation.Presenter
             : Enumerable.Empty<FormulaBuilderDTO>();
       }
 
-      public IFormulaCache FormulaCache => BuildingBlock != null ? BuildingBlock.FormulaCache : null;
+      public IFormulaCache FormulaCache => BuildingBlock?.FormulaCache;
    }
 }

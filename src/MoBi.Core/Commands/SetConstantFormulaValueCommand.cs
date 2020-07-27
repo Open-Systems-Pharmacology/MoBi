@@ -61,7 +61,6 @@ namespace MoBi.Core.Commands
 
          Description = AppConstants.Commands.SetConstantValueFormula(
             ObjectType, 
-            _constantFormula, 
             formatForDisplay(_newValue, _displayUnit), 
             formatForDisplay(_constantFormula.Value, _oldDisplayUnit),
             _owner == null? string.Empty : _owner.EntityPath());

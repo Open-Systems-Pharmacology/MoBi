@@ -3,11 +3,10 @@ using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
-using ILogger = OSPSuite.Core.Services.ILogger;
 
 namespace MoBi.BatchTool.Services
 {
-   public interface IBatchLogger : ILogger
+   public interface IBatchLogger : IOSPLogger
    {
       void Clear();
    }

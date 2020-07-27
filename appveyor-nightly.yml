@@ -1,30 +1,26 @@
 configuration: Debug
 image: Visual Studio 2019
 
-# hack until donet patching works with PR
+version: '{build}'
+
 init:
-  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
+- ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
 
 environment:
-  app_version: '9.0'
-  APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
   MIK_TEX_INSTALL_DIR: 'C:\MikTex\'
-
-version: '$(app_version).{build}'
 
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  assembly_version: "$(app_version).$(build_number)"
-  file_version: "$(app_version).$(build_number)"
-  informational_version: "$(app_version).$(build_number)"
-
+  version: '$(ospsuite_version).$(build_number)'
+  assembly_version: '$(ospsuite_version).$(build_number)'
+  file_version: '$(ospsuite_version).$(build_number)'
+  informational_version: '$(ospsuite_version).$(build_number) - EAP'
 
 clone_depth: 1
 
 install:
 - set PATH=C:\Ruby25\bin;%PATH%
-- git submodule update --init --recursive
 - gem install xml-simple
 - ps: >-
     (new-object net.webclient).DownloadFile('https://github.com/Open-Systems-Pharmacology/MiKTeX/releases/download/v2.9.3/MikTex.2.9.3.msi', 'C:\MikTex.msi')
@@ -68,8 +64,3 @@ on_finish:
 skip_commits:
   files:
     - '*.md'
-
-notifications:
-  - provider: Slack
-    incoming_webhook:      
-      secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyFEAs8X080yIO8g1FLt3tNfBN4OpeBnkgrXzf7AqNKV5561x7Coux3ByGrHmsL1sCo=
