@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.CanBeVariedInPopulation, _oldValue.ToString(), newValue.ToString(), parameter.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditParameterCanBeVariedInPopulationCommand(_quantity, _oldValue, _buildingBlock).AsInverseFor(this);
       }

@@ -45,7 +45,7 @@ namespace MoBi.Core.Commands
       }
 
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetStationaryPropertyCommand(_moleculeBuilder,_oldValue,_newValue,_buildingBlock).AsInverseFor(this);
       }

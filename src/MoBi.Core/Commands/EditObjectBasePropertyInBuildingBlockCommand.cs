@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
          _objectBase = objectBase;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditObjectBasePropertyInBuildingBlockCommand<T>(PropertyName, _oldValue, _newValue, _objectBase, _buildingBlock) {Visible = Visible}
             .AsInverseFor(this);

@@ -20,7 +20,7 @@ namespace MoBi.Core.Commands
          _oldDimension = quantity.Dimension;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetQuantityDimensionCommand(_quantity, _oldDimension, _buildingBlock).AsInverseFor(this);
       }
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetDistributedParameterDimensionCommand(distributedParameter, _oldDimension, _buildingBlock).AsInverseFor(this);
       }

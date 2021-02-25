@@ -45,7 +45,7 @@ namespace MoBi.Core.Commands
          _targetBuilder = context.Get<ITransportBuilder>(_targetBuilderId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetMoleculeListsCommand(_targetBuilder, _oldMoleculeList, _buildingBlock).AsInverseFor(this);
       }

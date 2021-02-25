@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
          _startValuesBuildingBlock.Remove(_startValue);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddStartValueToBuildingBlockCommand<T>(_startValuesBuildingBlock, _startValue)
          {

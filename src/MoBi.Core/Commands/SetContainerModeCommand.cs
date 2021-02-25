@@ -69,7 +69,7 @@ namespace MoBi.Core.Commands
          _container = null;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetContainerModeCommand(_buildingBlock, _container, _oldContainerMode)
          {

@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
          _oldDisplayUnit = oldUnit;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetConstantFormulaValueCommand(_constantFormula, _oldValue, _oldDisplayUnit, _displayUnit, _buildingBlock, _owner).AsInverseFor(this);
       }

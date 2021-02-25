@@ -108,7 +108,7 @@ namespace MoBi.Core.Commands
          ObjectType =ObjectTypes.Educt;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveReactionPartnerFromEductCollection(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }
@@ -128,7 +128,7 @@ namespace MoBi.Core.Commands
          ObjectType =ObjectTypes.Product;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveReactionPartnerFromProductCollection(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }
@@ -159,7 +159,7 @@ namespace MoBi.Core.Commands
          return modifier;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveItemFromModifierCollectionCommand(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }

@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.EditSolverPropertyInSimulationDescription(propertyName, newValue.ToString(), simulation.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditSolverPropertyInSimulationCommand(_propertyName, _oldValue, _newValue, _simulation).AsInverseFor(this);
       }

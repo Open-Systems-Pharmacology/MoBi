@@ -38,7 +38,7 @@ namespace MoBi.Core.Commands
          _buildingBlock = context.Get<T>(BuildingBlockId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveBuildingBlockCommand<T>(_buildingBlock).AsInverseFor(this);
       }

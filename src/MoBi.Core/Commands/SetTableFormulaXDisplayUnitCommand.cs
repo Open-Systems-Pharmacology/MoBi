@@ -24,7 +24,7 @@ namespace MoBi.Core.Commands
          }
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetTableFormulaXDisplayUnitCommand(_oldDisplayUnit, _newDisplayUnit, _tableFormula, _buildingBlock).AsInverseFor(this);
       }

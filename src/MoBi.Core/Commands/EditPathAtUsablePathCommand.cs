@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
          _formulaPathToUpdate = null;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditPathAtUsablePathCommand(_formula, _oldObjectPath, _formulaPathToUpdate, _buildingBlock).AsInverseFor(this);
       }

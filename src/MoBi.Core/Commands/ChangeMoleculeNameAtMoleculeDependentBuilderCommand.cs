@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
       public string NewMoleculeName { get; set; }
       public string ObserverBuilderId { get; set; }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          var inverseCommand = CommandExtensions.AsInverseFor(new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(OldMoleculeName,NewMoleculeName,_moleculeDependentBuilder,_buildingBlock), this);
          inverseCommand.Visible = Visible;

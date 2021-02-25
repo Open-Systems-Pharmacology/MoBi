@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
          return _buildingBlock.Solver;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditSolverPropertyCommand(PropertyName, _oldValue, _newValue, _buildingBlock).AsInverseFor(this);
       }

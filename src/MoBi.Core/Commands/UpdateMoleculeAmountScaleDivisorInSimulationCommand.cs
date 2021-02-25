@@ -16,7 +16,7 @@ namespace MoBi.Core.Commands
          _oldScaleDivisor = _quantity.ScaleDivisor;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateMoleculeAmountScaleDivisorInSimulationCommand(_quantity, _oldScaleDivisor, _simulation).AsInverseFor(this);
       }

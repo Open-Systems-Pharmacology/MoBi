@@ -6,7 +6,7 @@ using OSPSuite.Utility.Events;
 
 namespace MoBi.BatchTool.Services
 {
-   public interface IBatchLogger : IOSPLogger
+   public interface IBatchLogger : IOSPSuiteLogger
    {
       void Clear();
    }

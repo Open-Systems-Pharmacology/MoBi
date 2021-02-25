@@ -4,7 +4,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Services
 {
-   public class MoBiLogger : IOSPLogger
+   public class MoBiLogger : IOSPSuiteLogger
    {
       public void AddToLog(string message, LogLevel logLevel, string categoryName)
       {

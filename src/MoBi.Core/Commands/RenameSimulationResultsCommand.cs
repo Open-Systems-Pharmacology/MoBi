@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
 
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RenameSimulationResultsCommand(_dataRepository, _simulation, OldName).AsInverseFor(this);
       }

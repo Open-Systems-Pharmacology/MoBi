@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.EditIsAdvancedParameterCommandDescription(parameter, _newValue);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditIsAdvancesParameterPropertyCommand(_quantity, _oldValue, _buildingBlock).AsInverseFor(this);
       }

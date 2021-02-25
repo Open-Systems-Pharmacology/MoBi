@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveParameterBuilderCommand(_parent,_itemToAdd,_buildingBlock).AsInverseFor(this);
       }
@@ -30,7 +30,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddParameterBuilderCommand(_parent,_itemToRemove,_buildingBlock).AsInverseFor(this);
       }

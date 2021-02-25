@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
          _parameter = null;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SynchronizeParameterStartValueCommand(_parameter, _parameterStartValue)
          {

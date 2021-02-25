@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          //inverse of a reset command set the previous value back into the quantity
          return new SetQuantityValueInSimulationCommand(_quantity, _oldValue, _simulation).AsInverseFor(this);

@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
          spatialStructure.DiagramManager.AddObjectBase(child);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveTopContainerCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
@@ -79,7 +79,7 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new RemovedEvent(_removedIds));
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddTopContainerCommand(_parent, _itemToRemove).AsInverseFor(this);
       }

@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
          _processBuilder = context.Get<IProcessBuilder>(_processBuilderId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetCreateProcessRateParameterCommand(_oldCreateProcessRate, _processBuilder, _buildingBlock).AsInverseFor(this);
       }

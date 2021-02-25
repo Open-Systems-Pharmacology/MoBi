@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
          _parameter.Name = _newValue;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditParameterNameInBuildingBlockCommand(_oldValue, _newValue, _parameter, _buildingBlock).AsInverseFor(this);
       }

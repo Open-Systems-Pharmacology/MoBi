@@ -28,7 +28,7 @@ namespace MoBi.Core.Commands
          _applicationMoleculeBuilder.RelativeContainerPath.Replace(_oldElement, _newElement);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangePathElementAtContainerPathCommand(_oldElement, _applicationMoleculeBuilder, _newElement,_buildingBlock)
             .AsInverseFor(this);

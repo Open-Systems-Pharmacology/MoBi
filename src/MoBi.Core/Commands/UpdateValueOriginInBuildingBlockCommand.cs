@@ -30,7 +30,7 @@ namespace MoBi.Core.Commands
          _valueOrigin = null;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateValueOriginInBuildingBlockCommand(_quantity, _oldValueOrigin, _buildingBlock).AsInverseFor(this);
       }

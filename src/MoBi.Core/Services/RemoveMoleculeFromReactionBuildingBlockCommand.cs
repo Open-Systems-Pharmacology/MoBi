@@ -23,7 +23,7 @@ namespace MoBi.Core.Services
          Description = AppConstants.Commands.RemoveFromDescription(ObjectType, _moleculeNodeName, reactionBuildingBlock.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return BuildingBlockChangeBaseCommandExtensions.AsInverseFor(new AddMoleculeToReactionBuildingBlockCommand(_buildingBlock, _moleculeNodeName), this);
       }
