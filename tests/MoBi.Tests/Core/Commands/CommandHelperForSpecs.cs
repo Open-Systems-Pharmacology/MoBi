@@ -5,13 +5,13 @@ namespace MoBi.Core.Commands
 {
    public static class CommandHelperForSpecs
    {
-      public static IReversibleCommand<IMoBiContext> ExecuteAndInvokeInverse(this IReversibleCommand<IMoBiContext> command, IMoBiContext context)
+      public static ICommand<IMoBiContext> ExecuteAndInvokeInverse(this IReversibleCommand<IMoBiContext> command, IMoBiContext context)
       {
          command.Execute(context);
          return command.InvokeInverse(context);
       }
 
-      public static IReversibleCommand<IMoBiContext> InvokeInverse(this IReversibleCommand<IMoBiContext> command, IMoBiContext context)
+      public static ICommand<IMoBiContext> InvokeInverse(this IReversibleCommand<IMoBiContext> command, IMoBiContext context)
       {
          command.RestoreExecutionData(context);
          var inverse = command.InverseCommand(context);
