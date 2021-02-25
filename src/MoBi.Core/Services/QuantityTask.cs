@@ -152,9 +152,8 @@ namespace MoBi.Core.Services
          var updateCommand = new MoBiMacroCommand();
          addUpdateDefaultStateAndValueOriginCommand(updateCommand, quantity, buildingBlockOrSimulation, setParameterDefaultStateFunc, setParameterValueOriginFunc);
 
-         //TODO: it is not totally clear to me why this does not compile, so I will keep it commented out for now 
-         //if (updateCommand.IsEmtpy)
-           // return executedCommand;
+         if (updateCommand.IsEmpty)
+            return executedCommand;
 
          var macroCommand = new MoBiMacroCommand().WithHistoryEntriesFrom(executedCommand);
          macroCommand.Add(executedCommand);
