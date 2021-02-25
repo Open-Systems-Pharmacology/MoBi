@@ -42,13 +42,15 @@ namespace MoBi.Core.Services
          var moleculeParameterDataTable = _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(simulation.MoBiBuildConfiguration.MoleculeStartValues.Where(msv => msv.IsPresent), simulation.MoBiBuildConfiguration.Molecules);
 
          var dataTables = new List<DataTable> {reactionDataTable, simulationParameterDataTable, moleculeParameterDataTable};
+         //TODO: have to fix the export here
+         /*
          ExportToExcelTask.ExportDataTablesToExcel(dataTables, excelFileName, openExcel: openExcel, workbookConfiguration: (wb, dt) =>
          {
             wb.setSelection(0, 0, 0, dt.Columns.Count);
             var rangeStyle = wb.getRangeStyle();
             rangeStyle.FontBold = true;
             wb.setRangeStyle(rangeStyle);
-         });
+         });*/
       }
    }
 }
