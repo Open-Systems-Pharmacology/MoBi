@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
          _newFormula = null;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateDistributedFormulaCommand(_parameter, _oldFormula, "XX", _buildingBlock).AsInverseFor(this);
       }

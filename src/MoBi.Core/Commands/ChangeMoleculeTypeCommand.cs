@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.MoleculeType, Enum.GetName(typeof (QuantityType), oldType), Enum.GetName(typeof (QuantityType), newType), moleculeBuilder.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangeMoleculeTypeCommand(_moleculeBuilder, _oldType, _newType, _buildingBlock).AsInverseFor(this);
       }

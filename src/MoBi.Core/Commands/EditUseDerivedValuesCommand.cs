@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.SetUseDerivedValues(newValue,tableFormula);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditUseDerivedValuesCommand(_tableFormula, OldValue, NewValue, _buildingBlock).AsInverseFor(this);
       }

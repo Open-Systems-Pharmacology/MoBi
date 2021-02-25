@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.VariableName, _oldVariableName, newVariableName, _sumFormula.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangeVariableNameCommand(_sumFormula, _oldVariableName, _buildingBlock).AsInverseFor(this);
       }

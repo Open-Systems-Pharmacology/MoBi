@@ -16,7 +16,7 @@ namespace MoBi.Core.Commands
          _valuePoint = valuePoint;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveValuePointFromTableFormulaCommand(_parent, _valuePoint, _buildingBlock).AsInverseFor(this);
       }
@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddValuePointCommand(_parent, _itemToRemove, _buildingBlock).AsInverseFor(this);
       }

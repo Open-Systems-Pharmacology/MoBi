@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddFormulaUsablePathCommand(_parent, _itemToRemove, _buildingBlock).AsInverseFor(this);
       }

@@ -38,7 +38,7 @@ namespace MoBi.Core.Commands
          ObjectType = AppConstants.Commands.MatchAllCondition;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddMatchAllConditionCommand<T>(_taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
@@ -59,7 +59,7 @@ namespace MoBi.Core.Commands
          ObjectType = AppConstants.Commands.MatchTagCondition;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddMatchTagConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
@@ -78,7 +78,7 @@ namespace MoBi.Core.Commands
          ObjectType = AppConstants.Commands.NotMatchTagCondition;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddNotMatchTagConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
@@ -97,7 +97,7 @@ namespace MoBi.Core.Commands
          ObjectType = AppConstants.Commands.InContainerCondition;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddInContainerConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }
@@ -117,7 +117,7 @@ namespace MoBi.Core.Commands
          ObjectType = AppConstants.Commands.NotInContainerCondition;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddNotInContainerConditionCommand<T>(_tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }

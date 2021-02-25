@@ -16,7 +16,7 @@ namespace MoBi.Core.Commands
          CommandType = AppConstants.Commands.DeleteCommand;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddChartTemplateToBuildingBlockCommand(_chartTemplate, _buildingBlock).AsInverseFor(this);
       }

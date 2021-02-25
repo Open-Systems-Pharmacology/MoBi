@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
          parent.Add(child);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveMoleculeBuilderCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddMoleculeBuilderCommand(_parent, _itemToRemove).AsInverseFor(this);
       }

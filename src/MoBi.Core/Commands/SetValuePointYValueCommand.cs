@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
          _oldBaseValue = valuePoint.Y;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetValuePointYValueCommand(_tableFormula, _valuePoint, _oldBaseValue, _buildingBlock).AsInverseFor(this);
       }

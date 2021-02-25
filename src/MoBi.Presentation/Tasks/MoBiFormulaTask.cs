@@ -116,7 +116,7 @@ namespace MoBi.Presentation.Tasks
          parametersUsingFormula.Each(p => updateValueOriginCommand.Add(_quantityTask.UpdateDefaultStateAndValueOriginFor(p, buildingBlock)));
 
          //we have depending parameters but they all have default state and value origin set;
-         if (updateValueOriginCommand.IsEmtpy)
+         if (updateValueOriginCommand.IsEmpty)
             return executedCommand;
 
          var macroCommand = new MoBiMacroCommand().WithHistoryEntriesFrom(executedCommand);

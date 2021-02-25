@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new QuantityValueChangedEvent(_quantity));
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetQuantityValueInBuildingBlockCommand(_quantity, _oldValue, _buildingBlock).AsInverseFor(this);
       }

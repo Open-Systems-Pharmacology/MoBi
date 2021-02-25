@@ -66,7 +66,7 @@ namespace MoBi.Core.Commands
          Path = _changedStartValue.Path;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangeStartValueFormulaCommand<T>(_startValuesBuildingBlock, _changedStartValue, _oldFormula, _newFormula).AsInverseFor(this);
       }

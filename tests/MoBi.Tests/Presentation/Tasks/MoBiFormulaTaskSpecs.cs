@@ -433,7 +433,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_update_the_default_state_and_value_origin_of_parameters_using_the_formula_by_leverage_the_quantity_task_command()
       {
-         _command.IsEmtpy.ShouldBeFalse();
+         _command.IsEmpty.ShouldBeFalse();
          _command.All().ShouldContain(_updateCommand1);
       }
 

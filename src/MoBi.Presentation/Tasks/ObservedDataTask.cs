@@ -16,14 +16,14 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Assets;
-using ColumnInfo = OSPSuite.Core.Importer.ColumnInfo;
+using ColumnInfo = OSPSuite.Infrastructure.Import.Core.ColumnInfo;
 using Command = OSPSuite.Assets.Command;
 using CoreConstants = OSPSuite.Core.Domain.Constants;
-using DataImporterSettings = OSPSuite.Core.Importer.DataImporterSettings;
-using DimensionInfo = OSPSuite.Core.Importer.DimensionInfo;
-using IDataImporter = OSPSuite.Core.Importer.IDataImporter;
-using MetaDataCategory = OSPSuite.Core.Importer.MetaDataCategory;
-using NullValuesHandlingType = OSPSuite.Core.Importer.NullValuesHandlingType;
+using DataImporterSettings = OSPSuite.Infrastructure.Import.Core.DataImporterSettings;
+using DimensionInfo = OSPSuite.Infrastructure.Import.Core;
+using IDataImporter = OSPSuite.Infrastructure.Import.Services.IDataImporter;
+using MetaDataCategory = OSPSuite.Infrastructure.Import.Core.MetaDataCategory;
+using NullValuesHandlingType = OSPSuite.Infrastructure.Import.Core.NullValuesHandlingType;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -70,7 +70,7 @@ namespace MoBi.Presentation.Tasks
       public void AddObservedDataToProject()
       {
          var data = _dataImporter.ImportDataSets(createMetaData().ToList(), createColumnInfos().ToList(), createDataImportSettings());
-         foreach (var repository in data)
+         foreach (var repository in data.DataRepositories)
          {
             adjustMolWeight(repository);
             AddObservedDataToProject(repository);
@@ -257,7 +257,7 @@ namespace MoBi.Presentation.Tasks
             NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
-         timeColumn.DimensionInfos.Add(new DimensionInfo {Dimension = timeDimension, IsMainDimension = true});
+         timeColumn.DimensionInfos.Add(new DimensionInfo.DimensionInfo {Dimension = timeDimension, IsMainDimension = true});
          yield return timeColumn;
 
          var mainDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.MOLAR_CONCENTRATION);
@@ -297,7 +297,7 @@ namespace MoBi.Presentation.Tasks
 
          foreach (var dimension in _dimensionFactory.DimensionsSortedByName.Where(x => x != timeDimension))
          {
-            columnInfo.DimensionInfos.Add(new DimensionInfo
+            columnInfo.DimensionInfos.Add(new DimensionInfo.DimensionInfo
             {
                Dimension = dimension,
                IsMainDimension = (dimension == mainDimension)

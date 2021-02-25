@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangeMoleculeStartValueNameCommand(_buildingBlock, new ObjectPath(_path), _oldValue).AsInverseFor(this);
       }

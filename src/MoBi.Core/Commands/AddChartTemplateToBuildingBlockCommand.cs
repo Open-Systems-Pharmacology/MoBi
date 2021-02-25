@@ -18,7 +18,7 @@ namespace MoBi.Core.Commands
          _chartTemplateName = _chartTemplate.Name;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveChartTemplateFromBuildingBlockCommand(_chartTemplate, _buildingBlock).AsInverseFor(this);
       }

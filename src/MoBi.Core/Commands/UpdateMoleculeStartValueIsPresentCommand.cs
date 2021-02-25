@@ -44,7 +44,7 @@ namespace MoBi.Core.Commands
          _startValue = context.Get<IMoleculeStartValue>(_startValueId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateMoleculeStartValueIsPresentCommand(_buildingBlock, _startValue, _oldIsPresent).AsInverseFor(this);
       }

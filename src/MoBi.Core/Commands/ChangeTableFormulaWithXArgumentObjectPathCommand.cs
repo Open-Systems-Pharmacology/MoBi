@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangeTableFormulaWithXArgumentTableObjectPathCommand(_tableFormulaWithReference, _oldFormulaUsablePath, _buildingBlock).AsInverseFor(this);
       }
@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangeTableFormulaWithXArgumentXArgumentObjectPathCommand(_tableFormulaWithReference, _oldFormulaUsablePath, _buildingBlock).AsInverseFor(this);
       }

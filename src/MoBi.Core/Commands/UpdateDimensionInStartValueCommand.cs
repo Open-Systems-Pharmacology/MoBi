@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
          _buildingBlock = context.Get<IStartValuesBuildingBlock<T>>(_buildingBlockId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateDimensionInStartValueCommand<T>(_startValue, _oldDimension, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
       }

@@ -25,11 +25,11 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Importer;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
+using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
 using OSPSuite.UI;
@@ -226,7 +226,7 @@ namespace MoBi.UI.Services
 
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
-         container.Register<IOSPLogger, MoBiLogger>(LifeStyle.Singleton);
+         container.Register<IOSPSuiteLogger, MoBiLogger>(LifeStyle.Singleton);
          container.Register<ISplashScreen, SplashScreen>();
          container.Register<ISplashScreenPresenter, SplashScreenPresenter>();
          container.Register<IProgressUpdater, ProgressUpdater>();

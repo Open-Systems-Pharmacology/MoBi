@@ -9,14 +9,13 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Core.Commands;
+using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
-
-using OSPSuite.Core.Importer;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace MoBi.Presentation.Tasks
 {

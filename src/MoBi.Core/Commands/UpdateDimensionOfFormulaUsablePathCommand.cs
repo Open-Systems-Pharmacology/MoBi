@@ -36,7 +36,7 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new FormulaChangedEvent(formula));
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          var formula = context.Get<IFormula>(_formulaId);
          return new UpdateDimensionOfFormulaUsablePathCommand(context.DimensionFactory.Dimension(_oldDimension), formula, _alias, _buildingBlock).AsInverseFor(this);

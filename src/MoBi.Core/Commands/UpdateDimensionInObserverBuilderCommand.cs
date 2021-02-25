@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
          _observerBuilder = context.Get<IObserverBuilder>(_observerBuilderId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateDimensionInObserverBuilderCommand(_observerBuilder, _oldDimension, _buildingBlock).AsInverseFor(this);
       }

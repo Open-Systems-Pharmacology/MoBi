@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
    {
       private BuildingBlockChangeCommandBase<IBuildingBlock> _originalCommand;
       private IMoBiContext _context;
-      private IReversibleCommand<IMoBiContext> _inverseCommand;
+      private ICommand<IMoBiContext> _inverseCommand;
 
       protected override void Context()
       {
@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
          {
          }
 
-         protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+         protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
          {
             return new TestBuildingBlockCommand().AsInverseFor(this);
          }

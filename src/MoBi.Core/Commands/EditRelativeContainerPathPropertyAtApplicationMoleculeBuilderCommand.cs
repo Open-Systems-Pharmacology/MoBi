@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.RelativeContainerPath, _oldPath.PathAsString, newPath.PathAsString, applicationMoleculeBuilder.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(_applicationMoleculeBuilder, _oldPath, _buildingBlock).AsInverseFor(this);
       }

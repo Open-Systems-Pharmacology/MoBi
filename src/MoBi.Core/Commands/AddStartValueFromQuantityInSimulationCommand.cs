@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
          _quantity = null;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveStartValueFromBuildingBlockInSimulationCommand<TStartValue>(_objectPath, _startValuesBuildingBlock)
          {

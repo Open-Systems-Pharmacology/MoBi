@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
          _oldValue = context.Get<IFormula>(_oldFormulaId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditParameterRHSFormulaInBuildingBlockCommand(_oldValue, _newValue, _parameter, _buildingBlock).AsInverseFor(this);
       }

@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
          _buildingBlock = context.Deserialize<T>(_serializationStream);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddBuildingBlockCommand<T>(_buildingBlock).AsInverseFor(this);
       }

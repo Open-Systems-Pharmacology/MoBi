@@ -17,7 +17,7 @@ namespace MoBi.Core.Commands
          _pathToAdd = itemToAdd;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveFormulaUsablePathCommand(_parent, _pathToAdd, _buildingBlock).AsInverseFor(this);
       }

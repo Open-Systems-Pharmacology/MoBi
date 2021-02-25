@@ -20,7 +20,7 @@ namespace MoBi.Core.Commands
          _targetNodeName = targetNodeName;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new MoveDiagramNodeCommand(_buildingBlock, _targetNodeName, _originalNode).AsInverseFor(this);
       }

@@ -53,7 +53,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.UpdateMoleculeStartValue(_path, _value, _present, msv.DisplayUnit, _scaleDisivor,_negativeValuesAllowed);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateMoleculeStartValueInBuildingBlockCommand(_buildingBlock, _path, _originalValue, _originalPresent, _originalScaleDivisor,_originalNegativeValuesAllowed).AsInverseFor(this);
       }

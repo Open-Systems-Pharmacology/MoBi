@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.SetQuantityValueInSimulation(ObjectType, _quantity.ValueInDisplayUnit, _newDisplayUnit.Name, oldDisplayValue, _oldDisplayUnit.Name, _quantity.EntityPath(), _simulation.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetQuantityUnitInSimulationCommand(_quantity, _oldDisplayUnit, _simulation).AsInverseFor(this);
       }

@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
          _changedUsedCalculationMethod = null;
       }
       
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangeCalculationMethodForCategoryCommand(_moleculeBuilder,Category,OldCalculationMethod,NewCalculationMethod,_buildingBlock).AsInverseFor(this);
       }

@@ -68,7 +68,7 @@ namespace MoBi.Core.Commands
          _parameter = context.Get<IParameter>(_parameterId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetParameterDimensionInBuildingBlockCommand(_parameter, _oldDimension, _buildingBlock)
          {

@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.SetQuantityValueInBuildingBlock(ObjectType, _quantity.ValueInDisplayUnit, _newDisplayUnit.Name, oldDisplayValue, _oldDisplayUnitName, _quantity.EntityPath(), _buildingBlock.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetQuantityUnitInBuildingBlockCommand(_quantity, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
       }
