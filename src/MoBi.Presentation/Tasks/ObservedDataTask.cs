@@ -69,6 +69,7 @@ namespace MoBi.Presentation.Tasks
 
       public void AddObservedDataToProject()
       {
+         //maybe the formats are not being registered 
          var data = _dataImporter.ImportDataSets(createMetaData().ToList(), createColumnInfos().ToList(), createDataImportSettings());
          foreach (var repository in data.DataRepositories)
          {
