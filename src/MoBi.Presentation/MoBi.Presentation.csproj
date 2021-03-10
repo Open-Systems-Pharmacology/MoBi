@@ -31,9 +31,8 @@
     <PackageReference Include="OSPSuite.Presentation.Serialization" Version="10.0.94" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.94" />
-  </ItemGroup>
-
+    <PackageReference Include="OSPSuite.Core" Version="10.0.94" />  
+   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
