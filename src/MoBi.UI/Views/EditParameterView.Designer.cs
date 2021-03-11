@@ -470,6 +470,7 @@ namespace MoBi.UI.Views
          // tabTags
          // 
          this.tabTags.Name = "tabTags";
+         this.tabTags.Padding = new System.Windows.Forms.Padding(10);
          this.tabTags.Size = new System.Drawing.Size(756, 415);
          this.tabTags.Text = "tabTags";
          // 
