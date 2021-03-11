@@ -10,5 +10,6 @@ namespace MoBi.Presentation.Views
       void AddRHSView(IView rhsView);
       bool ShowBuildMode { set; }
       void AddValueOriginView(IView view);
+      void AddTagsView(IView view);
    }
 }

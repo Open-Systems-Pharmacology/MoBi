@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
@@ -14,7 +13,7 @@ namespace MoBi.Presentation.Tasks
 {
    public interface IEntityTask
    {
-      IMoBiCommand AddNewTagTo(IEntity entity, ITaggedEntityDTO dto, IBuildingBlock buildingBlock);
+      IMoBiCommand AddNewTagTo(IEntity entity, IBuildingBlock buildingBlock);
       IMoBiCommand RemoveTagFrom(TagDTO tagDTO, IEntity entity, IBuildingBlock buildingBlock);
    }
 
@@ -31,20 +30,16 @@ namespace MoBi.Presentation.Tasks
          _dialogCreator = dialogCreator;
       }
 
-      public IMoBiCommand AddNewTagTo(IEntity entity, ITaggedEntityDTO dto, IBuildingBlock buildingBlock)
+      public IMoBiCommand AddNewTagTo(IEntity entity, IBuildingBlock buildingBlock)
       {
-         var tag = _dialogCreator.AskForInput("New Tag for Container", "New Tag", string.Empty, Enumerable.Empty<string>(), getUsedTags());
+         var tag = _dialogCreator.AskForInput("New Tag for Container", "New Tag", string.Empty, entity.Tags.Select(x => x.Value), getUsedTags());
          if (string.IsNullOrEmpty(tag))
             return new MoBiEmptyCommand();
 
-         dto.Tags.Add(new TagDTO(tag));
          return new AddTagCommand(tag, entity, buildingBlock).Run(_context);
       }
 
-      private IEnumerable<string> getUsedTags()
-      {
-         return _tagVisitor.AllTags();
-      }
+      private IEnumerable<string> getUsedTags() => _tagVisitor.AllTags();
 
       public IMoBiCommand RemoveTagFrom(TagDTO tagDTO, IEntity entity, IBuildingBlock buildingBlock)
       {

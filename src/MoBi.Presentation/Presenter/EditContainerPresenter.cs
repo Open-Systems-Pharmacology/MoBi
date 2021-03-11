@@ -157,7 +157,8 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewTag()
       {
-         AddCommand(_entityTask.AddNewTagTo(_container, _containerDTO, BuildingBlock));
+         //TODO
+         AddCommand(_entityTask.AddNewTagTo(_container,  BuildingBlock));
       }
 
       public void RemoveTag(TagDTO tagDTO)

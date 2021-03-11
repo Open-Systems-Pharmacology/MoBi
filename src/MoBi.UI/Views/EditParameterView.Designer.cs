@@ -20,7 +20,6 @@ namespace MoBi.UI.Views
             components.Dispose();
          }
          _screenBinder.Dispose();
-         _gridBinder.Dispose();
          
          base.Dispose(disposing);
       }
@@ -36,6 +35,7 @@ namespace MoBi.UI.Views
          this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
          this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControlProperties = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.panelOrigiView = new DevExpress.XtraEditors.PanelControl();
          this.chkIsFavorite = new DevExpress.XtraEditors.CheckEdit();
          this.cbGroup = new DevExpress.XtraEditors.ComboBoxEdit();
          this.chkCanBeVariedInPopulation = new OSPSuite.UI.Controls.UxCheckEdit();
@@ -65,22 +65,15 @@ namespace MoBi.UI.Views
          this.layoutControlItemPersistable = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemAdvancedParameter = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemCanBeVariedInPopulation = new DevExpress.XtraLayout.LayoutControlItem();
-         this.tabTags = new DevExpress.XtraTab.XtraTabPage();
-         this.layoutControlTags = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.btAddTag = new DevExpress.XtraEditors.SimpleButton();
-         this.gridControl1 = new OSPSuite.UI.Controls.UxGridControl();
-         this.gridViewTags = new DevExpress.XtraGrid.Views.Grid.GridView();
-         this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutControlItemAddTag = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItemTags = new DevExpress.XtraLayout.LayoutControlItem();
-         this.panelOrigiView = new DevExpress.XtraEditors.PanelControl();
          this.layoutItemValueOrigin = new DevExpress.XtraLayout.LayoutControlItem();
+         this.tabTags = new DevExpress.XtraTab.XtraTabPage();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
          this.xtraTabControl1.SuspendLayout();
          this.tabProperties.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlProperties)).BeginInit();
          this.layoutControlProperties.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.panelOrigiView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkIsFavorite.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbGroup.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkCanBeVariedInPopulation.Properties)).BeginInit();
@@ -110,15 +103,6 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemPersistable)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemAdvancedParameter)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemCanBeVariedInPopulation)).BeginInit();
-         this.tabTags.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlTags)).BeginInit();
-         this.layoutControlTags.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridViewTags)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemAddTag)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemTags)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelOrigiView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValueOrigin)).BeginInit();
          this.SuspendLayout();
          // 
@@ -138,7 +122,7 @@ namespace MoBi.UI.Views
          // 
          this.tabProperties.Controls.Add(this.layoutControlProperties);
          this.tabProperties.Name = "tabProperties";
-         this.tabProperties.Size = new System.Drawing.Size(752, 412);
+         this.tabProperties.Size = new System.Drawing.Size(756, 415);
          this.tabProperties.Text = "tabProperties";
          // 
          // layoutControlProperties
@@ -162,106 +146,113 @@ namespace MoBi.UI.Views
          this.layoutControlProperties.Name = "layoutControlProperties";
          this.layoutControlProperties.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(971, 370, 573, 607);
          this.layoutControlProperties.Root = this.layoutControlGroup1;
-         this.layoutControlProperties.Size = new System.Drawing.Size(752, 412);
+         this.layoutControlProperties.Size = new System.Drawing.Size(756, 415);
          this.layoutControlProperties.TabIndex = 25;
          this.layoutControlProperties.Text = "layoutControlProperties";
+         // 
+         // panelOrigiView
+         // 
+         this.panelOrigiView.Location = new System.Drawing.Point(133, 141);
+         this.panelOrigiView.Name = "panelOrigiView";
+         this.panelOrigiView.Size = new System.Drawing.Size(599, 19);
+         this.panelOrigiView.TabIndex = 29;
          // 
          // chkIsFavorite
          // 
          this.chkIsFavorite.Location = new System.Drawing.Point(24, 164);
          this.chkIsFavorite.Name = "chkIsFavorite";
          this.chkIsFavorite.Properties.Caption = "chkIsFavorite";
-         this.chkIsFavorite.Size = new System.Drawing.Size(173, 19);
+         this.chkIsFavorite.Size = new System.Drawing.Size(174, 20);
          this.chkIsFavorite.StyleController = this.layoutControlProperties;
          this.chkIsFavorite.TabIndex = 27;
          // 
          // cbGroup
          // 
-         this.cbGroup.Location = new System.Drawing.Point(133, 114);
+         this.cbGroup.Location = new System.Drawing.Point(133, 117);
          this.cbGroup.Name = "cbGroup";
          this.cbGroup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbGroup.Size = new System.Drawing.Size(595, 20);
+         this.cbGroup.Size = new System.Drawing.Size(599, 20);
          this.cbGroup.StyleController = this.layoutControlProperties;
          this.cbGroup.TabIndex = 26;
          // 
          // chkCanBeVariedInPopulation
          // 
          this.chkCanBeVariedInPopulation.AllowClicksOutsideControlArea = false;
-         this.chkCanBeVariedInPopulation.Location = new System.Drawing.Point(555, 164);
+         this.chkCanBeVariedInPopulation.Location = new System.Drawing.Point(558, 164);
          this.chkCanBeVariedInPopulation.Name = "chkCanBeVariedInPopulation";
          this.chkCanBeVariedInPopulation.Properties.Caption = "chkCanBeVariedInPopulation";
-         this.chkCanBeVariedInPopulation.Size = new System.Drawing.Size(173, 19);
+         this.chkCanBeVariedInPopulation.Size = new System.Drawing.Size(174, 20);
          this.chkCanBeVariedInPopulation.StyleController = this.layoutControlProperties;
          this.chkCanBeVariedInPopulation.TabIndex = 25;
          // 
          // chkPersistable
          // 
          this.chkPersistable.AllowClicksOutsideControlArea = false;
-         this.chkPersistable.Location = new System.Drawing.Point(201, 164);
+         this.chkPersistable.Location = new System.Drawing.Point(202, 164);
          this.chkPersistable.Name = "chkPersistable";
          this.chkPersistable.Properties.Caption = "chkPersistable";
-         this.chkPersistable.Size = new System.Drawing.Size(173, 19);
+         this.chkPersistable.Size = new System.Drawing.Size(174, 20);
          this.chkPersistable.StyleController = this.layoutControlProperties;
          this.chkPersistable.TabIndex = 24;
          // 
          // panelRHSFormula
          // 
          this.panelRHSFormula.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-         this.panelRHSFormula.Location = new System.Drawing.Point(24, 354);
+         this.panelRHSFormula.Location = new System.Drawing.Point(24, 365);
          this.panelRHSFormula.Name = "panelRHSFormula";
-         this.panelRHSFormula.Size = new System.Drawing.Size(704, 10);
+         this.panelRHSFormula.Size = new System.Drawing.Size(708, 2);
          this.panelRHSFormula.TabIndex = 21;
          // 
          // htmlEditor
          // 
          this.htmlEditor.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.htmlEditor.Location = new System.Drawing.Point(121, 380);
+         this.htmlEditor.Location = new System.Drawing.Point(121, 383);
          this.htmlEditor.Name = "htmlEditor";
          this.htmlEditor.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.htmlEditor.Properties.ShowIcon = false;
-         this.htmlEditor.Size = new System.Drawing.Size(619, 20);
+         this.htmlEditor.Size = new System.Drawing.Size(623, 20);
          this.htmlEditor.StyleController = this.layoutControlProperties;
          this.htmlEditor.TabIndex = 22;
          // 
          // panelFormula
          // 
          this.panelFormula.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-         this.panelFormula.Location = new System.Drawing.Point(24, 229);
+         this.panelFormula.Location = new System.Drawing.Point(24, 233);
          this.panelFormula.Name = "panelFormula";
-         this.panelFormula.Size = new System.Drawing.Size(704, 51);
+         this.panelFormula.Size = new System.Drawing.Size(708, 49);
          this.panelFormula.TabIndex = 20;
          // 
          // cbDimension
          // 
          this.cbDimension.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.cbDimension.Location = new System.Drawing.Point(133, 90);
+         this.cbDimension.Location = new System.Drawing.Point(133, 93);
          this.cbDimension.Name = "cbDimension";
          this.cbDimension.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbDimension.Size = new System.Drawing.Size(595, 20);
+         this.cbDimension.Size = new System.Drawing.Size(599, 20);
          this.cbDimension.StyleController = this.layoutControlProperties;
          this.cbDimension.TabIndex = 19;
          // 
          // chkAdvancedParameter
          // 
          this.chkAdvancedParameter.AllowClicksOutsideControlArea = false;
-         this.chkAdvancedParameter.Location = new System.Drawing.Point(378, 164);
+         this.chkAdvancedParameter.Location = new System.Drawing.Point(380, 164);
          this.chkAdvancedParameter.Name = "chkAdvancedParameter";
          this.chkAdvancedParameter.Properties.Caption = "chkAdvancedParameter";
-         this.chkAdvancedParameter.Size = new System.Drawing.Size(173, 19);
+         this.chkAdvancedParameter.Size = new System.Drawing.Size(174, 20);
          this.chkAdvancedParameter.StyleController = this.layoutControlProperties;
          this.chkAdvancedParameter.TabIndex = 23;
          // 
          // cbParameterBuildMode
          // 
          this.cbParameterBuildMode.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.cbParameterBuildMode.Location = new System.Drawing.Point(133, 66);
+         this.cbParameterBuildMode.Location = new System.Drawing.Point(133, 69);
          this.cbParameterBuildMode.Name = "cbParameterBuildMode";
          this.cbParameterBuildMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbParameterBuildMode.Size = new System.Drawing.Size(595, 20);
+         this.cbParameterBuildMode.Size = new System.Drawing.Size(599, 20);
          this.cbParameterBuildMode.StyleController = this.layoutControlProperties;
          this.cbParameterBuildMode.TabIndex = 17;
          // 
@@ -272,17 +263,17 @@ namespace MoBi.UI.Views
          this.btName.Name = "btName";
          this.btName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.btName.Size = new System.Drawing.Size(619, 20);
+         this.btName.Size = new System.Drawing.Size(623, 20);
          this.btName.StyleController = this.layoutControlProperties;
          this.btName.TabIndex = 0;
          // 
          // chkHasRHS
          // 
          this.chkHasRHS.AllowClicksOutsideControlArea = false;
-         this.chkHasRHS.Location = new System.Drawing.Point(12, 301);
+         this.chkHasRHS.Location = new System.Drawing.Point(12, 308);
          this.chkHasRHS.Name = "chkHasRHS";
          this.chkHasRHS.Properties.Caption = "Parameter is state variable";
-         this.chkHasRHS.Size = new System.Drawing.Size(728, 19);
+         this.chkHasRHS.Size = new System.Drawing.Size(732, 20);
          this.chkHasRHS.StyleController = this.layoutControlProperties;
          this.chkHasRHS.TabIndex = 14;
          // 
@@ -299,9 +290,8 @@ namespace MoBi.UI.Views
             this.layoutGroupRHSFormula,
             this.splitterRHSFormula,
             this.layoutGroupProperties});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup1.Name = "Root";
-         this.layoutControlGroup1.Size = new System.Drawing.Size(752, 412);
+         this.layoutControlGroup1.Size = new System.Drawing.Size(756, 415);
          this.layoutControlGroup1.TextVisible = false;
          // 
          // layoutItemName
@@ -310,7 +300,7 @@ namespace MoBi.UI.Views
          this.layoutItemName.CustomizationFormText = "Name";
          this.layoutItemName.Location = new System.Drawing.Point(0, 0);
          this.layoutItemName.Name = "layoutItemName";
-         this.layoutItemName.Size = new System.Drawing.Size(732, 24);
+         this.layoutItemName.Size = new System.Drawing.Size(736, 24);
          this.layoutItemName.Text = "Name:";
          this.layoutItemName.TextSize = new System.Drawing.Size(106, 13);
          // 
@@ -318,9 +308,9 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItemHasRHS.Control = this.chkHasRHS;
          this.layoutControlItemHasRHS.CustomizationFormText = "layoutControlItem2";
-         this.layoutControlItemHasRHS.Location = new System.Drawing.Point(0, 289);
+         this.layoutControlItemHasRHS.Location = new System.Drawing.Point(0, 296);
          this.layoutControlItemHasRHS.Name = "layoutControlItemHasRHS";
-         this.layoutControlItemHasRHS.Size = new System.Drawing.Size(732, 23);
+         this.layoutControlItemHasRHS.Size = new System.Drawing.Size(736, 24);
          this.layoutControlItemHasRHS.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemHasRHS.TextVisible = false;
          // 
@@ -328,9 +318,9 @@ namespace MoBi.UI.Views
          // 
          this.layoutItemDescription.Control = this.htmlEditor;
          this.layoutItemDescription.CustomizationFormText = "Description";
-         this.layoutItemDescription.Location = new System.Drawing.Point(0, 368);
+         this.layoutItemDescription.Location = new System.Drawing.Point(0, 371);
          this.layoutItemDescription.Name = "layoutItemDescription";
-         this.layoutItemDescription.Size = new System.Drawing.Size(732, 24);
+         this.layoutItemDescription.Size = new System.Drawing.Size(736, 24);
          this.layoutItemDescription.Text = "Description:";
          this.layoutItemDescription.TextSize = new System.Drawing.Size(106, 13);
          // 
@@ -340,9 +330,9 @@ namespace MoBi.UI.Views
          this.layoutGroupValue.ExpandButtonVisible = true;
          this.layoutGroupValue.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemFormula});
-         this.layoutGroupValue.Location = new System.Drawing.Point(0, 187);
+         this.layoutGroupValue.Location = new System.Drawing.Point(0, 188);
          this.layoutGroupValue.Name = "layoutGroupValue";
-         this.layoutGroupValue.Size = new System.Drawing.Size(732, 97);
+         this.layoutGroupValue.Size = new System.Drawing.Size(736, 98);
          this.layoutGroupValue.Text = "Value";
          // 
          // layoutItemFormula
@@ -351,7 +341,7 @@ namespace MoBi.UI.Views
          this.layoutItemFormula.CustomizationFormText = "layoutItemFormula";
          this.layoutItemFormula.Location = new System.Drawing.Point(0, 0);
          this.layoutItemFormula.Name = "layoutItemFormula";
-         this.layoutItemFormula.Size = new System.Drawing.Size(708, 55);
+         this.layoutItemFormula.Size = new System.Drawing.Size(712, 53);
          this.layoutItemFormula.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemFormula.TextVisible = false;
          // 
@@ -361,9 +351,9 @@ namespace MoBi.UI.Views
          this.layoutGroupRHSFormula.ExpandButtonVisible = true;
          this.layoutGroupRHSFormula.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemRHSFormula});
-         this.layoutGroupRHSFormula.Location = new System.Drawing.Point(0, 312);
+         this.layoutGroupRHSFormula.Location = new System.Drawing.Point(0, 320);
          this.layoutGroupRHSFormula.Name = "layoutGroupRHSFormula";
-         this.layoutGroupRHSFormula.Size = new System.Drawing.Size(732, 56);
+         this.layoutGroupRHSFormula.Size = new System.Drawing.Size(736, 51);
          this.layoutGroupRHSFormula.Text = "Right hand side";
          // 
          // layoutItemRHSFormula
@@ -372,7 +362,7 @@ namespace MoBi.UI.Views
          this.layoutItemRHSFormula.CustomizationFormText = "layoutItemRHSFormula";
          this.layoutItemRHSFormula.Location = new System.Drawing.Point(0, 0);
          this.layoutItemRHSFormula.Name = "layoutItemRHSFormula";
-         this.layoutItemRHSFormula.Size = new System.Drawing.Size(708, 14);
+         this.layoutItemRHSFormula.Size = new System.Drawing.Size(712, 6);
          this.layoutItemRHSFormula.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemRHSFormula.TextVisible = false;
          // 
@@ -380,9 +370,9 @@ namespace MoBi.UI.Views
          // 
          this.splitterRHSFormula.AllowHotTrack = true;
          this.splitterRHSFormula.CustomizationFormText = "splitterItem1";
-         this.splitterRHSFormula.Location = new System.Drawing.Point(0, 284);
+         this.splitterRHSFormula.Location = new System.Drawing.Point(0, 286);
          this.splitterRHSFormula.Name = "splitterItem1";
-         this.splitterRHSFormula.Size = new System.Drawing.Size(732, 5);
+         this.splitterRHSFormula.Size = new System.Drawing.Size(736, 10);
          // 
          // layoutGroupProperties
          // 
@@ -398,7 +388,7 @@ namespace MoBi.UI.Views
             this.layoutItemValueOrigin});
          this.layoutGroupProperties.Location = new System.Drawing.Point(0, 24);
          this.layoutGroupProperties.Name = "layoutGroupProperties";
-         this.layoutGroupProperties.Size = new System.Drawing.Size(732, 163);
+         this.layoutGroupProperties.Size = new System.Drawing.Size(736, 164);
          // 
          // layoutItemParameterType
          // 
@@ -406,7 +396,7 @@ namespace MoBi.UI.Views
          this.layoutItemParameterType.CustomizationFormText = "Parameter Type";
          this.layoutItemParameterType.Location = new System.Drawing.Point(0, 0);
          this.layoutItemParameterType.Name = "layoutItemParameterType";
-         this.layoutItemParameterType.Size = new System.Drawing.Size(708, 24);
+         this.layoutItemParameterType.Size = new System.Drawing.Size(712, 24);
          this.layoutItemParameterType.Text = "Parameter type:";
          this.layoutItemParameterType.TextSize = new System.Drawing.Size(106, 13);
          // 
@@ -416,7 +406,7 @@ namespace MoBi.UI.Views
          this.layoutItemDimension.CustomizationFormText = "Dimension";
          this.layoutItemDimension.Location = new System.Drawing.Point(0, 24);
          this.layoutItemDimension.Name = "layoutItemDimension";
-         this.layoutItemDimension.Size = new System.Drawing.Size(708, 24);
+         this.layoutItemDimension.Size = new System.Drawing.Size(712, 24);
          this.layoutItemDimension.Text = "Dimension:";
          this.layoutItemDimension.TextSize = new System.Drawing.Size(106, 13);
          // 
@@ -426,16 +416,16 @@ namespace MoBi.UI.Views
          this.layoutItemGroup.CustomizationFormText = "layoutItemGroup";
          this.layoutItemGroup.Location = new System.Drawing.Point(0, 48);
          this.layoutItemGroup.Name = "layoutItemGroup";
-         this.layoutItemGroup.Size = new System.Drawing.Size(708, 24);
+         this.layoutItemGroup.Size = new System.Drawing.Size(712, 24);
          this.layoutItemGroup.TextSize = new System.Drawing.Size(106, 13);
          // 
          // layoutItemIsFavorite
          // 
          this.layoutItemIsFavorite.Control = this.chkIsFavorite;
          this.layoutItemIsFavorite.CustomizationFormText = "layoutItemIsFavorite";
-         this.layoutItemIsFavorite.Location = new System.Drawing.Point(0, 98);
+         this.layoutItemIsFavorite.Location = new System.Drawing.Point(0, 95);
          this.layoutItemIsFavorite.Name = "layoutItemIsFavorite";
-         this.layoutItemIsFavorite.Size = new System.Drawing.Size(177, 23);
+         this.layoutItemIsFavorite.Size = new System.Drawing.Size(178, 24);
          this.layoutItemIsFavorite.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemIsFavorite.TextVisible = false;
          // 
@@ -443,9 +433,9 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItemPersistable.Control = this.chkPersistable;
          this.layoutControlItemPersistable.CustomizationFormText = "layoutControlItemPersistable";
-         this.layoutControlItemPersistable.Location = new System.Drawing.Point(177, 98);
+         this.layoutControlItemPersistable.Location = new System.Drawing.Point(178, 95);
          this.layoutControlItemPersistable.Name = "layoutControlItemPersistable";
-         this.layoutControlItemPersistable.Size = new System.Drawing.Size(177, 23);
+         this.layoutControlItemPersistable.Size = new System.Drawing.Size(178, 24);
          this.layoutControlItemPersistable.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemPersistable.TextVisible = false;
          // 
@@ -453,9 +443,9 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItemAdvancedParameter.Control = this.chkAdvancedParameter;
          this.layoutControlItemAdvancedParameter.CustomizationFormText = "layoutControlItemAdvancedParameter";
-         this.layoutControlItemAdvancedParameter.Location = new System.Drawing.Point(354, 98);
+         this.layoutControlItemAdvancedParameter.Location = new System.Drawing.Point(356, 95);
          this.layoutControlItemAdvancedParameter.Name = "layoutControlItemAdvancedParameter";
-         this.layoutControlItemAdvancedParameter.Size = new System.Drawing.Size(177, 23);
+         this.layoutControlItemAdvancedParameter.Size = new System.Drawing.Size(178, 24);
          this.layoutControlItemAdvancedParameter.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemAdvancedParameter.TextVisible = false;
          // 
@@ -463,103 +453,25 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItemCanBeVariedInPopulation.Control = this.chkCanBeVariedInPopulation;
          this.layoutControlItemCanBeVariedInPopulation.CustomizationFormText = "layoutControlItemCanBeVariedInPopulation";
-         this.layoutControlItemCanBeVariedInPopulation.Location = new System.Drawing.Point(531, 98);
+         this.layoutControlItemCanBeVariedInPopulation.Location = new System.Drawing.Point(534, 95);
          this.layoutControlItemCanBeVariedInPopulation.Name = "layoutControlItemCanBeVariedInPopulation";
-         this.layoutControlItemCanBeVariedInPopulation.Size = new System.Drawing.Size(177, 23);
+         this.layoutControlItemCanBeVariedInPopulation.Size = new System.Drawing.Size(178, 24);
          this.layoutControlItemCanBeVariedInPopulation.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemCanBeVariedInPopulation.TextVisible = false;
-         // 
-         // tabTags
-         // 
-         this.tabTags.Controls.Add(this.layoutControlTags);
-         this.tabTags.Name = "tabTags";
-         this.tabTags.Size = new System.Drawing.Size(752, 412);
-         this.tabTags.Text = "tabTags";
-         // 
-         // layoutControlTags
-         // 
-         this.layoutControlTags.AllowCustomization = false;
-         this.layoutControlTags.Controls.Add(this.btAddTag);
-         this.layoutControlTags.Controls.Add(this.gridControl1);
-         this.layoutControlTags.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControlTags.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlTags.Name = "layoutControlTags";
-         this.layoutControlTags.Root = this.layoutControlGroup2;
-         this.layoutControlTags.Size = new System.Drawing.Size(752, 412);
-         this.layoutControlTags.TabIndex = 0;
-         this.layoutControlTags.Text = "layoutControlTags";
-         // 
-         // btAddTag
-         // 
-         this.btAddTag.Location = new System.Drawing.Point(12, 12);
-         this.btAddTag.Name = "btAddTag";
-         this.btAddTag.Size = new System.Drawing.Size(728, 22);
-         this.btAddTag.StyleController = this.layoutControlTags;
-         this.btAddTag.TabIndex = 4;
-         this.btAddTag.Text = "simpleButton1";
-         // 
-         // gridControl1
-         // 
-         this.gridControl1.Location = new System.Drawing.Point(125, 38);
-         this.gridControl1.MainView = this.gridViewTags;
-         this.gridControl1.Name = "gridControl1";
-         this.gridControl1.Size = new System.Drawing.Size(615, 362);
-         this.gridControl1.TabIndex = 5;
-         this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridViewTags});
-         // 
-         // gridViewTags
-         // 
-         this.gridViewTags.GridControl = this.gridControl1;
-         this.gridViewTags.Name = "gridViewTags";
-         // 
-         // layoutControlGroup2
-         // 
-         this.layoutControlGroup2.CustomizationFormText = "layoutControlGroup2";
-         this.layoutControlGroup2.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.layoutControlGroup2.GroupBordersVisible = false;
-         this.layoutControlGroup2.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItemAddTag,
-            this.layoutControlItemTags});
-         this.layoutControlGroup2.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup2.Name = "layoutControlGroup2";
-         this.layoutControlGroup2.Size = new System.Drawing.Size(752, 412);
-         this.layoutControlGroup2.TextVisible = false;
-         // 
-         // layoutControlItemAddTag
-         // 
-         this.layoutControlItemAddTag.Control = this.btAddTag;
-         this.layoutControlItemAddTag.CustomizationFormText = "layoutControlItem1";
-         this.layoutControlItemAddTag.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlItemAddTag.Name = "layoutControlItemAddTag";
-         this.layoutControlItemAddTag.Size = new System.Drawing.Size(732, 26);
-         this.layoutControlItemAddTag.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItemAddTag.TextVisible = false;
-         // 
-         // layoutControlItemTags
-         // 
-         this.layoutControlItemTags.Control = this.gridControl1;
-         this.layoutControlItemTags.CustomizationFormText = "layoutControlItemTags";
-         this.layoutControlItemTags.Location = new System.Drawing.Point(0, 26);
-         this.layoutControlItemTags.Name = "layoutControlItem3";
-         this.layoutControlItemTags.Size = new System.Drawing.Size(732, 366);
-         this.layoutControlItemTags.Text = "layoutControlItemTags";
-         this.layoutControlItemTags.TextSize = new System.Drawing.Size(110, 13);
-         // 
-         // panelControl1
-         // 
-         this.panelOrigiView.Location = new System.Drawing.Point(133, 138);
-         this.panelOrigiView.Name = "panelOrigiView";
-         this.panelOrigiView.Size = new System.Drawing.Size(595, 22);
-         this.panelOrigiView.TabIndex = 29;
          // 
          // layoutItemValueOrigin
          // 
          this.layoutItemValueOrigin.Control = this.panelOrigiView;
          this.layoutItemValueOrigin.Location = new System.Drawing.Point(0, 72);
          this.layoutItemValueOrigin.Name = "layoutItemValueOrigin";
-         this.layoutItemValueOrigin.Size = new System.Drawing.Size(708, 26);
+         this.layoutItemValueOrigin.Size = new System.Drawing.Size(712, 23);
          this.layoutItemValueOrigin.TextSize = new System.Drawing.Size(106, 13);
+         // 
+         // tabTags
+         // 
+         this.tabTags.Name = "tabTags";
+         this.tabTags.Size = new System.Drawing.Size(756, 415);
+         this.tabTags.Text = "tabTags";
          // 
          // EditParameterView
          // 
@@ -574,6 +486,7 @@ namespace MoBi.UI.Views
          this.tabProperties.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlProperties)).EndInit();
          this.layoutControlProperties.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.panelOrigiView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkIsFavorite.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbGroup.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkCanBeVariedInPopulation.Properties)).EndInit();
@@ -603,15 +516,6 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemPersistable)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemAdvancedParameter)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemCanBeVariedInPopulation)).EndInit();
-         this.tabTags.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlTags)).EndInit();
-         this.layoutControlTags.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridViewTags)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemAddTag)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemTags)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelOrigiView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValueOrigin)).EndInit();
          this.ResumeLayout(false);
 
@@ -642,12 +546,6 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemAdvancedParameter;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemPersistable;
       private DevExpress.XtraTab.XtraTabPage tabTags;
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControlTags;
-      private DevExpress.XtraEditors.SimpleButton btAddTag;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemAddTag;
-      private DevExpress.XtraGrid.Views.Grid.GridView gridViewTags;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemTags;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemCanBeVariedInPopulation;
       private DevExpress.XtraEditors.ComboBoxEdit cbGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemGroup;
@@ -660,6 +558,5 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupProperties;
       private DevExpress.XtraEditors.PanelControl panelOrigiView;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemValueOrigin;
-      private UxGridControl gridControl1;
    }
 }
