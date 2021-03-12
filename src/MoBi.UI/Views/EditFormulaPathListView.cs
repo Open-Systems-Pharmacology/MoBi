@@ -10,7 +10,6 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;

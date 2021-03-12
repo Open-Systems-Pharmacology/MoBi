@@ -16,12 +16,13 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.UI.Views;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
@@ -85,6 +86,10 @@ namespace MoBi.UI.Views
          layoutGroupContainer.Text = AppConstants.Captions.InContainerWith;
          layoutGroupApplicationBuilder.Text = AppConstants.Captions.ApplicationMoleculeBuilder;
          layoutItemMolecule.Text = AppConstants.Captions.AdministeredMolecule.FormatForLabel();
+         tabMolecules.Text = AppConstants.Captions.AdministeredMolecule;
+         tabMolecules.Image = ApplicationIcons.Molecule;
+         tabParameter.Text = AppConstants.Captions.Parameters;
+         tabParameter.Image = ApplicationIcons.Parameters;
       }
 
       public void Activate()
