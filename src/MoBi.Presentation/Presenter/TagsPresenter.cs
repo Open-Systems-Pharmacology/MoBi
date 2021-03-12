@@ -11,6 +11,8 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
+   //AppConstants.Captions.ContainerTags.FormatForLabel
+
    public interface ITagsPresenter : IEditPresenter<IEntity>, IPresenter<ITagsView>
    {
       void AddNewTag();

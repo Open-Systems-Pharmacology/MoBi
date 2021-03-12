@@ -11,5 +11,6 @@ namespace MoBi.Presentation.Views
       bool EnableDescriptors { get; set; }
       void ShowParameters();
       void AddDescriptorConditionListView(IView view);
+      void AddTagsView(IView view);
    }
 }

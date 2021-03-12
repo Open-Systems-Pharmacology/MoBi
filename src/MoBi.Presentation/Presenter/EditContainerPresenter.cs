@@ -10,7 +10,6 @@ using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -23,8 +22,6 @@ namespace MoBi.Presentation.Presenter
    {
       EditParameterMode EditMode { set; }
       bool ReadOnly { set; }
-      void AddNewTag();
-      void RemoveTag(TagDTO tagDTO);
       void SetInitialName(string initialName);
       string ContainerModeDisplayFor(ContainerMode mode);
       IEnumerable<ContainerMode> AllContainerModes();
@@ -39,20 +36,26 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditTaskForContainer _editTasks;
       private ContainerDTO _containerDTO;
       private readonly IMoBiContext _context;
-      private readonly IEntityTask _entityTask;
+      private readonly ITagsPresenter _tagsPresenter;
       private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
 
-      public EditContainerPresenter(IEditContainerView view, IContainerToContainerDTOMapper containerToDtoContainerMapper, IEditTaskForContainer editTasks,
-         IEditParametersInContainerPresenter editParametersInContainerPresenter, IMoBiContext context, IEntityTask entityTask)
+      public EditContainerPresenter(
+         IEditContainerView view, 
+         IContainerToContainerDTOMapper containerToDtoContainerMapper, 
+         IEditTaskForContainer editTasks,
+         IEditParametersInContainerPresenter editParametersInContainerPresenter, 
+         IMoBiContext context, 
+         ITagsPresenter tagsPresenter)
          : base(view)
       {
          _containerToDTOContainerMapper = containerToDtoContainerMapper;
-         _entityTask = entityTask;
          _context = context;
+         _tagsPresenter = tagsPresenter;
          _editParametersInContainerPresenter = editParametersInContainerPresenter;
          _editTasks = editTasks;
-         _view.SetParameterView(editParametersInContainerPresenter.BaseView);
-         AddSubPresenters(_editParametersInContainerPresenter);
+         _view.AddParameterView(editParametersInContainerPresenter.BaseView);
+         _view.AddTagsView(_tagsPresenter.BaseView);
+         AddSubPresenters(_editParametersInContainerPresenter, _tagsPresenter);
          initParameterListPresenter();
       }
 
@@ -105,14 +108,15 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock
       {
-         get { return _editParametersInContainerPresenter.BuildingBlock; }
-         set { _editParametersInContainerPresenter.BuildingBlock = value; }
+         get => _editParametersInContainerPresenter.BuildingBlock;
+         set
+         {
+            _editParametersInContainerPresenter.BuildingBlock = value;
+            _tagsPresenter.BuildingBlock = value;
+         }
       }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
       public void SelectParameter(IParameter childParameter)
       {
@@ -137,39 +141,25 @@ namespace MoBi.Presentation.Presenter
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));
          _editParametersInContainerPresenter.Edit(_container);
          _view.BindTo(_containerDTO);
+         _tagsPresenter.Edit(container);
          _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();
       }
 
-      public override object Subject
-      {
-         get { return _container; }
-      }
+      public override object Subject => _container;
 
       public EditParameterMode EditMode
       {
-         set { _editParametersInContainerPresenter.EditMode = value; }
+         set => _editParametersInContainerPresenter.EditMode = value;
       }
 
       public bool ReadOnly
       {
-         set { _view.ReadOnly = value; }
-      }
-
-      public void AddNewTag()
-      {
-         //TODO
-         AddCommand(_entityTask.AddNewTagTo(_container,  BuildingBlock));
-      }
-
-      public void RemoveTag(TagDTO tagDTO)
-      {
-         AddCommand(_entityTask.RemoveTagFrom(tagDTO, _container, BuildingBlock));
-         _containerDTO.Tags.Remove(tagDTO);
+         set => _view.ReadOnly = value;
       }
 
       public void SetInitialName(string initialName)
       {
-         SetPropertyValueFromView(_container.PropertyName(x => x.Name), initialName, String.Empty);
+         SetPropertyValueFromView(_container.PropertyName(x => x.Name), initialName, string.Empty);
          _containerDTO.Name = initialName;
       }
    }

@@ -1,6 +1,5 @@
 ﻿using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI;
 using OSPSuite.Utility.Extensions;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors.Controls;
@@ -8,9 +7,8 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
@@ -42,6 +40,11 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          tabParameters.Text = AppConstants.Captions.Parameters;
+         tabParameters.Image = ApplicationIcons.Parameter;
+         tabProperties.Text = AppConstants.Captions.Properties;
+         tabProperties.Image = ApplicationIcons.Properties;
+         tabTags.Text = AppConstants.Captions.Tags;
+         tabTags.Image = ApplicationIcons.Tag;
       }
 
       public void Activate()
@@ -80,8 +83,8 @@ namespace MoBi.UI.Views
 
       public bool EnableDescriptors
       {
-         get { return grpContainerDescriptor.Enabled; }
-         set { grpContainerDescriptor.Enabled = value; }
+         get => grpContainerDescriptor.Enabled;
+         set => grpContainerDescriptor.Enabled = value;
       }
 
       public void ShowParameters()
@@ -94,19 +97,20 @@ namespace MoBi.UI.Views
          panelDescriptorCriteria.FillWith(view);
       }
 
-      public override bool HasError
+      public void AddTagsView(IView view)
       {
-         get { return base.HasError || _screenBinder.HasError; }
+         tabTags.FillWith(view);
       }
 
-      public BarManager PopupBarManager
-      {
-         get { return barManager; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError;
+
+      public BarManager PopupBarManager => barManager;
 
       private void btName_ButtonClick(object sender, ButtonPressedEventArgs e)
       {
          _presenter.RenameSubject();
       }
+
+      
    }
 }
