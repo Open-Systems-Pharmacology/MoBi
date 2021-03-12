@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
@@ -25,6 +24,7 @@ namespace MoBi.UI.Views
          InitializeComponent();
          _gridBinder = new GridViewBinder<TagDTO>(gridView);
          _addRemoveButtonRepository = new UxAddAndRemoveButtonRepository();
+         Caption = AppConstants.Captions.Tags;
       }
 
       public void AttachPresenter(ITagsPresenter presenter)
@@ -61,8 +61,6 @@ namespace MoBi.UI.Views
          btnAddTag.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddTag);
 
          layoutControlItemAddTag.AdjustButtonSize();
-         layoutControlItemTags.TextLocation = Locations.Top;
-         layoutControlItemTags.Text = AppConstants.Captions.Tags;
       }
 
       private void onButtonClicked(ButtonPressedEventArgs buttonPressedEventArgs, TagDTO tagDTO)
@@ -73,15 +71,5 @@ namespace MoBi.UI.Views
          else
             _presenter.RemoveTag(tagDTO);
       }
-
-
-      // private RepositoryItemButtonEdit createAddRemoveButtonRepository()
-      // {
-      //    var buttonRepository = new RepositoryItemButtonEdit { TextEditStyle = TextEditStyles.HideTextEditor };
-      //    buttonRepository.Buttons[0].Kind = ButtonPredefines.Plus;
-      //    buttonRepository.Buttons.Add(new EditorButton(ButtonPredefines.Delete));
-      //    return buttonRepository;
-      // }
-
    }
 }
