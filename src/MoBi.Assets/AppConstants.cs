@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
-using static OSPSuite.Assets.MenuNames;
 
 namespace MoBi.Assets
 {
@@ -96,7 +95,7 @@ namespace MoBi.Assets
          public static readonly string ObserverBuildingBlock = "Observer";
          public static readonly string SimulationSettings = "Simulation Settings";
          public static readonly string EmptyCalculationMethod = "No Calculation Method";
-         public static string EmptyCalculationMethodDescription = "";
+         public static readonly string EmptyCalculationMethodDescription = "";
 
          public static readonly string GlobalEventTag = "Events";
 
@@ -105,12 +104,18 @@ namespace MoBi.Assets
             "Plasma (Peripheral Venous Blood)",
             "Plasma Unbound (Peripheral Venous Blood)",
             "Tissue",
-            "Fraction excreted"
+            "Fraction excreted",
+            "Whole Blood",
+            "Interstitial Unbound",
+            "Intracellular Unbound", 
+            "Whole Organ",
+            "Fraction of oral drug mass absorbed into mucosa segment"
          };
 
          public static readonly IReadOnlyList<string> PKSimDynamicObservers = new[]
          {
-            "Fraction of dose"
+            "Fraction of dose",
+            "Whole organ incl. FcRn_Complex"
          };
       }
 
