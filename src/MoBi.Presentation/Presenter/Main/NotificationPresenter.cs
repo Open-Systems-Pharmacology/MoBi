@@ -195,7 +195,7 @@ namespace MoBi.Presentation.Presenter.Main
          _allNotifications = new NotifyList<NotificationMessageDTO>(_allNotifications);
 
      
-         notificationMessages.Where(notificationIsViible).Each(m =>
+         notificationMessages.Where(notificationIsVisible).Each(m =>
          {
             if (!_allNotifications.Contains(m))
                _allNotifications.Add(m);
@@ -204,7 +204,7 @@ namespace MoBi.Presentation.Presenter.Main
          bindToView();
       }
 
-      private bool notificationIsViible(NotificationMessageDTO message)
+      private bool notificationIsVisible(NotificationMessageDTO message)
       {
          return _userSettings.ShowPKSimObserverMessages || !isPKSimObserverMessage(message);
       }
