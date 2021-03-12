@@ -39,8 +39,6 @@ namespace MoBi.Presentation.Presenter
       void SetIsAdvancedParameter(bool isAdvancedParameter);
       void SetPersistable(bool isPersitable);
       void SetIsVariablePopulation(bool isVariableInPopulation);
-      void AddNewTag();
-      void RemoveTag(TagDTO tagDTO);
       IEnumerable<IGroup> AllGroups();
       void SetGroup(IGroup group);
       string DisplayFor(IGroup group);
@@ -90,13 +88,13 @@ namespace MoBi.Presentation.Presenter
       private ParameterDTO _parameterDTO;
       public IBuildingBlock BuildingBlock { get; set; }
       public IEnumerable<IObjectBase> LocalEntitiesToReference { set; protected get; }
-      private readonly IEntityTask _entityTask;
       private readonly IGroupRepository _groupRepository;
       private readonly IEditTaskFor<IParameter> _editTasks;
       private readonly IInteractionTasksForParameter _parameterTask;
       private readonly IContextSpecificReferencesRetriever _contextSpecificReferencesRetriever;
       private readonly IFavoriteTask _favoriteTask;
       private readonly IEditValueOriginPresenter _editValueOriginPresenter;
+      private readonly ITagsPresenter _tagsPresenter;
       public IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
       public bool WarnOnBuildModeChange { get; set; }
 
@@ -105,13 +103,13 @@ namespace MoBi.Presentation.Presenter
          IParameterToParameterDTOMapper parameterMapper,
          IEditFormulaPresenter editRhsFormulaPresenter,
          IInteractionTaskContext interactionTaskContext,
-         IEntityTask entityTask,
          IGroupRepository groupRepository,
          IEditTaskFor<IParameter> editTasks,
          IInteractionTasksForParameter parameterTask,
          IContextSpecificReferencesRetriever contextSpecificReferencesRetriever,
          IFavoriteTask favoriteTask,
-         IEditValueOriginPresenter editValueOriginPresenter
+         IEditValueOriginPresenter editValueOriginPresenter,
+         ITagsPresenter tagsPresenter
       )
          : base(view)
       {
@@ -120,8 +118,8 @@ namespace MoBi.Presentation.Presenter
          _contextSpecificReferencesRetriever = contextSpecificReferencesRetriever;
          _favoriteTask = favoriteTask;
          _editValueOriginPresenter = editValueOriginPresenter;
+         _tagsPresenter = tagsPresenter;
          _parameterMapper = parameterMapper;
-         _entityTask = entityTask;
          _groupRepository = groupRepository;
          _editTasks = editTasks;
          _editRHSFormulaPresenter = editRhsFormulaPresenter;
@@ -129,8 +127,9 @@ namespace MoBi.Presentation.Presenter
          _view.SetFormulaView(_editValueFormulaPresenter.BaseView);
          _view.AddRHSView(_editRHSFormulaPresenter.BaseView);
          _view.AddValueOriginView(_editValueOriginPresenter.BaseView);
+         _view.AddTagsView(_tagsPresenter.BaseView);
 
-         AddSubPresenters(editRhsFormulaPresenter, editValueFormulaPresenter, _editValueOriginPresenter);
+         AddSubPresenters(editRhsFormulaPresenter, editValueFormulaPresenter, _editValueOriginPresenter, _tagsPresenter);
 
          _editRHSFormulaPresenter.IsRHS = true;
          _editRHSFormulaPresenter.RemoveAllFormulaTypes();
@@ -209,7 +208,9 @@ namespace MoBi.Presentation.Presenter
          if (hasRHS(parameter))
             initRHSPresenter();
 
-         _parameterDTO = _parameterMapper.MapFrom(parameter).DowncastTo<ParameterDTO>();
+         _tagsPresenter.BuildingBlock = BuildingBlock;
+         _tagsPresenter.Edit(parameter);
+          _parameterDTO = _parameterMapper.MapFrom(parameter).DowncastTo<ParameterDTO>();
          _parameterDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(parameter, existingObjectsInParent));
          _view.Show(_parameterDTO);
       }
@@ -264,18 +265,7 @@ namespace MoBi.Presentation.Presenter
       {
          addCommandToRun(new EditParameterCanBeVariedInPopulationCommand(_parameter, isVariableInPopulation, BuildingBlock));
       }
-
-      public void AddNewTag()
-      {
-         AddCommand(_entityTask.AddNewTagTo(_parameter, _parameterDTO, BuildingBlock));
-      }
-
-      public void RemoveTag(TagDTO tagDTO)
-      {
-         AddCommand(_entityTask.RemoveTagFrom(tagDTO, _parameter, BuildingBlock));
-         _parameterDTO.Tags.Remove(tagDTO);
-      }
-
+      
       public IEnumerable<IGroup> AllGroups()
       {
          return _groupRepository.All().OrderBy(x => x.FullName);

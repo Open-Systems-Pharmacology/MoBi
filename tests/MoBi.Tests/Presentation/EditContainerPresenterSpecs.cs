@@ -12,12 +12,12 @@ namespace MoBi.Presentation
 {
    public abstract class concern_for_EditContainerPresenterSpecs : ContextSpecification<IEditContainerPresenter>
    {
-      private IEntityTask _enityTask;
       protected IEditContainerView _view;
       private IContainerToContainerDTOMapper _containerMapper;
       private IEditTaskForContainer _editTasks;
       protected IEditParametersInContainerPresenter _parametersInContainerPresenter;
       private IMoBiContext _context;
+      private ITagsPresenter _tagsPresenter;
 
       protected override void Context()
       {
@@ -26,12 +26,12 @@ namespace MoBi.Presentation
          _editTasks = A.Fake<IEditTaskForContainer>();
          _parametersInContainerPresenter = A.Fake<IEditParametersInContainerPresenter>();
          _context = A.Fake<IMoBiContext>();
-         _enityTask = A.Fake<IEntityTask>();
-         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _enityTask);
+         _tagsPresenter = A.Fake<ITagsPresenter>();
+         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter);
       }
    }
 
-   internal class When_told_a_containerpresenter_to_select_parameters : concern_for_EditContainerPresenterSpecs
+   internal class When_told_a_container_presenter_to_select_parameters : concern_for_EditContainerPresenterSpecs
    {
       private IParameter _parameter;
 
@@ -47,7 +47,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_tell_view_to_show_parmaeters()
+      public void should_tell_view_to_show_parameters()
       {
          A.CallTo(() => _view.ShowParameters());
       }

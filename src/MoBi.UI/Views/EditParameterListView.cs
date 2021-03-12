@@ -19,7 +19,6 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
@@ -36,7 +35,7 @@ namespace MoBi.UI.Views
       private readonly UxComboBoxUnit<ParameterDTO> _unitControl;
       private IEditParameterListPresenter _presenter;
       private RepositoryItemButtonEdit _isFixedParameterEditRepository;
-      private readonly RepositoryItemTextEdit _stantdardParameterEditRepository = new RepositoryItemTextEdit();
+      private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       private readonly UxRepositoryItemCheckEdit _favoriteRepository;
       private readonly IToolTipCreator _toolTipCreator;
       private readonly ValueOriginBinder<ParameterDTO> _valueOriginBinder;
@@ -180,7 +179,7 @@ namespace MoBi.UI.Views
          if (_presenter.IsFixedValue(parameter))
             return _isFixedParameterEditRepository;
 
-         return _stantdardParameterEditRepository;
+         return _standardParameterEditRepository;
       }
 
       private void configureRepository(BaseEdit activeEditor, ParameterDTO parameter)

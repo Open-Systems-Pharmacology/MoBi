@@ -1,12 +1,8 @@
 ﻿using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
-using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -16,7 +12,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
-using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using ToolTips = MoBi.Assets.ToolTips;
 
@@ -26,13 +21,11 @@ namespace MoBi.UI.Views
    {
       private IEditParameterPresenter _presenter;
       private readonly ScreenBinder<ParameterDTO> _screenBinder;
-      private readonly GridViewBinder<TagDTO> _gridBinder;
 
       public EditParameterView()
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<ParameterDTO>();
-         _gridBinder = new GridViewBinder<TagDTO>(gridViewTags);
       }
 
       public override void InitializeBinding()
@@ -84,17 +77,7 @@ namespace MoBi.UI.Views
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
-         _gridBinder.Bind(tag => tag.Value).WithCaption(AppConstants.Captions.Tag).AsReadOnly();
-         var buttonRepository = createAddRemoveButtonRepository();
-         buttonRepository.ButtonClick += (o, e) => OnEvent(() => onButtonClicked(e, _gridBinder.FocusedElement));
 
-         _gridBinder.AddUnboundColumn()
-            .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithRepository(dto => buttonRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
-
-         btAddTag.Click += (o, e) => OnEvent(_presenter.AddNewTag);
          btName.ButtonClick += (o, e) => OnEvent(nameButtonClicked, e);
       }
 
@@ -103,22 +86,6 @@ namespace MoBi.UI.Views
          _presenter.RenameParameter();
       }
 
-      private void onButtonClicked(ButtonPressedEventArgs buttonPressedEventArgs, TagDTO tagDTO)
-      {
-         var pressedButton = buttonPressedEventArgs.Button;
-         if (pressedButton.Kind.Equals(ButtonPredefines.Plus))
-            _presenter.AddNewTag();
-         else
-            _presenter.RemoveTag(tagDTO);
-      }
-
-      private RepositoryItemButtonEdit createAddRemoveButtonRepository()
-      {
-         var buttonRepository = new RepositoryItemButtonEdit {TextEditStyle = TextEditStyles.HideTextEditor};
-         buttonRepository.Buttons[0].Kind = ButtonPredefines.Plus;
-         buttonRepository.Buttons.Add(new EditorButton(ButtonPredefines.Delete));
-         return buttonRepository;
-      }
 
       public override void InitializeResources()
       {
@@ -136,10 +103,7 @@ namespace MoBi.UI.Views
          tabProperties.Image = ApplicationIcons.Properties;
          tabTags.Text = AppConstants.Captions.Tags;
          tabTags.Image = ApplicationIcons.Tag;
-         btAddTag.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddTag);
-         layoutControlItemAddTag.AdjustButtonSize();
-         layoutControlItemTags.TextLocation = Locations.Top;
-         layoutControlItemTags.Text = AppConstants.Captions.Tags;
+         
          layoutItemGroup.Text = AppConstants.Captions.Group.FormatForLabel();
          layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
          chkIsFavorite.Text = Captions.Favorite;
@@ -184,7 +148,6 @@ namespace MoBi.UI.Views
       public void Show(ParameterDTO parameterDTO)
       {
          _screenBinder.BindToSource(parameterDTO);
-         _gridBinder.BindToSource(parameterDTO.Tags);
          initNameControl(parameterDTO);
          initRHSControl(parameterDTO);
       }
@@ -219,6 +182,11 @@ namespace MoBi.UI.Views
       public void AddValueOriginView(IView view)
       {
          panelOrigiView.FillWith(view);
+      }
+
+      public void AddTagsView(IView view)
+      {
+         tabTags.FillWith(view);
       }
 
       private bool showRHSPanel

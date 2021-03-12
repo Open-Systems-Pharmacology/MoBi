@@ -25,6 +25,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEventGroupBuilderToEventGroupBuilderDTOMapper _eventGroupBuilderDTOMapper;
       private readonly IMoBiContext _context;
       private readonly IDescriptorConditionListPresenter<IEventGroupBuilder> _descriptorConditionListPresenter;
+      private readonly ITagsPresenter _tagsPresenter;
       private readonly IEditParametersInContainerPresenter _parametersInContainerPresenter;
       private IBuildingBlock _buildingBlock;
 
@@ -34,17 +35,20 @@ namespace MoBi.Presentation.Presenter
          IEditParametersInContainerPresenter parametersInContainerPresenter,
          IEventGroupBuilderToEventGroupBuilderDTOMapper eventGroupBuilderDTOMapper, 
          IMoBiContext context,
-         IDescriptorConditionListPresenter<IEventGroupBuilder> descriptorConditionListPresenter)
+         IDescriptorConditionListPresenter<IEventGroupBuilder> descriptorConditionListPresenter,
+         ITagsPresenter tagsPresenter)
          : base(view)
       {
          _descriptorConditionListPresenter = descriptorConditionListPresenter;
+         _tagsPresenter = tagsPresenter;
          _context = context;
          _eventGroupBuilderDTOMapper = eventGroupBuilderDTOMapper;
          _parametersInContainerPresenter = parametersInContainerPresenter;
          _view.AddParametersView(parametersInContainerPresenter.BaseView);
          _view.AddDescriptorConditionListView(_descriptorConditionListPresenter.View);
+         _view.AddTagsView(_tagsPresenter.View);
          _editTask = editTask;
-         AddSubPresenters(_parametersInContainerPresenter, _descriptorConditionListPresenter);
+         AddSubPresenters(_parametersInContainerPresenter, _descriptorConditionListPresenter, _tagsPresenter);
       }
 
       public override void Edit(IEventGroupBuilder eventGroupBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
@@ -55,6 +59,7 @@ namespace MoBi.Presentation.Presenter
          var dto = _eventGroupBuilderDTOMapper.MapFrom(_eventGroupBuilder);
          dto.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(eventGroupBuilder, existingObjectsInParent));
          _view.BindTo(dto);
+         _tagsPresenter.Edit(eventGroupBuilder);
          _descriptorConditionListPresenter.Edit(eventGroupBuilder,x => x.SourceCriteria, _buildingBlock);
       }
 
@@ -89,6 +94,7 @@ namespace MoBi.Presentation.Presenter
          {
             _buildingBlock = value;
             _parametersInContainerPresenter.BuildingBlock = value;
+            _tagsPresenter.BuildingBlock = value;
          }
       }
 

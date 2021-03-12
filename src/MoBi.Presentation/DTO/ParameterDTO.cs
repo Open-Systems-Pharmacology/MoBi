@@ -8,21 +8,19 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public class ParameterDTO : ObjectBaseDTO, ITaggedEntityDTO, IMoBiParameterDTO
+   public class ParameterDTO : ObjectBaseDTO,  IMoBiParameterDTO
    {
       public bool HasRHS { get; set; }
       public FormulaBuilderDTO RHSFormula { get; set; }
       public FormulaBuilderDTO Formula { get; set; }
       public IParameter Parameter { get; private set; }
       public bool IsAdvancedParameter { get; set; }
-      public IList<TagDTO> Tags { get; set; }
       public IGroup Group { get; set; }
       public bool CanBeVariedInPopulation { get; set; }
       public bool IsFavorite { get; set; }

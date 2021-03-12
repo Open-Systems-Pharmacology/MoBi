@@ -7,7 +7,8 @@ namespace MoBi.Presentation.Views
    public interface IEditContainerView : IView<IEditContainerPresenter>, IActivatableView
    {
       void BindTo(ContainerDTO dto);
-      void SetParameterView(IView view);
+      void AddParameterView(IView view);
+      void AddTagsView(IView view);
       bool ReadOnly { get; set; }
       bool ContainerPropertiesEditable { get; set; }
       void ShowParameters();
