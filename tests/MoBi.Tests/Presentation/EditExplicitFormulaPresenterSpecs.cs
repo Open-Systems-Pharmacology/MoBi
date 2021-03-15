@@ -48,8 +48,7 @@ namespace MoBi.Presentation
          _moBiFormulaTask = A.Fake<IMoBiFormulaTask>();
          _editFormulaPathListPresenter = A.Fake<IEditFormulaPathListPresenter>();
          sut = new EditExplicitFormulaPresenter(
-            _view, _explicitFormulaMapper, _context,
-            _moBiFormulaTask, _reactionDimensionRetriever, _displayUnitRetriever, _editFormulaPathListPresenter);
+            _view, _explicitFormulaMapper, _moBiFormulaTask, _reactionDimensionRetriever, _displayUnitRetriever, _editFormulaPathListPresenter);
       }
    }
 

@@ -1,4 +1,3 @@
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
@@ -10,7 +9,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
@@ -31,7 +29,6 @@ namespace MoBi.Presentation.Presenter
    public class EditExplicitFormulaPresenter : EditTypedFormulaPresenter<IEditExplicitFormulaView, IEditExplicitFormulaPresenter, ExplicitFormula>,
       IEditExplicitFormulaPresenter
    {
-      private readonly IMoBiContext _context;
       private readonly IExplicitFormulaToExplicitFormulaDTOMapper _explicitFormulaMapper;
       private readonly IMoBiFormulaTask _moBiFormulaTask;
       private readonly IReactionDimensionRetriever _reactionDimensionRetriever;
@@ -40,7 +37,6 @@ namespace MoBi.Presentation.Presenter
       public EditExplicitFormulaPresenter(
          IEditExplicitFormulaView view,
          IExplicitFormulaToExplicitFormulaDTOMapper explicitFormulaMapper,
-         IMoBiContext context,
          IMoBiFormulaTask moBiFormulaTask,
          IReactionDimensionRetriever reactionDimensionRetriever,
          IDisplayUnitRetriever displayUnitRetriever,
@@ -50,7 +46,6 @@ namespace MoBi.Presentation.Presenter
          _moBiFormulaTask = moBiFormulaTask;
          _reactionDimensionRetriever = reactionDimensionRetriever;
          _editFormulaPathListPresenter = editFormulaPathListPresenter;
-         _context = context;
          AddSubPresenters(_editFormulaPathListPresenter);
          _view.AddFormulaPathListView(_editFormulaPathListPresenter.BaseView);
          _editFormulaPathListPresenter.DragDropAllowedFor = DragDropAllowedFor;
@@ -94,18 +89,18 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public override void Edit(ExplicitFormula objectToEdit)
+      public override void Edit(ExplicitFormula formula)
       {
-         if (objectToEdit.IsExplicit())
+         if (formula.IsExplicit())
          {
             _view.Enabled = true;
-            _formula = objectToEdit;
+            _formula = formula;
             _view.Show(_explicitFormulaMapper.MapFrom(_formula, UsingObject));
             _editFormulaPathListPresenter.Edit(_formula, UsingObject);
             Validate(_formula.FormulaString);
          }
 
-         if (objectToEdit.IsBlackBox())
+         if (formula.IsBlackBox())
             _view.Enabled = false;
 
          updateFormulaCaption();
@@ -118,21 +113,16 @@ namespace MoBi.Presentation.Presenter
 
       public bool DragDropAllowedFor(ReferenceDTO droppedReferenceDTO)
       {
-         if (ReadOnly) return false;
-         if (droppedReferenceDTO?.Path == null) return false;
-         if (droppedReferenceDTO.Path.IsAnImplementationOf<TimePath>()) return true;
-         if (droppedReferenceDTO.BuildMode == ParameterBuildMode.Local && referencesToLocalForbidden) return false;
-         return true;
-      }
+         if (ReadOnly)
+            return false;
 
-      private bool referencesToLocalForbidden
-      {
-         get
-         {
-            var parameter = UsingObject as IParameter;
-            if (parameter == null) return false;
-            return !parameter.BuildMode.Equals(ParameterBuildMode.Local);
-         }
+         if (droppedReferenceDTO?.Path == null)
+            return false;
+
+         if (droppedReferenceDTO.Path.IsAnImplementationOf<TimePath>())
+            return true;
+
+         return true;
       }
 
       public void Validate(string formulaString)
@@ -158,9 +148,6 @@ namespace MoBi.Presentation.Presenter
          Edit(_formula, _formulaOwner);
       }
 
-      private bool canHandle(FormulaEvent formulaEvent)
-      {
-         return Equals(formulaEvent.Formula, _formula);
-      }
+      private bool canHandle(FormulaEvent formulaEvent) => Equals(formulaEvent.Formula, _formula);
    }
 }

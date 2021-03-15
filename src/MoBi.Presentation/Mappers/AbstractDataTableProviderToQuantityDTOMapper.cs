@@ -36,16 +36,32 @@ namespace MoBi.Presentation.Mappers
       ///    Gets a dimension unit string in a data row. Indicate which row contains the unit
       /// </summary>
       /// <param name="rowIndex">The index of the row being converted</param>
-      /// <param name="columnIndex">The index of the column containing the unit</param>
+      /// <param name="unitColumn">The index of the column containing the unit</param>
+      /// <param name="dimensionColumn">The index of the column containing the dimension</param>
       /// <param name="table">The table containing the row</param>
       /// <returns>A dimension corresponding to the unit given</returns>
-      protected IDimension GetDimension(DataTable table, int rowIndex, int columnIndex)
+      protected IDimension GetDimension(DataTable table, int rowIndex, int unitColumn, int dimensionColumn)
       {
          var row = table.Rows[rowIndex];
-         var dimension = _dimensionFactory.DimensionForUnit(row[columnIndex].ToString());
+         var unitName = row[unitColumn].ToString();
+         var dimension = _dimensionFactory.DimensionForUnit(unitName);
          if (dimension == null)
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.CouldNotFindDimensionFromUnits(row[columnIndex].ToString()));
-         return dimension;
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
+               AppConstants.Exceptions.CouldNotFindDimensionFromUnits(unitName));
+
+         if (table.Columns.Count <= dimensionColumn)
+            return dimension;
+
+         //now we may have a dimension specified
+         var dimensionName = row[dimensionColumn].ToString();
+         if (string.IsNullOrEmpty(dimensionName))
+            return dimension;
+
+         if (!_dimensionFactory.Has(dimensionName))
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
+               AppConstants.Exceptions.CouldNotFindDimension(dimensionName));
+
+         return _dimensionFactory.Dimension(dimensionName);
       }
 
       /// <summary>
@@ -76,7 +92,8 @@ namespace MoBi.Presentation.Mappers
          var row = table.Rows[rowIndex];
          double quantity;
          if (!double.TryParse(row[columnIndex].ToString(), out quantity))
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.ColumnNMustBeNumeric(row[columnIndex].ToString(), columnIndex + 1));
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
+               AppConstants.Exceptions.ColumnNMustBeNumeric(row[columnIndex].ToString(), columnIndex + 1));
          return quantity;
       }
 
@@ -97,13 +114,16 @@ namespace MoBi.Presentation.Mappers
          return row[index].ToString();
       }
 
-      protected virtual void ValidateInContext(ImportedQuantityDTO dto, QuantityImporterDTO quantityImporterDTO, TImportTarget buildingBlock, DataRow row, int rowIndex)
+      protected virtual void ValidateInContext(ImportedQuantityDTO dto, QuantityImporterDTO quantityImporterDTO, TImportTarget buildingBlock,
+         DataRow row, int rowIndex)
       {
          if (IsUpdate(dto, buildingBlock) && !ValidateDTOForUpdate(dto))
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Validation.ValueNotValidForUpdate(dto.Path.ToString()));
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
+               AppConstants.Validation.ValueNotValidForUpdate(dto.Path.ToString()));
 
          if (IsNewInsert(dto, buildingBlock) && !ValidateDTOForInsert(dto))
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Validation.ValueNotValidForInsert(dto.Path.ToString()));
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
+               AppConstants.Validation.ValueNotValidForInsert(dto.Path.ToString()));
 
          if (string.IsNullOrEmpty(dto.Name))
             throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.ImportedStartValueMustHaveName);
@@ -112,7 +132,8 @@ namespace MoBi.Presentation.Mappers
             throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.ImportedStartValueMustHaveContainerPath);
 
          if (quantityImporterDTO.QuantitDTOs.Any(x => Equals(x.Path, dto.Path)))
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.DuplicatedImportedStartValue(dto.Path.PathAsString));
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
+               AppConstants.Exceptions.DuplicatedImportedStartValue(dto.Path.PathAsString));
       }
 
       public QuantityImporterDTO MapFrom(DataTable table, TImportTarget target)
@@ -161,7 +182,8 @@ namespace MoBi.Presentation.Mappers
                importerDTO.QuantitDTOs.Clear();
                break;
             }
-            rowIndex ++;
+
+            rowIndex++;
          }
 
          return importerDTO;

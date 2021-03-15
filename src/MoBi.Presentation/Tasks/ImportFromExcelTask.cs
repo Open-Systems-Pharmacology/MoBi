@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       /// <param name="filePath">The path to the excel file</param>
       /// <param name="sheetName">the sheet in the file to convert</param>
-      /// <param name="firstRowAsCaption">Wheter or not the first row in the sheet should be interpreted as a caption</param>
+      /// <param name="firstRowAsCaption">Whether or not the first row in the sheet should be interpreted as a caption</param>
       /// <returns>Data table corresponding to the file and sheet</returns>
       DataTable GetDataTables(string filePath, string sheetName, bool firstRowAsCaption);
 
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Tasks
       /// Gets all the DataTables from the Excel workbook at the specified filePath
       /// </summary>
       /// <param name="filePath">The path to the excel file</param>
-      /// <param name="firstRowAsCaption">Wheter or not the first row in the sheet should be interpreted as a caption</param>
+      /// <param name="firstRowAsCaption">Whether or not the first row in the sheet should be interpreted as a caption</param>
       /// <returns>The data tables corresponding to the file</returns>
       IReadOnlyList<DataTable> GetAllDataTables(string filePath, bool firstRowAsCaption);
    }
