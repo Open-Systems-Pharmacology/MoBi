@@ -1231,10 +1231,9 @@ namespace MoBi.Assets
             return $"Dimension '{name}' not available in DimensionFactory.";
          }
 
-         public static string CouldNotFindDimensionFromUnits(string columnValue)
-         {
-            return $"Could not find the dimension for this unit: {columnValue}";
-         }
+         public static string CouldNotFindDimensionFromUnits(string unit) => $"Could not find the dimension for this unit: {unit}";
+
+         public static string CouldNotFindDimension(string dimension) => $"Could not find the dimension: {dimension}";
 
          public static string CannotRemoveParameter(string parameterName, string containerName, string containerType)
          {
