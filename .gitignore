@@ -254,5 +254,6 @@ paket-files/
 setup/deploy
 setup/MoBi*
 setup/*.zip
+src/**/licenses.licx
 
 *.ncrunchproject

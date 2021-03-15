@@ -13,7 +13,6 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Extensions;
@@ -36,7 +35,9 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          tabParameters.Text = AppConstants.Captions.Parameters;
+         tabParameters.Image = ApplicationIcons.Parameters;
          tabProperties.Text = AppConstants.Captions.Properties;
+         tabProperties.Image = ApplicationIcons.Properties;
          layoutGroupAssignment.Text = AppConstants.Captions.Assignment;
          layoutGroupCondition.Text = AppConstants.Captions.Condition;
          layoutControlItemAddFormula.AdjustLongButtonSize();
@@ -49,7 +50,7 @@ namespace MoBi.UI.Views
          btnAddAssignment.Text = AppConstants.Captions.AddAssignment;
          btnAddAssignment.Image = ApplicationIcons.Add;
          btnAddFormula.Click += (o, e) => OnEvent(_presenter.AddConditionFormula);
-         btnAddAssignment.Click += (o, e) => OnEvent(_presenter.AddAssigment);
+         btnAddAssignment.Click += (o, e) => OnEvent(_presenter.AddAssignment);
          htmlEditor.Properties.ShowIcon = false;
       }
 
@@ -65,16 +66,21 @@ namespace MoBi.UI.Views
             .WithValues(dto => _presenter.AllFormulaNames())
             .OnValueUpdating += onConditionFormulaNameSet;
 
-         _gridBinder = new GridViewBinder<EventAssignmentBuilderDTO>(grdAssingments);
-         var selectButtonrepository = createSelectButtonRepository();
-         selectButtonrepository.ButtonClick += (o, e) => onSelectButtonClick(_gridBinder.FocusedElement);
+         _gridBinder = new GridViewBinder<EventAssignmentBuilderDTO>(gridViewAssignments);
+         var selectButtonRepository = createSelectButtonRepository();
+         selectButtonRepository.ButtonClick += (o, e) => onSelectButtonClick(_gridBinder.FocusedElement);
+
          _gridBinder.Bind(dto => dto.ChangedEntityPath)
             .WithCaption(AppConstants.Captions.ChangedEntityPath)
-            .WithRepository(d => selectButtonrepository);
+            .WithOnValueUpdating((dto, e) => OnEvent(() => _presenter.SetChangedEntityPath(e.NewValue, dto)))
+            .WithRepository(d => selectButtonRepository)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways);
+
          _gridBinder.Bind(dto => dto.NewFormula)
             .WithCaption(AppConstants.Captions.NewFormula)
-            .WithRepository(d => getFormualReposititory(grdAssingments))
-            .WithOnValueUpdating(onAssingmentFormulaSet);
+            .WithRepository(d => getFormulaRepository(gridViewAssignments))
+            .WithOnValueUpdating(onAssignmentFormulaSet);
+         
          _gridBinder.Bind(dto => dto.UseAsValue)
             .WithCaption(AppConstants.Captions.UseAsValue)
             .OnValueUpdating += onAssignmentPropertySet;
@@ -90,7 +96,7 @@ namespace MoBi.UI.Views
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
-      private void onAssingmentFormulaSet(EventAssignmentBuilderDTO eventAssignmentBuilder, PropertyValueSetEventArgs<FormulaBuilderDTO> e)
+      private void onAssignmentFormulaSet(EventAssignmentBuilderDTO eventAssignmentBuilder, PropertyValueSetEventArgs<FormulaBuilderDTO> e)
       {
          OnEvent(() => _presenter.SetFormulaFor(eventAssignmentBuilder, e.NewValue));
       }
@@ -107,7 +113,7 @@ namespace MoBi.UI.Views
 
       private RepositoryItemButtonEdit createSelectButtonRepository()
       {
-         var buttonRepository = new RepositoryItemButtonEdit {TextEditStyle = TextEditStyles.DisableTextEditor};
+         var buttonRepository = new RepositoryItemButtonEdit();
          buttonRepository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
          return buttonRepository;
       }
@@ -125,7 +131,7 @@ namespace MoBi.UI.Views
          var pressedButton = buttonPressedEventArgs.Button;
          if (pressedButton.Kind.Equals(ButtonPredefines.Plus))
          {
-            OnEvent(() => _presenter.AddAssigment());
+            OnEvent(() => _presenter.AddAssignment());
          }
          else
          {
@@ -138,7 +144,7 @@ namespace MoBi.UI.Views
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }
 
-      private RepositoryItem getFormualReposititory(GridView gridView)
+      private RepositoryItem getFormulaRepository(GridView gridView)
       {
          var repository = new UxRepositoryItemComboBox(gridView);
          repository.FillComboBoxRepositoryWith(_presenter.GetFormulas());
@@ -199,10 +205,7 @@ namespace MoBi.UI.Views
          tabParameters.Show();
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError;
 
       public void Activate()
       {

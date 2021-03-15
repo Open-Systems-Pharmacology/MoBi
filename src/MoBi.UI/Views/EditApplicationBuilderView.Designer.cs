@@ -94,7 +94,7 @@
          this.tabMolecules.Controls.Add(this.layoutControl);
          this.tabMolecules.Name = "tabMolecules";
          this.tabMolecules.Size = new System.Drawing.Size(573, 470);
-         this.tabMolecules.Text = "Administered Molecules";
+         this.tabMolecules.Text = "tabMolecules";
          // 
          // layoutControl
          // 
@@ -297,7 +297,7 @@
          // 
          this.tabParameter.Name = "tabParameter";
          this.tabParameter.Size = new System.Drawing.Size(573, 470);
-         this.tabParameter.Text = "Parameters";
+         this.tabParameter.Text = "tabParameter";
          // 
          // layoutItemMolecule
          // 

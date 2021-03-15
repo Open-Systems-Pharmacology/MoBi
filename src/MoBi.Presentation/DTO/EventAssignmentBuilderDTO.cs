@@ -26,7 +26,7 @@ namespace MoBi.Presentation.DTO
 
       public string ChangedEntityPath
       {
-         get { return _changedEntityPath; }
+         get => _changedEntityPath;
          set
          {
             _changedEntityPath = value;
