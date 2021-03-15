@@ -35,8 +35,10 @@ namespace MoBi.Presentation.Mapper
          BaseDimensionRepresentation baseRepresentation = new BaseDimensionRepresentation();
 
          _concentrationDimension = new Dimension(baseRepresentation, "Concentration", "mol");
-         _volumeDimension = new Dimension(baseRepresentation, "Volume", "ml");
-         _timeDimension = new Dimension(baseRepresentation, "Time", "s");
+         _volumeDimension = new Dimension(baseRepresentation, "Volume", "l");
+         _volumeDimension.AddUnit("ml", 0.001, 0);
+         _timeDimension = new Dimension(baseRepresentation, "Time", "min");
+         _timeDimension.AddUnit("s", 1 / 60.0, 0);
          _inversedTime = new Dimension(baseRepresentation, "Inversed time", "1/min");
          _becquerel = new Dimension(baseRepresentation, "Becquerel", "1/min");
 
