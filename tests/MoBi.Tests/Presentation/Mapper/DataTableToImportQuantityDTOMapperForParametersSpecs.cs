@@ -14,9 +14,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Mapper
 {
-   public abstract class
-      concern_for_DataTableToImportQuantityDTOMapperForParameters : ContextSpecificationForImportStartValues<
-         DataTableToImportQuantityDTOMapperForParameters>
+   public abstract class concern_for_DataTableToImportQuantityDTOMapperForParameters : ContextSpecificationForImportStartValues<DataTableToImportQuantityDTOMapperForParameters>
    {
       protected IParameterStartValuesBuildingBlock _startValuesBuildingBlock;
 
@@ -29,8 +27,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class
-      When_converting_and_validating_for_updates_where_the_dimensions_dont_match : concern_for_DataTableToImportQuantityDTOMapperForParameters
+   public class When_converting_and_validating_for_updates_where_the_dimensions_dont_match : concern_for_DataTableToImportQuantityDTOMapperForParameters
    {
       private DataTable _tables;
       private QuantityImporterDTO _result;
@@ -60,9 +57,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class
-      When_converting_and_validating_for_updates_where_the_dimensions_dont_match_but_share_a_common_unit :
-         concern_for_DataTableToImportQuantityDTOMapperForParameters
+   public class When_converting_and_validating_for_updates_where_the_dimensions_dont_match_but_share_a_common_unit : concern_for_DataTableToImportQuantityDTOMapperForParameters
    {
       private DataTable _tables;
       private QuantityImporterDTO _result;
@@ -129,7 +124,6 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-
    public class When_converting_and_validating_for_full_insert_parameters_with_dimension_column : concern_for_DataTableToImportQuantityDTOMapperForParameters
    {
       private QuantityImporterDTO _result;
@@ -155,7 +149,6 @@ namespace MoBi.Presentation.Mapper
          _result.QuantitDTOs[0].Dimension.Name.ShouldBeEqualTo("Becquerel");
          _result.QuantitDTOs[1].Dimension.Name.ShouldBeEqualTo("Inversed time");
       }
-    
    }
 
    public abstract class WhenConvertingDataTableToImportQuantityDTOThatDontConform : concern_for_DataTableToImportQuantityDTOMapperForParameters
@@ -211,8 +204,7 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class
-      When_converting_data_table_to_import_quantity_dto_with_fewer_than_three_columns : WhenConvertingDataTableToImportQuantityDTOThatDontConform
+   public class When_converting_data_table_to_import_quantity_dto_with_fewer_than_three_columns : WhenConvertingDataTableToImportQuantityDTOThatDontConform
    {
       protected override void Because()
       {
