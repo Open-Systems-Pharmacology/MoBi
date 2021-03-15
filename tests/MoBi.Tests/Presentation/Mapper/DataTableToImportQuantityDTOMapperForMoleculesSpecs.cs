@@ -22,6 +22,8 @@ namespace MoBi.Presentation.Mapper
       private IDimension _concentrationDimension;
       private IDimension _volumeDimension;
       private IDimension _timeDimension;
+      private IDimension _becquerel;
+      private IDimension _inversedTime;
 
       protected ObjectPath ContainerPathFromDataTableRow(DataTable tables, int row)
       {
@@ -30,21 +32,27 @@ namespace MoBi.Presentation.Mapper
 
       protected void CreateDimensionFactory()
       {
-         _concentrationDimension = new Dimension();
-         _concentrationDimension.AddUnit("mol", 1.0, 0);
+         BaseDimensionRepresentation baseRepresentation = new BaseDimensionRepresentation();
 
-         _volumeDimension = new Dimension();
-         _volumeDimension.AddUnit("ml", 0.001, 0);
+         _concentrationDimension = new Dimension(baseRepresentation, "Concentration", "mol");
+         _volumeDimension = new Dimension(baseRepresentation, "Volume", "ml");
+         _timeDimension = new Dimension(baseRepresentation, "Time", "s");
+         _inversedTime = new Dimension(baseRepresentation, "Inversed time", "1/min");
+         _becquerel = new Dimension(baseRepresentation, "Becquerel", "1/min");
 
-         _timeDimension = new Dimension();
-         _timeDimension.AddUnit("s", 1 / 60.0, 0);
          _dimensionFactory = A.Fake<IMoBiDimensionFactory>();
 
          A.CallTo(() => _dimensionFactory.DimensionForUnit("mol")).Returns(_concentrationDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("ml")).Returns(_volumeDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("s")).Returns(_timeDimension);
+         A.CallTo(() => _dimensionFactory.DimensionForUnit("1/min")).Returns(_inversedTime);
+         A.CallTo(() => _dimensionFactory.Has(_inversedTime.Name)).Returns(true);
+         A.CallTo(() => _dimensionFactory.Has(_becquerel.Name)).Returns(true);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("r/h")).Returns(null);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("")).Throws<Exception>();
+
+         A.CallTo(() => _dimensionFactory.Dimension(_becquerel.Name)).Returns(_becquerel);
+         A.CallTo(() => _dimensionFactory.Dimension(_inversedTime.Name)).Returns(_inversedTime);
 
       }
    }
