@@ -9,6 +9,6 @@ namespace MoBi.Presentation.Views
       void SetParametersView(IView subView);
       void Show(MoleculeBuilderDTO moleculeBuilder);
       void ShowParameters();
-      void UpdateStartAmountDisplay(string amoutOrConcentrationText);
+      void UpdateStartAmountDisplay(string amountOrConcentrationText);
    }
 }
