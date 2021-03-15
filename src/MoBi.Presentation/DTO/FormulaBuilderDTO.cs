@@ -15,7 +15,7 @@ namespace MoBi.Presentation.DTO
 
       public override string ToString()
       {
-         return FormulaString;
+         return $"{Name} ({FormulaString})";
       }
    }
 }
