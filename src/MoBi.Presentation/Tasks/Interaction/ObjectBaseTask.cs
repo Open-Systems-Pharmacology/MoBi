@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IObjectBaseTask
    {
-      IMoBiCommand Rename(IObjectBase objectBase, IEnumerable<string> allreadyNames, IBuildingBlock buildingBlock);
+      IMoBiCommand Rename(IObjectBase objectBase, IEnumerable<string> alreadyUsedNames, IBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Search for usages of <paramref name="oldName" /> in the project and asks the user if they should be renamed as well
@@ -40,23 +39,27 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IMoBiContext _context;
       private readonly ICheckNameVisitor _checkNamesVisitor;
       private readonly IMoBiApplicationController _applicationController;
-      private readonly IDialogCreator _dialogCreator;
 
-      public ObjectBaseTask(IObjectTypeResolver objectTypeResolver, IMoBiContext context, ICheckNameVisitor checkNamesVisitor, IMoBiApplicationController applicationController, IDialogCreator dialogCreator)
+      public ObjectBaseTask(IObjectTypeResolver objectTypeResolver, IMoBiContext context, ICheckNameVisitor checkNamesVisitor, IMoBiApplicationController applicationController)
       {
          _objectTypeResolver = objectTypeResolver;
          _context = context;
          _checkNamesVisitor = checkNamesVisitor;
          _applicationController = applicationController;
-         _dialogCreator = dialogCreator;
       }
 
-      public IMoBiCommand Rename(IObjectBase objectBase, IEnumerable<string> allreadyNames, IBuildingBlock buildingBlock)
+      public IMoBiCommand Rename(IObjectBase objectBase, IEnumerable<string> alreadyUsedNames, IBuildingBlock buildingBlock)
       {
-         var unallowedNames = new List<string>(allreadyNames);
+         var unallowedNames = new List<string>(alreadyUsedNames);
          unallowedNames.AddRange(AppConstants.UnallowedNames);
          var objectName = _objectTypeResolver.TypeFor(objectBase);
-         string newName = _dialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(objectBase.Name), AppConstants.Captions.NewName, objectBase.Name, unallowedNames);
+
+         string newName;
+         using (var renameObjectPresenter = _applicationController.Start<IRenameObjectPresenter>())
+         {
+            newName = renameObjectPresenter.NewNameFrom(objectBase, unallowedNames);
+         }
+
 
          if (string.IsNullOrEmpty(newName))
             return new MoBiEmptyCommand();
