@@ -13,7 +13,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -158,7 +157,7 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<XElement> retrieveElementsToDeserializeFromFile<T>(XElement xelRoot, string fileName)
       {
-         var elementName = _xmlSerializationService.ElementNameFor(typeof (T));
+         var elementName = _xmlSerializationService.ElementNameFor(typeof(T));
 
          //models only required when importing simulations. Otherwise, too many containers are loaded
          if (!loadingSimulation<T>())
@@ -181,11 +180,10 @@ namespace MoBi.Presentation.Tasks
          return xelRoot.DescendantsAndSelf(getElementNameFromBuildConfiguration(expectedElementName));
       }
 
-  
       private bool loadingSimulation<T>()
       {
-         return typeof (T).IsAnImplementationOf<IModelCoreSimulation>() ||
-                typeof (T).IsAnImplementationOf<SimulationTransfer>();
+         return typeof(T).IsAnImplementationOf<IModelCoreSimulation>() ||
+                typeof(T).IsAnImplementationOf<SimulationTransfer>();
       }
 
       private XElement removeModelFrom(XElement xelRoot)
