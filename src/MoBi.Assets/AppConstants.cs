@@ -1189,25 +1189,16 @@ namespace MoBi.Assets
             return $"Unable to set formula for {name}";
          }
 
-         public static string NameAlreadyUsed(string newName)
-         {
-            return $"Name '{newName}' already used";
-         }
+         public static string NameAlreadyUsed(string newName) => $"Name '{newName}' already used";
 
          public static string NoEditPresenterFoundFor(IObjectBase objectToEdit)
          {
             return $"No edit presenter found for {objectToEdit.Name}. {ShouldNeverHappen}";
          }
 
-         public static string FormulaInUse(IFormula formula)
-         {
-            return $"Unable to remove Formula '{formula.Name}' still in use.";
-         }
+         public static string FormulaInUse(IFormula formula) => $"Unable to remove Formula '{formula.Name}' still in use.";
 
-         public static string NotSupportedFormulaType(Type type)
-         {
-            return $"Formula type {type} is not supported";
-         }
+         public static string NotSupportedFormulaType(Type type) => $"Formula type {type} is not supported";
 
          public static string RemovedToPreventErrorDoubleImport<T>(IEnumerable<T> containerDoubleImported) where T : IObjectBase
          {
@@ -1221,15 +1212,9 @@ namespace MoBi.Assets
             return $"'{display}' are not imported to prevent errors, because it is already imported as child of another Container. \n You may add them in a second step if necessary";
          }
 
-         public static string BuildingBlockNotFoundFor(IObjectBase objectBase)
-         {
-            return $"BuildingBlock not found for {objectBase.Name}";
-         }
+         public static string BuildingBlockNotFoundFor(IObjectBase objectBase) => $"BuildingBlock not found for {objectBase.Name}";
 
-         public static string UnknownDimension(string name)
-         {
-            return $"Dimension '{name}' not available in DimensionFactory.";
-         }
+         public static string UnknownDimension(string name) => $"Dimension '{name}' not available in DimensionFactory.";
 
          public static string CouldNotFindDimensionFromUnits(string unit) => $"Could not find the dimension for this unit: {unit}";
 
@@ -1240,10 +1225,7 @@ namespace MoBi.Assets
             return string.Format("Parameter '{0}' is a mandatory parameter of {2} '{1}' and cannot be removed.", parameterName, containerName, containerType.ToLowerInvariant());
          }
 
-         public static string AliasNotUnique(string alias, string formulaName)
-         {
-            return $"Alias '{alias}' is not unique in formula '{formulaName}'.";
-         }
+         public static string AliasNotUnique(string alias, string formulaName) => $"Alias '{alias}' is not unique in formula '{formulaName}'.";
 
          public static string ImportedDimensionNotRecognized(string dimensionName, IEnumerable<string> unitNames)
          {
@@ -1254,6 +1236,8 @@ namespace MoBi.Assets
          {
             return $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
          }
+
+         public static string FileIsReadOnly(string fileFullPath) => $"Could not save the project\nThe file '{fileFullPath}' is read-only.";
       }
 
       public static class Captions
