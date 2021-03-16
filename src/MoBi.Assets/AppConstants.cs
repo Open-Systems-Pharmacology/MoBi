@@ -1237,7 +1237,7 @@ namespace MoBi.Assets
             return $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
          }
 
-         public static string FileIsReadOnly(string fileFullPath) => $"Could not save the project\nThe file '{fileFullPath}' is read-only.";
+         public static string FileIsReadOnly(string fileFullPath) => $"The project cannot be saved:\nThe file '{fileFullPath}' is read-only.";
       }
 
       public static class Captions
