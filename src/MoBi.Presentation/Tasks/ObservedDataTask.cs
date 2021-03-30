@@ -73,7 +73,6 @@ namespace MoBi.Presentation.Tasks
          var data = _dataImporter.ImportDataSets(createMetaData().ToList(), createColumnInfos().ToList(), createDataImportSettings());
          foreach (var repository in data.DataRepositories)
          {
-            adjustMolWeight(repository);
             AddObservedDataToProject(repository);
             adjustRepositoryPaths(repository);
          }
@@ -157,21 +156,8 @@ namespace MoBi.Presentation.Tasks
             Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
          };
          settings.AddNamingPatternMetaData(Constants.FILE);
+         settings.NameOfMetaDataHoldingMolecularWeightInformation = AppConstants.Parameters.MOLECULAR_WEIGHT;
          return settings;
-      }
-
-      private void adjustMolWeight(DataRepository observedData)
-      {
-         if (!observedData.ExtendedProperties.Contains(AppConstants.Parameters.MOLECULAR_WEIGHT))
-            return;
-
-         // molweight is provided in default unit should be saved in core unit
-         var molWeightExtendedProperty = observedData.ExtendedProperties[AppConstants.Parameters.MOLECULAR_WEIGHT].DowncastTo<IExtendedProperty<double>>();
-         var molWeight = _molWeightDimension.UnitValueToBaseUnitValue(_molWeightDimension.DefaultUnit, molWeightExtendedProperty.Value);
-         observedData.AllButBaseGrid().Each(x => x.DataInfo.MolWeight = molWeight);
-
-         //Remove Molweight extended properties
-         observedData.ExtendedProperties.Remove(AppConstants.Parameters.MOLECULAR_WEIGHT);
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -319,19 +305,19 @@ namespace MoBi.Presentation.Tasks
             MinValueAllowed = false
          };
 
-         yield return createMetaDataCategory<string>(ObservedData.ORGAN,
+         yield return createMetaDataCategory<string>(Constants.ObservedData.ORGAN,
             isMandatory: false,
             isListOfValuesFixed: true,
             fixedValuesRetriever: addPredefinedOrganValues,
             description: ObservedData.ObservedDataOrganDescription);
 
-         yield return createMetaDataCategory<string>(ObservedData.COMPARTMENT,
+         yield return createMetaDataCategory<string>(Constants.ObservedData.COMPARTMENT,
             isMandatory: false,
             isListOfValuesFixed: true,
             fixedValuesRetriever: addPredefinedCompartmentValues,
             description: ObservedData.ObservedDataCompartmentDescription);
 
-         yield return createMetaDataCategory<string>(ObservedData.MOLECULE,
+         yield return createMetaDataCategory<string>(Constants.ObservedData.MOLECULE,
             isMandatory: false, isListOfValuesFixed: true,
             fixedValuesRetriever: addPredefinedMoleculeNames,
             description: ObservedData.ObservedDataMoleculeDescription);
@@ -339,7 +325,7 @@ namespace MoBi.Presentation.Tasks
 
       private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
       {
-         addUndefinedValueTo(metaDataCategory);
+         metaDataCategory.ShouldListOfValuesBeIncluded = true;
          allMolecules().OrderBy(molecule => molecule.Name).Each(molecule => addInfoToCategory(metaDataCategory, molecule));
       }
 
@@ -420,13 +406,13 @@ namespace MoBi.Presentation.Tasks
 
       public IEnumerable<string> PredefinedValuesFor(string name)
       {
-         if (string.Equals(name, ObservedData.ORGAN))
+         if (string.Equals(name, Constants.ObservedData.ORGAN))
             return predefinedValuesForCategory(addPredefinedOrganValues);
 
-         if (string.Equals(name, ObservedData.COMPARTMENT))
+         if (string.Equals(name, Constants.ObservedData.COMPARTMENT))
             return predefinedValuesForCategory(addPredefinedCompartmentValues);
 
-         if (string.Equals(name, ObservedData.MOLECULE))
+         if (string.Equals(name, Constants.ObservedData.MOLECULE))
             return predefinedValuesForCategory(addPredefinedMoleculeNames);
 
          return Enumerable.Empty<string>();
