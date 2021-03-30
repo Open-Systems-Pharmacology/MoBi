@@ -1059,6 +1059,7 @@ namespace MoBi.Assets
          public static readonly string ModelParts = "Model Parts";
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
+         public static readonly string ReloadAll = "Reload all under same settings...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 

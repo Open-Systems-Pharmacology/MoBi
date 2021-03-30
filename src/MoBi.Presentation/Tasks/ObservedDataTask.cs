@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Assets;
+using OSPSuite.Core.Import;
 using ColumnInfo = OSPSuite.Infrastructure.Import.Core.ColumnInfo;
 using Command = OSPSuite.Assets.Command;
 using CoreConstants = OSPSuite.Core.Domain.Constants;
@@ -38,6 +39,8 @@ namespace MoBi.Presentation.Tasks
       ///    Removes selected <paramref name="resultsToRemove" /> from their respective simulations
       /// </summary>
       void RemoveResultsFromSimulations(IReadOnlyList<DataRepository> resultsToRemove);
+
+      void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile);
    }
 
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
@@ -49,6 +52,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IDimension _molWeightDimension;
       private readonly IDialogCreator _mobiDialogCreator;
 
+
       public ObservedDataTask(
          IDataImporter dataImporter, 
          IDimensionFactory dimensionFactory, 
@@ -56,7 +60,7 @@ namespace MoBi.Presentation.Tasks
          IDialogCreator dialogCreator, 
          IInteractionTask interactionTask, 
          IDataRepositoryExportTask dataRepositoryTask, 
-         IContainerTask containerTask, 
+         IContainerTask containerTask,
          IObjectTypeResolver objectTypeResolver) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _dataImporter = dataImporter;
@@ -76,6 +80,7 @@ namespace MoBi.Presentation.Tasks
             AddObservedDataToProject(repository);
             adjustRepositoryPaths(repository);
          }
+         AddImporterConfigurationToProject(data.Configuration);
       }
 
       private void adjustRepositoryPaths(DataRepository repository)
@@ -202,6 +207,72 @@ namespace MoBi.Presentation.Tasks
          });
 
          _context.AddToHistory(macroCommand.Run(_context));
+      }
+
+      public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
+      {
+
+         var importedObservedData = getObservedDataFromImporter(configuration);
+         var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());
+
+         foreach (var dataSet in reloadDataSets.NewDataSets)
+         {
+            AddObservedDataToProject(dataSet);
+            adjustRepositoryPaths(dataSet);
+         }
+
+         foreach (var dataSet in reloadDataSets.DataSetsToBeDeleted.ToArray()) //toDo it should be checked if to array solves the deleting problem
+         {
+            Delete(dataSet);
+         }
+
+         foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
+         {
+            //TODO this here should be tested
+            var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
+
+            foreach (var column in dataSet.Columns)
+            {
+               var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
+               {
+                  QuantityInfo = column.QuantityInfo,
+                  DataInfo = column.DataInfo,
+                  IsInternal = column.IsInternal,
+                  Values = column.Values
+               };
+
+               if (column.IsBaseGrid())
+               {
+                  existingDataSet.BaseGrid.Values = datacolumn.Values;
+               }
+               else
+               {
+                  var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
+                  if (existingColumn == null)
+                     existingDataSet.Add(column);
+                  else
+                     existingColumn.Values = column.Values;
+               }
+            }
+         }
+      }
+
+      private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
+      {
+         return (from dataRepo in dataRepositoryList let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString()) where result select dataRepo).FirstOrDefault();
+      }
+
+      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration)
+      {
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
+         var dataImporterSettings = createDataImportSettings();
+
+         //do we really need this in MoBi????
+         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
+         var colInfos = createColumnInfos().ToList();
+
+         var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, (IReadOnlyList<MetaDataCategory>)metaDataCategories, colInfos, dataImporterSettings);
+         return importedObservedData;
       }
 
       private ICommand removeResultFromSimulationCommand(DataRepository dataRepository)
