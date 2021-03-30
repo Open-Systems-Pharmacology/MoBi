@@ -56,7 +56,7 @@ namespace MoBi.Core
          {
             try
             {
-              return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.PKSIM_REG_PATH}{Version}", Constants.RegistryPaths.INSTALL_PATH, null);
+              return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.PKSIM_REG_PATH}{Major}", Constants.RegistryPaths.INSTALL_PATH, null);
             }
             catch (Exception)
             {
