@@ -18,7 +18,7 @@ namespace MoBi.Core.Domain.Services
 
       public string GetTimeName()
       {
-         return AppConstants.TimeColumName;
+         return AppConstants.TimeColumnName;
       }
 
       public string GetNewRepositoryName()

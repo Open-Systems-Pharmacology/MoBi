@@ -31,9 +31,9 @@
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.cmbSpatialStructure = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cmbSpatialStructure = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlItemSpatialStructure = new DevExpress.XtraLayout.LayoutControlItem();
-         this.cmbMolecules = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cmbMolecules = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlItemMolecules = new DevExpress.XtraLayout.LayoutControlItem();
          this.txtName = new DevExpress.XtraEditors.TextEdit();
          this.layoutControlItemName = new DevExpress.XtraLayout.LayoutControlItem();
@@ -163,8 +163,8 @@
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.TextEdit txtName;
-      private DevExpress.XtraEditors.ComboBoxEdit cmbMolecules;
-      private DevExpress.XtraEditors.ComboBoxEdit cmbSpatialStructure;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cmbMolecules;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cmbSpatialStructure;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemSpatialStructure;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemMolecules;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemName;

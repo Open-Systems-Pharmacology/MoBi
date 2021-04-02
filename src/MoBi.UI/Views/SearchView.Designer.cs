@@ -36,7 +36,7 @@ namespace MoBi.UI.Views
          this.chkCaseSensitive = new UxCheckEdit();
          this.chkRegExSearch = new UxCheckEdit();
          this.ckWholeName = new UxCheckEdit();
-         this.cbScope = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbScope = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.txtSearchExpression = new DevExpress.XtraEditors.ButtonEdit();
          this.grdResultControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridSearchResult = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -260,7 +260,7 @@ namespace MoBi.UI.Views
       #endregion
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
-      private DevExpress.XtraEditors.ComboBoxEdit cbScope;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbScope;
       private DevExpress.XtraEditors.ButtonEdit txtSearchExpression;
       private DevExpress.XtraGrid.GridControl grdResultControl;
       private DevExpress.XtraGrid.Views.Grid.GridView gridSearchResult;

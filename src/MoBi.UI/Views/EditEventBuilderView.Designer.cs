@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
          this.btnAddAssignment = new DevExpress.XtraEditors.SimpleButton();
          this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
          this.btnAddFormula = new DevExpress.XtraEditors.SimpleButton();
-         this.cmbCondition = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cmbCondition = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.chkOneTime = new OSPSuite.UI.Controls.UxCheckEdit();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
@@ -418,7 +418,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraEditors.SimpleButton btnAddAssignment;
       private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
       private DevExpress.XtraEditors.SimpleButton btnAddFormula;
-      private DevExpress.XtraEditors.ComboBoxEdit cmbCondition;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cmbCondition;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemCondition;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemAddFormula;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;

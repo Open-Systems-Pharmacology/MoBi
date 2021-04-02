@@ -38,7 +38,7 @@
          this.gridControlMolecules = new OSPSuite.UI.Controls.UxGridControl();
          this.grdMoleculeBuilder = new MoBi.UI.Views.UxGridView();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
-         this.cbApplicatedMoleculeName = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbApplicatedMoleculeName = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.barManager = new DevExpress.XtraBars.BarManager(this.components);
          this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
          this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
@@ -356,7 +356,7 @@
       private DevExpress.XtraBars.BarDockControl barDockControlTop;
       private DevExpress.XtraBars.BarManager barManager;
       private DevExpress.XtraEditors.ButtonEdit btName;
-      private DevExpress.XtraEditors.ComboBoxEdit cbApplicatedMoleculeName;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbApplicatedMoleculeName;
       private DevExpress.XtraEditors.MemoExEdit htmlEditor;
       private DevExpress.XtraGrid.GridControl gridControlMolecules;
       private UxGridView grdMoleculeBuilder;

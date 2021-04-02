@@ -32,7 +32,7 @@ namespace MoBi.UI.Views
         private void InitializeComponent()
         {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbBuildingBlocks = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbBuildingBlocks = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.btnNew = new DevExpress.XtraEditors.SimpleButton();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemNew = new DevExpress.XtraLayout.LayoutControlItem();
@@ -149,7 +149,7 @@ namespace MoBi.UI.Views
         private DevExpress.XtraEditors.SimpleButton btnNew;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemNew;
-        private DevExpress.XtraEditors.ComboBoxEdit cbBuildingBlocks;
+        private OSPSuite.UI.Controls.UxComboBoxEdit cbBuildingBlocks;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemComboBox;
         private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
 
