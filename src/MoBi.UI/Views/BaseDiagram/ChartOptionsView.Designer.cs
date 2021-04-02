@@ -36,8 +36,8 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.diagramColorEdit = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.chartBackgroundColorEdit = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
-         this.cbPreferredChartYScaling = new DevExpress.XtraEditors.ComboBoxEdit();
-         this.cbeDefaultLayoutName = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbPreferredChartYScaling = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbeDefaultLayoutName = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.chkSimulationInCurveName = new OSPSuite.UI.Controls.UxCheckEdit();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -261,10 +261,10 @@ namespace MoBi.UI.Views.BaseDiagram
 
       #endregion
 
-      private DevExpress.XtraEditors.ComboBoxEdit cbeDefaultLayoutName;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbeDefaultLayoutName;
       private System.Windows.Forms.Timer timer1;
       private UxLayoutControl layoutControl;
-      private DevExpress.XtraEditors.ComboBoxEdit cbPreferredChartYScaling;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbPreferredChartYScaling;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
