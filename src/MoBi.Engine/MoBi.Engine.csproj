@@ -32,8 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="10.0.119" />
-    <PackageReference Include="OSPSuite.Assets" Version="10.0.119" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.158-lfsdwrxa" />
+    <PackageReference Include="OSPSuite.Assets" Version="10.0.158-lfsdwrxa" />
   </ItemGroup>
 
   <ItemGroup>

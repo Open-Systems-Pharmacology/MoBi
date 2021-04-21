@@ -26,12 +26,12 @@
 
   <ItemGroup>
     <PackageReference Include="Northwoods.GoWin" Version="5.2.0" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.119" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.158-lfsdwrxa" />
     <PackageReference Include="OSPSuite.Presentation.Importer" Version="10.0.92" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="10.0.119" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="10.0.158-lfsdwrxa" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.119" />  
+    <PackageReference Include="OSPSuite.Core" Version="10.0.158-lfsdwrxa" />  
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
