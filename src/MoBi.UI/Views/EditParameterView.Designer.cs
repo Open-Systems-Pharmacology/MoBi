@@ -37,15 +37,15 @@ namespace MoBi.UI.Views
          this.layoutControlProperties = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelOrigiView = new DevExpress.XtraEditors.PanelControl();
          this.chkIsFavorite = new DevExpress.XtraEditors.CheckEdit();
-         this.cbGroup = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbGroup = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.chkCanBeVariedInPopulation = new OSPSuite.UI.Controls.UxCheckEdit();
          this.chkPersistable = new OSPSuite.UI.Controls.UxCheckEdit();
          this.panelRHSFormula = new DevExpress.XtraEditors.PanelControl();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.panelFormula = new DevExpress.XtraEditors.PanelControl();
-         this.cbDimension = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbDimension = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.chkAdvancedParameter = new OSPSuite.UI.Controls.UxCheckEdit();
-         this.cbParameterBuildMode = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbParameterBuildMode = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
          this.chkHasRHS = new OSPSuite.UI.Controls.UxCheckEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -530,8 +530,8 @@ namespace MoBi.UI.Views
       private DevExpress.XtraEditors.PanelControl panelRHSFormula;
       private DevExpress.XtraEditors.MemoExEdit htmlEditor;
       private DevExpress.XtraEditors.PanelControl panelFormula;
-      private DevExpress.XtraEditors.ComboBoxEdit cbDimension;
-      private DevExpress.XtraEditors.ComboBoxEdit cbParameterBuildMode;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbDimension;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbParameterBuildMode;
       private DevExpress.XtraEditors.ButtonEdit btName;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDimension;
@@ -548,7 +548,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemPersistable;
       private DevExpress.XtraTab.XtraTabPage tabTags;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemCanBeVariedInPopulation;
-      private DevExpress.XtraEditors.ComboBoxEdit cbGroup;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemGroup;
       private DevExpress.XtraEditors.CheckEdit chkIsFavorite;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemIsFavorite;

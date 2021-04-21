@@ -32,10 +32,10 @@
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.tbPercentile = new DevExpress.XtraEditors.TextEdit();
-         this.cbFormulaType = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbFormulaType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
-         this.cbDimension = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbDimension = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemDimension = new DevExpress.XtraLayout.LayoutControlItem();
@@ -420,10 +420,10 @@
       private ValueEdit veMinimum;
       private ValueEdit veMean;
       private DevExpress.XtraEditors.ButtonEdit btName;
-      private DevExpress.XtraEditors.ComboBoxEdit cbDimension;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbDimension;
       private DevExpress.XtraEditors.MemoExEdit htmlEditor;
       private ValueEdit veValue;
-      private DevExpress.XtraEditors.ComboBoxEdit cbFormulaType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbFormulaType;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemName;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDimension;

@@ -33,7 +33,7 @@ namespace MoBi.UI.Views
       {
          this.fProperties = new DevExpress.XtraEditors.Repository.RepositoryItem();
          this.tbValue = new DevExpress.XtraEditors.TextEdit();
-         this.cbUnit = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbUnit = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.warningProvider = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.fProperties)).BeginInit();

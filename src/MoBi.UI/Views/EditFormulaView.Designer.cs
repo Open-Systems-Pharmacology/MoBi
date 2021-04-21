@@ -31,11 +31,11 @@
       {
          this.pnlEdit = new DevExpress.XtraEditors.PanelControl();
          this.splitFormula = new DevExpress.XtraEditors.SplitContainerControl();
-         this.cbExplicitFormulaName = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbExplicitFormulaName = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnCloneFormula = new DevExpress.XtraEditors.SimpleButton();
          this.btnAddFormula = new DevExpress.XtraEditors.SimpleButton();
-         this.cbFormulaType = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbFormulaType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemFormulaView = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemExplicitFormulaName = new DevExpress.XtraLayout.LayoutControlItem();
@@ -228,8 +228,8 @@
       #endregion
 
       private DevExpress.XtraEditors.PanelControl pnlEdit;
-      private DevExpress.XtraEditors.ComboBoxEdit cbExplicitFormulaName;
-      private DevExpress.XtraEditors.ComboBoxEdit cbFormulaType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbExplicitFormulaName;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbFormulaType;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemFormulaView;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemExplicitFormulaName;

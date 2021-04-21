@@ -34,10 +34,10 @@ namespace MoBi.UI.Views
          this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelTags = new DevExpress.XtraEditors.PanelControl();
-         this.cbContainerMode = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbContainerMode = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
-         this.cbContainerType = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbContainerType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemContainerType = new DevExpress.XtraLayout.LayoutControlItem();
@@ -257,7 +257,7 @@ namespace MoBi.UI.Views
 
       protected DevExpress.XtraTab.XtraTabPage tabProperties;
       protected DevExpress.XtraTab.XtraTabControl tabPagesControl;
-      private DevExpress.XtraEditors.ComboBoxEdit cbContainerType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbContainerType;
       protected DevExpress.XtraTab.XtraTabPage tabParameters;
       private ButtonEdit btName;
       private MemoExEdit htmlEditor;

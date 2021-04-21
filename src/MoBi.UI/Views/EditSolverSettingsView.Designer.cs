@@ -31,7 +31,7 @@
       private void InitializeComponent()
       {
          this.components = new System.ComponentModel.Container();
-         this.cbSolver = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbSolver = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
@@ -169,7 +169,7 @@
 
       #endregion
 
-      private DevExpress.XtraEditors.ComboBoxEdit cbSolver;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbSolver;
       private DevExpress.XtraGrid.GridControl gridControl;
       private MoBi.UI.Views.UxGridView gridView;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
