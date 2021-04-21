@@ -418,7 +418,7 @@ namespace MoBi.Presentation.Tasks
          allOrgans().OrderBy(org => org.Name).Each(organ => addInfoToCategory(metaDataCategory, organ));
       }
 
-      private void addNamingPatterns(DataImporterSettings dataImporterSettings)
+      private void addNamingPatterns(DimensionInfo.DataImporterSettings dataImporterSettings)
       {
          dataImporterSettings.AddNamingPatternMetaData(
             Constants.FILE
