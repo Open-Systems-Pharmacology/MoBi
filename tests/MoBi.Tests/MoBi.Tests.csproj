@@ -49,10 +49,10 @@
     <PackageReference Include="OSPSuite.Infrastructure" Version="10.0.159-unroltob" />
     <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="10.0.159-unroltob" />
     <PackageReference Include="OSPSuite.UI" Version="10.0.159-unroltob" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.122" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="10.0.122" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="10.0.122" />
-    <PackageReference Include="OSPSuite.UI" Version="10.0.122" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.159" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="10.0.159" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="10.0.159" />
+    <PackageReference Include="OSPSuite.UI" Version="10.0.159" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.50" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.42" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
