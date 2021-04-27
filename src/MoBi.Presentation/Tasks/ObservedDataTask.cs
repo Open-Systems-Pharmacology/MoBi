@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       void RemoveResultsFromSimulations(IReadOnlyList<DataRepository> resultsToRemove);
 
-      void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile);
+      void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IReadOnlyList<DataRepository> observedDataFromSameFile);
    }
 
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
@@ -75,6 +75,7 @@ namespace MoBi.Presentation.Tasks
 
          foreach (var repository in data.DataRepositories)
          {
+            adjustMolWeightUnit(repository);
             AddObservedDataToProject(repository);
             adjustRepositoryPaths(repository);
          }
@@ -163,6 +164,20 @@ namespace MoBi.Presentation.Tasks
          return settings;
       }
 
+      private void adjustMolWeightUnit(DataRepository observedData)
+      {
+         if (!observedData.ExtendedProperties.Contains(AppConstants.Parameters.MOLECULAR_WEIGHT))
+            return;
+
+         // molweight is provided in default unit should be saved in core unit
+         var molWeightExtendedProperty = observedData.ExtendedProperties[AppConstants.Parameters.MOLECULAR_WEIGHT].DowncastTo<IExtendedProperty<double>>();
+         var molWeight = _molWeightDimension.UnitValueToBaseUnitValue(_molWeightDimension.DefaultUnit, molWeightExtendedProperty.Value);
+         observedData.AllButBaseGrid().Each(x => x.DataInfo.MolWeight = molWeight);
+
+         //Remove Molweight extended properties
+         observedData.ExtendedProperties.Remove(AppConstants.Parameters.MOLECULAR_WEIGHT);
+      }
+
       public override void Rename(DataRepository dataRepository)
       {
          var newName = _mobiDialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(dataRepository.Name),
@@ -205,7 +220,7 @@ namespace MoBi.Presentation.Tasks
       }
 
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration,
-         IEnumerable<DataRepository> observedDataFromSameFile)
+         IReadOnlyList<DataRepository> observedDataFromSameFile)
       {
          var importedObservedData = getObservedDataFromImporter(configuration);
          var reloadDataSets =
