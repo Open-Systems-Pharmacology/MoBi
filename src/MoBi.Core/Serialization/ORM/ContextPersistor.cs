@@ -114,7 +114,7 @@ namespace MoBi.Core.Serialization.ORM
       private void verifyFileNotReadOnly(string projectFilePath)
       {
          var fileInfo = new FileInfo(projectFilePath);
-         if (!fileInfo.IsReadOnly)
+         if (!fileInfo.Exists || !fileInfo.IsReadOnly)
             return;
 
          throw new OSPSuiteException(AppConstants.Exceptions.FileIsReadOnly(projectFilePath));
