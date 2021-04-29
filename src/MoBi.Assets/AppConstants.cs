@@ -1059,6 +1059,7 @@ namespace MoBi.Assets
          public static readonly string ModelParts = "Model Parts";
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
+         public static readonly string ReloadAll = "Reload all under same settings...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1900,6 +1901,8 @@ namespace MoBi.Assets
       public static readonly string BrowseForFile = "Select File";
       public static readonly string Undefined = "Undefined";
       public static readonly string PleaseSelectCurveInChartEditor = "Please select a curve from the chart editor to be displayed in the chart";
+      public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN};
+
 
       public static string PathType(string pathTypeAsString)
       {
