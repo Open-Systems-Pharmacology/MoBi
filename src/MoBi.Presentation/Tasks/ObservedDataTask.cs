@@ -75,7 +75,6 @@ namespace MoBi.Presentation.Tasks
 
          foreach (var repository in data.DataRepositories)
          {
-            adjustMolWeightUnit(repository);
             AddObservedDataToProject(repository);
             adjustRepositoryPaths(repository);
          }
@@ -162,20 +161,6 @@ namespace MoBi.Presentation.Tasks
          addNamingPatterns(settings);
          settings.NameOfMetaDataHoldingMolecularWeightInformation = AppConstants.Parameters.MOLECULAR_WEIGHT;
          return settings;
-      }
-
-      private void adjustMolWeightUnit(DataRepository observedData)
-      {
-         if (!observedData.ExtendedProperties.Contains(AppConstants.Parameters.MOLECULAR_WEIGHT))
-            return;
-
-         // molweight is provided in default unit should be saved in core unit
-         var molWeightExtendedProperty = observedData.ExtendedProperties[AppConstants.Parameters.MOLECULAR_WEIGHT].DowncastTo<IExtendedProperty<double>>();
-         var molWeight = _molWeightDimension.UnitValueToBaseUnitValue(_molWeightDimension.DefaultUnit, molWeightExtendedProperty.Value);
-         observedData.AllButBaseGrid().Each(x => x.DataInfo.MolWeight = molWeight);
-
-         //Remove Molweight extended properties
-         observedData.ExtendedProperties.Remove(AppConstants.Parameters.MOLECULAR_WEIGHT);
       }
 
       public override void Rename(DataRepository dataRepository)
