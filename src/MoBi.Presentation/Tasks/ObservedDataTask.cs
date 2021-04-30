@@ -175,6 +175,10 @@ namespace MoBi.Presentation.Tasks
          _context.AddToHistory(new RenameObservedDataCommand(dataRepository, newName).Run(_context));
       }
 
+      public override void UpdateMolWeight(DataRepository observedData)
+      {
+      }
+
       private IMoBiSimulation getSimulationWithHistoricResult(DataRepository repository)
       {
          var simulations = _context.CurrentProject.Simulations;
