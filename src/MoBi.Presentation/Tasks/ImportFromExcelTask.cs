@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
-using MoBi.Presentation.Extensions;
-using SmartXLS;
 using OSPSuite.Utility.Exceptions;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using MoBi.Presentation.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -56,14 +59,16 @@ namespace MoBi.Presentation.Tasks
          if (string.IsNullOrEmpty(filename))
             yield break;
 
-         using (var workbook = new WorkBook())
+         if (!File.Exists(filename))
+            yield break;
+
+         using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
          {
-            workbook.ReadExcelFile(filename);
-            for (var i = 0; i < workbook.NumSheets; i++)
+            var workbook = WorkbookFactory.Create(fs);
+            for (var i = 0; i < workbook.NumberOfSheets; i++)
             {
-               workbook.Sheet = i;
-               if (!excludeEmptySheets || !workbook.IsCurrentSheetEmpty())
-                  yield return workbook.getSheetName(i);
+               if (!excludeEmptySheets || (workbook.GetSheetAt(i).LastRowNum >= 0))
+                  yield return workbook.GetSheetName(i);
             }
          }
       }
@@ -92,15 +97,13 @@ namespace MoBi.Presentation.Tasks
 
       private static IEnumerable<DataTable> dataTables(string fileName, string sheetName, bool firstRowAsCaption)
       {
-         using (var workbook = new WorkBook())
+         using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
          {
-            workbook.ReadExcelFile(fileName);
-            for (var i = 0; i < workbook.NumSheets; i++)
+            var workbook = WorkbookFactory.Create(fs);
+            for (var i = 0; i < workbook.NumberOfSheets; i++)
             {
-               if (!String.IsNullOrEmpty(sheetName) && !workbook.getSheetName(i).Equals(sheetName)) continue;
-               workbook.Sheet = i;
-               //+1 because lastrow starts counting from 0, but export counts from 1
-               yield return workbook.ExportDataTable(0, 0, workbook.LastRow + 1, workbook.LastCol + 1, firstRowAsCaption);
+               if (!string.IsNullOrEmpty(sheetName) && !workbook.GetSheetAt(i).SheetName.Equals(sheetName)) continue;
+               yield return workbook.GetSheetAt(i).ExportDataTable(sheetName, firstRowAsCaption);
             }
          }
       }
