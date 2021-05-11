@@ -34,8 +34,7 @@ namespace MoBi.Core.Service
          A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<IMoleculeStartValue>>.Ignored, A<IEnumerable<IMoleculeBuilder>>.Ignored)).Returns(new DataTable { TableName = "molecules" });
       }
    }
-
-   [Ignore("ISSUE WITH SMARTXLS")]
+   
    public class When_mapping_model_parts : concern_for_ModelPartsToExcelExporterTask
    {
       private MoBiReactionBuildingBlock _moBiReactionBuildingBlock;

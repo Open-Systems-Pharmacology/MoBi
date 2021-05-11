@@ -67,7 +67,7 @@ namespace MoBi.Presentation.Tasks
             var workbook = WorkbookFactory.Create(fs);
             for (var i = 0; i < workbook.NumberOfSheets; i++)
             {
-               if (!excludeEmptySheets || (workbook.GetSheetAt(i).LastRowNum >= 0))
+               if (!excludeEmptySheets || !workbook.GetSheetAt(i).IsCurrentSheetEmpty())
                   yield return workbook.GetSheetName(i);
             }
          }

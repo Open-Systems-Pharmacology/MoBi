@@ -54,5 +54,10 @@ namespace MoBi.Presentation.Extensions
 
          return data;
       }
+      public static bool IsCurrentSheetEmpty(this ISheet sheet)
+      {
+
+         return sheet.LastRowNum == -1 || sheet.GetRow(sheet.LastRowNum)?.GetCell(0) == null;
+      }
    }
 }
