@@ -78,6 +78,7 @@ namespace MoBi.Presentation.Tasks
             AddObservedDataToProject(repository);
             adjustRepositoryPaths(repository);
          }
+
          AddImporterConfigurationToProject(data.Configuration);
       }
 

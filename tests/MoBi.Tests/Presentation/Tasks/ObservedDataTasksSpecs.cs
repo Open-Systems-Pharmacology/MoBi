@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Import;
 using OSPSuite.Infrastructure.Import.Services;
 
 namespace MoBi.Presentation.Tasks
@@ -156,15 +157,20 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   [Ignore("NEW IMPORTER ISSUE")]
    public class When_addding_data_from_Excel : concern_for_ObservedDataTask
    {
       private ObservedDataAddedEvent _event;
       private IReadOnlyList<ColumnInfo> _columnsInfo;
+      private OSPSuite.Core.Import.ImporterConfiguration _importerConfiguration;
 
       protected override void Context()
       {
          base.Context();
+
+         _importerConfiguration = A.Fake<OSPSuite.Core.Import.ImporterConfiguration>();
+         _importerConfiguration.Id = "Id";
+         _importerConfiguration.AddParameter(A.Fake<DataFormatParameter>());
+
          A.CallTo(() => _dimensionFactory.DimensionsSortedByName).Returns(new []
          {
             DimensionFactoryForSpecs.MassDimension,
@@ -173,11 +179,6 @@ namespace MoBi.Presentation.Tasks
          });
          A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.TIME)).Returns(DimensionFactoryForSpecs.TimeDimension);
 
-         A.CallTo(_dataImporter)
-            .WithReturnType<IEnumerable<DataRepository>>()
-            .Invokes(x=>_columnsInfo = x.GetArgument<IReadOnlyList<ColumnInfo>>(1))
-            .Returns(new[] {_dataRepository});
-
          A.CallTo(() => _context.PublishEvent(A<ObservedDataAddedEvent>._)).Invokes(call => _event = call.GetArgument<ObservedDataAddedEvent>(0));
          _dataRepository.Name = "A";
          _dataRepository.BaseGrid.Name = "B";
@@ -185,6 +186,10 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _containerTask.CreateUniqueName(A<IEnumerable<IWithName>>._, "A", true)).Returns("A");
 
          _dataRepository.Add(new DataColumn("name", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
+
+         A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored ))
+            .Invokes(x => _columnsInfo = x.GetArgument<IReadOnlyList<ColumnInfo>>(1))
+            .Returns((new[] { _dataRepository }, _importerConfiguration));
       }
 
       protected override void Because()

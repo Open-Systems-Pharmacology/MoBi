@@ -6,7 +6,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Tasks;
+using OSPSuite.Infrastructure.Import.Services;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
