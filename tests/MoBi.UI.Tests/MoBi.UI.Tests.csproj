@@ -19,6 +19,8 @@
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
     <PackageReference Include="OSPSuite.Core" Version="10.0.201" />
     <PackageReference Include="OSPSuite.UI" Version="10.0.201" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.218" />
+    <PackageReference Include="OSPSuite.UI" Version="10.0.218" />
    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\MoBi.Core\MoBi.Core.csproj" />
