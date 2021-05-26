@@ -396,7 +396,8 @@ namespace MoBi.Presentation.Tasks
          yield return createMetaDataCategory<string>(Constants.ObservedData.MOLECULE,
             isMandatory: false, isListOfValuesFixed: true,
             fixedValuesRetriever: addPredefinedMoleculeNames,
-            description: ObservedData.ObservedDataMoleculeDescription);
+            description: ObservedData.ObservedDataMoleculeDescription,
+            allowsManualInput: true);
       }
 
       private void addPredefinedMoleculeNames(DimensionInfo.MetaDataCategory metaDataCategory)
@@ -495,7 +496,7 @@ namespace MoBi.Presentation.Tasks
             metaDataCategory.ListOfImages.Add(container.Name, icon.IconName);
       }
 
-      private DimensionInfo.MetaDataCategory createMetaDataCategory<T>(string categoryName, bool isMandatory = false, bool isListOfValuesFixed = false, Action<DimensionInfo.MetaDataCategory> fixedValuesRetriever = null, string description = null)
+      private DimensionInfo.MetaDataCategory createMetaDataCategory<T>(string categoryName, bool isMandatory = false, bool isListOfValuesFixed = false, Action<DimensionInfo.MetaDataCategory> fixedValuesRetriever = null, string description = null, bool allowsManualInput = false)
       {
          var category = new DimensionInfo.MetaDataCategory
          {
@@ -504,7 +505,8 @@ namespace MoBi.Presentation.Tasks
             Description = description ?? categoryName,
             MetaDataType = typeof(T),
             IsMandatory = isMandatory,
-            IsListOfValuesFixed = isListOfValuesFixed
+            IsListOfValuesFixed = isListOfValuesFixed,
+            AllowsManualInput = allowsManualInput
          };
 
          fixedValuesRetriever?.Invoke(category);
