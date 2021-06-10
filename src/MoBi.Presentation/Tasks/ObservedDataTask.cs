@@ -18,9 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ColumnInfo = OSPSuite.Infrastructure.Import.Core.ColumnInfo;
 using OSPSuite.Infrastructure.Import.Services;
+using static OSPSuite.Core.Domain.Constants;
 using Command = OSPSuite.Assets.Command;
-using CoreConstants = OSPSuite.Core.Domain.Constants;
 using DimensionInfo = OSPSuite.Infrastructure.Import.Core;
+using ObservedData = OSPSuite.Assets.ObservedData;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -98,7 +99,7 @@ namespace MoBi.Presentation.Tasks
 
       public void LoadObservedDataIntoProject()
       {
-         string filename = _interactionTask.AskForFileToOpen(AppConstants.Dialog.Load(ObjectTypes.ObservedData), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
+         string filename = _interactionTask.AskForFileToOpen(AppConstants.Dialog.Load(ObjectTypes.ObservedData), Filter.PKML_FILE_FILTER, DirectoryKey.MODEL_PART);
          if (filename.IsNullOrEmpty())
             return;
 
@@ -308,64 +309,54 @@ namespace MoBi.Presentation.Tasks
          return new RemoveHistoricResultFromSimulationCommand(parentSimulation, repository);
       }
 
-      private IEnumerable<DimensionInfo.ColumnInfo> createColumnInfos()
+      private IEnumerable<ColumnInfo> createColumnInfos()
       {
          var timeDimension = _dimensionFactory.Dimension(Constants.Dimension.TIME);
-         var timeColumn = new DimensionInfo.ColumnInfo
+         var timeColumn = new ColumnInfo
          {
             DefaultDimension = timeDimension,
             Name = "Time",
-            Description = "Time",
             DisplayName = "Time",
             IsMandatory = true,
-            NullValuesHandling = DimensionInfo.NullValuesHandlingType.DeleteRow,
          };
 
-         timeColumn.DimensionInfos.Add(new DimensionInfo.DimensionInfo { Dimension = timeDimension, IsMainDimension = true });
+         timeColumn.SupportedDimensions.Add(timeDimension);
          yield return timeColumn;
 
          var mainDimension = _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
-         var measurementInfo = new DimensionInfo.ColumnInfo
+         var measurementInfo = new ColumnInfo
          {
             DefaultDimension = mainDimension,
             Name = "Measurement",
-            Description = "Measurement",
             DisplayName = "Measurement",
             IsMandatory = true,
-            NullValuesHandling = DimensionInfo.NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name
          };
 
-         addDimensionsTo(measurementInfo, mainDimension);
+         addDimensionsTo(measurementInfo);
          yield return measurementInfo;
 
-         var errorInfo = new DimensionInfo.ColumnInfo
+         var errorInfo = new ColumnInfo
          {
             DefaultDimension = mainDimension,
             Name = "Error",
-            Description = "Error",
             DisplayName = "Error",
             IsMandatory = false,
-            NullValuesHandling = DimensionInfo.NullValuesHandlingType.Allowed,
             BaseGridName = timeColumn.Name,
             RelatedColumnOf = measurementInfo.Name
          };
 
-         addDimensionsTo(errorInfo, mainDimension);
+         addDimensionsTo(errorInfo);
          yield return errorInfo;
       }
 
-      private void addDimensionsTo(DimensionInfo.ColumnInfo columnInfo, IDimension mainDimension)
+      private void addDimensionsTo(ColumnInfo columnInfo)
       {
          var timeDimension = _dimensionFactory.Dimension(Constants.Dimension.TIME);
 
          foreach (var dimension in _dimensionFactory.DimensionsSortedByName.Where(x => x != timeDimension))
          {
-            columnInfo.DimensionInfos.Add(new DimensionInfo.DimensionInfo
-            {
-               Dimension = dimension,
-               IsMainDimension = (dimension == mainDimension)
-            });
+            columnInfo.SupportedDimensions.Add(dimension);
          }
       }
 
@@ -427,12 +418,12 @@ namespace MoBi.Presentation.Tasks
       private void addNamingPatterns(DimensionInfo.DataImporterSettings dataImporterSettings)
       {
          dataImporterSettings.AddNamingPatternMetaData(
-            Constants.FILE
+            FILE
          );
 
          dataImporterSettings.AddNamingPatternMetaData(
-            Constants.FILE,
-            Constants.SHEET
+            FILE,
+            SHEET
          );
 
          dataImporterSettings.AddNamingPatternMetaData(

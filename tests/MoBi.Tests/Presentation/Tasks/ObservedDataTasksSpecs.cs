@@ -201,14 +201,14 @@ namespace MoBi.Presentation.Tasks
       public void should_have_removed_the_time_dimension_from_all_data_columns()
       {
          var dataColumn = _columnsInfo[1];
-         dataColumn.DimensionInfos.Find(x=>x.Dimension.Name == Constants.Dimension.TIME).ShouldBeNull();
+         dataColumn.SupportedDimensions.Find(x=>x.Name == Constants.Dimension.TIME).ShouldBeNull();
       }
 
       [Observation]
       public void should_have_kept_the_dimensionsless_dimension_in_all_data_columns()
       {
          var dataColumn = _columnsInfo[1];
-         dataColumn.DimensionInfos.Find(x => x.Dimension == Constants.Dimension.NO_DIMENSION).ShouldNotBeNull();
+         dataColumn.SupportedDimensions.Find(x => x == Constants.Dimension.NO_DIMENSION).ShouldNotBeNull();
       }
 
       [Observation]
