@@ -442,7 +442,7 @@ namespace MoBi.Presentation.Tasks
             Constants.ObservedData.GENDER,
             Constants.ObservedData.DOSE,
             Constants.ObservedData.ROUTE,
-            Constants.ObservedData.PATIENT_ID
+            Constants.ObservedData.SUBJECT_ID
          );
       }
 
