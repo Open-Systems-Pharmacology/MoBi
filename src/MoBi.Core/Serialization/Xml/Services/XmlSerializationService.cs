@@ -54,9 +54,10 @@ namespace MoBi.Core.Serialization.Xml.Services
 
       public XElement SerializeModelPart<T>(T entityToSerialize)
       {
-         using (var serializationContext = _serializationContextFactory.Create())
+         var type = entityToSerialize.GetType();
+         using (var serializationContext = _serializationContextFactory.Create(type))
          {
-            var partSerializer = _repository.SerializerFor(entityToSerialize.GetType());
+            var partSerializer = _repository.SerializerFor(type);
             var xElement = partSerializer.Serialize(entityToSerialize, serializationContext);
             xElement.AddAttribute(Constants.Serialization.Attribute.VERSION, ProjectVersions.CurrentAsString);
             addFormulaCache(entityToSerialize, xElement, serializationContext);
@@ -96,26 +97,26 @@ namespace MoBi.Core.Serialization.Xml.Services
       private object deserialize(XElement element, IMoBiProject project, int version, Type type = null, SerializationContext parentSerializationContext = null)
       {
          object deserializedObject;
-         bool conversionHappened = false;
-         using (var serializationContext = _serializationContextFactory.Create(parentSerializationContext))
+         bool conversionHappened;
+         IXmlSerializer<SerializationContext> serializer;
+         Type deserializedType;
+
+         if (type == null)
+         {
+            serializer = _repository.SerializerFor(element);
+            deserializedType = serializer.ObjectType;
+         }
+         else
+         {
+            serializer = serializeFor(type);
+            deserializedType = type;
+         }
+
+         using (var serializationContext = _serializationContextFactory.Create(deserializedType, parentSerializationContext))
          {
             conversionHappened = convertXml(element, version, project);
 
-            IXmlSerializer<SerializationContext> serializer;
-            Type deserializeType;
-
-            if (type == null)
-            {
-               serializer = _repository.SerializerFor(element);
-               deserializeType = serializer.ObjectType;
-            }
-            else
-            {
-               serializer = serializeFor(type);
-               deserializeType = type;
-            }
-
-            var formulaCacheElement = getFormulaCacheElementFor(element, deserializeType);
+            var formulaCacheElement = getFormulaCacheElementFor(element, deserializedType);
             conversionHappened = convertXml(formulaCacheElement, version, project) || conversionHappened;
             deserializeFormula(formulaCacheElement, version, project, serializationContext);
 
