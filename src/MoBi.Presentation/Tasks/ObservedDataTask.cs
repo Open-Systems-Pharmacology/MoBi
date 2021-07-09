@@ -70,7 +70,12 @@ namespace MoBi.Presentation.Tasks
 
       public void AddObservedDataToProject()
       {
-         var data = _dataImporter.ImportDataSets(createMetaData().ToList(), createColumnInfos().ToList(), createDataImportSettings());
+         var data = _dataImporter.ImportDataSets(
+            createMetaData().ToList(), 
+            createColumnInfos().ToList(), 
+            createDataImportSettings(),
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         );
 
          if (data.DataRepositories == null || data.Configuration == null) return;
 
@@ -276,8 +281,13 @@ namespace MoBi.Presentation.Tasks
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          var colInfos = createColumnInfos().ToList();
 
-         var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, createMetaData().ToList(),
-            colInfos, dataImporterSettings);
+         var importedObservedData = _dataImporter.ImportFromConfiguration(
+            configuration, 
+            createMetaData().ToList(),
+            colInfos, 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         );
          return importedObservedData;
       }
 
