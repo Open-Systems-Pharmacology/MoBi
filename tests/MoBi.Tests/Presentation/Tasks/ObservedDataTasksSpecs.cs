@@ -187,7 +187,7 @@ namespace MoBi.Presentation.Tasks
 
          _dataRepository.Add(new DataColumn("name", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
 
-         A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored ))
+         A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored, A<string>.Ignored))
             .Invokes(x => _columnsInfo = x.GetArgument<IReadOnlyList<ColumnInfo>>(1))
             .Returns((new[] { _dataRepository }, _importerConfiguration));
       }
