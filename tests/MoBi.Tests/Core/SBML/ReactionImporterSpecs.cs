@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using Model = libsbmlcs.Model;
 using Reaction = libsbmlcs.Reaction;
+using MoBi.Core.Exceptions;
 
 namespace MoBi.Core.SBML
 {
@@ -157,8 +158,6 @@ namespace MoBi.Core.SBML
 
    public class PassiveTransportReactionImporterTests : ReactionImporterSpecs
    {
-      private IPassiveTransportBuildingBlock _ptBuildingBlock;
-
       protected override void Context()
       {
          base.Context();
@@ -167,40 +166,12 @@ namespace MoBi.Core.SBML
 
       protected override void Because()
       {
-         base.Because();
-         _ptBuildingBlock = _moBiProject.PassiveTransportCollection.FirstOrDefault();
       }
 
       [Observation]
-      public void PassiveTransportNotNullTest()
+      public void ShouldRaiseOnInvalidFileConvertion()
       {
-         _ptBuildingBlock.ShouldNotBeNull();
-      }
-
-      [Observation]
-      public void NoReactionCreatedTest()
-      {
-         _moBiProject.ReactionBlockCollection.FirstOrDefault().FirstOrDefault().ShouldBeNull();
-      }
-
-      [Observation]
-      public void SimplePassiveTransportTest()
-      {
-         _ptBuildingBlock.FirstOrDefault().ShouldNotBeNull();
-         var pt = _ptBuildingBlock.FirstOrDefault();
-         pt.MoleculeList.MoleculeNames.Find(name => name == "b_cat").ShouldNotBeNull();
-         pt.SourceCriteria.Count().ShouldBeEqualTo(1);
-         pt.TargetCriteria.Count().ShouldBeEqualTo(1);
-      }
-
-      [Observation]
-      public void LocalParameterCreationTest()
-      {
-         _ptBuildingBlock.FirstOrDefault().ShouldNotBeNull();
-         var pt = _ptBuildingBlock.FirstOrDefault();
-         pt.ShouldNotBeNull();
-         pt.Parameters.Count().ShouldBeEqualTo(1);
-         pt.Parameters.ExistsByName("lp1");
+         The.Action(() => _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject)).ShouldThrowAn<MoBiException>();
       }
    }
 }

@@ -105,6 +105,8 @@ namespace MoBi.Engine.Sbml
       public const string ASIN = "asin";
       public const string ATAN = "atan";
 
+      public static string NoValidConversionToLevel3Version2 = "The file cannot be converted to Level 3 Version 2. Please, use an older version of MoBi to load this file";
+
       public static string ModelNotRead(string errorLog)
       {
          return String.Format("'ReadSBML' contains errors. Import not possible. Errorlog: {0}", errorLog);
