@@ -95,4 +95,11 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <None Update="Core\SBML\Testfiles\Barros2021_RAJI.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
 </Project>

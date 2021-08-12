@@ -25,6 +25,10 @@ namespace MoBi.Engine.Sbml
       private readonly IMoBiReactionBuildingBlock _reactionBuildingBlock;
       private readonly IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       private readonly IDimensionFactory _dimensionFactory;
+      public void SetFunctionDefinitions(List<FunctionDefinition> functionDefinitions)
+      {
+         _astHandler.FunctionDefinitions = functionDefinitions;
+      }
 
       public ReactionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory)
           : base(objectPathFactory, objectBaseFactory, astHandler, context)

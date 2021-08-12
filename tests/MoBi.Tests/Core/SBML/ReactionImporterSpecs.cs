@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.Builder;
 using Model = libsbmlcs.Model;
 using Reaction = libsbmlcs.Reaction;
 using MoBi.Core.Exceptions;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.SBML
 {
@@ -172,6 +173,33 @@ namespace MoBi.Core.SBML
       public void ShouldRaiseOnInvalidFileConvertion()
       {
          The.Action(() => _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject)).ShouldThrowAn<MoBiException>();
+      }
+   }
+
+   public class ExpressionReactionImporterTests : ReactionImporterSpecs
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = Helper.TestFileFullPath("Barros2021_RAJI.xml");
+      }
+
+      protected override void Because()
+      {
+         _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject);
+      }
+
+      [Observation]
+      public void ShouldRaiseOnInvalidFileConvertion()
+      {
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * theta * T * Cm");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * phi * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * pi_ * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * alpha * T * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * epsilon * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * mu * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * rho * T * ((1) - (beta * T))");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * gamma * Ct * Ct");
       }
    }
 }
