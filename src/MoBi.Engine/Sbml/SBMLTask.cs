@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using libsbmlcs;
 using MoBi.Assets;
 using MoBi.Core;
@@ -49,7 +50,10 @@ namespace MoBi.Engine.Sbml
 
          reportConstraints(project, model);
 
-         foreach (var importer in _importerRepository.AllFor(model))
+         var importers = _importerRepository.AllFor(model).ToList();
+         var functionDefinitionImporter = importers.OfType<FunctionDefinitionImporter>().FirstOrDefault();
+         importers.OfType<ReactionImporter>().Each(ri => ri.SetFunctionDefinitions(functionDefinitionImporter.FunctionDefinitions));
+         foreach (var importer in importers)
          {
             importer.DoImport(model, project, SBMLInformation, command);
          }
@@ -104,9 +108,14 @@ namespace MoBi.Engine.Sbml
          {
             throw new MoBiException(SBMLConstants.ModelNotRead(sbmlDoc.getErrorLog().ToString()));
          }
-
-         convertSBML(sbmlDoc);
-
+         try
+         {
+            convertSBML(sbmlDoc);
+         }
+         catch (Exception _)
+         {
+            throw new MoBiException(SBMLConstants.NoValidConversionToLevel3Version2);
+         }
          var model = sbmlDoc.getModel();
          SaveSBMLInformation(model, sbmlDoc);
          return model;
