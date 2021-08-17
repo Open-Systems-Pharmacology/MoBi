@@ -190,16 +190,47 @@ namespace MoBi.Core.SBML
       }
 
       [Observation]
-      public void ShouldRaiseOnInvalidFileConvertion()
+      public void ShouldParseUserDefinedFunctions()
       {
          (_moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * theta * T * Cm");
          (_moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * phi * Ct");
          (_moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * pi_ * Ct");
          (_moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * alpha * T * Ct");
          (_moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * epsilon * Ct");
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * mu * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * mu * Cm");
          (_moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * rho * T * ((1) - (beta * T))");
          (_moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * gamma * Ct * Ct");
+      }
+
+      [Observation]
+      public void ShouldCreateAliases()
+      {
+         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "theta").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "Cm").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula.ObjectPaths.Where(op => op.Alias == "phi").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula.ObjectPaths.Where(op => op.Alias == "pi_").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "alpha").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula.ObjectPaths.Where(op => op.Alias == "epsilon").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula.ObjectPaths.Where(op => op.Alias == "mu").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula.ObjectPaths.Where(op => op.Alias == "Cm").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "rho").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "beta").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "gamma").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
       }
    }
 }
