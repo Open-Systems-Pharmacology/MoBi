@@ -56,6 +56,7 @@ namespace MoBi.Engine.Sbml
          try
          {
             _objectPaths.Clear();
+            _functionDefDictionary.Clear();
             _sbmlProject = sbmlProject;
             _sbmlInformation = sbmlInformation;
             _reactionBuilder = reactionBuilder;
