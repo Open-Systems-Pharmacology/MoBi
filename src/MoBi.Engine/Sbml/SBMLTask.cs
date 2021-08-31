@@ -52,7 +52,10 @@ namespace MoBi.Engine.Sbml
 
          var importers = _importerRepository.AllFor(model).ToList();
          var functionDefinitionImporter = importers.OfType<FunctionDefinitionImporter>().FirstOrDefault();
+         var unitDefinitionImporter = importers.OfType<UnitDefinitionImporter>().FirstOrDefault();
          importers.OfType<ReactionImporter>().Each(ri => ri.SetFunctionDefinitions(functionDefinitionImporter.FunctionDefinitions));
+         importers.OfType<SpeciesImporter>().Each(si => si.SetUnitDefinitionImporter(unitDefinitionImporter));
+         importers.OfType<ParameterImporter>().Each(si => si.SetUnitDefinitionImporter(unitDefinitionImporter));
          foreach (var importer in importers)
          {
             importer.DoImport(model, project, SBMLInformation, command);
