@@ -120,6 +120,11 @@ namespace MoBi.Engine.Sbml
 
       public override void AddToProject() { }
 
+      public IDimension DimensionFor(string sbmlUnit)
+      {
+         return _unitConvertionDictionary[sbmlUnit].Dimension;
+      }
+
       public double[] ToMobiBaseUnit(string unit, IEnumerable<double> value)
       {
          var convertionData = _unitConvertionDictionary[unit];

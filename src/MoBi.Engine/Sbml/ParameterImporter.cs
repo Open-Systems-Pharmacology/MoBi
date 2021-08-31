@@ -39,17 +39,20 @@ namespace MoBi.Engine.Sbml
       {
          var value = 0.0;
          if (sbmlParameter.isSetValue()) value = sbmlParameter.getValue();
-         IFormula formula = ObjectBaseFactory.Create<ConstantFormula>().WithValue(value);
-
-         var parameter = ObjectBaseFactory.Create<IParameter>()
+         if (!sbmlParameter.isSetUnits())
+         {
+            return ObjectBaseFactory.Create<IParameter>()
              .WithName(sbmlParameter.getId())
-             .WithFormula(formula);
+             .WithFormula(ObjectBaseFactory.Create<ConstantFormula>().WithValue(value));
+         }
 
-         if (!sbmlParameter.isSetUnits()) return parameter;
-
-         if (_sbmlInformation.MobiDimension.ContainsKey(sbmlParameter.getUnits()))
-            parameter.Dimension = _sbmlInformation.MobiDimension[sbmlParameter.getUnits()];
-         return parameter;
+         var sbmlUnit = sbmlParameter.getUnits();
+         var dimension = _unitDefinitionImporter.DimensionFor(sbmlUnit);
+         value = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, new[] { value })[0];
+         return ObjectBaseFactory.Create<IParameter>()
+          .WithName(sbmlParameter.getId())
+          .WithFormula(ObjectBaseFactory.Create<ConstantFormula>().WithValue(value))
+          .WithDimension(dimension);
       }
 
       /// <summary>

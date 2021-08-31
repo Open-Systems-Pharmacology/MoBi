@@ -194,7 +194,8 @@ namespace MoBi.Engine.Sbml
                   msv.IsPresent = true;
                   var sbmlSpecies = molInfo.GetSpeciesIfOne();
                   if (sbmlSpecies == null) return;
-                  var amountDimension = GetDimension(sbmlSpecies, model);
+                  var sbmlUnit = GetUnit(sbmlSpecies, model);
+                  var amountDimension = _unitDefinitionImporter.DimensionFor(sbmlUnit);
 
                   //unit is set by the Unit of SubstanceUnit
                   if (sbmlSpecies.isSetInitialAmount())
@@ -209,7 +210,7 @@ namespace MoBi.Engine.Sbml
                   if (!sbmlSpecies.isSetInitialConcentration()) continue;
 
                   //unit is {unit of amount}/{unit of size}
-                  msv.StartValue = sbmlSpecies.getInitialConcentration();
+                  msv.StartValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, new[] { sbmlSpecies.getInitialConcentration() })[0];
 
                   var sizeDimension = GetSizeDimensionFromCompartment(sbmlSpecies, model);
                   if (amountDimension == null) continue;
@@ -304,23 +305,9 @@ namespace MoBi.Engine.Sbml
          return sizeDimension;
       }
 
-      /// <summary>
-      ///     Gets the dimension of a species. It is set by it's one substanceUnits attribute
-      ///     or by the substanceUnits definition of the Model. 
-      /// </summary>
-      private IDimension GetDimension(Species s, Model model)
+      private string GetUnit(Species s, Model model)
       {
-         var substanceUnits = s.isSetSubstanceUnits() ? s.getSubstanceUnits() : model.getSubstanceUnits();
-         IDimension amountDimension = null;
-
-         if (_sbmlInformation.MobiDimension.ContainsKey(substanceUnits))
-            amountDimension = _sbmlInformation.MobiDimension[substanceUnits];
-
-         if (amountDimension == null) return null;
-         if (_moBiDimensionFactory.Dimensions.All(dim => dim.Name != amountDimension.Name))
-            _moBiDimensionFactory.AddDimension(amountDimension);
-
-         return amountDimension;
+         return s.isSetSubstanceUnits() ? s.getSubstanceUnits() : model.getSubstanceUnits();
       }
 
       /// <summary>
