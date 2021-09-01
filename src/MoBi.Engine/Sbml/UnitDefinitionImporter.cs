@@ -18,7 +18,13 @@ namespace MoBi.Engine.Sbml
       public double Rate { get; set; }
    }
 
-   public class UnitDefinitionImporter : SBMLImporter
+   public interface IUnitDefinitionImporter : ISBMLImporter
+   {
+      IDimension DimensionFor(string sbmlUnit);
+      double[] ToMobiBaseUnit(string unit, IEnumerable<double> value);
+   }
+
+   public class UnitDefinitionImporter : SBMLImporter, IUnitDefinitionImporter
    {
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly IDictionary<int, Unit> _baseUnitsDictionary;

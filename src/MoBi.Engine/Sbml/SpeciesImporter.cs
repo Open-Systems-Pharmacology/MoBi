@@ -23,10 +23,10 @@ namespace MoBi.Engine.Sbml
       private readonly IMoleculeBuilderFactory _moleculeBuilderFactory;
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly Dictionary<string, Dimension> _dimensionDictionary;
-      private UnitDefinitionImporter _unitDefinitionImporter;
+      private IUnitDefinitionImporter _unitDefinitionImporter;
       private int _counter;
 
-      public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IMoleculeStartValuesCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context)
+      public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IMoleculeStartValuesCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter)
           : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _moleculeBuilderFactory = moleculeBuilderFactory;
@@ -34,10 +34,6 @@ namespace MoBi.Engine.Sbml
          _moBiDimensionFactory = moBiDimensionFactory;
          _counter = 1;
          _dimensionDictionary = new Dictionary<string, Dimension>();
-      }
-
-      public void SetUnitDefinitionImporter(UnitDefinitionImporter unitDefinitionImporter)
-      {
          _unitDefinitionImporter = unitDefinitionImporter;
       }
 

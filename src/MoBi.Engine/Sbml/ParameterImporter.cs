@@ -10,12 +10,13 @@ namespace MoBi.Engine.Sbml
    public class ParameterImporter : SBMLImporter
    {
       private readonly List<IEntity> _paramList;
-      private UnitDefinitionImporter _unitDefinitionImporter;
+      private IUnitDefinitionImporter _unitDefinitionImporter;
 
-      public ParameterImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, ASTHandler astHandler, IMoBiContext context)
+      public ParameterImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter)
           : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _paramList = new List<IEntity>();
+         _unitDefinitionImporter = unitDefinitionImporter;
       }
 
       protected override void Import(SBMLModel model)
@@ -25,11 +26,6 @@ namespace MoBi.Engine.Sbml
             _paramList.Add(CreateParameter(model.getParameter(i)));
          }
          AddToProject();
-      }
-
-      public void SetUnitDefinitionImporter(UnitDefinitionImporter unitDefinitionImporter)
-      {
-         _unitDefinitionImporter = unitDefinitionImporter;
       }
 
       /// <summary>
