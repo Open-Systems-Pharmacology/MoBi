@@ -42,13 +42,18 @@ namespace MoBi.Engine.Sbml
       {
          _astHandler.NeedAbsolutePath = true;
          CreateEGBandEGBB();
-         long i;
-         for (i = 0; i < model.getNumEvents(); i++)
+         var numEvents = model.getNumEvents();
+         if (numEvents == 0)
          {
-            CreateEvent(model.getEvent(i));
-         }
-         if (i == 0)
             CreateEmptyEvent();
+         }
+         else
+         {
+            for (var i = 0; i < numEvents; i++)
+            {
+               CreateEvent(model.getEvent(i));
+            }
+         }
 
          _astHandler.NeedAbsolutePath = false;
          AddToProject();
