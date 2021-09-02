@@ -12,6 +12,7 @@ namespace MoBi.Engine.Sbml
       public static string FORMULA = "Formula";
       public const string SBML_EVENT_ASSIGNMENT = "SBML Event Assignment ";
       public const string SBML_EVENTBUILDER = "EVENTBUILDER";
+      public const string SBML_DEFAULTEVENTNAME = "Default Event";
 
       //Building Block Names
       public const string SBML_REACTION_BB = "SBML Reactions";

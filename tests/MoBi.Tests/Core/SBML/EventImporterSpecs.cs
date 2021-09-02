@@ -24,6 +24,22 @@ namespace MoBi.Core.SBML
       }
    }
 
+   public class DefaultEventImporterTests : ConcernForEventImporter
+   {
+      protected override void Because()
+      {
+         var sbmlModel = new Model(3, 1);
+
+         sut.DoImport(sbmlModel, new MoBiProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
+      }
+
+      [Observation]
+      public void LoadsDefaultIfNoEvent()
+      {
+         ObjectBaseExtensions.AllNames(sut.EventGroupBuilder.Children).ShouldNotBeEmpty();
+      }
+   }
+
    public class EventImporterTests : ConcernForEventImporter
    {
       protected override void Because()
@@ -74,7 +90,7 @@ namespace MoBi.Core.SBML
       public void TriggerCreationTest()
       {
          sut.EventGroupBuilder.Children.ExistsByName("e1").ShouldBeTrue();
-         var event1 = (EventBuilder) sut.EventGroupBuilder.Children.FindByName("e1");
+         var event1 = (EventBuilder)sut.EventGroupBuilder.Children.FindByName("e1");
          event1.Formula.ShouldNotBeNull();
       }
 
