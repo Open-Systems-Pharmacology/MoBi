@@ -6,10 +6,15 @@ using Model = libsbmlcs.Model;
 
 namespace MoBi.Engine.Sbml
 {
-   public class FunctionDefinitionImporter : SBMLImporter
+   public interface IFunctionDefinitionImporter : ISBMLImporter
+   {
+      List<FunctionDefinition> FunctionDefinitions { get; }
+   }
+
+   public class FunctionDefinitionImporter : SBMLImporter, IFunctionDefinitionImporter
    {
       private readonly List<FunctionDefinition> _functionDefinitions;
-      internal List<FunctionDefinition> FunctionDefinitions { get => _functionDefinitions; }
+      public List<FunctionDefinition> FunctionDefinitions { get => _functionDefinitions; }
 
       public FunctionDefinitionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, ASTHandler astHandler, IMoBiContext context) : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {

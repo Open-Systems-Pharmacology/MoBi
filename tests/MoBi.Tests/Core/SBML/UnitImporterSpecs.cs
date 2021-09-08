@@ -31,7 +31,8 @@ namespace MoBi.Core.SBML
          private UnitDefinition _unitDef;
          private Unit _unit2;
          private UnitDefinition _unitDef2;
-         private IDimension _substanceDimension;
+         private Unit _unit3;
+         private UnitDefinition _unitDef3;
          private IDimension _volumeDimension;
          private IMoBiDimensionFactory _dimensionFactoy;
 
@@ -65,28 +66,42 @@ namespace MoBi.Core.SBML
             _unitDef2.setName("volume");
             _unitDef2.addUnit(_unit2);
 
+            _unit3 = _sbmlModel.createUnit();
+            _unit3.setExponent(-1);
+            _unit3.setMultiplier(86400.0); //86400 seconds in one day
+            _unit3.setScale(0);
+            _unit3.setKind(libsbml.UnitKind_forName("second"));
+
+            _unitDef3 = _sbmlModel.createUnitDefinition();
+            _unitDef3.setId("inverse_day");
+            _unitDef3.setName("1/d");
+            _unitDef3.addUnit(_unit3);
+
+
             _sbmlModel.addUnitDefinition(_unitDef);
             sut.DoImport(_sbmlModel, new MoBiProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
-            _substanceDimension = _dimensionFactoy.Dimension("SBML_substance");
             _volumeDimension = _dimensionFactoy.Dimension("Volume");
          }
 
          [Observation]
          public void NotNullTest()
          {
-            _substanceDimension.ShouldNotBeNull();
             _volumeDimension.ShouldNotBeNull();
          }
 
          [Observation]
          public void UnitImporterTest()
          {
-            _substanceDimension.BaseRepresentation.ShouldNotBeNull();
-            _substanceDimension.DisplayName.ShouldBeEqualTo("SBML_substance");
-
             _volumeDimension.ShouldNotBeNull();
             _volumeDimension.Name.ShouldBeEqualTo("Volume");
             _volumeDimension.DefaultUnit.Name.ShouldBeEqualTo("l");
+         }
+
+         [Observation]
+         public void NewDimensionsTests()
+         {
+            sut.ToMobiBaseUnit("substance", new[] { 3e6 }).ShouldBeEqualTo(new[] { 3e12 });
+            sut.ToMobiBaseUnit("inverse_day", new[] { 0.83 }).ShouldBeEqualTo(new[] { 0.83/1440 }); //base unit is in minutes so 1440 minutes in one day
          }
       }
    }
@@ -106,15 +121,6 @@ namespace MoBi.Core.SBML
          var parameter = tc.GetSingleChildByName<IParameter>("k1");
          parameter.ShouldNotBeNull();
          parameter.DisplayUnit.ToString().ShouldBeEqualTo("l");
-      }
-
-      [Observation]
-      public void ParameterWithSubstanceUnitTest()
-      {
-         var tc = _moBiProject.SpatialStructureCollection.FirstOrDefault().TopContainers.FirstOrDefault();
-         var parameter = tc.GetSingleChildByName<IParameter>("k2");
-         parameter.ShouldNotBeNull();
-         parameter.DisplayUnit.ToString().ShouldBeEqualTo("substance");
       }
 
       [Observation]

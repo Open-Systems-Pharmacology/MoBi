@@ -25,12 +25,9 @@ namespace MoBi.Engine.Sbml
       private readonly IMoBiReactionBuildingBlock _reactionBuildingBlock;
       private readonly IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       private readonly IDimensionFactory _dimensionFactory;
-      public void SetFunctionDefinitions(List<FunctionDefinition> functionDefinitions)
-      {
-         _astHandler.FunctionDefinitions = functionDefinitions;
-      }
+      private readonly IFunctionDefinitionImporter _functionDefinitionImporter;
 
-      public ReactionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory)
+      public ReactionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory, IFunctionDefinitionImporter functionDefinitionImporter)
           : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _dimensionFactory = moBiDimensionFactory;
@@ -39,6 +36,7 @@ namespace MoBi.Engine.Sbml
          _reactionBuildingBlock = reactionBuildingBlockFactory.Create().WithName(SBMLConstants.SBML_REACTION_BB);
          _passiveTransportBuildingBlock = ObjectBaseFactory.Create<IPassiveTransportBuildingBlock>()
              .WithName(SBMLConstants.SBML_PASSIVETRANSPORTS_BB);
+         _functionDefinitionImporter = functionDefinitionImporter;
       }
 
       /// <summary>
@@ -46,6 +44,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       protected override void Import(Model model)
       {
+         _astHandler.FunctionDefinitions = _functionDefinitionImporter.FunctionDefinitions;
          for (long i = 0; i < model.getNumReactions(); i++)
          {
             CreateReaction(model.getReaction(i), model);
