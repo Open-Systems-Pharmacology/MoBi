@@ -8,6 +8,12 @@ using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using System;
+using OSPSuite.Core.Serialization;
+using IContainer = OSPSuite.Utility.Container.IContainer;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Domain.Services;
+using MoBi.Core.Serialization.Xml.Services;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -15,6 +21,8 @@ namespace MoBi.Presentation.Tasks.Edit
    {
       void Edit(T objectToEdit);
       void Save(T entityToSerialize);
+
+      T Clone(T entityToClone);
 
       /// <summary>
       ///    Gets the forbidden names for the given object, from the local list the objects name is removed.
@@ -42,20 +50,57 @@ namespace MoBi.Presentation.Tasks.Edit
       protected readonly IMoBiApplicationController _applicationController;
       protected readonly IInteractionTask _interactionTask;
       protected readonly IInteractionTaskContext _interactionTaskContext;
+      private readonly IMoBiXmlSerializerRepository _xmlSerializerRepository;
+      private readonly IContainer _container;
+      private readonly IDimensionFactory _dimensionFactory;
+      private readonly IObjectBaseFactory _objectBaseFactory;
+      private readonly ICloneManagerForModel _cloneManagerForModel;
       public string ObjectName { get; private set; }
 
-      protected EditTaskFor(IInteractionTaskContext interactionTaskContext)
+      protected EditTaskFor(
+         IInteractionTaskContext interactionTaskContext,
+         IMoBiXmlSerializerRepository xmlSerializerRepository = null, 
+         IContainer container = null,
+         IDimensionFactory dimensionFactory = null,
+         IObjectBaseFactory objectBaseFactory = null,
+         ICloneManagerForModel cloneManagerForModel = null)
       {
          _interactionTaskContext = interactionTaskContext;
          _applicationController = interactionTaskContext.ApplicationController;
          _interactionTask = interactionTaskContext.InteractionTask;
          _context = interactionTaskContext.Context;
          ObjectName = _interactionTaskContext.GetTypeFor<T>();
+         _xmlSerializerRepository = xmlSerializerRepository;
+         _container = container;
+         _dimensionFactory = dimensionFactory;
+         _objectBaseFactory = objectBaseFactory;
+         _cloneManagerForModel = cloneManagerForModel;
       }
 
       public virtual void Edit(T objectToEdit)
       {
          _context.PublishEvent(new EntitySelectedEvent(objectToEdit, this));
+      }
+
+      protected TEntity Clone<TEntity>(TEntity entityToClone) where TEntity : class
+      {
+         using (var serializationContext = SerializationTransaction.Create(_container,
+            _dimensionFactory,
+            _objectBaseFactory,
+            new WithIdRepository(),
+            _cloneManagerForModel))
+         {
+            var serializer = _xmlSerializerRepository.SerializerFor(entityToClone);
+            var element = serializer.Serialize(entityToClone, serializationContext);
+            return serializer.Deserialize<TEntity>(element, serializationContext);
+         }
+      }
+
+      public virtual T Clone(T entityToClone)
+      {
+         var newEntity = Clone<T>(entityToClone);
+         newEntity.Id = Guid.NewGuid().ToString();
+         return newEntity;
       }
 
       public virtual void Rename<TEntity>(TEntity entity, IBuildingBlock buildingBlock) where TEntity : T, IEntity
@@ -102,7 +147,7 @@ namespace MoBi.Presentation.Tasks.Edit
          using (var modalPresenter = GetCreateViewFor(entity, commandCollector))
          {
             InitializeSubPresenter(modalPresenter.SubPresenter, buildingBlock, entity);
-            ((ICreatePresenter<T>) modalPresenter.SubPresenter).Edit(entity, existingObjectsInParent);
+            ((ICreatePresenter<T>)modalPresenter.SubPresenter).Edit(entity, existingObjectsInParent);
             return modalPresenter.Show();
          }
       }

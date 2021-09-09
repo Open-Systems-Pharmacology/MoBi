@@ -38,6 +38,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             createEditItem(simulation),
             createRenameItem(simulation),
+            createCloneItem(simulation),
 
             createConfigure(simulation),
 
@@ -183,6 +184,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
             .WithIcon(ApplicationIcons.Edit)
             .WithCommandFor<EditSimulationUICommand, IMoBiSimulation>(simulation);
+      }
+
+      private IMenuBarItem createCloneItem(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
+            .WithIcon(ApplicationIcons.Clone)
+            .WithCommandFor<CloneSimulationUICommand, IMoBiSimulation>(simulation);
       }
 
       private IMenuBarItem createConfigure(IMoBiSimulation simulation)

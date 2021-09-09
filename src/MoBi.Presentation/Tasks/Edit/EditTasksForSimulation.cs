@@ -4,6 +4,9 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
+using MoBi.Core.Exceptions;
+using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
@@ -18,6 +21,7 @@ using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -43,6 +47,10 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly ISimModelExporter _simModelExporter;
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
+      private readonly IHeavyWorkManager _heavyWorkManager;
+      private readonly IBuildConfigurationFactory _buildConfigurationFactory;
+      private readonly IModelConstructor _modelConstructor;
+      private readonly ISimulationFactory _simulationFactory;
 
       public EditTasksForSimulation(
          IInteractionTaskContext interactionTaskContext,
@@ -52,7 +60,15 @@ namespace MoBi.Presentation.Tasks.Edit
          IModelReportCreator reportCreator,
          ISimModelExporter simModelExporter,
          IDimensionFactory dimensionFactory,
-         IParameterIdentificationSimulationPathUpdater parameterIdentificationSimulationPathUpdater) : base(interactionTaskContext)
+         IParameterIdentificationSimulationPathUpdater parameterIdentificationSimulationPathUpdater,
+         IMoBiXmlSerializerRepository xmlSerializerRepository,
+         IContainer container,
+         IObjectBaseFactory objectBaseFactory,
+         ICloneManagerForModel cloneManagerForModel,
+         IHeavyWorkManager heavyWorkManager,
+         IBuildConfigurationFactory buildConfigurationFactory,
+         IModelConstructor modelConstructor,
+         ISimulationFactory simulationFactory) : base(interactionTaskContext, xmlSerializerRepository, container, dimensionFactory, objectBaseFactory, cloneManagerForModel)
       {
          _simulationPersistor = simulationPersistor;
          _dialogCreator = dialogCreator;
@@ -61,6 +77,10 @@ namespace MoBi.Presentation.Tasks.Edit
          _simModelExporter = simModelExporter;
          _dimensionFactory = dimensionFactory;
          _parameterIdentificationSimulationPathUpdater = parameterIdentificationSimulationPathUpdater;
+         _heavyWorkManager = heavyWorkManager;
+         _buildConfigurationFactory = buildConfigurationFactory;
+         _modelConstructor = modelConstructor;
+         _simulationFactory = simulationFactory;
       }
 
       public void CreateReport(IModelCoreSimulation simulation)
@@ -178,6 +198,37 @@ namespace MoBi.Presentation.Tasks.Edit
          var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, simulation.Name);
          if (fileName.IsNullOrEmpty()) return;
          _simulationPersistor.Save(new SimulationTransfer {Simulation = simulation}, fileName);
+      }
+
+      public override IMoBiSimulation Clone(IMoBiSimulation entityToClone)
+      {
+         CreationResult result = null;
+         IMoBiBuildConfiguration buildConfiguration = null;
+         _heavyWorkManager.Start(() => { result = createModel(entityToClone, out buildConfiguration); }, AppConstants.Captions.CreatingSimulation);
+
+         if (result == null || result.IsInvalid)
+            throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
+
+         var newEntity = createSimulation(result.Model, buildConfiguration, entityToClone.Name);
+
+         return newEntity;
+      }
+
+      private CreationResult createModel(IMoBiSimulation entityToClone, out IMoBiBuildConfiguration buildConfiguration)
+      {
+         //Create the model using a build configuration referencing the templates building block so that references to template builders are defined properly 
+         //we override the _buildConfiguration so that reference to builders are saved
+         buildConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(entityToClone.MoBiBuildConfiguration);
+         return _modelConstructor.CreateModelFrom(buildConfiguration, entityToClone.Name);
+      }
+
+      private IMoBiSimulation createSimulation(IModel model, IMoBiBuildConfiguration buildConfiguration, string name)
+      {
+         //update the building block configuration to now use clones
+         var simulationBuildConfiguration = _buildConfigurationFactory.CreateFromTemplateClones(buildConfiguration);
+         var simulation = _simulationFactory.CreateFrom(simulationBuildConfiguration, model).WithName(name);
+         simulation.HasChanged = true;
+         return simulation;
       }
 
       public void ExportSimModelXml(IMoBiSimulation simulation)

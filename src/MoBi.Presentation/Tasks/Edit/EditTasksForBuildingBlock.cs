@@ -1,14 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Domain.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
+using MoBi.Core.Serialization.Xml.Services;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -19,7 +20,13 @@ namespace MoBi.Presentation.Tasks.Edit
 
    public class EditTasksForBuildingBlock<T> : EditTaskFor<T>, IEditTasksForBuildingBlock<T> where T : class, IObjectBase
    {
-      public EditTasksForBuildingBlock(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
+      public EditTasksForBuildingBlock(
+         IInteractionTaskContext interactionTaskContext,
+         IMoBiXmlSerializerRepository xmlSerializerRepository = null,
+         IContainer container = null,
+         IDimensionFactory dimensionFactory = null,
+         IObjectBaseFactory objectBaseFactory = null,
+         ICloneManagerForModel cloneManagerForModel = null) : base(interactionTaskContext, xmlSerializerRepository, container, dimensionFactory, objectBaseFactory, cloneManagerForModel)
       {
       }
 

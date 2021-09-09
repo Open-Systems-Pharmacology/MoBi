@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
+using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -13,6 +16,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -26,6 +30,14 @@ namespace MoBi.Presentation.Tasks
       private IModelReportCreator _reportCreator;
       private IDimensionFactory _dimensionFactory;
       protected IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
+      protected IMoBiXmlSerializerRepository _serializerRepository;
+      protected IContainer _container;
+      protected IObjectBaseFactory _objectBaseFactory;
+      protected ICloneManagerForModel _cloneManagerForModel;
+      protected IHeavyWorkManager _heavyWorkManager;
+      protected IBuildConfigurationFactory _buildConfigurationFactory;
+      protected IModelConstructor _modelConstructor;
+      protected ISimulationFactory _simulationFactory;
 
       protected override void Context()
       {
@@ -37,8 +49,33 @@ namespace MoBi.Presentation.Tasks
          _reportCreator = A.Fake<IModelReportCreator>();
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
+         _serializerRepository = A.Fake<IMoBiXmlSerializerRepository>();
+         _container = A.Fake<IContainer>();
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         _cloneManagerForModel = A.Fake<ICloneManagerForModel>();
+         _heavyWorkManager = new HeavyWorkManagerForSpecs();
+         _buildConfigurationFactory = A.Fake<IBuildConfigurationFactory>();
+         _modelConstructor = A.Fake<IModelConstructor>();
+         _simulationFactory = A.Fake<ISimulationFactory>();
 
-         sut = new EditTasksForSimulation(_context, _simulationPersistor, _dialogCreator, _dataRepositoryTask, _reportCreator, _simulationModelExporter, _dimensionFactory, _parameterIdentificationSimulationPathUpdater);
+         sut = new EditTasksForSimulation(
+            _context, 
+            _simulationPersistor, 
+            _dialogCreator, 
+            _dataRepositoryTask, 
+            _reportCreator, 
+            _simulationModelExporter, 
+            _dimensionFactory, 
+            _parameterIdentificationSimulationPathUpdater,
+            _serializerRepository,
+            _container,
+            _objectBaseFactory,
+            _cloneManagerForModel,
+            _heavyWorkManager,
+            _buildConfigurationFactory,
+            _modelConstructor,
+            _simulationFactory
+         );
       }
    }
 
@@ -92,6 +129,31 @@ namespace MoBi.Presentation.Tasks
       public void should_set_simulation_to_changed()
       {
          _simulation.HasChanged.ShouldBeTrue();
+      }
+   }
+
+   public class When_cloning_a_simulation : concern_for_EditTasksForSimulation
+   {
+      private IMoBiSimulation _simulation;
+      private IMoBiSimulation _clonedSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _simulation.Name).Returns("Name");
+      }
+
+      protected override void Because()
+      {
+         _clonedSimulation = sut.Clone(_simulation);
+      }
+
+      [Observation]
+      public void should_set_simulation_to_changed()
+      {
+         _clonedSimulation.HasChanged.ShouldBeTrue();
+         _clonedSimulation.Name.ShouldBeEqualTo("Name");
       }
    }
 }

@@ -29,7 +29,8 @@ namespace MoBi.Core.Domain.Model
             return;
 
          target.DiagramModel = sourceDiagramModel.Create();
-         target.InitializeDiagramManager(source.DiagramManager.DiagramOptions);
+         if (source.DiagramManager.DiagramOptions != null)
+            target.InitializeDiagramManager(source.DiagramManager.DiagramOptions);
 
          new LayoutCopyService().Copy(source.DiagramModel, target.DiagramModel);
       }
