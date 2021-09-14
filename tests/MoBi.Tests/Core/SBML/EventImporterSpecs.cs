@@ -36,7 +36,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void LoadsDefaultIfNoEvent()
       {
-         ObjectBaseExtensions.AllNames(sut.EventGroupBuilder.Children).ShouldNotBeEmpty();
+         sut.EventGroupBuilder.Children.AllNames().ShouldNotBeEmpty();
       }
    }
 
