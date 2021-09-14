@@ -98,6 +98,7 @@ namespace MoBi.Engine.Sbml
          if (dimension != Constants.Dimension.NO_DIMENSION)
          {
             _sbmlInformation.MobiDimension[sbmlUnit] = dimension;
+            _unitConvertionDictionary.Add(sbmlUnit, new UnitConvertionInfo() { Dimension = dimension, Unit = dimension.DefaultUnit, Rate = 1 });
             return dimension;
          }
 
@@ -114,6 +115,7 @@ namespace MoBi.Engine.Sbml
                return unitDimension;
             }
          }
+         _unitConvertionDictionary.Add(sbmlUnit, new UnitConvertionInfo() { Dimension = dimension, Unit = dimension.DefaultUnit, Rate = 1 });
          return dimension;
       }
 

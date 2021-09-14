@@ -99,6 +99,9 @@
     <None Update="Core\SBML\Testfiles\Barros2021_RAJI.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Core\SBML\Testfiles\UnitTestFile.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 
