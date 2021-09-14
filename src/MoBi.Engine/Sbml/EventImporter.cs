@@ -42,11 +42,19 @@ namespace MoBi.Engine.Sbml
       {
          _astHandler.NeedAbsolutePath = true;
          CreateEGBandEGBB();
-
-         for (long i = 0; i < model.getNumEvents(); i++)
+         var numEvents = model.getNumEvents();
+         if (numEvents == 0)
          {
-            CreateEvent(model.getEvent(i));
+            CreateEmptyEvent();
          }
+         else
+         {
+            for (var i = 0; i < numEvents; i++)
+            {
+               CreateEvent(model.getEvent(i));
+            }
+         }
+
          _astHandler.NeedAbsolutePath = false;
          AddToProject();
       }
@@ -88,6 +96,15 @@ namespace MoBi.Engine.Sbml
          CreateWarningsForUnsupportedFeatures(sbmlEvent);
 
          EventGroupBuilder.Add(EventBuilder);
+      }
+
+      private void CreateEmptyEvent()
+      {
+         EventGroupBuilder.Add(
+            new EventBuilder()
+               .WithId(SBMLConstants.SBML_EVENTBUILDER)
+               .WithName(SBMLConstants.SBML_DEFAULTEVENTNAME)
+         );
       }
 
       /// <summary>

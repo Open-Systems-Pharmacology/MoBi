@@ -11,13 +11,13 @@ namespace MoBi.Engine
          container.AddScanner(x =>
          {
             x.AssemblyContainingType<EngineRegister>();
+            x.WithConvention(new OSPSuiteRegistrationConvention(registerConcreteType: true));
             x.ExcludeType<UnitDefinitionImporter>();
             x.ExcludeType<FunctionDefinitionImporter>();
-            x.WithConvention(new OSPSuiteRegistrationConvention(registerConcreteType: true));
          });
 
-         //No idea why this is required explicitly. Maybe because the class only has yield operators?
          container.Register<SBMLImporterRepository, SBMLImporterRepository>();
+         container.Register<ASTHandler, ASTHandler>();
          container.Register<IUnitDefinitionImporter, UnitDefinitionImporter>(LifeStyle.Singleton);
          container.Register<IFunctionDefinitionImporter, FunctionDefinitionImporter>(LifeStyle.Singleton);
       }

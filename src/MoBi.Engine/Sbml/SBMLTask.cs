@@ -105,14 +105,7 @@ namespace MoBi.Engine.Sbml
          {
             throw new MoBiException(SBMLConstants.ModelNotRead(sbmlDoc.getErrorLog().ToString()));
          }
-         try
-         {
-            convertSBML(sbmlDoc);
-         }
-         catch (Exception _)
-         {
-            throw new MoBiException(SBMLConstants.NoValidConversionToLevel3Version2);
-         }
+         convertSBML(sbmlDoc);
          var model = sbmlDoc.getModel();
          SaveSBMLInformation(model, sbmlDoc);
          return model;
