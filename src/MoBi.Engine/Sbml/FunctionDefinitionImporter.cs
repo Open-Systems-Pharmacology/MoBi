@@ -11,7 +11,7 @@ namespace MoBi.Engine.Sbml
       List<FunctionDefinition> FunctionDefinitions { get; }
    }
 
-   public class FunctionDefinitionImporter : SBMLImporter, IFunctionDefinitionImporter
+   public class FunctionDefinitionImporter : SBMLImporter, ISBMLInitializableImporter, IFunctionDefinitionImporter
    {
       private readonly List<FunctionDefinition> _functionDefinitions;
       public List<FunctionDefinition> FunctionDefinitions { get => _functionDefinitions; }
@@ -31,6 +31,11 @@ namespace MoBi.Engine.Sbml
 
       public override void AddToProject()
       {
+      }
+
+      public void Initialize()
+      {
+         _functionDefinitions.Clear();
       }
    }
 }

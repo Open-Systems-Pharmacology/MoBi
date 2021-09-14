@@ -24,7 +24,7 @@ namespace MoBi.Engine.Sbml
       double[] ToMobiBaseUnit(string unit, IEnumerable<double> value);
    }
 
-   public class UnitDefinitionImporter : SBMLImporter, IUnitDefinitionImporter
+   public class UnitDefinitionImporter : SBMLImporter, ISBMLInitializableImporter, IUnitDefinitionImporter
    {
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly IDictionary<int, Unit> _baseUnitsDictionary;
@@ -135,6 +135,11 @@ namespace MoBi.Engine.Sbml
       {
          var convertionData = _unitConvertionDictionary[unit];
          return convertionData.Dimension.UnitValuesToBaseUnitValues(convertionData.Unit, value.Select(v => v * convertionData.Rate));
+      }
+
+      public void Initialize()
+      {
+         _unitConvertionDictionary.Clear();
       }
    }
 
