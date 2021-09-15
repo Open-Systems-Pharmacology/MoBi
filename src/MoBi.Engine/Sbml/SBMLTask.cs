@@ -11,6 +11,7 @@ using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using Model = libsbmlcs.Model;
 
@@ -49,7 +50,7 @@ namespace MoBi.Engine.Sbml
          project.Name = getProjectName(model);
 
          reportConstraints(project, model);
-         _importerRepository.AllFor(model).OfType<ISBMLInitializableImporter>().Each(impoter => impoter.Initialize());
+         _importerRepository.AllFor(model).OfType<IStartable>().Each(impoter => impoter.Start());
 
          foreach (var importer in _importerRepository.AllFor(model))
          {

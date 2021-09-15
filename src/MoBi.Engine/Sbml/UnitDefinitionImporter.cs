@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility;
 using Model = libsbmlcs.Model;
 using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
 
@@ -24,7 +25,7 @@ namespace MoBi.Engine.Sbml
       double[] ToMobiBaseUnit(string unit, IEnumerable<double> value);
    }
 
-   public class UnitDefinitionImporter : SBMLImporter, ISBMLInitializableImporter, IUnitDefinitionImporter
+   public class UnitDefinitionImporter : SBMLImporter, IStartable, IUnitDefinitionImporter
    {
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly IDictionary<int, Unit> _baseUnitsDictionary;
@@ -139,7 +140,7 @@ namespace MoBi.Engine.Sbml
          return convertionData.Dimension.UnitValuesToBaseUnitValues(convertionData.Unit, value.Select(v => v * convertionData.Rate));
       }
 
-      public void Initialize()
+      public void Start()
       {
          _unitConvertionDictionary.Clear();
       }
