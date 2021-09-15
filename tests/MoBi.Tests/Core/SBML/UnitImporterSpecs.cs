@@ -15,7 +15,7 @@ using Unit = libsbmlcs.Unit;
 
 namespace MoBi.Core.SBML
 {
-   public abstract class UnitImporterSpecs : ContextForSBMLIntegration<UnitDefinitionImporter>
+   public abstract class UnitImporterSpecs : ContextForSBMLIntegration<IUnitDefinitionImporter>
    {
       private Model _sbmlModel;
 

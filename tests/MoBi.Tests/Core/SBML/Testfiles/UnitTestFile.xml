@@ -87,7 +87,7 @@
 <compartment metaid="default" id="default" size="1" units="volume"/>
 </listOfCompartments>
 <listOfSpecies>
-<species metaid="s1" id="s1" name="s1" compartment="default" initialAmount="5" substanceUnits="mole" hasOnlySubstanceUnits="true" charge="0">
+<species metaid="s1" id="s1" name="s1" compartment="default" initialAmount="5" substanceUnits="substance" hasOnlySubstanceUnits="true" charge="0">
 <annotation>
 <celldesigner:extension>
 <celldesigner:positionToCompartment>inside</celldesigner:positionToCompartment>

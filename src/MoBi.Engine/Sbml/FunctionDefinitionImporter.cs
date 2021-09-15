@@ -2,6 +2,7 @@
 using libsbmlcs;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 using Model = libsbmlcs.Model;
 
 namespace MoBi.Engine.Sbml
@@ -11,7 +12,7 @@ namespace MoBi.Engine.Sbml
       List<FunctionDefinition> FunctionDefinitions { get; }
    }
 
-   public class FunctionDefinitionImporter : SBMLImporter, IFunctionDefinitionImporter
+   public class FunctionDefinitionImporter : SBMLImporter, IStartable, IFunctionDefinitionImporter
    {
       private readonly List<FunctionDefinition> _functionDefinitions;
       public List<FunctionDefinition> FunctionDefinitions { get => _functionDefinitions; }
@@ -31,6 +32,11 @@ namespace MoBi.Engine.Sbml
 
       public override void AddToProject()
       {
+      }
+
+      public void Start()
+      {
+         _functionDefinitions.Clear();
       }
    }
 }
