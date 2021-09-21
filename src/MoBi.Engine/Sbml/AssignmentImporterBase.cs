@@ -12,6 +12,7 @@ namespace MoBi.Engine.Sbml
    {
       protected AssignmentImporterBase(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, ASTHandler astHandler, IMoBiContext context) : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
+         _astHandler.NeedAbsolutePath = true;
       }
 
       public bool IsSpeciesAssignment(string symbol)
