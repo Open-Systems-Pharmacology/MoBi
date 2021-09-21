@@ -57,5 +57,11 @@ namespace MoBi.Core.SBML
          molinfo.GetAllSpecies().ShouldNotBeNull();
          molinfo.GetAllSpecies().Count.ShouldBeEqualTo(2);
       }
+
+      [Observation]
+      public void IsMultipleTimesInOneCompartmentTest()
+      {
+         _moleculeInformation.Any(info => info.IsMultipleTimesInOneCompartment()).ShouldBeFalse();
+      }
    }
 }
