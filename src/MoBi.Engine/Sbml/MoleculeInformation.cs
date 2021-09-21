@@ -21,7 +21,7 @@ namespace MoBi.Engine.Sbml
         /// </summary>
         public bool IsMultipleTimesInOneCompartment()
         {
-            return _container.Any(container=> _container.Any(con => container != con && container.Name == con.Name));
+            return _container.Any(target => _container.Any(duplicate => target != duplicate && target.Name == duplicate.Name));
         }
 
         public MoleculeInformation(Species species)
