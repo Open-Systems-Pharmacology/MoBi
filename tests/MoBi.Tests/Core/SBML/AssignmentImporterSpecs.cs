@@ -78,7 +78,11 @@ namespace MoBi.Core.SBML
       {
          var psvbb = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
          psvbb.ShouldNotBeNull();
-         psvbb.Where(psv => psv.Formula != null).Each(psv => psv.Formula.ObjectPaths.Each((p => p.Resolve<IFormulaUsable>(psv).ShouldNotBeNull())));
+         psvbb
+            .Where(psv => psv.Formula != null)                          //if it contains a formula
+            .Each(psv => psv.Formula.ObjectPaths.Each(                  //then all its objectPaths
+               p => p.Resolve<IFormulaUsable>(psv).ShouldNotBeNull())   //should be resolvable from where they are used
+            );
       }
 
    }
