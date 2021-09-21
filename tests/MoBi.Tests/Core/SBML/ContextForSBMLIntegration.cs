@@ -23,7 +23,7 @@ namespace MoBi.Core.SBML
          var context = IoC.Resolve<IMoBiContext>();
          context.NewProject();
          _moBiProject = context.CurrentProject;
-         //context.LoadFrom(_moBiProject);
+         context.LoadFrom(_moBiProject);
       }
 
       protected override void Because()
