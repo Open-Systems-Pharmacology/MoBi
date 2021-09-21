@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Domain.Model;
-using MoBi.Core.Reporting;
 using MoBi.Engine.Sbml;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Domain;
 
 namespace MoBi.Core.SBML
 {
@@ -62,5 +62,28 @@ namespace MoBi.Core.SBML
             }
          }
       }
+   }
+
+   public class InitialRulesAssignmentImporterTests : ContextForSBMLIntegration<RuleImporter>
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = Helper.TestFileFullPath("tiny_example_12.xml");
+      }
+
+
+      [Observation]
+      public void FormulaParameter_InitialAssignmentCreationTest()
+      {
+         var psvbb = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
+         psvbb.ShouldNotBeNull();
+         psvbb
+            .Where(psv => psv.Formula != null)                          //if it contains a formula
+            .Each(psv => psv.Formula.ObjectPaths.Each(                  //then all its objectPaths
+               p => p.Resolve<IFormulaUsable>(psv).ShouldNotBeNull())   //should be resolvable from where they are used
+            );
+      }
+
    }
 }
