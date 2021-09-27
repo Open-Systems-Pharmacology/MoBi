@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using MoBi.Assets;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
@@ -13,6 +14,8 @@ namespace MoBi.BatchTool.Services
 
    public class BatchLogger : IBatchLogger
    {
+      public string DefaultCategoryName { get; set; } = AppConstants.PRODUCT_NAME;
+
       private readonly IEventPublisher _eventPublisher;
       private readonly IList<string> _entries;
 
