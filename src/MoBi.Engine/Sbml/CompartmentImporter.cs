@@ -95,7 +95,7 @@ namespace MoBi.Engine.Sbml
             .WithDescription(SBMLConstants.SBML_NOTES + compartment.getNotesString());
 
          CreateMoleculeProperties(container);
-         container.Add(CreateVolumeParameter());
+         container.Add(CreateVolumeParameter(compartment));
 
          if (!compartment.isSetSize()) return container;
          var sizeParameter = CreateSizeParameter(compartment);
@@ -116,13 +116,18 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Creates a Volume Parameter for a MoBi Container. 
       /// </summary>
-      private IEntity CreateVolumeParameter()
+      private IEntity CreateVolumeParameter(Compartment compartment)
       {
-         IFormula formula = ObjectBaseFactory.Create<ConstantFormula>().WithValue(1);
+         var volume = 1.0;
+         if (compartment.isSetVolume())
+            volume = compartment.getVolume();
+         else if (compartment.isSetSize())
+            volume = compartment.getSize();
+         IFormula formula = ObjectBaseFactory.Create<ConstantFormula>().WithValue(volume);
 
          var volumeParameter = _objectBaseFactory.Create<IParameter>()
             .WithName(SBMLConstants.VOLUME)
-            .WithDimension(_dimensionFactory.Dimension(OSPSuite.Core.Domain.Constants.Dimension.VOLUME))
+            .WithDimension(_dimensionFactory.Dimension(Constants.Dimension.VOLUME))
             .WithFormula(formula);
 
          return volumeParameter;
