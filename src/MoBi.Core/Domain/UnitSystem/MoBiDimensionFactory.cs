@@ -9,16 +9,35 @@ namespace MoBi.Core.Domain.UnitSystem
    public interface IMoBiDimensionFactory : IDimensionFactory
    {
       IDimension TryGetDimensionCaseInsensitive(string dimensionName);
+      IDimension TryGetDimensionCaseInsensitiveFromUnit(string unitName);
    }
 
    public class MoBiDimensionFactory : DimensionFactory, IMoBiDimensionFactory
    {
       private IEnumerable<IMoBiDimensionMergingInformation> mobiDimensionMergingInformationList => AllMergingInformation.Cast<IMoBiDimensionMergingInformation>();
+      private IDictionary<string, string> _sbmlUnitsSynonyms = new Dictionary<string, string>()
+      {
+         { "litre", "l" }
+      };
 
       public IDimension TryGetDimensionCaseInsensitive(string dimensionName)
       {
          var dimension = Dimensions.FirstOrDefault(d => d.Name.Equals(dimensionName, StringComparison.OrdinalIgnoreCase));
          return dimension ?? NoDimension;
+      }
+
+      public IDimension TryGetDimensionCaseInsensitiveFromUnit(string unitName)
+      {
+         var dimension = Dimensions.FirstOrDefault(d => d.FindUnit(unitName, true) != null);
+         if (dimension != null)
+            return dimension;
+         if (_sbmlUnitsSynonyms.ContainsKey(unitName))
+         {
+            dimension = Dimensions.FirstOrDefault(d => d.Units.Any(u => u.Name.Equals(_sbmlUnitsSynonyms[unitName], StringComparison.OrdinalIgnoreCase)));
+            if (dimension != null)
+               return dimension;
+         }
+         return NoDimension;
       }
 
       protected override IDimensionConverter CreateConverterFor<T>(IDimension dimension, IDimension dimensionToMerge, T hasDimension)

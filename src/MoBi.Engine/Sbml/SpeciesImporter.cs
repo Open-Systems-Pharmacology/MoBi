@@ -8,6 +8,7 @@ using MoBi.Core.Domain.UnitSystem;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using Model = libsbmlcs.Model;
@@ -206,13 +207,15 @@ namespace MoBi.Engine.Sbml
                   if (!sbmlSpecies.isSetInitialConcentration()) continue;
 
                   //unit is {unit of amount}/{unit of size}
-                  msv.StartValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, new[] { sbmlSpecies.getInitialConcentration() })[0];
+                  var startValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, new[] { sbmlSpecies.getInitialConcentration() })[0];
+                  msv.StartValue = startValue;
+                  msv.Formula = new ConstantFormula(startValue);
 
                   var sizeDimension = GetSizeDimensionFromCompartment(sbmlSpecies, model);
                   if (amountDimension == null) continue;
                   if (sizeDimension == null) continue;
 
-                  var newDim = CreateNewDimension(amountDimension, sizeDimension);
+                  var newDim = _moBiDimensionFactory.DimensionForUnit($"{amountDimension.BaseUnit.Name}/{sizeDimension.BaseUnit.Name}") ?? CreateNewDimension(amountDimension, sizeDimension);
                   msv.Dimension = newDim;
                   molInfo.SetDimension(newDim);
                }
@@ -289,8 +292,8 @@ namespace MoBi.Engine.Sbml
       {
          var compartmentSizeUnit = model.getCompartment(species.getCompartment()).getUnits();
 
-         var sizeDimension = _moBiDimensionFactory.TryGetDimensionCaseInsensitive(compartmentSizeUnit);
-         if (sizeDimension == OSPSuite.Core.Domain.Constants.Dimension.NO_DIMENSION) return sizeDimension;
+         var sizeDimension = _moBiDimensionFactory.TryGetDimensionCaseInsensitiveFromUnit(compartmentSizeUnit);
+         if (sizeDimension == Constants.Dimension.NO_DIMENSION) return sizeDimension;
 
          if (_sbmlInformation.MobiDimension.ContainsKey(compartmentSizeUnit))
             sizeDimension = _sbmlInformation.MobiDimension[compartmentSizeUnit];

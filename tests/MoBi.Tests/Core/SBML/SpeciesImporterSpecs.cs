@@ -92,4 +92,20 @@ namespace MoBi.Core.SBML
          mbb.Any(molecule => molecule.Name == "abc").ShouldBeTrue();
       }
    }
+
+   public class WhenSettingMoleculeStartValue : ContextForSBMLIntegration<SpeciesImporter>
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = Helper.TestFileFullPath("tiny_example_12.xml");
+      }
+
+      [Observation]
+      public void should_understand_litre_as_unit()
+      {
+         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         msvbb.FirstOrDefault().Dimension.Name.ShouldBeEqualTo("Concentration (molar)");
+      }
+   }
 }
