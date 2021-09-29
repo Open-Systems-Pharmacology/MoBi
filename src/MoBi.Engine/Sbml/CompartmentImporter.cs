@@ -21,15 +21,17 @@ namespace MoBi.Engine.Sbml
       internal IContainer _topContainer;
       internal IContainer _eventsTopContainer;
       private readonly IDimensionFactory _dimensionFactory;
+      private IFormulaFactory _formulaFactory;
 
       public CompartmentImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory,
          IMoBiSpatialStructureFactory spatialStructureFactory, IMoBiDimensionFactory moBiDimensionFactory,
-         ASTHandler astHandler, IMoBiContext context)
+         ASTHandler astHandler, IMoBiContext context, IFormulaFactory formulaFactory)
          : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _objectBaseFactory = objectBaseFactory;
          _spatialStructureFactory = spatialStructureFactory;
          _dimensionFactory = moBiDimensionFactory;
+         _formulaFactory = formulaFactory;
       }
 
       protected override void Import(Model sbmlModel)
@@ -123,11 +125,12 @@ namespace MoBi.Engine.Sbml
             volume = compartment.getVolume();
          else if (compartment.isSetSize())
             volume = compartment.getSize();
-         IFormula formula = ObjectBaseFactory.Create<ConstantFormula>().WithValue(volume);
+         var dimension = _dimensionFactory.Dimension(Constants.Dimension.VOLUME);
+         IFormula formula = _formulaFactory.ConstantFormula(volume, dimension);
 
          var volumeParameter = _objectBaseFactory.Create<IParameter>()
             .WithName(SBMLConstants.VOLUME)
-            .WithDimension(_dimensionFactory.Dimension(Constants.Dimension.VOLUME))
+            .WithDimension(dimension)
             .WithFormula(formula);
 
          return volumeParameter;

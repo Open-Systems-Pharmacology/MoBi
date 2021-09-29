@@ -109,7 +109,8 @@ namespace MoBi.Core.SBML
          [Observation]
          public void VolumeIsSetFromSize()
          {
-            ((_container.Children.FirstOrDefault(x => x.Name == SBMLConstants.VOLUME) as IParameter).Formula as ConstantFormula).Value.ShouldBeEqualTo(5);
+            var parameter = _container.Children.FirstOrDefault(x => x.Name == SBMLConstants.VOLUME) as IParameter;
+            parameter.Value.ShouldBeEqualTo(5);
          }
       }
    }
