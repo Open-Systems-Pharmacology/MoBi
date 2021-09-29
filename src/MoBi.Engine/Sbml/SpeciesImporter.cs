@@ -209,7 +209,7 @@ namespace MoBi.Engine.Sbml
                   if (!sbmlSpecies.isSetInitialConcentration()) continue;
 
                   //unit is {unit of amount}/{unit of size}
-                  var startValue = sbmlSpecies.getInitialConcentration();
+                  var startValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, new[] { sbmlSpecies.getInitialConcentration() })[0];
                   msv.StartValue = startValue;
                   msv.Formula = _formulaFactory.ConstantFormula(startValue, _unitDefinitionImporter.ConvertionDictionary[sbmlUnit]);
 
