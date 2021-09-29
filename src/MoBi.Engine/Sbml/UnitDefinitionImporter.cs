@@ -23,6 +23,7 @@ namespace MoBi.Engine.Sbml
    {
       IDimension DimensionFor(string sbmlUnit);
       double[] ToMobiBaseUnit(string unit, IEnumerable<double> value);
+      IReadOnlyDictionary<string, IDimension> ConvertionDictionary { get; }
    }
 
    public class UnitDefinitionImporter : SBMLImporter, IStartable, IUnitDefinitionImporter
@@ -30,6 +31,7 @@ namespace MoBi.Engine.Sbml
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly IDictionary<int, Unit> _baseUnitsDictionary;
       private readonly IDictionary<string, UnitConvertionInfo> _unitConvertionDictionary;
+      public IReadOnlyDictionary<string, IDimension> ConvertionDictionary { get => _unitConvertionDictionary.ToDictionary(kv => kv.Key, kv => kv.Value.Dimension); }
 
       public UnitDefinitionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory mobiDimensionFactory, ASTHandler astHandler, IMoBiContext context) : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
