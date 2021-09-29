@@ -16,7 +16,7 @@ namespace MoBi.Engine.Sbml
    {
       public string Name { get => (_direct?.Name ?? "1") + (_inverse != null ? $"/{_inverse.Name}" : ""); }
       public double Rate { get; private set; } = 1;
-      public void AddUnit(int kind, double exponent, double multiplier, IDictionary<int, Unit>  baseUnitsDictionary)
+      public void AddUnit(int kind, double exponent, double multiplier, IDictionary<int, Unit> baseUnitsDictionary)
       {
          if (!baseUnitsDictionary.ContainsKey(kind))
             return;
@@ -127,8 +127,8 @@ namespace MoBi.Engine.Sbml
          {
             var sbmlUnitDefinition = unitDefinition.getUnit(i);
             combinedUnit.AddUnit(
-               sbmlUnitDefinition.getKind(), 
-               sbmlUnitDefinition.getExponent(), 
+               sbmlUnitDefinition.getKind(),
+               sbmlUnitDefinition.getExponent(),
                sbmlUnitDefinition.getMultiplier(),
                _baseUnitsDictionary);
          }
