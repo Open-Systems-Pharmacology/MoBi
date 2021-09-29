@@ -93,7 +93,7 @@ namespace MoBi.Core.SBML
       }
    }
 
-   public class WhenSettingMoleculeStartValue : ContextForSBMLIntegration<SpeciesImporter>
+   public class When_setting_molecule_start_value : ContextForSBMLIntegration<SpeciesImporter>
    {
       protected override void Context()
       {

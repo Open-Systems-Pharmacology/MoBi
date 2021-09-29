@@ -28,12 +28,12 @@ namespace MoBi.Core.Domain.UnitSystem
 
       public IDimension TryGetDimensionCaseInsensitiveFromUnit(string unitName)
       {
-         var dimension = Dimensions.FirstOrDefault(d => d.FindUnit(unitName, true) != null);
+         var dimension = DimensionForUnit(unitName);
          if (dimension != null)
             return dimension;
          if (_sbmlUnitsSynonyms.ContainsKey(unitName))
          {
-            dimension = Dimensions.FirstOrDefault(d => d.Units.Any(u => u.Name.Equals(_sbmlUnitsSynonyms[unitName], StringComparison.OrdinalIgnoreCase)));
+            dimension = DimensionForUnit(_sbmlUnitsSynonyms[unitName]);
             if (dimension != null)
                return dimension;
          }

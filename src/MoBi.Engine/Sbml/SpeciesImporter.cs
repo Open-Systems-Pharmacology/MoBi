@@ -25,9 +25,10 @@ namespace MoBi.Engine.Sbml
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly Dictionary<string, Dimension> _dimensionDictionary;
       private IUnitDefinitionImporter _unitDefinitionImporter;
+      private IFormulaFactory _formulaFactory;
       private int _counter;
 
-      public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IMoleculeStartValuesCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter)
+      public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IMoleculeStartValuesCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter, IFormulaFactory formulaFactory)
           : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _moleculeBuilderFactory = moleculeBuilderFactory;
@@ -36,6 +37,7 @@ namespace MoBi.Engine.Sbml
          _counter = 1;
          _dimensionDictionary = new Dictionary<string, Dimension>();
          _unitDefinitionImporter = unitDefinitionImporter;
+         _formulaFactory = formulaFactory;
       }
 
       protected override void Import(Model model)
@@ -207,9 +209,9 @@ namespace MoBi.Engine.Sbml
                   if (!sbmlSpecies.isSetInitialConcentration()) continue;
 
                   //unit is {unit of amount}/{unit of size}
-                  var startValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, new[] { sbmlSpecies.getInitialConcentration() })[0];
+                  var startValue = sbmlSpecies.getInitialConcentration();
                   msv.StartValue = startValue;
-                  msv.Formula = new ConstantFormula(startValue);
+                  msv.Formula = _formulaFactory.ConstantFormula(startValue, _unitDefinitionImporter.ConvertionDictionary[sbmlUnit]);
 
                   var sizeDimension = GetSizeDimensionFromCompartment(sbmlSpecies, model);
                   if (amountDimension == null) continue;
