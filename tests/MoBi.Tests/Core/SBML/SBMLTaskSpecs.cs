@@ -51,5 +51,13 @@ namespace MoBi.Core.SBML
          var result = _modelConstructor.CreateModelFrom(buildConfiguration, name);
          result.State.ShouldBeEqualTo(ValidationState.Valid);
       }
+
+      [Observation]
+      public void should_translate_new_units_properly()
+      {
+         var msv = _moBiProject.MoleculeStartValueBlockCollection.First();
+         var glucoseStartValue = msv.First();
+         glucoseStartValue.StartValue.Value.ShouldBeEqualTo(5000);
+      }
    }
 }
