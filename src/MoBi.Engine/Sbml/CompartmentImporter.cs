@@ -22,16 +22,18 @@ namespace MoBi.Engine.Sbml
       internal IContainer _eventsTopContainer;
       private readonly IDimensionFactory _dimensionFactory;
       private IFormulaFactory _formulaFactory;
+      private IUnitDefinitionImporter _unitDefinitionImporter;
 
       public CompartmentImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory,
          IMoBiSpatialStructureFactory spatialStructureFactory, IMoBiDimensionFactory moBiDimensionFactory,
-         ASTHandler astHandler, IMoBiContext context, IFormulaFactory formulaFactory)
+         ASTHandler astHandler, IMoBiContext context, IFormulaFactory formulaFactory, IUnitDefinitionImporter unitDefinitionImporter)
          : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _objectBaseFactory = objectBaseFactory;
          _spatialStructureFactory = spatialStructureFactory;
          _dimensionFactory = moBiDimensionFactory;
          _formulaFactory = formulaFactory;
+         _unitDefinitionImporter = unitDefinitionImporter;
       }
 
       protected override void Import(Model sbmlModel)
@@ -125,12 +127,14 @@ namespace MoBi.Engine.Sbml
             volume = compartment.getVolume();
          else if (compartment.isSetSize())
             volume = compartment.getSize();
-         var dimension = _dimensionFactory.Dimension(Constants.Dimension.VOLUME);
-         IFormula formula = _formulaFactory.ConstantFormula(volume, dimension);
+
+         var unit = compartment.getUnits();
+         var baseValue = _unitDefinitionImporter.ToMobiBaseUnit(unit, volume);
+         IFormula formula = _formulaFactory.ConstantFormula(baseValue.value, baseValue.dimension);
 
          var volumeParameter = _objectBaseFactory.Create<IParameter>()
             .WithName(SBMLConstants.VOLUME)
-            .WithDimension(dimension)
+            .WithDimension(baseValue.dimension)
             .WithFormula(formula);
 
          return volumeParameter;
