@@ -12,6 +12,24 @@ using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
 
 namespace MoBi.Engine.Sbml
 {
+   internal class CombinedUnit
+   {
+      public string Name { get => (_direct?.Name ?? "1") + (_inverse != null ? $"/{_inverse.Name}" : ""); }
+      public double Rate { get; private set; } = 1;
+      public void AddUnit(int kind, double exponent, double multiplier, IDictionary<int, Unit> baseUnitsDictionary)
+      {
+         if (!baseUnitsDictionary.ContainsKey(kind))
+            return;
+         if (exponent < 0)
+            _inverse = baseUnitsDictionary[kind];
+         else
+            _direct = baseUnitsDictionary[kind];
+         Rate *= Math.Pow(multiplier, exponent);
+      }
+      private Unit _direct { get; set; }
+      private Unit _inverse { get; set; }
+   }
+
    internal class UnitConvertionInfo
    {
       public IDimension Dimension { get; set; }
@@ -31,16 +49,19 @@ namespace MoBi.Engine.Sbml
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly IDictionary<int, Unit> _baseUnitsDictionary;
       private readonly IDictionary<string, UnitConvertionInfo> _unitConvertionDictionary;
+      private IDimensionFactory _dimensionFactory;
+      public IReadOnlyDictionary<string, IDimension> ConvertionDictionary { get => _unitConvertionDictionary.ToDictionary(kv => kv.Key, kv => kv.Value.Dimension); }
       private IDictionary<string, string> _sbmlUnitsSynonyms = new Dictionary<string, string>()
       {
          { "litre", "l" }
       };
 
-      public UnitDefinitionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory mobiDimensionFactory, ASTHandler astHandler, IMoBiContext context) : base(objectPathFactory, objectBaseFactory, astHandler, context)
+      public UnitDefinitionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory mobiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IDimensionFactory dimensionFactory) : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _moBiDimensionFactory = mobiDimensionFactory;
          _baseUnitsDictionary = new Dictionary<int, Unit>();
          _unitConvertionDictionary = new Dictionary<string, UnitConvertionInfo>();
+         _dimensionFactory = dimensionFactory;
          InitBaseUnitsDictionary();
       }
 
@@ -79,7 +100,6 @@ namespace MoBi.Engine.Sbml
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_PASCAL, _moBiDimensionFactory.Dimension("Pressure").Unit("Pa"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_RADIAN, _moBiDimensionFactory.Dimension("Radian").Unit("rad"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SECOND, _moBiDimensionFactory.Dimension("Time").Unit("s"));
-         _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SECOND * -1, _moBiDimensionFactory.Dimension("Inversed time").Unit("1/s"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SIEMENS, _moBiDimensionFactory.Dimension("Siemens").Unit("S"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_SIEVERT, _moBiDimensionFactory.Dimension("Sievert").Unit("Sv"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_STERADIAN, _moBiDimensionFactory.Dimension("Steradian").Unit("sr"));
@@ -115,28 +135,27 @@ namespace MoBi.Engine.Sbml
             return dimension;
          }
 
+         var combinedUnit = new CombinedUnit();
          for (long i = 0; i < unitDefinition.getNumUnits(); i++)
          {
             var sbmlUnitDefinition = unitDefinition.getUnit(i);
-            var mobiUnit = SBMLBaseUnitToMoBi(sbmlUnitDefinition);
-            if (mobiUnit == null) continue;
-            var unitDimension = _moBiDimensionFactory.DimensionForUnit(mobiUnit.Name);
-            if (unitDimension != Constants.Dimension.NO_DIMENSION)
-            {
-               _sbmlInformation.MobiDimension[sbmlUnit] = unitDimension;
-               _unitConvertionDictionary.Add(sbmlUnit, new UnitConvertionInfo() { Dimension = unitDimension, Unit = mobiUnit, Rate = Math.Pow(sbmlUnitDefinition.getMultiplier(), sbmlUnitDefinition.getExponent()) });
-               return unitDimension;
-            }
+            combinedUnit.AddUnit(
+               sbmlUnitDefinition.getKind(),
+               sbmlUnitDefinition.getExponent(),
+               sbmlUnitDefinition.getMultiplier(),
+               _baseUnitsDictionary);
          }
+         var unitName = combinedUnit.Name;
+         var dimensionAndUnit = _dimensionFactory.FindUnit(unitName);
+         if (dimensionAndUnit.dimension != Constants.Dimension.NO_DIMENSION)
+         {
+            _sbmlInformation.MobiDimension[sbmlUnit] = dimensionAndUnit.dimension;
+            _unitConvertionDictionary.Add(sbmlUnit, new UnitConvertionInfo() { Dimension = dimensionAndUnit.dimension, Unit = dimensionAndUnit.unit, Rate = combinedUnit.Rate });
+            return dimensionAndUnit.dimension;
+         }
+
          _unitConvertionDictionary.Add(sbmlUnit, new UnitConvertionInfo() { Dimension = dimension, Unit = dimension.DefaultUnit, Rate = 1 });
          return dimension;
-      }
-
-      public Unit SBMLBaseUnitToMoBi(libsbmlcs.Unit sbmlBaseUnit)
-      {
-         if (sbmlBaseUnit == null) return null;
-         var kind = (sbmlBaseUnit.getExponent() != 0 ? sbmlBaseUnit.getExponent() : 1) * sbmlBaseUnit.getKind();
-         return _baseUnitsDictionary.ContainsKey(kind) ? _baseUnitsDictionary[kind] : null;
       }
 
       public override void AddToProject() { }

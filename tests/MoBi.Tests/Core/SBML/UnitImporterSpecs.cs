@@ -39,7 +39,7 @@ namespace MoBi.Core.SBML
          protected override void Because()
          {
             _dimensionFactoy = IoC.Resolve<IMoBiDimensionFactory>();
-            sut = new UnitDefinitionImporter(IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IObjectBaseFactory>(), _dimensionFactoy, IoC.Resolve<ASTHandler>(), A.Fake<IMoBiContext>());
+            sut = new UnitDefinitionImporter(IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IObjectBaseFactory>(), _dimensionFactoy, IoC.Resolve<ASTHandler>(), A.Fake<IMoBiContext>(), A.Fake<IDimensionFactory>());
             //create unit "substance"
             _unit = new Unit(3, 1);
             _unit.setExponent(1);
@@ -141,6 +141,24 @@ namespace MoBi.Core.SBML
          mol.ShouldNotBeNull();
          mol.Dimension.ShouldNotBeNull();
          mol.Dimension.ToString().ShouldBeEqualTo("Amount");
+      }
+   }
+
+   public class When_importing_combined_units : UnitImporterSpecs
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = Helper.TestFileFullPath("tiny_example_12.xml");
+      }
+
+      [Observation]
+      public void should_find_combined_dimensions()
+      {
+         var tc = _moBiProject.SpatialStructureCollection.FirstOrDefault().TopContainers.FirstOrDefault();
+         var parameter = tc.GetSingleChildByName<IParameter>("Vmax_ATPASE");
+         parameter.ShouldNotBeNull();
+         parameter.DisplayUnit.ToString().ShouldBeEqualTo("kat");
       }
    }
 }
