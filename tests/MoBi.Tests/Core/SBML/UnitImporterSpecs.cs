@@ -39,7 +39,7 @@ namespace MoBi.Core.SBML
          protected override void Because()
          {
             _dimensionFactoy = IoC.Resolve<IMoBiDimensionFactory>();
-            sut = new UnitDefinitionImporter(IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IObjectBaseFactory>(), _dimensionFactoy, IoC.Resolve<ASTHandler>(), A.Fake<IMoBiContext>());
+            sut = new UnitDefinitionImporter(IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IObjectBaseFactory>(), _dimensionFactoy, IoC.Resolve<ASTHandler>(), A.Fake<IMoBiContext>(), A.Fake<IDimensionFactory>());
             //create unit "substance"
             _unit = new Unit(3, 1);
             _unit.setExponent(1);
