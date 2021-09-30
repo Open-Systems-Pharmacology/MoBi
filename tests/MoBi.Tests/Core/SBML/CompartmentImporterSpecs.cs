@@ -6,6 +6,8 @@ using MoBi.Engine.Sbml;
 using MoBi.IntegrationTests;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using Model = libsbmlcs.Model;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.SBML
 {
@@ -102,6 +104,13 @@ namespace MoBi.Core.SBML
             var containsVolumeParam = _container3.Children.Any(x => x.Name == SBMLConstants.VOLUME);
             containsSizeParam.ShouldBeTrue();
             containsVolumeParam.ShouldBeTrue();
+         }
+
+         [Observation]
+         public void VolumeIsSetFromSize()
+         {
+            var parameter = _container.Parameter(SBMLConstants.VOLUME);
+            parameter.Value.ShouldBeEqualTo(5);
          }
       }
    }
