@@ -209,9 +209,9 @@ namespace MoBi.Engine.Sbml
                   if (!sbmlSpecies.isSetInitialConcentration()) continue;
 
                   //unit is {unit of amount}/{unit of size}
-                  var startValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, new[] { sbmlSpecies.getInitialConcentration() })[0];
-                  msv.StartValue = startValue;
-                  msv.Formula = _formulaFactory.ConstantFormula(startValue, _unitDefinitionImporter.ConvertionDictionary[sbmlUnit]);
+                  var baseValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, sbmlSpecies.getInitialConcentration());
+                  msv.StartValue = baseValue.value;
+                  msv.Formula = _formulaFactory.ConstantFormula(baseValue.value, baseValue.dimension);
 
                   var sizeDimension = GetSizeDimensionFromCompartment(sbmlSpecies, model);
                   if (amountDimension == null) continue;
@@ -292,9 +292,9 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       private IDimension GetSizeDimensionFromCompartment(Species species, Model model)
       {
-         var compartmentSizeUnit = model.getCompartment(species.getCompartment()).getUnits();
+         var compartmentSizeUnit = _unitDefinitionImporter.TranslateUnit(model.getCompartment(species.getCompartment()).getUnits());
 
-         var sizeDimension = _moBiDimensionFactory.TryGetDimensionCaseInsensitiveFromUnit(compartmentSizeUnit);
+         var sizeDimension = _moBiDimensionFactory.TryGetDimensionCaseInsensitive(compartmentSizeUnit);
          if (sizeDimension == Constants.Dimension.NO_DIMENSION) return sizeDimension;
 
          if (_sbmlInformation.MobiDimension.ContainsKey(compartmentSizeUnit))
