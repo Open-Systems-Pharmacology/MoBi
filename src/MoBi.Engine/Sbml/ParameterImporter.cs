@@ -11,12 +11,14 @@ namespace MoBi.Engine.Sbml
    {
       private readonly List<IEntity> _paramList;
       private IUnitDefinitionImporter _unitDefinitionImporter;
+      private IFormulaFactory _formulaFactory;
 
-      public ParameterImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter)
+      public ParameterImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter, IFormulaFactory formulaFactory)
           : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _paramList = new List<IEntity>();
          _unitDefinitionImporter = unitDefinitionImporter;
+         _formulaFactory = formulaFactory;
       }
 
       protected override void Import(SBMLModel model)
@@ -43,12 +45,11 @@ namespace MoBi.Engine.Sbml
          }
 
          var sbmlUnit = sbmlParameter.getUnits();
-         var dimension = _unitDefinitionImporter.DimensionFor(sbmlUnit);
-         value = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, new[] { value })[0];
+         var baseValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, value);
          return ObjectBaseFactory.Create<IParameter>()
           .WithName(sbmlParameter.getId())
-          .WithFormula(ObjectBaseFactory.Create<ConstantFormula>().WithValue(value))
-          .WithDimension(dimension);
+          .WithFormula(_formulaFactory.ConstantFormula(baseValue.value, baseValue.dimension))
+          .WithDimension(baseValue.dimension);
       }
 
       /// <summary>

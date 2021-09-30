@@ -100,8 +100,8 @@ namespace MoBi.Core.SBML
          [Observation]
          public void NewDimensionsTests()
          {
-            sut.ToMobiBaseUnit("substance", new[] { 3e6 }).ShouldBeEqualTo(new[] { 3e12 });
-            sut.ToMobiBaseUnit("inverse_day", new[] { 0.83 }).ShouldBeEqualTo(new[] { 0.83/1440 }); //base unit is in minutes so 1440 minutes in one day
+            sut.ToMobiBaseUnit("substance", 3e6).value.ShouldBeEqualTo(3e12);
+            sut.ToMobiBaseUnit("inverse_day", 0.83).value.ShouldBeEqualTo(0.83/1440); //base unit is in minutes so 1440 minutes in one day
          }
       }
    }

@@ -22,8 +22,8 @@ namespace MoBi.Engine.Sbml
    public interface IUnitDefinitionImporter : ISBMLImporter
    {
       IDimension DimensionFor(string sbmlUnit);
-      double[] ToMobiBaseUnit(string unit, IEnumerable<double> value);
-      IReadOnlyDictionary<string, IDimension> ConvertionDictionary { get; }
+      (double value, IDimension dimension) ToMobiBaseUnit(string unit, double value);
+      string TranslateUnit(string sbmlUnit);
    }
 
    public class UnitDefinitionImporter : SBMLImporter, IStartable, IUnitDefinitionImporter
@@ -31,7 +31,10 @@ namespace MoBi.Engine.Sbml
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly IDictionary<int, Unit> _baseUnitsDictionary;
       private readonly IDictionary<string, UnitConvertionInfo> _unitConvertionDictionary;
-      public IReadOnlyDictionary<string, IDimension> ConvertionDictionary { get => _unitConvertionDictionary.ToDictionary(kv => kv.Key, kv => kv.Value.Dimension); }
+      private IDictionary<string, string> _sbmlUnitsSynonyms = new Dictionary<string, string>()
+      {
+         { "litre", "l" }
+      };
 
       public UnitDefinitionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory mobiDimensionFactory, ASTHandler astHandler, IMoBiContext context) : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
@@ -39,6 +42,13 @@ namespace MoBi.Engine.Sbml
          _baseUnitsDictionary = new Dictionary<int, Unit>();
          _unitConvertionDictionary = new Dictionary<string, UnitConvertionInfo>();
          InitBaseUnitsDictionary();
+      }
+
+      public string TranslateUnit(string sbmlUnit)
+      {
+         if (_sbmlUnitsSynonyms.ContainsKey(sbmlUnit))
+            return _sbmlUnitsSynonyms[sbmlUnit];
+         return sbmlUnit;
       }
 
       private void InitBaseUnitsDictionary()
@@ -133,13 +143,22 @@ namespace MoBi.Engine.Sbml
 
       public IDimension DimensionFor(string sbmlUnit)
       {
-         return _unitConvertionDictionary[sbmlUnit].Dimension;
+         if (_unitConvertionDictionary.ContainsKey(sbmlUnit))
+            return _unitConvertionDictionary[sbmlUnit].Dimension;
+
+         return _moBiDimensionFactory.DimensionForUnit(TranslateUnit(sbmlUnit)) ?? _moBiDimensionFactory.NoDimension;
       }
 
-      public double[] ToMobiBaseUnit(string unit, IEnumerable<double> value)
+      public (double value, IDimension dimension) ToMobiBaseUnit(string unit, double value)
       {
-         var convertionData = _unitConvertionDictionary[unit];
-         return convertionData.Dimension.UnitValuesToBaseUnitValues(convertionData.Unit, value.Select(v => v * convertionData.Rate));
+         if (_unitConvertionDictionary.ContainsKey(unit))
+         {
+            var convertionData = _unitConvertionDictionary[unit];
+            return (convertionData.Dimension.UnitValueToBaseUnitValue(convertionData.Unit, value * convertionData.Rate), convertionData.Dimension);
+         }
+         var dimension = DimensionFor(unit);
+
+         return (dimension.UnitValueToBaseUnitValue(dimension.FindUnit(TranslateUnit(unit)), value), dimension);
       }
 
       public void Start()

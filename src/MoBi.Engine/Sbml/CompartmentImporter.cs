@@ -21,15 +21,19 @@ namespace MoBi.Engine.Sbml
       internal IContainer _topContainer;
       internal IContainer _eventsTopContainer;
       private readonly IDimensionFactory _dimensionFactory;
+      private IFormulaFactory _formulaFactory;
+      private IUnitDefinitionImporter _unitDefinitionImporter;
 
       public CompartmentImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory,
          IMoBiSpatialStructureFactory spatialStructureFactory, IMoBiDimensionFactory moBiDimensionFactory,
-         ASTHandler astHandler, IMoBiContext context)
+         ASTHandler astHandler, IMoBiContext context, IFormulaFactory formulaFactory, IUnitDefinitionImporter unitDefinitionImporter)
          : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _objectBaseFactory = objectBaseFactory;
          _spatialStructureFactory = spatialStructureFactory;
          _dimensionFactory = moBiDimensionFactory;
+         _formulaFactory = formulaFactory;
+         _unitDefinitionImporter = unitDefinitionImporter;
       }
 
       protected override void Import(Model sbmlModel)
@@ -95,7 +99,7 @@ namespace MoBi.Engine.Sbml
             .WithDescription(SBMLConstants.SBML_NOTES + compartment.getNotesString());
 
          CreateMoleculeProperties(container);
-         container.Add(CreateVolumeParameter());
+         container.Add(CreateVolumeParameter(compartment));
 
          if (!compartment.isSetSize()) return container;
          var sizeParameter = CreateSizeParameter(compartment);
@@ -116,13 +120,21 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Creates a Volume Parameter for a MoBi Container. 
       /// </summary>
-      private IEntity CreateVolumeParameter()
+      private IEntity CreateVolumeParameter(Compartment compartment)
       {
-         IFormula formula = ObjectBaseFactory.Create<ConstantFormula>().WithValue(1);
+         var volume = 1.0;
+         if (compartment.isSetVolume())
+            volume = compartment.getVolume();
+         else if (compartment.isSetSize())
+            volume = compartment.getSize();
+
+         var unit = compartment.getUnits();
+         var baseValue = _unitDefinitionImporter.ToMobiBaseUnit(unit, volume);
+         IFormula formula = _formulaFactory.ConstantFormula(baseValue.value, baseValue.dimension);
 
          var volumeParameter = _objectBaseFactory.Create<IParameter>()
             .WithName(SBMLConstants.VOLUME)
-            .WithDimension(_dimensionFactory.Dimension(OSPSuite.Core.Domain.Constants.Dimension.VOLUME))
+            .WithDimension(baseValue.dimension)
             .WithFormula(formula);
 
          return volumeParameter;
