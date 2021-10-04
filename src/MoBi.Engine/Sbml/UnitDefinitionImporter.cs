@@ -16,6 +16,8 @@ namespace MoBi.Engine.Sbml
    {
       public string Name => (_direct?.Name ?? "1") + (_inverse != null ? $"/{_inverse.Name}" : "");
 
+      // Rate is the factor to convert from the unit used in sbml to the base unit used in sbml. 
+      // This is not necessarily the base unit in the ospsuite (1/s vs 1/min for inversed day for instance)
       public double Rate { get; private set; } = 1;
 
       private Unit _direct;
@@ -38,7 +40,10 @@ namespace MoBi.Engine.Sbml
    internal class UnitConversionInfo
    {
       public IDimension Dimension { get; set; }
+
+      //Unit in which the values are stored in SBML Base unit
       public Unit Unit { get; set; }
+
       public double Rate { get; set; }
    }
 

@@ -1,17 +1,14 @@
 ﻿using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
 using FakeItEasy;
 using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.UnitSystem;
 using MoBi.Engine.Sbml;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Container;
 using Model = libsbmlcs.Model;
-using Unit = libsbmlcs.Unit;
 
 namespace MoBi.Core.SBML
 {
@@ -66,7 +63,7 @@ namespace MoBi.Core.SBML
 
          _unit3 = _sbmlModel.createUnit();
          _unit3.setExponent(-1);
-         _unit3.setMultiplier(86400.0); //86400 seconds in one day
+         _unit3.setMultiplier(1 / 86400.0); //86400 seconds in one day
          _unit3.setScale(0);
          _unit3.setKind(libsbml.UnitKind_forName("second"));
 
@@ -84,10 +81,9 @@ namespace MoBi.Core.SBML
       public void NewDimensionsTests()
       {
          sut.ToMobiBaseUnit("substance", 3e6).value.ShouldBeEqualTo(3e12);
-         sut.ToMobiBaseUnit("inverse_day", 0.83).value.ShouldBeEqualTo(0.83 / 1440); //base unit is in minutes so 1440 minutes in one day
+         sut.ToMobiBaseUnit("inverse_day", 10).value.ShouldBeEqualTo(10.0 / 1440); //base unit is in minutes so 1440 minutes in one day
       }
    }
-
 
    public class UnitTests : UnitImporterSpecs
    {
