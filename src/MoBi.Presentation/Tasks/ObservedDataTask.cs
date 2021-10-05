@@ -10,17 +10,17 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Import;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Infrastructure.Import.Core;
 using ColumnInfo = OSPSuite.Infrastructure.Import.Core.ColumnInfo;
 using OSPSuite.Infrastructure.Import.Services;
 using static OSPSuite.Core.Domain.Constants;
 using Command = OSPSuite.Assets.Command;
-using DimensionInfo = OSPSuite.Infrastructure.Import.Core;
+using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
 using ObservedData = OSPSuite.Assets.ObservedData;
 
 namespace MoBi.Presentation.Tasks
@@ -46,7 +46,6 @@ namespace MoBi.Presentation.Tasks
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IMoBiContext _context;
       private readonly IInteractionTask _interactionTask;
-      private readonly IDimension _molWeightDimension;
       private readonly IDialogCreator _mobiDialogCreator;
 
 
@@ -65,27 +64,29 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = interactionTask;
          _dimensionFactory = dimensionFactory;
          _context = context;
-         _molWeightDimension = dimensionFactory.Dimension(AppConstants.DimensionNames.MOL_WEIGHT);
       }
 
       public void AddObservedDataToProject()
       {
-         var data = _dataImporter.ImportDataSets(
-            createMetaData().ToList(), 
+         var (metaDataCategories, settings) = initializeSettings();
+
+         var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
+            metaDataCategories,  
             createColumnInfos().ToList(), 
-            createDataImportSettings(),
+            settings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
 
-         if (data.DataRepositories == null || data.Configuration == null) return;
+         if (dataRepositories == null || configuration == null) 
+            return;
 
-         foreach (var repository in data.DataRepositories)
+         foreach (var repository in dataRepositories)
          {
             AddObservedDataToProject(repository);
             adjustRepositoryPaths(repository);
          }
 
-         AddImporterConfigurationToProject(data.Configuration);
+         AddImporterConfigurationToProject(configuration);
       }
 
       private void adjustRepositoryPaths(DataRepository repository)
@@ -131,15 +132,15 @@ namespace MoBi.Presentation.Tasks
             return;
 
          var simulations = _context.CurrentProject.Simulations;
-         var macoCommand = new MoBiMacroCommand
+         var macroCommand = new MoBiMacroCommand
          {
             CommandType = Command.CommandTypeDelete,
             ObjectType = ObjectTypes.ObservedData,
             Description = AppConstants.Commands.DeleteAllResultsFromAllSimulations,
          };
 
-         simulations.Each(s => macoCommand.AddCommand(deleteAllResultsFromSimulationCommand(s)));
-         _context.AddToHistory(macoCommand.Run(_context));
+         simulations.Each(s => macroCommand.AddCommand(deleteAllResultsFromSimulationCommand(s)));
+         _context.AddToHistory(macroCommand.Run(_context));
       }
 
       private static MoBiMacroCommand deleteAllResultsFromSimulationCommand(IMoBiSimulation simulation)
@@ -158,16 +159,30 @@ namespace MoBi.Presentation.Tasks
          return macroCommand;
       }
 
-      private DimensionInfo.DataImporterSettings createDataImportSettings()
+      private (IReadOnlyList<MetaDataCategory>, DataImporterSettings) initializeSettings()
       {
-         var settings = new DimensionInfo.DataImporterSettings
+         var dataImporterSettings = new DataImporterSettings
          {
             IconName = ApplicationIcons.MoBi.IconName,
             Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
          };
-         addNamingPatterns(settings);
-         settings.NameOfMetaDataHoldingMolecularWeightInformation = AppConstants.Parameters.MOLECULAR_WEIGHT;
-         return settings;
+
+         addNamingPatterns(dataImporterSettings);
+         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
+         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
+
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategories().ToList();
+         populateMetaDataLists(metaDataCategories);
+
+         return (metaDataCategories, dataImporterSettings);
+      }
+
+
+      private void populateMetaDataLists(IList<MetaDataCategory> metaDataCategories)
+      {
+         addPredefinedOrganValues(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
+         addPredefinedCompartmentValues(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
+         addPredefinedMoleculeNames(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -275,15 +290,14 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration)
       {
-         var dataImporterSettings = createDataImportSettings();
+         var (metaDataCategories, dataImporterSettings)  = initializeSettings();
 
          //do we really need this in MoBi????
-         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          var colInfos = createColumnInfos().ToList();
 
          var importedObservedData = _dataImporter.ImportFromConfiguration(
-            configuration, 
-            createMetaData().ToList(),
+            configuration,
+            metaDataCategories,
             colInfos, 
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
@@ -370,40 +384,11 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      private IEnumerable<DimensionInfo.MetaDataCategory> createMetaData()
+      private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
       {
-         yield return new DimensionInfo.MetaDataCategory
-         {
-            Name = AppConstants.Parameters.MOLECULAR_WEIGHT,
-            DisplayName = $"{AppConstants.Parameters.MOLECULAR_WEIGHT} [{_molWeightDimension.DefaultUnit}]",
-            Description = AppConstants.Parameters.MOLECULAR_WEIGHT,
-            MetaDataType = typeof(double),
-            IsMandatory = false,
-            MinValue = 0,
-            MinValueAllowed = false
-         };
+         if (metaDataCategory == null)
+            return;
 
-         yield return createMetaDataCategory<string>(Constants.ObservedData.ORGAN,
-            isMandatory: false,
-            isListOfValuesFixed: true,
-            fixedValuesRetriever: addPredefinedOrganValues,
-            description: ObservedData.ObservedDataOrganDescription);
-
-         yield return createMetaDataCategory<string>(Constants.ObservedData.COMPARTMENT,
-            isMandatory: false,
-            isListOfValuesFixed: true,
-            fixedValuesRetriever: addPredefinedCompartmentValues,
-            description: ObservedData.ObservedDataCompartmentDescription);
-
-         yield return createMetaDataCategory<string>(Constants.ObservedData.MOLECULE,
-            isMandatory: false, isListOfValuesFixed: true,
-            fixedValuesRetriever: addPredefinedMoleculeNames,
-            description: ObservedData.ObservedDataMoleculeDescription,
-            allowsManualInput: true);
-      }
-
-      private void addPredefinedMoleculeNames(DimensionInfo.MetaDataCategory metaDataCategory)
-      {
          metaDataCategory.ShouldListOfValuesBeIncluded = true;
          allMolecules().OrderBy(molecule => molecule.Name).Each(molecule => addInfoToCategory(metaDataCategory, molecule));
       }
@@ -413,19 +398,22 @@ namespace MoBi.Presentation.Tasks
          return _context.CurrentProject.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
       }
 
-      private static void addUndefinedValueTo(DimensionInfo.MetaDataCategory metaDataCategory)
+      private static void addUndefinedValueTo(MetaDataCategory metaDataCategory)
       {
          metaDataCategory.ListOfValues.Add(AppConstants.Undefined, AppConstants.Undefined);
       }
 
-      private void addPredefinedOrganValues(DimensionInfo.MetaDataCategory metaDataCategory)
+      private void addPredefinedOrganValues(MetaDataCategory metaDataCategory)
       {
+         if (metaDataCategory == null)
+            return;
+
          addUndefinedValueTo(metaDataCategory);
          metaDataCategory.ShouldListOfValuesBeIncluded = true;
          allOrgans().OrderBy(org => org.Name).Each(organ => addInfoToCategory(metaDataCategory, organ));
       }
 
-      private void addNamingPatterns(DimensionInfo.DataImporterSettings dataImporterSettings)
+      private void addNamingPatterns(DataImporterSettings dataImporterSettings)
       {
          dataImporterSettings.AddNamingPatternMetaData(
             FILE
@@ -456,8 +444,11 @@ namespace MoBi.Presentation.Tasks
          );
       }
 
-      private void addPredefinedCompartmentValues(DimensionInfo.MetaDataCategory metaDataCategory)
+      private void addPredefinedCompartmentValues(MetaDataCategory metaDataCategory)
       {
+         if (metaDataCategory == null)
+            return;
+
          addUndefinedValueTo(metaDataCategory);
          metaDataCategory.ShouldListOfValuesBeIncluded = true;
          allCompartments().OrderBy(comp => comp.Name).Each(compartment => addInfoToCategory(metaDataCategory, compartment));
@@ -489,7 +480,7 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      private void addInfoToCategory(DimensionInfo.MetaDataCategory metaDataCategory, IContainer container)
+      private void addInfoToCategory(MetaDataCategory metaDataCategory, IContainer container)
       {
          metaDataCategory.ListOfValues.Add(container.Name, container.Name);
 
@@ -498,23 +489,6 @@ namespace MoBi.Presentation.Tasks
             metaDataCategory.ListOfImages.Add(container.Name, icon.IconName);
       }
 
-      private DimensionInfo.MetaDataCategory createMetaDataCategory<T>(string categoryName, bool isMandatory = false, bool isListOfValuesFixed = false, Action<DimensionInfo.MetaDataCategory> fixedValuesRetriever = null, string description = null, bool allowsManualInput = false)
-      {
-         var category = new DimensionInfo.MetaDataCategory
-         {
-            Name = categoryName,
-            DisplayName = categoryName,
-            Description = description ?? categoryName,
-            MetaDataType = typeof(T),
-            IsMandatory = isMandatory,
-            IsListOfValuesFixed = isListOfValuesFixed,
-            AllowsManualInput = allowsManualInput
-         };
-
-         fixedValuesRetriever?.Invoke(category);
-
-         return category;
-      }
 
       public IEnumerable<string> PredefinedValuesFor(string name)
       {
@@ -530,9 +504,9 @@ namespace MoBi.Presentation.Tasks
          return Enumerable.Empty<string>();
       }
 
-      private IEnumerable<string> predefinedValuesForCategory(Action<DimensionInfo.MetaDataCategory> action)
+      private IEnumerable<string> predefinedValuesForCategory(Action<MetaDataCategory> action)
       {
-         var category = new DimensionInfo.MetaDataCategory();
+         var category = new MetaDataCategory();
          action(category);
          return category.ListOfValues.Values;
       }
