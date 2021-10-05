@@ -14,26 +14,36 @@ namespace MoBi.Engine.Sbml
 {
    internal class CombinedUnit
    {
-      public string Name { get => (_direct?.Name ?? "1") + (_inverse != null ? $"/{_inverse.Name}" : ""); }
+      public string Name => (_direct?.Name ?? "1") + (_inverse != null ? $"/{_inverse.Name}" : "");
+
+      // Rate is the factor to convert from the unit used in sbml to the base unit used in sbml. 
+      // This is not necessarily the base unit in the ospsuite (1/s vs 1/min for inversed day for instance)
       public double Rate { get; private set; } = 1;
+
+      private Unit _direct;
+      private Unit _inverse;
+
       public void AddUnit(int kind, double exponent, double multiplier, double scale, IDictionary<int, Unit> baseUnitsDictionary)
       {
          if (!baseUnitsDictionary.ContainsKey(kind))
             return;
+      
          if (exponent < 0)
             _inverse = baseUnitsDictionary[kind];
          else
             _direct = baseUnitsDictionary[kind];
+
          Rate *= multiplier * Math.Pow(10, scale);
       }
-      private Unit _direct { get; set; }
-      private Unit _inverse { get; set; }
    }
 
-   internal class UnitConvertionInfo
+   internal class UnitConversionInfo
    {
       public IDimension Dimension { get; set; }
+
+      //Unit in which the values are stored in SBML Base unit
       public Unit Unit { get; set; }
+
       public double Rate { get; set; }
    }
 
@@ -48,37 +58,39 @@ namespace MoBi.Engine.Sbml
    {
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly IDictionary<int, Unit> _baseUnitsDictionary;
-      private readonly IDictionary<string, UnitConvertionInfo> _unitConvertionDictionary;
-      private IDimensionFactory _dimensionFactory;
-      public IReadOnlyDictionary<string, IDimension> ConvertionDictionary { get => _unitConvertionDictionary.ToDictionary(kv => kv.Key, kv => kv.Value.Dimension); }
-      private IDictionary<string, string> _sbmlUnitsSynonyms = new Dictionary<string, string>()
+      private readonly IDictionary<string, UnitConversionInfo> _unitConversionDictionary;
+
+      public IReadOnlyDictionary<string, IDimension> ConversionDictionary => _unitConversionDictionary.ToDictionary(kv => kv.Key, kv => kv.Value.Dimension);
+
+      private readonly IDictionary<string, string> _sbmlUnitsSynonyms = new Dictionary<string, string>()
       {
-         { "litre", "l" }
+         {"litre", "l"}
       };
 
-      public UnitDefinitionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory mobiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IDimensionFactory dimensionFactory) : base(objectPathFactory, objectBaseFactory, astHandler, context)
+      public UnitDefinitionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory mobiDimensionFactory, ASTHandler astHandler, IMoBiContext context) : 
+         base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _moBiDimensionFactory = mobiDimensionFactory;
          _baseUnitsDictionary = new Dictionary<int, Unit>();
-         _unitConvertionDictionary = new Dictionary<string, UnitConvertionInfo>();
-         _dimensionFactory = dimensionFactory;
-         InitBaseUnitsDictionary();
+         _unitConversionDictionary = new Dictionary<string, UnitConversionInfo>();
+         initBaseUnitsDictionary();
       }
 
       public string TranslateUnit(string sbmlUnit)
       {
          if (_sbmlUnitsSynonyms.ContainsKey(sbmlUnit))
             return _sbmlUnitsSynonyms[sbmlUnit];
+
          return sbmlUnit;
       }
 
-      private void InitBaseUnitsDictionary()
+      private void initBaseUnitsDictionary()
       {
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_AMPERE, _moBiDimensionFactory.Dimension("Ampere").Unit("A"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_BECQUEREL, _moBiDimensionFactory.Dimension("Becquerel").Unit("Bq"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_CANDELA, _moBiDimensionFactory.Dimension("Candela").Unit("cd"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_COULOMB, _moBiDimensionFactory.Dimension("Coulomb").Unit("C"));
-         _baseUnitsDictionary.Add(libsbml.UNIT_KIND_DIMENSIONLESS, _moBiDimensionFactory.NoDimension.DefaultUnit);
+         _baseUnitsDictionary.Add(libsbml.UNIT_KIND_DIMENSIONLESS, _moBiDimensionFactory.NoDimension.BaseUnit);
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_FARAD, _moBiDimensionFactory.Dimension("Becquerel").Unit("Bq"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_GRAM, _moBiDimensionFactory.Dimension("Mass").Unit("g"));
          _baseUnitsDictionary.Add(libsbml.UNIT_KIND_GRAY, _moBiDimensionFactory.Dimension("Gray").Unit("Gy"));
@@ -111,7 +123,9 @@ namespace MoBi.Engine.Sbml
 
       protected override void Import(Model model)
       {
-         if (model == null) return;
+         if (model == null)
+            return;
+
          if (_sbmlProject == null) return;
 
          for (long i = 0; i < model.getNumUnitDefinitions(); i++)
@@ -121,7 +135,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Converts a SBML UnitDefinition into a MoBi Unit.
+      ///    Converts a SBML UnitDefinition into a MoBi Unit.
       /// </summary>
       public IDimension ConvertUnit(UnitDefinition unitDefinition)
       {
@@ -131,7 +145,7 @@ namespace MoBi.Engine.Sbml
          if (dimension != Constants.Dimension.NO_DIMENSION)
          {
             _sbmlInformation.MobiDimension[sbmlUnit] = dimension;
-            _unitConvertionDictionary.Add(sbmlUnit, new UnitConvertionInfo() { Dimension = dimension, Unit = dimension.DefaultUnit, Rate = 1 });
+            _unitConversionDictionary.Add(sbmlUnit, new UnitConversionInfo {Dimension = dimension, Unit = dimension.BaseUnit, Rate = 1});
             return dimension;
          }
 
@@ -146,36 +160,40 @@ namespace MoBi.Engine.Sbml
                sbmlUnitDefinition.getScale(),
                _baseUnitsDictionary);
          }
+
          var unitName = combinedUnit.Name;
-         var dimensionAndUnit = _dimensionFactory.FindUnit(unitName);
+         var dimensionAndUnit = _moBiDimensionFactory.FindUnit(unitName);
          if (dimensionAndUnit.dimension != Constants.Dimension.NO_DIMENSION)
          {
             _sbmlInformation.MobiDimension[sbmlUnit] = dimensionAndUnit.dimension;
-            _unitConvertionDictionary.Add(sbmlUnit, new UnitConvertionInfo() { Dimension = dimensionAndUnit.dimension, Unit = dimensionAndUnit.unit, Rate = combinedUnit.Rate });
+            _unitConversionDictionary.Add(sbmlUnit, new UnitConversionInfo {Dimension = dimensionAndUnit.dimension, Unit = dimensionAndUnit.unit, Rate = combinedUnit.Rate});
             return dimensionAndUnit.dimension;
          }
 
-         _unitConvertionDictionary.Add(sbmlUnit, new UnitConvertionInfo() { Dimension = dimension, Unit = dimension.DefaultUnit, Rate = 1 });
+         _unitConversionDictionary.Add(sbmlUnit, new UnitConversionInfo {Dimension = dimension, Unit = dimension.BaseUnit, Rate = 1});
          return dimension;
       }
 
-      public override void AddToProject() { }
+      public override void AddToProject()
+      {
+      }
 
       public IDimension DimensionFor(string sbmlUnit)
       {
-         if (_unitConvertionDictionary.ContainsKey(sbmlUnit))
-            return _unitConvertionDictionary[sbmlUnit].Dimension;
+         if (_unitConversionDictionary.ContainsKey(sbmlUnit))
+            return _unitConversionDictionary[sbmlUnit].Dimension;
 
          return _moBiDimensionFactory.DimensionForUnit(TranslateUnit(sbmlUnit)) ?? _moBiDimensionFactory.NoDimension;
       }
 
       public (double value, IDimension dimension) ToMobiBaseUnit(string unit, double value)
       {
-         if (_unitConvertionDictionary.ContainsKey(unit))
+         if (_unitConversionDictionary.ContainsKey(unit))
          {
-            var convertionData = _unitConvertionDictionary[unit];
-            return (convertionData.Dimension.UnitValueToBaseUnitValue(convertionData.Unit, value * convertionData.Rate), convertionData.Dimension);
+            var conversionData = _unitConversionDictionary[unit];
+            return (conversionData.Dimension.UnitValueToBaseUnitValue(conversionData.Unit, value * conversionData.Rate), conversionData.Dimension);
          }
+
          var dimension = DimensionFor(unit);
 
          return (dimension.UnitValueToBaseUnitValue(dimension.FindUnit(TranslateUnit(unit)), value), dimension);
@@ -183,8 +201,7 @@ namespace MoBi.Engine.Sbml
 
       public void Start()
       {
-         _unitConvertionDictionary.Clear();
+         _unitConversionDictionary.Clear();
       }
    }
-
 }

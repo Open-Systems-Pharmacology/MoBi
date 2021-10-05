@@ -413,7 +413,6 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemOneTime;
       private DevExpress.XtraEditors.MemoExEdit htmlEditor;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemDescription;
-      private DevExpress.XtraGrid.GridControl gridControl1;
       private UxGridView gridViewAssignments;
       private DevExpress.XtraEditors.SimpleButton btnAddAssignment;
       private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
