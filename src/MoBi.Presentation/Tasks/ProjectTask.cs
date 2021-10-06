@@ -163,6 +163,7 @@ namespace MoBi.Presentation.Tasks
          if (fileName.IsNullOrEmpty()) return;
 
          _context.NewProject();
+         //_context.CurrentProject.ReactionDimensionMode
          _context.AddToHistory(_sbmlTask.ImportModelFromSbml(fileName, _context.CurrentProject));
          notifyProjectLoaded();
       }
