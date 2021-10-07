@@ -17,6 +17,7 @@ namespace MoBi.Engine.Sbml
       private IMoBiProject _sbmlProject;
       public List<FunctionDefinition> FunctionDefinitions { get; set; }
       public bool NeedAbsolutePath { get; set; }
+      public bool UseConcentrations { get; set; } = false;
 
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
@@ -808,13 +809,14 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Checks if a object path for the given objectName is already existant and creates a new one if not.
       /// </summary>
-      private string getObjectPathName(string parentContainer, string objectName)
+      private string getObjectPathName(string parentContainer, string objectName, bool useConcentration = false)
       {
          if (objectPathExistent(objectName))
             return objectName;
 
          var alias = createAliasFrom(objectName);
-         _objectPaths.Add(_objectPathFactory.CreateFormulaUsablePathFrom(parentContainer, objectName).WithAlias(alias));
+         var usablePath = useConcentration ? _objectPathFactory.CreateFormulaUsablePathFrom(parentContainer, objectName, Constants.Parameters.CONCENTRATION) : _objectPathFactory.CreateFormulaUsablePathFrom(parentContainer, objectName);
+         _objectPaths.Add(usablePath.WithAlias(alias));
          return alias;
       }
 
@@ -905,7 +907,7 @@ namespace MoBi.Engine.Sbml
          //reaction 
          if (NeedAbsolutePath == false)
          {
-            return getObjectPathName(ObjectPath.PARENT_CONTAINER, molecule.Name);
+            return getObjectPathName(ObjectPath.PARENT_CONTAINER, molecule.Name, UseConcentrations);
          }
 
          if (_sbmlInformation.MoleculeInformation.All(info => info.GetMoleculeBuilderName() != molecule.Name))
