@@ -105,7 +105,19 @@ namespace MoBi.Core.SBML
       public void should_understand_litre_as_unit()
       {
          var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
-         msvbb.FirstOrDefault().Dimension.Name.ShouldBeEqualTo("Concentration (molar)");
+         msvbb.FirstOrDefault().Dimension.Name.ShouldBeEqualTo("Amount");
+      }
+
+      [Observation]
+      public void should_assign_molecule_start_values_as_concentrations()
+      {
+         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         var glucose = msvbb.First();
+         glucose.Formula.ToString().ShouldBeEqualTo("5000 * V");
+         var volumePath = glucose.Formula.ObjectPaths.First();
+         volumePath.ToString().ShouldBeEqualTo("..|Volume");
+         volumePath.Alias.ShouldBeEqualTo("V");
+         volumePath.Count.ShouldBeEqualTo(2);
       }
    }
 }
