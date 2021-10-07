@@ -233,4 +233,26 @@ namespace MoBi.Core.SBML
          _moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
       }
    }
+
+   public class ConcentrationBasedReactionImporterTests : ReactionImporterSpecs
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = Helper.TestFileFullPath("tiny_example_12.xml");
+      }
+
+      protected override void Because()
+      {
+         _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject);
+      }
+
+      [Observation]
+      public void ShouldParseUserDefinedFunctions()
+      {
+         var gkReaction = _moBiProject.ReactionBlockCollection.First().First();
+         var glucosePath = gkReaction.Formula.ObjectPaths.ElementAt(1);
+         glucosePath.Last().ShouldBeEqualTo("Concentration");
+      }
+   }
 }
