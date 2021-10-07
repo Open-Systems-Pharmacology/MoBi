@@ -5,10 +5,11 @@ using FakeItEasy;
 using MoBi.Engine.Sbml;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.SBML
 {
-   public class HelperTests : ContextForSBMLIntegration<SpeciesImporter>
+   public class HelperTests : ContextForSBMLIntegration<ISpeciesImporter>
    {
       private IDimension _amountDimension;
       private IDimension _sizeDimension;
@@ -36,11 +37,11 @@ namespace MoBi.Core.SBML
       public void GetNewFactorTest()
       {
          var res = (double) _amountFactor / _sizeFactor;
-         sut.GetNewFactor(_amountDimension, _sizeDimension).ShouldBeEqualTo(res);
+         sut.DowncastTo<SpeciesImporter>().GetNewFactor(_amountDimension, _sizeDimension).ShouldBeEqualTo(res);
       }
    }
 
-   public class MoleculeCreationTests : ContextForSBMLIntegration<SpeciesImporter>
+   public class MoleculeCreationTests : ContextForSBMLIntegration<ISpeciesImporter>
    {
       protected override void Context()
       {
@@ -76,7 +77,7 @@ namespace MoBi.Core.SBML
       }
    }
 
-   public class SpeciesSameNameTests : ContextForSBMLIntegration<SpeciesImporter>
+   public class SpeciesSameNameTests : ContextForSBMLIntegration<ISpeciesImporter>
    {
       protected override void Context()
       {
@@ -93,7 +94,7 @@ namespace MoBi.Core.SBML
       }
    }
 
-   public class When_setting_molecule_start_value : ContextForSBMLIntegration<SpeciesImporter>
+   public class When_setting_molecule_start_value : ContextForSBMLIntegration<ISpeciesImporter>
    {
       protected override void Context()
       {
