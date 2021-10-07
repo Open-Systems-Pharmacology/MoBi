@@ -254,5 +254,12 @@ namespace MoBi.Core.SBML
          var glucosePath = gkReaction.Formula.ObjectPaths.ElementAt(1);
          glucosePath.Last().ShouldBeEqualTo("Concentration");
       }
+
+      [Observation]
+      public void ShouldTranslateConstantsIntoBaseUnits()
+      {
+         var atpprodReaction = _moBiProject.ReactionBlockCollection.First().ElementAt(1);
+         atpprodReaction.Formula.ToString().ShouldBeEqualTo("Vmax_ATPASE * ((ADP) / ((Km_adp + ADP))) * cos(((((Time) / (1/60))) / (10)))");
+      }
    }
 }
