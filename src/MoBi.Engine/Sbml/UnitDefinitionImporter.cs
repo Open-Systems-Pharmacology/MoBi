@@ -64,7 +64,8 @@ namespace MoBi.Engine.Sbml
 
       private readonly IDictionary<string, string> _sbmlUnitsSynonyms = new Dictionary<string, string>()
       {
-         {"litre", "l"}
+         {"litre", "l"},
+         { "second", "s"}
       };
 
       public UnitDefinitionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory mobiDimensionFactory, ASTHandler astHandler, IMoBiContext context) : 
@@ -196,7 +197,10 @@ namespace MoBi.Engine.Sbml
 
          var dimension = DimensionFor(unit);
 
-         return (dimension.UnitValueToBaseUnitValue(dimension.FindUnit(TranslateUnit(unit)), value), dimension);
+         var translatedUnit = dimension.FindUnit(TranslateUnit(unit));
+         if (translatedUnit == null)
+            return (value, dimension);
+         return (dimension.UnitValueToBaseUnitValue(translatedUnit, value), dimension);
       }
 
       public void Start()

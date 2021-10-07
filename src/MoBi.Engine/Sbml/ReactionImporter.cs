@@ -27,8 +27,9 @@ namespace MoBi.Engine.Sbml
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IFunctionDefinitionImporter _functionDefinitionImporter;
       private readonly ISpeciesImporter _speciesImporter;
+      private readonly IUnitDefinitionImporter _unitDefinitionImporter;
 
-      public ReactionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory, IFunctionDefinitionImporter functionDefinitionImporter, ISpeciesImporter speciesImporter)
+      public ReactionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory, IFunctionDefinitionImporter functionDefinitionImporter, ISpeciesImporter speciesImporter, IUnitDefinitionImporter unitDefinitionImporter)
           : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _dimensionFactory = moBiDimensionFactory;
@@ -39,6 +40,7 @@ namespace MoBi.Engine.Sbml
              .WithName(SBMLConstants.SBML_PASSIVETRANSPORTS_BB);
          _functionDefinitionImporter = functionDefinitionImporter;
          _speciesImporter = speciesImporter;
+         _unitDefinitionImporter = unitDefinitionImporter;
       }
 
       /// <summary>
@@ -47,6 +49,7 @@ namespace MoBi.Engine.Sbml
       protected override void Import(Model model)
       {
          _astHandler.FunctionDefinitions = _functionDefinitionImporter.FunctionDefinitions;
+         _astHandler.SetUnitDefinitionImporter(_unitDefinitionImporter);
          _astHandler.UseConcentrations = _speciesImporter.UseConcentrations;
          for (long i = 0; i < model.getNumReactions(); i++)
          {
