@@ -196,6 +196,7 @@ namespace MoBi.Engine.Sbml
                if (molInfo.GetContainer().Any(x => x.Name == msv.ContainerPath.LastOrDefault()))
                {
                   msv.IsPresent = true;
+                  msv.NegativeValuesAllowed = true;
                   var sbmlSpecies = molInfo.GetSpeciesIfOne();
                   if (sbmlSpecies == null) return;
                   var sbmlUnit = GetUnit(sbmlSpecies, model);
