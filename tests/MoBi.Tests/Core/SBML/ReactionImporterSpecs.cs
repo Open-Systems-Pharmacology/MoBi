@@ -259,7 +259,7 @@ namespace MoBi.Core.SBML
       public void ShouldTranslateConstantsIntoBaseUnits()
       {
          var atpprodReaction = _moBiProject.ReactionBlockCollection.First().ElementAt(1);
-         atpprodReaction.Formula.ToString().ShouldBeEqualTo("Vmax_ATPASE * ((ADP) / ((Km_adp + ADP))) * cos(((((Time) / (1/60))) / (10)))");
+         atpprodReaction.Formula.ToString().ShouldBeEqualTo("Vmax_ATPASE * ((ADP) / ((Km_adp + ADP))) * cos(((((Time) / (0.0166666666666667))) / (10)))");
       }
    }
 }

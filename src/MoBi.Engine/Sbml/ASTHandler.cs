@@ -27,6 +27,7 @@ namespace MoBi.Engine.Sbml
       private int _counter;
       private IReactionBuilder _reactionBuilder;
       private SBMLInformation _sbmlInformation;
+      private IUnitDefinitionImporter _unitDefinitionImporter;
 
       private readonly Dictionary<string, string> _functionDefDictionary;
       private readonly string[] _forbiddenNames = new[] { "E", "PI" };
@@ -42,6 +43,12 @@ namespace MoBi.Engine.Sbml
          _moBiDimensionFactory = moBiDimensionFactory;
          _counter = 0;
          NeedAbsolutePath = false;
+      }
+
+      //Not possible to inject during construction due to circular references
+      public void SetUnitDefinitionImporter(IUnitDefinitionImporter unitDefinitionImporter)
+      {
+         _unitDefinitionImporter = unitDefinitionImporter;
       }
 
       /// <summary>
@@ -421,10 +428,13 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       private string parseInteger(ASTNode rootNode)
       {
-         if (rootNode.getInteger().ToString(CultureInfo.InvariantCulture).Contains("-"))
+         double value = rootNode.getInteger();
+         if (rootNode.isSetUnits() && _unitDefinitionImporter != null)
+            value = _unitDefinitionImporter.ToMobiBaseUnit(rootNode.getUnits(), value).value;
+         if (value.ToString(CultureInfo.InvariantCulture).Contains("-"))
             return SBMLConstants.LBRACE + rootNode.getInteger().ToString(CultureInfo.InvariantCulture) +
                    SBMLConstants.RBRACE;
-         return rootNode.getInteger().ToString(CultureInfo.InvariantCulture);
+         return value.ToString(CultureInfo.InvariantCulture);
       }
 
       /// <summary>
@@ -432,10 +442,13 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       private string parseReal(ASTNode rootNode)
       {
-         if (rootNode.getReal().ToString(CultureInfo.InvariantCulture).Contains("-"))
+         var value = rootNode.getReal();
+         if (rootNode.isSetUnits() && _unitDefinitionImporter != null)
+            value = _unitDefinitionImporter.ToMobiBaseUnit(rootNode.getUnits(), value).value;
+         if (value.ToString(CultureInfo.InvariantCulture).Contains("-"))
             return SBMLConstants.LBRACE + rootNode.getReal().ToString(CultureInfo.InvariantCulture) +
                    SBMLConstants.RBRACE;
-         return rootNode.getReal().ToString(CultureInfo.InvariantCulture);
+         return value.ToString(CultureInfo.InvariantCulture);
       }
 
       /// <summary>
