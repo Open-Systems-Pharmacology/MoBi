@@ -248,11 +248,11 @@ namespace MoBi.Core.SBML
       }
 
       [Observation]
-      public void ShouldParseUserDefinedFunctions()
+      public void should_parse_user_defined_functions()
       {
          var gkReaction = _moBiProject.ReactionBlockCollection.First().First();
          var glucosePath = gkReaction.Formula.ObjectPaths.ElementAt(1);
-         glucosePath.Last().ShouldBeEqualTo("Concentration");
+         glucosePath.Last().ShouldBeEqualTo(Constants.Parameters.CONCENTRATION);
       }
    }
 }
