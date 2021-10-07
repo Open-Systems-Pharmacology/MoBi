@@ -48,7 +48,6 @@ namespace MoBi.Engine.Sbml
             CreateMoleculeFromSpecies(model.getSpecies(i));
          }
          CheckMoleculeNameContainer();
-         CreateDummySpecies();
          CreateMoleculeStartValueBuildingBlock(model);
          SetMoleculeStartValues(model);
          SetDummyMSVs();
@@ -211,15 +210,23 @@ namespace MoBi.Engine.Sbml
                   //unit is {unit of amount}/{unit of size}
                   var baseValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, sbmlSpecies.getInitialConcentration());
                   msv.StartValue = baseValue.value;
-                  msv.Formula = _formulaFactory.ConstantFormula(baseValue.value, baseValue.dimension);
+                  msv.Formula = _context.Create<ExplicitFormula>($"{msv.Name}_0").WithDimension(amountDimension).WithFormulaString($"{baseValue.value} * {Constants.VOLUME_ALIAS}");
+                  msv.Formula.AddObjectPath(
+                     ObjectPathFactory.CreateFormulaUsablePathFrom($"{ObjectPath.PARENT_CONTAINER}|{Constants.Parameters.VOLUME}")
+                        .WithAlias(Constants.VOLUME_ALIAS)
+                        .WithDimension(_moBiDimensionFactory.Dimension(Constants.Dimension.VOLUME))
+                  );
+                  _moleculeStartValuesBuildingBlock.AddFormula(msv.Formula);
+                  msv.Dimension = amountDimension;
+                  molInfo.SetDimension(amountDimension);
 
-                  var sizeDimension = GetSizeDimensionFromCompartment(sbmlSpecies, model);
+                  /*var sizeDimension = GetSizeDimensionFromCompartment(sbmlSpecies, model);
                   if (amountDimension == null) continue;
                   if (sizeDimension == null) continue;
 
                   var newDim = _moBiDimensionFactory.DimensionForUnit($"{amountDimension.BaseUnit.Name}/{sizeDimension.BaseUnit.Name}") ?? CreateNewDimension(amountDimension, sizeDimension);
                   msv.Dimension = newDim;
-                  molInfo.SetDimension(newDim);
+                  molInfo.SetDimension(newDim);*/
                }
                else
                {
