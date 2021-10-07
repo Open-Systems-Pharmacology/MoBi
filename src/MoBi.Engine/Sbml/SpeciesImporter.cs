@@ -11,12 +11,18 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility;
 using Model = libsbmlcs.Model;
 using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
 
 namespace MoBi.Engine.Sbml
 {
-   public class SpeciesImporter : SBMLImporter
+   public interface ISpeciesImporter : ISBMLImporter
+   {
+      bool UseConcentrations { get; }
+   }
+
+   public class SpeciesImporter : SBMLImporter, IStartable, ISpeciesImporter
    {
       private readonly IMoleculeStartValuesCreator _moleculeStartValuesCreator;
       internal IMoleculeBuildingBlock MoleculeBuildingBlock;
@@ -25,7 +31,6 @@ namespace MoBi.Engine.Sbml
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly Dictionary<string, Dimension> _dimensionDictionary;
       private IUnitDefinitionImporter _unitDefinitionImporter;
-      private IFormulaFactory _formulaFactory;
       private int _counter;
 
       public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IMoleculeStartValuesCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter, IFormulaFactory formulaFactory)
@@ -37,8 +42,9 @@ namespace MoBi.Engine.Sbml
          _counter = 1;
          _dimensionDictionary = new Dictionary<string, Dimension>();
          _unitDefinitionImporter = unitDefinitionImporter;
-         _formulaFactory = formulaFactory;
       }
+
+      public bool UseConcentrations { get; private set; }
 
       protected override void Import(Model model)
       {
@@ -219,6 +225,7 @@ namespace MoBi.Engine.Sbml
                   _moleculeStartValuesBuildingBlock.AddFormula(msv.Formula);
                   msv.Dimension = amountDimension;
                   molInfo.SetDimension(amountDimension);
+                  UseConcentrations = true;
                }
                else
                {
@@ -350,6 +357,11 @@ namespace MoBi.Engine.Sbml
                }
             }
          }
+      }
+
+      public void Start()
+      {
+         UseConcentrations = false;
       }
    }
 }

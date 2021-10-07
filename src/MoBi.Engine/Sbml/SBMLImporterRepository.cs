@@ -17,7 +17,7 @@ namespace MoBi.Engine.Sbml
         {
             yield return _container.Resolve<IUnitDefinitionImporter>();
             yield return _container.Resolve<CompartmentImporter>();
-            yield return _container.Resolve<SpeciesImporter>();
+            yield return _container.Resolve<ISpeciesImporter>();
             yield return _container.Resolve<ParameterImporter>();
             yield return _container.Resolve<IFunctionDefinitionImporter>();
             yield return _container.Resolve<ReactionImporter>();
@@ -30,7 +30,7 @@ namespace MoBi.Engine.Sbml
                 yield return _container.Resolve<IUnitDefinitionImporter>();
             yield return _container.Resolve<CompartmentImporter>();
             if (sbmlModel.getNumSpecies() != 0)
-                yield return _container.Resolve<SpeciesImporter>();
+                yield return _container.Resolve<ISpeciesImporter>();
             if (sbmlModel.getNumParameters() != 0)
                 yield return _container.Resolve<ParameterImporter>();
             if (sbmlModel.getNumFunctionDefinitions() != 0)
