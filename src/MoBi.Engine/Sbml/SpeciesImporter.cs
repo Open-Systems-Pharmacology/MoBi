@@ -11,12 +11,18 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility;
 using Model = libsbmlcs.Model;
 using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
 
 namespace MoBi.Engine.Sbml
 {
-   public class SpeciesImporter : SBMLImporter
+   public interface ISpeciesImporter : ISBMLImporter
+   {
+      bool UseConcentrations { get; }
+   }
+
+   public class SpeciesImporter : SBMLImporter, IStartable, ISpeciesImporter
    {
       private readonly IMoleculeStartValuesCreator _moleculeStartValuesCreator;
       internal IMoleculeBuildingBlock MoleculeBuildingBlock;
@@ -25,7 +31,6 @@ namespace MoBi.Engine.Sbml
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly Dictionary<string, Dimension> _dimensionDictionary;
       private IUnitDefinitionImporter _unitDefinitionImporter;
-      private IFormulaFactory _formulaFactory;
       private int _counter;
 
       public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IMoleculeStartValuesCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter, IFormulaFactory formulaFactory)
@@ -37,8 +42,9 @@ namespace MoBi.Engine.Sbml
          _counter = 1;
          _dimensionDictionary = new Dictionary<string, Dimension>();
          _unitDefinitionImporter = unitDefinitionImporter;
-         _formulaFactory = formulaFactory;
       }
+
+      public bool UseConcentrations { get; private set; }
 
       protected override void Import(Model model)
       {
@@ -48,7 +54,6 @@ namespace MoBi.Engine.Sbml
             CreateMoleculeFromSpecies(model.getSpecies(i));
          }
          CheckMoleculeNameContainer();
-         CreateDummySpecies();
          CreateMoleculeStartValueBuildingBlock(model);
          SetMoleculeStartValues(model);
          SetDummyMSVs();
@@ -211,15 +216,16 @@ namespace MoBi.Engine.Sbml
                   //unit is {unit of amount}/{unit of size}
                   var baseValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, sbmlSpecies.getInitialConcentration());
                   msv.StartValue = baseValue.value;
-                  msv.Formula = _formulaFactory.ConstantFormula(baseValue.value, baseValue.dimension);
-
-                  var sizeDimension = GetSizeDimensionFromCompartment(sbmlSpecies, model);
-                  if (amountDimension == null) continue;
-                  if (sizeDimension == null) continue;
-
-                  var newDim = _moBiDimensionFactory.DimensionForUnit($"{amountDimension.BaseUnit.Name}/{sizeDimension.BaseUnit.Name}") ?? CreateNewDimension(amountDimension, sizeDimension);
-                  msv.Dimension = newDim;
-                  molInfo.SetDimension(newDim);
+                  msv.Formula = _context.Create<ExplicitFormula>($"{msv.Name}_0").WithName($"{msv.Name}_0").WithDimension(amountDimension).WithFormulaString($"{baseValue.value} * {Constants.VOLUME_ALIAS}");
+                  msv.Formula.AddObjectPath(
+                     ObjectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, Constants.Parameters.VOLUME)
+                        .WithAlias(Constants.VOLUME_ALIAS)
+                        .WithDimension(_moBiDimensionFactory.Dimension(Constants.Dimension.VOLUME))
+                  );
+                  _moleculeStartValuesBuildingBlock.AddFormula(msv.Formula);
+                  msv.Dimension = amountDimension;
+                  molInfo.SetDimension(amountDimension);
+                  UseConcentrations = true;
                }
                else
                {
@@ -351,6 +357,11 @@ namespace MoBi.Engine.Sbml
                }
             }
          }
+      }
+
+      public void Start()
+      {
+         UseConcentrations = false;
       }
    }
 }
