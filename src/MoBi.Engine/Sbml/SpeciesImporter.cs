@@ -54,6 +54,7 @@ namespace MoBi.Engine.Sbml
             CreateMoleculeFromSpecies(model.getSpecies(i));
          }
          CheckMoleculeNameContainer();
+         CreateDummySpecies();
          CreateMoleculeStartValueBuildingBlock(model);
          SetMoleculeStartValues(model);
          SetDummyMSVs();
@@ -363,6 +364,8 @@ namespace MoBi.Engine.Sbml
       public void Start()
       {
          UseConcentrations = false;
+         _dimensionDictionary.Clear();
+         _counter = 1;
       }
    }
 }
