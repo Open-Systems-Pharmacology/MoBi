@@ -32,7 +32,7 @@ namespace MoBi.Core.Commands
          editTagInCriteria(getCriteria());
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditTagCommand<T>(_oldTag, _newTag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
       }

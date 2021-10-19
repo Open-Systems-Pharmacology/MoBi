@@ -1,0 +1,464 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" comp:required="true" fbc:required="false" layout:required="false" level="3" metaid="meta_11b6620dad1b4403bab84b845495eff3" sboTerm="SBO:0000293" version="2" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" xmlns:fbc="http://www.sbml.org/sbml/level3/version1/fbc/version2" xmlns:layout="http://www.sbml.org/sbml/level3/version1/layout/version1">
+  <annotation>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+      <rdf:Description rdf:about="#meta_11b6620dad1b4403bab84b845495eff3">
+	<bqmodel:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000293"/>
+	</rdf:Bag>
+	</bqmodel:is>
+	</rdf:Description>
+	
+    </rdf:RDF>
+  </annotation>
+  <model areaUnits="m2" extentUnits="mmole" fbc:strict="false" id="tiny_example_12" lengthUnits="metre" metaid="meta_tiny_example_12" name="Keating2019 -  Minimal model demonstrating SBML Level 3 packages." substanceUnits="mmole" timeUnits="second" volumeUnits="litre">
+    <listOfFunctionDefinitions>
+      <functionDefinition id="f_oscillation" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">        
+          <lambda>
+            <bvar>
+              <ci> x </ci>
+            </bvar>
+            <apply>
+              <cos/>
+              <apply>
+                <divide/>
+                <ci> x </ci>
+                <cn type="integer" sbml:units="dimensionless"> 10 </cn>
+              </apply>
+            </apply>
+          </lambda>
+        </math>
+            </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="m2">
+        <listOfUnits>
+          <unit exponent="2" kind="metre" multiplier="1" scale="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="mmole">
+        <listOfUnits>
+          <unit exponent="1" kind="mole" multiplier="1" scale="-3"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="mM">
+        <listOfUnits>
+          <unit exponent="1" kind="mole" multiplier="1" scale="-3"/>
+          <unit exponent="-1" kind="litre" multiplier="1" scale="0"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="mmole_per_s">
+        <listOfUnits>
+          <unit exponent="1" kind="mole" multiplier="1" scale="-3"/>
+          <unit exponent="-1" kind="second" multiplier="1" scale="0"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment constant="true" id="c" metaid="meta_c" name="cell compartment" sboTerm="SBO:0000290" size="1E-5" spatialDimensions="3" units="litre">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_c">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000290"/>
+	<rdf:li rdf:resource="http://identifiers.org/go/GO:0005623"/>
+	<rdf:li rdf:resource="http://identifiers.org/fma/FMA:68646"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species boundaryCondition="false" compartment="c" constant="false" fbc:charge="0" fbc:chemicalFormula="C6H12O6" hasOnlySubstanceUnits="false" id="glc" initialConcentration="5" metaid="meta_glc" name="glucose" sboTerm="SBO:0000247" substanceUnits="mmole">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_glc">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000247"/>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:4167"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00031"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </species>
+      <species boundaryCondition="false" compartment="c" constant="false" fbc:charge="-2" fbc:chemicalFormula="C6H11O9P" hasOnlySubstanceUnits="false" id="g6p" initialConcentration="0.1" metaid="meta_g6p" name="glucose-6-phosphate" sboTerm="SBO:0000247" substanceUnits="mmole">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_g6p">
+              <bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000247"/>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:58225"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00668"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </species>
+      <species boundaryCondition="false" compartment="c" constant="false" fbc:charge="-4" fbc:chemicalFormula="C10H12N5O13P3" hasOnlySubstanceUnits="false" id="atp" initialConcentration="3" metaid="meta_atp" name="ATP" sboTerm="SBO:0000247" substanceUnits="mmole">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_atp">
+              <bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000247"/>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:30616"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00002"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </species>
+      <species boundaryCondition="false" compartment="c" constant="false" fbc:charge="-3" fbc:chemicalFormula="C10H12N5O10P2" hasOnlySubstanceUnits="false" id="adp" initialConcentration="0.8" metaid="meta_adp" name="ADP" sboTerm="SBO:0000247" substanceUnits="mmole">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_adp">
+              <bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000247"/>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:456216"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00008"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="c" constant="true" fbc:charge="-2" fbc:chemicalFormula="HO4P" hasOnlySubstanceUnits="false" id="phos" initialConcentration="0" metaid="meta_phos" name="P" sboTerm="SBO:0000247" substanceUnits="mmole">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_phos">
+              <bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000247"/>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:43474"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00009"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="c" constant="true" fbc:charge="1" fbc:chemicalFormula="H" hasOnlySubstanceUnits="false" id="hydron" initialConcentration="0" metaid="meta_hydron" name="H+" sboTerm="SBO:0000247" substanceUnits="mmole">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_hydron">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000247"/>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:15378"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00080"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </species>
+      <species boundaryCondition="true" compartment="c" constant="true" fbc:charge="0" fbc:chemicalFormula="H2O" hasOnlySubstanceUnits="false" id="h2o" initialConcentration="0" metaid="meta_h2o" name="H2O" sboTerm="SBO:0000247" substanceUnits="mmole">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_h2o">
+              <bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000247"/>
+	<rdf:li rdf:resource="http://identifiers.org/chebi/CHEBI:15377"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.compound/C00001"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter constant="true" id="Vmax_GK" metaid="meta_Vmax_GK" name="Vmax Glucokinase" sboTerm="SBO:0000186" units="mmole_per_s" value="1E-6">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_Vmax_GK">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000186"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="Km_glc" metaid="meta_Km_glc" name="Km glucose" sboTerm="SBO:0000027" units="mM" value="0.5">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_Km_glc">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="Km_atp" metaid="meta_Km_atp" name="Km ATP" sboTerm="SBO:0000027" units="mM" value="0.1">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_Km_atp">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="Km_adp" metaid="meta_Km_adp" name="Km ADP" sboTerm="SBO:0000027" units="mM" value="0.1">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_Km_adp">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000027"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="Vmax_ATPASE" metaid="meta_Vmax_ATPASE" name="Vmax ATPase" sboTerm="SBO:0000186" units="mmole_per_s" value="1E-6">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_Vmax_ATPASE">
+	<bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000186"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+            </parameter>
+      <parameter constant="true" id="zero" name="zero bound" sboTerm="SBO:0000612" units="mmole_per_s" value="0"/>
+      <parameter constant="true" id="inf" name="upper bound" sboTerm="SBO:0000612" units="mmole_per_s" value="INF"/>
+      <parameter constant="true" id="minus_1000" sboTerm="SBO:0000612" units="mmole_per_s" value="-1000"/>
+      <parameter constant="true" id="plus_1000" sboTerm="SBO:0000612" units="mmole_per_s" value="1000"/>
+      <parameter constant="false" id="a_sum" name="ATP + ADP balance" units="mM"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="glc" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">
+        <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">        
+          <cn sbml:units="mM"> 4.5 </cn>
+        </math>
+            </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <assignmentRule name="ATP + ADP balance" variable="a_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">        
+          <apply>
+            <plus/>
+            <ci> atp </ci>
+            <ci> adp </ci>
+          </apply>
+        </math>
+            </assignmentRule>
+    </listOfRules>
+    
+    <listOfReactions>
+      <reaction compartment="c" fbc:lowerFluxBound="zero" fbc:upperFluxBound="inf" id="GK" metaid="meta_GK" name="Glucokinase" reversible="false" sboTerm="SBO:0000176">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" xmlns:vCard4="http://www.w3.org/2006/vcard/ns#" xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" xmlns:bqmodel="http://biomodels.net/model-qualifiers/">
+            <rdf:Description rdf:about="#meta_GK">
+              <bqbiol:is>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/sbo/SBO:0000176"/>
+	</rdf:Bag>
+	</bqbiol:is>
+	
+	<bqbiol:isVersionOf>
+	<rdf:Bag>
+	<rdf:li rdf:resource="http://identifiers.org/ec-code/2.7.1.2"/>
+	<rdf:li rdf:resource="http://identifiers.org/uniprot/P35557"/>
+	<rdf:li rdf:resource="http://identifiers.org/kegg.reaction/R01092"/>
+	<rdf:li rdf:resource="http://identifiers.org/rhea/36495"/>
+	</rdf:Bag>
+	</bqbiol:isVersionOf>
+	</rdf:Description>
+	
+          </rdf:RDF>
+        </annotation>
+              <listOfReactants>
+          <speciesReference constant="true" species="glc" stoichiometry="1"/>
+          <speciesReference constant="true" species="atp" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" species="g6p" stoichiometry="1"/>
+          <speciesReference constant="true" species="adp" stoichiometry="1"/>
+          <speciesReference constant="true" species="hydron" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <apply>
+              <times/>
+              <ci> Vmax_GK </ci>
+              <apply>
+                <divide/>
+                <ci> glc </ci>
+                <apply>
+                  <plus/>
+                  <ci> Km_glc </ci>
+                  <ci> glc </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> atp </ci>
+                <apply>
+                  <plus/>
+                  <ci> Km_atp </ci>
+                  <ci> atp </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction compartment="c" fbc:lowerFluxBound="zero" fbc:upperFluxBound="inf" id="ATPPROD" name="ATP production" reversible="false" sboTerm="SBO:0000176">
+        <listOfReactants>
+          <speciesReference constant="true" species="adp" stoichiometry="1"/>
+          <speciesReference constant="true" species="phos" stoichiometry="1"/>
+          <speciesReference constant="true" species="hydron" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference constant="true" species="atp" stoichiometry="1"/>
+          <speciesReference constant="true" species="h2o" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">
+          <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">          
+            <apply>
+              <times/>
+              <ci> Vmax_ATPASE </ci>
+              <apply>
+                <divide/>
+                <ci> adp </ci>
+                <apply>
+                  <plus/>
+                  <ci> Km_adp </ci>
+                  <ci> adp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <ci> f_oscillation </ci>
+                <apply>
+                  <divide/>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                  <cn type="integer" sbml:units="second"> 1 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction compartment="c" fbc:lowerFluxBound="minus_1000" fbc:upperFluxBound="plus_1000" id="EX_glc" name="glucose exchange" reversible="false" sboTerm="SBO:0000627">
+        <listOfReactants>
+          <speciesReference constant="true" species="glc" stoichiometry="1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <ci> zero </ci>
+          </math>
+                </kineticLaw>
+      </reaction>
+      <reaction compartment="c" fbc:lowerFluxBound="minus_1000" fbc:upperFluxBound="plus_1000" id="EX_g6p" name="glucose-6 phosphate exchange" reversible="false" sboTerm="SBO:0000627">
+        <listOfReactants>
+          <speciesReference constant="true" species="g6p" stoichiometry="1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">          
+            <ci> zero </ci>
+          </math>
+                </kineticLaw>
+      </reaction>
+    </listOfReactions>
+    <listOfEvents>
+      <event id="event_1" name="reset concentrations" useValuesFromTriggerTime="true">
+        <trigger initialValue="false" persistent="true" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">
+          <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">          
+            <apply>
+              <geq/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <cn type="integer" sbml:units="second"> 200 </cn>
+            </apply>
+          </math>
+                </trigger>
+        <listOfEventAssignments>
+          <eventAssignment variable="glc" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">            
+              <cn sbml:units="mM"> 4.5 </cn>
+            </math>
+                    </eventAssignment>
+          <eventAssignment variable="atp" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">            
+              <cn sbml:units="mM"> 3 </cn>
+            </math>
+                    </eventAssignment>
+          <eventAssignment variable="adp" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">            
+              <cn sbml:units="mM"> 0.8 </cn>
+            </math>
+                    </eventAssignment>
+          <eventAssignment variable="g6p" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:sbml="http://www.sbml.org/sbml/level3/version2/core">            
+              <cn sbml:units="mM"> 0.1 </cn>
+            </math>
+                    </eventAssignment>
+        </listOfEventAssignments>
+      </event>
+    </listOfEvents>
+  </model>
+</sbml>

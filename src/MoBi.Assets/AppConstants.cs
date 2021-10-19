@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
-using static OSPSuite.Assets.MenuNames;
 
 namespace MoBi.Assets
 {
@@ -96,7 +95,7 @@ namespace MoBi.Assets
          public static readonly string ObserverBuildingBlock = "Observer";
          public static readonly string SimulationSettings = "Simulation Settings";
          public static readonly string EmptyCalculationMethod = "No Calculation Method";
-         public static string EmptyCalculationMethodDescription = "";
+         public static readonly string EmptyCalculationMethodDescription = "";
 
          public static readonly string GlobalEventTag = "Events";
 
@@ -105,12 +104,18 @@ namespace MoBi.Assets
             "Plasma (Peripheral Venous Blood)",
             "Plasma Unbound (Peripheral Venous Blood)",
             "Tissue",
-            "Fraction excreted"
+            "Fraction excreted",
+            "Whole Blood",
+            "Interstitial Unbound",
+            "Intracellular Unbound", 
+            "Whole Organ",
+            "Fraction of oral drug mass absorbed into mucosa segment"
          };
 
          public static readonly IReadOnlyList<string> PKSimDynamicObservers = new[]
          {
-            "Fraction of dose"
+            "Fraction of dose",
+            "Whole organ incl. FcRn_Complex"
          };
       }
 
@@ -493,7 +498,7 @@ namespace MoBi.Assets
             return $"Configure simulation: '{simulationName}' was updated.";
          }
 
-         public static string EditDescriptionMoleculeList(string objectType, MoleculeList newMoleculeList, string name)
+         public static string EditDescriptionMoleculeList(string objectType, string name)
          {
             return $"Sets property '{ObjectTypes.MoleculeList}' for {objectType} '{name}'";
          }
@@ -608,7 +613,7 @@ namespace MoBi.Assets
             return $"Creating new formula named '{formulaName}'";
          }
 
-         public static string SetConstantValueFormula(string objectType, ConstantFormula constantFormula, string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
+         public static string SetConstantValueFormula(string objectType,  string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
          {
             return string.Format("Value of {3} '{2}' set from '{1}' to '{0}'", newValueInDisplayUnits, oldValueInDisplayUnits, ownerIdentifier, objectType.ToLowerInvariant());
          }
@@ -1054,6 +1059,7 @@ namespace MoBi.Assets
          public static readonly string ModelParts = "Model Parts";
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
+         public static readonly string ReloadAll = "Reload all under same settings...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1184,25 +1190,16 @@ namespace MoBi.Assets
             return $"Unable to set formula for {name}";
          }
 
-         public static string NameAlreadyUsed(string newName)
-         {
-            return $"Name '{newName}' already used";
-         }
+         public static string NameAlreadyUsed(string newName) => $"Name '{newName}' already used";
 
          public static string NoEditPresenterFoundFor(IObjectBase objectToEdit)
          {
             return $"No edit presenter found for {objectToEdit.Name}. {ShouldNeverHappen}";
          }
 
-         public static string FormulaInUse(IFormula formula)
-         {
-            return $"Unable to remove Formula '{formula.Name}' still in use.";
-         }
+         public static string FormulaInUse(IFormula formula) => $"Unable to remove Formula '{formula.Name}' still in use.";
 
-         public static string NotSupportedFormulaType(Type type)
-         {
-            return $"Formula type {type} is not supported";
-         }
+         public static string NotSupportedFormulaType(Type type) => $"Formula type {type} is not supported";
 
          public static string RemovedToPreventErrorDoubleImport<T>(IEnumerable<T> containerDoubleImported) where T : IObjectBase
          {
@@ -1216,30 +1213,20 @@ namespace MoBi.Assets
             return $"'{display}' are not imported to prevent errors, because it is already imported as child of another Container. \n You may add them in a second step if necessary";
          }
 
-         public static string BuildingBlockNotFoundFor(IObjectBase objectBase)
-         {
-            return $"BuildingBlock not found for {objectBase.Name}";
-         }
+         public static string BuildingBlockNotFoundFor(IObjectBase objectBase) => $"BuildingBlock not found for {objectBase.Name}";
 
-         public static string UnknownDimension(string name)
-         {
-            return $"Dimension '{name}' not available in DimensionFactory.";
-         }
+         public static string UnknownDimension(string name) => $"Dimension '{name}' not available in DimensionFactory.";
 
-         public static string CouldNotFindDimensionFromUnits(string columnValue)
-         {
-            return $"Could not find the dimension for this unit: {columnValue}";
-         }
+         public static string CouldNotFindDimensionFromUnits(string unit) => $"Could not find the dimension for this unit: {unit}";
+
+         public static string CouldNotFindDimension(string dimension) => $"Could not find the dimension: {dimension}";
 
          public static string CannotRemoveParameter(string parameterName, string containerName, string containerType)
          {
             return string.Format("Parameter '{0}' is a mandatory parameter of {2} '{1}' and cannot be removed.", parameterName, containerName, containerType.ToLowerInvariant());
          }
 
-         public static string AliasNotUnique(string alias, string formulaName)
-         {
-            return $"Alias '{alias}' is not unique in formula '{formulaName}'.";
-         }
+         public static string AliasNotUnique(string alias, string formulaName) => $"Alias '{alias}' is not unique in formula '{formulaName}'.";
 
          public static string ImportedDimensionNotRecognized(string dimensionName, IEnumerable<string> unitNames)
          {
@@ -1250,6 +1237,8 @@ namespace MoBi.Assets
          {
             return $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
          }
+
+         public static string FileIsReadOnly(string fileFullPath) => $"The project cannot be saved:\nThe file '{fileFullPath}' is read-only.";
       }
 
       public static class Captions
@@ -1906,13 +1895,14 @@ namespace MoBi.Assets
          }
       }
 
-      public static readonly string TimeColumName = "Simulationtime";
+      public static readonly string TimeColumnName = "Simulationtime";
 
       public static readonly string ResultName = "Results ";
       public static readonly string BrowseForFile = "Select File";
       public static readonly string Undefined = "Undefined";
       public static readonly string PleaseSelectCurveInChartEditor = "Please select a curve from the chart editor to be displayed in the chart";
-      public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] {ObservedData.MOLECULE, ObservedData.COMPARTMENT, ObservedData.ORGAN};
+      public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN};
+
 
       public static string PathType(string pathTypeAsString)
       {

@@ -64,7 +64,7 @@ namespace MoBi.Core.Commands
          _valuePoint = _tableFormula.GetPointWithCoordinates(_x, _y);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetRestartSolverInValuePointCommand(_tableFormula, _valuePoint, _oldRestartSolverValue,  _buildingBlock).AsInverseFor(this);
       }

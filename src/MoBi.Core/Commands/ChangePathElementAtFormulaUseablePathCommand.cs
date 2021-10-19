@@ -30,7 +30,7 @@ namespace MoBi.Core.Commands
          CommandType = AppConstants.Commands.EditCommand;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new ChangePathElementAtFormulaUseablePathCommand(_oldElement, _formula, _newElement, _path, _buildingBlock)
          {

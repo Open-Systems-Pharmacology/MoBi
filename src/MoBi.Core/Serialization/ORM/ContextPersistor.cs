@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -11,6 +14,7 @@ using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Serialization.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Exceptions;
 
 namespace MoBi.Core.Serialization.ORM
 {
@@ -87,6 +91,7 @@ namespace MoBi.Core.Serialization.ORM
       {
          var project = context.CurrentProject;
 
+         verifyFileNotReadOnly(project.FilePath);
          _sessionManager.CreateFactoryFor(project.FilePath);
 
          using (var session = _sessionManager.OpenSession())
@@ -98,12 +103,21 @@ namespace MoBi.Core.Serialization.ORM
             transaction.Commit();
          }
 
-         // after save was successfull, compress file
+         // after save was successful, compress file
          _projectFileCompressor.Compress(project.FilePath);
          project.Name = FileHelper.FileNameFromFileFullPath(project.FilePath);
          project.HasChanged = false;
          context.ProjectIsReadOnly = false;
          GC.Collect();
+      }
+
+      private void verifyFileNotReadOnly(string projectFilePath)
+      {
+         var fileInfo = new FileInfo(projectFilePath);
+         if (!fileInfo.Exists || !fileInfo.IsReadOnly)
+            return;
+
+         throw new OSPSuiteException(AppConstants.Exceptions.FileIsReadOnly(projectFilePath));
       }
 
       public void NewProject(IMoBiContext context)

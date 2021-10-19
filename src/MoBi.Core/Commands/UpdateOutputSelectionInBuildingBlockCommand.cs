@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.UpdateOutputSelectionInSimulationDescription(buildingBlock.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateOutputSelectionInBuildingBlockCommand(_oldOutputSelections, _buildingBlock).AsInverseFor(this);
       }

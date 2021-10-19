@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
          _spatialStructure = context.Get<IMoBiSpatialStructure>(SpatialStructureId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveContainerFromSpatialStructureCommand(_parent, _itemToAdd, _spatialStructure).AsInverseFor(this);
       }

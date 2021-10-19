@@ -13,28 +13,28 @@ namespace MoBi.Engine.Sbml
             _container = container;
         }
 
-        public IEnumerable<SBMLImporter> All()
+        public IEnumerable<ISBMLImporter> All()
         {
-            yield return _container.Resolve<UnitDefinitionImporter>();
+            yield return _container.Resolve<IUnitDefinitionImporter>();
             yield return _container.Resolve<CompartmentImporter>();
-            yield return _container.Resolve<SpeciesImporter>();
+            yield return _container.Resolve<ISpeciesImporter>();
             yield return _container.Resolve<ParameterImporter>();
-            yield return _container.Resolve<FunctionDefinitionImporter>();
+            yield return _container.Resolve<IFunctionDefinitionImporter>();
             yield return _container.Resolve<ReactionImporter>();
             yield return _container.Resolve<AssignmentImporter>();
             yield return _container.Resolve<EventImporter>();
         }
-        public IEnumerable<SBMLImporter> AllFor(Model sbmlModel)
+        public IEnumerable<ISBMLImporter> AllFor(Model sbmlModel)
         {
             if (sbmlModel.getNumUnitDefinitions() != 0)
-                yield return _container.Resolve<UnitDefinitionImporter>();
+                yield return _container.Resolve<IUnitDefinitionImporter>();
             yield return _container.Resolve<CompartmentImporter>();
             if (sbmlModel.getNumSpecies() != 0)
-                yield return _container.Resolve<SpeciesImporter>();
+                yield return _container.Resolve<ISpeciesImporter>();
             if (sbmlModel.getNumParameters() != 0)
                 yield return _container.Resolve<ParameterImporter>();
             if (sbmlModel.getNumFunctionDefinitions() != 0)
-                yield return _container.Resolve<FunctionDefinitionImporter>();
+                yield return _container.Resolve<IFunctionDefinitionImporter>();
             if (sbmlModel.getNumReactions() != 0)
                 yield return _container.Resolve<ReactionImporter>();
             yield return _container.Resolve<AssignmentImporter>();

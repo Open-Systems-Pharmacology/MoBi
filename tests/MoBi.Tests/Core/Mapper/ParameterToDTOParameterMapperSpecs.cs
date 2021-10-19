@@ -10,8 +10,6 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Utility.Extensions;
 using IParameterToParameterDTOMapper = MoBi.Presentation.Mappers.IParameterToParameterDTOMapper;
 
@@ -20,7 +18,6 @@ namespace MoBi.Core.Mapper
    public abstract class concern_for_ParameterToDTOParameterMapper : ContextSpecification<IParameterToParameterDTOMapper>
    {
       protected IFormulaToFormulaBuilderDTOMapper _formulaMapper;
-      protected ITagToTagDTOMapper _tagMapper;
       protected IGroupRepository _groupRepository;
       protected IFavoriteRepository _favoriteRepository;
       protected IEntityPathResolver _entityPathResolver;
@@ -29,12 +26,11 @@ namespace MoBi.Core.Mapper
       protected override void Context()
       {
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _tagMapper = A.Fake<ITagToTagDTOMapper>();
          _groupRepository= A.Fake<IGroupRepository>();
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _pathToPathElementsMapper= A.Fake<IPathToPathElementsMapper>();
-         sut = new ParameterToParameterDTOMapper(_formulaMapper,_tagMapper,_groupRepository,_favoriteRepository,_entityPathResolver, _pathToPathElementsMapper);
+         sut = new ParameterToParameterDTOMapper(_formulaMapper,_groupRepository,_favoriteRepository,_entityPathResolver, _pathToPathElementsMapper);
       }
    }
 
@@ -46,8 +42,6 @@ namespace MoBi.Core.Mapper
       private IDimension _dimension;
       private ParameterBuildMode _parameterBuildMode;
       private ParameterDTO _result;
-      protected Tag _tag;
-      protected Tag _otherTag;
       private IGroup _group;
       private PathElements _pathElements;
 
@@ -68,12 +62,9 @@ namespace MoBi.Core.Mapper
          _parameter.Dimension = _dimension;
          _parameterBuildMode = ParameterBuildMode.Global;
          _parameter.BuildMode = _parameterBuildMode;
-         _tag = new Tag("Unsinn");
-         _otherTag = new Tag("Quatsch");
          _parameter.CanBeVariedInPopulation = true;
          _pathElements = new PathElements();
          A.CallTo(() => _pathToPathElementsMapper.MapFrom(_parameter)).Returns(_pathElements);
-         A.CallTo(() => _parameter.Tags).Returns(new Tags(new[] {_tag, _otherTag}));
          A.CallTo(() => _groupRepository.GroupByName(_parameter.GroupName)).Returns(_group);
       }
 
@@ -87,12 +78,7 @@ namespace MoBi.Core.Mapper
       {
          A.CallTo(() => _formulaMapper.MapFrom(_formula)).MustHaveHappened();
       }
-      [Observation]
-      public void should_ask_map_all_tags()
-      {
-         A.CallTo(() => _tagMapper.MapFrom(_tag)).MustHaveHappened();
-         A.CallTo(() => _tagMapper.MapFrom(_otherTag)).MustHaveHappened();
-      }
+    
 
       [Observation]
       public void should_set_right_properties()
@@ -119,8 +105,6 @@ namespace MoBi.Core.Mapper
       private IDimension _dimension;
       private ParameterBuildMode _parameterBuildMode;
       private ParameterDTO _result;
-      private Tag _tag;
-      private Tag _otherTag;
 
       protected override void Context()
       {
@@ -138,9 +122,6 @@ namespace MoBi.Core.Mapper
          _parameter.Dimension = _dimension;
          _parameterBuildMode = ParameterBuildMode.Global;
          _parameter.BuildMode = _parameterBuildMode;
-         _tag = new Tag("Unsinn");
-         _otherTag = new Tag("Quatsch");
-         A.CallTo(() => _parameter.Tags).Returns(new Tags(new[] { _tag, _otherTag }));
       }
 
       protected override void Because()
@@ -153,13 +134,6 @@ namespace MoBi.Core.Mapper
       {
          A.CallTo(() => _formulaMapper.MapFrom(_formula)).MustHaveHappened();
          A.CallTo(() => _formulaMapper.MapFrom(_rhsFormula)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_ask_map_all_Tags()
-      {
-         A.CallTo(() => _tagMapper.MapFrom(_tag)).MustHaveHappened();
-         A.CallTo(() => _tagMapper.MapFrom(_otherTag)).MustHaveHappened();
       }
 
       [Observation]
@@ -182,8 +156,6 @@ namespace MoBi.Core.Mapper
       private IDimension _dimension;
       private ParameterBuildMode _parameterBuildMode;
       private ParameterDTO _result;
-      private Tag _tag;
-      private Tag _otherTag;
       private IObjectPath _path;
 
       protected override void Context()
@@ -201,11 +173,8 @@ namespace MoBi.Core.Mapper
          _parameter.Dimension = _dimension;
          _parameterBuildMode = ParameterBuildMode.Global;
          _parameter.BuildMode = _parameterBuildMode;
-         _tag = new Tag("Unsinn");
-         _otherTag = new Tag("Quatsch");
          A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(_path);
          A.CallTo(() => _favoriteRepository.Contains(_path)).Returns(true);
-         A.CallTo(() => _parameter.Tags).Returns(new Tags(new[] { _tag, _otherTag }));
       }
 
       protected override void Because()
@@ -217,13 +186,6 @@ namespace MoBi.Core.Mapper
       public void should_ask_to_map_formulas()
       {
          A.CallTo(() => _formulaMapper.MapFrom(_formula)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_ask_map_all_Tags()
-      {
-         A.CallTo(() => _tagMapper.MapFrom(_tag)).MustHaveHappened();
-         A.CallTo(() => _tagMapper.MapFrom(_otherTag)).MustHaveHappened();
       }
 
       [Observation]

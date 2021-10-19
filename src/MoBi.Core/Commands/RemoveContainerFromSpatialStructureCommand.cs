@@ -86,7 +86,7 @@ namespace MoBi.Core.Commands
          _spatialStructure = context.Get<IMoBiSpatialStructure>(SpatialStructureId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
 
          var command = new MoBiMacroCommand()

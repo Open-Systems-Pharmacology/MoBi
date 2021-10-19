@@ -15,10 +15,9 @@ namespace MoBi.Core.Domain.UnitSystem
    {
       private IEnumerable<IMoBiDimensionMergingInformation> mobiDimensionMergingInformationList => AllMergingInformation.Cast<IMoBiDimensionMergingInformation>();
 
-      public IDimension TryGetDimensionCaseInsensitive(string dimensionName)
+      public IDimension TryGetDimensionCaseInsensitive(string unitName)
       {
-         var dimension = Dimensions.FirstOrDefault(d => d.Name.Equals(dimensionName, StringComparison.OrdinalIgnoreCase));
-         return dimension ?? NoDimension;
+         return DimensionForUnit(unitName) ?? NoDimension;
       }
 
       protected override IDimensionConverter CreateConverterFor<T>(IDimension dimension, IDimension dimensionToMerge, T hasDimension)

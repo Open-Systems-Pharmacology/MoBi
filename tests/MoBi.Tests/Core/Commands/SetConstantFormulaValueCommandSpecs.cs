@@ -65,7 +65,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void command_description_should_describe_changes_to_value_and_display_units()
       {
-         sut.Description.ShouldBeEqualTo(AppConstants.Commands.SetConstantValueFormula("Parameter", _formula, "4 µmol", "3 µmol/l", _owner.Name));
+         sut.Description.ShouldBeEqualTo(AppConstants.Commands.SetConstantValueFormula("Parameter", "4 µmol", "3 µmol/l", _owner.Name));
       }
    }
 }

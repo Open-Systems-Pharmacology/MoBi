@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
          _parameter.BuildMode = _newValue;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditParameterBuildModeInBuildingBlockCommand(_oldValue, _parameter, _buildingBlock).AsInverseFor(this);
       }

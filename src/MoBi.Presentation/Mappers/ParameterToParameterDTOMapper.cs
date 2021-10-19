@@ -4,7 +4,6 @@ using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -15,21 +14,18 @@ namespace MoBi.Presentation.Mappers
    public class ParameterToParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IParameterToParameterDTOMapper
    {
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuilderMapper;
-      private readonly ITagToTagDTOMapper _tagMapper;
       private readonly IGroupRepository _groupRepository;
       private readonly IFavoriteRepository _favoriteRepository;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IPathToPathElementsMapper _pathToPathElementsMapper;
 
-      public ParameterToParameterDTOMapper(IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuilderMapper, 
-         ITagToTagDTOMapper tagMapper, 
-         IGroupRepository groupRepository, 
-         IFavoriteRepository favoriteRepository, 
-         IEntityPathResolver entityPathResolver, 
+      public ParameterToParameterDTOMapper(IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuilderMapper,
+         IGroupRepository groupRepository,
+         IFavoriteRepository favoriteRepository,
+         IEntityPathResolver entityPathResolver,
          IPathToPathElementsMapper pathToPathElementsMapper)
       {
          _formulaToDTOFormulaBuilderMapper = formulaToDTOFormulaBuilderMapper;
-         _tagMapper = tagMapper;
          _groupRepository = groupRepository;
          _favoriteRepository = favoriteRepository;
          _entityPathResolver = entityPathResolver;
@@ -50,7 +46,6 @@ namespace MoBi.Presentation.Mappers
          dto.IsAdvancedParameter = !parameter.Visible;
          dto.CanBeVariedInPopulation = parameter.CanBeVariedInPopulation;
          dto.PathElements = _pathToPathElementsMapper.MapFrom(parameter);
-         dto.Tags = parameter.Tags.MapAllUsing(_tagMapper).ToRichList();
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          dto.IsFavorite = _favoriteRepository.Contains(parameterPath);
 

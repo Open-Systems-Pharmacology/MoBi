@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
          _container.AddTag(new Tag(_tag));
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveTagCommand(_tag, _container, _buildingBlock).AsInverseFor(this);
       }
@@ -73,7 +73,7 @@ namespace MoBi.Core.Commands
          container.RemoveTag(_tag);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          var container = context.Get<IEntity>(_containerId);
          return new AddTagCommand(_tag, container, _buildingBlock).AsInverseFor(this);

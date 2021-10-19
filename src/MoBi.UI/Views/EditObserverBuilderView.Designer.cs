@@ -37,7 +37,7 @@ namespace MoBi.UI.Views
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.panelDescriptorConditionList = new DevExpress.XtraEditors.PanelControl();
          this.panelMoleculeList = new DevExpress.XtraEditors.PanelControl();
-         this.cbDimension = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbDimension = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.barManager = new DevExpress.XtraBars.BarManager();
          this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
          this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
@@ -334,7 +334,7 @@ namespace MoBi.UI.Views
       protected DevExpress.XtraBars.BarDockControl barDockControlLeft;
       protected DevExpress.XtraBars.BarDockControl barDockControlRight;
       private DevExpress.XtraEditors.ButtonEdit btName;
-      private DevExpress.XtraEditors.ComboBoxEdit cbDimension;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbDimension;
       private DevExpress.XtraEditors.MemoExEdit htmlEditor;
       private DevExpress.XtraTab.XtraTabPage tabFormula;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;

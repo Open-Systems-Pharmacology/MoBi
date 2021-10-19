@@ -16,7 +16,7 @@ namespace MoBi.Core.Commands
          CommandType = AppConstants.Commands.EditCommand;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateChartTemplateInSimulationSettingsCommand(_oldTemplate, _simulation, _templateNameToUpdate).AsInverseFor(this);
       }

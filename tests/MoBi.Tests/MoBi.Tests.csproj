@@ -45,12 +45,12 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.137" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="9.0.137" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="9.0.137" />
-    <PackageReference Include="OSPSuite.UI" Version="9.0.137" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.368" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="10.0.368" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="10.0.368" />
+    <PackageReference Include="OSPSuite.UI" Version="10.0.368" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.50" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.42" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.45" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" GeneratePathProperty="true" />
@@ -92,6 +92,19 @@
 
   <ItemGroup>
     <Folder Include="ProjectConversion\v6_0\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Update="Core\SBML\Testfiles\Barros2021_RAJI.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Core\SBML\Testfiles\tiny_example_12.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Core\SBML\Testfiles\UnitTestFile.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 

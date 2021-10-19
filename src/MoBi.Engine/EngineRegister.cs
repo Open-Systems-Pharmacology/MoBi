@@ -8,14 +8,20 @@ namespace MoBi.Engine
    {
       public override void RegisterInContainer(IContainer container)
       {
-
-         container.AddRegister(x => x.FromType<SBMLImportRegister>());
-
          container.AddScanner(x =>
          {
             x.AssemblyContainingType<EngineRegister>();
             x.WithConvention(new OSPSuiteRegistrationConvention(registerConcreteType: true));
+            x.ExcludeType<UnitDefinitionImporter>();
+            x.ExcludeType<SpeciesImporter>();
+            x.ExcludeType<FunctionDefinitionImporter>();
          });
+
+         container.Register<SBMLImporterRepository, SBMLImporterRepository>();
+         container.Register<ASTHandler, ASTHandler>();
+         container.Register<IUnitDefinitionImporter, UnitDefinitionImporter>(LifeStyle.Singleton);
+         container.Register<ISpeciesImporter, SpeciesImporter>(LifeStyle.Singleton);
+         container.Register<IFunctionDefinitionImporter, FunctionDefinitionImporter>(LifeStyle.Singleton);
       }
    }
 }

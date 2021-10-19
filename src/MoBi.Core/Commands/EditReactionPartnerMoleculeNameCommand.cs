@@ -32,7 +32,7 @@ namespace MoBi.Core.Commands
             reactionDiagramManager.RenameMolecule(_reaction, _oldMoleculeName, _newMoleculeName);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditReactionPartnerMoleculeNameCommand(_oldMoleculeName, _reaction, _reactionPartner, _buildingBlock)
          {

@@ -37,7 +37,7 @@ namespace MoBi.UI.Views
          this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
          this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControlProperties = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbMoleculeType = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbMoleculeType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.grpFormula = new DevExpress.XtraEditors.GroupControl();
          this.gridControlCalcualtionMethod = new OSPSuite.UI.Controls.UxGridControl();
          this.grdCalculationMethodsView = new MoBi.UI.Views.UxGridView();
@@ -315,7 +315,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemDescription;
       private DevExpress.XtraEditors.GroupControl grpFormula;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemFormula;
-      private DevExpress.XtraEditors.ComboBoxEdit cbMoleculeType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbMoleculeType;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemMoleculeType;
       private UxGridView grdCalculationMethodsView;
       private DevExpress.Utils.ToolTipController _toolTipController;

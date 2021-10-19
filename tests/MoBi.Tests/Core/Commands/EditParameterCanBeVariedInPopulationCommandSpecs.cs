@@ -49,7 +49,7 @@ namespace MoBi.Core.Commands
 
    internal class When_asking_for_inverse_command_of_a_EditParameterCanBeVariedInPopulationCommand : concern_for_EditParameterCanBeVariedInPopulationCommandSpecs
    {
-      private IReversibleCommand<IMoBiContext> _result;
+      private ICommand<IMoBiContext> _result;
       private IMoBiContext _context;
 
       protected override void Context()

@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
 {
@@ -62,7 +62,7 @@ namespace MoBi.Core.Services
          addBuildConfigurationToProject(project, moBiSimulation.MoBiBuildConfiguration, loadCommand);
 
          moBiSimulation.Results = simulation.Results;
-         if(!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
+         if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
             return;
 
          moBiSimulation.HasChanged = true;
@@ -75,7 +75,8 @@ namespace MoBi.Core.Services
          project.Favorites.AddFavorites(simulationTransfer.Favorites);
          var simulation = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
          var loadCommand = createLoadCommand(simulation);
-         addSimulationToProject(simulation, loadCommand,  shouldCloneSimulation: !project.IsEmpty);
+         //We always clone the simulation from Transfer as it may be loaded twice
+         addSimulationToProject(simulation, loadCommand, shouldCloneSimulation: true);
          addObservedDataToProject(simulationTransfer.AllObservedData, loadCommand);
          return loadCommand.Run(_context);
       }
@@ -132,7 +133,8 @@ namespace MoBi.Core.Services
          }
       }
 
-      private static void updateTemplateBuildingBlockIds<T>(IStartValuesBuildingBlock<T> startValues, string moleculeBuildingBlockId, string spatialStructureId, IStartValuesBuildingBlock<T> buildingBlock) where T : class, IStartValue
+      private static void updateTemplateBuildingBlockIds<T>(IStartValuesBuildingBlock<T> startValues, string moleculeBuildingBlockId,
+         string spatialStructureId, IStartValuesBuildingBlock<T> buildingBlock) where T : class, IStartValue
       {
          startValues.MoleculeBuildingBlockId = moleculeBuildingBlockId;
          startValues.SpatialStructureId = spatialStructureId;
@@ -140,7 +142,8 @@ namespace MoBi.Core.Services
          buildingBlock.SpatialStructureId = startValues.SpatialStructureId;
       }
 
-      private T createForProject<T>(IReadOnlyCollection<T> projectBuildingBlocks, IBuildingBlockInfo<T> buildingBlockInfo) where T : class, IBuildingBlock
+      private T createForProject<T>(IReadOnlyCollection<T> projectBuildingBlocks, IBuildingBlockInfo<T> buildingBlockInfo)
+         where T : class, IBuildingBlock
       {
          //this was already added to the project
          var templateBuildingBlock = projectBuildingBlocks.FindById(buildingBlockInfo.TemplateBuildingBlockId);

@@ -122,7 +122,7 @@ namespace MoBi.Core.Commands
          _updatedBuildConfiguration = context.Deserialize<IMoBiBuildConfiguration>(_buildConfigurationSerialization);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateSimulationCommand(_simulationToUpdate, _newModel, _updatedBuildConfiguration, _wasChanged, _changedBuildingBlockName, _changedBuildingBlockType)
             .AsInverseFor(this);

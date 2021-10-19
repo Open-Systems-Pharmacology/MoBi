@@ -36,7 +36,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveMoleculeNameFromIncludeCommand(_parent,_itemToAdd,_buildingBlock).AsInverseFor(this);
       }
@@ -54,7 +54,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveMoleculeNameFromExcludeCommand(_parent, _itemToAdd,_buildingBlock).AsInverseFor(this);
       }
@@ -93,7 +93,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddMoleculeNameToIncludeCommand(_parent,_itemToRemove, _buildingBlock).AsInverseFor(this);
       }
@@ -111,7 +111,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddMoleculeNameToExcludeCommand(_parent,_itemToRemove,_buildingBlock).AsInverseFor(this);
       }

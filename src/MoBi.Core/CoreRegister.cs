@@ -19,6 +19,7 @@ using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.FuncParser;
 using OSPSuite.Infrastructure.Export;
+using OSPSuite.Infrastructure.Import;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Utility.Container;
@@ -70,7 +71,6 @@ namespace MoBi.Core
          container.Register<IObjectBaseFactory, ObjectBaseFactory>(LifeStyle.Singleton);
          container.Register<IFullPathDisplayResolver, FullPathDisplayResolver>(LifeStyle.Singleton);
 
-
          //Register opened types generics
          container.Register(typeof(IEntitiesInBuildingBlockRetriever<>), typeof(EntitiesInBuildingBlockRetriever<>));
          container.Register<IList<IDimensionMergingInformation>, List<IDimensionMergingInformation>>(LifeStyle.Singleton);
@@ -79,10 +79,11 @@ namespace MoBi.Core
          container.RegisterFactory<IHistoryManagerFactory>();
          container.RegisterFactory<IDiagramManagerFactory>();
 
-
          container.Register<DimensionParser, DimensionParser>();
 
          registerSerializers(container);
+
+         registerImporter(container);
 
          registerReporters(container);
 
@@ -96,6 +97,11 @@ namespace MoBi.Core
       private void registerSerializers(IContainer container)
       {
          container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.Serialization.InfrastructureSerializationRegister>());
+      }
+
+      private void registerImporter(IContainer container)
+      {
+         container.AddRegister(x => x.FromType<InfrastructureImportRegister>());
       }
 
       private static void registerReporters(IContainer container)

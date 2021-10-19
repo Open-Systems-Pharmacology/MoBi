@@ -31,17 +31,18 @@
       {
          this.pnlEdit = new DevExpress.XtraEditors.PanelControl();
          this.splitFormula = new DevExpress.XtraEditors.SplitContainerControl();
-         this.cbExplicitFormulaName = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbExplicitFormulaName = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnCloneFormula = new DevExpress.XtraEditors.SimpleButton();
          this.btnAddFormula = new DevExpress.XtraEditors.SimpleButton();
-         this.cbFormulaType = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbFormulaType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemFormulaView = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemExplicitFormulaName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemFormulaType = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemAddFormula = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemCloneFormula = new DevExpress.XtraLayout.LayoutControlItem();
+         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.pnlEdit)).BeginInit();
          this.pnlEdit.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.splitFormula)).BeginInit();
@@ -82,11 +83,11 @@
          // 
          // cbExplicitFormulaName
          // 
-         this.cbExplicitFormulaName.Location = new System.Drawing.Point(156, 26);
+         this.cbExplicitFormulaName.Location = new System.Drawing.Point(155, 26);
          this.cbExplicitFormulaName.Name = "cbExplicitFormulaName";
          this.cbExplicitFormulaName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbExplicitFormulaName.Size = new System.Drawing.Size(282, 20);
+         this.cbExplicitFormulaName.Size = new System.Drawing.Size(283, 20);
          this.cbExplicitFormulaName.StyleController = this.layoutControl1;
          this.cbExplicitFormulaName.TabIndex = 3;
          // 
@@ -126,11 +127,11 @@
          // 
          // cbFormulaType
          // 
-         this.cbFormulaType.Location = new System.Drawing.Point(156, 2);
+         this.cbFormulaType.Location = new System.Drawing.Point(155, 2);
          this.cbFormulaType.Name = "cbFormulaType";
          this.cbFormulaType.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbFormulaType.Size = new System.Drawing.Size(722, 20);
+         this.cbFormulaType.Size = new System.Drawing.Size(723, 20);
          this.cbFormulaType.StyleController = this.layoutControl1;
          this.cbFormulaType.TabIndex = 4;
          // 
@@ -145,11 +146,9 @@
             this.layoutItemFormulaType,
             this.layoutItemAddFormula,
             this.layoutItemCloneFormula});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup1.Name = "layoutControlGroup1";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup1.Size = new System.Drawing.Size(880, 457);
-         this.layoutControlGroup1.Text = "layoutControlGroup1";
          this.layoutControlGroup1.TextVisible = false;
          // 
          // layoutItemFormulaView
@@ -159,9 +158,7 @@
          this.layoutItemFormulaView.Location = new System.Drawing.Point(0, 50);
          this.layoutItemFormulaView.Name = "layoutItemFormulaView";
          this.layoutItemFormulaView.Size = new System.Drawing.Size(880, 407);
-         this.layoutItemFormulaView.Text = "layoutItemFormulaView";
          this.layoutItemFormulaView.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemFormulaView.TextToControlDistance = 0;
          this.layoutItemFormulaView.TextVisible = false;
          // 
          // layoutItemExplicitFormulaName
@@ -171,7 +168,6 @@
          this.layoutItemExplicitFormulaName.Location = new System.Drawing.Point(0, 24);
          this.layoutItemExplicitFormulaName.Name = "layoutItemExplicitFormulaName";
          this.layoutItemExplicitFormulaName.Size = new System.Drawing.Size(440, 26);
-         this.layoutItemExplicitFormulaName.Text = "layoutItemExplicitFormulaName";
          this.layoutItemExplicitFormulaName.TextSize = new System.Drawing.Size(150, 13);
          // 
          // layoutItemFormulaType
@@ -181,7 +177,6 @@
          this.layoutItemFormulaType.Location = new System.Drawing.Point(0, 0);
          this.layoutItemFormulaType.Name = "layoutItemFormulaType";
          this.layoutItemFormulaType.Size = new System.Drawing.Size(880, 24);
-         this.layoutItemFormulaType.Text = "layoutItemFormulaType";
          this.layoutItemFormulaType.TextSize = new System.Drawing.Size(150, 13);
          // 
          // layoutItemAddFormula
@@ -191,9 +186,7 @@
          this.layoutItemAddFormula.Location = new System.Drawing.Point(440, 24);
          this.layoutItemAddFormula.Name = "layoutItemAddFormula";
          this.layoutItemAddFormula.Size = new System.Drawing.Size(220, 26);
-         this.layoutItemAddFormula.Text = "layoutItemAddFormula";
          this.layoutItemAddFormula.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemAddFormula.TextToControlDistance = 0;
          this.layoutItemAddFormula.TextVisible = false;
          // 
          // layoutItemCloneFormula
@@ -203,9 +196,7 @@
          this.layoutItemCloneFormula.Location = new System.Drawing.Point(660, 24);
          this.layoutItemCloneFormula.Name = "layoutItemCloneFormula";
          this.layoutItemCloneFormula.Size = new System.Drawing.Size(220, 26);
-         this.layoutItemCloneFormula.Text = "layoutItemCloneFormula";
          this.layoutItemCloneFormula.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemCloneFormula.TextToControlDistance = 0;
          this.layoutItemCloneFormula.TextVisible = false;
          // 
          // EditFormulaView
@@ -215,6 +206,7 @@
          this.Controls.Add(this.layoutControl1);
          this.Name = "EditFormulaView";
          this.Size = new System.Drawing.Size(880, 457);
+         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.pnlEdit)).EndInit();
          this.pnlEdit.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.splitFormula)).EndInit();
@@ -236,8 +228,8 @@
       #endregion
 
       private DevExpress.XtraEditors.PanelControl pnlEdit;
-      private DevExpress.XtraEditors.ComboBoxEdit cbExplicitFormulaName;
-      private DevExpress.XtraEditors.ComboBoxEdit cbFormulaType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbExplicitFormulaName;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbFormulaType;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemFormulaView;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemExplicitFormulaName;

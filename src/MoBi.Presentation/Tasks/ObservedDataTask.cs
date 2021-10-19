@@ -1,29 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
-using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Assets;
-using ColumnInfo = OSPSuite.Core.Importer.ColumnInfo;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using OSPSuite.Infrastructure.Import.Core;
+using ColumnInfo = OSPSuite.Infrastructure.Import.Core.ColumnInfo;
+using OSPSuite.Infrastructure.Import.Services;
+using static OSPSuite.Core.Domain.Constants;
 using Command = OSPSuite.Assets.Command;
-using CoreConstants = OSPSuite.Core.Domain.Constants;
-using DataImporterSettings = OSPSuite.Core.Importer.DataImporterSettings;
-using DimensionInfo = OSPSuite.Core.Importer.DimensionInfo;
-using IDataImporter = OSPSuite.Core.Importer.IDataImporter;
-using MetaDataCategory = OSPSuite.Core.Importer.MetaDataCategory;
-using NullValuesHandlingType = OSPSuite.Core.Importer.NullValuesHandlingType;
+using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
+using ObservedData = OSPSuite.Assets.ObservedData;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -38,6 +36,8 @@ namespace MoBi.Presentation.Tasks
       ///    Removes selected <paramref name="resultsToRemove" /> from their respective simulations
       /// </summary>
       void RemoveResultsFromSimulations(IReadOnlyList<DataRepository> resultsToRemove);
+
+      void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IReadOnlyList<DataRepository> observedDataFromSameFile);
    }
 
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
@@ -46,17 +46,17 @@ namespace MoBi.Presentation.Tasks
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IMoBiContext _context;
       private readonly IInteractionTask _interactionTask;
-      private readonly IDimension _molWeightDimension;
       private readonly IDialogCreator _mobiDialogCreator;
 
+
       public ObservedDataTask(
-         IDataImporter dataImporter, 
-         IDimensionFactory dimensionFactory, 
+         IDataImporter dataImporter,
+         IDimensionFactory dimensionFactory,
          IMoBiContext context,
-         IDialogCreator dialogCreator, 
-         IInteractionTask interactionTask, 
-         IDataRepositoryExportTask dataRepositoryTask, 
-         IContainerTask containerTask, 
+         IDialogCreator dialogCreator,
+         IInteractionTask interactionTask,
+         IDataRepositoryExportTask dataRepositoryTask,
+         IContainerTask containerTask,
          IObjectTypeResolver objectTypeResolver) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _dataImporter = dataImporter;
@@ -64,37 +64,48 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = interactionTask;
          _dimensionFactory = dimensionFactory;
          _context = context;
-         _molWeightDimension = dimensionFactory.Dimension(AppConstants.DimensionNames.MOL_WEIGHT);
       }
 
       public void AddObservedDataToProject()
       {
-         var data = _dataImporter.ImportDataSets(createMetaData().ToList(), createColumnInfos().ToList(), createDataImportSettings());
-         foreach (var repository in data)
+         var (metaDataCategories, settings) = initializeSettings();
+
+         var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
+            metaDataCategories,  
+            createColumnInfos().ToList(), 
+            settings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         );
+
+         if (dataRepositories == null || configuration == null) 
+            return;
+
+         foreach (var repository in dataRepositories)
          {
-            adjustMolWeight(repository);
             AddObservedDataToProject(repository);
             adjustRepositoryPaths(repository);
          }
+
+         AddImporterConfigurationToProject(configuration);
       }
 
       private void adjustRepositoryPaths(DataRepository repository)
       {
          var baseGrid = repository.BaseGrid;
          var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] {repository.Name, baseGridName}, QuantityType.Time);
+         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] { repository.Name, baseGridName }, QuantityType.Time);
 
          foreach (var col in repository.AllButBaseGrid())
          {
             var colName = col.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-            var quantityInfo = new QuantityInfo(col.Name, new[] {repository.Name, colName}, QuantityType.Undefined);
+            var quantityInfo = new QuantityInfo(col.Name, new[] { repository.Name, colName }, QuantityType.Undefined);
             col.QuantityInfo = quantityInfo;
          }
       }
 
       public void LoadObservedDataIntoProject()
       {
-         string filename = _interactionTask.AskForFileToOpen(AppConstants.Dialog.Load(ObjectTypes.ObservedData), CoreConstants.Filter.PKML_FILE_FILTER, CoreConstants.DirectoryKey.MODEL_PART);
+         string filename = _interactionTask.AskForFileToOpen(AppConstants.Dialog.Load(ObjectTypes.ObservedData), Filter.PKML_FILE_FILTER, DirectoryKey.MODEL_PART);
          if (filename.IsNullOrEmpty())
             return;
 
@@ -121,15 +132,15 @@ namespace MoBi.Presentation.Tasks
             return;
 
          var simulations = _context.CurrentProject.Simulations;
-         var macoCommand = new MoBiMacroCommand
+         var macroCommand = new MoBiMacroCommand
          {
             CommandType = Command.CommandTypeDelete,
             ObjectType = ObjectTypes.ObservedData,
             Description = AppConstants.Commands.DeleteAllResultsFromAllSimulations,
          };
 
-         simulations.Each(s => macoCommand.AddCommand(deleteAllResultsFromSimulationCommand(s)));
-         _context.AddToHistory(macoCommand.Run(_context));
+         simulations.Each(s => macroCommand.AddCommand(deleteAllResultsFromSimulationCommand(s)));
+         _context.AddToHistory(macroCommand.Run(_context));
       }
 
       private static MoBiMacroCommand deleteAllResultsFromSimulationCommand(IMoBiSimulation simulation)
@@ -148,29 +159,30 @@ namespace MoBi.Presentation.Tasks
          return macroCommand;
       }
 
-      private DataImporterSettings createDataImportSettings()
+      private (IReadOnlyList<MetaDataCategory>, DataImporterSettings) initializeSettings()
       {
-         var settings = new DataImporterSettings
+         var dataImporterSettings = new DataImporterSettings
          {
             IconName = ApplicationIcons.MoBi.IconName,
             Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
          };
-         settings.AddNamingPatternMetaData(Constants.FILE);
-         return settings;
+
+         addNamingPatterns(dataImporterSettings);
+         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
+         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
+
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategories().ToList();
+         populateMetaDataLists(metaDataCategories);
+
+         return (metaDataCategories, dataImporterSettings);
       }
 
-      private void adjustMolWeight(DataRepository observedData)
+
+      private void populateMetaDataLists(IList<MetaDataCategory> metaDataCategories)
       {
-         if (!observedData.ExtendedProperties.Contains(AppConstants.Parameters.MOLECULAR_WEIGHT))
-            return;
-
-         // molweight is provided in default unit should be saved in core unit
-         var molWeightExtendedProperty = observedData.ExtendedProperties[AppConstants.Parameters.MOLECULAR_WEIGHT].DowncastTo<IExtendedProperty<double>>();
-         var molWeight = _molWeightDimension.UnitValueToBaseUnitValue(_molWeightDimension.DefaultUnit, molWeightExtendedProperty.Value);
-         observedData.AllButBaseGrid().Each(x => x.DataInfo.MolWeight = molWeight);
-
-         //Remove Molweight extended properties
-         observedData.ExtendedProperties.Remove(AppConstants.Parameters.MOLECULAR_WEIGHT);
+         addPredefinedOrganValues(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
+         addPredefinedCompartmentValues(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
+         addPredefinedMoleculeNames(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -183,6 +195,10 @@ namespace MoBi.Presentation.Tasks
             return;
 
          _context.AddToHistory(new RenameObservedDataCommand(dataRepository, newName).Run(_context));
+      }
+
+      public override void UpdateMolWeight(DataRepository observedData)
+      {
       }
 
       private IMoBiSimulation getSimulationWithHistoricResult(DataRepository repository)
@@ -209,12 +225,84 @@ namespace MoBi.Presentation.Tasks
             CommandType = AppConstants.Commands.DeleteCommand
          };
 
-         resultsToRemove.Each(result =>
-         {
-            macroCommand.Add(removeResultFromSimulationCommand(result));
-         });
+         resultsToRemove.Each(result => { macroCommand.Add(removeResultFromSimulationCommand(result)); });
 
          _context.AddToHistory(macroCommand.Run(_context));
+      }
+
+      public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration,
+         IReadOnlyList<DataRepository> observedDataFromSameFile)
+      {
+         var importedObservedData = getObservedDataFromImporter(configuration);
+         var reloadDataSets =
+            _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());
+
+         foreach (var dataSet in reloadDataSets.NewDataSets)
+         {
+            AddObservedDataToProject(dataSet);
+            adjustRepositoryPaths(dataSet);
+         }
+
+         foreach (var dataSet in reloadDataSets.DataSetsToBeDeleted.ToArray()) //toDo it should be checked if to array solves the deleting problem
+         {
+            Delete(dataSet);
+         }
+
+         foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
+         {
+            //TODO this here should be tested
+            var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
+
+            foreach (var column in dataSet.Columns)
+            {
+               var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
+               {
+                  QuantityInfo = column.QuantityInfo,
+                  DataInfo = column.DataInfo,
+                  IsInternal = column.IsInternal,
+                  Values = column.Values
+               };
+
+               if (column.IsBaseGrid())
+               {
+                  existingDataSet.BaseGrid.Values = datacolumn.Values;
+               }
+               else
+               {
+                  var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
+                  if (existingColumn == null)
+                     existingDataSet.Add(column);
+                  else
+                     existingColumn.Values = column.Values;
+               }
+            }
+         }
+      }
+
+      private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
+      {
+         return (from dataRepo in dataRepositoryList
+                 let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair =>
+                    dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString())
+                 where result
+                 select dataRepo).FirstOrDefault();
+      }
+
+      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration)
+      {
+         var (metaDataCategories, dataImporterSettings)  = initializeSettings();
+
+         //do we really need this in MoBi????
+         var colInfos = createColumnInfos().ToList();
+
+         var importedObservedData = _dataImporter.ImportFromConfiguration(
+            configuration,
+            metaDataCategories,
+            colInfos, 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         );
+         return importedObservedData;
       }
 
       private ICommand removeResultFromSimulationCommand(DataRepository dataRepository)
@@ -239,115 +327,75 @@ namespace MoBi.Presentation.Tasks
          return new ClearResultsCommand(parentSimulation);
       }
 
-      private static RemoveHistoricResultFromSimulationCommand removeHistoricResultFromSimulationCommand(DataRepository repository, IMoBiSimulation parentSimulation)
+      private static RemoveHistoricResultFromSimulationCommand removeHistoricResultFromSimulationCommand(DataRepository repository,
+         IMoBiSimulation parentSimulation)
       {
          return new RemoveHistoricResultFromSimulationCommand(parentSimulation, repository);
       }
 
       private IEnumerable<ColumnInfo> createColumnInfos()
       {
-         var timeDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.TIME);
+         var timeDimension = _dimensionFactory.Dimension(Constants.Dimension.TIME);
          var timeColumn = new ColumnInfo
          {
             DefaultDimension = timeDimension,
             Name = "Time",
-            Description = "Time",
             DisplayName = "Time",
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
-         timeColumn.DimensionInfos.Add(new DimensionInfo {Dimension = timeDimension, IsMainDimension = true});
+         timeColumn.SupportedDimensions.Add(timeDimension);
          yield return timeColumn;
 
-         var mainDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.MOLAR_CONCENTRATION);
+         var mainDimension = _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
          var measurementInfo = new ColumnInfo
          {
             DefaultDimension = mainDimension,
             Name = "Measurement",
-            Description = "Measurement",
             DisplayName = "Measurement",
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name
          };
 
-         addDimensionsTo(measurementInfo, mainDimension);
+         addDimensionsTo(measurementInfo);
          yield return measurementInfo;
 
          var errorInfo = new ColumnInfo
          {
             DefaultDimension = mainDimension,
             Name = "Error",
-            Description = "Error",
             DisplayName = "Error",
             IsMandatory = false,
-            NullValuesHandling = NullValuesHandlingType.Allowed,
             BaseGridName = timeColumn.Name,
             RelatedColumnOf = measurementInfo.Name
          };
 
-         addDimensionsTo(errorInfo, mainDimension);
+         addDimensionsTo(errorInfo);
          yield return errorInfo;
       }
 
-      private void addDimensionsTo(ColumnInfo columnInfo, IDimension mainDimension)
+      private void addDimensionsTo(ColumnInfo columnInfo)
       {
-         var timeDimension = _dimensionFactory.Dimension(CoreConstants.Dimension.TIME);
+         var timeDimension = _dimensionFactory.Dimension(Constants.Dimension.TIME);
 
          foreach (var dimension in _dimensionFactory.DimensionsSortedByName.Where(x => x != timeDimension))
          {
-            columnInfo.DimensionInfos.Add(new DimensionInfo
-            {
-               Dimension = dimension,
-               IsMainDimension = (dimension == mainDimension)
-            });
+            columnInfo.SupportedDimensions.Add(dimension);
          }
-      }
-
-      private IEnumerable<MetaDataCategory> createMetaData()
-      {
-         yield return new MetaDataCategory
-         {
-            Name = AppConstants.Parameters.MOLECULAR_WEIGHT,
-            DisplayName = $"{AppConstants.Parameters.MOLECULAR_WEIGHT} [{_molWeightDimension.DefaultUnit}]",
-            Description = AppConstants.Parameters.MOLECULAR_WEIGHT,
-            MetaDataType = typeof(double),
-            IsMandatory = false,
-            MinValue = 0,
-            MinValueAllowed = false
-         };
-
-         yield return createMetaDataCategory<string>(ObservedData.ORGAN,
-            isMandatory: false,
-            isListOfValuesFixed: true,
-            fixedValuesRetriever: addPredefinedOrganValues,
-            description: ObservedData.ObservedDataOrganDescription);
-
-         yield return createMetaDataCategory<string>(ObservedData.COMPARTMENT,
-            isMandatory: false,
-            isListOfValuesFixed: true,
-            fixedValuesRetriever: addPredefinedCompartmentValues,
-            description: ObservedData.ObservedDataCompartmentDescription);
-
-         yield return createMetaDataCategory<string>(ObservedData.MOLECULE,
-            isMandatory: false, isListOfValuesFixed: true,
-            fixedValuesRetriever: addPredefinedMoleculeNames,
-            description: ObservedData.ObservedDataMoleculeDescription);
       }
 
       private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
       {
-         addUndefinedValueTo(metaDataCategory);
+         if (metaDataCategory == null)
+            return;
+
+         metaDataCategory.ShouldListOfValuesBeIncluded = true;
          allMolecules().OrderBy(molecule => molecule.Name).Each(molecule => addInfoToCategory(metaDataCategory, molecule));
       }
 
       private IEnumerable<IContainer> allMolecules()
       {
-         return _context.CurrentProject.MoleculeBlockCollection.SelectMany(buildingBlock =>
-         {
-            return buildingBlock.Select(builder => builder);
-         }).DistinctBy(builder => builder.Name);
+         return _context.CurrentProject.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
       }
 
       private static void addUndefinedValueTo(MetaDataCategory metaDataCategory)
@@ -357,24 +405,65 @@ namespace MoBi.Presentation.Tasks
 
       private void addPredefinedOrganValues(MetaDataCategory metaDataCategory)
       {
+         if (metaDataCategory == null)
+            return;
+
          addUndefinedValueTo(metaDataCategory);
+         metaDataCategory.ShouldListOfValuesBeIncluded = true;
          allOrgans().OrderBy(org => org.Name).Each(organ => addInfoToCategory(metaDataCategory, organ));
+      }
+
+      private void addNamingPatterns(DataImporterSettings dataImporterSettings)
+      {
+         dataImporterSettings.AddNamingPatternMetaData(
+            FILE
+         );
+
+         dataImporterSettings.AddNamingPatternMetaData(
+            FILE,
+            SHEET
+         );
+
+         dataImporterSettings.AddNamingPatternMetaData(
+            Constants.ObservedData.MOLECULE,
+            Constants.ObservedData.SPECIES,
+            Constants.ObservedData.ORGAN,
+            Constants.ObservedData.COMPARTMENT
+         );
+
+         dataImporterSettings.AddNamingPatternMetaData(
+            Constants.ObservedData.MOLECULE,
+            Constants.ObservedData.SPECIES,
+            Constants.ObservedData.ORGAN,
+            Constants.ObservedData.COMPARTMENT,
+            Constants.ObservedData.STUDY_ID,
+            Constants.ObservedData.GENDER,
+            Constants.ObservedData.DOSE,
+            Constants.ObservedData.ROUTE,
+            Constants.ObservedData.SUBJECT_ID
+         );
       }
 
       private void addPredefinedCompartmentValues(MetaDataCategory metaDataCategory)
       {
+         if (metaDataCategory == null)
+            return;
+
          addUndefinedValueTo(metaDataCategory);
+         metaDataCategory.ShouldListOfValuesBeIncluded = true;
          allCompartments().OrderBy(comp => comp.Name).Each(compartment => addInfoToCategory(metaDataCategory, compartment));
       }
 
       private IEnumerable<IContainer> allOrgans()
       {
-         return allTopContainers().SelectMany(allSubContainers).Where(container => container.ContainerType == ContainerType.Organ).DistinctBy(x => x.Name);
+         return allTopContainers().SelectMany(allSubContainers).Where(container => container.ContainerType == ContainerType.Organ)
+            .DistinctBy(x => x.Name);
       }
 
       private IEnumerable<IContainer> allCompartments()
       {
-         return allTopContainers().SelectMany(allSubContainers).Where(container => container.ContainerType == ContainerType.Compartment).DistinctBy(x => x.Name);
+         return allTopContainers().SelectMany(allSubContainers).Where(container => container.ContainerType == ContainerType.Compartment)
+            .DistinctBy(x => x.Name);
       }
 
       private IEnumerable<IContainer> allTopContainers()
@@ -400,32 +489,16 @@ namespace MoBi.Presentation.Tasks
             metaDataCategory.ListOfImages.Add(container.Name, icon.IconName);
       }
 
-      private MetaDataCategory createMetaDataCategory<T>(string categoryName, bool isMandatory = false, bool isListOfValuesFixed = false, Action<MetaDataCategory> fixedValuesRetriever = null, string description = null)
-      {
-         var category = new MetaDataCategory
-         {
-            Name = categoryName,
-            DisplayName = categoryName,
-            Description = description ?? categoryName,
-            MetaDataType = typeof(T),
-            IsMandatory = isMandatory,
-            IsListOfValuesFixed = isListOfValuesFixed
-         };
-
-         fixedValuesRetriever?.Invoke(category);
-
-         return category;
-      }
 
       public IEnumerable<string> PredefinedValuesFor(string name)
       {
-         if (string.Equals(name, ObservedData.ORGAN))
+         if (string.Equals(name, Constants.ObservedData.ORGAN))
             return predefinedValuesForCategory(addPredefinedOrganValues);
 
-         if (string.Equals(name, ObservedData.COMPARTMENT))
+         if (string.Equals(name, Constants.ObservedData.COMPARTMENT))
             return predefinedValuesForCategory(addPredefinedCompartmentValues);
 
-         if (string.Equals(name, ObservedData.MOLECULE))
+         if (string.Equals(name, Constants.ObservedData.MOLECULE))
             return predefinedValuesForCategory(addPredefinedMoleculeNames);
 
          return Enumerable.Empty<string>();
@@ -438,7 +511,10 @@ namespace MoBi.Presentation.Tasks
          return category.ListOfValues.Values;
       }
 
-      public IReadOnlyList<string> DefaultMetaDataCategories => AppConstants.DefaultObservedDataCategories;
+      public IReadOnlyList<string> DefaultMetaDataCategories => new[]
+      {
+         Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN
+      };
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string>();
 

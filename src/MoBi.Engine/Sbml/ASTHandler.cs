@@ -17,6 +17,7 @@ namespace MoBi.Engine.Sbml
       private IMoBiProject _sbmlProject;
       public List<FunctionDefinition> FunctionDefinitions { get; set; }
       public bool NeedAbsolutePath { get; set; }
+      public bool UseConcentrations { get; set; } = false;
 
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
@@ -26,6 +27,7 @@ namespace MoBi.Engine.Sbml
       private int _counter;
       private IReactionBuilder _reactionBuilder;
       private SBMLInformation _sbmlInformation;
+      private IUnitDefinitionImporter _unitDefinitionImporter;
 
       private readonly Dictionary<string, string> _functionDefDictionary;
       private readonly string[] _forbiddenNames = new[] { "E", "PI" };
@@ -43,6 +45,12 @@ namespace MoBi.Engine.Sbml
          NeedAbsolutePath = false;
       }
 
+      //Not possible to inject during construction due to circular references
+      public void SetUnitDefinitionImporter(IUnitDefinitionImporter unitDefinitionImporter)
+      {
+         _unitDefinitionImporter = unitDefinitionImporter;
+      }
+
       /// <summary>
       ///     Parses a SBML MathML expression from a SBML Reaction into a MoBi Formula. 
       /// </summary>
@@ -56,6 +64,7 @@ namespace MoBi.Engine.Sbml
          try
          {
             _objectPaths.Clear();
+            _functionDefDictionary.Clear();
             _sbmlProject = sbmlProject;
             _sbmlInformation = sbmlInformation;
             _reactionBuilder = reactionBuilder;
@@ -419,10 +428,13 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       private string parseInteger(ASTNode rootNode)
       {
-         if (rootNode.getInteger().ToString(CultureInfo.InvariantCulture).Contains("-"))
+         double value = rootNode.getInteger();
+         if (rootNode.isSetUnits() && _unitDefinitionImporter != null)
+            value = _unitDefinitionImporter.ToMobiBaseUnit(rootNode.getUnits(), value).value;
+         if (value.ToString(CultureInfo.InvariantCulture).Contains("-"))
             return SBMLConstants.LBRACE + rootNode.getInteger().ToString(CultureInfo.InvariantCulture) +
                    SBMLConstants.RBRACE;
-         return rootNode.getInteger().ToString(CultureInfo.InvariantCulture);
+         return value.ToString(CultureInfo.InvariantCulture);
       }
 
       /// <summary>
@@ -430,10 +442,13 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       private string parseReal(ASTNode rootNode)
       {
-         if (rootNode.getReal().ToString(CultureInfo.InvariantCulture).Contains("-"))
+         var value = rootNode.getReal();
+         if (rootNode.isSetUnits() && _unitDefinitionImporter != null)
+            value = _unitDefinitionImporter.ToMobiBaseUnit(rootNode.getUnits(), value).value;
+         if (value.ToString(CultureInfo.InvariantCulture).Contains("-"))
             return SBMLConstants.LBRACE + rootNode.getReal().ToString(CultureInfo.InvariantCulture) +
                    SBMLConstants.RBRACE;
-         return rootNode.getReal().ToString(CultureInfo.InvariantCulture);
+         return value.ToString(CultureInfo.InvariantCulture);
       }
 
       /// <summary>
@@ -807,13 +822,14 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Checks if a object path for the given objectName is already existant and creates a new one if not.
       /// </summary>
-      private string getObjectPathName(string parentContainer, string objectName)
+      private string getObjectPathName(string parentContainer, string objectName, bool useConcentration = false)
       {
          if (objectPathExistent(objectName))
             return objectName;
 
          var alias = createAliasFrom(objectName);
-         _objectPaths.Add(_objectPathFactory.CreateFormulaUsablePathFrom(parentContainer, objectName).WithAlias(alias));
+         var usablePath = useConcentration ? _objectPathFactory.CreateFormulaUsablePathFrom(parentContainer, objectName, Constants.Parameters.CONCENTRATION) : _objectPathFactory.CreateFormulaUsablePathFrom(parentContainer, objectName);
+         _objectPaths.Add(usablePath.WithAlias(alias));
          return alias;
       }
 
@@ -904,7 +920,7 @@ namespace MoBi.Engine.Sbml
          //reaction 
          if (NeedAbsolutePath == false)
          {
-            return getObjectPathName(ObjectPath.PARENT_CONTAINER, molecule.Name);
+            return getObjectPathName(ObjectPath.PARENT_CONTAINER, molecule.Name, UseConcentrations);
          }
 
          if (_sbmlInformation.MoleculeInformation.All(info => info.GetMoleculeBuilderName() != molecule.Name))

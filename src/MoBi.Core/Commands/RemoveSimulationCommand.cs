@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
          _simulation = null;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddSimulationCommand(_simulation).AsInverseFor(this);
       }

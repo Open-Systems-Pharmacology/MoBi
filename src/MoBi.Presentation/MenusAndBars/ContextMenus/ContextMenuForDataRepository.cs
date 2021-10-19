@@ -53,6 +53,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             editMenuItemFor(dataRepository),
             renameMenuItemFor(dataRepository),
             createSaveItemFor(dataRepository),
+            createReloadItemFor(dataRepository),
             deleteMenuItemFor(dataRepository),
             exportToExcel(dataRepository),
             reportMenuItemFor(dataRepository),
@@ -93,6 +94,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveDataRepositoryUICommand, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.Delete);
+      }
+
+      private IMenuBarItem createReloadItemFor(DataRepository dataRepository)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ReloadAll) //ToDo: move to Core, also from PK-Sim
+            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository)
+            .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
+            .WithIcon(ApplicationIcons.Excel);
       }
 
       private IMenuBarItem createSaveItemFor(DataRepository dataRepository)

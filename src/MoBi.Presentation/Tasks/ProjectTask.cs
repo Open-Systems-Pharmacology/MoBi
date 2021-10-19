@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -182,7 +183,12 @@ namespace MoBi.Presentation.Tasks
 
       public bool Save()
       {
-         if (string.IsNullOrEmpty(_context.CurrentProject.FilePath))
+         var filePath = _context.CurrentProject.FilePath;
+         if (string.IsNullOrEmpty(filePath))
+            return SaveAs();
+
+         var fileInfo = new FileInfo(filePath);
+         if (fileInfo.Exists && fileInfo.IsReadOnly)
             return SaveAs();
 
          return saveProject();

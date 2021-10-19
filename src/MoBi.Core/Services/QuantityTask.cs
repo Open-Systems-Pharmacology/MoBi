@@ -152,7 +152,7 @@ namespace MoBi.Core.Services
          var updateCommand = new MoBiMacroCommand();
          addUpdateDefaultStateAndValueOriginCommand(updateCommand, quantity, buildingBlockOrSimulation, setParameterDefaultStateFunc, setParameterValueOriginFunc);
 
-         if (updateCommand.IsEmtpy)
+         if (updateCommand.IsEmpty)
             return executedCommand;
 
          var macroCommand = new MoBiMacroCommand().WithHistoryEntriesFrom(executedCommand);

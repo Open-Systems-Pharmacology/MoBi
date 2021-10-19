@@ -16,7 +16,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddReactionBuilderCommand(_parent, _itemToRemove, _originalNode, _originalParentLocation).AsInverseFor(this);
       }
@@ -56,7 +56,7 @@ namespace MoBi.Core.Commands
          if (parentLocation != null) _parentLocation = parentLocation.Value;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveReactionBuilderCommand(_parent, _itemToAdd).AsInverseFor(this);
       }

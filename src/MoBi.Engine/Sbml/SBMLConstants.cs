@@ -12,6 +12,7 @@ namespace MoBi.Engine.Sbml
       public static string FORMULA = "Formula";
       public const string SBML_EVENT_ASSIGNMENT = "SBML Event Assignment ";
       public const string SBML_EVENTBUILDER = "EVENTBUILDER";
+      public const string SBML_DEFAULTEVENTNAME = "Default Event";
 
       //Building Block Names
       public const string SBML_REACTION_BB = "SBML Reactions";
@@ -104,6 +105,8 @@ namespace MoBi.Engine.Sbml
       public const string ACOS = "acos";
       public const string ASIN = "asin";
       public const string ATAN = "atan";
+
+      public static string NoValidConversionToLevel3Version2 = "The file cannot be converted to Level 3 Version 2. Please, use an older version of MoBi to load this file";
 
       public static string ModelNotRead(string errorLog)
       {

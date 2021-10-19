@@ -2,16 +2,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Validation;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
@@ -80,6 +81,14 @@ namespace MoBi.Presentation.DTO
 
       private static class AllRules
       {
+         private static bool nameDoesNotContainerIllegalCharacters(string name)
+         {
+            if (string.IsNullOrEmpty(name))
+               return true;
+
+            return !Constants.ILLEGAL_CHARACTERS.Any(name.Contains);
+         }
+
          private static IBusinessRule notEmptyNameRule { get; } = CreateRule.For<IObjectBaseDTO>()
             .Property(x => x.Name)
             .WithRule((dto, name) => dto.IsNameDefined(name))
@@ -90,9 +99,15 @@ namespace MoBi.Presentation.DTO
             .WithRule((dto, name) => dto.IsNameUnique(name))
             .WithError(AppConstants.Validation.NameAlreadyUsed);
 
+         private static IBusinessRule nameDoesNotContainIllegalCharacters { get; } = CreateRule.For<IObjectBaseDTO>()
+            .Property(item => item.Name)
+            .WithRule((dto, name) => nameDoesNotContainerIllegalCharacters(name))
+            .WithError(Error.NameCannotContainIllegalCharacters(Constants.ILLEGAL_CHARACTERS));
+
          public static IEnumerable<IBusinessRule> All()
          {
             yield return notEmptyNameRule;
+            yield return nameDoesNotContainIllegalCharacters;
             yield return uniqueNameRule;
          }
       }
@@ -136,7 +151,6 @@ namespace MoBi.Presentation.DTO
 
    public class UserDefinedNodeViewItem : ObjectBaseDTO
    {
-      
    }
 
    public class BuildingBlockInfoViewItem : ObjectBaseDTO

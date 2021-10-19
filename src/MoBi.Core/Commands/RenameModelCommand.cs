@@ -28,7 +28,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.SetDescription(ObjectType, AppConstants.Captions.Name, newName, _oldName);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RenameModelCommand(_model, _oldName).AsInverseFor(this);
       }

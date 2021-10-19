@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
          _isDefault = isDefault;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetParameterDefaultStateInSimulationCommand(_quantity, _oldIsDefault, _simulation).AsInverseFor(this);
       }

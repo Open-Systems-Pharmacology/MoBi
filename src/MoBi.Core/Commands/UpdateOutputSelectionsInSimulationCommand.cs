@@ -18,7 +18,7 @@ namespace MoBi.Core.Commands
          ObjectType = ObjectTypes.OutputSelections;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateOutputSelectionsInSimulationCommand(_oldOutputSelections, _simulation).AsInverseFor(this);
       }

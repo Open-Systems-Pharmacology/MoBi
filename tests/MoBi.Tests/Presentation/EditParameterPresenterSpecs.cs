@@ -25,7 +25,6 @@ namespace MoBi.Presentation
       protected IEditFormulaPresenter _editFormulaPresenter;
       protected IParameterToParameterDTOMapper _parameterMapper;
       protected IEditFormulaPresenter _editRHSPresenter;
-      private IEntityTask _entityTaks;
       protected IInteractionTaskContext _interactionTasksContext;
       protected IGroupRepository _groupRepository;
       private IEditTaskFor<IParameter> _editTasks;
@@ -33,6 +32,7 @@ namespace MoBi.Presentation
       protected IInteractionTasksForParameter _parameterTask;
       protected ICommandCollector _commandCollector;
       protected IEditValueOriginPresenter _editValueOriginPresenter;
+      protected ITagsPresenter _tagsPresenter;
 
       protected override void Context()
       {
@@ -40,15 +40,22 @@ namespace MoBi.Presentation
          _editFormulaPresenter = A.Fake<IEditFormulaPresenter>();
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
          _editRHSPresenter = A.Fake<IEditFormulaPresenter>();
-         _entityTaks = A.Fake<IEntityTask>();
          _interactionTasksContext = A.Fake<IInteractionTaskContext>();
          _groupRepository = A.Fake<IGroupRepository>();
          _editTasks = A.Fake<IEditTaskFor<IParameter>>();
          _favoriteTask = A.Fake<IFavoriteTask>();
          _parameterTask = A.Fake<IInteractionTasksForParameter>();
          _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();
-         sut = new EditParameterPresenter(_view, _editFormulaPresenter, _parameterMapper, _editRHSPresenter, _interactionTasksContext,
-            _entityTaks, _groupRepository, _editTasks, _parameterTask, new ContextSpecificReferencesRetriever(), _favoriteTask,_editValueOriginPresenter)
+         _tagsPresenter= A.Fake<ITagsPresenter>();
+         sut = new EditParameterPresenter(
+            _view, 
+            _editFormulaPresenter, 
+            _parameterMapper, 
+            _editRHSPresenter, 
+            _interactionTasksContext,
+            _groupRepository, 
+            _editTasks, 
+            _parameterTask, new ContextSpecificReferencesRetriever(), _favoriteTask,_editValueOriginPresenter, _tagsPresenter)
          {
             BuildingBlock = A.Fake<IBuildingBlock>()
          };

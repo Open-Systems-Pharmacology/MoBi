@@ -47,10 +47,10 @@ namespace MoBi.UI.Views.BaseDiagram
          this.coeReactionPortProduct = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.chkSnapGridVisible = new OSPSuite.UI.Controls.UxCheckEdit();
          this.chkObserverLinksVisible = new OSPSuite.UI.Controls.UxCheckEdit();
-         this.cbeDefaultNodeSizeObserver = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbeDefaultNodeSizeObserver = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.coeReactionLinkEduct = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
-         this.cbeDefaultNodeSizeReaction = new DevExpress.XtraEditors.ComboBoxEdit();
-         this.cbeDefaultNodeSizeMolecule = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbeDefaultNodeSizeReaction = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbeDefaultNodeSizeMolecule = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.coeContainerLogical = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.coeMoleculeNode = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.coeContainerPhysical = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
@@ -806,9 +806,9 @@ namespace MoBi.UI.Views.BaseDiagram
 
       #endregion
 
-      private DevExpress.XtraEditors.ComboBoxEdit cbeDefaultNodeSizeReaction;
-      private DevExpress.XtraEditors.ComboBoxEdit cbeDefaultNodeSizeMolecule;
-      private DevExpress.XtraEditors.ComboBoxEdit cbeDefaultNodeSizeObserver;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbeDefaultNodeSizeReaction;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbeDefaultNodeSizeMolecule;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbeDefaultNodeSizeObserver;
       private System.Windows.Forms.Timer timer1;
       private DevExpress.XtraEditors.TextEdit txtContainerOpacity;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;

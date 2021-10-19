@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveFormulaFromFormulaCacheCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
@@ -28,7 +28,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddFormulaToFormulaCacheCommand(_parent, _itemToRemove).AsInverseFor(this);
       }

@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemovePassiveTransportBuilderCommand(_parent,_itemToAdd).AsInverseFor(this);
       }
@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddPassiveTransportBuilderCommand(_parent,_itemToRemove).AsInverseFor(this);
       }
@@ -45,7 +45,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveActiveTransportBuilderCommand(_parent,_itemToAdd,_buildingBlock).AsInverseFor(this);
       }
@@ -63,7 +63,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddActiveTransportBuilderCommand(_parent,_itemToRemove,_buildingBlock).AsInverseFor(this);
       }

@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveRootEventGroupBuilderCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddRootEventGroupBuilderCommand(_parent, _itemToRemove).AsInverseFor(this);
       }
@@ -44,7 +44,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveRootApplicationBuilderCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
@@ -61,7 +61,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddRootApplicationBuilderCommand(_parent, _itemToRemove).AsInverseFor(this);
       }
@@ -78,7 +78,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveEventGroupBuilderCommand(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }
@@ -95,7 +95,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddEventGroupBuilderCommand(_parent, _itemToRemove, _buildingBlock).AsInverseFor(this);
       }
@@ -112,7 +112,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveApplicationBuilderCommand(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }
@@ -129,7 +129,7 @@ namespace MoBi.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddApplicationBuilderCommand(_parent, _itemToRemove, _buildingBlock).AsInverseFor(this);
       }

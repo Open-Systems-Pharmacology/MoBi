@@ -59,7 +59,7 @@ namespace MoBi.Core.Commands
          _startValue.DisplayUnit = _newDisplayUnit;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new StartValueValueOrUnitChangedCommand<TStartValue, TStartValueBuildingBlock>(_startValue, _oldBaseValue, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
       }

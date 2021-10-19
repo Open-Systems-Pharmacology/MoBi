@@ -6,6 +6,7 @@ using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace MoBi.Presentation.Presenter
 {

@@ -9,6 +9,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using Model = libsbmlcs.Model;
 using Reaction = libsbmlcs.Reaction;
+using MoBi.Core.Exceptions;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.SBML
 {
@@ -157,8 +159,6 @@ namespace MoBi.Core.SBML
 
    public class PassiveTransportReactionImporterTests : ReactionImporterSpecs
    {
-      private IPassiveTransportBuildingBlock _ptBuildingBlock;
-
       protected override void Context()
       {
          base.Context();
@@ -167,40 +167,99 @@ namespace MoBi.Core.SBML
 
       protected override void Because()
       {
-         base.Because();
-         _ptBuildingBlock = _moBiProject.PassiveTransportCollection.FirstOrDefault();
       }
 
       [Observation]
-      public void PassiveTransportNotNullTest()
+      public void ShouldRaiseOnInvalidFileConvertion()
       {
-         _ptBuildingBlock.ShouldNotBeNull();
+         The.Action(() => _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject)).ShouldThrowAn<MoBiException>();
+      }
+   }
+
+   public class ExpressionReactionImporterTests : ReactionImporterSpecs
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = Helper.TestFileFullPath("Barros2021_RAJI.xml");
+      }
+
+      protected override void Because()
+      {
+         _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject);
       }
 
       [Observation]
-      public void NoReactionCreatedTest()
+      public void ShouldParseUserDefinedFunctions()
       {
-         _moBiProject.ReactionBlockCollection.FirstOrDefault().FirstOrDefault().ShouldBeNull();
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * theta * T * Cm");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * phi * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * pi_ * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * alpha * T * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * epsilon * Ct");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * mu * Cm");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * rho * T * ((1) - (beta * T))");
+         (_moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * gamma * Ct * Ct");
       }
 
       [Observation]
-      public void SimplePassiveTransportTest()
+      public void ShouldCreateAliases()
       {
-         _ptBuildingBlock.FirstOrDefault().ShouldNotBeNull();
-         var pt = _ptBuildingBlock.FirstOrDefault();
-         pt.MoleculeList.MoleculeNames.Find(name => name == "b_cat").ShouldNotBeNull();
-         pt.SourceCriteria.Count().ShouldBeEqualTo(1);
-         pt.TargetCriteria.Count().ShouldBeEqualTo(1);
+         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "theta").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "Cm").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula.ObjectPaths.Where(op => op.Alias == "phi").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula.ObjectPaths.Where(op => op.Alias == "pi_").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "alpha").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula.ObjectPaths.Where(op => op.Alias == "epsilon").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula.ObjectPaths.Where(op => op.Alias == "mu").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula.ObjectPaths.Where(op => op.Alias == "Cm").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "rho").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "beta").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+
+         _moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "gamma").ShouldNotBeEmpty();
+         _moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+      }
+   }
+
+   public class ConcentrationBasedReactionImporterTests : ReactionImporterSpecs
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = Helper.TestFileFullPath("tiny_example_12.xml");
+      }
+
+      protected override void Because()
+      {
+         _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject);
       }
 
       [Observation]
-      public void LocalParameterCreationTest()
+      public void should_parse_user_defined_functions()
       {
-         _ptBuildingBlock.FirstOrDefault().ShouldNotBeNull();
-         var pt = _ptBuildingBlock.FirstOrDefault();
-         pt.ShouldNotBeNull();
-         pt.Parameters.Count().ShouldBeEqualTo(1);
-         pt.Parameters.ExistsByName("lp1");
+         var gkReaction = _moBiProject.ReactionBlockCollection.First().First();
+         var glucosePath = gkReaction.Formula.ObjectPaths.ElementAt(1);
+         glucosePath.Last().ShouldBeEqualTo(Constants.Parameters.CONCENTRATION);
+      }
+
+      [Observation]
+      public void should_translate_constants_into_base_units()
+      {
+         var atpprodReaction = _moBiProject.ReactionBlockCollection.First().ElementAt(1);
+         atpprodReaction.Formula.ToString().ShouldBeEqualTo("Vmax_ATPASE * ((ADP) / ((Km_adp + ADP))) * cos(((((Time) / (0.0166666666666667))) / (10)))");
       }
    }
 }

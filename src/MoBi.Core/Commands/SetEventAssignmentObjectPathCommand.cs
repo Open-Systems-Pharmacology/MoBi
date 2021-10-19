@@ -54,7 +54,7 @@ namespace MoBi.Core.Commands
          _assignment = context.Get<IEventAssignmentBuilder>(_assignmentId);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetEventAssignmentObjectPathCommand(_assignment, _oldObjectPath, _buildingBlock).AsInverseFor(this);
       }

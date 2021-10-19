@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new FormulaChangedEvent(formula));
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          var formula = context.Get<IFormula>(_formulaId);
          return new EditFormulaAliasCommand(formula, _oldAlias, _newAlias, _buildingBlock).AsInverseFor(this);

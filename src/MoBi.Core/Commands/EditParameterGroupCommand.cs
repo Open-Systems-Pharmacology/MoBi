@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.Group, _oldGroup.DisplayName, _newGroup.DisplayName, _quantity.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditParameterGroupCommand(_quantity, _oldGroup, _buildingBlock).AsInverseFor(this);
       }

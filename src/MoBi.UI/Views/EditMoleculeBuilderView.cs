@@ -11,10 +11,12 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Services;
+using OSPSuite.Assets;
 using OSPSuite.Presentation;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
@@ -96,11 +98,13 @@ namespace MoBi.UI.Views
          var size = layoutControlItemCalculationMethod.Size;
          size.Height = grdCalculationMethodsView.ColumnPanelRowHeight + 26 * 3;
          layoutControlItemCalculationMethod.Size = size;
+         tabParameter.Image = ApplicationIcons.Parameter;
+         tabProperties.Image = ApplicationIcons.Properties;
       }
 
-      public void UpdateStartAmountDisplay(string amoutOrConcentrationText)
+      public void UpdateStartAmountDisplay(string amountOrConcentrationText)
       {
-         grpFormula.Text = amoutOrConcentrationText;
+         grpFormula.Text = amountOrConcentrationText;
       }
 
       public void Activate()
@@ -169,9 +173,6 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError || _gridBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError || _gridBinder.HasError;
    }
 }

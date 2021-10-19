@@ -7,7 +7,24 @@ using Model = libsbmlcs.Model;
 
 namespace MoBi.Engine.Sbml
 {
-   public abstract class SBMLImporter
+   public interface ISBMLImporter
+   {
+      IMoBiSpatialStructure GetMainSpatialStructure(Model model);
+      IMoBiReactionBuildingBlock GetMainReactionBuildingBlock();
+      IContainer GetMainTopContainer();
+      IContainer GetEventsTopContainer();
+      IMoleculeBuildingBlock GetMainMoleculeBuildingBlock();
+      IParameterStartValuesBuildingBlock GetMainParameterStartValuesBuildingBlock();
+      IMoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock();
+      IEntity GetContainerFromCompartment(string compartment);
+      IContainer GetContainerFromCompartment_(string compartment);
+      void DoImport(Model sbmlModel, IMoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command);
+      void AddToProject();
+      IObjectPathFactory ObjectPathFactory { get; set; }
+      IObjectBaseFactory ObjectBaseFactory { get; set; }
+   }
+
+   public abstract class SBMLImporter : ISBMLImporter
    {
       protected ASTHandler _astHandler;
       protected IMoBiProject _sbmlProject;

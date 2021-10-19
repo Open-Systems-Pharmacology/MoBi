@@ -27,6 +27,8 @@ namespace MoBi.Presentation.Mappers
          public const int UNIT = 4;
          public const int SCALE_DIVISOR = 5;
          public const int NEGATIVE_VALUES_ALLOWED = 6;
+         //optional dimension column to use
+         public const int DIMENSION = 7;
          public const int COLUMNS = 7;
       }
 
@@ -121,7 +123,7 @@ namespace MoBi.Presentation.Mappers
 
          if (!msv.IsQuantitySpecified) return msv;
 
-         var dimension = GetDimension(table, rowIndex, DataTableRowIndexes.UNIT);
+         var dimension = GetDimension(table, rowIndex, DataTableRowIndexes.UNIT, DataTableRowIndexes.DIMENSION);
          msv.Dimension = dimension;
          msv.DisplayUnit = dimension.Unit(row[DataTableRowIndexes.UNIT].ToString());
 

@@ -64,7 +64,7 @@ namespace MoBi.Core.Commands
          _moleculeAmount = null;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SynchronizeMoleculeStartValueCommand(_quantity, _moleculeStartValue)
          {

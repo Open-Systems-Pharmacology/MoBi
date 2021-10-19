@@ -28,7 +28,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.ChangeFormulaString(formula.Name, _newFormulaString, _oldFormulaString, buildingBlock.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditFormulaStringCommand(_oldFormulaString, _formula, _buildingBlock).AsInverseFor(this);
       }

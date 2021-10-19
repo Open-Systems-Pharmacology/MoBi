@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
          _reactionPartner = RetrievePartner(_moleculeName);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new EditReactionPartnerStoichiometricCoefficientCommand(_oldCoefficient, _reaction, _reactionPartner, _buildingBlock)
          {

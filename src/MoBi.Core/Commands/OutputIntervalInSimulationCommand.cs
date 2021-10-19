@@ -47,7 +47,7 @@ namespace MoBi.Core.Commands
          _schema.AddInterval(_interval);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new RemoveOutputIntervalFromSimulationCommand(_schema, _interval, _simulation).AsInverseFor(this);
       }
@@ -67,7 +67,7 @@ namespace MoBi.Core.Commands
          _schema.RemoveInterval(_interval);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddOutputIntervalInSimulationCommand(_schema, _interval, _simulation).AsInverseFor(this);
       }

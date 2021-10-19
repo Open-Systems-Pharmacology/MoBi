@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
          _valueOrigin = valueOrigin;
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateValueOriginInSimulationCommand(_quantity, _oldValueOrigin, _simulation).AsInverseFor(this);
       }

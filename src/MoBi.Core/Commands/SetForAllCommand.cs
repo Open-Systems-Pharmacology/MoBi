@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.ForAll, (!_forAll).ToString(), forAll.ToString(), moleculeDependentBuilder.Name);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetForAllCommand(_moleculeDependentBuilder, !_forAll,_buildingBlock).AsInverseFor(this);
       }

@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
 
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new SetParameterDefaultStateInBuildingBlockCommand(_quantity, _oldIsDefault, _buildingBlock).AsInverseFor(this);
       }

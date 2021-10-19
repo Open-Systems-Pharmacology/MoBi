@@ -1,24 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi", "src\MoBi\MoBi.csproj", "{B831E5E2-431A-4627-B58C-3CE3F5002E42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi", "src\MoBi\MoBi.csproj", "{B831E5E2-431A-4627-B58C-3CE3F5002E42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.Core", "src\MoBi.Core\MoBi.Core.csproj", "{2DBF50BE-A749-421C-B526-8BDA31CFE7B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.Core", "src\MoBi.Core\MoBi.Core.csproj", "{2DBF50BE-A749-421C-B526-8BDA31CFE7B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.Presentation", "src\MoBi.Presentation\MoBi.Presentation.csproj", "{B4C86DCA-8877-4400-8088-2401EE65B403}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.Presentation", "src\MoBi.Presentation\MoBi.Presentation.csproj", "{B4C86DCA-8877-4400-8088-2401EE65B403}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.Assets", "src\MoBi.Assets\MoBi.Assets.csproj", "{3C65FFC2-D9EC-4951-8C35-04854AD34E52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.Assets", "src\MoBi.Assets\MoBi.Assets.csproj", "{3C65FFC2-D9EC-4951-8C35-04854AD34E52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.Tests", "Tests\MoBi.Tests\MoBi.Tests.csproj", "{9DFDB6C9-FB74-4578-AAAF-F89C07BD4414}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.Tests", "Tests\MoBi.Tests\MoBi.Tests.csproj", "{9DFDB6C9-FB74-4578-AAAF-F89C07BD4414}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.UI", "src\MoBi.UI\MoBi.UI.csproj", "{DE743812-F444-42E2-B72D-CF298933E2BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.UI", "src\MoBi.UI\MoBi.UI.csproj", "{DE743812-F444-42E2-B72D-CF298933E2BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.BatchTool", "src\MoBi.BatchTool\MoBi.BatchTool.csproj", "{881D23DB-4A9F-45C8-BA67-58B790537634}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.BatchTool", "src\MoBi.BatchTool\MoBi.BatchTool.csproj", "{881D23DB-4A9F-45C8-BA67-58B790537634}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B29CBF46-FC2E-4201-BBEC-940B5601A773}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		appveyor-coverage.yml = appveyor-coverage.yml
 		appveyor-nightly.yml = appveyor-nightly.yml
 		appveyor.yml = appveyor.yml
@@ -29,9 +30,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.UI.Tests", "tests\MoBi.UI.Tests\MoBi.UI.Tests.csproj", "{2710573C-9216-4817-AD81-97099597A780}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.UI.Tests", "tests\MoBi.UI.Tests\MoBi.UI.Tests.csproj", "{2710573C-9216-4817-AD81-97099597A780}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.Engine", "src\MoBi.Engine\MoBi.Engine.csproj", "{15ED932C-EDEC-407B-91D9-7BCB8E7F95F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.Engine", "src\MoBi.Engine\MoBi.Engine.csproj", "{15ED932C-EDEC-407B-91D9-7BCB8E7F95F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

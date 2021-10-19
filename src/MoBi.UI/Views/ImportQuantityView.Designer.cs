@@ -34,7 +34,7 @@ namespace MoBi.UI.Views
       private void InitializeComponent()
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this._sheetNameComboBox = new DevExpress.XtraEditors.ComboBoxEdit();
+         this._sheetNameComboBox = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.lblImportFileFormatHint = new System.Windows.Forms.Label();
          this.messageMemoEdit = new DevExpress.XtraEditors.MemoEdit();
          this.filePathButtonEdit = new DevExpress.XtraEditors.ButtonEdit();
@@ -262,7 +262,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlItem logEditControlItem2;
       private System.Windows.Forms.Label lblImportFileFormatHint;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-      private DevExpress.XtraEditors.ComboBoxEdit _sheetNameComboBox;
+      private OSPSuite.UI.Controls.UxComboBoxEdit _sheetNameComboBox;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
    }
 }

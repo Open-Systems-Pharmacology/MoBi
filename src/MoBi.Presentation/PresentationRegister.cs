@@ -125,7 +125,6 @@ namespace MoBi.Presentation
          container.Register<IDisplayNameProvider, DisplayNameProvider>();
          container.Register<IRenameObjectDTOFactory, RenameObjectDTOFactory>();
 
-         container.AddRegister(x=>x.FromType<OSPSuite.Presentation.Importer.PresentationImporterRegister>());
          registerTasks(container);
          registerContextMenus(container);
 

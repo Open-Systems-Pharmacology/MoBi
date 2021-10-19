@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.UpdateParameterStartValue(_path, _value, psv.DisplayUnit);
       }
 
-      protected override IReversibleCommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateParameterStartValueInBuildingBlockCommand(_buildingBlock, _path, _originalValue).AsInverseFor(this);
       }

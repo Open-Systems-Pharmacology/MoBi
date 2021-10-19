@@ -13,6 +13,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation

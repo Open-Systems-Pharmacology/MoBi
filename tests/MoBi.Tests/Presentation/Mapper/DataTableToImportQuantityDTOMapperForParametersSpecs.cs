@@ -1,13 +1,13 @@
 ﻿using System.Data;
 using System.Globalization;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -121,6 +121,33 @@ namespace MoBi.Presentation.Mapper
       public void should_fail_to_validate_When_missing_a_quantity()
       {
          _result.QuantitDTOs.ShouldBeEmpty();
+      }
+   }
+
+   public class When_converting_and_validating_for_full_insert_parameters_with_dimension_column : concern_for_DataTableToImportQuantityDTOMapperForParameters
+   {
+      private QuantityImporterDTO _result;
+      private DataTable _tables;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         // We'll need a real building block for this test so that it will return null when asked for a start value from a path
+         _startValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _tables = new WithDimensionColumnDataTable().ImportTables();
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+      }
+
+      [Observation]
+      public void should_fail_to_validate_When_missing_a_quantity()
+      {
+         _result.QuantitDTOs[0].Dimension.Name.ShouldBeEqualTo("Becquerel");
+         _result.QuantitDTOs[1].Dimension.Name.ShouldBeEqualTo("Inversed time");
       }
    }
 
@@ -247,6 +274,34 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
+   internal class WithDimensionColumnDataTable : DataTableProvider
+   {
+      public override DataTable ImportTables()
+      {
+         var dt = new DataTable("SpecsTable");
+
+         dt.Columns.Add("PathColumn");
+         dt.Columns.Add("NameColumn");
+         dt.Columns.Add("ValueColumn");
+         dt.Columns.Add("UnitsColumn");
+         dt.Columns.Add("DimensionColumn");
+
+         for (var i = 0; i < 2; i++)
+         {
+            var row = dt.NewRow();
+            row[0] = "This" + ObjectPath.PATH_DELIMITER + "Is" + ObjectPath.PATH_DELIMITER + "The" + ObjectPath.PATH_DELIMITER + "Path" +
+                     ObjectPath.PATH_DELIMITER + i;
+            row[1] = "ParameterName";
+            row[2] = GetQuantities(1, i);
+            row[3] = "1/min";
+            row[4] = i == 0 ? "Becquerel" : "Inversed time";
+            dt.Rows.Add(row);
+         }
+
+         return dt;
+      }
+   }
+
    internal class IncorrectFormatDataTableProvider : DataTableProvider
    {
       public override DataTable ImportTables()
@@ -306,7 +361,8 @@ namespace MoBi.Presentation.Mapper
          for (var i = 0; i < _numberOfRowsToImport; i++)
          {
             var row = dt.NewRow();
-            row[0] = "This" + ObjectPath.PATH_DELIMITER + "Is" + ObjectPath.PATH_DELIMITER + "The" + ObjectPath.PATH_DELIMITER + "Path" + ObjectPath.PATH_DELIMITER + i;
+            row[0] = "This" + ObjectPath.PATH_DELIMITER + "Is" + ObjectPath.PATH_DELIMITER + "The" + ObjectPath.PATH_DELIMITER + "Path" +
+                     ObjectPath.PATH_DELIMITER + i;
             row[1] = "ParameterName";
             row[2] = GetQuantities(1, i);
             row[3] = GetUnits(i);

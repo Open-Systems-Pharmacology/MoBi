@@ -21,6 +21,8 @@ namespace MoBi.Presentation.Mappers
          public const int NAME = 1;
          public const int VALUE = 2;
          public const int UNIT = 3;
+         //optional dimension column
+         public const int DIMENSION = 4;
          public const int COLUMNS = 4;
       }
 
@@ -29,7 +31,7 @@ namespace MoBi.Presentation.Mappers
          if (row.ItemArray.Count() < DataTableRowIndexes.COLUMNS)
             throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(DataTableRowIndexes.COLUMNS));
 
-         var dimension = GetDimension(table, rowIndex, DataTableRowIndexes.UNIT);
+         var dimension = GetDimension(table, rowIndex, DataTableRowIndexes.UNIT, DataTableRowIndexes.DIMENSION);
          var containerPath = GetPath(row, DataTableRowIndexes.CONTAINER_PATH);
          var quantity = GetQuantity(table, rowIndex, DataTableRowIndexes.VALUE);
          var parameterName = GetQuantityName(row, DataTableRowIndexes.NAME);
