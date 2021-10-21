@@ -20,6 +20,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters.Events;
+using System.Collections.Generic;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -58,15 +59,19 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
       private bool _parameterIdentificationRunning;
       private bool _sensitivityRunning;
+      private IList<string> _activePIs = new List<string>();
+      private string _currentlyActivePI;
+      private readonly IEventPublisher _eventPublisher;
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
-         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager, IMoBiContext context)
+         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager, IMoBiContext context, IEventPublisher eventPublisher)
          : base(view, menuBarItemRepository, mruProvider)
       {
          _skinManager = skinManager;
          _context = context;
          _menuBarItemRepository = menuBarItemRepository;
          _buttonGroupRepository = buttonGroupRepository;
+         _eventPublisher = eventPublisher;
       }
 
       protected override void AddRibbonPages()
@@ -350,18 +355,24 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
+         _currentlyActivePI = parameterIdentification.Id;
+         _parameterIdentificationRunning = _activePIs.Contains(parameterIdentification.Id);
          updateParameterIdentifcationItems(parameterIdentification);
+         _eventPublisher.PublishEvent(new ParameterIdentificationSelectedEvent(parameterIdentification));
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
+         _activePIs.Add(parameterIdentificationEvent.ParameterIdentification.Id);
          _parameterIdentificationRunning = true;
          updateParameterIdentifcationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
       public void Handle(ParameterIdentificationTerminatedEvent parameterIdentificationEvent)
       {
-         _parameterIdentificationRunning = false;
+         _activePIs.Remove(parameterIdentificationEvent.ParameterIdentification.Id);
+         if (parameterIdentificationEvent.ParameterIdentification.Id == _currentlyActivePI)
+            _parameterIdentificationRunning = false;
          updateParameterIdentifcationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
