@@ -290,14 +290,9 @@ namespace MoBi.UI.Services
 
       private static SynchronizationContext getCurrentContext()
       {
-         var context = SynchronizationContext.Current;
-         if (context == null)
-         {
-            context = new WindowsFormsSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(context);
-         }
-
-         return SynchronizationContext.Current;
+        var  context = new WindowsFormsSynchronizationContext();
+        SynchronizationContext.SetSynchronizationContext(context);
+        return SynchronizationContext.Current;
       }
    }
 }

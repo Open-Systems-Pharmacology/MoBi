@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Version>10.0.0</Version>
-    <PackageVersion>10.0.0</PackageVersion>
-    <AssemblyVersion>10.0.0</AssemblyVersion>
-    <FileVersion>10.0.0</FileVersion>
-    <InformationalVersion>10.0.0</InformationalVersion>
+    <Version>11.0.0</Version>
+    <PackageVersion>11.0.0</PackageVersion>
+    <AssemblyVersion>11.0.0</AssemblyVersion>
+    <FileVersion>11.0.0</FileVersion>
+    <InformationalVersion>11.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <Authors>Open-Systems-Pharmacology</Authors>
@@ -28,12 +28,12 @@
     <PackageReference Include="Northwoods.GoWin" Version="5.2.0" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.18" />
     <PackageReference Include="OSPSuite.Presentation.Importer" Version="10.0.92" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="11.0.18" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.371-rsgvdwow" />  
+    <PackageReference Include="OSPSuite.Core" Version="11.0.18" />  
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
