@@ -60,6 +60,7 @@ namespace MoBi.Presentation.Presenter
       protected readonly IMoBiContext _context;
       private readonly IUserSettings _userSettings;
       private readonly IChartTasks _chartTasks;
+      private IChartUpdater _chartUpdater;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
       protected readonly ICache<DataRepository, IMoBiSimulation> _dataRepositoryCache;
 
@@ -69,10 +70,11 @@ namespace MoBi.Presentation.Presenter
       private IChartEditorPresenter editorPresenter => _chartPresenterContext.EditorPresenter;
 
       protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks,
-         IChartTemplatingTask chartTemplatingTask) :
+         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater) :
          base(chartView, chartPresenterContext)
       {
          _chartTasks = chartTasks;
+         _chartUpdater = chartUpdater;
          initializeDisplayPresenter();
          initializeEditorPresenter();
 
@@ -192,14 +194,35 @@ namespace MoBi.Presentation.Presenter
          }
          else
          {
-            var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e);
-            addObservedData(droppedObservedData.ToList());
+            if (_userSettings.ColorGroupObservedDataFromSameFolder)
+            {
+               var droppedObservedDataWithFolderAddress = _observedDataDragDropBinder.DroppedObservedDataWithFolderPathFrom(e);
+               addColorGroupedObservedData(droppedObservedDataWithFolderAddress);
+            }
+            else
+            {
+               var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e);
+               addObservedData(droppedObservedData.ToList());
+            }
          }
       }
 
       protected abstract bool CanDropSimulation { get; }
 
       protected abstract void MarkChartOwnerAsChanged();
+
+      private void addColorGroupedObservedData(IReadOnlyList<IReadOnlyList<DataRepository>> observedData)
+      {
+         using (_chartUpdater.UpdateTransaction(Chart))
+         {
+            foreach (var observedDataNodesList in observedData)
+            {
+               AddDataRepositoriesToEditor(observedDataNodesList);
+               var columnsToAdd = observedDataNodesList.SelectMany(x => x.ObservationColumns());
+               ChartEditorPresenter.AddCurvesWithSameColorForColumn(columnsToAdd.ToList());
+            }
+         }
+      }
 
       private void addHistoricalResults(IReadOnlyList<DataRepository> repositories)
       {

@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Presenter
       private readonly ICurveNamer _curveNamer;
 
       public SimulationChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks, IChartTemplatingTask chartTemplatingTask, ICurveNamer curveNamer, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext)
-         : base(chartView, chartPresenterContext, context, userSettings, chartTasks, chartTemplatingTask)
+         : base(chartView, chartPresenterContext, context, userSettings, chartTasks, chartTemplatingTask, chartUpdater)
       {
          _curveNamer = curveNamer;
       }

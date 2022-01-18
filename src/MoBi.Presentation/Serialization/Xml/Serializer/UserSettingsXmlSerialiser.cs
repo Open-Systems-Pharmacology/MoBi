@@ -37,6 +37,7 @@ namespace MoBi.Presentation.Serialization.Xml.Serializer
          Map(x => x.JournalPageEditorSettings);
          Map(x => x.ParameterIdentificationFeedbackEditorSettings);
          Map(x => x.MergeConflictViewSettings);
+         Map(x => x.ColorGroupObservedDataFromSameFolder);
          MapEnumerable(x => x.ProjectFiles, x => x.ProjectFiles.Add);
          MapEnumerable(x => x.UsedDirectories, x => x.DirectoryMapSettings.AddUsedDirectory);
       }
