@@ -390,7 +390,18 @@ namespace MoBi.Presentation.Tasks
             return;
 
          metaDataCategory.ShouldListOfValuesBeIncluded = true;
-         allMolecules().OrderBy(molecule => molecule.Name).Each(molecule => addInfoToCategory(metaDataCategory, molecule));
+
+         foreach (var molecule in allMolecules())
+         {
+            var molWeightParameter = molecule.AllParameters().FirstOrDefault(x => x.Name == AppConstants.Parameters.MOLECULAR_WEIGHT);
+            var molWeight = molWeightParameter != null ? molWeightParameter.ValueInDisplayUnit.ToString() : string.Empty;
+            metaDataCategory.ListOfValues.Add(molecule.Name, molWeight);
+
+            var icon = ApplicationIcons.IconByName(molecule.Icon);
+
+            if (icon != ApplicationIcons.EmptyIcon)
+               metaDataCategory.ListOfImages.Add(molecule.Name, icon.IconName);
+         }
       }
 
       private IEnumerable<IContainer> allMolecules()
