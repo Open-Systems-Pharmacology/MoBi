@@ -164,7 +164,8 @@ namespace MoBi.Presentation.Tasks
          var dataImporterSettings = new DataImporterSettings
          {
             IconName = ApplicationIcons.MoBi.IconName,
-            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
+            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}",
+            CheckMolWeightAgainstMolecule = false
          };
 
          addNamingPatterns(dataImporterSettings);
@@ -182,7 +183,7 @@ namespace MoBi.Presentation.Tasks
       {
          addPredefinedOrganValues(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
          addPredefinedCompartmentValues(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
-         addPredefinedMoleculeNames(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
+         addPredefinedMoleculesForImporter(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -384,7 +385,7 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
+      private void addPredefinedMoleculesForImporter(MetaDataCategory metaDataCategory)
       {
          if (metaDataCategory == null)
             return;
@@ -402,6 +403,15 @@ namespace MoBi.Presentation.Tasks
             if (icon != ApplicationIcons.EmptyIcon)
                metaDataCategory.ListOfImages.Add(molecule.Name, icon.IconName);
          }
+      }
+
+      private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
+      {
+         if (metaDataCategory == null)
+            return;
+
+         metaDataCategory.ShouldListOfValuesBeIncluded = true;
+         allMolecules().OrderBy(molecule => molecule.Name).Each(molecule => addInfoToCategory(metaDataCategory, molecule));
       }
 
       private IEnumerable<IContainer> allMolecules()
