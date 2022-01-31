@@ -24,16 +24,16 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.6" />
     <PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
-    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.0.1" />
+    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.0.2" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="11.0.22" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="11.0.22" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.0.22" />
-    <PackageReference Include="OSPSuite.UI" Version="11.0.22" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="11.0.65" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="11.0.65" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.65" />
+    <PackageReference Include="OSPSuite.UI" Version="11.0.65" />
     <PackageReference Include="OSPSuite.UI.Importer" Version="10.0.92" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.22" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.65" />
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">

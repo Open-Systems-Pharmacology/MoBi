@@ -164,7 +164,8 @@ namespace MoBi.Presentation.Tasks
          var dataImporterSettings = new DataImporterSettings
          {
             IconName = ApplicationIcons.MoBi.IconName,
-            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
+            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}",
+            CheckMolWeightAgainstMolecule = false
          };
 
          addNamingPatterns(dataImporterSettings);
@@ -182,7 +183,7 @@ namespace MoBi.Presentation.Tasks
       {
          addPredefinedOrganValues(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
          addPredefinedCompartmentValues(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
-         addPredefinedMoleculeNames(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
+         addPredefinedMoleculesForImporter(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -384,6 +385,26 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
+      private void addPredefinedMoleculesForImporter(MetaDataCategory metaDataCategory)
+      {
+         if (metaDataCategory == null)
+            return;
+
+         metaDataCategory.ShouldListOfValuesBeIncluded = true;
+
+         foreach (var molecule in allMolecules())
+         {
+            var molWeightParameter = molecule.Parameter(AppConstants.Parameters.MOLECULAR_WEIGHT);
+            var molWeight = molWeightParameter != null ? molWeightParameter.ValueInDisplayUnit.ToString() : string.Empty;
+            metaDataCategory.ListOfValues.Add(molecule.Name, molWeight);
+
+            var icon = ApplicationIcons.IconByName(molecule.Icon);
+
+            if (icon != ApplicationIcons.EmptyIcon)
+               metaDataCategory.ListOfImages.Add(molecule.Name, icon.IconName);
+         }
+      }
+
       private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
       {
          if (metaDataCategory == null)
@@ -518,7 +539,7 @@ namespace MoBi.Presentation.Tasks
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string>();
 
-      public bool MolWeightEditable => true;
+      public bool MolWeightAlwaysEditable => true;
 
       public bool MolWeightVisible => true;
    }
