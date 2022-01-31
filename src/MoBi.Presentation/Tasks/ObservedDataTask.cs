@@ -394,7 +394,7 @@ namespace MoBi.Presentation.Tasks
 
          foreach (var molecule in allMolecules())
          {
-            var molWeightParameter = molecule.AllParameters().FirstOrDefault(x => x.Name == AppConstants.Parameters.MOLECULAR_WEIGHT);
+            var molWeightParameter = molecule.Parameter(AppConstants.Parameters.MOLECULAR_WEIGHT);
             var molWeight = molWeightParameter != null ? molWeightParameter.ValueInDisplayUnit.ToString() : string.Empty;
             metaDataCategory.ListOfValues.Add(molecule.Name, molWeight);
 
@@ -539,7 +539,7 @@ namespace MoBi.Presentation.Tasks
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string>();
 
-      public bool MolWeightEditable => true;
+      public bool MolWeightAlwaysEditable => true;
 
       public bool MolWeightVisible => true;
    }
