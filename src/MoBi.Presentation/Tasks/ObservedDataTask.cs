@@ -164,7 +164,8 @@ namespace MoBi.Presentation.Tasks
          var dataImporterSettings = new DataImporterSettings
          {
             IconName = ApplicationIcons.MoBi.IconName,
-            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
+            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}",
+            CheckMolWeightAgainstMolecule = false
          };
 
          addNamingPatterns(dataImporterSettings);
@@ -182,7 +183,7 @@ namespace MoBi.Presentation.Tasks
       {
          addPredefinedOrganValues(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
          addPredefinedCompartmentValues(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
-         addPredefinedMoleculeNames(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
+         addPredefinedMoleculesForImporter(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -464,7 +465,7 @@ namespace MoBi.Presentation.Tasks
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string>();
 
-      public bool MolWeightEditable => true;
+      public bool MolWeightAlwaysEditable => true;
 
       public bool MolWeightVisible => true;
    }
