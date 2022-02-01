@@ -331,7 +331,7 @@ namespace MoBi.Presentation.Tasks
          return new RemoveHistoricResultFromSimulationCommand(parentSimulation, repository);
       }
 
-      private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
+      private void addPredefinedMoleculesForImporter(MetaDataCategory metaDataCategory)
       {
          if (metaDataCategory == null)
             return;
@@ -446,7 +446,7 @@ namespace MoBi.Presentation.Tasks
             return predefinedValuesForCategory(addPredefinedCompartmentValues);
 
          if (string.Equals(name, Constants.ObservedData.MOLECULE))
-            return predefinedValuesForCategory(addPredefinedMoleculeNames);
+            return predefinedValuesForCategory(addPredefinedMoleculesForImporter);
 
          return Enumerable.Empty<string>();
       }
