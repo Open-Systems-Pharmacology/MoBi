@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Tasks
 
          var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
             metaDataCategories,  
-            createColumnInfos().ToList(), 
+            _dataImporter.ColumnInfosForObservedData(), 
             settings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
@@ -293,13 +293,10 @@ namespace MoBi.Presentation.Tasks
       {
          var (metaDataCategories, dataImporterSettings)  = initializeSettings();
 
-         //do we really need this in MoBi????
-         var colInfos = createColumnInfos().ToList();
-
          var importedObservedData = _dataImporter.ImportFromConfiguration(
             configuration,
             metaDataCategories,
-            colInfos, 
+            _dataImporter.ColumnInfosForObservedData(), 
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
@@ -334,78 +331,7 @@ namespace MoBi.Presentation.Tasks
          return new RemoveHistoricResultFromSimulationCommand(parentSimulation, repository);
       }
 
-      private IEnumerable<ColumnInfo> createColumnInfos()
-      {
-         var timeDimension = _dimensionFactory.Dimension(Constants.Dimension.TIME);
-         var timeColumn = new ColumnInfo
-         {
-            DefaultDimension = timeDimension,
-            Name = "Time",
-            DisplayName = "Time",
-            IsMandatory = true,
-         };
-
-         timeColumn.SupportedDimensions.Add(timeDimension);
-         yield return timeColumn;
-
-         var mainDimension = _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
-         var measurementInfo = new ColumnInfo
-         {
-            DefaultDimension = mainDimension,
-            Name = "Measurement",
-            DisplayName = "Measurement",
-            IsMandatory = true,
-            BaseGridName = timeColumn.Name
-         };
-
-         addDimensionsTo(measurementInfo);
-         yield return measurementInfo;
-
-         var errorInfo = new ColumnInfo
-         {
-            DefaultDimension = mainDimension,
-            Name = "Error",
-            DisplayName = "Error",
-            IsMandatory = false,
-            BaseGridName = timeColumn.Name,
-            RelatedColumnOf = measurementInfo.Name
-         };
-
-         addDimensionsTo(errorInfo);
-         yield return errorInfo;
-      }
-
-      private void addDimensionsTo(ColumnInfo columnInfo)
-      {
-         var timeDimension = _dimensionFactory.Dimension(Constants.Dimension.TIME);
-
-         foreach (var dimension in _dimensionFactory.DimensionsSortedByName.Where(x => x != timeDimension))
-         {
-            columnInfo.SupportedDimensions.Add(dimension);
-         }
-      }
-
       private void addPredefinedMoleculesForImporter(MetaDataCategory metaDataCategory)
-      {
-         if (metaDataCategory == null)
-            return;
-
-         metaDataCategory.ShouldListOfValuesBeIncluded = true;
-
-         foreach (var molecule in allMolecules())
-         {
-            var molWeightParameter = molecule.Parameter(AppConstants.Parameters.MOLECULAR_WEIGHT);
-            var molWeight = molWeightParameter != null ? molWeightParameter.ValueInDisplayUnit.ToString() : string.Empty;
-            metaDataCategory.ListOfValues.Add(molecule.Name, molWeight);
-
-            var icon = ApplicationIcons.IconByName(molecule.Icon);
-
-            if (icon != ApplicationIcons.EmptyIcon)
-               metaDataCategory.ListOfImages.Add(molecule.Name, icon.IconName);
-         }
-      }
-
-      private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
       {
          if (metaDataCategory == null)
             return;
@@ -520,7 +446,7 @@ namespace MoBi.Presentation.Tasks
             return predefinedValuesForCategory(addPredefinedCompartmentValues);
 
          if (string.Equals(name, Constants.ObservedData.MOLECULE))
-            return predefinedValuesForCategory(addPredefinedMoleculeNames);
+            return predefinedValuesForCategory(addPredefinedMoleculesForImporter);
 
          return Enumerable.Empty<string>();
       }
