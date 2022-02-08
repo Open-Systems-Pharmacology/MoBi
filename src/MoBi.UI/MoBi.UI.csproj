@@ -28,10 +28,13 @@
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
     <PackageReference Include="OSPSuite.Infrastructure" Version="11.0.65" />
     <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="11.0.65" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.0.65" />
-    <PackageReference Include="OSPSuite.UI" Version="11.0.65" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.88" />
+    <PackageReference Include="OSPSuite.UI" Version="11.0.88" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.65" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="11.0.88" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="11.0.88" />
+    <PackageReference Include="OSPSuite.UI.Importer" Version="10.0.92" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.88" />
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
