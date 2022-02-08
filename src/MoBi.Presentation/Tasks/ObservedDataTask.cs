@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Tasks
 
          var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
             metaDataCategories,  
-            createColumnInfos().ToList(), 
+            _dataImporter.ColumnInfosForObservedData(), 
             settings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
@@ -164,7 +164,8 @@ namespace MoBi.Presentation.Tasks
          var dataImporterSettings = new DataImporterSettings
          {
             IconName = ApplicationIcons.MoBi.IconName,
-            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}"
+            Caption = $"{AppConstants.PRODUCT_NAME} - {AppConstants.Captions.ImportObservedData}",
+            CheckMolWeightAgainstMolecule = false
          };
 
          addNamingPatterns(dataImporterSettings);
@@ -182,7 +183,7 @@ namespace MoBi.Presentation.Tasks
       {
          addPredefinedOrganValues(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
          addPredefinedCompartmentValues(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
-         addPredefinedMoleculeNames(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
+         addPredefinedMoleculesForImporter(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -292,13 +293,10 @@ namespace MoBi.Presentation.Tasks
       {
          var (metaDataCategories, dataImporterSettings)  = initializeSettings();
 
-         //do we really need this in MoBi????
-         var colInfos = createColumnInfos().ToList();
-
          var importedObservedData = _dataImporter.ImportFromConfiguration(
             configuration,
             metaDataCategories,
-            colInfos, 
+            _dataImporter.ColumnInfosForObservedData(), 
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
@@ -333,58 +331,7 @@ namespace MoBi.Presentation.Tasks
          return new RemoveHistoricResultFromSimulationCommand(parentSimulation, repository);
       }
 
-      private IEnumerable<ColumnInfo> createColumnInfos()
-      {
-         var timeDimension = _dimensionFactory.Dimension(Constants.Dimension.TIME);
-         var timeColumn = new ColumnInfo
-         {
-            DefaultDimension = timeDimension,
-            Name = "Time",
-            DisplayName = "Time",
-            IsMandatory = true,
-         };
-
-         timeColumn.SupportedDimensions.Add(timeDimension);
-         yield return timeColumn;
-
-         var mainDimension = _dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
-         var measurementInfo = new ColumnInfo
-         {
-            DefaultDimension = mainDimension,
-            Name = "Measurement",
-            DisplayName = "Measurement",
-            IsMandatory = true,
-            BaseGridName = timeColumn.Name
-         };
-
-         addDimensionsTo(measurementInfo);
-         yield return measurementInfo;
-
-         var errorInfo = new ColumnInfo
-         {
-            DefaultDimension = mainDimension,
-            Name = "Error",
-            DisplayName = "Error",
-            IsMandatory = false,
-            BaseGridName = timeColumn.Name,
-            RelatedColumnOf = measurementInfo.Name
-         };
-
-         addDimensionsTo(errorInfo);
-         yield return errorInfo;
-      }
-
-      private void addDimensionsTo(ColumnInfo columnInfo)
-      {
-         var timeDimension = _dimensionFactory.Dimension(Constants.Dimension.TIME);
-
-         foreach (var dimension in _dimensionFactory.DimensionsSortedByName.Where(x => x != timeDimension))
-         {
-            columnInfo.SupportedDimensions.Add(dimension);
-         }
-      }
-
-      private void addPredefinedMoleculeNames(MetaDataCategory metaDataCategory)
+      private void addPredefinedMoleculesForImporter(MetaDataCategory metaDataCategory)
       {
          if (metaDataCategory == null)
             return;
@@ -499,7 +446,7 @@ namespace MoBi.Presentation.Tasks
             return predefinedValuesForCategory(addPredefinedCompartmentValues);
 
          if (string.Equals(name, Constants.ObservedData.MOLECULE))
-            return predefinedValuesForCategory(addPredefinedMoleculeNames);
+            return predefinedValuesForCategory(addPredefinedMoleculesForImporter);
 
          return Enumerable.Empty<string>();
       }
@@ -518,7 +465,7 @@ namespace MoBi.Presentation.Tasks
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string>();
 
-      public bool MolWeightEditable => true;
+      public bool MolWeightAlwaysEditable => true;
 
       public bool MolWeightVisible => true;
    }
