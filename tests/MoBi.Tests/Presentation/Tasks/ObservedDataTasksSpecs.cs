@@ -160,7 +160,6 @@ namespace MoBi.Presentation.Tasks
    public class When_addding_data_from_Excel : concern_for_ObservedDataTask
    {
       private ObservedDataAddedEvent _event;
-      private IReadOnlyList<ColumnInfo> _columnsInfo;
       private OSPSuite.Core.Import.ImporterConfiguration _importerConfiguration;
 
       protected override void Context()
@@ -188,27 +187,12 @@ namespace MoBi.Presentation.Tasks
          _dataRepository.Add(new DataColumn("name", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
 
          A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored, A<string>.Ignored))
-            .Invokes(x => _columnsInfo = x.GetArgument<IReadOnlyList<ColumnInfo>>(1))
             .Returns((new[] { _dataRepository }, _importerConfiguration));
       }
 
       protected override void Because()
       {
          sut.AddObservedDataToProject();
-      }
-
-      [Observation]
-      public void should_have_removed_the_time_dimension_from_all_data_columns()
-      {
-         var dataColumn = _columnsInfo[1];
-         dataColumn.SupportedDimensions.Find(x=>x.Name == Constants.Dimension.TIME).ShouldBeNull();
-      }
-
-      [Observation]
-      public void should_have_kept_the_dimensionsless_dimension_in_all_data_columns()
-      {
-         var dataColumn = _columnsInfo[1];
-         dataColumn.SupportedDimensions.Find(x => x == Constants.Dimension.NO_DIMENSION).ShouldNotBeNull();
       }
 
       [Observation]
