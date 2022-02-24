@@ -17,6 +17,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Core.Domain.Constants.ObservedData;
 using Command = OSPSuite.Assets.Command;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
 
@@ -165,8 +166,8 @@ namespace MoBi.Presentation.Tasks
          };
 
          addNamingPatterns(dataImporterSettings);
-         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
-         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
+         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = MOLECULE;
+         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = MOLECULAR_WEIGHT;
 
          var metaDataCategories = _dataImporter.DefaultMetaDataCategoriesForObservedData().ToList();
          populateMetaDataLists(metaDataCategories);
@@ -176,9 +177,9 @@ namespace MoBi.Presentation.Tasks
 
       private void populateMetaDataLists(IList<MetaDataCategory> metaDataCategories)
       {
-         addPredefinedOrganValues(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
-         addPredefinedCompartmentValues(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
-         addPredefinedMoleculesForImporter(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
+         addPredefinedOrganValues(metaDataCategories.FindByName(ORGAN));
+         addPredefinedCompartmentValues(metaDataCategories.FindByName(COMPARTMENT));
+         addPredefinedMoleculesForImporter(metaDataCategories.FindByName(MOLECULE));
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -363,22 +364,22 @@ namespace MoBi.Presentation.Tasks
          );
 
          dataImporterSettings.AddNamingPatternMetaData(
-            Constants.ObservedData.MOLECULE,
-            Constants.ObservedData.SPECIES,
-            Constants.ObservedData.ORGAN,
-            Constants.ObservedData.COMPARTMENT
+            MOLECULE,
+            SPECIES,
+            ORGAN,
+            COMPARTMENT
          );
 
          dataImporterSettings.AddNamingPatternMetaData(
-            Constants.ObservedData.MOLECULE,
-            Constants.ObservedData.SPECIES,
-            Constants.ObservedData.ORGAN,
-            Constants.ObservedData.COMPARTMENT,
-            Constants.ObservedData.STUDY_ID,
-            Constants.ObservedData.GENDER,
-            Constants.ObservedData.DOSE,
-            Constants.ObservedData.ROUTE,
-            Constants.ObservedData.SUBJECT_ID
+            MOLECULE,
+            SPECIES,
+            ORGAN,
+            COMPARTMENT,
+            STUDY_ID,
+            GENDER,
+            DOSE,
+            ROUTE,
+            SUBJECT_ID
          );
       }
 
@@ -429,13 +430,13 @@ namespace MoBi.Presentation.Tasks
 
       public IEnumerable<string> PredefinedValuesFor(string name)
       {
-         if (string.Equals(name, Constants.ObservedData.ORGAN))
+         if (string.Equals(name, ORGAN))
             return predefinedValuesForCategory(addPredefinedOrganValues);
 
-         if (string.Equals(name, Constants.ObservedData.COMPARTMENT))
+         if (string.Equals(name, COMPARTMENT))
             return predefinedValuesForCategory(addPredefinedCompartmentValues);
 
-         if (string.Equals(name, Constants.ObservedData.MOLECULE))
+         if (string.Equals(name, MOLECULE))
             return predefinedValuesForCategory(addPredefinedMoleculesForImporter);
 
          return Enumerable.Empty<string>();
@@ -450,7 +451,7 @@ namespace MoBi.Presentation.Tasks
 
       public IReadOnlyList<string> DefaultMetaDataCategories => new[]
       {
-         Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN
+         MOLECULE, COMPARTMENT, ORGAN
       };
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string>();
