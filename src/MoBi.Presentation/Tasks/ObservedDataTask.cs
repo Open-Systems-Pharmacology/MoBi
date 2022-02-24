@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -11,17 +14,13 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Infrastructure.Import.Core;
-using ColumnInfo = OSPSuite.Infrastructure.Import.Core.ColumnInfo;
 using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Utility.Extensions;
 using static OSPSuite.Core.Domain.Constants;
+using static OSPSuite.Core.Domain.Constants.ObservedData;
 using Command = OSPSuite.Assets.Command;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
-using ObservedData = OSPSuite.Assets.ObservedData;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -48,7 +47,6 @@ namespace MoBi.Presentation.Tasks
       private readonly IInteractionTask _interactionTask;
       private readonly IDialogCreator _mobiDialogCreator;
 
-
       public ObservedDataTask(
          IDataImporter dataImporter,
          IDimensionFactory dimensionFactory,
@@ -74,10 +72,10 @@ namespace MoBi.Presentation.Tasks
             metaDataCategories,  
             _dataImporter.ColumnInfosForObservedData(), 
             settings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
 
-         if (dataRepositories == null || configuration == null) 
+         if (dataRepositories == null || configuration == null)
             return;
 
          foreach (var repository in dataRepositories)
@@ -93,19 +91,19 @@ namespace MoBi.Presentation.Tasks
       {
          var baseGrid = repository.BaseGrid;
          var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] { repository.Name, baseGridName }, QuantityType.Time);
+         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] {repository.Name, baseGridName}, QuantityType.Time);
 
          foreach (var col in repository.AllButBaseGrid())
          {
             var colName = col.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-            var quantityInfo = new QuantityInfo(col.Name, new[] { repository.Name, colName }, QuantityType.Undefined);
+            var quantityInfo = new QuantityInfo(col.Name, new[] {repository.Name, colName}, QuantityType.Undefined);
             col.QuantityInfo = quantityInfo;
          }
       }
 
       public void LoadObservedDataIntoProject()
       {
-         string filename = _interactionTask.AskForFileToOpen(AppConstants.Dialog.Load(ObjectTypes.ObservedData), Filter.PKML_FILE_FILTER, DirectoryKey.MODEL_PART);
+         var filename = _interactionTask.AskForFileToOpen(AppConstants.Dialog.Load(ObjectTypes.ObservedData), Filter.PKML_FILE_FILTER, DirectoryKey.MODEL_PART);
          if (filename.IsNullOrEmpty())
             return;
 
@@ -169,21 +167,20 @@ namespace MoBi.Presentation.Tasks
          };
 
          addNamingPatterns(dataImporterSettings);
-         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
-         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
+         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = MOLECULE;
+         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = MOLECULAR_WEIGHT;
 
-         var metaDataCategories = _dataImporter.DefaultMetaDataCategories().ToList();
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategoriesForObservedData().ToList();
          populateMetaDataLists(metaDataCategories);
 
          return (metaDataCategories, dataImporterSettings);
       }
 
-
       private void populateMetaDataLists(IList<MetaDataCategory> metaDataCategories)
       {
-         addPredefinedOrganValues(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
-         addPredefinedCompartmentValues(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
-         addPredefinedMoleculesForImporter(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE));
+         addPredefinedOrganValues(metaDataCategories.FindByName(ORGAN));
+         addPredefinedCompartmentValues(metaDataCategories.FindByName(COMPARTMENT));
+         addPredefinedMoleculesForImporter(metaDataCategories.FindByName(MOLECULE));
       }
 
       public override void Rename(DataRepository dataRepository)
@@ -283,22 +280,22 @@ namespace MoBi.Presentation.Tasks
       private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
       {
          return (from dataRepo in dataRepositoryList
-                 let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair =>
-                    dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString())
-                 where result
-                 select dataRepo).FirstOrDefault();
+            let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair =>
+               dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString())
+            where result
+            select dataRepo).FirstOrDefault();
       }
 
       private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration)
       {
-         var (metaDataCategories, dataImporterSettings)  = initializeSettings();
+         var (metaDataCategories, dataImporterSettings) = initializeSettings();
 
          var importedObservedData = _dataImporter.ImportFromConfiguration(
             configuration,
             metaDataCategories,
             _dataImporter.ColumnInfosForObservedData(), 
             dataImporterSettings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
          return importedObservedData;
       }
@@ -307,15 +304,11 @@ namespace MoBi.Presentation.Tasks
       {
          var parentSimulation = getSimulationWithHistoricResult(dataRepository);
          if (parentSimulation != null)
-         {
             return removeHistoricResultFromSimulationCommand(dataRepository, parentSimulation);
-         }
 
          parentSimulation = getSimulationWithCurrentResult(dataRepository);
          if (parentSimulation != null)
-         {
             return clearResultsCommand(parentSimulation);
-         }
 
          return new MoBiEmptyCommand();
       }
@@ -372,22 +365,22 @@ namespace MoBi.Presentation.Tasks
          );
 
          dataImporterSettings.AddNamingPatternMetaData(
-            Constants.ObservedData.MOLECULE,
-            Constants.ObservedData.SPECIES,
-            Constants.ObservedData.ORGAN,
-            Constants.ObservedData.COMPARTMENT
+            MOLECULE,
+            SPECIES,
+            ORGAN,
+            COMPARTMENT
          );
 
          dataImporterSettings.AddNamingPatternMetaData(
-            Constants.ObservedData.MOLECULE,
-            Constants.ObservedData.SPECIES,
-            Constants.ObservedData.ORGAN,
-            Constants.ObservedData.COMPARTMENT,
-            Constants.ObservedData.STUDY_ID,
-            Constants.ObservedData.GENDER,
-            Constants.ObservedData.DOSE,
-            Constants.ObservedData.ROUTE,
-            Constants.ObservedData.SUBJECT_ID
+            MOLECULE,
+            SPECIES,
+            ORGAN,
+            COMPARTMENT,
+            STUDY_ID,
+            GENDER,
+            DOSE,
+            ROUTE,
+            SUBJECT_ID
          );
       }
 
@@ -436,16 +429,15 @@ namespace MoBi.Presentation.Tasks
             metaDataCategory.ListOfImages.Add(container.Name, icon.IconName);
       }
 
-
       public IEnumerable<string> PredefinedValuesFor(string name)
       {
-         if (string.Equals(name, Constants.ObservedData.ORGAN))
+         if (string.Equals(name, ORGAN))
             return predefinedValuesForCategory(addPredefinedOrganValues);
 
-         if (string.Equals(name, Constants.ObservedData.COMPARTMENT))
+         if (string.Equals(name, COMPARTMENT))
             return predefinedValuesForCategory(addPredefinedCompartmentValues);
 
-         if (string.Equals(name, Constants.ObservedData.MOLECULE))
+         if (string.Equals(name, MOLECULE))
             return predefinedValuesForCategory(addPredefinedMoleculesForImporter);
 
          return Enumerable.Empty<string>();
@@ -460,7 +452,7 @@ namespace MoBi.Presentation.Tasks
 
       public IReadOnlyList<string> DefaultMetaDataCategories => new[]
       {
-         Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN
+         MOLECULE, COMPARTMENT, ORGAN
       };
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string>();
