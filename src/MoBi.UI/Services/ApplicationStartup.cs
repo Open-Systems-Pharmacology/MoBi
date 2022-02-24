@@ -213,8 +213,8 @@ namespace MoBi.UI.Services
          IoC.InitializeWith(container);
          IoC.RegisterImplementationOf<IContainer>(container);
          initFacilities(container);
-
-         container.RegisterImplementationOf(getCurrentContext());
+         initializeSynchronizationContext();
+         container.RegisterImplementationOf(SynchronizationContext.Current);
 
          container.AddRegister(x => x.FromType<PresenterRegister>());
          container.AddRegister(x => x.FromType<UIRegister>());
@@ -288,16 +288,11 @@ namespace MoBi.UI.Services
          register.PerformMappingForSerializerIn(container);
       }
 
-      private static SynchronizationContext getCurrentContext()
-      {
-         var context = SynchronizationContext.Current;
-         if (context == null)
-         {
-            context = new WindowsFormsSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(context);
-         }
 
-         return SynchronizationContext.Current;
+      private void initializeSynchronizationContext()
+      {
+         var context = new WindowsFormsSynchronizationContext();
+         SynchronizationContext.SetSynchronizationContext(context);
       }
    }
 }
