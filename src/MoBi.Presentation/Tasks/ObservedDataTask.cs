@@ -17,6 +17,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Core.Domain.Constants;
 using static OSPSuite.Core.Domain.Constants.ObservedData;
 using Command = OSPSuite.Assets.Command;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
@@ -71,7 +72,7 @@ namespace MoBi.Presentation.Tasks
             metaDataCategories,  
             _dataImporter.ColumnInfosForObservedData(), 
             settings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
 
          if (dataRepositories == null || configuration == null)
@@ -102,7 +103,7 @@ namespace MoBi.Presentation.Tasks
 
       public void LoadObservedDataIntoProject()
       {
-         var filename = _interactionTask.AskForFileToOpen(AppConstants.Dialog.Load(ObjectTypes.ObservedData), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
+         var filename = _interactionTask.AskForFileToOpen(AppConstants.Dialog.Load(ObjectTypes.ObservedData), Filter.PKML_FILE_FILTER, DirectoryKey.MODEL_PART);
          if (filename.IsNullOrEmpty())
             return;
 
@@ -294,7 +295,7 @@ namespace MoBi.Presentation.Tasks
             metaDataCategories,
             _dataImporter.ColumnInfosForObservedData(), 
             dataImporterSettings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
          return importedObservedData;
       }
@@ -355,12 +356,12 @@ namespace MoBi.Presentation.Tasks
       private void addNamingPatterns(DataImporterSettings dataImporterSettings)
       {
          dataImporterSettings.AddNamingPatternMetaData(
-            Constants.FILE
+            FILE
          );
 
          dataImporterSettings.AddNamingPatternMetaData(
-            Constants.FILE,
-            Constants.SHEET
+            FILE,
+            SHEET
          );
 
          dataImporterSettings.AddNamingPatternMetaData(
