@@ -1,16 +1,13 @@
-﻿using MoBi.Presentation.Presenter;
-using OSPSuite.Presentation.Views;
-
-namespace MoBi.UI.Views
+﻿namespace MoBi.UI.Views
 {
-   partial class SplashScreen 
+   partial class SplashScreen
    {
-      /// <summary> 
+      /// <summary>
       /// Required designer variable.
       /// </summary>
       private System.ComponentModel.IContainer components = null;
 
-      /// <summary> 
+      /// <summary>
       /// Clean up any resources being used.
       /// </summary>
       /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -23,56 +20,106 @@ namespace MoBi.UI.Views
          base.Dispose(disposing);
       }
 
-      #region Component Designer generated code
+      #region Windows Form Designer generated code
 
-      /// <summary> 
-      /// Required method for Designer support - do not modify 
+      /// <summary>
+      /// Required method for Designer support - do not modify
       /// the contents of this method with the code editor.
       /// </summary>
       private void InitializeComponent()
       {
          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SplashScreen));
-         this.progressBar = new DevExpress.XtraEditors.ProgressBarControl();
-         this.lblCaption = new DevExpress.XtraEditors.LabelControl();
-         ((System.ComponentModel.ISupportInitialize)(this.progressBar.Properties)).BeginInit();
+         this.progressBarControl = new DevExpress.XtraEditors.ProgressBarControl();
+         this.labelCopyright = new DevExpress.XtraEditors.LabelControl();
+         this.labelStatus = new DevExpress.XtraEditors.LabelControl();
+         this.peImage = new DevExpress.XtraEditors.PictureEdit();
+         this.peLogo = new DevExpress.XtraEditors.PictureEdit();
+         ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.progressBarControl.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.peImage.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.peLogo.Properties)).BeginInit();
          this.SuspendLayout();
          // 
-         // progressBar
+         // progressBarControl
          // 
-         this.progressBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.progressBar.EditValue = "0";
-         this.progressBar.Location = new System.Drawing.Point(0, 118);
-         this.progressBar.Name = "progressBar";
-         this.progressBar.Properties.ProgressViewStyle = DevExpress.XtraEditors.Controls.ProgressViewStyle.Solid;
-         this.progressBar.Properties.UseParentBackground = true;
-         this.progressBar.Size = new System.Drawing.Size(451, 18);
-         this.progressBar.TabIndex = 0;
+         this.progressBarControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.progressBarControl.Location = new System.Drawing.Point(23, 161);
+         this.progressBarControl.Name = "progressBarControl";
+         this.progressBarControl.Size = new System.Drawing.Size(484, 14);
+         this.progressBarControl.TabIndex = 5;
          // 
-         // lblCaption
+         // labelCopyright
          // 
-         this.lblCaption.Appearance.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-         this.lblCaption.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.lblCaption.Location = new System.Drawing.Point(0, 102);
-         this.lblCaption.Name = "lblCaption";
-         this.lblCaption.Size = new System.Drawing.Size(56, 16);
-         this.lblCaption.TabIndex = 1;
-         this.lblCaption.Text = "lblCaption";
+         this.labelCopyright.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+         this.labelCopyright.Location = new System.Drawing.Point(26, 200);
+         this.labelCopyright.Name = "labelCopyright";
+         this.labelCopyright.Size = new System.Drawing.Size(47, 13);
+         this.labelCopyright.TabIndex = 6;
+         this.labelCopyright.Text = "Copyright";
+         // 
+         // labelStatus
+         // 
+         this.labelStatus.Location = new System.Drawing.Point(23, 144);
+         this.labelStatus.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+         this.labelStatus.Name = "labelStatus";
+         this.labelStatus.Size = new System.Drawing.Size(50, 13);
+         this.labelStatus.TabIndex = 7;
+         this.labelStatus.Text = "Starting...";
+         // 
+         // peImage
+         // 
+         this.peImage.Dock = System.Windows.Forms.DockStyle.Top;
+         this.peImage.EditValue = ((object)(resources.GetObject("peImage.EditValue")));
+         this.peImage.Location = new System.Drawing.Point(1, 1);
+         this.peImage.Name = "peImage";
+         this.peImage.Properties.AllowFocused = false;
+         this.peImage.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
+         this.peImage.Properties.Appearance.Options.UseBackColor = true;
+         this.peImage.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+         this.peImage.Properties.ShowMenu = false;
+         this.peImage.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+         this.peImage.Properties.SvgImageColorizationMode = DevExpress.Utils.SvgImageColorizationMode.None;
+         this.peImage.Size = new System.Drawing.Size(530, 143);
+         this.peImage.TabIndex = 9;
+         // 
+         // peLogo
+         // 
+         this.peLogo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.peLogo.EditValue = ((object)(resources.GetObject("peLogo.EditValue")));
+         this.peLogo.Location = new System.Drawing.Point(368, 187);
+         this.peLogo.Name = "peLogo";
+         this.peLogo.Properties.AllowFocused = false;
+         this.peLogo.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
+         this.peLogo.Properties.Appearance.Options.UseBackColor = true;
+         this.peLogo.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+         this.peLogo.Properties.ShowMenu = false;
+         this.peLogo.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+         this.peLogo.Size = new System.Drawing.Size(147, 40);
+         this.peLogo.TabIndex = 8;
          // 
          // SplashScreen
          // 
+         this.Appearance.BackColor = System.Drawing.Color.White;
+         this.Appearance.Options.UseBackColor = true;
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.BackgroundImageLayoutStore = System.Windows.Forms.ImageLayout.Stretch;
-         this.BackgroundImageStore = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImageStore")));
-         this.ClientSize = new System.Drawing.Size(451, 136);
-         this.Controls.Add(this.lblCaption);
-         this.Controls.Add(this.progressBar);
-         this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+         this.Caption = "SplashScreen";
+         this.ClientSize = new System.Drawing.Size(532, 232);
+         this.Controls.Add(this.peImage);
+         this.Controls.Add(this.peLogo);
+         this.Controls.Add(this.labelStatus);
+         this.Controls.Add(this.labelCopyright);
+         this.Controls.Add(this.progressBarControl);
+         this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.Name = "SplashScreen";
-         this.Opacity = 0.9;
-         this.ShowIcon = false;
-         this.ShowInTaskbar = false;
-         ((System.ComponentModel.ISupportInitialize)(this.progressBar.Properties)).EndInit();
+         this.Padding = new System.Windows.Forms.Padding(1);
+         this.Text = "SplashScreen";
+         ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.progressBarControl.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.peImage.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.peLogo.Properties)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -80,7 +127,10 @@ namespace MoBi.UI.Views
 
       #endregion
 
-      private DevExpress.XtraEditors.ProgressBarControl progressBar;
-      private DevExpress.XtraEditors.LabelControl lblCaption;
+      private DevExpress.XtraEditors.ProgressBarControl progressBarControl;
+      private DevExpress.XtraEditors.LabelControl labelCopyright;
+      private DevExpress.XtraEditors.LabelControl labelStatus;
+      private DevExpress.XtraEditors.PictureEdit peLogo;
+      private DevExpress.XtraEditors.PictureEdit peImage;
    }
 }

@@ -21,7 +21,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          yield return CreateAddNewItemFor(_context.CurrentProject);
          yield return CreateAddExistingItemFor(_context.CurrentProject);
          yield return CreateAddExistingFromTemplateItemFor(_context.CurrentProject);
-         yield return CreateReportItemForCollection();
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewFromSelection)
             .WithIcon(ApplicationIcons.Molecule)

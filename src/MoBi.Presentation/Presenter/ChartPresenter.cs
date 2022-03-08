@@ -101,7 +101,6 @@ namespace MoBi.Presentation.Presenter
       {
          displayPresenter.DragDrop += OnDragDrop;
          displayPresenter.DragOver += OnDragOver;
-         displayPresenter.ExportToPDF = () => _chartTasks.ExportToPDF(Chart);
          initializeNoCurvesHint();
       }
 

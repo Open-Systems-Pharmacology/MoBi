@@ -1022,8 +1022,6 @@ namespace MoBi.Assets
          public static readonly string ZoomOut = "Zoom Out";
          public static readonly string FitToPage = "Fit to Page";
          public static readonly string ExportHistoryToExcel = "Export to Excel®...";
-         public static readonly string ExportHistoryToPDF = "Export to PDF...";
-         public static readonly string ExportToPDF = "Export to PDF...";
          public static readonly string ProjectReport = "Project Report";
          public static readonly string SimulationReport = "Create Simulation Report...";
          public static readonly string SetToDefault = "Set to Default";
