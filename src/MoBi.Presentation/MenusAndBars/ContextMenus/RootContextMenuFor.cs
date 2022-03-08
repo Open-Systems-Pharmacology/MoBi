@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -44,14 +44,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected IMenuBarItem CreateAddNewItemFor(TParent parent)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypeName))
-            .WithIcon(ApplicationIcons.AddIconFor(typeof (TObjectBase).Name))
+            .WithIcon(ApplicationIcons.AddIconFor(typeof(TObjectBase).Name))
             .WithCommandFor<AddNewCommandFor<TParent, TObjectBase>, TParent>(parent);
       }
 
       protected IMenuBarItem CreateAddExistingItemFor(TParent parent)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypeName))
-            .WithIcon(ApplicationIcons.LoadIconFor(typeof (TObjectBase).Name))
+            .WithIcon(ApplicationIcons.LoadIconFor(typeof(TObjectBase).Name))
             .WithCommandFor<AddExistingCommandFor<TParent, TObjectBase>, TParent>(parent);
       }
 
@@ -62,18 +62,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<AddExistingFromTemplateCommandFor<TParent, TObjectBase>, TParent>(parent);
       }
 
-
-      protected virtual IMenuBarItem CreateReportItemForCollection()
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToPDF)
-            .WithCommand<ExportCollectionToPDFCommand<TObjectBase>>()
-            .WithIcon(ApplicationIcons.ExportToPDF);
-      }
-
-      protected string ObjectTypeName
-      {
-         get { return _objectTypeResolver.TypeFor<TObjectBase>(); }
-      }
+      protected string ObjectTypeName => _objectTypeResolver.TypeFor<TObjectBase>();
 
       public virtual IContextMenu InitializeWith(RootNodeType rootNodeType, IExplorerPresenter presenter)
       {
@@ -89,12 +78,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          }
          else
          {
-            if (typeof (TObjectBase).IsAnImplementationOf<IBuildingBlock>())
+            if (typeof(TObjectBase).IsAnImplementationOf<IBuildingBlock>())
             {
                createAddItems(_context.CurrentProject as TParent);
             }
          }
-         _allMenuItems.Add(CreateReportItemForCollection());
 
          return this;
       }

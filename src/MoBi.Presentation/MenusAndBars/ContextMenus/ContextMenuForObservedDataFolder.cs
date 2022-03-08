@@ -1,19 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using MoBi.Presentation.Nodes;
-using MoBi.Presentation.UICommand;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -34,10 +30,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          yield return _menuBarItemRepository[MenuBarItemIds.AddObservedData];
          yield return _menuBarItemRepository[MenuBarItemIds.LoadObservedData];
-
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToPDF)
-            .WithCommand<ExportCollectionToPDFCommand<DataRepository>>()
-            .WithIcon(ApplicationIcons.ExportToPDF);
 
          if (_treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
             yield return ObservedDataClassificationCommonContextMenuItems.CreateEditMultipleMetaDataMenuButton(_treeNode).AsGroupStarter();

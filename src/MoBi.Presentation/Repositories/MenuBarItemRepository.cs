@@ -268,18 +268,6 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.Excel)
             .WithCommand<ExportHistoryUICommand>();
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportHistoryToPDF)
-            .WithId(MenuBarItemIds.ExportHistoryToPDF)
-            .WithDescription(ToolTips.ExportRibbon.ExportHistoryToPDF)
-            .WithIcon(ApplicationIcons.ExportToPDF)
-            .WithCommand<ExportHistoryToPDFCommand>();
-
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ProjectReport)
-            .WithId(MenuBarItemIds.ExportProjectToPDF)
-            .WithDescription(ToolTips.ExportRibbon.ExportToPDF)
-            .WithIcon(ApplicationIcons.ExportToPDF)
-            .WithCommand<ExportProjectToPDFCommand>();
-
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewMolecule)
             .WithId(MenuBarItemIds.NewMolecule)
             .WithDescription(ToolTips.BuildingBlockMolecule.NewMolecule)

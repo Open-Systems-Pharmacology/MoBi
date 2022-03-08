@@ -56,7 +56,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             createReloadItemFor(dataRepository),
             deleteMenuItemFor(dataRepository),
             exportToExcel(dataRepository),
-            reportMenuItemFor(dataRepository),
             addToJournalMenuItemFor(dataRepository),
          };
 
@@ -75,14 +74,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return ObjectBaseCommonContextMenuItems.AddToJournal(dataRepository);
       }
 
-      private static IMenuBarButton reportMenuItemFor(DataRepository dataRepository)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToPDF)
-            .WithIcon(ApplicationIcons.ExportToPDF)
-            .WithCommandFor<ExportToPDFCommand<DataRepository>, DataRepository>(dataRepository);
-      }
-
-      private static IMenuBarButton renameMenuItemFor(DataRepository dataRepository)
+     private static IMenuBarButton renameMenuItemFor(DataRepository dataRepository)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
             .WithIcon(ApplicationIcons.Rename)

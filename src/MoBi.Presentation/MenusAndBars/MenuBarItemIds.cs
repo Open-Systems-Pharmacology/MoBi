@@ -71,9 +71,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId Merge = createMenuBarItemId("Merge");
       public static MenuBarItemId Help = createMenuBarItemId("Help");
       public static MenuBarItemId SearchView = createMenuBarItemId("SearchView");
-      public static MenuBarItemId ExportProjectToPDF = createMenuBarItemId("ExportProjectToPDF");
       public static MenuBarItemId HistoryReportGroup = createMenuBarItemId("HistoryReportGroup");
-      public static MenuBarItemId ExportHistoryToPDF = createMenuBarItemId("ExportHistoryToPDF");
       public static MenuBarItemId NotificationView = createMenuBarItemId("NotificationView");
       public static MenuBarItemId ComparisonView = createMenuBarItemId("ComparisonView");
       public static MenuBarItemId RunWithSettings = createMenuBarItemId("RunWithSettings");

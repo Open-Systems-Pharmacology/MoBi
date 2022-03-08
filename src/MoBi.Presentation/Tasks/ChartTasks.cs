@@ -7,7 +7,6 @@ using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.UICommand;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Services;
@@ -24,7 +23,6 @@ namespace MoBi.Presentation.Tasks
       void ShowData(IReadOnlyList<DataRepository> data);
       void ShowData(DataRepository dataRepository);
       void Remove(CurveChart initializer);
-      void ExportToPDF(CurveChart chart);
 
       /// <summary>
       ///    Removes the <paramref name="charts" /> from the project
@@ -39,18 +37,16 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiContext _context;
       private readonly IEventPublisher _eventPublisher;
       private readonly IMoBiApplicationController _applicationController;
-      private readonly ExportChartToPDFCommand _exportChartToPDFCommand;
       private readonly IChartFactory _chartFactory;
       private readonly IDialogCreator _dialogCreator;
       private readonly IMoBiProjectRetriever _projectRetriever;
 
-      public ChartTasks(IMoBiContext context, IEventPublisher eventPublisher, IMoBiApplicationController applicationController, ExportChartToPDFCommand exportChartToPDFCommand,
+      public ChartTasks(IMoBiContext context, IEventPublisher eventPublisher, IMoBiApplicationController applicationController,
          IChartFactory chartFactory, IDialogCreator dialogCreator, IMoBiProjectRetriever projectRetriever)
       {
          _context = context;
          _eventPublisher = eventPublisher;
          _applicationController = applicationController;
-         _exportChartToPDFCommand = exportChartToPDFCommand;
          _chartFactory = chartFactory;
          _dialogCreator = dialogCreator;
          _projectRetriever = projectRetriever;
@@ -118,13 +114,8 @@ namespace MoBi.Presentation.Tasks
             data.AddUnique(curve.xData.Repository);
             data.AddUnique(curve.yData.Repository);
          }
-         ShowChart(chart, data);
-      }
 
-      public void ExportToPDF(CurveChart chart)
-      {
-         _exportChartToPDFCommand.Subject = chart;
-         _exportChartToPDFCommand.Execute();
+         ShowChart(chart, data);
       }
 
       private string getChartName(IEnumerable<DataRepository> data)

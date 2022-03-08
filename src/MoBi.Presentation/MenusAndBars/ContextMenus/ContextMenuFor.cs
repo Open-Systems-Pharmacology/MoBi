@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -55,7 +54,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             _allMenuItems.Add(CreateRenameItemFor(objectBase));
             _allMenuItems.Add(createSaveItemFor(objectBase));
             _allMenuItems.Add(CreateDeleteItemFor(objectBase));
-            _allMenuItems.Add(CreateReportItemFor(objectBase));
             return this;
          }
          catch (InterfaceResolutionException)
@@ -92,18 +90,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      protected virtual IMenuBarItem CreateReportItemFor(TObjectBase objectToExport)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToPDF)
-            .WithCommandFor<ExportToPDFCommand<TObjectBase>, TObjectBase>(objectToExport)
-            .WithIcon(ApplicationIcons.ExportToPDF);
-      }
-
-      protected string ObjectTypeName
-      {
-         get { return _objectTypeResolver.TypeFor<TObjectBase>(); }
-      }
-
+      protected string ObjectTypeName => _objectTypeResolver.TypeFor<TObjectBase>();
 
       protected IMenuBarItem AddToJournal(TObjectBase objectBase)
       {
