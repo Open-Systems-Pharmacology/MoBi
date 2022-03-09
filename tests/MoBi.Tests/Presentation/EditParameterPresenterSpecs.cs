@@ -33,6 +33,7 @@ namespace MoBi.Presentation
       protected ICommandCollector _commandCollector;
       protected IEditValueOriginPresenter _editValueOriginPresenter;
       protected ITagsPresenter _tagsPresenter;
+      protected IDescriptorConditionListPresenter<IParameter> _descriptorConditionListPresenter;
 
       protected override void Context()
       {
@@ -47,6 +48,7 @@ namespace MoBi.Presentation
          _parameterTask = A.Fake<IInteractionTasksForParameter>();
          _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();
          _tagsPresenter= A.Fake<ITagsPresenter>();
+         _descriptorConditionListPresenter= A.Fake<IDescriptorConditionListPresenter<IParameter>>();
          sut = new EditParameterPresenter(
             _view, 
             _editFormulaPresenter, 
@@ -55,7 +57,12 @@ namespace MoBi.Presentation
             _interactionTasksContext,
             _groupRepository, 
             _editTasks, 
-            _parameterTask, new ContextSpecificReferencesRetriever(), _favoriteTask,_editValueOriginPresenter, _tagsPresenter)
+            _parameterTask, 
+            new ContextSpecificReferencesRetriever(), 
+            _favoriteTask,
+            _editValueOriginPresenter, 
+            _tagsPresenter,
+            _descriptorConditionListPresenter)
          {
             BuildingBlock = A.Fake<IBuildingBlock>()
          };

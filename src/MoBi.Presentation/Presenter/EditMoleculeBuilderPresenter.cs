@@ -54,6 +54,9 @@ namespace MoBi.Presentation.Presenter
          _view.UpdateStartAmountDisplay(dimensionRetriever.SelectedDimensionMode == ReactionDimensionMode.AmountBased
             ? AppConstants.Captions.Amount
             : AppConstants.Captions.Concentration);
+
+         //We support container criteria for parameters in molecule builder
+         _editMoleculeParameters.EnableContainerCriteriaSupport();
       }
 
       public override void InitializeWith(ICommandCollector commandRegister)

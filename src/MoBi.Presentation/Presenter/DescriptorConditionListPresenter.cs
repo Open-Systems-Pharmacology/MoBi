@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Commands;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -39,6 +40,11 @@ namespace MoBi.Presentation.Presenter
    public interface IDescriptorConditionListPresenter<T> : IDescriptorConditionListPresenter where T : IObjectBase
    {
       void Edit(T taggedObject, Func<T, DescriptorCriteria> criteriaRetriever, IBuildingBlock buildingBlock);
+
+      /// <summary>
+      ///    When criteria is not defined in the object, it can be useful to allow the caller to specify a way to set a criteria
+      /// </summary>
+      Func<T, DescriptorCriteria> DescriptorCriteriaCreator { get; set; }
    }
 
    public class DescriptorConditionListPresenter<T> : AbstractCommandCollectorPresenter<IDescriptorConditionListView, IDescriptorConditionListPresenter>, IDescriptorConditionListPresenter<T> where T : class, IObjectBase
@@ -56,6 +62,9 @@ namespace MoBi.Presentation.Presenter
 
       private IBuildingBlock _buildingBlock;
       public IViewItem ViewRootItem { get; set; }
+
+      //by default we set a dummy implementation
+      public Func<T, DescriptorCriteria> DescriptorCriteriaCreator { get; set; } = x => null;
 
       public DescriptorConditionListPresenter(IDescriptorConditionListView view, IViewItemContextMenuFactory viewItemContextMenuFactory,
          ITagTask tagTask, IDescriptorConditionToDescriptorConditionDTOMapper descriptorConditionMapper, IDialogCreator dialogCreator,
@@ -97,14 +106,22 @@ namespace MoBi.Presentation.Presenter
          _view.CriteriaDescription = _descriptorCriteria.ToString();
       }
 
+      private TagConditionCommandParameters<T> createCommandParameters() => new TagConditionCommandParameters<T>
+      {
+         TaggedObject = _taggedObject,
+         BuildingBlock = _buildingBlock,
+         DescriptorCriteriaCreator = DescriptorCriteriaCreator,
+         DescriptorCriteriaRetriever = _descriptorCriteriaRetriever,
+      };
+
       public void RemoveCondition(IDescriptorConditionDTO dto)
       {
-         AddCommand(_tagTask.RemoveTagCondition(dto.Tag, dto.TagType, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever));
+         AddCommand(_tagTask.RemoveTagCondition(dto.Tag, dto.TagType, createCommandParameters()));
       }
 
       public void UpdateCriteriaTag(IDescriptorConditionDTO descriptorConditionDTO, string newTag)
       {
-         AddCommand(_tagTask.EditTag(newTag, descriptorConditionDTO.Tag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever));
+         AddCommand(_tagTask.EditTag(newTag, descriptorConditionDTO.Tag, createCommandParameters()));
          updateCriteriaDescription();
       }
 
@@ -114,7 +131,7 @@ namespace MoBi.Presentation.Presenter
          if (string.IsNullOrEmpty(tag))
             return;
 
-         AddCommand(_tagTask.AddTagCondition(tag, tagType, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever));
+         AddCommand(_tagTask.AddTagCondition(tag, tagType, createCommandParameters()));
       }
 
       private string getNewTagName(TagType tagType)
@@ -139,7 +156,7 @@ namespace MoBi.Presentation.Presenter
       private string getNewTagName<TTagCondition>(string caption) where TTagCondition : ITagCondition
       {
          var forbiddenTags = _descriptorCriteria.OfType<TTagCondition>().Select(x => x.Tag);
-         return _dialogCreator.AskForInput(caption, AppConstants.Captions.Tag, String.Empty, forbiddenTags, getUsedTags());
+         return _dialogCreator.AskForInput(caption, AppConstants.Captions.Tag, string.Empty, forbiddenTags, getUsedTags());
       }
 
       private IEnumerable<string> getUsedTags() => _tagVisitor.AllTags();

@@ -7,13 +7,13 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
@@ -76,6 +76,11 @@ namespace MoBi.Presentation.Presenter
       IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
 
       bool WarnOnBuildModeChange { get; set; }
+
+      /// <summary>
+      ///    Enables the Container criteria support for specific use cases
+      /// </summary>
+      void EnableContainerCriteriaSupport();
    }
 
    public class EditParameterPresenter : AbstractEntityEditPresenter<IEditParameterView, IEditParameterPresenter, IParameter>, IEditParameterPresenter
@@ -98,6 +103,8 @@ namespace MoBi.Presentation.Presenter
       public IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
       public bool WarnOnBuildModeChange { get; set; }
 
+      private readonly IDescriptorConditionListPresenter<IParameter> _containerCriteriaPresenter;
+
       public EditParameterPresenter(IEditParameterView view,
          IEditFormulaPresenter editValueFormulaPresenter,
          IParameterToParameterDTOMapper parameterMapper,
@@ -109,8 +116,8 @@ namespace MoBi.Presentation.Presenter
          IContextSpecificReferencesRetriever contextSpecificReferencesRetriever,
          IFavoriteTask favoriteTask,
          IEditValueOriginPresenter editValueOriginPresenter,
-         ITagsPresenter tagsPresenter
-      )
+         ITagsPresenter tagsPresenter,
+         IDescriptorConditionListPresenter<IParameter> containerCriteriaPresenter)
          : base(view)
       {
          _editValueFormulaPresenter = editValueFormulaPresenter;
@@ -119,6 +126,7 @@ namespace MoBi.Presentation.Presenter
          _favoriteTask = favoriteTask;
          _editValueOriginPresenter = editValueOriginPresenter;
          _tagsPresenter = tagsPresenter;
+         _containerCriteriaPresenter = containerCriteriaPresenter;
          _parameterMapper = parameterMapper;
          _groupRepository = groupRepository;
          _editTasks = editTasks;
@@ -129,7 +137,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddValueOriginView(_editValueOriginPresenter.BaseView);
          _view.AddTagsView(_tagsPresenter.BaseView);
 
-         AddSubPresenters(editRhsFormulaPresenter, editValueFormulaPresenter, _editValueOriginPresenter, _tagsPresenter);
+         AddSubPresenters(editRhsFormulaPresenter, editValueFormulaPresenter, _editValueOriginPresenter, _tagsPresenter, _containerCriteriaPresenter);
 
          _editRHSFormulaPresenter.IsRHS = true;
          _editRHSFormulaPresenter.RemoveAllFormulaTypes();
@@ -142,15 +150,14 @@ namespace MoBi.Presentation.Presenter
          _editValueOriginPresenter.ShowCaption = false;
       }
 
-      public void SetIsFavorite(bool isFavorite)
+      public void EnableContainerCriteriaSupport()
       {
-         _favoriteTask.SetParameterFavorite(_parameter, isFavorite);
+         _view.AddContainerCriteriaView(_containerCriteriaPresenter.BaseView);
       }
 
-      public void RenameParameter()
-      {
-         _editTasks.Rename(_parameter, BuildingBlock);
-      }
+      public void SetIsFavorite(bool isFavorite) => _favoriteTask.SetParameterFavorite(_parameter, isFavorite);
+
+      public void RenameParameter() => _editTasks.Rename(_parameter, BuildingBlock);
 
       public void SetDescription(ParameterDTO parameterDTO, string newDescription)
       {
@@ -210,7 +217,14 @@ namespace MoBi.Presentation.Presenter
 
          _tagsPresenter.BuildingBlock = BuildingBlock;
          _tagsPresenter.Edit(parameter);
-          _parameterDTO = _parameterMapper.MapFrom(parameter).DowncastTo<ParameterDTO>();
+         _containerCriteriaPresenter.Edit(parameter, x => x.ContainerCriteria, BuildingBlock);
+         _containerCriteriaPresenter.DescriptorCriteriaCreator = x =>
+         {
+            x.ContainerCriteria = new DescriptorCriteria();
+            return x.ContainerCriteria;
+         };
+
+         _parameterDTO = _parameterMapper.MapFrom(parameter).DowncastTo<ParameterDTO>();
          _parameterDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(parameter, existingObjectsInParent));
          _view.Show(_parameterDTO);
       }
@@ -265,7 +279,7 @@ namespace MoBi.Presentation.Presenter
       {
          addCommandToRun(new EditParameterCanBeVariedInPopulationCommand(_parameter, isVariableInPopulation, BuildingBlock));
       }
-      
+
       public IEnumerable<IGroup> AllGroups()
       {
          return _groupRepository.All().OrderBy(x => x.FullName);
