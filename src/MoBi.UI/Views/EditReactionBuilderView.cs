@@ -1,19 +1,18 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Utility.Extensions;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraBars;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -109,7 +108,6 @@ namespace MoBi.UI.Views
 
       public override void InitializeBinding()
       {
-
          _screenBinder = new ScreenBinder<ReactionBuilderDTO>();
          _screenBinder.Bind(item => item.StoichiometricFormula).To(lblStoichiometricFormula);
          _screenBinder.Bind(item => item.Name).To(btName).OnValueUpdating += onValueUpdating;
@@ -155,12 +153,11 @@ namespace MoBi.UI.Views
          chkPlotParameter.Text = AppConstants.Captions.PlotProcessRateParameter;
          tabContainerCriteria.Text = AppConstants.Captions.ContainerCriteria;
 
-         layoutGroupContainerCritieria.Text = AppConstants.Captions.InContainerWith;
+         layoutGroupContainerCriteria.Text = AppConstants.Captions.InContainerWith;
          layoutItemContainerCriteria.TextVisible = false;
          lblStoichiometricFormula.AsDescription();
 
          tabModifiers.Text = AppConstants.Captions.Modifiers;
-         
       }
 
       private static string createPartnerPanelTitle(string partnerType, string reactionName)

@@ -67,7 +67,7 @@ namespace MoBi.UI.Views
          this.layoutControl2 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelContainerCriteria = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutGroupContainerCritieria = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutGroupContainerCriteria = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemContainerCriteria = new DevExpress.XtraLayout.LayoutControlItem();
          this.tabModifiers = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControl4 = new OSPSuite.UI.Controls.UxLayoutControl();
@@ -107,7 +107,7 @@ namespace MoBi.UI.Views
          this.layoutControl2.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelContainerCriteria)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupContainerCritieria)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupContainerCriteria)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemContainerCriteria)).BeginInit();
          this.tabModifiers.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl4)).BeginInit();
@@ -435,7 +435,7 @@ namespace MoBi.UI.Views
          this.layoutControlGroup2.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup2.GroupBordersVisible = false;
          this.layoutControlGroup2.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutGroupContainerCritieria});
+            this.layoutGroupContainerCriteria});
          this.layoutControlGroup2.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup2.Name = "layoutControlGroup2";
          this.layoutControlGroup2.Size = new System.Drawing.Size(837, 542);
@@ -443,11 +443,11 @@ namespace MoBi.UI.Views
          // 
          // layoutGroupContainerCritieria
          // 
-         this.layoutGroupContainerCritieria.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+         this.layoutGroupContainerCriteria.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemContainerCriteria});
-         this.layoutGroupContainerCritieria.Location = new System.Drawing.Point(0, 0);
-         this.layoutGroupContainerCritieria.Name = "layoutGroupContainerCritieria";
-         this.layoutGroupContainerCritieria.Size = new System.Drawing.Size(817, 522);
+         this.layoutGroupContainerCriteria.Location = new System.Drawing.Point(0, 0);
+         this.layoutGroupContainerCriteria.Name = "layoutGroupContainerCriteria";
+         this.layoutGroupContainerCriteria.Size = new System.Drawing.Size(817, 522);
          // 
          // layoutItemContainerCriteria
          // 
@@ -546,7 +546,7 @@ namespace MoBi.UI.Views
          this.layoutControl2.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelContainerCriteria)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupContainerCritieria)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupContainerCriteria)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemContainerCriteria)).EndInit();
          this.tabModifiers.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl4)).EndInit();
@@ -589,7 +589,7 @@ namespace MoBi.UI.Views
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl2;
       private PanelControl panelContainerCriteria;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutGroupContainerCritieria;
+      private DevExpress.XtraLayout.LayoutControlGroup layoutGroupContainerCriteria;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemContainerCriteria;
       private DevExpress.XtraLayout.SplitterItem splitterItem1;
       private PanelControl eductsPanel;

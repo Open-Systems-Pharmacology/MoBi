@@ -4,20 +4,20 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -125,6 +125,7 @@ namespace MoBi.Presentation.Tasks
                //var newPath = generateNewPath(path);
                _changes.Add(formula, _buildingBlock, new ChangePathElementAtFormulaUseablePathCommand(_newName, formula, _oldName, path, _buildingBlock));
             }
+
             // possible alias Adjustments
             if (path.Alias.Equals(oldAlias))
             {
@@ -135,9 +136,11 @@ namespace MoBi.Presentation.Tasks
                   newAlias = $"{newAlias}{i}";
                   i++;
                }
+
                _changes.Add(formula, _buildingBlock, new EditFormulaAliasCommand(formula, newAlias, oldAlias, _buildingBlock));
             }
          }
+
          var explicitFormula = formula as ExplicitFormula;
          if (explicitFormula == null) return;
 
@@ -214,6 +217,7 @@ namespace MoBi.Presentation.Tasks
          {
             newPath.Add(element.Equals(_oldName) ? _newName : element);
          }
+
          return newPath;
       }
 
@@ -259,7 +263,8 @@ namespace MoBi.Presentation.Tasks
             if (!string.Equals(tagCondition.Tag, _oldName))
                continue;
 
-            _changes.Add(taggedObject, _buildingBlock, new EditTagCommand<T>(_newName, _oldName, taggedObject, _buildingBlock, descriptorCriteriaRetriever));
+            var commandParameters = new TagConditionCommandParameters<T> {TaggedObject = taggedObject, BuildingBlock = _buildingBlock, DescriptorCriteriaRetriever = descriptorCriteriaRetriever};
+            _changes.Add(taggedObject, _buildingBlock, new EditTagCommand<T>(_newName, _oldName, commandParameters));
          }
       }
 
@@ -295,7 +300,7 @@ namespace MoBi.Presentation.Tasks
       {
          foreach (var reactionPartner in reactionPartners.Where(reactionPartner => reactionPartner.MoleculeName.Equals(_oldName)))
          {
-            var command =new EditReactionPartnerMoleculeNameCommand(_newName, reaction,reactionPartner, getReactionBuildingBlockContaining(reaction));
+            var command = new EditReactionPartnerMoleculeNameCommand(_newName, reaction, reactionPartner, getReactionBuildingBlockContaining(reaction));
             _changes.Add(reactionPartner, _buildingBlock, command);
          }
       }
@@ -364,6 +369,7 @@ namespace MoBi.Presentation.Tasks
                   curveTemplate.yData.Path = stringReplace(curveTemplate.yData.Path);
                }
             }
+
             newChartTemplates.Add(newChartTemplate);
          }
 

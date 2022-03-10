@@ -32,7 +32,7 @@ namespace MoBi.UI.Views
       /// </summary>
       private void InitializeComponent()
       {
-         this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
+         this.tabControl = new DevExpress.XtraTab.XtraTabControl();
          this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControlProperties = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelOrigiView = new DevExpress.XtraEditors.PanelControl();
@@ -67,9 +67,15 @@ namespace MoBi.UI.Views
          this.layoutControlItemCanBeVariedInPopulation = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemValueOrigin = new DevExpress.XtraLayout.LayoutControlItem();
          this.tabTags = new DevExpress.XtraTab.XtraTabPage();
+         this.tabCriteria = new DevExpress.XtraTab.XtraTabPage();
+         this.layoutControl = new DevExpress.XtraLayout.LayoutControl();
+         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.panelContainerCriteria = new DevExpress.XtraEditors.PanelControl();
+         this.layoutItemContainerCriteria = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutGroupContainerCriteria = new DevExpress.XtraLayout.LayoutControlGroup();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
-         this.xtraTabControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.tabControl)).BeginInit();
+         this.tabControl.SuspendLayout();
          this.tabProperties.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlProperties)).BeginInit();
          this.layoutControlProperties.SuspendLayout();
@@ -104,19 +110,27 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemAdvancedParameter)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemCanBeVariedInPopulation)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValueOrigin)).BeginInit();
+         this.tabCriteria.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelContainerCriteria)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemContainerCriteria)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupContainerCriteria)).BeginInit();
          this.SuspendLayout();
          // 
-         // xtraTabControl1
+         // tabControl
          // 
-         this.xtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.xtraTabControl1.Location = new System.Drawing.Point(0, 0);
-         this.xtraTabControl1.Name = "xtraTabControl1";
-         this.xtraTabControl1.SelectedTabPage = this.tabProperties;
-         this.xtraTabControl1.Size = new System.Drawing.Size(758, 440);
-         this.xtraTabControl1.TabIndex = 0;
-         this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+         this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.tabControl.Location = new System.Drawing.Point(0, 0);
+         this.tabControl.Name = "tabControl";
+         this.tabControl.SelectedTabPage = this.tabProperties;
+         this.tabControl.Size = new System.Drawing.Size(758, 440);
+         this.tabControl.TabIndex = 0;
+         this.tabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.tabProperties,
-            this.tabTags});
+            this.tabTags,
+            this.tabCriteria});
          // 
          // tabProperties
          // 
@@ -152,9 +166,9 @@ namespace MoBi.UI.Views
          // 
          // panelOrigiView
          // 
-         this.panelOrigiView.Location = new System.Drawing.Point(133, 141);
+         this.panelOrigiView.Location = new System.Drawing.Point(142, 141);
          this.panelOrigiView.Name = "panelOrigiView";
-         this.panelOrigiView.Size = new System.Drawing.Size(599, 19);
+         this.panelOrigiView.Size = new System.Drawing.Size(590, 19);
          this.panelOrigiView.TabIndex = 29;
          // 
          // chkIsFavorite
@@ -168,11 +182,11 @@ namespace MoBi.UI.Views
          // 
          // cbGroup
          // 
-         this.cbGroup.Location = new System.Drawing.Point(133, 117);
+         this.cbGroup.Location = new System.Drawing.Point(142, 117);
          this.cbGroup.Name = "cbGroup";
          this.cbGroup.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbGroup.Size = new System.Drawing.Size(599, 20);
+         this.cbGroup.Size = new System.Drawing.Size(590, 20);
          this.cbGroup.StyleController = this.layoutControlProperties;
          this.cbGroup.TabIndex = 26;
          // 
@@ -207,12 +221,12 @@ namespace MoBi.UI.Views
          // htmlEditor
          // 
          this.htmlEditor.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.htmlEditor.Location = new System.Drawing.Point(121, 383);
+         this.htmlEditor.Location = new System.Drawing.Point(130, 383);
          this.htmlEditor.Name = "htmlEditor";
          this.htmlEditor.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.htmlEditor.Properties.ShowIcon = false;
-         this.htmlEditor.Size = new System.Drawing.Size(623, 20);
+         this.htmlEditor.Size = new System.Drawing.Size(614, 20);
          this.htmlEditor.StyleController = this.layoutControlProperties;
          this.htmlEditor.TabIndex = 22;
          // 
@@ -227,11 +241,11 @@ namespace MoBi.UI.Views
          // cbDimension
          // 
          this.cbDimension.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.cbDimension.Location = new System.Drawing.Point(133, 93);
+         this.cbDimension.Location = new System.Drawing.Point(142, 93);
          this.cbDimension.Name = "cbDimension";
          this.cbDimension.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbDimension.Size = new System.Drawing.Size(599, 20);
+         this.cbDimension.Size = new System.Drawing.Size(590, 20);
          this.cbDimension.StyleController = this.layoutControlProperties;
          this.cbDimension.TabIndex = 19;
          // 
@@ -248,22 +262,22 @@ namespace MoBi.UI.Views
          // cbParameterBuildMode
          // 
          this.cbParameterBuildMode.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.cbParameterBuildMode.Location = new System.Drawing.Point(133, 69);
+         this.cbParameterBuildMode.Location = new System.Drawing.Point(142, 69);
          this.cbParameterBuildMode.Name = "cbParameterBuildMode";
          this.cbParameterBuildMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbParameterBuildMode.Size = new System.Drawing.Size(599, 20);
+         this.cbParameterBuildMode.Size = new System.Drawing.Size(590, 20);
          this.cbParameterBuildMode.StyleController = this.layoutControlProperties;
          this.cbParameterBuildMode.TabIndex = 17;
          // 
          // btName
          // 
          this.btName.Anchor = System.Windows.Forms.AnchorStyles.None;
-         this.btName.Location = new System.Drawing.Point(121, 12);
+         this.btName.Location = new System.Drawing.Point(130, 12);
          this.btName.Name = "btName";
          this.btName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.btName.Size = new System.Drawing.Size(623, 20);
+         this.btName.Size = new System.Drawing.Size(614, 20);
          this.btName.StyleController = this.layoutControlProperties;
          this.btName.TabIndex = 0;
          // 
@@ -474,16 +488,67 @@ namespace MoBi.UI.Views
          this.tabTags.Size = new System.Drawing.Size(756, 415);
          this.tabTags.Text = "tabTags";
          // 
+         // tabCriteria
+         // 
+         this.tabCriteria.Controls.Add(this.layoutControl);
+         this.tabCriteria.Name = "tabCriteria";
+         this.tabCriteria.Size = new System.Drawing.Size(756, 415);
+         this.tabCriteria.Text = "tabCriteria";
+         // 
+         // layoutControl
+         // 
+         this.layoutControl.Controls.Add(this.panelContainerCriteria);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.Root;
+         this.layoutControl.Size = new System.Drawing.Size(756, 415);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl";
+         // 
+         // Root
+         // 
+         this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+         this.Root.GroupBordersVisible = false;
+         this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutGroupContainerCriteria});
+         this.Root.Name = "Root";
+         this.Root.Size = new System.Drawing.Size(756, 415);
+         this.Root.TextVisible = false;
+         // 
+         // panelContainerCriteria
+         // 
+         this.panelContainerCriteria.Location = new System.Drawing.Point(170, 45);
+         this.panelContainerCriteria.Name = "panelContainerCriteria";
+         this.panelContainerCriteria.Size = new System.Drawing.Size(562, 346);
+         this.panelContainerCriteria.TabIndex = 4;
+         // 
+         // layoutItemContainerCriteria
+         // 
+         this.layoutItemContainerCriteria.Control = this.panelContainerCriteria;
+         this.layoutItemContainerCriteria.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemContainerCriteria.Name = "layoutItemContainerCriteria";
+         this.layoutItemContainerCriteria.Size = new System.Drawing.Size(712, 350);
+         this.layoutItemContainerCriteria.TextSize = new System.Drawing.Size(134, 13);
+         // 
+         // layoutGroupContainerCriteria
+         // 
+         this.layoutGroupContainerCriteria.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutItemContainerCriteria});
+         this.layoutGroupContainerCriteria.Location = new System.Drawing.Point(0, 0);
+         this.layoutGroupContainerCriteria.Name = "layoutGroupContainerCriteria";
+         this.layoutGroupContainerCriteria.Size = new System.Drawing.Size(736, 395);
+         // 
          // EditParameterView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.xtraTabControl1);
+         this.Controls.Add(this.tabControl);
          this.Name = "EditParameterView";
          this.Size = new System.Drawing.Size(758, 440);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).EndInit();
-         this.xtraTabControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.tabControl)).EndInit();
+         this.tabControl.ResumeLayout(false);
          this.tabProperties.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlProperties)).EndInit();
          this.layoutControlProperties.ResumeLayout(false);
@@ -518,13 +583,20 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemAdvancedParameter)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemCanBeVariedInPopulation)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValueOrigin)).EndInit();
+         this.tabCriteria.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelContainerCriteria)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemContainerCriteria)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupContainerCriteria)).EndInit();
          this.ResumeLayout(false);
 
       }
 
       #endregion
 
-      private DevExpress.XtraTab.XtraTabControl xtraTabControl1;
+      private DevExpress.XtraTab.XtraTabControl tabControl;
       private DevExpress.XtraTab.XtraTabPage tabProperties;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControlProperties;
       private DevExpress.XtraEditors.PanelControl panelRHSFormula;
@@ -559,5 +631,11 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupProperties;
       private DevExpress.XtraEditors.PanelControl panelOrigiView;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemValueOrigin;
+      private DevExpress.XtraTab.XtraTabPage tabCriteria;
+      private DevExpress.XtraLayout.LayoutControl layoutControl;
+      private DevExpress.XtraEditors.PanelControl panelContainerCriteria;
+      private DevExpress.XtraLayout.LayoutControlGroup Root;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemContainerCriteria;
+      private DevExpress.XtraLayout.LayoutControlGroup layoutGroupContainerCriteria;
    }
 }

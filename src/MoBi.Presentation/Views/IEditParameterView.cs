@@ -11,5 +11,6 @@ namespace MoBi.Presentation.Views
       bool ShowBuildMode { set; }
       void AddValueOriginView(IView view);
       void AddTagsView(IView view);
+      void AddContainerCriteriaView(IView view);
    }
 }

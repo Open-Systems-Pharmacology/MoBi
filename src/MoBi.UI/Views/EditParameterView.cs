@@ -103,7 +103,11 @@ namespace MoBi.UI.Views
          tabProperties.Image = ApplicationIcons.Properties;
          tabTags.Text = AppConstants.Captions.Tags;
          tabTags.Image = ApplicationIcons.Tag;
-         
+         tabCriteria.Text = AppConstants.Captions.ContainerCriteria;
+         tabCriteria.Image = ApplicationIcons.Formula;
+         layoutGroupContainerCriteria.Text = AppConstants.Captions.InContainerWith;
+         layoutItemContainerCriteria.TextVisible = false;
+
          layoutItemGroup.Text = AppConstants.Captions.Group.FormatForLabel();
          layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
          chkIsFavorite.Text = Captions.Favorite;
@@ -179,14 +183,14 @@ namespace MoBi.UI.Views
          set => layoutItemParameterType.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
-      public void AddValueOriginView(IView view)
-      {
-         panelOrigiView.FillWith(view);
-      }
+      public void AddValueOriginView(IView view) => panelOrigiView.FillWith(view);
 
-      public void AddTagsView(IView view)
+      public void AddTagsView(IView view) => tabTags.FillWith(view);
+
+      public void AddContainerCriteriaView(IView view)
       {
-         tabTags.FillWith(view);
+         tabCriteria.PageVisible = true;
+         panelContainerCriteria.FillWith(view);
       }
 
       private bool showRHSPanel

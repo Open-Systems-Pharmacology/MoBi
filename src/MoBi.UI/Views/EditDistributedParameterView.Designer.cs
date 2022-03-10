@@ -111,15 +111,15 @@
          // 
          // tbPercentile
          // 
-         this.tbPercentile.Location = new System.Drawing.Point(111, 82);
+         this.tbPercentile.Location = new System.Drawing.Point(120, 82);
          this.tbPercentile.Name = "tbPercentile";
-         this.tbPercentile.Size = new System.Drawing.Size(574, 20);
+         this.tbPercentile.Size = new System.Drawing.Size(565, 20);
          this.tbPercentile.StyleController = this.layoutControl;
          this.tbPercentile.TabIndex = 39;
          // 
          // cbFormulaType
          // 
-         this.cbFormulaType.Location = new System.Drawing.Point(24, 137);
+         this.cbFormulaType.Location = new System.Drawing.Point(24, 139);
          this.cbFormulaType.Name = "cbFormulaType";
          this.cbFormulaType.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -131,12 +131,12 @@
          // 
          this.htmlEditor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.htmlEditor.Location = new System.Drawing.Point(111, 290);
+         this.htmlEditor.Location = new System.Drawing.Point(120, 290);
          this.htmlEditor.Name = "htmlEditor";
          this.htmlEditor.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.htmlEditor.Properties.ShowIcon = false;
-         this.htmlEditor.Size = new System.Drawing.Size(574, 20);
+         this.htmlEditor.Size = new System.Drawing.Size(565, 20);
          this.htmlEditor.StyleController = this.layoutControl;
          this.htmlEditor.TabIndex = 20;
          // 
@@ -144,11 +144,11 @@
          // 
          this.btName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.btName.Location = new System.Drawing.Point(111, 12);
+         this.btName.Location = new System.Drawing.Point(120, 12);
          this.btName.Name = "btName";
          this.btName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.btName.Size = new System.Drawing.Size(574, 20);
+         this.btName.Size = new System.Drawing.Size(565, 20);
          this.btName.StyleController = this.layoutControl;
          this.btName.TabIndex = 0;
          // 
@@ -156,11 +156,11 @@
          // 
          this.cbDimension.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.cbDimension.Location = new System.Drawing.Point(111, 36);
+         this.cbDimension.Location = new System.Drawing.Point(120, 36);
          this.cbDimension.Name = "cbDimension";
          this.cbDimension.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbDimension.Size = new System.Drawing.Size(574, 20);
+         this.cbDimension.Size = new System.Drawing.Size(565, 20);
          this.cbDimension.StyleController = this.layoutControl;
          this.cbDimension.TabIndex = 19;
          // 
@@ -176,10 +176,8 @@
             this.layoutItemDescription,
             this.layoutGroupDistribution,
             this.layoutItemPercentile});
-         this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Size = new System.Drawing.Size(697, 322);
-         this.layoutControlGroup.Text = "layoutControlGroup";
          this.layoutControlGroup.TextVisible = false;
          // 
          // layoutItemName
@@ -234,9 +232,7 @@
          this.layoutItemDistributionType.Location = new System.Drawing.Point(0, 0);
          this.layoutItemDistributionType.Name = "layoutItemDistributionType";
          this.layoutItemDistributionType.Size = new System.Drawing.Size(653, 24);
-         this.layoutItemDistributionType.Text = "layoutItemDistributionType";
          this.layoutItemDistributionType.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemDistributionType.TextToControlDistance = 0;
          this.layoutItemDistributionType.TextVisible = false;
          // 
          // layoutItemPercentile
@@ -254,10 +250,10 @@
          this.veGeoStd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.veGeoStd.Caption = "";
-         this.veGeoStd.Location = new System.Drawing.Point(123, 231);
+         this.veGeoStd.Location = new System.Drawing.Point(132, 232);
          this.veGeoStd.MaximumSize = new System.Drawing.Size(200000, 20);
          this.veGeoStd.Name = "veGeoStd";
-         this.veGeoStd.Size = new System.Drawing.Size(550, 20);
+         this.veGeoStd.Size = new System.Drawing.Size(541, 19);
          this.veGeoStd.TabIndex = 38;
          this.veGeoStd.ToolTip = "";
          // 
@@ -266,10 +262,10 @@
          this.veDeviation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.veDeviation.Caption = "";
-         this.veDeviation.Location = new System.Drawing.Point(123, 255);
+         this.veDeviation.Location = new System.Drawing.Point(132, 255);
          this.veDeviation.MaximumSize = new System.Drawing.Size(200000, 20);
          this.veDeviation.Name = "veDeviation";
-         this.veDeviation.Size = new System.Drawing.Size(550, 19);
+         this.veDeviation.Size = new System.Drawing.Size(541, 19);
          this.veDeviation.TabIndex = 38;
          this.veDeviation.ToolTip = "";
          // 
@@ -278,10 +274,10 @@
          this.veMaximum.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.veMaximum.Caption = "";
-         this.veMaximum.Location = new System.Drawing.Point(123, 208);
+         this.veMaximum.Location = new System.Drawing.Point(132, 209);
          this.veMaximum.MaximumSize = new System.Drawing.Size(200000, 20);
          this.veMaximum.Name = "veMaximum";
-         this.veMaximum.Size = new System.Drawing.Size(550, 19);
+         this.veMaximum.Size = new System.Drawing.Size(541, 19);
          this.veMaximum.TabIndex = 26;
          this.veMaximum.ToolTip = "";
          // 
@@ -290,10 +286,10 @@
          this.veMean.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.veMean.Caption = "";
-         this.veMean.Location = new System.Drawing.Point(123, 161);
+         this.veMean.Location = new System.Drawing.Point(132, 163);
          this.veMean.MaximumSize = new System.Drawing.Size(200000, 20);
          this.veMean.Name = "veMean";
-         this.veMean.Size = new System.Drawing.Size(550, 19);
+         this.veMean.Size = new System.Drawing.Size(541, 19);
          this.veMean.TabIndex = 27;
          this.veMean.ToolTip = "";
          // 
@@ -302,10 +298,10 @@
          this.veMinimum.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.veMinimum.Caption = "";
-         this.veMinimum.Location = new System.Drawing.Point(123, 184);
+         this.veMinimum.Location = new System.Drawing.Point(132, 186);
          this.veMinimum.MaximumSize = new System.Drawing.Size(200000, 20);
          this.veMinimum.Name = "veMinimum";
-         this.veMinimum.Size = new System.Drawing.Size(550, 20);
+         this.veMinimum.Size = new System.Drawing.Size(541, 19);
          this.veMinimum.TabIndex = 25;
          this.veMinimum.ToolTip = "";
          // 
@@ -314,10 +310,10 @@
          this.veValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.veValue.Caption = "";
-         this.veValue.Location = new System.Drawing.Point(111, 60);
+         this.veValue.Location = new System.Drawing.Point(120, 60);
          this.veValue.MaximumSize = new System.Drawing.Size(200000, 20);
          this.veValue.Name = "veValue";
-         this.veValue.Size = new System.Drawing.Size(574, 18);
+         this.veValue.Size = new System.Drawing.Size(565, 18);
          this.veValue.TabIndex = 35;
          this.veValue.ToolTip = "";
          // 
@@ -347,7 +343,7 @@
          this.layoutItemMinimum.CustomizationFormText = "Minimum";
          this.layoutItemMinimum.Location = new System.Drawing.Point(0, 47);
          this.layoutItemMinimum.Name = "layoutItemMinimum";
-         this.layoutItemMinimum.Size = new System.Drawing.Size(653, 24);
+         this.layoutItemMinimum.Size = new System.Drawing.Size(653, 23);
          this.layoutItemMinimum.Text = "Minimum";
          this.layoutItemMinimum.TextSize = new System.Drawing.Size(96, 13);
          // 
@@ -355,7 +351,7 @@
          // 
          this.layoutItemMaximum.Control = this.veMaximum;
          this.layoutItemMaximum.CustomizationFormText = "Maximum";
-         this.layoutItemMaximum.Location = new System.Drawing.Point(0, 71);
+         this.layoutItemMaximum.Location = new System.Drawing.Point(0, 70);
          this.layoutItemMaximum.Name = "layoutItemMaximum";
          this.layoutItemMaximum.Size = new System.Drawing.Size(653, 23);
          this.layoutItemMaximum.Text = "Maximum";
@@ -365,7 +361,7 @@
          // 
          this.layoutItemDeviation.Control = this.veDeviation;
          this.layoutItemDeviation.CustomizationFormText = "layoutControlItem1";
-         this.layoutItemDeviation.Location = new System.Drawing.Point(0, 118);
+         this.layoutItemDeviation.Location = new System.Drawing.Point(0, 116);
          this.layoutItemDeviation.Name = "layoutItemDeviation";
          this.layoutItemDeviation.Size = new System.Drawing.Size(653, 23);
          this.layoutItemDeviation.Text = "Standard Deviation";
@@ -375,9 +371,9 @@
          // 
          this.layoutItemGeoDeviation.Control = this.veGeoStd;
          this.layoutItemGeoDeviation.CustomizationFormText = "Geometric Deviation";
-         this.layoutItemGeoDeviation.Location = new System.Drawing.Point(0, 94);
+         this.layoutItemGeoDeviation.Location = new System.Drawing.Point(0, 93);
          this.layoutItemGeoDeviation.Name = "layoutItemGeoDeviation";
-         this.layoutItemGeoDeviation.Size = new System.Drawing.Size(653, 24);
+         this.layoutItemGeoDeviation.Size = new System.Drawing.Size(653, 23);
          this.layoutItemGeoDeviation.Text = "Geometric Deviation";
          this.layoutItemGeoDeviation.TextSize = new System.Drawing.Size(96, 13);
          // 
