@@ -38,10 +38,16 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiContext _context;
       private readonly ICoreCalculationMethodRepository _calculationMethodsRepository;
 
-      public EditMoleculeBuilderPresenter(IEditMoleculeBuilderView view, IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderDTOMapper,
-         IEditParametersInContainerPresenter editMoleculeParameters, IEditTaskFor<IMoleculeBuilder> editTasks,
-         IEditFormulaPresenter editFormulaPresenter, IMoBiContext context, ISelectReferenceAtMoleculePresenter selectReferencePresenter,
-         IReactionDimensionRetriever dimensionRetriever, ICoreCalculationMethodRepository calculationMethodsRepository)
+      public EditMoleculeBuilderPresenter(
+         IEditMoleculeBuilderView view, 
+         IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderDTOMapper,
+         IEditParametersInContainerPresenter editMoleculeParameters, 
+         IEditTaskFor<IMoleculeBuilder> editTasks,
+         IEditFormulaPresenter editFormulaPresenter, 
+         IMoBiContext context, 
+         ISelectReferenceAtMoleculePresenter selectReferencePresenter,
+         IReactionDimensionRetriever dimensionRetriever, 
+         ICoreCalculationMethodRepository calculationMethodsRepository)
          : base(view, editFormulaPresenter, selectReferencePresenter)
       {
          _context = context;
@@ -122,8 +128,8 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock
       {
-         get { return _editMoleculeParameters.BuildingBlock; }
-         set { _editMoleculeParameters.BuildingBlock = value; }
+         get => _editMoleculeParameters.BuildingBlock;
+         set => _editMoleculeParameters.BuildingBlock = value;
       }
 
       public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;

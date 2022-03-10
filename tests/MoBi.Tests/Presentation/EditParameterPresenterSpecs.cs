@@ -1,18 +1,19 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
+﻿using System;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -34,6 +35,9 @@ namespace MoBi.Presentation
       protected IEditValueOriginPresenter _editValueOriginPresenter;
       protected ITagsPresenter _tagsPresenter;
       protected IDescriptorConditionListPresenter<IParameter> _descriptorConditionListPresenter;
+      protected IParameter _parameter;
+      protected ParameterDTO _parameterDTO;
+      protected IBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
@@ -46,41 +50,44 @@ namespace MoBi.Presentation
          _editTasks = A.Fake<IEditTaskFor<IParameter>>();
          _favoriteTask = A.Fake<IFavoriteTask>();
          _parameterTask = A.Fake<IInteractionTasksForParameter>();
-         _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();
-         _tagsPresenter= A.Fake<ITagsPresenter>();
-         _descriptorConditionListPresenter= A.Fake<IDescriptorConditionListPresenter<IParameter>>();
+         _editValueOriginPresenter = A.Fake<IEditValueOriginPresenter>();
+         _tagsPresenter = A.Fake<ITagsPresenter>();
+         _descriptorConditionListPresenter = A.Fake<IDescriptorConditionListPresenter<IParameter>>();
+
+         _buildingBlock = A.Fake<IBuildingBlock>();
+
          sut = new EditParameterPresenter(
-            _view, 
-            _editFormulaPresenter, 
-            _parameterMapper, 
-            _editRHSPresenter, 
+            _view,
+            _editFormulaPresenter,
+            _parameterMapper,
+            _editRHSPresenter,
             _interactionTasksContext,
-            _groupRepository, 
-            _editTasks, 
-            _parameterTask, 
-            new ContextSpecificReferencesRetriever(), 
+            _groupRepository,
+            _editTasks,
+            _parameterTask,
+            new ContextSpecificReferencesRetriever(),
             _favoriteTask,
-            _editValueOriginPresenter, 
+            _editValueOriginPresenter,
             _tagsPresenter,
             _descriptorConditionListPresenter)
          {
-            BuildingBlock = A.Fake<IBuildingBlock>()
+            BuildingBlock = _buildingBlock
          };
 
-         _commandCollector= A.Fake<ICommandCollector>();
+         _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
+
+         _parameter = new Parameter().WithId("Para");
+         _parameterDTO = new ParameterDTO(_parameter);
+         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(_parameterDTO);
       }
    }
 
    internal class When_set_is_variable_in_population_is_called : concern_for_EditParameterPresenter
    {
-      private IParameter _parameter;
-
       protected override void Context()
       {
          base.Context();
-         _parameter = new Parameter().WithId("Para");
-         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(new ParameterDTO(_parameter));
          sut.Edit(_parameter);
       }
 
@@ -132,13 +139,9 @@ namespace MoBi.Presentation
 
    internal class When_set_is_favorite_in_parameter_is_called : concern_for_EditParameterPresenter
    {
-      private IParameter _parameter;
-
       protected override void Context()
       {
          base.Context();
-         _parameter = new Parameter().WithId("Para");
-         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(new ParameterDTO(_parameter));
          sut.Edit(_parameter);
       }
 
@@ -154,22 +157,14 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_the_value_descroption_is_set_in_a_parameter : concern_for_EditParameterPresenter
+   internal class When_the_value_description_is_set_in_a_parameter : concern_for_EditParameterPresenter
    {
-      private IParameter _parameter;
-      private ParameterDTO _parameterDTO;
       private ValueOrigin _valueOrigin;
-      private IBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _buildingBlock= A.Fake<IBuildingBlock>(); 
          _valueOrigin = new ValueOrigin();
-         _parameter = new Parameter().WithId("Para");
-         _parameterDTO = new ParameterDTO(_parameter);
-         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(_parameterDTO);
-         sut.BuildingBlock  =_buildingBlock;
          sut.Edit(_parameter);
       }
 
@@ -187,16 +182,9 @@ namespace MoBi.Presentation
 
    public class When_evaluating_if_the_edit_parameter_presenter_can_close_for_a_parameter_not_using_rhs : concern_for_EditParameterPresenter
    {
-      private IParameter _parameter;
-      private ParameterDTO _parameterDTO;
-
       protected override void Context()
       {
          base.Context();
-         _parameter = new Parameter().WithId("Para");
-         _parameterDTO = new ParameterDTO(_parameter);
-         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(_parameterDTO);
-         sut.InitializeWith(A.Fake<ICommandCollector>());
          sut.Edit(_parameter);
 
          A.CallTo(() => _view.HasError).Returns(false);
@@ -215,16 +203,9 @@ namespace MoBi.Presentation
 
    public class When_evaluating_if_the_edit_parameter_presenter_can_close_for_a_parameter_using_rhs : concern_for_EditParameterPresenter
    {
-      private IParameter _parameter;
-      private ParameterDTO _parameterDTO;
-
       protected override void Context()
       {
          base.Context();
-         _parameter = new Parameter().WithId("Para");
-         _parameterDTO = new ParameterDTO(_parameter);
-         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(_parameterDTO);
-         sut.InitializeWith(A.Fake<ICommandCollector>());
          sut.Edit(_parameter);
 
          A.CallTo(() => _view.HasError).Returns(false);
@@ -238,6 +219,34 @@ namespace MoBi.Presentation
       public void should_use_the_can_close_state_of_the_rhs_presenter()
       {
          sut.CanClose.ShouldBeFalse();
+      }
+   }
+
+   public class When_initializing_the_container_tag_conditions_for_the_parameter : concern_for_EditParameterPresenter
+   {
+      private Func<IParameter, DescriptorCriteria> _creator;
+
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock = A.Fake<IBuildingBlock>();
+         sut.BuildingBlock = _buildingBlock;
+         A.CallTo(() => _descriptorConditionListPresenter.Edit(_parameter, A<Func<IParameter, DescriptorCriteria>>._, A<Func<IParameter, DescriptorCriteria>>._, _buildingBlock))
+            .Invokes(x => _creator = x.GetArgument<Func<IParameter, DescriptorCriteria>>(2));
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_parameter);
+      }
+
+      [Observation]
+      public void should_provide_a_container_criteria_creator_that_will_indeed_create_container_criteria_when_called()
+      {
+         _parameter.ContainerCriteria.ShouldBeNull();
+         var criteria = _creator(_parameter);
+         _parameter.ContainerCriteria.ShouldNotBeNull();
+         _parameter.ContainerCriteria.ShouldBeEqualTo(criteria);
       }
    }
 }

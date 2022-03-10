@@ -212,17 +212,20 @@ namespace MoBi.Presentation.Presenter
          _editValueFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(parameter),
             _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
          _editValueOriginPresenter.Edit(parameter);
+
          if (hasRHS(parameter))
             initRHSPresenter();
 
          _tagsPresenter.BuildingBlock = BuildingBlock;
          _tagsPresenter.Edit(parameter);
-         _containerCriteriaPresenter.Edit(parameter, x => x.ContainerCriteria, BuildingBlock);
-         _containerCriteriaPresenter.DescriptorCriteriaCreator = x =>
+
+         DescriptorCriteria containerCriteriaCreator(IParameter param)
          {
-            x.ContainerCriteria = new DescriptorCriteria();
-            return x.ContainerCriteria;
-         };
+            param.ContainerCriteria = new DescriptorCriteria();
+            return param.ContainerCriteria;
+         }
+
+         _containerCriteriaPresenter.Edit(parameter, x => x.ContainerCriteria, containerCriteriaCreator, BuildingBlock);
 
          _parameterDTO = _parameterMapper.MapFrom(parameter).DowncastTo<ParameterDTO>();
          _parameterDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(parameter, existingObjectsInParent));
