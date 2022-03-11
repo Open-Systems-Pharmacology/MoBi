@@ -152,19 +152,19 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _observerBuilder.ContainerCriteria = Create.Criteria(x => x.With("TOTO").With(DescriptorCriteriaOperator.And));
+         _observerBuilder.ContainerCriteria = Create.Criteria(x => x.With("TOTO").With(CriteriaOperator.And));
       }
 
       protected override void Because()
       {
-         _command = sut.EditOperator(DescriptorCriteriaOperator.Or, _commandParameters);
+         _command = sut.EditOperator(CriteriaOperator.Or, _commandParameters);
       }
 
       [Observation]
       public void should_update_the_criteria_operator()
       {
          _command.ShouldBeAnInstanceOf<EditOperatorCommand<IObserverBuilder>>();
-         _observerBuilder.ContainerCriteria.Operator.ShouldBeEqualTo(DescriptorCriteriaOperator.Or);
+         _observerBuilder.ContainerCriteria.Operator.ShouldBeEqualTo(CriteriaOperator.Or);
       }
    }
 

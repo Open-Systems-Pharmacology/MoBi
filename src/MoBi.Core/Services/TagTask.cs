@@ -38,7 +38,7 @@ namespace MoBi.Core.Services
       /// <summary>
       ///    Edits the tag <paramref name="newOperator" /> 
       /// </summary>
-      IMoBiCommand EditOperator<T>(DescriptorCriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
+      IMoBiCommand EditOperator<T>(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
 
    }
 
@@ -66,7 +66,7 @@ namespace MoBi.Core.Services
          return new EditTagCommand<T>(newTag, oldTag, tagConditionCommandParameters).Run(_context);
       }
 
-      public IMoBiCommand EditOperator<T>(DescriptorCriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
+      public IMoBiCommand EditOperator<T>(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
          return new EditOperatorCommand<T>(newOperator, tagConditionCommandParameters).Run(_context);
       }

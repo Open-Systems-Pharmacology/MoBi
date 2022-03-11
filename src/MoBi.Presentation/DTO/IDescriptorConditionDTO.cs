@@ -7,7 +7,7 @@ namespace MoBi.Presentation.DTO
 {
    public class DescriptorCriteriaDTO
    {
-      public DescriptorCriteriaOperator Operator { get; set; } 
+      public CriteriaOperator Operator { get; set; } 
       public IReadOnlyList<DescriptorConditionDTO> Conditions { get; set; } = new List<DescriptorConditionDTO>();
    }
 

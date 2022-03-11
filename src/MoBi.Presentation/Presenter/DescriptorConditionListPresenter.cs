@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Presenter
       void NewNotMatchTagCondition();
       void NewInContainerCondition();
       void NewNotInContainerCondition();
-      void ChangeOperator(DescriptorCriteriaOperator criteriaOperator);
+      void ChangeOperator(CriteriaOperator criteriaOperator);
    }
 
    public interface IDescriptorConditionListPresenter<T> : IDescriptorConditionListPresenter where T : IObjectBase
@@ -177,7 +177,7 @@ namespace MoBi.Presentation.Presenter
 
       public void NewNotInContainerCondition() => addCondition(TagType.NotInContainer);
 
-      public void ChangeOperator(DescriptorCriteriaOperator newOperator)
+      public void ChangeOperator(CriteriaOperator newOperator)
       {
          AddCommand(_tagTask.EditOperator(newOperator, createCommandParameters()));
          updateCriteriaDescription();

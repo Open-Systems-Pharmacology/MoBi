@@ -70,7 +70,7 @@ namespace MoBi.UI.Views
 
          _screenBinder.Bind(x => x.Operator)
             .To(cbOperator)
-            .WithValues(EnumHelper.AllValuesFor<DescriptorCriteriaOperator>())
+            .WithValues(EnumHelper.AllValuesFor<CriteriaOperator>())
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.ChangeOperator(e.NewValue));
       }
 

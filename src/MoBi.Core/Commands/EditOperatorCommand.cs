@@ -9,10 +9,10 @@ namespace MoBi.Core.Commands
 {
    public class EditOperatorCommand<T> : TagConditionCommandBase<T> where T : class, IObjectBase
    {
-      private readonly DescriptorCriteriaOperator _newOperator;
-      private DescriptorCriteriaOperator _oldOperator;
+      private readonly CriteriaOperator _newOperator;
+      private CriteriaOperator _oldOperator;
 
-      public EditOperatorCommand(DescriptorCriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) :
+      public EditOperatorCommand(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) :
          base(string.Empty, tagConditionCommandParameters)
       {
          CommandType = AppConstants.Commands.EditCommand;
