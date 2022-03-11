@@ -360,6 +360,11 @@ namespace MoBi.Assets
             return EditDescription(objectType, "tag", oldTag, newTag, name);
          }
 
+         public static string EditOperatorDescription(string objectType, string oldOperator, string newOperator, string name)
+         {
+            return EditDescription(objectType, "operator", oldOperator, newOperator, name);
+         }
+
          public static string SetDescription(string objectType, string propertyName, string newValue, string name)
          {
             return $"{propertyName.ToLowerInvariant()} set to '{newValue}' for {objectType} '{name}'";
@@ -1321,6 +1326,7 @@ namespace MoBi.Assets
          public static readonly string LoadParameter = "Load Parameter ";
          public static readonly string InContainerWith = "In Container With";
          public static readonly string ContainerCriteria = "Container Criteria";
+         public static readonly string Operator = "Operator";
          public static readonly string Products = "Products";
          public static readonly string Educts = "Educts";
          public static readonly string ApplicationMoleculeBuilder = "Application Molecule Builder";

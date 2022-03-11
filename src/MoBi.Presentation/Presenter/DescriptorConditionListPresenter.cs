@@ -27,14 +27,15 @@ namespace MoBi.Presentation.Presenter
       IListener<AddTagConditionEvent>,
       IListener<RemoveTagConditionEvent>
    {
-      void UpdateCriteriaTag(IDescriptorConditionDTO descriptorConditionDTO, string newTag);
+      void UpdateCriteriaTag(DescriptorConditionDTO descriptorConditionDTO, string newTag);
       IObjectBase Subject { get; }
-      void RemoveCondition(IDescriptorConditionDTO descriptorConditionDTO);
+      void RemoveCondition(DescriptorConditionDTO descriptorConditionDTO);
       void NewMatchTagCondition();
       void NewMatchAllCondition();
       void NewNotMatchTagCondition();
       void NewInContainerCondition();
       void NewNotInContainerCondition();
+      void ChangeOperator(DescriptorCriteriaOperator criteriaOperator);
    }
 
    public interface IDescriptorConditionListPresenter<T> : IDescriptorConditionListPresenter where T : IObjectBase
@@ -48,11 +49,11 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly ITagTask _tagTask;
-      private readonly IDescriptorConditionToDescriptorConditionDTOMapper _descriptorConditionMapper;
+      private readonly IDescriptorCriteriaToDescriptorCriteriaDTOMapper _descriptorCriteriaMapper;
       private readonly IDialogCreator _dialogCreator;
       private readonly ITagVisitor _tagVisitor;
       private DescriptorCriteria _descriptorCriteria;
-      private IReadOnlyList<IDescriptorConditionDTO> _descriptorCriteriaDTO;
+      private DescriptorCriteriaDTO _descriptorCriteriaDTO;
       private T _taggedObject;
       private Func<T, DescriptorCriteria> _descriptorCriteriaRetriever;
       private Func<T, DescriptorCriteria> _descriptorCriteriaCreator;
@@ -61,16 +62,20 @@ namespace MoBi.Presentation.Presenter
       private IBuildingBlock _buildingBlock;
       public IViewItem ViewRootItem { get; set; }
 
-      public DescriptorConditionListPresenter(IDescriptorConditionListView view, IViewItemContextMenuFactory viewItemContextMenuFactory,
-         ITagTask tagTask, IDescriptorConditionToDescriptorConditionDTOMapper descriptorConditionMapper, IDialogCreator dialogCreator,
+      public DescriptorConditionListPresenter(
+         IDescriptorConditionListView view, 
+         IViewItemContextMenuFactory viewItemContextMenuFactory,
+         ITagTask tagTask,
+         IDescriptorCriteriaToDescriptorCriteriaDTOMapper descriptorCriteriaMapper, 
+         IDialogCreator dialogCreator,
          ITagVisitor tagVisitor)
          : base(view)
       {
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _tagTask = tagTask;
-         _descriptorConditionMapper = descriptorConditionMapper;
          _dialogCreator = dialogCreator;
          _tagVisitor = tagVisitor;
+         _descriptorCriteriaMapper = descriptorCriteriaMapper;
          _defaultRootItem = new ContainerDescriptorRootItem();
       }
 
@@ -97,7 +102,7 @@ namespace MoBi.Presentation.Presenter
       private void bindToView()
       {
          _descriptorCriteria = _descriptorCriteriaRetriever(_taggedObject);
-         _descriptorCriteriaDTO = _descriptorCriteria?.MapAllUsing(_descriptorConditionMapper) ?? Array.Empty<IDescriptorConditionDTO>();
+         _descriptorCriteriaDTO = _descriptorCriteriaMapper.MapFrom(_descriptorCriteria);
          _view.BindTo(_descriptorCriteriaDTO);
          updateCriteriaDescription();
       }
@@ -115,12 +120,12 @@ namespace MoBi.Presentation.Presenter
          DescriptorCriteriaRetriever = _descriptorCriteriaRetriever,
       };
 
-      public void RemoveCondition(IDescriptorConditionDTO dto)
+      public void RemoveCondition(DescriptorConditionDTO dto)
       {
          AddCommand(_tagTask.RemoveTagCondition(dto.Tag, dto.TagType, createCommandParameters()));
       }
 
-      public void UpdateCriteriaTag(IDescriptorConditionDTO descriptorConditionDTO, string newTag)
+      public void UpdateCriteriaTag(DescriptorConditionDTO descriptorConditionDTO, string newTag)
       {
          AddCommand(_tagTask.EditTag(newTag, descriptorConditionDTO.Tag, createCommandParameters()));
          updateCriteriaDescription();
@@ -171,6 +176,12 @@ namespace MoBi.Presentation.Presenter
       public void NewInContainerCondition() => addCondition(TagType.InContainer);
 
       public void NewNotInContainerCondition() => addCondition(TagType.NotInContainer);
+
+      public void ChangeOperator(DescriptorCriteriaOperator newOperator)
+      {
+         AddCommand(_tagTask.EditOperator(newOperator, createCommandParameters()));
+         updateCriteriaDescription();
+      }
 
       public IObjectBase Subject => _taggedObject;
 

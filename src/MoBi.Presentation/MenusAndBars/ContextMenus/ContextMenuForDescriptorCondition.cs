@@ -21,7 +21,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allowAddAllCondition = allowAddAllCondition;
       }
 
-      protected virtual IMenuBarItem CreateRemoveCommand(IDescriptorConditionDTO dto)
+      protected virtual IMenuBarItem CreateRemoveCommand(DescriptorConditionDTO dto)
       {
          return CreateMenuButton.WithCaption(AppConstants.Captions.RemoveCondition)
             .WithIcon(ApplicationIcons.Delete)
@@ -73,7 +73,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          if (_allowAddAllCondition)
             allItems.Add(CreateAddAllCondition().AsGroupStarter());
 
-         var dto = _viewItem as IDescriptorConditionDTO;
+         var dto = _viewItem as DescriptorConditionDTO;
          if (dto != null)
             allItems.Add(CreateRemoveCommand(dto).AsGroupStarter());
 

@@ -1,16 +1,17 @@
-﻿using MoBi.Core.Services;
+﻿using System.Collections.Generic;
+using MoBi.Core.Services;
+using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IDescriptorConditionDTO : IViewItem
+   public class DescriptorCriteriaDTO
    {
-      string Tag { get; set; }
-      TagType TagType { get; }
-      string TagDescription { get; }
+      public DescriptorCriteriaOperator Operator { get; set; } 
+      public IReadOnlyList<DescriptorConditionDTO> Conditions { get; set; } = new List<DescriptorConditionDTO>();
    }
 
-   public class DescriptorConditionDTO : IDescriptorConditionDTO
+   public class DescriptorConditionDTO : IViewItem
    {
       public TagType TagType { get; }
       public string Tag { get; set; }
@@ -24,7 +25,7 @@ namespace MoBi.Presentation.DTO
       }
    }
 
-   public class ContainerDescriptorRootItem : IRootViewItem<IDescriptorConditionDTO>
+   public class ContainerDescriptorRootItem : IRootViewItem<DescriptorConditionDTO>
    {
    }
 }
