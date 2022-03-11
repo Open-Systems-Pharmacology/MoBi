@@ -34,6 +34,12 @@ namespace MoBi.Core.Services
       ///    Edits the tag <paramref name="oldTag" /> 
       /// </summary>
       IMoBiCommand EditTag<T>(string newTag, string oldTag, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
+
+      /// <summary>
+      ///    Edits the tag <paramref name="newOperator" /> 
+      /// </summary>
+      IMoBiCommand EditOperator<T>(DescriptorCriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
+
    }
 
    public class TagTask : ITagTask
@@ -58,6 +64,11 @@ namespace MoBi.Core.Services
       public IMoBiCommand EditTag<T>(string newTag, string oldTag,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
          return new EditTagCommand<T>(newTag, oldTag, tagConditionCommandParameters).Run(_context);
+      }
+
+      public IMoBiCommand EditOperator<T>(DescriptorCriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
+      {
+         return new EditOperatorCommand<T>(newOperator, tagConditionCommandParameters).Run(_context);
       }
 
       private IMoBiCommand getAddCommand<T>(string tag, TagType tagType,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase

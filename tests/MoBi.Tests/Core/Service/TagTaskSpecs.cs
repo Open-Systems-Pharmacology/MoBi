@@ -144,4 +144,28 @@ namespace MoBi.Core.Service
          _command.ShouldBeAnInstanceOf<EditTagCommand<IObserverBuilder>>();
       }
    }
+
+   public class When_editing_the_operator_from_a_taggable_object : concern_for_TagTask
+   {
+      private IMoBiCommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         _observerBuilder.ContainerCriteria = Create.Criteria(x => x.With("TOTO").With(DescriptorCriteriaOperator.And));
+      }
+
+      protected override void Because()
+      {
+         _command = sut.EditOperator(DescriptorCriteriaOperator.Or, _commandParameters);
+      }
+
+      [Observation]
+      public void should_update_the_criteria_operator()
+      {
+         _command.ShouldBeAnInstanceOf<EditOperatorCommand<IObserverBuilder>>();
+         _observerBuilder.ContainerCriteria.Operator.ShouldBeEqualTo(DescriptorCriteriaOperator.Or);
+      }
+   }
+
 }
