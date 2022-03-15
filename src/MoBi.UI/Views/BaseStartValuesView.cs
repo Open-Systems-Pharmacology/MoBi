@@ -90,7 +90,6 @@ namespace MoBi.UI.Views
          layoutControlItem.MaxSize = layoutControlItem.MinSize;
       }
 
-
       public void HideIsPresentView()
       {
          layoutItemIsPresent.Visibility = LayoutVisibility.Never;
