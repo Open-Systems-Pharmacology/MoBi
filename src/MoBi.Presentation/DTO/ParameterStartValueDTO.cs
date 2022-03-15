@@ -5,10 +5,7 @@ namespace MoBi.Presentation.DTO
 {
    public class ParameterStartValueDTO : StartValueDTO<IParameterStartValue>
    {
-      public IParameterStartValue ParameterStartValue
-      {
-         get { return StartValueObject; }
-      }
+      public IParameterStartValue ParameterStartValue => StartValueObject;
 
       public ParameterStartValueDTO(IParameterStartValue parameterStartValue, IStartValuesBuildingBlock<IParameterStartValue> buildingBlock) : base(parameterStartValue, buildingBlock)
       {

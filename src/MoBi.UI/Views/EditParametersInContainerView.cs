@@ -118,7 +118,7 @@ namespace MoBi.UI.Views
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
          _colValue = _gridViewBinder.Bind(dto => dto.Value)
-            .WithFormat(dto => dto.ParameterFormatter())
+            .WithFormat(dto => dto.ParameterFormatter(checkForEditable: false))
             .WithRepository(repositoryForValue)
             .WithEditorConfiguration(configureRepository)
             .WithToolTip(ToolTips.ParameterList.SetParameterValue)
