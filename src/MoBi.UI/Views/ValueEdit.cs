@@ -50,6 +50,8 @@ namespace MoBi.UI.Views
          RegisterValidationFor(_screenBinder, () => Changing());
 
          tbValue.EnterMoveNextControl = true;
+         layoutItemUnit.TextVisible = false;
+         layoutItemValue.TextVisible = false;
       }
 
       private void onValueUpdating(ValueEditDTO dto, PropertyValueSetEventArgs<double> e)

@@ -105,6 +105,7 @@ namespace MoBi.UI.Views
          tabTags.Image = ApplicationIcons.Tag;
          tabCriteria.Text = AppConstants.Captions.ContainerCriteria;
          tabCriteria.Image = ApplicationIcons.Formula;
+         tabCriteria.PageVisible = false;
          layoutGroupContainerCriteria.Text = AppConstants.Captions.InContainerWith;
          layoutItemContainerCriteria.TextVisible = false;
 

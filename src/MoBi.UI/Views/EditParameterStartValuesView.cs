@@ -2,7 +2,6 @@
 using OSPSuite.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 

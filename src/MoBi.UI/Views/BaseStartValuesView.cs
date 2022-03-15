@@ -80,20 +80,16 @@ namespace MoBi.UI.Views
 
       private void scaleLegendLayoutItem(LayoutControlItem layoutControlItem)
       {
-         layoutControlItem.MinSize = new Size(scaleForScreenDPI(UIConstants.UI.START_VALUES_LEGEND_WIDTH), scaleForScreenDPI(UIConstants.UI.START_VALUES_LEGEND_HEIGHT));
+         layoutControlItem.MinSize = new Size(UIConstants.UI.START_VALUES_LEGEND_WIDTH, UIConstants.UI.START_VALUES_LEGEND_HEIGHT);
          layoutControlItem.MaxSize = layoutControlItem.MinSize;
       }
 
       private void scaleApplyToSelectionLayoutItem(LayoutControlItem layoutControlItem)
       {
-         layoutControlItem.MinSize = new Size(UIConstants.UI.APPLY_TO_SELECTION_WIDTH, scaleForScreenDPI(UIConstants.UI.APPLY_TO_SELECTION_HEIGHT));
+         layoutControlItem.MinSize = new Size(UIConstants.UI.APPLY_TO_SELECTION_WIDTH, UIConstants.UI.APPLY_TO_SELECTION_HEIGHT);
          layoutControlItem.MaxSize = layoutControlItem.MinSize;
       }
 
-      private static int scaleForScreenDPI(int size)
-      {
-         return OSPSuite.UI.UIConstants.Size.ScaleForScreenDPI(size);
-      }
 
       public void HideIsPresentView()
       {

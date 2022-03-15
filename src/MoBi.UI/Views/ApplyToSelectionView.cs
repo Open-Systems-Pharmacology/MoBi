@@ -31,11 +31,13 @@ namespace MoBi.UI.Views
          btnSelection.Text = AppConstants.Captions.PerformCheckSelection;
          btnSelection.Image = ApplicationIcons.OK;
          btnSelection.ImageLocation = ImageLocation.MiddleLeft;
+         cbSelection.Properties.AutoHeight = false;
+         cbSelection.Height = btnSelection.Height;
       }
 
       public override string Caption
       {
-         set { lblCaption.Text = value.FormatForLabel(); }
+         set => lblCaption.Text = value.FormatForLabel();
       }
 
       public override void InitializeBinding()
