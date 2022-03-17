@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IParameterStartValuesTask : IStartValuesTask<IParameterStartValuesBuildingBlock, IParameterStartValue>
    {
-      IParameter GetpossibleParameterFromProject(IObjectPath parameterPath);
+      IParameter GetPossibleParameterFromProject(IObjectPath parameterPath);
 
       /// <summary>
       ///    Adds a new formula to the building block formula cache and assigns it to the start value
@@ -89,12 +89,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateParameterStartValueInBuildingBlockCommand(startValuesBuildingBlock, dto.Path, dto.QuantityInBaseUnit);
       }
 
-      public IParameter GetpossibleParameterFromProject(IObjectPath parameterPath)
+      public IParameter GetPossibleParameterFromProject(IObjectPath parameterPath)
       {
          foreach (var topContainer in Context.CurrentProject.SpatialStructureCollection.SelectMany(spatialStructure => spatialStructure.TopContainers))
          {
-            bool found;
-            var parameter = parameterPath.TryResolve<IParameter>(topContainer, out found);
+            var parameter = parameterPath.TryResolve<IParameter>(topContainer, out _);
             if (parameter != null)
                return parameter;
          }
@@ -110,7 +109,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.SetStartValueAndFormula
          };
 
-         var parameter = GetpossibleParameterFromProject(parameterStartValue.Path);
+         var parameter = GetPossibleParameterFromProject(parameterStartValue.Path);
 
          macroCommand.Add(AddFormulaToFormulaCacheAndSetOnStartValue<ExplicitFormula>(buildingBlock, parameterStartValue, parameter));
 
@@ -148,8 +147,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          return HasEquivalentDimension(startValue, parameter) &&
                 HasEquivalentFormula(startValue, parameter.Formula) &&
-                HasEquivalentStartValue(startValue, parameter.Value);
+                HasEquivalentStartValue(startValue, parameter);
       }
+
 
       public override IDimension GetDefaultDimension()
       {
@@ -182,10 +182,10 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (!HasEquivalentDimension(startValue, parameter))
                macroCommand.Add(UpdateStartValueDimension(buildingBlock, startValue, parameter.Dimension));
 
-            if (!HasEquivalentStartValue(startValue, parameter.Value))
+            if (!HasEquivalentStartValue(startValue, parameter))
                macroCommand.Add(SetStartDisplayValueWithUnit(startValue, parameter.ConvertToDisplayUnit(parameter.Value), parameter.DisplayUnit, buildingBlock));
 
-            // Evaluating the startValue before the formula is important if the startValue is a constant and the original building block uses a constantformula
+            // Evaluating the startValue before the formula is important if the startValue is a constant and the original building block uses a constant formula
             if (!HasEquivalentFormula(startValue, parameter.Formula))
                macroCommand.Add(ChangeStartValueFormulaCommand(buildingBlock, startValue, parameter.Formula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(parameter.Formula, buildingBlock.FormulaCache)));
          });

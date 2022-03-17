@@ -61,7 +61,8 @@ namespace MoBi.UI.Views
             .WithEditRepository(dto => CreateFormulaRepository())
             .WithOnValueUpdating((o, e) => parameterStartValuesPresenter.SetFormula(o, e.NewValue.Formula));
 
-         _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository).WithOnValueUpdating((o,e) => OnEvent(() => onDimensionSet(o,e)));
+         _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository)
+            .WithOnValueUpdating((o,e) => OnEvent(() => onDimensionSet(o,e)));
 
          gridView.HiddenEditor += (o, e) => hideEditor();
       }
@@ -90,10 +91,7 @@ namespace MoBi.UI.Views
          _unitControl.Hide();
       }
 
-      private IParameterStartValuesPresenter parameterStartValuesPresenter
-      {
-         get { return _presenter.DowncastTo<IParameterStartValuesPresenter>(); }
-      }
+      private IParameterStartValuesPresenter parameterStartValuesPresenter => _presenter.DowncastTo<IParameterStartValuesPresenter>();
 
       private void configureRepository(BaseEdit activeEditor, ParameterStartValueDTO parameterStartValue)
       {
