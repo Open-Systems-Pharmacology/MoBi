@@ -32,62 +32,10 @@
          this._labelInfo = new DevExpress.XtraEditors.LabelControl();
          this._websiteLink = new DevExpress.XtraEditors.HyperLinkEdit();
          this.licenseAgreementLink = new DevExpress.XtraEditors.HyperLinkEdit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._websiteLink.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.licenseAgreementLink.Properties)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(502, 12);
-         this.btnCancel.Size = new System.Drawing.Size(104, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(377, 12);
-         this.btnOk.Size = new System.Drawing.Size(121, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 234);
-         this.layoutControlBase.Size = new System.Drawing.Size(618, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(178, 22);
-         // 
-         // layoutControlGroupBase
-         // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(618, 46);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(365, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(125, 26);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(490, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(108, 26);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(182, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(183, 26);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(182, 26);
          // 
          // _labelInfo
          // 
@@ -134,17 +82,9 @@
          this.MinimizeBox = false;
          this.Name = "AboutView";
          this.Text = "AboutView";
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
          this.Controls.SetChildIndex(this._labelInfo, 0);
          this.Controls.SetChildIndex(this._websiteLink, 0);
          this.Controls.SetChildIndex(this.licenseAgreementLink, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._websiteLink.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.licenseAgreementLink.Properties)).EndInit();
