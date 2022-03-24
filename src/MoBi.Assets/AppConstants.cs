@@ -1069,6 +1069,8 @@ namespace MoBi.Assets
          public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
+
+       
       }
 
       public static class DimensionNames
@@ -1587,7 +1589,13 @@ namespace MoBi.Assets
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
          public static readonly string Chart = "Chart";
-
+         public static readonly string Mean = "Mean";
+         public static readonly string Minimum = "Minimum";
+         public static readonly string Maximum = "Maximum";
+         public static readonly string Percentile = "Percentile";
+         public static readonly string Distribution = "Distribution";
+         public static readonly string StandardDeviation = "Standard Deviation";
+         public static readonly string GeometricDeviation = "Geometric Deviation";
          public static readonly string List = "List";
 
          //TODO MOVE TO CORE
@@ -1596,7 +1604,7 @@ namespace MoBi.Assets
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 
 
-         public static string ManageDisplayUnits(string type)
+         public static string ManageDisplayUnits(string type)  
          {
             return $"Manage {type} Display Units";
          }
@@ -2085,5 +2093,6 @@ namespace MoBi.Assets
       {
          public static readonly string Data = "Data";
       }
+
    }
 }
