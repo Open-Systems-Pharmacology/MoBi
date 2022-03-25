@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Views
       void Show(TransportBuilderDTO dto);
       void AddMoleculeSelectionView(IView view);
       void SetParameterView(IView view);
-      void ShowParamters();
+      void ShowParameters();
       bool FormulaHasError { set; }
       bool ShowMoleculeList { set; }
       void EnableDisablePlotProcessRateParameter(bool newValue);

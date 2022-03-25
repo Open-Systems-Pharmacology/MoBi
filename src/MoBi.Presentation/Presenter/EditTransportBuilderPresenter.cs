@@ -165,7 +165,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SelectParameter(IParameter parameter)
       {
-         _view.ShowParamters();
+         _view.ShowParameters();
          _editParametersInContainerPresenter.Select(parameter);
       }
 

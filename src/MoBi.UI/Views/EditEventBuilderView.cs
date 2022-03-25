@@ -35,9 +35,9 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          tabParameters.Text = AppConstants.Captions.Parameters;
-         tabParameters.Image = ApplicationIcons.Parameters;
+         tabParameters.ImageOptions.SvgImage = ApplicationIcons.Parameters;
          tabProperties.Text = AppConstants.Captions.Properties;
-         tabProperties.Image = ApplicationIcons.Properties;
+         tabProperties.ImageOptions.SvgImage = ApplicationIcons.Properties;
          layoutGroupAssignment.Text = AppConstants.Captions.Assignment;
          layoutGroupCondition.Text = AppConstants.Captions.Condition;
          layoutControlItemAddFormula.AdjustLongButtonSize();
@@ -46,9 +46,9 @@ namespace MoBi.UI.Views
          layoutControlItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          chkOneTime.Text = AppConstants.Captions.OneTimeEvent;
          btnAddFormula.Text = AppConstants.Captions.AddFormula;
-         btnAddFormula.Image = ApplicationIcons.Add;
+         btnAddFormula.ImageOptions.SvgImage = ApplicationIcons.Add;
          btnAddAssignment.Text = AppConstants.Captions.AddAssignment;
-         btnAddAssignment.Image = ApplicationIcons.Add;
+         btnAddAssignment.ImageOptions.SvgImage = ApplicationIcons.Add;
          btnAddFormula.Click += (o, e) => OnEvent(_presenter.AddConditionFormula);
          btnAddAssignment.Click += (o, e) => OnEvent(_presenter.AddAssignment);
          htmlEditor.Properties.ShowIcon = false;

@@ -10,6 +10,7 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using MoBi.UI.Services;
 using OSPSuite.Assets;
 using OSPSuite.Presentation;
@@ -98,8 +99,9 @@ namespace MoBi.UI.Views
          var size = layoutControlItemCalculationMethod.Size;
          size.Height = grdCalculationMethodsView.ColumnPanelRowHeight + 26 * 3;
          layoutControlItemCalculationMethod.Size = size;
-         tabParameter.Image = ApplicationIcons.Parameter;
-         tabProperties.Image = ApplicationIcons.Properties;
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
+         tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
+
       }
 
       public void UpdateStartAmountDisplay(string amountOrConcentrationText)
@@ -142,7 +144,7 @@ namespace MoBi.UI.Views
 
       public void SetParametersView(IView subView)
       {
-         tabParameter.FillWith(subView);
+         tabParameters.FillWith(subView);
       }
 
       public void Show(MoleculeBuilderDTO moleculeBuilder)
@@ -157,7 +159,7 @@ namespace MoBi.UI.Views
 
       public void ShowParameters()
       {
-         tabParameter.Show();
+         tabParameters.Show();
       }
 
       private void initNameEdit(MoleculeBuilderDTO moleculeBuilder)

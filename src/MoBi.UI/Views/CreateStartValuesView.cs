@@ -1,11 +1,10 @@
 ﻿using MoBi.Assets;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Views;
 
@@ -55,14 +54,6 @@ namespace MoBi.UI.Views
          _screenBinder.BindToSource(dto);
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         set { Icon = value; }
-      }
-
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
    }
 }

@@ -51,7 +51,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
-         Icon = ApplicationIcons.Simulation.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Simulation;
          Caption = AppConstants.Captions.SimulationCreationCaption;
          this.ReziseForCurrentScreen(fractionHeight: UIConstants.UI.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.UI.SCREEN_RESIZE_FRACTION);
       }

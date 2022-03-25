@@ -3,25 +3,30 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors.Controls;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
    public partial class EditContainerView : BaseUserControl, IEditContainerView
    {
+      private readonly IImageListRetriever _imageListRetriever;
       protected IEditContainerPresenter _presenter;
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
 
-      public EditContainerView()
+      public EditContainerView(IImageListRetriever imageListRetriever)
       {
+         _imageListRetriever = imageListRetriever;
          InitializeComponent();
       }
 
@@ -63,8 +68,8 @@ namespace MoBi.UI.Views
          base.InitializeResources();
 
          btName.ToolTip = ToolTips.Container.ContainerName;
-         tabProperties.Image = ApplicationIcons.Properties;
-         tabParameters.Image = ApplicationIcons.Parameter;
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
+         tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
       }
 
       private void onNameSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)

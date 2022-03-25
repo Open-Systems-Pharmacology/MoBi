@@ -1,6 +1,4 @@
 ﻿using System;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraTab;
 using MoBi.Assets;
@@ -8,16 +6,16 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Extensions;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
    public partial class EditSpatialStructureView : EditBuildingBlockBaseView, IEditSpatialStructureView
    {
       private IEditSpatialStructurePresenter spatialStructurePresenter => _presenter.DowncastTo<IEditSpatialStructurePresenter>();
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.SpatialStructure;
 
       public EditSpatialStructureView(IMainView mainView) : base(mainView)
       {
@@ -34,7 +32,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          Caption = AppConstants.Captions.SpatialStructure;
-
+         ApplicationIcon = ApplicationIcons.SpatialStructure;
          tabDiagram.InitWith(AppConstants.Captions.ModelDiagram, ApplicationIcons.Diagram);
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
 
