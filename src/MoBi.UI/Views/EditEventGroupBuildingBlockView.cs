@@ -31,12 +31,11 @@ namespace MoBi.UI.Views
          splitContainerControl.Panel2.FillWith(editEventView);
       }
 
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Event;
-
       public override void InitializeResources()
       {
          base.InitializeResources();
          EditCaption = AppConstants.Captions.Events;
+         ApplicationIcon = ApplicationIcons.PassiveTransport;
       }
    }
 }

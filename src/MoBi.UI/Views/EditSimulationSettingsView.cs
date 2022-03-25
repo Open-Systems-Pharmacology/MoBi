@@ -1,7 +1,7 @@
-﻿using OSPSuite.Assets;
-using DevExpress.XtraTab;
+﻿using DevExpress.XtraTab;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Views;
 
@@ -19,14 +19,12 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public override XtraTabControl TabControl
-      {
-         get { return tabControl; }
-      }
+      public override XtraTabControl TabControl => tabControl;
 
-      public override ApplicationIcon ApplicationIcon
+      public override void InitializeResources()
       {
-         get { return ApplicationIcons.SimulationSettings; }
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.SimulationSettings;
       }
    }
 }

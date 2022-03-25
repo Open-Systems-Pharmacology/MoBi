@@ -1,11 +1,10 @@
-using OSPSuite.Assets;
 using DevExpress.XtraEditors;
 using DevExpress.XtraTab;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
@@ -23,6 +22,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Reaction;
          tabFavorites.InitWith(Captions.Favorites, ApplicationIcons.Favorites);
          tabUserDefined.InitWith(AppConstants.Captions.UserDefined, ApplicationIcons.UserDefinedVariability);
          tabFlowChart.InitWith(AppConstants.Captions.Chart, ApplicationIcons.Diagram);
@@ -30,7 +30,6 @@ namespace MoBi.UI.Views
          splitContainerControl1.CollapsePanel = SplitCollapsePanel.Panel1;
          EditCaption = AppConstants.Captions.Reactions;
          tabOverviewControl.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
-
       }
 
       private void tabSelectionChanged(TabPageChangingEventArgs e)
@@ -70,7 +69,5 @@ namespace MoBi.UI.Views
       {
          tabUserDefined.FillWith(view);
       }
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Reaction;
    }
 }

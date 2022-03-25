@@ -44,7 +44,7 @@ namespace MoBi.UI.Views
          this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
          this.chkCreateParameter = new UxCheckEdit();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
-         this.splitContainerControl1 = new DevExpress.XtraEditors.SplitContainerControl();
+         this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemName = new DevExpress.XtraLayout.LayoutControlItem();
@@ -71,8 +71,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkCreateParameter.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).BeginInit();
-         this.splitContainerControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).BeginInit();
+         this.splitContainerControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.btName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).BeginInit();
@@ -116,7 +116,7 @@ namespace MoBi.UI.Views
          this.layoutControl1.Controls.Add(this.chkPlotParameter);
          this.layoutControl1.Controls.Add(this.chkCreateParameter);
          this.layoutControl1.Controls.Add(this.htmlEditor);
-         this.layoutControl1.Controls.Add(this.splitContainerControl1);
+         this.layoutControl1.Controls.Add(this.splitContainerControl);
          this.layoutControl1.Controls.Add(this.btName);
          this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl1.Location = new System.Drawing.Point(0, 0);
@@ -196,16 +196,16 @@ namespace MoBi.UI.Views
          // 
          // splitContainerControl1
          // 
-         this.splitContainerControl1.Horizontal = false;
-         this.splitContainerControl1.Location = new System.Drawing.Point(120, 36);
-         this.splitContainerControl1.Name = "splitContainerControl1";
-         this.splitContainerControl1.Panel1.Controls.Add(this.layoutControl2);
-         this.splitContainerControl1.Panel1.Text = "Panel1";
-         this.splitContainerControl1.Panel2.Text = "Panel2";
-         this.splitContainerControl1.Size = new System.Drawing.Size(688, 486);
-         this.splitContainerControl1.SplitterPosition = 205;
-         this.splitContainerControl1.TabIndex = 5;
-         this.splitContainerControl1.Text = "splitContainerControl1";
+         this.splitContainerControl.Horizontal = false;
+         this.splitContainerControl.Location = new System.Drawing.Point(120, 36);
+         this.splitContainerControl.Name = "splitContainerControl";
+         this.splitContainerControl.Panel1.Controls.Add(this.layoutControl2);
+         this.splitContainerControl.Panel1.Text = "Panel1";
+         this.splitContainerControl.Panel2.Text = "Panel2";
+         this.splitContainerControl.Size = new System.Drawing.Size(688, 486);
+         this.splitContainerControl.SplitterPosition = 205;
+         this.splitContainerControl.TabIndex = 5;
+         this.splitContainerControl.Text = "splitContainerControl1";
          // 
          // btName
          // 
@@ -247,7 +247,7 @@ namespace MoBi.UI.Views
          // 
          // layoutItemTagKinetic
          // 
-         this.layoutItemTagKinetic.Control = this.splitContainerControl1;
+         this.layoutItemTagKinetic.Control = this.splitContainerControl;
          this.layoutItemTagKinetic.CustomizationFormText = "layoutItemTagKinetic";
          this.layoutItemTagKinetic.Location = new System.Drawing.Point(0, 24);
          this.layoutItemTagKinetic.Name = "layoutItemTagKinetic";
@@ -390,8 +390,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkCreateParameter.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl1)).EndInit();
-         this.splitContainerControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).EndInit();
+         this.splitContainerControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.btName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).EndInit();
@@ -423,7 +423,7 @@ namespace MoBi.UI.Views
       private XtraTabPage tabProperties;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraEditors.MemoExEdit htmlEditor;
-      private DevExpress.XtraEditors.SplitContainerControl splitContainerControl1;
+      private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
       private DevExpress.XtraEditors.ButtonEdit btName;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemName;

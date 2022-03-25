@@ -24,12 +24,11 @@ namespace MoBi.UI.Views
          tabEditBuildingBlock.FillWith(view);
       }
 
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.ParameterStartValues;
-
       public override void InitializeResources()
       {
          base.InitializeResources();
          EditCaption = AppConstants.Captions.ParameterStartValues;
+         ApplicationIcon = ApplicationIcons.ParameterStartValues;
       }
    }
 }

@@ -51,7 +51,7 @@ namespace MoBi.UI.Views
          this.layoutControlItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemFormula = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemMoleculeType = new DevExpress.XtraLayout.LayoutControlItem();
-         this.tabParameter = new DevExpress.XtraTab.XtraTabPage();
+         this.tabParameters = new DevExpress.XtraTab.XtraTabPage();
          this._toolTipController = new DevExpress.Utils.ToolTipController(this.components);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
@@ -85,7 +85,7 @@ namespace MoBi.UI.Views
          this.xtraTabControl1.TabIndex = 0;
          this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.tabProperties,
-            this.tabParameter});
+            this.tabParameters});
          // 
          // tabProperties
          // 
@@ -263,9 +263,9 @@ namespace MoBi.UI.Views
          // 
          // tabParameter
          // 
-         this.tabParameter.Name = "tabParameter";
-         this.tabParameter.Size = new System.Drawing.Size(700, 559);
-         this.tabParameter.Text = "Parameters";
+         this.tabParameters.Name = "tabParameters";
+         this.tabParameters.Size = new System.Drawing.Size(700, 559);
+         this.tabParameters.Text = "Parameters";
          // 
          // EditMoleculeBuilderView
          // 
@@ -301,7 +301,7 @@ namespace MoBi.UI.Views
       #endregion
 
       private DevExpress.XtraTab.XtraTabControl xtraTabControl1;
-      private DevExpress.XtraTab.XtraTabPage tabParameter;
+      private DevExpress.XtraTab.XtraTabPage tabParameters;
       private DevExpress.XtraTab.XtraTabPage tabProperties;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControlProperties;
       private DevExpress.XtraEditors.ButtonEdit btName;

@@ -106,7 +106,7 @@ namespace MoBi.UI.Views
          layoutItemCalculateScaleDivisors.AdjustButtonSize();
          btnCalculateScaleDivisors.InitWithImage(ApplicationIcons.Run, AppConstants.Captions.Calculate);
          ButtonExtra.InitWithImage(ApplicationIcons.Reset, AppConstants.Captions.Reset);
-         Icon = ApplicationIcons.ScaleFactor;
+         ApplicationIcon = ApplicationIcons.ScaleFactor;
          Caption = AppConstants.Captions.CalculateScaleDivisor;
       }
    }

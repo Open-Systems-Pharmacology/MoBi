@@ -103,6 +103,7 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddPageHeaderItemLinks(_menuBarItemRepository[MenuBarItemIds.Help]);
       }
 
+      
       private void initializeDynamicPages()
       {
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Molecules, Color.LightGreen);
@@ -155,7 +156,7 @@ namespace MoBi.Presentation.Presenter.Main
          projectItemsAreEnabled = true;
       }
 
-      protected override void DisableMenuBarItemsForPogramStart()
+      protected override void DisableMenuBarItemsForProgramStart()
       {
          DisableAll();
          enableDefaultItems();

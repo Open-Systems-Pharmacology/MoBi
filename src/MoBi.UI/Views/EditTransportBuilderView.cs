@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Drawing;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI;
-using OSPSuite.Utility.Extensions;
+using DevExpress.Utils.Svg;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -11,14 +7,17 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using MoBi.UI.Extensions;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -26,8 +25,8 @@ namespace MoBi.UI.Views
    {
       private IEditTransportBuilderPresenter _presenter;
       private ScreenBinder<TransportBuilderDTO> _screenBinder;
-      private Image _errorImage;
-      private Image _passiveTransportImage;
+      private SvgImage _errorImage;
+      private SvgImage _passiveTransportImage;
 
       public EditTransportBuilderView(IImageListRetriever imageListRetriever)
       {
@@ -39,7 +38,7 @@ namespace MoBi.UI.Views
       {
          set
          {
-            tabKinetic.Image = value ? _errorImage : _passiveTransportImage;
+            tabKinetic.ImageOptions.SvgImage = value ? _errorImage : _passiveTransportImage;
             tabKinetic.Tooltip = value ? AppConstants.Exceptions.ErrorInFormula : String.Empty;
          }
       }
@@ -62,17 +61,17 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         splitContainerControl1.CollapsePanel = SplitCollapsePanel.Panel1;
+         splitContainerControl.CollapsePanel = SplitCollapsePanel.Panel1;
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          layoutItemTagKinetic.TextVisible = false;
          chkCreateParameter.Text = AppConstants.Captions.CreateProcessRateParameter;
          chkPlotParameter.Text = AppConstants.Captions.PlotProcessRateParameter;
          tabKinetic.Text = AppConstants.Captions.Kinetic;
-         tabParameters.Image = ApplicationIcons.Parameter;
-         tabProperties.Image = ApplicationIcons.Properties;
-         _errorImage = ApplicationIcons.DxError.ToImage();
-         _passiveTransportImage = ApplicationIcons.PassiveTransport.ToImage();
-         splitContainerControl1.PanelVisibility = SplitPanelVisibility.Panel1;
+         tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
+         _errorImage = ApplicationIcons.DxError;
+         _passiveTransportImage = ApplicationIcons.PassiveTransport;
+         splitContainerControl.PanelVisibility = SplitPanelVisibility.Panel1;
          layoutItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
          layoutItemPanelSource.Text = AppConstants.Captions.Source.FormatForLabel();
          layouytItemPanelTarget.Text = AppConstants.Captions.Target.FormatForLabel();
@@ -104,10 +103,7 @@ namespace MoBi.UI.Views
          OnEvent(() => _presenter.SetCreateProcessRateParameter(e.NewValue));
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError;
 
       public void Activate()
       {
@@ -135,13 +131,13 @@ namespace MoBi.UI.Views
 
       public bool ShowMoleculeList
       {
-         set { splitContainerControl1.PanelVisibility = value ? SplitPanelVisibility.Both : SplitPanelVisibility.Panel1; }
+         set => splitContainerControl.PanelVisibility = value ? SplitPanelVisibility.Both : SplitPanelVisibility.Panel1;
       }
 
       public void AddMoleculeSelectionView(IView view)
       {
-         splitContainerControl1.PanelVisibility = SplitPanelVisibility.Both;
-         splitContainerControl1.Panel2.FillWith(view);
+         splitContainerControl.PanelVisibility = SplitPanelVisibility.Both;
+         splitContainerControl.Panel2.FillWith(view);
       }
 
       public void SetFormulaView(IView view)
@@ -154,19 +150,16 @@ namespace MoBi.UI.Views
          tabParameters.FillWith(view);
       }
 
-      public void ShowParamters()
+      public void ShowParameters()
       {
          tabParameters.Show();
       }
 
-      public BarManager PopupBarManager
-      {
-         get { return barManager; }
-      }
+      public BarManager PopupBarManager => barManager;
 
       private void btName_ButtonClick(object sender, ButtonPressedEventArgs e)
       {
-         this.DoWithinExceptionHandler(() => _presenter.RenameSubject());
+         OnEvent(() => _presenter.RenameSubject());
       }
    }
 }

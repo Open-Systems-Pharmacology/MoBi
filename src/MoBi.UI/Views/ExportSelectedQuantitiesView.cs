@@ -46,16 +46,13 @@ namespace MoBi.UI.Views
          _screenBinder.BindToSource(exportQuantitiesSelectionDTO);
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public override void InitializeResources()
       {
          base.InitializeResources();
          Caption = AppConstants.Captions.SelectDataToExport;
-         Icon = ApplicationIcons.ObservedData;
+         ApplicationIcon = ApplicationIcons.ObservedData;
          layoutItemSelectionPath.Text = AppConstants.Captions.ReportFile.FormatForLabel();
       }
    }

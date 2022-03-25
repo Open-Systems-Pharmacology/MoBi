@@ -20,7 +20,7 @@ namespace MoBi.UI.Views
          Opacity = 0.98;
          progressBarControl.Properties.ShowTitle = true;
          Text = AppConstants.Captions.LoadingApplication;
-         Icon = ApplicationIcons.MoBi.WithSize(IconSizes.Size48x48);
+         ApplicationIcon = ApplicationIcons.MoBi;
       }
 
       public void AttachPresenter(ISplashScreenPresenter presenter)

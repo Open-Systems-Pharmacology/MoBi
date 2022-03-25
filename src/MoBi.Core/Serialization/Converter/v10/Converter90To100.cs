@@ -61,10 +61,10 @@ namespace MoBi.Core.Serialization.Converter.v10
             return;
 
          if (!explicitFormula.NameIsOneOf(
-            "RelExpInterstialForInterstitial",
-            "RelExpInterstialIntraVascEndoIsInterstitial",
-            "RelExpInterstialMembraneExtracellularBasolateral",
-            "RelExpPlasmaMembraneExtracellularApicalTissueOrgan"))
+                "RelExpInterstialForInterstitial",
+                "RelExpInterstialIntraVascEndoIsInterstitial",
+                "RelExpInterstialMembraneExtracellularBasolateral",
+                "RelExpPlasmaMembraneExtracellularApicalTissueOrgan"))
 
             return;
 
