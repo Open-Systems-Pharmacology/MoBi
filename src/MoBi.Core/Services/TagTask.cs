@@ -17,28 +17,29 @@ namespace MoBi.Core.Services
       NotInContainer,
    }
 
+  
    public interface ITagTask
    {
       /// <summary>
-      ///    Removes the tag <paramref name="tag" /> of type <paramref name="tagType" /> defined in the
-      ///    <paramref name="taggedObject" /> belonging to the <paramref name="buildingBlock" />.
-      ///    The <paramref name="descriptorCriteriaRetriever" /> is used to know how to retrieve the list of tags to remove from.
+      ///    Removes the tag <paramref name="tag" /> of type <paramref name="tagType" />
       /// </summary>
-      IMoBiCommand RemoveTagCondition<T>(string tag, TagType tagType, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) where T : class, IObjectBase;
+      IMoBiCommand RemoveTagCondition<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
 
       /// <summary>
-      ///    Adds a tag <paramref name="tag" /> of type <paramref name="tagType" /> defined in the
-      ///    <paramref name="taggedObject" /> belonging to the <paramref name="buildingBlock" />.
-      ///    The <paramref name="descriptorCriteriaRetriever" /> is used to know how to retrieve the list of tags to add to.
+      ///    Adds a tag <paramref name="tag" /> of type <paramref name="tagType" /> 
       /// </summary>
-      IMoBiCommand AddTagCondition<T>(string tag, TagType tagType, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) where T : class, IObjectBase;
+      IMoBiCommand AddTagCondition<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
 
       /// <summary>
-      ///    Edits the tag <paramref name="oldTag" /> defined in the <paramref name="taggedObject" /> belonging to the
-      ///    <paramref name="buildingBlock" /> and sets its new value to <paramref name="newTag" />.
-      ///    The <paramref name="descriptorCriteriaRetriever" /> is used to know how to retrieve the actual tag to edit.
+      ///    Edits the tag <paramref name="oldTag" /> 
       /// </summary>
-      IMoBiCommand EditTag<T>(string newTag, string oldTag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) where T : class, IObjectBase;
+      IMoBiCommand EditTag<T>(string newTag, string oldTag, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
+
+      /// <summary>
+      ///    Edits the tag <paramref name="newOperator" /> 
+      /// </summary>
+      IMoBiCommand EditOperator<T>(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
+
    }
 
    public class TagTask : ITagTask
@@ -50,54 +51,59 @@ namespace MoBi.Core.Services
          _context = context;
       }
 
-      public IMoBiCommand RemoveTagCondition<T>(string tag, TagType tagType, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) where T : class, IObjectBase
+      public IMoBiCommand RemoveTagCondition<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
-         return getRemoveCommand(tag, tagType, taggedObject, buildingBlock, descriptorCriteriaRetriever).Run(_context);
+         return getRemoveCommand(tag, tagType, tagConditionCommandParameters).Run(_context);
       }
 
-      public IMoBiCommand AddTagCondition<T>(string tag, TagType tagType, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) where T : class, IObjectBase
+      public IMoBiCommand AddTagCondition<T>(string tag, TagType tagType,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
-         return getAddCommand(tag, tagType, taggedObject, buildingBlock, descriptorCriteriaRetriever).Run(_context);
+         return getAddCommand(tag, tagType, tagConditionCommandParameters).Run(_context);
       }
 
-      public IMoBiCommand EditTag<T>(string newTag, string oldTag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) where T : class, IObjectBase
+      public IMoBiCommand EditTag<T>(string newTag, string oldTag,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
-         return new EditTagCommand<T>(newTag, oldTag, taggedObject, buildingBlock, descriptorCriteriaRetriever).Run(_context);
+         return new EditTagCommand<T>(newTag, oldTag, tagConditionCommandParameters).Run(_context);
       }
 
-      private IMoBiCommand getAddCommand<T>(string tag, TagType tagType, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) where T : class, IObjectBase
+      public IMoBiCommand EditOperator<T>(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
+      {
+         return new EditOperatorCommand<T>(newOperator, tagConditionCommandParameters).Run(_context);
+      }
+
+      private IMoBiCommand getAddCommand<T>(string tag, TagType tagType,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
          switch (tagType)
          {
             case TagType.MatchAll:
-               return new AddMatchAllConditionCommand<T>(taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddMatchAllConditionCommand<T>(tagConditionCommandParameters);
             case TagType.Match:
-               return new AddMatchTagConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddMatchTagConditionCommand<T>(tag,  tagConditionCommandParameters);
             case TagType.NotMatch:
-               return new AddNotMatchTagConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddNotMatchTagConditionCommand<T>(tag,  tagConditionCommandParameters);
             case TagType.InContainer:
-               return new AddInContainerConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
             case TagType.NotInContainer:
-               return new AddNotInContainerConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new AddNotInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
             default:
                throw new ArgumentOutOfRangeException(nameof(tagType));
          }
       }
 
-      private IMoBiCommand getRemoveCommand<T>(string tag, TagType tagType, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) where T : class, IObjectBase
+      private IMoBiCommand getRemoveCommand<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
          switch (tagType)
          {
             case TagType.MatchAll:
-               return new RemoveMatchAllConditionCommand<T>(taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveMatchAllConditionCommand<T>(tagConditionCommandParameters);
             case TagType.Match:
-               return new RemoveMatchTagConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveMatchTagConditionCommand<T>(tag,  tagConditionCommandParameters);
             case TagType.NotMatch:
-               return new RemoveNotMatchTagConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveNotMatchTagConditionCommand<T>(tag,  tagConditionCommandParameters);
             case TagType.InContainer:
-               return new RemoveInContainerConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
             case TagType.NotInContainer:
-               return new RemoveNotInContainerConditionCommand<T>(tag, taggedObject, buildingBlock, descriptorCriteriaRetriever);
+               return new RemoveNotInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
             default:
                throw new ArgumentOutOfRangeException(nameof(tagType));
          }

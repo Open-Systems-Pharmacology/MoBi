@@ -53,27 +53,34 @@ namespace MoBi.UI.Views
             .To(messageMemoEdit);
 
          _excelSheetSelectionScreenBinder.Bind(x => x.SelectedSheet)
-            .ToEnableOf(btnExtra)
+            .ToEnableOf(ButtonExtra)
             .EnabledWhen(x => !string.IsNullOrEmpty(x));
 
          _importStartValuesDTOScreenBinder.Bind(x => x.Count)
-            .ToEnableOf(btnOk)
+            .ToEnableOf(ButtonOk)
             .EnabledWhen(count => count > 0);
 
-         btnExtra.InitWithImage(ApplicationIcons.Run, AppConstants.Captions.StartImport);
-         btnExtra.Click += (o, e) => OnEvent(() => _presenter.StartImport());
+         ButtonExtra.InitWithImage(ApplicationIcons.Run, AppConstants.Captions.StartImport);
          ExtraVisible = true;
 
          filePathButtonEdit.Click += (o, e) => OnEvent(() => _presenter.SelectFile());
 
-         btnOk.Click += (o, e) => OnEvent(() => _presenter.TransferImportedQuantities());
-         btnOk.Text = AppConstants.Captions.Transfer;
+         OkCaption = AppConstants.Captions.Transfer;
       }
 
-      public override bool HasError
+      protected override void OkClicked()
       {
-         get { return _excelSheetSelectionScreenBinder.HasError; }
+         base.OkClicked();
+         _presenter.TransferImportedQuantities();
       }
+
+      protected override void ExtraClicked()
+      {
+         base.ExtraClicked();
+         _presenter.StartImport();
+      }
+
+      public override bool HasError => _excelSheetSelectionScreenBinder.HasError;
 
       public override void InitializeResources()
       {

@@ -28,7 +28,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          Text = AppConstants.Captions.MergeSimulationIntoProject;
-         Icon = ApplicationIcons.Merge;
+         ApplicationIcon = ApplicationIcons.Merge;
       }
    }
 }

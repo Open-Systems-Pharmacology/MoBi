@@ -7,7 +7,6 @@ using DevExpress.XtraBars;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -40,7 +39,6 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          ApplicationIcon = ApplicationIcons.MoBi;
-         Icon = ApplicationIcon.WithSize(IconSizes.Size32x32);
       }
 
       protected override void OnLoad(EventArgs e)

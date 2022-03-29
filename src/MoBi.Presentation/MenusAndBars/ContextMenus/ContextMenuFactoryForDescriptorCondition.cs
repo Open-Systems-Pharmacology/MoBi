@@ -18,8 +18,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
          return presenter.IsAnImplementationOf<IDescriptorConditionListPresenter>() &&
-                (objectRequestingContextMenu.IsAnImplementationOf<IDescriptorConditionDTO>()
-                 || objectRequestingContextMenu.IsAnImplementationOf<IRootViewItem<IDescriptorConditionDTO>>());
+                (objectRequestingContextMenu.IsAnImplementationOf<DescriptorConditionDTO>()
+                 || objectRequestingContextMenu.IsAnImplementationOf<IRootViewItem<DescriptorConditionDTO>>());
       }
 
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)

@@ -1,5 +1,7 @@
 using System;
 using System.Windows.Forms;
+using DevExpress.LookAndFeel;
+using DevExpress.XtraEditors;
 using MoBi.Engine;
 using MoBi.UI.Services;
 using OSPSuite.Core.Extensions;
@@ -17,6 +19,10 @@ namespace MoBi
       {
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault(false);
+
+         WindowsFormsSettings.SetDPIAware();
+         WindowsFormsSettings.SetPerMonitorDpiAware();
+         WindowsFormsSettings.TouchUIMode = TouchUIMode.False;
          try
          {
             ApplicationStartup.Initialize(registrationAction);

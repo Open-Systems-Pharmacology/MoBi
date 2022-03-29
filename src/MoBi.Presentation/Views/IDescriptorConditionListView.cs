@@ -7,7 +7,7 @@ namespace MoBi.Presentation.Views
 {
    public interface IDescriptorConditionListView : IView<IDescriptorConditionListPresenter>
    {
-      void BindTo(IEnumerable<IDescriptorConditionDTO> descriptorConditions);
+      void BindTo(DescriptorCriteriaDTO descriptorCriteriaDTO);
       string CriteriaDescription { set; }
    }
 }

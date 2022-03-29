@@ -1,8 +1,7 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 
@@ -14,8 +13,6 @@ namespace MoBi.UI.Views
       {
          InitializeComponent();
       }
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.MoleculeStartValues;
 
       public void AttachPresenter(IEditMoleculeStartValuesPresenter presenter)
       {
@@ -31,6 +28,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          EditCaption = AppConstants.Captions.MoleculeStartValues;
+         ApplicationIcon = ApplicationIcons.MoleculeStartValues;
       }
    }
 }

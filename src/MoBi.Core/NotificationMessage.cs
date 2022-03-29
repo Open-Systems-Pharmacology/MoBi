@@ -44,16 +44,13 @@ namespace MoBi.Core
          Object = objectBase;
          _details = new List<string>();
          Type = notificationType;
-         Id = string.Format("{0}{1}{2}", messageOrigin, objectBase.Id, notificationType);
+         Id = $"{messageOrigin}{objectBase.Id}{notificationType}";
       }
 
       /// <summary>
       ///    Returns the name of the object for which the notification was created
       /// </summary>
-      public string ObjectName
-      {
-         get { return Object.Name; }
-      }
+      public string ObjectName => Object.Name;
 
       /// <summary>
       ///    Returns the name of the building block containing the object for which the notification was created
@@ -71,7 +68,7 @@ namespace MoBi.Core
       //Description of error
       public string Message
       {
-         get { return _message; }
+         get => _message;
          set
          {
             _message = value;
@@ -86,7 +83,7 @@ namespace MoBi.Core
 
       public IEnumerable<string> Details => _details;
 
-      public Image Image
+      public ApplicationIcon Image
       {
          get
          {

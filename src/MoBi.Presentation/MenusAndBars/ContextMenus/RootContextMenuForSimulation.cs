@@ -1,14 +1,13 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Presentation.Nodes;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -23,7 +22,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var simulationFolderNode = presenter.NodeByType(rootNodeType);
          _allMenuItems.Add(createNewSimulationMenuBarItem());
          _allMenuItems.Add(createAddExistingSimulationMenuBarItem());
-         _allMenuItems.Add(CreateReportItemForCollection());
          _allMenuItems.Add(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(simulationFolderNode, presenter).AsGroupStarter());
          _allMenuItems.Add(SimulationClassificationCommonContextMenuItems.RemoveSimulationFolderMainMenu(simulationFolderNode, presenter).AsGroupStarter());
          _allMenuItems.Add(deleteAllSimulationResults().AsGroupStarter());
@@ -33,7 +31,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem deleteAllSimulationResults()
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.DeleteAllResults)
-                    .WithCommand<DeleteAllResultsInAllSimulationsUICommand>();
+            .WithCommand<DeleteAllResultsInAllSimulationsUICommand>();
       }
 
       private IMenuBarItem createAddExistingSimulationMenuBarItem()
@@ -49,7 +47,5 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.Simulation)
             .WithCommand<NewSimulationCommand>();
       }
-
-
    }
 }

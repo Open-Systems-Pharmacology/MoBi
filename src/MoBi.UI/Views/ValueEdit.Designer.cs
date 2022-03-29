@@ -31,15 +31,19 @@ namespace MoBi.UI.Views
       /// </summary>
       private void InitializeComponent()
       {
+         this.components = new System.ComponentModel.Container();
          this.fProperties = new DevExpress.XtraEditors.Repository.RepositoryItem();
          this.tbValue = new DevExpress.XtraEditors.TextEdit();
          this.cbUnit = new OSPSuite.UI.Controls.UxComboBoxEdit();
-         this.warningProvider = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider();
+         this.warningProvider = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
+         this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.fProperties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbValue.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbUnit.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
+         this.tablePanel.SuspendLayout();
          this.SuspendLayout();
          // 
          // fProperties
@@ -51,38 +55,57 @@ namespace MoBi.UI.Views
          this.tbValue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.tbValue.Location = new System.Drawing.Point(0, 0);
+         this.tablePanel.SetColumn(this.tbValue, 0);
+         this.tbValue.Location = new System.Drawing.Point(3, 3);
          this.tbValue.Name = "tbValue";
-         this.tbValue.Size = new System.Drawing.Size(151, 20);
+         this.tablePanel.SetRow(this.tbValue, 0);
+         this.tbValue.Size = new System.Drawing.Size(329, 20);
          this.tbValue.TabIndex = 1;
          // 
          // cbUnit
          // 
-         this.cbUnit.Dock = System.Windows.Forms.DockStyle.Right;
-         this.cbUnit.Location = new System.Drawing.Point(157, 0);
+         this.cbUnit.Anchor = System.Windows.Forms.AnchorStyles.None;
+         this.tablePanel.SetColumn(this.cbUnit, 1);
+         this.cbUnit.Location = new System.Drawing.Point(338, 3);
          this.cbUnit.Name = "cbUnit";
          this.cbUnit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbUnit.Size = new System.Drawing.Size(72, 20);
+         this.tablePanel.SetRow(this.cbUnit, 0);
+         this.cbUnit.Size = new System.Drawing.Size(329, 20);
          this.cbUnit.TabIndex = 2;
          // 
          // warningProvider
          // 
          this.warningProvider.ContainerControl = this;
          // 
+         // tablePanel
+         // 
+         this.tablePanel.Columns.AddRange(new DevExpress.Utils.Layout.TablePanelColumn[] {
+            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 50F),
+            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 50F)});
+         this.tablePanel.Controls.Add(this.cbUnit);
+         this.tablePanel.Controls.Add(this.tbValue);
+         this.tablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.tablePanel.Location = new System.Drawing.Point(0, 0);
+         this.tablePanel.Name = "tablePanel";
+         this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
+         this.tablePanel.Size = new System.Drawing.Size(670, 26);
+         this.tablePanel.TabIndex = 4;
+         // 
          // ValueEdit
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-         this.Controls.Add(this.tbValue);
-         this.Controls.Add(this.cbUnit);
-         this.MaximumSize = new System.Drawing.Size(200000, 20);
+         this.Controls.Add(this.tablePanel);
          this.Name = "ValueEdit";
-         this.Size = new System.Drawing.Size(229, 20);
+         this.Size = new System.Drawing.Size(670, 26);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.fProperties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbValue.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbUnit.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
+         this.tablePanel.ResumeLayout(false);
          this.ResumeLayout(false);
 
       }
@@ -90,8 +113,9 @@ namespace MoBi.UI.Views
       #endregion
 
       private TextEdit tbValue;
-      private ComboBoxEdit cbUnit;
       private DevExpress.XtraEditors.Repository.RepositoryItem fProperties;
       private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider warningProvider;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbUnit;
+      private DevExpress.Utils.Layout.TablePanel tablePanel;
    }
 }

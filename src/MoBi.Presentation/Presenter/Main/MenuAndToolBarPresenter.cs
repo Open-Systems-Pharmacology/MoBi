@@ -21,6 +21,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters.Events;
 using System.Collections.Generic;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -57,21 +58,20 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IMoBiContext _context;
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
-      private bool _parameterIdentificationRunning;
       private bool _sensitivityRunning;
-      private IList<string> _activePIs = new List<string>();
-      private string _currentlyActivePI;
-      private readonly IEventPublisher _eventPublisher;
+      private readonly List<ParameterIdentification> _runningParameterIdentifications = new List<ParameterIdentification>();
+      private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
-         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager, IMoBiContext context, IEventPublisher eventPublisher)
+         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager, 
+         IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
          : base(view, menuBarItemRepository, mruProvider)
       {
          _skinManager = skinManager;
          _context = context;
          _menuBarItemRepository = menuBarItemRepository;
          _buttonGroupRepository = buttonGroupRepository;
-         _eventPublisher = eventPublisher;
+         _activeSubjectRetriever = activeSubjectRetriever;
       }
 
       protected override void AddRibbonPages()
@@ -103,6 +103,7 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddPageHeaderItemLinks(_menuBarItemRepository[MenuBarItemIds.Help]);
       }
 
+      
       private void initializeDynamicPages()
       {
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Molecules, Color.LightGreen);
@@ -155,7 +156,7 @@ namespace MoBi.Presentation.Presenter.Main
          projectItemsAreEnabled = true;
       }
 
-      protected override void DisableMenuBarItemsForPogramStart()
+      protected override void DisableMenuBarItemsForProgramStart()
       {
          DisableAll();
          enableDefaultItems();
@@ -228,8 +229,6 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.LoadSimulationIntoProject].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.HistoryReportGroup].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ExportHistoryToExcel].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.ExportHistoryToPDF].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.ExportProjectToPDF].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewMolecule].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadMolecule].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadMoleculeFromTemplate].Enabled = enabled;
@@ -355,32 +354,31 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
-         _currentlyActivePI = parameterIdentification.Id;
-         _parameterIdentificationRunning = _activePIs.Contains(parameterIdentification.Id);
          updateParameterIdentifcationItems(parameterIdentification);
-         _eventPublisher.PublishEvent(new ParameterIdentificationSelectedEvent(parameterIdentification));
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
-         _activePIs.Add(parameterIdentificationEvent.ParameterIdentification.Id);
-         _parameterIdentificationRunning = true;
+         _runningParameterIdentifications.Add(parameterIdentificationEvent.ParameterIdentification);
          updateParameterIdentifcationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
       public void Handle(ParameterIdentificationTerminatedEvent parameterIdentificationEvent)
       {
-         _activePIs.Remove(parameterIdentificationEvent.ParameterIdentification.Id);
-         if (parameterIdentificationEvent.ParameterIdentification.Id == _currentlyActivePI)
-            _parameterIdentificationRunning = false;
-         updateParameterIdentifcationItems(parameterIdentificationEvent.ParameterIdentification);
+         var parameterIdentification = parameterIdentificationEvent.ParameterIdentification;
+         _runningParameterIdentifications.Remove(parameterIdentificationEvent.ParameterIdentification);
+         //only update if selected subject in the actual parameter identification terminated
+         var activeSubject = _activeSubjectRetriever.Active<ParameterIdentification>();
+         if (Equals(activeSubject, parameterIdentification))
+            updateParameterIdentifcationItems(parameterIdentification);
       }
 
       private void updateParameterIdentifcationItems(ParameterIdentification parameterIdentification)
       {
-         var hasResult = !_parameterIdentificationRunning && parameterIdentification.HasResults;
-         _menuBarItemRepository[MenuBarItemIds.RunParameterIdentification].Enabled = !_parameterIdentificationRunning;
-         _menuBarItemRepository[MenuBarItemIds.StopParameterIdentification].Enabled = _parameterIdentificationRunning;
+         var parameterIdentificationRunning = _runningParameterIdentifications.Contains(parameterIdentification);
+         var hasResult = !parameterIdentificationRunning && parameterIdentification.HasResults;
+         _menuBarItemRepository[MenuBarItemIds.RunParameterIdentification].Enabled = !parameterIdentificationRunning;
+         _menuBarItemRepository[MenuBarItemIds.StopParameterIdentification].Enabled = parameterIdentificationRunning;
          _menuBarItemRepository[MenuBarItemIds.TimeProfileParameterIdentification].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.PredictedVsObservedParameterIdentification].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.CorrelationMatrixParameterIdentification].Enabled = hasResult;

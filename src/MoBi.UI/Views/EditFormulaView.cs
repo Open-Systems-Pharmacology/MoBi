@@ -73,7 +73,7 @@ namespace MoBi.UI.Views
 
       public bool IsComplexFormulaView
       {
-         set { splitFormula.PanelVisibility = value ? SplitPanelVisibility.Both : SplitPanelVisibility.Panel1; }
+         set => splitFormula.PanelVisibility = value ? SplitPanelVisibility.Both : SplitPanelVisibility.Panel1;
       }
 
       public bool IsNamedFormulaView
@@ -105,18 +105,14 @@ namespace MoBi.UI.Views
          cbExplicitFormulaName.ToolTip = ToolTips.Formula.FormulaName;
          layoutItemExplicitFormulaName.Text = AppConstants.Captions.FormulaName.FormatForLabel();
          layoutItemFormulaType.Text = AppConstants.Captions.FormulaType.FormatForLabel();
-         btnAddFormula.Text = AppConstants.Captions.AddFormula;
-         btnAddFormula.Image = ApplicationIcons.Add.ToImage(IconSizes.Size16x16);
-         btnAddFormula.ImageLocation = ImageLocation.MiddleLeft;
-         btnAddFormula.ToolTip = ToolTips.Formula.FormulaName;
+         btnAddFormula.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddFormula, ImageLocation.MiddleLeft, ToolTips.Formula.FormulaName);
          layoutItemCloneFormula.Visibility = LayoutVisibility.Never;
          layoutItemCloneFormula.AdjustButtonSize();
          layoutItemAddFormula.AdjustButtonSize();
+         cbExplicitFormulaName.Properties.AutoHeight = false;
+         cbExplicitFormulaName.Height = btnAddFormula.Height;
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError;
    }
 }

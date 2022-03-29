@@ -29,7 +29,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          Caption = AppConstants.Captions.SimulationSettings;
-         Icon = ApplicationIcons.Simulation;
+         ApplicationIcon = ApplicationIcons.Simulation;
       }
    }
 }

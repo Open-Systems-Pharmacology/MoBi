@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
          layoutControlResult.Text = AppConstants.Captions.SearchResults;
          var searchButton = txtSearchExpression.Properties.Buttons[0];
          searchButton.Kind = ButtonPredefines.Glyph;
-         searchButton.Image = ApplicationIcons.Search;
+         searchButton.ImageOptions.SvgImage = ApplicationIcons.Search;
          ckWholeName.Text = AppConstants.Captions.SearchWholeName;
          chkCaseSensitive.Text = AppConstants.Captions.CaseSensitive;
          chkRegExSearch.Text = AppConstants.Captions.SearchRegEx;

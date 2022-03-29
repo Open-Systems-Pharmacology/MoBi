@@ -8,6 +8,7 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
@@ -99,11 +100,13 @@ namespace MoBi.UI.Views
          chkPersistable.Text = AppConstants.Captions.Persistable;
          chkPersistable.ToolTip = ToolTips.ParameterView.Persistable;
          chkCanBeVariedInPopulation.Text = AppConstants.Captions.CanBeVariedInPopulation;
-         tabProperties.Text = AppConstants.Captions.Properties;
-         tabProperties.Image = ApplicationIcons.Properties;
-         tabTags.Text = AppConstants.Captions.Tags;
-         tabTags.Image = ApplicationIcons.Tag;
-         
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
+         tabTags.InitWith(AppConstants.Captions.Tags, ApplicationIcons.Tag);
+         tabCriteria.InitWith(AppConstants.Captions.ContainerCriteria, ApplicationIcons.Formula);
+         tabCriteria.PageVisible = false;
+         layoutGroupContainerCriteria.Text = AppConstants.Captions.InContainerWith;
+         layoutItemContainerCriteria.TextVisible = false;
+
          layoutItemGroup.Text = AppConstants.Captions.Group.FormatForLabel();
          layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
          chkIsFavorite.Text = Captions.Favorite;
@@ -179,14 +182,14 @@ namespace MoBi.UI.Views
          set => layoutItemParameterType.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
-      public void AddValueOriginView(IView view)
-      {
-         panelOrigiView.FillWith(view);
-      }
+      public void AddValueOriginView(IView view) => panelOrigiView.FillWith(view);
 
-      public void AddTagsView(IView view)
+      public void AddTagsView(IView view) => tabTags.FillWith(view);
+
+      public void AddContainerCriteriaView(IView view)
       {
-         tabTags.FillWith(view);
+         tabCriteria.PageVisible = true;
+         panelContainerCriteria.FillWith(view);
       }
 
       private bool showRHSPanel

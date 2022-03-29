@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Utility.Extensions;
-using DevExpress.XtraLayout.Utils;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Helper;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -54,27 +56,27 @@ namespace MoBi.UI.Views
             .WithValues(getDimensions)
             .Changed += () => OnEvent(_presenter.DimensionChanged);
 
-         bindDisitributionParameter(dto => dto.Value, veValue);
+         bindDistributionParameter(dto => dto.Value, veValue);
 
          _screenBinder.Bind(dto => dto.Percentile)
             .To(tbPercentile);
          tbPercentile.Enabled = false;
 
-         bindDisitributionParameter(dto => dto.Minimum, veMinimum);
-         bindDisitributionParameter(dto => dto.Maximum, veMaximum);
-         bindDisitributionParameter(dto => dto.Mean, veMean);
-         bindDisitributionParameter(dto => dto.Deviation, veDeviation);
-         bindDisitributionParameter(dto => dto.GeometricDeviation, veGeoStd);
+         bindDistributionParameter(dto => dto.Minimum, veMinimum);
+         bindDistributionParameter(dto => dto.Maximum, veMaximum);
+         bindDistributionParameter(dto => dto.Mean, veMean);
+         bindDistributionParameter(dto => dto.Deviation, veDeviation);
+         bindDistributionParameter(dto => dto.GeometricDeviation, veGeoStd);
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor).OnValueUpdating += onValueUpdating;
 
-         RegisterValidationFor(_screenBinder,NotifyViewChanged);
+         RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
          btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
       }
 
-      private void bindDisitributionParameter(Expression<Func<DistributedParameterDTO, DistributionParameterDTO>> expression, ValueEdit valueEdit)
+      private void bindDistributionParameter(Expression<Func<DistributedParameterDTO, DistributionParameterDTO>> expression, ValueEdit valueEdit)
       {
          _screenBinder.Bind(expression).To(valueEdit);
          valueEdit.ValueChanged += parameterValueSet;
@@ -143,24 +145,45 @@ namespace MoBi.UI.Views
       private void setControlVisibility(DistributionFormulaType formulaType)
       {
          layoutControl.SuspendLayout();
-         layoutItemMinimum.Visibility = LayoutVisibilityConvertor.FromBoolean(formulaType == DistributionFormulaType.UniformDistribution);
-         layoutItemMaximum.Visibility = layoutItemMinimum.Visibility;
 
-         bool needsMeanParameter = formulaType == DistributionFormulaType.NormalDistribution ||
-                                   formulaType == DistributionFormulaType.LogNormalDistribution ||
-                                   formulaType == DistributionFormulaType.DiscreteDistribution;
+         tablePanel.RowFor(labelMinimum).Visible = formulaType == DistributionFormulaType.UniformDistribution;
+         tablePanel.RowFor(labelMaximum).Visible = tablePanel.RowFor(labelMinimum).Visible;
 
-         layoutItemMean.Visibility = LayoutVisibilityConvertor.FromBoolean(needsMeanParameter);
-         layoutItemDeviation.Visibility = LayoutVisibilityConvertor.FromBoolean(formulaType == DistributionFormulaType.NormalDistribution);
-         layoutItemGeoDeviation.Visibility = LayoutVisibilityConvertor.FromBoolean(formulaType == DistributionFormulaType.LogNormalDistribution);
-         layoutItemPercentile.Visibility = LayoutVisibilityConvertor.FromBoolean(formulaType != DistributionFormulaType.DiscreteDistribution);
+         var needsMeanParameter = formulaType == DistributionFormulaType.NormalDistribution ||
+                                  formulaType == DistributionFormulaType.LogNormalDistribution ||
+                                  formulaType == DistributionFormulaType.DiscreteDistribution;
+
+         tablePanel.RowFor(labelMean).Visible = needsMeanParameter;
+         tablePanel.RowFor(labelDeviation).Visible = formulaType == DistributionFormulaType.NormalDistribution;
+         tablePanel.RowFor(labelGeoStd).Visible = formulaType == DistributionFormulaType.LogNormalDistribution;
+         tableProperties.RowFor(labelPercentile).Visible = formulaType != DistributionFormulaType.DiscreteDistribution;
 
          layoutControl.ResumeLayout();
       }
 
-      public override bool HasError
+      public override bool HasError => _screenBinder.HasError;
+
+      public override void InitializeResources()
       {
-         get { return _screenBinder.HasError; }
+         base.InitializeResources();
+         var height = Convert.ToInt16(tablePanel.RowFor(cbFormulaType).Height);
+         tablePanel.AdjustControlSize(veDeviation, height: height);
+         tablePanel.AdjustControlSize(veGeoStd, height: height);
+         tablePanel.AdjustControlSize(veMean, height: height);
+         tablePanel.AdjustControlSize(veMinimum, height: height);
+         tablePanel.AdjustControlSize(veMaximum, height: height);
+         tableProperties.AdjustControlSize(veValue, height: height);
+
+         labelMean.Text = AppConstants.Captions.Mean.FormatForLabel();
+         labelDeviation.Text = AppConstants.Captions.StandardDeviation.FormatForLabel();
+         labelGeoStd.Text = AppConstants.Captions.GeometricDeviation.FormatForLabel();
+         labelMinimum.Text = AppConstants.Captions.Minimum.FormatForLabel();
+         labelMaximum.Text = AppConstants.Captions.Maximum.FormatForLabel();
+         labelName.Text = AppConstants.Captions.Name.FormatForLabel();
+         labelDimension.Text = AppConstants.Captions.Dimension.FormatForLabel();
+         labelValue.Text = AppConstants.Captions.Value.FormatForLabel();
+         labelPercentile.Text = AppConstants.Captions.Percentile.FormatForLabel();
+         labellDistribution.Text = AppConstants.Captions.Distribution.FormatForLabel();
       }
    }
 }

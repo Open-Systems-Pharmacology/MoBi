@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using MoBi.Assets;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views
@@ -35,17 +35,17 @@ namespace MoBi.UI.Views
       public void BindTo(IEnumerable<ScaleDivisorDTO> scaleDivisors)
       {
          _gridViewBinder.BindToSource(scaleDivisors);
-         initColumnVisibilty();
+         initColumnVisibility();
       }
 
       public bool Calculating
       {
-         get { return btnExtra.Enabled; }
+         get => ExtraEnabled;
          set
          {
-            btnExtra.Enabled = !value;
-            btnOk.Enabled = btnExtra.Enabled;
-            btnCalculateScaleDivisors.Enabled = btnExtra.Enabled;
+            ExtraEnabled = !value;
+            OkEnabled = ExtraEnabled;
+            btnCalculateScaleDivisors.Enabled = ExtraEnabled;
          }
       }
 
@@ -89,12 +89,9 @@ namespace MoBi.UI.Views
          _pathElementsColumns.Add(_gridViewBinder.Bind(expression).WithCaption(caption).AsReadOnly());
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
 
-      private void initColumnVisibilty()
+      private void initColumnVisibility()
       {
          for (int i = 0; i < _pathElementsColumns.Count; i++)
          {
@@ -108,8 +105,8 @@ namespace MoBi.UI.Views
          ExtraVisible = true;
          layoutItemCalculateScaleDivisors.AdjustButtonSize();
          btnCalculateScaleDivisors.InitWithImage(ApplicationIcons.Run, AppConstants.Captions.Calculate);
-         btnExtra.InitWithImage(ApplicationIcons.Reset, AppConstants.Captions.Reset);
-         Icon = ApplicationIcons.ScaleFactor;
+         ButtonExtra.InitWithImage(ApplicationIcons.Reset, AppConstants.Captions.Reset);
+         ApplicationIcon = ApplicationIcons.ScaleFactor;
          Caption = AppConstants.Captions.CalculateScaleDivisor;
       }
    }

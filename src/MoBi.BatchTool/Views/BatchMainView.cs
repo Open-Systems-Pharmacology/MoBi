@@ -35,7 +35,6 @@ namespace MoBi.BatchTool.Views
          ShowInTaskbar = true;
          StartPosition = FormStartPosition.CenterScreen;
          ApplicationIcon = ApplicationIcons.MoBi;
-         Icon = ApplicationIcons.MoBi;
          btnLoadPkmlFilesFromFolder.Text = "Load PKML Files from Folder";
          btnLoadProjectFilesFromFolder.Text = "Load MoBi Project Files from Folder";
          btnGenerateProjectOverview.Text = "Generate MoBi Project Overview from Folder";

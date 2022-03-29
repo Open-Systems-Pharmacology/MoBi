@@ -33,11 +33,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.SimulationComparison)
             .WithCommandFor<ShowDataRepositoryUICommand, DataRepository>(dataRepository));
 
-         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToPDF)
-            .WithIcon(ApplicationIcons.ExportToPDF)
-            .WithCommandFor<ExportToPDFCommand<DataRepository>, DataRepository>(dataRepository));
-
-
          if (!Equals(simulation.Results, dataRepository))
          {
             var persitableCommand = CreateMenuButton.WithCaption(dataRepository.IsPersistable() ? AppConstants.MenuNames.DiscardResults : AppConstants.MenuNames.KeepResults)

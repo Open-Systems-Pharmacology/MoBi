@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Mappers
    {
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
 
-      public ObserverBuilderToDTOObserverBuilderMapper(IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper, IDescriptorConditionToDescriptorConditionDTOMapper descriptorConditionMapperToDTODescriptorConditionMapper)
+      public ObserverBuilderToDTOObserverBuilderMapper(IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper)
       {
          _formulaToDTOFormulaMapper = formulaToDTOFormulaMapper;
       }

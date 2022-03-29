@@ -47,7 +47,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
             createStartPopulationSimulation(simulation),
             createSaveItem(simulation),
-            createReportItemFor(simulation),
             createAddToJournal(simulation),
             exportSimulationResultsToExcel(simulation),
             createExportODEForMatlabItem(simulation),
@@ -171,14 +170,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<RenameSimulationUICommand, IMoBiSimulation>(simulation).WithIcon(ApplicationIcons.Rename);
       }
 
-      private IMenuBarItem createReportItemFor(IMoBiSimulation simulation)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToPDF)
-            .WithCommandFor<ExportToPDFCommand<IMoBiSimulation>, IMoBiSimulation>(simulation)
-            .WithIcon(ApplicationIcons.ExportToPDF);
-      }
-
-      private IMenuBarItem createEditItem(IMoBiSimulation simulation)
+   private IMenuBarItem createEditItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
             .WithIcon(ApplicationIcons.Edit)

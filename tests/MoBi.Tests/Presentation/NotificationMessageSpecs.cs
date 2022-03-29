@@ -29,38 +29,23 @@ namespace MoBi.Presentation
       [Observation]
       public void should_return_the_error_icon_for_an_error_message()
       {
-         imageShouldBe(ApplicationIcons.Error);
+         sut.Image.ShouldBeEqualTo(ApplicationIcons.Error);
       }
 
       [Observation]
       public void should_return_the_warning_icon_for_a_warning_message()
       {
          sut = new NotificationMessage(_objectBase, MessageOrigin.Formula, _buildingBlock, NotificationType.Warning);
-         imageShouldBe(ApplicationIcons.Warning);
+         sut.Image.ShouldBeEqualTo(ApplicationIcons.Warning);
       }
 
       [Observation]
       public void should_return_the_message_icon_for_a_message_message()
       {
          sut = new NotificationMessage(_objectBase, MessageOrigin.Formula, _buildingBlock, NotificationType.Info);
-         imageShouldBe(ApplicationIcons.Info);
+         sut.Image.ShouldBeEqualTo(ApplicationIcons.Info);
       }
 
-      private void imageShouldBe(Image image)
-      {
-         var image1 = new Bitmap(sut.Image);
-         var image2 = new Bitmap(image);
-
-         for (int i = 0; i < image1.Width; i++)
-         {
-            for (int j = 0; j < image1.Height; j++)
-            {
-               var pix1 = image1.GetPixel(i, j).ToString();
-               var pix2 = image2.GetPixel(i, j).ToString();
-               pix1.ShouldBeEqualTo(pix2);
-            }
-         }
-      }
    }
 
    public class When_checking_if_two_notication_messages_are_equal : concern_for_NotificationMessage

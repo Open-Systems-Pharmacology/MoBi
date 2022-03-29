@@ -1,8 +1,8 @@
-﻿using OSPSuite.Assets;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 
@@ -19,7 +19,8 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          splitContainer.CollapsePanel = SplitCollapsePanel.Panel1;
-         EditCaption =  AppConstants.Captions.Molecules;
+         EditCaption = AppConstants.Captions.Molecules;
+         ApplicationIcon = ApplicationIcons.Molecule;
       }
 
       public void AttachPresenter(IEditMoleculeBuildingBlockPresenter presenter)
@@ -38,7 +39,5 @@ namespace MoBi.UI.Views
       {
          splitContainer.Panel2.FillWith(editEventView);
       }
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Molecule;
    }
 }

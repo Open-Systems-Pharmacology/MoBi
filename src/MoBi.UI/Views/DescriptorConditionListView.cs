@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using DevExpress.XtraBars;
 using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
@@ -14,20 +14,22 @@ using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility;
 
 namespace MoBi.UI.Views
 {
    public partial class DescriptorConditionListView : BaseUserControl, IDescriptorConditionListView, IViewWithPopup
    {
       private IDescriptorConditionListPresenter _presenter;
-      private readonly GridViewBinder<IDescriptorConditionDTO> _gridViewBinder;
-      public BarManager PopupBarManager { get; private set; }
+      private readonly GridViewBinder<DescriptorConditionDTO> _gridViewBinder;
+      public BarManager PopupBarManager { get; }
       private readonly UxRemoveButtonRepository _removeButtonRepository = new UxRemoveButtonRepository();
+      private readonly ScreenBinder<DescriptorCriteriaDTO> _screenBinder = new ScreenBinder<DescriptorCriteriaDTO>();
 
       public DescriptorConditionListView(IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
-         _gridViewBinder = new GridViewBinder<IDescriptorConditionDTO>(gridView);
+         _gridViewBinder = new GridViewBinder<DescriptorConditionDTO>(gridView);
          gridView.AllowsFiltering = false;
          PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImages16x16};
       }
@@ -37,9 +39,10 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public void BindTo(IEnumerable<IDescriptorConditionDTO> descriptorConditions)
+      public void BindTo(DescriptorCriteriaDTO descriptorCriteriaDTO)
       {
-         _gridViewBinder.BindToSource(descriptorConditions);
+         _gridViewBinder.BindToSource(descriptorCriteriaDTO.Conditions);
+         _screenBinder.BindToSource(descriptorCriteriaDTO);
       }
 
       public string CriteriaDescription
@@ -64,9 +67,14 @@ namespace MoBi.UI.Views
 
          gridControl.MouseClick += (o, e) => OnEvent(onGridClick, e);
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveCondition(_gridViewBinder.FocusedElement));
+
+         _screenBinder.Bind(x => x.Operator)
+            .To(cbOperator)
+            .WithValues(EnumHelper.AllValuesFor<CriteriaOperator>())
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.ChangeOperator(e.NewValue));
       }
 
-      private void onCriteriaTagChanged(IDescriptorConditionDTO descriptorCondition, PropertyValueSetEventArgs<string> e)
+      private void onCriteriaTagChanged(DescriptorConditionDTO descriptorCondition, PropertyValueSetEventArgs<string> e)
       {
          _presenter.UpdateCriteriaTag(descriptorCondition, e.NewValue);
       }
@@ -83,6 +91,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          lblCriteriaDescription.AsDescription();
+         layoutItemOperator.Text = AppConstants.Captions.Operator.FormatForLabel();
       }
    }
 }
