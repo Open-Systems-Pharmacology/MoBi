@@ -11,7 +11,7 @@ namespace MoBi.Core.Domain.Model.Diagram
       public Scalings DefaultChartYScaling { get; set; }
       public Color DefaultChartBackColor { get; set; }
       public Color DefaultChartDiagramBackColor { get; set; }
-
+      public bool ColorGroupObservedDataFromSameFolder { get; set; }
       public ChartOptions()
       {
          SimulationInCurveName = false;
@@ -20,6 +20,7 @@ namespace MoBi.Core.Domain.Model.Diagram
          DefaultChartYScaling = Scalings.Log;
          DefaultChartBackColor = Color.White;
          DefaultChartDiagramBackColor = Color.White;
+         ColorGroupObservedDataFromSameFolder = false;
       }
    }
 }

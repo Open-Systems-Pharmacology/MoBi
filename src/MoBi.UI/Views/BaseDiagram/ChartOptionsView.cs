@@ -52,9 +52,9 @@ namespace MoBi.UI.Views.BaseDiagram
          _screenBinder.Bind(options => options.DefaultChartBackColor).To(chartBackgroundColorEdit);
          _screenBinder.Bind(options => options.DefaultChartDiagramBackColor).To(diagramColorEdit);
 
-        /* _screenBinder.Bind(options => options.ColorGroupObservedDataFromSameFolder)
+         _screenBinder.Bind(options => options.ColorGroupObservedDataFromSameFolder)
             .To(chckColorGroupObservedData)
-            .WithCaption(Captions.ShouldColorGroupObservedData);*/
+            .WithCaption(Captions.ShouldColorGroupObservedData);
 
          _screenBinder.Bind(options => options.DefaultLayoutName)
             .To(cbeDefaultLayoutName)

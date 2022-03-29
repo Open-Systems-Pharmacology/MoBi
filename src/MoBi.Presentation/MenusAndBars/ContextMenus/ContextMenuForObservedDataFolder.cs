@@ -53,9 +53,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          if (_treeNode.HasChildren)
          {
             var colorGroupingButton = CreateMenuCheckButton.WithCaption(Captions.ColorGroupObservedDataContextMenu);
-            colorGroupingButton.Checked = _userSettings.ColorGroupObservedDataFromSameFolder;
+            colorGroupingButton.WithChecked(_userSettings.ColorGroupObservedDataFromSameFolder);
 
-            colorGroupingButton.CheckedChanged += (o) => { _userSettings.ColorGroupObservedDataFromSameFolder = o; };
+            colorGroupingButton.WithCheckedAction(colorGroup => _userSettings.ColorGroupObservedDataFromSameFolder = colorGroup);
             yield return colorGroupingButton;
          }
 
