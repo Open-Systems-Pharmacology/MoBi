@@ -16,6 +16,4 @@ namespace MoBi.Presentation.Views
       void AddSourceCriteriaView(IView view);
       void AddTargetCriteriaView(IView view);
    }
-
-   
 }

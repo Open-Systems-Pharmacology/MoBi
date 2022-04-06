@@ -13,6 +13,7 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Extensions;
@@ -34,10 +35,8 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         tabParameters.Text = AppConstants.Captions.Parameters;
-         tabParameters.ImageOptions.SvgImage = ApplicationIcons.Parameters;
-         tabProperties.Text = AppConstants.Captions.Properties;
-         tabProperties.ImageOptions.SvgImage = ApplicationIcons.Properties;
+         tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameters);
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
          layoutGroupAssignment.Text = AppConstants.Captions.Assignment;
          layoutGroupCondition.Text = AppConstants.Captions.Condition;
          layoutControlItemAddFormula.AdjustLongButtonSize();
@@ -45,10 +44,8 @@ namespace MoBi.UI.Views
          layoutControlItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
          layoutControlItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          chkOneTime.Text = AppConstants.Captions.OneTimeEvent;
-         btnAddFormula.Text = AppConstants.Captions.AddFormula;
-         btnAddFormula.ImageOptions.SvgImage = ApplicationIcons.Add;
-         btnAddAssignment.Text = AppConstants.Captions.AddAssignment;
-         btnAddAssignment.ImageOptions.SvgImage = ApplicationIcons.Add;
+         btnAddFormula.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddFormula);
+         btnAddAssignment.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddAssignment);
          btnAddFormula.Click += (o, e) => OnEvent(_presenter.AddConditionFormula);
          btnAddAssignment.Click += (o, e) => OnEvent(_presenter.AddAssignment);
          htmlEditor.Properties.ShowIcon = false;

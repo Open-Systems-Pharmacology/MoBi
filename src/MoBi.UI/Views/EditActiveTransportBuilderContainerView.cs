@@ -6,11 +6,14 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
+using OSPSuite.Assets;
 using OSPSuite.Presentation;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
@@ -33,7 +36,8 @@ namespace MoBi.UI.Views
          layoutControlItemTranportName.OptionsToolTip.ToolTip = ToolTips.TransporterName;
          layoutControlItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
          layoutControlItemDescription.OptionsToolTip.ToolTip = ToolTips.Description;
-         tabParameter.Text = AppConstants.Captions.Parameters;
+         tabParameter.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameters);
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
       }
 
       public override void InitializeBinding()

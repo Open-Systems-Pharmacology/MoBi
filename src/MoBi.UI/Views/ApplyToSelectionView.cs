@@ -1,13 +1,12 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI;
-using DevExpress.XtraEditors;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 
 namespace MoBi.UI.Views
@@ -28,9 +27,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         btnSelection.Text = AppConstants.Captions.PerformCheckSelection;
-         btnSelection.ImageOptions.SvgImage = ApplicationIcons.OK;
-         btnSelection.ImageLocation = ImageLocation.MiddleLeft;
+         btnSelection.InitWithImage(ApplicationIcons.OK, AppConstants.Captions.PerformCheckSelection);
          cbSelection.Properties.AutoHeight = false;
          cbSelection.Height = btnSelection.Height;
       }

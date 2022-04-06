@@ -30,7 +30,7 @@
       private void InitializeComponent()
       {
          this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
-         this.tabInfo = new DevExpress.XtraTab.XtraTabPage();
+         this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControlProperties = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btTransportName = new DevExpress.XtraEditors.ButtonEdit();
          this.btEditName = new DevExpress.XtraEditors.ButtonEdit();
@@ -43,7 +43,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
          this.xtraTabControl1.SuspendLayout();
-         this.tabInfo.SuspendLayout();
+         this.tabProperties.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlProperties)).BeginInit();
          this.layoutControlProperties.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.btTransportName.Properties)).BeginInit();
@@ -60,19 +60,19 @@
          this.xtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
          this.xtraTabControl1.Location = new System.Drawing.Point(0, 0);
          this.xtraTabControl1.Name = "xtraTabControl1";
-         this.xtraTabControl1.SelectedTabPage = this.tabInfo;
+         this.xtraTabControl1.SelectedTabPage = this.tabProperties;
          this.xtraTabControl1.Size = new System.Drawing.Size(767, 344);
          this.xtraTabControl1.TabIndex = 0;
          this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
-            this.tabInfo,
+            this.tabProperties,
             this.tabParameter});
          // 
-         // tabInfo
+         // tabProperties
          // 
-         this.tabInfo.Controls.Add(this.layoutControlProperties);
-         this.tabInfo.Name = "tabInfo";
-         this.tabInfo.Size = new System.Drawing.Size(761, 316);
-         this.tabInfo.Text = "Info";
+         this.tabProperties.Controls.Add(this.layoutControlProperties);
+         this.tabProperties.Name = "tabProperties";
+         this.tabProperties.Size = new System.Drawing.Size(761, 316);
+         this.tabProperties.Text = "tabProperties";
          // 
          // layoutControlProperties
          // 
@@ -180,7 +180,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).EndInit();
          this.xtraTabControl1.ResumeLayout(false);
-         this.tabInfo.ResumeLayout(false);
+         this.tabProperties.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlProperties)).EndInit();
          this.layoutControlProperties.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.btTransportName.Properties)).EndInit();
@@ -197,7 +197,7 @@
       #endregion
 
       private DevExpress.XtraTab.XtraTabControl xtraTabControl1;
-      private DevExpress.XtraTab.XtraTabPage tabInfo;
+      private DevExpress.XtraTab.XtraTabPage tabProperties;
       private DevExpress.XtraTab.XtraTabPage tabParameter;
       private DevExpress.XtraEditors.MemoEdit htmlEditor;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;

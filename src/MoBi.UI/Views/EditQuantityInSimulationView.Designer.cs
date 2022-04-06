@@ -30,7 +30,7 @@
       private void InitializeComponent()
       {
          this.tabControl = new DevExpress.XtraTab.XtraTabControl();
-         this.tabInfo = new DevExpress.XtraTab.XtraTabPage();
+         this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
          this.tabValue = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnResetToFormulaValue = new DevExpress.XtraEditors.SimpleButton();
@@ -59,26 +59,26 @@
          this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tabControl.Location = new System.Drawing.Point(0, 0);
          this.tabControl.Name = "tabControl";
-         this.tabControl.SelectedTabPage = this.tabInfo;
+         this.tabControl.SelectedTabPage = this.tabProperties;
          this.tabControl.Size = new System.Drawing.Size(1250, 403);
          this.tabControl.TabIndex = 0;
          this.tabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
-            this.tabInfo,
+            this.tabProperties,
             this.tabValue,
             this.tabParameters});
          // 
          // tabInfo
          // 
-         this.tabInfo.Name = "tabInfo";
-         this.tabInfo.Size = new System.Drawing.Size(1244, 375);
-         this.tabInfo.Text = "Info";
+         this.tabProperties.Name = "tabProperties";
+         this.tabProperties.Size = new System.Drawing.Size(1244, 375);
+         this.tabProperties.Text = "tabProperties";
          // 
          // tabValue
          // 
          this.tabValue.Controls.Add(this.layoutControl1);
          this.tabValue.Name = "tabValue";
          this.tabValue.Size = new System.Drawing.Size(1244, 375);
-         this.tabValue.Text = "Value";
+         this.tabValue.Text = "tabValue";
          // 
          // layoutControl1
          // 
@@ -202,7 +202,7 @@
 
       private DevExpress.XtraTab.XtraTabControl tabControl;
       private DevExpress.XtraTab.XtraTabPage tabValue;
-      private DevExpress.XtraTab.XtraTabPage tabInfo;
+      private DevExpress.XtraTab.XtraTabPage tabProperties;
       private DevExpress.XtraTab.XtraTabPage tabParameters;
       private DevExpress.XtraEditors.PanelControl pnlFormula;
       private ValueEdit valueEdit;
