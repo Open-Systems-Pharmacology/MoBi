@@ -1,8 +1,5 @@
-﻿using System;
-using DevExpress.Utils.Svg;
-using DevExpress.XtraBars;
+﻿using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Controls;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -24,22 +21,21 @@ namespace MoBi.UI.Views
    public partial class EditTransportBuilderView : BaseUserControl, IEditTransportBuilderView, IViewWithPopup
    {
       private IEditTransportBuilderPresenter _presenter;
-      private ScreenBinder<TransportBuilderDTO> _screenBinder;
-      private SvgImage _errorImage;
-      private SvgImage _passiveTransportImage;
+      private readonly ScreenBinder<TransportBuilderDTO> _screenBinder;
 
       public EditTransportBuilderView(IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
          barManager.Images = imageListRetriever.AllImages16x16;
+         _screenBinder = new ScreenBinder<TransportBuilderDTO>();
       }
 
       public bool FormulaHasError
       {
          set
          {
-            tabKinetic.ImageOptions.SvgImage = value ? _errorImage : _passiveTransportImage;
-            tabKinetic.Tooltip = value ? AppConstants.Exceptions.ErrorInFormula : String.Empty;
+            tabKinetic.SetImage(value ? ApplicationIcons.DxError : ApplicationIcons.PassiveTransport);
+            tabKinetic.Tooltip = value ? AppConstants.Exceptions.ErrorInFormula : string.Empty;
          }
       }
 
@@ -66,11 +62,9 @@ namespace MoBi.UI.Views
          layoutItemTagKinetic.TextVisible = false;
          chkCreateParameter.Text = AppConstants.Captions.CreateProcessRateParameter;
          chkPlotParameter.Text = AppConstants.Captions.PlotProcessRateParameter;
-         tabKinetic.Text = AppConstants.Captions.Kinetic;
+         tabKinetic.InitWith(AppConstants.Captions.Kinetic, ApplicationIcons.PassiveTransport);
          tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
          tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
-         _errorImage = ApplicationIcons.DxError;
-         _passiveTransportImage = ApplicationIcons.PassiveTransport;
          splitContainerControl.PanelVisibility = SplitPanelVisibility.Panel1;
          layoutItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
          layoutItemPanelSource.Text = AppConstants.Captions.Source.FormatForLabel();
@@ -81,16 +75,25 @@ namespace MoBi.UI.Views
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         _screenBinder = new ScreenBinder<TransportBuilderDTO>();
-         _screenBinder.Bind(dto => dto.Name).To(btName).OnValueUpdating += OnValueUpdating;
-         _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueUpdating += OnValueUpdating;
-         _screenBinder.Bind(dto => dto.CreateProcessRateParameter).To(chkCreateParameter).OnValueUpdating +=
-            onCreateParameterSet;
-         _screenBinder.Bind(dto => dto.ProcessRateParameterPersistable).To(chkPlotParameter).OnValueUpdating += onPlotParameterSet;
+         _screenBinder.Bind(dto => dto.Name)
+            .To(btName)
+            .OnValueUpdating += OnValueUpdating;
+
+         _screenBinder.Bind(dto => dto.Description)
+            .To(htmlEditor)
+            .OnValueUpdating += OnValueUpdating;
+
+         _screenBinder.Bind(dto => dto.CreateProcessRateParameter)
+            .To(chkCreateParameter)
+            .OnValueUpdating += onCreateParameterSet;
+
+         _screenBinder.Bind(dto => dto.ProcessRateParameterPersistable)
+            .To(chkPlotParameter)
+            .OnValueUpdating += onPlotParameterSet;
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
-         btName.ButtonClick += btName_ButtonClick;
+         btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
       }
 
       private void onPlotParameterSet(TransportBuilderDTO dto, PropertyValueSetEventArgs<bool> e)
@@ -156,10 +159,5 @@ namespace MoBi.UI.Views
       }
 
       public BarManager PopupBarManager => barManager;
-
-      private void btName_ButtonClick(object sender, ButtonPressedEventArgs e)
-      {
-         OnEvent(() => _presenter.RenameSubject());
-      }
    }
 }

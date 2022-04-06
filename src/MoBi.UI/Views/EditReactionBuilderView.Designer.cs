@@ -137,7 +137,7 @@ namespace MoBi.UI.Views
          this.tabProperties.Controls.Add(this.layoutControl1);
          this.tabProperties.Name = "tabProperties";
          this.tabProperties.Size = new System.Drawing.Size(837, 542);
-         this.tabProperties.Text = "Properties";
+         this.tabProperties.Text = "tabProperties";
          // 
          // layoutControl1
          // 
@@ -403,7 +403,7 @@ namespace MoBi.UI.Views
          // 
          this.tabParameters.Name = "tabParameters";
          this.tabParameters.Size = new System.Drawing.Size(837, 542);
-         this.tabParameters.Text = "Parameters";
+         this.tabParameters.Text = "tabParameters";
          // 
          // tabContainerCriteria
          // 

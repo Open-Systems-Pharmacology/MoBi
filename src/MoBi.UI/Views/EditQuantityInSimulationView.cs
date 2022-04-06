@@ -6,6 +6,7 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using MoBi.UI.Helper;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
@@ -26,7 +27,7 @@ namespace MoBi.UI.Views
          InitializeComponent();
          _screenBinder = new ScreenBinder<QuantityDTO>();
          _baseEditView = new EditBaseInfoView();
-         tabInfo.Controls.Add(_baseEditView);
+         tabProperties.Controls.Add(_baseEditView);
          _baseEditView.Dock = DockStyle.Fill;
       }
 
@@ -74,7 +75,7 @@ namespace MoBi.UI.Views
 
       public string SetInitialValueLabel
       {
-         set { layoutControlItemValue.Text = value.FormatForLabel(); }
+         set => layoutControlItemValue.Text = value.FormatForLabel();
       }
 
       public void SetFormulaView(IView view)
@@ -119,8 +120,8 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          layoutControlItemFormula.Text = ObjectTypes.Default.FormatForLabel();
-         tabInfo.Text = AppConstants.Captions.Properties;
-         tabValue.Text = AppConstants.Captions.InitialValue;
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
+         tabValue.InitWith(AppConstants.Captions.InitialValue, ApplicationIcons.Formula);
          btnResetToFormulaValue.InitWithImage(ApplicationIcons.Reset, text: AppConstants.Captions.Reset);
          layoutControlItemReset.AdjustButtonSize();
       }
