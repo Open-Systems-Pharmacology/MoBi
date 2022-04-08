@@ -34,6 +34,7 @@ namespace MoBi.UI.Views.BaseDiagram
          defaultYScalingLayoutItem.Text = AppConstants.Captions.DefaultChartYScaling.FormatForLabel();
          defaultLayoutLayoutItem.Text = AppConstants.Captions.DefaultLayout.FormatForLabel();
          chartBackgroundColorLayoutItem.Text = Captions.ChartColor.FormatForLabel();
+         chckColorGroupObservedData.Text = Captions.ShouldColorGroupObservedData;
          chartDiagramBackgroundColorLayoutItem.Text = Captions.DiagramBackground.FormatForLabel();
       }
 
@@ -50,6 +51,10 @@ namespace MoBi.UI.Views.BaseDiagram
          _screenBinder.Bind(options => options.DefaultChartYScaling).To(cbPreferredChartYScaling).WithValues(getAllScalings);
          _screenBinder.Bind(options => options.DefaultChartBackColor).To(chartBackgroundColorEdit);
          _screenBinder.Bind(options => options.DefaultChartDiagramBackColor).To(diagramColorEdit);
+
+         _screenBinder.Bind(options => options.ColorGroupObservedDataFromSameFolder)
+            .To(chckColorGroupObservedData)
+            .WithCaption(Captions.ShouldColorGroupObservedData);
 
          _screenBinder.Bind(options => options.DefaultLayoutName)
             .To(cbeDefaultLayoutName)
