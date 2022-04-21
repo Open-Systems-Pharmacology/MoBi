@@ -1,16 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Presentation.Settings;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using MoBi.Presentation.Nodes;
-using MoBi.Presentation.Settings;
-using MoBi.Presentation.UICommand;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
@@ -27,7 +21,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private readonly IExplorerPresenter _presenter;
       private readonly IUserSettings _userSettings;
 
-      public ContextMenuForObservedDataFolder(IMenuBarItemRepository menuBarItemRepository, ITreeNode<RootNodeType> treeNode, IExplorerPresenter presenter, IUserSettings userSettings)
+      public ContextMenuForObservedDataFolder(IMenuBarItemRepository menuBarItemRepository, ITreeNode<RootNodeType> treeNode,
+         IExplorerPresenter presenter, IUserSettings userSettings)
       {
          _menuBarItemRepository = menuBarItemRepository;
          _treeNode = treeNode;
@@ -41,7 +36,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          yield return _menuBarItemRepository[MenuBarItemIds.LoadObservedData];
 
          if (_treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
-            yield return ObservedDataClassificationCommonContextMenuItems.CreateEditMultipleMetaDataMenuButton(_treeNode).AsGroupStarter();
+            yield return ObservedDataClassificationCommonContextMenuItems.EditMultipleMetaData(_treeNode).AsGroupStarter();
 
 
          yield return ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(_treeNode, _presenter);
@@ -51,13 +46,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             yield return groupMenu;
 
          if (_treeNode.HasChildren)
-         {
-            var colorGroupingButton = CreateMenuCheckButton.WithCaption(Captions.ColorGroupObservedDataContextMenu);
-            colorGroupingButton.WithChecked(_userSettings.ColorGroupObservedDataFromSameFolder);
-
-            colorGroupingButton.WithCheckedAction(colorGroup => _userSettings.ColorGroupObservedDataFromSameFolder = colorGroup);
-            yield return colorGroupingButton;
-         }
+            yield return ObservedDataClassificationCommonContextMenuItems.ColorGroupObservedData(_userSettings);
 
          yield return ClassificationCommonContextMenuItems.RemoveClassificationFolderMainMenu(_treeNode, _presenter).AsGroupStarter();
       }
@@ -89,7 +78,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
          var explorerPresenter = presenter.DowncastTo<IExplorerPresenter>();
-         return new ContextMenuForObservedDataFolder(_container.Resolve<IMenuBarItemRepository>(), explorerPresenter.NodeByType(RootNodeTypes.ObservedDataFolder), explorerPresenter, _userSettings);
+         return new ContextMenuForObservedDataFolder(_container.Resolve<IMenuBarItemRepository>(),
+            explorerPresenter.NodeByType(RootNodeTypes.ObservedDataFolder), explorerPresenter, _userSettings);
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
