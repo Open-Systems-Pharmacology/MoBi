@@ -91,12 +91,12 @@ namespace MoBi.Presentation.Tasks
       {
          var baseGrid = repository.BaseGrid;
          var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] {repository.Name, baseGridName}, QuantityType.Time);
+         baseGrid.QuantityInfo = new QuantityInfo(new[] {repository.Name, baseGridName}, QuantityType.Time);
 
          foreach (var col in repository.AllButBaseGrid())
          {
             var colName = col.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-            var quantityInfo = new QuantityInfo(col.Name, new[] {repository.Name, colName}, QuantityType.Undefined);
+            var quantityInfo = new QuantityInfo(new[] {repository.Name, colName}, QuantityType.Undefined);
             col.QuantityInfo = quantityInfo;
          }
       }
