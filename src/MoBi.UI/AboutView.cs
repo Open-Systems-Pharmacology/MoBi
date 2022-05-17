@@ -65,7 +65,7 @@ namespace MoBi.UI
 
       protected override void SetActiveControl()
       {
-         ActiveControl = btnOk;
+         ActiveControl = ButtonOk;
       }
    }
 }

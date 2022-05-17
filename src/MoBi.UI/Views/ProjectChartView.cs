@@ -1,6 +1,6 @@
-﻿using OSPSuite.Assets;
-using MoBi.Presentation.Presenter;
+﻿using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
@@ -24,9 +24,10 @@ namespace MoBi.UI.Views
          this.FillWith(view);
       }
 
-      public override ApplicationIcon ApplicationIcon
+      public override void InitializeResources()
       {
-         get { return ApplicationIcons.SimulationComparison; }
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.SimulationComparison;
       }
    }
 }

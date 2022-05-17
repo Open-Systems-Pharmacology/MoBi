@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
 
       public ComparisonChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks, IChartTemplatingTask chartTemplatingTask, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext) :
-         base(chartView, chartPresenterContext, context, userSettings, chartTasks, chartTemplatingTask)
+         base(chartView, chartPresenterContext, context, userSettings, chartTasks, chartTemplatingTask, chartUpdater)
       {
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
       }

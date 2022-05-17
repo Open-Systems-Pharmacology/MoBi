@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Descriptors;
 
 namespace MoBi.Core.Commands
 {
@@ -15,12 +13,11 @@ namespace MoBi.Core.Commands
       private readonly string _oldTag;
       private readonly string _newTag;
 
-      public EditTagCommand(string newTag, string oldTag, T taggedObject, IBuildingBlock buildingBlock, Func<T, DescriptorCriteria> descriptorCriteriaRetriever) :
-         base(oldTag, taggedObject, buildingBlock, descriptorCriteriaRetriever)
+      public EditTagCommand(string newTag, string oldTag, TagConditionCommandParameters<T> tagConditionCommandParameters) :
+         base(oldTag, tagConditionCommandParameters)
       {
          CommandType = AppConstants.Commands.EditCommand;
          ObjectType = ObjectTypes.TagCondition;
-         _taggedObject = taggedObject;
          _oldTag = oldTag;
          _newTag = newTag;
          Description = AppConstants.Commands.EditTagDescription(ObjectType, _oldTag, _newTag, _taggedObject.Name);
@@ -34,7 +31,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new EditTagCommand<T>(_oldTag, _newTag, _taggedObject, _buildingBlock, _descriptorCriteriaRetriever).AsInverseFor(this);
+         return new EditTagCommand<T>(_oldTag, _newTag, CreateCommandParameters()).AsInverseFor(this);
       }
 
       private DescriptorCriteria getCriteria()

@@ -91,7 +91,7 @@ namespace MoBi.UI.Views
          CancelVisible = false;
          tabDisplayUnits.Text = AppConstants.Captions.DefaultDisplayUnits;
          tabApplicationSettings.Text = AppConstants.Captions.ApplicationSettings;
-         Icon = ApplicationIcons.Settings;
+         ApplicationIcon = ApplicationIcons.Settings;
          layoutItemNumberOfProcessors.Text = Captions.NumberOfProcessors.FormatForLabel();
       }
 

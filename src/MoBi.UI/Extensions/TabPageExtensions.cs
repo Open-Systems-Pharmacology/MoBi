@@ -1,5 +1,6 @@
 ﻿using OSPSuite.Assets;
 using DevExpress.XtraTab;
+using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Extensions
 {
@@ -8,7 +9,7 @@ namespace MoBi.UI.Extensions
       public static void InitWith(this XtraTabPage tabPage, string caption, ApplicationIcon icon)
       {
          tabPage.Text = caption;
-         tabPage.Image = icon.ToImage(IconSizes.Size16x16);
+         tabPage.SetImage(icon);
       }
    }
 }

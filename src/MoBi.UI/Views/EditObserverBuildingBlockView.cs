@@ -1,13 +1,13 @@
-﻿using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using DevExpress.XtraTab;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -41,22 +41,14 @@ namespace MoBi.UI.Views
          splitContainerControl.Panel2.FillWith(view);
       }
 
-      public ObserverType ObserverType
-      {
-         get { return ((ObserverType) tabControl.SelectedTabPage.Tag); }
-      }
+      public ObserverType ObserverType => ((ObserverType) tabControl.SelectedTabPage.Tag);
 
       private void selectedPageChanged(object sender, TabPageChangedEventArgs e)
       {
          OnEvent(() => editObserverBuildingBlockPresenter.Select((ObserverType) e.Page.Tag));
       }
 
-      private IEditObserverBuildingBlockPresenter editObserverBuildingBlockPresenter
-      {
-         get { return Presenter.DowncastTo<IEditObserverBuildingBlockPresenter>(); }
-      }
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Observer;
+      private IEditObserverBuildingBlockPresenter editObserverBuildingBlockPresenter => Presenter.DowncastTo<IEditObserverBuildingBlockPresenter>();
 
       public override void InitializeResources()
       {
@@ -64,6 +56,7 @@ namespace MoBi.UI.Views
          tabAmountObserverList.InitWith(AppConstants.Captions.MoleculeObserver, ApplicationIcons.MoleculeObserver);
          tabContainerObserverList.InitWith(AppConstants.Captions.ContainerObserver, ApplicationIcons.ContainerObserver);
          EditCaption = AppConstants.Captions.Observers;
+         ApplicationIcon = ApplicationIcons.Observer;
       }
    }
 }

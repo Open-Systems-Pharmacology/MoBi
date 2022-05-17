@@ -69,6 +69,11 @@ namespace MoBi.UI.Settings
          set => ChartOptions.DefaultChartDiagramBackColor = value;
       }
 
+      public bool ColorGroupObservedDataFromSameFolder
+      {
+         get => ChartOptions.ColorGroupObservedDataFromSameFolder;
+         set => ChartOptions.ColorGroupObservedDataFromSameFolder = value;
+      }
       public bool RenameDependentObjectsDefault { get; set; }
       public IDiagramOptions DiagramOptions { get; set; }
       public IForceLayoutConfiguration ForceLayoutConfigutation { get; set; }

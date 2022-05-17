@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IReactionBuilderToReactionBuilderDTOMapper _reactionBuilderToReactionBuilderDTOMapper;
       private IReactionBuilder _reactionBuilder;
       private readonly IEditTaskFor<IReactionBuilder> _editTasks;
-      private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuidlerMapper;
+      private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuilderMapper;
       private readonly IEditParametersInContainerPresenter _editReactionParametersPresenter;
       private readonly IMoBiContext _context;
       private readonly IDescriptorConditionListPresenter<IReactionBuilder> _containerCriteriaPresenter;
@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Presenter
          _view.SetProductView(reactionProductPresenter.View);
          _view.SetModifierView(reactionModifiersPresenter.View);
          _editTasks = editTasks;
-         _formulaToDTOFormulaBuidlerMapper = formulaBuilderMapper;
+         _formulaToDTOFormulaBuilderMapper = formulaBuilderMapper;
          _editFormulaPresenter.SetDefaultFormulaType<ExplicitFormula>();
          _editFormulaPresenter.RemoveFormulaType<TableFormula>();
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
@@ -158,7 +158,7 @@ namespace MoBi.Presentation.Presenter
 
       public IEnumerable<FormulaBuilderDTO> GetFormulas()
       {
-         return FormulaCache.Select(formula => _formulaToDTOFormulaBuidlerMapper.MapFrom(formula));
+         return FormulaCache.Select(formula => _formulaToDTOFormulaBuilderMapper.MapFrom(formula));
       }
 
       public IBuildingBlock BuildingBlock

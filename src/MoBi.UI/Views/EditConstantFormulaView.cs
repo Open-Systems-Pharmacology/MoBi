@@ -1,13 +1,10 @@
 ﻿using MoBi.Assets;
 using OSPSuite.DataBinding;
-using OSPSuite.Utility.Extensions;
-
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Helper;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Extensions;
 
@@ -42,8 +39,8 @@ namespace MoBi.UI.Views
 
       public bool ReadOnly
       {
-         get { return !valueEdit.Enabled; }
-         set { valueEdit.Enabled = !value; }
+         get => !valueEdit.Enabled;
+         set => valueEdit.Enabled = !value;
       }
 
       public override void InitializeBinding()
@@ -60,12 +57,12 @@ namespace MoBi.UI.Views
 
       private void onUnitChange(ValueEditDTO valueEditDTO, Unit unit)
       {
-         this.DoWithinExceptionHandler(() => _presenter.SetDisplayUnit(valueEditDTO, unit));
+         OnEvent(() => _presenter.SetDisplayUnit(valueEditDTO, unit));
       }
 
       private void onValueUpdating(ValueEditDTO valueEditDTO, double value)
       {
-         this.DoWithinExceptionHandler(() => _presenter.SetDisplayValue(valueEditDTO, value));
+         OnEvent(() => _presenter.SetDisplayValue(valueEditDTO, value));
       }
    }
 }

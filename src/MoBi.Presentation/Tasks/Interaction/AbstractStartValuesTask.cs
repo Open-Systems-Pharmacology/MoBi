@@ -166,10 +166,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _startValuePathTask.HasEquivalentFormula(startValue, targetFormula);
       }
 
+      protected static bool HasEquivalentStartValue(IStartValue startValue, IParameter parameter)
+      {
+         var (value, _) = parameter.TryGetValue();
+         return HasEquivalentStartValue(startValue, value);
+      }
+
       protected static bool HasEquivalentStartValue(IStartValue startValue, double? originalStartValue)
       {
          if (!originalStartValue.HasValue)
-            return double.IsNaN(startValue.StartValue.GetValueOrDefault(Double.NaN));
+            return double.IsNaN(startValue.StartValue.GetValueOrDefault(double.NaN));
 
          if (!startValue.StartValue.HasValue)
             return false;

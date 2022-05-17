@@ -120,7 +120,7 @@ namespace MoBi.UI.Views
 
          _pathBinder.InitializeBinding(_gridViewBinder);
          _gridViewBinder.Bind(dto => dto.Value)
-            .WithFormat(dto => dto.ParameterFormatter())
+            .WithFormat(dto => dto.ParameterFormatter(checkForEditable:false))
             .WithRepository(repositoryForValue)
             .WithEditorConfiguration(configureRepository)
             .WithToolTip(ToolTips.ParameterList.SetParameterValue)

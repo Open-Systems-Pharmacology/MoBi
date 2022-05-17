@@ -14,6 +14,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
@@ -271,7 +272,7 @@ namespace MoBi.Presentation.Presenter.Main
          _notificationMessage = notificationMessage;
       }
 
-      public Image Image => _notificationMessage.Image;
+      public ApplicationIcon Image => _notificationMessage.Image;
       public NotificationType Type => _notificationMessage.Type;
       public NotificationMessage NotificationMessage => _notificationMessage;
       public IObjectBase Object => _notificationMessage.Object;

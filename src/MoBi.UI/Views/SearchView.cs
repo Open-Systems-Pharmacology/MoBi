@@ -12,6 +12,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Presentation;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -40,7 +41,7 @@ namespace MoBi.UI.Views
          layoutControlResult.Text = AppConstants.Captions.SearchResults;
          var searchButton = txtSearchExpression.Properties.Buttons[0];
          searchButton.Kind = ButtonPredefines.Glyph;
-         searchButton.Image = ApplicationIcons.Search;
+         searchButton.ImageOptions.SetImage(ApplicationIcons.Search);
          ckWholeName.Text = AppConstants.Captions.SearchWholeName;
          chkCaseSensitive.Text = AppConstants.Captions.CaseSensitive;
          chkRegExSearch.Text = AppConstants.Captions.SearchRegEx;

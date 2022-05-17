@@ -8,6 +8,11 @@ namespace MoBi.UI.Views
 {
    public partial class EditBuildingBlockBaseView : BaseMdiChildView, IEditBuildingBlockBaseView
    {
+      //only for design time
+      public EditBuildingBlockBaseView() : this(null)
+      {
+      }
+
       public EditBuildingBlockBaseView(IMainView mainView) : base(mainView)
       {
          InitializeComponent();

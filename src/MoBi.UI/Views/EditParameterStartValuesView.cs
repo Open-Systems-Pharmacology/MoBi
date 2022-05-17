@@ -2,7 +2,6 @@
 using OSPSuite.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 
@@ -25,12 +24,11 @@ namespace MoBi.UI.Views
          tabEditBuildingBlock.FillWith(view);
       }
 
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.ParameterStartValues;
-
       public override void InitializeResources()
       {
          base.InitializeResources();
          EditCaption = AppConstants.Captions.ParameterStartValues;
+         ApplicationIcon = ApplicationIcons.ParameterStartValues;
       }
    }
 }

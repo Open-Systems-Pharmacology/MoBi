@@ -1,19 +1,20 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Utility.Extensions;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraBars;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using MoBi.UI.Extensions;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -109,7 +110,6 @@ namespace MoBi.UI.Views
 
       public override void InitializeBinding()
       {
-
          _screenBinder = new ScreenBinder<ReactionBuilderDTO>();
          _screenBinder.Bind(item => item.StoichiometricFormula).To(lblStoichiometricFormula);
          _screenBinder.Bind(item => item.Name).To(btName).OnValueUpdating += onValueUpdating;
@@ -145,7 +145,6 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         tabStoichiometry.Text = AppConstants.Captions.Stoichiometry;
          layoutItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
          layoutItemKinetic.Text = AppConstants.Captions.Kinetic;
          layoutItemKinetic.TextLocation = Locations.Top;
@@ -153,14 +152,16 @@ namespace MoBi.UI.Views
          htmlEditor.Properties.ShowIcon = false;
          chkCreateParmeter.Text = AppConstants.Captions.CreateProcessRateParameter;
          chkPlotParameter.Text = AppConstants.Captions.PlotProcessRateParameter;
-         tabContainerCriteria.Text = AppConstants.Captions.ContainerCriteria;
 
-         layoutGroupContainerCritieria.Text = AppConstants.Captions.InContainerWith;
+         tabStoichiometry.InitWith(AppConstants.Captions.Stoichiometry, ApplicationIcons.Formula);
+         tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameters);
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
+         tabModifiers.InitWith(AppConstants.Captions.Modifiers, ApplicationIcons.Reaction);
+         tabContainerCriteria.InitWith(AppConstants.Captions.ContainerCriteria, ApplicationIcons.Tag);
+
+         layoutGroupContainerCriteria.Text = AppConstants.Captions.InContainerWith;
          layoutItemContainerCriteria.TextVisible = false;
          lblStoichiometricFormula.AsDescription();
-
-         tabModifiers.Text = AppConstants.Captions.Modifiers;
-         
       }
 
       private static string createPartnerPanelTitle(string partnerType, string reactionName)

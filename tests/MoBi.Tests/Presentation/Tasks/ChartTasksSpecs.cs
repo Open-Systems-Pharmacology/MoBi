@@ -3,7 +3,6 @@ using FakeItEasy;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using MoBi.Presentation.UICommand;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
@@ -18,7 +17,6 @@ namespace MoBi.Presentation.Tasks
       protected IMoBiContext _moBiContext;
       protected IEventPublisher _eventPublisher;
       protected IMoBiApplicationController _moBiApplicationController;
-      protected ExportChartToPDFCommand _exportChartToPDFCommand;
       protected IChartFactory _chartFactory;
       protected IDialogCreator _dialogCreator;
       protected IMoBiProject _currentProject;
@@ -29,13 +27,12 @@ namespace MoBi.Presentation.Tasks
          _moBiContext = A.Fake<IMoBiContext>();
          _eventPublisher = A.Fake<IEventPublisher>();
          _moBiApplicationController = A.Fake<IMoBiApplicationController>();
-         _exportChartToPDFCommand = A.Fake<ExportChartToPDFCommand>();
          _chartFactory = A.Fake<IChartFactory>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _currentProject = A.Fake<IMoBiProject>();
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
 
-         sut = new ChartTasks(_moBiContext, _eventPublisher, _moBiApplicationController, _exportChartToPDFCommand,
+         sut = new ChartTasks(_moBiContext, _eventPublisher, _moBiApplicationController,
             _chartFactory, _dialogCreator, _projectRetriever);
 
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_currentProject);

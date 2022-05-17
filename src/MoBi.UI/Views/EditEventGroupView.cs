@@ -7,6 +7,7 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Views;
@@ -39,12 +40,9 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         tabParameters.Text = AppConstants.Captions.Parameters;
-         tabParameters.Image = ApplicationIcons.Parameter;
-         tabProperties.Text = AppConstants.Captions.Properties;
-         tabProperties.Image = ApplicationIcons.Properties;
-         tabTags.Text = AppConstants.Captions.Tags;
-         tabTags.Image = ApplicationIcons.Tag;
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
+         tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
+         tabTags.InitWith(AppConstants.Captions.Tags, ApplicationIcons.Tag);
       }
 
       public void Activate()

@@ -1,3 +1,4 @@
+using System.Threading;
 using MoBi.Assets;
 using MoBi.Core;
 using OSPSuite.TeXReporting.Events;
@@ -65,6 +66,8 @@ namespace MoBi.Presentation.Presenter
       {
          _view.Initialize();
          View.Caption = _configuration.ProductDisplayName;
+
+         Thread.Sleep(10000);
          _allMainViewItemPresenters.All().Each(x => x.Initialize());
          _skinManager.ActivateSkin(_userSettings, _userSettings.ActiveSkin);
       }

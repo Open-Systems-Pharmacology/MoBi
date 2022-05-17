@@ -135,6 +135,9 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<SensitivityAnalysis>())
             return Start<IEditSensitivityAnalysisPresenter>();
 
+         if (subject.IsAnImplementationOf<ParameterIdentificationFeedback>())
+            return Start<IParameterIdentificationFeedbackPresenter>();
+
          throw new ArgumentException(AppConstants.Exceptions.UnknownProjectItem(subject.GetType()));
       }
    }

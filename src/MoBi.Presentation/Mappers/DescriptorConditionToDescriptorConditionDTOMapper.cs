@@ -7,13 +7,13 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IDescriptorConditionToDescriptorConditionDTOMapper : IMapper<IDescriptorCondition, IDescriptorConditionDTO>
+   public interface IDescriptorConditionToDescriptorConditionDTOMapper : IMapper<IDescriptorCondition, DescriptorConditionDTO>
    {
    }
 
    internal class DescriptorConditionToDescriptorConditionDTOMapper : IDescriptorConditionToDescriptorConditionDTOMapper
    {
-      public IDescriptorConditionDTO MapFrom(IDescriptorCondition descriptorCondition)
+      public DescriptorConditionDTO MapFrom(IDescriptorCondition descriptorCondition)
       {
          switch (descriptorCondition)
          {

@@ -33,6 +33,7 @@ namespace MoBi.UI.Views.SimulationView
       public override void InitializeResources()
       {
          base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Simulation;
          tabDiagram.InitWith(AppConstants.Captions.ModelDiagram, ApplicationIcons.Diagram);
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
          tabSimulation.InitWith(AppConstants.Captions.SimulationParameters, ApplicationIcons.Parameter);
@@ -44,8 +45,6 @@ namespace MoBi.UI.Views.SimulationView
          spliterDiagram.Horizontal = true;
          spliterDiagram.SplitterPosition = Convert.ToInt32(Height * AppConstants.Diagram.SplitterDiagramRatio);
       }
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Simulation;
 
       private void tabSelectionChanged(TabPageChangingEventArgs e)
       {

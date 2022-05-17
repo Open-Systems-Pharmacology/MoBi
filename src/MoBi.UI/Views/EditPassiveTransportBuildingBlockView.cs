@@ -11,7 +11,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
@@ -37,6 +36,7 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          splitContainerControl1.CollapsePanel = SplitCollapsePanel.Panel1;
          EditCaption = AppConstants.Captions.PassiveTransports;
+         ApplicationIcon = ApplicationIcons.PassiveTransport;
       }
 
       public override void InitializeBinding()
@@ -48,7 +48,7 @@ namespace MoBi.UI.Views
             .WithShowInColumnChooser(true)
             .AsHidden();
 
-         gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown,e);
+         gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
       }
 
       private RepositoryItem createFormulaComboboxRepositoryItem(TransportBuilderDTO dtoObserverBuilder)
@@ -96,7 +96,5 @@ namespace MoBi.UI.Views
       public BarManager PopupBarManager => barManager;
 
       private IEditPassiveTransportBuildingBlockPresenter editPassiveTransportBuildingBlockPresenter => Presenter.DowncastTo<IEditPassiveTransportBuildingBlockPresenter>();
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.PassiveTransport;
    }
 }

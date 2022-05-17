@@ -51,6 +51,11 @@ namespace MoBi.Presentation.Presenter
       void SetBuildModeFor(ParameterDTO parameterDTO, ParameterBuildMode newMode);
       void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable);
       void SetDimensionFor(ParameterDTO parameterDTO, IDimension newDimension);
+
+      /// <summary>
+      ///    Enables the Container criteria support for specific use cases
+      /// </summary>
+      void EnableContainerCriteriaSupport();
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
@@ -75,9 +80,12 @@ namespace MoBi.Presentation.Presenter
          IInteractionTasksForParameter parameterTask,
          IEditDistributedParameterPresenter editDistributedParameterPresenter,
          IEditParameterPresenter editParameterPresenter,
-         IQuantityTask quantityTask, IInteractionTaskContext interactionTaskContext,
-         IClipboardManager clipboardManager, IEditTaskFor<IParameter> editTask,
-         ISelectReferencePresenterFactory selectReferencePresenterFactory, IFavoriteTask favoriteTask)
+         IQuantityTask quantityTask,
+         IInteractionTaskContext interactionTaskContext,
+         IClipboardManager clipboardManager,
+         IEditTaskFor<IParameter> editTask,
+         ISelectReferencePresenterFactory selectReferencePresenterFactory,
+         IFavoriteTask favoriteTask)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _clipboardManager = clipboardManager;
@@ -117,6 +125,11 @@ namespace MoBi.Presentation.Presenter
          var parameter = ParameterFrom(parameterDTO);
          AddCommand(_parameterTask.SetDimensionForParameter(parameter, newDimension, BuildingBlock));
          refreshViewAndSelect(parameterDTO);
+      }
+
+      public void EnableContainerCriteriaSupport()
+      {
+         _editParameterPresenter.EnableContainerCriteriaSupport();
       }
 
       private void createParameterCache(IEnumerable<IParameter> parametersToEdit)
@@ -164,7 +177,6 @@ namespace MoBi.Presentation.Presenter
          var parametersToShowDTO = _allParametersDTO.Where(shouldShowParameter).ToList();
          _view.BindTo(parametersToShowDTO);
          setupEditPresenter(parametersToShowDTO.FirstOrDefault()?.Parameter);
-
       }
 
       private bool shouldShowParameter(ParameterDTO parameterDTO)

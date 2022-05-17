@@ -19,15 +19,12 @@ namespace MoBi.UI.Views
          WizardPresenter = presenter;
       }
 
-      public override XtraTabControl TabControl
-      {
-         get { return tabWizard; }
-      }
+      public override XtraTabControl TabControl => tabWizard;
 
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Simulation.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Simulation;
          this.ReziseForCurrentScreen(fractionHeight: UIConstants.UI.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.UI.SCREEN_RESIZE_FRACTION);
       }
    }

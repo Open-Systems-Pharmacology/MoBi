@@ -65,7 +65,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_tell_view_to_show_parameters()
       {
-         A.CallTo(() => _view.ShowParamters()).MustHaveHappened();
+         A.CallTo(() => _view.ShowParameters()).MustHaveHappened();
       }
 
       [Observation]

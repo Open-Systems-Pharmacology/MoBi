@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using System;
 using System.Windows.Forms;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
@@ -10,24 +10,21 @@ namespace MoBi.UI.Views
 {
    public partial class SplashScreen : BaseView, ISplashScreen
    {
-      private ISplashScreenPresenter _presenter;
-
       public SplashScreen()
       {
          InitializeComponent();
-
-         progressBar.Properties.ShowTitle = true;
-         StartPosition = FormStartPosition.CenterScreen;
+         this.labelCopyright.Text = $"Copyright © 2002-{DateTime.Now.Year} - Open Systems Pharmacology Community";
          FormBorderStyle = FormBorderStyle.None;
          StartPosition = FormStartPosition.CenterScreen;
-         ClientSize = new Size(BackgroundImage.Size.Width, BackgroundImage.Size.Height);
          ShowInTaskbar = false;
-         TopMost = true;
-         Opacity = 0.9;
-         progressBar.Properties.ShowTitle = true;
-         lblCaption.Text = string.Empty;
-         Icon = ApplicationIcons.MoBi;
+         Opacity = 0.98;
+         progressBarControl.Properties.ShowTitle = true;
          Text = AppConstants.Captions.LoadingApplication;
+         ApplicationIcon = ApplicationIcons.MoBi;
+      }
+
+      public void AttachPresenter(ISplashScreenPresenter presenter)
+      {
       }
 
       public void StopProgress()
@@ -42,13 +39,13 @@ namespace MoBi.UI.Views
 
       public void ShowProgress(int progress, string caption)
       {
-         lblCaption.Text = caption;
-         progressBar.EditValue = progress;
+         labelStatus.Text = caption;
+         progressBarControl.EditValue = progress;
       }
 
-      public void AttachPresenter(ISplashScreenPresenter presenter)
+      public override void InitializeResources()
       {
-         _presenter = presenter;
+         labelStatus.Text = string.Empty;
       }
    }
 }

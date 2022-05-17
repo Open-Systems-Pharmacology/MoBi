@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Presenter
       void BindTo(ObjectBaseSummaryDTO objectBase);
    }
 
-   class ObjectBaseSummaryPresenter : AbstractPresenter<IObjectBaseSummaryView, IObjectBaseSummaryPresenter>, IObjectBaseSummaryPresenter
+   public class ObjectBaseSummaryPresenter : AbstractPresenter<IObjectBaseSummaryView, IObjectBaseSummaryPresenter>, IObjectBaseSummaryPresenter
    {
       public ObjectBaseSummaryPresenter(IObjectBaseSummaryView view) : base(view)
       {

@@ -1,13 +1,10 @@
 ﻿using FakeItEasy;
-
+using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Domain.Model;
-using NHibernate.AdoNet;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
-
 
 namespace MoBi.Core.Commands
 {
@@ -17,6 +14,7 @@ namespace MoBi.Core.Commands
       protected string _newTag;
       protected string _oldTag;
       protected IBuildingBlock _buildingBlock;
+      protected TagConditionCommandParameters<SumFormula> _commandParameters;
 
       protected override void Context()
       {
@@ -24,7 +22,8 @@ namespace MoBi.Core.Commands
          _newTag = "New";
          _oldTag = "Old";
          _buildingBlock = A.Fake<IBuildingBlock>();
-         sut = new EditTagCommand<SumFormula>(_newTag, _oldTag,_sumFormula,  _buildingBlock,x=>x.Criteria);
+         _commandParameters = new TagConditionCommandParameters<SumFormula> {TaggedObject = _sumFormula, BuildingBlock = _buildingBlock, DescriptorCriteriaRetriever = x => x.Criteria};
+         sut = new EditTagCommand<SumFormula>(_newTag, _oldTag, _commandParameters);
       }
    }
 
@@ -52,4 +51,4 @@ namespace MoBi.Core.Commands
          _tagCondition.Tag.ShouldBeEqualTo(_newTag);
       }
    }
-}	
+}

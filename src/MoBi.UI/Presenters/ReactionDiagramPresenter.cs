@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
@@ -17,6 +16,7 @@ using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.UICommands;
 using Northwoods.Go;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
@@ -24,8 +24,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Assets;
 using OSPSuite.UI.Diagram.Elements;
+using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Presenters
@@ -37,8 +37,9 @@ namespace MoBi.UI.Presenters
       private readonly IDiagramPopupMenuBase _reactionPopupMenu;
       private readonly IDiagramLayoutTask _diagramLayoutTask;
 
-      public ReactionDiagramPresenter(IReactionDiagramView view, IContainerBaseLayouter layouter, IMoBiContext context, IUserSettings userSettings, IDialogCreator dialogCreator, IMoBiApplicationController applicationController, IDiagramTask diagramTask, IDiagramLayoutTask diagramLayoutTask, IStartOptions runOptions, IDiagramModelFactory diagramModelFactory) :
-            base(view, layouter, dialogCreator,diagramModelFactory, userSettings, context, diagramTask, runOptions)
+      public ReactionDiagramPresenter(IReactionDiagramView view, IContainerBaseLayouter layouter, IMoBiContext context, IUserSettings userSettings, IDialogCreator dialogCreator, IMoBiApplicationController applicationController, IDiagramTask diagramTask, IDiagramLayoutTask diagramLayoutTask,
+         IStartOptions runOptions, IDiagramModelFactory diagramModelFactory) :
+         base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
          _applicationController = applicationController;
          _diagramPopupMenu = new PopupMenuReactionDiagram(this, runOptions);
@@ -73,7 +74,7 @@ namespace MoBi.UI.Presenters
          Refresh();
 
          //to avoid scrollbar error
-         ResetViewSize(); 
+         ResetViewSize();
       }
 
       public void LayerLayout()
@@ -179,18 +180,16 @@ namespace MoBi.UI.Presenters
       private void removeItem(GoObject itemToDelete)
       {
          if (itemToDelete.IsAnImplementationOf<MoleculeNode>())
-            RemoveMoleculeNode((MoleculeNode)itemToDelete);
+            RemoveMoleculeNode((MoleculeNode) itemToDelete);
 
          else if (itemToDelete.IsAnImplementationOf<ReactionNode>())
-            RemoveReactionNode((ReactionNode)itemToDelete);
+            RemoveReactionNode((ReactionNode) itemToDelete);
       }
 
       private bool anyLinkedNodes(MoleculeNode moleculeNode)
       {
-         var moleculeNodes = reactionDiagramManager.GetMoleculeNodes(moleculeNode.Name);
          var reactionNodes = getLinkedReactionsForMoleculeNode(moleculeNode);
-
-         return reactionNodes.Any() && moleculeNodes.Count() == 1;
+         return reactionNodes.Any();
       }
 
       public void LayerLayout(IContainerBase containerBase)
@@ -208,10 +207,7 @@ namespace MoBi.UI.Presenters
 
       public override void Link(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
-         ReactionNode reactionNode;
-         MoleculeNode moleculeNode;
-         ReactionLinkType reactionLinkType;
-         getLinkProperties(node1, node2, portObject1, portObject2, out reactionNode, out moleculeNode, out reactionLinkType);
+         getLinkProperties(node1, node2, portObject1, portObject2, out var reactionNode, out var moleculeNode, out var reactionLinkType);
          var reactionBuilder = _context.Get<IReactionBuilder>(reactionNode.Id);
 
          var addLinkCommand = new AddNamedPartnerUICommand(_context, _model, reactionBuilder, moleculeNode.Name, reactionLinkType);
@@ -259,13 +255,13 @@ namespace MoBi.UI.Presenters
          {
             reactionNode = rNode1;
             moleculeNode = mNode2;
-            reactionLinkType = (ReactionLinkType)portObject1;
+            reactionLinkType = (ReactionLinkType) portObject1;
          }
          else
          {
             reactionNode = rNode2;
             moleculeNode = mNode1;
-            reactionLinkType = (ReactionLinkType)portObject2;
+            reactionLinkType = (ReactionLinkType) portObject2;
          }
       }
 

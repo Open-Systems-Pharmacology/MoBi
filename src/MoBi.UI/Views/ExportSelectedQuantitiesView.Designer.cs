@@ -35,8 +35,6 @@
          this.layoutControl = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemPanel = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemSelectionPath = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
@@ -46,28 +44,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemSelectionPath)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(405, 12);
-         this.btnCancel.Size = new System.Drawing.Size(82, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(304, 12);
-         this.btnOk.Size = new System.Drawing.Size(97, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 416);
-         this.layoutControlBase.Size = new System.Drawing.Size(499, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(142, 22);
+        
          // 
          // layoutControl1
          // 
@@ -143,10 +120,7 @@
          this.Controls.Add(this.layoutControl1);
          this.Name = "ExportSelectedQuantitiesView";
          this.Text = "ExportSelectedQuantitiesView";
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
          this.Controls.SetChildIndex(this.layoutControl1, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);

@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Presenter
       ICanEditPropertiesPresenter, IPresenterWithContextMenu<IViewItem>,
       IPresenterWithFormulaCache
    {
-      void SetCreateProcessRateParameter(bool createProccessRate);
+      void SetCreateProcessRateParameter(bool createProcessRate);
       void SetPlotProcessRateParameter(bool plotProcessRate);
    }
 
@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Presenter
       private ITransportBuilder _transportBuilder;
       protected readonly IEditTaskFor<ITransportBuilder> _editTasks;
       protected readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
-      private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuidlerMapper;
+      private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuilderMapper;
       private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
       private readonly ISelectReferenceAtTransportPresenter _selectReferencePresenter;
       private readonly IMoBiContext _context;
@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Presenter
 
       public EditTransportBuilderPresenter(IEditTransportBuilderView view, ITransportBuilderToTransportBuilderDTOMapper transportBuilderToDTOTransportBuilderMapper,
          IEditTaskFor<ITransportBuilder> editTasks, IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuidlerMapper, IEditParametersInContainerPresenter editParametersInContainerPresenter,
+         IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuilderMapper, IEditParametersInContainerPresenter editParametersInContainerPresenter,
          IEditFormulaPresenter editFormulaPresenter, ISelectReferenceAtTransportPresenter selectReferencePresenter, IMoBiContext context,
          IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<ITransportBuilder> sourceCriteriaPresenter,
          IDescriptorConditionListPresenter<ITransportBuilder> targetCriteriaPresenter)
@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
          _context = context;
 
          _editParametersInContainerPresenter = editParametersInContainerPresenter;
-         _formulaToDTOFormulaBuidlerMapper = formulaToDTOFormulaBuidlerMapper;
+         _formulaToDTOFormulaBuilderMapper = formulaToDTOFormulaBuilderMapper;
          _editTasks = editTasks;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _selectReferencePresenter = selectReferencePresenter;
@@ -165,7 +165,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SelectParameter(IParameter parameter)
       {
-         _view.ShowParamters();
+         _view.ShowParameters();
          _editParametersInContainerPresenter.Select(parameter);
       }
 
@@ -177,7 +177,7 @@ namespace MoBi.Presentation.Presenter
 
       public IEnumerable<FormulaBuilderDTO> GetFormulas()
       {
-         return FormulaCache.Select(formula => _formulaToDTOFormulaBuidlerMapper.MapFrom(formula));
+         return FormulaCache.Select(formula => _formulaToDTOFormulaBuilderMapper.MapFrom(formula));
       }
 
       public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;

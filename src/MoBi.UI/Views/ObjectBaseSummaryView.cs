@@ -32,7 +32,7 @@ namespace MoBi.UI.Views
       {
          _screenBinder.BindToSource(objectBaseDTO);
          _gridViewBinder.BindToSource(objectBaseDTO.Dictionary.OrderBy(x => x.Key));
-         pictureBox.Image = objectBaseDTO.ApplicationIcon;
+         svgImageBox.SvgImage = objectBaseDTO.ApplicationIcon;
       }
 
       public override void InitializeBinding()
