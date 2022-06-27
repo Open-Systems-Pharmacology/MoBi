@@ -13,6 +13,7 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation
@@ -29,6 +30,7 @@ namespace MoBi.Presentation
       protected IEditFavoritesInSimulationPresenter _editFavoritePresenter;
       protected IChartTasks _chartTasks;
       protected IUserDefinedParametersPresenter _userDefinedParametersPresenter;
+      protected ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
 
       protected override void Context()
       {
@@ -42,9 +44,11 @@ namespace MoBi.Presentation
          _editFavoritePresenter = A.Fake<IEditFavoritesInSimulationPresenter>();
          _chartTasks = A.Fake<IChartTasks>();
          _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
+         _simulationOutputMappingPresenter = A.Fake<ISimulationOutputMappingPresenter>();
+
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
-            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter);
+            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter);
       }
    }
 

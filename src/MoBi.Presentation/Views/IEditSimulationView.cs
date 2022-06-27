@@ -20,5 +20,7 @@ namespace MoBi.Presentation.Views
       /// Changes the displayed view to the results view
       /// </summary>
       void ShowResultsTab();
+
+      void SetDataView(ISimulationOutputMappingView view);
    }
 }

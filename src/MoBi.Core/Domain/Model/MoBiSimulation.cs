@@ -5,6 +5,7 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Visitor;
@@ -43,7 +44,7 @@ namespace MoBi.Core.Domain.Model
       public CurveChart Chart { get; set; }
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
-
+      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
       public MoBiSimulation()
       {
          HistoricResults = new Cache<string, DataRepository>(x => x.Id, x => null);

@@ -50,11 +50,12 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditFavoritesInSimulationPresenter _favoritesPresenter;
       private readonly IUserDefinedParametersPresenter _userDefinedParametersPresenter;
       private readonly IChartTasks _chartTask;
+      private readonly ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
 
       public EditSimulationPresenter(IEditSimulationView view, ISimulationChartPresenter chartPresenter, IHierarchicalSimulationPresenter hierarchicalPresenter, ISimulationDiagramPresenter simulationDiagramPresenter,
          IEditSolverSettingsPresenter solverSettingsPresenter, IEditOutputSchemaPresenter editOutputSchemaPresenter,
          IEditInSimulationPresenterFactory showPresenterFactory, IHeavyWorkManager heavyWorkManager, IChartFactory chartFactory,
-         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask, IUserDefinedParametersPresenter userDefinedParametersPresenter)
+         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask, IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter)
          : base(view)
       {
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
@@ -68,13 +69,15 @@ namespace MoBi.Presentation.Presenter
          _hierarchicalPresenter = hierarchicalPresenter;
          _simulationDiagramPresenter = simulationDiagramPresenter;
          _chartPresenter = chartPresenter;
+         _simulationOutputMappingPresenter = simulationOutputMappingPresenter;
          _view.SetTreeView(hierarchicalPresenter.BaseView);
          _view.SetModelDiagram(_simulationDiagramPresenter.View);
          _hierarchicalPresenter.ShowOutputSchema = showOutputSchema;
          _hierarchicalPresenter.ShowSolverSettings = showSolverSettings;
          _hierarchicalPresenter.SimulationFavorites = () => _favoritesPresenter.Favorites();
          _view.SetChartView(chartPresenter.View);
-         AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter, _favoritesPresenter, _userDefinedParametersPresenter);
+         _view.SetDataView(_simulationOutputMappingPresenter.View);
+         AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter, _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter);
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> {OnMissingKey = x => null};
       }
 
@@ -109,6 +112,7 @@ namespace MoBi.Presentation.Presenter
          _favoritesPresenter.Edit(_simulation);
          _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
+         _simulationOutputMappingPresenter.SetSimulation(simulation);
          UpdateCaption();
          _view.Display();
          loadChart();
