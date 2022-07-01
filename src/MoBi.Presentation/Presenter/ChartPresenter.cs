@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Settings;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
@@ -15,8 +13,6 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -59,21 +55,20 @@ namespace MoBi.Presentation.Presenter
    {
       protected readonly IMoBiContext _context;
       private readonly IUserSettings _userSettings;
-      private readonly IChartTasks _chartTasks;
-      private IChartUpdater _chartUpdater;
+      private readonly IChartUpdater _chartUpdater;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
       protected readonly ICache<DataRepository, IMoBiSimulation> _dataRepositoryCache;
 
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
+      private bool _initialized;
 
       private IChartDisplayPresenter displayPresenter => _chartPresenterContext.DisplayPresenter;
       private IChartEditorPresenter editorPresenter => _chartPresenterContext.EditorPresenter;
 
-      protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks,
+      protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings,
          IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater) :
          base(chartView, chartPresenterContext)
       {
-         _chartTasks = chartTasks;
          _chartUpdater = chartUpdater;
          initializeDisplayPresenter();
          initializeEditorPresenter();
@@ -250,12 +245,21 @@ namespace MoBi.Presentation.Presenter
          MarkChartOwnerAsChanged();
       }
 
+      public override void InitializeAnalysis(CurveChart chart)
+      {
+         if (_initialized) return;
+         //this will prevent re-initializing the layout if this was already done (no UI flicker)
+         base.InitializeAnalysis(chart);
+         _initialized = true;
+      }
+
       public void Show(CurveChart chart, IReadOnlyList<DataRepository> dataRepositories, CurveChartTemplate defaultTemplate = null)
       {
          try
          {
             clearNoCurvesHint();
             InitializeAnalysis(chart);
+
             //do not validate template when showing a chart as the chart might well be without curves when initialized for the first time.
             var currentTemplate = defaultTemplate ?? _chartTemplatingTask.TemplateFrom(chart, validateTemplate: false);
             replaceSimulationRepositories(dataRepositories);
