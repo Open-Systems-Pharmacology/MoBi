@@ -1,6 +1,5 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Settings;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
@@ -18,8 +17,8 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
 
-      public ComparisonChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks, IChartTemplatingTask chartTemplatingTask, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext) :
-         base(chartView, chartPresenterContext, context, userSettings, chartTasks, chartTemplatingTask, chartUpdater)
+      public ComparisonChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTemplatingTask chartTemplatingTask, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext) :
+         base(chartView, chartPresenterContext, context, userSettings, chartTemplatingTask, chartUpdater)
       {
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
       }
