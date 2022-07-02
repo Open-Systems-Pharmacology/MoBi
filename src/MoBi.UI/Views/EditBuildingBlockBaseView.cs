@@ -30,7 +30,12 @@ namespace MoBi.UI.Views
 
       public ApplicationIcon EditIcon
       {
-         set => tabEditBuildingBlock.Image = value.ToImage(IconSizes.Size16x16);
+         set
+         {
+            //Required because this might be set before the component is actually fully initialized
+            if(tabEditBuildingBlock != null)
+               tabEditBuildingBlock.Image = value.ToImage(IconSizes.Size16x16);
+         }
       }
 
       public void ShowFormulas()
@@ -43,6 +48,15 @@ namespace MoBi.UI.Views
          tabPagesControl.SelectedTabPage = tabEditBuildingBlock;
       }
 
+      public override ApplicationIcon ApplicationIcon
+      {
+         set
+         {
+            base.ApplicationIcon = value;
+            EditIcon = value;
+         }
+      }
+
       public override void SaveChanges()
       {
          base.SaveChanges();
@@ -53,7 +67,6 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         EditIcon = ApplicationIcon;
          tabFormulaCache.Image = ApplicationIcons.Formula.ToImage(IconSizes.Size16x16);
       }
    }
