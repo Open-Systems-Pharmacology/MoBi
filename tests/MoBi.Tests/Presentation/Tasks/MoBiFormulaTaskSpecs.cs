@@ -144,7 +144,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _formulaDimension = DomainHelperForSpecs.ConcentrationDimension;
          _existingNames = new List<string>();
-         A.CallTo(() => _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, _existingNames, null, ApplicationIcons.Rename.IconName)).Returns("FORMULA");
+         A.CallTo(() => _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, _existingNames, null, null)).Returns("FORMULA");
       }
 
       protected override void Because()
@@ -153,7 +153,7 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_return_a_formula_haveing_the_expected_type()
+      public void should_return_a_formula_having_the_expected_type()
       {
          _formula.ShouldBeAnInstanceOf<ConstantFormula>();
       }
