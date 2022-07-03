@@ -1258,7 +1258,6 @@ namespace MoBi.Assets
          public static readonly string BuildingBlockExplorer = "Building Block Explorer";
          public static readonly string WarningsCaption = "Solver Warnings";
          public static readonly string HistoryBrowser = "History";
-         public static readonly string NameInUse = "New Name";
          public static readonly string RenameWizardCaption = "Rename also";
          public static readonly string AddReactionMolecule = "Molecule Name";
          public static readonly string NewName = "New Name";

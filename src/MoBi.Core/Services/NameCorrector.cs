@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using OSPSuite.Assets;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -78,8 +79,13 @@ namespace MoBi.Core.Services
 
          if (usedNames.Contains(oldName))
          {
-            newName = _dialogCreator.AskForInput(AppConstants.Dialog.AskForChangedName(oldName, typeName),
-               AppConstants.Captions.NameInUse, getNextSuggestedName(usedNames, oldName), usedNames);
+            newName = _dialogCreator.AskForInput(
+               AppConstants.Dialog.AskForChangedName(oldName, typeName),
+               Captions.Rename,
+               getNextSuggestedName(usedNames, oldName),
+               usedNames,
+               iconName: ApplicationIcons.Rename.IconName);
+
          }
          //Rename was canceled
          if (newName.IsNullOrEmpty())

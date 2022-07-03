@@ -10,6 +10,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Interaction;
 using NUnit.Framework;
+using OSPSuite.Assets;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -98,7 +99,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _dataRepository.Name = "OLD";
          _newName = "New";
-         A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._)).Returns(_newName);
+         A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, ApplicationIcons.Rename.IconName)).Returns(_newName);
          _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
          A.CallTo(() => _context.Resolve<IDataRepositoryNamer>()).Returns(_dataRepositoryNamer);
       }

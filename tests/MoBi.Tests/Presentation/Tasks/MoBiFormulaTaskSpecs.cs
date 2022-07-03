@@ -10,6 +10,7 @@ using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -143,7 +144,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _formulaDimension = DomainHelperForSpecs.ConcentrationDimension;
          _existingNames = new List<string>();
-         A.CallTo(() => _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, _existingNames, null)).Returns("FORMULA");
+         A.CallTo(() => _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, _existingNames, null, ApplicationIcons.Rename.IconName)).Returns("FORMULA");
       }
 
       protected override void Because()
