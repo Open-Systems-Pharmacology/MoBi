@@ -96,6 +96,7 @@ def copy_templates_files(source_dir)
 	FileUtils.mkdir_p setup_temp_dir
 	FileUtils.copy_entry File.join(source_dir, 'TeXTemplates'), File.join(setup_temp_dir, 'TeXTemplates')
 	FileUtils.copy_entry File.join(source_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
+   FileUtils.copy_entry File.join(source_dir, 'Templates'), File.join(setup_temp_dir, 'Templates')
 end
 
 def relative_src_dir_for(configuration)
