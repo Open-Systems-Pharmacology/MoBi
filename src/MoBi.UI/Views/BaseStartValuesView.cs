@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using DevExpress.XtraEditors;
@@ -10,7 +9,6 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -64,30 +62,6 @@ namespace MoBi.UI.Views
          gridView.CustomRowFilter += gridViewOnCustomRowFilter;
 
          _screenBinder = new ScreenBinder<IStartValuesPresenter<TStartValue>>();
-      }
-
-      public override void InitializeResources()
-      {
-         base.InitializeResources();
-
-         scaleApplyToSelectionLayoutItem(layoutItemIsPresent);
-         scaleApplyToSelectionLayoutItem(layoutItemRefreshStartValues);
-         scaleApplyToSelectionLayoutItem(layoutItemNegativeValuesAllowed);
-         scaleApplyToSelectionLayoutItem(layoutItemDelete);
-
-         scaleLegendLayoutItem(layoutItemLegend);
-      }
-
-      private void scaleLegendLayoutItem(LayoutControlItem layoutControlItem)
-      {
-         layoutControlItem.MinSize = new Size(UIConstants.UI.START_VALUES_LEGEND_WIDTH, UIConstants.UI.START_VALUES_LEGEND_HEIGHT);
-         layoutControlItem.MaxSize = layoutControlItem.MinSize;
-      }
-
-      private void scaleApplyToSelectionLayoutItem(LayoutControlItem layoutControlItem)
-      {
-         layoutControlItem.MinSize = new Size(UIConstants.UI.APPLY_TO_SELECTION_WIDTH, UIConstants.UI.APPLY_TO_SELECTION_HEIGHT);
-         layoutControlItem.MaxSize = layoutControlItem.MinSize;
       }
 
       public void HideIsPresentView()
