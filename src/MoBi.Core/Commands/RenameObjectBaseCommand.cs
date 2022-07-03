@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return CommandExtensions.AsInverseFor(new RenameObjectBaseCommand(_objectBase, OldName,_buildingBlock), this);
+         return new RenameObjectBaseCommand(_objectBase, OldName,_buildingBlock).AsInverseFor(this);
       }
 
       protected override void ClearReferences()

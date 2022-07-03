@@ -187,7 +187,9 @@ namespace MoBi.Presentation.Tasks
       {
          var newName = _mobiDialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(dataRepository.Name),
             AppConstants.Captions.NewName,
-            dataRepository.Name, _context.CurrentProject.AllObservedData.Select(x => x.Name));
+            dataRepository.Name,
+            _context.CurrentProject.AllObservedData.Select(x => x.Name),
+            iconName: ApplicationIcons.Rename.IconName);
 
          if (string.IsNullOrEmpty(newName))
             return;
