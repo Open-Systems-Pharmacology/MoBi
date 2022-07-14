@@ -5,6 +5,7 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Visitor;
@@ -123,6 +124,8 @@ namespace MoBi.Core.Domain.Model
       {
          get { yield return Chart; }
       }
+
+      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
       public new IReactionBuildingBlock Reactions
       {

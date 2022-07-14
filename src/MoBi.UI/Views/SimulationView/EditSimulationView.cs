@@ -38,6 +38,7 @@ namespace MoBi.UI.Views.SimulationView
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
          tabSimulation.InitWith(AppConstants.Captions.SimulationParameters, ApplicationIcons.Parameter);
          tabResults.InitWith(AppConstants.Captions.Results, ApplicationIcons.TimeProfileAnalysis);
+         tabData.InitWith(AppConstants.Captions.SimulationData, ApplicationIcons.PKSim);
 
          tabsNavigation.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
          tabs.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
@@ -79,6 +80,11 @@ namespace MoBi.UI.Views.SimulationView
       public void ShowResultsTab()
       {
          tabs.SelectedTabPage = tabResults;
+      }
+
+      public void SetDataView(ISimulationOutputMappingView view)
+      {
+         tabData.FillWith(view);
       }
    }
 }
