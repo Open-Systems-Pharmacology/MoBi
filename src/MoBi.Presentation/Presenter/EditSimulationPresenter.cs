@@ -52,10 +52,12 @@ namespace MoBi.Presentation.Presenter
       private readonly IChartTasks _chartTask;
       private readonly ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
 
-      public EditSimulationPresenter(IEditSimulationView view, ISimulationChartPresenter chartPresenter, IHierarchicalSimulationPresenter hierarchicalPresenter, ISimulationDiagramPresenter simulationDiagramPresenter,
+      public EditSimulationPresenter(IEditSimulationView view, ISimulationChartPresenter chartPresenter,
+         IHierarchicalSimulationPresenter hierarchicalPresenter, ISimulationDiagramPresenter simulationDiagramPresenter,
          IEditSolverSettingsPresenter solverSettingsPresenter, IEditOutputSchemaPresenter editOutputSchemaPresenter,
          IEditInSimulationPresenterFactory showPresenterFactory, IHeavyWorkManager heavyWorkManager, IChartFactory chartFactory,
-         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask, IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter)
+         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask,
+         IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter)
          : base(view)
       {
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
@@ -77,8 +79,9 @@ namespace MoBi.Presentation.Presenter
          _hierarchicalPresenter.SimulationFavorites = () => _favoritesPresenter.Favorites();
          _view.SetChartView(chartPresenter.View);
          _view.SetDataView(_simulationOutputMappingPresenter.View);
-         AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter, _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter);
-         _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> {OnMissingKey = x => null};
+         AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
+            _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter);
+         _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
       }
 
       public string CreateResultTabCaption(string chartName)

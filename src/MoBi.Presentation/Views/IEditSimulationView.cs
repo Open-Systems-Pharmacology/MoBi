@@ -12,17 +12,17 @@ namespace MoBi.Presentation.Views
       void SetModelDiagram(ISimulationDiagramView subView);
 
       /// <summary>
-      /// Indicates whether or not the current view is the results view
+      ///    Indicates whether or not the current view is the results view
       /// </summary>
       bool ShowsResults { get; }
 
       /// <summary>
-      /// Changes the displayed view to the results view
+      ///    Changes the displayed view to the results view
       /// </summary>
       void ShowResultsTab();
 
       /// <summary>
-      /// Sets the outputMappingView to the corresponding tab
+      ///    Sets the outputMappingView to the corresponding tab
       /// </summary>
       void SetDataView(ISimulationOutputMappingView view);
    }

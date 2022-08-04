@@ -140,7 +140,9 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation : concern_for_EditSimulationPresenter
+   public class
+      When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation :
+         concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private CurveChart _chart;
@@ -205,7 +207,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation = new MoBiSimulation {Results = new DataRepository()};
+         _simulation = new MoBiSimulation { Results = new DataRepository() };
 
          var chart = new CurveChart();
 
@@ -273,7 +275,9 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_edit_simulation_presenter_is_notified_that_a_parameter_should_be_selected_for_the_edited_simulation : concern_for_EditSimulationPresenter
+   public class
+      When_the_edit_simulation_presenter_is_notified_that_a_parameter_should_be_selected_for_the_edited_simulation :
+         concern_for_EditSimulationPresenter
    {
       private IParameter _parameter;
       private IMoBiSimulation _simulation;
@@ -284,18 +288,19 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation= A.Fake<IMoBiSimulation>();
-         _parameter= A.Fake<IParameter>();
-         _rootContainer= A.Fake<IContainer>();
+         _simulation = A.Fake<IMoBiSimulation>();
+         _parameter = A.Fake<IParameter>();
+         _rootContainer = A.Fake<IContainer>();
          //ensures that the parameter belongs to the simulation
          _simulation.Model.Root = _rootContainer;
          A.CallTo(() => _parameter.RootContainer).Returns(_rootContainer);
          sut.Edit(_simulation);
-         _parameterContainer= A.Fake<IContainer>();
+         _parameterContainer = A.Fake<IContainer>();
          _parameter.ParentContainer = _parameterContainer;
-         _= A.Fake<IEditContainerInSimulationPresenter>();
+         _ = A.Fake<IEditContainerInSimulationPresenter>();
          A.CallTo(() => _presenterFactory.PresenterFor(_parameterContainer)).Returns(_);
       }
+
       protected override void Because()
       {
          sut.Handle(new EntitySelectedEvent(_parameter, new object()));
