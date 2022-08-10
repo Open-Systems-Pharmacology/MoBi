@@ -25,5 +25,8 @@ namespace MoBi.Presentation.Views
       ///    Sets the outputMappingView to the corresponding tab
       /// </summary>
       void SetDataView(ISimulationOutputMappingView view);
+
+      void SetPredictedVsObservedView(ISimulationRunAnalysisView view);
+      void SetResidualsVsTimeView(ISimulationRunAnalysisView view);
    }
 }

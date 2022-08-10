@@ -40,6 +40,8 @@ namespace MoBi.Presentation.Presenter
       private readonly IHierarchicalSimulationPresenter _hierarchicalPresenter;
       private readonly ISimulationDiagramPresenter _simulationDiagramPresenter;
       private readonly ISimulationChartPresenter _chartPresenter;
+      private readonly ISimulationPredictedVsObservedChartPresenter _simulationPredictedVsObservedChartPresenter;
+      private readonly ISimulationResidualVsTimeChartPresenter _simulationResidualVsTimeChartPresenter;
       private readonly IEditSolverSettingsPresenter _solverSettingsPresenter;
       private readonly IEditOutputSchemaPresenter _editOutputSchemaPresenter;
       private readonly IEditInSimulationPresenterFactory _showPresenterFactory;
@@ -57,7 +59,8 @@ namespace MoBi.Presentation.Presenter
          IEditSolverSettingsPresenter solverSettingsPresenter, IEditOutputSchemaPresenter editOutputSchemaPresenter,
          IEditInSimulationPresenterFactory showPresenterFactory, IHeavyWorkManager heavyWorkManager, IChartFactory chartFactory,
          IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask,
-         IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter)
+         IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
+         ISimulationPredictedVsObservedChartPresenter simulationPredictedVsObservedChartPresenter, ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter)
          : base(view)
       {
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
@@ -70,6 +73,8 @@ namespace MoBi.Presentation.Presenter
          _solverSettingsPresenter = solverSettingsPresenter;
          _hierarchicalPresenter = hierarchicalPresenter;
          _simulationDiagramPresenter = simulationDiagramPresenter;
+         _simulationPredictedVsObservedChartPresenter = simulationPredictedVsObservedChartPresenter;
+         _simulationResidualVsTimeChartPresenter = simulationResidualVsTimeChartPresenter;
          _chartPresenter = chartPresenter;
          _simulationOutputMappingPresenter = simulationOutputMappingPresenter;
          _view.SetTreeView(hierarchicalPresenter.BaseView);
@@ -78,9 +83,11 @@ namespace MoBi.Presentation.Presenter
          _hierarchicalPresenter.ShowSolverSettings = showSolverSettings;
          _hierarchicalPresenter.SimulationFavorites = () => _favoritesPresenter.Favorites();
          _view.SetChartView(chartPresenter.View);
+         _view.SetPredictedVsObservedView(simulationPredictedVsObservedChartPresenter.View);
+         _view.SetResidualsVsTimeView(simulationResidualVsTimeChartPresenter.View);
          _view.SetDataView(_simulationOutputMappingPresenter.View);
          AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
-            _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter);
+            _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter);
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
       }
 

@@ -39,6 +39,7 @@ namespace MoBi.UI.Views.SimulationView
          tabSimulation.InitWith(AppConstants.Captions.SimulationParameters, ApplicationIcons.Parameter);
          tabResults.InitWith(AppConstants.Captions.Results, ApplicationIcons.TimeProfileAnalysis);
          tabData.InitWith(AppConstants.Captions.SimulationData, ApplicationIcons.PKSim);
+         tabTimeProfile.InitWith(AppConstants.Captions.TimeProfile, ApplicationIcons.TimeProfileAnalysis);
 
          tabsNavigation.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
          tabs.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
@@ -66,7 +67,7 @@ namespace MoBi.UI.Views.SimulationView
       public void SetChartView(IChartView chartView)
       {
          chartView.CaptionChanged += (o, e) => OnEvent(() => tabResults.Text = simulationPresenter.CreateResultTabCaption(chartView.Caption));
-         tabResults.FillWith(chartView);
+         tabTimeProfile.FillWith(chartView);
       }
 
       public void SetModelDiagram(ISimulationDiagramView subView)
@@ -85,6 +86,16 @@ namespace MoBi.UI.Views.SimulationView
       public void SetDataView(ISimulationOutputMappingView view)
       {
          tabData.FillWith(view);
+      }
+
+      public void SetPredictedVsObservedView(ISimulationRunAnalysisView view)
+      {
+         tabPredVsObs.FillWith(view);
+      }
+
+      public void SetResidualsVsTimeView(ISimulationRunAnalysisView view)
+      {
+         tabResidVsTime.FillWith(view);
       }
    }
 }

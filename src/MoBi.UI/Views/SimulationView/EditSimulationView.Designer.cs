@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraEditors;
+﻿using System.Windows.Forms;
+using DevExpress.XtraEditors;
 
 namespace MoBi.UI.Views.SimulationView
 {
@@ -39,8 +40,15 @@ namespace MoBi.UI.Views.SimulationView
          this.tabDiagram = new DevExpress.XtraTab.XtraTabPage();
          this.spliterDiagram = new DevExpress.XtraEditors.SplitContainerControl();
          this.modelOverview = new Northwoods.Go.GoOverview();
-         this.tabResults = new DevExpress.XtraTab.XtraTabPage();
          this.tabData = new DevExpress.XtraTab.XtraTabPage();
+         this.tabResults = new DevExpress.XtraTab.XtraTabPage();
+         this.plotTabs = new DevExpress.XtraTab.XtraTabControl();
+         this.tabTimeProfile = new DevExpress.XtraTab.XtraTabPage();
+         this.tabPredVsObs = new DevExpress.XtraTab.XtraTabPage();
+         this.xtraTabPage2 = new DevExpress.XtraTab.XtraTabPage();
+         this.xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
+         this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
+         this.tabResidVsTime = new DevExpress.XtraTab.XtraTabPage();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabs)).BeginInit();
          this.tabs.SuspendLayout();
@@ -58,13 +66,18 @@ namespace MoBi.UI.Views.SimulationView
          this.spliterDiagram.Panel1.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.spliterDiagram.Panel2)).BeginInit();
          this.spliterDiagram.SuspendLayout();
+         this.tabResults.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.plotTabs)).BeginInit();
+         this.plotTabs.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
+         this.xtraTabControl1.SuspendLayout();
          this.SuspendLayout();
          // 
          // tabs
          // 
          this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tabs.Location = new System.Drawing.Point(0, 0);
-         this.tabs.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+         this.tabs.Margin = new System.Windows.Forms.Padding(8);
          this.tabs.Name = "tabs";
          this.tabs.SelectedTabPage = this.tabSimulation;
          this.tabs.Size = new System.Drawing.Size(1290, 987);
@@ -76,7 +89,7 @@ namespace MoBi.UI.Views.SimulationView
          // tabSimulation
          // 
          this.tabSimulation.Controls.Add(this.splitSimulationParameters);
-         this.tabSimulation.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+         this.tabSimulation.Margin = new System.Windows.Forms.Padding(8);
          this.tabSimulation.Name = "tabSimulation";
          this.tabSimulation.Size = new System.Drawing.Size(1286, 926);
          this.tabSimulation.Text = "Simulation";
@@ -86,7 +99,7 @@ namespace MoBi.UI.Views.SimulationView
          this.splitSimulationParameters.Dock = System.Windows.Forms.DockStyle.Fill;
          this.splitSimulationParameters.FixedPanel = DevExpress.XtraEditors.SplitFixedPanel.None;
          this.splitSimulationParameters.Location = new System.Drawing.Point(0, 0);
-         this.splitSimulationParameters.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+         this.splitSimulationParameters.Margin = new System.Windows.Forms.Padding(8);
          this.splitSimulationParameters.Name = "splitSimulationParameters";
          // 
          // splitSimulationParameters.Panel1
@@ -106,7 +119,7 @@ namespace MoBi.UI.Views.SimulationView
          // 
          this.tabsNavigation.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tabsNavigation.Location = new System.Drawing.Point(0, 0);
-         this.tabsNavigation.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+         this.tabsNavigation.Margin = new System.Windows.Forms.Padding(8);
          this.tabsNavigation.Name = "tabsNavigation";
          this.tabsNavigation.SelectedTabPage = this.tabTree;
          this.tabsNavigation.Size = new System.Drawing.Size(643, 926);
@@ -118,7 +131,7 @@ namespace MoBi.UI.Views.SimulationView
          // 
          // tabTree
          // 
-         this.tabTree.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+         this.tabTree.Margin = new System.Windows.Forms.Padding(8);
          this.tabTree.Name = "tabTree";
          this.tabTree.Size = new System.Drawing.Size(639, 865);
          this.tabTree.Text = "tabTree";
@@ -126,16 +139,16 @@ namespace MoBi.UI.Views.SimulationView
          // tabDiagram
          // 
          this.tabDiagram.Controls.Add(this.spliterDiagram);
-         this.tabDiagram.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+         this.tabDiagram.Margin = new System.Windows.Forms.Padding(8);
          this.tabDiagram.Name = "tabDiagram";
-         this.tabDiagram.Size = new System.Drawing.Size(634, 855);
+         this.tabDiagram.Size = new System.Drawing.Size(639, 865);
          this.tabDiagram.Text = "tabDiagram";
          // 
          // spliterDiagram
          // 
          this.spliterDiagram.Dock = System.Windows.Forms.DockStyle.Fill;
          this.spliterDiagram.Location = new System.Drawing.Point(0, 0);
-         this.spliterDiagram.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+         this.spliterDiagram.Margin = new System.Windows.Forms.Padding(8);
          this.spliterDiagram.Name = "spliterDiagram";
          // 
          // spliterDiagram.Panel1
@@ -146,7 +159,7 @@ namespace MoBi.UI.Views.SimulationView
          // spliterDiagram.Panel2
          // 
          this.spliterDiagram.Panel2.Text = "Panel2";
-         this.spliterDiagram.Size = new System.Drawing.Size(634, 855);
+         this.spliterDiagram.Size = new System.Drawing.Size(639, 865);
          this.spliterDiagram.SplitterPosition = 307;
          this.spliterDiagram.TabIndex = 1;
          this.spliterDiagram.Text = "splitContainerControl2";
@@ -167,19 +180,12 @@ namespace MoBi.UI.Views.SimulationView
          this.modelOverview.DocScale = 0.125F;
          this.modelOverview.DragsRealtime = true;
          this.modelOverview.Location = new System.Drawing.Point(0, 0);
-         this.modelOverview.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+         this.modelOverview.Margin = new System.Windows.Forms.Padding(8);
          this.modelOverview.Name = "modelOverview";
          this.modelOverview.ShowsNegativeCoordinates = false;
-         this.modelOverview.Size = new System.Drawing.Size(307, 855);
+         this.modelOverview.Size = new System.Drawing.Size(307, 865);
          this.modelOverview.TabIndex = 0;
          this.modelOverview.Text = "modelOverview";
-         // 
-         // tabResults
-         // 
-         this.tabResults.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
-         this.tabResults.Name = "tabResults";
-         this.tabResults.Size = new System.Drawing.Size(1286, 926);
-         this.tabResults.Text = "tabResults";
          // 
          // tabData
          // 
@@ -187,13 +193,75 @@ namespace MoBi.UI.Views.SimulationView
          this.tabData.Size = new System.Drawing.Size(639, 865);
          this.tabData.Text = "tabData";
          // 
+         // tabResults
+         // 
+         this.tabResults.Controls.Add(this.plotTabs);
+         this.tabResults.Margin = new System.Windows.Forms.Padding(8);
+         this.tabResults.Name = "tabResults";
+         this.tabResults.Size = new System.Drawing.Size(1286, 926);
+         this.tabResults.Text = "tabResults";
+         // 
+         // plotTabs
+         // 
+         this.plotTabs.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.plotTabs.Location = new System.Drawing.Point(0, 0);
+         this.plotTabs.Name = "plotTabs";
+         this.plotTabs.SelectedTabPage = this.tabTimeProfile;
+         this.plotTabs.Size = new System.Drawing.Size(1286, 926);
+         this.plotTabs.TabIndex = 0;
+         this.plotTabs.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.tabTimeProfile,
+            this.tabPredVsObs,
+            this.tabResidVsTime});
+         // 
+         // tabTimeProfile
+         // 
+         this.tabTimeProfile.Name = "tabTimeProfile";
+         this.tabTimeProfile.Size = new System.Drawing.Size(1282, 865);
+         this.tabTimeProfile.Text = "tabTimeProfile";
+         // 
+         // tabPredVsObs
+         // 
+         this.tabPredVsObs.Name = "tabPredVsObs";
+         this.tabPredVsObs.Size = new System.Drawing.Size(1282, 865);
+         this.tabPredVsObs.Text = "tabPredVsObs";
+         // 
+         // xtraTabPage2
+         // 
+         this.xtraTabPage2.Name = "xtraTabPage2";
+         this.xtraTabPage2.Size = new System.Drawing.Size(296, 239);
+         this.xtraTabPage2.Text = "xtraTabPage2";
+         // 
+         // xtraTabPage1
+         // 
+         this.xtraTabPage1.Name = "xtraTabPage1";
+         this.xtraTabPage1.Size = new System.Drawing.Size(296, 239);
+         this.xtraTabPage1.Text = "xtraTabPage1";
+         // 
+         // xtraTabControl1
+         // 
+         this.xtraTabControl1.Location = new System.Drawing.Point(256, 17);
+         this.xtraTabControl1.Name = "xtraTabControl1";
+         this.xtraTabControl1.SelectedTabPage = this.xtraTabPage1;
+         this.xtraTabControl1.Size = new System.Drawing.Size(300, 300);
+         this.xtraTabControl1.TabIndex = 2;
+         this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.xtraTabPage1,
+            this.xtraTabPage2});
+         // 
+         // tabResidVsTime
+         // 
+         this.tabResidVsTime.Name = "tabResidVsTime";
+         this.tabResidVsTime.Size = new System.Drawing.Size(1282, 865);
+         this.tabResidVsTime.Text = "tabResidVsTime";
+         // 
          // EditSimulationView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(15F, 33F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(1290, 987);
          this.Controls.Add(this.tabs);
-         this.Margin = new System.Windows.Forms.Padding(20, 20, 20, 20);
+         this.Margin = new System.Windows.Forms.Padding(20);
          this.Name = "EditSimulationView";
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabs)).EndInit();
@@ -212,6 +280,11 @@ namespace MoBi.UI.Views.SimulationView
          ((System.ComponentModel.ISupportInitialize)(this.spliterDiagram.Panel2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.spliterDiagram)).EndInit();
          this.spliterDiagram.ResumeLayout(false);
+         this.tabResults.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.plotTabs)).EndInit();
+         this.plotTabs.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).EndInit();
+         this.xtraTabControl1.ResumeLayout(false);
          this.ResumeLayout(false);
 
       }
@@ -228,5 +301,12 @@ namespace MoBi.UI.Views.SimulationView
       private SplitContainerControl spliterDiagram;
       private Northwoods.Go.GoOverview modelOverview;
       private DevExpress.XtraTab.XtraTabPage tabData;
+      private DevExpress.XtraTab.XtraTabControl plotTabs;
+      private DevExpress.XtraTab.XtraTabPage tabTimeProfile;
+      private DevExpress.XtraTab.XtraTabPage tabPredVsObs;
+      private DevExpress.XtraTab.XtraTabPage xtraTabPage2;
+      private DevExpress.XtraTab.XtraTabPage xtraTabPage1;
+      private DevExpress.XtraTab.XtraTabControl xtraTabControl1;
+      private DevExpress.XtraTab.XtraTabPage tabResidVsTime;
    }
 }

@@ -26,9 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="11.1.9-yihosdul" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="11.1.9-yihosdul" />
-    <PackageReference Include="OSPSuite.Core" Version="11.1.9-yihosdul" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.1.15-mgtwborp" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="11.1.15-mgtwborp" />
+    <PackageReference Include="OSPSuite.Core" Version="11.1.15-mgtwborp" />
   </ItemGroup>
 
   <ItemGroup>
