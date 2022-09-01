@@ -44,7 +44,7 @@ namespace MoBi.Core.Domain.Model
       public CurveChart Chart { get; set; }
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
-
+      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
       public MoBiSimulation()
       {
          HistoricResults = new Cache<string, DataRepository>(x => x.Id, x => null);

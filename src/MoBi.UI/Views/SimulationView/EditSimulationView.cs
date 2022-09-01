@@ -66,6 +66,11 @@ namespace MoBi.UI.Views.SimulationView
          tabTree.FillWith(view);
       }
 
+      public void SetDataView(ISimulationOutputMappingView view)
+      {
+         tabData.FillWith(view);
+      }
+
       public void SetChartView(IChartView chartView)
       {
          chartView.CaptionChanged += (o, e) => OnEvent(() => tabResults.Text = simulationPresenter.CreateResultTabCaption(chartView.Caption));
