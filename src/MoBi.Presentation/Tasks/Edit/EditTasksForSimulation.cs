@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public void ExportResultsToExcel(IMoBiSimulation simulation)
       {
-         ExportResultsToExcel(simulation, simulation.Results);
+         ExportResultsToExcel(simulation, simulation.ResultsDataRepository);
       }
 
       public void ExportResultsToExcel(IMoBiSimulation simulation, DataRepository dataRepository)
@@ -160,7 +160,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       private IEnumerable<string> allUsedResultsNameIn(IMoBiSimulation simulation)
       {
-         return simulation.HistoricResults.Select(x => x.Name).Union(new[] {simulation.Results.Name});
+         return simulation.HistoricResults.Select(x => x.Name).Union(new[] {simulation.ResultsDataRepository.Name});
       }
 
       private void addCommand(IMoBiCommand command)

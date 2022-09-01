@@ -22,6 +22,8 @@ namespace MoBi.Presentation
    {
       protected IEditSimulationView _view;
       protected ISimulationChartPresenter _chartPresenter;
+      protected ISimulationPredictedVsObservedChartPresenter _simulationPredictedVsObservedChartPresenter;
+      protected ISimulationResidualVsTimeChartPresenter _simulationResidualVsTimeChartPresenter;
       protected IHierarchicalSimulationPresenter _hierarchicalSimulationPresenter;
       protected ISimulationDiagramPresenter _diagramPresenter;
       protected IEditSolverSettingsPresenter _solverSettings;
@@ -36,6 +38,8 @@ namespace MoBi.Presentation
       {
          _view = A.Fake<IEditSimulationView>();
          _chartPresenter = A.Fake<ISimulationChartPresenter>();
+         _simulationPredictedVsObservedChartPresenter = A.Fake<ISimulationPredictedVsObservedChartPresenter>();
+         _simulationResidualVsTimeChartPresenter = A.Fake<ISimulationResidualVsTimeChartPresenter>();
          _hierarchicalSimulationPresenter = A.Fake<IHierarchicalSimulationPresenter>();
          _diagramPresenter = A.Fake<ISimulationDiagramPresenter>();
          _solverSettings = A.Fake<IEditSolverSettingsPresenter>();
@@ -48,7 +52,8 @@ namespace MoBi.Presentation
 
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
-            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter);
+            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
+            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter);
       }
    }
 
@@ -207,7 +212,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation = new MoBiSimulation { Results = new DataRepository() };
+         _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
 
          var chart = new CurveChart();
 

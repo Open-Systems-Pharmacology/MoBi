@@ -291,7 +291,7 @@ namespace MoBi.Presentation.Presenter
       private IMoBiSimulation findSimulation(DataRepository dataRepository)
       {
          return _context.CurrentProject.Simulations
-            .FirstOrDefault(simulation => Equals(simulation.Results, dataRepository));
+            .FirstOrDefault(simulation => Equals(simulation.ResultsDataRepository, dataRepository));
       }
 
       private IMoBiSimulation findHistoricSimulation(DataRepository dataRepository)

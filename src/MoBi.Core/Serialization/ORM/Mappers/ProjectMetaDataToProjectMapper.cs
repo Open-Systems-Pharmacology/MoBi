@@ -91,7 +91,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          _project.AddSimulation(simulation);
          deserializeResults(simulation, simulationMetaData, serializationContext);
          //Ensure that all references to simulations (Simulation itself, results etc) are available in the serialization context
-         serializationContext.AddRepository(simulation.Results);
+         serializationContext.AddRepository(simulation.ResultsDataRepository);
          simulation.HistoricResults.Each(serializationContext.AddRepository);
          serializationContext.Register(simulation);
       }

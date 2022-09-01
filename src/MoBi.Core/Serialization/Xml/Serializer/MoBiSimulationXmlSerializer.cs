@@ -16,7 +16,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.Results);
+         Map(x => x.ResultsDataRepository);
          Map(x => x.ParameterIdentificationWorkingDirectory);
          Map(x => x.HasUpToDateResults);
       }
@@ -30,8 +30,8 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       {
          base.TypedDeserialize(simulation, outputToDeserialize, serializationContext);
 
-         if (simulation.Results != null)
-            serializationContext.AddRepository(simulation.Results);
+         if (simulation.ResultsDataRepository != null)
+            serializationContext.AddRepository(simulation.ResultsDataRepository);
 
          var chartSerializer = SerializerRepository.SerializerFor<CurveChart>();
          var chartElement = outputToDeserialize.Element(chartSerializer.ElementName);

@@ -40,6 +40,8 @@ namespace MoBi.UI.Views.SimulationView
          tabResults.InitWith(AppConstants.Captions.Results, ApplicationIcons.TimeProfileAnalysis);
          tabData.InitWith(AppConstants.Captions.SimulationData, ApplicationIcons.PKSim);
          tabTimeProfile.InitWith(AppConstants.Captions.TimeProfile, ApplicationIcons.TimeProfileAnalysis);
+         tabPredVsObs.InitWith(AppConstants.Captions.PredictedVsObserved, ApplicationIcons.PredictedVsObservedAnalysis);
+         tabResidVsTime.InitWith(AppConstants.Captions.ResidualsVsTime, ApplicationIcons.ResidualVsTimeAnalysis);
 
          tabsNavigation.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
          tabs.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);

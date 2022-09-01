@@ -152,11 +152,12 @@ namespace MoBi.Presentation.Tasks
       private void copyResultsToSimulation(SimulationRunResults results, IMoBiSimulation simulation)
       {
          var resultsResults = results.Results;
-         if (simulation.Results != null)
-            simulation.HistoricResults.Add(simulation.Results);
+         if (simulation.ResultsDataRepository != null)
+            simulation.HistoricResults.Add(simulation.ResultsDataRepository);
 
          setMolecularWeight(simulation, resultsResults);
-         simulation.Results = resultsResults;
+         simulation.ResultsDataRepository = resultsResults;
+         //so theoretically we could add here the calculation of the individual results...
       }
 
       private void setMolecularWeight(IMoBiSimulation simulation, IEnumerable<DataColumn> results)

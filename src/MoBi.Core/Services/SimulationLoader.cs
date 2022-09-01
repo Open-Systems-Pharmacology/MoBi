@@ -61,7 +61,7 @@ namespace MoBi.Core.Services
 
          addBuildConfigurationToProject(project, moBiSimulation.MoBiBuildConfiguration, loadCommand);
 
-         moBiSimulation.Results = simulation.Results;
+         moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
          if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
             return;
 

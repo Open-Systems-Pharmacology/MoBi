@@ -79,8 +79,8 @@ namespace MoBi.IntegrationTests
       [Observation]
       public void should_add_the_parameter_value_to_the_resulting_data_repository()
       {
-         _simulation.Results.ShouldNotBeNull();
-         var volumeParmaeterDataColumn = _simulation.Results.First(x => x.QuantityInfo.PathAsString == new[] {_simulation.Name, _organism.Name, Constants.Parameters.VOLUME}.ToPathString());
+         _simulation.ResultsDataRepository.ShouldNotBeNull();
+         var volumeParmaeterDataColumn = _simulation.ResultsDataRepository.First(x => x.QuantityInfo.PathAsString == new[] {_simulation.Name, _organism.Name, Constants.Parameters.VOLUME}.ToPathString());
          volumeParmaeterDataColumn.ShouldNotBeNull();
       }
    }

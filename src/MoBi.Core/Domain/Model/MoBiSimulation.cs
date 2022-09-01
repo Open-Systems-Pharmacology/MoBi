@@ -14,7 +14,7 @@ namespace MoBi.Core.Domain.Model
 {
    public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
    {
-      DataRepository Results { get; set; }
+      //DataRepository ResultsDataRepository { get; set; }
       ICache<string, DataRepository> HistoricResults { get; }
       CurveChart Chart { get; set; }
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
@@ -40,7 +40,6 @@ namespace MoBi.Core.Domain.Model
       private bool _hasChanged;
       private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       private DataRepository _results;
-      private SimulationResults _results1;
       public IDiagramModel DiagramModel { get; set; }
       public CurveChart Chart { get; set; }
       public string ParameterIdentificationWorkingDirectory { get; set; }
@@ -128,14 +127,6 @@ namespace MoBi.Core.Domain.Model
 
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
-      SimulationResults ISimulation.Results
-      {
-         get => _results1;
-         set => _results1 = value;
-      }
-
-      public DataRepository ResultRepository { get; }
-
       public new IReactionBuildingBlock Reactions
       {
          get => BuildConfiguration.Reactions;
@@ -180,9 +171,9 @@ namespace MoBi.Core.Domain.Model
          HasUpToDateResults = false;
       }
 
-      public bool HasResults => Results != null;
+      public bool HasResults => ResultsDataRepository != null;
 
-      public DataRepository Results
+      public DataRepository ResultsDataRepository
       {
          get => _results;
          set

@@ -10,6 +10,7 @@ using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Services;
@@ -126,6 +127,8 @@ namespace MoBi.Presentation.Presenter
          UpdateCaption();
          _view.Display();
          loadChart();
+         _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
+         _simulationResidualVsTimeChartPresenter.UpdateAnalysisBasedOn(_simulation);
       }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
@@ -146,11 +149,24 @@ namespace MoBi.Presentation.Presenter
 
       private void loadChart()
       {
+         //probably have to rename to charts
+         if (_simulationPredictedVsObservedChartPresenter.Chart == null)
+         {
+            var chart = _chartFactory.Create<SimulationPredictedVsObservedChart>();
+            _simulationPredictedVsObservedChartPresenter.InitializeAnalysis(chart, _simulation);
+         }
+
+         if (_simulationResidualVsTimeChartPresenter.Chart == null)
+         {
+            var chart = _chartFactory.Create<SimulationResidualVsTimeChart>();
+            _simulationResidualVsTimeChartPresenter.InitializeAnalysis(chart, _simulation);
+         }
+
          CurveChartTemplate defaultTemplate = null;
 
          var data = new List<DataRepository>();
-         if (_simulation.Results != null)
-            data.Add(_simulation.Results);
+         if (_simulation.ResultsDataRepository != null)
+            data.Add(_simulation.ResultsDataRepository);
 
          if (_simulation.Chart == null)
          {
@@ -164,6 +180,8 @@ namespace MoBi.Presentation.Presenter
             defaultTemplate = _simulation.DefaultChartTemplate;
 
          addObservedDataRepositories(data, _simulation.Chart.Curves);
+         _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
+         _simulationResidualVsTimeChartPresenter.UpdateAnalysisBasedOn(_simulation);
          _chartPresenter.Show(_simulation.Chart, data, defaultTemplate);
       }
 
