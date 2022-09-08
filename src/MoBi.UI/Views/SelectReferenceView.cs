@@ -10,11 +10,14 @@ using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
+using static MoBi.Assets.AppConstants.Captions;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace MoBi.UI.Views
 {
@@ -30,7 +33,7 @@ namespace MoBi.UI.Views
          _treeView = new UxTreeView();
          Controls.Add(_treeView);
 
-         grpEntityTreeView.FillWith(_treeView);
+         panelReferenceTreeView.FillWith(_treeView);
          _treeView.MouseDown += onMouseDown;
          _treeView.ShouldExpandAddedNode = false;
          _treeView.UseLazyLoading = true;
@@ -48,11 +51,13 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         groupControl.Text = AppConstants.Captions.SelectReferencesView;
+         Root.Text = SelectReferencesView;
          btEditSelectLocalisation.ToolTip = ToolTips.ReferenceSelector.SetLocalReferencePoint;
          radioGroupReferenceType.ToolTip = $"{ToolTips.ReferenceSelector.AbsolutePath}\n{ToolTips.ReferenceSelector.RelativePath}";
-         lblLocalisation.Text = AppConstants.Captions.LocalReferencePoint;
-         grpEntityTreeView.Text = AppConstants.Captions.PossibleReferencedObjects;
+         layoutItemLocalisation.Text = LocalReferencePoint.FormatForLabel();
+         layoutItemPanelTreeView.Text = PossibleReferencedObjects.FormatForLabel();
+         layoutItemRadioGroup.AdjustControlHeight(RADIO_GROUP_HEIGHT, layoutControl);
+         layoutItemRadioGroup.TextVisible = false;
       }
 
       private RadioGroupItem[] getReferenceTypesForRadioGroup()
@@ -104,10 +109,7 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public void Show(IEnumerable<ITreeNode> nodes)
-      {
-         addNodes(nodes, true);
-      }
+      public void Show(IEnumerable<ITreeNode> nodes) => addNodes(nodes, clear: true);
 
       private void addNodes(IEnumerable<ITreeNode> nodes, bool clear)
       {
@@ -144,15 +146,9 @@ namespace MoBi.UI.Views
          }
       }
 
-      public void AddNodes(IEnumerable<ITreeNode> nodes)
-      {
-         addNodes(nodes, false);
-      }
+      public void AddNodes(IEnumerable<ITreeNode> nodes) => addNodes(nodes, clear: false);
 
-      public void AddNode(ITreeNode node)
-      {
-         AddNodes(new[] {node});
-      }
+      public void AddNode(ITreeNode node) => AddNodes(new[] {node});
 
       public void Select(IEntity entityToSelect)
       {
@@ -170,23 +166,17 @@ namespace MoBi.UI.Views
       public void Remove(IObjectBase removedObject)
       {
          var treeNodes = GetNodes(removedObject);
-         treeNodes.Each(treeNode => { _treeView.DestroyNode(treeNode); });
+         treeNodes.Each(treeNode => _treeView.DestroyNode(treeNode));
       }
 
-      public IReadOnlyList<ITreeNode> GetNodes(IObjectBase objectBase)
-      {
-         return containsNodeWithId(objectBase.Id).ToList();
-      }
+      public IReadOnlyList<ITreeNode> GetNodes(IObjectBase objectBase) => containsNodeWithId(objectBase.Id).ToList();
 
       private IEnumerable<ITreeNode> containsNodeWithId(string id)
       {
          return _treeView.RootNodes.SelectMany(rootNode => rootNode.AllNodes).Where(node => node.TagAsObject.IsAnImplementationOf<IObjectBaseDTO>() && objectIdMatches(node.TagAsObject as IObjectBaseDTO, id));
       }
 
-      private bool objectIdMatches(IObjectBaseDTO objectBaseDTO, string id)
-      {
-         return string.Equals(objectBaseDTO.Id, id);
-      }
+      private bool objectIdMatches(IObjectBaseDTO objectBaseDTO, string id) => string.Equals(objectBaseDTO.Id, id);
 
       private void rgReferenceType_SelectedIndexChanged(object sender, EventArgs e)
       {
