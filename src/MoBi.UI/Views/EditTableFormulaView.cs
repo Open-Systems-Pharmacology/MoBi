@@ -153,7 +153,7 @@ namespace MoBi.UI.Views
          chkUseDerivedValues.Text = AppConstants.Captions.UseDerivedValues;
          chkUseDerivedValues.ToolTip = ToolTips.Formula.UseDerivedValues;
          btnAddValuePoint.InitWithImage(ApplicationIcons.Add, text: AppConstants.Captions.AddValuePoint, toolTip: ToolTips.Formula.AddPoint);
-         layoutItemAddValuePoint.AdjustButtonSize();
+         layoutItemAddValuePoint.AdjustButtonSize(layoutControl);
          _uxRepositoryItemCheckEdit = new UxRepositoryItemCheckEdit(gridView);
       }
 

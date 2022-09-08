@@ -30,7 +30,7 @@ namespace MoBi.UI.Views
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.selectionList = new DevExpress.XtraEditors.ListBoxControl();
          this.txtNewName = new DevExpress.XtraEditors.TextEdit();
@@ -41,8 +41,8 @@ namespace MoBi.UI.Views
          this.layoutControlItemSelection = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.selectionList)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.txtNewName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
@@ -54,24 +54,24 @@ namespace MoBi.UI.Views
          // 
          // layoutControl1
          // 
-         this.layoutControl1.Controls.Add(this.lblDescription);
-         this.layoutControl1.Controls.Add(this.selectionList);
-         this.layoutControl1.Controls.Add(this.txtNewName);
-         this.layoutControl1.Controls.Add(this.btAddNew);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(500, 216);
-         this.layoutControl1.TabIndex = 2;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.Controls.Add(this.lblDescription);
+         this.layoutControl.Controls.Add(this.selectionList);
+         this.layoutControl.Controls.Add(this.txtNewName);
+         this.layoutControl.Controls.Add(this.btAddNew);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(500, 216);
+         this.layoutControl.TabIndex = 2;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // lblDescription
          // 
          this.lblDescription.Location = new System.Drawing.Point(12, 12);
          this.lblDescription.Name = "lblDescription";
          this.lblDescription.Size = new System.Drawing.Size(63, 13);
-         this.lblDescription.StyleController = this.layoutControl1;
+         this.lblDescription.StyleController = this.layoutControl;
          this.lblDescription.TabIndex = 8;
          this.lblDescription.Text = "lblDescription";
          // 
@@ -80,7 +80,7 @@ namespace MoBi.UI.Views
          this.selectionList.Location = new System.Drawing.Point(12, 55);
          this.selectionList.Name = "selectionList";
          this.selectionList.Size = new System.Drawing.Size(476, 149);
-         this.selectionList.StyleController = this.layoutControl1;
+         this.selectionList.StyleController = this.layoutControl;
          this.selectionList.TabIndex = 7;
          // 
          // txtNewName
@@ -88,7 +88,7 @@ namespace MoBi.UI.Views
          this.txtNewName.Location = new System.Drawing.Point(12, 29);
          this.txtNewName.Name = "txtNewName";
          this.txtNewName.Size = new System.Drawing.Size(189, 20);
-         this.txtNewName.StyleController = this.layoutControl1;
+         this.txtNewName.StyleController = this.layoutControl;
          this.txtNewName.TabIndex = 6;
          // 
          // btAddNew
@@ -97,7 +97,7 @@ namespace MoBi.UI.Views
          this.btAddNew.Location = new System.Drawing.Point(205, 29);
          this.btAddNew.Name = "btAddNew";
          this.btAddNew.Size = new System.Drawing.Size(283, 22);
-         this.btAddNew.StyleController = this.layoutControl1;
+         this.btAddNew.StyleController = this.layoutControl;
          this.btAddNew.TabIndex = 5;
          this.btAddNew.Text = "Add To List";
          // 
@@ -174,13 +174,13 @@ namespace MoBi.UI.Views
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(500, 262);
-         this.Controls.Add(this.layoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "MultipleStringSelectionView";
          this.Text = "MultipleStringSelectionView";
-         this.Controls.SetChildIndex(this.layoutControl1, 0);
+         this.Controls.SetChildIndex(this.layoutControl, 0);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.selectionList)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.txtNewName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
@@ -194,7 +194,7 @@ namespace MoBi.UI.Views
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraEditors.TextEdit txtNewName;
       private DevExpress.XtraEditors.SimpleButton btAddNew;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;

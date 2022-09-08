@@ -30,7 +30,7 @@ namespace MoBi.UI.Views
       /// </summary>
       private void InitializeComponent()
       {
-         this.uxLayoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.btnAddTag = new DevExpress.XtraEditors.SimpleButton();
          this.layoutControlItemAddTag = new DevExpress.XtraLayout.LayoutControlItem();
@@ -38,8 +38,8 @@ namespace MoBi.UI.Views
          this.gridView = new MoBi.UI.Views.UxGridView();
          this.layoutControlItemTags = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).BeginInit();
-         this.uxLayoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemAddTag)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
@@ -49,16 +49,16 @@ namespace MoBi.UI.Views
          // 
          // uxLayoutControl1
          // 
-         this.uxLayoutControl.AllowCustomization = false;
-         this.uxLayoutControl.Controls.Add(this.gridControl);
-         this.uxLayoutControl.Controls.Add(this.btnAddTag);
-         this.uxLayoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.uxLayoutControl.Location = new System.Drawing.Point(0, 0);
-         this.uxLayoutControl.Name = "uxLayoutControl";
-         this.uxLayoutControl.Root = this.Root;
-         this.uxLayoutControl.Size = new System.Drawing.Size(538, 491);
-         this.uxLayoutControl.TabIndex = 0;
-         this.uxLayoutControl.Text = "uxLayoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.gridControl);
+         this.layoutControl.Controls.Add(this.btnAddTag);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.Root;
+         this.layoutControl.Size = new System.Drawing.Size(538, 491);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "uxLayoutControl1";
          // 
          // Root
          // 
@@ -77,7 +77,7 @@ namespace MoBi.UI.Views
          this.btnAddTag.Location = new System.Drawing.Point(2, 2);
          this.btnAddTag.Name = "btnAddTag";
          this.btnAddTag.Size = new System.Drawing.Size(534, 22);
-         this.btnAddTag.StyleController = this.uxLayoutControl;
+         this.btnAddTag.StyleController = this.layoutControl;
          this.btnAddTag.TabIndex = 4;
          this.btnAddTag.Text = "btnAddTag";
          // 
@@ -127,12 +127,12 @@ namespace MoBi.UI.Views
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.uxLayoutControl);
+         this.Controls.Add(this.layoutControl);
          this.Name = "TagsView";
          this.Size = new System.Drawing.Size(538, 491);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).EndInit();
-         this.uxLayoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemAddTag)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
@@ -144,7 +144,7 @@ namespace MoBi.UI.Views
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl uxLayoutControl;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private OSPSuite.UI.Controls.UxGridControl gridControl;
       private MoBi.UI.Views.UxGridView gridView;
       private DevExpress.XtraEditors.SimpleButton btnAddTag;

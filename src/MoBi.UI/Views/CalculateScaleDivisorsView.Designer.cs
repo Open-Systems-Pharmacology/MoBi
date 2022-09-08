@@ -29,7 +29,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -38,8 +38,8 @@
          this.layoutItemCalculateScaleDivisors = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
@@ -51,16 +51,16 @@
          // 
          // layoutControl1
          // 
-         this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.btnCalculateScaleDivisors);
-         this.layoutControl1.Controls.Add(this.gridControl);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(554, 400);
-         this.layoutControl1.TabIndex = 38;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.btnCalculateScaleDivisors);
+         this.layoutControl.Controls.Add(this.gridControl);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(554, 400);
+         this.layoutControl.TabIndex = 38;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // gridControl
          // 
@@ -110,7 +110,7 @@
          this.btnCalculateScaleDivisors.Location = new System.Drawing.Point(279, 366);
          this.btnCalculateScaleDivisors.Name = "btnCalculateScaleDivisors";
          this.btnCalculateScaleDivisors.Size = new System.Drawing.Size(263, 22);
-         this.btnCalculateScaleDivisors.StyleController = this.layoutControl1;
+         this.btnCalculateScaleDivisors.StyleController = this.layoutControl;
          this.btnCalculateScaleDivisors.TabIndex = 5;
          this.btnCalculateScaleDivisors.Text = "btnCalculateScaleDivisor";
          // 
@@ -137,13 +137,13 @@
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "CalculateScaleFactorsView";
          this.ClientSize = new System.Drawing.Size(554, 446);
-         this.Controls.Add(this.layoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "CalculateScaleDivisorsView";
          this.Text = "CalculateScaleFactorsView";
-         this.Controls.SetChildIndex(this.layoutControl1, 0);
+         this.Controls.SetChildIndex(this.layoutControl, 0);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
@@ -156,7 +156,7 @@
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraGrid.GridControl gridControl;
       private MoBi.UI.Views.UxGridView gridView;
