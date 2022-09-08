@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override void AddSpecificInitalObjects()
+      protected override void AddSpecificInitialObjects()
       {
          AddTimeReference();
          AddSpatialStructures();

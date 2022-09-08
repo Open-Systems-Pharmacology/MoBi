@@ -79,7 +79,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetStochiometricCoefficient(1.0, _reactionPartnerDTO);
+         sut.SetStoichiometricCoefficient(1.0, _reactionPartnerDTO);
       }
 
       [Observation]

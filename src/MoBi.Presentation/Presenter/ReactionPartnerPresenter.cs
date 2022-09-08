@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Presenter
    {
       bool HasError { get; }
       void AddNewReactionPartnerBuilder();
-      void SetStochiometricCoefficient(double newCoefficient, ReactionPartnerBuilderDTO reactionPartnerDTO);
+      void SetStoichiometricCoefficient(double newCoefficient, ReactionPartnerBuilderDTO reactionPartnerDTO);
       void SetPartnerMoleculeName(string newMoleculeName, ReactionPartnerBuilderDTO reactionPartnerDTO);
       void Remove(TReactionPartnerBuilder reactionPartnerBuilderDTO);
       void Edit(ReactionBuilderDTO reactionBuilderDTO, IBuildingBlock buildingBlock);
@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Presenter
          _reactionBuilderTask = reactionBuilderTask;
       }
 
-      public void SetStochiometricCoefficient(double newCoefficient, ReactionPartnerBuilderDTO reactionPartnerDTO)
+      public void SetStoichiometricCoefficient(double newCoefficient, ReactionPartnerBuilderDTO reactionPartnerDTO)
       {
          var partner = reactionPartnerDTO.PartnerBuilder;
          AddCommand(new EditReactionPartnerStoichiometricCoefficientCommand(newCoefficient, _reactionBuilderDTO.ReactionBuilder, partner, ReactionBuildingBlock).Run(_context));

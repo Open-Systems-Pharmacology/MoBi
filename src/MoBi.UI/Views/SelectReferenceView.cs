@@ -59,7 +59,7 @@ namespace MoBi.UI.Views
          layoutItemRadioGroup.AdjustControlHeight(RADIO_GROUP_HEIGHT, layoutControl);
          layoutItemRadioGroup.TextVisible = false;
       }
-
+      
       private RadioGroupItem[] getReferenceTypesForRadioGroup()
       {
          return new[]
