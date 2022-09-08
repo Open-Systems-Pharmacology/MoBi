@@ -50,9 +50,9 @@ namespace MoBi.UI.Views
       private IGridViewColumn _colBuildMode;
       private IGridViewColumn _colDescription;
       private readonly UxComboBoxUnit<ParameterDTO> _unitControl;
-      private readonly RepositoryItemTextEdit _stantdardParameterEditRepository = new RepositoryItemTextEdit();
+      private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       private RepositoryItemButtonEdit _isFixedParameterEditRepository;
-      private readonly RepositoryItemButtonEdit _addRemoveButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
+      private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private RepositoryItemButtonEdit _nameButtonRepository;
       private readonly UxRepositoryItemCheckEdit _checkBoxRepository;
 
@@ -94,7 +94,7 @@ namespace MoBi.UI.Views
          layoutControlItemLoadParameter.AdjustLargeButtonSize();
          chkShowAdvancedParameter.Text = AppConstants.Captions.ShowAdvancedParameters;
          chkGroupBy.Text = AppConstants.Captions.GroupParameters;
-         _addRemoveButtonRepository.Buttons[0].ToolTip = ToolTips.ParameterList.DeleteParameter;
+         _removeButtonRepository.Buttons[0].ToolTip = ToolTips.ParameterList.DeleteParameter;
          _gridView.MultiSelect = true;
       }
 
@@ -172,10 +172,10 @@ namespace MoBi.UI.Views
          _colButtons = _gridViewBinder.AddUnboundColumn()
             .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithRepository(dto => _addRemoveButtonRepository)
+            .WithRepository(dto => _removeButtonRepository)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
-         _addRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveParameter(_gridViewBinder.FocusedElement));
+         _removeButtonRepository.ButtonClick += (o, e) => OnEvent(_presenter.RemoveParameter, _gridViewBinder.FocusedElement);
 
 
          _gridView.FocusedRowChanged += (o, e) => OnEvent(gridViewRowChanged, e);
@@ -186,15 +186,9 @@ namespace MoBi.UI.Views
          btLoadParameter.Click += (o, e) => OnEvent(_presenter.LoadParameter);
       }
 
-      private void onIsFavoriteSet(ParameterDTO parameterDTO, bool newValue)
-      {
-         _presenter.SetIsFavorite(parameterDTO, newValue);
-      }
+      private void onIsFavoriteSet(ParameterDTO parameterDTO, bool newValue) => _presenter.SetIsFavorite(parameterDTO, newValue);
 
-      private void onIsPersistableSet(ParameterDTO parameterDTO, bool newValue)
-      {
-         _presenter.SetIsPersistable(parameterDTO, newValue);
-      }
+      private void onIsPersistableSet(ParameterDTO parameterDTO, bool newValue) => _presenter.SetIsPersistable(parameterDTO, newValue);
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
       {
@@ -246,7 +240,7 @@ namespace MoBi.UI.Views
          if (_presenter.IsFixedValue(parameter))
             return _isFixedParameterEditRepository;
 
-         return _stantdardParameterEditRepository;
+         return _standardParameterEditRepository;
       }
 
       private void configureRepository(BaseEdit activeEditor, ParameterDTO parameter)

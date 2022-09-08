@@ -139,9 +139,8 @@ namespace MoBi.UI.Views
 
       private UxRepositoryItemButtonEdit createButtonRepository()
       {
-         var buttonRepositoryItem = new UxRepositoryItemButtonEdit(ButtonPredefines.Plus);
+         var buttonRepositoryItem = new UxAddAndRemoveButtonRepository();
          buttonRepositoryItem.Buttons[0].ToolTip = ToolTips.Formula.AddPoint;
-         buttonRepositoryItem.AddButton(ButtonPredefines.Delete);
          buttonRepositoryItem.Buttons[1].ToolTip = ToolTips.Formula.DeletePoint;
          buttonRepositoryItem.ButtonClick += (o, e) => OnEvent(onButtonClick, e);
          return buttonRepositoryItem;
