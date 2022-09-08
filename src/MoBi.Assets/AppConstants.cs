@@ -1361,6 +1361,8 @@ namespace MoBi.Assets
          public static readonly string Category = "Category";
          public static readonly string UseAsValue = "Use assignment as value";
          public static readonly string SelectLocalReferencePoint = "Select local reference point";
+         public static readonly string LocalReferencePoint = "Local reference point";
+         public static readonly string PossibleReferencedObjects = "Possible referenced objects";
          public static readonly string RelativeContainerPath = "Relative container path";
          public static readonly string Parameters = "Parameters";
          public static readonly string ChangedEntityPath = "Changed entity path";

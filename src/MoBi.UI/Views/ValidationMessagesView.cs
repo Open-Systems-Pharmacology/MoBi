@@ -76,7 +76,7 @@ namespace MoBi.UI.Views
          btnSaveLog.ImageLocation = ImageLocation.MiddleLeft;
          layoutItemSaveLog.AdjustButtonSize(layoutControl);
       }
-
+         
       public void AttachPresenter(IValidationMessagesPresenter presenter)
       {
          _presenter = presenter;
