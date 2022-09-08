@@ -1250,7 +1250,6 @@ namespace MoBi.Assets
       {
          public static readonly string Modifiers = "Modifiers";
          public static readonly string Dimension = "Dimension";
-         public static readonly string Alias = "Alias";
          public static readonly string Unit = "Unit";
          public static readonly string FormulaCreationCaption = "Formula Creation Wizard";
          public static readonly string SimulationCreationCaption = "Simulation Creation Wizard";

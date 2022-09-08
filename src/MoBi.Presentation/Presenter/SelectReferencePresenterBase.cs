@@ -100,7 +100,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addInitialObjects()
       {
-         AddSpecificInitalObjects();
+         AddSpecificInitialObjects();
       }
 
       public virtual IEnumerable<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto)
@@ -229,7 +229,7 @@ namespace MoBi.Presentation.Presenter
          _view.Select(entityToSelect);
       }
 
-      protected abstract void AddSpecificInitalObjects();
+      protected abstract void AddSpecificInitialObjects();
 
       protected void AddSpatialStructures()
       {
