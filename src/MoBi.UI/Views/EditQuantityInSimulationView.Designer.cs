@@ -32,7 +32,7 @@
          this.tabControl = new DevExpress.XtraTab.XtraTabControl();
          this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
          this.tabValue = new DevExpress.XtraTab.XtraTabPage();
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnResetToFormulaValue = new DevExpress.XtraEditors.SimpleButton();
          this.pnlFormula = new DevExpress.XtraEditors.PanelControl();
          this.valueEdit = new MoBi.UI.Views.ValueEdit();
@@ -45,8 +45,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.tabControl)).BeginInit();
          this.tabControl.SuspendLayout();
          this.tabValue.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.pnlFormula)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemFormula)).BeginInit();
@@ -75,31 +75,31 @@
          // 
          // tabValue
          // 
-         this.tabValue.Controls.Add(this.layoutControl1);
+         this.tabValue.Controls.Add(this.layoutControl);
          this.tabValue.Name = "tabValue";
          this.tabValue.Size = new System.Drawing.Size(1244, 375);
          this.tabValue.Text = "tabValue";
          // 
          // layoutControl1
          // 
-         this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.btnResetToFormulaValue);
-         this.layoutControl1.Controls.Add(this.pnlFormula);
-         this.layoutControl1.Controls.Add(this.valueEdit);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(1244, 375);
-         this.layoutControl1.TabIndex = 0;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.btnResetToFormulaValue);
+         this.layoutControl.Controls.Add(this.pnlFormula);
+         this.layoutControl.Controls.Add(this.valueEdit);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(1244, 375);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // btnResetToFormulaValue
          // 
          this.btnResetToFormulaValue.Location = new System.Drawing.Point(624, 12);
          this.btnResetToFormulaValue.Name = "btnResetToFormulaValue";
          this.btnResetToFormulaValue.Size = new System.Drawing.Size(608, 22);
-         this.btnResetToFormulaValue.StyleController = this.layoutControl1;
+         this.btnResetToFormulaValue.StyleController = this.layoutControl;
          this.btnResetToFormulaValue.TabIndex = 5;
          this.btnResetToFormulaValue.Text = "btnResetToFormulaValue";
          // 
@@ -187,8 +187,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.tabControl)).EndInit();
          this.tabControl.ResumeLayout(false);
          this.tabValue.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.pnlFormula)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemFormula)).EndInit();
@@ -211,6 +211,6 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemValue;
       private DevExpress.XtraEditors.SimpleButton btnResetToFormulaValue;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemReset;
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
    }
 }

@@ -103,7 +103,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          ExtraVisible = true;
-         layoutItemCalculateScaleDivisors.AdjustButtonSize();
+         layoutItemCalculateScaleDivisors.AdjustButtonSize(layoutControl);
          btnCalculateScaleDivisors.InitWithImage(ApplicationIcons.Run, AppConstants.Captions.Calculate);
          ButtonExtra.InitWithImage(ApplicationIcons.Reset, AppConstants.Captions.Reset);
          ApplicationIcon = ApplicationIcons.ScaleFactor;

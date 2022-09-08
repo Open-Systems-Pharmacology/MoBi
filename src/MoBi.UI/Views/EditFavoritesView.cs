@@ -40,8 +40,11 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          buttonMoveUp.InitWithImage(ApplicationIcons.Up, imageLocation: ImageLocation.MiddleCenter, toolTip: ToolTips.ParameterList.MoveUp);
          buttonMoveDown.InitWithImage(ApplicationIcons.Down, imageLocation: ImageLocation.MiddleCenter, toolTip: ToolTips.ParameterList.MoveDown);
-         layoutItemButtonMoveUp.AdjustButtonSizeWithImageOnly();
-         layoutItemButtonMoveDown.AdjustButtonSizeWithImageOnly();
+         layoutControl.DoInBatch(() =>
+         {
+            layoutItemButtonMoveUp.AdjustButtonSizeWithImageOnly();
+            layoutItemButtonMoveDown.AdjustButtonSizeWithImageOnly();
+         });
       }
    }
 }

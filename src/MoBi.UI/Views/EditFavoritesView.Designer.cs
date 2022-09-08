@@ -28,7 +28,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+         this.layoutControl = new DevExpress.XtraLayout.LayoutControl();
          this.panelParameters = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemParameters = new DevExpress.XtraLayout.LayoutControlItem();
@@ -38,8 +38,8 @@
          this.buttonMoveDown = new DevExpress.XtraEditors.SimpleButton();
          this.layoutItemButtonMoveDown = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameters)).BeginInit();
@@ -50,16 +50,16 @@
          // 
          // layoutControl1
          // 
-         this.layoutControl1.Controls.Add(this.buttonMoveDown);
-         this.layoutControl1.Controls.Add(this.buttonMoveUp);
-         this.layoutControl1.Controls.Add(this.panelParameters);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(404, 399);
-         this.layoutControl1.TabIndex = 0;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.Controls.Add(this.buttonMoveDown);
+         this.layoutControl.Controls.Add(this.buttonMoveUp);
+         this.layoutControl.Controls.Add(this.panelParameters);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(404, 399);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // panelParameters
          // 
@@ -105,7 +105,7 @@
          this.buttonMoveUp.Location = new System.Drawing.Point(308, 2);
          this.buttonMoveUp.Name = "buttonMoveUp";
          this.buttonMoveUp.Size = new System.Drawing.Size(94, 22);
-         this.buttonMoveUp.StyleController = this.layoutControl1;
+         this.buttonMoveUp.StyleController = this.layoutControl;
          this.buttonMoveUp.TabIndex = 5;
          this.buttonMoveUp.Text = "buttonMoveUp";
          // 
@@ -123,7 +123,7 @@
          this.buttonMoveDown.Location = new System.Drawing.Point(308, 28);
          this.buttonMoveDown.Name = "buttonMoveDown";
          this.buttonMoveDown.Size = new System.Drawing.Size(94, 22);
-         this.buttonMoveDown.StyleController = this.layoutControl1;
+         this.buttonMoveDown.StyleController = this.layoutControl;
          this.buttonMoveDown.TabIndex = 6;
          this.buttonMoveDown.Text = "buttonMoveDown";
          // 
@@ -140,12 +140,12 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.layoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "EditFavoritesView";
          this.Size = new System.Drawing.Size(404, 399);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameters)).EndInit();
@@ -158,7 +158,7 @@
 
       #endregion
 
-      private DevExpress.XtraLayout.LayoutControl layoutControl1;
+      private DevExpress.XtraLayout.LayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.PanelControl panelParameters;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemParameters;

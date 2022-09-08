@@ -60,7 +60,7 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          btnAddTag.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddTag);
 
-         layoutControlItemAddTag.AdjustButtonSize();
+         layoutControlItemAddTag.AdjustButtonSize(layoutControl);
       }
 
       private void onButtonClicked(ButtonPressedEventArgs buttonPressedEventArgs, TagDTO tagDTO)
