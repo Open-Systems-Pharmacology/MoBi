@@ -29,30 +29,30 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.groupControl1 = new DevExpress.XtraEditors.GroupControl();
+         this.groupControl = new DevExpress.XtraEditors.GroupControl();
          this.lblLocalisation = new DevExpress.XtraEditors.LabelControl();
          this.grpEntityTreeView = new DevExpress.XtraEditors.GroupControl();
-         this.rgReferenceType = new DevExpress.XtraEditors.RadioGroup();
+         this.radioGroupReferenceType = new DevExpress.XtraEditors.RadioGroup();
          this.btEditSelectLocalisation = new DevExpress.XtraEditors.ButtonEdit();
-         ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).BeginInit();
-         this.groupControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.groupControl)).BeginInit();
+         this.groupControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.grpEntityTreeView)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.rgReferenceType.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.radioGroupReferenceType.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.btEditSelectLocalisation.Properties)).BeginInit();
          this.SuspendLayout();
          // 
-         // groupControl1
+         // groupControl
          // 
-         this.groupControl1.Controls.Add(this.lblLocalisation);
-         this.groupControl1.Controls.Add(this.grpEntityTreeView);
-         this.groupControl1.Controls.Add(this.rgReferenceType);
-         this.groupControl1.Controls.Add(this.btEditSelectLocalisation);
-         this.groupControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.groupControl1.Location = new System.Drawing.Point(0, 0);
-         this.groupControl1.Name = "groupControl1";
-         this.groupControl1.Size = new System.Drawing.Size(239, 451);
-         this.groupControl1.TabIndex = 0;
-         this.groupControl1.Text = "groupControl1";
+         this.groupControl.Controls.Add(this.lblLocalisation);
+         this.groupControl.Controls.Add(this.grpEntityTreeView);
+         this.groupControl.Controls.Add(this.radioGroupReferenceType);
+         this.groupControl.Controls.Add(this.btEditSelectLocalisation);
+         this.groupControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.groupControl.Location = new System.Drawing.Point(0, 0);
+         this.groupControl.Name = "groupControl";
+         this.groupControl.Size = new System.Drawing.Size(239, 451);
+         this.groupControl.TabIndex = 0;
+         this.groupControl.Text = "groupControl";
          // 
          // lblLocalisation
          // 
@@ -60,7 +60,6 @@
          this.lblLocalisation.Name = "lblLocalisation";
          this.lblLocalisation.Size = new System.Drawing.Size(104, 13);
          this.lblLocalisation.TabIndex = 6;
-         this.lblLocalisation.Text = "Local Reference Point";
          // 
          // grpEntityTreeView
          // 
@@ -75,13 +74,13 @@
          // 
          // rgReferenceType
          // 
-         this.rgReferenceType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+         this.radioGroupReferenceType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                      | System.Windows.Forms.AnchorStyles.Right)));
-         this.rgReferenceType.Location = new System.Drawing.Point(3, 71);
-         this.rgReferenceType.Name = "rgReferenceType";
-         this.rgReferenceType.Size = new System.Drawing.Size(232, 21);
-         this.rgReferenceType.TabIndex = 4;
-         this.rgReferenceType.SelectedIndexChanged += new System.EventHandler(this.rgReferenceType_SelectedIndexChanged);
+         this.radioGroupReferenceType.Location = new System.Drawing.Point(3, 71);
+         this.radioGroupReferenceType.Name = "radioGroupReferenceType";
+         this.radioGroupReferenceType.Size = new System.Drawing.Size(232, 21);
+         this.radioGroupReferenceType.TabIndex = 4;
+         this.radioGroupReferenceType.SelectedIndexChanged += new System.EventHandler(this.rgReferenceType_SelectedIndexChanged);
          // 
          // btEditSelectLocalisation
          // 
@@ -97,14 +96,14 @@
          // 
          // SelectReferenceView
          // 
-         this.Controls.Add(this.groupControl1);
+         this.Controls.Add(this.groupControl);
          this.Name = "SelectReferenceView";
          this.Size = new System.Drawing.Size(239, 451);
-         ((System.ComponentModel.ISupportInitialize)(this.groupControl1)).EndInit();
-         this.groupControl1.ResumeLayout(false);
-         this.groupControl1.PerformLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.groupControl)).EndInit();
+         this.groupControl.ResumeLayout(false);
+         this.groupControl.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.grpEntityTreeView)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.rgReferenceType.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.radioGroupReferenceType.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.btEditSelectLocalisation.Properties)).EndInit();
          this.ResumeLayout(false);
 
@@ -112,9 +111,9 @@
 
       #endregion
 
-      private DevExpress.XtraEditors.GroupControl groupControl1;
+      private DevExpress.XtraEditors.GroupControl groupControl;
       private DevExpress.XtraEditors.GroupControl grpEntityTreeView;
-      private DevExpress.XtraEditors.RadioGroup rgReferenceType;
+      private DevExpress.XtraEditors.RadioGroup radioGroupReferenceType;
       private DevExpress.XtraEditors.ButtonEdit btEditSelectLocalisation;
       private DevExpress.XtraEditors.LabelControl lblLocalisation;
 
