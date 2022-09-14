@@ -90,11 +90,6 @@ namespace MoBi.UI.Views.SimulationView
          tabs.SelectedTabPage = tabResults;
       }
 
-      public void SetDataView(ISimulationOutputMappingView view)
-      {
-         tabData.FillWith(view);
-      }
-
       public void SetPredictedVsObservedView(ISimulationRunAnalysisView view)
       {
          tabPredVsObs.FillWith(view);

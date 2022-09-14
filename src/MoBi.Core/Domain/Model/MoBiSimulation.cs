@@ -125,8 +125,6 @@ namespace MoBi.Core.Domain.Model
          get { yield return Chart; }
       }
 
-      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
-
       public new IReactionBuildingBlock Reactions
       {
          get => BuildConfiguration.Reactions;

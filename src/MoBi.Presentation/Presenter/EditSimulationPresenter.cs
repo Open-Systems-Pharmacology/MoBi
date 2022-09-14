@@ -146,7 +146,6 @@ namespace MoBi.Presentation.Presenter
       }
 
       public override object Subject => _simulation;
-
       private void loadChart()
       {
          //probably have to rename to charts
