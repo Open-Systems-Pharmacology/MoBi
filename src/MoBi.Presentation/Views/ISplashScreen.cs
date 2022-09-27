@@ -8,5 +8,7 @@ namespace MoBi.Presentation.Views
       void StopProgress();
       void StartProgress(int startingProgress, string caption);
       void ShowProgress(int startingProgress, string caption);
+      string VersionInfo { set; }
+
    }
 }

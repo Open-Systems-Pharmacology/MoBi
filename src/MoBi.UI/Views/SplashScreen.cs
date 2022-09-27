@@ -13,7 +13,7 @@ namespace MoBi.UI.Views
       public SplashScreen()
       {
          InitializeComponent();
-         this.labelCopyright.Text = $"Copyright © 2002-{DateTime.Now.Year} - Open Systems Pharmacology Community";
+         labelCopyright.Text = $"Copyright © 2002-{DateTime.Now.Year} - Open Systems Pharmacology Community";
          FormBorderStyle = FormBorderStyle.None;
          StartPosition = FormStartPosition.CenterScreen;
          ShowInTaskbar = false;
@@ -37,6 +37,11 @@ namespace MoBi.UI.Views
          ShowProgress(startingProgress, caption);
       }
 
+      public string VersionInfo
+      {
+         set => labelVersion.Text = $"Version {value}";
+      }
+
       public void ShowProgress(int progress, string caption)
       {
          labelStatus.Text = caption;
@@ -46,6 +51,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          labelStatus.Text = string.Empty;
+
       }
    }
 }
