@@ -35,7 +35,7 @@ namespace MoBi.Core.Services
 
       private DataFactory createDataFactory()
       {
-         return new DataFactory(_context.DimensionFactory, _context.ObjectPathFactory, _displayUnitRetriever, _dataRepositoryTask);
+         return new DataFactory(_context.DimensionFactory, _displayUnitRetriever, _dataRepositoryTask);
       }
    }
 }
