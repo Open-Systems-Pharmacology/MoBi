@@ -87,7 +87,7 @@ namespace MoBi.IntegrationTests
 
             var simulation = new MoBiSimulation {BuildConfiguration = buildConfigurtion, Model = result.Model};
             var simModelManager = new SimModelManager(_simModelExporter, new SimModelSimulationFactory(),
-               new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), IoC.Resolve<IObjectPathFactory>(), IoC.Resolve<IDisplayUnitRetriever>(), IoC.Resolve<IDataRepositoryTask>()));
+               new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), IoC.Resolve<IDisplayUnitRetriever>(), IoC.Resolve<IDataRepositoryTask>()));
             var runResults = simModelManager.RunSimulation(simulation);
             if (!runResults.Success)
             {
