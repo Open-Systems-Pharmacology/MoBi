@@ -1,7 +1,7 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -62,6 +62,19 @@ namespace MoBi.Core.Commands
       }
    }
 
+   public class When_adding_a_new_parameter_to_interaction_container : When_testing_for_appropriate_parameter_build_modes
+   {
+      protected override IContainer GetContainer()
+      {
+         return new InteractionContainer();
+      }
+
+      protected override ParameterBuildMode GetBuildModeType()
+      {
+         return ParameterBuildMode.Global;
+      }
+   }
+
    public class When_adding_a_new_parameter_to_a_generic_container : When_testing_for_appropriate_parameter_build_modes
    {
       protected override IContainer GetContainer()
@@ -75,7 +88,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_executing_inverse_of_add_a_new_paramter_to_container : concern_for_AddParameterToContainerCommand
+   public class When_executing_inverse_of_add_a_new_parameter_to_container : concern_for_AddParameterToContainerCommand
    {
       protected override void Context()
       {
@@ -101,5 +114,4 @@ namespace MoBi.Core.Commands
          _container.ShouldBeEmpty();
       }
    }
-
 }
