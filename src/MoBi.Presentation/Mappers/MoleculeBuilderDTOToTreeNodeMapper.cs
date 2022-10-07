@@ -1,9 +1,9 @@
 using System.Linq;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using OSPSuite.Assets;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -11,28 +11,26 @@ namespace MoBi.Presentation.Mappers
    {
    }
 
-
    internal class MoleculeBuilderDTOToTreeNodeMapper : IMoleculeBuilderDTOToTreeNodeMapper
    {
-      private readonly ITransporterMoleculeContainerDTOToMoleculeTreeNodeMapper _activeTransportBuilderContaienrToMolceculeTreeNodeMapper;
+      private readonly ITransporterMoleculeContainerDTOToMoleculeTreeNodeMapper _activeTransportBuilderContainerToMoleculeTreeNodeMapper;
       private readonly IInteractionContainerDTOToMoleculeTreeMapper _interactionContainerMapper;
 
-      public MoleculeBuilderDTOToTreeNodeMapper(ITransporterMoleculeContainerDTOToMoleculeTreeNodeMapper activeTransportBuilderContaienrToMolceculeTreeNodeMapper, IInteractionContainerDTOToMoleculeTreeMapper interactionContainerMapper)
+      public MoleculeBuilderDTOToTreeNodeMapper(ITransporterMoleculeContainerDTOToMoleculeTreeNodeMapper activeTransportBuilderContainerToMoleculeTreeNodeMapper, IInteractionContainerDTOToMoleculeTreeMapper interactionContainerMapper)
       {
-         _activeTransportBuilderContaienrToMolceculeTreeNodeMapper = activeTransportBuilderContaienrToMolceculeTreeNodeMapper;
+         _activeTransportBuilderContainerToMoleculeTreeNodeMapper = activeTransportBuilderContainerToMoleculeTreeNodeMapper;
          _interactionContainerMapper = interactionContainerMapper;
       }
 
-      public IMoleculeTreeNode MapFrom(MoleculeBuilderDTO input)
+      public IMoleculeTreeNode MapFrom(MoleculeBuilderDTO moleculeBuilderDTO)
       {
-         var node = new MoleculeTreeNode(input) {Text = input.Name, Icon = ApplicationIcons.IconByName(input.Icon)};
-         var children = input.TransporterMolecules.MapAllUsing(_activeTransportBuilderContaienrToMolceculeTreeNodeMapper).ToList();
-         children = children.Union(input.InteractionContainerCollection.MapAllUsing(_interactionContainerMapper)).ToList();
+         var node = new MoleculeTreeNode(moleculeBuilderDTO) {Text = moleculeBuilderDTO.Name, Icon = ApplicationIcons.IconByName(moleculeBuilderDTO.Icon)};
+         var children = moleculeBuilderDTO.TransporterMolecules.MapAllUsing(_activeTransportBuilderContainerToMoleculeTreeNodeMapper).ToList();
+         children = children.Union(moleculeBuilderDTO.InteractionContainerCollection.MapAllUsing(_interactionContainerMapper)).ToList();
          children.Each(node.AddChild);
          return node;
       }
    }
-
 
    public interface ITransporterMoleculeContainerDTOToMoleculeTreeNodeMapper : IMapper<TransporterMoleculeContainerDTO, IMoleculeTreeNode>
    {
@@ -40,27 +38,27 @@ namespace MoBi.Presentation.Mappers
 
    internal class TransporterMoleculeContainerDTOToMoleculeTreeNodeMapper : ITransporterMoleculeContainerDTOToMoleculeTreeNodeMapper
    {
-      private readonly ITranpsortBuilderDTOToMoleculeTreeNodeMapper _activeTransportRealizationsBuilderToMolceculeTreeNodeMapper;
+      private readonly ITransportBuilderDTOToMoleculeTreeNodeMapper _activeTransportRealizationsBuilderToMoleculeTreeNodeMapper;
 
-      public TransporterMoleculeContainerDTOToMoleculeTreeNodeMapper(ITranpsortBuilderDTOToMoleculeTreeNodeMapper activeTransportRealizationsBuilderToMolceculeTreeNodeMapper)
+      public TransporterMoleculeContainerDTOToMoleculeTreeNodeMapper(ITransportBuilderDTOToMoleculeTreeNodeMapper activeTransportRealizationsBuilderToMoleculeTreeNodeMapper)
       {
-         _activeTransportRealizationsBuilderToMolceculeTreeNodeMapper = activeTransportRealizationsBuilderToMolceculeTreeNodeMapper;
+         _activeTransportRealizationsBuilderToMoleculeTreeNodeMapper = activeTransportRealizationsBuilderToMoleculeTreeNodeMapper;
       }
 
       public IMoleculeTreeNode MapFrom(TransporterMoleculeContainerDTO input)
       {
          var node = new MoleculeTreeNode(input) {Text = input.Name, Icon = ApplicationIcons.IconByName(input.Icon)};
-         var children = input.Realizations.MapAllUsing(_activeTransportRealizationsBuilderToMolceculeTreeNodeMapper);
+         var children = input.Realizations.MapAllUsing(_activeTransportRealizationsBuilderToMoleculeTreeNodeMapper);
          children.Each(node.AddChild);
          return node;
       }
    }
 
-   internal interface ITranpsortBuilderDTOToMoleculeTreeNodeMapper : IMapper<TransportBuilderDTO, IMoleculeTreeNode>
+   internal interface ITransportBuilderDTOToMoleculeTreeNodeMapper : IMapper<TransportBuilderDTO, IMoleculeTreeNode>
    {
    }
 
-   internal class TranpsortBuilderDTOToMoleculeTreeNodeMapper : ITranpsortBuilderDTOToMoleculeTreeNodeMapper
+   internal class TransportBuilderDTOToMoleculeTreeNodeMapper : ITransportBuilderDTOToMoleculeTreeNodeMapper
    {
       public IMoleculeTreeNode MapFrom(TransportBuilderDTO input)
       {
@@ -68,16 +66,18 @@ namespace MoBi.Presentation.Mappers
       }
    }
 
-   public interface IInteractionContainerDTOToMoleculeTreeMapper:IMapper<InteractionContainerDTO,IMoleculeTreeNode>
+   public interface IInteractionContainerDTOToMoleculeTreeMapper : IMapper<InteractionContainerDTO, IMoleculeTreeNode>
    {
-       
    }
 
-   class InteractionContainerDTOToMoleculeTreeMapper : IInteractionContainerDTOToMoleculeTreeMapper
+   public class InteractionContainerDTOToMoleculeTreeMapper : IInteractionContainerDTOToMoleculeTreeMapper
    {
-      public IMoleculeTreeNode MapFrom(InteractionContainerDTO input)
+      public IMoleculeTreeNode MapFrom(InteractionContainerDTO interactionContainerDTO)
       {
-         return new MoleculeTreeNode(input) {Text = input.Name, Icon = ApplicationIcons.IconByName(input.Icon)};
+         return new MoleculeTreeNode(interactionContainerDTO)
+         {
+            Text = interactionContainerDTO.Name, Icon = ApplicationIcons.IconByName(interactionContainerDTO.Icon)
+         };
       }
    }
 }
