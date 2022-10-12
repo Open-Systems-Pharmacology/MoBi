@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.UI.Tests", "tests\MoBi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.Engine", "src\MoBi.Engine\MoBi.Engine.csproj", "{15ED932C-EDEC-407B-91D9-7BCB8E7F95F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DXApplication1", "DXApplication1\DXApplication1.csproj", "{5413DF87-239B-4541-BBEF-7F898E485025}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -139,6 +141,18 @@ Global
 		{15ED932C-EDEC-407B-91D9-7BCB8E7F95F5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{15ED932C-EDEC-407B-91D9-7BCB8E7F95F5}.Release|x86.ActiveCfg = Release|Any CPU
 		{15ED932C-EDEC-407B-91D9-7BCB8E7F95F5}.Release|x86.Build.0 = Release|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Debug|x86.Build.0 = Debug|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Release|x86.ActiveCfg = Release|Any CPU
+		{5413DF87-239B-4541-BBEF-7F898E485025}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,9 @@
-﻿namespace MoBi.UI.Views
+﻿using DevExpress.XtraEditors;
+using DevExpress.XtraLayout;
+
+namespace DXApplication1
 {
-   partial class EditDistributedParameterView
+   partial class UserControl1
    {
       /// <summary> 
       /// Required designer variable.
@@ -17,7 +20,6 @@
          {
             components.Dispose();
          }
-         _screenBinder.Dispose();
          base.Dispose(disposing);
       }
 
@@ -30,36 +32,36 @@
       private void InitializeComponent()
       {
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
-         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new LayoutControl();
          this.tableProperties = new DevExpress.Utils.Layout.TablePanel();
-         this.veValue = new MoBi.UI.Views.ValueEdit();
+         this.veValue = new ValueEdit();
          this.labelPercentile = new DevExpress.XtraEditors.LabelControl();
          this.labelValue = new DevExpress.XtraEditors.LabelControl();
          this.labelDimension = new DevExpress.XtraEditors.LabelControl();
          this.labelName = new DevExpress.XtraEditors.LabelControl();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
-         this.cbDimension = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbDimension = new ComboBoxEdit();
          this.tbPercentile = new DevExpress.XtraEditors.TextEdit();
          this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
-         this.veDeviation = new MoBi.UI.Views.ValueEdit();
-         this.veGeoStd = new MoBi.UI.Views.ValueEdit();
-         this.veMaximum = new MoBi.UI.Views.ValueEdit();
-         this.veMinimum = new MoBi.UI.Views.ValueEdit();
-         this.veMean = new MoBi.UI.Views.ValueEdit();
+         this.veDeviation = new ValueEdit();
+         this.veGeoStd = new ValueEdit();
+         this.veMaximum = new ValueEdit();
+         this.veMinimum = new ValueEdit();
+         this.veMean = new ValueEdit();
          this.labellDistribution = new DevExpress.XtraEditors.LabelControl();
          this.labelDeviation = new DevExpress.XtraEditors.LabelControl();
          this.labelGeoStd = new DevExpress.XtraEditors.LabelControl();
          this.labelMaximum = new DevExpress.XtraEditors.LabelControl();
          this.labelMinimum = new DevExpress.XtraEditors.LabelControl();
          this.labelMean = new DevExpress.XtraEditors.LabelControl();
-         this.cbFormulaType = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbFormulaType = new ComboBoxEdit();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupDistribution = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.tableProperties)).BeginInit();
@@ -439,7 +441,6 @@
          this.Controls.Add(this.layoutControl);
          this.Name = "EditDistributedParameterView";
          this.Size = new System.Drawing.Size(568, 509);
-         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.tableProperties)).EndInit();
@@ -466,14 +467,14 @@
 
       private DevExpress.XtraEditors.LabelControl lblDescription;
       private DevExpress.XtraEditors.ButtonEdit btName;
-      private OSPSuite.UI.Controls.UxComboBoxEdit cbDimension;
+      private ComboBoxEdit cbDimension;
       private DevExpress.XtraEditors.MemoExEdit htmlEditor;
-      private OSPSuite.UI.Controls.UxComboBoxEdit cbFormulaType;
+      private ComboBoxEdit cbFormulaType;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupDistribution;
       private DevExpress.XtraEditors.TextEdit tbPercentile;
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
+      private LayoutControl layoutControl;
       private DevExpress.Utils.Layout.TablePanel tablePanel;
       private DevExpress.XtraEditors.LabelControl labelDeviation;
       private DevExpress.XtraEditors.LabelControl labelGeoStd;

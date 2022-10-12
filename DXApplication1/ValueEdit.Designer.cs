@@ -1,6 +1,6 @@
 ﻿using DevExpress.XtraEditors;
 
-namespace MoBi.UI.Views
+namespace DXApplication1
 {
    partial class  ValueEdit
    {
@@ -19,7 +19,6 @@ namespace MoBi.UI.Views
          {
             components.Dispose();
          }
-         _screenBinder.Dispose();
          base.Dispose(disposing);
       }
 
@@ -34,10 +33,10 @@ namespace MoBi.UI.Views
          this.components = new System.ComponentModel.Container();
          this.fProperties = new DevExpress.XtraEditors.Repository.RepositoryItem();
          this.tbValue = new DevExpress.XtraEditors.TextEdit();
-         this.cbUnit = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbUnit = new ComboBoxEdit();
          this.warningProvider = new DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider(this.components);
          this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
-         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+
          ((System.ComponentModel.ISupportInitialize)(this.fProperties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbValue.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbUnit.Properties)).BeginInit();
@@ -100,8 +99,7 @@ namespace MoBi.UI.Views
 
          this.Controls.Add(this.tablePanel);
          this.Name = "ValueEdit";
-         this.Size = new System.Drawing.Size(670, 26);
-         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+         this.Size = new System.Drawing.Size(670, 26); ;
          ((System.ComponentModel.ISupportInitialize)(this.fProperties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbValue.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbUnit.Properties)).EndInit();
@@ -117,7 +115,7 @@ namespace MoBi.UI.Views
       private TextEdit tbValue;
       private DevExpress.XtraEditors.Repository.RepositoryItem fProperties;
       private DevExpress.XtraEditors.DXErrorProvider.DXErrorProvider warningProvider;
-      private OSPSuite.UI.Controls.UxComboBoxEdit cbUnit;
+      private ComboBoxEdit cbUnit;
       private DevExpress.Utils.Layout.TablePanel tablePanel;
    }
 }
