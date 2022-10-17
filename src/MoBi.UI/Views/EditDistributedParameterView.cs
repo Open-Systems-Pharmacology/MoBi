@@ -168,12 +168,12 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          var height = cbFormulaType.Height;
-         adjustControlSize(tablePanel, veDeviation, height: height);
-         adjustControlSize(tablePanel, veGeoStd, height: height);
-         adjustControlSize(tablePanel, veMean, height: height);
-         adjustControlSize(tablePanel, veMinimum, height: height);
-         adjustControlSize(tablePanel, veMaximum, height: height);
-         adjustControlSize(tableProperties, veValue, height: height);
+         tablePanel.AdjustControlSize(veDeviation, height: height);
+         tablePanel.AdjustControlSize(veGeoStd, height: height);
+         tablePanel.AdjustControlSize(veMean, height: height);
+         tablePanel.AdjustControlSize(veMinimum, height: height);
+         tablePanel.AdjustControlSize(veMaximum, height: height);
+         tableProperties.AdjustControlSize(veValue, height: height);
 
          labelMean.Text = AppConstants.Captions.Mean.FormatForLabel();
          labelDeviation.Text = AppConstants.Captions.StandardDeviation.FormatForLabel();
@@ -185,44 +185,6 @@ namespace MoBi.UI.Views
          labelValue.Text = AppConstants.Captions.Value.FormatForLabel();
          labelPercentile.Text = AppConstants.Captions.Percentile.FormatForLabel();
          labellDistribution.Text = AppConstants.Captions.Distribution.FormatForLabel();
-      }
-
-      public static void adjustControlSize(TablePanel tablePanel, Control control, int? width = null, int? height = null)
-      {
-         var row = RowFor(tablePanel, control);
-         var col = ColumnFor(tablePanel, control);
-         if (width.HasValue)
-         {
-            col.Style = TablePanelEntityStyle.AutoSize;
-            // col.Width = width.Value + control.Margin.Horizontal;
-            // control.MaximumSize = new Size(width.Value, control.Height);
-            control.Width = width.Value;
-         }
-
-         if (height.HasValue)
-         {
-            row.Style = TablePanelEntityStyle.AutoSize;
-
-            // row.Height = height.Value + control.Margin.Vertical;
-            // control.MaximumSize = new Size(control.Width, height.Value);
-            control.Height = height.Value;
-         }
-      }
-
-      /// <summary>
-      ///    Returns the <see cref="TablePanelRow" /> where the <paramref name="control" /> is located
-      /// </summary>
-      public static TablePanelRow RowFor(TablePanel tablePanel, Control control)
-      {
-         return tablePanel.Rows[tablePanel.GetRow(control)];
-      }
-
-      /// <summary>
-      ///    Returns the <see cref="TablePanelColumn" /> where the <paramref name="control" /> is located
-      /// </summary>
-      public static TablePanelColumn ColumnFor(TablePanel tablePanel, Control control)
-      {
-         return tablePanel.Columns[tablePanel.GetColumn(control)];
       }
    }
 }
