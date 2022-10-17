@@ -32,6 +32,7 @@
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.tableProperties = new DevExpress.Utils.Layout.TablePanel();
+         this.veValue = new MoBi.UI.Views.ValueEdit();
          this.labelPercentile = new DevExpress.XtraEditors.LabelControl();
          this.labelValue = new DevExpress.XtraEditors.LabelControl();
          this.labelDimension = new DevExpress.XtraEditors.LabelControl();
@@ -40,6 +41,11 @@
          this.cbDimension = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.tbPercentile = new DevExpress.XtraEditors.TextEdit();
          this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
+         this.veDeviation = new MoBi.UI.Views.ValueEdit();
+         this.veGeoStd = new MoBi.UI.Views.ValueEdit();
+         this.veMaximum = new MoBi.UI.Views.ValueEdit();
+         this.veMinimum = new MoBi.UI.Views.ValueEdit();
+         this.veMean = new MoBi.UI.Views.ValueEdit();
          this.labellDistribution = new DevExpress.XtraEditors.LabelControl();
          this.labelDeviation = new DevExpress.XtraEditors.LabelControl();
          this.labelGeoStd = new DevExpress.XtraEditors.LabelControl();
@@ -53,12 +59,6 @@
          this.layoutGroupDistribution = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.veValue = new MoBi.UI.Views.ValueEdit();
-         this.veMean = new MoBi.UI.Views.ValueEdit();
-         this.veMinimum = new MoBi.UI.Views.ValueEdit();
-         this.veMaximum = new MoBi.UI.Views.ValueEdit();
-         this.veGeoStd = new MoBi.UI.Views.ValueEdit();
-         this.veDeviation = new MoBi.UI.Views.ValueEdit();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -97,7 +97,7 @@
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.Root = this.layoutControlGroup;
-         this.layoutControl.Size = new System.Drawing.Size(697, 501);
+         this.layoutControl.Size = new System.Drawing.Size(568, 509);
          this.layoutControl.TabIndex = 37;
          this.layoutControl.Text = "layoutControl1";
          // 
@@ -117,13 +117,24 @@
          this.tableProperties.Location = new System.Drawing.Point(12, 12);
          this.tableProperties.Name = "tableProperties";
          this.tableProperties.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
-         this.tableProperties.Size = new System.Drawing.Size(673, 113);
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F)});
+         this.tableProperties.Size = new System.Drawing.Size(544, 115);
          this.tableProperties.TabIndex = 41;
+         // 
+         // veValue
+         // 
+         this.veValue.Caption = "";
+         this.tableProperties.SetColumn(this.veValue, 1);
+         this.veValue.Location = new System.Drawing.Point(79, 55);
+         this.veValue.Name = "veValue";
+         this.tableProperties.SetRow(this.veValue, 2);
+         this.veValue.Size = new System.Drawing.Size(462, 20);
+         this.veValue.TabIndex = 44;
+         this.veValue.ToolTip = "";
          // 
          // labelPercentile
          // 
@@ -175,7 +186,7 @@
          this.btName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
          this.tableProperties.SetRow(this.btName, 0);
-         this.btName.Size = new System.Drawing.Size(591, 20);
+         this.btName.Size = new System.Drawing.Size(462, 20);
          this.btName.TabIndex = 0;
          // 
          // cbDimension
@@ -188,7 +199,7 @@
          this.cbDimension.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.tableProperties.SetRow(this.cbDimension, 1);
-         this.cbDimension.Size = new System.Drawing.Size(591, 20);
+         this.cbDimension.Size = new System.Drawing.Size(462, 20);
          this.cbDimension.TabIndex = 19;
          // 
          // tbPercentile
@@ -197,7 +208,7 @@
          this.tbPercentile.Location = new System.Drawing.Point(79, 81);
          this.tbPercentile.Name = "tbPercentile";
          this.tableProperties.SetRow(this.tbPercentile, 3);
-         this.tbPercentile.Size = new System.Drawing.Size(591, 20);
+         this.tbPercentile.Size = new System.Drawing.Size(462, 20);
          this.tbPercentile.TabIndex = 39;
          // 
          // tablePanel
@@ -217,18 +228,73 @@
          this.tablePanel.Controls.Add(this.labelMinimum);
          this.tablePanel.Controls.Add(this.labelMean);
          this.tablePanel.Controls.Add(this.cbFormulaType);
-         this.tablePanel.Location = new System.Drawing.Point(24, 162);
+         this.tablePanel.Location = new System.Drawing.Point(24, 164);
          this.tablePanel.Name = "tablePanel";
          this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 35F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 34F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
-         this.tablePanel.Size = new System.Drawing.Size(649, 291);
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F)});
+         this.tablePanel.Size = new System.Drawing.Size(520, 297);
          this.tablePanel.TabIndex = 40;
+         // 
+         // veDeviation
+         // 
+         this.veDeviation.Caption = "";
+         this.tablePanel.SetColumn(this.veDeviation, 1);
+         this.veDeviation.Location = new System.Drawing.Point(87, 133);
+         this.veDeviation.Name = "veDeviation";
+         this.tablePanel.SetRow(this.veDeviation, 5);
+         this.veDeviation.Size = new System.Drawing.Size(430, 20);
+         this.veDeviation.TabIndex = 49;
+         this.veDeviation.ToolTip = "";
+         // 
+         // veGeoStd
+         // 
+         this.veGeoStd.Caption = "";
+         this.tablePanel.SetColumn(this.veGeoStd, 1);
+         this.veGeoStd.Location = new System.Drawing.Point(87, 107);
+         this.veGeoStd.Name = "veGeoStd";
+         this.tablePanel.SetRow(this.veGeoStd, 4);
+         this.veGeoStd.Size = new System.Drawing.Size(430, 20);
+         this.veGeoStd.TabIndex = 48;
+         this.veGeoStd.ToolTip = "";
+         // 
+         // veMaximum
+         // 
+         this.veMaximum.Caption = "";
+         this.tablePanel.SetColumn(this.veMaximum, 1);
+         this.veMaximum.Location = new System.Drawing.Point(87, 81);
+         this.veMaximum.Name = "veMaximum";
+         this.tablePanel.SetRow(this.veMaximum, 3);
+         this.veMaximum.Size = new System.Drawing.Size(430, 20);
+         this.veMaximum.TabIndex = 47;
+         this.veMaximum.ToolTip = "";
+         // 
+         // veMinimum
+         // 
+         this.veMinimum.Caption = "";
+         this.tablePanel.SetColumn(this.veMinimum, 1);
+         this.veMinimum.Location = new System.Drawing.Point(87, 55);
+         this.veMinimum.Name = "veMinimum";
+         this.tablePanel.SetRow(this.veMinimum, 2);
+         this.veMinimum.Size = new System.Drawing.Size(430, 20);
+         this.veMinimum.TabIndex = 46;
+         this.veMinimum.ToolTip = "";
+         // 
+         // veMean
+         // 
+         this.veMean.Caption = "";
+         this.tablePanel.SetColumn(this.veMean, 1);
+         this.veMean.Location = new System.Drawing.Point(87, 29);
+         this.veMean.Name = "veMean";
+         this.tablePanel.SetRow(this.veMean, 1);
+         this.veMean.Size = new System.Drawing.Size(430, 20);
+         this.veMean.TabIndex = 45;
+         this.veMean.ToolTip = "";
          // 
          // labellDistribution
          // 
@@ -243,7 +309,7 @@
          // labelDeviation
          // 
          this.tablePanel.SetColumn(this.labelDeviation, 0);
-         this.labelDeviation.Location = new System.Drawing.Point(3, 149);
+         this.labelDeviation.Location = new System.Drawing.Point(3, 136);
          this.labelDeviation.Name = "labelDeviation";
          this.tablePanel.SetRow(this.labelDeviation, 5);
          this.labelDeviation.Size = new System.Drawing.Size(67, 13);
@@ -253,7 +319,7 @@
          // labelGeoStd
          // 
          this.tablePanel.SetColumn(this.labelGeoStd, 0);
-         this.labelGeoStd.Location = new System.Drawing.Point(3, 115);
+         this.labelGeoStd.Location = new System.Drawing.Point(3, 110);
          this.labelGeoStd.Name = "labelGeoStd";
          this.tablePanel.SetRow(this.labelGeoStd, 4);
          this.labelGeoStd.Size = new System.Drawing.Size(57, 13);
@@ -299,19 +365,19 @@
          this.cbFormulaType.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.tablePanel.SetRow(this.cbFormulaType, 0);
-         this.cbFormulaType.Size = new System.Drawing.Size(559, 20);
+         this.cbFormulaType.Size = new System.Drawing.Size(430, 20);
          this.cbFormulaType.TabIndex = 37;
          // 
          // htmlEditor
          // 
          this.htmlEditor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.htmlEditor.Location = new System.Drawing.Point(81, 469);
+         this.htmlEditor.Location = new System.Drawing.Point(81, 477);
          this.htmlEditor.Name = "htmlEditor";
          this.htmlEditor.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.htmlEditor.Properties.ShowIcon = false;
-         this.htmlEditor.Size = new System.Drawing.Size(604, 20);
+         this.htmlEditor.Size = new System.Drawing.Size(475, 20);
          this.htmlEditor.StyleController = this.layoutControl;
          this.htmlEditor.TabIndex = 20;
          // 
@@ -325,16 +391,16 @@
             this.layoutGroupDistribution,
             this.layoutControlItem2});
          this.layoutControlGroup.Name = "layoutControlGroup";
-         this.layoutControlGroup.Size = new System.Drawing.Size(697, 501);
+         this.layoutControlGroup.Size = new System.Drawing.Size(568, 509);
          this.layoutControlGroup.TextVisible = false;
          // 
          // layoutItemDescription
          // 
          this.layoutItemDescription.Control = this.htmlEditor;
          this.layoutItemDescription.CustomizationFormText = "Description";
-         this.layoutItemDescription.Location = new System.Drawing.Point(0, 457);
+         this.layoutItemDescription.Location = new System.Drawing.Point(0, 465);
          this.layoutItemDescription.Name = "layoutItemDescription";
-         this.layoutItemDescription.Size = new System.Drawing.Size(677, 24);
+         this.layoutItemDescription.Size = new System.Drawing.Size(548, 24);
          this.layoutItemDescription.Text = "Description:";
          this.layoutItemDescription.TextSize = new System.Drawing.Size(57, 13);
          // 
@@ -343,9 +409,9 @@
          this.layoutGroupDistribution.CustomizationFormText = "Distribution";
          this.layoutGroupDistribution.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1});
-         this.layoutGroupDistribution.Location = new System.Drawing.Point(0, 117);
+         this.layoutGroupDistribution.Location = new System.Drawing.Point(0, 119);
          this.layoutGroupDistribution.Name = "layoutGroupDistribution";
-         this.layoutGroupDistribution.Size = new System.Drawing.Size(677, 340);
+         this.layoutGroupDistribution.Size = new System.Drawing.Size(548, 346);
          this.layoutGroupDistribution.Text = "Distribution";
          // 
          // layoutControlItem1
@@ -353,7 +419,7 @@
          this.layoutControlItem1.Control = this.tablePanel;
          this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(653, 295);
+         this.layoutControlItem1.Size = new System.Drawing.Size(524, 301);
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
          // 
@@ -362,81 +428,9 @@
          this.layoutControlItem2.Control = this.tableProperties;
          this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItem2.Name = "layoutControlItem2";
-         this.layoutControlItem2.Size = new System.Drawing.Size(677, 117);
+         this.layoutControlItem2.Size = new System.Drawing.Size(548, 119);
          this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem2.TextVisible = false;
-         // 
-         // veValue
-         // 
-         this.veValue.Caption = "";
-         this.tableProperties.SetColumn(this.veValue, 1);
-         this.veValue.Location = new System.Drawing.Point(76, 52);
-         this.veValue.Margin = new System.Windows.Forms.Padding(0);
-         this.veValue.Name = "veValue";
-         this.tableProperties.SetRow(this.veValue, 2);
-         this.veValue.Size = new System.Drawing.Size(597, 26);
-         this.veValue.TabIndex = 44;
-         this.veValue.ToolTip = "";
-         // 
-         // veMean
-         // 
-         this.veMean.Caption = "";
-         this.tablePanel.SetColumn(this.veMean, 1);
-         this.veMean.Location = new System.Drawing.Point(84, 26);
-         this.veMean.Margin = new System.Windows.Forms.Padding(0);
-         this.veMean.Name = "veMean";
-         this.tablePanel.SetRow(this.veMean, 1);
-         this.veMean.Size = new System.Drawing.Size(565, 26);
-         this.veMean.TabIndex = 45;
-         this.veMean.ToolTip = "";
-         // 
-         // veMinimum
-         // 
-         this.veMinimum.Caption = "";
-         this.tablePanel.SetColumn(this.veMinimum, 1);
-         this.veMinimum.Location = new System.Drawing.Point(84, 52);
-         this.veMinimum.Margin = new System.Windows.Forms.Padding(0);
-         this.veMinimum.Name = "veMinimum";
-         this.tablePanel.SetRow(this.veMinimum, 2);
-         this.veMinimum.Size = new System.Drawing.Size(565, 26);
-         this.veMinimum.TabIndex = 46;
-         this.veMinimum.ToolTip = "";
-         // 
-         // veMaximum
-         // 
-         this.veMaximum.Caption = "";
-         this.tablePanel.SetColumn(this.veMaximum, 1);
-         this.veMaximum.Location = new System.Drawing.Point(84, 78);
-         this.veMaximum.Margin = new System.Windows.Forms.Padding(0);
-         this.veMaximum.Name = "veMaximum";
-         this.tablePanel.SetRow(this.veMaximum, 3);
-         this.veMaximum.Size = new System.Drawing.Size(565, 26);
-         this.veMaximum.TabIndex = 47;
-         this.veMaximum.ToolTip = "";
-         // 
-         // veGeoStd
-         // 
-         this.veGeoStd.Caption = "";
-         this.tablePanel.SetColumn(this.veGeoStd, 1);
-         this.veGeoStd.Location = new System.Drawing.Point(84, 108);
-         this.veGeoStd.Margin = new System.Windows.Forms.Padding(0);
-         this.veGeoStd.Name = "veGeoStd";
-         this.tablePanel.SetRow(this.veGeoStd, 4);
-         this.veGeoStd.Size = new System.Drawing.Size(565, 26);
-         this.veGeoStd.TabIndex = 48;
-         this.veGeoStd.ToolTip = "";
-         // 
-         // veDeviation
-         // 
-         this.veDeviation.Caption = "";
-         this.tablePanel.SetColumn(this.veDeviation, 1);
-         this.veDeviation.Location = new System.Drawing.Point(84, 143);
-         this.veDeviation.Margin = new System.Windows.Forms.Padding(0);
-         this.veDeviation.Name = "veDeviation";
-         this.tablePanel.SetRow(this.veDeviation, 5);
-         this.veDeviation.Size = new System.Drawing.Size(565, 26);
-         this.veDeviation.TabIndex = 49;
-         this.veDeviation.ToolTip = "";
          // 
          // EditDistributedParameterView
          // 
@@ -444,7 +438,7 @@
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
          this.Name = "EditDistributedParameterView";
-         this.Size = new System.Drawing.Size(697, 501);
+         this.Size = new System.Drawing.Size(568, 509);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
