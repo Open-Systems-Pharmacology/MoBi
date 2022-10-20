@@ -156,7 +156,6 @@ namespace MoBi.Presentation.Presenter
       public override object Subject => _simulation;
       private void loadChart()
       {
-         //probably have to rename to charts
          if (_simulationPredictedVsObservedChartPresenter.Chart == null)
          {
             var chart = _chartFactory.Create<SimulationPredictedVsObservedChart>();
@@ -189,7 +188,7 @@ namespace MoBi.Presentation.Presenter
          addObservedDataRepositories(data, _simulation.Chart.Curves);
          _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
          _simulationResidualVsTimeChartPresenter.UpdateAnalysisBasedOn(_simulation);
-         _chartPresenter.Show(_simulation.Chart, data, defaultTemplate); //MyComm: HERE it is this presenters that knows about the simulation and should be handling this.
+         _chartPresenter.Show(_simulation.Chart, data, defaultTemplate);
       }
 
       public void Handle(SimulationRunFinishedEvent eventToHandle)

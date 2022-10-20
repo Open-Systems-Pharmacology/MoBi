@@ -243,21 +243,6 @@ namespace MoBi.Presentation.Presenter
       {
          editorPresenter.AddDataRepositories(repositories);
          repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => editorPresenter.AddCurveForColumn(observationColumn));
-         /*
-         foreach (var dataRepository in repositories)
-         {
-            var simulation = findSimulation(dataRepository) ?? findHistoricSimulation(dataRepository);
-            if (simulation == null) return;
-
-            _dataRepositoryCache.Add(dataRepository, simulation);
-            var newOutputMapping = mapMatchingOutput(dataRepository, simulation);
-
-            if (newOutputMapping.Output != null)
-               simulation.OutputMappings.Add(newOutputMapping);
-            _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, dataRepository, false));
-
-         }*/
-
          OnObservedDataAddedToChart(this, new ObservedDataAddedToChartEventArgs() { AddedDataRepositories = repositories });
          _chartPresenterContext.Refresh();
       }
@@ -309,9 +294,6 @@ namespace MoBi.Presentation.Presenter
 
       private void addDataRepositoriesToDataRepositoryCache(IReadOnlyCollection<DataRepository> dataRepositories)
       {
-         //OK here is the place we actually need to add the outputMappings....
-         //it is the correct place, so we will do this, regardless of whether this will actually do 
-         //result in duplication
          dataRepositories.Where(dataRepository => !_dataRepositoryCache.Contains(dataRepository))
             .Each(dataRepository =>
             {

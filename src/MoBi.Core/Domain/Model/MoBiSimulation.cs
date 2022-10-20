@@ -13,8 +13,7 @@ using OSPSuite.Utility.Visitor;
 namespace MoBi.Core.Domain.Model
 {
    public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
-   {
-      //DataRepository ResultsDataRepository { get; set; }
+   { 
       ICache<string, DataRepository> HistoricResults { get; }
       CurveChart Chart { get; set; }
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
