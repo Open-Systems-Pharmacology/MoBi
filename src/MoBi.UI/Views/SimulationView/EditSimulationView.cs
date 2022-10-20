@@ -39,7 +39,6 @@ namespace MoBi.UI.Views.SimulationView
          tabSimulation.InitWith(AppConstants.Captions.SimulationParameters, ApplicationIcons.Parameter);
          tabResults.InitWith(AppConstants.Captions.Results, ApplicationIcons.TimeProfileAnalysis);
          tabData.InitWith(AppConstants.Captions.SimulationData, ApplicationIcons.PKSim);
-         tabTimeProfile.InitWith(AppConstants.Captions.TimeProfile, ApplicationIcons.TimeProfileAnalysis);
          tabPredVsObs.InitWith(AppConstants.Captions.PredictedVsObserved, ApplicationIcons.PredictedVsObservedAnalysis);
          tabResidVsTime.InitWith(AppConstants.Captions.ResidualsVsTime, ApplicationIcons.ResidualVsTimeAnalysis);
 
@@ -74,7 +73,7 @@ namespace MoBi.UI.Views.SimulationView
       public void SetChartView(IChartView chartView)
       {
          chartView.CaptionChanged += (o, e) => OnEvent(() => tabResults.Text = simulationPresenter.CreateResultTabCaption(chartView.Caption));
-         tabTimeProfile.FillWith(chartView);
+         tabResults.FillWith(chartView);
       }
 
       public void SetModelDiagram(ISimulationDiagramView subView)
@@ -90,12 +89,12 @@ namespace MoBi.UI.Views.SimulationView
          tabs.SelectedTabPage = tabResults;
       }
 
-      public void SetPredictedVsObservedView(ISimulationRunAnalysisView view)
+      public void SetPredictedVsObservedView(ISimulationVsObservedDataView view)
       {
          tabPredVsObs.FillWith(view);
       }
 
-      public void SetResidualsVsTimeView(ISimulationRunAnalysisView view)
+      public void SetResidualsVsTimeView(ISimulationVsObservedDataView view)
       {
          tabResidVsTime.FillWith(view);
       }

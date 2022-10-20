@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Views
       /// </summary>
       void SetDataView(ISimulationOutputMappingView view);
 
-      void SetPredictedVsObservedView(ISimulationRunAnalysisView view);
-      void SetResidualsVsTimeView(ISimulationRunAnalysisView view);
+      void SetPredictedVsObservedView(ISimulationVsObservedDataView view);
+      void SetResidualsVsTimeView(ISimulationVsObservedDataView view);
    }
 }

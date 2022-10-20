@@ -40,15 +40,14 @@ namespace MoBi.UI.Views.SimulationView
          this.tabDiagram = new DevExpress.XtraTab.XtraTabPage();
          this.spliterDiagram = new DevExpress.XtraEditors.SplitContainerControl();
          this.modelOverview = new Northwoods.Go.GoOverview();
-         this.tabData = new DevExpress.XtraTab.XtraTabPage();
          this.tabResults = new DevExpress.XtraTab.XtraTabPage();
          this.plotTabs = new DevExpress.XtraTab.XtraTabControl();
-         this.tabTimeProfile = new DevExpress.XtraTab.XtraTabPage();
+         this.tabData = new DevExpress.XtraTab.XtraTabPage();
          this.tabPredVsObs = new DevExpress.XtraTab.XtraTabPage();
+         this.tabResidVsTime = new DevExpress.XtraTab.XtraTabPage();
          this.xtraTabPage2 = new DevExpress.XtraTab.XtraTabPage();
          this.xtraTabPage1 = new DevExpress.XtraTab.XtraTabPage();
          this.xtraTabControl1 = new DevExpress.XtraTab.XtraTabControl();
-         this.tabResidVsTime = new DevExpress.XtraTab.XtraTabPage();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabs)).BeginInit();
          this.tabs.SuspendLayout();
@@ -68,7 +67,6 @@ namespace MoBi.UI.Views.SimulationView
          this.spliterDiagram.SuspendLayout();
          this.tabResults.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.plotTabs)).BeginInit();
-         this.plotTabs.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).BeginInit();
          this.xtraTabControl1.SuspendLayout();
          this.SuspendLayout();
@@ -84,7 +82,10 @@ namespace MoBi.UI.Views.SimulationView
          this.tabs.TabIndex = 0;
          this.tabs.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.tabSimulation,
-            this.tabResults});
+            this.tabResults,
+            this.tabData,
+            this.tabPredVsObs,
+            this.tabResidVsTime});
          // 
          // tabSimulation
          // 
@@ -126,8 +127,7 @@ namespace MoBi.UI.Views.SimulationView
          this.tabsNavigation.TabIndex = 0;
          this.tabsNavigation.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.tabTree,
-            this.tabDiagram,
-            this.tabData});
+            this.tabDiagram});
          // 
          // tabTree
          // 
@@ -187,12 +187,6 @@ namespace MoBi.UI.Views.SimulationView
          this.modelOverview.TabIndex = 0;
          this.modelOverview.Text = "modelOverview";
          // 
-         // tabData
-         // 
-         this.tabData.Name = "tabData";
-         this.tabData.Size = new System.Drawing.Size(639, 865);
-         this.tabData.Text = "tabData";
-         // 
          // tabResults
          // 
          this.tabResults.Controls.Add(this.plotTabs);
@@ -206,25 +200,26 @@ namespace MoBi.UI.Views.SimulationView
          this.plotTabs.Dock = System.Windows.Forms.DockStyle.Fill;
          this.plotTabs.Location = new System.Drawing.Point(0, 0);
          this.plotTabs.Name = "plotTabs";
-         this.plotTabs.SelectedTabPage = this.tabTimeProfile;
          this.plotTabs.Size = new System.Drawing.Size(1286, 926);
          this.plotTabs.TabIndex = 0;
-         this.plotTabs.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
-            this.tabTimeProfile,
-            this.tabPredVsObs,
-            this.tabResidVsTime});
          // 
-         // tabTimeProfile
+         // tabData
          // 
-         this.tabTimeProfile.Name = "tabTimeProfile";
-         this.tabTimeProfile.Size = new System.Drawing.Size(1282, 865);
-         this.tabTimeProfile.Text = "tabTimeProfile";
+         this.tabData.Name = "tabData";
+         this.tabData.Size = new System.Drawing.Size(1286, 926);
+         this.tabData.Text = "tabData";
          // 
          // tabPredVsObs
          // 
          this.tabPredVsObs.Name = "tabPredVsObs";
-         this.tabPredVsObs.Size = new System.Drawing.Size(1282, 865);
+         this.tabPredVsObs.Size = new System.Drawing.Size(1286, 926);
          this.tabPredVsObs.Text = "tabPredVsObs";
+         // 
+         // tabResidVsTime
+         // 
+         this.tabResidVsTime.Name = "tabResidVsTime";
+         this.tabResidVsTime.Size = new System.Drawing.Size(1286, 926);
+         this.tabResidVsTime.Text = "tabResidVsTime";
          // 
          // xtraTabPage2
          // 
@@ -248,12 +243,6 @@ namespace MoBi.UI.Views.SimulationView
          this.xtraTabControl1.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.xtraTabPage1,
             this.xtraTabPage2});
-         // 
-         // tabResidVsTime
-         // 
-         this.tabResidVsTime.Name = "tabResidVsTime";
-         this.tabResidVsTime.Size = new System.Drawing.Size(1282, 865);
-         this.tabResidVsTime.Text = "tabResidVsTime";
          // 
          // EditSimulationView
          // 
@@ -282,7 +271,6 @@ namespace MoBi.UI.Views.SimulationView
          this.spliterDiagram.ResumeLayout(false);
          this.tabResults.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.plotTabs)).EndInit();
-         this.plotTabs.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.xtraTabControl1)).EndInit();
          this.xtraTabControl1.ResumeLayout(false);
          this.ResumeLayout(false);
@@ -300,13 +288,12 @@ namespace MoBi.UI.Views.SimulationView
       private DevExpress.XtraTab.XtraTabPage tabDiagram;
       private SplitContainerControl spliterDiagram;
       private Northwoods.Go.GoOverview modelOverview;
-      private DevExpress.XtraTab.XtraTabPage tabData;
       private DevExpress.XtraTab.XtraTabControl plotTabs;
-      private DevExpress.XtraTab.XtraTabPage tabTimeProfile;
-      private DevExpress.XtraTab.XtraTabPage tabPredVsObs;
       private DevExpress.XtraTab.XtraTabPage xtraTabPage2;
       private DevExpress.XtraTab.XtraTabPage xtraTabPage1;
       private DevExpress.XtraTab.XtraTabControl xtraTabControl1;
+      private DevExpress.XtraTab.XtraTabPage tabData;
+      private DevExpress.XtraTab.XtraTabPage tabPredVsObs;
       private DevExpress.XtraTab.XtraTabPage tabResidVsTime;
    }
 }
