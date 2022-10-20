@@ -34,7 +34,7 @@ namespace MoBi.UI.Views
       {
          this.tabControl = new DevExpress.XtraTab.XtraTabControl();
          this.tabProperties = new DevExpress.XtraTab.XtraTabPage();
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.gridAssignment = new OSPSuite.UI.Controls.UxGridControl();
          this.gridViewAssignments = new MoBi.UI.Views.UxGridView();
          this.btnAddAssignment = new DevExpress.XtraEditors.SimpleButton();
@@ -62,8 +62,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.tabControl)).BeginInit();
          this.tabControl.SuspendLayout();
          this.tabProperties.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.gridAssignment)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewAssignments)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).BeginInit();
@@ -101,30 +101,30 @@ namespace MoBi.UI.Views
          // 
          // tabProperties
          // 
-         this.tabProperties.Controls.Add(this.layoutControl1);
+         this.tabProperties.Controls.Add(this.layoutControl);
          this.tabProperties.Name = "tabProperties";
          this.tabProperties.Size = new System.Drawing.Size(717, 561);
          this.tabProperties.Text = "tabProperties";
          // 
          // layoutControl1
          // 
-         this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.gridAssignment);
-         this.layoutControl1.Controls.Add(this.btnAddAssignment);
-         this.layoutControl1.Controls.Add(this.splitContainerControl);
-         this.layoutControl1.Controls.Add(this.btnAddFormula);
-         this.layoutControl1.Controls.Add(this.cmbCondition);
-         this.layoutControl1.Controls.Add(this.htmlEditor);
-         this.layoutControl1.Controls.Add(this.chkOneTime);
-         this.layoutControl1.Controls.Add(this.btName);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1069, 197, 479, 642);
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(717, 561);
-         this.layoutControl1.TabIndex = 0;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.gridAssignment);
+         this.layoutControl.Controls.Add(this.btnAddAssignment);
+         this.layoutControl.Controls.Add(this.splitContainerControl);
+         this.layoutControl.Controls.Add(this.btnAddFormula);
+         this.layoutControl.Controls.Add(this.cmbCondition);
+         this.layoutControl.Controls.Add(this.htmlEditor);
+         this.layoutControl.Controls.Add(this.chkOneTime);
+         this.layoutControl.Controls.Add(this.btName);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1069, 197, 479, 642);
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(717, 561);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // gridAssignment
          // 
@@ -157,7 +157,7 @@ namespace MoBi.UI.Views
          this.btnAddAssignment.Location = new System.Drawing.Point(360, 403);
          this.btnAddAssignment.Name = "btnAddAssignment";
          this.btnAddAssignment.Size = new System.Drawing.Size(333, 22);
-         this.btnAddAssignment.StyleController = this.layoutControl1;
+         this.btnAddAssignment.StyleController = this.layoutControl;
          this.btnAddAssignment.TabIndex = 17;
          this.btnAddAssignment.Text = "btAddAssignment";
          // 
@@ -178,7 +178,7 @@ namespace MoBi.UI.Views
          this.btnAddFormula.Location = new System.Drawing.Point(360, 93);
          this.btnAddFormula.Name = "btnAddFormula";
          this.btnAddFormula.Size = new System.Drawing.Size(333, 22);
-         this.btnAddFormula.StyleController = this.layoutControl1;
+         this.btnAddFormula.StyleController = this.layoutControl;
          this.btnAddFormula.TabIndex = 15;
          this.btnAddFormula.Text = "btAddFormula";
          // 
@@ -189,7 +189,7 @@ namespace MoBi.UI.Views
          this.cmbCondition.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.cmbCondition.Size = new System.Drawing.Size(332, 20);
-         this.cmbCondition.StyleController = this.layoutControl1;
+         this.cmbCondition.StyleController = this.layoutControl;
          this.cmbCondition.TabIndex = 14;
          // 
          // htmlEditor
@@ -199,7 +199,7 @@ namespace MoBi.UI.Views
          this.htmlEditor.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.htmlEditor.Size = new System.Drawing.Size(550, 20);
-         this.htmlEditor.StyleController = this.layoutControl1;
+         this.htmlEditor.StyleController = this.layoutControl;
          this.htmlEditor.TabIndex = 13;
          // 
          // chkOneTime
@@ -209,7 +209,7 @@ namespace MoBi.UI.Views
          this.chkOneTime.Name = "chkOneTime";
          this.chkOneTime.Properties.Caption = "chkOneTime";
          this.chkOneTime.Size = new System.Drawing.Size(693, 20);
-         this.chkOneTime.StyleController = this.layoutControl1;
+         this.chkOneTime.StyleController = this.layoutControl;
          this.chkOneTime.TabIndex = 12;
          // 
          // btName
@@ -219,7 +219,7 @@ namespace MoBi.UI.Views
          this.btName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
          this.btName.Size = new System.Drawing.Size(550, 20);
-         this.btName.StyleController = this.layoutControl1;
+         this.btName.StyleController = this.layoutControl;
          this.btName.TabIndex = 9;
          // 
          // layoutControlGroup1
@@ -374,8 +374,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.tabControl)).EndInit();
          this.tabControl.ResumeLayout(false);
          this.tabProperties.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.gridAssignment)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewAssignments)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).EndInit();
@@ -406,7 +406,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraTab.XtraTabControl tabControl;
       private DevExpress.XtraTab.XtraTabPage tabProperties;
       private DevExpress.XtraTab.XtraTabPage tabParameters;
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.ButtonEdit btName;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemName;

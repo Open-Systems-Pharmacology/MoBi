@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter
          base.Init(refObjectBase, entities, transportBuilder);
       }
 
-      protected override void AddSpecificInitalObjects()
+      protected override void AddSpecificInitialObjects()
       {
          AddTimeReference();
          AddSpatialStructures();

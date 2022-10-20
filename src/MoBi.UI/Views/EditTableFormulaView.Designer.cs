@@ -32,7 +32,7 @@ namespace MoBi.UI.Views
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
@@ -41,8 +41,8 @@ namespace MoBi.UI.Views
          this.layoutItemAddValuePoint = new DevExpress.XtraLayout.LayoutControlItem();
          this.chkUseDerivedValues = new UxCheckEdit();
          this.layoutControlItemUseDerivedValues = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
@@ -54,16 +54,16 @@ namespace MoBi.UI.Views
          // 
          // layoutControl1
          // 
-         this.layoutControl1.Controls.Add(this.chkUseDerivedValues);
-         this.layoutControl1.Controls.Add(this.btnAddValuePoint);
-         this.layoutControl1.Controls.Add(this.gridControl);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(332, 293);
-         this.layoutControl1.TabIndex = 0;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.Controls.Add(this.chkUseDerivedValues);
+         this.layoutControl.Controls.Add(this.btnAddValuePoint);
+         this.layoutControl.Controls.Add(this.gridControl);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(332, 293);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // layoutControlGroup1
          // 
@@ -119,7 +119,7 @@ namespace MoBi.UI.Views
          this.btnAddValuePoint.Location = new System.Drawing.Point(168, 12);
          this.btnAddValuePoint.Name = "btnAddValuePoint";
          this.btnAddValuePoint.Size = new System.Drawing.Size(152, 22);
-         this.btnAddValuePoint.StyleController = this.layoutControl1;
+         this.btnAddValuePoint.StyleController = this.layoutControl;
          this.btnAddValuePoint.TabIndex = 6;
          this.btnAddValuePoint.Text = "simpleButton1";
          // 
@@ -141,7 +141,7 @@ namespace MoBi.UI.Views
          this.chkUseDerivedValues.Name = "chkUseDerivedValues";
          this.chkUseDerivedValues.Properties.Caption = "checkEdit1";
          this.chkUseDerivedValues.Size = new System.Drawing.Size(152, 19);
-         this.chkUseDerivedValues.StyleController = this.layoutControl1;
+         this.chkUseDerivedValues.StyleController = this.layoutControl;
          this.chkUseDerivedValues.TabIndex = 7;
          // 
          // layoutControlItemUseDerivedValues
@@ -160,11 +160,11 @@ namespace MoBi.UI.Views
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.layoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "EditTableFormulaView";
          this.Size = new System.Drawing.Size(332, 293);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
@@ -178,7 +178,7 @@ namespace MoBi.UI.Views
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.CheckEdit chkUseDerivedValues;
       private DevExpress.XtraEditors.SimpleButton btnAddValuePoint;

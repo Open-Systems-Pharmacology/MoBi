@@ -139,9 +139,8 @@ namespace MoBi.UI.Views
 
       private UxRepositoryItemButtonEdit createButtonRepository()
       {
-         var buttonRepositoryItem = new UxRepositoryItemButtonEdit(ButtonPredefines.Plus);
+         var buttonRepositoryItem = new UxAddAndRemoveButtonRepository();
          buttonRepositoryItem.Buttons[0].ToolTip = ToolTips.Formula.AddPoint;
-         buttonRepositoryItem.AddButton(ButtonPredefines.Delete);
          buttonRepositoryItem.Buttons[1].ToolTip = ToolTips.Formula.DeletePoint;
          buttonRepositoryItem.ButtonClick += (o, e) => OnEvent(onButtonClick, e);
          return buttonRepositoryItem;
@@ -153,7 +152,7 @@ namespace MoBi.UI.Views
          chkUseDerivedValues.Text = AppConstants.Captions.UseDerivedValues;
          chkUseDerivedValues.ToolTip = ToolTips.Formula.UseDerivedValues;
          btnAddValuePoint.InitWithImage(ApplicationIcons.Add, text: AppConstants.Captions.AddValuePoint, toolTip: ToolTips.Formula.AddPoint);
-         layoutItemAddValuePoint.AdjustButtonSize();
+         layoutItemAddValuePoint.AdjustButtonSize(layoutControl);
          _uxRepositoryItemCheckEdit = new UxRepositoryItemCheckEdit(gridView);
       }
 

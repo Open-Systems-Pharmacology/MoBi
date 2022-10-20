@@ -23,9 +23,9 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override void AddSpecificInitalObjects()
+      protected override void AddSpecificInitialObjects()
       {
-         base.AddSpecificInitalObjects();
+         base.AddSpecificInitialObjects();
          AddReactions();
       }
    }

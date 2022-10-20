@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
          ChangeLocalisationAllowed = true;
       }
 
-      protected override void AddSpecificInitalObjects()
+      protected override void AddSpecificInitialObjects()
       {
          AddTimeReference();
          AddSpatialStructures();

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Extensions
 {
@@ -27,7 +27,8 @@ namespace MoBi.Core.Domain.Extensions
       public static ParameterBuildMode DefaultParameterBuildMode(this IContainer container)
       {
          var needsGlobalParameter = container.IsAnImplementationOf<TransporterMoleculeContainer>() ||
-                                    container.IsAnImplementationOf<IReactionBuilder>();
+                                    container.IsAnImplementationOf<IReactionBuilder>() ||
+                                    container.IsAnImplementationOf<InteractionContainer>();
 
          return needsGlobalParameter ? ParameterBuildMode.Global : ParameterBuildMode.Local;
       }

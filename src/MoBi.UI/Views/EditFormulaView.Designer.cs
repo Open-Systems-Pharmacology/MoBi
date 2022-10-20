@@ -32,7 +32,7 @@
          this.pnlEdit = new DevExpress.XtraEditors.PanelControl();
          this.splitFormula = new DevExpress.XtraEditors.SplitContainerControl();
          this.cbExplicitFormulaName = new OSPSuite.UI.Controls.UxComboBoxEdit();
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnCloneFormula = new DevExpress.XtraEditors.SimpleButton();
          this.btnAddFormula = new DevExpress.XtraEditors.SimpleButton();
          this.cbFormulaType = new OSPSuite.UI.Controls.UxComboBoxEdit();
@@ -48,8 +48,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.splitFormula)).BeginInit();
          this.splitFormula.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.cbExplicitFormulaName.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.cbFormulaType.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemFormulaView)).BeginInit();
@@ -88,31 +88,31 @@
          this.cbExplicitFormulaName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.cbExplicitFormulaName.Size = new System.Drawing.Size(283, 20);
-         this.cbExplicitFormulaName.StyleController = this.layoutControl1;
+         this.cbExplicitFormulaName.StyleController = this.layoutControl;
          this.cbExplicitFormulaName.TabIndex = 3;
          // 
          // layoutControl1
          // 
-         this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.btnCloneFormula);
-         this.layoutControl1.Controls.Add(this.btnAddFormula);
-         this.layoutControl1.Controls.Add(this.cbFormulaType);
-         this.layoutControl1.Controls.Add(this.pnlEdit);
-         this.layoutControl1.Controls.Add(this.cbExplicitFormulaName);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(880, 457);
-         this.layoutControl1.TabIndex = 5;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.btnCloneFormula);
+         this.layoutControl.Controls.Add(this.btnAddFormula);
+         this.layoutControl.Controls.Add(this.cbFormulaType);
+         this.layoutControl.Controls.Add(this.pnlEdit);
+         this.layoutControl.Controls.Add(this.cbExplicitFormulaName);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(880, 457);
+         this.layoutControl.TabIndex = 5;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // btnCloneFormula
          // 
          this.btnCloneFormula.Location = new System.Drawing.Point(662, 26);
          this.btnCloneFormula.Name = "btnCloneFormula";
          this.btnCloneFormula.Size = new System.Drawing.Size(216, 22);
-         this.btnCloneFormula.StyleController = this.layoutControl1;
+         this.btnCloneFormula.StyleController = this.layoutControl;
          this.btnCloneFormula.TabIndex = 6;
          this.btnCloneFormula.Text = "btnCloneFormula";
          // 
@@ -121,7 +121,7 @@
          this.btnAddFormula.Location = new System.Drawing.Point(442, 26);
          this.btnAddFormula.Name = "btnAddFormula";
          this.btnAddFormula.Size = new System.Drawing.Size(216, 22);
-         this.btnAddFormula.StyleController = this.layoutControl1;
+         this.btnAddFormula.StyleController = this.layoutControl;
          this.btnAddFormula.TabIndex = 5;
          this.btnAddFormula.Text = "btnAddFormula";
          // 
@@ -132,7 +132,7 @@
          this.cbFormulaType.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.cbFormulaType.Size = new System.Drawing.Size(723, 20);
-         this.cbFormulaType.StyleController = this.layoutControl1;
+         this.cbFormulaType.StyleController = this.layoutControl;
          this.cbFormulaType.TabIndex = 4;
          // 
          // layoutControlGroup1
@@ -203,7 +203,7 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.layoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "EditFormulaView";
          this.Size = new System.Drawing.Size(880, 457);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
@@ -212,8 +212,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.splitFormula)).EndInit();
          this.splitFormula.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.cbExplicitFormulaName.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.cbFormulaType.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemFormulaView)).EndInit();
@@ -239,6 +239,6 @@
       private DevExpress.XtraEditors.SimpleButton btnAddFormula;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemAddFormula;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemCloneFormula;
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
    }
 }

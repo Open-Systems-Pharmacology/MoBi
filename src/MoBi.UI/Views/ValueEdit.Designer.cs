@@ -56,10 +56,11 @@ namespace MoBi.UI.Views
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.tablePanel.SetColumn(this.tbValue, 0);
-         this.tbValue.Location = new System.Drawing.Point(3, 3);
+         this.tbValue.Location = new System.Drawing.Point(0, 3);
+         this.tbValue.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
          this.tbValue.Name = "tbValue";
          this.tablePanel.SetRow(this.tbValue, 0);
-         this.tbValue.Size = new System.Drawing.Size(329, 20);
+         this.tbValue.Size = new System.Drawing.Size(332, 20);
          this.tbValue.TabIndex = 1;
          // 
          // cbUnit
@@ -67,11 +68,12 @@ namespace MoBi.UI.Views
          this.cbUnit.Anchor = System.Windows.Forms.AnchorStyles.None;
          this.tablePanel.SetColumn(this.cbUnit, 1);
          this.cbUnit.Location = new System.Drawing.Point(338, 3);
+         this.cbUnit.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
          this.cbUnit.Name = "cbUnit";
          this.cbUnit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.tablePanel.SetRow(this.cbUnit, 0);
-         this.cbUnit.Size = new System.Drawing.Size(329, 20);
+         this.cbUnit.Size = new System.Drawing.Size(332, 20);
          this.cbUnit.TabIndex = 2;
          // 
          // warningProvider
@@ -89,13 +91,13 @@ namespace MoBi.UI.Views
          this.tablePanel.Location = new System.Drawing.Point(0, 0);
          this.tablePanel.Name = "tablePanel";
          this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F)});
          this.tablePanel.Size = new System.Drawing.Size(670, 26);
          this.tablePanel.TabIndex = 4;
          // 
          // ValueEdit
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+
          this.Controls.Add(this.tablePanel);
          this.Name = "ValueEdit";
          this.Size = new System.Drawing.Size(670, 26);

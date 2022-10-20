@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Windows.Forms;
+using DevExpress.Utils.Layout;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -166,7 +167,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         var height = Convert.ToInt16(tablePanel.RowFor(cbFormulaType).Height);
+         var height = cbFormulaType.Height;
          tablePanel.AdjustControlSize(veDeviation, height: height);
          tablePanel.AdjustControlSize(veGeoStd, height: height);
          tablePanel.AdjustControlSize(veMean, height: height);

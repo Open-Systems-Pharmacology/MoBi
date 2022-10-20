@@ -1,3 +1,4 @@
+using MoBi.Core;
 using OSPSuite.Utility.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Presenters;
@@ -13,8 +14,11 @@ namespace MoBi.Presentation.Presenter
 
    public class SplashScreenPresenter : AbstractPresenter<ISplashScreen, ISplashScreenPresenter>, ISplashScreenPresenter
    {
-      public SplashScreenPresenter(ISplashScreen view) : base(view)
+      private readonly IMoBiConfiguration _configuration;
+
+      public SplashScreenPresenter(ISplashScreen view, IMoBiConfiguration configuration) : base(view)
       {
+         _configuration = configuration;
       }
 
       public void Handle(ProgressingEvent eventToHandle)
@@ -29,6 +33,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(ProgressInitEvent eventToHandle)
       {
+         _view.VersionInfo = _configuration.FullVersionDisplay;
          _view.StartProgress(0, eventToHandle.Message);
       }
    }

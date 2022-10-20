@@ -39,8 +39,8 @@ namespace MoBi.UI.Views
          tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
          layoutGroupAssignment.Text = AppConstants.Captions.Assignment;
          layoutGroupCondition.Text = AppConstants.Captions.Condition;
-         layoutControlItemAddFormula.AdjustLongButtonSize();
-         layoutControlItemAddAssignment.AdjustLongButtonSize();
+         layoutControlItemAddFormula.AdjustLongButtonSize(layoutControl);
+         layoutControlItemAddAssignment.AdjustLongButtonSize(layoutControl);
          layoutControlItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
          layoutControlItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          chkOneTime.Text = AppConstants.Captions.OneTimeEvent;
