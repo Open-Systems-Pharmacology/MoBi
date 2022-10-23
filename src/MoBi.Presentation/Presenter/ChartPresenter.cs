@@ -14,6 +14,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
@@ -70,15 +71,15 @@ namespace MoBi.Presentation.Presenter
       protected readonly IChartTemplatingTask _chartTemplatingTask;
       protected readonly ICache<DataRepository, IMoBiSimulation> _dataRepositoryCache;
 
+      private readonly IOutputMappingMatchingService _outputMappingMatchingService;
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       private bool _initialized;
 
       private IChartDisplayPresenter displayPresenter => _chartPresenterContext.DisplayPresenter;
       private IChartEditorPresenter editorPresenter => _chartPresenterContext.EditorPresenter;
-      private readonly IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
 
       protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings,
-         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IEntitiesInSimulationRetriever entitiesInSimulationRetriever) :
+         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IOutputMappingMatchingService outputMappingMatchingService) :
          base(chartView, chartPresenterContext)
       {
          _chartUpdater = chartUpdater;
@@ -87,6 +88,7 @@ namespace MoBi.Presentation.Presenter
 
          _chartTemplatingTask = chartTemplatingTask;
          _dataRepositoryCache = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
+         _outputMappingMatchingService = outputMappingMatchingService;
 
          _userSettings = userSettings;
          _context = context;
@@ -97,7 +99,6 @@ namespace MoBi.Presentation.Presenter
          initEditorPresenterSettings();
 
          _observedDataDragDropBinder = new ObservedDataDragDropBinder();
-         _entitiesInSimulationRetriever = entitiesInSimulationRetriever;
 
          AddSubPresenters(chartPresenterContext.EditorAndDisplayPresenter);
       }
@@ -301,51 +302,11 @@ namespace MoBi.Presentation.Presenter
                if (simulation == null) return;
 
                _dataRepositoryCache.Add(dataRepository, simulation);
-               var newOutputMapping = mapMatchingOutput(dataRepository, simulation);
+               _outputMappingMatchingService.AddMatchingOutputMapping(dataRepository, simulation);
 
-               if (newOutputMapping.Output != null)
-                  simulation.OutputMappings.Add(newOutputMapping);
                _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, dataRepository, false));
             });
          ;
-      }
-
-      private OutputMapping mapMatchingOutput(DataRepository observedData, ISimulation simulation)
-      {
-         var newOutputMapping = new OutputMapping();
-         var pathCache = _entitiesInSimulationRetriever.OutputsFrom(simulation);
-         var matchingOutputPath = pathCache.Keys.FirstOrDefault(x => observedDataMatchesOutput(observedData, x));
-
-         if (matchingOutputPath == null)
-         {
-            newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
-            return newOutputMapping;
-         }
-
-         var matchingOutput = pathCache[matchingOutputPath];
-
-         newOutputMapping.OutputSelection =
-            new SimulationQuantitySelection(simulation, new QuantitySelection(matchingOutputPath, matchingOutput.QuantityType));
-         newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
-         newOutputMapping.Scaling = defaultScalingFor(matchingOutput);
-         return newOutputMapping;
-      }
-
-      private Scalings defaultScalingFor(IQuantity output)
-      {
-         return output.IsFraction() ? Scalings.Linear : Scalings.Log;
-      }
-
-      private bool observedDataMatchesOutput(DataRepository observedData, string outputPath)
-      {
-         var organ = observedData.ExtendedPropertyValueFor(Constants.ObservedData.ORGAN);
-         var compartment = observedData.ExtendedPropertyValueFor(Constants.ObservedData.COMPARTMENT);
-         var molecule = observedData.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
-
-         if (organ == null || compartment == null || molecule == null)
-            return false;
-
-         return outputPath.Contains(organ) && outputPath.Contains(compartment) && outputPath.Contains(molecule);
       }
 
       private IMoBiSimulation findSimulation(DataRepository dataRepository)

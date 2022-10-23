@@ -19,8 +19,8 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly ICurveNamer _curveNamer;
 
-      public SimulationChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTemplatingTask chartTemplatingTask, ICurveNamer curveNamer, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext, IEntitiesInSimulationRetriever entitiesInSimulationRetriever)
-         : base(chartView, chartPresenterContext, context, userSettings,  chartTemplatingTask, chartUpdater, entitiesInSimulationRetriever)
+      public SimulationChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTemplatingTask chartTemplatingTask, ICurveNamer curveNamer, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext, IOutputMappingMatchingService outputMappingMatchingService)
+         : base(chartView, chartPresenterContext, context, userSettings,  chartTemplatingTask, chartUpdater, outputMappingMatchingService)
       {
          _curveNamer = curveNamer;
       }

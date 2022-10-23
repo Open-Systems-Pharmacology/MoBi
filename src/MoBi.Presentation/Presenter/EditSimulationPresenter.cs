@@ -66,7 +66,9 @@ namespace MoBi.Presentation.Presenter
          IEditInSimulationPresenterFactory showPresenterFactory, IHeavyWorkManager heavyWorkManager, IChartFactory chartFactory,
          IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask,
          IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
-         ISimulationPredictedVsObservedChartPresenter simulationPredictedVsObservedChartPresenter, ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter, IMoBiContext context, IEntitiesInSimulationRetriever entitiesInSimulationRetriever)
+         ISimulationPredictedVsObservedChartPresenter simulationPredictedVsObservedChartPresenter,
+         ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter, IMoBiContext context,
+         IEntitiesInSimulationRetriever entitiesInSimulationRetriever)
          : base(view)
       {
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
@@ -93,11 +95,12 @@ namespace MoBi.Presentation.Presenter
          _view.SetResidualsVsTimeView(simulationResidualVsTimeChartPresenter.View);
          _view.SetDataView(_simulationOutputMappingPresenter.View);
          AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
-            _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter);
+            _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationPredictedVsObservedChartPresenter,
+            _simulationResidualVsTimeChartPresenter);
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
          _chartPresenter.OnObservedDataAddedToChart += onObservedDataAddedToChart;
          _context = context;
-         _entitiesInSimulationRetriever = entitiesInSimulationRetriever;  
+         _entitiesInSimulationRetriever = entitiesInSimulationRetriever;
       }
 
       public string CreateResultTabCaption(string chartName)
@@ -154,6 +157,7 @@ namespace MoBi.Presentation.Presenter
       }
 
       public override object Subject => _simulation;
+
       private void loadChart()
       {
          if (_simulationPredictedVsObservedChartPresenter.Chart == null)
@@ -329,7 +333,6 @@ namespace MoBi.Presentation.Presenter
             if (newOutputMapping.Output != null)
                _simulation.OutputMappings.Add(newOutputMapping);
             _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(_simulation, dataRepository, false));
-
          }
       }
 
@@ -376,6 +379,5 @@ namespace MoBi.Presentation.Presenter
          return _context.CurrentProject.Simulations
             .FirstOrDefault(simulation => Equals(simulation.ResultsDataRepository, dataRepository));
       }
-
    }
 }

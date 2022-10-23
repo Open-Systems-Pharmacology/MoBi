@@ -1424,8 +1424,6 @@ namespace MoBi.Assets
          public static readonly string SimulationParameters = "Parameters";
          public static readonly string Results = "Results";
          public static readonly string TimeProfile = "Time Profile";
-         public static readonly string PredictedVsObserved = "Predicted vs Observed";
-         public static readonly string ResidualsVsTime = "Residuals vs Time";
          public static readonly string SimulationData = "Data";
          public static readonly string IsStationary = "Stationary";
          public static readonly string DefaultStartAmount = "Amount";
