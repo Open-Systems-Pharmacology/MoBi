@@ -19,8 +19,8 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
 
-      public ComparisonChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTemplatingTask chartTemplatingTask, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext, IOutputMappingMatchingService outputMappingMatchingService) :
-         base(chartView, chartPresenterContext, context, userSettings, chartTemplatingTask, chartUpdater, outputMappingMatchingService)
+      public ComparisonChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTemplatingTask chartTemplatingTask, IQuantityPathToQuantityDisplayPathMapper quantityDisplayPathMapper, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext, IOutputMappingMatchingTask OutputMappingMatchingTask) :
+         base(chartView, chartPresenterContext, context, userSettings, chartTemplatingTask, chartUpdater, OutputMappingMatchingTask)
       {
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
       }

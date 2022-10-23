@@ -71,7 +71,7 @@ namespace MoBi.Presentation.Presenter
       protected readonly IChartTemplatingTask _chartTemplatingTask;
       protected readonly ICache<DataRepository, IMoBiSimulation> _dataRepositoryCache;
 
-      private readonly IOutputMappingMatchingService _outputMappingMatchingService;
+      private readonly IOutputMappingMatchingTask _OutputMappingMatchingTask;
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       private bool _initialized;
 
@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Presenter
       private IChartEditorPresenter editorPresenter => _chartPresenterContext.EditorPresenter;
 
       protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings,
-         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IOutputMappingMatchingService outputMappingMatchingService) :
+         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IOutputMappingMatchingTask OutputMappingMatchingTask) :
          base(chartView, chartPresenterContext)
       {
          _chartUpdater = chartUpdater;
@@ -88,7 +88,7 @@ namespace MoBi.Presentation.Presenter
 
          _chartTemplatingTask = chartTemplatingTask;
          _dataRepositoryCache = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
-         _outputMappingMatchingService = outputMappingMatchingService;
+         _OutputMappingMatchingTask = OutputMappingMatchingTask;
 
          _userSettings = userSettings;
          _context = context;
@@ -302,7 +302,7 @@ namespace MoBi.Presentation.Presenter
                if (simulation == null) return;
 
                _dataRepositoryCache.Add(dataRepository, simulation);
-               _outputMappingMatchingService.AddMatchingOutputMapping(dataRepository, simulation);
+               _OutputMappingMatchingTask.AddMatchingOutputMapping(dataRepository, simulation);
 
                _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, dataRepository, false));
             });
