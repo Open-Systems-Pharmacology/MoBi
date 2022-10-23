@@ -11,8 +11,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.ParameterIdentifications;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Binders;
@@ -306,7 +304,6 @@ namespace MoBi.Presentation.Presenter
 
                _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, dataRepository, false));
             });
-         ;
       }
 
       private IMoBiSimulation findSimulation(DataRepository dataRepository)

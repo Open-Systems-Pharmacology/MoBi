@@ -13,8 +13,6 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.ParameterIdentifications;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -58,7 +56,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IChartTasks _chartTask;
       protected readonly IMoBiContext _context;
       private readonly ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
-      private readonly IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
+      private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
 
       public EditSimulationPresenter(IEditSimulationView view, ISimulationChartPresenter chartPresenter,
          IHierarchicalSimulationPresenter hierarchicalPresenter, ISimulationDiagramPresenter simulationDiagramPresenter,
@@ -68,7 +66,7 @@ namespace MoBi.Presentation.Presenter
          IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
          ISimulationPredictedVsObservedChartPresenter simulationPredictedVsObservedChartPresenter,
          ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter, IMoBiContext context,
-         IEntitiesInSimulationRetriever entitiesInSimulationRetriever)
+         IOutputMappingMatchingTask outputMappingMatchingTask)
          : base(view)
       {
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
@@ -100,7 +98,7 @@ namespace MoBi.Presentation.Presenter
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
          _chartPresenter.OnObservedDataAddedToChart += onObservedDataAddedToChart;
          _context = context;
-         _entitiesInSimulationRetriever = entitiesInSimulationRetriever;
+         _outputMappingMatchingTask = outputMappingMatchingTask;
       }
 
       public string CreateResultTabCaption(string chartName)
@@ -328,56 +326,9 @@ namespace MoBi.Presentation.Presenter
       {
          foreach (var dataRepository in e.AddedDataRepositories)
          {
-            var newOutputMapping = mapMatchingOutput(dataRepository, _simulation);
-
-            if (newOutputMapping.Output != null)
-               _simulation.OutputMappings.Add(newOutputMapping);
+            _outputMappingMatchingTask.AddMatchingOutputMapping(dataRepository, _simulation);
             _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(_simulation, dataRepository, false));
          }
-      }
-
-      private OutputMapping mapMatchingOutput(DataRepository observedData, ISimulation simulation)
-      {
-         var newOutputMapping = new OutputMapping();
-         var pathCache = _entitiesInSimulationRetriever.OutputsFrom(simulation);
-         var matchingOutputPath = pathCache.Keys.FirstOrDefault(x => observedDataMatchesOutput(observedData, x));
-
-         if (matchingOutputPath == null)
-         {
-            newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
-            return newOutputMapping;
-         }
-
-         var matchingOutput = pathCache[matchingOutputPath];
-
-         newOutputMapping.OutputSelection =
-            new SimulationQuantitySelection(simulation, new QuantitySelection(matchingOutputPath, matchingOutput.QuantityType));
-         newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
-         newOutputMapping.Scaling = defaultScalingFor(matchingOutput);
-         return newOutputMapping;
-      }
-
-      private Scalings defaultScalingFor(IQuantity output)
-      {
-         return output.IsFraction() ? Scalings.Linear : Scalings.Log;
-      }
-
-      private bool observedDataMatchesOutput(DataRepository observedData, string outputPath)
-      {
-         var organ = observedData.ExtendedPropertyValueFor(Constants.ObservedData.ORGAN);
-         var compartment = observedData.ExtendedPropertyValueFor(Constants.ObservedData.COMPARTMENT);
-         var molecule = observedData.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
-
-         if (organ == null || compartment == null || molecule == null)
-            return false;
-
-         return outputPath.Contains(organ) && outputPath.Contains(compartment) && outputPath.Contains(molecule);
-      }
-
-      private IMoBiSimulation findSimulation(DataRepository dataRepository)
-      {
-         return _context.CurrentProject.Simulations
-            .FirstOrDefault(simulation => Equals(simulation.ResultsDataRepository, dataRepository));
       }
    }
 }

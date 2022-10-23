@@ -25,12 +25,12 @@
       public const string SIMULATION_SETTINGS = "Simulation Settings";
       public const string SIMULATIONS = "Simulations";
       public const string SIMULATION = "Simulation";
-      public const string RESULTS = "ResultsDataRepository";
+      public const string RESULTS = "Results";
       public const string CHARTS = "Charts";
       public const string CHART = "Chart";
       public const string DATA = "Data";
       public const string OBSERVED_DATA = "Observed Data";
-      public const string HISTORIC_RESULTS = "Historic ResultsDataRepository";
+      public const string HISTORIC_RESULTS = "Historic Results";
 
       public const string DIMENSION = "Dimension";
       public const string ID = "ID";

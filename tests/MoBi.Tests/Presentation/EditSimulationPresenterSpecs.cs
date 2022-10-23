@@ -12,8 +12,8 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 
@@ -35,7 +35,7 @@ namespace MoBi.Presentation
       protected IUserDefinedParametersPresenter _userDefinedParametersPresenter;
       protected ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
       protected IMoBiContext _context;
-      protected IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
+      protected IOutputMappingMatchingTask _outputMappingMatchingTask;
 
       protected override void Context()
       {
@@ -53,12 +53,12 @@ namespace MoBi.Presentation
          _simulationOutputMappingPresenter = A.Fake<ISimulationOutputMappingPresenter>();
          _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
          _context = A.Fake<IMoBiContext>();
-         _entitiesInSimulationRetriever = A.Fake<IEntitiesInSimulationRetriever>();
+         _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
 
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
             A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
-            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _entitiesInSimulationRetriever);
+            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask);
       }
    }
 
