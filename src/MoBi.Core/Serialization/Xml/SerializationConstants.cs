@@ -17,5 +17,6 @@
       public static string MoBiSimulation = "MoBiSimulation";
       public static string MoBiReactionBuildingBlock = "ReactionBuildingBlock";
       public static string MoBiSpatialStructure = "SpatialStructure";
+      public static string MoBiResults = "Results";
    }
 }
