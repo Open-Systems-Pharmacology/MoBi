@@ -19,8 +19,6 @@ namespace MoBi.Core.Domain.Model
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
       string ParameterIdentificationWorkingDirectory { get; set; }
       void Update(IMoBiBuildConfiguration buildConfiguration, IModel model);
-      bool HasChanged { get; set; }
-
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
