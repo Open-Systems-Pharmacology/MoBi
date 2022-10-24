@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Presenter
       protected readonly IChartTemplatingTask _chartTemplatingTask;
       protected readonly ICache<DataRepository, IMoBiSimulation> _dataRepositoryCache;
 
-      private readonly IOutputMappingMatchingTask _OutputMappingMatchingTask;
+      private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
       private bool _initialized;
 
@@ -77,7 +77,7 @@ namespace MoBi.Presentation.Presenter
       private IChartEditorPresenter editorPresenter => _chartPresenterContext.EditorPresenter;
 
       protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings,
-         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IOutputMappingMatchingTask OutputMappingMatchingTask) :
+         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IOutputMappingMatchingTask outputMappingMatchingTask) :
          base(chartView, chartPresenterContext)
       {
          _chartUpdater = chartUpdater;
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Presenter
 
          _chartTemplatingTask = chartTemplatingTask;
          _dataRepositoryCache = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
-         _OutputMappingMatchingTask = OutputMappingMatchingTask;
+         _outputMappingMatchingTask = outputMappingMatchingTask;
 
          _userSettings = userSettings;
          _context = context;
@@ -300,7 +300,7 @@ namespace MoBi.Presentation.Presenter
                if (simulation == null) return;
 
                _dataRepositoryCache.Add(dataRepository, simulation);
-               _OutputMappingMatchingTask.AddMatchingOutputMapping(dataRepository, simulation);
+               _outputMappingMatchingTask.AddMatchingOutputMapping(dataRepository, simulation);
 
                _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, dataRepository, false));
             });
