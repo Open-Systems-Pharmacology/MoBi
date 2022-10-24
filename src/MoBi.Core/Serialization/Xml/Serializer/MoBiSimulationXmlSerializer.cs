@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Serializer;
 
 namespace MoBi.Core.Serialization.Xml.Serializer
 {
@@ -16,7 +17,8 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.ResultsDataRepository);
+         //for compatibility with older versions before renaming of "Results" to "ResultsDataRepository"
+         Map(x => x.ResultsDataRepository).WithMappingName(SerializationConstants.MoBiResults);
          Map(x => x.ParameterIdentificationWorkingDirectory);
          Map(x => x.HasUpToDateResults);
       }
