@@ -38,7 +38,7 @@ namespace MoBi.UI.Views.SimulationView
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
          tabSimulation.InitWith(AppConstants.Captions.SimulationParameters, ApplicationIcons.Parameter);
          tabResults.InitWith(AppConstants.Captions.Results, ApplicationIcons.TimeProfileAnalysis);
-         tabData.InitWith(AppConstants.Captions.SimulationData, ApplicationIcons.PKSim);
+         tabData.InitWith(AppConstants.Captions.SimulationObservedData, ApplicationIcons.ObservedData);
          tabPredVsObs.InitWith(Captions.SimulationUI.PredictedVsObservedSimulation, ApplicationIcons.PredictedVsObservedAnalysis);
          tabResidVsTime.InitWith(Captions.SimulationUI.ResidualsVsTimeSimulation, ApplicationIcons.ResidualVsTimeAnalysis);
 
