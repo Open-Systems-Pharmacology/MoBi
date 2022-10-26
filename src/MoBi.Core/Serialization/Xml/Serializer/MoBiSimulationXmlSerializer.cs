@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Serializer;
 
 namespace MoBi.Core.Serialization.Xml.Serializer
 {
@@ -16,7 +17,8 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.Results);
+         //for compatibility with older versions before renaming of "Results" to "ResultsDataRepository"
+         Map(x => x.ResultsDataRepository).WithMappingName(SerializationConstants.MoBiResults);
          Map(x => x.ParameterIdentificationWorkingDirectory);
          Map(x => x.HasUpToDateResults);
       }
@@ -30,8 +32,8 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       {
          base.TypedDeserialize(simulation, outputToDeserialize, serializationContext);
 
-         if (simulation.Results != null)
-            serializationContext.AddRepository(simulation.Results);
+         if (simulation.ResultsDataRepository != null)
+            serializationContext.AddRepository(simulation.ResultsDataRepository);
 
          var chartSerializer = SerializerRepository.SerializerFor<CurveChart>();
          var chartElement = outputToDeserialize.Element(chartSerializer.ElementName);

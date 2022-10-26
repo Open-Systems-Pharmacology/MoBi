@@ -3,6 +3,7 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Extensions;
@@ -18,8 +19,8 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly ICurveNamer _curveNamer;
 
-      public SimulationChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTemplatingTask chartTemplatingTask, ICurveNamer curveNamer, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext)
-         : base(chartView, chartPresenterContext, context, userSettings,  chartTemplatingTask, chartUpdater)
+      public SimulationChartPresenter(IChartView chartView, IMoBiContext context, IUserSettings userSettings, IChartTemplatingTask chartTemplatingTask, ICurveNamer curveNamer, IChartUpdater chartUpdater, ChartPresenterContext chartPresenterContext, IOutputMappingMatchingTask OutputMappingMatchingTask)
+         : base(chartView, chartPresenterContext, context, userSettings,  chartTemplatingTask, chartUpdater, OutputMappingMatchingTask)
       {
          _curveNamer = curveNamer;
       }

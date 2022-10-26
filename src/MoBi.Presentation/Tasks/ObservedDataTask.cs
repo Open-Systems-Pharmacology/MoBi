@@ -150,7 +150,7 @@ namespace MoBi.Presentation.Tasks
             Description = AppConstants.Commands.DeleteResultsFromSimulation(simulation.Name),
          };
 
-         if (simulation.Results != null)
+         if (simulation.ResultsDataRepository != null)
             macroCommand.AddCommand(new ClearResultsCommand(simulation));
 
          simulation.HistoricResults.Each(x => macroCommand.Add(new RemoveHistoricResultFromSimulationCommand(simulation, x)));
@@ -210,7 +210,7 @@ namespace MoBi.Presentation.Tasks
       private IMoBiSimulation getSimulationWithCurrentResult(DataRepository repository)
       {
          var simulations = _context.CurrentProject.Simulations;
-         return simulations.FirstOrDefault(sim => sim.Results != null && sim.Results.Id.Equals(repository.Id));
+         return simulations.FirstOrDefault(sim => sim.ResultsDataRepository != null && sim.ResultsDataRepository.Id.Equals(repository.Id));
       }
 
       public void RemoveResultsFromSimulations(IReadOnlyList<DataRepository> resultsToRemove)

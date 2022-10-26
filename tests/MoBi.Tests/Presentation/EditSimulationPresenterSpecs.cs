@@ -13,6 +13,8 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation
@@ -21,6 +23,8 @@ namespace MoBi.Presentation
    {
       protected IEditSimulationView _view;
       protected ISimulationChartPresenter _chartPresenter;
+      protected ISimulationPredictedVsObservedChartPresenter _simulationPredictedVsObservedChartPresenter;
+      protected ISimulationResidualVsTimeChartPresenter _simulationResidualVsTimeChartPresenter;
       protected IHierarchicalSimulationPresenter _hierarchicalSimulationPresenter;
       protected ISimulationDiagramPresenter _diagramPresenter;
       protected IEditSolverSettingsPresenter _solverSettings;
@@ -29,11 +33,16 @@ namespace MoBi.Presentation
       protected IEditFavoritesInSimulationPresenter _editFavoritePresenter;
       protected IChartTasks _chartTasks;
       protected IUserDefinedParametersPresenter _userDefinedParametersPresenter;
+      protected ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
+      protected IMoBiContext _context;
+      protected IOutputMappingMatchingTask _outputMappingMatchingTask;
 
       protected override void Context()
       {
          _view = A.Fake<IEditSimulationView>();
          _chartPresenter = A.Fake<ISimulationChartPresenter>();
+         _simulationPredictedVsObservedChartPresenter = A.Fake<ISimulationPredictedVsObservedChartPresenter>();
+         _simulationResidualVsTimeChartPresenter = A.Fake<ISimulationResidualVsTimeChartPresenter>();
          _hierarchicalSimulationPresenter = A.Fake<IHierarchicalSimulationPresenter>();
          _diagramPresenter = A.Fake<ISimulationDiagramPresenter>();
          _solverSettings = A.Fake<IEditSolverSettingsPresenter>();
@@ -41,10 +50,15 @@ namespace MoBi.Presentation
          _presenterFactory = A.Fake<IEditInSimulationPresenterFactory>();
          _editFavoritePresenter = A.Fake<IEditFavoritesInSimulationPresenter>();
          _chartTasks = A.Fake<IChartTasks>();
+         _simulationOutputMappingPresenter = A.Fake<ISimulationOutputMappingPresenter>();
          _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
+         _context = A.Fake<IMoBiContext>();
+         _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
+
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
-            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter);
+            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
+            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask);
       }
    }
 
@@ -136,7 +150,9 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation : concern_for_EditSimulationPresenter
+   public class
+      When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation :
+         concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private CurveChart _chart;
@@ -201,7 +217,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation = new MoBiSimulation {Results = new DataRepository()};
+         _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
 
          var chart = new CurveChart();
 
@@ -269,7 +285,9 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_edit_simulation_presenter_is_notified_that_a_parameter_should_be_selected_for_the_edited_simulation : concern_for_EditSimulationPresenter
+   public class
+      When_the_edit_simulation_presenter_is_notified_that_a_parameter_should_be_selected_for_the_edited_simulation :
+         concern_for_EditSimulationPresenter
    {
       private IParameter _parameter;
       private IMoBiSimulation _simulation;
@@ -280,18 +298,19 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation= A.Fake<IMoBiSimulation>();
-         _parameter= A.Fake<IParameter>();
-         _rootContainer= A.Fake<IContainer>();
+         _simulation = A.Fake<IMoBiSimulation>();
+         _parameter = A.Fake<IParameter>();
+         _rootContainer = A.Fake<IContainer>();
          //ensures that the parameter belongs to the simulation
          _simulation.Model.Root = _rootContainer;
          A.CallTo(() => _parameter.RootContainer).Returns(_rootContainer);
          sut.Edit(_simulation);
-         _parameterContainer= A.Fake<IContainer>();
+         _parameterContainer = A.Fake<IContainer>();
          _parameter.ParentContainer = _parameterContainer;
-         _= A.Fake<IEditContainerInSimulationPresenter>();
+         _ = A.Fake<IEditContainerInSimulationPresenter>();
          A.CallTo(() => _presenterFactory.PresenterFor(_parameterContainer)).Returns(_);
       }
+
       protected override void Because()
       {
          sut.Handle(new EntitySelectedEvent(_parameter, new object()));

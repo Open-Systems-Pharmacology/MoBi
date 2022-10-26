@@ -24,7 +24,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _simulationTasks.ExportResultsToExcel(Subject, DataRepository ?? Subject.Results);
+         _simulationTasks.ExportResultsToExcel(Subject, DataRepository ?? Subject.ResultsDataRepository);
       }
    }
 }

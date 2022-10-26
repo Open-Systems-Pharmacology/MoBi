@@ -51,8 +51,8 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         var result = _simulation.Results;
-         _simulation.Results = null;
+         var result = _simulation.ResultsDataRepository;
+         _simulation.ResultsDataRepository = null;
          Description = AppConstants.Commands.RemoveFromDescription(ObjectType, result.Name, _simulation.Name);
          context.PublishEvent(new RemovedDataEvent(result));
       }

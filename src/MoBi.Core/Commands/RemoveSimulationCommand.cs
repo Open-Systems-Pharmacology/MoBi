@@ -25,8 +25,8 @@ namespace MoBi.Core.Commands
          context.UnregisterSimulation(_simulation);
          context.PublishEvent(new SimulationRemovedEvent(_simulation));
          
-         //Do not serialize Results
-         _simulation.Results = null; 
+         //Do not serialize ResultsDataRepository
+         _simulation.ResultsDataRepository = null; 
          _serializationStream = context.Serialize(_simulation);
       }
 

@@ -23,13 +23,13 @@ namespace MoBi.Core
       {
          base.Context();
          sut.Creation.Version = "a version";
-         sut.Results = A.Fake<DataRepository>();
+         sut.ResultsDataRepository = A.Fake<DataRepository>();
          sut.Creation.Version = "another version";
       }
 
       protected override void Because()
       {
-         sut.Results = A.Fake<DataRepository>();
+         sut.ResultsDataRepository = A.Fake<DataRepository>();
       }
 
       [Observation]

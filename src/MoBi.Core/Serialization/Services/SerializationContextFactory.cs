@@ -60,7 +60,7 @@ namespace MoBi.Core.Serialization.Services
          if (project != null && shouldRegisterSimulations)
          {
             var allSimulations = project.Simulations;
-            var allSimulationResults = allSimulations.Where(s => s.HasResults).Select(s => s.Results);
+            var allSimulationResults = allSimulations.Where(s => s.HasResults).Select(s => s.ResultsDataRepository);
             allRepositories.AddRange(allSimulationResults.Union(project.AllObservedData));
 
             //Also register simulations to ensure that they are available as well for deserialization

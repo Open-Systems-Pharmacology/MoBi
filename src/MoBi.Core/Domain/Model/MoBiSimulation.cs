@@ -5,6 +5,7 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Visitor;
@@ -12,15 +13,12 @@ using OSPSuite.Utility.Visitor;
 namespace MoBi.Core.Domain.Model
 {
    public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
-   {
-      DataRepository Results { get; set; }
+   { 
       ICache<string, DataRepository> HistoricResults { get; }
       CurveChart Chart { get; set; }
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
       string ParameterIdentificationWorkingDirectory { get; set; }
       void Update(IMoBiBuildConfiguration buildConfiguration, IModel model);
-      bool HasChanged { get; set; }
-
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
@@ -43,7 +41,7 @@ namespace MoBi.Core.Domain.Model
       public CurveChart Chart { get; set; }
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
-
+      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
       public MoBiSimulation()
       {
          HistoricResults = new Cache<string, DataRepository>(x => x.Id, x => null);
@@ -168,9 +166,9 @@ namespace MoBi.Core.Domain.Model
          HasUpToDateResults = false;
       }
 
-      public bool HasResults => Results != null;
+      public bool HasResults => ResultsDataRepository != null;
 
-      public DataRepository Results
+      public DataRepository ResultsDataRepository
       {
          get => _results;
          set

@@ -235,7 +235,7 @@ namespace MoBi.Presentation.Tasks
 
          A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
          _oldResults = new DataRepository("OLD");
-         _simulation.Results = _oldResults;
+         _simulation.ResultsDataRepository = _oldResults;
 
          _newResults = new DataRepository("NEW");
          _simulationResults = new SimulationRunResults(success: true, warnings: Enumerable.Empty<SolverWarning>(), results: _newResults);
@@ -281,7 +281,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_set_the_newly_calculated_results_as_new_results()
       {
-         _simulation.Results.ShouldBeEqualTo(_newResults);
+         _simulation.ResultsDataRepository.ShouldBeEqualTo(_newResults);
       }
 
       [Observation]

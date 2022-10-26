@@ -60,8 +60,8 @@ namespace MoBi.Presentation.Nodes
          var buildConfigNode = CreateFor(simulation.MoBiBuildConfiguration);
 
          simNode.AddChild(buildConfigNode);
-         if (simulation.Results != null)
-            simNode.AddChild(CreateFor(simulation.Results));
+         if (simulation.ResultsDataRepository != null)
+            simNode.AddChild(CreateFor(simulation.ResultsDataRepository));
 
          //uses reverse so that the first result is the last node
          simulation.HistoricResults.Reverse().Each(res => simNode.AddChild(CreateFor(res)));

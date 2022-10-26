@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Tasks
          _currentResult = new DataRepository("id1");
          _historicResult = new DataRepository("id2");
          _repositories = new List<DataRepository> {_currentResult, _historicResult};
-         _moBiSimulation = new MoBiSimulation {Results = _currentResult};
+         _moBiSimulation = new MoBiSimulation {ResultsDataRepository = _currentResult};
          _moBiSimulation.HistoricResults.Add(_historicResult);
 
          _project.AddSimulation(_moBiSimulation);
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Tasks
       public void the_data_repositories_must_be_removed_from_the_simulations()
       {
          _moBiSimulation.HistoricResults.Contains(_historicResult).ShouldBeFalse();
-         _moBiSimulation.Results.ShouldBeNull();
+         _moBiSimulation.ResultsDataRepository.ShouldBeNull();
       }
    }
 
@@ -259,7 +259,7 @@ namespace MoBi.Presentation.Tasks
          _simulation = new MoBiSimulation().WithName("TOTO");
          _simulation.HistoricResults.Add(new DataRepository("Rep1"));
          _simulation.HistoricResults.Add(new DataRepository("Rep2"));
-         _simulation.Results = new DataRepository("Res");
+         _simulation.ResultsDataRepository = new DataRepository("Res");
 
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
@@ -279,7 +279,7 @@ namespace MoBi.Presentation.Tasks
       public void should_remove_all_historical_results_and_current_results()
       {
          _simulation.HistoricResults.Count.ShouldBeEqualTo(0);
-         _simulation.Results.ShouldBeNull();
+         _simulation.ResultsDataRepository.ShouldBeNull();
       }
    }
 
@@ -295,8 +295,8 @@ namespace MoBi.Presentation.Tasks
          _simulation2 = new MoBiSimulation().WithName("SIM1");
          _simulation1.HistoricResults.Add(new DataRepository("Rep1"));
          _simulation2.HistoricResults.Add(new DataRepository("Rep2"));
-         _simulation1.Results = new DataRepository("Res");
-         _simulation2.Results = new DataRepository("Res");
+         _simulation1.ResultsDataRepository = new DataRepository("Res");
+         _simulation2.ResultsDataRepository = new DataRepository("Res");
 
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
 
@@ -319,10 +319,10 @@ namespace MoBi.Presentation.Tasks
       public void should_remove_all_historical_results_and_current_results()
       {
          _simulation1.HistoricResults.Count.ShouldBeEqualTo(0);
-         _simulation1.Results.ShouldBeNull();
+         _simulation1.ResultsDataRepository.ShouldBeNull();
 
          _simulation2.HistoricResults.Count.ShouldBeEqualTo(0);
-         _simulation2.Results.ShouldBeNull();
+         _simulation2.ResultsDataRepository.ShouldBeNull();
       }
    }
 }
