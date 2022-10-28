@@ -142,11 +142,14 @@
     <Group id="150" name="PROTEIN" sequence="1" description="Protein" displayName="Protein" visible="1" isAdvanced="1" popDisplayName="Protein" fullName="Protein" />
     <Group id="88" name="PROTOCOL" sequence="30" description="Applications" displayName="Applications" iconName="Applications" visible="1" isAdvanced="0" popDisplayName="Applications" fullName="Applications" />
     <Group id="91" name="RELATIVE_EXPRESSIONS" sequence="90" description="Enzymes, Transporters and Binding Partners" displayName="Enzymes, Transporters and Binding Partners" visible="1" isAdvanced="0" popDisplayName="Enzymes, Transporters and Binding Partners" fullName="Enzymes, Transporters and Binding Partners" />
-    <Group id="94" name="SAMPLING PROCEDURE" sequence="9999" description="Sampling" displayName="Sampling" visible="0" isAdvanced="0" popDisplayName="Sampling" fullName="Sampling" />
+    <Group id="94" name="SAMPLING_PROCEDURE" sequence="9999" description="Sampling" displayName="Sampling" visible="1" isAdvanced="1" popDisplayName="Sampling" fullName="Sampling" />
+    <Group id="154" name="FRACTION_OF_BLOOD_SAMPLING" sequence="1" description="Fraction of blood for sampling" displayName="Fraction of blood" visible="1" isAdvanced="1" popDisplayName="Fraction of blood" fullName="Sampling - Fraction of blood" parent="94" />
     <Group id="97" name="SIMULATION_ACTIVE_PROCESS" sequence="9999" description="Simulation active process" displayName="Simulation active process" visible="1" isAdvanced="0" popDisplayName="Simulation active process" fullName="Simulation active process" />
     <Group id="98" name="SIMULATION_SETTINGS" sequence="10" description="Simulation settings" displayName="Settings" iconName="Settings" visible="1" isAdvanced="0" popDisplayName="Settings" fullName="Simulation Settings" />
     <Group id="100" name="SOLVER_SETTINGS" sequence="6" description="Solver settings" displayName="Solver settings" iconName="Solver" visible="1" isAdvanced="1" popDisplayName="Solver settings" fullName="Solver settings" parent="98" />
     <Group id="117" name="UNDEFINED" sequence="9999" description="This group must be defined. Used as dummy." displayName="Undefined" visible="1" isAdvanced="0" popDisplayName="Undefined" fullName="Undefined" />
     <Group id="120" name="VASCULAR_SYSTEM" sequence="10" description="Vascular system" displayName="Vascular system" visible="1" isAdvanced="0" popDisplayName="Vascular system" fullName="Vascular system" />
+    <Group id="153" name="DISEASE_STATES" sequence="1" description="Disease states parameters" displayName="Disease states" visible="1" isAdvanced="0" popDisplayName="Disease states" fullName="Disease States" />
+    <Group id="155" name="DISEASE_STATE_FACTORS" sequence="1" description="Disease factor parameters" displayName="Disease factors" visible="1" isAdvanced="1" popDisplayName="Disease factors" fullName="Disease factor parameters" parent="153" />
   </All>
 </GroupRepository>
