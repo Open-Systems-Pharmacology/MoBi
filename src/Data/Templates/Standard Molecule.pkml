@@ -1,289 +1,289 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<MoleculeBuildingBlock id="5mIngqBikUmX7DpR8e8k_Q" name="Standard Molecule" icon="Molecule" bbVersion="0" version="15">
-  <Creation createdAt="5249375796387785772" createdBy="Michael" creationMode="New" origin="PKSim" version="10.0" internalVersion="78" />
+<MoleculeBuildingBlock id="bvBN29KyVUOFroJwMMkgfQ" name="Standard Molecule" icon="Molecule" bbVersion="0" version="16">
+  <Creation createdAt="5249711709499474800" createdBy="Michael" creationMode="New" origin="PKSim" version="11.1" internalVersion="79" />
   <Builders>
-    <MoleculeBuilder id="75WTj50s70Oy57UlxLqeKQ" icon="DRUG" mode="Logical" containerType="Other" isFloating="1" quantityType="Drug" isXenobiotic="1" dim="Amount" defaultStartFormula="l9utK18zakioS5dzVIp0HA" displayUnit="µmol">
+    <MoleculeBuilder id="UFtUGsA_2kG_ZNILDfvwUw" icon="DRUG" mode="Logical" containerType="Other" isFloating="1" quantityType="Drug" isXenobiotic="1" dim="Amount" defaultStartFormula="bzq5PsuPHkCQxFk2BNSkSQ" displayUnit="µmol">
       <Children>
-        <Parameter id="UEl1J6QYAky-5i2OW77eow" name="base_For_KaPL_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="20">
+        <Parameter id="3XyBLSSWykGESriEGRY1hQ" name="base_For_KaPL_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="20">
           <ValueOrigin id="34" source="Publication" description="Toxicol In Vitro. 2008 Mar;22(2):457-67 https://doi.org/10.1016/j.tiv.2007.09.010" />
           <Info min="0" flag="36" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="Qe2KZUoankWpFaNpHGhp3A" name="base_For_logD_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.001">
+        <Parameter id="z4uMnRqZx06HBPzdH16v8A" name="base_For_logD_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.001">
           <ValueOrigin id="34" source="Publication" description="Toxicol In Vitro. 2008 Mar;22(2):457-67 https://doi.org/10.1016/j.tiv.2007.09.010" />
           <Info min="0" flag="36" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="4msvXN6BjU6SJ2SJIdoy3w" name="base_For_P_cell_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.001">
+        <Parameter id="aVH8I1cMJk-74etAytRcnw" name="base_For_P_cell_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.001">
           <Info min="0" flag="36" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="er5GQJPjHE2N90isNTFZfw" name="base_For_Pint_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.1">
+        <Parameter id="DzaOZ5wnQEuPUk6gXmq-ZA" name="base_For_Pint_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.1">
           <Info min="0" flag="36" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="Zaix8PTNYkahTMaXHLBGeA" name="BP_AGP" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="Oau2fwnYH0eoDBcIPBjlWA" name="BP_AGP" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info flag="52" seq="1" ref="0" bb="4" group="9" />
         </Parameter>
-        <Parameter id="u-q2FJObpUu8uyJsNLTwMg" name="BP_ALBUMIN" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+        <Parameter id="fi2aCyfRVEWY3fDxb8nT9A" name="BP_ALBUMIN" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
           <Info flag="52" seq="1" ref="0" bb="4" group="9" />
         </Parameter>
-        <Parameter id="bf3koJsOAU-3-uZ9tQtMAg" name="BP_UNKNOWN" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="2">
+        <Parameter id="Q4RWNbjoBUmhe2mVXhoKOA" name="BP_UNKNOWN" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="2">
           <Info flag="52" seq="1" ref="0" bb="4" group="9" />
         </Parameter>
-        <Parameter id="dTnux8eZyEOdfSpjzEFPvQ" name="Br" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="v1TEYLKvsUqWYRYYU8E0pg" name="Br" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="10" flag="58" seq="1" ref="0" bb="4" group="13" />
         </Parameter>
-        <Parameter id="Y5a13qxqUkecUnnWJNqLqA" name="Calculated specific intestinal permeability (transcellular)" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="IntestinalPermeabilityCommon_PKSim.PARAM_P_int_InVitro" buildMode="Global" isDefault="1" displayUnit="cm/min">
+        <Parameter id="s_oRA7xAE0SrbUxzjfV2uw" name="Calculated specific intestinal permeability (transcellular)" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="IntestinalPermeabilityCommon_PKSim.PARAM_P_int_InVitro" buildMode="Global" isDefault="1" displayUnit="cm/min">
           <ValueOrigin id="28" source="Publication" description="Thelen K, Coboeken K, Willmann S, et al. Evolution of a detailed physiological model to simulate the gastrointestinal transit and absorption process in humans, Part 1:Oral solutions. J Pharm Sci. 2011 Dec;100(12):5324-45 https://doi.org/10.1002/jps.22726" />
           <Info min="0" flag="52" seq="1" ref="0" bb="2" group="75" />
         </Parameter>
-        <Parameter id="PSSwNIxor0Gbs6ztnsDM4g" name="Cl" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="UeeybckBEk6RFq-uAqRWBg" name="Cl" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="10" flag="58" seq="1" ref="0" bb="4" group="13" />
         </Parameter>
-        <Parameter id="FFU9Q34wPkWgP2PUxDbCUA" name="Compound type 0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="807OCMoqD0uI5yIYgb-8cg" name="Compound type 0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="-1" max="1" flag="58" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="YYhqLL-9O062mH22wCtKIg" name="Compound type 1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="5puWMrgrIEeu5msgBpgxkg" name="Compound type 1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="-1" max="1" flag="58" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="rVrw4T8OhEqgafpE_tI2kw" name="Compound type 2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="h0UorgbjbUaXTbEbisWxQA" name="Compound type 2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="-1" max="1" flag="58" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="80qG-Efy10G_vCoSHj3UCA" name="CT_ACID" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="-1">
+        <Parameter id="WZdO2eRxikKBQBiSnDTjag" name="CT_ACID" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="-1">
           <Info min="-1" max="-1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="FVdti4TE_kiq6T-K6E56_Q" name="CT_BASE" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+        <Parameter id="GSwOLBtqRUOR-2LD1tjuGQ" name="CT_BASE" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
           <Info min="1" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="lsZIwszxkE-OmB4v8i8gFg" name="CT_NEUTRAL" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="Qw4BUZT360-cWSGBJJBa3g" name="CT_NEUTRAL" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="0" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="DgOhOpNopkmX0axoGXNXeA" name="Effective molecular weight" icon="Parameter" persistable="0" isFixedValue="0" dim="Molecular weight" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundMW_PKSim.PARAM_MWEff" buildMode="Property" isDefault="1" displayUnit="g/mol">
+        <Parameter id="P4gQKf7AO0qnE_5JbKjn_A" name="Effective molecular weight" icon="Parameter" persistable="0" isFixedValue="0" dim="Molecular weight" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundMW_PKSim.PARAM_MWEff" buildMode="Property" isDefault="1" displayUnit="g/mol">
           <ValueOrigin id="25" source="Publication" description="Stefan Willmann, Walter Schmitt,Jörg Keldenich, Jörg Lippert, and Jennifer B. Dressman: A Physiological Model for the Estimation of the Fraction Dose Absorbed in Humans. J. Med. Chem. 2004, 47, 4022-4031" />
           <Info min="1.5E-08" flag="62" seq="1" ref="0" bb="4" group="13" />
         </Parameter>
-        <Parameter id="OeYY0MNpLkCYsmUyeJ1Wzg" name="F" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="DzlJ_o5TUUS-Lf34li7mDw" name="F" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="10" flag="58" seq="1" ref="0" bb="4" group="13" />
         </Parameter>
-        <Parameter id="HVDbursJHUuE_iHz2xhLmw" name="Has halogens" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundMW_PKSim.PARAM_HasHalogens" buildMode="Property" isDefault="1">
+        <Parameter id="wjFRvXw_fkeEW4xSoHSTig" name="Has halogens" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundMW_PKSim.PARAM_HasHalogens" buildMode="Property" isDefault="1">
           <Info min="0" flag="60" seq="1" ref="0" bb="4" group="13" />
         </Parameter>
-        <Parameter id="SXsr0D4l3kmxcLt99ATcpA" name="I" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="LeSLvIX3kEeqonk40ZzlAg" name="I" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="10" flag="58" seq="1" ref="0" bb="4" group="13" />
         </Parameter>
-        <Parameter id="_gwYjwCDMECeNA5DQeQ50Q" name="Is diprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsDiproticAcid" buildMode="Property" isDefault="1">
+        <Parameter id="-SYUr5gWj0CmyYJHFRaG7g" name="Is diprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsDiproticAcid" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="xA9pYsKcCEah6boEviCAcQ" name="Is diprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsDiproticBase" buildMode="Property" isDefault="1">
+        <Parameter id="fttzbFe6fUmJsJexyYqmdQ" name="Is diprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsDiproticBase" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="9AZGSeScREWfgY69-_naSg" name="Is diprotic base monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsDiproticBaseMonoproticAcid" buildMode="Property" isDefault="1">
+        <Parameter id="JuHcWbLCOEGo4UyzZ1TH8Q" name="Is diprotic base monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsDiproticBaseMonoproticAcid" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="Nn8VCB_F1EaeTPMvEx_8XQ" name="Is floating in lumen" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+        <Parameter id="n7RKQdL00060ml2f1VLgKA" name="Is floating in lumen" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="9" />
         </Parameter>
-        <Parameter id="z4R1myrR00-oT11vQ0vGmQ" name="Is monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsMonoproticAcid" buildMode="Property" isDefault="1">
+        <Parameter id="lLFjVNhIPkS7hj_yCgrA7w" name="Is monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsMonoproticAcid" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="p_jVn0rKGUyDVfQuBqUf3g" name="Is monoprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsMonoproticBase" buildMode="Property" isDefault="1">
+        <Parameter id="2Tcop2_SDEWEZIGjnkWNhA" name="Is monoprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsMonoproticBase" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="79mFn4WoI0amF8w4fW-3Zw" name="Is monoprotic base diprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsMonoproticBaseDiproticAcid" buildMode="Property" isDefault="1">
+        <Parameter id="fbrumhwsj0G2oSQOTn_zuw" name="Is monoprotic base diprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsMonoproticBaseDiproticAcid" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="MJwI690GWU6f-ehu3kFeNw" name="Is monoprotic base monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsMonoproticBaseMonoproticAcid" buildMode="Property" isDefault="1">
+        <Parameter id="KP5pUS0EGECcpeKLWAqfZA" name="Is monoprotic base monoprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsMonoproticBaseMonoproticAcid" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="psrus6Jj0EuRJTpWLDO66w" name="Is neutral" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsNeutral" buildMode="Property" isDefault="1">
+        <Parameter id="vJd5TBVnjk-ef1GYzJXdKw" name="Is neutral" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsNeutral" buildMode="Property" isDefault="1">
           <Info min="0" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="2BdQu1cUS0KDQg6RUVwYtw" name="Is small molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="1">
+        <Parameter id="0rg_y8Dq0E-9enBjMg_ThQ" name="Is small molecule" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="1">
           <Info min="0" max="1" flag="60" seq="1" ref="0" bb="4" group="9" />
         </Parameter>
-        <Parameter id="B5VyLkkj00uY6xOPPf4M3w" name="Is strong base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_HasStrongBase" buildMode="Property" isDefault="1">
+        <Parameter id="Eq6d3c1v5EOtTB3dzWMEug" name="Is strong base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_HasStrongBase" buildMode="Property" isDefault="1">
           <Info min="0" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="nx71JpOOzk2kyyLlsASsSA" name="Is triprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsTriproticAcid" buildMode="Property" isDefault="1">
+        <Parameter id="h_7-y9-iv0youoVNcLtbhg" name="Is triprotic acid" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsTriproticAcid" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="xhf-3h-Xr0CwtdXZXLDWXQ" name="Is triprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsTriproticBase" buildMode="Property" isDefault="1">
+        <Parameter id="FHpweFZM8U-IdoCZe3-9iw" name="Is triprotic base" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_IsTriproticBase" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="H6E-Hf97VkCfakPVY2YBdw" name="Molecular weight" icon="Parameter" persistable="0" isFixedValue="0" dim="Molecular weight" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="NaN" displayUnit="g/mol">
+        <Parameter id="RngNpRAa-kKmuSA6RKjigg" name="Molecular weight" icon="Parameter" persistable="0" isFixedValue="0" dim="Molecular weight" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="NaN" displayUnit="g/mol">
           <Info min="1.5E-08" flag="56" seq="1" ref="0" bb="4" group="13" />
         </Parameter>
-        <Parameter id="CVO3wfnfcky0kHozrOC_uA" name="pKa value 0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="Jxb7YXytUk-USdL2RXbRvw" name="pKa value 0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="14" flag="58" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="CgOaoyjH1kGU6D5iVEpFrA" name="pKa value 1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="KnxC_0HaFUaGtzd5LCLe4Q" name="pKa value 1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="14" flag="58" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="LRsyM48UA0mPxT5l1n5MKQ" name="pKa value 2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="pYSPOxE1_UqNjIiH1GdP8g" name="pKa value 2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="14" flag="58" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="4mOmd_vzO0eiiRAsSRxIEQ" name="pKa_Acid_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Acid_0" buildMode="Property" isDefault="1">
+        <Parameter id="sqgE3tEhtUCOUH111PVsQA" name="pKa_Acid_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Acid_0" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="at7ZW86RtECY4U9uMSZ0Vw" name="pKa_Acid_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Acid_1" buildMode="Property" isDefault="1">
+        <Parameter id="3h45_XNZeEui6luN7XlpQw" name="pKa_Acid_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Acid_1" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="CJPLy6ngcESv8-grPocKdQ" name="pKa_Acid_2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Acid_2" buildMode="Property" isDefault="1">
+        <Parameter id="PwmR6ohb1kyvJqvEVLltRA" name="pKa_Acid_2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Acid_2" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="TlsDYy25PkmZgFUaCHBqcg" name="pKa_Acids_Count" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Acids_Count" buildMode="Property" isDefault="1">
+        <Parameter id="w9YYWnnE_0ekpSxRqdo6Eg" name="pKa_Acids_Count" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Acids_Count" buildMode="Property" isDefault="1">
           <Info min="0" max="3" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="UMz8VxM1WEK6OjxhfvFhgw" name="pKa_Base_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Base_0" buildMode="Property" isDefault="1">
+        <Parameter id="Ad-bs_aSY0-yZbVcG7Bgnw" name="pKa_Base_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Base_0" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="jhpadkun7kugipWGR8d2ZA" name="pKa_Base_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Base_1" buildMode="Property" isDefault="1">
+        <Parameter id="_zF8ocvAck6wK7Wn9qpYDg" name="pKa_Base_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Base_1" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="Dh5efDmr20Gf6YzlZAxx3w" name="pKa_Base_2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Base_2" buildMode="Property" isDefault="1">
+        <Parameter id="p9HnfphYaEaD8J96JjUvlw" name="pKa_Base_2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Base_2" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="r8LG1YMzMEmqeK27S8YxDA" name="pKa_Bases_Count" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Bases_Count" buildMode="Property" isDefault="1">
+        <Parameter id="aHUofCb0HkqgjtWgQO6AIQ" name="pKa_Bases_Count" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_Bases_Count" buildMode="Property" isDefault="1">
           <Info min="0" max="3" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="T86L37mblUe7EyR0EnWdAQ" name="pKa_OneAcid_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_OneAcid_0" buildMode="Property" isDefault="1">
+        <Parameter id="UCs_T2VBy0a3gH7Teb8CmA" name="pKa_OneAcid_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_OneAcid_0" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="c7TVfE4UEUSFn0minLE15A" name="pKa_OneBase_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_OneBase_0" buildMode="Property" isDefault="1">
+        <Parameter id="fcSKfvP66kieLuZyIp7oyg" name="pKa_OneBase_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_OneBase_0" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="Bcz7X_0QH0axcv_zBiKBow" name="pKa_pH_WS_sol_F1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_F1" buildMode="Property" isDefault="1">
+        <Parameter id="o2tJbi4xQk6mnadDJ7dcAw" name="pKa_pH_WS_sol_F1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_F1" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="bwV3rtRqfUWJuiN2epwKgg" name="pKa_pH_WS_sol_F2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_F2" buildMode="Property" isDefault="1">
+        <Parameter id="XVjoxtFqZ0KPO6AKFnAwqg" name="pKa_pH_WS_sol_F2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_F2" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="CK6GYVB-7kKNZbc-3Vf3KA" name="pKa_pH_WS_sol_F3" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_F3" buildMode="Property" isDefault="1">
+        <Parameter id="1K0-5A5yIkSfuPc4BZCYKQ" name="pKa_pH_WS_sol_F3" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_F3" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="PNFAXEvgPEqv7gv2iwpnLw" name="pKa_pH_WS_sol_K1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K1" buildMode="Property" isDefault="1">
+        <Parameter id="EwaaHgSk0Eqwn8jBrc79DA" name="pKa_pH_WS_sol_K1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K1" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="RdVvH5YeikqR3gvAcHaYjg" name="pKa_pH_WS_sol_K2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K2" buildMode="Property" isDefault="1">
+        <Parameter id="25WIbR7MP0WJ4dcCyZ2g6w" name="pKa_pH_WS_sol_K2" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K2" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="4csyFAqlP0ieuaJhmM3KcQ" name="pKa_pH_WS_sol_K3" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K3" buildMode="Property" isDefault="1">
+        <Parameter id="FUomthN5506s4C1UhX_J-g" name="pKa_pH_WS_sol_K3" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K3" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="6R21sFHvo0uHfyRE_PqgBQ" name="pKa_pH_WS_sol_K4" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K4" buildMode="Property" isDefault="1">
+        <Parameter id="43U3-cuaYUG_2Zmu1bWMHQ" name="pKa_pH_WS_sol_K4" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K4" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="EfqdgtQWEk6dyt_B6rjkaQ" name="pKa_pH_WS_sol_K5" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K5" buildMode="Property" isDefault="1">
+        <Parameter id="9CwGAtD7yU-LD4laonfLJg" name="pKa_pH_WS_sol_K5" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K5" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="pRlFYNhb0Uioqmcw1W1i9g" name="pKa_pH_WS_sol_K6" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K6" buildMode="Property" isDefault="1">
+        <Parameter id="XqVc_5jOSU6BM3-F--v9iw" name="pKa_pH_WS_sol_K6" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K6" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="WfyWYJxJi0OeoMgcrbZHRA" name="pKa_pH_WS_sol_K7" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K7" buildMode="Property" isDefault="1">
+        <Parameter id="gXPayWjTqECWaaMaz-r5YQ" name="pKa_pH_WS_sol_K7" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K7" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="nN8EIJfbZEuJUIrkNtWu8A" name="pKa_pH_WS_sol_K8" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K8" buildMode="Property" isDefault="1">
+        <Parameter id="2I1sAwsop0-PGhl6wwceCw" name="pKa_pH_WS_sol_K8" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_pH_WS_sol_K8" buildMode="Property" isDefault="1">
           <Info min="0" max="1" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="9y-P-Xrj9ECCv384HrNzNg" name="pKa_ThreeAcids_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_ThreeAcids_0" buildMode="Property" isDefault="1">
+        <Parameter id="l_ygI8bt2EiUClMAdYK-3Q" name="pKa_ThreeAcids_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_ThreeAcids_0" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="qys6PVbB-EWfnDBq4HBPGw" name="pKa_ThreeAcids_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_ThreeAcids_1" buildMode="Property" isDefault="1">
+        <Parameter id="m-wiDGr2v0Gz4DNOx8n9Eg" name="pKa_ThreeAcids_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_ThreeAcids_1" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="cw1HX2sL1kWQOsDj0mCIBQ" name="pKa_ThreeBases_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_ThreeBases_0" buildMode="Property" isDefault="1">
+        <Parameter id="rVQ61_63lE6kOOp-gkqL1g" name="pKa_ThreeBases_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_ThreeBases_0" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="jxClLf0GT0-HCoHQqF2e0Q" name="pKa_ThreeBases_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_ThreeBases_1" buildMode="Property" isDefault="1">
+        <Parameter id="4i9vE8GmQUOnO61W4yfc0w" name="pKa_ThreeBases_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_ThreeBases_1" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="GKKivDZhcUyYWly10aE4nQ" name="pKa_TwoAcids_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_TwoAcids_0" buildMode="Property" isDefault="1">
+        <Parameter id="wc2raPQ6I0uf3a9JN-ZAFg" name="pKa_TwoAcids_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_TwoAcids_0" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="xdt4IGLD8Uq3aKSSLJdVgg" name="pKa_TwoAcids_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_TwoAcids_1" buildMode="Property" isDefault="1">
+        <Parameter id="P0LqA5WWXUqaGS1lVU37PQ" name="pKa_TwoAcids_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_TwoAcids_1" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="Jk8Cwl9l3U6rG-YbL5zuCw" name="pKa_TwoBases_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_TwoBases_0" buildMode="Property" isDefault="1">
+        <Parameter id="lNeToPtqIEKzlBO587Eqzg" name="pKa_TwoBases_0" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_TwoBases_0" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="0BOdNZ6tLk2X3dpF5festw" name="pKa_TwoBases_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_TwoBases_1" buildMode="Property" isDefault="1">
+        <Parameter id="OIDJhw-6lkiQ9Rxe_3QNVQ" name="pKa_TwoBases_1" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_pKa_TwoBases_1" buildMode="Property" isDefault="1">
           <Info min="0" max="14" flag="52" seq="1" ref="0" bb="4" group="16" />
         </Parameter>
-        <Parameter id="fI8amFnjZk6Q-5ycTKbheA" name="Plasma protein binding partner" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="2">
+        <Parameter id="y5247QNshUqj5tT_qX7bEQ" name="Plasma protein binding partner" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="2">
           <Info flag="58" seq="1" ref="0" bb="4" group="9" />
         </Parameter>
-        <Parameter id="AwhA_Li390K1em-baZ2pmA" name="Solubility_pKa_pH_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_Solubility_pKa_RefpH_Factor" buildMode="Property" isDefault="1">
+        <Parameter id="N89smho-qU-F_xyAFLUz1w" name="Solubility_pKa_pH_Factor" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundAcidBase_PKSim.PARAM_Solubility_pKa_RefpH_Factor" buildMode="Property" isDefault="1">
           <Info min="0" flag="52" seq="1" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="kMjE3pAh00SaCz-0VNclOA" name="Total drug mass" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" formula="DynamicSumFormulas.PARAM_TotalDrugMass" buildMode="Property" isDefault="1" displayUnit="µmol">
+        <Parameter id="BUEXyCm_Fk2_LG9wmdqacw" name="Total drug mass" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" formula="DynamicSumFormulas.PARAM_TotalDrugMass" buildMode="Property" isDefault="1" displayUnit="µmol">
           <Info min="0" flag="52" seq="1" ref="0" bb="2" group="9" />
         </Parameter>
-        <Parameter id="4LqkeDW_nU6322ygiiKbNg" name="Total oral drug mass" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0" displayUnit="µmol">
+        <Parameter id="_6TlROyXfkGEG_FCLLkduQ" name="Total oral drug mass" icon="Parameter" persistable="0" isFixedValue="0" dim="Amount" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0" displayUnit="µmol">
           <Info min="0" flag="52" seq="1" ref="0" bb="2" group="63" />
         </Parameter>
-        <Parameter id="NTgChh4c0kOuwBXjGnf6wA" name="Lipophilicity" icon="Parameter" persistable="0" isFixedValue="0" dim="Log Units" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="NaN" displayUnit="Log Units">
+        <Parameter id="nV7eh6V9BUSh7wTsX0S8-g" name="Lipophilicity" icon="Parameter" persistable="0" isFixedValue="0" dim="Log Units" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="NaN" displayUnit="Log Units">
           <Info min="-10" max="10" flag="58" seq="2" ref="0" bb="4" group="12" />
         </Parameter>
-        <Parameter id="UKC9e8yUT0elPBvxgtgSmA" name="Fraction unbound (plasma, reference value)" icon="Parameter" persistable="0" isFixedValue="0" dim="Fraction" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="NaN">
+        <Parameter id="TxKBc06pt0CoZlkkiAIV-w" name="Fraction unbound (plasma, reference value)" icon="Parameter" persistable="0" isFixedValue="0" dim="Fraction" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="NaN">
           <Info min="0" max="1" flag="106" seq="3" ref="0" bb="4" group="10" />
         </Parameter>
-        <Parameter id="YQkKXnYdjUW7hazT4N2_UA" name="Solubility at reference pH" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (mass)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="NaN" displayUnit="mg/l">
+        <Parameter id="sh0A44svq0uQcQUmznBZGQ" name="Solubility at reference pH" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (mass)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="NaN" displayUnit="mg/l">
           <Info min="0" flag="122" seq="4" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="l1eZoswi3US6W9hJ-5teFw" name="Solubility table" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (mass)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0" displayUnit="mg/l">
+        <Parameter id="VRKaRMvY80abPhJa0NCejw" name="Solubility table" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (mass)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0" displayUnit="mg/l">
           <Info min="0" flag="48" seq="4" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="bP3hRr_xIkS0_raRybYchg" name="Reference pH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="7">
+        <Parameter id="QACmBoLCwkCJaNshFguQvw" name="Reference pH" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="0" value="7">
           <Info min="0" max="14" flag="58" seq="5" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="F53XbCaJjUinx5nVdIBatQ" name="Solubility gain per charge" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1000">
+        <Parameter id="_qmzoweKdEGvKU6FH8YXUA" name="Solubility gain per charge" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1000">
           <Info min="0" flag="42" seq="6" ref="0" bb="4" group="18" />
         </Parameter>
-        <Parameter id="eMzdgdTl6kiYl2YcRwz1dQ" name="Permeability" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="DiffusionCommon_PKSim.PARAM_P" buildMode="Property" isDefault="1" displayUnit="cm/min">
+        <Parameter id="sOe8LGoD3UqctrxdHuTUrw" name="Permeability" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="DiffusionCommon_PKSim.PARAM_P" buildMode="Property" isDefault="1" displayUnit="cm/min">
           <Info min="0" flag="62" seq="7" ref="0" bb="4" group="15" />
         </Parameter>
-        <Parameter id="omk8xUs7Iki182kzCOpGFA" name="Specific intestinal permeability (transcellular)" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="IntestinalPermeabilityCommon_PKSim.PARAM_P_int_InVitro" buildMode="Property" isDefault="1" displayUnit="cm/min">
+        <Parameter id="kU9ArTgoTk6gfyNl3oZOtQ" name="Specific intestinal permeability (transcellular)" icon="Parameter" persistable="0" isFixedValue="0" dim="Velocity" quantityType="Parameter" negativeValuesAllowed="1" formula="IntestinalPermeabilityCommon_PKSim.PARAM_P_int_InVitro" buildMode="Property" isDefault="1" displayUnit="cm/min">
           <ValueOrigin id="28" source="Publication" description="Thelen K, Coboeken K, Willmann S, et al. Evolution of a detailed physiological model to simulate the gastrointestinal transit and absorption process in humans, Part 1:Oral solutions. J Pharm Sci. 2011 Dec;100(12):5324-45 https://doi.org/10.1002/jps.22726" />
           <Info min="0" flag="62" seq="8" ref="0" bb="4" group="11" />
         </Parameter>
-        <Parameter id="z4wPV3CBV02uruUP647UZw" name="Partition coefficient (water/protein)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="DistributionInVitro_PKSim.PARAM_KProt" buildMode="Global" isDefault="1">
+        <Parameter id="cT76HX2kg0GMT_pM_G80vQ" name="Partition coefficient (water/protein)" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" formula="DistributionInVitro_PKSim.PARAM_KProt" buildMode="Global" isDefault="1">
           <Info min="0" flag="122" seq="9" ref="0" bb="2" group="67" />
         </Parameter>
-        <Parameter id="GSmLPoUfT0-EZoPn1FM-gg" name="Treat precipitated drug as" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
+        <Parameter id="BdQLVUU9g0O5vwU7SKWyhw" name="Treat precipitated drug as" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1">
           <Info min="0" max="1" flag="58" seq="30" ref="0" bb="4" group="14" />
         </Parameter>
-        <Parameter id="DTUxb87iNkK-_tI8-mlc5Q" name="Aqueous diffusion coefficient" icon="Parameter" persistable="0" isFixedValue="0" dim="Diffusion coefficient" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundCommon.PARAM_Aqueous_diffusion_coefficient" buildMode="Property" isDefault="1" displayUnit="cm²/min">
+        <Parameter id="SMlnM09uCUKmh_6atWqJ-w" name="Aqueous diffusion coefficient" icon="Parameter" persistable="0" isFixedValue="0" dim="Diffusion coefficient" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundCommon.PARAM_Aqueous_diffusion_coefficient" buildMode="Property" isDefault="1" displayUnit="cm²/min">
           <ValueOrigin id="32" source="Publication" description="Willmann S, Thelen K, Becker C, et al. Mechanism-based prediction of particle size-dependent dissolution and absorption: cilostazol pharmacokinetics in dogs. Eur J Pharm Biopharm. 2010 Sep;76(1):83-94 https://doi.org/10.1016/j.ejpb.2010.06.003" />
           <Info min="6E-13" max="0.6" flag="58" seq="31" ref="0" bb="4" group="14" />
         </Parameter>
-        <Parameter id="2N2eLicYKkSKH4pNGfsUew" name="Density (drug)" icon="Parameter" persistable="0" isFixedValue="0" dim="Density" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1" displayUnit="g/cm³">
+        <Parameter id="a4Sb1HIa7kKTHugjBRfFFA" name="Density (drug)" icon="Parameter" persistable="0" isFixedValue="0" dim="Density" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1" displayUnit="g/cm³">
           <ValueOrigin id="32" source="Publication" description="Willmann S, Thelen K, Becker C, et al. Mechanism-based prediction of particle size-dependent dissolution and absorption: cilostazol pharmacokinetics in dogs. Eur J Pharm Biopharm. 2010 Sep;76(1):83-94 https://doi.org/10.1016/j.ejpb.2010.06.003" />
           <Info min="2.5E-06" flag="58" seq="32" ref="0" bb="4" group="14" />
         </Parameter>
-        <Parameter id="gAaNOdv18EW_afxj14tUgA" name="Immediately dissolve particles smaller than" icon="Parameter" persistable="0" isFixedValue="0" dim="Length" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1E-07" displayUnit="µm">
+        <Parameter id="MUiE0DAtp0C6d5I9cd5bbg" name="Immediately dissolve particles smaller than" icon="Parameter" persistable="0" isFixedValue="0" dim="Length" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="1E-07" displayUnit="µm">
           <ValueOrigin id="32" source="Publication" description="Willmann S, Thelen K, Becker C, et al. Mechanism-based prediction of particle size-dependent dissolution and absorption: cilostazol pharmacokinetics in dogs. Eur J Pharm Biopharm. 2010 Sep;76(1):83-94 https://doi.org/10.1016/j.ejpb.2010.06.003" />
           <Info min="1E-35" flag="58" seq="33" ref="0" bb="4" group="14" />
         </Parameter>
-        <Parameter id="3hy8KAKyIEOoQxQXLsrMFw" name="Radius (solute)" icon="Parameter" persistable="0" isFixedValue="0" dim="Length" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundCommon.PARAM_Ae" buildMode="Property" isDefault="1" displayUnit="µm">
+        <Parameter id="FDV1xTlsaUef8PtFhJGPCg" name="Radius (solute)" icon="Parameter" persistable="0" isFixedValue="0" dim="Length" quantityType="Parameter" negativeValuesAllowed="1" formula="CompoundCommon.PARAM_Ae" buildMode="Property" isDefault="1" displayUnit="µm">
           <ValueOrigin id="26" source="Publication" description="Niederalt, C., Kuepfer, L., Solodenko, J. et al. J Pharmacokinet Pharmacodyn (2017). https://doi.org/10.1007/s10928-017-9559-4" />
           <Info min="0" flag="58" seq="40" ref="0" bb="4" group="19" />
         </Parameter>
-        <Parameter id="11JD2VgWgUqlfoE5xs1Bbg" name="Kd (FcRn) in endosomal space" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="999999" displayUnit="µmol/l">
+        <Parameter id="YxMgfe98gkqvnV5m8o4Hkw" name="Kd (FcRn) in endosomal space" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="999999" displayUnit="µmol/l">
           <ValueOrigin id="26" source="Publication" description="Niederalt, C., Kuepfer, L., Solodenko, J. et al. J Pharmacokinet Pharmacodyn (2017). https://doi.org/10.1007/s10928-017-9559-4" />
           <Info min="0" flag="58" seq="41" ref="0" bb="4" group="19" />
         </Parameter>
-        <Parameter id="6D1pm0vkxUKoTtk75puaSw" name="Kd (FcRn) in plasma/interstitial" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="999999" displayUnit="µmol/l">
+        <Parameter id="t55QTLqWBUKMxNpUVLvhqQ" name="Kd (FcRn) in plasma/interstitial" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="999999" displayUnit="µmol/l">
           <ValueOrigin id="26" source="Publication" description="Niederalt, C., Kuepfer, L., Solodenko, J. et al. J Pharmacokinet Pharmacodyn (2017). https://doi.org/10.1007/s10928-017-9559-4" />
           <Info min="0" flag="58" seq="42" ref="0" bb="4" group="19" />
         </Parameter>
-        <Parameter id="fmKChvxsvEq6u4dI7p9nAQ" name="kass (FcRn)" icon="Parameter" persistable="0" isFixedValue="0" dim="Second order rate constant" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.87" displayUnit="l/µmol/min">
+        <Parameter id="j2N3zuS4m0KeplcIftlOoA" name="kass (FcRn)" icon="Parameter" persistable="0" isFixedValue="0" dim="Second order rate constant" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0.87" displayUnit="l/µmol/min">
           <ValueOrigin id="26" source="Publication" description="Niederalt, C., Kuepfer, L., Solodenko, J. et al. J Pharmacokinet Pharmacodyn (2017). https://doi.org/10.1007/s10928-017-9559-4" />
           <Info min="0" flag="58" seq="43" ref="0" bb="4" group="19" />
         </Parameter>
-        <Parameter id="5wYiPhHztUq6e85Mlyodcw" name="Use pH- and pKa-dependent penalty factor for charged molecule fraction" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Global" isDefault="1" value="0">
+        <Parameter id="6VUK-xTxp0uFzQ8eLdOQuw" name="Use pH- and pKa-dependent penalty factor for charged molecule fraction" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Global" isDefault="1" value="0">
           <Info min="0" max="1" flag="58" seq="100" ref="0" bb="2" group="75" />
         </Parameter>
-        <Parameter id="cnw0QxnvmEC1M3PYIvOaTw" name="Enable supersaturation" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
+        <Parameter id="TUyg7UtKM0GYFejhYRJ7yg" name="Enable supersaturation" icon="Parameter" persistable="0" isFixedValue="0" quantityType="Parameter" negativeValuesAllowed="1" buildMode="Property" isDefault="1" value="0">
           <Info min="0" max="1" flag="58" seq="100" ref="0" bb="4" group="14" />
         </Parameter>
-        <Parameter id="hfte7ZP4F0uEavFRAmQNzQ" name="Concentration" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" formula="ConcFormula" isDefault="1" displayUnit="µmol/l">
+        <Parameter id="R3baoEKu1Uq-I2FVLfaSwA" name="Concentration" icon="Parameter" persistable="0" isFixedValue="0" dim="Concentration (molar)" quantityType="Parameter" negativeValuesAllowed="1" formula="ConcFormula" isDefault="1" displayUnit="µmol/l">
           <Info min="0" flag="18" seq="1" ref="0" bb="2" group="117" />
         </Parameter>
       </Children>
@@ -649,7 +649,7 @@
         </Paths>
       </Formula>
       <SumFormula id="DynamicSumFormulas.PARAM_TotalDrugMass" name="PARAM_TotalDrugMass" dim="Amount" variable="P" formulaString="P_#i">
-        <Criteria>
+        <Criteria operator="And">
           <DescriptorConditions>
             <MatchTagCondition tag="DrugMass" />
             <MatchTagCondition tag="MOLECULE" />
@@ -684,7 +684,7 @@
           <Path path="105" as="106" dim="107" />
         </Paths>
       </Formula>
-      <ConstantFormula id="l9utK18zakioS5dzVIp0HA" dim="Amount" value="0" />
+      <ConstantFormula id="bzq5PsuPHkCQxFk2BNSkSQ" dim="Amount" value="0" />
     </Formulas>
     <StringMap>
       <Map s="..|Effective molecular weight" id="0" />
