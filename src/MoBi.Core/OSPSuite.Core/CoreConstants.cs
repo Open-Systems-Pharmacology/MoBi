@@ -42,6 +42,4 @@ namespace OSPSuite.Core
          return nonEmptyNames.Select(x => x.Trim()).ToString($"{separator}");
       }
    }
-
-   
 }
