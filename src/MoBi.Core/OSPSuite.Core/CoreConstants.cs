@@ -7,6 +7,8 @@ namespace OSPSuite.Core
 {
    public static class CoreConstants
    {
+      // TODO: remove common code from PK-sim when this is promoted to Core
+
       public static class ContainerName
       {
          public static string ExpressionProfileName(string moleculeName, string species, string category)
