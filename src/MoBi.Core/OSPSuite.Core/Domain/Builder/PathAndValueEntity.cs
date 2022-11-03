@@ -8,7 +8,8 @@ namespace OSPSuite.Core.Domain.Builder
 {
 
    // TODO: this should become the replacement for StartValueBase on promotion to Core.
-   // will require changes x.StartValue => x.Value all over
+   // For start value, we can just add the property 'StartValue' which reflects the 'Value' here.
+   // That way project conversion is not necessary
    public abstract class PathAndValueEntity : Entity, IUsingFormula, IWithDisplayUnit, IWithValueOrigin
    {
       private IObjectPath _containerPath;
@@ -149,9 +150,6 @@ namespace OSPSuite.Core.Domain.Builder
          ValueOrigin.UpdateAllFrom(sourcePathAndValueEntity.ValueOrigin);
       }
 
-      public override string ToString()
-      {
-         return $"Path={ContainerPath}, Name={Name}";
-      }
+      public override string ToString() => $"Path={ContainerPath}, Name={Name}";
    }
 }
