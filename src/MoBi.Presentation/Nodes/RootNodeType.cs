@@ -14,6 +14,7 @@ namespace MoBi.Presentation.Nodes
       public static readonly RootNodeType ReactionFolder = new RootNodeType(AppConstants.Captions.Reactions, ApplicationIcons.ReactionFolder);
       public static readonly RootNodeType MoleculeStartValuesFolder = new RootNodeType(AppConstants.Captions.MoleculeStartValues, ApplicationIcons.MoleculeStartValuesFolder);
       public static readonly RootNodeType ParameterStartValuesFolder = new RootNodeType(AppConstants.Captions.ParameterStartValues, ApplicationIcons.ParameterStartValuesFolder);
+      public static readonly RootNodeType ExpressionProfilesFolder = new RootNodeType(AppConstants.Captions.ExpressionProfiles, ApplicationIcons.ExpressionProfileFolder);
       public static readonly RootNodeType SimulationSettingsFolder = new RootNodeType(AppConstants.Captions.SimulationSettings, ApplicationIcons.SimulationSettingsFolder);
    }
 }

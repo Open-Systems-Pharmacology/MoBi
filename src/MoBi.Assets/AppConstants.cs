@@ -1291,6 +1291,7 @@ namespace MoBi.Assets
          public static readonly string Reactions = "Reactions";
          public static readonly string MoleculeStartValues = "Molecule Start Values";
          public static readonly string ParameterStartValues = "Parameter Start Values";
+         public static readonly string ExpressionProfiles = "Expression Profiles";
          public static readonly string NextButton = "&Next";
          public static readonly string PreviousButton = "&Previous";
          public static readonly string FinishButton = "&Finish";

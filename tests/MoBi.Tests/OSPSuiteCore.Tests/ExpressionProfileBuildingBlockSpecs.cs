@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using MoBi.IntegrationTests;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -45,6 +46,22 @@ namespace MoBi.OSPSuiteCore.Tests
          sut.Type.ShouldBeEqualTo(ExpressionType.MetabolizingEnzyme);
          sut.PKSimVersion.ShouldBeEqualTo(11);
          sut.Count().ShouldBeEqualTo(1);
+      }
+   }
+
+   public class when_reading_the_icon_name_for_the_building_block : concern_for_ExpressionProfileBuildingBlock
+   {
+      [Observation]
+      public void icon_name_translated_for_each_expression_type()
+      {
+         sut.Type = ExpressionType.MetabolizingEnzyme;
+         sut.Icon.ShouldBeEqualTo("Enzyme");
+
+         sut.Type = ExpressionType.TransportProtein;
+         sut.Icon.ShouldBeEqualTo("Transporter");
+
+         sut.Type = ExpressionType.ProteinBindingPartner;
+         sut.Icon.ShouldBeEqualTo("Protein");
       }
    }
 

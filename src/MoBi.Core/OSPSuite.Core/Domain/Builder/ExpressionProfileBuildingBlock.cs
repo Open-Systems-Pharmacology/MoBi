@@ -1,12 +1,30 @@
 ﻿using OSPSuite.Core.Domain.Services;
 using static OSPSuite.Core.CoreConstants.ContainerName;
+using static OSPSuite.Core.CoreConstants.ExpressionTypeNames;
 
 namespace OSPSuite.Core.Domain.Builder
 {
    // On promotion to core, StartValueBuildingBlock, StartValueBase and PathAndValueEntity should get a refactoring
    // This building block uses much of the same features as StartValueBB, but is not really a 'StartValue' kind of bb
-   public class ExpressionProfileBuildingBlock : StartValueBuildingBlock<ExpressionParameter>
+   public class ExpressionProfileBuildingBlock : StartValueBuildingBlock<ExpressionParameter>, IExpressionProfileBuildingBlock
    {
+      public override string Icon => iconNameFor(Type);
+
+      private string iconNameFor(ExpressionType type)
+      {
+         switch (type)
+         {
+            case ExpressionType.TransportProtein:
+               return Transporter;
+            case ExpressionType.ProteinBindingPartner:
+               return Protein;
+            case ExpressionType.MetabolizingEnzyme:
+               return Enzyme;
+         }
+
+         return string.Empty;
+      }
+
       public virtual string MoleculeName { get; private set; }
 
       public string Species { get; private set; }
@@ -47,6 +65,10 @@ namespace OSPSuite.Core.Domain.Builder
          PKSimVersion = sourceExpressionProfile.PKSimVersion;
          Name = sourceExpressionProfile.Name;
       }
+   }
+
+   public interface IExpressionProfileBuildingBlock : IBuildingBlock
+   {
    }
 
    public enum ExpressionType

@@ -41,5 +41,12 @@ namespace OSPSuite.Core
 
          return nonEmptyNames.Select(x => x.Trim()).ToString($"{separator}");
       }
+
+      public static class ExpressionTypeNames
+      {
+         public static string Transporter = "Transporter";
+         public static string Protein = "Protein";
+         public static string Enzyme = "Enzyme";
+      }
    }
 }

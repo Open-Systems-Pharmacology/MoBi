@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.UnitSystem;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 
@@ -23,6 +21,7 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyList<IEventGroupBuildingBlock> EventBlockCollection { get; }
       IReadOnlyList<IMoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection { get; }
       IReadOnlyList<IParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection { get; }
+      IReadOnlyList<IExpressionProfileBuildingBlock> ExpressionProfilesBlockCollection { get; }
       IReadOnlyList<ISimulationSettings> SimulationSettingsCollection { get; }
 
       ReactionDimensionMode ReactionDimensionMode { get; set; }
@@ -122,6 +121,8 @@ namespace MoBi.Core.Domain.Model
       public IReadOnlyList<IMoleculeBuildingBlock> MoleculeBlockCollection => get<IMoleculeBuildingBlock>();
 
       public IReadOnlyList<IMoBiReactionBuildingBlock> ReactionBlockCollection => get<IMoBiReactionBuildingBlock>();
+
+      public IReadOnlyList<IExpressionProfileBuildingBlock> ExpressionProfilesBlockCollection => get<IExpressionProfileBuildingBlock>();
 
       public IReadOnlyList<ISimulationSettings> SimulationSettingsCollection => get<ISimulationSettings>();
 
