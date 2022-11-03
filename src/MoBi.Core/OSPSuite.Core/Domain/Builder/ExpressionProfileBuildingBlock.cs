@@ -3,7 +3,9 @@ using static OSPSuite.Core.CoreConstants.ContainerName;
 
 namespace OSPSuite.Core.Domain.Builder
 {
-   public class CoreExpressionProfile : BuildingBlock<ExpressionParameter>
+   // On promotion to core, StartValueBuildingBlock, StartValueBase and PathAndValueEntity should get a refactoring
+   // This building block uses much of the same features as StartValueBB, but is not really a 'StartValue' kind of bb
+   public class ExpressionProfileBuildingBlock : StartValueBuildingBlock<ExpressionParameter>
    {
       public virtual string MoleculeName { get; private set; }
 
@@ -38,7 +40,7 @@ namespace OSPSuite.Core.Domain.Builder
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(source, cloneManager);
-         var sourceExpressionProfile = source as CoreExpressionProfile;
+         var sourceExpressionProfile = source as ExpressionProfileBuildingBlock;
          if (sourceExpressionProfile == null) return;
 
          Type = sourceExpressionProfile.Type;
