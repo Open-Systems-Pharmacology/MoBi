@@ -1,5 +1,4 @@
 ﻿using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Extensions;
 using static OSPSuite.Core.CoreConstants.ContainerName;
 
 namespace OSPSuite.Core.Domain.Builder
