@@ -21,7 +21,7 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyList<IEventGroupBuildingBlock> EventBlockCollection { get; }
       IReadOnlyList<IMoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection { get; }
       IReadOnlyList<IParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection { get; }
-      IReadOnlyList<IExpressionProfileBuildingBlock> ExpressionProfilesBlockCollection { get; }
+      IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfilesCollection { get; }
       IReadOnlyList<ISimulationSettings> SimulationSettingsCollection { get; }
 
       ReactionDimensionMode ReactionDimensionMode { get; set; }
@@ -122,7 +122,7 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<IMoBiReactionBuildingBlock> ReactionBlockCollection => get<IMoBiReactionBuildingBlock>();
 
-      public IReadOnlyList<IExpressionProfileBuildingBlock> ExpressionProfilesBlockCollection => get<IExpressionProfileBuildingBlock>();
+      public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfilesCollection => get<ExpressionProfileBuildingBlock>();
 
       public IReadOnlyList<ISimulationSettings> SimulationSettingsCollection => get<ISimulationSettings>();
 

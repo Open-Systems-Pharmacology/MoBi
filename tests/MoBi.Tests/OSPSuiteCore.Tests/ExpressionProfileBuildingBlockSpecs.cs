@@ -29,7 +29,7 @@ namespace MoBi.OSPSuiteCore.Tests
          _expressionProfileBuildingBlock = new ExpressionProfileBuildingBlock();
          _cloneManager = IoC.Resolve<ICloneManager>();
          _expressionProfileBuildingBlock.Name = "Molecule|Species|Name";
-         _expressionProfileBuildingBlock.Type = ExpressionType.MetabolizingEnzyme;
+         _expressionProfileBuildingBlock.Type = ExpressionTypes.MetabolizingEnzyme;
          _expressionProfileBuildingBlock.PKSimVersion = 11;
          _expressionProfileBuildingBlock.Add(new ExpressionParameter().WithName("name1"));
       }
@@ -43,7 +43,7 @@ namespace MoBi.OSPSuiteCore.Tests
       public void the_updated_expression_profile_should_have_properties_set()
       {
          sut.Name.ShouldBeEqualTo("Molecule|Species|Name");
-         sut.Type.ShouldBeEqualTo(ExpressionType.MetabolizingEnzyme);
+         sut.Type.ShouldBeEqualTo(ExpressionTypes.MetabolizingEnzyme);
          sut.PKSimVersion.ShouldBeEqualTo(11);
          sut.Count().ShouldBeEqualTo(1);
       }
@@ -54,13 +54,13 @@ namespace MoBi.OSPSuiteCore.Tests
       [Observation]
       public void icon_name_translated_for_each_expression_type()
       {
-         sut.Type = ExpressionType.MetabolizingEnzyme;
+         sut.Type = ExpressionTypes.MetabolizingEnzyme;
          sut.Icon.ShouldBeEqualTo("Enzyme");
 
-         sut.Type = ExpressionType.TransportProtein;
+         sut.Type = ExpressionTypes.TransportProtein;
          sut.Icon.ShouldBeEqualTo("Transporter");
 
-         sut.Type = ExpressionType.ProteinBindingPartner;
+         sut.Type = ExpressionTypes.ProteinBindingPartner;
          sut.Icon.ShouldBeEqualTo("Protein");
       }
    }

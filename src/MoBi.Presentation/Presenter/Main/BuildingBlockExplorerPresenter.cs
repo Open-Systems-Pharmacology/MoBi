@@ -73,7 +73,7 @@ namespace MoBi.Presentation.Presenter.Main
             project.EventBlockCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.EventFolder));
             project.MoleculeStartValueBlockCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.MoleculeStartValuesFolder));
             project.ParametersStartValueBlockCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ParameterStartValuesFolder));
-            project.ExpressionProfilesBlockCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ExpressionProfilesFolder));
+            project.ExpressionProfilesCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ExpressionProfilesFolder));
 
             project.SimulationSettingsCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.SimulationSettingsFolder));
 
