@@ -51,6 +51,7 @@ namespace MoBi.Presentation
       protected ITreeNode<RootNodeType> _nodeSimulationSettingsFolder;
       protected ITreeNode<RootNodeType> _nodeMoleculeStartValuesFolder;
       protected ITreeNode<RootNodeType> _nodeParameterStartValuesFolder;
+      protected ITreeNode<RootNodeType> _expressionProfileFolder;
       protected ITreeNode<RootNodeType> _nodeObservedDataFolder;
 
       protected override void Context()
@@ -80,6 +81,7 @@ namespace MoBi.Presentation
          _nodeSimulationSettingsFolder = setupNode(MoBiRootNodeTypes.SimulationSettingsFolder);
          _nodeMoleculeStartValuesFolder = setupNode(MoBiRootNodeTypes.MoleculeStartValuesFolder);
          _nodeParameterStartValuesFolder = setupNode(MoBiRootNodeTypes.ParameterStartValuesFolder);
+         _expressionProfileFolder = setupNode(MoBiRootNodeTypes.ExpressionProfilesFolder);
          _nodeObservedDataFolder = setupNode(RootNodeTypes.ObservedDataFolder);
       }
 
@@ -240,7 +242,7 @@ namespace MoBi.Presentation
       public void should_add_a_folder_node_for_all_building_block_types()
       {
          _allNodesAdded.ShouldContain(_nodeSpatialStructureFolder, _nodeMoleculeFolder, _nodeReactionFolder, _nodePassiveTransportFolder,
-            _nodeObserverFolder, _nodeEventFolder, _nodeMoleculeFolder, _nodeSimulationSettingsFolder, _nodeMoleculeStartValuesFolder, _nodeParameterStartValuesFolder);
+            _nodeObserverFolder, _nodeEventFolder, _nodeSimulationSettingsFolder, _nodeMoleculeStartValuesFolder, _nodeParameterStartValuesFolder, _expressionProfileFolder);
       }
 
       [Observation]
