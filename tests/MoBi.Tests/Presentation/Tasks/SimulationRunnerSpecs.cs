@@ -14,6 +14,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
@@ -179,6 +180,12 @@ namespace MoBi.Presentation.Tasks
       public void should_retrieve_the_settings_for_the_simulation_even_if_some_where_previously_defined()
       {
          A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_publish_event_that_the_output_selections_have_changed()
+      {
+         A.CallTo(() => _context.PublishEvent(A<SimulationOutputSelectionsChangedEvent>._)).MustHaveHappened();
       }
 
       [Observation]
