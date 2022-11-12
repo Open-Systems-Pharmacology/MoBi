@@ -21,6 +21,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          Map(x => x.ResultsDataRepository).WithMappingName(SerializationConstants.MoBiResults);
          Map(x => x.ParameterIdentificationWorkingDirectory);
          Map(x => x.HasUpToDateResults);
+         Map(x => x.OutputMappings);
       }
 
       public override MoBiSimulation CreateObject(XElement element, SerializationContext serializationContext)

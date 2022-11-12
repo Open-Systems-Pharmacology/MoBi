@@ -16,12 +16,12 @@ namespace MoBi.Core.Commands
       protected IBuildingBlockInfo _simulationBuildingBlockInfo;
       protected IBuildingBlock _simulationBuildingBlock;
       protected IMoBiContext _context;
-      protected IBuilingBlockReferenceUpdater _buildingBlockInfoUpdater;
+      protected IBuildingBlockReferenceUpdater _buildingBlockInfoUpdater;
 
       protected override void Context()
       {
          _simulation = A.Fake<IMoBiSimulation>();
-         _buildingBlockInfoUpdater= A.Fake<IBuilingBlockReferenceUpdater>();
+         _buildingBlockInfoUpdater= A.Fake<IBuildingBlockReferenceUpdater>();
          _oldTemplateBuildingBlock = A.Fake<IParameterStartValuesBuildingBlock>().WithName("OLD TEMPLATE");
          _clonedSimulationBuildingBlock = A.Fake<IParameterStartValuesBuildingBlock>().WithName("CLONE SIMULATION");
          _oldTemplateBuildingBlock.Version = 7;
@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
          _simulationBuildingBlock.Name = "TRALALA";
          A.CallTo(_simulation.MoBiBuildConfiguration).WithReturnType<IBuildingBlockInfo>().Returns(_simulationBuildingBlockInfo);
          _context= A.Fake<IMoBiContext>();
-         A.CallTo(() =>_context.Resolve<IBuilingBlockReferenceUpdater>()).Returns(_buildingBlockInfoUpdater);
+         A.CallTo(() =>_context.Resolve<IBuildingBlockReferenceUpdater>()).Returns(_buildingBlockInfoUpdater);
          sut = new UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand<IParameterStartValuesBuildingBlock>(_oldTemplateBuildingBlock, _clonedSimulationBuildingBlock, _simulation);
       }
    }

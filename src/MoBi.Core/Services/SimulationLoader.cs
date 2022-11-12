@@ -94,7 +94,9 @@ namespace MoBi.Core.Services
 
       private void checkTemplateBuildingBlock(IBuildingBlockInfo buildingBlockInfo)
       {
-         if (!string.IsNullOrEmpty(buildingBlockInfo.TemplateBuildingBlockId)) return;
+         if (!string.IsNullOrEmpty(buildingBlockInfo.TemplateBuildingBlockId)) 
+            return;
+
          buildingBlockInfo.TemplateBuildingBlockId = buildingBlockInfo.UntypedBuildingBlock.Id;
          buildingBlockInfo.UntypedTemplateBuildingBlock = buildingBlockInfo.UntypedBuildingBlock;
       }
@@ -158,7 +160,7 @@ namespace MoBi.Core.Services
             return null;
 
          buildingBlockInfo.TemplateBuildingBlock = templateBuildingBlock;
-         buildingBlockInfo.BuildingBlock = _cloneManager.CloneBuidingBlock(templateBuildingBlock);
+         buildingBlockInfo.BuildingBlock = _cloneManager.CloneBuildingBlock(templateBuildingBlock);
          return templateBuildingBlock;
       }
 
