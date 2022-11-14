@@ -62,7 +62,7 @@ namespace MoBi.Core
          _buildConfiguration.MoleculesInfo = _moleculesInfo;
          A.CallTo(() => _buildConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] {_psvInfo, _moleculesInfo, _spatialStructureInfo});
          _cloneBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("psvbb2");
-         A.CallTo(() => _cloneManager.CloneBuidingBlock(_psvInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(_psvInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
          A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(_buildConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }
@@ -97,7 +97,7 @@ namespace MoBi.Core
          _buildConfiguration.ObserversInfo = _bbInfo;
          A.CallTo(() => _buildConfiguration.AllBuildingBlockInfos()).Returns(new[] {_bbInfo});
          _cloneBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
-         A.CallTo(() => _cloneManager.CloneBuidingBlock(_bbInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(_bbInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
          A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(_buildConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }

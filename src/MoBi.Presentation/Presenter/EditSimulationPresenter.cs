@@ -132,7 +132,7 @@ namespace MoBi.Presentation.Presenter
          _favoritesPresenter.Edit(_simulation);
          _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
-         _simulationOutputMappingPresenter.SetSimulation(simulation);
+         _simulationOutputMappingPresenter.EditSimulation(simulation);
          UpdateCaption();
          _view.Display();
          loadChart();

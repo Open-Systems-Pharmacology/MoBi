@@ -5,7 +5,6 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Visitor;
@@ -13,7 +12,7 @@ using OSPSuite.Utility.Visitor;
 namespace MoBi.Core.Domain.Model
 {
    public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
-   { 
+   {
       ICache<string, DataRepository> HistoricResults { get; }
       CurveChart Chart { get; set; }
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
@@ -42,6 +41,7 @@ namespace MoBi.Core.Domain.Model
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
+
       public MoBiSimulation()
       {
          HistoricResults = new Cache<string, DataRepository>(x => x.Id, x => null);
@@ -74,7 +74,7 @@ namespace MoBi.Core.Domain.Model
 
       public bool UsesObservedData(DataRepository dataRepository)
       {
-         return Charts.Any(x => chartUsesObservedData(dataRepository, x));
+         return OutputMappings.Any(x => x.UsesObservedData(dataRepository)) || Charts.Any(x => chartUsesObservedData(dataRepository, x));
       }
 
       private static bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart)
@@ -106,10 +106,15 @@ namespace MoBi.Core.Domain.Model
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(source, cloneManager);
-         var sourceSimulationBlock = source as IMoBiSimulation;
-         if (sourceSimulationBlock == null) return;
+         var sourceSimulation = source as IMoBiSimulation;
+         if (sourceSimulation == null) return;
 
-         this.UpdateDiagramFrom(sourceSimulationBlock);
+         OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);
+         //Updating the properties will hold the reference to the source simulation, we need to reset usage
+         //and make sure the output mapping is referencing THIS simulation
+         OutputMappings.SwapSimulation(sourceSimulation, this);
+
+         this.UpdateDiagramFrom(sourceSimulation);
       }
 
       public double? TotalDrugMassPerBodyWeightFor(string compoundName)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 
@@ -36,6 +37,31 @@ namespace MoBi.Helpers
       public static IDimension AmountPerTimeDimension { get; } = new Dimension(new BaseDimensionRepresentation {AmountExponent = 1, TimeExponent = -1}, Constants.Dimension.AMOUNT_PER_TIME, "µmol/min");
 
       public static IDimension TimeDimension { get; } = new Dimension(new BaseDimensionRepresentation {TimeExponent = 1}, Constants.Dimension.TIME, "min");
+
+      public static DataRepository ObservedData(string id = "TestData", IDimension timeDimension = null, IDimension concentrationDimension = null, string obsDataColumnName = null)
+      {
+         var observedData = new DataRepository(id).WithName(id);
+         var baseGrid = new BaseGrid("Time", timeDimension ?? TimeDimension)
+         {
+            Values = new[] { 1.0f, 2.0f, 3.0f }
+         };
+         observedData.Add(baseGrid);
+
+         var data = ConcentrationColumnForObservedData(baseGrid, concentrationDimension, obsDataColumnName);
+         observedData.Add(data);
+
+         return observedData;
+      }
+
+      public static DataColumn ConcentrationColumnForObservedData(BaseGrid baseGrid, IDimension concentrationDimension = null, string obsDataColumnName = null)
+      {
+         var data = new DataColumn(obsDataColumnName ?? "Col", concentrationDimension ?? ConcentrationDimension, baseGrid)
+         {
+            Values = new[] { 10f, 20f, 30f },
+            DataInfo = { Origin = ColumnOrigins.Observation }
+         };
+         return data;
+      }
    }
 
    public class ObjectPathFactoryForSpecs : ObjectPathFactory

@@ -128,7 +128,7 @@ namespace MoBi.Core.Service
       [Ignore("46-7112: Problem with duplicate id")]
       public void should_clone_the_new_buidingblock()
       {
-         A.CallTo(() => _cloneManager.CloneBuidingBlock(_newBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(_newBuildingBlock)).MustHaveHappened();
       }
 
       [Observation]

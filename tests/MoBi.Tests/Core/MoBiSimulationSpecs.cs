@@ -1,8 +1,10 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Helpers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
@@ -44,12 +46,21 @@ namespace MoBi.Core
       private ICloneManager _cloneManager;
       private MoBiSimulation _moBiSimulation;
       private ISimulationDiagramManager _simulationDiagramManager;
+
       protected override void Context()
       {
          base.Context();
          _cloneManager = A.Fake<ICloneManager>();
          _simulationDiagramManager = A.Fake<ISimulationDiagramManager>();
          _moBiSimulation = new MoBiSimulation {DiagramManager = _simulationDiagramManager};
+         sut.Model = new Model();
+         sut.Model.Root = new Container();
+
+         _moBiSimulation.OutputMappings.Add(new OutputMapping
+         {
+            OutputSelection = new SimulationQuantitySelection(_moBiSimulation, new QuantitySelection("A|BC", QuantityType.Enzyme)),
+            WeightedObservedData = new WeightedObservedData(DomainHelperForSpecs.ObservedData())
+         });
       }
 
       protected override void Because()
@@ -61,6 +72,13 @@ namespace MoBi.Core
       public void the_source_diagram_manager_creates_new_diagram_manager_for_target()
       {
          A.CallTo(() => _simulationDiagramManager.Create()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_have_updated_the_references_to_the_simulation_in_the_output_mappings()
+      {
+         sut.OutputMappings.Count().ShouldBeEqualTo(1);
+         sut.OutputMappings.ElementAt(0).Simulation.ShouldBeEqualTo(sut);
       }
    }
 

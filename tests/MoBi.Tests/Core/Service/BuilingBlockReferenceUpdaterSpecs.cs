@@ -9,11 +9,11 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Service
 {
-   public abstract class concern_for_BuilingBlockReferenceUpdater : ContextSpecification<IBuilingBlockReferenceUpdater>
+   public abstract class concern_for_BuilingBlockReferenceUpdater : ContextSpecification<IBuildingBlockReferenceUpdater>
    {
       protected override void Context()
       {
-         sut = new BuilingBlockReferenceUpdater();
+         sut = new BuildingBlockReferenceUpdater();
       }
    }
 
