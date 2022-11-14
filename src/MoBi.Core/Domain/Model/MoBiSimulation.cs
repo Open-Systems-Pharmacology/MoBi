@@ -110,7 +110,7 @@ namespace MoBi.Core.Domain.Model
          if (sourceSimulation == null) return;
 
          OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);
-         //Updating the properties will old the reference to the source simulation, we need to reset usage
+         //Updating the properties will hold the reference to the source simulation, we need to reset usage
          //and make sure the output mapping is referencing THIS simulation
          OutputMappings.SwapSimulation(sourceSimulation, this);
 
