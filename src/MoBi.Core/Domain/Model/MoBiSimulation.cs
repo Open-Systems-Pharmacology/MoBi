@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Domain.Model
@@ -120,6 +121,17 @@ namespace MoBi.Core.Domain.Model
       public double? TotalDrugMassPerBodyWeightFor(string compoundName)
       {
          return null;
+      }
+
+      public void RemoveUsedObservedData(DataRepository dataRepository)
+      {
+         
+
+      }
+
+      public void RemoveOutputMappings(DataRepository dataRepository)
+      {
+         
       }
 
       public IEnumerable<CurveChart> Charts
