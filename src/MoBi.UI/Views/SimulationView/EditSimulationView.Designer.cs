@@ -82,8 +82,8 @@ namespace MoBi.UI.Views.SimulationView
          this.tabs.TabIndex = 0;
          this.tabs.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.tabSimulation,
-            this.tabResults,
             this.tabData,
+            this.tabResults,
             this.tabPredVsObs,
             this.tabResidVsTime});
          // 
