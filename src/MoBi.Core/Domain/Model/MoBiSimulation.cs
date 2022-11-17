@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -16,6 +17,9 @@ namespace MoBi.Core.Domain.Model
    {
       ICache<string, DataRepository> HistoricResults { get; }
       CurveChart Chart { get; set; }
+      SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
+      SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
+
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
       string ParameterIdentificationWorkingDirectory { get; set; }
       void Update(IMoBiBuildConfiguration buildConfiguration, IModel model);
@@ -39,6 +43,8 @@ namespace MoBi.Core.Domain.Model
       private DataRepository _results;
       public IDiagramModel DiagramModel { get; set; }
       public CurveChart Chart { get; set; }
+      public SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
+      public SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
@@ -78,7 +84,7 @@ namespace MoBi.Core.Domain.Model
          return OutputMappings.Any(x => x.UsesObservedData(dataRepository)) || Charts.Any(x => chartUsesObservedData(dataRepository, x));
       }
 
-      private static bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart)
+      private bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart)
       {
          return curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
       }
