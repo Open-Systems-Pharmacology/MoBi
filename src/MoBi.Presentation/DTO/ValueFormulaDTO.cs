@@ -3,16 +3,16 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Presentation.DTO
 {
-   public class StartValueFormulaDTO
+   public class ValueFormulaDTO
    {
       public string FormulaString { get; set; }
       public IFormula Formula { get; set; }
 
-      public StartValueFormulaDTO()
+      public ValueFormulaDTO()
       {
       }
 
-      public StartValueFormulaDTO(ExplicitFormula explicitFormula)
+      public ValueFormulaDTO(ExplicitFormula explicitFormula)
       {
          Formula = explicitFormula;
          FormulaString = explicitFormula.FormulaString;
@@ -24,7 +24,7 @@ namespace MoBi.Presentation.DTO
       }
    }
 
-   public class EmptyFormulaDTO : StartValueFormulaDTO
+   public class EmptyFormulaDTO : ValueFormulaDTO
    {
       public EmptyFormulaDTO()
       {

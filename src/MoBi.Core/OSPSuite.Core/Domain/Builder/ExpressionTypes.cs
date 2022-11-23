@@ -2,22 +2,19 @@
 {
    public static class ExpressionTypes
    {
-      public static ExpressionType TransportProtein = new ExpressionType(_transporter);
-      public static ExpressionType MetabolizingEnzyme = new ExpressionType(_enzyme);
-      public static ExpressionType ProteinBindingPartner = new ExpressionType(_protein);
-
-      private const string _transporter = "Transporter";
-      private const string _protein = "Protein";
-      private const string _enzyme = "Enzyme";
+      public static ExpressionType TransportProtein = new ExpressionType(Assets.IconNames.Transporter, Assets.Captions.Transporter);
+      public static ExpressionType MetabolizingEnzyme = new ExpressionType(Assets.IconNames.Enzyme, Assets.Captions.Enzyme);
+      public static ExpressionType ProteinBindingPartner = new ExpressionType(Assets.IconNames.Protein, Assets.Captions.Protein);
    }
 
    public class ExpressionType
    {
       public string IconName { get; }
-
-      public ExpressionType(string iconName)
+      public string NameType { get; }
+      public ExpressionType(string iconName, string nameType)
       {
          IconName = iconName;
+         NameType = nameType;
       }
    }
 }

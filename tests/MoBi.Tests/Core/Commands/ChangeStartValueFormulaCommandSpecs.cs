@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_ChangeStartValueFormulaCommand : ContextSpecification<ChangeStartValueFormulaCommand<IMoleculeStartValue>>
+   public abstract class concern_for_ChangeStartValueFormulaCommand : ContextSpecification<ChangeValueFormulaCommand<IMoleculeStartValue>>
    {
       protected IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
       protected IMoleculeStartValue _changedMoleculeStartValue;
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
          _newFormula = new ExplicitFormula{Id = "newFormulaId"};
          _oldFormula = new ExplicitFormula{Id = "oldFormulaId"};
          
-         sut = new ChangeStartValueFormulaCommand<IMoleculeStartValue>(_moleculeStartValuesBuildingBlock, _changedMoleculeStartValue, _newFormula, _oldFormula);
+         sut = new StartValueFormulaChangedCommand<IMoleculeStartValue>(_moleculeStartValuesBuildingBlock, _changedMoleculeStartValue, _newFormula, _oldFormula);
       }
    }
 
@@ -36,7 +36,7 @@ namespace MoBi.Core.Commands
          A.CallTo(() => _context.Get<IFormula>(_oldFormula.Id)).Returns(_oldFormula);
          A.CallTo(() => _context.Get<IFormula>(_newFormula.Id)).Returns(_newFormula);
          _moleculeStartValuesBuildingBlock.Add(_changedMoleculeStartValue);
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<IMoleculeStartValue>>(A<string>.Ignored)).Returns(_moleculeStartValuesBuildingBlock);
+         A.CallTo(() => _context.Get<IBuildingBlock<IMoleculeStartValue>>(A<string>.Ignored)).Returns(_moleculeStartValuesBuildingBlock);
       }
 
       protected override void Because()

@@ -23,15 +23,6 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IParameterStartValuesTask : IStartValuesTask<IParameterStartValuesBuildingBlock, IParameterStartValue>
    {
       IParameter GetPossibleParameterFromProject(IObjectPath parameterPath);
-
-      /// <summary>
-      ///    Adds a new formula to the building block formula cache and assigns it to the start value
-      /// </summary>
-      /// <typeparam name="T">The type of formula being created</typeparam>
-      /// <param name="buildingBlock">The building block that has the formula added and contains the start value</param>
-      /// <param name="parameterStartValue">the start value being updated with a new formula</param>
-      /// <returns>The command used to modify the building block and start value</returns>
-      ICommand<IMoBiContext> AddNewFormulaAtParameterStartValueBuildingBlock<T>(IParameterStartValuesBuildingBlock buildingBlock, IParameterStartValue parameterStartValue);
    }
 
    public class ParameterStartValuesTask : AbstractStartValuesTask<IParameterStartValuesBuildingBlock, IParameterStartValue>, IParameterStartValuesTask
@@ -100,20 +91,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          return null;
       }
 
-      public ICommand<IMoBiContext> AddNewFormulaAtParameterStartValueBuildingBlock<T>(IParameterStartValuesBuildingBlock buildingBlock, IParameterStartValue parameterStartValue)
+      public ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(IParameterStartValuesBuildingBlock buildingBlock, IParameterStartValue parameterStartValue)
       {
-         var macroCommand = new MoBiMacroCommand
-         {
-            CommandType = AppConstants.Commands.EditCommand,
-            ObjectType = _interactionTaskContext.GetTypeFor(parameterStartValue),
-            Description = AppConstants.Commands.SetStartValueAndFormula
-         };
-
          var parameter = GetPossibleParameterFromProject(parameterStartValue.Path);
 
-         macroCommand.Add(AddFormulaToFormulaCacheAndSetOnStartValue<ExplicitFormula>(buildingBlock, parameterStartValue, parameter));
-
-         return macroCommand;
+         return AddNewFormulaAtBuildingBlock(buildingBlock, parameterStartValue, parameter);
       }
 
       public override IMoBiCommand ImportStartValuesToBuildingBlock(IParameterStartValuesBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues)
@@ -183,11 +165,11 @@ namespace MoBi.Presentation.Tasks.Interaction
                macroCommand.Add(UpdateStartValueDimension(buildingBlock, startValue, parameter.Dimension));
 
             if (!HasEquivalentStartValue(startValue, parameter))
-               macroCommand.Add(SetStartDisplayValueWithUnit(startValue, parameter.ConvertToDisplayUnit(parameter.Value), parameter.DisplayUnit, buildingBlock));
+               macroCommand.Add(SetDisplayValueWithUnit(startValue, parameter.ConvertToDisplayUnit(parameter.Value), parameter.DisplayUnit, buildingBlock));
 
             // Evaluating the startValue before the formula is important if the startValue is a constant and the original building block uses a constant formula
             if (!HasEquivalentFormula(startValue, parameter.Formula))
-               macroCommand.Add(ChangeStartValueFormulaCommand(buildingBlock, startValue, parameter.Formula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(parameter.Formula, buildingBlock.FormulaCache)));
+               macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, startValue, parameter.Formula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(parameter.Formula, buildingBlock.FormulaCache)));
          });
 
          return macroCommand;

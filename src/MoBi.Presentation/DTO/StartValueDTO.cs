@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,32 +7,27 @@ using MoBi.Assets;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
-using MoBi.Core.Helper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IStartValueDTO : IBreadCrumbsDTO, IWithDisplayUnitDTO, IWithValueOrigin
+   public interface IStartValueDTO : IBreadCrumbsDTO, IWithDisplayUnitDTO, IWithValueOrigin, IWithFormulaDTO
    {
    }
 
-   public abstract class StartValueDTO<T> : BreadCrumbsDTO<T>, IStartValueDTO where T : class, IStartValue
+   public interface IWithFormulaDTO
    {
-      private static readonly string _containerPathPropertyName;
-      private static readonly string _formulaPropertyName;
-      private StartValueFormulaDTO _formula;
-      private readonly IStartValuesBuildingBlock<T> _buildingBlock;
-      public T StartValueObject { get; private set; }
+      ValueFormulaDTO Formula { get; set; }
+   }
 
-      static StartValueDTO()
-      {
-         _containerPathPropertyName = MoBiReflectionHelper.PropertyName<IStartValue>(x => x.ContainerPath);
-         _formulaPropertyName = MoBiReflectionHelper.PropertyName<IStartValue>(x => x.Formula);
-      }
+   public abstract class StartValueDTO<T> : PathWithValueEntityDTO<T>, IStartValueDTO where T : class, IStartValue
+   {
+      private readonly IStartValuesBuildingBlock<T> _buildingBlock;
+      
+
+
 
       public string Name
       {
@@ -53,31 +47,16 @@ namespace MoBi.Presentation.DTO
       protected StartValueDTO(T startValueObject, IStartValuesBuildingBlock<T> buildingBlock)
          : base(startValueObject)
       {
-         StartValueObject = startValueObject;
-         StartValueObject.PropertyChanged += underlyingObjectOnPropertyChanged;
+         
          _buildingBlock = buildingBlock;
 
          Rules.AddRange(AllRules.All());
       }
 
-      public IDimension Dimension
+      protected override IObjectPath GetContainerPath(T startValueObject)
       {
-         get => StartValueObject.Dimension;
-         set
-         {
-            // We don't want the binding to set the value in the underlying object, only the command should do that
-         }
+         return startValueObject.ContainerPath;
       }
-
-      public Unit DisplayUnit
-      {
-         get => StartValueObject.DisplayUnit;
-         set
-         {
-            // We don't want the binding to set the value in the underlying object, only the command should do that
-         }
-      }
-
 
       public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
       {
@@ -91,24 +70,7 @@ namespace MoBi.Presentation.DTO
       }
 
 
-      public IEnumerable<Unit> AllUnits
-      {
-         get => Dimension.Units;
-         set
-         {
-            // We don't want the binding to set the value in the underlying object, only the command should do that
-         }
-      }
 
-      public StartValueFormulaDTO Formula
-      {
-         get => _formula;
-         set
-         {
-            _formula = value;
-            OnPropertyChanged(() => Formula);
-         }
-      }
 
       public double? StartValue
       {
@@ -121,19 +83,6 @@ namespace MoBi.Presentation.DTO
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
-         }
-      }
-
-      private void underlyingObjectOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-      {
-         var changedProperty = propertyChangedEventArgs.PropertyName;
-         if (changedProperty.Equals(_containerPathPropertyName))
-         {
-            ContainerPath = StartValueObject.ContainerPath;
-         }
-         else if (changedProperty.Equals(_formulaPropertyName))
-         {
-            Formula = StartValueObject.Formula.IsExplicit() ? new StartValueFormulaDTO(StartValueObject.Formula as ExplicitFormula) : new EmptyFormulaDTO();
          }
       }
 

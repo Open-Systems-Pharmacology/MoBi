@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
@@ -10,7 +9,6 @@ using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -23,13 +21,13 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTasksForEnumerableBuildingBlock<TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
+   public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTaskForPathAndValueEntity<TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
       where TBuildingBlock : class, IBuildingBlock, IStartValuesBuildingBlock<TStartValue>
       where TStartValue : class, IStartValue
    {
       protected IIgnoreReplaceMergeManager<TStartValue> _startValueBuildingBlockMergeManager;
       protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
-      private readonly IMoBiFormulaTask _moBiFormulaTask;
+      
       private readonly ISpatialStructureFactory _spatialStructureFactory;
       private readonly IMapper<ImportedQuantityDTO, TStartValue> _dtoToQuantityToParameterStartValueMapper;
       private readonly IStartValuePathTask<TBuildingBlock, TStartValue> _startValuePathTask;
@@ -38,11 +36,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          IIgnoreReplaceMergeManager<TStartValue> startValueBuildingBlockMergeManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TStartValue> dtoToQuantityToParameterStartValueMapper,
          IStartValuePathTask<TBuildingBlock, TStartValue> startValuePathTask)
-         : base(interactionTaskContext, editTask)
+         : base(interactionTaskContext, editTask, moBiFormulaTask)
       {
          _startValueBuildingBlockMergeManager = startValueBuildingBlockMergeManager;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
-         _moBiFormulaTask = moBiFormulaTask;
          _spatialStructureFactory = spatialStructureFactory;
          _dtoToQuantityToParameterStartValueMapper = dtoToQuantityToParameterStartValueMapper;
          _startValuePathTask = startValuePathTask;
@@ -76,9 +73,14 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
+      protected override double? ValueFromBuilder(TStartValue builder)
+      {
+         return builder.StartValue;
+      }
+
       /// <summary>
       ///    Updates the start values defined in <paramref name="startValuesToUpdate" /> with the values defined in
-      ///    <paramref name="startValueInfo" />. Returns a template cache containg all values defined in the template
+      ///    <paramref name="startValueInfo" />. Returns a template cache containing all values defined in the template
       /// </summary>
       public ICache<string, TStartValue> UpdateValuesFromTemplate(TBuildingBlock startValuesToUpdate, IBuildingBlockInfo<TBuildingBlock> startValueInfo)
       {
@@ -164,6 +166,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected bool HasEquivalentFormula(IStartValue startValue, IFormula targetFormula)
       {
          return _startValuePathTask.HasEquivalentFormula(startValue, targetFormula);
+      }
+
+      public override IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock startValues, TStartValue startValue, IFormula formula)
+      {
+         return new StartValueFormulaChangedCommand<TStartValue>(startValues, startValue, formula, startValue.Formula).Run(Context);
       }
 
       protected static bool HasEquivalentStartValue(IStartValue startValue, IParameter parameter)
@@ -254,28 +261,13 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract bool AreEquivalentItems(TStartValue first, TStartValue second);
       protected abstract IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToRemove);
-      protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToAdd);
+      protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToAdd); 
       public abstract void ExtendStartValues(TBuildingBlock startValuesBuildingBlock);
       public abstract TBuildingBlock CreateStartValuesForSimulation(IMoBiBuildConfiguration buildConfiguration);
       public abstract IMoBiCommand AddStartValueToBuildingBlock(TBuildingBlock buildingBlock, TStartValue startValue);
       public abstract IMoBiCommand ImportStartValuesToBuildingBlock(TBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues);
       public abstract IMoBiCommand RemoveStartValueFromBuildingBlockCommand(TStartValue startValue, TBuildingBlock buildingBlock);
       public abstract IMoBiCommand RefreshStartValuesFromBuildingBlocks(TBuildingBlock buildingBlock, IEnumerable<TStartValue> startValuesToRefresh);
-
-      public IMoBiCommand ChangeStartValueFormulaCommand(TBuildingBlock startValues, TStartValue startValue, IFormula formula)
-      {
-         return new ChangeStartValueFormulaCommand<TStartValue>(startValues, startValue, formula, startValue.Formula).Run(Context);
-      }
-
-      public IMoBiCommand SetStartValueWithUnit(TStartValue startValue, double? newBaseValue, Unit unit, TBuildingBlock startValues)
-      {
-         return new StartValueValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
-      }
-
-      public IMoBiCommand SetStartDisplayValueWithUnit(TStartValue startValue, double? newDisplayValue, Unit unit, TBuildingBlock startValues)
-      {
-         return SetStartValueWithUnit(startValue, unit.UnitValueToBaseUnitValue(newDisplayValue.GetValueOrDefault(double.NaN)), unit, startValues);
-      }
 
       public IMoBiCommand UpdateStartValueDimension(TBuildingBlock startValuesBuildingBlock, TStartValue startValue, IDimension newDimension)
       {
@@ -287,74 +279,14 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateValueOriginInStartValueCommand<TStartValue>(startValue, valueOrigin, buildingBlock).Run(Context);
       }
 
-      public IMoBiCommand SetUnit(TBuildingBlock buildingBlock, TStartValue startValue, Unit newUnit)
+      public override IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TStartValue startValue, IFormula formula)
       {
-         return setValue(startValue, startValue.ConvertToDisplayUnit(startValue.StartValue), newUnit, buildingBlock);
-      }
+         var shouldClearValue = startValue.StartValue.HasValue;
 
-      public IMoBiCommand SetValue(TBuildingBlock buildingBlock, double? valueInDisplayUnit, TStartValue startValue)
-      {
-         var macroCommand = new MoBiMacroCommand
-         {
-            CommandType = AppConstants.Commands.EditCommand,
-            ObjectType = _interactionTaskContext.GetTypeFor<TStartValue>(),
-            Description = AppConstants.Commands.SetStartValueAndFormula
-         };
-
-         macroCommand.Add(setValue(startValue, valueInDisplayUnit, startValue.DisplayUnit, buildingBlock));
-         if (startValue.Formula != null)
-            macroCommand.Add(setFormula(buildingBlock, startValue, null));
-         return macroCommand;
-      }
-
-      private IMoBiCommand setValue(TStartValue startValue, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock)
-      {
-         return SetStartDisplayValueWithUnit(startValue, newDisplayValue, unit, buildingBlock);
-      }
-
-      public IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TStartValue startValue, IFormula formula)
-      {
-         var macroCommand = new MoBiMacroCommand
-         {
-            CommandType = AppConstants.Commands.EditCommand,
-            ObjectType = _interactionTaskContext.GetTypeFor<TStartValue>(),
-            Description = AppConstants.Commands.SetStartValueAndFormula
-         };
-
-         macroCommand.Add(setFormula(buildingBlock, startValue, formula));
-         if (startValue.StartValue.HasValue)
-            macroCommand.Add(setValue(startValue, null, startValue.DisplayUnit, buildingBlock));
-
-         return macroCommand;
+         return SetFormula(buildingBlock, startValue, formula, shouldClearValue);
       }
 
       public abstract bool CanResolve(TBuildingBlock buildingBlock, TStartValue startValue);
-
-      private IMoBiCommand setFormula(TBuildingBlock buildingBlock, TStartValue startValue, IFormula formula)
-      {
-         return ChangeStartValueFormulaCommand(buildingBlock, startValue, formula);
-      }
-
-      protected IMoBiCommand AddFormulaToFormulaCacheAndSetOnStartValue<TFormula>(TBuildingBlock startValuesBuildingBlock, TStartValue startValue, IParameter referenceParameter)
-         where TFormula : IFormula
-      {
-         var macroCommand = new MoBiMacroCommand
-         {
-            CommandType = AppConstants.Commands.AddCommand,
-            Description = AppConstants.Commands.AddFormulaToBuildingBlock,
-            ObjectType = _interactionTaskContext.GetTypeFor<TFormula>()
-         };
-
-         var newFormula = _moBiFormulaTask.CreateNewFormula<TFormula>(startValue.Dimension);
-
-         macroCommand.AddCommand(new AddFormulaToFormulaCacheCommand(startValuesBuildingBlock, newFormula).Run(Context));
-
-         if (!_moBiFormulaTask.EditNewFormula(newFormula, macroCommand, startValuesBuildingBlock, referenceParameter))
-            return CancelCommand(macroCommand);
-
-         macroCommand.Add(SetFormula(startValuesBuildingBlock, startValue, newFormula));
-         return macroCommand;
-      }
 
       protected static bool ShouldFormulaBeOverridden(ImportedQuantityDTO quantityDTO, TStartValue startValue)
       {
@@ -363,7 +295,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected IMoBiCommand GetChangeStartValueFormulaCommand(TBuildingBlock startValuesBuildingBlock, TStartValue startValue, IFormula newFormula, IFormula oldFormula)
       {
-         return new ChangeStartValueFormulaCommand<TStartValue>(startValuesBuildingBlock, startValue, newFormula, oldFormula);
+         return new StartValueFormulaChangedCommand<TStartValue>(startValuesBuildingBlock, startValue, newFormula, oldFormula);
       }
 
       protected abstract IMoBiCommand GetUpdateStartValueInBuildingBlockCommand(TBuildingBlock startValuesBuildingBlock, ImportedQuantityDTO dto);
@@ -394,6 +326,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand EditStartValueContainerPath(TBuildingBlock buildingBlock, TStartValue startValue, int indexToUpdate, string newValue)
       {
          return _startValuePathTask.UpdateStartValueContainerPath(buildingBlock, startValue, indexToUpdate, newValue);
+      }
+
+      protected override IMoBiCommand SetValueWithUnit(TStartValue startValue, double? newBaseValue, Unit unit, TBuildingBlock startValues)
+      {
+         return new StartValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
       }
    }
 }

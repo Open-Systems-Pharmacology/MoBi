@@ -246,7 +246,8 @@ namespace MoBi.Assets
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
          public static readonly string RefreshStartValuesFromBuildingBlocks = "Refreshing start values from original building blocks";
-         public static readonly string SetStartValueAndFormula = "Set start value and formula";
+         public static readonly string SetValueAndFormula = "Set value and formula";
+         public static readonly string SetExpressionValue = "Set expression value";
          public static readonly string AddFormulaToBuildingBlock = "Add formula to building block";
          public static readonly string ExtendCommand = "Extend";
          public static readonly string ImportMultipleParameters = "Importing multiple parameter values";
@@ -1292,6 +1293,7 @@ namespace MoBi.Assets
          public static readonly string MoleculeStartValues = "Molecule Start Values";
          public static readonly string ParameterStartValues = "Parameter Start Values";
          public static readonly string ExpressionProfiles = "Expression Profiles";
+         public static readonly string ExpressionProfile = "Expression Profile";
          public static readonly string NextButton = "&Next";
          public static readonly string PreviousButton = "&Previous";
          public static readonly string FinishButton = "&Finish";
@@ -1680,6 +1682,11 @@ namespace MoBi.Assets
             return buildingBlockCaption(Reactions, name);
          }
 
+         public static string ExpressionProfileBuildingBlockCaption(string name)
+         {
+            return buildingBlockCaption(ExpressionProfile, name);
+         }
+
          public static string MoleculeStartValuesBuildingBlockCaption(string name)
          {
             return buildingBlockCaption(MoleculeStartValues, name);
@@ -1750,7 +1757,7 @@ namespace MoBi.Assets
             return $"Configure Simulation: {simulationName}";
          }
 
-         public const string StartValueNotAvailable = "<Not Available>";
+         public const string ValueNotAvailable = "<Not Available>";
          public const string FormulaNotAvailable = "<Not Available>";
 
          public static string ApplyToRemaining(int remainingConflicts)

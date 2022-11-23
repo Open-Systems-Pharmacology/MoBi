@@ -3,10 +3,10 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
-   public class SetMoleculeStartValueWithUnitCommand : StartValueValueOrUnitChangedCommand<IMoleculeStartValue, IMoleculeStartValuesBuildingBlock>
+   public class SetMoleculeStartValueWithUnitCommand : StartValueOrUnitChangedCommand<IMoleculeStartValue, IMoleculeStartValuesBuildingBlock>
    {
-      public SetMoleculeStartValueWithUnitCommand(IMoleculeStartValue moleculeStartValue, double? newBaseValue, Unit newDisplayUnit, IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
-         : base(moleculeStartValue, newBaseValue, newDisplayUnit, moleculeStartValuesBuildingBlock)
+      public SetMoleculeStartValueWithUnitCommand(IMoleculeStartValue moleculeBuilder, double? newBaseValue, Unit newDisplayUnit, IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
+         : base(moleculeBuilder, newBaseValue, newDisplayUnit, moleculeStartValuesBuildingBlock)
       {
       }
    }

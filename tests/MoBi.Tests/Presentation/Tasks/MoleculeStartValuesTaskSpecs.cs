@@ -445,7 +445,7 @@ namespace MoBi.Presentation.Tasks
          var targetUnit = _dim.Unit("kg");
 
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
-         sut.SetStartDisplayValueWithUnit(_startValue, _startValue.ConvertToDisplayUnit(_startValue.StartValue.Value), targetUnit, A.Fake<IMoleculeStartValuesBuildingBlock>());
+         sut.SetDisplayValueWithUnit(_startValue, _startValue.ConvertToDisplayUnit(_startValue.StartValue.Value), targetUnit, A.Fake<IMoleculeStartValuesBuildingBlock>());
       }
 
       [Observation]

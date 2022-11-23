@@ -16,7 +16,7 @@ namespace MoBi.Core.Mapper
    {
       protected override void Context()
       {
-         sut = new ParameterStartValueToParameterStartValueDTOMapper();
+         sut = new ParameterStartValueToParameterStartValueDTOMapper(new FormulaToValueFormulaDTOMapper());
       }
    }
 

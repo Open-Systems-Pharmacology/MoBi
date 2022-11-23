@@ -68,8 +68,7 @@ namespace MoBi.Presentation.Presenter
       public override void AddNewFormula(MoleculeStartValueDTO moleculeStartValueDTO)
       {
          var startValue = StartValueFrom(moleculeStartValueDTO);
-         AddCommand(_moleculeStartValuesTask.AddNewFormulaAtMoleculeStartValueBuildingBlock<ExplicitFormula>(_buildingBlock, startValue));
-         RefreshDTO(moleculeStartValueDTO, startValue.Formula, startValue);
+         AddNewFormula(moleculeStartValueDTO, startValue);
       }
 
       public void SetScaleDivisor(MoleculeStartValueDTO dto, double newScaleDivisor)

@@ -376,7 +376,7 @@ namespace MoBi.Presentation
 
    internal class When_GetFormulas_is_called_at_msv_presenter : concern_for_MoleculeStartValuesPresenter
    {
-      private IEnumerable<StartValueFormulaDTO> _resultFormulas;
+      private IEnumerable<ValueFormulaDTO> _resultFormulas;
       private IFormula _explicitFormula;
 
       protected override void Because()

@@ -19,6 +19,7 @@ namespace MoBi.Presentation.DTO
       string PathElement7 { get; }
       string PathElement8 { get; }
       string PathElement9 { get; }
+      string PathElementByIndex(int index);
    }
 
    public abstract class BreadCrumbsDTO<T> : DxValidatableDTO<T>, IBreadCrumbsDTO where T : IValidatable, INotifier
@@ -33,7 +34,7 @@ namespace MoBi.Presentation.DTO
 
       public IObjectPath ContainerPath
       {
-         get { return _containerPath; }
+         get => _containerPath;
          set
          {
             _containerPath = value;
@@ -41,55 +42,25 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public string PathElement0
-      {
-         get { return PathElementByIndex(0); }
-      }
+      public string PathElement0 => PathElementByIndex(0);
 
-      public string PathElement1
-      {
-         get { return PathElementByIndex(1); }
-      }
+      public string PathElement1 => PathElementByIndex(1);
 
-      public string PathElement2
-      {
-         get { return PathElementByIndex(2); }
-      }
+      public string PathElement2 => PathElementByIndex(2);
 
-      public string PathElement3
-      {
-         get { return PathElementByIndex(3); }
-      }
+      public string PathElement3 => PathElementByIndex(3);
 
-      public string PathElement4
-      {
-         get { return PathElementByIndex(4); }
-      }
+      public string PathElement4 => PathElementByIndex(4);
 
-      public string PathElement5
-      {
-         get { return PathElementByIndex(5); }
-      }
+      public string PathElement5 => PathElementByIndex(5);
 
-      public string PathElement6
-      {
-         get { return PathElementByIndex(6); }
-      }
+      public string PathElement6 => PathElementByIndex(6);
 
-      public string PathElement7
-      {
-         get { return PathElementByIndex(7); }
-      }
+      public string PathElement7 => PathElementByIndex(7);
 
-      public string PathElement8
-      {
-         get { return PathElementByIndex(8); }
-      }
+      public string PathElement8 => PathElementByIndex(8);
 
-      public string PathElement9
-      {
-         get { return PathElementByIndex(9); }
-      }
+      public string PathElement9 => PathElementByIndex(9);
 
       public string PathElementByIndex(int index)
       {

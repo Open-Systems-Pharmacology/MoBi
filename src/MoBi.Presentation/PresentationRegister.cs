@@ -235,6 +235,7 @@ namespace MoBi.Presentation
          container.Register<IContextMenuFor<IMoBiSimulation>, ContextMenuForSimulation>();
          container.Register<IContextMenuForBuildingBlock<IParameterStartValuesBuildingBlock>, ContextMenuForParameterStartValuesBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IMoleculeStartValuesBuildingBlock>, ContextMenuForMoleculeStartValuesBuildingBlock>();
+         container.Register<IContextMenuForBuildingBlock<ExpressionProfileBuildingBlock>, ContextMenuForExpressionProfileBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IMoBiReactionBuildingBlock>, ContextMenuForMergableBuildingBlock<IMoBiReactionBuildingBlock>>();
          container.Register<IContextMenuForBuildingBlock<IObserverBuildingBlock>, ContextMenuForMergableBuildingBlock<IObserverBuildingBlock>>();
          container.Register<IContextMenuForBuildingBlock<IPassiveTransportBuildingBlock>, ContextMenuForMergableBuildingBlock<IPassiveTransportBuildingBlock>>();
@@ -253,6 +254,7 @@ namespace MoBi.Presentation
          registerContextMenuForBuildingBlockFactory<IObserverBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<IEventGroupBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<IMoleculeStartValuesBuildingBlock>(container);
+         registerContextMenuForBuildingBlockFactory<ExpressionProfileBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<IParameterStartValuesBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<ISimulationSettings>(container);
       }
