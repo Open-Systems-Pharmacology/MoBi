@@ -8,14 +8,11 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -286,32 +283,6 @@ namespace MoBi.Presentation.Tasks
       private void generateDefaultsInCurrentProject()
       {
          addDefault<IMoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock);
-         addDefault<ExpressionProfileBuildingBlock>("", () =>
-         {
-
-            var bb = new ExpressionProfileBuildingBlock
-            {
-               Type = ExpressionTypes.MetabolizingEnzyme,
-               Name = "Molecule|Species|Category"
-            };
-
-            bb.Add(new ExpressionParameter { ContainerPath = new ObjectPath("Top", "next", "bottom1"), Name = "Name1", Value = 3.4, Dimension = IoC.Resolve<IDimensionFactory>().Dimension("Concentration (molar)") });
-            bb.Add(new ExpressionParameter { ContainerPath = new ObjectPath("Top", "next", "bottom2"), Name = "Name2", Value = null, Formula = new ExplicitFormula("y=mx+b") { Id = "formula1" } });
-            bb.Add(new ExpressionParameter { ContainerPath = new ObjectPath("Top", "next", "bottom4"), Name = "Name2", Value = null, Formula = new ExplicitFormula("y=mx+c") { Id = "formula2" } });
-            bb.Add(new ExpressionParameter { ContainerPath = new ObjectPath("Top", "next", "bottom3"), Name = "Name3", Value = 1.2 });
-            bb.Id = "the_id";
-
-            bb.Each(x => x.UpdateValueOriginFrom(new ValueOrigin { Description = "description", Id = 5, Method = ValueOriginDeterminationMethods.Assumption, Source = ValueOriginSources.Unknown }));
-
-            bb.Each(x =>
-            {
-
-               if (x.Formula != null)
-                  bb.AddFormula(x.Formula);
-            });
-
-            return bb;
-         });
          addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create());
          addDefault(AppConstants.DefaultNames.SpatialStructure, () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure));
          addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock);

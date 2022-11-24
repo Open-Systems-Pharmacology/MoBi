@@ -4,6 +4,10 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
+   public interface IExpressionParameterToExpressionParameterDTOMapper : IMapper<ExpressionParameter, ExpressionParameterDTO>
+   {
+   }
+
    public class ExpressionParameterToExpressionParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IExpressionParameterToExpressionParameterDTOMapper
    {
       private readonly IFormulaToValueFormulaDTOMapper _formulaMapper;
@@ -19,9 +23,5 @@ namespace MoBi.Presentation.Mappers
             Formula = _formulaMapper.MapFrom(expressionParameter.Formula)
          };
       }
-   }
-
-   public interface IExpressionParameterToExpressionParameterDTOMapper : IMapper<ExpressionParameter, ExpressionParameterDTO>
-   {
    }
 }

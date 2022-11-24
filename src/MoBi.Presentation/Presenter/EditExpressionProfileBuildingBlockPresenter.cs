@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
 
       public override void Edit(object subject)
       {
-         Edit( subject as ExpressionProfileBuildingBlock);
+         Edit(subject as ExpressionProfileBuildingBlock);
       }
 
       protected override void UpdateCaption()

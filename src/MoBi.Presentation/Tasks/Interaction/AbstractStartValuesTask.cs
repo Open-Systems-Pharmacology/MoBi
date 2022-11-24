@@ -330,7 +330,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override IMoBiCommand SetValueWithUnit(TStartValue startValue, double? newBaseValue, Unit unit, TBuildingBlock startValues)
       {
-         return new StartValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
+         return new StartValueValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
       }
    }
 }

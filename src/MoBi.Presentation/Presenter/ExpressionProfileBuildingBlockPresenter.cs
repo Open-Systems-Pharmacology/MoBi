@@ -43,7 +43,6 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_expressionProfileBuildingBlockDTO);
       }
 
-
       public override object Subject => _buildingBlock;
 
       public void SetExpressionParameterValue(ExpressionParameterDTO expressionParameterDTO, double? newValue)

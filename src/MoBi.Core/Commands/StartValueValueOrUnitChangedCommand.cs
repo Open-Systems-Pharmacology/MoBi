@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace MoBi.Core.Commands
 {
-   public class StartValueOrUnitChangedCommand<TBuilder, TBuildingBlock> : ValueWithPathEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>
+   public class StartValueValueOrUnitChangedCommand<TBuilder, TBuildingBlock> : ValueWithPathEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>
       where TBuildingBlock : class, IBuildingBlock<TBuilder> where TBuilder : class, IStartValue
    {
-      public StartValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock)
+      public StartValueValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock)
          : base(builder, newBaseValue, newDisplayUnit, buildingBlock)
       {
 
@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new StartValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
+         return new StartValueValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
       }
    }
 }

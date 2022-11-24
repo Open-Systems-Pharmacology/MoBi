@@ -33,6 +33,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(ExpressionParameter builder, ExpressionProfileBuildingBlock targetBuildingBlock, string originalBuilderName = null)
       {
+         // You cannot add ExpressionParameters to the buildingBlock
          return new MoBiMacroCommand();
       }
 

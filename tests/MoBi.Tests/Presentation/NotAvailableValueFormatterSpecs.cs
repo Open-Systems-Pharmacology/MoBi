@@ -7,7 +7,7 @@ using OSPSuite.BDDHelper.Extensions;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_StartValueFormatter : ContextSpecification<NotAvailableValueFormatter>
+   public abstract class concern_for_NotAvailableValueFormatter : ContextSpecification<NotAvailableValueFormatter>
    {
       protected IStartValueDTO _startValueDTO;
 
@@ -18,7 +18,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_formatting_a_start_value : concern_for_StartValueFormatter
+   public class formatting_a_not_available_value : concern_for_NotAvailableValueFormatter
    {
       [Observation]
       public void should_return_start_value_not_available_if_the_value_is_null()

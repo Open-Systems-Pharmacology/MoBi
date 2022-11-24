@@ -2,43 +2,62 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using NPOI.SS.Formula.Functions;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_ChangeStartValueFormulaCommand : ContextSpecification<ChangeValueFormulaCommand<IMoleculeStartValue>>
+   public abstract class concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, T> : ContextSpecification<TCommand> where T : class, IUsingFormula where TCommand : ChangeValueFormulaCommand<T> where TBuildingBlock : IBuildingBlock<T>, new()
    {
-      protected IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
-      protected IMoleculeStartValue _changedMoleculeStartValue;
       protected IFormula _newFormula;
       protected IFormula _oldFormula;
-
-      protected override void Context()
-      {
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
-         _changedMoleculeStartValue = A.Fake<IMoleculeStartValue>();
-         _newFormula = new ExplicitFormula{Id = "newFormulaId"};
-         _oldFormula = new ExplicitFormula{Id = "oldFormulaId"};
-         
-         sut = new StartValueFormulaChangedCommand<IMoleculeStartValue>(_moleculeStartValuesBuildingBlock, _changedMoleculeStartValue, _newFormula, _oldFormula);
-      }
-   }
-
-   class When_inverting_a_psv_change_command : concern_for_ChangeStartValueFormulaCommand
-   {
+      protected T _changedBuilder;
+      protected TBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
+      protected abstract TCommand GetCommand();
+
       protected override void Context()
       {
-         base.Context();
-         
+         _changedBuilder = A.Fake<T>();
+         _newFormula = new ExplicitFormula { Id = "newFormulaId" };
+         _oldFormula = new ExplicitFormula { Id = "oldFormulaId" };
+         _buildingBlock = GetBuildingBlock();
+         sut = GetCommand();
+
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<IFormula>(_oldFormula.Id)).Returns(_oldFormula);
          A.CallTo(() => _context.Get<IFormula>(_newFormula.Id)).Returns(_newFormula);
-         _moleculeStartValuesBuildingBlock.Add(_changedMoleculeStartValue);
-         A.CallTo(() => _context.Get<IBuildingBlock<IMoleculeStartValue>>(A<string>.Ignored)).Returns(_moleculeStartValuesBuildingBlock);
+         _buildingBlock.Add(_changedBuilder);
+         A.CallTo(() => _context.Get<IBuildingBlock<T>>(A<string>.Ignored)).Returns(_buildingBlock);
       }
 
+      protected TBuildingBlock GetBuildingBlock()
+      {
+         return new TBuildingBlock();
+      }
+   }
+
+   class When_inverting_a_psv_change_command : When_inverting_a_formula_change_command<StartValueFormulaChangedCommand<IMoleculeStartValue>, MoleculeStartValuesBuildingBlock, IMoleculeStartValue>
+   {
+      protected override StartValueFormulaChangedCommand<IMoleculeStartValue> GetCommand()
+      {
+         return new StartValueFormulaChangedCommand<IMoleculeStartValue>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+      }
+   }
+
+   class inverting_an_expression_formula_change_command : When_inverting_a_formula_change_command<ExpressionParameterFormulaChangedCommand, ExpressionProfileBuildingBlock, ExpressionParameter>
+   {
+      protected override ExpressionParameterFormulaChangedCommand GetCommand()
+      {
+         return new ExpressionParameterFormulaChangedCommand(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+      }
+   }
+
+   abstract class When_inverting_a_formula_change_command<TCommand, TBuildingBlock, TBuilder> : concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, TBuilder> 
+      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : class, IUsingFormula
+   {
       protected override void Because()
       {
          sut.ExecuteAndInvokeInverse(_context);
@@ -47,31 +66,47 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_change_start_value_formula_back_to_original()
       {
-         _changedMoleculeStartValue.Formula.ShouldBeEqualTo(_oldFormula);
+         _changedBuilder.Formula.ShouldBeEqualTo(_oldFormula);
+      }
+
+   }
+
+   class executing_change_expression_value_formula_command : executing_change_formula_command<ExpressionParameterFormulaChangedCommand, ExpressionProfileBuildingBlock, ExpressionParameter>
+   {
+      protected override ExpressionParameterFormulaChangedCommand GetCommand()
+      {
+         return new ExpressionParameterFormulaChangedCommand(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
    }
 
-   class executing_change_start_value_formula_command : concern_for_ChangeStartValueFormulaCommand
+   class executing_change_start_value_formula_command : executing_change_formula_command<StartValueFormulaChangedCommand<IMoleculeStartValue>, MoleculeStartValuesBuildingBlock, IMoleculeStartValue>
    {
-      private IMoBiContext _context;
-      private const string _newFormulaId = "new";
+      protected override StartValueFormulaChangedCommand<IMoleculeStartValue> GetCommand()
+      {
+         return new StartValueFormulaChangedCommand<IMoleculeStartValue>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+      }
+   }
 
+   abstract class executing_change_formula_command<TCommand, TBuildingBlock, TBuilder> : concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, TBuilder>
+      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : class, IUsingFormula
+   {
+      private const string _newFormulaId = "new";
+   
       protected override void Context()
       {
          base.Context();
-         _context = A.Fake<IMoBiContext>();
          _newFormula.Id = _newFormulaId;
       }
-
+   
       protected override void Because()
       {
          sut.Execute(_context);
       }
-
+   
       [Observation]
       public void should_set_molecule_startValues_Formula()
       {
-         _changedMoleculeStartValue.Formula.ShouldBeEqualTo(_newFormula);
+         _changedBuilder.Formula.ShouldBeEqualTo(_newFormula);
       }
    }
 }	

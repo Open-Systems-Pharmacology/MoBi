@@ -42,6 +42,4 @@ namespace MoBi.Presentation
          _view.Caption.ShouldBeEqualTo(Assets.AppConstants.Captions.ExpressionProfileBuildingBlockCaption(_expressionProfile.Name));
       }
    }
-
-
 }

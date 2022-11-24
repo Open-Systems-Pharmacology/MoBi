@@ -40,35 +40,34 @@ namespace MoBi.Presentation.Presenter
          return allFormulas;
       }
 
-      protected virtual void RefreshDTO(TBuilderDTO startValueDTO, IFormula newValue, TBuilder startValue)
+      protected virtual void RefreshDTO(TBuilderDTO builderDTO, IFormula newValue, TBuilder builder)
       {
          if (newValue != null)
          {
-            var explicitFormula = newValue as ExplicitFormula;
-            if (explicitFormula != null)
-               startValueDTO.Formula = new ValueFormulaDTO(explicitFormula);
+            if (newValue is ExplicitFormula explicitFormula)
+               builderDTO.Formula = new ValueFormulaDTO(explicitFormula);
          }
          else
          {
-            startValueDTO.Formula = new EmptyFormulaDTO();
+            builderDTO.Formula = new EmptyFormulaDTO();
          }
       }
 
-      protected void SetFormulaInBuilder(TBuilderDTO startValueDTO, IFormula formula, TBuilder startValue)
+      protected void SetFormulaInBuilder(TBuilderDTO builderDTO, IFormula formula, TBuilder builder)
       {
-         AddCommand(_interactionTask.SetFormula(_buildingBlock, startValue, formula));
-         RefreshDTO(startValueDTO, formula, startValue);
+         AddCommand(_interactionTask.SetFormula(_buildingBlock, builder, formula));
+         RefreshDTO(builderDTO, formula, builder);
       }
 
-      public void SetUnit(TBuilder startValue, Unit newUnit)
+      public void SetUnit(TBuilder builder, Unit newUnit)
       {
-         AddCommand(_interactionTask.SetUnit(_buildingBlock, startValue, newUnit));
+         AddCommand(_interactionTask.SetUnit(_buildingBlock, builder, newUnit));
       }
 
-      protected void AddNewFormula(TBuilderDTO moleculeStartValueDTO, TBuilder startValue)
+      protected void AddNewFormula(TBuilderDTO builderDTO, TBuilder builder)
       {
-         AddCommand(_interactionTask.AddNewFormulaAtBuildingBlock(_buildingBlock, startValue, null));
-         RefreshDTO(moleculeStartValueDTO, startValue.Formula, startValue);
+         AddCommand(_interactionTask.AddNewFormulaAtBuildingBlock(_buildingBlock, builder, null));
+         RefreshDTO(builderDTO, builder.Formula, builder);
       }
    }
 }
