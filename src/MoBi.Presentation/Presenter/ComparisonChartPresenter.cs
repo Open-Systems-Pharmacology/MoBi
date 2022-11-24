@@ -24,6 +24,7 @@ namespace MoBi.Presentation.Presenter
          base(chartView, chartPresenterContext, context, userSettings, chartTemplatingTask, chartUpdater, OutputMappingMatchingTask)
       {
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
+         ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
       }
 
       protected override string CurveNameDefinition(DataColumn column)

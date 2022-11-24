@@ -300,6 +300,7 @@ namespace MoBi.Presentation.Presenter
                if (simulation == null) return;
 
                _dataRepositoryCache.Add(dataRepository, simulation);
+               ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
                _outputMappingMatchingTask.AddMatchingOutputMapping(dataRepository, simulation);
 
                _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, dataRepository, false));
@@ -320,7 +321,9 @@ namespace MoBi.Presentation.Presenter
       private void replaceSimulationRepositories(IReadOnlyCollection<DataRepository> dataRepositories)
       {
          var repositoriesToRemove = _dataRepositoryCache.Keys.Except(dataRepositories).ToList();
+         var simulationsToRemove = _dataRepositoryCache.KeyValues.Where(x => repositoriesToRemove.Contains(x.Key)).Select(x => x.Value);
          repositoriesToRemove.Each(_dataRepositoryCache.Remove);
+         //simulationsToRemove.Each(simulation => ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings));
 
          addDataRepositoriesToDataRepositoryCache(dataRepositories);
 
