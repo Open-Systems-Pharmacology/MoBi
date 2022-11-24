@@ -19,7 +19,6 @@ using OSPSuite.UI.Extensions;
 using DevExpress.XtraEditors;
 using MoBi.Presentation.Formatters;
 using DevExpress.XtraEditors.Controls;
-using DevExpress.XtraGrid.Views.Base;
 
 namespace MoBi.UI.Views
 {
@@ -29,7 +28,6 @@ namespace MoBi.UI.Views
       private readonly GridViewBinder<ExpressionParameterDTO> _gridViewBinder;
       private readonly ScreenBinder<ExpressionProfileBuildingBlockDTO> _screenBinder = new ScreenBinder<ExpressionProfileBuildingBlockDTO>();
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
-      private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       private readonly IDimensionFactory _dimensionFactory;
       private readonly UxRepositoryItemComboBox _dimensionComboBoxRepository;
       private readonly UxComboBoxUnit<ExpressionParameterDTO> _unitControl;
@@ -92,15 +90,11 @@ namespace MoBi.UI.Views
 
          _dimensionComboBoxRepository.FillComboBoxRepositoryWith(_dimensionFactory.DimensionsSortedByName);
 
-
-         _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository).AsReadOnly();
-
-         _standardParameterEditRepository.ConfigureWith(typeof(double));
-         _standardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
-
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())
             .WithOnValueUpdating((o, e) => _presenter.SetFormula(o, e.NewValue.Formula));
+
+         _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository).AsReadOnly();
 
          gridView.HiddenEditor += (o, e) => hideEditor();
       }
@@ -168,6 +162,12 @@ namespace MoBi.UI.Views
       private void bindGrid(IReadOnlyList<ExpressionParameterDTO> expressionParameterDTOs)
       {
          _gridViewBinder.BindToSource(expressionParameterDTOs);
+      }
+
+      private void disposeBinders()
+      {
+         _screenBinder.Dispose();
+         _gridViewBinder.Dispose();
       }
    }
 }

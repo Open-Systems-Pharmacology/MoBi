@@ -18,6 +18,7 @@
             components.Dispose();
          }
          base.Dispose(disposing);
+         disposeBinders();
       }
 
       #region Component Designer generated code
