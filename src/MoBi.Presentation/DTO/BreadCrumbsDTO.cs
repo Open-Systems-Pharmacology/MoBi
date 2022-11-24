@@ -7,22 +7,9 @@ using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IBreadCrumbsDTO
-   {
-      string PathElement0 { get; }
-      string PathElement1 { get; }
-      string PathElement2 { get; }
-      string PathElement3 { get; }
-      string PathElement4 { get; }
-      string PathElement5 { get; }
-      string PathElement6 { get; }
-      string PathElement7 { get; }
-      string PathElement8 { get; }
-      string PathElement9 { get; }
-      string PathElementByIndex(int index);
-   }
 
-   public abstract class BreadCrumbsDTO<T> : DxValidatableDTO<T>, IBreadCrumbsDTO where T : IValidatable, INotifier
+
+   public abstract class BreadCrumbsDTO<T> : DxValidatableDTO<T> where T : IValidatable, INotifier
    {
       private IObjectPath _containerPath;
       private IList<string> _elementList;

@@ -10,18 +10,18 @@ namespace OSPSuite.Core.Domain.Builder
    // TODO: this should become the replacement for StartValueBase on promotion to Core.
    // For start value, we can just add the property 'StartValue' which reflects the 'Value' here.
    // That way project conversion is not necessary
-   public abstract class PathAndValueEntity : Entity, IUsingFormula, IWithDisplayUnit, IWithValueOrigin
+   public abstract class PathAndValueEntity : Entity, IUsingFormula, IWithDisplayUnit, IWithValueOrigin, IStartValue
    {
       private IObjectPath _containerPath;
       protected IFormula _formula;
       private Unit _displayUnit;
       private IDimension _dimension;
-      private double? _value;
+      private double? _startValue;
 
       protected PathAndValueEntity()
       {
          Dimension = Constants.Dimension.NO_DIMENSION;
-         Value = null;
+         StartValue = null;
          ContainerPath = ObjectPath.Empty;
          ValueOrigin = new ValueOrigin();
       }
@@ -46,6 +46,12 @@ namespace OSPSuite.Core.Domain.Builder
       {
          get => _containerPath;
          set => SetProperty(ref _containerPath, value);
+      }
+
+      public double? StartValue
+      {
+         get => _startValue;
+         set => SetProperty(ref _startValue, value);
       }
 
       public IFormula Formula
@@ -96,8 +102,8 @@ namespace OSPSuite.Core.Domain.Builder
          return
             NullableEqualsCheck(ContainerPath, target.ContainerPath) &&
             NullableEqualsCheck(Path, target.Path) &&
-            Value.HasValue == target.Value.HasValue &&
-            (!Value.HasValue || ValueComparer.AreValuesEqual(Value.GetValueOrDefault(), target.Value.GetValueOrDefault())) &&
+            StartValue.HasValue == target.StartValue.HasValue &&
+            (!StartValue.HasValue || ValueComparer.AreValuesEqual(StartValue.GetValueOrDefault(), target.StartValue.GetValueOrDefault())) &&
             NullableEqualsCheck(Formula, target.Formula, x => x.ToString()) &&
             NullableEqualsCheck(Dimension, target.Dimension, x => x.ToString()) &&
             NullableEqualsCheck(Icon, target.Icon) &&
@@ -129,12 +135,6 @@ namespace OSPSuite.Core.Domain.Builder
 
          return transform?.Invoke(first).Equals(transform(second)) ?? first.Equals(second);
       }
-      
-      public double? Value
-      {
-         get => _value;
-         set => SetProperty(ref _value, value);
-      }
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
@@ -142,7 +142,7 @@ namespace OSPSuite.Core.Domain.Builder
          var sourcePathAndValueEntity = source as PathAndValueEntity;
          if (sourcePathAndValueEntity == null) return;
 
-         Value = sourcePathAndValueEntity.Value;
+         StartValue = sourcePathAndValueEntity.StartValue;
          ContainerPath = sourcePathAndValueEntity.ContainerPath.Clone<IObjectPath>();
          DisplayUnit = sourcePathAndValueEntity.DisplayUnit;
          Dimension = sourcePathAndValueEntity.Dimension;

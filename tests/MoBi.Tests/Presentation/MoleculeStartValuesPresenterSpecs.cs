@@ -35,6 +35,7 @@ namespace MoBi.Presentation
       private IMoleculeNegativeValuesAllowedSelectionPresenter _negativeStartValuesAllowedSelectionPresenter;
       protected ILegendPresenter _legendPresenter;
       protected IMoleculeStartValuesCreator _moleculeStartValuesCreator;
+      private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
 
       protected override void Context()
       {
@@ -49,9 +50,10 @@ namespace MoBi.Presentation
          _deleteStartValuePresenter = A.Fake<IDeleteStartValuePresenter>();
          _legendPresenter = A.Fake<ILegendPresenter>();
          _moleculeStartValuesCreator = A.Fake<IMoleculeStartValuesCreator>();
+         _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          sut = new MoleculeStartValuesPresenter(
             _view, _mapper, _isPresentSelectionPresenter, _refreshStartValuesPresenter, _negativeStartValuesAllowedSelectionPresenter, _moleculeStartValueTask,
-            _moleculeStartValuesCreator, _context, _legendPresenter, _deleteStartValuePresenter);
+            _moleculeStartValuesCreator, _context, _legendPresenter, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper);
          _moleculeStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
 
          sut.InitializeWith(_commandCollector);

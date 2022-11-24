@@ -4,6 +4,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
+using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -14,7 +15,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation
 {
-   public class concern_for_ExpressionProfileBuildingBlockPresenter : ContextSpecification<ExpressionProfileBuildingBlockPresenter>
+    public class concern_for_ExpressionProfileBuildingBlockPresenter : ContextSpecification<ExpressionProfileBuildingBlockPresenter>
    {
       protected IExpressionProfileBuildingBlockView _view;
       protected ExpressionParameterToExpressionParameterDTOMapper _expressionParameterToExpressionParameterDTOMapper;
@@ -25,6 +26,7 @@ namespace MoBi.Presentation
       protected ExpressionProfileBuildingBlockDTO _buildingBlockDTO;
       protected IInteractionTasksForExpressionProfileBuildingBlock _interactionTaskForExpressionProfile;
       private ICommandCollector _commandCollector;
+      private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
 
       protected override void Context()
       {
@@ -32,12 +34,13 @@ namespace MoBi.Presentation
          _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(_expressionParameterToExpressionParameterDTOMapper);
          _view = A.Fake<IExpressionProfileBuildingBlockView>();
          _interactionTaskForExpressionProfile = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();
-         sut = new ExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper, _interactionTaskForExpressionProfile);
+         _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
+         sut = new ExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper, _interactionTaskForExpressionProfile, _formulaToValueFormulaDTOMapper);
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
 
-         _expressionParameter1 = new ExpressionParameter { Path = new ObjectPath("Path1", "Path2", "Name"), Value = 10 };
-         _expressionParameter2 = new ExpressionParameter { Path = new ObjectPath("Path1", "Path3", "Name"), Value = 1 };
+         _expressionParameter1 = new ExpressionParameter { Path = new ObjectPath("Path1", "Path2", "Name"), StartValue = 10 };
+         _expressionParameter2 = new ExpressionParameter { Path = new ObjectPath("Path1", "Path3", "Name"), StartValue = 1 };
          _buildingBlock = new ExpressionProfileBuildingBlock
          {
             _expressionParameter1,

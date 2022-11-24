@@ -25,9 +25,9 @@ namespace MoBi.Presentation.Mapper
             base.Context();
             _buildingBlock = new ExpressionProfileBuildingBlock
             {
-               new ExpressionParameter { Value = 1, Path = new ObjectPath("path1", "path2")},
-               new ExpressionParameter { Value = 2, Path = new ObjectPath("path1", "path3") },
-               new ExpressionParameter { Value = 3, Path = new ObjectPath("path1", "path4") }
+               new ExpressionParameter { StartValue = 1, Path = new ObjectPath("path1", "path2")},
+               new ExpressionParameter { StartValue = 2, Path = new ObjectPath("path1", "path3") },
+               new ExpressionParameter { StartValue = 3, Path = new ObjectPath("path1", "path4") }
             };
          }
 

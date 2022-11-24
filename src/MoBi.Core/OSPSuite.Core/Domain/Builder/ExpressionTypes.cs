@@ -10,11 +10,11 @@
    public class ExpressionType
    {
       public string IconName { get; }
-      public string NameType { get; }
-      public ExpressionType(string iconName, string nameType)
+      public string DisplayName { get; }
+      public ExpressionType(string iconName, string displayName)
       {
          IconName = iconName;
-         NameType = nameType;
+         DisplayName = displayName;
       }
    }
 }

@@ -62,12 +62,12 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      protected void underlyingObjectOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+      private void underlyingObjectOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
       {
          var changedProperty = propertyChangedEventArgs.PropertyName;
          if (changedProperty.Equals(ContainerPathPropertyName))
          {
-            ContainerPath = GetContainerPath(StartValueObject);
+            ContainerPath = GetContainerPath();
          }
          else if (changedProperty.Equals(FormulaPropertyName))
          {
@@ -75,7 +75,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      protected abstract IObjectPath GetContainerPath(T startValueObject);
+      protected abstract IObjectPath GetContainerPath();
 
    }
 }

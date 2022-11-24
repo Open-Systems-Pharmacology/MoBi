@@ -55,8 +55,9 @@ namespace MoBi.Presentation.Presenter
          IMoleculeStartValuesCreator msvCreator,
          IMoBiContext context,
          ILegendPresenter legendPresenter,
-         IDeleteStartValuePresenter deleteStartValuePresenter)
-         : base(view, startValueMapper, refreshStartValuesPresenter, moleculeStartValuesTask, msvCreator, context, legendPresenter, deleteStartValuePresenter)
+         IDeleteStartValuePresenter deleteStartValuePresenter,
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
+         : base(view, startValueMapper, refreshStartValuesPresenter, moleculeStartValuesTask, msvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper)
       {
          _moleculeStartValuesTask = moleculeStartValuesTask;
          isPresentSelectionPresenter.ApplySelectionAction = performIsPresentAction;

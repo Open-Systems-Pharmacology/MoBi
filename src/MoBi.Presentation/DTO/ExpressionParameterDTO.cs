@@ -12,24 +12,23 @@ namespace MoBi.Presentation.DTO
       {
          ExpressionParameter = expressionParameter;
          ContainerPath = expressionParameter.ContainerPath;
-         ExpressionParameter.PropertyChanged += underlyingObjectOnPropertyChanged;
       }
+
+      public ExpressionParameter ExpressionParameter { get; }
 
       public double? Value
       {
          get
          {
             if (Formula == null || Formula.Formula == null)
-               return ExpressionParameter.ConvertToDisplayUnit(ExpressionParameter.Value);
+               return ExpressionParameter.ConvertToDisplayUnit(ExpressionParameter.StartValue);
             return double.NaN;
          }
       }
 
-      public ExpressionParameter ExpressionParameter { get; }
-
-      protected override IObjectPath GetContainerPath(ExpressionParameter startValueObject)
+      protected override IObjectPath GetContainerPath()
       {
-         return startValueObject.ContainerPath;
+         return ContainerPath;
       }
    }
 }

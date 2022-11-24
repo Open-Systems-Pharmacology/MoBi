@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class concern_for_ExpressionValueChangedCommand : ContextSpecification<ExpressionParameterValueOrUnitChangedCommand>
+   public class concern_for_ExpressionValueChangedCommand : ContextSpecification<ValueWithPathEntityValueOrUnitChangedCommand<ExpressionParameter, ExpressionProfileBuildingBlock>>
    {
       protected ExpressionProfileBuildingBlock _buildingBlock;
       protected double? _newValue;
@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
       {
          _newValue = 3.0;
          _oldValue = null;
-         _expressionParameter = new ExpressionParameter { Value = _oldValue };
+         _expressionParameter = new ExpressionParameter { StartValue = _oldValue };
          _context = A.Fake<IMoBiContext>();
          _buildingBlock = new ExpressionProfileBuildingBlock
          {
@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
          };
          _buildingBlock.Id = "id";
 
-         sut = new ExpressionParameterValueOrUnitChangedCommand(_expressionParameter, _newValue, _expressionParameter.DisplayUnit, _buildingBlock);
+         sut = new ValueWithPathEntityValueOrUnitChangedCommand<ExpressionParameter, ExpressionProfileBuildingBlock>(_expressionParameter, _newValue, _expressionParameter.DisplayUnit, _buildingBlock);
       }
    }
 
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_expression_parameter_value_should_be_updated()
       {
-         _expressionParameter.Value.ShouldBeEqualTo(_newValue);
+         _expressionParameter.StartValue.ShouldBeEqualTo(_newValue);
       }
    }
 
@@ -63,7 +63,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_expression_parameter_value_should_be_updated()
       {
-         _expressionParameter.Value.ShouldBeEqualTo(_oldValue);
+         _expressionParameter.StartValue.ShouldBeEqualTo(_oldValue);
       }
    }
 }

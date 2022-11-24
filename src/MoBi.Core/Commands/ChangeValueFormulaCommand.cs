@@ -11,7 +11,7 @@ using static System.String;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class ChangeValueFormulaCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : class, IObjectBase, IUsingFormula
+   public class ChangeValueFormulaCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : class, IObjectBase, IUsingFormula, IStartValue
    {
       private readonly string _objectBaseId;
       private readonly string _newFormulaId;
@@ -19,9 +19,9 @@ namespace MoBi.Core.Commands
       protected IFormula _newFormula;
       protected IFormula _oldFormula;
       protected T _changedStartValue;
-      public IObjectPath Path { get; set; }
+      protected IObjectPath Path { get; set; }
 
-      protected ChangeValueFormulaCommand(IBuildingBlock<T> buildingBlock, T startValue, IFormula newFormula, IFormula oldFormula): base(buildingBlock)
+      public ChangeValueFormulaCommand(IBuildingBlock<T> buildingBlock, T startValue, IFormula newFormula, IFormula oldFormula): base(buildingBlock)
       {
          _newFormula = newFormula;
          _oldFormula = oldFormula;
@@ -29,7 +29,7 @@ namespace MoBi.Core.Commands
          _changedStartValue = startValue;
          ObjectType = new ObjectTypeResolver().TypeFor(startValue);
 
-         Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.FormulaName, _oldFormula?.ToString() ?? AppConstants.NullString, _newFormula?.ToString() ?? AppConstants.NullString, PathFrom(_changedStartValue).PathAsString);
+         Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.FormulaName, _oldFormula?.ToString() ?? AppConstants.NullString, _newFormula?.ToString() ?? AppConstants.NullString, _changedStartValue.Path.PathAsString);
 
          CommandType = AppConstants.Commands.EditCommand;
 
@@ -48,6 +48,11 @@ namespace MoBi.Core.Commands
          return formulaId.IsNotEmpty() ? context.Get<IFormula>(formulaId) : null;
       }
 
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new ChangeValueFormulaCommand<T>(_buildingBlock, _changedStartValue, _oldFormula, _newFormula).AsInverseFor(this);
+      }
+
       protected override void ClearReferences()
       {
          base.ClearReferences();
@@ -61,54 +66,19 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _changedStartValue.Formula = _newFormula;
-         Path = PathFrom(_changedStartValue);
+         Path = _changedStartValue.Path;
       }
 
-      protected abstract IObjectPath PathFrom(T changedStartValue);
+      // protected abstract IObjectPath PathFrom(T changedStartValue);
 
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
          _buildingBlock = context.Get<IBuildingBlock<T>>(_objectBaseId);
-         _changedStartValue = _buildingBlock.Single(startValue => PathFrom(startValue).Equals(Path));
+         _changedStartValue = _buildingBlock.Single(startValue => startValue.Path.Equals(Path));
          _oldFormula = GetFormula(_oldFormulaId, context);
          _newFormula = GetFormula(_newFormulaId, context);
       }
-   }
-
-   public class ExpressionParameterFormulaChangedCommand : ChangeValueFormulaCommand<ExpressionParameter>
-   {
-      public ExpressionParameterFormulaChangedCommand(IBuildingBlock<ExpressionParameter> buildingBlock, ExpressionParameter startValue, IFormula newFormula, IFormula oldFormula) : base(buildingBlock, startValue, newFormula, oldFormula)
-      {
-      }
-
-      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
-      {
-         return new ExpressionParameterFormulaChangedCommand(_buildingBlock, _changedStartValue, _oldFormula, _newFormula).AsInverseFor(this);
-      }
-
-      protected override IObjectPath PathFrom(ExpressionParameter changedStartValue)
-      {
-         return changedStartValue.Path;
-      }
-   }
-
-   public class StartValueFormulaChangedCommand<T> : ChangeValueFormulaCommand<T> where T : class, IUsingFormula, IStartValue
-   {
-      public StartValueFormulaChangedCommand(IBuildingBlock<T> buildingBlock, T startValue, IFormula newFormula, IFormula oldFormula) : base(buildingBlock, startValue, newFormula, oldFormula)
-      {
-      }
-
-      protected override IObjectPath PathFrom(T changedStartValue)
-      {
-         return changedStartValue.Path;
-      }
-
-      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
-      {
-         return new StartValueFormulaChangedCommand<T>(_buildingBlock, _changedStartValue, _oldFormula, _newFormula).AsInverseFor(this);
-      }
-
    }
 }

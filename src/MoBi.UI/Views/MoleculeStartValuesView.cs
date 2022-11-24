@@ -10,8 +10,8 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
@@ -19,7 +19,7 @@ using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Views
 {
-   public partial class MoleculeStartValuesView : BaseStartValuesView<MoleculeStartValueDTO>, IMoleculeStartValuesView
+   public partial class MoleculeStartValuesView : BaseStartValuesView<MoleculeStartValueDTO, IMoleculeStartValue>, IMoleculeStartValuesView
    {
       private readonly UxComboBoxUnit<MoleculeStartValueDTO> _unitControl;
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;

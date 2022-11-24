@@ -56,8 +56,9 @@ namespace MoBi.Presentation.Presenter
          IEmptyStartValueCreator<TStartValue> emptyStartValueCreator,
          IMoBiContext context,
          ILegendPresenter legendPresenter,
-         IDeleteStartValuePresenter deleteStartValuePresenter)
-         : base(view, startValuesTask)
+         IDeleteStartValuePresenter deleteStartValuePresenter,
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
+         : base(view, startValuesTask, formulaToValueFormulaDTOMapper)
       {
          _startValuesTask = startValuesTask;
          _startValueMapper = startValueMapper;

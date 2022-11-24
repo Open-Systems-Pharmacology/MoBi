@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
@@ -23,10 +24,12 @@ namespace MoBi.Presentation.Presenter
    {
       protected TBuildingBlock _buildingBlock;
       private readonly IInteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder> _interactionTask;
+      private readonly IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
 
-      protected PathWithValueBuildingBlockPresenter(TView view, IInteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder> interactionTask) : base(view)
+      protected PathWithValueBuildingBlockPresenter(TView view, IInteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder> interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper) : base(view)
       {
          _interactionTask = interactionTask;
+         _formulaToValueFormulaDTOMapper = formulaToValueFormulaDTOMapper;
       }
 
       public IEnumerable<ValueFormulaDTO> AllFormulas()
@@ -40,17 +43,9 @@ namespace MoBi.Presentation.Presenter
          return allFormulas;
       }
 
-      protected virtual void RefreshDTO(TBuilderDTO builderDTO, IFormula newValue, TBuilder builder)
+      protected virtual void RefreshDTO(TBuilderDTO builderDTO, IFormula newFormula, TBuilder builder)
       {
-         if (newValue != null)
-         {
-            if (newValue is ExplicitFormula explicitFormula)
-               builderDTO.Formula = new ValueFormulaDTO(explicitFormula);
-         }
-         else
-         {
-            builderDTO.Formula = new EmptyFormulaDTO();
-         }
+         builderDTO.Formula = _formulaToValueFormulaDTOMapper.MapFrom(newFormula);
       }
 
       protected void SetFormulaInBuilder(TBuilderDTO builderDTO, IFormula formula, TBuilder builder)

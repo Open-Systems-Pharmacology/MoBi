@@ -1,12 +1,13 @@
 ﻿using FakeItEasy;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
-   public class concern_for_EditExpressionProfileBuildingBlockPresenter : ContextSpecification<EditExpressionProfileBuildingBlockPresenter>
+    public class concern_for_EditExpressionProfileBuildingBlockPresenter : ContextSpecification<EditExpressionProfileBuildingBlockPresenter>
    {
       protected IExpressionProfileBuildingBlockPresenter _expressionProfileBuildingBlockPresenter;
       protected IEditExpressionProfileBuildingBlockView _view;

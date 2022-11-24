@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand SetFormula(ExpressionProfileBuildingBlock buildingBlock, ExpressionParameter builder, IFormula formula)
       {
-         return SetFormula(buildingBlock, builder, formula, shouldClearValue:builder.Value.HasValue);
+         return SetFormula(buildingBlock, builder, formula, shouldClearValue:builder.StartValue.HasValue);
       }
 
       protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(ExpressionParameter builder, ExpressionProfileBuildingBlock targetBuildingBlock, string originalBuilderName = null)
@@ -39,17 +39,17 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override double? ValueFromBuilder(ExpressionParameter builder)
       {
-         return builder.Value;
+         return builder.StartValue;
       }
 
       public override IMoBiCommand ChangeValueFormulaCommand(ExpressionProfileBuildingBlock buildingBlock, ExpressionParameter builder, IFormula formula)
       {
-         return new ExpressionParameterFormulaChangedCommand(buildingBlock, builder, formula, builder.Formula).Run(Context);
+         return new ChangeValueFormulaCommand<ExpressionParameter>(buildingBlock, builder, formula, builder.Formula).Run(Context);
       }
 
       protected override IMoBiCommand SetValueWithUnit(ExpressionParameter builder, double? unitValueToBaseUnitValue, Unit unit, ExpressionProfileBuildingBlock startValues)
       {
-         return new ExpressionParameterValueOrUnitChangedCommand(builder, unitValueToBaseUnitValue, unit, startValues).Run(Context);
+         return new ValueWithPathEntityValueOrUnitChangedCommand<ExpressionParameter, ExpressionProfileBuildingBlock>(builder, unitValueToBaseUnitValue, unit, startValues).Run(Context);
       }
    }
 }

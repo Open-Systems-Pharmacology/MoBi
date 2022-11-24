@@ -7,14 +7,14 @@ using OSPSuite.BDDHelper.Extensions;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_NotAvailableValueFormatter : ContextSpecification<NotAvailableValueFormatter>
+   public abstract class concern_for_NotAvailableValueFormatter : ContextSpecification<ValueAllowingNaNFormatter>
    {
       protected IStartValueDTO _startValueDTO;
 
       protected override void Context()
       {
          _startValueDTO = A.Fake<IStartValueDTO>();
-         sut = new NotAvailableValueFormatter(_startValueDTO);
+         sut = new ValueAllowingNaNFormatter(_startValueDTO);
       }
    }
 

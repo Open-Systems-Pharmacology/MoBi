@@ -12,17 +12,17 @@ using OSPSuite.UI.Controls;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants.Captions;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.Utils;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Extensions;
 using DevExpress.XtraEditors;
 using MoBi.Presentation.Formatters;
 using DevExpress.XtraEditors.Controls;
+using MoBi.Presentation.Views;
 
 namespace MoBi.UI.Views
 {
-   public partial class ExpressionProfileBuildingBlockView : BaseUserControl, IExpressionProfileBuildingBlockView
+    public partial class ExpressionProfileBuildingBlockView : BaseUserControl, IExpressionProfileBuildingBlockView
    {
       private IExpressionProfileBuildingBlockPresenter _presenter;
       private readonly GridViewBinder<ExpressionParameterDTO> _gridViewBinder;
@@ -155,13 +155,8 @@ namespace MoBi.UI.Views
          _screenBinder.BindToSource(buildingBlockDTO);
 
          lblMoleculeName.Text = buildingBlockDTO.NameType.FormatForLabel();
-         bindGrid(buildingBlockDTO.ExpressionParameters);
+         _gridViewBinder.BindToSource(buildingBlockDTO.ExpressionParameters);
          initColumnVisibility();
-      }
-
-      private void bindGrid(IReadOnlyList<ExpressionParameterDTO> expressionParameterDTOs)
-      {
-         _gridViewBinder.BindToSource(expressionParameterDTOs);
       }
 
       private void disposeBinders()

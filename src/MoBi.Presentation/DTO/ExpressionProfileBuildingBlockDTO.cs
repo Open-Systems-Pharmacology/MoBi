@@ -17,6 +17,6 @@ namespace MoBi.Presentation.DTO
       public string Species => _expressionProfileBuildingBlock.Species;
       public string Category => _expressionProfileBuildingBlock.Category;
       public string MoleculeName => _expressionProfileBuildingBlock.MoleculeName;
-      public string NameType => _expressionProfileBuildingBlock.Type.NameType;
+      public string NameType => _expressionProfileBuildingBlock.Type.DisplayName;
    }
 }

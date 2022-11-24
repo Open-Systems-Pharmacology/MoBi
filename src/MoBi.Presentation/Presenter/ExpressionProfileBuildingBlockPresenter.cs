@@ -3,16 +3,15 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
+using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
 
-using OSPSuite.Presentation.Views;
-
 namespace MoBi.Presentation.Presenter
 {
-   public interface IExpressionProfileBuildingBlockPresenter : IPresenter<IExpressionProfileBuildingBlockView>, IBreadCrumbsPresenter
+    public interface IExpressionProfileBuildingBlockPresenter : IPresenter<IExpressionProfileBuildingBlockView>, IBreadCrumbsPresenter
    {
       void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
       void SetExpressionParameterValue(ExpressionParameterDTO expressionParameterDTO, double? newValue);
@@ -30,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       private ExpressionProfileBuildingBlockDTO _expressionProfileBuildingBlockDTO;
 
       public ExpressionProfileBuildingBlockPresenter(IExpressionProfileBuildingBlockView view, IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper expressionProfileToDTOMapper, 
-         IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile) : base(view, interactionTaskForExpressionProfile)
+         IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper) : base(view, interactionTaskForExpressionProfile, formulaToValueFormulaDTOMapper)
       {
          _expressionProfileToDTOMapper = expressionProfileToDTOMapper;
          _interactionTaskForExpressionProfile = interactionTaskForExpressionProfile;
@@ -69,10 +68,5 @@ namespace MoBi.Presentation.Presenter
       {
          return _expressionProfileBuildingBlockDTO.ExpressionParameters.HasAtLeastTwoDistinctValues(pathElementIndex);
       }
-   }
-
-   public interface IExpressionProfileBuildingBlockView : IView<IExpressionProfileBuildingBlockPresenter>
-   {
-      void BindTo(ExpressionProfileBuildingBlockDTO buildingBlockDTO);
    }
 }

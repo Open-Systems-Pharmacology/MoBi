@@ -1,15 +1,17 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
+using System.Linq;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class ValueWithPathEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock> : BuildingBlockChangeCommandBase<TBuildingBlock>
-      where TBuildingBlock : class, IBuildingBlock<TBuilder> 
-      where TBuilder : class, IObjectBase, IUsingFormula, IWithDisplayUnit
+   public class ValueWithPathEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock> : BuildingBlockChangeCommandBase<TBuildingBlock>
+      where TBuildingBlock : class, IBuildingBlock<TBuilder>
+      where TBuilder : class, IObjectBase, IUsingFormula, IWithDisplayUnit, IStartValue
    {
       protected TBuilder _builder;
       protected Unit _newDisplayUnit;
@@ -18,16 +20,15 @@ namespace MoBi.Core.Commands
       protected double? _oldBaseValue;
       protected readonly IObjectPath _valuePath;
 
-      protected abstract double? GetOldValue();
 
-      protected ValueWithPathEntityValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock) : base(buildingBlock)
+      public ValueWithPathEntityValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _builder = builder;
          _newDisplayUnit = newDisplayUnit;
          _oldDisplayUnit = _builder.DisplayUnit;
          _newBaseValue = newBaseValue;
-         _oldBaseValue = GetOldValue();
-         _valuePath = GetPath();
+         _oldBaseValue = builder.StartValue;
+         _valuePath = builder.Path;
 
          CommandType = AppConstants.Commands.EditCommand;
          ObjectType = new ObjectTypeResolver().TypeFor(builder);
@@ -37,10 +38,13 @@ namespace MoBi.Core.Commands
             _newDisplayUnit.Name,
             builder.ConvertToDisplayUnit(_oldBaseValue.GetValueOrDefault(double.NaN)),
             _oldDisplayUnit.Name,
-            GetPath().PathAsString, _buildingBlock.Name);
+            builder.Path.PathAsString, _buildingBlock.Name);
       }
 
-      protected abstract IObjectPath GetPath();
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new ValueWithPathEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
+      }
 
       protected override void ClearReferences()
       {
@@ -48,14 +52,16 @@ namespace MoBi.Core.Commands
          _builder = null;
       }
 
-
-
-      protected abstract void SetNewValue(double? newBaseValue);
+      public override void RestoreExecutionData(IMoBiContext context)
+      {
+         base.RestoreExecutionData(context);
+         _builder = _buildingBlock.Single(expressionParameter => expressionParameter.Path.Equals(_valuePath));
+      }
 
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         SetNewValue(_newBaseValue);
+         _builder.StartValue = _newBaseValue;
          _builder.DisplayUnit = _newDisplayUnit;
       }
    }

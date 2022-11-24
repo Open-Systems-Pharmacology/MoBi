@@ -2,6 +2,7 @@
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -21,12 +22,10 @@ namespace MoBi.Presentation.Mappers
 
       public ExpressionProfileBuildingBlockDTO MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
-         var expressionProfileDTO =  new ExpressionProfileBuildingBlockDTO(expressionProfileBuildingBlock)
+         return  new ExpressionProfileBuildingBlockDTO(expressionProfileBuildingBlock)
          {
-            ExpressionParameters = expressionProfileBuildingBlock.Select(x => _expressionParameterToExpressionParameterDTOMapper.MapFrom(x)).ToList()
+            ExpressionParameters = expressionProfileBuildingBlock.MapAllUsing(_expressionParameterToExpressionParameterDTOMapper)
          };
-
-         return expressionProfileDTO;
       }
    }
 }

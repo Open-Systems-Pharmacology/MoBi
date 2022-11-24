@@ -13,7 +13,7 @@ using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IStartValueDTO : IBreadCrumbsDTO, IWithDisplayUnitDTO, IWithValueOrigin, IWithFormulaDTO
+   public interface IStartValueDTO : IWithDisplayUnitDTO, IWithValueOrigin, IWithFormulaDTO
    {
    }
 
@@ -53,9 +53,9 @@ namespace MoBi.Presentation.DTO
          Rules.AddRange(AllRules.All());
       }
 
-      protected override IObjectPath GetContainerPath(T startValueObject)
+      protected override IObjectPath GetContainerPath()
       {
-         return startValueObject.ContainerPath;
+         return StartValueObject.ContainerPath;
       }
 
       public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)

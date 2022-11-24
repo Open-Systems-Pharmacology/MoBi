@@ -170,7 +170,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock startValues, TStartValue startValue, IFormula formula)
       {
-         return new StartValueFormulaChangedCommand<TStartValue>(startValues, startValue, formula, startValue.Formula).Run(Context);
+         return new ChangeValueFormulaCommand<TStartValue>(startValues, startValue, formula, startValue.Formula).Run(Context);
       }
 
       protected static bool HasEquivalentStartValue(IStartValue startValue, IParameter parameter)
@@ -295,7 +295,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected IMoBiCommand GetChangeStartValueFormulaCommand(TBuildingBlock startValuesBuildingBlock, TStartValue startValue, IFormula newFormula, IFormula oldFormula)
       {
-         return new StartValueFormulaChangedCommand<TStartValue>(startValuesBuildingBlock, startValue, newFormula, oldFormula);
+         return new ChangeValueFormulaCommand<TStartValue>(startValuesBuildingBlock, startValue, newFormula, oldFormula);
       }
 
       protected abstract IMoBiCommand GetUpdateStartValueInBuildingBlockCommand(TBuildingBlock startValuesBuildingBlock, ImportedQuantityDTO dto);
@@ -330,7 +330,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override IMoBiCommand SetValueWithUnit(TStartValue startValue, double? newBaseValue, Unit unit, TBuildingBlock startValues)
       {
-         return new StartValueValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
+         return new ValueWithPathEntityValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
       }
    }
 }

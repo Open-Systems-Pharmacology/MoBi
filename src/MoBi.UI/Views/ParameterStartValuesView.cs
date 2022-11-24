@@ -11,13 +11,14 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 
 namespace MoBi.UI.Views
 {
-   public partial class ParameterStartValuesView : BaseStartValuesView<ParameterStartValueDTO>, IParameterStartValuesView
+   public partial class ParameterStartValuesView : BaseStartValuesView<ParameterStartValueDTO, IParameterStartValue>, IParameterStartValuesView
    {
       private readonly UxComboBoxUnit<ParameterStartValueDTO> _unitControl;
       private readonly IDimensionFactory _dimensionFactory;

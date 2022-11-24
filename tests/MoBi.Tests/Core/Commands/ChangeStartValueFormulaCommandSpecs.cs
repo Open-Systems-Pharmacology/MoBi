@@ -9,7 +9,7 @@ using NPOI.SS.Formula.Functions;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, T> : ContextSpecification<TCommand> where T : class, IUsingFormula where TCommand : ChangeValueFormulaCommand<T> where TBuildingBlock : IBuildingBlock<T>, new()
+   public abstract class concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, T> : ContextSpecification<TCommand> where T : class, IStartValue where TCommand : ChangeValueFormulaCommand<T> where TBuildingBlock : IBuildingBlock<T>, new()
    {
       protected IFormula _newFormula;
       protected IFormula _oldFormula;
@@ -39,24 +39,24 @@ namespace MoBi.Core.Commands
       }
    }
 
-   class When_inverting_a_psv_change_command : When_inverting_a_formula_change_command<StartValueFormulaChangedCommand<IMoleculeStartValue>, MoleculeStartValuesBuildingBlock, IMoleculeStartValue>
+   class When_inverting_a_psv_change_command : When_inverting_a_formula_change_command<ChangeValueFormulaCommand<IMoleculeStartValue>, MoleculeStartValuesBuildingBlock, IMoleculeStartValue>
    {
-      protected override StartValueFormulaChangedCommand<IMoleculeStartValue> GetCommand()
+      protected override ChangeValueFormulaCommand<IMoleculeStartValue> GetCommand()
       {
-         return new StartValueFormulaChangedCommand<IMoleculeStartValue>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+         return new ChangeValueFormulaCommand<IMoleculeStartValue>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
    }
 
-   class inverting_an_expression_formula_change_command : When_inverting_a_formula_change_command<ExpressionParameterFormulaChangedCommand, ExpressionProfileBuildingBlock, ExpressionParameter>
+   class inverting_an_expression_formula_change_command : When_inverting_a_formula_change_command<ChangeValueFormulaCommand<ExpressionParameter>, ExpressionProfileBuildingBlock, ExpressionParameter>
    {
-      protected override ExpressionParameterFormulaChangedCommand GetCommand()
+      protected override ChangeValueFormulaCommand<ExpressionParameter> GetCommand()
       {
-         return new ExpressionParameterFormulaChangedCommand(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+         return new ChangeValueFormulaCommand<ExpressionParameter>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
    }
 
    abstract class When_inverting_a_formula_change_command<TCommand, TBuildingBlock, TBuilder> : concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, TBuilder> 
-      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : class, IUsingFormula
+      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : class, IStartValue
    {
       protected override void Because()
       {
@@ -71,24 +71,24 @@ namespace MoBi.Core.Commands
 
    }
 
-   class executing_change_expression_value_formula_command : executing_change_formula_command<ExpressionParameterFormulaChangedCommand, ExpressionProfileBuildingBlock, ExpressionParameter>
+   class executing_change_expression_value_formula_command : executing_change_formula_command<ChangeValueFormulaCommand<ExpressionParameter>, ExpressionProfileBuildingBlock, ExpressionParameter>
    {
-      protected override ExpressionParameterFormulaChangedCommand GetCommand()
+      protected override ChangeValueFormulaCommand<ExpressionParameter> GetCommand()
       {
-         return new ExpressionParameterFormulaChangedCommand(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+         return new ChangeValueFormulaCommand<ExpressionParameter>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
    }
 
-   class executing_change_start_value_formula_command : executing_change_formula_command<StartValueFormulaChangedCommand<IMoleculeStartValue>, MoleculeStartValuesBuildingBlock, IMoleculeStartValue>
+   class executing_change_start_value_formula_command : executing_change_formula_command<ChangeValueFormulaCommand<IMoleculeStartValue>, MoleculeStartValuesBuildingBlock, IMoleculeStartValue>
    {
-      protected override StartValueFormulaChangedCommand<IMoleculeStartValue> GetCommand()
+      protected override ChangeValueFormulaCommand<IMoleculeStartValue> GetCommand()
       {
-         return new StartValueFormulaChangedCommand<IMoleculeStartValue>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+         return new ChangeValueFormulaCommand<IMoleculeStartValue>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
    }
 
    abstract class executing_change_formula_command<TCommand, TBuildingBlock, TBuilder> : concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, TBuilder>
-      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : class, IUsingFormula
+      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : class, IStartValue
    {
       private const string _newFormulaId = "new";
    

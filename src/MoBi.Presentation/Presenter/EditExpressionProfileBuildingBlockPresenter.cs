@@ -2,11 +2,10 @@
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditExpressionProfileBuildingBlockPresenter : ISingleStartPresenter<ExpressionProfileBuildingBlock>
+    public interface IEditExpressionProfileBuildingBlockPresenter : ISingleStartPresenter<ExpressionProfileBuildingBlock>
    {
 
    }
@@ -43,10 +42,5 @@ namespace MoBi.Presentation.Presenter
          EditFormulas(_expressionProfileBuildingBlock);
          _view.Display();
       }
-   }
-
-   public interface IEditExpressionProfileBuildingBlockView : IMdiChildView, IView<IEditExpressionProfileBuildingBlockPresenter>, IEditBuildingBlockBaseView
-   {
-      void AddExpressionProfileView(IView baseView);
    }
 }
