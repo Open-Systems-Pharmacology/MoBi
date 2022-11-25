@@ -24,10 +24,12 @@ using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.UI.Views
 {
-   public abstract partial class BaseStartValuesView<TStartValue> : BaseUserControl, IStartValuesView<TStartValue> where TStartValue : class, IStartValueDTO
+   public abstract partial class BaseStartValuesView<TStartValue, T> : BaseUserControl, IStartValuesView<TStartValue> where TStartValue : BreadCrumbsDTO<T>, IStartValueDTO where T : IValidatable, INotifier
    {
       private readonly ValueOriginBinder<TStartValue> _valueOriginBinder;
       protected readonly GridViewBinder<TStartValue> _gridViewBinder;

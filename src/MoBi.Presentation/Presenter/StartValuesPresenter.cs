@@ -11,8 +11,8 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -26,15 +26,15 @@ using OSPSuite.Presentation.Views;
 namespace MoBi.Presentation.Presenter
 {
    public abstract class StartValuePresenter<TView, TPresenter, TBuildingBlock, TStartValueDTO, TStartValue> :
-      AbstractEditPresenter<TView, TPresenter, TBuildingBlock>, IStartValuesPresenter<TStartValueDTO>
+      PathWithValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TStartValue, TStartValueDTO>, IStartValuesPresenter<TStartValueDTO>
       where TView : IView<TPresenter>, IStartValuesView<TStartValueDTO>
       where TPresenter : IPresenter
-      where TStartValue : class, IStartValue
+      where TStartValue : class, IStartValue, IUsingFormula
       where TStartValueDTO : StartValueDTO<TStartValue>
       where TBuildingBlock : class, IBuildingBlock<TStartValue>, IStartValuesBuildingBlock<TStartValue>
    {
       protected readonly IStartValueToStartValueDTOMapper<TStartValue, TStartValueDTO> _startValueMapper;
-      protected TBuildingBlock _buildingBlock;
+      
       private readonly IStartValuesTask<TBuildingBlock, TStartValue> _startValuesTask;
       protected BindingList<TStartValueDTO> _startValueDTOs;
       private readonly IEmptyStartValueCreator<TStartValue> _emptyStartValueCreator;
@@ -56,8 +56,9 @@ namespace MoBi.Presentation.Presenter
          IEmptyStartValueCreator<TStartValue> emptyStartValueCreator,
          IMoBiContext context,
          ILegendPresenter legendPresenter,
-         IDeleteStartValuePresenter deleteStartValuePresenter)
-         : base(view)
+         IDeleteStartValuePresenter deleteStartValuePresenter,
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
+         : base(view, startValuesTask, formulaToValueFormulaDTOMapper)
       {
          _startValuesTask = startValuesTask;
          _startValueMapper = startValueMapper;
@@ -344,53 +345,25 @@ namespace MoBi.Presentation.Presenter
          this.DoWithinLatch(() => base.AddCommand(commandAction));
       }
 
-      public IEnumerable<StartValueFormulaDTO> AllFormulas()
-      {
-         var allFormulas = new List<StartValueFormulaDTO> {new EmptyFormulaDTO()};
-
-         allFormulas.AddRange(_buildingBlock.FormulaCache
-            .OfType<ExplicitFormula>()
-            .OrderBy(formula => formula.Name)
-            .Select(formula => new StartValueFormulaDTO(formula)));
-
-         return allFormulas;
-      }
-
       public void SetFormula(TStartValueDTO startValueDTO, IFormula formula)
       {
          var startValue = StartValueFrom(startValueDTO);
-         AddCommand(_startValuesTask.SetFormula(_buildingBlock, startValue, formula));
-         RefreshDTO(startValueDTO, formula, startValue);
+         SetFormulaInBuilder(startValueDTO, formula, startValue);
       }
 
       public void SetUnit(TStartValueDTO startValueDTO, Unit newUnit)
       {
-         AddCommand(_startValuesTask.SetUnit(_buildingBlock, StartValueFrom(startValueDTO), newUnit));
+         SetUnit(StartValueFrom(startValueDTO), newUnit);
       }
 
       public abstract void AddNewFormula(TStartValueDTO startValueDTO);
 
       public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
       {
-         var allValuesForPathElement = _startValueDTOs.Select(x => x.PathElementByIndex(pathElementIndex)).Distinct().ToList();
-         return allValuesForPathElement.Count >= 2;
+         return _startValueDTOs.HasAtLeastTwoDistinctValues(pathElementIndex);
       }
 
-      protected virtual void RefreshDTO(TStartValueDTO startValueDTO, IFormula newValue, TStartValue startValue)
-      {
-         if (newValue != null)
-         {
-            var explicitFormula = newValue as ExplicitFormula;
-            if (explicitFormula != null)
-               startValueDTO.Formula = new StartValueFormulaDTO(explicitFormula);
-         }
-         else
-         {
-            startValueDTO.Formula = new EmptyFormulaDTO();
-         }
-      }
-
-      public void HandleBuildingBlockEvent(StartValueBuildingBlockEvent eventToHandle)
+      public void HandleBuildingBlockEvent(BuildingBlockEvent eventToHandle)
       {
          if (IsLatched) return;
          if (!Equals(_buildingBlock, eventToHandle.BuildingBlock))

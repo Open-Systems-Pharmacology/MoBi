@@ -10,7 +10,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IStartValuesTask<TBuildingBlock, in TStartValue> : IInteractionTasksForBuildingBlock<TBuildingBlock>
+   public interface IStartValuesTask<TBuildingBlock, in TStartValue> : IInteractionTasksForBuildingBlock<TBuildingBlock>, IInteractionTaskForPathAndValueEntity<TBuildingBlock, TStartValue>
       where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
       where TStartValue : class, IStartValue
    {
@@ -40,7 +40,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="startValue">The start value being updated</param>
       /// <param name="formula">The new formula</param>
       /// <returns>The command used to execute the update</returns>
-      IMoBiCommand ChangeStartValueFormulaCommand(TBuildingBlock startValues, TStartValue startValue, IFormula formula);
+      IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock startValues, TStartValue startValue, IFormula formula);
 
       /// <summary>
       ///    Modifies the value of the StartValue
@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="unit">The new unit of the start value</param>
       /// <param name="startValues">The start value building block that the start value is a member of</param>
       /// <returns>The command used to modify the start value</returns>
-      IMoBiCommand SetStartDisplayValueWithUnit(TStartValue startValue, double? newDisplayValue, Unit unit, TBuildingBlock startValues);
+      IMoBiCommand SetDisplayValueWithUnit(TStartValue startValue, double? newDisplayValue, Unit unit, TBuildingBlock startValues);
 
       /// <summary>
       ///    Returns a command that can be used to remove the start values contained in <paramref name="startValue"/> from <paramref name="buildingBlock"/>
@@ -119,37 +119,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// Sets the value of a start value
       /// </summary>
       /// <param name="buildingBlock">The building block that contains the start value</param>
-      /// <param name="valueInDisplayUnit">The new value in display units</param>
-      /// <param name="startValue">The start value being modified</param>
-      /// <returns>The command used to modify the start value</returns>
-      IMoBiCommand SetValue(TBuildingBlock buildingBlock, double? valueInDisplayUnit, TStartValue startValue);
-
-      /// <summary>
-      /// Sets the value of a start value
-      /// </summary>
-      /// <param name="buildingBlock">The building block that contains the start value</param>
       /// <param name="valueOrigin">The new value origin</param>
       /// <param name="startValue">The start value being modified</param>
       /// <returns>The command used to modify the start value</returns>
       ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TStartValue startValue);
 
-      /// <summary>
-      /// Sets the display unit of a start value
-      /// </summary>
-      /// <param name="buildingBlock">The building block that contains the start value</param>
-      /// <param name="startValue">The start value being modified</param>
-      /// <param name="newUnit">The new display unit</param>
-      /// <returns>The command used to modify the start value</returns>
-      IMoBiCommand SetUnit(TBuildingBlock buildingBlock, TStartValue startValue, Unit newUnit);
 
-      /// <summary>
-      /// Sets the formula for a start value
-      /// </summary>
-      /// <param name="buildingBlock">The building block that contains the start value</param>
-      /// <param name="startValue">The start value being modified</param>
-      /// <param name="formula">The new formula for the start value</param>
-      /// <returns>The command used to modify the start value</returns>
-      IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TStartValue startValue, IFormula formula);
 
       /// <summary>
       /// Determines whether the source for the building block can be resolved

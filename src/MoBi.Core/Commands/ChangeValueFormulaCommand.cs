@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
@@ -8,22 +7,21 @@ using MoBi.Core.Helper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using static System.String;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeStartValueFormulaCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock> where T : class, IStartValue
+   public class ChangeValueFormulaCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : class, IObjectBase, IUsingFormula, IStartValue
    {
       private readonly string _objectBaseId;
       private readonly string _newFormulaId;
       private readonly string _oldFormulaId;
       protected IFormula _newFormula;
       protected IFormula _oldFormula;
-      protected IStartValuesBuildingBlock<T> _startValuesBuildingBlock;
       protected T _changedStartValue;
-      public IObjectPath Path { get; set; }
+      protected IObjectPath Path { get; set; }
 
-
-      public ChangeStartValueFormulaCommand(IStartValuesBuildingBlock<T> buildingBlock, T startValue, IFormula newFormula, IFormula oldFormula): base(buildingBlock)
+      public ChangeValueFormulaCommand(IBuildingBlock<T> buildingBlock, T startValue, IFormula newFormula, IFormula oldFormula): base(buildingBlock)
       {
          _newFormula = newFormula;
          _oldFormula = oldFormula;
@@ -42,7 +40,7 @@ namespace MoBi.Core.Commands
 
       protected string GetFormulaId(IFormula formula)
       {
-         return formula == null ? String.Empty : formula.Id;
+         return formula == null ? Empty : formula.Id;
       }
 
       protected IFormula GetFormula(string formulaId, IMoBiContext context)
@@ -50,11 +48,16 @@ namespace MoBi.Core.Commands
          return formulaId.IsNotEmpty() ? context.Get<IFormula>(formulaId) : null;
       }
 
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new ChangeValueFormulaCommand<T>(_buildingBlock, _changedStartValue, _oldFormula, _newFormula).AsInverseFor(this);
+      }
+
       protected override void ClearReferences()
       {
          base.ClearReferences();
          _changedStartValue = null;
-         _startValuesBuildingBlock = null;
+         _buildingBlock = null;
          _newFormula = null;
          _oldFormula = null;
       }
@@ -66,16 +69,14 @@ namespace MoBi.Core.Commands
          Path = _changedStartValue.Path;
       }
 
-      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
-      {
-         return new ChangeStartValueFormulaCommand<T>(_startValuesBuildingBlock, _changedStartValue, _oldFormula, _newFormula).AsInverseFor(this);
-      }
+      // protected abstract IObjectPath PathFrom(T changedStartValue);
+
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _startValuesBuildingBlock = context.Get<IStartValuesBuildingBlock<T>>(_objectBaseId);
-         _changedStartValue = _startValuesBuildingBlock.Single(startValue => startValue.Path.Equals(Path));
+         _buildingBlock = context.Get<IBuildingBlock<T>>(_objectBaseId);
+         _changedStartValue = _buildingBlock.Single(startValue => startValue.Path.Equals(Path));
          _oldFormula = GetFormula(_oldFormulaId, context);
          _newFormula = GetFormula(_newFormulaId, context);
       }

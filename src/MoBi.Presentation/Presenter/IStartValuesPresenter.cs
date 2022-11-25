@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
       void HideLegend();
       void HideDeleteColumn();
 
-      IEnumerable<StartValueFormulaDTO> AllFormulas();
+      IEnumerable<ValueFormulaDTO> AllFormulas();
 
       /// <summary>
       ///    Checks if the color corresponds to Modified or Extended colors

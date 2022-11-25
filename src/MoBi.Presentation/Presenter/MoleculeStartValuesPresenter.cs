@@ -55,8 +55,9 @@ namespace MoBi.Presentation.Presenter
          IMoleculeStartValuesCreator msvCreator,
          IMoBiContext context,
          ILegendPresenter legendPresenter,
-         IDeleteStartValuePresenter deleteStartValuePresenter)
-         : base(view, startValueMapper, refreshStartValuesPresenter, moleculeStartValuesTask, msvCreator, context, legendPresenter, deleteStartValuePresenter)
+         IDeleteStartValuePresenter deleteStartValuePresenter,
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
+         : base(view, startValueMapper, refreshStartValuesPresenter, moleculeStartValuesTask, msvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper)
       {
          _moleculeStartValuesTask = moleculeStartValuesTask;
          isPresentSelectionPresenter.ApplySelectionAction = performIsPresentAction;
@@ -68,8 +69,7 @@ namespace MoBi.Presentation.Presenter
       public override void AddNewFormula(MoleculeStartValueDTO moleculeStartValueDTO)
       {
          var startValue = StartValueFrom(moleculeStartValueDTO);
-         AddCommand(_moleculeStartValuesTask.AddNewFormulaAtMoleculeStartValueBuildingBlock<ExplicitFormula>(_buildingBlock, startValue));
-         RefreshDTO(moleculeStartValueDTO, startValue.Formula, startValue);
+         AddNewFormula(moleculeStartValueDTO, startValue);
       }
 
       public void SetScaleDivisor(MoleculeStartValueDTO dto, double newScaleDivisor)

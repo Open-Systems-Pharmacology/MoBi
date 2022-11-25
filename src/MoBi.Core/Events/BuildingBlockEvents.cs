@@ -2,17 +2,17 @@
 
 namespace MoBi.Core.Events
 {
-   public class StartValueBuildingBlockEvent
+   public class BuildingBlockEvent
    {
-      public IBuildingBlock BuildingBlock { get; private set; }
+      public IBuildingBlock BuildingBlock { get; }
 
-      public StartValueBuildingBlockEvent(IBuildingBlock buildingBlock)
+      public BuildingBlockEvent(IBuildingBlock buildingBlock)
       {
          BuildingBlock = buildingBlock;
       }
    }
 
-   public class StartValuesBuildingBlockChangedEvent : StartValueBuildingBlockEvent
+   public class StartValuesBuildingBlockChangedEvent : BuildingBlockEvent
    {
       public StartValuesBuildingBlockChangedEvent(IBuildingBlock buildingBlock)
          : base(buildingBlock)

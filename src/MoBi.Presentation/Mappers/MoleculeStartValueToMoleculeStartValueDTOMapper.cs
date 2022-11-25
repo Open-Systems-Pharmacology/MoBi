@@ -1,6 +1,5 @@
 ﻿using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -17,15 +16,19 @@ namespace MoBi.Presentation.Mappers
 
    public class MoleculeStartValueToMoleculeStartValueDTOMapper : IMoleculeStartValueToMoleculeStartValueDTOMapper
    {
+      private readonly IFormulaToValueFormulaDTOMapper _formulaMapper;
+
+      public MoleculeStartValueToMoleculeStartValueDTOMapper(IFormulaToValueFormulaDTOMapper formulaMapper)
+      {
+         _formulaMapper = formulaMapper;
+      }
       public MoleculeStartValueDTO MapFrom(IMoleculeStartValue moleculeStartValue, IStartValuesBuildingBlock<IMoleculeStartValue> buildingBlock)
       {
          var dto = new MoleculeStartValueDTO(moleculeStartValue, buildingBlock)
          {
             ContainerPath = moleculeStartValue.ContainerPath,
+            Formula = _formulaMapper.MapFrom(moleculeStartValue.Formula)
          };
-
-         var formula = moleculeStartValue.Formula as ExplicitFormula;
-         dto.Formula = formula != null ? new StartValueFormulaDTO(formula) : new EmptyFormulaDTO();
          return dto;
       }
    }

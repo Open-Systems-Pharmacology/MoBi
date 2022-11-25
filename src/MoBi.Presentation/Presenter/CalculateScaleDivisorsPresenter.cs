@@ -9,6 +9,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -121,10 +122,8 @@ namespace MoBi.Presentation.Presenter
 
       public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
       {
-         var allValuesForPathElement = _scaleDivisors.Select(x => x.PathElementByIndex(pathElementIndex)).Distinct().ToList();
-         return allValuesForPathElement.Count >= 2;
+         return _scaleDivisors.HasAtLeastTwoDistinctValues(pathElementIndex);
       }
-
       public async Task StartScaleDivisorsCalculation()
       {
          try

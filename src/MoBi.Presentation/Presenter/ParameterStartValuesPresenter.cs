@@ -40,8 +40,9 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IDisplayUnitRetriever displayUnitRetriever,
          ILegendPresenter legendPresenter,
-         IDeleteStartValuePresenter deleteStartValuePresenter)
-         : base(view, startValueMapper, refreshStartValuesPresenter, parameterStartValuesTask, csvCreator, context, legendPresenter, deleteStartValuePresenter)
+         IDeleteStartValuePresenter deleteStartValuePresenter, 
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
+         : base(view, startValueMapper, refreshStartValuesPresenter, parameterStartValuesTask, csvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper)
       {
          _parameterStartValuesTask = parameterStartValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
@@ -52,8 +53,7 @@ namespace MoBi.Presentation.Presenter
       public override void AddNewFormula(ParameterStartValueDTO parameterStartValueDTO)
       {
          var parameterStartValue = StartValueFrom(parameterStartValueDTO);
-         AddCommand(_parameterStartValuesTask.AddNewFormulaAtParameterStartValueBuildingBlock<ExplicitFormula>(_buildingBlock, parameterStartValue));
-         RefreshDTO(parameterStartValueDTO, parameterStartValue.Formula, parameterStartValue);
+         AddNewFormula(parameterStartValueDTO, parameterStartValue);
       }
 
       public void UpdateDimension(ParameterStartValueDTO startValueObject, IDimension newDimension)
@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Presenter
          var value = startValue.ConvertToDisplayUnit(startValue.StartValue);
 
          macroCommand.AddCommand(_parameterStartValuesTask.UpdateStartValueDimension(_buildingBlock, startValue, newDimension));
-         macroCommand.AddCommand(_parameterStartValuesTask.SetStartDisplayValueWithUnit(startValue, value, _displayUnitRetriever.PreferredUnitFor(startValue), _buildingBlock));
+         macroCommand.AddCommand(_parameterStartValuesTask.SetDisplayValueWithUnit(startValue, value, _displayUnitRetriever.PreferredUnitFor(startValue), _buildingBlock));
 
          AddCommand(macroCommand);
       }

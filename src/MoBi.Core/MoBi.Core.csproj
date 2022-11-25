@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="OSPSuite.Presentation\Presenters\" />
     <Folder Include="Properties\" />
     <Folder Include="Serialization\Converter\v11\" />
   </ItemGroup>

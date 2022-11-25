@@ -138,6 +138,9 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<ParameterIdentificationFeedback>())
             return Start<IParameterIdentificationFeedbackPresenter>();
 
+         if (subject.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
+            return Start<IEditExpressionProfileBuildingBlockPresenter>();
+
          throw new ArgumentException(AppConstants.Exceptions.UnknownProjectItem(subject.GetType()));
       }
    }

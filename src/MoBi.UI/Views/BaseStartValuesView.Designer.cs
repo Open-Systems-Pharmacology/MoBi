@@ -1,9 +1,11 @@
 ﻿using OSPSuite.UI.Controls;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.UI.Views
 {
-   partial class BaseStartValuesView<TStartValue>
+   partial class BaseStartValuesView<TStartValue,T> 
    {
       /// <summary> 
       /// Required designer variable.

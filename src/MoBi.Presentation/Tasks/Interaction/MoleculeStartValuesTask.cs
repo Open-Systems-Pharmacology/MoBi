@@ -27,16 +27,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetIsPresent(IMoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<IMoleculeStartValue> startValues, bool isPresent);
 
       IMoBiCommand SetNegativeValuesAllowed(IMoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<IMoleculeStartValue> startValues, bool negativeValuesAllowed);
-
-      /// <summary>
-      ///    Adds a new formula to the building block formula cache and assigns it to the start value
-      /// </summary>
-      /// <typeparam name="T">The type of formula being created</typeparam>
-      /// <param name="buildingBlock">The building block that has the formula added and contains the start value</param>
-      /// <param name="moleculeStartValue">the start value being updated with a new formula</param>
-      /// <returns>The command used to modify the building block and start value</returns>
-      ICommand<IMoBiContext> AddNewFormulaAtMoleculeStartValueBuildingBlock<T>(IMoleculeStartValuesBuildingBlock buildingBlock, IMoleculeStartValue moleculeStartValue);
-
+      
       /// <summary>
       ///    Updates the scale divisor for a start value
       /// </summary>
@@ -142,18 +133,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateMoleculeStartValueNegativeValuesAllowedCommand(moleculeStartValues, msv, negativeValuesAllowed).Run(Context);
       }
 
-      public ICommand<IMoBiContext> AddNewFormulaAtMoleculeStartValueBuildingBlock<T>(IMoleculeStartValuesBuildingBlock buildingBlock, IMoleculeStartValue moleculeStartValue)
+      public ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(IMoleculeStartValuesBuildingBlock buildingBlock, IMoleculeStartValue moleculeStartValue)
       {
-         var macroCommand = new MoBiMacroCommand
-         {
-            CommandType = AppConstants.Commands.EditCommand,
-            ObjectType = _interactionTaskContext.GetTypeFor(moleculeStartValue),
-            Description = AppConstants.Commands.SetStartValueAndFormula
-         };
-
-         macroCommand.Add(AddFormulaToFormulaCacheAndSetOnStartValue<ExplicitFormula>(buildingBlock, moleculeStartValue, referenceParameter: null));
-
-         return macroCommand;
+         return AddNewFormulaAtBuildingBlock(buildingBlock, moleculeStartValue, referenceParameter: null);
       }
 
       public override IMoBiCommand AddStartValueToBuildingBlock(IMoleculeStartValuesBuildingBlock buildingBlock, IMoleculeStartValue moleculeStartValue)
@@ -209,12 +191,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             if (!HasEquivalentStartValue(startValue, originalStartValue))
             {
-               macroCommand.Add(SetStartValueWithUnit(startValue, originalStartValue, originalUnit, buildingBlock));
+               macroCommand.Add(SetValueWithUnit(startValue, originalStartValue, originalUnit, buildingBlock));
             }
 
             if (!HasEquivalentFormula(startValue, moleculeBuilder.DefaultStartFormula))
             {
-               macroCommand.Add(ChangeStartValueFormulaCommand(buildingBlock, startValue,
+               macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, startValue,
                   moleculeBuilder.DefaultStartFormula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(moleculeBuilder.DefaultStartFormula, buildingBlock.FormulaCache)));
             }
          });

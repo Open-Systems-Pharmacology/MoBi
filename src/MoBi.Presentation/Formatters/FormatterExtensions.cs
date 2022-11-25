@@ -7,12 +7,17 @@ namespace MoBi.Presentation.Formatters
    {
       public static IFormatter<double?> MoleculeStartValueFormatter(this MoleculeStartValueDTO moleculeStartValueDTO)
       {
-         return new StartValueFormatter(moleculeStartValueDTO);
+         return new ValueAllowingNaNFormatter(moleculeStartValueDTO);
       }
 
       public static IFormatter<double?> ParameterStartValueFormatter(this ParameterStartValueDTO parameterStartValueDTO)
       {
-         return new StartValueFormatter(parameterStartValueDTO);
+         return new ValueAllowingNaNFormatter(parameterStartValueDTO);
+      }
+
+      public static IFormatter<double?> ExpressionParameterFormatter(this ExpressionParameterDTO expressionParameterDTO)
+      {
+         return new ValueAllowingNaNFormatter(expressionParameterDTO);
       }
 
       public static IFormatter<double> ValuePointXFormatter(this DTOValuePoint dtoValuePoint)
