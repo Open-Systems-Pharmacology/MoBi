@@ -20,11 +20,12 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.FuncParser;
 using OSPSuite.Infrastructure.Export;
 using OSPSuite.Infrastructure.Import;
-using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Infrastructure.Reporting;
+using OSPSuite.Infrastructure.Serialization;
+using OSPSuite.Infrastructure.Serialization.ORM.History;
+using OSPSuite.TeXReporting;
 using OSPSuite.Utility.Container;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using ReportingRegister = OSPSuite.TeXReporting.ReportingRegister;
 
 namespace MoBi.Core
 {
@@ -92,11 +93,14 @@ namespace MoBi.Core
          registerCommitTasks(container);
 
          registerConverters(container);
+
+         // Temporary registration while Core components reside in MoBi
+         container.AddRegister(x => x.FromType<MoBiRegisterOfCore>());
       }
 
       private void registerSerializers(IContainer container)
       {
-         container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.Serialization.InfrastructureSerializationRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureSerializationRegister>());
       }
 
       private void registerImporter(IContainer container)
@@ -114,7 +118,7 @@ namespace MoBi.Core
          {
             scan.AssemblyContainingType<CoreRegister>();
             scan.IncludeNamespaceContainingType<ProjectReporter>();
-           scan.WithConvention<ReporterRegistrationConvention>();
+            scan.WithConvention<ReporterRegistrationConvention>();
          });
       }
 
