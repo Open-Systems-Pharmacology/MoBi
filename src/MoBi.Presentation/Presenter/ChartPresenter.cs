@@ -321,9 +321,9 @@ namespace MoBi.Presentation.Presenter
       private void replaceSimulationRepositories(IReadOnlyCollection<DataRepository> dataRepositories)
       {
          var repositoriesToRemove = _dataRepositoryCache.Keys.Except(dataRepositories).ToList();
-         var simulationsToRemove = _dataRepositoryCache.KeyValues.Where(x => repositoriesToRemove.Contains(x.Key)).Select(x => x.Value);
+         var simulationsToRemove = _dataRepositoryCache.KeyValues.Where(x => repositoriesToRemove.Contains(x.Key)).Select(x => x.Value).ToList();
          repositoriesToRemove.Each(_dataRepositoryCache.Remove);
-         //simulationsToRemove.Each(simulation => ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings));
+         simulationsToRemove.Each(simulation => ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings));
 
          addDataRepositoriesToDataRepositoryCache(dataRepositories);
 
