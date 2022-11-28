@@ -284,8 +284,7 @@ namespace MoBi.Presentation.Repositories
             .WithId(MenuBarItemIds.LoadExpressionProfile)
             .WithDescription(ToolTips.BuildingBlockExpressionProfile.LoadExpressionProfile)
             .WithIcon(ApplicationIcons.PKMLLoad)
-            //.WithCommand<LoadExpressionProfileUICommand>();
-            .WithCommand<AddExistingCommandFor<IMoBiProject, ExpressionProfileBuildingBlock>>();
+            .WithCommand<LoadExpressionProfileUICommand>();
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadMoleculeFromTemplate)
            .WithId(MenuBarItemIds.LoadMoleculeFromTemplate)

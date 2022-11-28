@@ -2,9 +2,6 @@
 using MoBi.Assets;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Settings;
-using MoBi.Presentation.UICommand;
-using NPOI.POIFS.Properties;
-using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
