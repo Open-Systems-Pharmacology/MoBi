@@ -45,7 +45,7 @@ namespace MoBi.Core.Commands
 
          base.ExecuteWith(context);
 
-         var bbInfoUpdater = context.Resolve<IBuilingBlockReferenceUpdater>();
+         var bbInfoUpdater = context.Resolve<IBuildingBlockReferenceUpdater>();
          bbInfoUpdater.UpdateTemplateReference(context.CurrentProject, newTemplateBuildingBlock);
 
          //increment the version of the template building block to be the version of the swapped building block +1

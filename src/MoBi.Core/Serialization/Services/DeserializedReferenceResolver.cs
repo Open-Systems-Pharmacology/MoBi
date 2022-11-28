@@ -1,10 +1,10 @@
-﻿using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.Services
 {
@@ -15,13 +15,13 @@ namespace MoBi.Core.Serialization.Services
 
    public class DeserializedReferenceResolver : IDeserializedReferenceResolver
    {
-      private readonly IBuilingBlockReferenceUpdater _builingBlockReferenceUpdater;
+      private readonly IBuildingBlockReferenceUpdater _buildingBlockReferenceUpdater;
       private readonly IReferencesResolver _referencesResolver;
       private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
 
-      public DeserializedReferenceResolver(IBuilingBlockReferenceUpdater builingBlockReferenceUpdater, IReferencesResolver referencesResolver, ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater)
+      public DeserializedReferenceResolver(IBuildingBlockReferenceUpdater buildingBlockReferenceUpdater, IReferencesResolver referencesResolver, ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater)
       {
-         _builingBlockReferenceUpdater = builingBlockReferenceUpdater;
+         _buildingBlockReferenceUpdater = buildingBlockReferenceUpdater;
          _referencesResolver = referencesResolver;
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
       }
@@ -31,7 +31,7 @@ namespace MoBi.Core.Serialization.Services
          if (deserializedObject.IsAnImplementationOf<IMoBiProject>())
          {
             var deserializedProject = deserializedObject.DowncastTo<IMoBiProject>();
-            _builingBlockReferenceUpdater.UpdateTemplatesReferencesIn(deserializedProject);
+            _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(deserializedProject);
          }
          else if (deserializedObject.IsAnImplementationOf<IMoBiSimulation>())
          {
@@ -41,16 +41,28 @@ namespace MoBi.Core.Serialization.Services
          else if (deserializedObject.IsAnImplementationOf<SimulationTransfer>())
          {
             var simulationTransfer = deserializedObject.DowncastTo<SimulationTransfer>();
-            resolveReferences(simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>());
+            var simulation = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
+            updateOutputMappings(simulation, simulationTransfer.OutputMappings);
+            resolveReferences(simulation);
          }
          else if (deserializedObject.IsAnImplementationOf<IMoBiBuildConfiguration>())
          {
-            _builingBlockReferenceUpdater.UpdateTemplatesReferencesIn(deserializedObject.DowncastTo<IMoBiBuildConfiguration>(), project);
+            _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(deserializedObject.DowncastTo<IMoBiBuildConfiguration>(), project);
          }
          else if (deserializedObject.IsAnImplementationOf<IModel>())
          {
             resolveReferences(deserializedObject.DowncastTo<IModel>());
          }
+      }
+
+      private void updateOutputMappings(IMoBiSimulation simulation, OutputMappings outputMappings)
+      {
+         if (outputMappings == null)
+            return;
+
+         simulation.OutputMappings = outputMappings;
+         //It is required to update the references as the simulation created may have another reference as the one deserialized
+         outputMappings.Each(x => x.UpdateSimulation(simulation));
       }
 
       private void resolveReferences(IMoBiSimulation simulation)

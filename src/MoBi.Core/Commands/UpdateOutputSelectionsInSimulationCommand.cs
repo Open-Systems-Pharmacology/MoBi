@@ -3,6 +3,7 @@ using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Assets;
+using OSPSuite.Core.Events;
 
 namespace MoBi.Core.Commands
 {
@@ -34,6 +35,8 @@ namespace MoBi.Core.Commands
          _oldOutputSelections = _simulation.OutputSelections;
          _simulation.SimulationSettings.OutputSelections = _outputSelections;
          Description = AppConstants.Commands.UpdateOutputSelectionInSimulationDescription(_simulation.Name);
+
+         context.PublishEvent(new SimulationOutputSelectionsChangedEvent(_simulation));
       }
    }
 }

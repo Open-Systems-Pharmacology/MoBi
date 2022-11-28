@@ -132,13 +132,11 @@ namespace MoBi.Presentation.Presenter
          _favoritesPresenter.Edit(_simulation);
          _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
-         _simulationOutputMappingPresenter.SetSimulation(simulation);
+         _simulationOutputMappingPresenter.EditSimulation(simulation);
          UpdateCaption();
          _view.Display();
          loadChart();
-         _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
-         _simulationResidualVsTimeChartPresenter.UpdateAnalysisBasedOn(_simulation);
-      }
+     }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
       {
@@ -158,29 +156,37 @@ namespace MoBi.Presentation.Presenter
 
       private void loadChart()
       {
-         if (_simulationPredictedVsObservedChartPresenter.Chart == null)
-         {
-            var chart = _chartFactory.Create<SimulationPredictedVsObservedChart>();
-            _simulationPredictedVsObservedChartPresenter.InitializeAnalysis(chart, _simulation);
-         }
-
-         if (_simulationResidualVsTimeChartPresenter.Chart == null)
-         {
-            var chart = _chartFactory.Create<SimulationResidualVsTimeChart>();
-            _simulationResidualVsTimeChartPresenter.InitializeAnalysis(chart, _simulation);
-         }
-
          CurveChartTemplate defaultTemplate = null;
 
          var data = new List<DataRepository>();
          if (_simulation.ResultsDataRepository != null)
             data.Add(_simulation.ResultsDataRepository);
 
+
+         //This whole initialization of Chart in presenter is really ugly.
+         //It's done like this now so that we can release 11.1 but should be done like in PK-Sim (multiple chart per simulation, added dynamically)
          if (_simulation.Chart == null)
          {
             _simulation.Chart = _chartFactory.Create<CurveChart>().WithAxes();
             _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);
          }
+
+         if (_simulation.PredictedVsObservedChart == null) 
+            _simulation.PredictedVsObservedChart = _chartFactory.Create<SimulationPredictedVsObservedChart>();
+
+         if(_simulationPredictedVsObservedChartPresenter.Chart == null)
+            _simulationPredictedVsObservedChartPresenter.InitializeAnalysis(_simulation.PredictedVsObservedChart, _simulation);  
+         else
+            _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
+
+         if (_simulation.ResidualVsTimeChart == null) 
+            _simulation.ResidualVsTimeChart = _chartFactory.Create<SimulationResidualVsTimeChart>();
+
+         if (_simulationResidualVsTimeChartPresenter.Chart == null) 
+            _simulationResidualVsTimeChartPresenter.InitializeAnalysis(_simulation.ResidualVsTimeChart, _simulation);
+         else
+            _simulationResidualVsTimeChartPresenter.UpdateAnalysisBasedOn(_simulation);
+
 
          // Whether or not the chart is new, if it has no curves
          // we apply the simulation default template
@@ -188,8 +194,6 @@ namespace MoBi.Presentation.Presenter
             defaultTemplate = _simulation.DefaultChartTemplate;
 
          addObservedDataRepositories(data, _simulation.Chart.Curves);
-         _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
-         _simulationResidualVsTimeChartPresenter.UpdateAnalysisBasedOn(_simulation);
          _chartPresenter.Show(_simulation.Chart, data, defaultTemplate);
       }
 

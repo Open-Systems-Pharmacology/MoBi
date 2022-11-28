@@ -66,7 +66,6 @@ namespace MoBi.Presentation.Tasks
             if (outputSelections == null)
                return;
 
-
             updateOutputSelectionInSimulation(simulation, outputSelections);
          }
 
