@@ -41,6 +41,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId LoadMolecule = createMenuBarItemId("LoadMolecule");
       public static MenuBarItemId LoadMoleculeFromTemplate = createMenuBarItemId("LoadMoleculeFromTemplate");
       public static MenuBarItemId AddPKSimMolecule = createMenuBarItemId("AddPKSimMolecule");
+      public static MenuBarItemId LoadExpressionProfile = createMenuBarItemId("LoadExpressionProfile");
       public static MenuBarItemId NewReaction = createMenuBarItemId("NewReaction");
       public static MenuBarItemId LoadReaction = createMenuBarItemId("LoadReaction");
       public static MenuBarItemId LoadReactionFromTemplate = createMenuBarItemId("LoadReactionFromTemplate");

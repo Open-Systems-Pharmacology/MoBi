@@ -260,6 +260,7 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.FitToPage].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadObservedData].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.LoadExpressionProfile].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.MoleculeStartValuesExtend].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ParameterStartValuesExtend].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.Merge].Enabled = enabled;
