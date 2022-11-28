@@ -23,6 +23,7 @@ namespace MoBi.Presentation.Presenter
          : base(chartView, chartPresenterContext, context, userSettings,  chartTemplatingTask, chartUpdater, OutputMappingMatchingTask)
       {
          _curveNamer = curveNamer;
+         ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
       }
 
       protected override bool CanDropSimulation => false;
