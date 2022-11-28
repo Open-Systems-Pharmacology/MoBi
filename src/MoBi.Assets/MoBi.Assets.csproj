@@ -26,9 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="11.1.65-wqtsahcc" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="11.1.65-wqtsahcc" />
-    <PackageReference Include="OSPSuite.Core" Version="11.1.65-wqtsahcc" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.1.65-ikjtreet" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="11.1.65-ikjtreet" />
+    <PackageReference Include="OSPSuite.Core" Version="11.1.65-ikjtreet" />
   </ItemGroup>
 
   <ItemGroup>
