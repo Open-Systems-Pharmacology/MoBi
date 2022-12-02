@@ -182,6 +182,9 @@ namespace MoBi.Presentation.Presenter.Main
          if (buildingBlock.IsAnImplementationOf<SimulationSettings>())
             return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.SimulationSettingsFolder);
 
+         if (buildingBlock.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
+            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.ExpressionProfilesFolder);
+         
          throw new ArgumentOutOfRangeException();
       }
 

@@ -1,4 +1,5 @@
 ﻿using OSPSuite.Core.Comparison;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Container;
 
 namespace OSPSuite.Core
