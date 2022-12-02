@@ -25,6 +25,15 @@ namespace MoBi.Presentation.DTO
          FormulaPropertyName = MoBiReflectionHelper.PropertyName<IStartValue>(x => x.Formula);
       }
 
+      public string Name
+      {
+         get => StartValueObject.Name;
+         set
+         {
+            // We don't want the binding to set the value in the underlying object, only the command should do that
+         }
+      }
+
       public IDimension Dimension
       {
          get => StartValueObject.Dimension;
