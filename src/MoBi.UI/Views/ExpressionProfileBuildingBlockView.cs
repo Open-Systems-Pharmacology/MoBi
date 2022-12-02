@@ -54,8 +54,8 @@ namespace MoBi.UI.Views
          tbMoleculeName.Enabled = false;
          tbCategory.Enabled = false;
 
-         lblSpecies.Text = OSPSuite.Core.Assets.Captions.Species.FormatForLabel();
-         lblCategory.Text = OSPSuite.Core.Assets.Captions.Category.FormatForLabel();
+         lblSpecies.Text = Captions.Species.FormatForLabel();
+         lblCategory.Text = Captions.Category.FormatForLabel();
       }
 
       private void hideEditor()

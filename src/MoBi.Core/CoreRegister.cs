@@ -93,9 +93,6 @@ namespace MoBi.Core
          registerCommitTasks(container);
 
          registerConverters(container);
-
-         // Temporary registration while Core components reside in MoBi
-         container.AddRegister(x => x.FromType<MoBiRegisterOfCore>());
       }
 
       private void registerSerializers(IContainer container)
