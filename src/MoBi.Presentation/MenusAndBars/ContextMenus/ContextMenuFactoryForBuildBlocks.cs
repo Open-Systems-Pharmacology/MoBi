@@ -11,6 +11,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -61,6 +62,25 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
          return viewItem.IsAnImplementationOf<IRootViewItem<TChild>>();
+      }
+   }
+
+   public class RootContextMenuFactoryForExpressionProfileBuildingBlock : RootNodeContextMenuFactoryFor<ExpressionProfileBuildingBlock>
+   {
+      public RootContextMenuFactoryForExpressionProfileBuildingBlock() : base(MoBiRootNodeTypes.ExpressionProfilesFolder)
+      {
+      }
+   }
+
+   public class RootContextMenuForExpressionProfileBuildingBlock : RootContextMenuFor<IMoBiProject, ExpressionProfileBuildingBlock>
+   {
+      public RootContextMenuForExpressionProfileBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context) : base(objectTypeResolver, context)
+      {
+      }
+
+      protected override void CreateAddItems(IMoBiProject parent)
+      {
+         _allMenuItems.Add(CreateAddExistingItemFor(parent));
       }
    }
 

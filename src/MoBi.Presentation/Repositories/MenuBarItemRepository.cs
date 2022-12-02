@@ -280,12 +280,6 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.MoleculeLoad)
             .WithCommand<AddExistingCommandFor<IMoleculeBuildingBlock, IMoleculeBuilder>>();
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadExpressionProfile)
-            .WithId(MenuBarItemIds.LoadExpressionProfile)
-            .WithDescription(ToolTips.BuildingBlockExpressionProfile.LoadExpressionProfile)
-            .WithIcon(ApplicationIcons.PKMLLoad)
-            .WithCommand<AddExistingCommandFor<IMoBiProject, ExpressionProfileBuildingBlock>>();
-
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadMoleculeFromTemplate)
            .WithId(MenuBarItemIds.LoadMoleculeFromTemplate)
            .WithDescription(ToolTips.BuildingBlockMolecule.LoadMolecule)
