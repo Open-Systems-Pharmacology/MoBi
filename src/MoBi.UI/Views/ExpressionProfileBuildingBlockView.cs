@@ -70,6 +70,9 @@ namespace MoBi.UI.Views
 
       private void initializeBinders()
       {
+         _gridViewBinder.AutoBind(dto => dto.Name)
+            .WithCaption(ParameterName).AsReadOnly();
+
          initializePathElementColumn(dto => dto.PathElement0, Captions.PathElement(0));
          initializePathElementColumn(dto => dto.PathElement1, Captions.PathElement(1));
          initializePathElementColumn(dto => dto.PathElement2, Captions.PathElement(2));
@@ -80,9 +83,6 @@ namespace MoBi.UI.Views
          initializePathElementColumn(dto => dto.PathElement7, Captions.PathElement(7));
          initializePathElementColumn(dto => dto.PathElement8, Captions.PathElement(8));
          initializePathElementColumn(dto => dto.PathElement9, Captions.PathElement(9));
-
-         _gridViewBinder.AutoBind(dto => dto.Name)
-            .WithCaption(ParameterName).AsReadOnly();
 
          _gridViewBinder.Bind(dto => dto.Value).WithCaption(Value)
             .WithOnValueUpdating(onExpressionParameterValueSet)
