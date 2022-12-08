@@ -3,7 +3,6 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Extensions;
