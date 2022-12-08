@@ -209,9 +209,15 @@ namespace MoBi.Presentation.Presenter
             else
             {
                var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e);
-               addObservedData(droppedObservedData.ToList());
+               addObservedData(droppedObservedData.ToList(), addDataColumnsToEditorPresenter);
+               _chartPresenterContext.Refresh();
             }
          }
+      }
+
+      private void addDataColumnsToEditorPresenter(IEnumerable<DataColumn> dataColumns)
+      {
+         dataColumns.Each(dataColumn => editorPresenter.AddCurveForColumn(dataColumn));
       }
 
       protected abstract bool CanDropSimulation { get; }
@@ -224,11 +230,17 @@ namespace MoBi.Presentation.Presenter
          {
             foreach (var observedDataNodesList in observedData)
             {
-               AddDataRepositoriesToEditor(observedDataNodesList);
-               var columnsToAdd = observedDataNodesList.SelectMany(x => x.ObservationColumns());
-               ChartEditorPresenter.AddCurvesWithSameColorForColumn(columnsToAdd.ToList());
+               addObservedData(observedDataNodesList, dataColumns => editorPresenter.AddCurvesWithSameColorForColumn(dataColumns.ToList()));
             }
          }
+      }
+
+      private void addObservedData(IReadOnlyList<DataRepository> repositories, Action<IEnumerable<DataColumn>> addAction)
+      {
+
+         editorPresenter.AddDataRepositories(repositories);
+         addAction(repositories.SelectMany(x => x.ObservationColumns()));
+         OnObservedDataAddedToChart(this, new ObservedDataAddedToChartEventArgs { AddedDataRepositories = repositories });
       }
 
       private void addHistoricalResults(IReadOnlyList<DataRepository> repositories)
@@ -238,19 +250,13 @@ namespace MoBi.Presentation.Presenter
          repositories.Each(repository => repository.SetPersistable(persistable: true));
       }
 
-      private void addObservedData(IReadOnlyList<DataRepository> repositories)
-      {
-         editorPresenter.AddDataRepositories(repositories);
-         repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => editorPresenter.AddCurveForColumn(observationColumn));
-         OnObservedDataAddedToChart(this, new ObservedDataAddedToChartEventArgs() { AddedDataRepositories = repositories });
-         _chartPresenterContext.Refresh();
-      }
-
       private void addObservedDataIfNeeded(IEnumerable<DataRepository> dataRepositories)
       {
          //curves are already selected. no need to add default selection
-         if (Chart.Curves.Any()) return;
-         addObservedData(dataRepositories.ToList());
+         if (Chart.Curves.Any()) 
+            return;
+         addObservedData(dataRepositories.ToList(), addDataColumnsToEditorPresenter);
+         _chartPresenterContext.Refresh();
       }
 
       protected override void ChartChanged()
