@@ -11,7 +11,7 @@ using static System.String;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeValueFormulaCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : class, IObjectBase, IUsingFormula, IStartValue
+   public class ChangeValueFormulaCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : class, IObjectBase, IUsingFormula, IWithPath
    {
       private readonly string _objectBaseId;
       private readonly string _newFormulaId;

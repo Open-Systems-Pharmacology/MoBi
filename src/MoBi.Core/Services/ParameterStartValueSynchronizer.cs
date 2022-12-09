@@ -27,7 +27,7 @@ namespace MoBi.Core.Services
          if (parameterStartValue == null)
             return;
 
-         parameterStartValue.StartValue = parameter.Value;
+         parameterStartValue.Value = parameter.Value;
          parameterStartValue.Dimension = parameter.Dimension;
          parameterStartValue.DisplayUnit = parameter.DisplayUnit;
       }

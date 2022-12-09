@@ -43,7 +43,7 @@ namespace MoBi.Core.Mappers
          var row = dt.Rows.Add();
          row[_name] = moleculeStartValue.Name;
          row[_path] = moleculeStartValue.ContainerPath;
-         row[_initialValue] = moleculeStartValue.StartValue != null ? (object) moleculeStartValue.ConvertToDisplayUnit(moleculeStartValue.StartValue) : DBNull.Value; 
+         row[_initialValue] = moleculeStartValue.Value != null ? (object) moleculeStartValue.ConvertToDisplayUnit(moleculeStartValue.Value) : DBNull.Value; 
          row[_formula] = moleculeStartValue.Formula ?? (object) String.Empty; 
          row[_unit] = moleculeStartValue.DisplayUnit;
          row[_scaleDivisor] = moleculeStartValue.ScaleDivisor;

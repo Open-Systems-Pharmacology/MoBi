@@ -83,7 +83,7 @@ namespace MoBi.Core.Services
             return;
          }
 
-         var startValue = moleculeStartValue.StartValue.GetValueOrDefault(0);
+         var startValue = moleculeStartValue.Value.GetValueOrDefault(0);
          if (startValue == 0)
             return;
 

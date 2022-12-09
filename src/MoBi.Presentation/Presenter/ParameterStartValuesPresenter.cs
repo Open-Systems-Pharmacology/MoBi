@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
          macroCommand.Description = AppConstants.Commands.UpdateDimensionsAndUnits;
          macroCommand.ObjectType = new ObjectTypeResolver().TypeFor<ParameterStartValue>();
 
-         var value = startValue.ConvertToDisplayUnit(startValue.StartValue);
+         var value = startValue.ConvertToDisplayUnit(startValue.Value);
 
          macroCommand.AddCommand(_parameterStartValuesTask.UpdateStartValueDimension(_buildingBlock, startValue, newDimension));
          macroCommand.AddCommand(_parameterStartValuesTask.SetDisplayValueWithUnit(startValue, value, _displayUnitRetriever.PreferredUnitFor(startValue), _buildingBlock));

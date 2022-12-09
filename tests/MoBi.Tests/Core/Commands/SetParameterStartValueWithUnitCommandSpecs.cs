@@ -4,14 +4,13 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_SetParameterStartValueWithUnitCommandSpecs : ContextSpecification<ValueWithPathEntityValueOrUnitChangedCommand<IParameterStartValue, IParameterStartValuesBuildingBlock>>
+   public abstract class concern_for_SetParameterStartValueWithUnitCommandSpecs : ContextSpecification<PathAndValueEntityValueOrUnitChangedCommand<IParameterStartValue, IParameterStartValuesBuildingBlock>>
    {
       protected IParameterStartValue _psv;
       protected double _newValue =2.2;
@@ -34,7 +33,7 @@ namespace MoBi.Core.Commands
          _psv.Dimension = _dimension;
          A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_oldUnit,_oldValue)).Returns(_oldValue);
          A.CallTo(() => _dimension.UnitValueToBaseUnitValue(_newUnit,_newValue)).Returns(_newValue);
-         sut = new ValueWithPathEntityValueOrUnitChangedCommand<IParameterStartValue, IParameterStartValuesBuildingBlock>(_psv, _newValue, _newUnit, _buildingBlock);
+         sut = new PathAndValueEntityValueOrUnitChangedCommand<IParameterStartValue, IParameterStartValuesBuildingBlock>(_psv, _newValue, _newUnit, _buildingBlock);
       }
    }
 
@@ -60,7 +59,7 @@ namespace MoBi.Core.Commands
       public void should_change_StartValue_and_display_unit_of_the_parameter_start_value()
       {
          _psv.DisplayUnit.ShouldBeEqualTo(_newUnit);
-         _psv.StartValue.ShouldBeEqualTo(_newValue);
+         _psv.Value.ShouldBeEqualTo(_newValue);
       }
 
       [Observation]

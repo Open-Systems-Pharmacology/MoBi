@@ -74,8 +74,8 @@ namespace MoBi.Core.Reporting
             newParameterStartValueRow[Constants.PARAMETER] = levels[levels.Length - 1];
             newParameterStartValueRow[Constants.CONTAINER_PATH] = String.Join("|", levels.Take(levels.Length - 1));
             newParameterStartValueRow[Constants.LEVELS] = levels.Length;
-            if (parameterStartValue.StartValue != null)
-               newParameterStartValueRow[Constants.START_VALUE] = _reportingHelper.ConvertToDisplayUnit(parameterStartValue, parameterStartValue.StartValue);
+            if (parameterStartValue.Value != null)
+               newParameterStartValueRow[Constants.START_VALUE] = _reportingHelper.ConvertToDisplayUnit(parameterStartValue, parameterStartValue.Value);
             newParameterStartValueRow[Constants.UNIT] = _reportingHelper.GetDisplayUnitFor(parameterStartValue);
             newParameterStartValueRow[Constants.FORMULA] = (parameterStartValue.Formula == null) ? (object)DBNull.Value : parameterStartValue.Formula.Name;
             parameterStartValueTable.Rows.Add(newParameterStartValueRow);

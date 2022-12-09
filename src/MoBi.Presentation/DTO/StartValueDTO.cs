@@ -65,7 +65,7 @@ namespace MoBi.Presentation.DTO
          get
          {
             if (Formula == null || Formula.Formula == null)
-               return StartValueObject.ConvertToDisplayUnit(StartValueObject.StartValue);
+               return StartValueObject.ConvertToDisplayUnit(StartValueObject.Value);
             return double.NaN;
          }
          set

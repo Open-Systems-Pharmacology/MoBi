@@ -83,13 +83,13 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void constant_value_should_be_updated_from_template_building_block()
       {
-         _parameterStartValueBuildingBlock[_containerPath.AndAdd("ConstantStartValue")].StartValue.ShouldBeEqualTo(0.4);
+         _parameterStartValueBuildingBlock[_containerPath.AndAdd("ConstantStartValue")].Value.ShouldBeEqualTo(0.4);
       }
 
       [Observation]
       public void start_value_should_be_added_to_building_block_from_template_building_block()
       {
-         _parameterStartValueBuildingBlock[_containerPath.AndAdd("FormulaStartValue")].StartValue.ShouldBeEqualTo(4);
+         _parameterStartValueBuildingBlock[_containerPath.AndAdd("FormulaStartValue")].Value.ShouldBeEqualTo(4);
       }
    }
 
@@ -127,7 +127,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _parameterStartValue.Dimension).Returns(_dimension);
          A.CallTo(() => _parameterStartValue.Name).Returns(_name);
          A.CallTo(() => _parameterStartValue.Formula).Returns(null);
-         A.CallTo(() => _parameterStartValue.StartValue).Returns(1.0);
+         A.CallTo(() => _parameterStartValue.Value).Returns(1.0);
          A.CallTo(() => _parameterStartValue.DisplayUnit).Returns(_parameter.DisplayUnit);
       }
 
@@ -234,9 +234,9 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void value_of_start_values_should_match_commands_issued()
       {
-         _parameterStartValueBuildingBlock[_parameterStartValues[0].Path].StartValue.ShouldBeEqualTo(1.0);
-         _parameterStartValueBuildingBlock[_parameterStartValues[1].Path].StartValue.ShouldBeEqualTo(2.0);
-         _parameterStartValueBuildingBlock[_parameterStartValues[2].Path].StartValue.ShouldBeEqualTo(3.0);
+         _parameterStartValueBuildingBlock[_parameterStartValues[0].Path].Value.ShouldBeEqualTo(1.0);
+         _parameterStartValueBuildingBlock[_parameterStartValues[1].Path].Value.ShouldBeEqualTo(2.0);
+         _parameterStartValueBuildingBlock[_parameterStartValues[2].Path].Value.ShouldBeEqualTo(3.0);
       }
 
       [Observation]

@@ -98,8 +98,8 @@ namespace MoBi.Core.Reporting
             newMoleculeStartValueRow[Constants.MOLECULE_PATH] = moleculeStartValue.Path;
             newMoleculeStartValueRow[Constants.CONTAINER_PATH] = moleculeStartValue.ContainerPath;
             newMoleculeStartValueRow[Constants.MOLECULE_NAME] = moleculeStartValue.MoleculeName;
-            if (moleculeStartValue.StartValue != null)
-               newMoleculeStartValueRow[Constants.START_VALUE] = _reportingHelper.ConvertToDisplayUnit(moleculeStartValue, moleculeStartValue.StartValue);
+            if (moleculeStartValue.Value != null)
+               newMoleculeStartValueRow[Constants.START_VALUE] = _reportingHelper.ConvertToDisplayUnit(moleculeStartValue, moleculeStartValue.Value);
             newMoleculeStartValueRow[Constants.UNIT] = _reportingHelper.GetDisplayUnitFor(moleculeStartValue);
             newMoleculeStartValueRow[Constants.IS_PRESENT] = moleculeStartValue.IsPresent;
             newMoleculeStartValueRow[Constants.SCALE_DIVISOR] = moleculeStartValue.ScaleDivisor;

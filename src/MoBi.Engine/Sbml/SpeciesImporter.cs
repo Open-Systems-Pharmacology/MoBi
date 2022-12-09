@@ -206,7 +206,7 @@ namespace MoBi.Engine.Sbml
                   //unit is set by the Unit of SubstanceUnit
                   if (sbmlSpecies.isSetInitialAmount())
                   {
-                     msv.StartValue = sbmlSpecies.getInitialAmount();
+                     msv.Value = sbmlSpecies.getInitialAmount();
                      if (amountDimension != null)
                      {
                         msv.Dimension = amountDimension;
@@ -217,7 +217,7 @@ namespace MoBi.Engine.Sbml
 
                   //unit is {unit of amount}/{unit of size}
                   var baseValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, sbmlSpecies.getInitialConcentration());
-                  msv.StartValue = baseValue.value;
+                  msv.Value = baseValue.value;
                   msv.Formula = _context.Create<ExplicitFormula>($"{msv.Name}_0").WithName($"{msv.Name}_0").WithDimension(amountDimension).WithFormulaString($"{baseValue.value} * {Constants.VOLUME_ALIAS}");
                   msv.Formula.AddObjectPath(
                      ObjectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, Constants.Parameters.VOLUME)
@@ -232,7 +232,7 @@ namespace MoBi.Engine.Sbml
                else
                {
                   msv.IsPresent = false;
-                  msv.StartValue = 0;
+                  msv.Value = 0;
                }
             }
          }
@@ -350,12 +350,12 @@ namespace MoBi.Engine.Sbml
                if (dummySpecies.Value == msv.ContainerPath.LastOrDefault())
                {
                   msv.IsPresent = true;
-                  msv.StartValue = 0;
+                  msv.Value = 0;
                }
                else
                {
                   msv.IsPresent = false;
-                  msv.StartValue = 0;
+                  msv.Value = 0;
                }
             }
          }

@@ -9,7 +9,7 @@ namespace MoBi.Core.Extensions
       public static string GetStartValueAsDisplayString(this IStartValue startValue)
       {
          return string.Format("{0} {1}",
-            startValue.ConvertToDisplayUnit(startValue.StartValue).ToString(CultureInfo.InvariantCulture),
+            startValue.ConvertToDisplayUnit(startValue.Value).ToString(CultureInfo.InvariantCulture),
             startValue.DisplayUnit
             );
       }   

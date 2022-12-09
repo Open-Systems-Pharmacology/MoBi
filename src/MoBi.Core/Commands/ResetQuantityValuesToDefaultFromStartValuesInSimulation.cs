@@ -57,7 +57,7 @@ namespace MoBi.Core.Commands
          if (startValue.Formula != null)
             return _cloneManagerForModel.Clone(startValue.Formula);
 
-         return _formulaTask.CreateNewFormula<ConstantFormula>(startValue.Dimension).WithValue(startValue.StartValue.GetValueOrDefault(double.NaN));
+         return _formulaTask.CreateNewFormula<ConstantFormula>(startValue.Dimension).WithValue(startValue.Value.GetValueOrDefault(double.NaN));
       }
 
       protected abstract IQuantity QuantityUsedToFindPathFor(IQuantity quantity);

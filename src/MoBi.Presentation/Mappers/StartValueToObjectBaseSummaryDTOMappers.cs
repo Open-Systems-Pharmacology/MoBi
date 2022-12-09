@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Mappers
 
          dto.AddToDictionary(AppConstants.Captions.Type, new ObjectTypeResolver().TypeFor(startValue));
          dto.AddToDictionary(AppConstants.Captions.Path, startValue.Path.ToString());
-         if (startValue.StartValue.HasValue) dto.AddToDictionary(AppConstants.Captions.Value, startValue.GetStartValueAsDisplayString());
+         if (startValue.Value.HasValue) dto.AddToDictionary(AppConstants.Captions.Value, startValue.GetStartValueAsDisplayString());
          if (hasValidFormula(startValue)) dto.AddToDictionary(AppConstants.Captions.Formula, startValue.Formula.ToString());
          dto.AddToDictionary(AppConstants.Captions.Dimension, startValue.Dimension.DisplayName);
          dto.AddToDictionary(AppConstants.Captions.Description, startValue.Description);

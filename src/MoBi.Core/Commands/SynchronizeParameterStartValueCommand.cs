@@ -20,7 +20,7 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         _parameterStartValue.StartValue = _parameter.Value;
+         _parameterStartValue.Value = _parameter.Value;
          _parameterStartValue.Dimension = _parameter.Dimension;
          _parameterStartValue.DisplayUnit = _parameter.DisplayUnit;
          _parameterStartValue.UpdateValueOriginFrom(_parameter.ValueOrigin);

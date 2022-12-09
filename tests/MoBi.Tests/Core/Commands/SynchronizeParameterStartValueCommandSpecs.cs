@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_the_value()
       {
-         _parameterStartValue.StartValue.ShouldBeEqualTo(_parameter.Value);
+         _parameterStartValue.Value.ShouldBeEqualTo(_parameter.Value);
       }
 
       [Observation]

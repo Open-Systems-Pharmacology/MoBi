@@ -39,8 +39,8 @@ namespace MoBi.Presentation
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
 
-         _expressionParameter1 = new ExpressionParameter { Path = new ObjectPath("Path1", "Path2", "Name"), StartValue = 10 };
-         _expressionParameter2 = new ExpressionParameter { Path = new ObjectPath("Path1", "Path3", "Name"), StartValue = 1 };
+         _expressionParameter1 = new ExpressionParameter { Path = new ObjectPath("Path1", "Path2", "Name"), Value = 10 };
+         _expressionParameter2 = new ExpressionParameter { Path = new ObjectPath("Path1", "Path3", "Name"), Value = 1 };
          _buildingBlock = new ExpressionProfileBuildingBlock
          {
             _expressionParameter1,

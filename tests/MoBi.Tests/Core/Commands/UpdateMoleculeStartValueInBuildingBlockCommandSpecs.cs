@@ -55,9 +55,9 @@ namespace MoBi.Core.Commands
       {
          var msv = _buildingBlock[_path];
 
-         if (msv.StartValue == null) return;
+         if (msv.Value == null) return;
 
-         var value = (double)msv.StartValue;
+         var value = (double)msv.Value;
          value.ShouldBeGreaterThanOrEqualTo(0);
          msv.IsPresent.ShouldBeTrue();
          msv.NegativeValuesAllowed.ShouldBeTrue();
@@ -87,9 +87,9 @@ namespace MoBi.Core.Commands
          _buildingBlock.Count().ShouldBeEqualTo(1);
          var msv = _buildingBlock[_path];
 
-         if (msv.StartValue == null) return;
+         if (msv.Value == null) return;
          
-         var startValue = (double)msv.StartValue;
+         var startValue = (double)msv.Value;
          startValue.ShouldBeSmallerThan(0.0 + double.Epsilon);
       }
    }

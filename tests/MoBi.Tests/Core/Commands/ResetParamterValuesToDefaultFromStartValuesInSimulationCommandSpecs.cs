@@ -60,7 +60,7 @@ namespace MoBi.Core.Commands
 
          A.CallTo(() => _cloneManagerForModel.Clone(_psv1.Formula)).Returns(_psv1.Formula);
          _psv2 = new ParameterStartValue {ContainerPath = new ObjectPath("LIVER"), Name="P2"};
-         _psv2.StartValue = 17;
+         _psv2.Value = 17;
 
          _unchangedParameter = new Parameter().WithName("Unchanged").WithFormula(new ConstantFormula(2));
          _p1Parameter = new Parameter().WithName("P1").WithFormula(new ConstantFormula(1));

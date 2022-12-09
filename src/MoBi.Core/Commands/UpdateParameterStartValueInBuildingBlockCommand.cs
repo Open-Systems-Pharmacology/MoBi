@@ -30,8 +30,8 @@ namespace MoBi.Core.Commands
          var psv = _buildingBlock[_path];
          if (psv == null) return;
 
-         _originalValue = psv.StartValue;
-         psv.StartValue = _value;
+         _originalValue = psv.Value;
+         psv.Value = _value;
          Description = AppConstants.Commands.UpdateParameterStartValue(_path, _value, psv.DisplayUnit);
       }
 

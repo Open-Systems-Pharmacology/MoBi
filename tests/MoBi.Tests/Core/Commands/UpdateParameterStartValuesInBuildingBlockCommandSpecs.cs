@@ -49,7 +49,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void start_values_must_be_updated()
       {
-         _buildingBlock.Each(psv => psv.StartValue.Value.ShouldBeGreaterThanOrEqualTo(0));
+         _buildingBlock.Each(psv => psv.Value.Value.ShouldBeGreaterThanOrEqualTo(0));
       }
    }
 
@@ -63,7 +63,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void reverses_updates_to_result_in_original_list()
       {
-         _buildingBlock[_path].StartValue.Value.ShouldBeSmallerThan(0.0 + double.Epsilon);
+         _buildingBlock[_path].Value.Value.ShouldBeSmallerThan(0.0 + double.Epsilon);
       }
    }
 }

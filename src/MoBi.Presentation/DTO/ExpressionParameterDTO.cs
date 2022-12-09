@@ -20,7 +20,7 @@ namespace MoBi.Presentation.DTO
          get
          {
             if (Formula == null || Formula.Formula == null)
-               return ExpressionParameter.ConvertToDisplayUnit(ExpressionParameter.StartValue);
+               return ExpressionParameter.ConvertToDisplayUnit(ExpressionParameter.Value);
             return double.NaN;
          }
       }

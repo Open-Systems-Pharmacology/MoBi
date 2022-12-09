@@ -234,7 +234,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected override IMoBiCommand GetUpdateStartValueInBuildingBlockCommand(IMoleculeStartValuesBuildingBlock startValuesBuildingBlock, ImportedQuantityDTO dto)
       {
          var scaleDisivor = dto.IsScaleDivisorSpecified ? dto.ScaleDivisor : startValuesBuildingBlock[dto.Path].ScaleDivisor;
-         var startValue = dto.IsQuantitySpecified ? dto.QuantityInBaseUnit : startValuesBuildingBlock[dto.Path].StartValue;
+         var startValue = dto.IsQuantitySpecified ? dto.QuantityInBaseUnit : startValuesBuildingBlock[dto.Path].Value;
 
          return new UpdateMoleculeStartValueInBuildingBlockCommand(startValuesBuildingBlock, dto.Path, startValue, dto.IsPresent, scaleDisivor, dto.NegativeValuesAllowed);
       }

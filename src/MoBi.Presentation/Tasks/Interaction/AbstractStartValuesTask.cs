@@ -75,7 +75,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override double? ValueFromBuilder(TStartValue builder)
       {
-         return builder.StartValue;
+         return builder.Value;
       }
 
       /// <summary>
@@ -182,12 +182,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected static bool HasEquivalentStartValue(IStartValue startValue, double? originalStartValue)
       {
          if (!originalStartValue.HasValue)
-            return double.IsNaN(startValue.StartValue.GetValueOrDefault(double.NaN));
+            return double.IsNaN(startValue.Value.GetValueOrDefault(double.NaN));
 
-         if (!startValue.StartValue.HasValue)
+         if (!startValue.Value.HasValue)
             return false;
 
-         return (ValueComparer.AreValuesEqual(originalStartValue.Value, startValue.StartValue.Value));
+         return (ValueComparer.AreValuesEqual(originalStartValue.Value, startValue.Value.Value));
       }
 
       protected static bool HasEquivalentDimension(IWithDimension subject, IWithDimension target)
@@ -281,7 +281,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TStartValue startValue, IFormula formula)
       {
-         var shouldClearValue = startValue.StartValue.HasValue;
+         var shouldClearValue = startValue.Value.HasValue;
 
          return SetFormula(buildingBlock, startValue, formula, shouldClearValue);
       }
@@ -330,7 +330,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override IMoBiCommand SetValueWithUnit(TStartValue startValue, double? newBaseValue, Unit unit, TBuildingBlock startValues)
       {
-         return new ValueWithPathEntityValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
+         return new PathAndValueEntityValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
       }
    }
 }
