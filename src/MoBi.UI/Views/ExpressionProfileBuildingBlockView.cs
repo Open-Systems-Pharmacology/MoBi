@@ -54,8 +54,8 @@ namespace MoBi.UI.Views
          tbMoleculeName.Enabled = false;
          tbCategory.Enabled = false;
 
-         lblSpecies.Text = OSPSuite.Core.Assets.Captions.Species.FormatForLabel();
-         lblCategory.Text = OSPSuite.Core.Assets.Captions.Category.FormatForLabel();
+         lblSpecies.Text = Captions.Species.FormatForLabel();
+         lblCategory.Text = Captions.Category.FormatForLabel();
       }
 
       private void hideEditor()
@@ -70,6 +70,9 @@ namespace MoBi.UI.Views
 
       private void initializeBinders()
       {
+         _gridViewBinder.AutoBind(dto => dto.Name)
+            .WithCaption(ParameterName).AsReadOnly();
+
          initializePathElementColumn(dto => dto.PathElement0, Captions.PathElement(0));
          initializePathElementColumn(dto => dto.PathElement1, Captions.PathElement(1));
          initializePathElementColumn(dto => dto.PathElement2, Captions.PathElement(2));

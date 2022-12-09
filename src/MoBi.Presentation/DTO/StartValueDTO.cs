@@ -25,18 +25,6 @@ namespace MoBi.Presentation.DTO
    public abstract class StartValueDTO<T> : PathWithValueEntityDTO<T>, IStartValueDTO where T : class, IStartValue
    {
       private readonly IStartValuesBuildingBlock<T> _buildingBlock;
-      
-
-
-
-      public string Name
-      {
-         get => StartValueObject.Name;
-         set
-         {
-            // We don't want the binding to set the value in the underlying object, only the command should do that
-         }
-      }
 
       /// <summary>
       ///    Updates the name of the start value

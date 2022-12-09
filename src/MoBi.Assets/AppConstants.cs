@@ -1001,6 +1001,7 @@ namespace MoBi.Assets
          public static readonly string New = "New";
          public static readonly string NewMolecule = AddNew(ObjectTypes.Molecule);
          public static readonly string LoadMolecule = AddExisting(ObjectTypes.Molecule);
+         public static readonly string LoadExpressionProfile = AddExisting(ObjectTypes.ExpressionProfileBuildingBlock);
          public static readonly string LoadMoleculeFromTemplate = AddExistingFromTemplate(ObjectTypes.Molecule);
          public static readonly string NewReaction = AddNew(ObjectTypes.Reaction);
          public static readonly string LoadReaction = AddExisting(ObjectTypes.Reaction);

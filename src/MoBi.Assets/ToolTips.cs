@@ -22,6 +22,11 @@ namespace MoBi.Assets
          public static readonly string AddPKSimMolecule = "Add a PK-Sim Molecule";
       }
 
+      public static class BuildingBlockExpressionProfile
+      {
+         public static readonly string LoadExpressionProfile = $"Load Expression Profile from Expression Profile Building Block file (*{Constants.Filter.PKML_FILE_FILTER})";
+      }
+
       public static class BuildingBlockReaction
       {
          public static readonly string NewReaction = "Create a new Reaction";

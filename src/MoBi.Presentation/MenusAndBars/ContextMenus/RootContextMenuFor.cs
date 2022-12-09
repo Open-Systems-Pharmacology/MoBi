@@ -74,20 +74,20 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var subjectPresenter = presenter as ISubjectPresenter;
          if (subjectPresenter != null)
          {
-            createAddItems(subjectPresenter.Subject as TParent);
+            CreateAddItems(subjectPresenter.Subject as TParent);
          }
          else
          {
             if (typeof(TObjectBase).IsAnImplementationOf<IBuildingBlock>())
             {
-               createAddItems(_context.CurrentProject as TParent);
+               CreateAddItems(_context.CurrentProject as TParent);
             }
          }
 
          return this;
       }
 
-      private void createAddItems(TParent parent)
+      protected virtual void CreateAddItems(TParent parent)
       {
          _allMenuItems.Add(CreateAddNewItemFor(parent));
          _allMenuItems.Add(CreateAddExistingItemFor(parent));
