@@ -55,28 +55,28 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddParameterStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IParameter, IParameterStartValue>
+   public class AddParameterStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IParameter, ParameterStartValue>
    {
       public AddParameterStartValueFromQuantityInSimulationCommand(IParameter parameter, IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
          : base(parameter, parameterStartValuesBuildingBlock)
       {
       }
 
-      protected override IParameterStartValue CreateNewStartValue(IMoBiContext context)
+      protected override ParameterStartValue CreateNewStartValue(IMoBiContext context)
       {
          var parameterStartValueCreator = context.Resolve<IParameterStartValuesCreator>();
          return parameterStartValueCreator.CreateParameterStartValue(_objectPath, _quantity);
       }
    }
 
-   public class AddMoleculeStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IMoleculeAmount, IMoleculeStartValue>
+   public class AddMoleculeStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IMoleculeAmount, MoleculeStartValue>
    {
       public AddMoleculeStartValueFromQuantityInSimulationCommand(IMoleculeAmount moleculeAmount, IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
          : base(moleculeAmount, moleculeStartValuesBuildingBlock)
       {
       }
 
-      protected override IMoleculeStartValue CreateNewStartValue(IMoBiContext context)
+      protected override MoleculeStartValue CreateNewStartValue(IMoBiContext context)
       {
          var moleculeStartValueCreator = context.Resolve<IMoleculeStartValuesCreator>();
          var containerPath = _objectPath.Clone<IObjectPath>();

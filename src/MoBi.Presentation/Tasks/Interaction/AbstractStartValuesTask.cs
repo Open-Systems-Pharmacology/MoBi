@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTaskForPathAndValueEntity<TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
       where TBuildingBlock : class, IBuildingBlock, IStartValuesBuildingBlock<TStartValue>
-      where TStartValue : class, IStartValue
+      where TStartValue : PathAndValueEntity, IStartValue
    {
       protected IIgnoreReplaceMergeManager<TStartValue> _startValueBuildingBlockMergeManager;
       protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;

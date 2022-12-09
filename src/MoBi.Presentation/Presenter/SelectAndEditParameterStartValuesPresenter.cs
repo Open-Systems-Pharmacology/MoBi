@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   internal class SelectAndEditParameterStartValuesPresenter : SelectAndEditStartValuesPresenter<IParameterStartValuesBuildingBlock, IParameterStartValue>, ISelectAndEditParameterStartValuesPresenter
+   internal class SelectAndEditParameterStartValuesPresenter : SelectAndEditStartValuesPresenter<IParameterStartValuesBuildingBlock, ParameterStartValue>, ISelectAndEditParameterStartValuesPresenter
    {
       private readonly IParameterStartValuesPresenter _editPresenter;
 

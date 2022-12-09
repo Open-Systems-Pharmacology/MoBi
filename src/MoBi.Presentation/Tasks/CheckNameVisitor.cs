@@ -37,8 +37,8 @@ namespace MoBi.Presentation.Tasks
    public class CheckNameVisitor : ICheckNameVisitor,
       IVisitor<IObjectBase>,
       IVisitor<IFormula>,
-      IVisitor<IParameterStartValue>,
-      IVisitor<IMoleculeStartValue>,
+      IVisitor<ParameterStartValue>,
+      IVisitor<MoleculeStartValue>,
       IVisitor<IObserverBuilder>,
       IVisitor<IReactionBuilder>,
       IVisitor<IApplicationBuilder>,
@@ -429,12 +429,12 @@ namespace MoBi.Presentation.Tasks
             AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor<TransporterMoleculeContainer>(), _tranportNamePropertyName, _oldName, _newName, transporterMoleculeContainer.Name));
       }
 
-      public void Visit(IMoleculeStartValue moleculeStartValue)
+      public void Visit(MoleculeStartValue moleculeStartValue)
       {
          checkStartValue(moleculeStartValue, _msvPathTask);
       }
 
-      public void Visit(IParameterStartValue parameterStartValue)
+      public void Visit(ParameterStartValue parameterStartValue)
       {
          checkStartValue(parameterStartValue, _psvPathTask);
       }

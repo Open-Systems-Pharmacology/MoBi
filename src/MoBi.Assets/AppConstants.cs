@@ -2041,7 +2041,7 @@ namespace MoBi.Assets
             return $"Update Parameter Start Values Building Block: '{name}'. Adding Dimension Information";
          }
 
-         public static string UnableToGetDimensionFor(IParameterStartValue psv, string parentName)
+         public static string UnableToGetDimensionFor(ParameterStartValue psv, string parentName)
          {
             return
                $"Unable to get dimension information for Parameter Start Value: '{psv.Path.PathAsString}' in Parameter Start Values Building Block: '{parentName}'. Dimension is set to No Dimension";

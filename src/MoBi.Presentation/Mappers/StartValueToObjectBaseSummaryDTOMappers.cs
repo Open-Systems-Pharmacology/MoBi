@@ -42,14 +42,14 @@ namespace MoBi.Presentation.Mappers
       public abstract ObjectBaseSummaryDTO MapFrom(T startValue);
    }
 
-   public interface IMoleculeStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<IMoleculeStartValue>
+   public interface IMoleculeStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<MoleculeStartValue>
    {
       
    }
 
-   public class MoleculeStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<IMoleculeStartValue>, IMoleculeStartValueToObjectBaseSummaryDTOMapper
+   public class MoleculeStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<MoleculeStartValue>, IMoleculeStartValueToObjectBaseSummaryDTOMapper
    {
-      public override ObjectBaseSummaryDTO MapFrom(IMoleculeStartValue startValue)
+      public override ObjectBaseSummaryDTO MapFrom(MoleculeStartValue startValue)
       {
          var dto = BaseMapper(startValue);
          dto.ApplicationIcon = ApplicationIcons.MoleculeStartValues;
@@ -60,14 +60,14 @@ namespace MoBi.Presentation.Mappers
       }
    }
 
-   public interface IParameterStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<IParameterStartValue>
+   public interface IParameterStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<ParameterStartValue>
    {
       
    }
 
-   public class ParameterStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<IParameterStartValue>, IParameterStartValueToObjectBaseSummaryDTOMapper
+   public class ParameterStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<ParameterStartValue>, IParameterStartValueToObjectBaseSummaryDTOMapper
    {
-      public override ObjectBaseSummaryDTO MapFrom(IParameterStartValue startValue)
+      public override ObjectBaseSummaryDTO MapFrom(ParameterStartValue startValue)
       {
          var dto = BaseMapper(startValue);
          dto.ApplicationIcon = ApplicationIcons.ParameterStartValues;

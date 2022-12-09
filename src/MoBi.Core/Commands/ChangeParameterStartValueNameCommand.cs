@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeParameterStartValueNameCommand : ChangeStartValueNameCommand<IParameterStartValuesBuildingBlock, IParameterStartValue>
+   public class ChangeParameterStartValueNameCommand : ChangeStartValueNameCommand<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       public ChangeParameterStartValueNameCommand(IParameterStartValuesBuildingBlock buildingBlock, IObjectPath path, string newValue) : base(buildingBlock, path, newValue)
       {

@@ -136,8 +136,8 @@ namespace MoBi.Presentation.Presenter
       {
          ValidateStartValues();
 
-         UpdateStartValueInfo<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>(_buildConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
-         UpdateStartValueInfo<IParameterStartValuesBuildingBlock, IParameterStartValue>(_buildConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
+         UpdateStartValueInfo<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>(_buildConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
+         UpdateStartValueInfo<IParameterStartValuesBuildingBlock, ParameterStartValue>(_buildConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
 
          _buildConfiguration.ShouldValidate = true;
          _buildConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;

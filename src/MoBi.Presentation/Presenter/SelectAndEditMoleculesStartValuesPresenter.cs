@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   internal class SelectAndEditMoleculesStartValuesPresenter : SelectAndEditStartValuesPresenter<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>, ISelectAndEditMoleculesStartValuesPresenter
+   internal class SelectAndEditMoleculesStartValuesPresenter : SelectAndEditStartValuesPresenter<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>, ISelectAndEditMoleculesStartValuesPresenter
    {
       private readonly IMoleculeStartValuesPresenter _editPresenter;
 

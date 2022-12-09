@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
    {
       protected double _oldScaleDivisor;
       protected double _newScaleDivisor;
-      protected IMoleculeStartValue _startValue;
+      protected MoleculeStartValue _startValue;
       protected IMoleculeStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
 

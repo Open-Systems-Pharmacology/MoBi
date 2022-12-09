@@ -18,12 +18,12 @@ namespace MoBi.Core.Mappers
       /// <param name="moleculeStartValues">The molecule start values being mapped</param>
       /// <param name="moleculeBuilders">The original builder building block. This may be used to look up information not contained in the start value, but needed for the data table</param>
       /// <returns>The data table</returns>
-      DataTable MapFrom(IEnumerable<IMoleculeStartValue> moleculeStartValues, IEnumerable<IMoleculeBuilder> moleculeBuilders);
+      DataTable MapFrom(IEnumerable<MoleculeStartValue> moleculeStartValues, IEnumerable<IMoleculeBuilder> moleculeBuilders);
    }
 
    public class MoleculeStartValuesBuildingBlockToParameterDataTableMapper : IMoleculeStartValuesBuildingBlockToParameterDataTableMapper
    {
-      public DataTable MapFrom(IEnumerable<IMoleculeStartValue> moleculeStartValues, IEnumerable<IMoleculeBuilder> moleculeBuilders)
+      public DataTable MapFrom(IEnumerable<MoleculeStartValue> moleculeStartValues, IEnumerable<IMoleculeBuilder> moleculeBuilders)
       {
          var dt = generateEmptyMoleculeParameterDataTable();
          moleculeStartValues.Each(moleculeStartValue => moleculeStartValueToParametersDataTable(moleculeStartValue, dt, moleculeBuilders.FindDescriptionForStartValueFromBuilder(moleculeStartValue.Name)));
@@ -38,7 +38,7 @@ namespace MoBi.Core.Mappers
       private static readonly string _scaleDivisor = AppConstants.Captions.ScaleDivisor;
       private const string _description = AppConstants.Captions.Description;
 
-      private void moleculeStartValueToParametersDataTable(IMoleculeStartValue moleculeStartValue, DataTable dt, string description)
+      private void moleculeStartValueToParametersDataTable(MoleculeStartValue moleculeStartValue, DataTable dt, string description)
       {
          var row = dt.Rows.Add();
          row[_name] = moleculeStartValue.Name;

@@ -6,7 +6,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class AddMoleculeStartValuesUICommand : AbstractStartValueSubjectRetrieverUICommand<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>
+   internal class AddMoleculeStartValuesUICommand : AbstractStartValueSubjectRetrieverUICommand<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
       private readonly IMoBiApplicationController _applicationController;
       private readonly IMoBiHistoryManager _moBiHistoryManager;

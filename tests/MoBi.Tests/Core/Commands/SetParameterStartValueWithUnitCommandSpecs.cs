@@ -10,9 +10,9 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_SetParameterStartValueWithUnitCommandSpecs : ContextSpecification<PathAndValueEntityValueOrUnitChangedCommand<IParameterStartValue, IParameterStartValuesBuildingBlock>>
+   public abstract class concern_for_SetParameterStartValueWithUnitCommandSpecs : ContextSpecification<PathAndValueEntityValueOrUnitChangedCommand<ParameterStartValue, IParameterStartValuesBuildingBlock>>
    {
-      protected IParameterStartValue _psv;
+      protected ParameterStartValue _psv;
       protected double _newValue =2.2;
       protected Unit _newUnit;
       protected IDimension _dimension;
@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          _psv.Dimension = _dimension;
          A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_oldUnit,_oldValue)).Returns(_oldValue);
          A.CallTo(() => _dimension.UnitValueToBaseUnitValue(_newUnit,_newValue)).Returns(_newValue);
-         sut = new PathAndValueEntityValueOrUnitChangedCommand<IParameterStartValue, IParameterStartValuesBuildingBlock>(_psv, _newValue, _newUnit, _buildingBlock);
+         sut = new PathAndValueEntityValueOrUnitChangedCommand<ParameterStartValue, IParameterStartValuesBuildingBlock>(_psv, _newValue, _newUnit, _buildingBlock);
       }
    }
 

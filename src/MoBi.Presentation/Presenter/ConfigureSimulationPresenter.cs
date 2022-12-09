@@ -54,8 +54,8 @@ namespace MoBi.Presentation.Presenter
             return new MoBiEmptyCommand();
 
          //Set the selected MSV AND PSV as per user inputs
-         UpdateStartValueInfo<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>(BuildConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
-         UpdateStartValueInfo<IParameterStartValuesBuildingBlock, IParameterStartValue>(BuildConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
+         UpdateStartValueInfo<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>(BuildConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
+         UpdateStartValueInfo<IParameterStartValuesBuildingBlock, ParameterStartValue>(BuildConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
 
 
          return _commands;

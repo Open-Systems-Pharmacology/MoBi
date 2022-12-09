@@ -20,7 +20,7 @@ namespace MoBi.Core.Services
       void Convert(IMoleculeBuilder moleculeBuilder, IFormulaCache formulaCache);
       void Convert(IMoleculeBuildingBlock moleculeBuildingBlock);
       void Convert(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock);
-      void Convert(IMoleculeStartValue moleculeStartValue, IFormulaCache formulaCache);
+      void Convert(MoleculeStartValue moleculeStartValue, IFormulaCache formulaCache);
       void Convert(object objectToConvert);
    }
 
@@ -69,7 +69,7 @@ namespace MoBi.Core.Services
          convertExplicitFormula(reaction.Formula, _concentrationPerTimeDimension);
       }
 
-      public void Convert(IMoleculeStartValue moleculeStartValue, IFormulaCache formulaCache)
+      public void Convert(MoleculeStartValue moleculeStartValue, IFormulaCache formulaCache)
       {
          if (!conversionRequired(moleculeStartValue))
             return;
@@ -180,7 +180,7 @@ namespace MoBi.Core.Services
          }
       }
 
-      private bool conversionRequired(IMoleculeStartValue moleculeStartValue)
+      private bool conversionRequired(MoleculeStartValue moleculeStartValue)
       {
          return conversionRequired(moleculeStartValue, Constants.Dimension.MOLAR_AMOUNT);
       }

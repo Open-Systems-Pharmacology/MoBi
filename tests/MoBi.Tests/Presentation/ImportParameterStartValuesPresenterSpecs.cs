@@ -169,7 +169,7 @@ namespace MoBi.Presentation
       [Observation]
       public void returns_empty_list_of_imported_start_values()
       {
-         A.CallTo(() => _startValuesTask.AddStartValueToBuildingBlock(_buildingBlock, A<IParameterStartValue>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _startValuesTask.AddStartValueToBuildingBlock(_buildingBlock, A<ParameterStartValue>.Ignored)).MustNotHaveHappened();
       }
    }
 }

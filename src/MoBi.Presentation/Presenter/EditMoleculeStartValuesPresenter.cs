@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Presenter
       void AddNewEmptyStartValue();
    }
 
-   public class EditMoleculeStartValuesPresenter : EditBuildingBlockPresenterBase<IEditMoleculeStartValuesView, IEditMoleculeStartValuesPresenter, IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>,
+   public class EditMoleculeStartValuesPresenter : EditBuildingBlockPresenterBase<IEditMoleculeStartValuesView, IEditMoleculeStartValuesPresenter, IMoleculeStartValuesBuildingBlock, MoleculeStartValue>,
       IEditMoleculeStartValuesPresenter
    {
       private readonly IMoleculeStartValuesPresenter _moleculeStartValuesPresenter;

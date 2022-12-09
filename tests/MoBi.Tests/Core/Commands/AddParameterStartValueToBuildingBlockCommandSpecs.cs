@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
 
          _psv = new ParameterStartValue {Path = new ObjectPath("path1"), StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1)};
          sut = new AddParameterStartValueToBuildingBlockCommand(_buildingBlock, _psv);
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<IParameterStartValue>>(A<string>._)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterStartValue>>(A<string>._)).Returns(_buildingBlock);
       }
    }
 

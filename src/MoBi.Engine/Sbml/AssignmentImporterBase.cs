@@ -99,7 +99,7 @@ namespace MoBi.Engine.Sbml
             return;
          }
 
-         var psv = ObjectBaseFactory.Create<IParameterStartValue>()
+         var psv = ObjectBaseFactory.Create<ParameterStartValue>()
             .WithName(parameter.Name)
             .WithFormula(formula)
             .WithDimension(parameter.Dimension);

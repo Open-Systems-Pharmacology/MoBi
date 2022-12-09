@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class EditParameterStartValuePathCommand : EditStartValuePathCommand<IParameterStartValuesBuildingBlock, IParameterStartValue>
+   public class EditParameterStartValuePathCommand : EditStartValuePathCommand<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       /// <summary>
       /// Changes a path for a Parameter start value
@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
       /// <param name="buildingBlock">The building block this start value is part of</param>
       /// <param name="startValue">The start value being modified</param>
       /// <param name="newContainerPath">The new container path for the start value</param>
-      public EditParameterStartValuePathCommand(IParameterStartValuesBuildingBlock buildingBlock, IParameterStartValue startValue, IObjectPath newContainerPath)
+      public EditParameterStartValuePathCommand(IParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue, IObjectPath newContainerPath)
          : base(buildingBlock, startValue, newContainerPath)
       {
 

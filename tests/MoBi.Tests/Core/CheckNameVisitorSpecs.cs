@@ -138,10 +138,10 @@ namespace MoBi.Core
    internal class When_visiting_an_MoleculesStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
       private IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
-      private IMoleculeStartValue _moleculeStartValue;
+      private MoleculeStartValue _moleculeStartValue;
       private IObjectPath _path;
       private IEnumerable<IStringChange> _changes;
-      private IMoleculeStartValue _moleculeStartValue2;
+      private MoleculeStartValue _moleculeStartValue2;
 
       protected override void Context()
       {
@@ -195,10 +195,10 @@ namespace MoBi.Core
    internal class When_visiting_an_ParameterStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
       private IParameterStartValuesBuildingBlock _parameterStartValuesBuildingBlock;
-      private IParameterStartValue _parameterStartValue;
+      private ParameterStartValue _parameterStartValue;
       private IObjectPath _path;
       private IEnumerable<IStringChange> _changes;
-      private IParameterStartValue _parameterStartValue2;
+      private ParameterStartValue _parameterStartValue2;
 
       protected override void Context()
       {

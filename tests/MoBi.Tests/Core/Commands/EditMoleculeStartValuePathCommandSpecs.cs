@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
    {
       protected IMoBiContext _context;
       protected IMoleculeStartValuesBuildingBlock _buildingBlock;
-      protected IMoleculeStartValue _moleculeStartValue;
+      protected MoleculeStartValue _moleculeStartValue;
       protected IObjectPath _path;
       protected override void Context()
       {

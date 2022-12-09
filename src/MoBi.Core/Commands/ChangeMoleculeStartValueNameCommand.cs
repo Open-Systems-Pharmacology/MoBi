@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeMoleculeStartValueNameCommand : ChangeStartValueNameCommand<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>
+   public class ChangeMoleculeStartValueNameCommand : ChangeStartValueNameCommand<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
       public ChangeMoleculeStartValueNameCommand(IMoleculeStartValuesBuildingBlock buildingBlock, IObjectPath path, string newValue): base(buildingBlock, path, newValue)
       {

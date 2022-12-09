@@ -53,8 +53,8 @@ namespace MoBi.Presentation.Tasks
    {
       private IParameterStartValuesBuildingBlock _templateStartValues;
       private ObjectPath _containerPath;
-      private IParameterStartValue _parameterStartValue;
-      private IParameterStartValue _clonedStartValue;
+      private ParameterStartValue _parameterStartValue;
+      private ParameterStartValue _clonedStartValue;
 
       protected override void Context()
       {
@@ -111,7 +111,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_comparing_start_value_to_original_parameter : concern_for_ParameterStartValuesTask
    {
-      private IParameterStartValue _parameterStartValue;
+      private ParameterStartValue _parameterStartValue;
       private const string _name = "Name";
       protected bool _result;
       private IDimension _dimension;
@@ -121,14 +121,10 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
-         _parameterStartValue = A.Fake<IParameterStartValue>();
-         _parameter = new Parameter {Dimension = _dimension, Name = _name, Value = 1.0};
+         _parameterStartValue = DomainHelperForSpecs.ParameterStartValue;
+         _parameterStartValue.Dimension = _dimension;
 
-         A.CallTo(() => _parameterStartValue.Dimension).Returns(_dimension);
-         A.CallTo(() => _parameterStartValue.Name).Returns(_name);
-         A.CallTo(() => _parameterStartValue.Formula).Returns(null);
-         A.CallTo(() => _parameterStartValue.Value).Returns(1.0);
-         A.CallTo(() => _parameterStartValue.DisplayUnit).Returns(_parameter.DisplayUnit);
+         _parameter = new Parameter {Dimension = _dimension, Name = _name, Value = 1.0};
       }
 
       protected override void Because()
@@ -180,7 +176,7 @@ namespace MoBi.Presentation.Tasks
    public class When_importing_multiple_parameter_start_values : concern_for_ParameterStartValuesTask
    {
       private IList<ImportedQuantityDTO> _parameterStartValues;
-      private IParameterStartValue _firstStartValueRef;
+      private ParameterStartValue _firstStartValueRef;
       private IMoBiCommand _result;
 
       protected override void Context()

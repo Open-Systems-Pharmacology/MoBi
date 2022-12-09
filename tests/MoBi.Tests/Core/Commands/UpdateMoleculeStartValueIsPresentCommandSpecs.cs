@@ -9,7 +9,7 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_UpdateMoleculeStartValueIsPresentCommand : ContextSpecification<UpdateMoleculeStartValueIsPresentCommand>
    {
       protected IMoleculeStartValuesBuildingBlock _startValueBuildingBlock;
-      protected IMoleculeStartValue _startValue;
+      protected MoleculeStartValue _startValue;
       protected IMoBiContext _context;
 
       protected override void Context()
@@ -42,7 +42,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _context.Get<IMoleculeStartValue>(_startValue.Id)).Returns(_startValue);
+         A.CallTo(() => _context.Get<MoleculeStartValue>(_startValue.Id)).Returns(_startValue);
       }
 
       protected override void Because()

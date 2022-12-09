@@ -12,7 +12,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class ParameterStartValuesBuildingBlockReporter : BuildingBlockReporter<IParameterStartValuesBuildingBlock, IParameterStartValue>
+   internal class ParameterStartValuesBuildingBlockReporter : BuildingBlockReporter<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       private readonly ReportingHelper _reportingHelper;
 
@@ -48,7 +48,7 @@ namespace MoBi.Core.Reporting
          listToReport.AddRange(parameterStartValues.FormulaCache.OrderBy(f => f.Name));
       }
 
-      private DataTable tableFor(IEnumerable<IParameterStartValue> parameterStartValues, bool verbose)
+      private DataTable tableFor(IEnumerable<ParameterStartValue> parameterStartValues, bool verbose)
       {
          var parameterStartValueTable = new DataTable(Constants.PARAMETER_START_VALUES);
 

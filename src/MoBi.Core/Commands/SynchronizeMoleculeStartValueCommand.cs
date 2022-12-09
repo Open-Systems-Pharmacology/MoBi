@@ -7,17 +7,17 @@ using OSPSuite.Core.Domain.Formulas;
 namespace MoBi.Core.Commands
 {
    /// <summary>
-   ///    Ensures that the value defined in the <see cref="IMoleculeStartValue" /> of simulation are synchronized
+   ///    Ensures that the value defined in the <see cref="MoleculeStartValue" /> of simulation are synchronized
    ///    with the values defined in the <see cref="IQuantity" /> 
    /// </summary>
    public class SynchronizeMoleculeStartValueCommand : MoBiReversibleCommand
    {
       private IQuantity _quantity;
       private IMoleculeAmount _moleculeAmount;
-      private readonly IMoleculeStartValue _moleculeStartValue;
+      private readonly MoleculeStartValue _moleculeStartValue;
       private readonly string _quantityId;
 
-      public SynchronizeMoleculeStartValueCommand(IQuantity quantity, IMoleculeStartValue moleculeStartValue)
+      public SynchronizeMoleculeStartValueCommand(IQuantity quantity, MoleculeStartValue moleculeStartValue)
       {
          _quantity = quantity;
          _quantityId = quantity.Id;

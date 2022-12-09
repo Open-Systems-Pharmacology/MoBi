@@ -2,7 +2,7 @@
 
 namespace MoBi.Presentation.DTO
 {
-   public class MoleculeStartValueDTO : StartValueDTO<IMoleculeStartValue>
+   public class MoleculeStartValueDTO : StartValueDTO<MoleculeStartValue>
    {
       public bool IsPresent
       {
@@ -31,12 +31,12 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public IMoleculeStartValue MoleculeStartValue
+      public MoleculeStartValue MoleculeStartValue
       {
          get { return StartValueObject; }
       }
 
-      public MoleculeStartValueDTO(IMoleculeStartValue moleculeStartValue, IStartValuesBuildingBlock<IMoleculeStartValue> buildingBlock) : base(moleculeStartValue, buildingBlock)
+      public MoleculeStartValueDTO(MoleculeStartValue moleculeStartValue, IStartValuesBuildingBlock<MoleculeStartValue> buildingBlock) : base(moleculeStartValue, buildingBlock)
       {
       }
 

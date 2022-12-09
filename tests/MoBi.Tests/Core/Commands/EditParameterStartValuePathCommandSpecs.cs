@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
    {
       protected IMoBiContext _context;
       protected IParameterStartValuesBuildingBlock _buildingBlock;
-      protected IParameterStartValue _parameterStartValue;
+      protected ParameterStartValue _parameterStartValue;
       protected IObjectPath _path;
       protected override void Context()
       {

@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IImportedQuantityToMoleculeStartValueMapper : IMapper<ImportedQuantityDTO, IMoleculeStartValue>
+   public interface IImportedQuantityToMoleculeStartValueMapper : IMapper<ImportedQuantityDTO, MoleculeStartValue>
    {
 
    }
@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Mappers
          _msvCreator = msvCreator;
       }
 
-      public IMoleculeStartValue MapFrom(ImportedQuantityDTO input)
+      public MoleculeStartValue MapFrom(ImportedQuantityDTO input)
       {
          var msv = _msvCreator.CreateMoleculeStartValue(input.ContainerPath, input.Name, input.Dimension, input.DisplayUnit);
          msv.Value = input.QuantityInBaseUnit;

@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
 {
    public class PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock> : BuildingBlockChangeCommandBase<TBuildingBlock>
       where TBuildingBlock : class, IBuildingBlock<TBuilder>
-      where TBuilder : class, IObjectBase, IUsingFormula, IWithDisplayUnit, IWithPath, IWithNullableValue
+      where TBuilder : PathAndValueEntity, IObjectBase, IUsingFormula, IWithDisplayUnit
    {
       protected TBuilder _builder;
       protected Unit _newDisplayUnit;

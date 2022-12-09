@@ -44,8 +44,8 @@ namespace MoBi.Core.Commands
 
    public class When_reseting_the_parameter_values_to_default_from_start_values: concern_for_ResetParamterValuesToDefaultFromStartValuesInSimulationCommand
    {
-      private IParameterStartValue _psv1;
-      private IParameterStartValue _psv2;
+      private ParameterStartValue _psv1;
+      private ParameterStartValue _psv2;
       private IParameter _p1Parameter;
       private IParameter _p2Parameter;
       private IParameter _unchangedParameter;

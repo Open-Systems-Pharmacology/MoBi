@@ -7,22 +7,22 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IMoleculeStartValuePathTask : IStartValuePathTask<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>
+   public interface IMoleculeStartValuePathTask : IStartValuePathTask<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
    }
 
-   public class MoleculeStartValuePathTask : AbstractStartValuePathTask<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>, IMoleculeStartValuePathTask
+   public class MoleculeStartValuePathTask : AbstractStartValuePathTask<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>, IMoleculeStartValuePathTask
    {
       public MoleculeStartValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
       {
       }
 
-      public override IMoBiCommand UpdateStartValueNameCommand(IMoleculeStartValuesBuildingBlock startValues, IMoleculeStartValue startValue, string newValue)
+      public override IMoBiCommand UpdateStartValueNameCommand(IMoleculeStartValuesBuildingBlock startValues, MoleculeStartValue startValue, string newValue)
       {
          return new ChangeMoleculeStartValueNameCommand(startValues, startValue.Path, newValue);
       }
 
-      public override IMoBiCommand UpdateStartValueContainerPathCommand(IMoleculeStartValuesBuildingBlock buildingBlock, IMoleculeStartValue startValue, int indexToUpdate, string newValue)
+      public override IMoBiCommand UpdateStartValueContainerPathCommand(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, int indexToUpdate, string newValue)
       {
          var targetPath = startValue.ContainerPath.Clone<IObjectPath>();
 

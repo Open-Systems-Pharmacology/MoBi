@@ -3,11 +3,11 @@ using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
-   public class ParameterStartValueDTO : StartValueDTO<IParameterStartValue>
+   public class ParameterStartValueDTO : StartValueDTO<ParameterStartValue>
    {
-      public IParameterStartValue ParameterStartValue => StartValueObject;
+      public ParameterStartValue ParameterStartValue => StartValueObject;
 
-      public ParameterStartValueDTO(IParameterStartValue parameterStartValue, IStartValuesBuildingBlock<IParameterStartValue> buildingBlock) : base(parameterStartValue, buildingBlock)
+      public ParameterStartValueDTO(ParameterStartValue parameterStartValue, IStartValuesBuildingBlock<ParameterStartValue> buildingBlock) : base(parameterStartValue, buildingBlock)
       {
       }
 

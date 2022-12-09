@@ -12,7 +12,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class MoleculeStartValuesBuildingBlockReporter : BuildingBlockReporter<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>
+   internal class MoleculeStartValuesBuildingBlockReporter : BuildingBlockReporter<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
       private readonly ReportingHelper _reportingHelper;
 
@@ -73,7 +73,7 @@ namespace MoBi.Core.Reporting
          view.RowFilter = String.Format("[{0}] = '{1}'", columnName, value.Replace("'", "''"));
       }
 
-      private DataTable tableFor(IEnumerable<IMoleculeStartValue> moleculeStartValues, bool verbose)
+      private DataTable tableFor(IEnumerable<MoleculeStartValue> moleculeStartValues, bool verbose)
       {
          var moleculeStartValueTable = new DataTable(Constants.MOLECULE_START_VALUES);
 

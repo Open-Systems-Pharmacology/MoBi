@@ -30,7 +30,7 @@ namespace MoBi.Core.Commands
          A.CallTo(() => _context.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
          A.CallTo(() => _context.Resolve<IParameterStartValuesCreator>()).Returns(_parameterStartValuesCreator);
          A.CallTo(() => _context.Get<IParameter>(_parameter.Id)).Returns(_parameter);
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<IParameterStartValue>>(_parameterStartValueBuildingBlock.Id)).Returns(_parameterStartValueBuildingBlock);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterStartValue>>(_parameterStartValueBuildingBlock.Id)).Returns(_parameterStartValueBuildingBlock);
 
          A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(_objectPath);
       }
@@ -38,7 +38,7 @@ namespace MoBi.Core.Commands
 
    public class When_adding_a_parameter_start_value_based_on_a_simulation_parameter_to_a_building_block_defined_in_a_simulation : concern_for_AddParameterStartValueFromQuantityInSimulationCommand
    {
-      private IParameterStartValue _parameterStartValue;
+      private ParameterStartValue _parameterStartValue;
 
       protected override void Context()
       {
@@ -61,7 +61,7 @@ namespace MoBi.Core.Commands
 
    public class When_adding_a_parameter_start_value_based_on_a_simulation_parameter_to_a_building_block_defined_in_a_simulation_that_already_exists : concern_for_AddParameterStartValueFromQuantityInSimulationCommand
    {
-      private IParameterStartValue _parameterStartValue;
+      private ParameterStartValue _parameterStartValue;
 
       protected override void Context()
       {

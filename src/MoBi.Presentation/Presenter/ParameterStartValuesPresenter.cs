@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
       : StartValuePresenter<IParameterStartValuesView,
          IParameterStartValuesPresenter,
          IParameterStartValuesBuildingBlock,
-         ParameterStartValueDTO, IParameterStartValue>,
+         ParameterStartValueDTO, ParameterStartValue>,
          IParameterStartValuesPresenter
    {
       private readonly IParameterStartValuesTask _parameterStartValuesTask;
