@@ -1604,6 +1604,9 @@ namespace MoBi.Assets
          public static readonly string GeometricDeviation = "Geometric Deviation";
          public static readonly string List = "List";
          public static readonly string UserDefined = "User Defined";
+         public static readonly string AddMetabolizingEnzyme = "Add Metagbolizing Enzyme";
+         public static readonly string AddTransportProtein = "Add Transport Protein";
+         public static readonly string AddSpecificBindingPartner = "Add Binding Partner";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 
@@ -2068,6 +2071,11 @@ namespace MoBi.Assets
          public static readonly string PopulationSimulationArgument = "/pop";
          public static readonly string JournalFileArgument = "/j";
          public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup. Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
+
+         public static string EntryPointNotFound(string fileName)
+         {
+            return $"Could not find entry point {fileName}. Please make sure that PK-Sim was installed using the provided setup.";
+         }
       }
 
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)

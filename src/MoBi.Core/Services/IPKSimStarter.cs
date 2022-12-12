@@ -4,5 +4,8 @@
    {
       void StartPopulationSimulationWithSimulationFile(string simulationFilePath);
       void StartWithWorkingJournalFile(string journalFilePath);
+      void CreateMetabolizingEnzymeExpression();
+      void CreateBindingPartnerExpression();
+      void CreateTransporterExpression();
    }
 }

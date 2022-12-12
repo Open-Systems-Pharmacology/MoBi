@@ -1,6 +1,4 @@
-﻿using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using OSPSuite.Core.Domain;
@@ -11,7 +9,8 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -111,7 +110,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
    }
-
 
    public class RootContextMenuFactoryForMoBiReactionBuildingBlock : RootNodeContextMenuFactoryFor<IMoBiReactionBuildingBlock>
    {
