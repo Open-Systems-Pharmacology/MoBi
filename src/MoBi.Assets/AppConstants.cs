@@ -576,7 +576,7 @@ namespace MoBi.Assets
 
          public static string AddedStartValue(IStartValue startValue, string buildingBlockName)
          {
-            return $"Added a Start Value to building block '{buildingBlockName}' at path: {startValue.Path}, with value: {startValue.StartValue} {startValue.DisplayUnit}";
+            return $"Added a Start Value to building block '{buildingBlockName}' at path: {startValue.Path}, with value: {startValue.Value} {startValue.DisplayUnit}";
          }
 
          public static string RemoveOutputIntervalFrom(string objectName)
@@ -591,7 +591,7 @@ namespace MoBi.Assets
 
          public static string RemoveStartValue(IStartValue startValue, string buildingBlockName)
          {
-            return string.Format("Removed a Start Value from building block '{3}' at path {0}, with value: {1} {2}", startValue.Path, startValue.ConvertToDisplayUnit(startValue.StartValue), startValue.DisplayUnit, buildingBlockName);
+            return string.Format("Removed a Start Value from building block '{3}' at path {0}, with value: {1} {2}", startValue.Path, startValue.ConvertToDisplayUnit(startValue.Value), startValue.DisplayUnit, buildingBlockName);
          }
 
          public static string UpdateScaleDivisorValue(string name, double oldScaleDivisor, double newScaleDivisor)
@@ -2041,7 +2041,7 @@ namespace MoBi.Assets
             return $"Update Parameter Start Values Building Block: '{name}'. Adding Dimension Information";
          }
 
-         public static string UnableToGetDimensionFor(IParameterStartValue psv, string parentName)
+         public static string UnableToGetDimensionFor(ParameterStartValue psv, string parentName)
          {
             return
                $"Unable to get dimension information for Parameter Start Value: '{psv.Path.PathAsString}' in Parameter Start Values Building Block: '{parentName}'. Dimension is set to No Dimension";

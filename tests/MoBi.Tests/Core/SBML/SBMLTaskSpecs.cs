@@ -57,7 +57,7 @@ namespace MoBi.Core.SBML
       {
          var msv = _moBiProject.MoleculeStartValueBlockCollection.First();
          var glucoseStartValue = msv.First();
-         glucoseStartValue.StartValue.Value.ShouldBeEqualTo(5000);
+         glucoseStartValue.Value.Value.ShouldBeEqualTo(5000);
       }
    }
 }

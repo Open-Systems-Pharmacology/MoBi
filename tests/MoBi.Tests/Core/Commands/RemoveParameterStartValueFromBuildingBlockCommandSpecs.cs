@@ -23,8 +23,8 @@ namespace MoBi.Core.Commands
          _buildingBlock.Add(_psv);
          sut = new RemoveParameterStartValueFromBuildingBlockCommand(_buildingBlock, _psv.Path);
 
-         A.CallTo(() => _context.Deserialize<IParameterStartValue>(A<byte[]>._)).Returns(_psv);
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<IParameterStartValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Deserialize<ParameterStartValue>(A<byte[]>._)).Returns(_psv);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterStartValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

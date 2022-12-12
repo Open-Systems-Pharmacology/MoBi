@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class EditMoleculeStartValuePathCommand : EditStartValuePathCommand<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>
+   public class EditMoleculeStartValuePathCommand : EditStartValuePathCommand<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
       /// <summary>
       /// Changes a path for a Molecule start value
@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
       /// <param name="buildingBlock">The building block this start value is a part of</param>
       /// <param name="startValue">The start value being modified</param>
       /// <param name="newContainerPath">The new container path for this start value</param>
-      public EditMoleculeStartValuePathCommand(IMoleculeStartValuesBuildingBlock buildingBlock, IMoleculeStartValue startValue, IObjectPath newContainerPath)
+      public EditMoleculeStartValuePathCommand(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, IObjectPath newContainerPath)
          : base(buildingBlock, startValue, newContainerPath)
       {
 

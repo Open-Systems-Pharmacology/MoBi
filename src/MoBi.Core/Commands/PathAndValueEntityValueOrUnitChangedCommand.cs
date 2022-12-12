@@ -9,9 +9,9 @@ using System.Linq;
 
 namespace MoBi.Core.Commands
 {
-   public class ValueWithPathEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock> : BuildingBlockChangeCommandBase<TBuildingBlock>
+   public class PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock> : BuildingBlockChangeCommandBase<TBuildingBlock>
       where TBuildingBlock : class, IBuildingBlock<TBuilder>
-      where TBuilder : class, IObjectBase, IUsingFormula, IWithDisplayUnit, IStartValue
+      where TBuilder : PathAndValueEntity, IObjectBase, IUsingFormula, IWithDisplayUnit
    {
       protected TBuilder _builder;
       protected Unit _newDisplayUnit;
@@ -21,13 +21,13 @@ namespace MoBi.Core.Commands
       protected readonly IObjectPath _valuePath;
 
 
-      public ValueWithPathEntityValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock) : base(buildingBlock)
+      public PathAndValueEntityValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _builder = builder;
          _newDisplayUnit = newDisplayUnit;
          _oldDisplayUnit = _builder.DisplayUnit;
          _newBaseValue = newBaseValue;
-         _oldBaseValue = builder.StartValue;
+         _oldBaseValue = builder.Value;
          _valuePath = builder.Path;
 
          CommandType = AppConstants.Commands.EditCommand;
@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new ValueWithPathEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
+         return new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
@@ -61,7 +61,7 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         _builder.StartValue = _newBaseValue;
+         _builder.Value = _newBaseValue;
          _builder.DisplayUnit = _newDisplayUnit;
       }
    }

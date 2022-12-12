@@ -9,11 +9,11 @@ namespace MoBi.Core.Commands
    public class UpdateMoleculeStartValueNegativeValuesAllowedCommand : BuildingBlockChangeCommandBase<IMoleculeStartValuesBuildingBlock>
    {
       private readonly string _startValueId;
-      private IMoleculeStartValue _startValue;
+      private MoleculeStartValue _startValue;
       private readonly bool _oldNegativeValuesAllowed;
       private readonly bool _newNegativeValuesAllowed;
 
-      public UpdateMoleculeStartValueNegativeValuesAllowedCommand(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, IMoleculeStartValue moleculeStartValue, bool negativeValuesAllowed)
+      public UpdateMoleculeStartValueNegativeValuesAllowedCommand(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, MoleculeStartValue moleculeStartValue, bool negativeValuesAllowed)
          : base(moleculeStartValuesBuildingBlock)
       {
          _startValueId = moleculeStartValue.Id;
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _startValue = context.Get<IMoleculeStartValue>(_startValueId);
+         _startValue = context.Get<MoleculeStartValue>(_startValueId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

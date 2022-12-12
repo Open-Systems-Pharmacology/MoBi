@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   public class ImportMoleculeStartValuePresenter : AbstractQuantitiesImporterPresenterForBuildingBlock<IMoleculeStartValuesBuildingBlock, IMoleculeStartValue>, IImportMoleculeStartValuePresenter
+   public class ImportMoleculeStartValuePresenter : AbstractQuantitiesImporterPresenterForBuildingBlock<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>, IImportMoleculeStartValuePresenter
    {
       private readonly IDataTableToImportQuantityDTOMapperForMolecules _mapper;
 

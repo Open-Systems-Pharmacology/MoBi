@@ -9,11 +9,11 @@ namespace MoBi.Core.Commands
    public class UpdateMoleculeStartValueIsPresentCommand : BuildingBlockChangeCommandBase<IMoleculeStartValuesBuildingBlock>
    {
       private readonly string _startValueId;
-      private IMoleculeStartValue _startValue;
+      private MoleculeStartValue _startValue;
       private readonly bool _oldIsPresent;
       private readonly bool _newIsPresent;
 
-      public UpdateMoleculeStartValueIsPresentCommand(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, IMoleculeStartValue moleculeStartValue, bool isPresent) : base(moleculeStartValuesBuildingBlock)
+      public UpdateMoleculeStartValueIsPresentCommand(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, MoleculeStartValue moleculeStartValue, bool isPresent) : base(moleculeStartValuesBuildingBlock)
       {
          _startValueId = moleculeStartValue.Id;
          _startValue = moleculeStartValue;
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _startValue = context.Get<IMoleculeStartValue>(_startValueId);
+         _startValue = context.Get<MoleculeStartValue>(_startValueId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

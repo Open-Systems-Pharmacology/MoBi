@@ -12,7 +12,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class ParameterStartValuesBuildingBlockReporter : BuildingBlockReporter<IParameterStartValuesBuildingBlock, IParameterStartValue>
+   internal class ParameterStartValuesBuildingBlockReporter : BuildingBlockReporter<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       private readonly ReportingHelper _reportingHelper;
 
@@ -48,7 +48,7 @@ namespace MoBi.Core.Reporting
          listToReport.AddRange(parameterStartValues.FormulaCache.OrderBy(f => f.Name));
       }
 
-      private DataTable tableFor(IEnumerable<IParameterStartValue> parameterStartValues, bool verbose)
+      private DataTable tableFor(IEnumerable<ParameterStartValue> parameterStartValues, bool verbose)
       {
          var parameterStartValueTable = new DataTable(Constants.PARAMETER_START_VALUES);
 
@@ -74,8 +74,8 @@ namespace MoBi.Core.Reporting
             newParameterStartValueRow[Constants.PARAMETER] = levels[levels.Length - 1];
             newParameterStartValueRow[Constants.CONTAINER_PATH] = String.Join("|", levels.Take(levels.Length - 1));
             newParameterStartValueRow[Constants.LEVELS] = levels.Length;
-            if (parameterStartValue.StartValue != null)
-               newParameterStartValueRow[Constants.START_VALUE] = _reportingHelper.ConvertToDisplayUnit(parameterStartValue, parameterStartValue.StartValue);
+            if (parameterStartValue.Value != null)
+               newParameterStartValueRow[Constants.START_VALUE] = _reportingHelper.ConvertToDisplayUnit(parameterStartValue, parameterStartValue.Value);
             newParameterStartValueRow[Constants.UNIT] = _reportingHelper.GetDisplayUnitFor(parameterStartValue);
             newParameterStartValueRow[Constants.FORMULA] = (parameterStartValue.Formula == null) ? (object)DBNull.Value : parameterStartValue.Formula.Name;
             parameterStartValueTable.Rows.Add(newParameterStartValueRow);

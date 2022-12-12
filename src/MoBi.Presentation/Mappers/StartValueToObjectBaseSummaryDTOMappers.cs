@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Mappers
 
          dto.AddToDictionary(AppConstants.Captions.Type, new ObjectTypeResolver().TypeFor(startValue));
          dto.AddToDictionary(AppConstants.Captions.Path, startValue.Path.ToString());
-         if (startValue.StartValue.HasValue) dto.AddToDictionary(AppConstants.Captions.Value, startValue.GetStartValueAsDisplayString());
+         if (startValue.Value.HasValue) dto.AddToDictionary(AppConstants.Captions.Value, startValue.GetStartValueAsDisplayString());
          if (hasValidFormula(startValue)) dto.AddToDictionary(AppConstants.Captions.Formula, startValue.Formula.ToString());
          dto.AddToDictionary(AppConstants.Captions.Dimension, startValue.Dimension.DisplayName);
          dto.AddToDictionary(AppConstants.Captions.Description, startValue.Description);
@@ -42,14 +42,14 @@ namespace MoBi.Presentation.Mappers
       public abstract ObjectBaseSummaryDTO MapFrom(T startValue);
    }
 
-   public interface IMoleculeStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<IMoleculeStartValue>
+   public interface IMoleculeStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<MoleculeStartValue>
    {
       
    }
 
-   public class MoleculeStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<IMoleculeStartValue>, IMoleculeStartValueToObjectBaseSummaryDTOMapper
+   public class MoleculeStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<MoleculeStartValue>, IMoleculeStartValueToObjectBaseSummaryDTOMapper
    {
-      public override ObjectBaseSummaryDTO MapFrom(IMoleculeStartValue startValue)
+      public override ObjectBaseSummaryDTO MapFrom(MoleculeStartValue startValue)
       {
          var dto = BaseMapper(startValue);
          dto.ApplicationIcon = ApplicationIcons.MoleculeStartValues;
@@ -60,14 +60,14 @@ namespace MoBi.Presentation.Mappers
       }
    }
 
-   public interface IParameterStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<IParameterStartValue>
+   public interface IParameterStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<ParameterStartValue>
    {
       
    }
 
-   public class ParameterStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<IParameterStartValue>, IParameterStartValueToObjectBaseSummaryDTOMapper
+   public class ParameterStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<ParameterStartValue>, IParameterStartValueToObjectBaseSummaryDTOMapper
    {
-      public override ObjectBaseSummaryDTO MapFrom(IParameterStartValue startValue)
+      public override ObjectBaseSummaryDTO MapFrom(ParameterStartValue startValue)
       {
          var dto = BaseMapper(startValue);
          dto.ApplicationIcon = ApplicationIcons.ParameterStartValues;

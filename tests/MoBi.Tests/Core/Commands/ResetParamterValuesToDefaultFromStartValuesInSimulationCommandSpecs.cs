@@ -44,8 +44,8 @@ namespace MoBi.Core.Commands
 
    public class When_reseting_the_parameter_values_to_default_from_start_values: concern_for_ResetParamterValuesToDefaultFromStartValuesInSimulationCommand
    {
-      private IParameterStartValue _psv1;
-      private IParameterStartValue _psv2;
+      private ParameterStartValue _psv1;
+      private ParameterStartValue _psv2;
       private IParameter _p1Parameter;
       private IParameter _p2Parameter;
       private IParameter _unchangedParameter;
@@ -60,7 +60,7 @@ namespace MoBi.Core.Commands
 
          A.CallTo(() => _cloneManagerForModel.Clone(_psv1.Formula)).Returns(_psv1.Formula);
          _psv2 = new ParameterStartValue {ContainerPath = new ObjectPath("LIVER"), Name="P2"};
-         _psv2.StartValue = 17;
+         _psv2.Value = 17;
 
          _unchangedParameter = new Parameter().WithName("Unchanged").WithFormula(new ConstantFormula(2));
          _p1Parameter = new Parameter().WithName("P1").WithFormula(new ConstantFormula(1));

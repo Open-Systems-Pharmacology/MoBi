@@ -11,10 +11,10 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IDataTableToImportQuantityDTOMapperForMolecules
    {
-      QuantityImporterDTO MapFrom(DataTable table, IStartValuesBuildingBlock<IMoleculeStartValue> buildingBlock);
+      QuantityImporterDTO MapFrom(DataTable table, IStartValuesBuildingBlock<MoleculeStartValue> buildingBlock);
    }
 
-   public class DataTableToImportQuantityDTOMapperForMolecules : AbstractDataTableProviderToQuantityDTOMapper<IStartValuesBuildingBlock<IMoleculeStartValue>>, IDataTableToImportQuantityDTOMapperForMolecules
+   public class DataTableToImportQuantityDTOMapperForMolecules : AbstractDataTableProviderToQuantityDTOMapper<IStartValuesBuildingBlock<MoleculeStartValue>>, IDataTableToImportQuantityDTOMapperForMolecules
    {
       private readonly IReactionDimensionRetriever _reactionDimensionRetriever;
 
@@ -42,12 +42,12 @@ namespace MoBi.Presentation.Mappers
          return dto.IsQuantitySpecified || dto.IsScaleDivisorSpecified;
       }
 
-      protected override bool IsUpdate(ImportedQuantityDTO dto, IStartValuesBuildingBlock<IMoleculeStartValue> importTarget)
+      protected override bool IsUpdate(ImportedQuantityDTO dto, IStartValuesBuildingBlock<MoleculeStartValue> importTarget)
       {
          return !IsNewInsert(dto, importTarget);
       }
 
-      protected override bool IsNewInsert(ImportedQuantityDTO dto, IStartValuesBuildingBlock<IMoleculeStartValue> importTarget)
+      protected override bool IsNewInsert(ImportedQuantityDTO dto, IStartValuesBuildingBlock<MoleculeStartValue> importTarget)
       {
          return importTarget[dto.Path] == null;
       }
@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Mappers
          return !double.IsNaN(dto.QuantityInBaseUnit) && dto.IsQuantitySpecified;
       }
 
-      protected override void ValidateInContext(ImportedQuantityDTO dto, QuantityImporterDTO quantityImporterDTO, IStartValuesBuildingBlock<IMoleculeStartValue> buildingBlock, DataRow row, int rowIndex)
+      protected override void ValidateInContext(ImportedQuantityDTO dto, QuantityImporterDTO quantityImporterDTO, IStartValuesBuildingBlock<MoleculeStartValue> buildingBlock, DataRow row, int rowIndex)
       {
          base.ValidateInContext(dto, quantityImporterDTO, buildingBlock, row, rowIndex);
          if (isDimensionRequired(dto) && !isCorrectDimensionForDimensionMode(_reactionDimensionRetriever.SelectedDimensionMode, dto))
@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Mappers
          }
       }
 
-      protected override void AddDTOToImportList(QuantityImporterDTO quantityImporterDTO, IStartValuesBuildingBlock<IMoleculeStartValue> importTarget, ImportedQuantityDTO dto)
+      protected override void AddDTOToImportList(QuantityImporterDTO quantityImporterDTO, IStartValuesBuildingBlock<MoleculeStartValue> importTarget, ImportedQuantityDTO dto)
       {
          quantityImporterDTO.QuantitDTOs.Add(dto);
          if (dto.HasWarning())

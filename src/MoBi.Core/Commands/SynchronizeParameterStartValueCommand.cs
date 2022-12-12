@@ -8,10 +8,10 @@ namespace MoBi.Core.Commands
    public class SynchronizeParameterStartValueCommand : MoBiReversibleCommand
    {
       private IParameter _parameter;
-      private readonly IParameterStartValue _parameterStartValue;
+      private readonly ParameterStartValue _parameterStartValue;
       private readonly string _parameterId;
 
-      public SynchronizeParameterStartValueCommand(IParameter parameter, IParameterStartValue parameterStartValue)
+      public SynchronizeParameterStartValueCommand(IParameter parameter, ParameterStartValue parameterStartValue)
       {
          _parameter = parameter;
          _parameterId = parameter.Id;
@@ -20,7 +20,7 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         _parameterStartValue.StartValue = _parameter.Value;
+         _parameterStartValue.Value = _parameter.Value;
          _parameterStartValue.Dimension = _parameter.Dimension;
          _parameterStartValue.DisplayUnit = _parameter.DisplayUnit;
          _parameterStartValue.UpdateValueOriginFrom(_parameter.ValueOrigin);

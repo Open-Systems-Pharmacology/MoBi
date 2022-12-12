@@ -14,7 +14,7 @@ namespace MoBi.Presentation.Presenter
       void AddNewEmptyStartValue();
    }
 
-   public class EditParameterStartValuesPresenter : EditBuildingBlockPresenterBase<IEditParameterStartValuesView, IEditParameterStartValuesPresenter, IParameterStartValuesBuildingBlock, IParameterStartValue>,
+   public class EditParameterStartValuesPresenter : EditBuildingBlockPresenterBase<IEditParameterStartValuesView, IEditParameterStartValuesPresenter, IParameterStartValuesBuildingBlock, ParameterStartValue>,
                                                     IEditParameterStartValuesPresenter
    {
       private readonly IParameterStartValuesPresenter _parameterStartValuesPresenter;

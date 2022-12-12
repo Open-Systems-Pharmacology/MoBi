@@ -123,15 +123,15 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public interface IParameterStartValueBuildingBlockMergeManager : IIgnoreReplaceMergeManager<IParameterStartValue>
+   public interface IParameterStartValueBuildingBlockMergeManager : IIgnoreReplaceMergeManager<ParameterStartValue>
    {
    }
 
-   public interface IMoleculeStartValueBuildingBlockMergeManager : IIgnoreReplaceMergeManager<IMoleculeStartValue>
+   public interface IMoleculeStartValueBuildingBlockMergeManager : IIgnoreReplaceMergeManager<MoleculeStartValue>
    {
    }
 
-   public class MoleculeStartValueBuildingBlockMergeManager : IgnoreReplaceMergeManager<IMoleculeStartValue>, IMoleculeStartValueBuildingBlockMergeManager
+   public class MoleculeStartValueBuildingBlockMergeManager : IgnoreReplaceMergeManager<MoleculeStartValue>, IMoleculeStartValueBuildingBlockMergeManager
    {
       public MoleculeStartValueBuildingBlockMergeManager(
          IApplicationController applicationController,
@@ -142,7 +142,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class ParameterStartValueBuildingBlockMergeManager : IgnoreReplaceMergeManager<IParameterStartValue>, IParameterStartValueBuildingBlockMergeManager
+   public class ParameterStartValueBuildingBlockMergeManager : IgnoreReplaceMergeManager<ParameterStartValue>, IParameterStartValueBuildingBlockMergeManager
    {
       public ParameterStartValueBuildingBlockMergeManager(
          IApplicationController applicationController,

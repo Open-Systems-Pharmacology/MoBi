@@ -24,7 +24,7 @@ namespace MoBi.Core.Mapper
       concern_for_ParameterStartValueToDTOParameterStartValueMapperSpecs
    {
       private ParameterStartValueDTO _resultDTO;
-      private IParameterStartValue _parameterStartValue;
+      private ParameterStartValue _parameterStartValue;
       private ExplicitFormula _formula;
       private IDimension _dimension;
       private string _formulaString;
@@ -63,7 +63,7 @@ namespace MoBi.Core.Mapper
    class When_mapping_a_parameterStartValueToADTOParameterStartValue_with_a_startValue : concern_for_ParameterStartValueToDTOParameterStartValueMapperSpecs
    {
       private ParameterStartValueDTO _resultDTO;
-      private IParameterStartValue _parameterStartValue;
+      private ParameterStartValue _parameterStartValue;
       private IDimension _dimension;
       private double _startValue;
       private IObjectPath _parameterPath;

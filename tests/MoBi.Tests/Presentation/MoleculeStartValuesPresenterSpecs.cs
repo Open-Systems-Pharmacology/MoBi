@@ -265,8 +265,8 @@ namespace MoBi.Presentation
 
    internal abstract class When_deleting_start_values_from_building_block : concern_for_MoleculeStartValuesPresenter
    {
-      protected IMoleculeStartValue _startValue1;
-      protected IMoleculeStartValue _startValue2;
+      protected MoleculeStartValue _startValue1;
+      protected MoleculeStartValue _startValue2;
       protected MoleculeStartValue _startValue3;
 
       protected override void Context()
@@ -415,7 +415,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _command = A.Fake<IMoBiCommand>();
-         A.CallTo(() => _moleculeStartValueTask.SetIsPresent(_moleculeStartValueBuildingBlock, A<IEnumerable<IMoleculeStartValue>>._, true)).Returns(_command);
+         A.CallTo(() => _moleculeStartValueTask.SetIsPresent(_moleculeStartValueBuildingBlock, A<IEnumerable<MoleculeStartValue>>._, true)).Returns(_command);
          sut.Edit(_moleculeStartValueBuildingBlock);
       }
 
@@ -439,7 +439,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _command = A.Fake<IMoBiCommand>();
-         A.CallTo(() => _moleculeStartValueTask.SetIsPresent(_moleculeStartValueBuildingBlock, A<IEnumerable<IMoleculeStartValue>>._, false)).Returns(_command);
+         A.CallTo(() => _moleculeStartValueTask.SetIsPresent(_moleculeStartValueBuildingBlock, A<IEnumerable<MoleculeStartValue>>._, false)).Returns(_command);
          sut.Edit(_moleculeStartValueBuildingBlock);
       }
 
@@ -457,7 +457,7 @@ namespace MoBi.Presentation
 
    public class When_performing_a_bulk_update_of_molecule_start_values : concern_for_MoleculeStartValuesPresenter
    {
-      private IMoleculeStartValue _msv1;
+      private MoleculeStartValue _msv1;
       private MoleculeStartValueDTO _msv1DTOFirst;
       private MoleculeStartValueDTO _msv1DTOSecond;
 

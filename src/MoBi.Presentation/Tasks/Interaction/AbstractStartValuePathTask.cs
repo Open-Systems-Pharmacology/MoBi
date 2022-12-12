@@ -113,7 +113,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <returns>True if the formula is constant and evaluates to the same value as startValue.StartValue</returns>
       private static bool isConstantFormulaEqualToStartValue(IStartValue startValue, ConstantFormula targetFormula)
       {
-         return startValue.StartValue.HasValue && ValueComparer.AreValuesEqual(startValue.StartValue.Value, targetFormula.Calculate(null));
+         return startValue.Value.HasValue && ValueComparer.AreValuesEqual(startValue.Value.Value, targetFormula.Calculate(null));
       }
    }
 }

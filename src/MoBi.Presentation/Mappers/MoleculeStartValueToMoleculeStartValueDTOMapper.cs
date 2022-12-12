@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Mappers
       TStartValueDTO MapFrom(TStartValue startValue, IStartValuesBuildingBlock<TStartValue> buildingBlock);
    }
 
-   public interface IMoleculeStartValueToMoleculeStartValueDTOMapper : IStartValueToStartValueDTOMapper<IMoleculeStartValue, MoleculeStartValueDTO>
+   public interface IMoleculeStartValueToMoleculeStartValueDTOMapper : IStartValueToStartValueDTOMapper<MoleculeStartValue, MoleculeStartValueDTO>
    {
       
    }
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
       {
          _formulaMapper = formulaMapper;
       }
-      public MoleculeStartValueDTO MapFrom(IMoleculeStartValue moleculeStartValue, IStartValuesBuildingBlock<IMoleculeStartValue> buildingBlock)
+      public MoleculeStartValueDTO MapFrom(MoleculeStartValue moleculeStartValue, IStartValuesBuildingBlock<MoleculeStartValue> buildingBlock)
       {
          var dto = new MoleculeStartValueDTO(moleculeStartValue, buildingBlock)
          {

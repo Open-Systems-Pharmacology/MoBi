@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_SynchronizeMoleculeStartValueCommand : ContextSpecification<SynchronizeMoleculeStartValueCommand>
    {
-      protected IMoleculeStartValue _moleculeStartValue;
+      protected MoleculeStartValue _moleculeStartValue;
       protected IMoleculeAmount _moleculeAmount;
       protected IDimension _dimension1;
       protected IDimension _dimension2;
@@ -51,7 +51,7 @@ namespace MoBi.Core.Commands
          base.Context();
          _moleculeStartValue.Dimension = _dimension1;
          _moleculeStartValue.DisplayUnit = _displayUnit2;
-         _moleculeStartValue.StartValue = 20;
+         _moleculeStartValue.Value = 20;
          _moleculeStartValue.ValueOrigin.Method  = ValueOriginDeterminationMethods.InVitro;
       }
 
@@ -63,7 +63,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_the_start_value()
       {
-         _moleculeStartValue.StartValue.ShouldBeEqualTo(_moleculeAmount.Value);
+         _moleculeStartValue.Value.ShouldBeEqualTo(_moleculeAmount.Value);
       }
 
       [Observation]
@@ -113,7 +113,7 @@ namespace MoBi.Core.Commands
          base.Context();
 
          _moleculeAmount.Formula = new ExplicitFormula("1+2");
-         _moleculeStartValue.StartValue = null;
+         _moleculeStartValue.Value = null;
       }
 
       protected override void Because()
@@ -124,7 +124,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_not_update_the_start_value()
       {
-         _moleculeStartValue.StartValue.ShouldBeNull();
+         _moleculeStartValue.Value.ShouldBeNull();
       }
    }
 
@@ -136,7 +136,7 @@ namespace MoBi.Core.Commands
 
          _moleculeAmount.Formula = new ExplicitFormula("1+2");
          _moleculeAmount.Value = 5;
-         _moleculeStartValue.StartValue = null;
+         _moleculeStartValue.Value = null;
       }
 
       protected override void Because()
@@ -147,7 +147,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_the_start_value()
       {
-         _moleculeStartValue.StartValue.ShouldBeEqualTo(5);
+         _moleculeStartValue.Value.ShouldBeEqualTo(5);
       }
    }
 }

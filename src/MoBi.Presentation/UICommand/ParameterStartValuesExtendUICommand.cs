@@ -4,7 +4,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class ParameterStartValuesExtendUICommand : AbstractStartValueSubjectRetrieverUICommand<IParameterStartValuesBuildingBlock, IParameterStartValue>
+   internal class ParameterStartValuesExtendUICommand : AbstractStartValueSubjectRetrieverUICommand<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       public ParameterStartValuesExtendUICommand(IParameterStartValuesTask startValueTasks, IActiveSubjectRetriever activeSubjectRetriever)
          : base(startValueTasks, activeSubjectRetriever)

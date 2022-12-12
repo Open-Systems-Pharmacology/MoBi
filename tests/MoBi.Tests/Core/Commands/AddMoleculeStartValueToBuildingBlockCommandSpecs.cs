@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
          _moleculeStartValue = new MoleculeStartValue { Path = new ObjectPath("path1"), Dimension = _fakeDimension, StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) };
          sut = new AddMoleculeStartValueToBuildingBlockCommand(_buildingBlock, _moleculeStartValue);
 
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<IMoleculeStartValue>>(A<string>._)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<MoleculeStartValue>>(A<string>._)).Returns(_buildingBlock);
       }
    }
 

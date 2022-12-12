@@ -7,9 +7,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_UpdateValueOriginInStartValueCommand : ContextSpecification<UpdateValueOriginInStartValueCommand<IParameterStartValue>>
+   public abstract class concern_for_UpdateValueOriginInStartValueCommand : ContextSpecification<UpdateValueOriginInStartValueCommand<ParameterStartValue>>
    {
-      protected IParameterStartValue _parameterStartValue;
+      protected ParameterStartValue _parameterStartValue;
       protected ValueOrigin _newValueOrigin;
       protected IParameterStartValuesBuildingBlock _startValueBuildingBlock;
       protected IMoBiContext _context;
@@ -35,8 +35,8 @@ namespace MoBi.Core.Commands
          _parameterStartValue.UpdateValueOriginFrom(_originalValueOrigin);
          _startValueBuildingBlock = A.Fake<IParameterStartValuesBuildingBlock>().WithId("PSV BB");
          _context = A.Fake<IMoBiContext>();
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<IParameterStartValue>>(_startValueBuildingBlock.Id)).Returns(_startValueBuildingBlock);
-         sut = new UpdateValueOriginInStartValueCommand<IParameterStartValue>(_parameterStartValue, _newValueOrigin, _startValueBuildingBlock);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterStartValue>>(_startValueBuildingBlock.Id)).Returns(_startValueBuildingBlock);
+         sut = new UpdateValueOriginInStartValueCommand<ParameterStartValue>(_parameterStartValue, _newValueOrigin, _startValueBuildingBlock);
       }
    }
 

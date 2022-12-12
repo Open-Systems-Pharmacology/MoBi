@@ -55,12 +55,12 @@ namespace MoBi.Presentation.Tasks
         [Observation]
         public void the_value_should_be_NotANumber()
         {
-            _expressionParameter.StartValue.ShouldBeEqualTo(double.NaN);
+            _expressionParameter.Value.ShouldBeEqualTo(double.NaN);
         }
 
         protected override ExpressionParameter GetExpressionParameter()
         {
-            return new ExpressionParameter { Formula = null, StartValue = 1.0 };
+            return new ExpressionParameter { Formula = null, Value = 1.0 };
         }
     }
 
@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Tasks
 
         protected override ExpressionParameter GetExpressionParameter()
         {
-            return new ExpressionParameter { Formula = new ExplicitFormula("y=b"), StartValue = null };
+            return new ExpressionParameter { Formula = new ExplicitFormula("y=b"), Value = null };
         }
 
         [Observation]
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Tasks
         [Observation]
         public void the_value_should_be_set_in_the_expression_parameter()
         {
-            _expressionParameter.StartValue.ShouldBeEqualTo(1.0);
+            _expressionParameter.Value.ShouldBeEqualTo(1.0);
         }
     }
 
@@ -104,7 +104,7 @@ namespace MoBi.Presentation.Tasks
             _dimension.AddUnit(_unit1);
             _dimension.AddUnit(_unit2);
 
-            return new ExpressionParameter { Formula = null, StartValue = 1.0 };
+            return new ExpressionParameter { Formula = null, Value = 1.0 };
         }
 
         protected override void Because()

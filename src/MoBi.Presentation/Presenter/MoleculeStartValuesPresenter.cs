@@ -40,7 +40,7 @@ namespace MoBi.Presentation.Presenter
       IMoleculeStartValuesPresenter,
       IMoleculeStartValuesBuildingBlock, 
       MoleculeStartValueDTO,
-      IMoleculeStartValue>,
+      MoleculeStartValue>,
       IMoleculeStartValuesPresenter
    {
       private readonly IMoleculeStartValuesTask _moleculeStartValuesTask;
@@ -87,13 +87,13 @@ namespace MoBi.Presentation.Presenter
          setNegativeValuesAllowed(new[] {dto.MoleculeStartValue}, negativeValuesAllowed);
       }
 
-      private void setNegativeValuesAllowed(IEnumerable<IMoleculeStartValue> startValuesToUpdate, bool negativeValuesAllowed)
+      private void setNegativeValuesAllowed(IEnumerable<MoleculeStartValue> startValuesToUpdate, bool negativeValuesAllowed)
       {
          AddCommand(() => _moleculeStartValuesTask.SetNegativeValuesAllowed(_buildingBlock, startValuesToUpdate, negativeValuesAllowed));
          _view.RefreshData();
       }
 
-      private void setIsPresent(IEnumerable<IMoleculeStartValue> startValuesToUpdate, bool isPresent)
+      private void setIsPresent(IEnumerable<MoleculeStartValue> startValuesToUpdate, bool isPresent)
       {
          AddCommand(() => _moleculeStartValuesTask.SetIsPresent(_buildingBlock, startValuesToUpdate, isPresent));
          _view.RefreshData();
@@ -109,7 +109,7 @@ namespace MoBi.Presentation.Presenter
          performSetFlagValueAction(setNegativeValuesAllowed, option);
       }
 
-      private void performSetFlagValueAction(Action<IEnumerable<IMoleculeStartValue>, bool> selectionAction, SelectOption option)
+      private void performSetFlagValueAction(Action<IEnumerable<MoleculeStartValue>, bool> selectionAction, SelectOption option)
       {
          if (option.IsOneOf(SelectOption.AllPresent, SelectOption.AllNegativeValuesAllowed))
             selectionAction(VisibleStartValues, true);

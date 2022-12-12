@@ -8,11 +8,11 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_UpdateDimensionInParameterStartValueCommand : ContextSpecification<UpdateDimensionInStartValueCommand<IParameterStartValue>>
+   public abstract class concern_for_UpdateDimensionInParameterStartValueCommand : ContextSpecification<UpdateDimensionInStartValueCommand<ParameterStartValue>>
    {
       protected IDimension _newDimension;
       protected IDimension _oldDimension;
-      protected IParameterStartValue _startValue;
+      protected ParameterStartValue _startValue;
       protected IParameterStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
       protected Unit _newDisplayUnit;
@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
          _startValue = new ParameterStartValue {Dimension = _oldDimension, StartValue = 1.0, DisplayUnit = _oldDisplayUnit};
 
 
-         sut = new UpdateDimensionInStartValueCommand<IParameterStartValue>(_startValue, _newDimension, _newDisplayUnit, _buildingBlock);
+         sut = new UpdateDimensionInStartValueCommand<ParameterStartValue>(_startValue, _newDimension, _newDisplayUnit, _buildingBlock);
       }
    }
 

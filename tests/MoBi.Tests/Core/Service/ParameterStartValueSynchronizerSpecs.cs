@@ -63,7 +63,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_have_synchronized_the_parameter_start_value()
       {
-         _parameterStartValue.StartValue.ShouldBeEqualTo(_parameter.Value);
+         _parameterStartValue.Value.ShouldBeEqualTo(_parameter.Value);
          _parameterStartValue.Dimension.ShouldBeEqualTo(_parameter.Dimension);
          _parameterStartValue.DisplayUnit.ShouldBeEqualTo(_parameter.DisplayUnit);
       }

@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public abstract class InteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TBuildingBlock, TBuilder>, IInteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder>
       where TBuildingBlock : class, IBuildingBlock, IBuildingBlock<TBuilder> 
-      where TBuilder : class, IUsingFormula, IWithDisplayUnit, IWithValueOrigin
+      where TBuilder : class, IUsingFormula, IWithDisplayUnit
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
 

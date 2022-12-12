@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Tasks
    /// </summary>
    public class When_updating_scale_divisor : concern_for_MoleculeStartValuesTask
    {
-      private IMoleculeStartValue _moleculeStartValue;
+      private MoleculeStartValue _moleculeStartValue;
 
       protected override void Context()
       {
@@ -136,7 +136,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_comparing_start_value_to_original_builder : concern_for_MoleculeStartValuesTask
    {
-      private IMoleculeStartValue _moleculeStartValue;
+      private MoleculeStartValue _moleculeStartValue;
       private const string _name = "Name";
       protected bool _result;
       private IDimension _dimension;
@@ -188,7 +188,7 @@ namespace MoBi.Presentation.Tasks
    public class When_importing_multiple_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
       private IList<ImportedQuantityDTO> _moleculeStartValues;
-      private IMoleculeStartValue _firstStartValueRef;
+      private MoleculeStartValue _firstStartValueRef;
       private IMoBiCommand _result;
 
       protected override void Context()
@@ -252,9 +252,9 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void value_of_start_values_should_match_commands_issued()
       {
-         _moleculeStartValueBuildingBlock[_moleculeStartValues[0].Path].StartValue.ShouldBeEqualTo(1.0);
-         _moleculeStartValueBuildingBlock[_moleculeStartValues[1].Path].StartValue.ShouldBeEqualTo(2.0);
-         _moleculeStartValueBuildingBlock[_moleculeStartValues[2].Path].StartValue.ShouldBeEqualTo(3.0);
+         _moleculeStartValueBuildingBlock[_moleculeStartValues[0].Path].Value.ShouldBeEqualTo(1.0);
+         _moleculeStartValueBuildingBlock[_moleculeStartValues[1].Path].Value.ShouldBeEqualTo(2.0);
+         _moleculeStartValueBuildingBlock[_moleculeStartValues[2].Path].Value.ShouldBeEqualTo(3.0);
       }
 
       [Observation]
@@ -266,13 +266,13 @@ namespace MoBi.Presentation.Tasks
 
    public class When_setting_the_is_present_flag_for_a_set_of_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
-      private List<IMoleculeStartValue> _startValues;
+      private List<MoleculeStartValue> _startValues;
       private IMoBiCommand _command;
 
       protected override void Context()
       {
          base.Context();
-         _startValues = new List<IMoleculeStartValue>
+         _startValues = new List<MoleculeStartValue>
          {
             new MoleculeStartValue {Name = "M1", IsPresent = true},
             new MoleculeStartValue {Name = "M2", IsPresent = false},
@@ -298,13 +298,13 @@ namespace MoBi.Presentation.Tasks
 
    public class When_setting_the_negatiave_start_values_flag_for_a_set_of_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
-      private List<IMoleculeStartValue> _startValues;
+      private List<MoleculeStartValue> _startValues;
       private IMoBiCommand _command;
 
       protected override void Context()
       {
          base.Context();
-         _startValues = new List<IMoleculeStartValue>
+         _startValues = new List<MoleculeStartValue>
          {
             new MoleculeStartValue {Name = "M1", NegativeValuesAllowed = true},
             new MoleculeStartValue {Name = "M2", NegativeValuesAllowed = false},
@@ -445,21 +445,21 @@ namespace MoBi.Presentation.Tasks
          var targetUnit = _dim.Unit("kg");
 
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
-         sut.SetDisplayValueWithUnit(_startValue, _startValue.ConvertToDisplayUnit(_startValue.StartValue.Value), targetUnit, A.Fake<IMoleculeStartValuesBuildingBlock>());
+         sut.SetDisplayValueWithUnit(_startValue, _startValue.ConvertToDisplayUnit(_startValue.Value.Value), targetUnit, A.Fake<IMoleculeStartValuesBuildingBlock>());
       }
 
       [Observation]
       public void display_amount_should_not_change()
       {
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
-         _startValue.ConvertToDisplayUnit(_startValue.StartValue.Value).ShouldBeEqualTo(_targetDisplayValue);
+         _startValue.ConvertToDisplayUnit(_startValue.Value.Value).ShouldBeEqualTo(_targetDisplayValue);
       }
 
       [Observation]
       public void base_amount_must_change_to_new_amount()
       {
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
-         _startValue.StartValue.Value.ShouldBeEqualTo(_targetBaseValue);
+         _startValue.Value.Value.ShouldBeEqualTo(_targetBaseValue);
       }
    }
 
@@ -542,7 +542,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_set_the_value_to_null()
       {
-         _nullStartValue.StartValue.ShouldBeNull();
+         _nullStartValue.Value.ShouldBeNull();
       }
    }
 

@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IParameterStartValueToParameterStartValueDTOMapper : IStartValueToStartValueDTOMapper<IParameterStartValue, ParameterStartValueDTO>
+   public interface IParameterStartValueToParameterStartValueDTOMapper : IStartValueToStartValueDTOMapper<ParameterStartValue, ParameterStartValueDTO>
    {
    }
 
@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Mappers
          _formulaMapper = formulaMapper;
       }
 
-      public ParameterStartValueDTO MapFrom(IParameterStartValue parameterStartValue, IStartValuesBuildingBlock<IParameterStartValue> buildingBlock)
+      public ParameterStartValueDTO MapFrom(ParameterStartValue parameterStartValue, IStartValuesBuildingBlock<ParameterStartValue> buildingBlock)
       {
          var dto = new ParameterStartValueDTO(parameterStartValue, buildingBlock)
          {

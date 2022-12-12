@@ -7,23 +7,23 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IParameterStartValuePathTask : IStartValuePathTask<IParameterStartValuesBuildingBlock, IParameterStartValue>
+   public interface IParameterStartValuePathTask : IStartValuePathTask<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
    }
 
-   public class ParameterStartValuePathTask : AbstractStartValuePathTask<IParameterStartValuesBuildingBlock, IParameterStartValue>, IParameterStartValuePathTask
+   public class ParameterStartValuePathTask : AbstractStartValuePathTask<IParameterStartValuesBuildingBlock, ParameterStartValue>, IParameterStartValuePathTask
    {
 
       public ParameterStartValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
       {
       }
 
-      public override IMoBiCommand UpdateStartValueNameCommand(IParameterStartValuesBuildingBlock startValues, IParameterStartValue startValue, string newValue)
+      public override IMoBiCommand UpdateStartValueNameCommand(IParameterStartValuesBuildingBlock startValues, ParameterStartValue startValue, string newValue)
       {
          return new ChangeParameterStartValueNameCommand(startValues, startValue.Path, newValue);
       }
 
-      public override IMoBiCommand UpdateStartValueContainerPathCommand(IParameterStartValuesBuildingBlock buildingBlock, IParameterStartValue startValue, int indexToUpdate, string newValue)
+      public override IMoBiCommand UpdateStartValueContainerPathCommand(IParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue, int indexToUpdate, string newValue)
       {
          var targetPath = startValue.ContainerPath.Clone<IObjectPath>();
          if (indexToUpdate > targetPath.Count)

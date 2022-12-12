@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
 
          var moleculeStartValue = _buildingBlock[_path];
          if (moleculeStartValue == null) return;
-         _originalValue = moleculeStartValue.StartValue;
+         _originalValue = moleculeStartValue.Value;
          _originalPresent = moleculeStartValue.IsPresent;
          _originalScaleDivisor = moleculeStartValue.ScaleDivisor;
          _originalNegativeValuesAllowed = moleculeStartValue.NegativeValuesAllowed;
@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
          var msv = _buildingBlock[_path];
          if (msv == null) return;
 
-         msv.StartValue = _value;
+         msv.Value = _value;
          msv.IsPresent = _present;
          msv.ScaleDivisor = _scaleDisivor;
          msv.NegativeValuesAllowed = _negativeValuesAllowed;

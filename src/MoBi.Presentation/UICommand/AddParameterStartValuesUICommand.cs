@@ -7,7 +7,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class AddParameterStartValuesUICommand : AbstractStartValueSubjectRetrieverUICommand<IParameterStartValuesBuildingBlock, IParameterStartValue>
+   internal class AddParameterStartValuesUICommand : AbstractStartValueSubjectRetrieverUICommand<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       private readonly IMoBiApplicationController _applicationController;
       private readonly IMoBiHistoryManager _moBiHistoryManager;

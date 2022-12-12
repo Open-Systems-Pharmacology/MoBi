@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand : ResetQuantityValuesToDefaultFromStartValuesInSimulation<IMoleculeStartValue>
+   public class ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand : ResetQuantityValuesToDefaultFromStartValuesInSimulation<MoleculeStartValue>
    {
       public ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand(IMoBiSimulation simulation) : base(simulation, simulation.BuildConfiguration.MoleculeStartValues)
       {

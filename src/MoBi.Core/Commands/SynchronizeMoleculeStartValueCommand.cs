@@ -7,17 +7,17 @@ using OSPSuite.Core.Domain.Formulas;
 namespace MoBi.Core.Commands
 {
    /// <summary>
-   ///    Ensures that the value defined in the <see cref="IMoleculeStartValue" /> of simulation are synchronized
+   ///    Ensures that the value defined in the <see cref="MoleculeStartValue" /> of simulation are synchronized
    ///    with the values defined in the <see cref="IQuantity" /> 
    /// </summary>
    public class SynchronizeMoleculeStartValueCommand : MoBiReversibleCommand
    {
       private IQuantity _quantity;
       private IMoleculeAmount _moleculeAmount;
-      private readonly IMoleculeStartValue _moleculeStartValue;
+      private readonly MoleculeStartValue _moleculeStartValue;
       private readonly string _quantityId;
 
-      public SynchronizeMoleculeStartValueCommand(IQuantity quantity, IMoleculeStartValue moleculeStartValue)
+      public SynchronizeMoleculeStartValueCommand(IQuantity quantity, MoleculeStartValue moleculeStartValue)
       {
          _quantity = quantity;
          _quantityId = quantity.Id;
@@ -43,19 +43,19 @@ namespace MoBi.Core.Commands
          //we are dealing with a quantity in simulation that was initialized with a constant value, we can update 
          if (_quantity.Formula.IsConstant())
          {
-            _moleculeStartValue.StartValue = _quantity.Value;
+            _moleculeStartValue.Value = _quantity.Value;
             return;
          }
 
          //value was overriden in the simulation
          if (_quantity.IsFixedValue)
          {
-            _moleculeStartValue.StartValue = _quantity.Value;
+            _moleculeStartValue.Value = _quantity.Value;
             return;
          }
 
          //value has not been changed by the user and the underlying quantity has no constant formula=> we should remove the start value
-         _moleculeStartValue.StartValue = null;
+         _moleculeStartValue.Value = null;
       }
 
       protected override void ClearReferences()

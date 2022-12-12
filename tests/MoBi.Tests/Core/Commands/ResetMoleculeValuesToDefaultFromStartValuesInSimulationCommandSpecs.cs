@@ -44,8 +44,8 @@ namespace MoBi.Core.Commands
 
    public class When_reseting_the_molecule_values_to_default_from_start_values : concern_for_ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand
    {
-      private IMoleculeStartValue _msv1;
-      private IMoleculeStartValue _msv2;
+      private MoleculeStartValue _msv1;
+      private MoleculeStartValue _msv2;
       private IMoleculeAmount _m1Liver;
       private IMoleculeAmount _m2Liver;
       private IMoleculeAmount _unchangedMoleculeAmount;
@@ -61,7 +61,7 @@ namespace MoBi.Core.Commands
 
          A.CallTo(() => _cloneManagerForModel.Clone(_msv1.Formula)).Returns(_msv1.Formula);
          _msv2 = new MoleculeStartValue { ContainerPath = new ObjectPath("LIVER"), Name = "M2" };
-         _msv2.StartValue = 17;
+         _msv2.Value = 17;
 
          _unchangedMoleculeAmount = new MoleculeAmount().WithName("Unchanged").WithFormula(new ConstantFormula(2));
          _m1Liver = new MoleculeAmount().WithName("M1").WithFormula(new ConstantFormula(1));

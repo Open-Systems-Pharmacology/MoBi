@@ -59,8 +59,8 @@ namespace MoBi.Core.Helper
          addToCache<DataRepository>(ObjectTypes.ObservedData);
          addToCache<ISimulationSettings>(ObjectTypes.SimulationSettings);
          addToCache<CurveChartTemplate>(ObjectTypes.ChartTemplate);
-         addToCache<IMoleculeStartValue>(ObjectTypes.MoleculeStartValue);
-         addToCache<IParameterStartValue>(ObjectTypes.ParameterStartValue);
+         addToCache<MoleculeStartValue>(ObjectTypes.MoleculeStartValue);
+         addToCache<ParameterStartValue>(ObjectTypes.ParameterStartValue);
          addToCache<IObserverBuilder>(ObjectTypes.ObserverBuilder);
          addToCache<TimePath>(ObjectTypes.Reference);
          addToCache<ObjectPath>(ObjectTypes.Reference);

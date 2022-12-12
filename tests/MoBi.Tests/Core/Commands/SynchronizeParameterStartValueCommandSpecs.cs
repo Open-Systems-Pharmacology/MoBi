@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_SynchronizeParameterStartValueCommand : ContextSpecification<SynchronizeParameterStartValueCommand>
    {
-      protected IParameterStartValue _parameterStartValue;
+      protected ParameterStartValue _parameterStartValue;
       protected IParameter _parameter;
       protected IMoBiContext _context;
 
@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_the_value()
       {
-         _parameterStartValue.StartValue.ShouldBeEqualTo(_parameter.Value);
+         _parameterStartValue.Value.ShouldBeEqualTo(_parameter.Value);
       }
 
       [Observation]

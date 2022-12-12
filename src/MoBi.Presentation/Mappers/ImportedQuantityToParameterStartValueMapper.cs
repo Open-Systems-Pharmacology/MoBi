@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IImportedQuantityToParameterStartValueMapper : IMapper<ImportedQuantityDTO, IParameterStartValue>
+   public interface IImportedQuantityToParameterStartValueMapper : IMapper<ImportedQuantityDTO, ParameterStartValue>
    {
       
    }
@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Mappers
          _psvCreator = psvCreator;
       }
 
-      public IParameterStartValue MapFrom(ImportedQuantityDTO input)
+      public ParameterStartValue MapFrom(ImportedQuantityDTO input)
       {
          var psv = _psvCreator.CreateParameterStartValue(input.Path, input.QuantityInBaseUnit, input.Dimension);
          psv.DisplayUnit = input.DisplayUnit;

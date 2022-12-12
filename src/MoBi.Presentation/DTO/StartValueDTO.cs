@@ -65,7 +65,7 @@ namespace MoBi.Presentation.DTO
          get
          {
             if (Formula == null || Formula.Formula == null)
-               return StartValueObject.ConvertToDisplayUnit(StartValueObject.StartValue);
+               return StartValueObject.ConvertToDisplayUnit(StartValueObject.Value);
             return double.NaN;
          }
          set
@@ -125,7 +125,7 @@ namespace MoBi.Presentation.DTO
 
          private static bool areAllPreviousPathElementsNonEmpty(StartValueDTO<T> dto, string pathElement, int index)
          {
-            // to set a path element to empty, there is no requirement for the preceeding elements
+            // to set a path element to empty, there is no requirement for the preceding elements
             if (string.IsNullOrEmpty(pathElement))
                return true;
 

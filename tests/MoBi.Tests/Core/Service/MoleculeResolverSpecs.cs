@@ -10,7 +10,7 @@ namespace MoBi.Core.Service
    {
       private IMoleculeBuildingBlock _moleculeBuildingBlock;
       private ISpatialStructure _spatialStructure;
-      private IMoleculeStartValue _moleculeStartValue;
+      private MoleculeStartValue _moleculeStartValue;
 
       protected ContainerMode _containerMode = ContainerMode.Physical;
       protected string _firstPathEntry = "The";

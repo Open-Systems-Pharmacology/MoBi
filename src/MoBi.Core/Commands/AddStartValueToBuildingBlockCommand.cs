@@ -56,16 +56,16 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddParameterStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<IParameterStartValue>
+   public class AddParameterStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<ParameterStartValue>
    {
-      public AddParameterStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<IParameterStartValue> parameterStartValuesBuildingBlock, IParameterStartValue startValue) : base(parameterStartValuesBuildingBlock, startValue)
+      public AddParameterStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<ParameterStartValue> parameterStartValuesBuildingBlock, ParameterStartValue startValue) : base(parameterStartValuesBuildingBlock, startValue)
       {
       }
    }
 
-   public class AddMoleculeStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<IMoleculeStartValue>
+   public class AddMoleculeStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<MoleculeStartValue>
    {
-      public AddMoleculeStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<IMoleculeStartValue> moleculeStartValuesBuildingBlock, IMoleculeStartValue startValue)
+      public AddMoleculeStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<MoleculeStartValue> moleculeStartValuesBuildingBlock, MoleculeStartValue startValue)
          : base(moleculeStartValuesBuildingBlock, startValue)
       {
       }

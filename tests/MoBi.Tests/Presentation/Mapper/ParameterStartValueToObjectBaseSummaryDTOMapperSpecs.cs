@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
          _builder.Name = "Name";
-         _builder.StartValue = 9.0;
+         _builder.Value = 9.0;
          _builder.ContainerPath = new ObjectPath("A");
          _builder.Dimension = DomainHelperForSpecs.AmountDimension;
          _builder.DisplayUnit = _builder.Dimension.DefaultUnit;

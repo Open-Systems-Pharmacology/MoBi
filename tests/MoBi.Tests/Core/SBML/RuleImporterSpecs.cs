@@ -26,7 +26,7 @@ namespace MoBi.Core.SBML
          foreach (var msv in msvbb)
          {
             if (msv.Name == "s1" && msv.IsPresent)
-               msv.StartValue.ShouldBeEqualTo(7);
+               msv.Value.ShouldBeEqualTo(7);
          }
       }
 
@@ -78,7 +78,7 @@ namespace MoBi.Core.SBML
          foreach (var msv in msvbb)
          {
             if (msv.Name == "s1" && msv.IsPresent)
-               msv.StartValue.ShouldBeEqualTo(7);
+               msv.Value.ShouldBeEqualTo(7);
          }
       }
 

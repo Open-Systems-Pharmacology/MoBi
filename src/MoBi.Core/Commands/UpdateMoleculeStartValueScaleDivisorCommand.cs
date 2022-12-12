@@ -10,10 +10,10 @@ namespace MoBi.Core.Commands
    {
       private readonly double _newScaleDivisor;
       private readonly double _oldScaleDivisor;
-      private IMoleculeStartValue _startValue;
+      private MoleculeStartValue _startValue;
       private readonly string _startValueId;
 
-      public UpdateMoleculeStartValueScaleDivisorCommand(IMoleculeStartValuesBuildingBlock buildingBlock, IMoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor) 
+      public UpdateMoleculeStartValueScaleDivisorCommand(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor) 
          : base(buildingBlock)
       {
          _newScaleDivisor = newScaleDivisor;
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _startValue = context.Get<IMoleculeStartValue>(_startValueId);
+         _startValue = context.Get<MoleculeStartValue>(_startValueId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
