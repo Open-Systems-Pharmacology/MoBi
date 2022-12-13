@@ -129,17 +129,17 @@ namespace MoBi.Presentation.Tasks.Interaction
       public virtual IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
-         return adddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+         return addItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
       }
 
       public IMoBiCommand AddExistingTemplate(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          _interactionTaskContext.UpdateTemplateDirectories();
          var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.LoadFromTemplate(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
-         return adddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+         return addItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
       }
 
-      private IMoBiCommand adddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
+      private IMoBiCommand addItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();

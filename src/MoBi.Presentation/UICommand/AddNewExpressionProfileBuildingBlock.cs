@@ -1,50 +1,73 @@
-﻿using MoBi.Core.Services;
-using OSPSuite.Presentation.MenuAndBars;
+﻿using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
+using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddNewIndividualTransporterBuildingBlock : IUICommand
+   public abstract class AddExpressionProfileBuildingBlock : ObjectUICommand<AddExpressionProfileBuildingBlock>
    {
-      private readonly IPKSimStarter _pkSimStarter;
+      protected IPKSimStarter _pkSimStarter;
+      private readonly IMoBiContext _context;
+      private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTasksForExpressionProfileBuildingBlock;
 
-      public AddNewIndividualTransporterBuildingBlock(IPKSimStarter pkSimStarter)
+      protected AddExpressionProfileBuildingBlock(IPKSimStarter pkSimStarter, IMoBiContext context,
+         IInteractionTasksForExpressionProfileBuildingBlock interactionTasksForExpressionProfileBuildingBlock)
       {
          _pkSimStarter = pkSimStarter;
+         _context = context;
+         _interactionTasksForExpressionProfileBuildingBlock = interactionTasksForExpressionProfileBuildingBlock;
       }
 
-      public void Execute()
+      protected override void PerformExecute()
       {
-         _pkSimStarter.CreateTransporterExpression();
+         var expressionFromPKSim = CreateExpressionFromPKSim();
+         if (expressionFromPKSim != null)
+         {
+            _context.AddToHistory(_interactionTasksForExpressionProfileBuildingBlock.AddToProject(expressionFromPKSim));
+         }
+      }
+
+      protected abstract ExpressionProfileBuildingBlock CreateExpressionFromPKSim();
+   }
+
+   public class AddNewIndividualTransporterBuildingBlock : AddExpressionProfileBuildingBlock
+   {
+      public AddNewIndividualTransporterBuildingBlock(IPKSimStarter pkSimStarter, IMoBiContext context,
+         IInteractionTasksForExpressionProfileBuildingBlock interactionTask) : base(pkSimStarter, context, interactionTask)
+      {
+      }
+
+      protected override ExpressionProfileBuildingBlock CreateExpressionFromPKSim()
+      {
+         return _pkSimStarter.CreateTransporterExpression();
       }
    }
 
-   public class AddNewBindingPartnerBuildingBlock : IUICommand
+   public class AddNewBindingPartnerBuildingBlock : AddExpressionProfileBuildingBlock
    {
-      private readonly IPKSimStarter _pkSimStarter;
-
-      public AddNewBindingPartnerBuildingBlock(IPKSimStarter pkSimStarter)
+      public AddNewBindingPartnerBuildingBlock(IPKSimStarter pkSimStarter, IMoBiContext context,
+         IInteractionTasksForExpressionProfileBuildingBlock interactionTask) : base(pkSimStarter, context, interactionTask)
       {
-         _pkSimStarter = pkSimStarter;
       }
 
-      public void Execute()
+      protected override ExpressionProfileBuildingBlock CreateExpressionFromPKSim()
       {
-         _pkSimStarter.CreateBindingPartnerExpression();
+         return _pkSimStarter.CreateBindingPartnerExpression();
       }
    }
 
-   public class AddNewMetabolizingEnzymeBuildingBlock : IUICommand
+   public class AddNewMetabolizingEnzymeBuildingBlock : AddExpressionProfileBuildingBlock
    {
-      private readonly IPKSimStarter _pkSimStarter;
-
-      public AddNewMetabolizingEnzymeBuildingBlock(IPKSimStarter pkSimStarter)
+      public AddNewMetabolizingEnzymeBuildingBlock(IPKSimStarter pkSimStarter, IMoBiContext context,
+         IInteractionTasksForExpressionProfileBuildingBlock interactionTask) : base(pkSimStarter, context, interactionTask)
       {
-         _pkSimStarter = pkSimStarter;
       }
 
-      public void Execute()
+      protected override ExpressionProfileBuildingBlock CreateExpressionFromPKSim()
       {
-         _pkSimStarter.CreateMetabolizingEnzymeExpression();
+         return _pkSimStarter.CreateMetabolizingEnzymeExpression();
       }
    }
 }

@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility;
@@ -39,10 +40,10 @@ namespace MoBi.Presentation.Tasks
          startPKSimWithFile(journalFilePath, AppConstants.PKSim.JournalFileArgument);
       }
 
-      public void CreateMetabolizingEnzymeExpression()
+      public ExpressionProfileBuildingBlock CreateMetabolizingEnzymeExpression()
       {
          loadPKSimAssembly();
-         var result = executeMethod(_expressionCreatorType.GetMethod("CreateIndividualEnzymeExpressionProfile"));
+         return executeMethod(_expressionCreatorType.GetMethod("CreateIndividualEnzymeExpressionProfile")) as ExpressionProfileBuildingBlock;
       }
 
       private object executeMethod(MethodInfo method)
@@ -63,16 +64,16 @@ namespace MoBi.Presentation.Tasks
             _expressionCreatorType = _externalAssembly.GetType("PKSim.UI.Starter.ExpressionProfileCreator");
       }
 
-      public void CreateBindingPartnerExpression()
+      public ExpressionProfileBuildingBlock CreateBindingPartnerExpression()
       {
          loadPKSimAssembly();
-         var result = executeMethod(_expressionCreatorType.GetMethod("CreateBindingPartnerExpressionProfile"));
+         return executeMethod(_expressionCreatorType.GetMethod("CreateBindingPartnerExpressionProfile")) as ExpressionProfileBuildingBlock;
       }
 
-      public void CreateTransporterExpression()
+      public ExpressionProfileBuildingBlock CreateTransporterExpression()
       {
          loadPKSimAssembly();
-         var result = executeMethod(_expressionCreatorType.GetMethod("CreateTransporterExpressionProfile"));
+         return executeMethod(_expressionCreatorType.GetMethod("CreateTransporterExpressionProfile")) as ExpressionProfileBuildingBlock;
       }
 
       private void startPKSimWithFile(string filePathToStart, string option)

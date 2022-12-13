@@ -1,11 +1,13 @@
-﻿namespace MoBi.Core.Services
+﻿using OSPSuite.Core.Domain.Builder;
+
+namespace MoBi.Core.Services
 {
    public interface IPKSimStarter
    {
       void StartPopulationSimulationWithSimulationFile(string simulationFilePath);
       void StartWithWorkingJournalFile(string journalFilePath);
-      void CreateMetabolizingEnzymeExpression();
-      void CreateBindingPartnerExpression();
-      void CreateTransporterExpression();
+      ExpressionProfileBuildingBlock CreateMetabolizingEnzymeExpression();
+      ExpressionProfileBuildingBlock CreateBindingPartnerExpression();
+      ExpressionProfileBuildingBlock CreateTransporterExpression();
    }
 }
