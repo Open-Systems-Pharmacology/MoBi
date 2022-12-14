@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public abstract class InteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TBuildingBlock, TBuilder>, IInteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder>
       where TBuildingBlock : class, IBuildingBlock, IBuildingBlock<TBuilder> 
-      where TBuilder : class, IUsingFormula, IWithDisplayUnit
+      where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
 
@@ -82,9 +82,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      protected abstract double? ValueFromBuilder(TBuilder builder);
-
-      public abstract IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula);
+      public IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)
+      {
+         return SetFormula(buildingBlock, builder, formula, shouldClearValue: builder.Value.HasValue);
+      }
 
       protected IMoBiCommand setFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)
       {
@@ -113,14 +114,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return SetValueWithUnit(builder, unit.UnitValueToBaseUnitValue(newDisplayValue.GetValueOrDefault(double.NaN)), unit, buildingBlock);
       }
 
-      protected abstract IMoBiCommand SetValueWithUnit(TBuilder builder, double? unitValueToBaseUnitValue, Unit unit, TBuildingBlock buildingBlock);
-
       protected IMoBiCommand setValue(TBuilder builder, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock)
       {
          return SetDisplayValueWithUnit(builder, newDisplayValue, unit, buildingBlock);
       }
 
-      public abstract IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula);
+      
 
       public IMoBiCommand SetValue(TBuildingBlock buildingBlock, double? valueInDisplayUnit, TBuilder builder)
       {
@@ -154,6 +153,33 @@ namespace MoBi.Presentation.Tasks.Interaction
          macroCommand.Add(AddFormulaToFormulaCacheAndSetOnBuilder<ExplicitFormula>(buildingBlock, builder, referenceParameter));
 
          return macroCommand;
+      }
+
+      protected virtual double? ValueFromBuilder(TBuilder builder)
+      {
+         return builder.Value;
+      }
+
+      public  IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)
+      {
+         return new ChangeValueFormulaCommand<TBuilder>(buildingBlock, builder, formula, builder.Formula).Run(Context);
+      }
+
+      protected IMoBiCommand SetValueWithUnit(TBuilder builder, double? unitValueToBaseUnitValue, Unit unit, TBuildingBlock buildingBlock)
+      {
+         return new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(builder, unitValueToBaseUnitValue, unit, buildingBlock).Run(Context);
+      }
+
+      public override IMoBiCommand Merge(TBuildingBlock buildingBlockToMerge, TBuildingBlock targetBuildingBlock)
+      {
+         // TODO
+         return new MoBiEmptyCommand();
+      }
+
+      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TBuilder builder, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      {
+         // You cannot add Individual Parameters to the buildingBlock
+         return new MoBiMacroCommand();
       }
    }
 }

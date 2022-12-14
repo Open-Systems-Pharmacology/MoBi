@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
+﻿using MoBi.Presentation.DTO;
 using OSPSuite.Presentation.Nodes;
-using MoBi.Presentation.DTO;
+using System.ComponentModel;
 
 namespace MoBi.Presentation.Nodes
 {

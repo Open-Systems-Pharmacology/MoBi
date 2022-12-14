@@ -63,6 +63,7 @@ namespace MoBi.Presentation.Presenter.Main
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.MoleculeStartValuesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ParameterStartValuesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder));
+            _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.IndividualsFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
 
             project.MoleculeBlockCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.MoleculeFolder));
@@ -74,6 +75,7 @@ namespace MoBi.Presentation.Presenter.Main
             project.MoleculeStartValueBlockCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.MoleculeStartValuesFolder));
             project.ParametersStartValueBlockCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ParameterStartValuesFolder));
             project.ExpressionProfileCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ExpressionProfilesFolder));
+            project.IndividualsCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.IndividualsFolder));
 
             project.SimulationSettingsCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.SimulationSettingsFolder));
 
@@ -184,6 +186,9 @@ namespace MoBi.Presentation.Presenter.Main
 
          if (buildingBlock.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
             return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.ExpressionProfilesFolder);
+
+         if (buildingBlock.IsAnImplementationOf<IndividualBuildingBlock>())
+            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.IndividualsFolder);
          
          throw new ArgumentOutOfRangeException();
       }
