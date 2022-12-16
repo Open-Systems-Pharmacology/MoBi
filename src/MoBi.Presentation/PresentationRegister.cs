@@ -76,6 +76,7 @@ namespace MoBi.Presentation
             scan.ExcludeNamespaceContainingType<ContextMenuBase>();
             scan.ExcludeNamespaceContainingType<IExitCommand>();
 
+            scan.ExcludeType<PKSimStarter>();
             scan.ExcludeType<MenuBarItemRepository>();
             scan.ExcludeType<SimulationRunner>();
             scan.ExcludeType<MoBiApplicationController>();
@@ -89,7 +90,7 @@ namespace MoBi.Presentation
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
 
-
+         container.Register<IPKSimStarter, PKSimStarter>(LifeStyle.Singleton);
          container.Register<IMenuBarItemRepository, MenuBarItemRepository>(LifeStyle.Singleton);
          container.Register<ISimulationRunner, SimulationRunner>(LifeStyle.Singleton);
          container.Register<IMoBiApplicationController, IApplicationController, MoBiApplicationController>(LifeStyle.Singleton);

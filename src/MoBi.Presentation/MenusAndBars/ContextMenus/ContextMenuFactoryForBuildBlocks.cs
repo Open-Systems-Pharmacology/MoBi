@@ -1,17 +1,17 @@
-﻿using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -72,18 +72,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuForExpressionProfileBuildingBlock : RootContextMenuFor<IMoBiProject, ExpressionProfileBuildingBlock>
-   {
-      public RootContextMenuForExpressionProfileBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context) : base(objectTypeResolver, context)
-      {
-      }
-
-      protected override void CreateAddItems(IMoBiProject parent)
-      {
-         _allMenuItems.Add(CreateAddExistingItemFor(parent));
-      }
-   }
-
    public class RootContextMenuFactoryForMoleculeBuildingBlock : RootNodeContextMenuFactoryFor<IMoleculeBuildingBlock>
    {
       public RootContextMenuFactoryForMoleculeBuildingBlock() : base(MoBiRootNodeTypes.MoleculeFolder)
@@ -111,7 +99,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
    }
-
 
    public class RootContextMenuFactoryForMoBiReactionBuildingBlock : RootNodeContextMenuFactoryFor<IMoBiReactionBuildingBlock>
    {
