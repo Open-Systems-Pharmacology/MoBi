@@ -2071,11 +2071,6 @@ namespace MoBi.Assets
          public static readonly string PopulationSimulationArgument = "/pop";
          public static readonly string JournalFileArgument = "/j";
          public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup. Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
-
-         public static string EntryPointNotFound(string fileName)
-         {
-            return $"Could not find entry point {fileName}. Please make sure that PK-Sim was installed using the provided setup.";
-         }
       }
 
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)

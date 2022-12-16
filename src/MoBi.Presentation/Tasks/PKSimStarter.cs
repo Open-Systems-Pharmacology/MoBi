@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility;
@@ -15,19 +15,25 @@ namespace MoBi.Presentation.Tasks
 {
    public class PKSimStarter : IPKSimStarter
    {
+      private const string CREATE_INDIVIDUAL_ENZYME_EXPRESSION_PROFILE = "CreateIndividualEnzymeExpressionProfile";
+      private const string CREATE_BINDING_PARTNER_EXPRESSION_PROFILE = "CreateBindingPartnerExpressionProfile";
+      private const string CREATE_TRANSPORTER_EXPRESSION_PROFILE = "CreateTransporterExpressionProfile";
+      private const string PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR = "PKSim.UI.Starter.ExpressionProfileCreator";
+      private const string PKSIM_UI_STARTER_DLL = "PKSim.UI.Starter.dll";
       private readonly IMoBiConfiguration _configuration;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
       private Assembly _externalAssembly;
       private readonly IShell _shell;
-      private Type _expressionCreatorType;
+      private readonly ICloneManagerForBuildingBlock _cloneManager;
 
-      public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory, IShell shell)
+      public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory, IShell shell, ICloneManagerForBuildingBlock cloneManager)
       {
          _configuration = configuration;
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
          _shell = shell;
+         _cloneManager = cloneManager;
       }
 
       public void StartPopulationSimulationWithSimulationFile(string simulationFilePath)
@@ -40,10 +46,24 @@ namespace MoBi.Presentation.Tasks
          startPKSimWithFile(journalFilePath, AppConstants.PKSim.JournalFileArgument);
       }
 
-      public ExpressionProfileBuildingBlock CreateMetabolizingEnzymeExpression()
+      public IBuildingBlock CreateProfileExpression(ExpressionType expressionType)
       {
+         var methodName = string.Empty;
+
+         if (expressionType == ExpressionTypes.MetabolizingEnzyme)
+            methodName = CREATE_INDIVIDUAL_ENZYME_EXPRESSION_PROFILE;
+         else if (expressionType == ExpressionTypes.ProteinBindingPartner)
+            methodName = CREATE_BINDING_PARTNER_EXPRESSION_PROFILE;
+         else if (expressionType == ExpressionTypes.TransportProtein)
+            methodName = CREATE_TRANSPORTER_EXPRESSION_PROFILE;
+
+         if (string.IsNullOrEmpty(methodName))
+            return null;
+
          loadPKSimAssembly();
-         return executeMethod(_expressionCreatorType.GetMethod("CreateIndividualEnzymeExpressionProfile")) as ExpressionProfileBuildingBlock;
+         var expressionProfileBuildingBlock = executeMethod(getExpressionCreatorMethod(methodName)) as ExpressionProfileBuildingBlock;
+
+         return _cloneManager.CloneBuildingBlock(expressionProfileBuildingBlock);
       }
 
       private object executeMethod(MethodInfo method)
@@ -59,21 +79,11 @@ namespace MoBi.Presentation.Tasks
          {
             _externalAssembly = Assembly.LoadFrom(assemblyFile);
          }
-
-         if (_expressionCreatorType == null)
-            _expressionCreatorType = _externalAssembly.GetType("PKSim.UI.Starter.ExpressionProfileCreator");
       }
 
-      public ExpressionProfileBuildingBlock CreateBindingPartnerExpression()
+      private MethodInfo getExpressionCreatorMethod(string methodName)
       {
-         loadPKSimAssembly();
-         return executeMethod(_expressionCreatorType.GetMethod("CreateBindingPartnerExpressionProfile")) as ExpressionProfileBuildingBlock;
-      }
-
-      public ExpressionProfileBuildingBlock CreateTransporterExpression()
-      {
-         loadPKSimAssembly();
-         return executeMethod(_expressionCreatorType.GetMethod("CreateTransporterExpressionProfile")) as ExpressionProfileBuildingBlock;
+         return _externalAssembly.GetType(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR).GetMethod(methodName);
       }
 
       private void startPKSimWithFile(string filePathToStart, string option)
@@ -95,7 +105,7 @@ namespace MoBi.Presentation.Tasks
          var pkSimPath = retrievePKSimExecutablePath();
          var directory = Path.GetDirectoryName(pkSimPath);
 
-         var dllName = "PKSim.UI.Starter.dll";
+         var dllName = PKSIM_UI_STARTER_DLL;
 
          if (directory != null)
          {
@@ -104,7 +114,7 @@ namespace MoBi.Presentation.Tasks
                return assemblyFile;
          }
 
-         throw new MoBiException(AppConstants.PKSim.EntryPointNotFound(dllName));
+         throw new MoBiException(AppConstants.PKSim.NotInstalled);
       }
 
       private string retrievePKSimExecutablePath()

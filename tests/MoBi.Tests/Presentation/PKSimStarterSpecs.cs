@@ -5,6 +5,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility;
@@ -18,6 +19,7 @@ namespace MoBi.Presentation
       protected IStartableProcessFactory _startableProcessFactory;
       protected IApplicationSettings _applicationSettings;
       protected string _simulationFile = "SimFile.pkml";
+      private ICloneManagerForBuildingBlock _cloneManager;
 
       protected override void Context()
       {
@@ -25,7 +27,8 @@ namespace MoBi.Presentation
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
          _applicationSettings = A.Fake<IApplicationSettings>();
          var shell = A.Fake<IShell>();
-         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, shell);
+         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, shell, _cloneManager);
       }
    }
 

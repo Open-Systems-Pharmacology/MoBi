@@ -22,15 +22,15 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithDescription(MenuDescriptions.NewExpressionProfileDescription);
 
          var newEnzyme = CreateMenuButton.WithCaption(AppConstants.Captions.AddMetabolizingEnzyme)
-            .WithCommand<AddNewMetabolizingEnzymeBuildingBlock>()
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.MetabolizingEnzyme)
             .WithIcon(ApplicationIcons.Enzyme);
 
          var newTransporter = CreateMenuButton.WithCaption(AppConstants.Captions.AddTransportProtein)
-            .WithCommand<AddNewIndividualTransporterBuildingBlock>()
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.TransportProtein)
             .WithIcon(ApplicationIcons.Transporter);
 
          var newSpecificBinding = CreateMenuButton.WithCaption(AppConstants.Captions.AddSpecificBindingPartner)
-            .WithCommand<AddNewBindingPartnerBuildingBlock>()
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.ProteinBindingPartner)
             .WithIcon(ApplicationIcons.SpecificBinding);
 
          newExpressionProfile.AddItem(newEnzyme);

@@ -6,8 +6,6 @@ namespace MoBi.Core.Services
    {
       void StartPopulationSimulationWithSimulationFile(string simulationFilePath);
       void StartWithWorkingJournalFile(string journalFilePath);
-      ExpressionProfileBuildingBlock CreateMetabolizingEnzymeExpression();
-      ExpressionProfileBuildingBlock CreateBindingPartnerExpression();
-      ExpressionProfileBuildingBlock CreateTransporterExpression();
+      IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
    }
 }
