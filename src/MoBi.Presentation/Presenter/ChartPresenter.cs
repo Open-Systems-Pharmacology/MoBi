@@ -23,6 +23,7 @@ using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Assets.Captions;
 using IChartTemplatingTask = MoBi.Presentation.Tasks.IChartTemplatingTask;
 
 namespace MoBi.Presentation.Presenter
@@ -59,7 +60,7 @@ namespace MoBi.Presentation.Presenter
       event EventHandler<ObservedDataAddedToChartEventArgs> OnObservedDataAddedToChart;
    }
 
-   public abstract class ChartPresenter : ChartPresenter<CurveChart, IChartView, IChartPresenter>, IChartPresenter
+   public abstract class ChartPresenter : ChartPresenter<CurveChart, IChartView, IChartPresenter>, IChartPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>
    {
       public event EventHandler<ObservedDataAddedToChartEventArgs> OnObservedDataAddedToChart = delegate { };
 
@@ -353,6 +354,11 @@ namespace MoBi.Presentation.Presenter
          displayPresenter.DragDrop -= OnDragDrop;
          displayPresenter.DragOver -= OnDragOver;
          Clear();
+      }
+
+      public void Handle(ObservedDataRemovedFromAnalysableEvent e)
+      {
+         Refresh();
       }
    }
 }

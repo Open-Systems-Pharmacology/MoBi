@@ -131,13 +131,22 @@ namespace MoBi.Core.Domain.Model
 
       public void RemoveUsedObservedData(DataRepository dataRepository)
       {
-         
+         if (!UsesObservedData(dataRepository))
+            return;
 
+         var curveToRemove = Chart.Curves.FirstOrDefault(c => Equals(c.yData.Repository, dataRepository));
+         if (curveToRemove == null)
+            return;
+
+         Chart.RemoveCurve(curveToRemove.Id);
+
+         HasChanged = true;
       }
 
       public void RemoveOutputMappings(DataRepository dataRepository)
       {
-         
+         var outputsMatchingDeletedObservedData = OutputMappings.OutputMappingsUsingDataRepository(dataRepository).ToList();
+         outputsMatchingDeletedObservedData.Each(OutputMappings.Remove);
       }
 
       public IEnumerable<CurveChart> Charts

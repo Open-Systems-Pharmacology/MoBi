@@ -1,13 +1,21 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.UnitSystem;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
+using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 
 namespace MoBi.Core
 {
@@ -116,6 +124,49 @@ namespace MoBi.Core
       public void the_simulation_must_indicate_it_has_changed()
       {
          sut.HasChanged.ShouldBeTrue();
+      }
+   }
+
+   public class When_removing_observed_data_from_the_simulation : concern_for_MoBiSimulation
+   {
+      private CurveChart _chart;
+      private Curve _curve;
+      private readonly DataRepository _dataRepository = new DataRepository();
+      private DataColumn _dataColumn;
+
+      protected override void Context()
+      {
+         base.Context();
+         _chart = new CurveChart();
+         _curve = new Curve();
+         _curve.SetxData(new DataColumn(), new MoBiDimensionFactory());
+         _dataColumn = new DataColumn
+         {
+            Repository = _dataRepository
+         };
+         _curve.SetyData(_dataColumn, new MoBiDimensionFactory());
+         _chart.AddCurve(_curve);
+
+         sut.Update(A.Fake<IMoBiBuildConfiguration>(), A.Fake<IModel>());
+         sut.Chart = _chart;
+         sut.HasChanged = false;
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveUsedObservedData(_dataRepository);
+      }
+
+      [Observation]
+      public void the_simulation_must_indicate_it_has_changed()
+      {
+         sut.HasChanged.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void the_observed_data_should_have_been_removed()
+      {
+         sut.Chart.Curves.ShouldBeEmpty();
       }
    }
 }
