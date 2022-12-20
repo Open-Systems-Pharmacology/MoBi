@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.SimModel;
 
 namespace MoBi.Presentation
 {
@@ -59,6 +60,31 @@ namespace MoBi.Presentation
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
             A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
             _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask);
+      }
+
+
+      protected Curve createObservedCurve(DataRepository observedDataRepository)
+      {
+         var dimensionFactory = A.Fake<IDimensionFactory>();
+         var curve = new Curve
+         {
+            Name = "OBS"
+         };
+         var baseGrid = new BaseGrid("baseGrid", DomainHelperForSpecs.TimeDimension)
+         {
+            DataInfo = new DataInfo(ColumnOrigins.BaseGrid),
+            Repository = observedDataRepository
+         };
+
+         var ydata = new DataColumn("ydata", DomainHelperForSpecs.ConcentrationDimension, baseGrid)
+         {
+            DataInfo = new DataInfo(ColumnOrigins.Observation),
+            Repository = observedDataRepository
+         };
+
+         curve.SetxData(baseGrid, dimensionFactory);
+         curve.SetyData(ydata, dimensionFactory);
+         return curve;
       }
    }
 
@@ -236,7 +262,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_initialise_hirarchical_presenter()
+      public void should_initialise_hierarchical_presenter()
       {
          A.CallTo(() => _hierarchicalSimulationPresenter.Edit(_simulation)).MustHaveHappened();
       }
@@ -258,30 +284,6 @@ namespace MoBi.Presentation
       public void should_not_display_diagram()
       {
          A.CallTo(() => _diagramPresenter.Edit(_simulation)).MustNotHaveHappened();
-      }
-
-      private Curve createObservedCurve(DataRepository observedDataRepository)
-      {
-         var dimensionFactory = A.Fake<IDimensionFactory>();
-         var curve = new Curve
-         {
-            Name = "OBS"
-         };
-         var baseGrid = new BaseGrid("baseGrid", DomainHelperForSpecs.TimeDimension)
-         {
-            DataInfo = new DataInfo(ColumnOrigins.BaseGrid),
-            Repository = observedDataRepository
-         };
-
-         var ydata = new DataColumn("ydata", DomainHelperForSpecs.ConcentrationDimension, baseGrid)
-         {
-            DataInfo = new DataInfo(ColumnOrigins.Observation),
-            Repository = observedDataRepository
-         };
-
-         curve.SetxData(baseGrid, dimensionFactory);
-         curve.SetyData(ydata, dimensionFactory);
-         return curve;
       }
    }
 
@@ -338,6 +340,52 @@ namespace MoBi.Presentation
       public void should_select_the_parameter_in_the_view()
       {
          A.CallTo(() => _.SelectParameter(_parameter)).MustHaveHappened();
+      }
+   }
+
+
+   public class When_adding_observed_data_to_the_simulation : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private DataRepository _firstObservedDataRepository;
+      private DataRepository _secondObservedDataRepository;
+      private List<DataRepository> _repositoryList = new List<DataRepository>();
+      private OutputMapping _firstOutputMapping;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
+         var chart = new CurveChart();
+         _firstObservedDataRepository = new DataRepository();
+         chart.AddCurve(createObservedCurve(_firstObservedDataRepository));
+         _secondObservedDataRepository = new DataRepository();
+         _repositoryList.Add(_firstObservedDataRepository);
+         _repositoryList.Add(_secondObservedDataRepository);
+         _simulation.Chart = chart;
+         _firstOutputMapping = A.Fake<OutputMapping>();
+         A.CallTo(() => _firstOutputMapping.UsesObservedData(_firstObservedDataRepository)).Returns(true);
+         A.CallTo(() => _firstOutputMapping.UsesObservedData(_secondObservedDataRepository)).Returns(false);
+         _simulation.OutputMappings.Add(_firstOutputMapping);
+         sut.Edit(_simulation);
+      }
+
+      protected override void Because()
+      {
+         _chartPresenter.OnObservedDataAddedToChart += Raise.With(new ObservedDataAddedToChartEventArgs { AddedDataRepositories = _repositoryList });
+      }
+
+
+      [Observation]
+      public void should_add_missing_mapping()
+      {
+         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_secondObservedDataRepository, _simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_add_duplicate_mapping()
+      {
+         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_firstObservedDataRepository, _simulation)).MustNotHaveHappened();
       }
    }
 }
