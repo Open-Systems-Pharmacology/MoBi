@@ -168,11 +168,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _startValuePathTask.HasEquivalentFormula(startValue, targetFormula);
       }
 
-      public override IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock startValues, TStartValue startValue, IFormula formula)
-      {
-         return new ChangeValueFormulaCommand<TStartValue>(startValues, startValue, formula, startValue.Formula).Run(Context);
-      }
-
       protected static bool HasEquivalentStartValue(IStartValue startValue, IParameter parameter)
       {
          var (value, _) = parameter.TryGetValue();
@@ -279,13 +274,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateValueOriginInStartValueCommand<TStartValue>(startValue, valueOrigin, buildingBlock).Run(Context);
       }
 
-      public override IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TStartValue startValue, IFormula formula)
-      {
-         var shouldClearValue = startValue.Value.HasValue;
-
-         return SetFormula(buildingBlock, startValue, formula, shouldClearValue);
-      }
-
       public abstract bool CanResolve(TBuildingBlock buildingBlock, TStartValue startValue);
 
       protected static bool ShouldFormulaBeOverridden(ImportedQuantityDTO quantityDTO, TStartValue startValue)
@@ -326,11 +314,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand EditStartValueContainerPath(TBuildingBlock buildingBlock, TStartValue startValue, int indexToUpdate, string newValue)
       {
          return _startValuePathTask.UpdateStartValueContainerPath(buildingBlock, startValue, indexToUpdate, newValue);
-      }
-
-      protected override IMoBiCommand SetValueWithUnit(TStartValue startValue, double? newBaseValue, Unit unit, TBuildingBlock startValues)
-      {
-         return new PathAndValueEntityValueOrUnitChangedCommand<TStartValue, TBuildingBlock>(startValue, newBaseValue, unit, startValues).Run(Context);
       }
    }
 }

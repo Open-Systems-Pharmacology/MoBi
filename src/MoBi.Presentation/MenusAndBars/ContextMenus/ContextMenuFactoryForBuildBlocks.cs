@@ -65,6 +65,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
+   public class RootContextMenuFactoryForIndividualBuildingBlock : RootNodeContextMenuFactoryFor<IndividualBuildingBlock>
+   {
+      public RootContextMenuFactoryForIndividualBuildingBlock() : base(MoBiRootNodeTypes.IndividualsFolder)
+      {
+      }
+   }
+
    public class RootContextMenuFactoryForExpressionProfileBuildingBlock : RootNodeContextMenuFactoryFor<ExpressionProfileBuildingBlock>
    {
       public RootContextMenuFactoryForExpressionProfileBuildingBlock() : base(MoBiRootNodeTypes.ExpressionProfilesFolder)
