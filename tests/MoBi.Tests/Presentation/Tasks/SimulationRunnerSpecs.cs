@@ -245,7 +245,7 @@ namespace MoBi.Presentation.Tasks
          _simulation.ResultsDataRepository = _oldResults;
 
          _newResults = new DataRepository("NEW");
-         _simulationResults = new SimulationRunResults(success: true, warnings: Enumerable.Empty<SolverWarning>(), results: _newResults);
+         _simulationResults = new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: _newResults);
          A.CallTo(() => _simModelManager.RunSimulation(_simulation, null)).Returns(_simulationResults);
          var baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimension);
          _concentrationColumn = new DataColumn("Drug", DomainHelperForSpecs.ConcentrationDimension, baseGrid);
