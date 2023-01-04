@@ -31,7 +31,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Comparisons;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -237,6 +236,7 @@ namespace MoBi.Presentation
          container.Register<IContextMenuForBuildingBlock<IParameterStartValuesBuildingBlock>, ContextMenuForParameterStartValuesBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IMoleculeStartValuesBuildingBlock>, ContextMenuForMoleculeStartValuesBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<ExpressionProfileBuildingBlock>, ContextMenuForExpressionProfileBuildingBlock>();
+         container.Register<IContextMenuForBuildingBlock<IndividualBuildingBlock>, ContextMenuForIndividualBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IMoBiReactionBuildingBlock>, ContextMenuForMergableBuildingBlock<IMoBiReactionBuildingBlock>>();
          container.Register<IContextMenuForBuildingBlock<IObserverBuildingBlock>, ContextMenuForMergableBuildingBlock<IObserverBuildingBlock>>();
          container.Register<IContextMenuForBuildingBlock<IPassiveTransportBuildingBlock>, ContextMenuForMergableBuildingBlock<IPassiveTransportBuildingBlock>>();
@@ -256,6 +256,7 @@ namespace MoBi.Presentation
          registerContextMenuForBuildingBlockFactory<IEventGroupBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<IMoleculeStartValuesBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<ExpressionProfileBuildingBlock>(container);
+         registerContextMenuForBuildingBlockFactory<IndividualBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<IParameterStartValuesBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<ISimulationSettings>(container);
       }
