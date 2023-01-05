@@ -342,9 +342,8 @@ namespace MoBi.Presentation.Presenter
 
       private List<DataRepository> observedDataNotMappedInTheSimulation(ObservedDataAddedToChartEventArgs e)
       {
-         var observedDataToAdd = e.AddedDataRepositories
+         return e.AddedDataRepositories
             .Where(dataRepository => !_simulation.OutputMappings.Any(x => x.UsesObservedData(dataRepository))).ToList();
-         return observedDataToAdd;
       }
    }
 }
