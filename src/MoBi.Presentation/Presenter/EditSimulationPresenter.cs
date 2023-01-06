@@ -136,7 +136,7 @@ namespace MoBi.Presentation.Presenter
          UpdateCaption();
          _view.Display();
          loadChart();
-     }
+      }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
       {
@@ -171,18 +171,18 @@ namespace MoBi.Presentation.Presenter
             _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);
          }
 
-         if (_simulation.PredictedVsObservedChart == null) 
+         if (_simulation.PredictedVsObservedChart == null)
             _simulation.PredictedVsObservedChart = _chartFactory.Create<SimulationPredictedVsObservedChart>();
 
-         if(_simulationPredictedVsObservedChartPresenter.Chart == null)
-            _simulationPredictedVsObservedChartPresenter.InitializeAnalysis(_simulation.PredictedVsObservedChart, _simulation);  
+         if (_simulationPredictedVsObservedChartPresenter.Chart == null)
+            _simulationPredictedVsObservedChartPresenter.InitializeAnalysis(_simulation.PredictedVsObservedChart, _simulation);
          else
             _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
 
-         if (_simulation.ResidualVsTimeChart == null) 
+         if (_simulation.ResidualVsTimeChart == null)
             _simulation.ResidualVsTimeChart = _chartFactory.Create<SimulationResidualVsTimeChart>();
 
-         if (_simulationResidualVsTimeChartPresenter.Chart == null) 
+         if (_simulationResidualVsTimeChartPresenter.Chart == null)
             _simulationResidualVsTimeChartPresenter.InitializeAnalysis(_simulation.ResidualVsTimeChart, _simulation);
          else
             _simulationResidualVsTimeChartPresenter.UpdateAnalysisBasedOn(_simulation);
@@ -328,11 +328,22 @@ namespace MoBi.Presentation.Presenter
 
       private void onObservedDataAddedToChart(object sender, ObservedDataAddedToChartEventArgs e)
       {
-         foreach (var dataRepository in e.AddedDataRepositories)
+         var observedDataToAdd = observedDataNotMappedInTheSimulation(e);
+
+         if (!observedDataToAdd.Any())
+            return;
+
+         foreach (var dataRepository in observedDataToAdd)
          {
             _outputMappingMatchingTask.AddMatchingOutputMapping(dataRepository, _simulation);
             _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(_simulation, dataRepository, false));
          }
+      }
+
+      private List<DataRepository> observedDataNotMappedInTheSimulation(ObservedDataAddedToChartEventArgs e)
+      {
+         return e.AddedDataRepositories
+            .Where(dataRepository => !_simulation.OutputMappings.Any(x => x.UsesObservedData(dataRepository))).ToList();
       }
    }
 }
