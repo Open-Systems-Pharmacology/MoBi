@@ -8,6 +8,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
 
@@ -56,8 +57,9 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          ILegendPresenter legendPresenter,
          IDeleteStartValuePresenter deleteStartValuePresenter,
-         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
-         : base(view, startValueMapper, refreshStartValuesPresenter, moleculeStartValuesTask, msvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper)
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
+         IDimensionFactory dimensionFactory)
+         : base(view, startValueMapper, refreshStartValuesPresenter, moleculeStartValuesTask, msvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _moleculeStartValuesTask = moleculeStartValuesTask;
          isPresentSelectionPresenter.ApplySelectionAction = performIsPresentAction;

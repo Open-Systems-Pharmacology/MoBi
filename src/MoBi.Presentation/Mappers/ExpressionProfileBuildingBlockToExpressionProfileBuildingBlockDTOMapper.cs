@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MoBi.Presentation.DTO;
+﻿using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -24,7 +23,7 @@ namespace MoBi.Presentation.Mappers
       {
          return  new ExpressionProfileBuildingBlockDTO(expressionProfileBuildingBlock)
          {
-            ExpressionParameters = expressionProfileBuildingBlock.MapAllUsing(_expressionParameterToExpressionParameterDTOMapper)
+            ParameterDTOs = expressionProfileBuildingBlock.MapAllUsing(_expressionParameterToExpressionParameterDTOMapper)
          };
       }
    }

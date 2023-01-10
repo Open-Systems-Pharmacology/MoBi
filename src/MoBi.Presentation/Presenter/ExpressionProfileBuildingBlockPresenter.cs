@@ -11,28 +11,32 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-    public interface IExpressionProfileBuildingBlockPresenter : IPresenter<IExpressionProfileBuildingBlockView>, IBreadCrumbsPresenter
+   public interface IPathAndValueBuildingBlockPresenter<in TDTO> : IBreadCrumbsPresenter
    {
-      void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
-      void SetExpressionParameterValue(ExpressionParameterDTO expressionParameterDTO, double? newValue);
-      void SetUnit(ExpressionParameterDTO expressionParameter, Unit unit);
-      void SetFormula(ExpressionParameterDTO expressionParameterDTO, IFormula newValueFormula);
+      void SetParameterValue(TDTO expressionParameterDTO, double? newValue);
+      void SetUnit(TDTO expressionParameter, Unit unit);
+      void SetFormula(TDTO expressionParameterDTO, IFormula newValueFormula);
       IEnumerable<ValueFormulaDTO> AllFormulas();
-      void AddNewFormula(ExpressionParameterDTO expressionParameterDTO);
+      void AddNewFormula(TDTO expressionParameterDTO);
+      IEnumerable<IDimension> DimensionsSortedByName();
    }
 
-   public class ExpressionProfileBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>, 
+   public interface IExpressionProfileBuildingBlockPresenter : IPresenter<IExpressionProfileBuildingBlockView>, IPathAndValueBuildingBlockPresenter<ExpressionParameterDTO>
+   {
+      void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
+   }
+
+   public class ExpressionProfileBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
       IExpressionProfileBuildingBlockPresenter
    {
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;
-      private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTaskForExpressionProfile;
+      
       private ExpressionProfileBuildingBlockDTO _expressionProfileBuildingBlockDTO;
 
-      public ExpressionProfileBuildingBlockPresenter(IExpressionProfileBuildingBlockView view, IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper expressionProfileToDTOMapper, 
-         IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper) : base(view, interactionTaskForExpressionProfile, formulaToValueFormulaDTOMapper)
+      public ExpressionProfileBuildingBlockPresenter(IExpressionProfileBuildingBlockView view, IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper expressionProfileToDTOMapper,
+         IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view, interactionTaskForExpressionProfile, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _expressionProfileToDTOMapper = expressionProfileToDTOMapper;
-         _interactionTaskForExpressionProfile = interactionTaskForExpressionProfile;
       }
 
       public override void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
@@ -44,29 +48,9 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _buildingBlock;
 
-      public void SetExpressionParameterValue(ExpressionParameterDTO expressionParameterDTO, double? newValue)
-      {
-         AddCommand(_interactionTaskForExpressionProfile.SetValue(_buildingBlock, newValue, expressionParameterDTO.ExpressionParameter));
-      }
-
-      public void SetFormula(ExpressionParameterDTO expressionParameterDTO, IFormula formula)
-      {
-         SetFormulaInBuilder(expressionParameterDTO, formula, expressionParameterDTO.ExpressionParameter);
-      }
-
-      public void AddNewFormula(ExpressionParameterDTO expressionParameterDTO)
-      {
-         AddNewFormula(expressionParameterDTO, expressionParameterDTO.ExpressionParameter);
-      }
-
-      public void SetUnit(ExpressionParameterDTO expressionParameter, Unit unit)
-      {
-         SetUnit(expressionParameter.ExpressionParameter, unit);
-      }
-
       public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
       {
-         return _expressionProfileBuildingBlockDTO.ExpressionParameters.HasAtLeastTwoDistinctValues(pathElementIndex);
+         return _expressionProfileBuildingBlockDTO.ParameterDTOs.HasAtLeastTwoDistinctValues(pathElementIndex);
       }
    }
 }

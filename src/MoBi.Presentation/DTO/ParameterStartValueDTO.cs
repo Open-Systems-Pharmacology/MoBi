@@ -1,11 +1,10 @@
 ﻿using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
    public class ParameterStartValueDTO : StartValueDTO<ParameterStartValue>
    {
-      public ParameterStartValue ParameterStartValue => StartValueObject;
+      public ParameterStartValue ParameterStartValue => PathWithValueObject;
 
       public ParameterStartValueDTO(ParameterStartValue parameterStartValue, IStartValuesBuildingBlock<ParameterStartValue> buildingBlock) : base(parameterStartValue, buildingBlock)
       {
@@ -16,5 +15,4 @@ namespace MoBi.Presentation.DTO
          ParameterStartValue.Name = newName;
       }
    }
-
 }

@@ -6,22 +6,19 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IExpressionParameterToExpressionParameterDTOMapper : IMapper<ExpressionParameter, ExpressionParameterDTO>
    {
+
    }
 
-   public class ExpressionParameterToExpressionParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IExpressionParameterToExpressionParameterDTOMapper
+   public class ExpressionParameterToExpressionParameterDTOMapper : PathWithValueToDTOMapper<ExpressionParameter, ExpressionParameterDTO>, IExpressionParameterToExpressionParameterDTOMapper
    {
-      private readonly IFormulaToValueFormulaDTOMapper _formulaMapper;
-
-      public ExpressionParameterToExpressionParameterDTOMapper(IFormulaToValueFormulaDTOMapper formulaMapper)
+      public ExpressionParameterToExpressionParameterDTOMapper(IFormulaToValueFormulaDTOMapper formulaMapper) : base(formulaMapper)
       {
-         _formulaMapper = formulaMapper;
+         
       }
-      public ExpressionParameterDTO MapFrom(ExpressionParameter expressionParameter)
+
+      protected override ExpressionParameterDTO DTOFor(ExpressionParameter inputParameter)
       {
-         return new ExpressionParameterDTO(expressionParameter)
-         {
-            Formula = _formulaMapper.MapFrom(expressionParameter.Formula)
-         };
+         return new ExpressionParameterDTO(inputParameter);
       }
    }
 }

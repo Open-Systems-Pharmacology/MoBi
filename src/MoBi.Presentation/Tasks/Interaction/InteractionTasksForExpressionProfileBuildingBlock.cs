@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    }
 
-   public class InteractionTaskForIndividualBuildingBlock : InteractionTaskForPathAndValueEntity<IndividualBuildingBlock, IndividualParameter>
+   public class InteractionTaskForIndividualBuildingBlock : InteractionTaskForPathAndValueEntity<IndividualBuildingBlock, IndividualParameter>, IInteractionTaskForIndividualBuildingBlock
    {
       public InteractionTaskForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<IndividualBuildingBlock> editTask, IMoBiFormulaTask moBiFormulaTask) : base(interactionTaskContext, editTask, moBiFormulaTask)
       {

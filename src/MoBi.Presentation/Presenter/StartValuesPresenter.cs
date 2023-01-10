@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       PathWithValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TStartValue, TStartValueDTO>, IStartValuesPresenter<TStartValueDTO>
       where TView : IView<TPresenter>, IStartValuesView<TStartValueDTO>
       where TPresenter : IPresenter
-      where TStartValue : class, IStartValue, IUsingFormula
+      where TStartValue : PathAndValueEntity, IStartValue, IUsingFormula
       where TStartValueDTO : StartValueDTO<TStartValue>
       where TBuildingBlock : class, IBuildingBlock<TStartValue>, IStartValuesBuildingBlock<TStartValue>
    {
@@ -57,8 +57,9 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          ILegendPresenter legendPresenter,
          IDeleteStartValuePresenter deleteStartValuePresenter,
-         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
-         : base(view, startValuesTask, formulaToValueFormulaDTOMapper)
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
+         IDimensionFactory dimensionFactory)
+         : base(view, startValuesTask, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _startValuesTask = startValuesTask;
          _startValueMapper = startValueMapper;
@@ -99,7 +100,7 @@ namespace MoBi.Presentation.Presenter
             return MoBiColors.Extended;
 
 
-         var startValue = startValueDTO.StartValueObject;
+         var startValue = startValueDTO.PathWithValueObject;
          if (!_startValuesTask.CanResolve(_buildingBlock, startValue))
             return MoBiColors.CannotResolve;
 
@@ -108,7 +109,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool isOriginalStartValue(TStartValueDTO startValue)
       {
-         return _originalStartValues.Contains(startValue.StartValueObject);
+         return _originalStartValues.Contains(startValue.PathWithValueObject);
       }
 
       public void ExtendStartValues()
@@ -173,7 +174,7 @@ namespace MoBi.Presentation.Presenter
 
       protected IEnumerable<TStartValue> StartValuesFrom(IEnumerable<TStartValueDTO> selectedStartValueDTOs)
       {
-         return selectedStartValueDTOs.Select(x => x.StartValueObject);
+         return selectedStartValueDTOs.Select(x => x.PathWithValueObject);
       }
 
       private void refreshStartValues(IEnumerable<TStartValue> startValues)
@@ -219,7 +220,7 @@ namespace MoBi.Presentation.Presenter
 
       private void deleteUnresolved()
       {
-         bulkRemove(_startValueDTOs.Where(dto => !_startValuesTask.CanResolve(_buildingBlock, dto.StartValueObject)).ToList());
+         bulkRemove(_startValueDTOs.Where(dto => !_startValuesTask.CanResolve(_buildingBlock, dto.PathWithValueObject)).ToList());
       }
 
       private void performRefreshAction(SelectOption option)
@@ -330,7 +331,7 @@ namespace MoBi.Presentation.Presenter
 
       protected TStartValue StartValueFrom(TStartValueDTO startValueDTO)
       {
-         return startValueDTO?.StartValueObject;
+         return startValueDTO?.PathWithValueObject;
       }
 
       protected TStartValueDTO StartValueDTOFrom(TStartValue startValue)
@@ -345,18 +346,18 @@ namespace MoBi.Presentation.Presenter
          this.DoWithinLatch(() => base.AddCommand(commandAction));
       }
 
-      public void SetFormula(TStartValueDTO startValueDTO, IFormula formula)
+      public override void SetFormula(TStartValueDTO startValueDTO, IFormula formula)
       {
          var startValue = StartValueFrom(startValueDTO);
          SetFormulaInBuilder(startValueDTO, formula, startValue);
       }
 
-      public void SetUnit(TStartValueDTO startValueDTO, Unit newUnit)
+      public override void SetUnit(TStartValueDTO startValueDTO, Unit newUnit)
       {
          SetUnit(StartValueFrom(startValueDTO), newUnit);
       }
 
-      public abstract void AddNewFormula(TStartValueDTO startValueDTO);
+      public abstract override void AddNewFormula(TStartValueDTO startValueDTO);
 
       public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
       {

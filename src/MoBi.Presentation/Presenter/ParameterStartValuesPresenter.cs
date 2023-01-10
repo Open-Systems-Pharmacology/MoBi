@@ -41,8 +41,9 @@ namespace MoBi.Presentation.Presenter
          IDisplayUnitRetriever displayUnitRetriever,
          ILegendPresenter legendPresenter,
          IDeleteStartValuePresenter deleteStartValuePresenter, 
-         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
-         : base(view, startValueMapper, refreshStartValuesPresenter, parameterStartValuesTask, csvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper)
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
+         IDimensionFactory dimensionFactory)
+         : base(view, startValueMapper, refreshStartValuesPresenter, parameterStartValuesTask, csvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _parameterStartValuesTask = parameterStartValuesTask;
          _displayUnitRetriever = displayUnitRetriever;

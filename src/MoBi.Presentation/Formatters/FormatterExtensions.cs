@@ -15,6 +15,11 @@ namespace MoBi.Presentation.Formatters
          return new ValueAllowingNaNFormatter(parameterStartValueDTO);
       }
 
+      public static IFormatter<double?> IndividualParameterFormatter(this IndividualParameterDTO individualParameterDTO)
+      {
+         return new ValueAllowingNaNFormatter(individualParameterDTO);
+      }
+
       public static IFormatter<double?> ExpressionParameterFormatter(this ExpressionParameterDTO expressionParameterDTO)
       {
          return new ValueAllowingNaNFormatter(expressionParameterDTO);

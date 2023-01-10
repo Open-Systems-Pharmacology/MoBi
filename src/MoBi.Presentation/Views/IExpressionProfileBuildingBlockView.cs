@@ -4,8 +4,8 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-    public interface IExpressionProfileBuildingBlockView : IView<IExpressionProfileBuildingBlockPresenter>
-    {
-        void BindTo(ExpressionProfileBuildingBlockDTO buildingBlockDTO);
-    }
+   public interface IExpressionProfileBuildingBlockView : IView<IExpressionProfileBuildingBlockPresenter>
+   {
+      void BindTo(ExpressionProfileBuildingBlockDTO buildingBlockDTO);
+   }
 }

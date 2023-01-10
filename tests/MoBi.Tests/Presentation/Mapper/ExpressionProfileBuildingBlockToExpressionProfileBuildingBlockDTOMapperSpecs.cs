@@ -39,10 +39,10 @@ namespace MoBi.Presentation.Mapper
          [Observation]
          public void the_dto_should_contain_expression_parameter_dtos()
          {
-            _result.ExpressionParameters.Count.ShouldBeEqualTo(3);
-            _result.ExpressionParameters.Count(x => x.Value.Value.Equals(1)).ShouldBeEqualTo(1);
-            _result.ExpressionParameters.Count(x => x.Value.Value.Equals(2)).ShouldBeEqualTo(1);
-            _result.ExpressionParameters.Count(x => x.Value.Value.Equals(3)).ShouldBeEqualTo(1);
+            _result.ParameterDTOs.Count.ShouldBeEqualTo(3);
+            _result.ParameterDTOs.Count(x => x.Value.Value.Equals(1)).ShouldBeEqualTo(1);
+            _result.ParameterDTOs.Count(x => x.Value.Value.Equals(2)).ShouldBeEqualTo(1);
+            _result.ParameterDTOs.Count(x => x.Value.Value.Equals(3)).ShouldBeEqualTo(1);
          }
       }
    }

@@ -1,4 +1,6 @@
-﻿using OSPSuite.Core.Domain.Builder;
+﻿using MoBi.Presentation.Formatters;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Format;
 
 namespace MoBi.Presentation.DTO
 {
@@ -6,7 +8,7 @@ namespace MoBi.Presentation.DTO
    {
       public bool IsPresent
       {
-         get { return StartValueObject.IsPresent; }
+         get { return PathWithValueObject.IsPresent; }
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -15,7 +17,7 @@ namespace MoBi.Presentation.DTO
 
       public bool NegativeValuesAllowed
       {
-         get { return StartValueObject.NegativeValuesAllowed; }
+         get { return PathWithValueObject.NegativeValuesAllowed; }
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -24,7 +26,7 @@ namespace MoBi.Presentation.DTO
 
       public double ScaleDivisor
       {
-         get { return StartValueObject.ScaleDivisor; }
+         get { return PathWithValueObject.ScaleDivisor; }
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -33,7 +35,7 @@ namespace MoBi.Presentation.DTO
 
       public MoleculeStartValue MoleculeStartValue
       {
-         get { return StartValueObject; }
+         get { return PathWithValueObject; }
       }
 
       public MoleculeStartValueDTO(MoleculeStartValue moleculeStartValue, IStartValuesBuildingBlock<MoleculeStartValue> buildingBlock) : base(moleculeStartValue, buildingBlock)

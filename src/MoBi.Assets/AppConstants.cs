@@ -1295,6 +1295,7 @@ namespace MoBi.Assets
          public static readonly string ParameterStartValues = "Parameter Start Values";
          public static readonly string ExpressionProfiles = "Expression Profiles";
          public static readonly string ExpressionProfile = "Expression Profile";
+         public static readonly string Individual = "Individual";
          public static readonly string NextButton = "&Next";
          public static readonly string PreviousButton = "&Previous";
          public static readonly string FinishButton = "&Finish";
@@ -1685,6 +1686,11 @@ namespace MoBi.Assets
          public static string ReactionsBuildingBlockCaption(string name)
          {
             return buildingBlockCaption(Reactions, name);
+         }
+
+         public static string IndividualBuildingBlockCaption(string name)
+         {
+            return buildingBlockCaption(Individual, name);
          }
 
          public static string ExpressionProfileBuildingBlockCaption(string name)
