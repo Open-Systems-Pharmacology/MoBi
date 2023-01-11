@@ -9,16 +9,16 @@ namespace MoBi.Presentation.DTO
    {
       private readonly OriginDataItems _originData;
       private readonly List<OriginDataItemDTO> _originDataItems;
-      private readonly ValueOriginDTO _valueOrigin;
 
       public IEnumerable<OriginDataItemDTO> AllDataItems => _originDataItems;
+      public ValueOriginDTO ValueOrigin { get; }
 
       public OriginDataDTO(OriginDataItems originData)
       {
          _originData = originData;
          _originDataItems = new List<OriginDataItemDTO>();
          _originData.AllDataItems.Each(x => _originDataItems.Add(new OriginDataItemDTO(x)));
-         // _valueOrigin = new ValueOriginDTO(originData);
+         ValueOrigin = new ValueOriginDTO(originData);
 
       }
    }

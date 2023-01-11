@@ -17,7 +17,9 @@
             {
                 components.Dispose();
             }
+            disposeBinders();
             base.Dispose(disposing);
+            
         }
 
         #region Component Designer generated code
@@ -28,46 +30,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-         this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new OSPSuite.UI.Controls.UxGridView();
-         this.originGridControl = new DevExpress.XtraGrid.GridControl();
-         this.cardView1 = new DevExpress.XtraGrid.Views.Card.CardView();
+         this.uxLayoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.gridGroup = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
-         this.tablePanel.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.originGridControl)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cardView1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).BeginInit();
+         this.uxLayoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridGroup)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
-         // 
-         // tablePanel
-         // 
-         this.tablePanel.Columns.AddRange(new DevExpress.Utils.Layout.TablePanelColumn[] {
-            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 5F),
-            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 55F)});
-         this.tablePanel.Controls.Add(this.originGridControl);
-         this.tablePanel.Controls.Add(this.gridControl);
-         this.tablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tablePanel.Location = new System.Drawing.Point(0, 0);
-         this.tablePanel.Name = "tablePanel";
-         this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 26F)});
-         this.tablePanel.Size = new System.Drawing.Size(731, 387);
-         this.tablePanel.TabIndex = 0;
          // 
          // gridControl
          // 
-         this.tablePanel.SetColumn(this.gridControl, 0);
-         this.tablePanel.SetColumnSpan(this.gridControl, 2);
-         this.gridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.gridControl.Location = new System.Drawing.Point(3, 128);
+         this.gridControl.Location = new System.Drawing.Point(24, 45);
          this.gridControl.MainView = this.gridView;
          this.gridControl.Name = "gridControl";
-         this.tablePanel.SetRow(this.gridControl, 1);
-         this.gridControl.Size = new System.Drawing.Size(725, 256);
+         this.gridControl.Size = new System.Drawing.Size(683, 318);
          this.gridControl.TabIndex = 0;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView});
@@ -86,49 +70,70 @@
          this.gridView.OptionsSelection.MultiSelect = true;
          this.gridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
          // 
-         // originGridControl
+         // uxLayoutControl
          // 
-         this.tablePanel.SetColumn(this.originGridControl, 0);
-         this.tablePanel.SetColumnSpan(this.originGridControl, 2);
-         this.originGridControl.Location = new System.Drawing.Point(3, 3);
-         this.originGridControl.MainView = this.cardView1;
-         this.originGridControl.Name = "originGridControl";
-         this.tablePanel.SetRow(this.originGridControl, 0);
-         this.originGridControl.Size = new System.Drawing.Size(725, 119);
-         this.originGridControl.TabIndex = 1;
-         this.originGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.cardView1});
+         this.uxLayoutControl.AllowCustomization = false;
+         this.uxLayoutControl.Controls.Add(this.gridControl);
+         this.uxLayoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.uxLayoutControl.Location = new System.Drawing.Point(0, 0);
+         this.uxLayoutControl.Name = "uxLayoutControl";
+         this.uxLayoutControl.Root = this.Root;
+         this.uxLayoutControl.Size = new System.Drawing.Size(731, 387);
+         this.uxLayoutControl.TabIndex = 1;
+         this.uxLayoutControl.Text = "uxLayoutControl1";
          // 
-         // cardView1
+         // Root
          // 
-         this.cardView1.GridControl = this.originGridControl;
-         this.cardView1.Name = "cardView1";
-         this.cardView1.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Auto;
+         this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+         this.Root.GroupBordersVisible = false;
+         this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.gridGroup});
+         this.Root.Name = "Root";
+         this.Root.Size = new System.Drawing.Size(731, 387);
+         this.Root.TextVisible = false;
+         // 
+         // gridGroup
+         // 
+         this.gridGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+         this.gridGroup.Location = new System.Drawing.Point(0, 0);
+         this.gridGroup.Name = "gridGroup";
+         this.gridGroup.Size = new System.Drawing.Size(711, 367);
+         // 
+         // layoutControlItem1
+         // 
+         this.layoutControlItem1.Control = this.gridControl;
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+         this.layoutControlItem1.Name = "layoutControlItem1";
+         this.layoutControlItem1.Size = new System.Drawing.Size(687, 322);
+         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem1.TextVisible = false;
          // 
          // IndividualBuildingBlockView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.tablePanel);
+         this.Controls.Add(this.uxLayoutControl);
          this.Name = "IndividualBuildingBlockView";
          this.Size = new System.Drawing.Size(731, 387);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
-         this.tablePanel.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.originGridControl)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cardView1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).EndInit();
+         this.uxLayoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridGroup)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private DevExpress.Utils.Layout.TablePanel tablePanel;
         private OSPSuite.UI.Controls.UxGridControl gridControl;
         private OSPSuite.UI.Controls.UxGridView gridView;
-        private DevExpress.XtraGrid.GridControl originGridControl;
-        private DevExpress.XtraGrid.Views.Card.CardView cardView1;
+        private OSPSuite.UI.Controls.UxLayoutControl uxLayoutControl;
+        private DevExpress.XtraLayout.LayoutControlGroup Root;
+        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+        private DevExpress.XtraLayout.LayoutControlGroup gridGroup;
     }
 }

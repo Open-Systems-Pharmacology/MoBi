@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
-using MoBi.Assets;
+using DevExpress.XtraLayout;
+using DevExpress.XtraLayout.Utils;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
@@ -14,6 +18,8 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
@@ -26,18 +32,21 @@ namespace MoBi.UI.Views
    {
       private IIndividualBuildingBlockPresenter _presenter;
       private readonly GridViewBinder<IndividualParameterDTO> _gridViewBinder;
-      private readonly GridViewBinder<OriginDataItemDTO> _originGridBinder;
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
       private readonly UxComboBoxUnit<IndividualParameterDTO> _unitControl;
+      private readonly List<TextEdit> _textBoxes = new List<TextEdit>();
+      private readonly LayoutControlGroup _flowGroup;
 
       public IndividualBuildingBlockView()
       {
          InitializeComponent();
          _gridViewBinder = new GridViewBinder<IndividualParameterDTO>(gridView);
-         _originGridBinder = new GridViewBinder<OriginDataItemDTO>(cardView1);
          _unitControl = new UxComboBoxUnit<IndividualParameterDTO>(gridControl);
-         originGridView.OptionsView.ShowGroupPanel = false;
          initializeGridViewBinders();
+
+         _flowGroup = uxLayoutControl.AddGroup();
+         _flowGroup.LayoutMode = LayoutMode.Flow;
+         _flowGroup.Move(gridGroup, InsertType.Top);
       }
 
       private void initializePathElementColumn(Expression<Func<IndividualParameterDTO, string>> expression, string caption)
@@ -52,9 +61,6 @@ namespace MoBi.UI.Views
 
       private void initializeGridViewBinders()
       {
-         _originGridBinder.AutoBind(x => x.Name).WithCaption(AppConstants.Captions.Name).AsReadOnly();
-         _originGridBinder.Bind(x => x.Value).WithCaption(Value).AsReadOnly();
-
          _gridViewBinder.AutoBind(dto => dto.Name)
             .WithCaption(ParameterName).AsReadOnly();
 
@@ -145,11 +151,61 @@ namespace MoBi.UI.Views
 
       public void BindTo(IndividualBuildingBlockDTO buildingBlockDTO)
       {
-         // _screenBinder.BindToSource(buildingBlockDTO);
+         createOriginData(buildingBlockDTO.OriginDataDTO);
          _gridViewBinder.BindToSource(buildingBlockDTO.ParameterDTOs);
-         _originGridBinder.BindToSource(buildingBlockDTO.OriginDataDTO.AllDataItems);
-         
          initColumnVisibility();
+      }
+
+      private void createOriginData(OriginDataDTO originDataDTO)
+      {
+         originDataDTO.AllDataItems.Each(addOriginDataToView);
+         addValueOriginToView(originDataDTO.ValueOrigin);
+         resizeTextBoxesToBestFit();
+         uxLayoutControl.BestFit();
+      }
+
+      private void addValueOriginToView(ValueOriginDTO valueOrigin)
+      {
+         addControlToFlowLayout(Captions.ValueOrigin, createTextBox(valueOrigin.ValueOrigin.Display));
+      }
+
+      private void resizeTextBoxesToBestFit()
+      {
+         var maxTextWidth = _textBoxes.Max(x => x.CalcBestSize().Width);
+         
+         // Adding some extra width to reduce crowding
+         var maxTextBoxWidth = (int)(maxTextWidth * 1.1);
+
+         _textBoxes.Each(x => x.MaximumSize = new Size(maxTextBoxWidth, x.MaximumSize.Height));
+      }
+
+      private void addControlToFlowLayout(string name, Control control)
+      {
+         var layoutControlItem = uxLayoutControl.AddItem();
+         layoutControlItem.Text = name.FormatForLabel(); ;
+
+         layoutControlItem.Control = control;
+         _flowGroup.AddItem(layoutControlItem);
+      }
+
+      private void addOriginDataToView(OriginDataItemDTO originDataItem)
+      {
+         addControlToFlowLayout(originDataItem.Name,createTextBox(originDataItem.Value));
+      }
+
+      private Control createTextBox(string textValue)
+      {
+         var tb = new TextEdit();
+         tb.Properties.AllowFocused = false;
+         tb.Properties.ReadOnly = true;
+         tb.Text = textValue;
+         _textBoxes.Add(tb);
+         return tb;
+      }
+
+      private void disposeBinders()
+      {
+         _gridViewBinder.Dispose();
       }
    }
 }
