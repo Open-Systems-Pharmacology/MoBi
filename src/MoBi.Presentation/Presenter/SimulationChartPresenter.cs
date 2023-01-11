@@ -12,6 +12,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISimulationChartPresenter : IChartPresenter
    {
+      void RefreshSimulationChart();
    }
 
    public class SimulationChartPresenter : ChartPresenter, ISimulationChartPresenter
@@ -35,6 +36,11 @@ namespace MoBi.Presentation.Presenter
       protected override string CurveNameDefinition(DataColumn column)
       {
          return _curveNamer.CurveNameForColumn(_dataRepositoryCache[column.Repository], column, addSimulationName: false);
+      }
+
+      public void RefreshSimulationChart()
+      {
+         Refresh();
       }
    }
 }

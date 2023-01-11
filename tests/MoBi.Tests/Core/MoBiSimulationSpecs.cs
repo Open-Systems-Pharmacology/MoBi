@@ -150,6 +150,8 @@ namespace MoBi.Core
          sut.Update(A.Fake<IMoBiBuildConfiguration>(), A.Fake<IModel>());
          sut.Chart = _chart;
          sut.HasChanged = false;
+         //make sure we do have curves initially
+         sut.Chart.Curves.ShouldNotBeEmpty();
       }
 
       protected override void Because()

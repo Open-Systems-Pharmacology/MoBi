@@ -60,7 +60,7 @@ namespace MoBi.Presentation.Presenter
       event EventHandler<ObservedDataAddedToChartEventArgs> OnObservedDataAddedToChart;
    }
 
-   public abstract class ChartPresenter : ChartPresenter<CurveChart, IChartView, IChartPresenter>, IChartPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>
+   public abstract class ChartPresenter : ChartPresenter<CurveChart, IChartView, IChartPresenter>, IChartPresenter
    {
       public event EventHandler<ObservedDataAddedToChartEventArgs> OnObservedDataAddedToChart = delegate { };
 
@@ -354,11 +354,6 @@ namespace MoBi.Presentation.Presenter
          displayPresenter.DragDrop -= OnDragDrop;
          displayPresenter.DragOver -= OnDragOver;
          Clear();
-      }
-
-      public void Handle(ObservedDataRemovedFromAnalysableEvent e)
-      {
-         Refresh();
       }
    }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using FluentNHibernate.Conventions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
@@ -134,11 +135,11 @@ namespace MoBi.Core.Domain.Model
          if (!UsesObservedData(dataRepository))
             return;
 
-         var curveToRemove = Chart.Curves.FirstOrDefault(c => Equals(c.yData.Repository, dataRepository));
-         if (curveToRemove == null)
+         var curveToRemove = Chart.Curves.Where(c => Equals(c.yData.Repository, dataRepository)).ToList();
+         if (curveToRemove.IsEmpty())
             return;
 
-         Chart.RemoveCurve(curveToRemove.Id);
+         curveToRemove.ForEach(curve => Chart.RemoveCurve(curve.Id) );
 
          HasChanged = true;
       }
