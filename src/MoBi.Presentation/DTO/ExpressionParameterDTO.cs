@@ -6,7 +6,6 @@ namespace MoBi.Presentation.DTO
    {
       public ExpressionParameterDTO(ExpressionParameter expressionParameter) : base(expressionParameter)
       {
-         
       }
    }
 }

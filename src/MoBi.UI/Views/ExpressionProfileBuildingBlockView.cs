@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.Repository;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants.Captions;
-using DevExpress.XtraEditors.Repository;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.UI.Extensions;
-using DevExpress.XtraEditors;
-using MoBi.Presentation.Formatters;
-using DevExpress.XtraEditors.Controls;
-using MoBi.Presentation.Views;
 
 namespace MoBi.UI.Views
 {
-    public partial class ExpressionProfileBuildingBlockView : BaseUserControl, IExpressionProfileBuildingBlockView
+   public partial class ExpressionProfileBuildingBlockView : BaseUserControl, IExpressionProfileBuildingBlockView
    {
       private IExpressionProfileBuildingBlockPresenter _presenter;
       private readonly GridViewBinder<ExpressionParameterDTO> _gridViewBinder;
@@ -38,7 +38,7 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.MoleculeName).To(tbMoleculeName);
          _screenBinder.Bind(dto => dto.Category).To(tbCategory);
          _unitControl = new UxComboBoxUnit<ExpressionParameterDTO>(gridControl);
-         
+
          initializeBinders();
          gridView.ShowColumnChooser = true;
       }
@@ -117,7 +117,7 @@ namespace MoBi.UI.Views
       protected void OnFormulaButtonClick(object sender, ButtonPressedEventArgs e)
       {
          if (!e.Button.Kind.Equals(ButtonPredefines.Plus)) return;
-      
+
          var expressionParameterDTO = _gridViewBinder.ElementAt(gridView.FocusedRowHandle);
          _presenter.AddNewFormula(expressionParameterDTO);
          var comboBox = sender as ComboBoxEdit;

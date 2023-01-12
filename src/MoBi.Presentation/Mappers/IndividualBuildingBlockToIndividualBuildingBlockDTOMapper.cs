@@ -7,7 +7,6 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper : IMapper<IndividualBuildingBlock, IndividualBuildingBlockDTO>
    {
-
    }
 
    public class IndividualBuildingBlockToIndividualBuildingBlockDTOMapper : IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper

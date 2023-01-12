@@ -1,6 +1,4 @@
-﻿using MoBi.Presentation.Formatters;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Utility.Format;
+﻿using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.DTO
 {

@@ -1609,6 +1609,7 @@ namespace MoBi.Assets
          public static readonly string AddTransportProtein = "Add Transport Protein";
          public static readonly string AddSpecificBindingPartner = "Add Binding Partner";
          public static readonly string Individuals = "Individuals";
+         public static readonly string OriginData = "Origin Data";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 

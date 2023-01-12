@@ -7,7 +7,6 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper : IMapper<ExpressionProfileBuildingBlock, ExpressionProfileBuildingBlockDTO>
    {
-
    }
 
    public class ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper : IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper
@@ -21,7 +20,7 @@ namespace MoBi.Presentation.Mappers
 
       public ExpressionProfileBuildingBlockDTO MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
-         return  new ExpressionProfileBuildingBlockDTO(expressionProfileBuildingBlock)
+         return new ExpressionProfileBuildingBlockDTO(expressionProfileBuildingBlock)
          {
             ParameterDTOs = expressionProfileBuildingBlock.MapAllUsing(_expressionParameterToExpressionParameterDTOMapper)
          };

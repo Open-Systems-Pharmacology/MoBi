@@ -15,17 +15,17 @@ namespace MoBi.Presentation.Presenter
 {
    public abstract class PathWithValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TBuilder, TBuilderDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
       where TBuildingBlock : IBuildingBlock<TBuilder>
-      where TPresenter : IPresenter 
+      where TPresenter : IPresenter
       where TView : IView<TPresenter>
       where TBuilder : PathAndValueEntity
-      where TBuilderDTO: PathWithValueEntityDTO<TBuilder>, IWithDisplayUnitDTO, IWithFormulaDTO
+      where TBuilderDTO : PathWithValueEntityDTO<TBuilder>, IWithDisplayUnitDTO, IWithFormulaDTO
    {
       protected TBuildingBlock _buildingBlock;
-      private readonly IInteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder> _interactionTask;
+      private readonly IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder> _interactionTask;
       private readonly IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private readonly IDimensionFactory _dimensionFactory;
 
-      protected PathWithValueBuildingBlockPresenter(TView view, IInteractionTaskForPathAndValueEntity<TBuildingBlock, TBuilder> interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view)
+      protected PathWithValueBuildingBlockPresenter(TView view, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder> interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view)
       {
          _interactionTask = interactionTask;
          _formulaToValueFormulaDTOMapper = formulaToValueFormulaDTOMapper;
@@ -34,7 +34,7 @@ namespace MoBi.Presentation.Presenter
 
       public IEnumerable<ValueFormulaDTO> AllFormulas()
       {
-         var allFormulas = new List<ValueFormulaDTO> {new EmptyFormulaDTO()};
+         var allFormulas = new List<ValueFormulaDTO> { new EmptyFormulaDTO() };
 
          allFormulas.AddRange(_buildingBlock.FormulaCache.OfType<ExplicitFormula>()
             .OrderBy(formula => formula.Name)

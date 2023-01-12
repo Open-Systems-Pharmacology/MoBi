@@ -11,7 +11,7 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public  class PathWithValueEntityDTO<T> : BreadCrumbsDTO<T>, IWithDisplayUnitDTO where T : PathAndValueEntity, IValidatable, INotifier, IWithDimension, IWithDisplayUnit, IUsingFormula
+   public class PathWithValueEntityDTO<T> : BreadCrumbsDTO<T>, IWithDisplayUnitDTO where T : PathAndValueEntity, IValidatable, INotifier, IWithDimension, IWithDisplayUnit, IUsingFormula
    {
       public string ContainerPathPropertyName;
       public string FormulaPropertyName;
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.DTO
 
       public string Name
       {
-         get => PathWithValueObject.Name;
+         get => ((IWithName)PathWithValueObject).Name;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that

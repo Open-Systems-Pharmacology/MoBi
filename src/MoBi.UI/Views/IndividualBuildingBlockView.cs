@@ -35,7 +35,6 @@ namespace MoBi.UI.Views
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
       private readonly UxComboBoxUnit<IndividualParameterDTO> _unitControl;
       private readonly List<TextEdit> _textBoxes = new List<TextEdit>();
-      private readonly LayoutControlGroup _flowGroup;
 
       public IndividualBuildingBlockView()
       {
@@ -43,10 +42,7 @@ namespace MoBi.UI.Views
          _gridViewBinder = new GridViewBinder<IndividualParameterDTO>(gridView);
          _unitControl = new UxComboBoxUnit<IndividualParameterDTO>(gridControl);
          initializeGridViewBinders();
-
-         _flowGroup = uxLayoutControl.AddGroup();
-         _flowGroup.LayoutMode = LayoutMode.Flow;
-         _flowGroup.Move(gridGroup, InsertType.Top);
+         gridGroup.Text = Parameters;
       }
 
       private void initializePathElementColumn(Expression<Func<IndividualParameterDTO, string>> expression, string caption)
@@ -158,39 +154,45 @@ namespace MoBi.UI.Views
 
       private void createOriginData(OriginDataDTO originDataDTO)
       {
-         originDataDTO.AllDataItems.Each(addOriginDataToView);
-         addValueOriginToView(originDataDTO.ValueOrigin);
+         var flowGroup = uxLayoutControl.AddGroup();
+         flowGroup.Text = OriginData;
+         flowGroup.LayoutMode = LayoutMode.Flow;
+         flowGroup.Move(gridGroup, InsertType.Top);
+
+         originDataDTO.AllDataItems.Each(x => addOriginDataToView(x, flowGroup));
+         addValueOriginToView(originDataDTO.ValueOrigin, flowGroup);
          resizeTextBoxesToBestFit();
          uxLayoutControl.BestFit();
       }
 
-      private void addValueOriginToView(ValueOriginDTO valueOrigin)
+      private void addValueOriginToView(ValueOriginDTO valueOrigin, LayoutControlGroup layoutControlGroup)
       {
-         addControlToFlowLayout(Captions.ValueOrigin, createTextBox(valueOrigin.ValueOrigin.Display));
+         addControlToFlowLayout(Captions.ValueOrigin, createTextBox(valueOrigin.ValueOrigin.Display), layoutControlGroup);
       }
 
       private void resizeTextBoxesToBestFit()
       {
          var maxTextWidth = _textBoxes.Max(x => x.CalcBestSize().Width);
-         
+
          // Adding some extra width to reduce crowding
          var maxTextBoxWidth = (int)(maxTextWidth * 1.1);
 
          _textBoxes.Each(x => x.MaximumSize = new Size(maxTextBoxWidth, x.MaximumSize.Height));
       }
 
-      private void addControlToFlowLayout(string name, Control control)
+      private void addControlToFlowLayout(string name, Control control, LayoutControlGroup layoutControlGroup)
       {
          var layoutControlItem = uxLayoutControl.AddItem();
-         layoutControlItem.Text = name.FormatForLabel(); ;
+         layoutControlItem.Text = name.FormatForLabel();
+         ;
 
          layoutControlItem.Control = control;
-         _flowGroup.AddItem(layoutControlItem);
+         layoutControlGroup.AddItem(layoutControlItem);
       }
 
-      private void addOriginDataToView(OriginDataItemDTO originDataItem)
+      private void addOriginDataToView(OriginDataItemDTO originDataItem, LayoutControlGroup layoutControlGroup)
       {
-         addControlToFlowLayout(originDataItem.Name,createTextBox(originDataItem.Value));
+         addControlToFlowLayout(originDataItem.Name, createTextBox(originDataItem.Value), layoutControlGroup);
       }
 
       private Control createTextBox(string textValue)

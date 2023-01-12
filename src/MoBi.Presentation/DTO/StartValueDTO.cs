@@ -4,12 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Validation;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
@@ -35,7 +35,6 @@ namespace MoBi.Presentation.DTO
       protected StartValueDTO(T startValueObject, IStartValuesBuildingBlock<T> buildingBlock)
          : base(startValueObject)
       {
-         
          _buildingBlock = buildingBlock;
 
          Rules.AddRange(AllRules.All());
@@ -56,9 +55,6 @@ namespace MoBi.Presentation.DTO
          get => PathWithValueObject.ValueOrigin;
          set => UpdateValueOriginFrom(value);
       }
-
-
-
 
       public double? StartValue
       {
@@ -134,6 +130,7 @@ namespace MoBi.Presentation.DTO
                if (string.IsNullOrEmpty(dto.PathElementByIndex(i)))
                   return false;
             }
+
             return true;
          }
 

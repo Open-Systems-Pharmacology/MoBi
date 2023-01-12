@@ -3,7 +3,6 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.DTO
 {
-   
    public class ExpressionProfileBuildingBlockDTO
    {
       private readonly ExpressionProfileBuildingBlock _buildingBlock;
@@ -20,5 +19,4 @@ namespace MoBi.Presentation.DTO
       public string MoleculeName => _buildingBlock.MoleculeName;
       public string NameType => _buildingBlock.Type.DisplayName;
    }
-
 }

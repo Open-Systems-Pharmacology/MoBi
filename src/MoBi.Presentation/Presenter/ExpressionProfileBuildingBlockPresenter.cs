@@ -1,26 +1,14 @@
-﻿using System.Collections.Generic;
-using MoBi.Presentation.DTO;
+﻿using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IPathAndValueBuildingBlockPresenter<in TDTO> : IBreadCrumbsPresenter
-   {
-      void SetParameterValue(TDTO expressionParameterDTO, double? newValue);
-      void SetUnit(TDTO expressionParameter, Unit unit);
-      void SetFormula(TDTO expressionParameterDTO, IFormula newValueFormula);
-      IEnumerable<ValueFormulaDTO> AllFormulas();
-      void AddNewFormula(TDTO expressionParameterDTO);
-      IEnumerable<IDimension> DimensionsSortedByName();
-   }
-
    public interface IExpressionProfileBuildingBlockPresenter : IPresenter<IExpressionProfileBuildingBlockView>, IPathAndValueBuildingBlockPresenter<ExpressionParameterDTO>
    {
       void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
@@ -30,7 +18,7 @@ namespace MoBi.Presentation.Presenter
       IExpressionProfileBuildingBlockPresenter
    {
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;
-      
+
       private ExpressionProfileBuildingBlockDTO _expressionProfileBuildingBlockDTO;
 
       public ExpressionProfileBuildingBlockPresenter(IExpressionProfileBuildingBlockView view, IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper expressionProfileToDTOMapper,

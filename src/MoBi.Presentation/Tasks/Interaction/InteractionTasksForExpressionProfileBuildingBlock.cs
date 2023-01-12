@@ -4,32 +4,15 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTaskForIndividualBuildingBlock: IInteractionTasksForBuildingBlock<IndividualBuildingBlock>, IInteractionTaskForPathAndValueEntity<IndividualBuildingBlock, IndividualParameter>
+   public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForBuildingBlock<ExpressionProfileBuildingBlock>, IInteractionTasksForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>
    {
-
    }
 
-   public class InteractionTaskForIndividualBuildingBlock : InteractionTaskForPathAndValueEntity<IndividualBuildingBlock, IndividualParameter>, IInteractionTaskForIndividualBuildingBlock
+   public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTasksForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
    {
-      public InteractionTaskForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<IndividualBuildingBlock> editTask, IMoBiFormulaTask moBiFormulaTask) : base(interactionTaskContext, editTask, moBiFormulaTask)
-      {
-      }
-
-
-   }
-
-   public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForBuildingBlock<ExpressionProfileBuildingBlock>, IInteractionTaskForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>
-   {
-      
-   }
-
-   public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTaskForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
-   {
-      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<ExpressionProfileBuildingBlock> editTask, IMoBiFormulaTask formulaTask) : 
+      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<ExpressionProfileBuildingBlock> editTask, IMoBiFormulaTask formulaTask) :
          base(interactionTaskContext, editTask, formulaTask)
       {
       }
-
-
    }
 }

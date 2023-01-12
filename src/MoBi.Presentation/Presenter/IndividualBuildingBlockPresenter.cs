@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Presenter
       private IndividualBuildingBlockDTO _individualBuildingBlockDTO;
 
       public IndividualBuildingBlockPresenter(IIndividualBuildingBlockView view, IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper individualToDTOMapper,
-         IInteractionTaskForIndividualBuildingBlock interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view, interactionTask, formulaToValueFormulaDTOMapper, dimensionFactory)
+         IInteractionTasksForIndividualBuildingBlock interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view, interactionTask, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _individualToDTOMapper = individualToDTOMapper;
       }

@@ -15,7 +15,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation
 {
-    public class concern_for_ExpressionProfileBuildingBlockPresenter : ContextSpecification<ExpressionProfileBuildingBlockPresenter>
+   public class concern_for_ExpressionProfileBuildingBlockPresenter : ContextSpecification<ExpressionProfileBuildingBlockPresenter>
    {
       protected IExpressionProfileBuildingBlockView _view;
       protected ExpressionParameterToExpressionParameterDTOMapper _expressionParameterToExpressionParameterDTOMapper;
@@ -104,7 +104,6 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _interactionTaskForExpressionProfile.SetUnit(_buildingBlock, _expressionParameter1, _unit)).MustHaveHappened();
       }
-
    }
 
    public class When_adding_a_new_formula_to_the_building_block : concern_for_ExpressionProfileBuildingBlockPresenter
@@ -130,6 +129,7 @@ namespace MoBi.Presentation
    public class When_changing_the_expression_formula : concern_for_ExpressionProfileBuildingBlockPresenter
    {
       private ExplicitFormula _formula;
+
       protected override void Context()
       {
          base.Context();

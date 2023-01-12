@@ -7,7 +7,6 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditIndividualBuildingBlockPresenter : ISingleStartPresenter<IndividualBuildingBlock>
    {
-
    }
 
    public class EditIndividualBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditIndividualBuildingBlockView, IEditIndividualBuildingBlockPresenter, IndividualBuildingBlock, IndividualParameter>, IEditIndividualBuildingBlockPresenter
