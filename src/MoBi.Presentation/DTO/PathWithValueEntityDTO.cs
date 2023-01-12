@@ -29,7 +29,7 @@ namespace MoBi.Presentation.DTO
 
       public string Name
       {
-         get => ((IWithName)PathWithValueObject).Name;
+         get => PathWithValueObject.Name;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
