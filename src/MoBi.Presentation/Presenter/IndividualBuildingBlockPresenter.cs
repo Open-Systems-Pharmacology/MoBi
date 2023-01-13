@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Presenter
 
       public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
       {
-         return _individualBuildingBlockDTO.ParameterDTOs.HasAtLeastTwoDistinctValues(pathElementIndex);
+         return _individualBuildingBlockDTO.Parameters.HasAtLeastTwoDistinctValues(pathElementIndex);
       }
    }
 }

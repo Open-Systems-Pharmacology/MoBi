@@ -12,7 +12,7 @@ namespace MoBi.Presentation.DTO
          _individualBuildingBlock = individualBuildingBlock;
       }
 
-      public IReadOnlyList<IndividualParameterDTO> ParameterDTOs { get; set; }
-      public OriginDataDTO OriginDataDTO { get; set; }
+      public IReadOnlyList<IndividualParameterDTO> Parameters { get; set; }
+      public OriginDataItems OriginData => _individualBuildingBlock.OriginData;
    }
 }

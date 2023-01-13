@@ -12,20 +12,17 @@ namespace MoBi.Presentation.Mappers
    public class IndividualBuildingBlockToIndividualBuildingBlockDTOMapper : IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper
    {
       private readonly IIndividualParameterToIndividualParameterDTOMapper _individualParameterToDTOMapper;
-      private readonly IOriginDataToOriginDataDTOMapper _originDataToOriginDataDTOMapper;
 
-      public IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(IIndividualParameterToIndividualParameterDTOMapper individualParameterToDTOMapper, IOriginDataToOriginDataDTOMapper originDataToOriginDataDTOMapper)
+      public IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(IIndividualParameterToIndividualParameterDTOMapper individualParameterToDTOMapper)
       {
          _individualParameterToDTOMapper = individualParameterToDTOMapper;
-         _originDataToOriginDataDTOMapper = originDataToOriginDataDTOMapper;
       }
 
       public IndividualBuildingBlockDTO MapFrom(IndividualBuildingBlock individualBuildingBlock)
       {
          return new IndividualBuildingBlockDTO(individualBuildingBlock)
          {
-            OriginDataDTO = _originDataToOriginDataDTOMapper.MapFrom(individualBuildingBlock.OriginData),
-            ParameterDTOs = individualBuildingBlock.MapAllUsing(_individualParameterToDTOMapper)
+            Parameters = individualBuildingBlock.MapAllUsing(_individualParameterToDTOMapper)
          };
       }
    }

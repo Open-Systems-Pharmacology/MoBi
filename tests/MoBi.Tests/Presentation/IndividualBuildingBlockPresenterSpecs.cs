@@ -28,14 +28,12 @@ namespace MoBi.Presentation
       private ICommandCollector _commandCollector;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
-      private IOriginDataToOriginDataDTOMapper _originDataMapper;
 
       protected override void Context()
       {
-         _originDataMapper = new OriginDataToOriginDataDTOMapper();
          _individualParameterToIndividualParameterDTOMapper = new IndividualParameterToIndividualParameterDTOMapper(new FormulaToValueFormulaDTOMapper());
          _dimensionFactory = A.Fake<IDimensionFactory>();
-         _individualBuildingBlockToIndividualBuildingBlockDTOMapper = new IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(_individualParameterToIndividualParameterDTOMapper, _originDataMapper);
+         _individualBuildingBlockToIndividualBuildingBlockDTOMapper = new IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(_individualParameterToIndividualParameterDTOMapper);
          _view = A.Fake<IIndividualBuildingBlockView>();
          _interactionTaskForIndividual = A.Fake<IInteractionTasksForIndividualBuildingBlock>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
@@ -98,7 +96,7 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          _unit = new Unit("", 1, 0);
-         sut.SetUnit(_buildingBlockDTO.ParameterDTOs.First(), _unit);
+         sut.SetUnit(_buildingBlockDTO.Parameters.First(), _unit);
       }
 
       [Observation]
@@ -118,7 +116,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.AddNewFormula(_buildingBlockDTO.ParameterDTOs.First());
+         sut.AddNewFormula(_buildingBlockDTO.Parameters.First());
       }
 
       [Observation]
@@ -141,7 +139,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetFormula(_buildingBlockDTO.ParameterDTOs.First(), _formula);
+         sut.SetFormula(_buildingBlockDTO.Parameters.First(), _formula);
       }
 
       [Observation]
@@ -164,7 +162,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetParameterValue(_buildingBlockDTO.ParameterDTOs.First(), _newValue);
+         sut.SetParameterValue(_buildingBlockDTO.Parameters.First(), _newValue);
       }
 
       [Observation]

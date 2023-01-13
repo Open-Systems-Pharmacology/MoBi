@@ -14,11 +14,12 @@ using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -147,12 +148,12 @@ namespace MoBi.UI.Views
 
       public void BindTo(IndividualBuildingBlockDTO buildingBlockDTO)
       {
-         createOriginData(buildingBlockDTO.OriginDataDTO);
-         _gridViewBinder.BindToSource(buildingBlockDTO.ParameterDTOs);
+         createOriginData(buildingBlockDTO.OriginData);
+         _gridViewBinder.BindToSource(buildingBlockDTO.Parameters);
          initColumnVisibility();
       }
 
-      private void createOriginData(OriginDataDTO originDataDTO)
+      private void createOriginData(OriginDataItems originDataDTO)
       {
          var flowGroup = uxLayoutControl.AddGroup();
          flowGroup.Text = OriginData;
@@ -165,9 +166,9 @@ namespace MoBi.UI.Views
          uxLayoutControl.BestFit();
       }
 
-      private void addValueOriginToView(ValueOriginDTO valueOrigin, LayoutControlGroup layoutControlGroup)
+      private void addValueOriginToView(ValueOrigin valueOrigin, LayoutControlGroup layoutControlGroup)
       {
-         addControlToFlowLayout(Captions.ValueOrigin, createTextBox(valueOrigin.ValueOrigin.Display), layoutControlGroup);
+         addControlToFlowLayout(Captions.ValueOrigin, createTextBox(valueOrigin.Display), layoutControlGroup);
       }
 
       private void resizeTextBoxesToBestFit()
@@ -190,7 +191,7 @@ namespace MoBi.UI.Views
          layoutControlGroup.AddItem(layoutControlItem);
       }
 
-      private void addOriginDataToView(OriginDataItemDTO originDataItem, LayoutControlGroup layoutControlGroup)
+      private void addOriginDataToView(OriginDataItem originDataItem, LayoutControlGroup layoutControlGroup)
       {
          addControlToFlowLayout(originDataItem.Name, createTextBox(originDataItem.Value), layoutControlGroup);
       }
