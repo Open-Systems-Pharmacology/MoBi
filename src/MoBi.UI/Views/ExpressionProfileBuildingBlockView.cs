@@ -1,38 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraEditors.Repository;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants.Captions;
-using DevExpress.XtraEditors.Repository;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.UI.Extensions;
-using DevExpress.XtraEditors;
-using MoBi.Presentation.Formatters;
-using DevExpress.XtraEditors.Controls;
-using MoBi.Presentation.Views;
 
 namespace MoBi.UI.Views
 {
-    public partial class ExpressionProfileBuildingBlockView : BaseUserControl, IExpressionProfileBuildingBlockView
+   public partial class ExpressionProfileBuildingBlockView : BaseUserControl, IExpressionProfileBuildingBlockView
    {
       private IExpressionProfileBuildingBlockPresenter _presenter;
       private readonly GridViewBinder<ExpressionParameterDTO> _gridViewBinder;
       private readonly ScreenBinder<ExpressionProfileBuildingBlockDTO> _screenBinder = new ScreenBinder<ExpressionProfileBuildingBlockDTO>();
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
-      private readonly IDimensionFactory _dimensionFactory;
-      private readonly UxRepositoryItemComboBox _dimensionComboBoxRepository;
       private readonly UxComboBoxUnit<ExpressionParameterDTO> _unitControl;
 
-      public ExpressionProfileBuildingBlockView(IDimensionFactory dimensionFactory)
+      public ExpressionProfileBuildingBlockView()
       {
          InitializeComponent();
          _gridViewBinder = new GridViewBinder<ExpressionParameterDTO>(gridView);
@@ -40,9 +38,7 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.MoleculeName).To(tbMoleculeName);
          _screenBinder.Bind(dto => dto.Category).To(tbCategory);
          _unitControl = new UxComboBoxUnit<ExpressionParameterDTO>(gridControl);
-         _dimensionFactory = dimensionFactory;
-         _dimensionComboBoxRepository = new UxRepositoryItemComboBox(gridView);
-         _dimensionFactory = dimensionFactory;
+
          initializeBinders();
          gridView.ShowColumnChooser = true;
       }
@@ -91,15 +87,20 @@ namespace MoBi.UI.Views
 
          _unitControl.ParameterUnitSet += setParameterUnit;
 
-         _dimensionComboBoxRepository.FillComboBoxRepositoryWith(_dimensionFactory.DimensionsSortedByName);
-
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())
             .WithOnValueUpdating((o, e) => _presenter.SetFormula(o, e.NewValue.Formula));
 
-         _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository).AsReadOnly();
+         _gridViewBinder.Bind(x => x.Dimension).WithRepository(createDimensionRepository).AsReadOnly();
 
          gridView.HiddenEditor += (o, e) => hideEditor();
+      }
+
+      private RepositoryItem createDimensionRepository(ExpressionParameterDTO arg)
+      {
+         var dimensionComboBoxRepository = new UxRepositoryItemComboBox(gridView);
+         dimensionComboBoxRepository.FillComboBoxRepositoryWith(_presenter.DimensionsSortedByName());
+         return dimensionComboBoxRepository;
       }
 
       protected RepositoryItem CreateFormulaRepository()
@@ -116,9 +117,9 @@ namespace MoBi.UI.Views
       protected void OnFormulaButtonClick(object sender, ButtonPressedEventArgs e)
       {
          if (!e.Button.Kind.Equals(ButtonPredefines.Plus)) return;
-      
-         var startValueDTO = _gridViewBinder.ElementAt(gridView.FocusedRowHandle);
-         _presenter.AddNewFormula(startValueDTO);
+
+         var expressionParameterDTO = _gridViewBinder.ElementAt(gridView.FocusedRowHandle);
+         _presenter.AddNewFormula(expressionParameterDTO);
          var comboBox = sender as ComboBoxEdit;
          if (comboBox != null)
             comboBox.FillComboBoxEditorWith(_presenter.AllFormulas());
@@ -135,7 +136,7 @@ namespace MoBi.UI.Views
 
       private void onExpressionParameterValueSet(ExpressionParameterDTO expressionParameterDTO, PropertyValueSetEventArgs<double?> e)
       {
-         OnEvent(() => _presenter.SetExpressionParameterValue(expressionParameterDTO, e.NewValue));
+         OnEvent(() => _presenter.SetParameterValue(expressionParameterDTO, e.NewValue));
       }
 
       private void initializePathElementColumn(Expression<Func<ExpressionParameterDTO, string>> expression, string caption)
@@ -158,7 +159,7 @@ namespace MoBi.UI.Views
          _screenBinder.BindToSource(buildingBlockDTO);
 
          lblMoleculeName.Text = buildingBlockDTO.NameType.FormatForLabel();
-         _gridViewBinder.BindToSource(buildingBlockDTO.ExpressionParameters);
+         _gridViewBinder.BindToSource(buildingBlockDTO.ParameterDTOs);
          initColumnVisibility();
       }
 

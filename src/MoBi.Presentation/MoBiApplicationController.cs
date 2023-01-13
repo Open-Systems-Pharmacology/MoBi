@@ -141,6 +141,9 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
             return Start<IEditExpressionProfileBuildingBlockPresenter>();
 
+         if (subject.IsAnImplementationOf<IndividualBuildingBlock>())
+            return Start<IEditIndividualBuildingBlockPresenter>();
+
          throw new ArgumentException(AppConstants.Exceptions.UnknownProjectItem(subject.GetType()));
       }
    }

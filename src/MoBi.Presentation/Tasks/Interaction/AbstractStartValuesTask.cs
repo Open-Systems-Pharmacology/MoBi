@@ -21,7 +21,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTaskForPathAndValueEntity<TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
+   public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTasksForPathAndValueEntity<TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
       where TBuildingBlock : class, IBuildingBlock, IStartValuesBuildingBlock<TStartValue>
       where TStartValue : PathAndValueEntity, IStartValue
    {

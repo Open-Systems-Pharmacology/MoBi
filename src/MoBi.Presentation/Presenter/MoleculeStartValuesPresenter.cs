@@ -6,8 +6,8 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
 
@@ -36,11 +36,11 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class MoleculeStartValuesPresenter : StartValuePresenter<
-      IMoleculeStartValuesView,
-      IMoleculeStartValuesPresenter,
-      IMoleculeStartValuesBuildingBlock, 
-      MoleculeStartValueDTO,
-      MoleculeStartValue>,
+         IMoleculeStartValuesView,
+         IMoleculeStartValuesPresenter,
+         IMoleculeStartValuesBuildingBlock,
+         MoleculeStartValueDTO,
+         MoleculeStartValue>,
       IMoleculeStartValuesPresenter
    {
       private readonly IMoleculeStartValuesTask _moleculeStartValuesTask;
@@ -56,8 +56,9 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          ILegendPresenter legendPresenter,
          IDeleteStartValuePresenter deleteStartValuePresenter,
-         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
-         : base(view, startValueMapper, refreshStartValuesPresenter, moleculeStartValuesTask, msvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper)
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
+         IDimensionFactory dimensionFactory)
+         : base(view, startValueMapper, refreshStartValuesPresenter, moleculeStartValuesTask, msvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _moleculeStartValuesTask = moleculeStartValuesTask;
          isPresentSelectionPresenter.ApplySelectionAction = performIsPresentAction;
@@ -79,12 +80,12 @@ namespace MoBi.Presentation.Presenter
 
       public void SetIsPresent(MoleculeStartValueDTO dto, bool isPresent)
       {
-         setIsPresent(new[] {dto.MoleculeStartValue}, isPresent);
+         setIsPresent(new[] { dto.MoleculeStartValue }, isPresent);
       }
 
       public void SetNegativeValuesAllowed(MoleculeStartValueDTO dto, bool negativeValuesAllowed)
       {
-         setNegativeValuesAllowed(new[] {dto.MoleculeStartValue}, negativeValuesAllowed);
+         setNegativeValuesAllowed(new[] { dto.MoleculeStartValue }, negativeValuesAllowed);
       }
 
       private void setNegativeValuesAllowed(IEnumerable<MoleculeStartValue> startValuesToUpdate, bool negativeValuesAllowed)

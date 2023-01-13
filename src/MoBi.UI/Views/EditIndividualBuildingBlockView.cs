@@ -7,19 +7,19 @@ using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Views
 {
-   public partial class EditExpressionProfileBuildingBlockView : EditBuildingBlockBaseView, IEditExpressionProfileBuildingBlockView
+   public partial class EditIndividualBuildingBlockView : EditBuildingBlockBaseView, IEditIndividualBuildingBlockView
    {
-      public EditExpressionProfileBuildingBlockView(IMainView mainView) : base(mainView)
+      public EditIndividualBuildingBlockView(IMainView mainView) : base(mainView)
       {
          InitializeComponent();
       }
 
-      public void AttachPresenter(IEditExpressionProfileBuildingBlockPresenter presenter)
+      public void AttachPresenter(IEditIndividualBuildingBlockPresenter presenter)
       {
          _presenter = presenter;
       }
 
-      public void AddExpressionProfileView(IView baseView)
+      public void AddIndividualView(IView baseView)
       {
          tabEditBuildingBlock.FillWith(baseView);
          EditCaption = AppConstants.Captions.Parameters;
@@ -28,7 +28,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         ApplicationIcon = ApplicationIcons.ExpressionProfile;
+         ApplicationIcon = ApplicationIcons.Individual;
       }
    }
 }

@@ -36,6 +36,7 @@ namespace MoBi.Presentation
       protected ILegendPresenter _legendPresenter;
       protected IMoleculeStartValuesCreator _moleculeStartValuesCreator;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
+      private IDimensionFactory _dimensionFactory;
 
       protected override void Context()
       {
@@ -49,11 +50,12 @@ namespace MoBi.Presentation
          _commandCollector = A.Fake<ICommandCollector>();
          _deleteStartValuePresenter = A.Fake<IDeleteStartValuePresenter>();
          _legendPresenter = A.Fake<ILegendPresenter>();
+         _dimensionFactory = A.Fake<IDimensionFactory>();
          _moleculeStartValuesCreator = A.Fake<IMoleculeStartValuesCreator>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          sut = new MoleculeStartValuesPresenter(
             _view, _mapper, _isPresentSelectionPresenter, _refreshStartValuesPresenter, _negativeStartValuesAllowedSelectionPresenter, _moleculeStartValueTask,
-            _moleculeStartValuesCreator, _context, _legendPresenter, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper);
+            _moleculeStartValuesCreator, _context, _legendPresenter, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory);
          _moleculeStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
 
          sut.InitializeWith(_commandCollector);
@@ -79,11 +81,11 @@ namespace MoBi.Presentation
          _moleculeStartValueBuildingBlock.Add(_originalUnchanged.MoleculeStartValue);
          _moleculeStartValueBuildingBlock.Add(_originalChanged.MoleculeStartValue);
 
-         A.CallTo(() => _moleculeStartValueTask.IsEquivalentToOriginal(_originalUnchanged.StartValueObject, _moleculeStartValueBuildingBlock)).Returns(true);
-         A.CallTo(() => _moleculeStartValueTask.IsEquivalentToOriginal(_originalChanged.StartValueObject, _moleculeStartValueBuildingBlock)).Returns(false);
+         A.CallTo(() => _moleculeStartValueTask.IsEquivalentToOriginal(_originalUnchanged.PathWithValueObject, _moleculeStartValueBuildingBlock)).Returns(true);
+         A.CallTo(() => _moleculeStartValueTask.IsEquivalentToOriginal(_originalChanged.PathWithValueObject, _moleculeStartValueBuildingBlock)).Returns(false);
 
-         A.CallTo(() => _moleculeStartValueTask.IsEquivalentToOriginal(_newUnchanged.StartValueObject, _moleculeStartValueBuildingBlock)).Returns(true);
-         A.CallTo(() => _moleculeStartValueTask.IsEquivalentToOriginal(_newChanged.StartValueObject, _moleculeStartValueBuildingBlock)).Returns(false);
+         A.CallTo(() => _moleculeStartValueTask.IsEquivalentToOriginal(_newUnchanged.PathWithValueObject, _moleculeStartValueBuildingBlock)).Returns(true);
+         A.CallTo(() => _moleculeStartValueTask.IsEquivalentToOriginal(_newChanged.PathWithValueObject, _moleculeStartValueBuildingBlock)).Returns(false);
 
          sut.Edit(_moleculeStartValueBuildingBlock);
       }

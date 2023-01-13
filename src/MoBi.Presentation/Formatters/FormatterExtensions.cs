@@ -1,5 +1,5 @@
-using OSPSuite.Utility.Format;
 using MoBi.Presentation.DTO;
+using OSPSuite.Utility.Format;
 
 namespace MoBi.Presentation.Formatters
 {
@@ -13,6 +13,11 @@ namespace MoBi.Presentation.Formatters
       public static IFormatter<double?> ParameterStartValueFormatter(this ParameterStartValueDTO parameterStartValueDTO)
       {
          return new ValueAllowingNaNFormatter(parameterStartValueDTO);
+      }
+
+      public static IFormatter<double?> IndividualParameterFormatter(this IndividualParameterDTO individualParameterDTO)
+      {
+         return new ValueAllowingNaNFormatter(individualParameterDTO);
       }
 
       public static IFormatter<double?> ExpressionParameterFormatter(this ExpressionParameterDTO expressionParameterDTO)

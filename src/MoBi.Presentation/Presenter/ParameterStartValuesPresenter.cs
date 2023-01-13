@@ -8,7 +8,6 @@ using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
@@ -23,9 +22,9 @@ namespace MoBi.Presentation.Presenter
 
    public class ParameterStartValuesPresenter
       : StartValuePresenter<IParameterStartValuesView,
-         IParameterStartValuesPresenter,
-         IParameterStartValuesBuildingBlock,
-         ParameterStartValueDTO, ParameterStartValue>,
+            IParameterStartValuesPresenter,
+            IParameterStartValuesBuildingBlock,
+            ParameterStartValueDTO, ParameterStartValue>,
          IParameterStartValuesPresenter
    {
       private readonly IParameterStartValuesTask _parameterStartValuesTask;
@@ -40,9 +39,10 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IDisplayUnitRetriever displayUnitRetriever,
          ILegendPresenter legendPresenter,
-         IDeleteStartValuePresenter deleteStartValuePresenter, 
-         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper)
-         : base(view, startValueMapper, refreshStartValuesPresenter, parameterStartValuesTask, csvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper)
+         IDeleteStartValuePresenter deleteStartValuePresenter,
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
+         IDimensionFactory dimensionFactory)
+         : base(view, startValueMapper, refreshStartValuesPresenter, parameterStartValuesTask, csvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _parameterStartValuesTask = parameterStartValuesTask;
          _displayUnitRetriever = displayUnitRetriever;

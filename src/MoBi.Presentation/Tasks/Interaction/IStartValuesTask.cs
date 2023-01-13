@@ -10,7 +10,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IStartValuesTask<TBuildingBlock, in TStartValue> : IInteractionTasksForBuildingBlock<TBuildingBlock>, IInteractionTaskForPathAndValueEntity<TBuildingBlock, TStartValue>
+   public interface IStartValuesTask<TBuildingBlock, in TStartValue> : IInteractionTasksForBuildingBlock<TBuildingBlock>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TStartValue>
       where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
       where TStartValue : class, IStartValue
    {

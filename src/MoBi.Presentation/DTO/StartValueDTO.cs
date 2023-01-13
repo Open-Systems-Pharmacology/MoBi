@@ -4,12 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Validation;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.DTO
       ValueFormulaDTO Formula { get; set; }
    }
 
-   public abstract class StartValueDTO<T> : PathWithValueEntityDTO<T>, IStartValueDTO where T : class, IStartValue
+   public abstract class StartValueDTO<T> : PathWithValueEntityDTO<T>, IStartValueDTO where T : PathAndValueEntity, IStartValue
    {
       private readonly IStartValuesBuildingBlock<T> _buildingBlock;
 
@@ -35,7 +35,6 @@ namespace MoBi.Presentation.DTO
       protected StartValueDTO(T startValueObject, IStartValuesBuildingBlock<T> buildingBlock)
          : base(startValueObject)
       {
-         
          _buildingBlock = buildingBlock;
 
          Rules.AddRange(AllRules.All());
@@ -43,29 +42,26 @@ namespace MoBi.Presentation.DTO
 
       protected override IObjectPath GetContainerPath()
       {
-         return StartValueObject.ContainerPath;
+         return PathWithValueObject.ContainerPath;
       }
 
       public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
       {
-         StartValueObject.UpdateValueOriginFrom(ValueOrigin);
+         PathWithValueObject.UpdateValueOriginFrom(ValueOrigin);
       }
 
       public virtual ValueOrigin ValueOrigin
       {
-         get => StartValueObject.ValueOrigin;
+         get => PathWithValueObject.ValueOrigin;
          set => UpdateValueOriginFrom(value);
       }
-
-
-
 
       public double? StartValue
       {
          get
          {
             if (Formula == null || Formula.Formula == null)
-               return StartValueObject.ConvertToDisplayUnit(StartValueObject.Value);
+               return PathWithValueObject.ConvertToDisplayUnit(PathWithValueObject.Value);
             return double.NaN;
          }
          set
@@ -112,7 +108,7 @@ namespace MoBi.Presentation.DTO
          private static bool namedOnlyElementDoesNotExist(StartValueDTO<T> dto, string name)
          {
             return !dto._buildingBlock.Any(sv =>
-               string.Equals(sv.Name, name) && sv.ContainerPath.Equals(dto.ContainerPath) && sv != dto.StartValueObject);
+               string.Equals(sv.Name, name) && sv.ContainerPath.Equals(dto.ContainerPath) && sv != dto.PathWithValueObject);
          }
 
          private static IBusinessRule mustHaveAllPreviousPathElementsSet(Expression<Func<StartValueDTO<T>, string>> propertyToCheck)
@@ -134,6 +130,7 @@ namespace MoBi.Presentation.DTO
                if (string.IsNullOrEmpty(dto.PathElementByIndex(i)))
                   return false;
             }
+
             return true;
          }
 
@@ -159,7 +156,7 @@ namespace MoBi.Presentation.DTO
 
             var path = containerPath.Clone<IObjectPath>().AndAdd(dto.Name);
 
-            if (dto._buildingBlock.Any(sv => sv.Path.Equals(path) && sv != dto.StartValueObject))
+            if (dto._buildingBlock.Any(sv => sv.Path.Equals(path) && sv != dto.PathWithValueObject))
                return false;
 
             return true;

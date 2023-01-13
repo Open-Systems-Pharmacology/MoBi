@@ -15,7 +15,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation
 {
-    public class concern_for_ExpressionProfileBuildingBlockPresenter : ContextSpecification<ExpressionProfileBuildingBlockPresenter>
+   public class concern_for_ExpressionProfileBuildingBlockPresenter : ContextSpecification<ExpressionProfileBuildingBlockPresenter>
    {
       protected IExpressionProfileBuildingBlockView _view;
       protected ExpressionParameterToExpressionParameterDTOMapper _expressionParameterToExpressionParameterDTOMapper;
@@ -27,15 +27,17 @@ namespace MoBi.Presentation
       protected IInteractionTasksForExpressionProfileBuildingBlock _interactionTaskForExpressionProfile;
       private ICommandCollector _commandCollector;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
+      private IDimensionFactory _dimensionFactory;
 
       protected override void Context()
       {
          _expressionParameterToExpressionParameterDTOMapper = new ExpressionParameterToExpressionParameterDTOMapper(new FormulaToValueFormulaDTOMapper());
+         _dimensionFactory = A.Fake<IDimensionFactory>();
          _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(_expressionParameterToExpressionParameterDTOMapper);
          _view = A.Fake<IExpressionProfileBuildingBlockView>();
          _interactionTaskForExpressionProfile = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
-         sut = new ExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper, _interactionTaskForExpressionProfile, _formulaToValueFormulaDTOMapper);
+         sut = new ExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper, _interactionTaskForExpressionProfile, _formulaToValueFormulaDTOMapper, _dimensionFactory);
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
 
@@ -94,7 +96,7 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          _unit = new Unit("", 1, 0);
-         sut.SetUnit(_buildingBlockDTO.ExpressionParameters.First(), _unit);
+         sut.SetUnit(_buildingBlockDTO.ParameterDTOs.First(), _unit);
       }
 
       [Observation]
@@ -102,7 +104,6 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _interactionTaskForExpressionProfile.SetUnit(_buildingBlock, _expressionParameter1, _unit)).MustHaveHappened();
       }
-
    }
 
    public class When_adding_a_new_formula_to_the_building_block : concern_for_ExpressionProfileBuildingBlockPresenter
@@ -115,7 +116,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.AddNewFormula(_buildingBlockDTO.ExpressionParameters.First());
+         sut.AddNewFormula(_buildingBlockDTO.ParameterDTOs.First());
       }
 
       [Observation]
@@ -128,6 +129,7 @@ namespace MoBi.Presentation
    public class When_changing_the_expression_formula : concern_for_ExpressionProfileBuildingBlockPresenter
    {
       private ExplicitFormula _formula;
+
       protected override void Context()
       {
          base.Context();
@@ -137,7 +139,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetFormula(_buildingBlockDTO.ExpressionParameters.First(), _formula);
+         sut.SetFormula(_buildingBlockDTO.ParameterDTOs.First(), _formula);
       }
 
       [Observation]
@@ -160,7 +162,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetExpressionParameterValue(_buildingBlockDTO.ExpressionParameters.First(), _newValue);
+         sut.SetParameterValue(_buildingBlockDTO.ParameterDTOs.First(), _newValue);
       }
 
       [Observation]

@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Presenter
       void OnlyShowFilterSelection();
 
       /// <summary>
-      /// Sets if new formula can be created. Default is true
+      ///    Sets if new formula can be created. Default is true
       /// </summary>
       bool CanCreateNewFormula { set; }
 

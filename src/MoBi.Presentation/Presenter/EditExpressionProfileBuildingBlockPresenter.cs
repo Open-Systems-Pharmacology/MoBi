@@ -5,9 +5,8 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-    public interface IEditExpressionProfileBuildingBlockPresenter : ISingleStartPresenter<ExpressionProfileBuildingBlock>
+   public interface IEditExpressionProfileBuildingBlockPresenter : ISingleStartPresenter<ExpressionProfileBuildingBlock>
    {
-
    }
 
    public class EditExpressionProfileBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditExpressionProfileBuildingBlockView, IEditExpressionProfileBuildingBlockPresenter, ExpressionProfileBuildingBlock, ExpressionParameter>, IEditExpressionProfileBuildingBlockPresenter
