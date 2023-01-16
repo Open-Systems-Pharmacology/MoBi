@@ -23,7 +23,6 @@ using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using static OSPSuite.Assets.Captions;
 using IChartTemplatingTask = MoBi.Presentation.Tasks.IChartTemplatingTask;
 
 namespace MoBi.Presentation.Presenter
