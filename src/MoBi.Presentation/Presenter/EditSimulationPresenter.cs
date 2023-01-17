@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Presenter
       string CreateResultTabCaption(string viewCaption);
    }
 
-   public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter
+   public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>
    {
       private IMoBiSimulation _simulation;
       private readonly IHierarchicalSimulationPresenter _hierarchicalPresenter;
@@ -319,6 +319,12 @@ namespace MoBi.Presentation.Presenter
 
          _userDefinedParametersPresenter.ShowUserDefinedParametersIn(_simulation.Model.Root);
          _view.SetEditView(_userDefinedParametersPresenter.BaseView);
+      }
+
+      public void Handle(ObservedDataRemovedFromAnalysableEvent e)
+      {
+         if (_simulation == e.Analysable.DowncastTo<IMoBiSimulation>())
+            _chartPresenter.RefreshSimulationChart();
       }
 
       private bool canHandle(IObjectBaseEvent objectBaseEvent)
