@@ -154,9 +154,16 @@ namespace MoBi.Presentation.DTO
          {
             var containerPath = newPathWithReplacement(dto, pathElement, index);
 
-            var path = containerPath.Clone<IObjectPath>().AndAdd(dto.Name);
+            var proposedNewPath = containerPath.Clone<IObjectPath>().AndAdd(dto.Name);
 
-            if (dto._buildingBlock.Any(sv => sv.Path.Equals(path) && sv != dto.PathWithValueObject))
+            // if the path being validated is the same as the original path of the object then 
+            // we can assume the path is valid as no changes will take place
+            // This prevents us from having to evaluate path equals checks against all start values when
+            // the validation is not caused by user edit
+            if (Equals(proposedNewPath, dto.PathWithValueObject.Path))
+               return true;
+
+            if (dto._buildingBlock.Any(sv => sv.Path.Equals(proposedNewPath) && sv != dto.PathWithValueObject))
                return false;
 
             return true;
@@ -174,7 +181,7 @@ namespace MoBi.Presentation.DTO
                   containerPath.RemoveAt(index);
 
             // We are appending to the end of the list of elements
-            else if (containerPath.Count == index)
+            else if (containerPath.Count == index && !string.IsNullOrEmpty(pathElement))
                containerPath.Add(pathElement);
             return containerPath;
          }

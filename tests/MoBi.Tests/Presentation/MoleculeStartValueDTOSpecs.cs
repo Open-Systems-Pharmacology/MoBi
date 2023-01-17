@@ -20,26 +20,6 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_validating_a_start_value_with_proposed_path_element_removed_from_end : concern_for_MoleculeStartValueDTO
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut = new MoleculeStartValueDTO(new MoleculeStartValue { Name = "MSV" }, _moleculeStartValuesBuildingBlock) { ContainerPath = new ObjectPath(""), Name = "MSV" };
-      }
-
-      protected override void Because()
-      {
-         sut.Validate();
-      }
-
-      [Observation]
-      public void start_value_with_rename_removing_last_element_should_fail_to_validate()
-      {
-         sut.IsValid().ShouldBeFalse();
-      }
-   }
-
    public class When_validating_molecule_start_value_with_path_elements_empty : concern_for_MoleculeStartValueDTO
    {
       protected override void Context()
