@@ -138,7 +138,7 @@ namespace MoBi.Core.Domain.Model
          if (!curveToRemove.Any())
             return;
 
-         curveToRemove.ForEach(curve => Chart.RemoveCurve(curve.Id) );
+         curveToRemove.Each(curve => Chart.RemoveCurve(curve.Id) );
 
          HasChanged = true;
       }
