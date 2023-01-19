@@ -14,5 +14,6 @@ namespace MoBi.Presentation.DTO
 
       public IReadOnlyList<IndividualParameterDTO> Parameters { get; set; }
       public OriginDataItems OriginData => _individualBuildingBlock.OriginData;
+      public string PKSimVersion => _individualBuildingBlock.PKSimVersion;
    }
 }
