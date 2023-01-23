@@ -128,8 +128,13 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public virtual IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
-         var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
+         var filename = AskForPKMLFileToOpen();
          return addItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+      }
+
+      protected string AskForPKMLFileToOpen()
+      {
+         return InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
       }
 
       public IMoBiCommand AddExistingTemplate(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
