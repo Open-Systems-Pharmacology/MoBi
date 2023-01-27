@@ -103,10 +103,15 @@ namespace MoBi.Presentation.Tasks.Edit
          };
 
          if (CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector))
-            commandCollector.AddCommand(new RenameObjectBaseCommand(objectBase, newName, buildingBlock) { ObjectType = objectName });
+            commandCollector.AddCommand(GetRenameCommandFor(objectBase, buildingBlock, newName, objectName));
 
          commandCollector.Run(_context);
          return commandCollector;
+      }
+
+      protected virtual RenameObjectBaseCommand GetRenameCommandFor(T objectBase, IBuildingBlock buildingBlock, string newName, string objectName)
+      {
+         return new RenameObjectBaseCommand(objectBase, newName, buildingBlock) { ObjectType = objectName };
       }
 
       public bool CheckUsagesFor(string newName, string oldName, IObjectBase renamedObject, ICommandCollector commandCollector)

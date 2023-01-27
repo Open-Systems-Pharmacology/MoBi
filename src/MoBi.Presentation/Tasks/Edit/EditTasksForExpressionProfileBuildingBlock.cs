@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MoBi.Core.Commands;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
@@ -28,6 +29,11 @@ namespace MoBi.Presentation.Tasks.Edit
          {
             return renameExpressionProfilePresenter.NewNameFrom(moleculeName, species, category, type, prohibitedNames);
          }
+      }
+
+      protected override RenameObjectBaseCommand GetRenameCommandFor(ExpressionProfileBuildingBlock objectBase, IBuildingBlock buildingBlock, string newName, string objectName)
+      {
+         return new RenameExpressionProfileBuildingBlockCommand(objectBase, newName, buildingBlock) { ObjectType = objectName };
       }
    }
 }

@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
    public class RenameObjectBaseCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
       private IObjectBase _objectBase;
-      private readonly string _newName;
+      protected readonly string _newName;
       public string OldName { get; private set; }
       public string ObjectId { get; private set; }
 
@@ -39,6 +39,13 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+         RenameBuildingBlock(context);
+
+         context.PublishEvent(new RenamedEvent(_objectBase));
+      }
+
+      protected virtual void RenameBuildingBlock(IMoBiContext context)
+      {
          OldName = _objectBase.Name;
          _objectBase.Name = _newName;
          if (_objectBase.IsAnImplementationOf<IBuildingBlock>())
@@ -46,8 +53,6 @@ namespace MoBi.Core.Commands
             var renameBuildingBlockTask = context.Resolve<IRenameBuildingBlockTask>();
             renameBuildingBlockTask.RenameInSimulationUsingTemplateBuildingBlock(_objectBase.DowncastTo<IBuildingBlock>());
          }
-
-         context.PublishEvent(new RenamedEvent(_objectBase));
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
