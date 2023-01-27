@@ -21,14 +21,11 @@ namespace MoBi.Presentation.Mappers
          _objectBaseFactory = objectBaseFactory;
       }
 
-      public ParameterStartValuesBuildingBlock MapFrom(ExpressionProfileBuildingBlock input)
+      public ParameterStartValuesBuildingBlock MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
          var buildingBlock = _objectBaseFactory.Create<ParameterStartValuesBuildingBlock>();
-
-         buildingBlock.Name = input.Name;
-
-         input.Each(expressionParameter => buildingBlock.Add(_expressionParameterToParameterStartValueMapper.MapFrom(expressionParameter)));
-
+         buildingBlock.Name = expressionProfileBuildingBlock.Name;
+         expressionProfileBuildingBlock.MapAllUsing(_expressionParameterToParameterStartValueMapper).Each(x => buildingBlock.Add(x));
          buildingBlock.FormulaCache.AddRange(buildingBlock.UniqueFormulasByName());
 
          return buildingBlock;

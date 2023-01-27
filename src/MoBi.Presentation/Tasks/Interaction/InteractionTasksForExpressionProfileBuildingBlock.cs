@@ -8,7 +8,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForBuildingBlock<ExpressionProfileBuildingBlock>, IInteractionTasksForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>
    {
-      IEnumerable<ExpressionProfileBuildingBlock> CreateFromPKML();
+      IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML();
    }
 
    public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTasksForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
@@ -18,10 +18,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
       }
 
-      public IEnumerable<ExpressionProfileBuildingBlock> CreateFromPKML()
+      public IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML()
       {
          var filename = AskForPKMLFileToOpen();
-         return string.IsNullOrEmpty(filename) ? Enumerable.Empty<ExpressionProfileBuildingBlock>() : LoadItems(filename);
+         return (string.IsNullOrEmpty(filename) ? Enumerable.Empty<ExpressionProfileBuildingBlock>() : LoadItems(filename)).ToList();
       }
    }
 }
