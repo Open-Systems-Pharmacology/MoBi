@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Tasks.Edit
          IModelReportCreator reportCreator,
          ISimModelExporter simModelExporter,
          IDimensionFactory dimensionFactory,
-         IParameterIdentificationSimulationPathUpdater parameterIdentificationSimulationPathUpdater) : base(interactionTaskContext)
+         IParameterIdentificationSimulationPathUpdater parameterIdentificationSimulationPathUpdater, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
       {
          _simulationPersistor = simulationPersistor;
          _dialogCreator = dialogCreator;

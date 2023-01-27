@@ -1,14 +1,12 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
 using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -17,6 +15,8 @@ namespace MoBi.Presentation.Tasks
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       protected IInteractionTaskContext _interactionTaskContext;
       protected IInteractionTask _interactionTask;
+      private IObjectTypeResolver _objectTypeResolver;
+      private ICheckNameVisitor _checkNamesVisitor;
 
       protected override void Context()
       {
@@ -24,7 +24,9 @@ namespace MoBi.Presentation.Tasks
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _interactionTask = A.Fake<IInteractionTask>();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory);
+         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectTypeResolver, _checkNamesVisitor);
       }
    }
 

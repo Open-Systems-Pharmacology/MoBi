@@ -2,6 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -13,6 +14,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -26,6 +28,10 @@ namespace MoBi.Presentation.Tasks
       private IModelReportCreator _reportCreator;
       private IDimensionFactory _dimensionFactory;
       protected IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
+      private IObjectTypeResolver _objectTypeResolver;
+      private ICheckNameVisitor _checkNamesVisitor;
+      protected IMoBiApplicationController _applicationController;
+      protected IRenameObjectPresenter _renameObjectPresenter;
 
       protected override void Context()
       {
@@ -37,8 +43,15 @@ namespace MoBi.Presentation.Tasks
          _reportCreator = A.Fake<IModelReportCreator>();
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
-
-         sut = new EditTasksForSimulation(_context, _simulationPersistor, _dialogCreator, _dataRepositoryTask, _reportCreator, _simulationModelExporter, _dimensionFactory, _parameterIdentificationSimulationPathUpdater);
+         _applicationController = A.Fake<IMoBiApplicationController>();
+         _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
+         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
+         
+         A.CallTo(() => _context.ApplicationController).Returns(_applicationController);
+         A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
+         
+         sut = new EditTasksForSimulation(_context, _simulationPersistor, _dialogCreator, _dataRepositoryTask, _reportCreator, _simulationModelExporter, _dimensionFactory, _parameterIdentificationSimulationPathUpdater, _objectTypeResolver, _checkNamesVisitor);
       }
    }
 
@@ -73,7 +86,8 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _simulation = new MoBiSimulation().WithName("Root");
          _simulation.HasChanged = false;
-         A.CallTo(() => _context.InteractionTask.Rename(_simulation, A<IEnumerable<string>>._, null))
+         
+         A.CallTo(() => _renameObjectPresenter.NewNameFrom(_simulation, A<IEnumerable<string>>._, A<string>._))
             .Invokes(x => _simulation.Name = "NEW_NAME");
       }
 

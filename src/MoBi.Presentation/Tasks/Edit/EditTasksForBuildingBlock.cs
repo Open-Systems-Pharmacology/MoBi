@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Tasks.Edit
@@ -19,13 +17,13 @@ namespace MoBi.Presentation.Tasks.Edit
 
    public class EditTasksForBuildingBlock<T> : EditTaskFor<T>, IEditTasksForBuildingBlock<T> where T : class, IObjectBase
    {
-      public EditTasksForBuildingBlock(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
+      public EditTasksForBuildingBlock(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
       {
       }
 
       public override void Edit(T buildingBlock)
       {
-         editEntiy(buildingBlock);
+         editEntity(buildingBlock);
          base.Edit(buildingBlock);
       }
 
@@ -34,7 +32,7 @@ namespace MoBi.Presentation.Tasks.Edit
          Edit(buildingBlock.DowncastTo<T>());
       }
 
-      private void editEntiy(T entity)
+      private void editEntity(T entity)
       {
          editPresenterFor(entity).Edit(entity);
       }

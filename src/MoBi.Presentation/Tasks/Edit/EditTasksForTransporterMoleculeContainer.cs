@@ -4,7 +4,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Helper;
-using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -17,23 +16,21 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public interface IEditTasksForTransporterMoleculeContainer : IEditTaskFor<TransporterMoleculeContainer>
    {
-      void ChangeTranportName(TransporterMoleculeContainer transporterMoleculeContainer, IBuildingBlock buildingBlock);
+      void ChangeTransportName(TransporterMoleculeContainer transporterMoleculeContainer, IBuildingBlock buildingBlock);
    }
 
    public class EditTasksForTransporterMoleculeContainer : EditTaskFor<TransporterMoleculeContainer>, IEditTasksForTransporterMoleculeContainer
    {
       private readonly ICoreCalculationMethodRepository _calculationMethodRepository;
       private readonly IReactionDimensionRetriever _dimensionRetriever;
-      private readonly IObjectBaseTask _objectBaseTask;
       private readonly IDialogCreator _dialogCreator;
 
       public EditTasksForTransporterMoleculeContainer(IInteractionTaskContext interactionTaskContext, ICoreCalculationMethodRepository calculationMethodRepository,
-         IReactionDimensionRetriever dimensionRetriever, IObjectBaseTask objectBaseTask, IDialogCreator dialogCreator)
-         : base(interactionTaskContext)
+         IReactionDimensionRetriever dimensionRetriever, IDialogCreator dialogCreator, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : 
+         base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
       {
          _calculationMethodRepository = calculationMethodRepository;
          _dimensionRetriever = dimensionRetriever;
-         _objectBaseTask = objectBaseTask;
          _dialogCreator = dialogCreator;
       }
 
@@ -60,7 +57,7 @@ namespace MoBi.Presentation.Tasks.Edit
          return true;
       }
 
-      public void ChangeTranportName(TransporterMoleculeContainer transporterMoleculeContainer, IBuildingBlock buildingBlock)
+      public void ChangeTransportName(TransporterMoleculeContainer transporterMoleculeContainer, IBuildingBlock buildingBlock)
       {
          var unallowedNames = new List<string>(AppConstants.UnallowedNames);
          unallowedNames.AddRange(GetForbiddenNamesWithoutSelf(transporterMoleculeContainer, transporterMoleculeContainer.ParentContainer));
@@ -77,9 +74,9 @@ namespace MoBi.Presentation.Tasks.Edit
             Description = AppConstants.Commands.RenameDescription(transporterMoleculeContainer, newName)
          };
 
-         if (_objectBaseTask.CheckUsagesFor(newName, transporterMoleculeContainer.TransportName, transporterMoleculeContainer, commandCollector))
+         if (CheckUsagesFor(newName, transporterMoleculeContainer.TransportName, transporterMoleculeContainer, commandCollector))
          {
-            commandCollector.AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(transporterMoleculeContainer.PropertyName(x => x.TransportName), newName, oldTransportName, transporterMoleculeContainer, buildingBlock) {ObjectType = ObjectName});
+            commandCollector.AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(transporterMoleculeContainer.PropertyName(x => x.TransportName), newName, oldTransportName, transporterMoleculeContainer, buildingBlock) { ObjectType = ObjectName });
          }
          commandCollector.Run(_context);
          _context.AddToHistory(commandCollector);

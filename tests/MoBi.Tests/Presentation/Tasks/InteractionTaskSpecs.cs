@@ -1,15 +1,19 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Linq;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
 using FakeItEasy;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Repositories;
 using MoBi.Core.Serialization.Services;
 using MoBi.Core.Services;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -19,11 +23,13 @@ namespace MoBi.Presentation.Tasks
       protected IDialogCreator _dialogCreator;
       protected IIconRepository _iconRepository;
       protected INameCorrector _nameCorrector;
-      protected IObjectBaseTask _objectBaseTask;
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       protected IAdjustFormulasVisitor _adjustFormulasVisitor;
       protected IObjectTypeResolver _objectTypeResolver;
       protected IForbiddenNamesRetriever _forbiddenNamesRetriever;
+      protected IMoBiApplicationController _moBiApplicationController;
+      private ICheckNameVisitor _checkNamesVisitor;
+      private IMoBiContext _moBiContext;
 
       protected override void Context()
       {
@@ -31,13 +37,15 @@ namespace MoBi.Presentation.Tasks
          _dialogCreator = A.Fake<IDialogCreator>();
          _iconRepository = A.Fake<IIconRepository>();
          _nameCorrector = A.Fake<INameCorrector>();
-         _objectBaseTask = A.Fake<IObjectBaseTask>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _adjustFormulasVisitor = A.Fake<IAdjustFormulasVisitor>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _forbiddenNamesRetriever = A.Fake<IForbiddenNamesRetriever>();
+         _moBiApplicationController = A.Fake<IMoBiApplicationController>();
+         _moBiContext = A.Fake<IMoBiContext>();
+         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
 
-         sut = new InteractionTask(_serializationTask,_dialogCreator, _iconRepository, _nameCorrector, _objectBaseTask, _cloneManagerForBuildingBlock, _adjustFormulasVisitor, _objectTypeResolver, _forbiddenNamesRetriever);
+         sut = new InteractionTask(_serializationTask,_dialogCreator, _iconRepository, _nameCorrector, _cloneManagerForBuildingBlock, _adjustFormulasVisitor, _objectTypeResolver, _forbiddenNamesRetriever);
       }
    }
 
@@ -57,7 +65,7 @@ namespace MoBi.Presentation.Tasks
          _originalFormula1 =new ExplicitFormula().WithName("F1").WithId("X1");
          _originalFormula2 = new ExplicitFormula().WithName("F2").WithId("X2");
          _buildingBlockToClone = new MoleculeBuildingBlock();
-         var clonedBuildinBlock= new MoleculeBuildingBlock();
+         var clonedBuildingBlock= new MoleculeBuildingBlock();
 
          _buildingBlockToClone.AddFormula(_originalFormula1);
          _buildingBlockToClone.AddFormula(_originalFormula2);
@@ -72,7 +80,7 @@ namespace MoBi.Presentation.Tasks
                var formulaCache = x.GetArgument<IFormulaCache>(1);
                formulaCache.Add(_cloneFormula1);
             })
-            .Returns(clonedBuildinBlock);
+            .Returns(clonedBuildingBlock);
       }
 
       protected override void Because()

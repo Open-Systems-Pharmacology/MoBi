@@ -3,12 +3,13 @@ using System.Linq;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTasksForObserverBuilder<TBuilder> : EditTaskFor<TBuilder> where TBuilder : class, IObserverBuilder
    {
-      public EditTasksForObserverBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
+      public EditTasksForObserverBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
       {
       }
 
@@ -30,14 +31,14 @@ namespace MoBi.Presentation.Tasks.Edit
 
    public class EditTasksForAmountObserverBuilder : EditTasksForObserverBuilder<IAmountObserverBuilder>
    {
-      public EditTasksForAmountObserverBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
+      public EditTasksForAmountObserverBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
       {
       }
    }
 
    public class EditTasksForContainerObserverBuilder : EditTasksForObserverBuilder<IContainerObserverBuilder>
    {
-      public EditTasksForContainerObserverBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
+      public EditTasksForContainerObserverBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
       {
       }
    }

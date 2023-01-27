@@ -9,6 +9,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -20,7 +21,7 @@ namespace MoBi.Presentation.Tasks.Edit
    public class EditTaskForContainer : EditTaskFor<IContainer>, IEditTaskForContainer
    {
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
-      public EditTaskForContainer(IInteractionTaskContext interactionTaskContext, IMoBiSpatialStructureFactory spatialStructureFactory) : base(interactionTaskContext)
+      public EditTaskForContainer(IInteractionTaskContext interactionTaskContext, IMoBiSpatialStructureFactory spatialStructureFactory, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
       {
          _spatialStructureFactory = spatialStructureFactory;
       }

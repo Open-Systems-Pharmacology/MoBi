@@ -3,12 +3,13 @@ using System.Linq;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTasksForTransportBuilder : EditTaskFor<ITransportBuilder>
    {
-      public EditTasksForTransportBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
+      public EditTasksForTransportBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
       {
       }
 

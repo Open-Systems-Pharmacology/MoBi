@@ -9,17 +9,22 @@ using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks
 {
    public abstract class concern_for_EditTaskForInteractionContainerSpecs : ContextSpecification<EditTaskForInteractionContainer>
    {
       protected IInteractionTaskContext _interactionTaskContext;
+      private IObjectTypeResolver _objectTypeResolver;
+      private ICheckNameVisitor _checkNamesVisitor;
 
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         sut = new EditTaskForInteractionContainer(_interactionTaskContext);
+         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
+         sut = new EditTaskForInteractionContainer(_interactionTaskContext, _objectTypeResolver, _checkNamesVisitor);
       }
    }
 

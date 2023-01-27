@@ -8,6 +8,7 @@ using MoBi.Presentation.Tasks.Interaction;
 using NUnit.Framework;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -17,6 +18,8 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTaskContext _interactionTaskContext;
       private IInteractionTask _interactionTask;
       protected IApplicationBuilder _builder;
+      private IObjectTypeResolver _objectTypeResolver;
+      private ICheckNameVisitor _checkNamesVisitor;
 
       protected override void Context()
       {
@@ -24,7 +27,9 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = A.Fake<IInteractionTask>();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
          _builder = new ApplicationBuilder();
-         sut = new EditTasksForEventGroupBuilder<IApplicationBuilder>(_interactionTaskContext);
+         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
+         sut = new EditTasksForEventGroupBuilder<IApplicationBuilder>(_interactionTaskContext, _objectTypeResolver, _checkNamesVisitor);
 
          A.CallTo(() => _interactionTask.ForbiddenNamesFor(_builder)).Returns(new List<string> {_builderName});
       }

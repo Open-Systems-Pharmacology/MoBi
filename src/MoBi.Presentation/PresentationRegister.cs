@@ -204,7 +204,7 @@ namespace MoBi.Presentation
          });
 
          container.Register<IEditTaskFor<InteractionContainer>, EditTaskForInteractionContainer>();
-         container.Register<IEditTaskFor<IMoleculeBuilder>, EditTaksForMoleculeBuilder>();
+         container.Register<IEditTaskFor<IMoleculeBuilder>, EditTasksForMoleculeBuilder>();
          container.Register<IEditTaskFor<IReactionBuilder>, EditTasksForReactionBuilder>();
          container.Register<IEditTaskFor<ITransportBuilder>, EditTasksForTransportBuilder>();
          container.Register<IEditTaskFor<IEventGroupBuilder>, EditTasksForEventGroupBuilder>();
@@ -217,10 +217,11 @@ namespace MoBi.Presentation
          container.Register<IEditTaskFor<IEventBuilder>, EditTaskForEventBuilder>();
          container.Register<IEditTaskFor<TransporterMoleculeContainer>, EditTasksForTransporterMoleculeContainer>();
          container.Register<IEditTaskFor<IApplicationMoleculeBuilder>, EditTaskForApplicationMoleculeBuilder>();
-         container.Register<IEditTaskFor<IEventAssignmentBuilder>, EditTaskForEventAssingmentBuilder>();
+         container.Register<IEditTaskFor<IEventAssignmentBuilder>, EditTaskForEventAssignmentBuilder>();
          container.Register<IEditTaskFor<INeighborhoodBuilder>, EditTasksForNeighborhoodBuilder>();
          container.Register<IEditTaskFor<IMoBiSimulation>, EditTasksForSimulation>();
          container.Register<IEditTaskFor<IMoBiSpatialStructure>, EditTasksForSpatialStructure>();
+         container.Register<IEditTaskFor<ExpressionProfileBuildingBlock>, EditTasksForExpressionProfileBuildingBlock>();
          container.Register(typeof(IEditTasksForBuildingBlock<>), typeof(EditTasksForBuildingBlock<>));
          container.Register(typeof(IEditTaskFor<>), typeof(EditTasksForBuildingBlock<>));
       }

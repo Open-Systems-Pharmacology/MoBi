@@ -8,6 +8,11 @@ using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using MoBi.Assets;
+using MoBi.Core.Commands;
+using MoBi.Core.Domain;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -42,11 +47,15 @@ namespace MoBi.Presentation.Tasks.Edit
       protected readonly IMoBiApplicationController _applicationController;
       protected readonly IInteractionTask _interactionTask;
       protected readonly IInteractionTaskContext _interactionTaskContext;
+      private readonly IObjectTypeResolver _objectTypeResolver;
+      private readonly ICheckNameVisitor _checkNamesVisitor;
       public string ObjectName { get; private set; }
 
-      protected EditTaskFor(IInteractionTaskContext interactionTaskContext)
+      protected EditTaskFor(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor)
       {
          _interactionTaskContext = interactionTaskContext;
+         _objectTypeResolver = objectTypeResolver;
+         _checkNamesVisitor = checkNamesVisitor;
          _applicationController = interactionTaskContext.ApplicationController;
          _interactionTask = interactionTaskContext.InteractionTask;
          _context = interactionTaskContext.Context;
@@ -66,7 +75,84 @@ namespace MoBi.Presentation.Tasks.Edit
       public virtual void Rename(T objectBase, IEnumerable<IObjectBase> existingObjectsInParent, IBuildingBlock buildingBlock)
       {
          var forbiddenNames = GetForbiddenNames(objectBase, existingObjectsInParent);
-         _context.AddToHistory(_interactionTask.Rename(objectBase, forbiddenNames, buildingBlock));
+         _context.AddToHistory(rename(objectBase, forbiddenNames, buildingBlock));
+      }
+      
+      protected virtual string NewNameFor(T objectBase, IReadOnlyList<string> prohibitedNames)
+      {
+         using (var renameObjectPresenter = _applicationController.Start<IRenameObjectPresenter>())
+         {
+            return renameObjectPresenter.NewNameFrom(objectBase, prohibitedNames);
+         }
+      }
+
+      private IMoBiCommand rename(T objectBase, IEnumerable<string> forbiddenNames, IBuildingBlock buildingBlock)
+      {
+         var newName = NewNameFor(objectBase, forbiddenNames.ToList());
+
+         var objectName = _objectTypeResolver.TypeFor(objectBase);
+
+         if (string.IsNullOrEmpty(newName))
+            return new MoBiEmptyCommand();
+
+         var commandCollector = new MoBiMacroCommand
+         {
+            CommandType = AppConstants.Commands.RenameCommand,
+            ObjectType = objectName,
+            Description = AppConstants.Commands.RenameDescription(objectBase, newName)
+         };
+
+         if (CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector))
+            commandCollector.AddCommand(new RenameObjectBaseCommand(objectBase, newName, buildingBlock) { ObjectType = objectName });
+
+         commandCollector.Run(_context);
+         return commandCollector;
+      }
+
+      public bool CheckUsagesFor(string newName, string oldName, IObjectBase renamedObject, ICommandCollector commandCollector)
+      {
+         if (renamedObject.IsAnImplementationOf<IModelCoreSimulation>())
+            return changeUsagesInSimulation(newName, renamedObject.DowncastTo<IModelCoreSimulation>(), commandCollector);
+
+         return checkUsagesInBuildingBlocks(newName, renamedObject, commandCollector, oldName);
+      }
+
+      private bool checkUsagesInBuildingBlocks(string newName, IObjectBase renamedObject, ICommandCollector commandCollector, string oldName)
+      {
+         var buildingBlocks = _context.CurrentProject.AllBuildingBlocks();
+         var possibleChanges = new List<IStringChange>();
+
+         foreach (var buildingBlock in buildingBlocks)
+         {
+            possibleChanges.AddRange(_checkNamesVisitor.GetPossibleChangesFrom(renamedObject, newName, buildingBlock, oldName));
+         }
+
+         if (!possibleChanges.Any())
+            return true;
+
+         using (var selectRenamingPresenter = _applicationController.Start<ISelectRenamingPresenter>())
+         {
+            selectRenamingPresenter.InitializeWith(possibleChanges);
+
+            if (renamedObject.IsAnImplementationOf<IBuildingBlock>())
+               selectRenamingPresenter.SetCheckedStateForAll(checkedState: false);
+
+            if (!selectRenamingPresenter.SelectRenamings())
+               return false;
+
+            var commands = selectRenamingPresenter.SelectedCommands();
+            commands.Each(commandCollector.AddCommand);
+            return true;
+         }
+      }
+
+      private static bool changeUsagesInSimulation(string newName, IModelCoreSimulation simulation, ICommandCollector commandCollector)
+      {
+         commandCollector.AddCommand(new RenameObjectBaseCommand(simulation.Model, newName, null));
+         commandCollector.AddCommand(new RenameModelCommand(simulation.Model, newName));
+         // Don't rename core Container to avoid reference Corruption
+
+         return true;
       }
 
       public IEnumerable<string> GetForbiddenNamesWithoutSelf(T objectBase, IEnumerable<IObjectBase> existingObjectsInParent)
