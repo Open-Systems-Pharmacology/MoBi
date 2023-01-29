@@ -148,22 +148,29 @@ namespace MoBi.UI.Views
 
       public void BindTo(IndividualBuildingBlockDTO buildingBlockDTO)
       {
-         createOriginData(buildingBlockDTO.OriginData);
+         createNameValuePairs(buildingBlockDTO);
          _gridViewBinder.BindToSource(buildingBlockDTO.Parameters);
          initColumnVisibility();
       }
 
-      private void createOriginData(OriginDataItems originDataDTO)
+      private void createNameValuePairs(IndividualBuildingBlockDTO buildingBlock)
       {
          var flowGroup = uxLayoutControl.AddGroup();
          flowGroup.Text = OriginData;
          flowGroup.LayoutMode = LayoutMode.Flow;
          flowGroup.Move(gridGroup, InsertType.Top);
+         var originDataDTO = buildingBlock.OriginData;
 
          originDataDTO.AllDataItems.Each(x => addOriginDataToView(x, flowGroup));
          addValueOriginToView(originDataDTO.ValueOrigin, flowGroup);
+         addPKSimVersionToView(buildingBlock.PKSimVersion, flowGroup);
          resizeTextBoxesToBestFit();
          uxLayoutControl.BestFit();
+      }
+
+      private void addPKSimVersionToView(string pkSimVersion, LayoutControlGroup layoutControlGroup)
+      {
+         addControlToFlowLayout(PKSimVersion, createTextBox(pkSimVersion), layoutControlGroup);
       }
 
       private void addValueOriginToView(ValueOrigin valueOrigin, LayoutControlGroup layoutControlGroup)
@@ -184,8 +191,7 @@ namespace MoBi.UI.Views
       private void addControlToFlowLayout(string name, Control control, LayoutControlGroup layoutControlGroup)
       {
          var layoutControlItem = uxLayoutControl.AddItem();
-         layoutControlItem.Text = name.FormatForLabel();
-         ;
+         layoutControlItem.Text = name.FormatForLabel(checkCase: false);
 
          layoutControlItem.Control = control;
          layoutControlGroup.AddItem(layoutControlItem);
