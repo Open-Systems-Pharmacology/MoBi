@@ -9,18 +9,6 @@ using OSPSuite.Presentation.MenuAndBars;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForIndividualBuildingBlock : RootContextMenuFor<IMoBiProject, IndividualBuildingBlock>
-   {
-      public RootContextMenuForIndividualBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context) : base(objectTypeResolver, context)
-      {
-      }
-
-      protected override void CreateAddItems(IMoBiProject parent)
-      {
-         _allMenuItems.Add(CreateAddExistingItemFor(parent));
-      }
-   }
-
    public class RootContextMenuForExpressionProfileBuildingBlock : RootContextMenuFor<IMoBiProject, ExpressionProfileBuildingBlock>
    {
       public RootContextMenuForExpressionProfileBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context) : base(objectTypeResolver, context)

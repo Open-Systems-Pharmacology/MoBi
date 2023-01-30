@@ -1605,9 +1605,10 @@ namespace MoBi.Assets
          public static readonly string GeometricDeviation = "Geometric Deviation";
          public static readonly string List = "List";
          public static readonly string UserDefined = "User Defined";
-         public static readonly string AddMetabolizingEnzyme = "Add Metagbolizing Enzyme";
+         public static readonly string AddMetabolizingEnzyme = "Add Metabolizing Enzyme";
          public static readonly string AddTransportProtein = "Add Transport Protein";
          public static readonly string AddSpecificBindingPartner = "Add Binding Partner";
+         public static readonly string AddIndividual = "Add Individual";
          public static readonly string Individuals = "Individuals";
          public static readonly string OriginData = "Origin Data";
 
