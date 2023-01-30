@@ -5,6 +5,7 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Domain.Extensions
 {
@@ -22,7 +23,15 @@ namespace MoBi.Core.Domain.Extensions
          var cache = new Cache<string, T>(getKey, x => null);
          cache.AddRange(elements);
          return cache;
-      } 
+      }
+
+      public static IReadOnlyList<IFormula> UniqueFormulasByName<T>(this IEnumerable<T> buildingBlock) where T : IUsingFormula
+      {
+         var formulaCache = new Cache<string, IFormula>(getKey: x => x.Name);
+         buildingBlock.Where(x => x.Formula != null).Each(x => formulaCache[x.Formula.Name] = x.Formula);
+
+         return formulaCache.ToList();
+      }
    }
 
    public static class MoleculeBuildingBlockExtensions
