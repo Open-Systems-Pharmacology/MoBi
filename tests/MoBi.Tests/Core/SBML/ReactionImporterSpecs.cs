@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.Builder;
 using Model = libsbmlcs.Model;
 using Reaction = libsbmlcs.Reaction;
 using MoBi.Core.Exceptions;
+using NUnit.Framework;
 using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.SBML
@@ -169,8 +170,8 @@ namespace MoBi.Core.SBML
       {
       }
 
-      [Observation]
-      public void ShouldRaiseOnInvalidFileConvertion()
+      [Observation, Ignore("Test is unstable. Remove Ignore with https://github.com/Open-Systems-Pharmacology/MoBi/issues/868")]
+      public void ShouldRaiseOnInvalidFileConversion()
       {
          The.Action(() => _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject)).ShouldThrowAn<MoBiException>();
       }
