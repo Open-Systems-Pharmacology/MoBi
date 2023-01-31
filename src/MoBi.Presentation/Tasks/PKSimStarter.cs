@@ -4,7 +4,6 @@ using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
-using NHibernate.Hql.Ast.ANTLR.Tree;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -30,7 +29,8 @@ namespace MoBi.Presentation.Tasks
       private readonly IShell _shell;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
 
-      public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory, IShell shell, ICloneManagerForBuildingBlock cloneManager)
+      public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings,
+         IStartableProcessFactory startableProcessFactory, IShell shell, ICloneManagerForBuildingBlock cloneManager)
       {
          _configuration = configuration;
          _applicationSettings = applicationSettings;

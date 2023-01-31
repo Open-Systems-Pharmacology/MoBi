@@ -19,7 +19,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected override void CreateAddItems(IMoBiProject parent)
       {
          _allMenuItems.Add(createAddNewIndividual());
-
          _allMenuItems.Add(CreateAddExistingItemFor(parent));
       }
 

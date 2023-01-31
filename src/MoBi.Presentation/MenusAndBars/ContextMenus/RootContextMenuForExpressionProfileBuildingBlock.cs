@@ -38,7 +38,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          newExpressionProfile.AddItem(newSpecificBinding);
 
          _allMenuItems.Add(newExpressionProfile);
-
          _allMenuItems.Add(CreateAddExistingItemFor(parent));
       }
    }
