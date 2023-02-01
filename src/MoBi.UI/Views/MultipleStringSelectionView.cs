@@ -96,7 +96,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutControlItemAddButton.AdjustButtonSize();
+         layoutControlItemAddButton.AdjustButtonSize(layoutControl);
       }
 
       public override bool HasError => base.HasError || !hasSelection();

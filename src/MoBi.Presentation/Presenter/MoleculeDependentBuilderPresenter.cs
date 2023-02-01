@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -50,10 +50,7 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_moleculeDependentBuilder.MoleculeList);
       }
 
-      public override object Subject
-      {
-         get { return _moleculeDependentBuilder; }
-      }
+      public override object Subject => _moleculeDependentBuilder;
 
       public void RemoveFromIncludeList(string molecule)
       {
@@ -65,9 +62,9 @@ namespace MoBi.Presentation.Presenter
          removeMolecule(_moleculeDependentBuilder.MoleculeNamesToExclude(), molecule, () => new RemoveMoleculeNameFromExcludeCommand(_moleculeDependentBuilder, molecule, BuildingBlock));
       }
 
-      private void removeMolecule(IEnumerable<string> availables, string molecule, Func<RemoveMoleculeNameCommand> removeItemCommand)
+      private void removeMolecule(IEnumerable<string> availableMolecules, string molecule, Func<RemoveMoleculeNameCommand> removeItemCommand)
       {
-         if (!availables.ContainsItem(molecule)) return;
+         if (!availableMolecules.ContainsItem(molecule)) return;
          AddCommand(removeItemCommand().Run(_context));
       }
 
@@ -88,11 +85,11 @@ namespace MoBi.Presentation.Presenter
             string.Empty, Enumerable.Empty<string>(), getMoleculeNames());
       }
 
-      private void addMolecule(IEnumerable<string> availables, Func<string, AddMoleculeNameCommand> addItemCommand)
+      private void addMolecule(IEnumerable<string> availableMolecules, Func<string, AddMoleculeNameCommand> addItemCommand)
       {
          var moleculeName = newMoleculeName();
          if (string.IsNullOrEmpty(moleculeName)) return;
-         if (availables.ContainsItem(moleculeName)) return;
+         if (availableMolecules.ContainsItem(moleculeName)) return;
          AddCommand(addItemCommand(moleculeName).Run(_context));
       }
 

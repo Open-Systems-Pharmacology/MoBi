@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -1250,7 +1250,6 @@ namespace MoBi.Assets
       {
          public static readonly string Modifiers = "Modifiers";
          public static readonly string Dimension = "Dimension";
-         public static readonly string Alias = "Alias";
          public static readonly string Unit = "Unit";
          public static readonly string FormulaCreationCaption = "Formula Creation Wizard";
          public static readonly string SimulationCreationCaption = "Simulation Creation Wizard";
@@ -1258,7 +1257,6 @@ namespace MoBi.Assets
          public static readonly string BuildingBlockExplorer = "Building Block Explorer";
          public static readonly string WarningsCaption = "Solver Warnings";
          public static readonly string HistoryBrowser = "History";
-         public static readonly string NameInUse = "New Name";
          public static readonly string RenameWizardCaption = "Rename also";
          public static readonly string AddReactionMolecule = "Molecule Name";
          public static readonly string NewName = "New Name";
@@ -1362,6 +1360,8 @@ namespace MoBi.Assets
          public static readonly string Category = "Category";
          public static readonly string UseAsValue = "Use assignment as value";
          public static readonly string SelectLocalReferencePoint = "Select local reference point";
+         public static readonly string LocalReferencePoint = "Local reference point";
+         public static readonly string PossibleReferencedObjects = "Possible referenced objects";
          public static readonly string RelativeContainerPath = "Relative container path";
          public static readonly string Parameters = "Parameters";
          public static readonly string ChangedEntityPath = "Changed entity path";
@@ -1423,6 +1423,8 @@ namespace MoBi.Assets
          public static readonly string ModelDiagram = "Diagram";
          public static readonly string SimulationParameters = "Parameters";
          public static readonly string Results = "Results";
+         public static readonly string TimeProfile = "Time Profile";
+         public static readonly string SimulationObservedData = "Observed Data";
          public static readonly string IsStationary = "Stationary";
          public static readonly string DefaultStartAmount = "Amount";
          public static readonly string MoleculeType = "Molecule Type";

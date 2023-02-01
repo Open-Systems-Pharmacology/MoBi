@@ -23,6 +23,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Services;
@@ -77,6 +78,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<ISimulationDiagramView>());
             container.RegisterImplementationOf(A.Fake<IContainerBaseLayouter>());
             container.RegisterImplementationOf(A.Fake<ILayerLayouter>());
+            container.RegisterImplementationOf(A.Fake<IEntityValidationTask>());
 
             container.Register<IDiagramModelToXmlMapper, DiagramModelToXmlMapperForSpecs>();
             container.Register<IMoBiConfiguration, MoBiConfiguration>(LifeStyle.Singleton);

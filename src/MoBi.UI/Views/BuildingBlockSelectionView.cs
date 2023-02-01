@@ -78,7 +78,7 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          btnNew.Image = ApplicationIcons.Create.ToImage(IconSizes.Size16x16);
          btnNew.ImageLocation = ImageLocation.MiddleCenter;
-         layoutItemNew.AdjustButtonSizeWithImageOnly();
+         layoutItemNew.AdjustButtonSizeWithImageOnly(layoutControl);
          cbBuildingBlocks.Properties.AllowHtmlDraw = DefaultBoolean.True;
       }
    }

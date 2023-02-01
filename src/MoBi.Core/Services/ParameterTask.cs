@@ -19,12 +19,12 @@ namespace MoBi.Core.Services
          _quantityTask = quantityTask;
       }
 
-      public ICommand SetParameterValue(IParameter parameter, double value, ISimulation simulation)
+      public ICommand SetParameterValue(IParameter parameter, double value, IModelCoreSimulation simulation)
       {
          return _quantityTask.SetQuantityBaseValue(parameter, value, simulation.DowncastTo<IMoBiSimulation>());
       }
 
-      public ICommand UpdateParameterValueOrigin(IParameter parameter, ValueOrigin valueOrigin, ISimulation simulation)
+      public ICommand UpdateParameterValueOrigin(IParameter parameter, ValueOrigin valueOrigin, IModelCoreSimulation simulation)
       {
          return _quantityTask.UpdateQuantityValueOriginInSimulation(parameter, valueOrigin, simulation.DowncastTo<IMoBiSimulation>());
       }

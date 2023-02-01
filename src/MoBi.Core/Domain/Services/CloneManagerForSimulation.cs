@@ -9,8 +9,8 @@ namespace MoBi.Core.Domain.Services
    public interface ICloneManagerForSimulation
    {
       IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone);
-      T CloneBuidingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo,new() ;
-      T CloneBuidingBlock<T>(T toClone) where T : class, IBuildingBlock;
+      T CloneBuildingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo,new() ;
+      T CloneBuildingBlock<T>(T toClone) where T : class, IBuildingBlock;
    }
 
    internal class CloneManagerForSimulation : ICloneManagerForSimulation
@@ -31,15 +31,15 @@ namespace MoBi.Core.Domain.Services
       {
          var buildConfig = new MoBiBuildConfiguration
          {
-            MoleculesInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculesInfo),
-            ReactionsInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.ReactionsInfo),
-            SpatialStructureInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.SpatialStructureInfo),
-            PassiveTransportsInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.PassiveTransportsInfo),
-            ObserversInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.ObserversInfo),
-            EventGroupsInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.EventGroupsInfo),
-            ParameterStartValuesInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.ParameterStartValuesInfo),
-            MoleculeStartValuesInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculeStartValuesInfo),
-            SimulationSettingsInfo = CloneBuidingBlockInfo(simulationToClone.MoBiBuildConfiguration.SimulationSettingsInfo)
+            MoleculesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculesInfo),
+            ReactionsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ReactionsInfo),
+            SpatialStructureInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.SpatialStructureInfo),
+            PassiveTransportsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.PassiveTransportsInfo),
+            ObserversInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ObserversInfo),
+            EventGroupsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.EventGroupsInfo),
+            ParameterStartValuesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ParameterStartValuesInfo),
+            MoleculeStartValuesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculeStartValuesInfo),
+            SimulationSettingsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.SimulationSettingsInfo)
          };
 
          var model = _cloneManagerForModel.CloneModel(simulationToClone.Model);
@@ -48,7 +48,7 @@ namespace MoBi.Core.Domain.Services
          return simulation;
       }
 
-      public T CloneBuidingBlock<T>(T toClone) where T : class, IBuildingBlock
+      public T CloneBuildingBlock<T>(T toClone) where T : class, IBuildingBlock
       {
          var formulaCache = new FormulaCache();
          var copy = _cloneManagerForBuildingBlock.Clone(toClone, formulaCache);
@@ -56,10 +56,10 @@ namespace MoBi.Core.Domain.Services
          return copy;
       }
 
-      public T CloneBuidingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo, new()
+      public T CloneBuildingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo, new()
       {
          var formulaCache = new FormulaCache();
-         var copy = new T {UntypedBuildingBlock = CloneBuidingBlock(toClone.UntypedBuildingBlock)};
+         var copy = new T {UntypedBuildingBlock = CloneBuildingBlock(toClone.UntypedBuildingBlock)};
          formulaCache.Each(copy.UntypedBuildingBlock.AddFormula);
          copy.TemplateBuildingBlockId = toClone.TemplateBuildingBlockId;
          copy.SimulationChanges = toClone.SimulationChanges;

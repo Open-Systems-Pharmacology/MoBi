@@ -123,7 +123,7 @@ namespace MoBi.UI.Views
          tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
          tabValue.InitWith(AppConstants.Captions.InitialValue, ApplicationIcons.Formula);
          btnResetToFormulaValue.InitWithImage(ApplicationIcons.Reset, text: AppConstants.Captions.Reset);
-         layoutControlItemReset.AdjustButtonSize();
+         layoutControlItemReset.AdjustButtonSize(layoutControl);
       }
    }
 }

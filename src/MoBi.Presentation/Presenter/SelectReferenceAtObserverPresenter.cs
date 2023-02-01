@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override void AddSpecificInitalObjects()
+      protected override void AddSpecificInitialObjects()
       {
          AddSpatialStructures();
       }
@@ -66,7 +66,7 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override void AddSpecificInitalObjects()
+      protected override void AddSpecificInitialObjects()
       {
          AddMolecule();
          AddSpatialStructures();

@@ -43,9 +43,9 @@ namespace MoBi.UI.Views
          this.chkForAll = new UxCheckEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupMoleculeSelection = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemCheckForAll = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemExcludeMolecules = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemIncludeMolecules = new DevExpress.XtraLayout.LayoutControlItem();
          this.layouytItemAddToIncludeList = new DevExpress.XtraLayout.LayoutControlItem();
          this.layouytItemAddToExcludeList = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
@@ -62,9 +62,9 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.chkForAll.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeSelection)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCheckForAll)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExcludeMolecules)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemIncludeMolecules)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layouytItemAddToIncludeList)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layouytItemAddToExcludeList)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
@@ -163,7 +163,7 @@ namespace MoBi.UI.Views
          // 
          this.layoutGroupMoleculeSelection.CustomizationFormText = "layoutControlGroup2";
          this.layoutGroupMoleculeSelection.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
+            this.layoutItemCheckForAll,
             this.layoutGroupInclude,
             this.layoutGroupExclude});
          this.layoutGroupMoleculeSelection.Location = new System.Drawing.Point(0, 0);
@@ -173,39 +173,39 @@ namespace MoBi.UI.Views
          // 
          // layoutControlItem1
          // 
-         this.layoutControlItem1.Control = this.chkForAll;
-         this.layoutControlItem1.CustomizationFormText = "layoutControlItem1";
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(841, 23);
-         this.layoutControlItem1.Text = "layoutControlItem1";
-         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem1.TextToControlDistance = 0;
-         this.layoutControlItem1.TextVisible = false;
+         this.layoutItemCheckForAll.Control = this.chkForAll;
+         this.layoutItemCheckForAll.CustomizationFormText = "layoutItemCheckForAll";
+         this.layoutItemCheckForAll.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemCheckForAll.Name = "layoutItemCheckForAll";
+         this.layoutItemCheckForAll.Size = new System.Drawing.Size(841, 23);
+         this.layoutItemCheckForAll.Text = "layoutControlItem1";
+         this.layoutItemCheckForAll.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemCheckForAll.TextToControlDistance = 0;
+         this.layoutItemCheckForAll.TextVisible = false;
          // 
-         // layoutControlItem2
+         // layoutItemExcludeMolecules
          // 
-         this.layoutControlItem2.Control = this.gridExcludedMolecules;
-         this.layoutControlItem2.CustomizationFormText = "layoutControlItem2";
-         this.layoutControlItem2.Location = new System.Drawing.Point(0, 26);
-         this.layoutControlItem2.Name = "layoutControlItem2";
-         this.layoutControlItem2.Size = new System.Drawing.Size(406, 265);
-         this.layoutControlItem2.Text = "layoutControlItem2";
-         this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem2.TextToControlDistance = 0;
-         this.layoutControlItem2.TextVisible = false;
+         this.layoutItemExcludeMolecules.Control = this.gridExcludedMolecules;
+         this.layoutItemExcludeMolecules.CustomizationFormText = "layoutItemExcludeMolecules";
+         this.layoutItemExcludeMolecules.Location = new System.Drawing.Point(0, 26);
+         this.layoutItemExcludeMolecules.Name = "layoutItemExcludeMolecules";
+         this.layoutItemExcludeMolecules.Size = new System.Drawing.Size(406, 265);
+         this.layoutItemExcludeMolecules.Text = "layoutControlItem2";
+         this.layoutItemExcludeMolecules.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemExcludeMolecules.TextToControlDistance = 0;
+         this.layoutItemExcludeMolecules.TextVisible = false;
          // 
          // layoutControlItem3
          // 
-         this.layoutControlItem3.Control = this.gridIncludedMolecules;
-         this.layoutControlItem3.CustomizationFormText = "layoutControlItem3";
-         this.layoutControlItem3.Location = new System.Drawing.Point(0, 26);
-         this.layoutControlItem3.Name = "layoutControlItem3";
-         this.layoutControlItem3.Size = new System.Drawing.Size(387, 265);
-         this.layoutControlItem3.Text = "layoutControlItem3";
-         this.layoutControlItem3.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem3.TextToControlDistance = 0;
-         this.layoutControlItem3.TextVisible = false;
+         this.layoutItemIncludeMolecules.Control = this.gridIncludedMolecules;
+         this.layoutItemIncludeMolecules.CustomizationFormText = "layoutItemIncludeMolecules";
+         this.layoutItemIncludeMolecules.Location = new System.Drawing.Point(0, 26);
+         this.layoutItemIncludeMolecules.Name = "layoutItemIncludeMolecules";
+         this.layoutItemIncludeMolecules.Size = new System.Drawing.Size(387, 265);
+         this.layoutItemIncludeMolecules.Text = "layoutControlItem3";
+         this.layoutItemIncludeMolecules.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemIncludeMolecules.TextToControlDistance = 0;
+         this.layoutItemIncludeMolecules.TextVisible = false;
          // 
          // layouytItemAddToIncludeList
          // 
@@ -257,7 +257,7 @@ namespace MoBi.UI.Views
          this.layoutGroupInclude.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layouytItemAddToIncludeList,
             this.emptySpaceItem1,
-            this.layoutControlItem3});
+            this.layoutItemIncludeMolecules});
          this.layoutGroupInclude.Location = new System.Drawing.Point(0, 23);
          this.layoutGroupInclude.Name = "layoutGroupInclude";
          this.layoutGroupInclude.Size = new System.Drawing.Size(411, 334);
@@ -267,7 +267,7 @@ namespace MoBi.UI.Views
          // 
          this.layoutGroupExclude.CustomizationFormText = "layoutGroupExclude";
          this.layoutGroupExclude.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2,
+            this.layoutItemExcludeMolecules,
             this.layouytItemAddToExcludeList,
             this.emptySpaceItem2});
          this.layoutGroupExclude.Location = new System.Drawing.Point(411, 23);
@@ -292,9 +292,9 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.chkForAll.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeSelection)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCheckForAll)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExcludeMolecules)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemIncludeMolecules)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layouytItemAddToIncludeList)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layouytItemAddToExcludeList)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
@@ -311,13 +311,13 @@ namespace MoBi.UI.Views
       protected DevExpress.XtraEditors.CheckEdit chkForAll;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupMoleculeSelection;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemCheckForAll;
       private DevExpress.XtraGrid.GridControl gridIncludedMolecules;
       private MoBi.UI.Views.UxGridView gridViewIncludedMolecules;
       private DevExpress.XtraGrid.GridControl gridExcludedMolecules;
       private MoBi.UI.Views.UxGridView gridViewExcludedMolecules;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemExcludeMolecules;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemIncludeMolecules;
       private DevExpress.XtraEditors.SimpleButton btnAddToExcludeList;
       private DevExpress.XtraEditors.SimpleButton btnAddToIncludeList;
       private DevExpress.XtraLayout.LayoutControlItem layouytItemAddToIncludeList;

@@ -13,7 +13,10 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.SimModel;
 
 namespace MoBi.Presentation
 {
@@ -21,6 +24,8 @@ namespace MoBi.Presentation
    {
       protected IEditSimulationView _view;
       protected ISimulationChartPresenter _chartPresenter;
+      protected ISimulationPredictedVsObservedChartPresenter _simulationPredictedVsObservedChartPresenter;
+      protected ISimulationResidualVsTimeChartPresenter _simulationResidualVsTimeChartPresenter;
       protected IHierarchicalSimulationPresenter _hierarchicalSimulationPresenter;
       protected ISimulationDiagramPresenter _diagramPresenter;
       protected IEditSolverSettingsPresenter _solverSettings;
@@ -29,11 +34,16 @@ namespace MoBi.Presentation
       protected IEditFavoritesInSimulationPresenter _editFavoritePresenter;
       protected IChartTasks _chartTasks;
       protected IUserDefinedParametersPresenter _userDefinedParametersPresenter;
+      protected ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
+      protected IMoBiContext _context;
+      protected IOutputMappingMatchingTask _outputMappingMatchingTask;
 
       protected override void Context()
       {
          _view = A.Fake<IEditSimulationView>();
          _chartPresenter = A.Fake<ISimulationChartPresenter>();
+         _simulationPredictedVsObservedChartPresenter = A.Fake<ISimulationPredictedVsObservedChartPresenter>();
+         _simulationResidualVsTimeChartPresenter = A.Fake<ISimulationResidualVsTimeChartPresenter>();
          _hierarchicalSimulationPresenter = A.Fake<IHierarchicalSimulationPresenter>();
          _diagramPresenter = A.Fake<ISimulationDiagramPresenter>();
          _solverSettings = A.Fake<IEditSolverSettingsPresenter>();
@@ -41,10 +51,40 @@ namespace MoBi.Presentation
          _presenterFactory = A.Fake<IEditInSimulationPresenterFactory>();
          _editFavoritePresenter = A.Fake<IEditFavoritesInSimulationPresenter>();
          _chartTasks = A.Fake<IChartTasks>();
+         _simulationOutputMappingPresenter = A.Fake<ISimulationOutputMappingPresenter>();
          _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
+         _context = A.Fake<IMoBiContext>();
+         _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
+
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
-            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter);
+            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
+            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask);
+      }
+
+
+      protected Curve createObservedCurve(DataRepository observedDataRepository)
+      {
+         var dimensionFactory = A.Fake<IDimensionFactory>();
+         var curve = new Curve
+         {
+            Name = "OBS"
+         };
+         var baseGrid = new BaseGrid("baseGrid", DomainHelperForSpecs.TimeDimension)
+         {
+            DataInfo = new DataInfo(ColumnOrigins.BaseGrid),
+            Repository = observedDataRepository
+         };
+
+         var ydata = new DataColumn("ydata", DomainHelperForSpecs.ConcentrationDimension, baseGrid)
+         {
+            DataInfo = new DataInfo(ColumnOrigins.Observation),
+            Repository = observedDataRepository
+         };
+
+         curve.SetxData(baseGrid, dimensionFactory);
+         curve.SetyData(ydata, dimensionFactory);
+         return curve;
       }
    }
 
@@ -136,7 +176,9 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation : concern_for_EditSimulationPresenter
+   public class
+      When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation :
+         concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private CurveChart _chart;
@@ -201,7 +243,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation = new MoBiSimulation {Results = new DataRepository()};
+         _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
 
          var chart = new CurveChart();
 
@@ -220,7 +262,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_initialise_hirarchical_presenter()
+      public void should_initialise_hierarchical_presenter()
       {
          A.CallTo(() => _hierarchicalSimulationPresenter.Edit(_simulation)).MustHaveHappened();
       }
@@ -243,33 +285,11 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _diagramPresenter.Edit(_simulation)).MustNotHaveHappened();
       }
-
-      private Curve createObservedCurve(DataRepository observedDataRepository)
-      {
-         var dimensionFactory = A.Fake<IDimensionFactory>();
-         var curve = new Curve
-         {
-            Name = "OBS"
-         };
-         var baseGrid = new BaseGrid("baseGrid", DomainHelperForSpecs.TimeDimension)
-         {
-            DataInfo = new DataInfo(ColumnOrigins.BaseGrid),
-            Repository = observedDataRepository
-         };
-
-         var ydata = new DataColumn("ydata", DomainHelperForSpecs.ConcentrationDimension, baseGrid)
-         {
-            DataInfo = new DataInfo(ColumnOrigins.Observation),
-            Repository = observedDataRepository
-         };
-
-         curve.SetxData(baseGrid, dimensionFactory);
-         curve.SetyData(ydata, dimensionFactory);
-         return curve;
-      }
    }
 
-   public class When_the_edit_simulation_presenter_is_notified_that_a_parameter_should_be_selected_for_the_edited_simulation : concern_for_EditSimulationPresenter
+   public class
+      When_the_edit_simulation_presenter_is_notified_that_a_parameter_should_be_selected_for_the_edited_simulation :
+         concern_for_EditSimulationPresenter
    {
       private IParameter _parameter;
       private IMoBiSimulation _simulation;
@@ -280,18 +300,19 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation= A.Fake<IMoBiSimulation>();
-         _parameter= A.Fake<IParameter>();
-         _rootContainer= A.Fake<IContainer>();
+         _simulation = A.Fake<IMoBiSimulation>();
+         _parameter = A.Fake<IParameter>();
+         _rootContainer = A.Fake<IContainer>();
          //ensures that the parameter belongs to the simulation
          _simulation.Model.Root = _rootContainer;
          A.CallTo(() => _parameter.RootContainer).Returns(_rootContainer);
          sut.Edit(_simulation);
-         _parameterContainer= A.Fake<IContainer>();
+         _parameterContainer = A.Fake<IContainer>();
          _parameter.ParentContainer = _parameterContainer;
-         _= A.Fake<IEditContainerInSimulationPresenter>();
+         _ = A.Fake<IEditContainerInSimulationPresenter>();
          A.CallTo(() => _presenterFactory.PresenterFor(_parameterContainer)).Returns(_);
       }
+
       protected override void Because()
       {
          sut.Handle(new EntitySelectedEvent(_parameter, new object()));
@@ -319,6 +340,52 @@ namespace MoBi.Presentation
       public void should_select_the_parameter_in_the_view()
       {
          A.CallTo(() => _.SelectParameter(_parameter)).MustHaveHappened();
+      }
+   }
+
+
+   public class When_adding_observed_data_to_the_simulation : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private DataRepository _firstObservedDataRepository;
+      private DataRepository _secondObservedDataRepository;
+      private List<DataRepository> _repositoryList = new List<DataRepository>();
+      private OutputMapping _firstOutputMapping;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
+         var chart = new CurveChart();
+         _firstObservedDataRepository = new DataRepository();
+         chart.AddCurve(createObservedCurve(_firstObservedDataRepository));
+         _secondObservedDataRepository = new DataRepository();
+         _repositoryList.Add(_firstObservedDataRepository);
+         _repositoryList.Add(_secondObservedDataRepository);
+         _simulation.Chart = chart;
+         _firstOutputMapping = A.Fake<OutputMapping>();
+         A.CallTo(() => _firstOutputMapping.UsesObservedData(_firstObservedDataRepository)).Returns(true);
+         A.CallTo(() => _firstOutputMapping.UsesObservedData(_secondObservedDataRepository)).Returns(false);
+         _simulation.OutputMappings.Add(_firstOutputMapping);
+         sut.Edit(_simulation);
+      }
+
+      protected override void Because()
+      {
+         _chartPresenter.OnObservedDataAddedToChart += Raise.With(new ObservedDataAddedToChartEventArgs { AddedDataRepositories = _repositoryList });
+      }
+
+
+      [Observation]
+      public void should_add_missing_mapping()
+      {
+         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_secondObservedDataRepository, _simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_add_duplicate_mapping()
+      {
+         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_firstObservedDataRepository, _simulation)).MustNotHaveHappened();
       }
    }
 }

@@ -1,22 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Settings;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -29,6 +27,11 @@ using IChartTemplatingTask = MoBi.Presentation.Tasks.IChartTemplatingTask;
 
 namespace MoBi.Presentation.Presenter
 {
+   public class ObservedDataAddedToChartEventArgs : EventArgs
+   {
+      public IReadOnlyList<DataRepository> AddedDataRepositories { get; set; }
+   }
+
    /// <summary>
    ///    Aggregates the presenters needed to show a chart
    /// </summary>
@@ -53,33 +56,37 @@ namespace MoBi.Presentation.Presenter
       void Show(CurveChart chart, IReadOnlyList<DataRepository> dataRepositories, CurveChartTemplate defaultTemplate = null);
 
       void UpdateTemplatesFor(IWithChartTemplates withChartTemplates);
+      event EventHandler<ObservedDataAddedToChartEventArgs> OnObservedDataAddedToChart;
    }
 
    public abstract class ChartPresenter : ChartPresenter<CurveChart, IChartView, IChartPresenter>, IChartPresenter
    {
+      public event EventHandler<ObservedDataAddedToChartEventArgs> OnObservedDataAddedToChart = delegate { };
+
       protected readonly IMoBiContext _context;
       private readonly IUserSettings _userSettings;
-      private readonly IChartTasks _chartTasks;
-      private IChartUpdater _chartUpdater;
+      private readonly IChartUpdater _chartUpdater;
       protected readonly IChartTemplatingTask _chartTemplatingTask;
       protected readonly ICache<DataRepository, IMoBiSimulation> _dataRepositoryCache;
 
+      private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
       private readonly ObservedDataDragDropBinder _observedDataDragDropBinder;
+      private bool _initialized;
 
       private IChartDisplayPresenter displayPresenter => _chartPresenterContext.DisplayPresenter;
       private IChartEditorPresenter editorPresenter => _chartPresenterContext.EditorPresenter;
 
-      protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings, IChartTasks chartTasks,
-         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater) :
+      protected ChartPresenter(IChartView chartView, ChartPresenterContext chartPresenterContext, IMoBiContext context, IUserSettings userSettings,
+         IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IOutputMappingMatchingTask outputMappingMatchingTask) :
          base(chartView, chartPresenterContext)
       {
-         _chartTasks = chartTasks;
          _chartUpdater = chartUpdater;
          initializeDisplayPresenter();
          initializeEditorPresenter();
 
          _chartTemplatingTask = chartTemplatingTask;
          _dataRepositoryCache = new Cache<DataRepository, IMoBiSimulation>(onMissingKey: x => null);
+         _outputMappingMatchingTask = outputMappingMatchingTask;
 
          _userSettings = userSettings;
          _context = context;
@@ -162,7 +169,8 @@ namespace MoBi.Presentation.Presenter
 
       protected void LoadFromTemplate(CurveChartTemplate chartTemplate, bool triggeredManually, bool propagateChartChangeEvent = true)
       {
-         _chartTemplatingTask.InitFromTemplate(_dataRepositoryCache, Chart, editorPresenter, chartTemplate, CurveNameDefinition, triggeredManually, propagateChartChangeEvent);
+         _chartTemplatingTask.InitFromTemplate(_dataRepositoryCache, Chart, editorPresenter, chartTemplate, CurveNameDefinition, triggeredManually,
+            propagateChartChangeEvent);
       }
 
       protected virtual void OnDragOver(object sender, IDragEvent e)
@@ -201,9 +209,15 @@ namespace MoBi.Presentation.Presenter
             else
             {
                var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e);
-               addObservedData(droppedObservedData.ToList());
+               addObservedData(droppedObservedData.ToList(), addDataColumnsToEditorPresenter);
+               _chartPresenterContext.Refresh();
             }
          }
+      }
+
+      private void addDataColumnsToEditorPresenter(IEnumerable<DataColumn> dataColumns)
+      {
+         dataColumns.Each(dataColumn => editorPresenter.AddCurveForColumn(dataColumn));
       }
 
       protected abstract bool CanDropSimulation { get; }
@@ -216,11 +230,17 @@ namespace MoBi.Presentation.Presenter
          {
             foreach (var observedDataNodesList in observedData)
             {
-               AddDataRepositoriesToEditor(observedDataNodesList);
-               var columnsToAdd = observedDataNodesList.SelectMany(x => x.ObservationColumns());
-               ChartEditorPresenter.AddCurvesWithSameColorForColumn(columnsToAdd.ToList());
+               addObservedData(observedDataNodesList, dataColumns => editorPresenter.AddCurvesWithSameColorForColumn(dataColumns.ToList()));
             }
          }
+      }
+
+      private void addObservedData(IReadOnlyList<DataRepository> repositories, Action<IEnumerable<DataColumn>> addAction)
+      {
+
+         editorPresenter.AddDataRepositories(repositories);
+         addAction(repositories.SelectMany(x => x.ObservationColumns()));
+         OnObservedDataAddedToChart(this, new ObservedDataAddedToChartEventArgs { AddedDataRepositories = repositories });
       }
 
       private void addHistoricalResults(IReadOnlyList<DataRepository> repositories)
@@ -230,18 +250,13 @@ namespace MoBi.Presentation.Presenter
          repositories.Each(repository => repository.SetPersistable(persistable: true));
       }
 
-      private void addObservedData(IReadOnlyList<DataRepository> repositories)
-      {
-         editorPresenter.AddDataRepositories(repositories);
-         repositories.SelectMany(x => x.ObservationColumns()).Each(observationColumn => editorPresenter.AddCurveForColumn(observationColumn));
-         _chartPresenterContext.Refresh();
-      }
-
       private void addObservedDataIfNeeded(IEnumerable<DataRepository> dataRepositories)
       {
          //curves are already selected. no need to add default selection
-         if (Chart.Curves.Any()) return;
-         addObservedData(dataRepositories.ToList());
+         if (Chart.Curves.Any()) 
+            return;
+         addObservedData(dataRepositories.ToList(), addDataColumnsToEditorPresenter);
+         _chartPresenterContext.Refresh();
       }
 
       protected override void ChartChanged()
@@ -250,12 +265,21 @@ namespace MoBi.Presentation.Presenter
          MarkChartOwnerAsChanged();
       }
 
+      public override void InitializeAnalysis(CurveChart chart)
+      {
+         if (_initialized) return;
+         //this will prevent re-initializing the layout if this was already done (no UI flicker)
+         base.InitializeAnalysis(chart);
+         _initialized = true;
+      }
+
       public void Show(CurveChart chart, IReadOnlyList<DataRepository> dataRepositories, CurveChartTemplate defaultTemplate = null)
       {
          try
          {
             clearNoCurvesHint();
             InitializeAnalysis(chart);
+
             //do not validate template when showing a chart as the chart might well be without curves when initialized for the first time.
             var currentTemplate = defaultTemplate ?? _chartTemplatingTask.TemplateFrom(chart, validateTemplate: false);
             replaceSimulationRepositories(dataRepositories);
@@ -279,15 +303,20 @@ namespace MoBi.Presentation.Presenter
             .Each(dataRepository =>
             {
                var simulation = findSimulation(dataRepository) ?? findHistoricSimulation(dataRepository);
-               if (simulation != null)
-                  _dataRepositoryCache.Add(dataRepository, simulation);
+               if (simulation == null) return;
+
+               _dataRepositoryCache.Add(dataRepository, simulation);
+               ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
+               _outputMappingMatchingTask.AddMatchingOutputMapping(dataRepository, simulation);
+
+               _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, dataRepository, false));
             });
       }
 
       private IMoBiSimulation findSimulation(DataRepository dataRepository)
       {
          return _context.CurrentProject.Simulations
-            .FirstOrDefault(simulation => Equals(simulation.Results, dataRepository));
+            .FirstOrDefault(simulation => Equals(simulation.ResultsDataRepository, dataRepository));
       }
 
       private IMoBiSimulation findHistoricSimulation(DataRepository dataRepository)
@@ -298,7 +327,9 @@ namespace MoBi.Presentation.Presenter
       private void replaceSimulationRepositories(IReadOnlyCollection<DataRepository> dataRepositories)
       {
          var repositoriesToRemove = _dataRepositoryCache.Keys.Except(dataRepositories).ToList();
+         var simulationsToRemove = _dataRepositoryCache.KeyValues.Where(x => repositoriesToRemove.Contains(x.Key)).Select(x => x.Value).ToList();
          repositoriesToRemove.Each(_dataRepositoryCache.Remove);
+         simulationsToRemove.Each(simulation => ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings));
 
          addDataRepositoriesToDataRepositoryCache(dataRepositories);
 
@@ -312,7 +343,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(ObservedDataRemovedEvent eventToHandle)
       {
          var dataRepository = eventToHandle.DataRepository;
-         editorPresenter.RemoveDataRepositories(new[] {dataRepository});
+         editorPresenter.RemoveDataRepositories(new[] { dataRepository });
          displayPresenter.Refresh();
       }
 

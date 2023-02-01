@@ -1,18 +1,18 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -107,8 +107,12 @@ namespace MoBi.UI.Views
          layoutItemFormulaType.Text = AppConstants.Captions.FormulaType.FormatForLabel();
          btnAddFormula.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddFormula, ImageLocation.MiddleLeft, ToolTips.Formula.FormulaName);
          layoutItemCloneFormula.Visibility = LayoutVisibility.Never;
-         layoutItemCloneFormula.AdjustButtonSize();
-         layoutItemAddFormula.AdjustButtonSize();
+         layoutControl.DoInBatch(() =>
+         {
+            layoutItemCloneFormula.AdjustButtonSize();
+            layoutItemAddFormula.AdjustButtonSize();
+         });
+
          cbExplicitFormulaName.Properties.AutoHeight = false;
          cbExplicitFormulaName.Height = btnAddFormula.Height;
       }

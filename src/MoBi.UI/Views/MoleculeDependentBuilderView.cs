@@ -105,10 +105,9 @@ namespace MoBi.UI.Views
          layoutGroupExclude.Text = AppConstants.Captions.ExcludeList;
          btnAddToIncludeList.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddMolecule, toolTip: ToolTips.Observer.AddMoleculeToIncludeList);
          btnAddToExcludeList.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddMolecule, toolTip: ToolTips.Observer.AddMoleculeToExcludeList);
-
          layoutGroupMoleculeSelection.Text = AppConstants.Captions.CalculatedForFollowingMolecules.FormatForLabel();
-         layouytItemAddToIncludeList.AdjustLongButtonSize();
-         layouytItemAddToExcludeList.AdjustLongButtonSize();
+         layouytItemAddToIncludeList.AdjustLongButtonSize(layoutControl);
+         layouytItemAddToExcludeList.AdjustLongButtonSize(layoutControl);
       }
 
       private void onForAllSet(PropertyValueSetEventArgs<bool> e)

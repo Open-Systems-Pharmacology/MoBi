@@ -10,8 +10,10 @@ using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
@@ -34,12 +36,14 @@ namespace MoBi.Presentation.Presenter
       string CreateResultTabCaption(string viewCaption);
    }
 
-   public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter
+   public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>
    {
       private IMoBiSimulation _simulation;
       private readonly IHierarchicalSimulationPresenter _hierarchicalPresenter;
       private readonly ISimulationDiagramPresenter _simulationDiagramPresenter;
       private readonly ISimulationChartPresenter _chartPresenter;
+      private readonly ISimulationPredictedVsObservedChartPresenter _simulationPredictedVsObservedChartPresenter;
+      private readonly ISimulationResidualVsTimeChartPresenter _simulationResidualVsTimeChartPresenter;
       private readonly IEditSolverSettingsPresenter _solverSettingsPresenter;
       private readonly IEditOutputSchemaPresenter _editOutputSchemaPresenter;
       private readonly IEditInSimulationPresenterFactory _showPresenterFactory;
@@ -50,11 +54,19 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditFavoritesInSimulationPresenter _favoritesPresenter;
       private readonly IUserDefinedParametersPresenter _userDefinedParametersPresenter;
       private readonly IChartTasks _chartTask;
+      protected readonly IMoBiContext _context;
+      private readonly ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
+      private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
 
-      public EditSimulationPresenter(IEditSimulationView view, ISimulationChartPresenter chartPresenter, IHierarchicalSimulationPresenter hierarchicalPresenter, ISimulationDiagramPresenter simulationDiagramPresenter,
+      public EditSimulationPresenter(IEditSimulationView view, ISimulationChartPresenter chartPresenter,
+         IHierarchicalSimulationPresenter hierarchicalPresenter, ISimulationDiagramPresenter simulationDiagramPresenter,
          IEditSolverSettingsPresenter solverSettingsPresenter, IEditOutputSchemaPresenter editOutputSchemaPresenter,
          IEditInSimulationPresenterFactory showPresenterFactory, IHeavyWorkManager heavyWorkManager, IChartFactory chartFactory,
-         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask, IUserDefinedParametersPresenter userDefinedParametersPresenter)
+         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask,
+         IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
+         ISimulationPredictedVsObservedChartPresenter simulationPredictedVsObservedChartPresenter,
+         ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter, IMoBiContext context,
+         IOutputMappingMatchingTask outputMappingMatchingTask)
          : base(view)
       {
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
@@ -67,15 +79,26 @@ namespace MoBi.Presentation.Presenter
          _solverSettingsPresenter = solverSettingsPresenter;
          _hierarchicalPresenter = hierarchicalPresenter;
          _simulationDiagramPresenter = simulationDiagramPresenter;
+         _simulationPredictedVsObservedChartPresenter = simulationPredictedVsObservedChartPresenter;
+         _simulationResidualVsTimeChartPresenter = simulationResidualVsTimeChartPresenter;
          _chartPresenter = chartPresenter;
+         _simulationOutputMappingPresenter = simulationOutputMappingPresenter;
          _view.SetTreeView(hierarchicalPresenter.BaseView);
          _view.SetModelDiagram(_simulationDiagramPresenter.View);
          _hierarchicalPresenter.ShowOutputSchema = showOutputSchema;
          _hierarchicalPresenter.ShowSolverSettings = showSolverSettings;
          _hierarchicalPresenter.SimulationFavorites = () => _favoritesPresenter.Favorites();
          _view.SetChartView(chartPresenter.View);
-         AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter, _favoritesPresenter, _userDefinedParametersPresenter);
-         _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> {OnMissingKey = x => null};
+         _view.SetPredictedVsObservedView(simulationPredictedVsObservedChartPresenter.View);
+         _view.SetResidualsVsTimeView(simulationResidualVsTimeChartPresenter.View);
+         _view.SetDataView(_simulationOutputMappingPresenter.View);
+         AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
+            _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationPredictedVsObservedChartPresenter,
+            _simulationResidualVsTimeChartPresenter);
+         _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
+         _chartPresenter.OnObservedDataAddedToChart += onObservedDataAddedToChart;
+         _context = context;
+         _outputMappingMatchingTask = outputMappingMatchingTask;
       }
 
       public string CreateResultTabCaption(string chartName)
@@ -109,6 +132,7 @@ namespace MoBi.Presentation.Presenter
          _favoritesPresenter.Edit(_simulation);
          _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
+         _simulationOutputMappingPresenter.EditSimulation(simulation);
          UpdateCaption();
          _view.Display();
          loadChart();
@@ -135,14 +159,34 @@ namespace MoBi.Presentation.Presenter
          CurveChartTemplate defaultTemplate = null;
 
          var data = new List<DataRepository>();
-         if (_simulation.Results != null)
-            data.Add(_simulation.Results);
+         if (_simulation.ResultsDataRepository != null)
+            data.Add(_simulation.ResultsDataRepository);
 
+
+         //This whole initialization of Chart in presenter is really ugly.
+         //It's done like this now so that we can release 11.1 but should be done like in PK-Sim (multiple chart per simulation, added dynamically)
          if (_simulation.Chart == null)
          {
             _simulation.Chart = _chartFactory.Create<CurveChart>().WithAxes();
             _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);
          }
+
+         if (_simulation.PredictedVsObservedChart == null)
+            _simulation.PredictedVsObservedChart = _chartFactory.Create<SimulationPredictedVsObservedChart>();
+
+         if (_simulationPredictedVsObservedChartPresenter.Chart == null)
+            _simulationPredictedVsObservedChartPresenter.InitializeAnalysis(_simulation.PredictedVsObservedChart, _simulation);
+         else
+            _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
+
+         if (_simulation.ResidualVsTimeChart == null)
+            _simulation.ResidualVsTimeChart = _chartFactory.Create<SimulationResidualVsTimeChart>();
+
+         if (_simulationResidualVsTimeChartPresenter.Chart == null)
+            _simulationResidualVsTimeChartPresenter.InitializeAnalysis(_simulation.ResidualVsTimeChart, _simulation);
+         else
+            _simulationResidualVsTimeChartPresenter.UpdateAnalysisBasedOn(_simulation);
+
 
          // Whether or not the chart is new, if it has no curves
          // we apply the simulation default template
@@ -277,9 +321,35 @@ namespace MoBi.Presentation.Presenter
          _view.SetEditView(_userDefinedParametersPresenter.BaseView);
       }
 
+      public void Handle(ObservedDataRemovedFromAnalysableEvent e)
+      {
+         if (_simulation == e.Analysable.DowncastTo<IMoBiSimulation>())
+            _chartPresenter.RefreshSimulationChart();
+      }
+
       private bool canHandle(IObjectBaseEvent objectBaseEvent)
       {
          return Equals(_simulation, objectBaseEvent.ObjectBase);
+      }
+
+      private void onObservedDataAddedToChart(object sender, ObservedDataAddedToChartEventArgs e)
+      {
+         var observedDataToAdd = observedDataNotMappedInTheSimulation(e);
+
+         if (!observedDataToAdd.Any())
+            return;
+
+         foreach (var dataRepository in observedDataToAdd)
+         {
+            _outputMappingMatchingTask.AddMatchingOutputMapping(dataRepository, _simulation);
+            _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(_simulation, dataRepository, false));
+         }
+      }
+
+      private List<DataRepository> observedDataNotMappedInTheSimulation(ObservedDataAddedToChartEventArgs e)
+      {
+         return e.AddedDataRepositories
+            .Where(dataRepository => !_simulation.OutputMappings.Any(x => x.UsesObservedData(dataRepository))).ToList();
       }
    }
 }

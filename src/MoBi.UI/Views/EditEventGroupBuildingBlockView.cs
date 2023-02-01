@@ -35,7 +35,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          EditCaption = AppConstants.Captions.Events;
-         ApplicationIcon = ApplicationIcons.PassiveTransport;
+         ApplicationIcon = ApplicationIcons.Event;
       }
    }
 }

@@ -33,10 +33,16 @@ namespace MoBi.Presentation.Tasks
       private readonly IDisplayUnitUpdater _displayUnitUpdater;
       private readonly ISimModelManagerFactory _simModelManagerFactory;
       private readonly IKeyPathMapper _keyPathMapper;
+      private readonly IEntityValidationTask _entityValidationTask;
 
-      public SimulationRunner(IMoBiContext context, IMoBiApplicationController applicationController,
-         IOutputSelectionsRetriever outputSelectionsRetriever, ISimulationPersistableUpdater simulationPersistableUpdater,
-         IDisplayUnitUpdater displayUnitUpdater, ISimModelManagerFactory simModelManagerFactory, IKeyPathMapper keyPathMapper)
+      public SimulationRunner(IMoBiContext context, 
+         IMoBiApplicationController applicationController,
+         IOutputSelectionsRetriever outputSelectionsRetriever, 
+         ISimulationPersistableUpdater simulationPersistableUpdater,
+         IDisplayUnitUpdater displayUnitUpdater, 
+         ISimModelManagerFactory simModelManagerFactory, 
+         IKeyPathMapper keyPathMapper, 
+         IEntityValidationTask entityValidationTask)
       {
          _context = context;
          _applicationController = applicationController;
@@ -45,15 +51,21 @@ namespace MoBi.Presentation.Tasks
          _displayUnitUpdater = displayUnitUpdater;
          _simModelManagerFactory = simModelManagerFactory;
          _keyPathMapper = keyPathMapper;
+         _entityValidationTask = entityValidationTask;
       }
 
       public void RunSimulation(IMoBiSimulation simulation, bool defineSettings = false)
       {
          addPersitableParametersToOutputSelection(simulation);
+         if (!_entityValidationTask.Validate(simulation))
+            return;
+
          if (settingsRequired(simulation, defineSettings))
          {
             var outputSelections = _outputSelectionsRetriever.OutputSelectionsFor(simulation);
-            if (outputSelections == null) return;
+            if (outputSelections == null)
+               return;
+
             updateOutputSelectionInSimulation(simulation, outputSelections);
          }
 
@@ -152,11 +164,11 @@ namespace MoBi.Presentation.Tasks
       private void copyResultsToSimulation(SimulationRunResults results, IMoBiSimulation simulation)
       {
          var resultsResults = results.Results;
-         if (simulation.Results != null)
-            simulation.HistoricResults.Add(simulation.Results);
+         if (simulation.ResultsDataRepository != null)
+            simulation.HistoricResults.Add(simulation.ResultsDataRepository);
 
          setMolecularWeight(simulation, resultsResults);
-         simulation.Results = resultsResults;
+         simulation.ResultsDataRepository = resultsResults;
       }
 
       private void setMolecularWeight(IMoBiSimulation simulation, IEnumerable<DataColumn> results)

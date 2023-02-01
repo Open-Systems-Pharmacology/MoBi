@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.RepositoryItems;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors.Controls;
-using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
@@ -20,8 +18,7 @@ namespace MoBi.UI.Views
    {
       protected GridViewBinder<TReactionPartnerBuilder> _gridBinder;
       protected IReactionPartnerPresenter<TReactionPartnerBuilder> _presenter;
-      private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
-      private readonly RepositoryItemButtonEdit _addButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Plus);
+      private readonly UxAddAndRemoveButtonRepository _addRemoveButtonRepository = new UxAddAndRemoveButtonRepository();
 
       protected ReactionBuilderView(IImageListRetriever imageListRetriever)
       {
@@ -49,33 +46,25 @@ namespace MoBi.UI.Views
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         
+
          gridControl.MouseClick += (o, e) => OnEvent(() => GridPartnerMouseClick(_gridBinder, e));
 
          _gridBinder.AddUnboundColumn()
             .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithRepository(dto => _addButtonRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithRepository(dto => _addRemoveButtonRepository)
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
-         _gridBinder.AddUnboundColumn()
-            .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithRepository(dto => _removeButtonRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
-
-         _removeButtonRepository.ButtonClick += (o, e) => OnEvent(removeReactionPartner, _gridBinder.FocusedElement);
-         _addButtonRepository.ButtonClick += (o, e) => OnEvent(addReactionPartner, _gridBinder.FocusedElement);
+         _addRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(() => onButtonClicked(e, _gridBinder.FocusedElement));
       }
 
-      private void addReactionPartner(TReactionPartnerBuilder reactionPartnerBuilderDTO)
+      private void onButtonClicked(ButtonPressedEventArgs buttonPressedEventArgs, TReactionPartnerBuilder reactionPartnerBuilderDTO)
       {
-         _presenter.AddNewReactionPartnerBuilder();
-      }
-
-      private void removeReactionPartner(TReactionPartnerBuilder reactionPartnerBuilderDTO)
-      {
-         _presenter.Remove(reactionPartnerBuilderDTO);
+         var pressedButton = buttonPressedEventArgs.Button;
+         if (pressedButton.Kind.Equals(ButtonPredefines.Plus))
+            _presenter.AddNewReactionPartnerBuilder();
+         else
+            _presenter.Remove(reactionPartnerBuilderDTO);
       }
 
       protected void GridPartnerMouseClick(GridViewBinder<TReactionPartnerBuilder> gridViewBinder, MouseEventArgs e)

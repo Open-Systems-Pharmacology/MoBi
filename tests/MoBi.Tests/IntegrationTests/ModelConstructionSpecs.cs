@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Helpers;
@@ -17,13 +18,10 @@ namespace MoBi.IntegrationTests
 {
    public abstract class concern_for_ModelConstruction : ContextForSimulationIntegration<IModelConstructor>
    {
-      protected override void Context()
-      {
-         
-      }
+      
    }
 
-   public class When_creating_a_simulation_using_reactions_with_the_flag_create_rate_parameter_checked:  concern_for_ModelConstruction
+   public class When_creating_a_simulation_using_reactions_with_the_flag_create_rate_parameter_checked : concern_for_ModelConstruction
    {
       private IMoBiBuildConfiguration _buildConfiguration;
       private IMoleculeBuilder _moleculeA;
@@ -53,7 +51,7 @@ namespace MoBi.IntegrationTests
       {
          var allReactions = _simulation.Model.Root.GetAllChildren<IReaction>(x => x.IsNamed(_reactionR1.Name));
          allReactions.Count.ShouldBeGreaterThan(0);
-         allReactions.Each(x=>x.Parameter(Constants.Parameters.PROCESS_RATE).ShouldNotBeNull());
+         allReactions.Each(x => x.Parameter(Constants.Parameters.PROCESS_RATE).ShouldNotBeNull());
       }
    }
 
@@ -61,6 +59,7 @@ namespace MoBi.IntegrationTests
    {
       private IMoBiBuildConfiguration _buildConfiguration;
       private IContainer _organism;
+      private IEntityValidationTask _entityValidationTask;
 
       public override void GlobalContext()
       {
@@ -71,7 +70,13 @@ namespace MoBi.IntegrationTests
          var volumeParameter = _organism.EntityAt<IParameter>(Constants.Parameters.VOLUME);
          volumeParameter.Persistable = true;
          _simulation = DomainFactoryForSpecs.CreateSimulationFor(_buildConfiguration);
+         _entityValidationTask = IoC.Resolve<IEntityValidationTask>();
+         A.CallTo(() => _entityValidationTask.Validate(_simulation)).Returns(true);
 
+      }
+
+      protected override void Because()
+      {
          var simulationRunner = IoC.Resolve<ISimulationRunner>();
          simulationRunner.RunSimulation(_simulation);
       }
@@ -79,9 +84,9 @@ namespace MoBi.IntegrationTests
       [Observation]
       public void should_add_the_parameter_value_to_the_resulting_data_repository()
       {
-         _simulation.Results.ShouldNotBeNull();
-         var volumeParmaeterDataColumn = _simulation.Results.First(x => x.QuantityInfo.PathAsString == new[] {_simulation.Name, _organism.Name, Constants.Parameters.VOLUME}.ToPathString());
-         volumeParmaeterDataColumn.ShouldNotBeNull();
+         _simulation.ResultsDataRepository.ShouldNotBeNull();
+         var volumeParameterDataColumn = _simulation.ResultsDataRepository.First(x => x.QuantityInfo.PathAsString == new[] {_simulation.Name, _organism.Name, Constants.Parameters.VOLUME}.ToPathString());
+         volumeParameterDataColumn.ShouldNotBeNull();
       }
    }
-}	
+}

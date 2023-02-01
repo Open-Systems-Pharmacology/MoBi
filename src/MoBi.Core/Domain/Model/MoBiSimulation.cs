@@ -1,26 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Domain.Model
 {
    public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
    {
-      DataRepository Results { get; set; }
       ICache<string, DataRepository> HistoricResults { get; }
       CurveChart Chart { get; set; }
+      SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
+      SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
+
       IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
       string ParameterIdentificationWorkingDirectory { get; set; }
       void Update(IMoBiBuildConfiguration buildConfiguration, IModel model);
-      bool HasChanged { get; set; }
-
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
@@ -41,8 +43,11 @@ namespace MoBi.Core.Domain.Model
       private DataRepository _results;
       public IDiagramModel DiagramModel { get; set; }
       public CurveChart Chart { get; set; }
+      public SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
+      public SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
+      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
       public MoBiSimulation()
       {
@@ -76,10 +81,10 @@ namespace MoBi.Core.Domain.Model
 
       public bool UsesObservedData(DataRepository dataRepository)
       {
-         return Charts.Any(x => chartUsesObservedData(dataRepository, x));
+         return OutputMappings.Any(x => x.UsesObservedData(dataRepository)) || Charts.Any(x => chartUsesObservedData(dataRepository, x));
       }
 
-      private static bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart)
+      private bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart)
       {
          return curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
       }
@@ -108,15 +113,40 @@ namespace MoBi.Core.Domain.Model
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(source, cloneManager);
-         var sourceSimulationBlock = source as IMoBiSimulation;
-         if (sourceSimulationBlock == null) return;
+         var sourceSimulation = source as IMoBiSimulation;
+         if (sourceSimulation == null) return;
 
-         this.UpdateDiagramFrom(sourceSimulationBlock);
+         OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);
+         //Updating the properties will hold the reference to the source simulation, we need to reset usage
+         //and make sure the output mapping is referencing THIS simulation
+         OutputMappings.SwapSimulation(sourceSimulation, this);
+
+         this.UpdateDiagramFrom(sourceSimulation);
       }
 
       public double? TotalDrugMassPerBodyWeightFor(string compoundName)
       {
          return null;
+      }
+
+      public void RemoveUsedObservedData(DataRepository dataRepository)
+      {
+         if (!UsesObservedData(dataRepository))
+            return;
+
+         var curveToRemove = Chart.Curves.Where(c => Equals(c.yData.Repository, dataRepository)).ToList();
+         if (!curveToRemove.Any())
+            return;
+
+         curveToRemove.Each(curve => Chart.RemoveCurve(curve.Id) );
+
+         HasChanged = true;
+      }
+
+      public void RemoveOutputMappings(DataRepository dataRepository)
+      {
+         var outputsMatchingDeletedObservedData = OutputMappings.OutputMappingsUsingDataRepository(dataRepository).ToList();
+         outputsMatchingDeletedObservedData.Each(OutputMappings.Remove);
       }
 
       public IEnumerable<CurveChart> Charts
@@ -168,9 +198,9 @@ namespace MoBi.Core.Domain.Model
          HasUpToDateResults = false;
       }
 
-      public bool HasResults => Results != null;
+      public bool HasResults => ResultsDataRepository != null;
 
-      public DataRepository Results
+      public DataRepository ResultsDataRepository
       {
          get => _results;
          set

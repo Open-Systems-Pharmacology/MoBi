@@ -4,7 +4,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Services
 {
-   public interface IBuilingBlockReferenceUpdater
+   public interface IBuildingBlockReferenceUpdater
    {
       /// <summary>
       ///    Ensures that all simulations are referencing template building blocks defined in the <paramref name="project" />.
@@ -33,7 +33,7 @@ namespace MoBi.Core.Services
 
    }  
 
-   public class BuilingBlockReferenceUpdater : IBuilingBlockReferenceUpdater
+   public class BuildingBlockReferenceUpdater : IBuildingBlockReferenceUpdater
    {
       public void UpdateTemplatesReferencesIn(IMoBiProject project)
       {

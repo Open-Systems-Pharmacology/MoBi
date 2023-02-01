@@ -47,7 +47,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          _simulation = context.Get<IMoBiSimulation>(SimulationId);
-         _dataRepository = _simulation.HistoricResults[DataRepositoryId] ?? _simulation.Results;
+         _dataRepository = _simulation.HistoricResults[DataRepositoryId] ?? _simulation.ResultsDataRepository;
       }
    }
 }

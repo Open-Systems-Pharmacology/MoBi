@@ -38,6 +38,9 @@ namespace MoBi.UI.Views.SimulationView
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
          tabSimulation.InitWith(AppConstants.Captions.SimulationParameters, ApplicationIcons.Parameter);
          tabResults.InitWith(AppConstants.Captions.Results, ApplicationIcons.TimeProfileAnalysis);
+         tabData.InitWith(AppConstants.Captions.SimulationObservedData, ApplicationIcons.ObservedData);
+         tabPredVsObs.InitWith(Captions.SimulationUI.PredictedVsObservedSimulation, ApplicationIcons.PredictedVsObservedAnalysis);
+         tabResidVsTime.InitWith(Captions.SimulationUI.ResidualsVsTimeSimulation, ApplicationIcons.ResidualVsTimeAnalysis);
 
          tabsNavigation.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
          tabs.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
@@ -62,6 +65,11 @@ namespace MoBi.UI.Views.SimulationView
          tabTree.FillWith(view);
       }
 
+      public void SetDataView(ISimulationOutputMappingView view)
+      {
+         tabData.FillWith(view);
+      }
+
       public void SetChartView(IChartView chartView)
       {
          chartView.CaptionChanged += (o, e) => OnEvent(() => tabResults.Text = simulationPresenter.CreateResultTabCaption(chartView.Caption));
@@ -79,6 +87,16 @@ namespace MoBi.UI.Views.SimulationView
       public void ShowResultsTab()
       {
          tabs.SelectedTabPage = tabResults;
+      }
+
+      public void SetPredictedVsObservedView(ISimulationVsObservedDataView view)
+      {
+         tabPredVsObs.FillWith(view);
+      }
+
+      public void SetResidualsVsTimeView(ISimulationVsObservedDataView view)
+      {
+         tabResidVsTime.FillWith(view);
       }
    }
 }

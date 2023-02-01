@@ -16,14 +16,13 @@ namespace MoBi.UI.Views
    public partial class TagsView : BaseUserControl, ITagsView
    {
       private readonly GridViewBinder<TagDTO> _gridBinder;
-      private readonly UxAddAndRemoveButtonRepository _addRemoveButtonRepository;
+      private readonly UxAddAndRemoveButtonRepository _addRemoveButtonRepository = new UxAddAndRemoveButtonRepository();
       private ITagsPresenter _presenter;
 
       public TagsView()
       {
          InitializeComponent();
          _gridBinder = new GridViewBinder<TagDTO>(gridView);
-         _addRemoveButtonRepository = new UxAddAndRemoveButtonRepository();
          Caption = AppConstants.Captions.Tags;
       }
 
@@ -60,7 +59,7 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          btnAddTag.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddTag);
 
-         layoutControlItemAddTag.AdjustButtonSize();
+         layoutControlItemAddTag.AdjustButtonSize(layoutControl);
       }
 
       private void onButtonClicked(ButtonPressedEventArgs buttonPressedEventArgs, TagDTO tagDTO)

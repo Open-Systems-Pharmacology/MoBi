@@ -36,7 +36,7 @@ namespace MoBi.UI.Views
 
       private void onCoefficentSet(ReactionPartnerBuilderDTO reactionPartner, PropertyValueSetEventArgs<double> e)
       {
-         OnEvent(() => _presenter.SetStochiometricCoefficient(e.NewValue, reactionPartner));
+         OnEvent(() => _presenter.SetStoichiometricCoefficient(e.NewValue, reactionPartner));
       }
    }
 }

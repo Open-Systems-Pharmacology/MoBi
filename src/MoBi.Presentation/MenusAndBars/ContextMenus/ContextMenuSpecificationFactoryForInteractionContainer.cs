@@ -1,18 +1,16 @@
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -20,21 +18,21 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         //As long as Interaction Container is "just" a "container" we can reuse the container in event group here.(allows no subcontainer)
+         //As long as Interaction Container is "just" a "container" we can reuse the container in event group here.(allows no sub-container)
          return IoC.Resolve<IContextMenuForContainerInMoleculeBuildingBlock>().InitializeWith(viewItem as ContainerDTO, presenter);
       }
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
-      { 
+      {
          return objectRequestingContextMenu.IsAnImplementationOf<InteractionContainerDTO>();
       }
    }
 
-   internal interface IContextMenuForContainerInMoleculeBuildingBlock:IContextMenuFor<InteractionContainer>
+   internal interface IContextMenuForContainerInMoleculeBuildingBlock : IContextMenuFor<InteractionContainer>
    {
    }
 
-   class ContextMenuForContainerInMoleculeBuildingBlock :ContextMenuForContainerBase<InteractionContainer>, IContextMenuForContainerInMoleculeBuildingBlock
+   class ContextMenuForContainerInMoleculeBuildingBlock : ContextMenuForContainerBase<InteractionContainer>, IContextMenuForContainerInMoleculeBuildingBlock
    {
       public ContextMenuForContainerInMoleculeBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
       {
