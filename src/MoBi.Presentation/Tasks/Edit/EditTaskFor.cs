@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Assets;
+using MoBi.Core.Commands;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Presenters;
-using MoBi.Assets;
-using MoBi.Core.Commands;
-using MoBi.Core.Domain;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -47,15 +47,13 @@ namespace MoBi.Presentation.Tasks.Edit
       protected readonly IMoBiApplicationController _applicationController;
       protected readonly IInteractionTask _interactionTask;
       protected readonly IInteractionTaskContext _interactionTaskContext;
-      private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly ICheckNameVisitor _checkNamesVisitor;
       public string ObjectName { get; private set; }
 
-      protected EditTaskFor(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor)
+      protected EditTaskFor(IInteractionTaskContext interactionTaskContext)
       {
          _interactionTaskContext = interactionTaskContext;
-         _objectTypeResolver = objectTypeResolver;
-         _checkNamesVisitor = checkNamesVisitor;
+         _checkNamesVisitor = _interactionTaskContext.CheckNamesVisitor;
          _applicationController = interactionTaskContext.ApplicationController;
          _interactionTask = interactionTaskContext.InteractionTask;
          _context = interactionTaskContext.Context;
@@ -77,7 +75,7 @@ namespace MoBi.Presentation.Tasks.Edit
          var forbiddenNames = GetForbiddenNames(objectBase, existingObjectsInParent);
          _context.AddToHistory(rename(objectBase, forbiddenNames, buildingBlock));
       }
-      
+
       protected virtual string NewNameFor(T objectBase, IReadOnlyList<string> prohibitedNames)
       {
          using (var renameObjectPresenter = _applicationController.Start<IRenameObjectPresenter>())
@@ -90,7 +88,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var newName = NewNameFor(objectBase, forbiddenNames.ToList());
 
-         var objectName = _objectTypeResolver.TypeFor(objectBase);
+         var objectName = _interactionTaskContext.GetTypeFor(objectBase);
 
          if (string.IsNullOrEmpty(newName))
             return new MoBiEmptyCommand();
@@ -193,7 +191,7 @@ namespace MoBi.Presentation.Tasks.Edit
          using (var modalPresenter = GetCreateViewFor(entity, commandCollector))
          {
             InitializeSubPresenter(modalPresenter.SubPresenter, buildingBlock, entity);
-            ((ICreatePresenter<T>) modalPresenter.SubPresenter).Edit(entity, existingObjectsInParent);
+            ((ICreatePresenter<T>)modalPresenter.SubPresenter).Edit(entity, existingObjectsInParent);
             return modalPresenter.Show();
          }
       }

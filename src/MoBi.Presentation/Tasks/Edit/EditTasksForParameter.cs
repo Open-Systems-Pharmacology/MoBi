@@ -14,7 +14,7 @@ namespace MoBi.Presentation.Tasks.Edit
    {
       private readonly ISelectReferencePresenterFactory _selectReferencePresenterFactory;
 
-      public EditTasksForParameter(IInteractionTaskContext interactionTaskContext, ISelectReferencePresenterFactory selectReferencePresenterFactory, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTasksForParameter(IInteractionTaskContext interactionTaskContext, ISelectReferencePresenterFactory selectReferencePresenterFactory) : base(interactionTaskContext)
       {
          _selectReferencePresenterFactory = selectReferencePresenterFactory;
       }

@@ -6,7 +6,7 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTaskForApplicationMoleculeBuilder : EditTaskFor<IApplicationMoleculeBuilder>
    {
-      public EditTaskForApplicationMoleculeBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTaskForApplicationMoleculeBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
    }

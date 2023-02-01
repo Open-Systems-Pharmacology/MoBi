@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTasksForTransportBuilder : EditTaskFor<ITransportBuilder>
    {
-      public EditTasksForTransportBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTasksForTransportBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 

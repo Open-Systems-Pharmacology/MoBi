@@ -14,7 +14,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
    public class EditTasksForExpressionProfileBuildingBlock : EditTasksForBuildingBlock<ExpressionProfileBuildingBlock>, IEditTasksForExpressionProfileBuildingBlock
    {
-      public EditTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 

@@ -16,15 +16,11 @@ namespace MoBi.Presentation.Tasks
    public abstract class concern_for_EditTaskForInteractionContainerSpecs : ContextSpecification<EditTaskForInteractionContainer>
    {
       protected IInteractionTaskContext _interactionTaskContext;
-      private IObjectTypeResolver _objectTypeResolver;
-      private ICheckNameVisitor _checkNamesVisitor;
 
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
-         sut = new EditTaskForInteractionContainer(_interactionTaskContext, _objectTypeResolver, _checkNamesVisitor);
+         sut = new EditTaskForInteractionContainer(_interactionTaskContext);
       }
    }
 

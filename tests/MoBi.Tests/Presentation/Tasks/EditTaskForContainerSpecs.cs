@@ -15,8 +15,6 @@ namespace MoBi.Presentation.Tasks
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       protected IInteractionTaskContext _interactionTaskContext;
       protected IInteractionTask _interactionTask;
-      private IObjectTypeResolver _objectTypeResolver;
-      private ICheckNameVisitor _checkNamesVisitor;
 
       protected override void Context()
       {
@@ -24,9 +22,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _interactionTask = A.Fake<IInteractionTask>();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectTypeResolver, _checkNamesVisitor);
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory);
       }
    }
 

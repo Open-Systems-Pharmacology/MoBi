@@ -14,7 +14,7 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTasksForNeighborhoodBuilder : EditTaskFor<INeighborhoodBuilder>
    {
-      public EditTasksForNeighborhoodBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTasksForNeighborhoodBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 

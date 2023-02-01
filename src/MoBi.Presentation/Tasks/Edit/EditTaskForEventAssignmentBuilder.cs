@@ -6,7 +6,7 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTaskForEventAssignmentBuilder : EditTaskFor<IEventAssignmentBuilder>
    {
-      public EditTaskForEventAssignmentBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTaskForEventAssignmentBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
    }

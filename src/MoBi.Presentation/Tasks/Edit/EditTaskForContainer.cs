@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Tasks.Edit
    public class EditTaskForContainer : EditTaskFor<IContainer>, IEditTaskForContainer
    {
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
-      public EditTaskForContainer(IInteractionTaskContext interactionTaskContext, IMoBiSpatialStructureFactory spatialStructureFactory, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTaskForContainer(IInteractionTaskContext interactionTaskContext, IMoBiSpatialStructureFactory spatialStructureFactory) : base(interactionTaskContext)
       {
          _spatialStructureFactory = spatialStructureFactory;
       }

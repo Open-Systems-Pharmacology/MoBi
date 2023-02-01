@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using MoBi.Assets;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
@@ -19,7 +20,7 @@ namespace MoBi.Presentation.DTO
       public RenameExpressionProfileDTO()
       {
          Rules.Add(RenameExpressionProfileDTORules.UniqueName);
-         Rules.AddRange(RenameExpressionProfileDTORules.NonEmptyFieldRules());
+         Rules.AddRange(RenameExpressionProfileDTORules.NonEmptyFieldRules);
       }
 
       public string Type { get; set; }
@@ -61,12 +62,12 @@ namespace MoBi.Presentation.DTO
 
       private static class RenameExpressionProfileDTORules
       {
-         public static IEnumerable<IBusinessRule> NonEmptyFieldRules()
+         public static IEnumerable<IBusinessRule> NonEmptyFieldRules { get; } = new List<IBusinessRule>
          {
-            yield return createNonEmptyRule(item => item.Species, Assets.AppConstants.Validation.SpeciesCannotBeEmpty);
-            yield return createNonEmptyRule(item => item.Category, Assets.AppConstants.Validation.CategoryCannotBeEmpty);
-            yield return createNonEmptyRule(item => item.MoleculeName, Assets.AppConstants.Validation.MoleculeNameCannotBeEmpty);
-         }
+            createNonEmptyRule(item => item.Species, AppConstants.Validation.SpeciesCannotBeEmpty),
+            createNonEmptyRule(item => item.Category, AppConstants.Validation.CategoryCannotBeEmpty),
+            createNonEmptyRule(item => item.MoleculeName, AppConstants.Validation.MoleculeNameCannotBeEmpty)
+         };
 
          private static IBusinessRule createNonEmptyRule(Expression<Func<RenameExpressionProfileDTO, string>> propertyToCheck, string errorCaption)
          {
@@ -79,12 +80,7 @@ namespace MoBi.Presentation.DTO
          public static IBusinessRule UniqueName { get; } = CreateRule.For<RenameExpressionProfileDTO>()
             .Property(item => item.Name)
             .WithRule((dto, newName) => dto.isNameUnique(newName))
-            .WithError((dto, newName) => dto.nameAlreadyExistsError(newName));
-      }
-
-      private string nameAlreadyExistsError(string newName)
-      {
-         return Error.NameAlreadyExists(newName);
+            .WithError((dto, newName) => Error.NameAlreadyExists(newName));
       }
 
       private bool isNameUnique(string newName)

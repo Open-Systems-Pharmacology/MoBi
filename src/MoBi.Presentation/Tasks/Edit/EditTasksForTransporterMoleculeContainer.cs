@@ -26,8 +26,7 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly IDialogCreator _dialogCreator;
 
       public EditTasksForTransporterMoleculeContainer(IInteractionTaskContext interactionTaskContext, ICoreCalculationMethodRepository calculationMethodRepository,
-         IReactionDimensionRetriever dimensionRetriever, IDialogCreator dialogCreator, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : 
-         base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+         IReactionDimensionRetriever dimensionRetriever, IDialogCreator dialogCreator) : base(interactionTaskContext)
       {
          _calculationMethodRepository = calculationMethodRepository;
          _dimensionRetriever = dimensionRetriever;

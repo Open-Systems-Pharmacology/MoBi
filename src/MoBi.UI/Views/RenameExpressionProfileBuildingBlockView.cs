@@ -19,14 +19,14 @@ namespace MoBi.UI.Views
          MaximizeBox = false;
          MinimizeBox = false;
 
-         initializeResources();
-         initializeBinding();
+         
       }
 
       public override bool HasError => _screenBinder.HasError;
 
-      private void initializeBinding()
+      public override void InitializeBinding()
       {
+         base.InitializeBinding();
          _screenBinder.Bind(x => x.Category).To(tbCategory);
          _screenBinder.Bind(x => x.MoleculeName).To(tbMoleculeName);
          _screenBinder.Bind(x => x.Species).To(tbSpecies);
@@ -34,7 +34,7 @@ namespace MoBi.UI.Views
          _screenBinder.SavingMode = SavingMode.Always;
 
          // We need to validate the text box when the text changes so that the Name property is validated
-         // even thought that text box is readonly. The Name is composed of each of the other text boxes content
+         // even though that text box is readonly. The Name is composed of each of the other text boxes content
          tbCategory.TextChanged += (o,e) => OnEvent(() => validateTextBox(o));
          tbMoleculeName.TextChanged += (o,e) => OnEvent(() => validateTextBox(o));
          tbSpecies.TextChanged += (o,e) => OnEvent(() => validateTextBox(o));
@@ -48,8 +48,9 @@ namespace MoBi.UI.Views
             textEdit.DoValidate();
       }
 
-      private void initializeResources()
+      public override void InitializeResources()
       {
+         base.InitializeResources();
          lblSpecies.Text = Captions.Species;
          lblCategory.Text = Captions.Category;
          lblName.Text = Captions.Name;

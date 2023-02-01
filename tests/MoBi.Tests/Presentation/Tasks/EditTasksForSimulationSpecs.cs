@@ -28,8 +28,6 @@ namespace MoBi.Presentation.Tasks
       private IModelReportCreator _reportCreator;
       private IDimensionFactory _dimensionFactory;
       protected IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
-      private IObjectTypeResolver _objectTypeResolver;
-      private ICheckNameVisitor _checkNamesVisitor;
       protected IMoBiApplicationController _applicationController;
       protected IRenameObjectPresenter _renameObjectPresenter;
 
@@ -45,13 +43,11 @@ namespace MoBi.Presentation.Tasks
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
-         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
          
          A.CallTo(() => _context.ApplicationController).Returns(_applicationController);
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
          
-         sut = new EditTasksForSimulation(_context, _simulationPersistor, _dialogCreator, _dataRepositoryTask, _reportCreator, _simulationModelExporter, _dimensionFactory, _parameterIdentificationSimulationPathUpdater, _objectTypeResolver, _checkNamesVisitor);
+         sut = new EditTasksForSimulation(_context, _simulationPersistor, _dialogCreator, _dataRepositoryTask, _reportCreator, _simulationModelExporter, _dimensionFactory, _parameterIdentificationSimulationPathUpdater);
       }
    }
 

@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTasksForEventGroupBuilder<TEventGroupBuilder> : EditTasksForBuilder<TEventGroupBuilder, IEventGroupBuildingBlock> where TEventGroupBuilder: class, IEventGroupBuilder
    {
-      public EditTasksForEventGroupBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTasksForEventGroupBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
    public class EditTasksForApplicationBuilder : EditTasksForEventGroupBuilder<IApplicationBuilder> 
    {
-      public EditTasksForApplicationBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTasksForApplicationBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
    }
@@ -37,7 +37,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
    public class EditTasksForEventGroupBuilder: EditTasksForEventGroupBuilder<IEventGroupBuilder> 
    {
-      public EditTasksForEventGroupBuilder(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTasksForEventGroupBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
    }

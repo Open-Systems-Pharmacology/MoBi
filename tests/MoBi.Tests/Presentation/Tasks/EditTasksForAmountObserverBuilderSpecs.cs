@@ -21,8 +21,7 @@ namespace MoBi.Presentation.Tasks
       protected IAmountObserverBuilder _amountObserver;
       protected AmountObserverBuilder _amountObserverBuilderWithForbiddenName;
       protected IInteractionTask _interactionTask;
-      private IObjectTypeResolver _objectTypeResolver;
-      private ICheckNameVisitor _checkNamesVisitor;
+
       protected IMoBiApplicationController _applicationController;
       protected IRenameObjectPresenter _renameObjectPresenter;
 
@@ -35,8 +34,6 @@ namespace MoBi.Presentation.Tasks
          _amountObserverBuilderWithForbiddenName = new AmountObserverBuilder {Name = "forbidden name"};
          _buildingBlock = new ObserverBuildingBlock {_amountObserverBuilderWithForbiddenName, _amountObserver};
          _interactionTask = A.Fake<IInteractionTask>();
-         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
 
@@ -47,7 +44,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_applicationController);
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
          
-         sut = new EditTasksForAmountObserverBuilder(_interactionTaskContext, _objectTypeResolver, _checkNamesVisitor);
+         sut = new EditTasksForAmountObserverBuilder(_interactionTaskContext);
       }
    }
 

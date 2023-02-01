@@ -33,15 +33,14 @@ namespace MoBi.Core.Commands
          _expressionProfileBuildingBlock = context.Get<ExpressionProfileBuildingBlock>(ObjectId);
       }
 
-      protected override void RenameBuildingBlock(IMoBiContext context)
+      protected override void RenameObjectBase(IMoBiContext context)
       {
-         base.RenameBuildingBlock(context);
-         var objectPathFactory = context.ObjectPathFactory;
+         base.RenameObjectBase(context);
          _expressionProfileBuildingBlock.Each(x =>
          {
             var objectPath = x.Path;
             objectPath.Replace(_oldMoleculeName, _expressionProfileBuildingBlock.MoleculeName);
-            x.Path = objectPathFactory.CreateObjectPathFrom(objectPath);
+            x.Path = objectPath;
          });
       }
    }

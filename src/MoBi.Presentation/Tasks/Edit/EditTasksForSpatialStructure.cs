@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
    public class EditTasksForSpatialStructure : EditTasksForBuildingBlock<IMoBiSpatialStructure>, IEditTasksForSpatialStructure
    {
-      public EditTasksForSpatialStructure(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTasksForSpatialStructure(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 

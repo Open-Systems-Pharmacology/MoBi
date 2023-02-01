@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTaskForInteractionContainer : EditTaskFor<InteractionContainer>
    {
-      public EditTaskForInteractionContainer(IInteractionTaskContext interactionTaskContext, IObjectTypeResolver objectTypeResolver, ICheckNameVisitor checkNamesVisitor) : base(interactionTaskContext, objectTypeResolver, checkNamesVisitor)
+      public EditTaskForInteractionContainer(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 
