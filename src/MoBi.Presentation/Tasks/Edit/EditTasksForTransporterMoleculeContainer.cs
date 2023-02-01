@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -77,6 +77,7 @@ namespace MoBi.Presentation.Tasks.Edit
          {
             commandCollector.AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(transporterMoleculeContainer.PropertyName(x => x.TransportName), newName, oldTransportName, transporterMoleculeContainer, buildingBlock) { ObjectType = ObjectName });
          }
+
          commandCollector.Run(_context);
          _context.AddToHistory(commandCollector);
       }

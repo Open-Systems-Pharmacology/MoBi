@@ -1,12 +1,11 @@
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {

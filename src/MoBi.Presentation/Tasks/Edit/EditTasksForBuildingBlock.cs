@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
-   public interface IEditTasksForBuildingBlock<T> : IEditTaskFor<T> where T : class,IObjectBase
+   public interface IEditTasksForBuildingBlock<T> : IEditTaskFor<T> where T : class, IObjectBase
    {
       void EditBuildingBlock(IBuildingBlock buildingBlock);
    }
@@ -46,7 +45,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var forbiddenNames = GetForbiddenNamesWithoutSelf(entity, existingObjectsInParent);
          var name = _interactionTaskContext.DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(ObjectName),
-            AppConstants.Captions.NewWindow(ObjectName), string.Empty,forbiddenNames);
+            AppConstants.Captions.NewWindow(ObjectName), string.Empty, forbiddenNames);
 
          if (name.IsNullOrEmpty())
             return false;
