@@ -66,6 +66,10 @@ namespace MoBi.Presentation.Tasks
          loadPKSimAssembly();
          var expressionProfileBuildingBlock = executeMethod(getExpressionCreatorMethod(methodName)) as ExpressionProfileBuildingBlock;
 
+         //in case of cancelling
+         if (expressionProfileBuildingBlock == null)
+            return null;
+
          return _cloneManager.CloneBuildingBlock(expressionProfileBuildingBlock);
       }
 
@@ -73,6 +77,10 @@ namespace MoBi.Presentation.Tasks
       {
          loadPKSimAssembly();
          var individualBuildingBlock = executeMethod(getIndividualCreatorMethod(CREATE_INDIVIDUAL)) as IndividualBuildingBlock;
+
+         //in case of cancelling
+         if (individualBuildingBlock == null) 
+            return null;
 
          return _cloneManager.CloneBuildingBlock(individualBuildingBlock);
       }
