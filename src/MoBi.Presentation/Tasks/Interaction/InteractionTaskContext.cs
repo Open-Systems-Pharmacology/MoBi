@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    public class InteractionTaskContext : IInteractionTaskContext
    {
       private readonly ICommandTask _commandTask;
-      private IObjectTypeResolver _objectTypeResolver { get; }
+      private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IMoBiConfiguration _configuration;
       private readonly DirectoryMapSettings _directoryMapSettings;
       public IMoBiContext Context { get; }
