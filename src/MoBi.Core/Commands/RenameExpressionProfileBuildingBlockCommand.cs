@@ -36,6 +36,9 @@ namespace MoBi.Core.Commands
       protected override void RenameObjectBase(IMoBiContext context)
       {
          base.RenameObjectBase(context);
+         // We need to modify the path of all builders when the building block name changes
+         // The building block name reflects the molecule name so when that changes, the path of all builders needs to be updated
+         // to the new molecule name
          _expressionProfileBuildingBlock.Each(x =>
          {
             var objectPath = x.Path;
