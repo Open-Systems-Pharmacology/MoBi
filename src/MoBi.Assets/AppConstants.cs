@@ -1839,6 +1839,9 @@ namespace MoBi.Assets
          public static readonly string EmptyAlias = "Alias has to be specified";
          public static readonly string AliasAlreadyUsed = "Alias is already in use";
          public static readonly string EmptyPath = "Path has to be specified";
+         public static readonly string SpeciesCannotBeEmpty = "Species cannot be empty";
+         public static readonly string MoleculeNameCannotBeEmpty = "Molecule name cannot be empty";
+         public static readonly string CategoryCannotBeEmpty = "Category cannot be empty";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
          {
@@ -1935,7 +1938,7 @@ namespace MoBi.Assets
       public static readonly string Undefined = "Undefined";
       public static readonly string PleaseSelectCurveInChartEditor = "Please select a curve from the chart editor to be displayed in the chart";
       public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN};
-
+      public static readonly string Clone = "Clone";
 
       public static string PathType(string pathTypeAsString)
       {

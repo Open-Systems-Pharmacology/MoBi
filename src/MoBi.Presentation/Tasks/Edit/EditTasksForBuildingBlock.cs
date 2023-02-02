@@ -1,18 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
-   public interface IEditTasksForBuildingBlock<T> : IEditTaskFor<T> where T : class,IObjectBase
+   public interface IEditTasksForBuildingBlock<T> : IEditTaskFor<T> where T : class, IObjectBase
    {
       void EditBuildingBlock(IBuildingBlock buildingBlock);
    }
@@ -25,7 +22,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public override void Edit(T buildingBlock)
       {
-         editEntiy(buildingBlock);
+         editEntity(buildingBlock);
          base.Edit(buildingBlock);
       }
 
@@ -34,7 +31,7 @@ namespace MoBi.Presentation.Tasks.Edit
          Edit(buildingBlock.DowncastTo<T>());
       }
 
-      private void editEntiy(T entity)
+      private void editEntity(T entity)
       {
          editPresenterFor(entity).Edit(entity);
       }
@@ -48,7 +45,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var forbiddenNames = GetForbiddenNamesWithoutSelf(entity, existingObjectsInParent);
          var name = _interactionTaskContext.DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(ObjectName),
-            AppConstants.Captions.NewWindow(ObjectName), string.Empty,forbiddenNames);
+            AppConstants.Captions.NewWindow(ObjectName), string.Empty, forbiddenNames);
 
          if (name.IsNullOrEmpty())
             return false;

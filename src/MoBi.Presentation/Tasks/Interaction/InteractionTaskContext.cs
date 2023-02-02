@@ -20,6 +20,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IUserSettings UserSettings { get; }
       IDialogCreator DialogCreator { get; }
       IMoBiFormulaTask MoBiFormulaTask { get; }
+      ICheckNameVisitor CheckNamesVisitor { get; }
       Unit DisplayUnitFor(IWithDimension withDimension);
       Unit DisplayUnitFor(IDimension dimension);
       IDimension DimensionByName(string dimensionName);
@@ -52,20 +53,21 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IMoBiConfiguration _configuration;
       private readonly DirectoryMapSettings _directoryMapSettings;
-      public IMoBiContext Context { get; private set; }
-      public IMoBiApplicationController ApplicationController { get; private set; }
-      public IInteractionTask InteractionTask { get; private set; }
-      public IActiveSubjectRetriever ActiveSubjectRetriever { get; private set; }
-      public IUserSettings UserSettings { get; private set; }
-      public IDialogCreator DialogCreator { get; private set; }
-      public IMoBiFormulaTask MoBiFormulaTask { get; private set; }
-      public IDisplayUnitRetriever DisplayUnitRetriever { get; private set; }
+      public IMoBiContext Context { get; }
+      public IMoBiApplicationController ApplicationController { get; }
+      public IInteractionTask InteractionTask { get; }
+      public IActiveSubjectRetriever ActiveSubjectRetriever { get; }
+      public IUserSettings UserSettings { get; }
+      public IDialogCreator DialogCreator { get; }
+      public IMoBiFormulaTask MoBiFormulaTask { get; }
+      public ICheckNameVisitor CheckNamesVisitor { get; }
+      public IDisplayUnitRetriever DisplayUnitRetriever { get; }
 
       public InteractionTaskContext(IMoBiContext context, IMoBiApplicationController applicationController,
          IInteractionTask interactionTask, IActiveSubjectRetriever activeSubjectRetriever, IUserSettings userSettings,
          IDisplayUnitRetriever displayUnitRetriever, IDialogCreator dialogCreator,
          ICommandTask commandTask, IObjectTypeResolver objectTypeResolver, IMoBiFormulaTask moBiFormulaTask,
-         IMoBiConfiguration configuration, DirectoryMapSettings directoryMapSettings)
+         IMoBiConfiguration configuration, DirectoryMapSettings directoryMapSettings, ICheckNameVisitor checkNamesVisitor)
       {
          DialogCreator = dialogCreator;
          Context = context;
@@ -79,6 +81,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _configuration = configuration;
          _directoryMapSettings = directoryMapSettings;
          MoBiFormulaTask = moBiFormulaTask;
+         CheckNamesVisitor = checkNamesVisitor;
       }
 
       public Unit DisplayUnitFor(IWithDimension withDimension)

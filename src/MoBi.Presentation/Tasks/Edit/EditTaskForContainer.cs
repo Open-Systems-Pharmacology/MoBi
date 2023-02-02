@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -20,21 +20,21 @@ namespace MoBi.Presentation.Tasks.Edit
    public class EditTaskForContainer : EditTaskFor<IContainer>, IEditTaskForContainer
    {
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
+
       public EditTaskForContainer(IInteractionTaskContext interactionTaskContext, IMoBiSpatialStructureFactory spatialStructureFactory) : base(interactionTaskContext)
       {
          _spatialStructureFactory = spatialStructureFactory;
       }
 
-
       protected override IEnumerable<string> GetUnallowedNames(IContainer container, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          if (existingObjectsInParent != null)
             return existingObjectsInParent.AllNames();
-         
+
          var spatialStructure = _interactionTaskContext.Active<ISpatialStructure>();
          if (spatialStructure == null)
             return Enumerable.Empty<string>();
-         
+
          return spatialStructure.TopContainers.Select(x => x.Name).Union(AppConstants.UnallowedNames);
       }
 
@@ -83,16 +83,19 @@ namespace MoBi.Presentation.Tasks.Edit
                {
                   firstFound = true;
                }
+
                if (neighborhood.SecondNeighbor.Equals(cont))
                {
                   secondFound = true;
                }
             }
+
             if (firstFound && secondFound)
             {
                neighborhoods.Add(neighborhood);
             }
          }
+
          return neighborhoods;
       }
    }
