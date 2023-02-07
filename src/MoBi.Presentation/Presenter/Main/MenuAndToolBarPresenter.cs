@@ -173,7 +173,7 @@ namespace MoBi.Presentation.Presenter.Main
          _menuBarItemRepository[MenuBarItemIds.NotificationView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.ComparisonView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.OpenSimulation].Enabled = true;
-         _menuBarItemRepository[MenuBarItemIds.BuildingBlockExplorerView].Enabled = true;
+         _menuBarItemRepository[MenuBarItemIds.ModuleExplorerView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.SimulationExplorerView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.GarbageCollection].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.Exit].Enabled = true;

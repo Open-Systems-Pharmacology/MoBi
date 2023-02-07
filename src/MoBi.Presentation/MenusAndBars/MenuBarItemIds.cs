@@ -16,7 +16,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId CloseProject = createMenuBarItemId("CloseProject");
       public static MenuBarItemId About = createMenuBarItemId("About");
       public static MenuBarItemId HistoryView = createMenuBarItemId("HistoryView");
-      public static MenuBarItemId BuildingBlockExplorerView = createMenuBarItemId("BuildingBlockExplorerView");
+      public static MenuBarItemId ModuleExplorerView = createMenuBarItemId("ModuleExplorerView");
       public static MenuBarItemId Options = createMenuBarItemId("Options");
       public static MenuBarItemId GarbageCollection = createMenuBarItemId("GarbageCollection");
       public static MenuBarItemId Exit = createMenuBarItemId("Exit");

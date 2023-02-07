@@ -14,7 +14,7 @@ namespace MoBi.Assets
 {
    public static class AppConstants
    {
-      public static readonly int LayoutVersion = 24;
+      public static readonly int LayoutVersion = 25;
       public static readonly string NotMatch = "not tagged with";
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
@@ -88,6 +88,7 @@ namespace MoBi.Assets
       public static class DefaultNames
       {
          public static readonly string MoleculeBuildingBlock = "Molecules";
+         public static readonly string Module1 = "Module1";
          public static readonly string ReactionBuildingBlock = "Reaction";
          public static readonly string SpatialStructure = "Organism";
          public static readonly string PassiveTransportBuildingBlock = "Passive Transports";
@@ -997,6 +998,7 @@ namespace MoBi.Assets
          public static readonly string ExportHistory = Captions.ExportHistory;
          public static readonly string StartPopulationSimulation = "Send Simulation to PK-Sim for Population Simulation...";
          public static readonly string BuildingBlockExplorer = "Building Blocks";
+         public static readonly string ModuleExplorer = "Modules";
          public static readonly string SimulationExplorer = "Simulations";
          public static readonly string New = "New";
          public static readonly string NewMolecule = AddNew(ObjectTypes.Molecule);

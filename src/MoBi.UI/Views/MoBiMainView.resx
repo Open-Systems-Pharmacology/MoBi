@@ -121,42 +121,42 @@
     <value>17, 17</value>
   </metadata>
   <metadata name="defaultToolTipController.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 56</value>
+    <value>200, 17</value>
   </metadata>
   <metadata name="defaultLookAndFeel.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 95</value>
+    <value>385, 17</value>
   </metadata>
   <metadata name="alertControl.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 134</value>
+    <value>545, 17</value>
   </metadata>
   <metadata name="dockManager.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 212</value>
+    <value>804, 17</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>63</value>
   </metadata>
   <metadata name="applicationMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 173</value>
+    <value>661, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="ribbonControl.ApplicationIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="ribbonControl.ApplicationButtonImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        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
+        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
 </value>
   </data>
-  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="MoBiMainView.IconOptions.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAcAEBAAAAEAGABoAwAAdgAAACAgAAABABgAqAwAAN4DAAAwMAAAAQAYAKgcAACGEAAAEBAAAAEA
         IABoBAAALi0AACAgAAABACAAqBAAAJYxAAAwMAAAAQAgAKglAAA+QgAAgIAAAAEAIAAoCAEA5mcAACgA

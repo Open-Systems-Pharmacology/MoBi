@@ -3,7 +3,6 @@ using System.Drawing;
 using OSPSuite.BDDHelper;
 using OSPSuite.Presentation.Nodes;
 using FakeItEasy;
-using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.Nodes;
@@ -24,7 +23,6 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
-using System;
 
 namespace MoBi.Presentation
 {

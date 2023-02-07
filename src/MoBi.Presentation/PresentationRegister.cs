@@ -161,8 +161,9 @@ namespace MoBi.Presentation
       {
          if (_registerMainViewPresenter)
             container.Register<IMainViewPresenter, IChangePropagator, MoBiMainViewPresenter>(LifeStyle.Singleton);
-
+         
          container.Register<IBuildingBlockExplorerPresenter, IMainViewItemPresenter, BuildingBlockExplorerPresenter>(LifeStyle.Singleton);
+         container.Register<IModuleExplorerPresenter, IMainViewItemPresenter, ModuleExplorerPresenter>(LifeStyle.Singleton);
          container.Register<IHistoryPresenter, IMainViewItemPresenter, HistoryPresenter>(LifeStyle.Singleton);
          container.Register<IJournalDiagramMainPresenter, IMainViewItemPresenter, JournalDiagramMainPresenter>(LifeStyle.Singleton);
          container.Register<IJournalPresenter, IMainViewItemPresenter, JournalPresenter>(LifeStyle.Singleton);
