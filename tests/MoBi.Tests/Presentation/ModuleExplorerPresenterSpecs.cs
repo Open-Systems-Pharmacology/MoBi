@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
+using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;

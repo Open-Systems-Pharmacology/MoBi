@@ -88,7 +88,7 @@ namespace MoBi.Assets
       public static class DefaultNames
       {
          public static readonly string MoleculeBuildingBlock = "Molecules";
-         public static readonly string Module1 = "Module1";
+         public static readonly string Module = "Module";
          public static readonly string ReactionBuildingBlock = "Reaction";
          public static readonly string SpatialStructure = "Organism";
          public static readonly string PassiveTransportBuildingBlock = "Passive Transports";

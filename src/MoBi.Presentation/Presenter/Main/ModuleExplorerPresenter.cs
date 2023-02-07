@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
+using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -160,9 +161,5 @@ namespace MoBi.Presentation.Presenter.Main
       {
          return startValueBlockCollection.Count > 1 ? _view.AddNode(_treeNodeFactory.CreateFor(rootNodeType).Under(moduleNode)) : moduleNode;
       }
-   }
-
-   public interface IModuleExplorerView : IExplorerView, IView<IModuleExplorerPresenter>
-   {
    }
 }

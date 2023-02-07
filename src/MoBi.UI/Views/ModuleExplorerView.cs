@@ -1,5 +1,6 @@
 ﻿using DevExpress.XtraTreeList;
 using MoBi.Presentation.Presenter.Main;
+using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
@@ -31,7 +32,6 @@ namespace MoBi.UI.Views
          //we do not want to sort the root nodes or if the presenter indicates no sort
          if (e.Node1.Level == 0 || !_moduleExplorerPresenter.ShouldSort(e.Node1.Tag as ITreeNode))
             e.Result = 0;
-
       }
    }
 }

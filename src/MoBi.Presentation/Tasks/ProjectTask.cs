@@ -291,7 +291,7 @@ namespace MoBi.Presentation.Tasks
          module.PassiveTransport = addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock);
          module.EventGroup = addDefault<IEventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock);
          module.Observer = addDefault<IObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock);
-         module.WithName(AppConstants.DefaultNames.Module1).WithIcon(ApplicationIcons.Folder.IconName);
+         module.WithName(AppConstants.DefaultNames.Module).WithIcon(ApplicationIcons.Folder.IconName);
 
          addModule(module);
 
