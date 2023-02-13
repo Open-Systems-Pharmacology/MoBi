@@ -213,7 +213,6 @@ namespace MoBi.Presentation
       private IObserverBuildingBlock _observerBuildingBlock;
       private IEventGroupBuildingBlock _eventGroupBuildingBlock;
       private ISimulationSettings _simulationSettings;
-      private Module _module;
 
       protected override void Context()
       {

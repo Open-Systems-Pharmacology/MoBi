@@ -1,11 +1,10 @@
 ﻿using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -28,15 +27,17 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          var project = context.CurrentProject;
-         context.Register(_module);
-         _module.AllBuildingBlocks().Each(context.Register);
+
+         var moduleRegistrationVisitor = context.Resolve<IModuleRegisterVisitor>();
+
+         _module.AcceptVisitor(moduleRegistrationVisitor);
+         
          addToProject(project);
 
          if (!Silent)
             context.PublishEvent(new AddedEvent<Module>(_module, project));
       }
 
-      // TODO test with implementation of https://github.com/Open-Systems-Pharmacology/MoBi/issues/822
       public override void RestoreExecutionData(IMoBiContext context)
       {
          _module = context.Get<Module>(ModuleId);

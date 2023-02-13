@@ -1078,8 +1078,8 @@ namespace MoBi.Assets
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
 
-         public static string AddEmptyModule() => $"Create Empty Module...";
-         public static string AddModuleWithBuildingBlocks() => $"Create Module with Building Blocks...";
+         public static string AddEmptyModule => $"Create Empty Module...";
+         public static string AddModuleWithBuildingBlocks => $"Create Module with Building Blocks...";
 
       }
 

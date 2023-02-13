@@ -1,6 +1,7 @@
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
@@ -26,13 +27,14 @@ namespace MoBi.Core.Commands
       {
          var project = context.CurrentProject;
          removeFromProject(project);
-         context.Unregister(_module);
-         _module.AllBuildingBlocks().Each(context.Unregister);
+
+         var moduleUnregisterVisitor = context.Resolve<IModuleUnregisterVisitor>();
+         _module.AcceptVisitor(moduleUnregisterVisitor);
+
          _serializationStream = context.Serialize(_module);
          context.PublishEvent(new RemovedEvent(_module, project));
       }
 
-      // TODO test with implementation of https://github.com/Open-Systems-Pharmacology/MoBi/issues/822
       public override void RestoreExecutionData(IMoBiContext context)
       {
          _module = context.Deserialize<Module>(_serializationStream);

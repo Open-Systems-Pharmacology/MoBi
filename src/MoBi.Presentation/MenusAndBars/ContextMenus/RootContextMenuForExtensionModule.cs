@@ -19,14 +19,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem addNewWithContent(IMoBiProject project)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddModuleWithBuildingBlocks())
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddModuleWithBuildingBlocks)
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)))
             .WithCommandFor<NewModuleWithBuildingBlocksUICommand, IMoBiProject>(project);
       }
 
       private IMenuBarItem addNewEmpty(IMoBiProject project)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddEmptyModule())
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddEmptyModule)
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)))
             .WithCommandFor<NewEmptyModuleUICommand, IMoBiProject>(project);
       }
