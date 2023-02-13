@@ -172,22 +172,65 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_module_explorer_presenter_is_asked_whether_to_sort : concern_for_ModuleExplorerPresenter
+   public class When_the_module_explorer_presenter_compares_nodes_of_the_different_types : concern_for_ModuleExplorerPresenter
    {
-      private ITreeNode _spatialStructureNode;
+      private ITreeNode<SpatialStructure> _spatialStructureA;
+      private ITreeNode<RootNodeType> _spatialStructureRootNode;
+      private ITreeNode<RootNodeType> _moduleNode;
 
       protected override void Context()
       {
          base.Context();
-         var moduleNode = _treeNodeFactory.CreateFor(new Module());
-         _spatialStructureNode = _treeNodeFactory.CreateFor(new SpatialStructure());
-         moduleNode.AddChild(_spatialStructureNode);
+         _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.PKSimModuleFolder);
+         _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
+         _spatialStructureRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.SpatialStructureFolder);
       }
 
       [Observation]
-      public void should_return_true()
+      public void module_nodes_are_superior()
       {
-         sut.ShouldSort(_spatialStructureNode).ShouldBeFalse();
+         sut.OrderingComparisonFor(_moduleNode, _spatialStructureRootNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_moduleNode, _spatialStructureA).ShouldBeEqualTo(-1);
+      }
+   }
+
+   public class When_the_module_explorer_presenter_compares_nodes_of_the_same_type : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<SpatialStructure> _spatialStructureA;
+      private ITreeNode<RootNodeType> _spatialStructureRootNode;
+      private ITreeNode<RootNodeType> _eventGroupRootNode;
+      private ITreeNode<SpatialStructure> _spatialStructureZ;
+      private ITreeNode<Module> _moduleNodeA;
+      private ITreeNode<Module> _moduleNodeZ;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moduleNodeA = _treeNodeFactory.CreateFor(new Module().WithName("A"));
+         _moduleNodeZ = _treeNodeFactory.CreateFor(new Module().WithName("Z"));
+         _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
+         _spatialStructureZ = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("Z"));
+         _spatialStructureRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.SpatialStructureFolder);
+         _eventGroupRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.EventFolder);
+      }
+
+      [Observation]
+      public void should_not_compare_for_building_block_nodes()
+      {
+         sut.OrderingComparisonFor(_spatialStructureA, _spatialStructureZ).ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void should_compare_names_for_module_nodes()
+      {
+         sut.OrderingComparisonFor(_moduleNodeA, _moduleNodeZ).ShouldBeEqualTo(-1);
+      }
+
+
+      [Observation]
+      public void should_compare_names_for_root_nodes()
+      {
+         sut.OrderingComparisonFor(_spatialStructureRootNode, _eventGroupRootNode).ShouldBeEqualTo(1);
       }
    }
 
@@ -251,7 +294,7 @@ namespace MoBi.Presentation
          _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.MoleculeStartValuesCollection.ElementAt(0))).ShouldBeEqualTo(1);
          
          // Make sure nodes have not been added for null items
-         _allNodesAdded.Count.ShouldBeEqualTo(9);
+         _allNodesAdded.Count.ShouldBeEqualTo(11);
       }
    }
 

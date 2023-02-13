@@ -72,6 +72,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
+   public class RootContextMenuFactoryForExtensionModule : RootNodeContextMenuFactoryFor<Module>
+   {
+      public RootContextMenuFactoryForExtensionModule() : base(MoBiRootNodeTypes.ExtensionModulesFolder)
+      {
+      }
+   }
+
    public class RootContextMenuFactoryForExpressionProfileBuildingBlock : RootNodeContextMenuFactoryFor<ExpressionProfileBuildingBlock>
    {
       public RootContextMenuFactoryForExpressionProfileBuildingBlock() : base(MoBiRootNodeTypes.ExpressionProfilesFolder)

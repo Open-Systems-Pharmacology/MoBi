@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Views;
@@ -17,6 +19,7 @@ using OSPSuite.Presentation.Presenters.ObservedData;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
@@ -24,10 +27,10 @@ namespace MoBi.Presentation.Presenter.Main
 {
    public interface IModuleExplorerPresenter : IExplorerPresenter, IPresenter<IModuleExplorerView>
    {
-      bool ShouldSort(ITreeNode node);
+      int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
 
-   public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter
+   public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter, IListener<AddedEvent<Module>>
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private readonly IEditBuildingBlockStarter _editBuildingBlockStarter;
@@ -68,14 +71,9 @@ namespace MoBi.Presentation.Presenter.Main
          _editBuildingBlockStarter.EditMolecule(moleculeBuildingBlock, moleculeBuilder);
       }
 
-      public bool ShouldSort(ITreeNode node)
+      public void Handle(AddedEvent<Module> eventToHandle)
       {
-         if (node.ParentNode == null)
-            return false;
-
-         // Do not sort if this is content of a module.
-         // Child nodes are created in the same order as the older Building Block Explorer
-         return !node.ParentNode.TagAsObject.IsAnImplementationOf<Module>();
+         addModule(eventToHandle.AddedObject);
       }
 
       public override bool CanDrag(ITreeNode node)
@@ -87,6 +85,42 @@ namespace MoBi.Presentation.Presenter.Main
             return true;
 
          return _observedDataInExplorerPresenter.CanDrag(node);
+      }
+
+      public int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
+      {
+         if (nodeTagIsModuleRootNode(node1) && nodeTagIsModuleRootNode(node2))
+            return nameComparison(node1, node2);
+
+         if (nodeTagIsModuleRootNode(node1) && !nodeTagIsModuleRootNode(node2))
+            return -1;
+
+         if (!nodeTagIsModuleRootNode(node1) && nodeTagIsModuleRootNode(node2))
+            return 1;
+
+         if (nodeTagIsBuildingBlock(node1) && nodeTagIsBuildingBlock(node2))
+            return 0;
+
+         return nameComparison(node1, node2);
+      }
+
+      private bool nodeTagIsBuildingBlock(ITreeNode<IWithName> node1)
+      {
+         return node1?.Tag is BuildingBlock;
+      }
+
+      private int nameComparison(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
+      {
+         if (node1 != null && node2 != null)
+            return string.Compare(node1.Tag.Name, node2.Tag.Name, StringComparison.InvariantCultureIgnoreCase);
+
+         return 0;
+      }
+
+      private static bool nodeTagIsModuleRootNode(ITreeNode<IWithName> node)
+      {
+         var rootNodeList = new List<IWithName> { MoBiRootNodeTypes.ExtensionModulesFolder, MoBiRootNodeTypes.PKSimModuleFolder };
+         return rootNodeList.Contains(node?.Tag);
       }
 
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
@@ -126,11 +160,13 @@ namespace MoBi.Presentation.Presenter.Main
          {
             _view.DestroyNodes();
 
-            project.Modules.Each(addModule);
-
+            _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.PKSimModuleFolder));
+            _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExtensionModulesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.IndividualsFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
+
+            project.Modules.Each(addModule);
 
             project.ExpressionProfileCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ExpressionProfilesFolder));
             project.IndividualsCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.IndividualsFolder));
@@ -141,7 +177,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void addModule(Module module)
       {
-         var moduleNode = _view.AddNode(_treeNodeFactory.CreateFor(module).WithIcon(ApplicationIcons.Folder));
+         var moduleNode = _view.AddNode(_treeNodeFactory.CreateFor(module).WithIcon(ApplicationIcons.Module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
 
          addBuildingBlockUnderNode(module.SpatialStructure, moduleNode);
          addBuildingBlockUnderNode(module.Molecule, moduleNode);

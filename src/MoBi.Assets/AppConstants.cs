@@ -118,6 +118,9 @@ namespace MoBi.Assets
             "Fraction of dose",
             "Whole organ incl. FcRn_Complex"
          };
+
+         public static readonly string ParameterStartValues = "Parameter Start Values";
+         public static readonly string MoleculeStartValues = "Molecule Start Values";
       }
 
       public static class SpecialFileNames
@@ -953,6 +956,7 @@ namespace MoBi.Assets
          public static readonly string SaveProject = "&Save";
          public static readonly string SaveAs = "Save As...";
          public static readonly string NewSimulation = "Create";
+         public static readonly string NewModule = AddNew("Module");
          public static readonly string Merge = "Merge";
          public static readonly string CloseProject = "&Close";
          public static readonly string GarbageCollection = "Start Garbage Collection";
@@ -1074,7 +1078,9 @@ namespace MoBi.Assets
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
 
-       
+         public static string AddEmptyModule() => $"Create Empty Module...";
+         public static string AddModuleWithBuildingBlocks() => $"Create Module with Building Blocks...";
+
       }
 
       public static class DimensionNames
@@ -1613,6 +1619,10 @@ namespace MoBi.Assets
          public static readonly string Individuals = "Individuals";
          public static readonly string OriginData = "Origin Data";
          public static readonly string PKSimVersion = "PK-Sim Version";
+         public static readonly string PKSimModules = "PK-Sim Modules";
+         public static readonly string ExtensionModulesFolder = "Extension Modules";
+         public static readonly string Module = "Module";
+         public static readonly string CreateBuildingBlocks = "Create Building Blocks";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 
@@ -1844,6 +1854,7 @@ namespace MoBi.Assets
          public static readonly string SpeciesCannotBeEmpty = "Species cannot be empty";
          public static readonly string MoleculeNameCannotBeEmpty = "Molecule name cannot be empty";
          public static readonly string CategoryCannotBeEmpty = "Category cannot be empty";
+         public static readonly string ModuleNameCannotBeEmpty = "Module name cannot be empty";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
          {
