@@ -18,8 +18,6 @@ namespace MoBi.UI.Views
          tbName.ReadOnly = true;
          MaximizeBox = false;
          MinimizeBox = false;
-
-         
       }
 
       public override bool HasError => _screenBinder.HasError;

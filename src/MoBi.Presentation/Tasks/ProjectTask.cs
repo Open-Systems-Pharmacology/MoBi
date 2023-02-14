@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using MoBi.Assets;
-using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
@@ -40,24 +39,16 @@ namespace MoBi.Presentation.Tasks
       private readonly IMRUProvider _mruProvider;
       private readonly ISerializationTask _serializationTask;
       private readonly IHeavyWorkManager _heavyWorkManager;
-      private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
-      private readonly ISimulationSettingsFactory _simulationSettingsFactory;
       private readonly ISimulationLoader _simulationLoader;
       private readonly ISbmlTask _sbmlTask;
-      private readonly IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
 
       public ProjectTask(IMoBiContext context, ISerializationTask serializationTask, IDialogCreator dialogCreator,
-         IMRUProvider mruProvider, IMoBiSpatialStructureFactory spatialStructureFactory,
-         IHeavyWorkManager heavyWorkManager, ISimulationSettingsFactory simulationSettingsFactory,
-         ISimulationLoader simulationLoader, ISbmlTask sbmlTask, IReactionBuildingBlockFactory reactionBuildingBlockFactory)
+         IMRUProvider mruProvider, IHeavyWorkManager heavyWorkManager, ISimulationLoader simulationLoader, ISbmlTask sbmlTask)
       {
          _context = context;
-         _simulationSettingsFactory = simulationSettingsFactory;
          _simulationLoader = simulationLoader;
          _sbmlTask = sbmlTask;
-         _reactionBuildingBlockFactory = reactionBuildingBlockFactory;
          _heavyWorkManager = heavyWorkManager;
-         _spatialStructureFactory = spatialStructureFactory;
          _mruProvider = mruProvider;
          _serializationTask = serializationTask;
          _dialogCreator = dialogCreator;
@@ -223,7 +214,7 @@ namespace MoBi.Presentation.Tasks
          if (!CloseProject()) return;
          _serializationTask.NewProject();
          _context.CurrentProject.ReactionDimensionMode = reactionDimensionMode;
-         generateDefaultsInCurrentProject();
+
          _context.PublishEvent(new ProjectCreatedEvent(_context.CurrentProject));
          _context.PublishEvent(new ProjectLoadedEvent(_context.CurrentProject));
       }
@@ -280,43 +271,6 @@ namespace MoBi.Presentation.Tasks
          notifyProjectLoaded();
 
          return true;
-      }
-
-      private void generateDefaultsInCurrentProject()
-      {
-         var module = _context.Create<Module>();
-         module.Molecule = addDefault<IMoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock);
-         module.Reaction = addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create());
-         module.SpatialStructure = addDefault(AppConstants.DefaultNames.SpatialStructure, () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure));
-         module.PassiveTransport = addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock);
-         module.EventGroup = addDefault<IEventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock);
-         module.Observer = addDefault<IObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock);
-         module.WithName(AppConstants.DefaultNames.Module).WithIcon(ApplicationIcons.Folder.IconName);
-
-         addModule(module);
-
-         addDefault(AppConstants.DefaultNames.SimulationSettings, _simulationSettingsFactory.CreateDefault);
-      }
-
-      private void addModule(Module module)
-      {
-         var project = _context.CurrentProject;
-         project.AddModule(module);
-         _context.Register(module);
-      }
-
-      private T addDefault<T>(string defaultName) where T : class, IBuildingBlock
-      {
-         return addDefault(defaultName, _context.Create<T>);
-      }
-
-      private T addDefault<T>(string defaultName, Func<T> buildingBlockCreator) where T : IBuildingBlock
-      {
-         var project = _context.CurrentProject;
-         var buildingBlock = buildingBlockCreator().WithName(defaultName);
-         project.AddBuildingBlock(buildingBlock);
-         _context.Register(buildingBlock);
-         return buildingBlock;
       }
    }
 }

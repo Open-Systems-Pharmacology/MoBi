@@ -1,6 +1,9 @@
-﻿using DevExpress.XtraTreeList;
+﻿using System;
+using DevExpress.XtraTreeList;
+using DevExpress.XtraTreeList.Nodes;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
@@ -25,13 +28,7 @@ namespace MoBi.UI.Views
 
       private void compareNodeValues(object sender, CompareNodeValuesEventArgs e)
       {
-         //we only want to sort for the top nodes (level 0)
-         if (e.Node1 == null)
-            return;
-
-         //we do not want to sort the root nodes or if the presenter indicates no sort
-         if (e.Node1.Level == 0 || !_moduleExplorerPresenter.ShouldSort(e.Node1.Tag as ITreeNode))
-            e.Result = 0;
+         e.Result = _moduleExplorerPresenter.OrderingComparisonFor(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>);
       }
    }
 }
