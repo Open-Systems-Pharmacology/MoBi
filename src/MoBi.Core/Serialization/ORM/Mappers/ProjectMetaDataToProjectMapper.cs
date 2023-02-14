@@ -30,8 +30,8 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       private IMoBiProject _project;
 
       public ProjectMetaDataToProjectMapper(
-         IXmlSerializationService serializationService, 
-         ISerializationContextFactory serializationContextFactory, 
+         IXmlSerializationService serializationService,
+         ISerializationContextFactory serializationContextFactory,
          IDeserializedReferenceResolver deserializedReferenceResolver)
       {
          _serializationService = serializationService;
@@ -115,6 +115,9 @@ namespace MoBi.Core.Serialization.ORM.Mappers
 
          else if (deserializedEntity.IsAnImplementationOf<SensitivityAnalysis>())
             _project.AddSensitivityAnalysis(deserializedEntity as SensitivityAnalysis);
+
+         else if (deserializedEntity.IsAnImplementationOf<Module>())
+            _project.AddModule(deserializedEntity as Module);
 
          else if (deserializedEntity.IsAnImplementationOf<IWithId>())
             _project.AddBuildingBlock(deserializedEntity as IBuildingBlock);
