@@ -19,9 +19,11 @@ namespace MoBi.Presentation.Tasks
       private const string CREATE_BINDING_PARTNER_EXPRESSION_PROFILE = "CreateBindingPartnerExpressionProfile";
       private const string CREATE_TRANSPORTER_EXPRESSION_PROFILE = "CreateTransporterExpressionProfile";
       private const string CREATE_INDIVIDUAL = "CreateIndividual";
+      private const string GET_EXPRESSION_DATABASE_QUERY = "GetExpressionDatabaseQuery";
       private const string PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR = "PKSim.UI.Starter.ExpressionProfileCreator";
       private const string PKSIM_UI_STARTER_INDIVIDUAL_CREATOR = "PKSim.UI.Starter.IndividualCreator";
       private const string PKSIM_UI_STARTER_DLL = "PKSim.UI.Starter.dll";
+      private const string PKSIM_UI_EXPRESSION_DATABASE_QUERY = "PKSim.UI.Starter.ExpressionDatabaseQuery";
       private readonly IMoBiConfiguration _configuration;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
@@ -85,6 +87,12 @@ namespace MoBi.Presentation.Tasks
             return null;
 
          return _cloneManager.CloneBuildingBlock(individualBuildingBlock);
+      }
+
+      public void GetQueryResultsFromDatabase(string speciesName)
+      {
+         loadPKSimAssembly();
+         var individualBuildingBlock = executeMethod(getMethod(PKSIM_UI_EXPRESSION_DATABASE_QUERY, GET_EXPRESSION_DATABASE_QUERY), new object[] {speciesName});
       }
 
       private object executeMethodWithShell(MethodInfo method)

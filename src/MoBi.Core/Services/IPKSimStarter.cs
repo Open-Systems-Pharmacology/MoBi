@@ -8,5 +8,6 @@ namespace MoBi.Core.Services
       void StartWithWorkingJournalFile(string journalFilePath);
       IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
       IBuildingBlock CreateIndividual();
+      void GetQueryResultsFromDatabase(string speciesName);
    }
 }

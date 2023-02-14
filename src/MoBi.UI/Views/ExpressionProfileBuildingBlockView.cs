@@ -52,6 +52,9 @@ namespace MoBi.UI.Views
 
          lblSpecies.Text = Captions.Species.FormatForLabel();
          lblCategory.Text = Captions.Category.FormatForLabel();
+
+         btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, "Query Database");
+         tablePanel.AdjustLongButtonWidth(btnLoadFromDatabase);
       }
 
       private void hideEditor()
@@ -94,6 +97,7 @@ namespace MoBi.UI.Views
          _gridViewBinder.Bind(x => x.Dimension).WithRepository(createDimensionRepository).AsReadOnly();
 
          gridView.HiddenEditor += (o, e) => hideEditor();
+         btnLoadFromDatabase.Click += (ot, e) => OnEvent(_presenter.LoadExpressionFromPKSimDatabaseQuery);
       }
 
       private RepositoryItem createDimensionRepository(ExpressionParameterDTO arg)
