@@ -33,6 +33,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          serializeContent(projectMetaData, project);
 
          project.AllBuildingBlocks().Each(x => projectMetaData.AddChild(mapFrom(x)));
+         project.Modules.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.Simulations.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.Charts.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.AllParameterAnalysables.Each(x => projectMetaData.AddChild(mapFrom(x)));
