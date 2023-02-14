@@ -6,28 +6,15 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddNewIndividualCommand : ObjectUICommand<IndividualBuildingBlock>
+   public class AddNewIndividualCommand : AddNewFromPKSimCommand<IndividualBuildingBlock>
    {
-      protected IPKSimStarter _pkSimStarter;
-      private readonly IMoBiContext _context;
-      private readonly IInteractionTasksForIndividualBuildingBlock _interactionTask;
-
-      public AddNewIndividualCommand(IPKSimStarter pkSimStarter, IMoBiContext context,
-         IInteractionTasksForIndividualBuildingBlock interactionTask)
+      public AddNewIndividualCommand(IPKSimStarter pkSimStarter, IMoBiContext context, IInteractionTasksForIndividualBuildingBlock interactionTask) : base(pkSimStarter, context, interactionTask)
       {
-         _pkSimStarter = pkSimStarter;
-         _context = context;
-         _interactionTask = interactionTask;
       }
 
-      protected override void PerformExecute()
+      protected override IBuildingBlock createBuildingBlockFromPKSim()
       {
-         var individualFromPKSim = _pkSimStarter.CreateIndividual();
-
-         if (individualFromPKSim == null)
-            return;
-
-         _context.AddToHistory(_interactionTask.AddToProject(individualFromPKSim));
+         return _pkSimStarter.CreateIndividual();
       }
    }
 }
