@@ -10,10 +10,10 @@ namespace MoBi.Presentation.UICommand
    {
       protected IPKSimStarter _pkSimStarter;
       private readonly IMoBiContext _context;
-      private readonly IInteractionTasksForIndividualBuildingBlock _interactionTask;
+      private readonly IInteractionTasksForBuildingBlock _interactionTask;
 
       protected AddNewFromPKSimCommand(IPKSimStarter pkSimStarter, IMoBiContext context,
-         IInteractionTasksForIndividualBuildingBlock interactionTask)
+         IInteractionTasksForBuildingBlock interactionTask)
       {
          _pkSimStarter = pkSimStarter;
          _context = context;
