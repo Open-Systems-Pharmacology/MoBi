@@ -14,7 +14,6 @@ namespace MoBi.Core.Commands
       protected Module _module;
       protected IMoBiContext _context;
       protected IMoBiProject _project;
-      private ModuleUnregisterVisitor _moduleUnregisterVisitor;
 
       protected override void Context()
       {
@@ -22,9 +21,7 @@ namespace MoBi.Core.Commands
          _context = A.Fake<IMoBiContext>();
          _module = new Module().WithId("moduleId");
          sut = new RemoveModuleCommand(_module);
-         _moduleUnregisterVisitor = new ModuleUnregisterVisitor(_context);
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _context.Resolve<IModuleUnregisterVisitor>()).Returns(_moduleUnregisterVisitor);
       }
    }
 
@@ -51,18 +48,27 @@ namespace MoBi.Core.Commands
 
    public class When_executing_the_remove_module_command_and_the_module_has_building_blocks : concern_for_RemoveModuleCommand
    {
+      private RegisterTask _registrationTask;
+      protected WithIdRepository _withIdRepository;
+      
       protected override void Context()
       {
          base.Context();
+         _withIdRepository = new WithIdRepository();
+         _registrationTask = new RegisterTask(_withIdRepository);
 
-         _module.SpatialStructure = new SpatialStructure();
-         _module.Molecule = new MoleculeBuildingBlock();
-         _module.Reaction = new ReactionBuildingBlock();
-         _module.PassiveTransport = new PassiveTransportBuildingBlock();
-         _module.Observer = new ObserverBuildingBlock();
-         _module.EventGroup = new EventGroupBuildingBlock();
-         _module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock());
-         _module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
+         _module.SpatialStructure = new SpatialStructure().WithId("SpatialStructure");
+         _module.Molecule = new MoleculeBuildingBlock().WithId("Molecule");
+         _module.Reaction = new ReactionBuildingBlock().WithId("Reaction");
+         _module.PassiveTransport = new PassiveTransportBuildingBlock().WithId("PassiveTransport");
+         _module.Observer = new ObserverBuildingBlock().WithId("Observer");
+         _module.EventGroup = new EventGroupBuildingBlock().WithId("EventGroup");
+         _module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock().WithId("MoleculeStartValues"));
+         _module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("ParameterStartValues"));
+
+         A.CallTo(() => _context.Register(_module)).Invokes(() => _registrationTask.RegisterAllIn(_module));
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
+         
          _project.AddModule(_module);
       }
 
@@ -72,17 +78,18 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void the_module_and_building_blocks_must_be_unregistered_in_the_context()
+      public void the_module_and_building_blocks_must_be_registered_in_the_context()
       {
-         A.CallTo(() => _context.Unregister(_module.SpatialStructure)).MustHaveHappened();
-         A.CallTo(() => _context.Unregister(_module.Molecule)).MustHaveHappened();
-         A.CallTo(() => _context.Unregister(_module.Reaction)).MustHaveHappened();
-         A.CallTo(() => _context.Unregister(_module.PassiveTransport)).MustHaveHappened();
-         A.CallTo(() => _context.Unregister(_module.Observer)).MustHaveHappened();
-         A.CallTo(() => _context.Unregister(_module.EventGroup)).MustHaveHappened();
-         A.CallTo(() => _context.Unregister(_module.MoleculeStartValuesCollection.First())).MustHaveHappened();
-         A.CallTo(() => _context.Unregister(_module.ParameterStartValuesCollection.First())).MustHaveHappened();
-         A.CallTo(() => _context.Unregister(_module)).MustHaveHappened();
+         var withIds = _withIdRepository.All();
+         withIds.ShouldNotContain(_module.SpatialStructure);
+         withIds.ShouldNotContain(_module.Molecule);
+         withIds.ShouldNotContain(_module.Reaction);
+         withIds.ShouldNotContain(_module.PassiveTransport);
+         withIds.ShouldNotContain(_module.Observer);
+         withIds.ShouldNotContain(_module.EventGroup);
+         withIds.ShouldNotContain(_module.MoleculeStartValuesCollection.First());
+         withIds.ShouldNotContain(_module.ParameterStartValuesCollection.First());
+         withIds.ShouldNotContain(_module);
       }
 
       [Observation]

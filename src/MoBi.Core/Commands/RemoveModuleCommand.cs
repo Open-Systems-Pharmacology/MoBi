@@ -27,9 +27,7 @@ namespace MoBi.Core.Commands
       {
          var project = context.CurrentProject;
          removeFromProject(project);
-
-         var moduleUnregisterVisitor = context.Resolve<IModuleUnregisterVisitor>();
-         _module.AcceptVisitor(moduleUnregisterVisitor);
+         context.Unregister(_module);
 
          _serializationStream = context.Serialize(_module);
          context.PublishEvent(new RemovedEvent(_module, project));

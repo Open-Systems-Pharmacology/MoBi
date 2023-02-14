@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -15,17 +15,19 @@ namespace MoBi.Core.Commands
       protected Module _module;
       protected IMoBiContext _context;
       protected IMoBiProject _project;
-      protected IModuleRegisterVisitor _moduleRegisterVisitor;
+      private RegisterTask _registrationTask;
+      protected WithIdRepository _withIdRepository;
 
       protected override void Context()
       {
          _module = new Module().WithId("moduleId");
+         _withIdRepository = new WithIdRepository();
+         _registrationTask = new RegisterTask(_withIdRepository);
          sut = new AddModuleCommand(_module);
          _project = new MoBiProject();
          _context = A.Fake<IMoBiContext>();
-         _moduleRegisterVisitor = new ModuleRegisterVisitor(_context);
+         A.CallTo(() => _context.Register(_module)).Invokes(() => _registrationTask.RegisterAllIn(_module));
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _context.Resolve<IModuleRegisterVisitor>()).Returns(_moduleRegisterVisitor);
       }
    }
 
@@ -55,15 +57,14 @@ namespace MoBi.Core.Commands
       {
          base.Context();
 
-         _module.SpatialStructure = new SpatialStructure();
-         _module.Molecule = new MoleculeBuildingBlock();
-         _module.Reaction= new ReactionBuildingBlock();
-         _module.PassiveTransport = new PassiveTransportBuildingBlock();
-         _module.Observer = new ObserverBuildingBlock();
-         _module.EventGroup = new EventGroupBuildingBlock();
-         _module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock());
-         _module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
-         
+         _module.SpatialStructure = new SpatialStructure().WithId("SpatialStructure");
+         _module.Molecule = new MoleculeBuildingBlock().WithId("Molecule");
+         _module.Reaction = new ReactionBuildingBlock().WithId("Reaction");
+         _module.PassiveTransport = new PassiveTransportBuildingBlock().WithId("PassiveTransport");
+         _module.Observer = new ObserverBuildingBlock().WithId("Observer");
+         _module.EventGroup = new EventGroupBuildingBlock().WithId("EventGroup");
+         _module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock().WithId("MoleculeStartValues"));
+         _module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("ParameterStartValues"));
       }
 
       protected override void Because()
@@ -74,15 +75,16 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_module_and_building_blocks_must_be_registered_in_the_context()
       {
-         A.CallTo(() => _context.Register(_module.SpatialStructure)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_module.Molecule)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_module.Reaction)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_module.PassiveTransport)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_module.Observer)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_module.EventGroup)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_module.MoleculeStartValuesCollection.First())).MustHaveHappened();
-         A.CallTo(() => _context.Register(_module.ParameterStartValuesCollection.First())).MustHaveHappened();
-         A.CallTo(() => _context.Register(_module)).MustHaveHappened();
+         var withIds = _withIdRepository.All();
+         withIds.ShouldContain(_module.SpatialStructure);
+         withIds.ShouldContain(_module.Molecule);
+         withIds.ShouldContain(_module.Reaction);
+         withIds.ShouldContain(_module.PassiveTransport);
+         withIds.ShouldContain(_module.Observer);
+         withIds.ShouldContain(_module.EventGroup);
+         withIds.ShouldContain(_module.MoleculeStartValuesCollection.First());
+         withIds.ShouldContain(_module.ParameterStartValuesCollection.First());
+         withIds.ShouldContain(_module);
       }
 
       [Observation]

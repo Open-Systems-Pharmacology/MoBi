@@ -28,10 +28,8 @@ namespace MoBi.Core.Commands
       {
          var project = context.CurrentProject;
 
-         var moduleRegistrationVisitor = context.Resolve<IModuleRegisterVisitor>();
+         context.Register(_module);
 
-         _module.AcceptVisitor(moduleRegistrationVisitor);
-         
          addToProject(project);
 
          if (!Silent)
