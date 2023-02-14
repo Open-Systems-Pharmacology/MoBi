@@ -1,93 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <Version>11.1.0</Version>
-    <PackageVersion>11.1.0</PackageVersion>
-    <AssemblyVersion>11.1.0</AssemblyVersion>
-    <FileVersion>11.1.0</FileVersion>
-    <InformationalVersion>11.1.0</InformationalVersion>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <OutputPath>bin\$(Configuration)</OutputPath>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<Version>11.1.0</Version>
+		<PackageVersion>11.1.0</PackageVersion>
+		<AssemblyVersion>11.1.0</AssemblyVersion>
+		<FileVersion>11.1.0</FileVersion>
+		<InformationalVersion>11.1.0</InformationalVersion>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<OutputPath>bin\$(Configuration)</OutputPath>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<NoWarn>1591</NoWarn>
 
-  </PropertyGroup>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.6" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.6" />
-    <PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
-    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.0.2" />
-    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.0.107" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.0.107" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.0.107" />
-    <PackageReference Include="OSPSuite.UI" Version="12.0.107" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.107" />
-   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.6" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.6" />
+		<PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
+		<PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.0.2" />
+		<PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
+		<PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
+		<PackageReference Include="OSPSuite.Infrastructure" Version="12.0.107" />
+		<PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.0.107" />
+		<PackageReference Include="OSPSuite.Presentation" Version="12.0.107" />
+		<PackageReference Include="OSPSuite.UI" Version="12.0.107" />
+		<PackageReference Include="OSPSuite.Core" Version="12.0.107" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
-    <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
-    <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
+		<ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
+		<ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Accessibility">
-      <HintPath>..\..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\Accessibility\v4.0_4.0.0.0__b03f5f7f11d50a3a\Accessibility.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Sparkline.v21.2.Core">
-      <HintPath>..\..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Sparkline.v21.2.Core\v4.0_21.2.3.0__b88d1754d700e49a\DevExpress.Sparkline.v21.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="System.Data.Linq">
-      <HintPath>..\..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Data.Linq\v4.0_4.0.0.0__b77a5c561934e089\System.Data.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Deployment">
-      <HintPath>..\..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Deployment\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap">
-      <HintPath>..\..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Runtime.Serialization.Formatters.Soap\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Runtime.Serialization.Formatters.Soap.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security">
-      <HintPath>..\..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Security\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.VisualBasic" />
+		<Reference Include="System.Windows.Forms" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Views\EditBuildConfigurationView - Copy.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Views\ModuleExplorerView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
 </Project>
