@@ -80,7 +80,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_module_and_building_blocks_must_be_registered_in_the_context()
       {
-         var withIds = _withIdRepository.All();
+         var withIds = _withIdRepository.All().ToList();
          withIds.ShouldNotContain(_module.SpatialStructure);
          withIds.ShouldNotContain(_module.Molecule);
          withIds.ShouldNotContain(_module.Reaction);
