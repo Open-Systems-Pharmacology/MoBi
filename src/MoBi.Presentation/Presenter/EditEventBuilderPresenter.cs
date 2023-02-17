@@ -172,9 +172,9 @@ namespace MoBi.Presentation.Presenter
       public void SetTargetPathFor(EventAssignmentBuilderDTO eventAssignmentBuilderDTO)
       {
          ObjectPath objectPath;
-         using (var selectEventAssignmentTargetPresenter = _applicationController.Start<ISelectEventAssingmentTargetPresenter>())
+         using (var selectEventAssignmentTargetPresenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
-            selectEventAssignmentTargetPresenter.Init(_context.CurrentProject, _eventBuilder.RootContainer);
+            selectEventAssignmentTargetPresenter.Init(_eventBuilder.RootContainer);
             objectPath = selectEventAssignmentTargetPresenter.Select();
          }
 

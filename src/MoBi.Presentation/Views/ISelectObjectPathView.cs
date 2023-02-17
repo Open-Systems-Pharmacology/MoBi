@@ -6,7 +6,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface ISelectEventAssignmentTargetView : IModalView<ISelectEventAssingmentTargetPresenter>
+   public interface ISelectObjectPathView : IModalView<ISelectObjectPathPresenter>
    {
       void BindTo(IEnumerable<IObjectBaseDTO> dtos);
       IObjectBaseDTO Selected { get; }

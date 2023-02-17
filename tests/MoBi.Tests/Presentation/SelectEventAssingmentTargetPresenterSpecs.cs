@@ -15,9 +15,9 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_SelectEventAssingmentTargetPresenter : ContextSpecification<ISelectEventAssingmentTargetPresenter>
+   public abstract class concern_for_SelectEventAssingmentTargetPresenter : ContextSpecification<ISelectEventAssignmentTargetPresenter>
    {
-      protected ISelectEventAssignmentTargetView _view;
+      protected ISelectObjectPathView _view;
       protected IMoBiContext _context;
       protected IObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
       protected IContainerToContainerDTOMapper _containerDTOMapper;
@@ -37,7 +37,7 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _view = A.Fake<ISelectEventAssignmentTargetView>();
+         _view = A.Fake<ISelectObjectPathView>();
          _context = A.Fake<IMoBiContext>();
          _objectBaseDTOMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
          _containerDTOMapper = A.Fake<IContainerToContainerDTOMapper>();
@@ -46,10 +46,11 @@ namespace MoBi.Presentation
          _objectPathFactory = A.Fake<IObjectPathFactory>();
          _parameterMapper = A.Fake<IParameterToDummyParameterDTOMapper>();
          _dimensionRetriever = A.Fake<IReactionDimensionRetriever>();
-         sut = new SelectEventAssingmentTargetPresenter(_view, _context, _objectBaseDTOMapper, _containerDTOMapper, _reactionMapper,
+         sut = new SelectEventAssignmentTargetPresenter(_view, _context, _objectBaseDTOMapper, _containerDTOMapper, _reactionMapper,
             _moleculeMapper, _objectPathFactory, _parameterMapper, _dimensionRetriever);
 
          _mobiProject= A.Fake<IMoBiProject>();
+         A.CallTo(() => _context.CurrentProject).Returns(_mobiProject);
          _rootContainer=new Container();
          _moleculeBuilder = new MoleculeBuilder().WithName("M");
          _reaction = new ReactionBuilder().WithName("R");
@@ -61,7 +62,7 @@ namespace MoBi.Presentation
          _moleculeBB = new MoleculeBuildingBlock {_moleculeBuilder};
          A.CallTo(() => _mobiProject.ReactionBlockCollection).Returns(new [] {_reactionBB});
          A.CallTo(() => _mobiProject.MoleculeBlockCollection).Returns(new [] {_moleculeBB});
-         sut.Init(_mobiProject,_rootContainer);
+         sut.Init(_rootContainer);
       }
    }
 

@@ -7,6 +7,7 @@ using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation
 {
@@ -18,6 +19,7 @@ namespace MoBi.Presentation
       protected IEditParametersInContainerPresenter _parametersInContainerPresenter;
       private IMoBiContext _context;
       private ITagsPresenter _tagsPresenter;
+      private IApplicationController _applicationController;
 
       protected override void Context()
       {
@@ -27,7 +29,8 @@ namespace MoBi.Presentation
          _parametersInContainerPresenter = A.Fake<IEditParametersInContainerPresenter>();
          _context = A.Fake<IMoBiContext>();
          _tagsPresenter = A.Fake<ITagsPresenter>();
-         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter);
+         _applicationController = A.Fake<IApplicationController>();
+         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter,_applicationController);
       }
    }
 

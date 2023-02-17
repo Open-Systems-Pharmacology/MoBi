@@ -2,7 +2,7 @@
 
 namespace MoBi.UI.Views
 {
-   partial class SelectEventAssignmentTargetView 
+   partial class SelectObjectPathView 
    {
       /// <summary>
       /// Required designer variable.
@@ -52,7 +52,7 @@ namespace MoBi.UI.Views
          this.Caption = "SelectEventAssignmentTargetView";
          this.ClientSize = new System.Drawing.Size(462, 634);
          this.Controls.Add(this.panelControl1);
-         this.Name = "SelectEventAssignmentTargetView";
+         this.Name = "SelectObjectPathView";
          this.Text = "SelectEventAssignmentTargetView";
          this.Controls.SetChildIndex(this.panelControl1, 0);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
