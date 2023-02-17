@@ -50,7 +50,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMolecules;
       }
 
-      public IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          var listPresenter = presenter.DowncastTo<IMoleculeListPresenter>();
          var moleculeBuildingBlock = listPresenter.MoleculeBuildingBlock;

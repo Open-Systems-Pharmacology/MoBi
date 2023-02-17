@@ -29,8 +29,8 @@ namespace MoBi.Presentation.Presenter
 
       void Init(IEntity localReferencePoint, IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject);
 
-      IEnumerable<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto);
-      ReferenceDTO GetReferenceObjectFrom(IObjectBaseDTO objectBaseDTO);
+      IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto);
+      ReferenceDTO GetReferenceObjectFrom(ObjectBaseDTO objectBaseDTO);
       ObjectPath GetSelection();
       void CheckPathCreationConfiguration();
       Func<IObjectBase, bool> SelectionPredicate { get; set; }
@@ -103,9 +103,9 @@ namespace MoBi.Presentation.Presenter
          AddSpecificInitialObjects();
       }
 
-      public virtual IEnumerable<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto)
+      public virtual IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto)
       {
-         var children = new List<IObjectBaseDTO>();
+         var children = new List<ObjectBaseDTO>();
 
          if (_context.ObjectRepository.ContainsObjectWithId(dto.Id))
          {
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Presenter
       /// </summary>
       /// <param name="objectBaseDTO">The dto object base for the object to reference</param>
       /// <returns>the usable Dto, null if object can't be referenced </returns>
-      public ReferenceDTO GetReferenceObjectFrom(IObjectBaseDTO objectBaseDTO)
+      public ReferenceDTO GetReferenceObjectFrom(ObjectBaseDTO objectBaseDTO)
       {
          try
          {
@@ -266,9 +266,9 @@ namespace MoBi.Presentation.Presenter
          return children.OrderBy(x => x.Name);
       }
 
-      protected virtual void AddChildrenFromDummyMolecule(List<IObjectBaseDTO> children, DummyMoleculeContainerDTO dummyMolecule)
+      protected virtual void AddChildrenFromDummyMolecule(List<ObjectBaseDTO> children, DummyMoleculeContainerDTO dummyMolecule)
       {
-         var parameterDTOs = new List<IObjectBaseDTO>();
+         var parameterDTOs = new List<ObjectBaseDTO>();
          var moleculePropertiesContainer = _context.Get<IContainer>(dummyMolecule.MoleculePropertiesContainer.Id);
 
          parameterDTOs.AddRange(moleculePropertiesContainer.GetChildren<IParameter>()
@@ -317,7 +317,7 @@ namespace MoBi.Presentation.Presenter
          return SelectionPredicate(objectBase);
       }
 
-      private void addParametersFromParameterContainer(List<IObjectBaseDTO> children, IContainsParameters parameterContainer)
+      private void addParametersFromParameterContainer(List<ObjectBaseDTO> children, IContainsParameters parameterContainer)
       {
          if (parameterContainer == null)
             return;
@@ -327,7 +327,7 @@ namespace MoBi.Presentation.Presenter
             .MapAllUsing(_objectBaseDTOMapper));
       }
 
-      private void addChildrenFromNeigborhood(List<IObjectBaseDTO> children, INeighborhoodBuilder neighborhood)
+      private void addChildrenFromNeigborhood(List<ObjectBaseDTO> children, INeighborhoodBuilder neighborhood)
       {
          if (neighborhood == null)
             return;
@@ -348,7 +348,7 @@ namespace MoBi.Presentation.Presenter
          children.Add(_objectBaseDTOMapper.MapFrom(secondContainer));
       }
 
-      private void addChildrenFromContainer(List<IObjectBaseDTO> children, IContainer container)
+      private void addChildrenFromContainer(List<ObjectBaseDTO> children, IContainer container)
       {
          if (container == null)
             return;
@@ -380,7 +380,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private void addChildrenFromSpatialStructure(List<IObjectBaseDTO> children, ISpatialStructure spatialStructure)
+      private void addChildrenFromSpatialStructure(List<ObjectBaseDTO> children, ISpatialStructure spatialStructure)
       {
          if (spatialStructure == null)
             return;
@@ -394,7 +394,7 @@ namespace MoBi.Presentation.Presenter
          addChildrenFromContainer(children, spatialStructure.GlobalMoleculeDependentProperties);
       }
 
-      private ReferenceDTO createPathFromParameterDummy(IObjectBaseDTO dtoObjectBase)
+      private ReferenceDTO createPathFromParameterDummy(ObjectBaseDTO dtoObjectBase)
       {
          return _objectPathCreator.CreatePathFromParameterDummy(dtoObjectBase, shouldCreateAbsolutePaths, _refObject, _editedObject);
       }

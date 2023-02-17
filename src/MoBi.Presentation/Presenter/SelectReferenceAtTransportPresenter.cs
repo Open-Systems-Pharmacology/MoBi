@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Presenter
          AddSpatialStructures();
       }
 
-      protected override void AddChildrenFromDummyMolecule(List<IObjectBaseDTO> children, DummyMoleculeContainerDTO dummyMolecule)
+      protected override void AddChildrenFromDummyMolecule(List<ObjectBaseDTO> children, DummyMoleculeContainerDTO dummyMolecule)
       {
          IEnumerable<TransporterMoleculeContainer> allTransporterMoleculeContainers = new List<TransporterMoleculeContainer>();
          IMoleculeBuildingBlock editedMoleculeBuildingBlock = null;

@@ -6,6 +6,6 @@ namespace MoBi.Presentation.Views
 {
    public interface ICreateSimulationView : IWizardView, IModalView<ICreateSimulationPresenter>
    {
-      void BindTo(IObjectBaseDTO simulationDTO);
+      void BindTo(ObjectBaseDTO simulationDTO);
    }
 }

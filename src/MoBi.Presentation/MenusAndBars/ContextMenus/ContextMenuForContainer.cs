@@ -23,7 +23,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          base.InitializeWith(dto, presenter);
          var container = _context.Get<TContainer>(dto.Id);
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          base.InitializeWith(dto, presenter);
          var container = _context.Get<IContainer>(dto.Id);

@@ -4,20 +4,20 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IObjectBaseToObjectBaseDTOMapper : IMapper<IObjectBase, IObjectBaseDTO>
+   public interface IObjectBaseToObjectBaseDTOMapper : IMapper<IObjectBase, ObjectBaseDTO>
    {
    }
 
    public abstract class ObjectBaseToObjectBaseDTOMapperBase
    {
-      protected T Map<T>(IObjectBase objectBase) where T : IObjectBaseDTO, new()
+      protected T Map<T>(IObjectBase objectBase) where T : ObjectBaseDTO, new()
       {
          var dto = new T();
          MapProperties(objectBase, dto);
          return dto;
       }
 
-      protected void MapProperties(IObjectBase objectBase, IObjectBaseDTO objectBaseDTO)
+      protected void MapProperties(IObjectBase objectBase, ObjectBaseDTO objectBaseDTO)
       {
          objectBaseDTO.Name = objectBase.Name;
          objectBaseDTO.Description = objectBase.Description;
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Mappers
 
    public class ObjectBaseToObjectBaseDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IObjectBaseToObjectBaseDTOMapper
    {
-      public IObjectBaseDTO MapFrom(IObjectBase objectBase)
+      public ObjectBaseDTO MapFrom(IObjectBase objectBase)
       {
          return Map<ObjectBaseDTO>(objectBase);
       }

@@ -11,17 +11,17 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IObjectBaseDTOToSpatialStructureNodeMapper : IMapper<IObjectBaseDTO, HierarchicalStructureNode>
+   public interface IObjectBaseDTOToSpatialStructureNodeMapper : IMapper<ObjectBaseDTO, HierarchicalStructureNode>
    {
-      void Initialize(Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> getChildren);
+      void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren);
    }
 
    public class ObjectBaseDTOToSpatialStructureNodeMapper : IObjectBaseDTOToSpatialStructureNodeMapper
    {
-      private Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> _getChildren;
+      private Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> _getChildren;
 
  
-      public HierarchicalStructureNode MapFrom(IObjectBaseDTO objectBase)
+      public HierarchicalStructureNode MapFrom(ObjectBaseDTO objectBase)
       {
          var node = new HierarchicalStructureNode(objectBase)
          {
@@ -34,12 +34,12 @@ namespace MoBi.Presentation.Mappers
          return node;
       }
 
-      public void Initialize(Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> getChildren)
+      public void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren)
       {
          _getChildren = getChildren;
       }
 
-      private ToolTipPart descriptionFor(IObjectBaseDTO objectBase)
+      private ToolTipPart descriptionFor(ObjectBaseDTO objectBase)
       {
          return new ToolTipPart {Title = objectBase.Name, Content = objectBase.Description};
       }

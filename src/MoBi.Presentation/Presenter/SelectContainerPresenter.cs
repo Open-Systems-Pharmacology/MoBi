@@ -35,20 +35,20 @@ namespace MoBi.Presentation.Presenter
          _view.Caption = AppConstants.Captions.SelectContainer;
       }
 
-      private IObjectBase getObjectFrom(IObjectBaseDTO dto)
+      private IObjectBase getObjectFrom(ObjectBaseDTO dto)
       {
          return _context.Get<IObjectBase>(dto.Id);
       }
 
-      public IEnumerable<IObjectBaseDTO> GetChildren(IObjectBaseDTO parentDTO)
+      public IEnumerable<ObjectBaseDTO> GetChildren(ObjectBaseDTO parentDTO)
       {
          var parent = getObjectFrom(parentDTO);
          if (parent.IsAnImplementationOf<IDistributedParameter>())
-            return Enumerable.Empty<IObjectBaseDTO>();
+            return Enumerable.Empty<ObjectBaseDTO>();
 
          var container = parent as IContainer;
          if (container == null)
-            return Enumerable.Empty<IObjectBaseDTO>();
+            return Enumerable.Empty<ObjectBaseDTO>();
 
          //Add sub containers removing molecule properties and and parameters
          var subContainers = container.GetChildrenSortedByName<IContainer>(x =>
@@ -57,12 +57,9 @@ namespace MoBi.Presentation.Presenter
          return subContainers.MapAllUsing(_containerDTOMapper);
       }
 
-      public bool IsValidSelection(IObjectBaseDTO selectedDTO)
+      public bool IsValidSelection(ObjectBaseDTO selectedDTO)
       {
-         if (selectedDTO == null)
-            return false;
-
-         return true;
+         return selectedDTO != null;
       }
 
       public ObjectPath Select()
@@ -72,9 +69,11 @@ namespace MoBi.Presentation.Presenter
          return _view.Canceled ? null : generatePathFromDTO(_view.Selected);
       }
 
-      private ObjectPath generatePathFromDTO(IObjectBaseDTO dto)
+      private IContainer getContainerFrom(ObjectBaseDTO dto) => getObjectFrom(dto) as IContainer;
+
+      private ObjectPath generatePathFromDTO(ObjectBaseDTO dto)
       {
-         var container = getObjectFrom(dto) as IContainer;
+         var container = getContainerFrom(dto);
          if (container == null)
             return null;
 
@@ -84,7 +83,7 @@ namespace MoBi.Presentation.Presenter
       private void init()
       {
          var project = _context.CurrentProject;
-         var list = project.SpatialStructureCollection.Select(createSpatialStructureDTOFrom).Cast<IObjectBaseDTO>().ToList();
+         var list = project.SpatialStructureCollection.Select(createSpatialStructureDTOFrom).ToList();
          _view.BindTo(list);
       }
 

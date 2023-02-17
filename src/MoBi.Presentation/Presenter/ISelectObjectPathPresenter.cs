@@ -6,7 +6,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectObjectPathPresenter: IDisposablePresenter
    {
-      IEnumerable<IObjectBaseDTO> GetChildren(IObjectBaseDTO id);
-      bool IsValidSelection(IObjectBaseDTO selectedDTO);
+      IEnumerable<ObjectBaseDTO> GetChildren(ObjectBaseDTO id);
+      bool IsValidSelection(ObjectBaseDTO selectedDTO);
    }
 }

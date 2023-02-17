@@ -8,15 +8,15 @@ using OSPSuite.Assets;
 namespace MoBi.Presentation.Mappers
 {
    public interface ISimulationSettingsToObjectBaseDTOMapper : 
-      IMapper<SolverSettings, IObjectBaseDTO>,
-      IMapper<OutputSchema, IObjectBaseDTO>,
-      IMapper<ISimulationSettings, IObjectBaseDTO>
+      IMapper<SolverSettings, ObjectBaseDTO>,
+      IMapper<OutputSchema, ObjectBaseDTO>,
+      IMapper<ISimulationSettings, ObjectBaseDTO>
    {
    }
 
    public class SimulationSettingsToObjectBaseDTOMapper : ISimulationSettingsToObjectBaseDTOMapper
    {
-      public IObjectBaseDTO MapFrom(SolverSettings solverSettings)
+      public ObjectBaseDTO MapFrom(SolverSettings solverSettings)
       {
          return new ObjectBaseDTO
          {
@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Mappers
          };
       }
 
-      public IObjectBaseDTO MapFrom(OutputSchema outputSchema)
+      public ObjectBaseDTO MapFrom(OutputSchema outputSchema)
       {
          return new ObjectBaseDTO
          {
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Mappers
          };
       }
 
-      public IObjectBaseDTO MapFrom(ISimulationSettings input)
+      public ObjectBaseDTO MapFrom(ISimulationSettings input)
       {
          return new ObjectBaseDTO
          {

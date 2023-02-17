@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Presenter
    {
       void SetFormula(ObserverBuilderDTO dtoObserverBuilder, FormulaBuilderDTO newValue, FormulaBuilderDTO oldValue);
       IReadOnlyList<IDimension> GetDimensions();
-      void SetPropertyValueFromViewFor<T>(IObjectBaseDTO dtoObjectBase, string propertyName, T newValue, T oldValue);
+      void SetPropertyValueFromViewFor<T>(ObjectBaseDTO dtoObjectBase, string propertyName, T newValue, T oldValue);
       IEditObserverBuildingBlockPresenter Parent { get; set; }
       void Select(ObserverBuilderDTO dto);
    }
@@ -84,7 +84,7 @@ namespace MoBi.Presentation.Presenter
 
       public IReadOnlyList<IDimension> GetDimensions() => _dimensionFactory.DimensionsSortedByName;
 
-      public void SetPropertyValueFromViewFor<T>(IObjectBaseDTO dtoObserverBuilder, string propertyName, T newValue, T oldValue)
+      public void SetPropertyValueFromViewFor<T>(ObjectBaseDTO dtoObserverBuilder, string propertyName, T newValue, T oldValue)
       {
          var observerBuilder = _context.Get<IObserverBuilder>(dtoObserverBuilder.Id);
          AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, observerBuilder, BuildingBlock).Run(_context)); // <T>

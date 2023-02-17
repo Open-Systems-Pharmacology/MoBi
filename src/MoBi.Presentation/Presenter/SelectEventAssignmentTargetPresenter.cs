@@ -61,15 +61,15 @@ namespace MoBi.Presentation.Presenter
          return _view.Canceled ? null : generatePathFromDTO(_view.Selected);
       }
 
-      public IEnumerable<IObjectBaseDTO> GetChildren(IObjectBaseDTO parentDTO)
+      public IEnumerable<ObjectBaseDTO> GetChildren(ObjectBaseDTO parentDTO)
       {
          var parent = getObjectFrom(parentDTO);
          if (parent.IsAnImplementationOf<IDistributedParameter>())
-            return Enumerable.Empty<IObjectBaseDTO>();
+            return Enumerable.Empty<ObjectBaseDTO>();
 
          var container = parent as IContainer;
          if (container == null)
-            return Enumerable.Empty<IObjectBaseDTO>();
+            return Enumerable.Empty<ObjectBaseDTO>();
 
          if (parent.IsAnImplementationOf<IMoleculeBuilder>() || parent.IsAnImplementationOf<IReactionBuilder>())
          {
@@ -82,7 +82,7 @@ namespace MoBi.Presentation.Presenter
          }
 
          //Real structural container. 
-         var list = new List<IObjectBaseDTO>();
+         var list = new List<ObjectBaseDTO>();
 
          //Add sub containers
          list.AddRange(map(container.GetChildrenSortedByName<IContainer>(x => !x.IsNamed(Constants.MOLECULE_PROPERTIES))));
@@ -97,12 +97,12 @@ namespace MoBi.Presentation.Presenter
          return list;
       }
 
-      private IReadOnlyList<IObjectBaseDTO> map(IEnumerable<IObjectBase> objectsToMap)
+      private IReadOnlyList<ObjectBaseDTO> map(IEnumerable<IObjectBase> objectsToMap)
       {
          return objectsToMap.MapAllUsing(_objectBaseDTOMapper);
       }
 
-      private IEnumerable<IObjectBaseDTO> dummyLocalParametersUnder(IObjectBase parent, IContainer container, IObjectBaseDTO parentDTO)
+      private IEnumerable<ObjectBaseDTO> dummyLocalParametersUnder(IObjectBase parent, IContainer container, ObjectBaseDTO parentDTO)
       {
          return localParametersUnder(container).Select(x => _dummyParameterDTOMapper.MapFrom(x, container, parentDTO));
       }
@@ -117,7 +117,7 @@ namespace MoBi.Presentation.Presenter
          return container.GetChildrenSortedByName<IParameter>(para => para.BuildMode == ParameterBuildMode.Global);
       }
 
-      public bool IsValidSelection(IObjectBaseDTO selectedDTO)
+      public bool IsValidSelection(ObjectBaseDTO selectedDTO)
       {
          if (selectedDTO == null)
             return false;
@@ -129,7 +129,7 @@ namespace MoBi.Presentation.Presenter
          return selection != null && selection.IsAnImplementationOf<IUsingFormula>();
       }
 
-      private bool isDummy(IObjectBaseDTO selectedDTO)
+      private bool isDummy(ObjectBaseDTO selectedDTO)
       {
          return selectedDTO.IsAnImplementationOf<DummyMoleculeDTO>() ||
                 selectedDTO.IsAnImplementationOf<DummyReactionDTO>() ||
@@ -141,18 +141,18 @@ namespace MoBi.Presentation.Presenter
          var project = _context.CurrentProject;
          _molecules = project.MoleculeBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<IMoleculeBuilder>()).OrderBy(x => x.Name).ToList();
          _reactions = project.ReactionBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<IReactionBuilder>()).OrderBy(x => x.Name).ToList();
-         var list = project.SpatialStructureCollection.Select(createSpatialStructureDTOFrom).Cast<IObjectBaseDTO>().ToList();
+         var list = project.SpatialStructureCollection.Select(createSpatialStructureDTOFrom).Cast<ObjectBaseDTO>().ToList();
          list.Add(_objectBaseDTOMapper.MapFrom(container));
          list.AddRange(globalReactionParameters());
          _view.BindTo(list);
       }
 
-      private IEnumerable<IObjectBaseDTO> globalReactionParameters()
+      private IEnumerable<ObjectBaseDTO> globalReactionParameters()
       {
          return _reactions.Where(x => globalParameterUnder(x).Any()).Select(x => _containerDTOMapper.MapFrom(x));
       }
 
-      private FormulaUsablePath generatePathFromDTO(IObjectBaseDTO dto)
+      private FormulaUsablePath generatePathFromDTO(ObjectBaseDTO dto)
       {
          if (dto.IsAnImplementationOf<DummyParameterDTO>())
          {
@@ -193,19 +193,19 @@ namespace MoBi.Presentation.Presenter
          return _context.Get<IParameter>(dummy.ParameterToUse.Id).Dimension;
       }
 
-      private IDimension getDimensionFor(IObjectBaseDTO dto)
+      private IDimension getDimensionFor(ObjectBaseDTO dto)
       {
          return dto.IsAnImplementationOf<DummyMoleculeDTO>() ? _dimensionRetriever.MoleculeDimension : _dimensionRetriever.ReactionDimension;
       }
 
-      private IEntity getExistingParentContainerFromDTO(IObjectBaseDTO dto)
+      private IEntity getExistingParentContainerFromDTO(ObjectBaseDTO dto)
       {
          var treeNode = _view.GetNode(dto.Id);
-         var dtoParent = treeNode.ParentNode.ParentNode.TagAsObject.DowncastTo<IObjectBaseDTO>();
+         var dtoParent = treeNode.ParentNode.ParentNode.TagAsObject.DowncastTo<ObjectBaseDTO>();
          return _context.Get<IEntity>(dtoParent.Id);
       }
 
-      private IObjectBase getObjectFrom(IObjectBaseDTO dto)
+      private IObjectBase getObjectFrom(ObjectBaseDTO dto)
       {
          if (dto.IsAnImplementationOf<DummyMoleculeDTO>())
             return dto.DowncastTo<DummyMoleculeDTO>().MoleculeBuilder;
@@ -219,12 +219,12 @@ namespace MoBi.Presentation.Presenter
          return _context.Get<IObjectBase>(dto.Id);
       }
 
-      private IEnumerable<IObjectBaseDTO> getLocalInformationForReaction(IContainer container)
+      private IEnumerable<ObjectBaseDTO> getLocalInformationForReaction(IContainer container)
       {
          return _reactions.Select(x => _dummyReactionDTOMapper.MapFrom(x, container));
       }
 
-      private IEnumerable<IObjectBaseDTO> getLocalInformationForMolecules(IContainer container)
+      private IEnumerable<ObjectBaseDTO> getLocalInformationForMolecules(IContainer container)
       {
          return _molecules.Select(x => _dummyMoleculeDTOMapper.MapFrom(x, container));
       }

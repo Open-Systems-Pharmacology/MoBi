@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Presenter
       /// </param>
       /// <param name="editedObject"></param>
       /// <returns> The path that could be used in the model to reference the object</returns>
-      ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject);
+      ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject);
 
       ReferenceDTO CreateMoleculePath(DummyMoleculeContainerDTO dtoObjectBase, bool shouldCreateAbsolutePaths, IEntity refObject);
    }
@@ -102,7 +102,7 @@ namespace MoBi.Presentation.Presenter
       /// </param>
       /// <param name="editedObject"></param>
       /// <returns> The path that could be uses in the model to reference the object</returns>
-      public virtual ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      public virtual ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          if (IsMoleculeReference(objectBaseDTO))
             return createMoleculeReference();
@@ -260,7 +260,7 @@ namespace MoBi.Presentation.Presenter
          throw new MoBiException($"cant find reaction for parameter{formulaUsable.Name}");
       }
 
-      protected static bool IsMoleculeReference(IObjectBaseDTO dtoObjectBase)
+      protected static bool IsMoleculeReference(ObjectBaseDTO dtoObjectBase)
       {
          return dtoObjectBase.Id.Equals(ObjectPathKeywords.MOLECULE);
       }

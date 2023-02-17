@@ -68,14 +68,14 @@ namespace MoBi.Presentation
 
    internal class When_geting_children_for_a_distributeg_parameter : concern_for_SelectEventAssingmentTargetPresenter
    {
-      private IObjectBaseDTO _distributedParameterDTO;
-      private IEnumerable<IObjectBaseDTO> _result;
+      private ObjectBaseDTO _distributedParameterDTO;
+      private IEnumerable<ObjectBaseDTO> _result;
 
       protected override void Context()
       {
          base.Context();
          var id = "DIST";
-         _distributedParameterDTO = A.Fake<IObjectBaseDTO>().WithId(id);
+         _distributedParameterDTO = A.Fake<ObjectBaseDTO>().WithId(id);
          var distributeParameter = A.Fake<IDistributedParameter>();
          A.CallTo(() => distributeParameter.Children).Returns(new[] {A.Fake<IParameter>().WithName("Mean")});
          A.CallTo(() => _context.Get<IObjectBase>(id)).Returns(distributeParameter);
@@ -96,11 +96,11 @@ namespace MoBi.Presentation
 
    internal class When_geting_children_for_a_container : concern_for_SelectEventAssingmentTargetPresenter
    {
-      private IObjectBaseDTO _containerDTO;
+      private ObjectBaseDTO _containerDTO;
       private Container _container;
       private IParameter _parameter1;
       private IParameter _parameter2;
-      private List<IObjectBaseDTO> _result;
+      private List<ObjectBaseDTO> _result;
       private Container _subContainer;
       private Container _moleculeProperties;
       private ObjectBaseDTO _subContainerDTO;

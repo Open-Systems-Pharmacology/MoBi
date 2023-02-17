@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Presenter
       /// <returns>
       ///    The path that could be uses in the model to reference the object
       /// </returns>
-      public override ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
          var firstPathElemnt = getPathKeywordForContainer(dtoDummyParameter.Parent.ParentContainer);

@@ -8,8 +8,8 @@ namespace MoBi.Presentation.Views
 {
    public interface ISelectObjectPathView : IModalView<ISelectObjectPathPresenter>
    {
-      void BindTo(IEnumerable<IObjectBaseDTO> dtos);
-      IObjectBaseDTO Selected { get; }
+      void BindTo(IEnumerable<ObjectBaseDTO> dtos);
+      ObjectBaseDTO Selected { get; }
       ITreeNode GetNode(string id);
    }
 }

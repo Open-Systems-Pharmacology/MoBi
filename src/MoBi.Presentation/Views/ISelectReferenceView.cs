@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Views
       /// </summary>
       void Show(IEnumerable<ITreeNode> nodes);
 
-      IObjectBaseDTO SelectedDTO { get; }
+      ObjectBaseDTO SelectedDTO { get; }
       ObjectPathType ObjectPathType { get; set; }
       string Localisation { get; set; }
       bool ChangeLocalisationAllowed { get; set; }
