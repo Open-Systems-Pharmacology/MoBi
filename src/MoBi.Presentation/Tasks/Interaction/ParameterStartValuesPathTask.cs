@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand UpdateStartValueContainerPathCommand(IParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue, int indexToUpdate, string newValue)
       {
-         var targetPath = startValue.ContainerPath.Clone<IObjectPath>();
+         var targetPath = startValue.ContainerPath.Clone<ObjectPath>();
          if (indexToUpdate > targetPath.Count)
             return new MoBiEmptyCommand();
 

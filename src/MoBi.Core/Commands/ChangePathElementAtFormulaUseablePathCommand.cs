@@ -10,14 +10,14 @@ namespace MoBi.Core.Commands
 {
    public class ChangePathElementAtFormulaUseablePathCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
-      private IFormulaUsablePath _path;
+      private FormulaUsablePath _path;
       private readonly string _alias;
       private readonly string _formulaId;
       private readonly string _oldElement;
       private readonly string _newElement;
       private IFormula _formula;
 
-      public ChangePathElementAtFormulaUseablePathCommand(string newElement, IFormula formula, string oldElement, IFormulaUsablePath path,IBuildingBlock buildingBlock):base(buildingBlock)
+      public ChangePathElementAtFormulaUseablePathCommand(string newElement, IFormula formula, string oldElement, FormulaUsablePath path,IBuildingBlock buildingBlock):base(buildingBlock)
       {
          _newElement = newElement;
          _oldElement = oldElement;

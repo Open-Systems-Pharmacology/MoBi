@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Presenter
 
       IEnumerable<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto);
       ReferenceDTO GetReferenceObjectFrom(IObjectBaseDTO objectBaseDTO);
-      IObjectPath GetSelection();
+      ObjectPath GetSelection();
       void CheckPathCreationConfiguration();
       Func<IObjectBase, bool> SelectionPredicate { get; set; }
       bool LegalObjectSelected { get; }
@@ -167,7 +167,7 @@ namespace MoBi.Presentation.Presenter
          };
       }
 
-      public IObjectPath GetSelection()
+      public ObjectPath GetSelection()
       {
          var selection = getSelected<IEntity>();
          return _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);

@@ -87,7 +87,7 @@ namespace MoBi.Presentation.Presenter
          return parameter?.Formula.IsTable() ?? false;
       }
 
-      private IFormulaUsablePath selectFormulaUseablePath(Func<IObjectBase, bool> predicate, string caption)
+      private FormulaUsablePath selectFormulaUseablePath(Func<IObjectBase, bool> predicate, string caption)
       {
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {

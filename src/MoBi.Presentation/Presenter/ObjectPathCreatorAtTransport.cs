@@ -82,7 +82,7 @@ namespace MoBi.Presentation.Presenter
          };
       }
 
-      protected override IFormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject, IUsingFormula editedObject)
+      protected override FormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject, IUsingFormula editedObject)
       {
          if (refObject == null) return null;
          var container = formulaUsable.ParentContainer;

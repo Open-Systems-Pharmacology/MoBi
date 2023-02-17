@@ -11,7 +11,7 @@ namespace MoBi.Presentation.DTO
 
    public abstract class BreadCrumbsDTO<T> : DxValidatableDTO<T> where T : IValidatable, INotifier
    {
-      private IObjectPath _containerPath;
+      private ObjectPath _containerPath;
       private IList<string> _elementList;
 
       protected BreadCrumbsDTO(T underlyingObject) : base(underlyingObject)
@@ -19,7 +19,7 @@ namespace MoBi.Presentation.DTO
          
       }
 
-      public IObjectPath ContainerPath
+      public ObjectPath ContainerPath
       {
          get => _containerPath;
          set

@@ -64,7 +64,7 @@ namespace MoBi.Core.Commands
          formula.ObjectPaths.Each(updateObjectPath);
       }
 
-      private void updateObjectPath(IObjectPath path)
+      private void updateObjectPath(ObjectPath path)
       {
          if (!path.First().Equals(_oldName)) return;
          path.Remove(_oldName);

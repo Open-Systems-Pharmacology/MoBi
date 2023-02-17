@@ -6,5 +6,6 @@ namespace MoBi.Presentation.DTO
    {
       public ContainerMode Mode { set; get; }
       public ContainerType ContainerType { get; set; }
+
    }
 }

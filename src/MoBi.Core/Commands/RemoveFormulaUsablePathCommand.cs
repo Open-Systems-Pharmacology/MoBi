@@ -8,9 +8,9 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveFormulaUsablePathCommand : RemoveItemCommand<IFormulaUsablePath, IFormula, IBuildingBlock>
+   public class RemoveFormulaUsablePathCommand : RemoveItemCommand<FormulaUsablePath, IFormula, IBuildingBlock>
    {
-      public RemoveFormulaUsablePathCommand(IFormula parent, IFormulaUsablePath itemToRemove, IBuildingBlock buildingBlock) : base(parent, itemToRemove, buildingBlock)
+      public RemoveFormulaUsablePathCommand(IFormula parent, FormulaUsablePath itemToRemove, IBuildingBlock buildingBlock) : base(parent, itemToRemove, buildingBlock)
       {
       }
 

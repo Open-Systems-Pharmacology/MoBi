@@ -20,10 +20,10 @@ namespace MoBi.Presentation.Presenter
          return path;
       }
 
-      protected IFormulaUsablePath GenerateLocalReference(IFormulaUsable formulaUsable,  IUsingFormula editedObject)
+      protected FormulaUsablePath GenerateLocalReference(IFormulaUsable formulaUsable,  IUsingFormula editedObject)
       {
          if (editedObject == null) return null;
-         IFormulaUsablePath path;
+         FormulaUsablePath path;
          if (formulaUsable.ParentContainer.Equals(editedObject.ParentContainer))
          {
             path = _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, formulaUsable.Name);
@@ -61,7 +61,7 @@ namespace MoBi.Presentation.Presenter
          return dto;
       }
 
-      protected override IFormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject,IUsingFormula editedObject)
+      protected override FormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject,IUsingFormula editedObject)
       {
          if (formulaUsable.IsAtReaction())
          {
@@ -90,9 +90,9 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override IFormulaUsablePath CreateRelativePath(IFormulaUsable formulaUseable, IEntity refObject, IUsingFormula editedObject)
+      protected override FormulaUsablePath CreateRelativePath(IFormulaUsable formulaUseable, IEntity refObject, IUsingFormula editedObject)
       {
-         IFormulaUsablePath path;
+         FormulaUsablePath path;
 
          if (!formulaUseable.IsAtMolecule())
          {

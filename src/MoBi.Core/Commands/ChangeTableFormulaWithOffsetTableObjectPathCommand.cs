@@ -8,7 +8,7 @@ namespace MoBi.Core.Commands
 {
    public class ChangeTableFormulaWithOffsetTableObjectPathCommand : ChangeTableFormulaWithReferencePathCommandBase<TableFormulaWithOffset>
    {
-      public ChangeTableFormulaWithOffsetTableObjectPathCommand(TableFormulaWithOffset tableFormulaWithOffset, IFormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock)
+      public ChangeTableFormulaWithOffsetTableObjectPathCommand(TableFormulaWithOffset tableFormulaWithOffset, FormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock)
          : base(tableFormulaWithOffset, newFormulaUsablePath, buildingBlock, x => x.TableObjectAlias, tableFormulaWithOffset.AddTableObjectPath)
       {
       }
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
 
    public class ChangeTableFormulaWithOffsetOffsetObjectPathCommand : ChangeTableFormulaWithReferencePathCommandBase<TableFormulaWithOffset>
    {
-      public ChangeTableFormulaWithOffsetOffsetObjectPathCommand(TableFormulaWithOffset tableFormulaWithOffset, IFormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock)
+      public ChangeTableFormulaWithOffsetOffsetObjectPathCommand(TableFormulaWithOffset tableFormulaWithOffset, FormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock)
          : base(tableFormulaWithOffset, newFormulaUsablePath, buildingBlock, x => x.OffsetObjectAlias, tableFormulaWithOffset.AddOffsetObjectPath)
       {
       }

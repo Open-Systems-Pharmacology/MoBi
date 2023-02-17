@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Presenter
    public interface ISelectEventAssingmentTargetPresenter : IDisposablePresenter
    {
       void Init(IMoBiProject project, IContainer container);
-      IFormulaUsablePath Select();
+      FormulaUsablePath Select();
       IEnumerable<IObjectBaseDTO> GetChildren(IObjectBaseDTO id);
       bool IsValidSelection(IObjectBaseDTO selectedDTO);
    }
@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Presenter
          _objectBaseDTOMapper = objectBaseDTOMapper;
       }
 
-      public IFormulaUsablePath Select()
+      public FormulaUsablePath Select()
       {
          _view.Display();
 
@@ -148,7 +148,7 @@ namespace MoBi.Presentation.Presenter
          return _reactions.Where(x=>globalParameterUnder(x).Any()).Select(x => _containerDTOMapper.MapFrom(x));
       }
 
-      private IFormulaUsablePath generatePathFromDTO(IObjectBaseDTO dto)
+      private FormulaUsablePath generatePathFromDTO(IObjectBaseDTO dto)
       {
          if (dto.IsAnImplementationOf<DummyParameterDTO>())
          {
@@ -179,7 +179,7 @@ namespace MoBi.Presentation.Presenter
          return null;
       }
 
-      private IFormulaUsablePath formulatUsablePathFrom(IObjectPath objectPath, IDimension dimension)
+      private FormulaUsablePath formulatUsablePathFrom(ObjectPath objectPath, IDimension dimension)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(objectPath).WithDimension(dimension);
       }

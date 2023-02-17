@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Presenter
          return base.CreatePathsFromEntity(objectBase, shouldCreateAbsolutePaths, refObject, editedObject);
       }
 
-      private IFormulaUsablePath cratePathToReacionProperty(IParameter parameter)
+      private FormulaUsablePath cratePathToReacionProperty(IParameter parameter)
       {
          var parentReaction = GetReactionBuilderFor(parameter);
 

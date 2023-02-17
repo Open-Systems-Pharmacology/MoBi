@@ -9,7 +9,7 @@ namespace MoBi.Core.Commands
 {
    public class UpdateMoleculeStartValueInBuildingBlockCommand : BuildingBlockChangeCommandBase<IMoleculeStartValuesBuildingBlock>
    {
-      private readonly IObjectPath _path;
+      private readonly ObjectPath _path;
       private readonly double? _value;
       private readonly double? _originalValue;
       private readonly bool _present;
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
 
       public UpdateMoleculeStartValueInBuildingBlockCommand(
          IMoleculeStartValuesBuildingBlock startValuesBuildingBlock, 
-         IObjectPath path, 
+         ObjectPath path, 
          double? value, bool present, double scaleDisivor, bool negativeValuesAllowed) : base(startValuesBuildingBlock)
       {
          CommandType = AppConstants.Commands.UpdateCommand;

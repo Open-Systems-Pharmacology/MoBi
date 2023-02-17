@@ -67,8 +67,8 @@ namespace MoBi.UI.Views
 
       public string TargetPath
       {
-         get { return btnTargetPath.Text; }
-         set { btnTargetPath.Text = value; }
+         get => btnTargetPath.Text;
+         set => btnTargetPath.Text = value;
       }
 
       public void AttachPresenter(IEditAssignmentBuilderPresenter presenter)

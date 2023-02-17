@@ -90,7 +90,7 @@ namespace MoBi.Core.Domain.UnitSystem
    public class MolWeightDimensionConverterForFormulaUsable : DimensionConverter<IQuantity>
    {
       private IQuantity _formulaUsable;
-      private IObjectPath _useablePath;
+      private ObjectPath _useablePath;
       private readonly ObjectPathFactory _pathFactory;
 
       public MolWeightDimensionConverterForFormulaUsable(IDimension sourceDimension, IDimension targetDimension) : base(sourceDimension, targetDimension)

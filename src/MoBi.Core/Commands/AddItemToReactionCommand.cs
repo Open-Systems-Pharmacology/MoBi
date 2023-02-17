@@ -64,18 +64,18 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new FormulaChangedEvent(formula));
       }
 
-      private IFormulaUsablePath createPath(string moleculeName, IEnumerable<string> usedAliases, IMoBiContext context)
+      private FormulaUsablePath createPath(string moleculeName, IEnumerable<string> usedAliases, IMoBiContext context)
       {
          var dimensionRetriever = context.Resolve<IReactionDimensionRetriever>();
          var aliasCreator = context.Resolve<IAliasCreator>();
          var objectPathFactory = context.Resolve<IObjectPathFactory>();
 
-         var pathToRefernecedObject = new List<string> {ObjectPath.PARENT_CONTAINER, moleculeName};
+         var pathToReferencedObject = new List<string> {ObjectPath.PARENT_CONTAINER, moleculeName};
          //in case of concentration, we need to add a reference to the concentration parameter
          if (dimensionRetriever.SelectedDimensionMode == ReactionDimensionMode.ConcentrationBased)
-            pathToRefernecedObject.Add(AppConstants.Parameters.CONCENTRATION);
+            pathToReferencedObject.Add(AppConstants.Parameters.CONCENTRATION);
 
-         return objectPathFactory.CreateFormulaUsablePathFrom(pathToRefernecedObject)
+         return objectPathFactory.CreateFormulaUsablePathFrom(pathToReferencedObject)
             .WithDimension(dimensionRetriever.MoleculeDimension)
             .WithAlias(aliasCreator.CreateAliasFrom(moleculeName, usedAliases));
       }

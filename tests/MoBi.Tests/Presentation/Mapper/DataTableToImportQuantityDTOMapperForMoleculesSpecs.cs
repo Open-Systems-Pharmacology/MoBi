@@ -73,8 +73,8 @@ namespace MoBi.Presentation.Mapper
       {
          _msvCreator = A.Fake<IMoleculeStartValuesCreator>();
 
-         A.CallTo(() => _msvCreator.CreateMoleculeStartValue(A<IObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._))
-            .ReturnsLazily((IObjectPath path, string moleculeName, IDimension dimension) => new MoleculeStartValue {ContainerPath = path, Name = moleculeName, Dimension = dimension});
+         A.CallTo(() => _msvCreator.CreateMoleculeStartValue(A<ObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._))
+            .ReturnsLazily((ObjectPath path, string moleculeName, IDimension dimension) => new MoleculeStartValue {ContainerPath = path, Name = moleculeName, Dimension = dimension});
 
          _concentrationDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLAR_CONCENTRATION, "mol/l");
 

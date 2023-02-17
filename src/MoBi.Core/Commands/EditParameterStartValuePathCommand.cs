@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
       /// <param name="buildingBlock">The building block this start value is part of</param>
       /// <param name="startValue">The start value being modified</param>
       /// <param name="newContainerPath">The new container path for the start value</param>
-      public EditParameterStartValuePathCommand(IParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue, IObjectPath newContainerPath)
+      public EditParameterStartValuePathCommand(IParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue, ObjectPath newContainerPath)
          : base(buildingBlock, startValue, newContainerPath)
       {
 

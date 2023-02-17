@@ -72,7 +72,7 @@ namespace MoBi.Core.Commands
          _reaction = context.Get<IReactionBuilder>(_parentId);
       }
 
-      private IFormulaUsablePath getPathToRemoveInReactionFormula(string moleculeName, IMoBiContext context)
+      private FormulaUsablePath getPathToRemoveInReactionFormula(string moleculeName, IMoBiContext context)
       {
          var pathToLookFor = context.ObjectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, moleculeName);
          return _reaction.Formula.ObjectPaths.FirstOrDefault(path => path.PathAsString.Equals(pathToLookFor.PathAsString));

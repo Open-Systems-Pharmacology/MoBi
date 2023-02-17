@@ -64,10 +64,7 @@ namespace MoBi.UI.Views
          panelFormula.FillWith(view);
       }
 
-      public override bool HasError
-      {
-         get { return base.HasError || _screenBinder.HasError; }
-      }
+      public override bool HasError => base.HasError || _screenBinder.HasError;
 
       private void selectContainerPath(object sender, ButtonPressedEventArgs e)
       {

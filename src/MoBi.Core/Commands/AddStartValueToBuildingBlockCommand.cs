@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
    public class AddStartValueToBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<IStartValuesBuildingBlock<T>> where T : class, IStartValue
    {
       private T _startValue;
-      private readonly IObjectPath _objectPath;
+      private readonly ObjectPath _objectPath;
       private byte[] _serializedParameterStartValue;
 
       public AddStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<T> startValuesBuildingBlock, T startValue)

@@ -15,9 +15,9 @@ namespace MoBi.Core.Events
 
    public class AddedFormulaUsablePathEvent : FormulaEvent
    {
-      public IFormulaUsablePath FormulaUsablePath { get; set; }
+      public FormulaUsablePath FormulaUsablePath { get; set; }
 
-      public AddedFormulaUsablePathEvent(IFormula formula, IFormulaUsablePath newPath) : base(formula)
+      public AddedFormulaUsablePathEvent(IFormula formula, FormulaUsablePath newPath) : base(formula)
       {
          FormulaUsablePath = newPath;
       }
@@ -25,9 +25,9 @@ namespace MoBi.Core.Events
 
    public class RemovedFormulaUsablePathEvent : FormulaEvent
    {
-      public IFormulaUsablePath FormulaUsablePath { get; set; }
+      public FormulaUsablePath FormulaUsablePath { get; set; }
 
-      public RemovedFormulaUsablePathEvent(IFormula formula, IFormulaUsablePath formulaUsablePath) : base(formula)
+      public RemovedFormulaUsablePathEvent(IFormula formula, FormulaUsablePath formulaUsablePath) : base(formula)
       {
          FormulaUsablePath = formulaUsablePath;
       }

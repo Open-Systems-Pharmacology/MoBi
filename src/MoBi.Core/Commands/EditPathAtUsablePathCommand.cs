@@ -12,20 +12,20 @@ namespace MoBi.Core.Commands
 {
    public class EditPathAtUsablePathCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
-      private readonly IFormulaUsablePath _oldObjectPath;
+      private readonly FormulaUsablePath _oldObjectPath;
       private readonly string _alias;
-      private readonly IObjectPath _newObjectPath;
+      private readonly ObjectPath _newObjectPath;
       private readonly string _formulaId;
-      private IFormulaUsablePath _formulaPathToUpdate;
+      private FormulaUsablePath _formulaPathToUpdate;
       private IFormula _formula;
 
-      public EditPathAtUsablePathCommand(IFormula formula, IObjectPath newObjectPath, IFormulaUsablePath formulaPathToUpdate, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public EditPathAtUsablePathCommand(IFormula formula, ObjectPath newObjectPath, FormulaUsablePath formulaPathToUpdate, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _newObjectPath = newObjectPath;
          _formulaId = formula.Id;
          _formulaPathToUpdate = formulaPathToUpdate;
          //we need a clone here to save the old path before updating it
-         _oldObjectPath = _formulaPathToUpdate.Clone<IFormulaUsablePath>();
+         _oldObjectPath = _formulaPathToUpdate.Clone<FormulaUsablePath>();
          _alias = _formulaPathToUpdate.Alias;
          Description = AppConstants.Commands.EditFormulaUsablePath(_oldObjectPath.PathAsString, newObjectPath.PathAsString, _alias, formula.Name, buildingBlock.Name);
          ObjectType = ObjectTypes.FormulaUsablePath;

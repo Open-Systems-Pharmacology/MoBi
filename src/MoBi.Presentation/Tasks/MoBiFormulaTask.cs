@@ -131,7 +131,7 @@ namespace MoBi.Presentation.Tasks
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
+      public IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
       {
          return new EditFormulaAliasCommand(formula, newAlias, oldAlias, buildingBlock).Run(_context);
       }
@@ -141,7 +141,7 @@ namespace MoBi.Presentation.Tasks
          return new UpdateDimensionOfFormulaUsablePathCommand(newDimension, formula, alias, buildingBlock).Run(_context);
       }
 
-      public IMoBiCommand RemoveFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand RemoveFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          return new RemoveFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
       }
@@ -158,13 +158,13 @@ namespace MoBi.Presentation.Tasks
          return (valid, validationMessage);
       }
 
-      public IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
       {
          var command = new EditPathAtUsablePathCommand(formula, newPath, formulaUsablePath, buildingBlock).Run(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand AddFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand AddFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          return new AddFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
       }
@@ -192,25 +192,25 @@ namespace MoBi.Presentation.Tasks
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand ChangeOffsetObject(TableFormulaWithOffset formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeOffsetObject(TableFormulaWithOffset formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          var command = new ChangeTableFormulaWithOffsetOffsetObjectPathCommand(formula, path, buildingBlock).Run(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand ChangeTableObject(TableFormulaWithOffset formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeTableObject(TableFormulaWithOffset formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          var command = new ChangeTableFormulaWithOffsetTableObjectPathCommand(formula, path, buildingBlock).Run(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand ChangeXArgumentObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeXArgumentObject(TableFormulaWithXArgument formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          var command = new ChangeTableFormulaWithXArgumentXArgumentObjectPathCommand(formula, path, buildingBlock).Run(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand ChangeTableObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeTableObject(TableFormulaWithXArgument formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
          var command = new ChangeTableFormulaWithXArgumentTableObjectPathCommand(formula, path, buildingBlock).Run(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);

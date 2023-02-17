@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Presenter
          return dtoReference;
       }
 
-      private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : IObjectPath
+      private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : ObjectPath
       {
          if (entity.IsAtMolecule())
          {

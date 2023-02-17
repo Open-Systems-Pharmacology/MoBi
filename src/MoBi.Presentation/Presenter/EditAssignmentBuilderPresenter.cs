@@ -93,11 +93,11 @@ namespace MoBi.Presentation.Presenter
 
       public void SelectPath()
       {
-         IFormulaUsablePath objectPath;
-         using (var selectEventAssingmentTargetPresenter = _applicationController.Start<ISelectEventAssingmentTargetPresenter>())
+         FormulaUsablePath objectPath;
+         using (var presenter = _applicationController.Start<ISelectEventAssingmentTargetPresenter>())
          {
-            selectEventAssingmentTargetPresenter.Init(_context.CurrentProject, _eventAssignmentBuilder.RootContainer);
-            objectPath = selectEventAssingmentTargetPresenter.Select();
+            presenter.Init(_context.CurrentProject, _eventAssignmentBuilder.RootContainer);
+            objectPath = presenter.Select();
          }
 
          if (objectPath == null) return;
