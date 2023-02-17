@@ -26,7 +26,7 @@ namespace MoBi.Core
       public override Origin Product { get; } = Origins.MoBi;
       public override string ProductNameWithTrademark { get; } = AppConstants.PRODUCT_NAME_WITH_TRADEMARK;
       public override string IconName { get; } = ApplicationIcons.MoBi.IconName;
-      protected override string[] LatestVersionWithOtherMajor { get; } = {"7.4", "6.3", "3.6" };
+      protected override string[] LatestVersionWithOtherMajor { get; } = {"11.1", "11.0", "7.4", "6.3", "3.6" };
       public override string UserSettingsFileName { get; } = "Settings.xml";
       public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
       public override string IssueTrackerUrl { get; } = AppConstants.IssueTrackerUrl;
