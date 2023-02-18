@@ -58,9 +58,9 @@ namespace MoBi.Presentation.Presenter
          _view.Show(roots);
       }
 
-      public void Edit(ISpatialStructure objectToEdit)
+      public void Edit(ISpatialStructure spatialStructure)
       {
-         InitializeWith(objectToEdit);
+         InitializeWith(spatialStructure);
       }
 
       public object Subject => _spatialStructure;
