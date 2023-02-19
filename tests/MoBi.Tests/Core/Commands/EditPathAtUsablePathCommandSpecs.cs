@@ -14,8 +14,8 @@ namespace MoBi.Core.Commands
    {
       protected IBuildingBlock _buildingBlock;
       private IFormula _formula;
-      protected IObjectPath _newObjectPath;
-      protected IFormulaUsablePath _oldObjectPath;
+      protected ObjectPath _newObjectPath;
+      protected FormulaUsablePath _oldObjectPath;
       protected IMoBiContext _context;
       protected IBuildingBlockVersionUpdater _buildingBlockVersionUpdater;
 

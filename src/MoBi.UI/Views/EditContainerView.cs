@@ -1,4 +1,5 @@
-﻿using OSPSuite.DataBinding;
+﻿using DevExpress.LookAndFeel;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Utility.Extensions;
@@ -10,6 +11,7 @@ using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
@@ -23,10 +25,13 @@ namespace MoBi.UI.Views
       protected IEditContainerPresenter _presenter;
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
+      private readonly UserLookAndFeel _lookAndFeel;
 
-      public EditContainerView(IImageListRetriever imageListRetriever)
+
+      public EditContainerView(IImageListRetriever imageListRetriever, UserLookAndFeel lookAndFeel)
       {
          _imageListRetriever = imageListRetriever;
+         _lookAndFeel = lookAndFeel;
          InitializeComponent();
       }
 
@@ -48,6 +53,10 @@ namespace MoBi.UI.Views
             .To(btName)
             .OnValueUpdating += onNameSet;
 
+         _screenBinder.Bind(dto => dto.ParentPath)
+            .To(btParentPath)
+            .OnValueUpdating += onParentPathSet;
+
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
             .OnValueUpdating += onValueUpdating;
@@ -56,6 +65,7 @@ namespace MoBi.UI.Views
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
          btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
+         btParentPath.ButtonClick += (o, e) => OnEvent(_presenter.UpdateParentPath);
       }
 
       public void Activate()
@@ -70,11 +80,18 @@ namespace MoBi.UI.Views
          btName.ToolTip = ToolTips.Container.ContainerName;
          tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
          tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
+         layoutItemParentPath.Text = AppConstants.Captions.ParentPath.FormatForLabel();
+         layoutControl.InitializeDisabledColors(_lookAndFeel);
       }
 
       private void onNameSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)
       {
          OnEvent(() => _presenter.SetInitialName(e.NewValue));
+      }
+
+      private void onParentPathSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)
+      {
+         OnEvent(() => _presenter.SetParentPath(e.NewValue));
       }
 
       private void onValueUpdating<T>(ContainerDTO container, PropertyValueSetEventArgs<T> e)
@@ -91,6 +108,13 @@ namespace MoBi.UI.Views
       {
          _screenBinder.BindToSource(dto);
          initNameControl(dto);
+         initParentPathControl(dto);
+      }
+
+      private void initParentPathControl(ContainerDTO dto)
+      {
+         editParentPathButton.Visible = dto.ParentPathEditable && !_readOnly;
+         btParentPath.Enabled = dto.ParentPathEditable;
       }
 
       private void initNameControl(ContainerDTO dto)
@@ -98,10 +122,13 @@ namespace MoBi.UI.Views
          var isInit = dto.Name.IsNullOrEmpty();
          editNameButton.Enabled = !isInit;
          editNameButton.Visible = !isInit && !_readOnly;
-         btName.Properties.ReadOnly = !isInit;
+         btName.ReadOnly = !isInit;
+         btName.Enabled = !isInit;
       }
 
       private EditorButton editNameButton => btName.Properties.Buttons[0];
+
+      private EditorButton editParentPathButton => btParentPath.Properties.Buttons[0];
 
       public void AddParameterView(IView view)
       {
@@ -144,5 +171,6 @@ namespace MoBi.UI.Views
       {
          tabParameters.Show();
       }
+
    }
 }

@@ -10,7 +10,7 @@ namespace MoBi.Presentation
    public abstract class concern_for_FormulaUsablePathDTO : ContextSpecification<FormulaUsablePathDTO>
    {
       protected IFormula _formula;
-      protected IFormulaUsablePath _formulaUsablePath;
+      protected FormulaUsablePath _formulaUsablePath;
 
       protected override void Context()
       {

@@ -85,10 +85,11 @@ namespace MoBi.Presentation.Tasks
          Expression<Func<IReactionPartnerBuilder, string>> reactionPartnerMoleculeName = x => x.MoleculeName;
          _reactionPartnerMoleculeNamePropertyName = reactionPartnerMoleculeName.Name();
 
-         Expression<Func<IEventAssignmentBuilder, IObjectPath>> eventObjectPath = x => x.ObjectPath;
+         Expression<Func<IEventAssignmentBuilder, ObjectPath>> eventObjectPath = x => x.ObjectPath;
          _eventObjectPathPropertyName = eventObjectPath.Name();
-         Expression<Func<TransporterMoleculeContainer, string>> tranportName = x => x.TransportName;
-         _tranportNamePropertyName = tranportName.Name();
+
+         Expression<Func<TransporterMoleculeContainer, string>> transportName = x => x.TransportName;
+         _tranportNamePropertyName = transportName.Name();
       }
 
       public IReadOnlyList<IStringChange> GetPossibleChangesFrom(IObjectBase objectToRename, string newName, IObjectBase renamingContext, string oldName)
@@ -210,7 +211,7 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      private IObjectPath generateNewPath(IObjectPath containerPath)
+      private ObjectPath generateNewPath(ObjectPath containerPath)
       {
          var newPath = new ObjectPath();
          foreach (var element in containerPath)

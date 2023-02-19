@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Mappers
          return dto;
       }
 
-      private static IFormulaUsablePath getPathByAlias(TableFormulaWithXArgument tableFormulaWithXArgument, string pathAlias)
+      private static FormulaUsablePath getPathByAlias(TableFormulaWithXArgument tableFormulaWithXArgument, string pathAlias)
       {
          return tableFormulaWithXArgument.ObjectPaths.SingleOrDefault(x => x.Alias.Equals(pathAlias));
       }

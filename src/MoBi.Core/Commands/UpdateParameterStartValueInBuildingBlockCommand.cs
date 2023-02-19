@@ -9,13 +9,13 @@ namespace MoBi.Core.Commands
 {
    public class UpdateParameterStartValueInBuildingBlockCommand : BuildingBlockChangeCommandBase<IParameterStartValuesBuildingBlock>
    {
-      private readonly IObjectPath _path;
+      private readonly ObjectPath _path;
       private readonly double? _value;
       private double? _originalValue;
 
       public UpdateParameterStartValueInBuildingBlockCommand(
          IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, 
-         IObjectPath path,
+         ObjectPath path,
          double? value) : base(parameterStartValuesBuildingBlock)
       {
          CommandType = AppConstants.Commands.UpdateCommand;

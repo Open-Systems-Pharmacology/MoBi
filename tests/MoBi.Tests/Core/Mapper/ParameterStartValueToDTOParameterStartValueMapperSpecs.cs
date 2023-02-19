@@ -28,7 +28,7 @@ namespace MoBi.Core.Mapper
       private ExplicitFormula _formula;
       private IDimension _dimension;
       private string _formulaString;
-      private IObjectPath _parameterPath;
+      private ObjectPath _parameterPath;
 
       protected override void Context()
       {
@@ -66,7 +66,7 @@ namespace MoBi.Core.Mapper
       private ParameterStartValue _parameterStartValue;
       private IDimension _dimension;
       private double _startValue;
-      private IObjectPath _parameterPath;
+      private ObjectPath _parameterPath;
 
       protected override void Context()
       {

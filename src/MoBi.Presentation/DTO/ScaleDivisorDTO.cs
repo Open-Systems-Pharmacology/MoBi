@@ -20,7 +20,7 @@ namespace MoBi.Presentation.DTO
 
       public string PathAsString
       {
-         get { return  ContainerPath.Clone<IObjectPath>().AndAdd(Name).ToString(); }
+         get { return  ContainerPath.Clone<ObjectPath>().AndAdd(Name).ToString(); }
       }
 
       public string Name

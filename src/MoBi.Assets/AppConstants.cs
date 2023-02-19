@@ -570,12 +570,12 @@ namespace MoBi.Assets
             return $"Chart Templates edited in simulation '{simulationName}'";
          }
 
-         public static string UpdateParameterStartValue(IObjectPath path, double? value, Unit displayUnit)
+         public static string UpdateParameterStartValue(ObjectPath path, double? value, Unit displayUnit)
          {
             return $"Updated parameter start value at path {path} with value {value} {displayUnit}";
          }
 
-         public static string UpdateMoleculeStartValue(IObjectPath path, double? value, bool present, Unit displayUnit, double scaleFactor, bool negativeValuesAllowed)
+         public static string UpdateMoleculeStartValue(ObjectPath path, double? value, bool present, Unit displayUnit, double scaleFactor, bool negativeValuesAllowed)
          {
             return $"Updated molecule start value at path: {path} with value: {value} {displayUnit},  present: {present},  scale divisor: {scaleFactor}, neg. values allowed: {negativeValuesAllowed}";
          }
@@ -610,7 +610,7 @@ namespace MoBi.Assets
             return $"Calculate scale divisor for simulation '{name}'";
          }
 
-         public static string EditPath(string objectType, IObjectPath originalPath, IObjectPath newPath)
+         public static string EditPath(string objectType, ObjectPath originalPath, ObjectPath newPath)
          {
             return $"Changing {objectType} original path {originalPath} to new path {newPath}";
          }
@@ -640,10 +640,11 @@ namespace MoBi.Assets
             return $"Update dimension for parameter '{parameterPath}' from '{oldDimensionName}' to '{newDimensionName}'";
          }
 
-         public static string UpdateAssignmentObjectPath(string assignmentPath, string path)
-         {
-            return $"Update object path for assignment '{assignmentPath}' to '{path}'";
-         }
+         public static string UpdateAssignmentObjectPath(string assignmentPath, string path) => 
+            $"Update object path for assignment '{assignmentPath}' to '{path}'";
+
+         public static string UpdateParentPath(string containerPath, string parentPath) =>
+            $"Update parent path for '{containerPath}' to '{parentPath}'";
 
          public static string UpdateMoleculeStartValueScaleDivisor(string path, double oldScaleDivisor, double newScaleDivisor)
          {
@@ -1192,7 +1193,7 @@ namespace MoBi.Assets
             return $"File contains no loadable content for  '{typeName}'";
          }
 
-         public static string CircularReferenceException(IFormulaUsablePath path, IFormula formula)
+         public static string CircularReferenceException(ObjectPath path, IFormula formula)
          {
             return $"Not adding path {path.PathAsString} to formula {formula.Name}.\nAdding path would create circular reference";
          }
@@ -1616,7 +1617,7 @@ namespace MoBi.Assets
          public static readonly string GeometricDeviation = "Geometric Deviation";
          public static readonly string List = "List";
          public static readonly string UserDefined = "User Defined";
-         public static readonly string AddMetabolizingEnzyme = "Add Metagbolizing Enzyme";
+         public static readonly string AddMetabolizingEnzyme = "Add Metabolizing Enzyme";
          public static readonly string AddTransportProtein = "Add Transport Protein";
          public static readonly string AddSpecificBindingPartner = "Add Binding Partner";
          public static readonly string Individuals = "Individuals";
@@ -1626,41 +1627,27 @@ namespace MoBi.Assets
          public static readonly string ExtensionModulesFolder = "Extension Modules";
          public static readonly string Module = "Module";
          public static readonly string CreateBuildingBlocks = "Create Building Blocks";
+         public static readonly string ParentPath = "Parent Path";
+         public static readonly string SelectContainer = "Select Container";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 
+         public static string ManageDisplayUnits(string type) => $"Manage {type} Display Units";
 
-         public static string ManageDisplayUnits(string type)  
-         {
-            return $"Manage {type} Display Units";
-         }
+         public static string ParameterRightHandSide(string name) => $"d{name}/dt = ";
 
-         public static string ParameterRightHandSide(string name)
-         {
-            return $"d{name}/dt = ";
-         }
+         public static string ReportCreationStartedMessage(string reportFullPath) => "This might take a while...";
 
-         public static string ReportCreationStartedMessage(string reportFullPath)
-         {
-            return "This might take a while...";
-         }
+         public static string ReportCreationFinishedMessage(string reportFullPath) => $"Report can be found at {reportFullPath}";
 
-         public static string ReportCreationFinishedMessage(string reportFullPath)
-         {
-            return $"Report can be found at {reportFullPath}";
-         }
+         public static string ConvertingExcelSheetToQuantities(string tableName) => $"Converting Excel sheet {tableName}";
 
-         public static string ConvertingExcelSheetToQuantities(string tableName)
-         {
-            return $"Converting Excel sheet {tableName}";
-         }
-
-         public static string AddingMoleculeStartValue(IObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeValueAllowed)
+         public static string AddingMoleculeStartValue(ObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeValueAllowed)
          {
             return $"Adding Molecule Start Value {moleculePath}={startValueInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeValueAllowed}";
          }
 
-         public static string AddingParameterStartValue(IObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
+         public static string AddingParameterStartValue(ObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
          {
             return $"Adding Parameter Start Value {parameterPath}={startValueInDisplayUnit} {displayUnit}";
          }
@@ -1803,24 +1790,24 @@ namespace MoBi.Assets
             return $"Select file containing the {buildingBlockType.ToLowerInvariant()} to merge";
          }
 
-         public static string UpdatingMoleculeStartValue(IObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeStartValueAllowed)
+         public static string UpdatingMoleculeStartValue(ObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeStartValueAllowed)
          {
             return !double.IsNaN(startValueInDisplayUnit)
                ? $"Updating Molecule Start Value {moleculePath}={startValueInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeStartValueAllowed}"
                : $"Updating Molecule Start Value {moleculePath}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeStartValueAllowed}";
          }
 
-         public static string UpdatingParameterStartValue(IObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
+         public static string UpdatingParameterStartValue(ObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
          {
             return $"Updating Parameter Start Value {parameterPath}={startValueInDisplayUnit} {displayUnit}";
          }
 
-         public static string UpdatingParameterValueInSimulation(IObjectPath path, double valueInDisplayUnit, Unit displayUnit)
+         public static string UpdatingParameterValueInSimulation(ObjectPath path, double valueInDisplayUnit, Unit displayUnit)
          {
             return $"Updating parameter value in simulation {path}={valueInDisplayUnit} {displayUnit}";
          }
 
-         public static string AddingParameterValueToSimulation(IObjectPath path, double valueInDisplayUnit, Unit displayUnit)
+         public static string AddingParameterValueToSimulation(ObjectPath path, double valueInDisplayUnit, Unit displayUnit)
          {
             return $"Adding parameter value in simulation {path}={valueInDisplayUnit} {displayUnit}";
          }
@@ -1921,7 +1908,7 @@ namespace MoBi.Assets
 
          public static string DoesNotEvaluateTo(string dimensionName) => $"does not evaluate to the dimension '{dimensionName}'";
 
-         public static string PathIsIdenticalToExistingPath(IObjectPath path)
+         public static string PathIsIdenticalToExistingPath(ObjectPath path)
          {
             return $"The path {path} is identical to an existing path in the building block";
          }

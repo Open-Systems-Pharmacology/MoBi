@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
       IListener<RemovedEvent>
    {
       void Select(IObjectBase objectBase);
-      void Select(IObjectBaseDTO objectBaseDTO);
+      void Select(ObjectBaseDTO objectBaseDTO);
    }
 
    public class EventGroupListPresenter : AbstractEditPresenter<IEventGroupsListView, IEventGroupListPresenter, IEventGroupBuildingBlock>, IEventGroupListPresenter
@@ -71,7 +71,7 @@ namespace MoBi.Presentation.Presenter
          _view.Show(events);
       }
 
-      public void Select(IObjectBaseDTO objectBaseDTO)
+      public void Select(ObjectBaseDTO objectBaseDTO)
       {
          if (objectBaseDTO.Equals(_favoritesNodes.TagAsObject))
             raiseFavoritesSelectedEvent();
@@ -91,7 +91,7 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new UserDefinedSelectedEvent(_eventGroupBuildingBlock));
       }
 
-      private void raiseEntitySelectedEvent(IObjectBaseDTO dtoObjectBase)
+      private void raiseEntitySelectedEvent(ObjectBaseDTO dtoObjectBase)
       {
          var objectBase = _context.Get<IObjectBase>(dtoObjectBase.Id);
          Select(objectBase);

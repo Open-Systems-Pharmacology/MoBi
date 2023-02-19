@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Nodes
    public interface ITreeNodeFactory : OSPSuite.Presentation.Nodes.ITreeNodeFactory
    {
       ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode);
-      ITreeNode CreateFor(IObjectBaseDTO objectBase);
+      ITreeNode CreateFor(ObjectBaseDTO objectBase);
       ITreeNode CreateFor(DataRepository dataRepository);
       ITreeNode CreateFor(ClassifiableSimulation classifiableSimulation);
       ITreeNode CreateFor(CurveChart chart);
@@ -39,9 +39,9 @@ namespace MoBi.Presentation.Nodes
 
       public ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode) => new RootNode(rootNode);
 
-      public ITreeNode CreateFor(IObjectBaseDTO objectBase)
+      public ITreeNode CreateFor(ObjectBaseDTO objectBase)
       {
-         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(objectBase);
+         return new ObjectWithIdAndNameNode<ObjectBaseDTO>(objectBase);
       }
 
       public ITreeNode CreateFor(DataRepository dataRepository)
@@ -140,7 +140,7 @@ namespace MoBi.Presentation.Nodes
 
       public ITreeNode CreateForFavorites()
       {
-         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(new FavoritesNodeViewItem
+         return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new FavoritesNodeViewItem
          {
             Name = Captions.Favorites,
             Icon = ApplicationIcons.Favorites.IconName,
@@ -150,7 +150,7 @@ namespace MoBi.Presentation.Nodes
 
       public ITreeNode CreateForUserDefined()
       {
-         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(new UserDefinedNodeViewItem
+         return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new UserDefinedNodeViewItem
             {
                Name = AppConstants.Captions.UserDefined,
                Icon = ApplicationIcons.UserDefinedVariability.IconName,

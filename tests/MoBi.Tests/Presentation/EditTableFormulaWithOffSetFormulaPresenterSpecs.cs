@@ -98,7 +98,7 @@ namespace MoBi.Presentation
       private IObjectBase _timeParameter;
       private IObjectBase _anotherParameter;
       private IObjectBase _notAParameter;
-      private IFormulaUsablePath _selectedFormulaUsablePath;
+      private FormulaUsablePath _selectedFormulaUsablePath;
 
       protected override void Context()
       {
@@ -163,7 +163,7 @@ namespace MoBi.Presentation
          private IObjectBase _tableParameter;
          private IObjectBase _anotherParameter;
          private IObjectBase _notAParameter;
-         private IFormulaUsablePath _selectedFormulaUsablePath;
+         private FormulaUsablePath _selectedFormulaUsablePath;
 
          protected override void Context()
          {

@@ -12,12 +12,12 @@ namespace MoBi.Core.Commands
       where TStartValue : class, IObjectBase, IStartValue
    {
       protected IEnumerable<string> _path;
-      private IObjectPath _newContainerPath;
+      private ObjectPath _newContainerPath;
       private TStartValue _originalStartValue;
-      protected IObjectPath _newStartValuePath;
-      protected IObjectPath _originalContainerPath;
+      protected ObjectPath _newStartValuePath;
+      protected ObjectPath _originalContainerPath;
 
-      protected EditStartValuePathCommand(TBuildingBlock buildingBlock, TStartValue startValue, IObjectPath newContainerPath)
+      protected EditStartValuePathCommand(TBuildingBlock buildingBlock, TStartValue startValue, ObjectPath newContainerPath)
          : base(buildingBlock)
       {
          _newContainerPath = newContainerPath;
@@ -29,7 +29,7 @@ namespace MoBi.Core.Commands
       {
          ObjectType = new ObjectTypeResolver().TypeFor<TStartValue>();
          CommandType = AppConstants.Commands.EditCommand;
-         var newStartValuePath = _newContainerPath.Clone<IObjectPath>().AndAdd(_originalStartValue.Name);
+         var newStartValuePath = _newContainerPath.Clone<ObjectPath>().AndAdd(_originalStartValue.Name);
          Description = AppConstants.Commands.EditPath(ObjectType, _originalStartValue.Path, newStartValuePath);
       }
 
@@ -49,7 +49,7 @@ namespace MoBi.Core.Commands
          // Simple remove/add cycle to ensure that we can find the start value later by the path.
          _buildingBlock.Remove(_originalStartValue);
 
-         _originalContainerPath = _originalStartValue.ContainerPath.Clone<IObjectPath>();
+         _originalContainerPath = _originalStartValue.ContainerPath.Clone<ObjectPath>();
          _originalStartValue.ContainerPath = _newContainerPath;
 
          _buildingBlock.Add(_originalStartValue);

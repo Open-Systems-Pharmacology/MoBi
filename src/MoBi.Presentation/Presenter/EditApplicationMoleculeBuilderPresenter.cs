@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditApplicationMoleculeBuilderPresenter : IPresenterWithFormulaCache, ICanEditPropertiesPresenter, IEditPresenter<IApplicationMoleculeBuilder>, ICreatePresenter<IApplicationMoleculeBuilder>
    {
-      IObjectPath SetObjectPath();
+      ObjectPath SetObjectPath();
    }
 
    public class EditApplicationMoleculeBuilderPresenter : AbstractEntityEditPresenter<IEditApplicationMoleculeBuilderView, IEditApplicationMoleculeBuilderPresenter, IApplicationMoleculeBuilder>, IEditApplicationMoleculeBuilderPresenter
@@ -63,10 +63,7 @@ namespace MoBi.Presentation.Presenter
          return buildingBlockWithFormulaCache.DowncastTo<IEventGroupBuildingBlock>();
       }
 
-      public override object Subject
-      {
-         get { return _applicationMoleculeBuilder; }
-      }
+      public override object Subject => _applicationMoleculeBuilder;
 
       public override void Edit(IApplicationMoleculeBuilder applicationMoleculeBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
       {
@@ -99,7 +96,7 @@ namespace MoBi.Presentation.Presenter
          get { return BuildingBlock.FormulaCache; }
       }
 
-      public IObjectPath SetObjectPath()
+      public ObjectPath SetObjectPath()
       {
          using (var modalPresenter = IoC.Resolve<IModalPresenter>())
          {

@@ -28,7 +28,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      public IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          var simulation = dto.DowncastTo<SimulationViewItem>().Simulation;
 

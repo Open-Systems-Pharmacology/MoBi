@@ -49,7 +49,7 @@ namespace MoBi.Presentation
    internal class When_adding_a_ReferencePath : concern_for_EditFormulaPathListPresenter
    {
       private ExplicitFormula _formula;
-      private IFormulaUsablePath _newFormulaPath;
+      private FormulaUsablePath _newFormulaPath;
 
       protected override void Context()
       {
@@ -59,8 +59,8 @@ namespace MoBi.Presentation
          sut.InitializeWith(A.Fake<ICommandCollector>());
          _formula.AddObjectPath(new FormulaUsablePath());
          A.CallTo(() => _dimensionFactory.Dimension(_userSettings.ParameterDefaultDimension)).Returns(DomainHelperForSpecs.AmountDimension);
-         A.CallTo(() => _moBiFormulaTask.AddFormulaUsablePath(_formula, A<IFormulaUsablePath>._, A<IBuildingBlock>._))
-            .Invokes(x => _newFormulaPath = x.GetArgument<IFormulaUsablePath>(1));
+         A.CallTo(() => _moBiFormulaTask.AddFormulaUsablePath(_formula, A<FormulaUsablePath>._, A<IBuildingBlock>._))
+            .Invokes(x => _newFormulaPath = x.GetArgument<FormulaUsablePath>(1));
       }
 
       protected override void Because()
@@ -92,10 +92,10 @@ namespace MoBi.Presentation
    internal class When_cloning_a_ReferencePath : concern_for_EditFormulaPathListPresenter
    {
       private ExplicitFormula _formula;
-      private IFormulaUsablePath _formulaUsablePath;
+      private FormulaUsablePath _formulaUsablePath;
       private FormulaUsablePathDTO _formulaUsablePathDTO;
       private ICommandCollector _commandCollector;
-      private IFormulaUsablePath _newFormulaPath;
+      private FormulaUsablePath _newFormulaPath;
 
       protected override void Context()
       {
@@ -111,8 +111,8 @@ namespace MoBi.Presentation
          sut.Edit(_formula, null);
          sut.InitializeWith(_commandCollector);
 
-         A.CallTo(() => _moBiFormulaTask.AddFormulaUsablePath(_formula, A<IFormulaUsablePath>._, A<IBuildingBlock>._))
-            .Invokes(x => _newFormulaPath = x.GetArgument<IFormulaUsablePath>(1));
+         A.CallTo(() => _moBiFormulaTask.AddFormulaUsablePath(_formula, A<FormulaUsablePath>._, A<IBuildingBlock>._))
+            .Invokes(x => _newFormulaPath = x.GetArgument<FormulaUsablePath>(1));
       }
 
       protected override void Because()
@@ -133,7 +133,7 @@ namespace MoBi.Presentation
    {
       private FormulaUsablePathDTO _formulaUsablePathDTO;
       private ExplicitFormula _formula;
-      private IFormulaUsablePath _pathToRemove;
+      private FormulaUsablePath _pathToRemove;
       private IMoBiCommand _removeCommand;
 
       protected override void Context()

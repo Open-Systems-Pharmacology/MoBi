@@ -14,7 +14,7 @@ namespace MoBi.UI.Views
 {
    public partial class NewFormulaView : BaseModalView, INewFormulaView
    {
-      private ScreenBinder<IObjectBaseDTO> _screenBinder;
+      private ScreenBinder<ObjectBaseDTO> _screenBinder;
 
       public NewFormulaView()
       {
@@ -36,7 +36,7 @@ namespace MoBi.UI.Views
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         _screenBinder = new ScreenBinder<IObjectBaseDTO>();
+         _screenBinder = new ScreenBinder<ObjectBaseDTO>();
          _screenBinder.Bind(dto => dto.Name).To(txtName);
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
@@ -56,7 +56,7 @@ namespace MoBi.UI.Views
          splitFormulaEditor.Panel1.FillWith(view);
       }
 
-      public void BindTo(IObjectBaseDTO dto)
+      public void BindTo(ObjectBaseDTO dto)
       {
          _screenBinder.BindToSource(dto);
       }

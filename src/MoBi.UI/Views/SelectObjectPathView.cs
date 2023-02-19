@@ -17,13 +17,13 @@ using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views
 {
-   public partial class SelectEventAssignmentTargetView : BaseModalView, ISelectEventAssignmentTargetView
+   public partial class SelectObjectPathView : BaseModalView, ISelectObjectPathView
    {
       private readonly IObjectBaseDTOToSpatialStructureNodeMapper _spatialStructureNodeMapper;
       private readonly UxTreeView _treeView;
-      private ISelectEventAssingmentTargetPresenter _presenter;
+      private ISelectObjectPathPresenter _presenter;
 
-      public SelectEventAssignmentTargetView(IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper, IImageListRetriever imageListRetriever)
+      public SelectObjectPathView(IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper, IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
          _treeView = new UxTreeView();
@@ -31,7 +31,7 @@ namespace MoBi.UI.Views
          initTreeView(imageListRetriever);
          _treeView.NodeClick += onNodeClick;
          _spatialStructureNodeMapper = spatialStructureNodeMapper;
-         _spatialStructureNodeMapper.Initialize((objectBase) => _presenter.GetChildren(objectBase));
+         _spatialStructureNodeMapper.Initialize(objectBase => _presenter.GetChildren(objectBase));
       }
 
       public override void InitializeResources()
@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
          Text = AppConstants.Captions.SelectChangedEntity;
       }
 
-      public void BindTo(IEnumerable<IObjectBaseDTO> dtos)
+      public void BindTo(IEnumerable<ObjectBaseDTO> dtos)
       {
          _treeView.Clear();
          foreach (var dto in dtos)
@@ -64,9 +64,9 @@ namespace MoBi.UI.Views
          SetOkButtonEnable();
       }
 
-      public IObjectBaseDTO Selected => _treeView.SelectedNode?.TagAsObject as IObjectBaseDTO;
+      public ObjectBaseDTO Selected => _treeView.SelectedNode?.TagAsObject as ObjectBaseDTO;
 
-      public void AttachPresenter(ISelectEventAssingmentTargetPresenter presenter)
+      public void AttachPresenter(ISelectObjectPathPresenter presenter)
       {
          _presenter = presenter;
       }

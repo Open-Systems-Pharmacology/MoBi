@@ -9,8 +9,8 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IFormulaUsablePathToFormulaUsablePathDTOMapper
    {
-      FormulaUsablePathDTO MapFrom(IFormulaUsablePath formulaUsablePath, IFormula formula);
-      IReadOnlyList<FormulaUsablePathDTO> MapFrom(IEnumerable<IFormulaUsablePath> formulaUsablePath, IFormula formula);
+      FormulaUsablePathDTO MapFrom(FormulaUsablePath formulaUsablePath, IFormula formula);
+      IReadOnlyList<FormulaUsablePathDTO> MapFrom(IEnumerable<FormulaUsablePath> formulaUsablePath, IFormula formula);
       IReadOnlyList<FormulaUsablePathDTO> MapFrom(IFormula formula);
       IReadOnlyList<FormulaUsablePathDTO> MapFrom(IFormula formula, IUsingFormula usingFormula);
    }
@@ -28,12 +28,12 @@ namespace MoBi.Presentation.Mappers
          _objectPathFactory = objectPathFactory;
       }
 
-      public FormulaUsablePathDTO MapFrom(IFormulaUsablePath formulaUsablePath, IFormula formula)
+      public FormulaUsablePathDTO MapFrom(FormulaUsablePath formulaUsablePath, IFormula formula)
       {
          return new FormulaUsablePathDTO(formulaUsablePath, formula);
       }
 
-      public IReadOnlyList<FormulaUsablePathDTO> MapFrom(IEnumerable<IFormulaUsablePath> formulaUsablePath, IFormula formula)
+      public IReadOnlyList<FormulaUsablePathDTO> MapFrom(IEnumerable<FormulaUsablePath> formulaUsablePath, IFormula formula)
       {
          return formulaUsablePath.Select(x => MapFrom(x, formula)).ToList();
       }
@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Mappers
          return MapFrom(updateObjectPaths(formula, usingFormula), formula);
       }
 
-      private IEnumerable<IFormulaUsablePath> updateObjectPaths(IFormula formula, IUsingFormula usingFormula)
+      private IEnumerable<FormulaUsablePath> updateObjectPaths(IFormula formula, IUsingFormula usingFormula)
       {
          if (shouldUseExistingObjectPaths(formula, usingFormula))
             return formula.ObjectPaths;
@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Mappers
          return usingFormula == null || !formula.AreReferencesResolved;
       }
 
-      private IFormulaUsablePath objectPathFor(IFormulaUsable referencedObject, IFormulaUsablePath originalObjectPath)
+      private FormulaUsablePath objectPathFor(IFormulaUsable referencedObject, FormulaUsablePath originalObjectPath)
       {
          if (referencedObject == null)
             return originalObjectPath;

@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
    {
       protected IMoleculeStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
-      protected IObjectPath _path;
+      protected ObjectPath _path;
 
       private IDimension _fakeDimension;
 

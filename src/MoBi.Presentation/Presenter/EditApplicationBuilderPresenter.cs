@@ -153,7 +153,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private void updateRelativeContainerPath(IApplicationMoleculeBuilder applicationMoleculeBuilder, IObjectPath path)
+      private void updateRelativeContainerPath(IApplicationMoleculeBuilder applicationMoleculeBuilder, ObjectPath path)
       {
          AddCommand(new EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(applicationMoleculeBuilder, path, BuildingBlock).Run(_context));
       }

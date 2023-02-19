@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IParameterStartValuesTask : IStartValuesTask<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
-      IParameter GetPossibleParameterFromProject(IObjectPath parameterPath);
+      IParameter GetPossibleParameterFromProject(ObjectPath parameterPath);
    }
 
    public class ParameterStartValuesTask : AbstractStartValuesTask<IParameterStartValuesBuildingBlock, ParameterStartValue>, IParameterStartValuesTask
@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateParameterStartValueInBuildingBlockCommand(startValuesBuildingBlock, dto.Path, dto.QuantityInBaseUnit);
       }
 
-      public IParameter GetPossibleParameterFromProject(IObjectPath parameterPath)
+      public IParameter GetPossibleParameterFromProject(ObjectPath parameterPath)
       {
          foreach (var topContainer in Context.CurrentProject.SpatialStructureCollection.SelectMany(spatialStructure => spatialStructure.TopContainers))
          {

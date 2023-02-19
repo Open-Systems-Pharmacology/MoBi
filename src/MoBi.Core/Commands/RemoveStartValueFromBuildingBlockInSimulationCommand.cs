@@ -7,10 +7,10 @@ namespace MoBi.Core.Commands
 {
    public class RemoveStartValueFromBuildingBlockInSimulationCommand<T> : StartValueBuildingBlockInSimulationCommandBase<T> where T : class, IStartValue
    {
-      private readonly IObjectPath _objectPath;
+      private readonly ObjectPath _objectPath;
       private T _startValue;
 
-      public RemoveStartValueFromBuildingBlockInSimulationCommand(IObjectPath objectPath, IStartValuesBuildingBlock<T> startValuesBuildingBlock) : base(startValuesBuildingBlock)
+      public RemoveStartValueFromBuildingBlockInSimulationCommand(ObjectPath objectPath, IStartValuesBuildingBlock<T> startValuesBuildingBlock) : base(startValuesBuildingBlock)
       {
          _objectPath = objectPath;
       }

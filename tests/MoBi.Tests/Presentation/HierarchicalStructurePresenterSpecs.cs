@@ -22,7 +22,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       private IObjectBaseToObjectBaseDTOMapper _dtoMapper;
       private ISimulationSettingsToObjectBaseDTOMapper _simulationSettingsMapper;
-      protected IObjectBaseDTO _favorites;
+      protected ObjectBaseDTO _favorites;
       private ITreeNodeFactory _treeNodeFactory;
       private IViewItemContextMenuFactory _contextMenuFactory;
 
@@ -42,7 +42,7 @@ namespace MoBi.Presentation
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
 
          A.CallTo(() => _treeNodeFactory.CreateForFavorites())
-            .Returns(new ObjectWithIdAndNameNode<IObjectBaseDTO>(_favorites));
+            .Returns(new ObjectWithIdAndNameNode<ObjectBaseDTO>(_favorites));
 
          _contextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
 

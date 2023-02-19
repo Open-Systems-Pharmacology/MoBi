@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_AddParameterStartValueFromQuantityInSimulationCommand : ContextSpecification<AddParameterStartValueFromQuantityInSimulationCommand>
    {
       protected IParameterStartValuesBuildingBlock _parameterStartValueBuildingBlock;
-      protected IObjectPath _objectPath;
+      protected ObjectPath _objectPath;
       protected IParameter _parameter;
       protected IMoBiContext _context;
       private IEntityPathResolver _entityPathResolver;

@@ -18,7 +18,7 @@ namespace MoBi.Core.Commands
       protected Unit _oldDisplayUnit;
       protected double? _newBaseValue;
       protected double? _oldBaseValue;
-      protected readonly IObjectPath _valuePath;
+      protected readonly ObjectPath _valuePath;
 
 
       public PathAndValueEntityValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock) : base(buildingBlock)

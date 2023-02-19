@@ -96,7 +96,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      protected virtual IObjectPath GetContainerPath()
+      protected virtual ObjectPath GetContainerPath()
       {
          return ContainerPath;
       }
