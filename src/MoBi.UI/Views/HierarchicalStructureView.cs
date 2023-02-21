@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
             if (hitInfo.Node != null)
             {
                var treeNode = treeView.NodeFrom(hitInfo.Node);
-               _presenter.CreatePopupMenuFor(treeNode.TagAsObject as IObjectBaseDTO).At(mouseEventArgs.Location);
+               _presenter.CreatePopupMenuFor(treeNode.TagAsObject as ObjectBaseDTO).At(mouseEventArgs.Location);
             }
             else
             {
@@ -50,11 +50,11 @@ namespace MoBi.UI.Views
          if (hitInfo.Node != null)
          {
             var treeNode = treeView.NodeFrom(hitInfo.Node);
-            OnEvent(() => _presenter.Select(treeNode.TagAsObject as IObjectBaseDTO));
+            OnEvent(() => _presenter.Select(treeNode.TagAsObject as ObjectBaseDTO));
          }
       }
 
-      public void Show(IEnumerable<IObjectBaseDTO> roots)
+      public void Show(IEnumerable<ObjectBaseDTO> roots)
       {
          _spatialStructureNodeMapper.Initialize(dto => _presenter.GetChildObjects(dto, child => !child.IsAnImplementationOf<IParameter>()));
          roots.Each(AddRoot);
@@ -70,7 +70,7 @@ namespace MoBi.UI.Views
          get { return barManager; }
       }
 
-      public void Add(IObjectBaseDTO newChild, IObjectBaseDTO parent)
+      public void Add(ObjectBaseDTO newChild, ObjectBaseDTO parent)
       {
          var newNode = _spatialStructureNodeMapper.MapFrom(newChild);
          var parentNode = treeView.NodeById(parent.Id);
@@ -82,7 +82,7 @@ namespace MoBi.UI.Views
          }
       }
 
-      public void Remove(IObjectBaseDTO dtoObjectBaseToRemove)
+      public void Remove(ObjectBaseDTO dtoObjectBaseToRemove)
       {
          ITreeNode nodeById = treeView.NodeById(dtoObjectBaseToRemove.Id);
          if (nodeById != null)
@@ -96,7 +96,7 @@ namespace MoBi.UI.Views
          treeView.AddNode(newNode);
       }
 
-      public void AddRoot(IObjectBaseDTO dto)
+      public void AddRoot(ObjectBaseDTO dto)
       {
          treeView.AddNode(_spatialStructureNodeMapper.MapFrom(dto));
       }

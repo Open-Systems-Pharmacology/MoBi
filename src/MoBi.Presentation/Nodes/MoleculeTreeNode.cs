@@ -10,9 +10,9 @@ namespace MoBi.Presentation.Nodes
 
    public class MoleculeTreeNode : AbstractNode, IMoleculeTreeNode
    {
-      private IObjectBaseDTO _tag;
+      private ObjectBaseDTO _tag;
 
-      public MoleculeTreeNode(IObjectBaseDTO tag)
+      public MoleculeTreeNode(ObjectBaseDTO tag)
       {
          _tag = tag;
          _tag.PropertyChanged += OnPropertyChanged;

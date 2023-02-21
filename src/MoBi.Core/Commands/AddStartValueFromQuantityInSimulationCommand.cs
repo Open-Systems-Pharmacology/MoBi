@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
       protected TQuantity _quantity;
       private IStartValuesBuildingBlock<TStartValue> _startValuesBuildingBlock;
       private readonly string _startValuesBuildingBlockId;
-      protected IObjectPath _objectPath;
+      protected ObjectPath _objectPath;
 
       protected AddStartValueFromQuantityInSimulationCommand(TQuantity quantity, IStartValuesBuildingBlock<TStartValue> startValuesBuildingBlock)
       {
@@ -79,7 +79,7 @@ namespace MoBi.Core.Commands
       protected override MoleculeStartValue CreateNewStartValue(IMoBiContext context)
       {
          var moleculeStartValueCreator = context.Resolve<IMoleculeStartValuesCreator>();
-         var containerPath = _objectPath.Clone<IObjectPath>();
+         var containerPath = _objectPath.Clone<ObjectPath>();
          var lastIndex = containerPath.Count - 1;
          var name = containerPath[lastIndex];
          containerPath.RemoveAt(lastIndex);

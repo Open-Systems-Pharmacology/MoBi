@@ -14,7 +14,27 @@ namespace MoBi.Presentation.Tasks.Edit
       void EditBuildingBlock(IBuildingBlock buildingBlock);
    }
 
-   public class EditTasksForBuildingBlock<T> : EditTaskFor<T>, IEditTasksForBuildingBlock<T> where T : class, IObjectBase
+   public abstract class EditTasksForSimpleNameObjectBase<T> : EditTaskFor<T> where T : class, IObjectBase
+   {
+      protected EditTasksForSimpleNameObjectBase(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
+      {
+      }
+
+      public override bool EditEntityModal(T entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
+      {
+         var forbiddenNames = GetForbiddenNamesWithoutSelf(entity, existingObjectsInParent);
+         var name = _interactionTaskContext.DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(ObjectName),
+            AppConstants.Captions.NewWindow(ObjectName), string.Empty, forbiddenNames);
+
+         if (name.IsNullOrEmpty())
+            return false;
+
+         entity.Name = name;
+         return true;
+      }
+   }
+
+   public class EditTasksForBuildingBlock<T> : EditTasksForSimpleNameObjectBase<T>, IEditTasksForBuildingBlock<T> where T : class, IObjectBase
    {
       public EditTasksForBuildingBlock(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {

@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
    {
       private readonly T _originalStartValue;
 
-      public RemoveStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<T> parent, IObjectPath path) : base(parent)
+      public RemoveStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<T> parent, ObjectPath path) : base(parent)
       {
          CommandType = AppConstants.Commands.DeleteCommand;
 
@@ -42,7 +42,7 @@ namespace MoBi.Core.Commands
 
    public class RemoveMoleculeStartValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<MoleculeStartValue>
    {
-      public RemoveMoleculeStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<MoleculeStartValue> parent, IObjectPath path)
+      public RemoveMoleculeStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<MoleculeStartValue> parent, ObjectPath path)
          : base(parent, path)
       {
       }
@@ -50,7 +50,7 @@ namespace MoBi.Core.Commands
 
    public class RemoveParameterStartValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<ParameterStartValue>
    {
-      public RemoveParameterStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<ParameterStartValue> parent, IObjectPath path) : base(parent, path)
+      public RemoveParameterStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<ParameterStartValue> parent, ObjectPath path) : base(parent, path)
       {
       }
    }

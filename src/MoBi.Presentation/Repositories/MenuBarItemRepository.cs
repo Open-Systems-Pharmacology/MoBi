@@ -188,13 +188,6 @@ namespace MoBi.Presentation.Repositories
            .WithIcon(ApplicationIcons.PKMLLoad)
            .WithCommand<LoadDataRepositoryUICommand>(_container);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.BuildingBlockExplorer)
-            .WithId(MenuBarItemIds.BuildingBlockExplorerView)
-            .WithIcon(ApplicationIcons.BuildingBlockExplorer)
-            .WithDescription(ToolTips.ViewRibbon.ViewBBs)
-            .WithCommand<ShowBuildingBlockExplorerCommand>(_container)
-            .WithShortcut(Keys.Control | Keys.Shift | Keys.B);
-
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.SimulationExplorer)
             .WithId(MenuBarItemIds.SimulationExplorerView)
             .WithDescription(ToolTips.ViewRibbon.ViewSims)

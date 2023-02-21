@@ -20,7 +20,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public interface IContextMenuFor : IContextMenu
    {
-      IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter);
+      IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter);
    }
 
    public interface IContextMenuFor<TObjectBase> : IContextMenuFor
@@ -45,7 +45,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected IObjectTypeResolver _objectTypeResolver;
       protected readonly IContainer _container;
 
-      public virtual IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public virtual IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          try
          {

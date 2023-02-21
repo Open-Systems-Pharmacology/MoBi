@@ -7,7 +7,7 @@ namespace MoBi.Core.Commands
 {
    public class ChangeMoleculeStartValueNameCommand : ChangeStartValueNameCommand<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
-      public ChangeMoleculeStartValueNameCommand(IMoleculeStartValuesBuildingBlock buildingBlock, IObjectPath path, string newValue): base(buildingBlock, path, newValue)
+      public ChangeMoleculeStartValueNameCommand(IMoleculeStartValuesBuildingBlock buildingBlock, ObjectPath path, string newValue): base(buildingBlock, path, newValue)
       {
       }
 

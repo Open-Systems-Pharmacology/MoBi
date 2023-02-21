@@ -69,7 +69,7 @@ namespace MoBi.Core.Helper
          addToCache<IMoBiProject>(ObjectTypes.Project);
          addToCache<IDiagramModel>(ObjectTypes.DiagramModel);
          addToCache<IContainer>(ObjectTypes.Container);
-         addToCache<IFormulaUsablePath>(ObjectTypes.FormulaUsablePath);
+         addToCache<FormulaUsablePath>(ObjectTypes.FormulaUsablePath);
          addToCache<ParameterIdentificationCovarianceMatrix>(Captions.ParameterIdentification.CovarianceMatrix);
          addToCache<ParameterIdentificationCorrelationMatrix>(Captions.ParameterIdentification.CorrelationMatrix);
          addToCache<ParameterIdentificationResidualHistogram>(Captions.ParameterIdentification.ResidualHistogramAnalysis);

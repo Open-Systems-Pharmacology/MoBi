@@ -31,9 +31,9 @@ namespace MoBi.Presentation.Presenter
 
       
 
-      private IFormulaUsablePath cratePathToMoleculeProperty(IParameter parameter, bool shouldCreateAbsolutePaths, IEntity refObject)
+      private FormulaUsablePath cratePathToMoleculeProperty(IParameter parameter, bool shouldCreateAbsolutePaths, IEntity refObject)
       {
-         // global molecule properties are alwas refercend absolute
+         // global molecule properties are always referenced absolute
          if (parameter.BuildMode != ParameterBuildMode.Local)
             return _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPathKeywords.MOLECULE, parameter.Name)
                .WithAlias(_aliasCreator.CreateAliasFrom(parameter.Name))

@@ -24,7 +24,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       protected ICircularReferenceChecker _formulaChecker;
       protected IDialogCreator _dialogCreator;
-      protected IInteractionTasksForChildren<IFormula, IFormulaUsablePath> _interactionTask;
+      protected IInteractionTasksForChildren<IFormula, FormulaUsablePath> _interactionTask;
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IMoBiFormulaTask _moBiFormulaTask;
       private IDisplayUnitRetriever _displayUnitRetriever;
@@ -40,7 +40,7 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _formulaChecker = A.Fake<ICircularReferenceChecker>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _interactionTask = A.Fake<IInteractionTasksForChildren<IFormula, IFormulaUsablePath>>();
+         _interactionTask = A.Fake<IInteractionTasksForChildren<IFormula, FormulaUsablePath>>();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
          _dimensionFactory = A.Fake<IDimensionFactory>();

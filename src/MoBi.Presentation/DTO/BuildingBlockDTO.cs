@@ -6,9 +6,9 @@ namespace MoBi.Presentation.DTO
    {
       public BuildingBlockDTO()
       {
-         Builder = new List<IObjectBaseDTO>();
+         Builder = new List<ObjectBaseDTO>();
       }
 
-      public IEnumerable<IObjectBaseDTO> Builder { get; set; }
+      public IEnumerable<ObjectBaseDTO> Builder { get; set; }
    }
 }

@@ -19,7 +19,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          var buildingBlock = _context.Get<IMoleculeStartValuesBuildingBlock>(dto.Id);
          base.InitializeWith(dto, presenter);

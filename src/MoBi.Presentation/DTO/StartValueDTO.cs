@@ -40,7 +40,7 @@ namespace MoBi.Presentation.DTO
          Rules.AddRange(AllRules.All());
       }
 
-      protected override IObjectPath GetContainerPath()
+      protected override ObjectPath GetContainerPath()
       {
          return PathWithValueObject.ContainerPath;
       }
@@ -154,7 +154,7 @@ namespace MoBi.Presentation.DTO
          {
             var containerPath = newPathWithReplacement(dto, pathElement, index);
 
-            var proposedNewPath = containerPath.Clone<IObjectPath>().AndAdd(dto.Name);
+            var proposedNewPath = containerPath.Clone<ObjectPath>().AndAdd(dto.Name);
 
             // if the path being validated is the same as the original path of the object then 
             // we can assume the path is valid as no changes will take place
@@ -169,9 +169,9 @@ namespace MoBi.Presentation.DTO
             return true;
          }
 
-         private static IObjectPath newPathWithReplacement(StartValueDTO<T> dto, string pathElement, int index)
+         private static ObjectPath newPathWithReplacement(StartValueDTO<T> dto, string pathElement, int index)
          {
-            var containerPath = dto.ContainerPath.Clone<IObjectPath>();
+            var containerPath = dto.ContainerPath.Clone<ObjectPath>();
 
             // This means we don't have enough elements to do a replacement
             if (containerPath.Count > index)

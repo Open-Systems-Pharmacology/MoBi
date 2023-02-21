@@ -45,7 +45,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<RemoveEventBuilderFromEventGroupBuilderUICommand, IEventGroupBuilder>(objectToRemove, _container);
       }
 
-      public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          _allMenuItems = new List<IMenuBarItem>();
 
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          base.InitializeWith(dto, presenter);
          var applicationBuilder = _context.Get<IApplicationBuilder>(dto.Id);
@@ -181,7 +181,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          var contestMenu = IoC.Resolve<IContextMenuForApplicationMoleculeBuilder>();
          var editPresenter = presenter.DowncastTo<IEditApplicationBuilderPresenter>();
-         contestMenu.InitialisedWith(viewItem as IObjectBaseDTO, editPresenter.Subject as IApplicationBuilder);
+         contestMenu.InitialisedWith(viewItem as ObjectBaseDTO, editPresenter.Subject as IApplicationBuilder);
          return contestMenu;
       }
 
@@ -194,7 +194,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    internal interface IContextMenuForApplicationMoleculeBuilder : IContextMenu
    {
-      IContextMenu InitialisedWith(IObjectBaseDTO dto, IApplicationBuilder parent);
+      IContextMenu InitialisedWith(ObjectBaseDTO dto, IApplicationBuilder parent);
    }
 
    internal class ContextMenuForApplicationMoleculeBuilder : ContextMenuBase, IContextMenuForApplicationMoleculeBuilder
@@ -209,7 +209,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _container = container;
       }
 
-      public IContextMenu InitialisedWith(IObjectBaseDTO dto, IApplicationBuilder parent)
+      public IContextMenu InitialisedWith(ObjectBaseDTO dto, IApplicationBuilder parent)
       {
          _allMenuItems = new List<IMenuBarItem>();
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.ApplicationMoleculeBuilder))

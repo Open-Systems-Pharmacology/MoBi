@@ -14,7 +14,7 @@ namespace MoBi.Core.Services
       /// <param name="spatialStructure">The spatial structure used to resolve the path</param>
       /// <param name="buildingBlock">The building block used to resolve the path</param>
       /// <returns>The matching parameter if found, otherwise null</returns>
-      IParameter Resolve(IObjectPath containerPath, string name, ISpatialStructure spatialStructure, IMoleculeBuildingBlock buildingBlock);
+      IParameter Resolve(ObjectPath containerPath, string name, ISpatialStructure spatialStructure, IMoleculeBuildingBlock buildingBlock);
    }
 
    public class ParameterResolver : IParameterResolver
@@ -22,7 +22,7 @@ namespace MoBi.Core.Services
       private ISpatialStructure _spatialStructure;
       private IMoleculeBuildingBlock _moleculeBuildingBlock;
 
-      public IParameter Resolve(IObjectPath containerPath, string name, ISpatialStructure spatialStructure, IMoleculeBuildingBlock buildingBlock)
+      public IParameter Resolve(ObjectPath containerPath, string name, ISpatialStructure spatialStructure, IMoleculeBuildingBlock buildingBlock)
       {
          _spatialStructure = spatialStructure;
          _moleculeBuildingBlock = buildingBlock;
@@ -45,29 +45,29 @@ namespace MoBi.Core.Services
 
       }
 
-      private IParameter resolveMoleculeParameterInSpatialStructure(IObjectPath containerPath, string name)
+      private IParameter resolveMoleculeParameterInSpatialStructure(ObjectPath containerPath, string name)
       {
          if (!containerPath.Any() || !canResolveMoleculeContainerPath(containerPath))
             return null;
 
-         var templatePath = containerPath.Clone<IObjectPath>();
+         var templatePath = containerPath.Clone<ObjectPath>();
          templatePath.RemoveAt(getMoleculeNameIndex(containerPath));
          templatePath.Add(Constants.MOLECULE_PROPERTIES);
          return resolveParameterInSpatialStructure(templatePath, name);
       }
 
-      private static int getMoleculeNameIndex(IObjectPath containerPath)
+      private static int getMoleculeNameIndex(ObjectPath containerPath)
       {
          // Molecule name is always at the end of the path
          return containerPath.Count - 1;
       }
 
-      private bool canResolveMoleculeContainerPath(IObjectPath containerPath)
+      private bool canResolveMoleculeContainerPath(ObjectPath containerPath)
       {
          if (!containerPath.Any())
             return false;
 
-         var templatePath = containerPath.Clone<IObjectPath>();
+         var templatePath = containerPath.Clone<ObjectPath>();
          templatePath.RemoveAt(getMoleculeNameIndex(containerPath));
 
          return resolveContainerPathInSpatialStructure(templatePath) != null;
@@ -79,7 +79,7 @@ namespace MoBi.Core.Services
       /// <param name="containerPath">The path being searched</param>
       /// <param name="parameterName">The name of the parameter</param>
       /// <returns>The matching property if found, otherwise null</returns>
-      private IParameter resolveGlobalModeInMoleculeBuildingBlock(IObjectPath containerPath, string parameterName)
+      private IParameter resolveGlobalModeInMoleculeBuildingBlock(ObjectPath containerPath, string parameterName)
       {
          return containerPath.Count > 1 ? null : resolveInMoleculeBuildingBlock(containerPath, parameterName, ParameterBuildMode.Global);
       }
@@ -90,12 +90,12 @@ namespace MoBi.Core.Services
       /// <param name="containerPath">The path being searched</param>
       /// <param name="parameterName">The name of the parameter</param>
       /// <returns>The matching property if found, otherwise null</returns>
-      private IParameter resolveLocalModeInMoleculeBuildingBlock(IObjectPath containerPath, string parameterName)
+      private IParameter resolveLocalModeInMoleculeBuildingBlock(ObjectPath containerPath, string parameterName)
       {
          return !canResolveMoleculeContainerPath(containerPath) ? null : resolveInMoleculeBuildingBlock(containerPath, parameterName, ParameterBuildMode.Local);
       }
 
-      private IParameter resolveInMoleculeBuildingBlock(IObjectPath containerPath, string parameterName, ParameterBuildMode buildMode)
+      private IParameter resolveInMoleculeBuildingBlock(ObjectPath containerPath, string parameterName, ParameterBuildMode buildMode)
       {
          if (!containerPath.Any())
             return null;
@@ -124,29 +124,29 @@ namespace MoBi.Core.Services
       /// <param name="containerPath">The path being searched</param>
       /// <param name="parameterName">The name of the property</param>
       /// <returns>The matching property if found, otherwise null</returns>
-      private IParameter resolveContainerParameterInSpatialStructure(IObjectPath containerPath, string parameterName)
+      private IParameter resolveContainerParameterInSpatialStructure(ObjectPath containerPath, string parameterName)
       {
          return resolveParameterInSpatialStructure(containerPath, parameterName);
       }
 
-      private IParameter resolveParameterInSpatialStructure(IObjectPath containerPath, string parameterName)
+      private IParameter resolveParameterInSpatialStructure(ObjectPath containerPath, string parameterName)
       {
-         var parameterPath = containerPath.Clone<IObjectPath>().AndAdd(parameterName);
+         var parameterPath = containerPath.Clone<ObjectPath>().AndAdd(parameterName);
          return resolveParameterPathInSpatialStructure(parameterPath);
       }
 
-      private T resolvePathInSpatialStructure<T>(IObjectPath objectPath) where T : class
+      private T resolvePathInSpatialStructure<T>(ObjectPath objectPath) where T : class
       {
          return _spatialStructure.Select(objectPath.TryResolve<T>)
             .FirstOrDefault(parameter => parameter != null);
       }
 
-      private IContainer resolveContainerPathInSpatialStructure(IObjectPath templatePath)
+      private IContainer resolveContainerPathInSpatialStructure(ObjectPath templatePath)
       {
          return resolvePathInSpatialStructure<IContainer>(templatePath);
       }
 
-      private IParameter resolveParameterPathInSpatialStructure(IObjectPath parameterPath)
+      private IParameter resolveParameterPathInSpatialStructure(ObjectPath parameterPath)
       {
          return resolvePathInSpatialStructure<IParameter>(parameterPath);
       }

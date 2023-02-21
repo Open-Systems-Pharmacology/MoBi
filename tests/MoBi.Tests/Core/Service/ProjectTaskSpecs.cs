@@ -55,8 +55,7 @@ namespace MoBi.Core.Service
          _appController = A.Fake<IMoBiApplicationController>();
          _sbmlTask = A.Fake<ISbmlTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
-         sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _spatialStructureFactory, new HeavyWorkManagerForSpecs(), 
-            _simSettingsFactory, new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _reactionBuildingBlockFactory);
+         sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, new HeavyWorkManagerForSpecs(), new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask);
       }
    }
 

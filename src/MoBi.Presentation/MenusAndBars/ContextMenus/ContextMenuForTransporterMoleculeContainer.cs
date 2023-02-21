@@ -49,7 +49,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      public IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          var activeTransportBuilderContainer = _context.Get<TransporterMoleculeContainer>(dto.Id);
          _allMenuItems = new List<IMenuBarItem>

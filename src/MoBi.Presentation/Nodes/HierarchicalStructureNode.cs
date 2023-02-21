@@ -7,12 +7,12 @@ using OSPSuite.Presentation.Presenters.Nodes;
 
 namespace MoBi.Presentation.Nodes
 {
-   public class HierarchicalStructureNode : ObjectWithIdAndNameNode<IObjectBaseDTO>
+   public class HierarchicalStructureNode : ObjectWithIdAndNameNode<ObjectBaseDTO>
    {
       private bool _childrenLoaded;
-      public Func<IObjectBaseDTO, IEnumerable<ITreeNode>> GetChildren { get; set; }
+      public Func<ObjectBaseDTO, IEnumerable<ITreeNode>> GetChildren { get; set; }
 
-      public HierarchicalStructureNode(IObjectBaseDTO objectBaseDTO) : base(objectBaseDTO)
+      public HierarchicalStructureNode(ObjectBaseDTO objectBaseDTO) : base(objectBaseDTO)
       {
          _childrenLoaded = false;
       }

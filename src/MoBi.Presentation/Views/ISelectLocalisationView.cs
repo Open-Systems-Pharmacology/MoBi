@@ -8,7 +8,7 @@ namespace MoBi.Presentation.Views
    public interface ISelectLocalisationView : IView<ISelectLocalisationPresenter>
    {
       void Show(IEnumerable<SpatialStructureDTO> dtoSpatialStructure);
-      IObjectBaseDTO Selected { get;  }
-      void Show(List<IObjectBaseDTO> dtos);
+      ObjectBaseDTO Selected { get;  }
+      void Show(List<ObjectBaseDTO> dtos);
    }
 }

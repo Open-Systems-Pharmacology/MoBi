@@ -33,6 +33,7 @@ namespace MoBi.Core.Domain.Model
       void AddChart(CurveChart chart);
       void RemoveChart(CurveChart chartToRemove);
       void AddModule(Module module);
+      void RemoveModule(Module module);
 
       //only for serialization
       IReadOnlyList<IBuildingBlock> AllBuildingBlocks();
@@ -120,6 +121,11 @@ namespace MoBi.Core.Domain.Model
       public void AddModule(Module module)
       {
          _modules.Add(module);
+      }
+
+      public void RemoveModule(Module module)
+      {
+         _modules.Remove(module);
       }
 
       public IReadOnlyList<IMoBiSimulation> Simulations => _allSimulations;

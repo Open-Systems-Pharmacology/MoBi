@@ -16,17 +16,7 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IObjectBaseDTO : IWithId, INotifier, IValidatable, IWithName, IViewItem
-   {
-      string Description { set; get; }
-      string Icon { get; set; }
-      void HandlePropertyChanged(object sender, PropertyChangedEventArgs e);
-      void AddUsedNames(IEnumerable<string> usedNames);
-      bool IsNameUnique(string name);
-      bool IsNameDefined(string name);
-   }
-
-   public class ObjectBaseDTO : DxValidatableDTO, IObjectBaseDTO
+   public class ObjectBaseDTO : DxValidatableDTO, IWithId, IWithName, IViewItem
    {
       private static readonly string _propertyName = MoBiReflectionHelper.PropertyName<IObjectBase>(x => x.Name);
 
@@ -89,17 +79,17 @@ namespace MoBi.Presentation.DTO
             return !Constants.ILLEGAL_CHARACTERS.Any(name.Contains);
          }
 
-         private static IBusinessRule notEmptyNameRule { get; } = CreateRule.For<IObjectBaseDTO>()
+         private static IBusinessRule notEmptyNameRule { get; } = CreateRule.For<ObjectBaseDTO>()
             .Property(x => x.Name)
             .WithRule((dto, name) => dto.IsNameDefined(name))
             .WithError(AppConstants.Validation.EmptyName);
 
-         private static IBusinessRule uniqueNameRule { get; } = CreateRule.For<IObjectBaseDTO>()
+         private static IBusinessRule uniqueNameRule { get; } = CreateRule.For<ObjectBaseDTO>()
             .Property(x => x.Name)
             .WithRule((dto, name) => dto.IsNameUnique(name))
             .WithError(AppConstants.Validation.NameAlreadyUsed);
 
-         private static IBusinessRule nameDoesNotContainIllegalCharacters { get; } = CreateRule.For<IObjectBaseDTO>()
+         private static IBusinessRule nameDoesNotContainIllegalCharacters { get; } = CreateRule.For<ObjectBaseDTO>()
             .Property(item => item.Name)
             .WithRule((dto, name) => nameDoesNotContainerIllegalCharacters(name))
             .WithError(Error.NameCannotContainIllegalCharacters(Constants.ILLEGAL_CHARACTERS));

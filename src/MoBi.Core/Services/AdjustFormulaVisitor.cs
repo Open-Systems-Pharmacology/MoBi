@@ -188,7 +188,7 @@ namespace MoBi.Core.Services
          return areEqualObjectPathCollection(explicitFormula.ObjectPaths, otherExplicitFormula.ObjectPaths);
       }
 
-      private bool areEqualObjectPathCollection(IReadOnlyList<IFormulaUsablePath> objectPaths, IReadOnlyList<IFormulaUsablePath> otherObjectPaths)
+      private bool areEqualObjectPathCollection(IReadOnlyList<FormulaUsablePath> objectPaths, IReadOnlyList<FormulaUsablePath> otherObjectPaths)
       {
          if (!objectPaths.Count.Equals(otherObjectPaths.Count)) return false;
          var equal = true;

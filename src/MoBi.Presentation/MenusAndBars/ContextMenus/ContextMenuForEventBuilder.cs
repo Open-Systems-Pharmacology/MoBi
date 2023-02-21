@@ -14,7 +14,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    internal interface IContextMenuForEventBuilder : IContextMenu
    {
-      IContextMenu InitializeWith(IObjectBaseDTO dto, IEventGroupBuilder parent);
+      IContextMenu InitializeWith(ObjectBaseDTO dto, IEventGroupBuilder parent);
    }
 
    internal class ContextMenuForEventBuilder : ContextMenuBase, IContextMenuForEventBuilder
@@ -34,7 +34,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      public IContextMenu InitializeWith(IObjectBaseDTO dto, IEventGroupBuilder parent)
+      public IContextMenu InitializeWith(ObjectBaseDTO dto, IEventGroupBuilder parent)
       {
          var eventBuilder = _context.Get<IEventBuilder>(dto.Id);
          _allMenuItems = new List<IMenuBarItem>

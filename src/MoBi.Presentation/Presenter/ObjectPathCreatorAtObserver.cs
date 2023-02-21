@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Presenter
       {
       }
       
-      public override ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          var dtoReference = base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
          if (!shouldCreateAbsolutePaths && !IsMoleculeReference(objectBaseDTO))
@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Presenter
          return dtoReference;
       }
 
-      private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : IObjectPath
+      private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : ObjectPath
       {
          if (entity.IsAtMolecule())
          {

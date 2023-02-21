@@ -21,7 +21,7 @@ namespace MoBi.Engine.Sbml
 
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly List<IFormulaUsablePath> _objectPaths;
+      private readonly List<FormulaUsablePath> _objectPaths;
       private readonly IAliasCreator _aliasCreator;
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private int _counter;
@@ -37,7 +37,7 @@ namespace MoBi.Engine.Sbml
       {
          _objectBaseFactory = obf;
          _objectPathFactory = objectPathFactory;
-         _objectPaths = new List<IFormulaUsablePath>();
+         _objectPaths = new List<FormulaUsablePath>();
          _functionDefDictionary = new Dictionary<string, string>();
          _aliasCreator = aliasCreator;
          _moBiDimensionFactory = moBiDimensionFactory;
@@ -869,7 +869,7 @@ namespace MoBi.Engine.Sbml
       ///     Gets the MoBi Object Path to the given variable
       ///     or creates a new one if not  existant.
       /// </summary>
-      private IFormulaUsablePath getObjectPathForAssignment(string assignmentVariable)
+      private FormulaUsablePath getObjectPathForAssignment(string assignmentVariable)
       {
          if (_sbmlInformation.MoleculeInformation.Any(info => info.SpeciesIds.Exists(s => s == assignmentVariable)))
          {

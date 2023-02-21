@@ -75,7 +75,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public abstract IMoBiCommand UpdateStartValueNameCommand(TBuildingBlock startValues, TStartValue startValue, string newName);
       public abstract IMoBiCommand UpdateStartValueContainerPathCommand(TBuildingBlock buildingBlock, TStartValue startValue, int indexToUpdate, string newValue);
 
-      public static void ConfigureTargetPath(int indexToUpdate, string newValue, IObjectPath targetPath)
+      public static void ConfigureTargetPath(int indexToUpdate, string newValue, ObjectPath targetPath)
       {
          if (targetPath.Count == indexToUpdate)
             targetPath.Add(newValue);

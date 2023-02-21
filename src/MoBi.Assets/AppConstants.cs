@@ -19,6 +19,7 @@ namespace MoBi.Assets
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
       public static readonly string InContainer = "in container";
+      public static readonly string InParent = "in parent";
       public static readonly string NotInContainer = "not in container";
       public static readonly string NullFormulaDescription = "No Formula";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
@@ -118,6 +119,9 @@ namespace MoBi.Assets
             "Fraction of dose",
             "Whole organ incl. FcRn_Complex"
          };
+
+         public static readonly string ParameterStartValues = "Parameter Start Values";
+         public static readonly string MoleculeStartValues = "Molecule Start Values";
       }
 
       public static class SpecialFileNames
@@ -243,6 +247,7 @@ namespace MoBi.Assets
          public static readonly string MatchTagCondition = "Match Tag Condition";
          public static readonly string NotMatchTagCondition = "Not Match Tag Condition";
          public static readonly string InContainerCondition = "In Container Condition";
+         public static readonly string InParentCondition = "In Parent Condition";
          public static readonly string NotInContainerCondition = "Not In Container Condition";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
@@ -565,12 +570,12 @@ namespace MoBi.Assets
             return $"Chart Templates edited in simulation '{simulationName}'";
          }
 
-         public static string UpdateParameterStartValue(IObjectPath path, double? value, Unit displayUnit)
+         public static string UpdateParameterStartValue(ObjectPath path, double? value, Unit displayUnit)
          {
             return $"Updated parameter start value at path {path} with value {value} {displayUnit}";
          }
 
-         public static string UpdateMoleculeStartValue(IObjectPath path, double? value, bool present, Unit displayUnit, double scaleFactor, bool negativeValuesAllowed)
+         public static string UpdateMoleculeStartValue(ObjectPath path, double? value, bool present, Unit displayUnit, double scaleFactor, bool negativeValuesAllowed)
          {
             return $"Updated molecule start value at path: {path} with value: {value} {displayUnit},  present: {present},  scale divisor: {scaleFactor}, neg. values allowed: {negativeValuesAllowed}";
          }
@@ -605,7 +610,7 @@ namespace MoBi.Assets
             return $"Calculate scale divisor for simulation '{name}'";
          }
 
-         public static string EditPath(string objectType, IObjectPath originalPath, IObjectPath newPath)
+         public static string EditPath(string objectType, ObjectPath originalPath, ObjectPath newPath)
          {
             return $"Changing {objectType} original path {originalPath} to new path {newPath}";
          }
@@ -635,10 +640,11 @@ namespace MoBi.Assets
             return $"Update dimension for parameter '{parameterPath}' from '{oldDimensionName}' to '{newDimensionName}'";
          }
 
-         public static string UpdateAssignmentObjectPath(string assignmentPath, string path)
-         {
-            return $"Update object path for assignment '{assignmentPath}' to '{path}'";
-         }
+         public static string UpdateAssignmentObjectPath(string assignmentPath, string path) => 
+            $"Update object path for assignment '{assignmentPath}' to '{path}'";
+
+         public static string UpdateParentPath(string containerPath, string parentPath) =>
+            $"Update parent path for '{containerPath}' to '{parentPath}'";
 
          public static string UpdateMoleculeStartValueScaleDivisor(string path, double oldScaleDivisor, double newScaleDivisor)
          {
@@ -953,6 +959,7 @@ namespace MoBi.Assets
          public static readonly string SaveProject = "&Save";
          public static readonly string SaveAs = "Save As...";
          public static readonly string NewSimulation = "Create";
+         public static readonly string NewModule = AddNew("Module");
          public static readonly string Merge = "Merge";
          public static readonly string CloseProject = "&Close";
          public static readonly string GarbageCollection = "Start Garbage Collection";
@@ -1074,7 +1081,9 @@ namespace MoBi.Assets
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
 
-       
+         public static string AddEmptyModule => $"Create Empty Module...";
+         public static string AddModuleWithBuildingBlocks => $"Create Module with Building Blocks...";
+
       }
 
       public static class DimensionNames
@@ -1184,7 +1193,7 @@ namespace MoBi.Assets
             return $"File contains no loadable content for  '{typeName}'";
          }
 
-         public static string CircularReferenceException(IFormulaUsablePath path, IFormula formula)
+         public static string CircularReferenceException(ObjectPath path, IFormula formula)
          {
             return $"Not adding path {path.PathAsString} to formula {formula.Name}.\nAdding path would create circular reference";
          }
@@ -1421,6 +1430,7 @@ namespace MoBi.Assets
          public static readonly string NewInContainerCondition = "New \"In container\" condition";
          public static readonly string NewNotInContainerCondition = "New \"Not in container\" condition";
          public static readonly string AddMatchAllCondition = "Add \"Match all tag\" condition";
+         public static readonly string AddInParentCondition = "Add \"In parent\" condition";
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
@@ -1614,41 +1624,31 @@ namespace MoBi.Assets
          public static readonly string Individuals = "Individuals";
          public static readonly string OriginData = "Origin Data";
          public static readonly string PKSimVersion = "PK-Sim Version";
+         public static readonly string PKSimModules = "PK-Sim Modules";
+         public static readonly string ExtensionModulesFolder = "Extension Modules";
+         public static readonly string Module = "Module";
+         public static readonly string CreateBuildingBlocks = "Create Building Blocks";
+         public static readonly string ParentPath = "Parent Path";
+         public static readonly string SelectContainer = "Select Container";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 
+         public static string ManageDisplayUnits(string type) => $"Manage {type} Display Units";
 
-         public static string ManageDisplayUnits(string type)  
-         {
-            return $"Manage {type} Display Units";
-         }
+         public static string ParameterRightHandSide(string name) => $"d{name}/dt = ";
 
-         public static string ParameterRightHandSide(string name)
-         {
-            return $"d{name}/dt = ";
-         }
+         public static string ReportCreationStartedMessage(string reportFullPath) => "This might take a while...";
 
-         public static string ReportCreationStartedMessage(string reportFullPath)
-         {
-            return "This might take a while...";
-         }
+         public static string ReportCreationFinishedMessage(string reportFullPath) => $"Report can be found at {reportFullPath}";
 
-         public static string ReportCreationFinishedMessage(string reportFullPath)
-         {
-            return $"Report can be found at {reportFullPath}";
-         }
+         public static string ConvertingExcelSheetToQuantities(string tableName) => $"Converting Excel sheet {tableName}";
 
-         public static string ConvertingExcelSheetToQuantities(string tableName)
-         {
-            return $"Converting Excel sheet {tableName}";
-         }
-
-         public static string AddingMoleculeStartValue(IObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeValueAllowed)
+         public static string AddingMoleculeStartValue(ObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeValueAllowed)
          {
             return $"Adding Molecule Start Value {moleculePath}={startValueInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeValueAllowed}";
          }
 
-         public static string AddingParameterStartValue(IObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
+         public static string AddingParameterStartValue(ObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
          {
             return $"Adding Parameter Start Value {parameterPath}={startValueInDisplayUnit} {displayUnit}";
          }
@@ -1791,24 +1791,24 @@ namespace MoBi.Assets
             return $"Select file containing the {buildingBlockType.ToLowerInvariant()} to merge";
          }
 
-         public static string UpdatingMoleculeStartValue(IObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeStartValueAllowed)
+         public static string UpdatingMoleculeStartValue(ObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeStartValueAllowed)
          {
             return !double.IsNaN(startValueInDisplayUnit)
                ? $"Updating Molecule Start Value {moleculePath}={startValueInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeStartValueAllowed}"
                : $"Updating Molecule Start Value {moleculePath}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeStartValueAllowed}";
          }
 
-         public static string UpdatingParameterStartValue(IObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
+         public static string UpdatingParameterStartValue(ObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
          {
             return $"Updating Parameter Start Value {parameterPath}={startValueInDisplayUnit} {displayUnit}";
          }
 
-         public static string UpdatingParameterValueInSimulation(IObjectPath path, double valueInDisplayUnit, Unit displayUnit)
+         public static string UpdatingParameterValueInSimulation(ObjectPath path, double valueInDisplayUnit, Unit displayUnit)
          {
             return $"Updating parameter value in simulation {path}={valueInDisplayUnit} {displayUnit}";
          }
 
-         public static string AddingParameterValueToSimulation(IObjectPath path, double valueInDisplayUnit, Unit displayUnit)
+         public static string AddingParameterValueToSimulation(ObjectPath path, double valueInDisplayUnit, Unit displayUnit)
          {
             return $"Adding parameter value in simulation {path}={valueInDisplayUnit} {displayUnit}";
          }
@@ -1845,6 +1845,7 @@ namespace MoBi.Assets
          public static readonly string SpeciesCannotBeEmpty = "Species cannot be empty";
          public static readonly string MoleculeNameCannotBeEmpty = "Molecule name cannot be empty";
          public static readonly string CategoryCannotBeEmpty = "Category cannot be empty";
+         public static readonly string ModuleNameCannotBeEmpty = "Module name cannot be empty";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
          {
@@ -1908,7 +1909,7 @@ namespace MoBi.Assets
 
          public static string DoesNotEvaluateTo(string dimensionName) => $"does not evaluate to the dimension '{dimensionName}'";
 
-         public static string PathIsIdenticalToExistingPath(IObjectPath path)
+         public static string PathIsIdenticalToExistingPath(ObjectPath path)
          {
             return $"The path {path} is identical to an existing path in the building block";
          }

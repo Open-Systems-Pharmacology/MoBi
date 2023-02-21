@@ -14,10 +14,10 @@ namespace MoBi.Core.Commands
       protected IModel _model ;
       protected string _newName= "new";
       protected string _oldName ="old";
-      protected IFormulaUsablePath _changedObjectPath;
-      protected IFormulaUsablePath _unchangedPath;
-      protected IFormulaUsablePath _rhsPath;
-      protected IFormulaUsablePath _neighborhoodPath;
+      protected FormulaUsablePath _changedObjectPath;
+      protected FormulaUsablePath _unchangedPath;
+      protected FormulaUsablePath _rhsPath;
+      protected FormulaUsablePath _neighborhoodPath;
 
       protected override void Context()
       {

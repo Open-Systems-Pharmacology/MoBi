@@ -10,11 +10,11 @@ namespace MoBi.Core.Commands
    public class EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
       private IApplicationMoleculeBuilder _applicationMoleculeBuilder;
-      private readonly IObjectPath _newPath;
-      private readonly IObjectPath _oldPath;
+      private readonly ObjectPath _newPath;
+      private readonly ObjectPath _oldPath;
       private readonly string _applicationMoleculeBuilderId;
 
-      public EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(IApplicationMoleculeBuilder applicationMoleculeBuilder, IObjectPath newPath, IBuildingBlock buildingBlock)
+      public EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(IApplicationMoleculeBuilder applicationMoleculeBuilder, ObjectPath newPath, IBuildingBlock buildingBlock)
          : base(buildingBlock)
       {
          _applicationMoleculeBuilder = applicationMoleculeBuilder;

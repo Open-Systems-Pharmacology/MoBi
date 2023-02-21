@@ -237,7 +237,7 @@ namespace MoBi.Presentation.Presenter
          _formula = formula;
       }
 
-      private bool hasCircularReference(IFormulaUsablePath path)
+      private bool hasCircularReference(FormulaUsablePath path)
       {
          return _formulaOwner != null && !IsRHS && _circularReferenceChecker.HasCircularReference(path, _formulaOwner);
       }

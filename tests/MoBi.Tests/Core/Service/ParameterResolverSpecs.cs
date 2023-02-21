@@ -10,7 +10,7 @@ namespace MoBi.Core.Service
    {
       protected IMoleculeBuildingBlock _moleculeBuildingBlock;
       protected ISpatialStructure _spatialStructure;
-      protected IObjectPath _containerPath;
+      protected ObjectPath _containerPath;
 
       protected override void Context()
       {

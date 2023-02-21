@@ -156,7 +156,7 @@ namespace MoBi.Core.Mapper
       private IDimension _dimension;
       private ParameterBuildMode _parameterBuildMode;
       private ParameterDTO _result;
-      private IObjectPath _path;
+      private ObjectPath _path;
 
       protected override void Context()
       {
@@ -164,7 +164,7 @@ namespace MoBi.Core.Mapper
          _parameter = A.Fake<IParameter>();
          _formula = A.Fake<IFormula>();
          _dimension = A.Fake<IDimension>();
-         _path= A.Fake<IObjectPath>();
+         _path= A.Fake<ObjectPath>();
          _parameter.Formula = _formula;
          _name = "Para";
          _parameter.Name = _name;

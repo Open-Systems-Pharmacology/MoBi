@@ -15,6 +15,8 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -23,6 +25,8 @@ namespace MoBi.Presentation.Presenter
       EditParameterMode EditMode { set; }
       bool ReadOnly { set; }
       void SetInitialName(string initialName);
+      void SetParentPath(string parentPath);
+      void UpdateParentPath();
       string ContainerModeDisplayFor(ContainerMode mode);
       IEnumerable<ContainerMode> AllContainerModes();
       void SetContainerMode(ContainerMode newContainerMode);
@@ -32,25 +36,28 @@ namespace MoBi.Presentation.Presenter
    public class EditContainerPresenter : AbstractEntityEditPresenter<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
    {
       private IContainer _container;
-      private readonly IContainerToContainerDTOMapper _containerToDTOContainerMapper;
+      private readonly IContainerToContainerDTOMapper _containerMapper;
       private readonly IEditTaskForContainer _editTasks;
       private ContainerDTO _containerDTO;
       private readonly IMoBiContext _context;
       private readonly ITagsPresenter _tagsPresenter;
+      private readonly IApplicationController _applicationController;
       private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
 
       public EditContainerPresenter(
          IEditContainerView view, 
-         IContainerToContainerDTOMapper containerToDtoContainerMapper, 
+         IContainerToContainerDTOMapper containerMapper, 
          IEditTaskForContainer editTasks,
          IEditParametersInContainerPresenter editParametersInContainerPresenter, 
          IMoBiContext context, 
-         ITagsPresenter tagsPresenter)
+         ITagsPresenter tagsPresenter,
+         IApplicationController applicationController)
          : base(view)
       {
-         _containerToDTOContainerMapper = containerToDtoContainerMapper;
+         _containerMapper = containerMapper;
          _context = context;
          _tagsPresenter = tagsPresenter;
+         _applicationController = applicationController;
          _editParametersInContainerPresenter = editParametersInContainerPresenter;
          _editTasks = editTasks;
          _view.AddParameterView(editParametersInContainerPresenter.BaseView);
@@ -65,6 +72,16 @@ namespace MoBi.Presentation.Presenter
          _editParametersInContainerPresenter.ChangeLocalisationAllowed = false;
       }
 
+      public void UpdateParentPath()
+      {
+         using (var presenter = _applicationController.Start<ISelectContainerPresenter>())
+         {
+            var objectPath = presenter.Select();
+            if (objectPath == null) return;
+            SetParentPath(objectPath);
+         }
+      }
+
       public string ContainerModeDisplayFor(ContainerMode mode)
       {
          switch (mode)
@@ -74,7 +91,7 @@ namespace MoBi.Presentation.Presenter
             case ContainerMode.Logical:
                return $"{mode} {ToolTips.Container.LogicalContainer}";
             default:
-               throw new ArgumentOutOfRangeException("mode");
+               throw new ArgumentOutOfRangeException(nameof(mode));
          }
       }
 
@@ -86,6 +103,16 @@ namespace MoBi.Presentation.Presenter
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
          AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _container, BuildingBlock).Run(_context));
+      }
+
+      public void SetParentPath(string parentPath)
+      {
+         var objectPath = new ObjectPath(parentPath.ToPathArray());
+         AddCommand(new SetParentPathCommand(_container, objectPath, BuildingBlock).Run(_context));
+
+         //rebind the view
+         _containerDTO.ParentPath = parentPath;
+         _view.BindTo(_containerDTO);
       }
 
       public void SetContainerMode(ContainerMode newContainerMode)
@@ -137,7 +164,7 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(IContainer container, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          _container = container;
-         _containerDTO = _containerToDTOContainerMapper.MapFrom(_container);
+         _containerDTO = _containerMapper.MapFrom(_container);
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));
          _editParametersInContainerPresenter.Edit(_container);
          _view.BindTo(_containerDTO);

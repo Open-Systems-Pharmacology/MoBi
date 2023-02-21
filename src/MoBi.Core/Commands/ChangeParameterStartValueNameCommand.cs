@@ -7,7 +7,7 @@ namespace MoBi.Core.Commands
 {
    public class ChangeParameterStartValueNameCommand : ChangeStartValueNameCommand<IParameterStartValuesBuildingBlock, ParameterStartValue>
    {
-      public ChangeParameterStartValueNameCommand(IParameterStartValuesBuildingBlock buildingBlock, IObjectPath path, string newValue) : base(buildingBlock, path, newValue)
+      public ChangeParameterStartValueNameCommand(IParameterStartValuesBuildingBlock buildingBlock, ObjectPath path, string newValue) : base(buildingBlock, path, newValue)
       {
       }
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
