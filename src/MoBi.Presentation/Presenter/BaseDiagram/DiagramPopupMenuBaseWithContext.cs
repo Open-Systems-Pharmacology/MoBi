@@ -1,6 +1,7 @@
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Presenter.BaseDiagram
 {
@@ -13,8 +14,8 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
    {
       private readonly IMoBiContext _context;
 
-      public DiagramPopupMenuBaseWithContext(IMoBiBaseDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions)
-         : base(presenter, runOptions)
+      public DiagramPopupMenuBaseWithContext(IMoBiBaseDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions, IContainer container)
+         : base(presenter, runOptions, container)
       {
          _context = context;
       }

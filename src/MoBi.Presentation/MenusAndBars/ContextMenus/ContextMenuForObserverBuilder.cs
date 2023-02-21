@@ -13,6 +13,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -26,20 +27,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuForContainerObserverBuilder : ContextMenuForObserverBuilder<IContainerObserverBuilder>, IContextMenuForContainerObserverBuilder
    {
-      public ContextMenuForContainerObserverBuilder(
-         IMoBiContext context,
+      public ContextMenuForContainerObserverBuilder(IMoBiContext context,
          IObjectTypeResolver objectTypeResolver,
-         IActiveSubjectRetriever activeSubjectRetriever) : base(context, objectTypeResolver, activeSubjectRetriever)
+         IActiveSubjectRetriever activeSubjectRetriever, IContainer container) : base(context, objectTypeResolver, activeSubjectRetriever, container)
       {
       }
    }
 
    public class ContextMenuForAmountObserverBuilder : ContextMenuForObserverBuilder<IAmountObserverBuilder>, IContextMenuForAmountObserverBuilder
    {
-      public ContextMenuForAmountObserverBuilder(
-         IMoBiContext context,
+      public ContextMenuForAmountObserverBuilder(IMoBiContext context,
          IObjectTypeResolver objectTypeResolver,
-         IActiveSubjectRetriever activeSubjectRetriever) : base(context, objectTypeResolver, activeSubjectRetriever)
+         IActiveSubjectRetriever activeSubjectRetriever, IContainer container) : base(context, objectTypeResolver, activeSubjectRetriever, container)
       {
       }
    }
@@ -48,8 +47,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      public ContextMenuForObserverBuilder(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IActiveSubjectRetriever activeSubjectRetriever)
-         : base(context, objectTypeResolver)
+      public ContextMenuForObserverBuilder(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IActiveSubjectRetriever activeSubjectRetriever, IContainer container)
+         : base(context, objectTypeResolver, container)
       {
          _activeSubjectRetriever = activeSubjectRetriever;
       }

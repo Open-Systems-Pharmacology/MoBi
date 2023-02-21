@@ -24,7 +24,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private readonly IActiveSubjectRetriever _activeSubujectRetriever;
 
-      public ContextMenuForEventGroupBuilder(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IActiveSubjectRetriever activeSubujectRetriever) : base(context, objectTypeResolver)
+      public ContextMenuForEventGroupBuilder(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IActiveSubjectRetriever activeSubujectRetriever, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
       {
          _activeSubujectRetriever = activeSubujectRetriever;
       }
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
-            .WithCommandFor<RemoveEventBuilderFromEventGroupBuilderUICommand, IEventGroupBuilder>(objectToRemove);
+            .WithCommandFor<RemoveEventBuilderFromEventGroupBuilderUICommand, IEventGroupBuilder>(objectToRemove, _container);
       }
 
       public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
@@ -54,34 +54,34 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             var buildingBlock = _activeSubujectRetriever.Active<IEventGroupBuildingBlock>();
             _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.EventGroupBuilder))
                .WithIcon(ApplicationIcons.Add)
-               .WithCommandFor<AddNewCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>, IEventGroupBuildingBlock>(buildingBlock));
+               .WithCommandFor<AddNewCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>, IEventGroupBuildingBlock>(buildingBlock, _container));
 
             _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.EventGroupBuilder))
-               .WithCommandFor<AddExistingCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>, IEventGroupBuildingBlock>(buildingBlock)
+               .WithCommandFor<AddExistingCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>, IEventGroupBuildingBlock>(buildingBlock, _container)
                .WithIcon(ApplicationIcons.EventLoad));
 
             _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(ObjectTypes.EventGroupBuilder))
-               .WithCommandFor<AddExistingFromTemplateCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>, IEventGroupBuildingBlock>(buildingBlock));
+               .WithCommandFor<AddExistingFromTemplateCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>, IEventGroupBuildingBlock>(buildingBlock, _container));
 
             if (!buildingBlock.ExistsByName(Constants.APPLICATIONS))
             {
                _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(Constants.APPLICATIONS))
                   .WithIcon(ApplicationIcons.Applications)
-                  .WithCommandFor<AddNewApplicationsEventGroup, IEventGroupBuildingBlock>(buildingBlock)
+                  .WithCommandFor<AddNewApplicationsEventGroup, IEventGroupBuildingBlock>(buildingBlock, _container)
                   .AsGroupStarter());
             }
 
             _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Application))
                .WithIcon(ApplicationIcons.Add)
-               .WithCommandFor<AddNewCommandFor<IEventGroupBuildingBlock, IApplicationBuilder>, IEventGroupBuildingBlock>(buildingBlock)
+               .WithCommandFor<AddNewCommandFor<IEventGroupBuildingBlock, IApplicationBuilder>, IEventGroupBuildingBlock>(buildingBlock, _container)
                .AsGroupStarter());
 
             _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.Application))
-               .WithCommandFor<AddExistingCommandFor<IEventGroupBuildingBlock, IApplicationBuilder>, IEventGroupBuildingBlock>(buildingBlock)
+               .WithCommandFor<AddExistingCommandFor<IEventGroupBuildingBlock, IApplicationBuilder>, IEventGroupBuildingBlock>(buildingBlock, _container)
                .WithIcon(ApplicationIcons.PKMLLoad));
 
             _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(ObjectTypes.Application))
-               .WithCommandFor<AddExistingFromTemplateCommandFor<IEventGroupBuildingBlock, IApplicationBuilder>, IEventGroupBuildingBlock>(buildingBlock));
+               .WithCommandFor<AddExistingFromTemplateCommandFor<IEventGroupBuildingBlock, IApplicationBuilder>, IEventGroupBuildingBlock>(buildingBlock, _container));
          }
          else
          {
@@ -106,31 +106,31 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createAddExistingChild<T>(IEventGroupBuilder container) where T : class, IEntity
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(_objectTypeResolver.TypeFor<T>()))
-            .WithCommandFor<AddExistingCommandFor<IEventGroupBuilder, T>, IEventGroupBuilder>(container);
+            .WithCommandFor<AddExistingCommandFor<IEventGroupBuilder, T>, IEventGroupBuilder>(container, _container);
       }
 
       private IMenuBarItem createAddExistingFromTemplateChild<T>(IEventGroupBuilder container) where T : class, IEntity
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(_objectTypeResolver.TypeFor<T>()))
-            .WithCommandFor<AddExistingFromTemplateCommandFor<IEventGroupBuilder, T>, IEventGroupBuilder>(container);
+            .WithCommandFor<AddExistingFromTemplateCommandFor<IEventGroupBuilder, T>, IEventGroupBuilder>(container, _container);
       }
 
       private IMenuBarItem createAddNewChild<T>(IEventGroupBuilder container) where T : class, IEntity
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(_objectTypeResolver.TypeFor<T>()))
-            .WithCommandFor<AddNewCommandFor<IEventGroupBuilder, T>, IEventGroupBuilder>(container);
+            .WithCommandFor<AddNewCommandFor<IEventGroupBuilder, T>, IEventGroupBuilder>(container, _container);
       }
 
       protected virtual IMenuBarItem CreateAddNewItemFor(IEventGroupBuilder selectedObject)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.EventGroupBuilder))
-            .WithCommandFor<AddNewCommandFor<IEventGroupBuilder, IEventGroupBuilder>, IEventGroupBuilder>(selectedObject);
+            .WithCommandFor<AddNewCommandFor<IEventGroupBuilder, IEventGroupBuilder>, IEventGroupBuilder>(selectedObject, _container);
       }
    }
 
    internal class ContextMenuForApplicationBuilder : ContextMenuForEventGroupBuilder
    {
-      public ContextMenuForApplicationBuilder(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IActiveSubjectRetriever activeSubjectRetriever) : base(context, objectTypeResolver, activeSubjectRetriever)
+      public ContextMenuForApplicationBuilder(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IActiveSubjectRetriever activeSubjectRetriever, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, activeSubjectRetriever, container)
       {
       }
 
@@ -147,14 +147,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createAddNewPassiveTranportBuilder(IApplicationBuilder container)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.ApplicationTransport))
-            .WithCommandFor<AddNewPassiveTransportToApplicationBuilderUICommand, IApplicationBuilder>(container)
+            .WithCommandFor<AddNewPassiveTransportToApplicationBuilderUICommand, IApplicationBuilder>(container, _container)
             .WithIcon(ApplicationIcons.Add);
       }
 
       private IMenuBarItem createAddExistingPassiveTranportBuilder(IApplicationBuilder container)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.ApplicationTransport))
-            .WithCommandFor<AddExistingPassiveTransportToApplicationBuilderUICommand, IApplicationBuilder>(container)
+            .WithCommandFor<AddExistingPassiveTransportToApplicationBuilderUICommand, IApplicationBuilder>(container, _container)
             .WithIcon(ApplicationIcons.PKMLLoad);
       }
 
@@ -166,7 +166,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
                .WithIcon(ApplicationIcons.Delete)
-               .WithCommandFor<RemoveEventBuilderFromEventGroupBuilderUICommand, IEventGroupBuilder>(objectToRemove);
+               .WithCommandFor<RemoveEventBuilderFromEventGroupBuilderUICommand, IEventGroupBuilder>(objectToRemove, _container);
          }
       }
    }
@@ -201,10 +201,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private IList<IMenuBarItem> _allMenuItems;
       private readonly IMoBiContext _context;
+      private readonly OSPSuite.Utility.Container.IContainer _container;
 
-      public ContextMenuForApplicationMoleculeBuilder(IMoBiContext context)
+      public ContextMenuForApplicationMoleculeBuilder(IMoBiContext context, OSPSuite.Utility.Container.IContainer container)
       {
          _context = context;
+         _container = container;
       }
 
       public IContextMenu InitialisedWith(IObjectBaseDTO dto, IApplicationBuilder parent)
@@ -212,7 +214,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems = new List<IMenuBarItem>();
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.ApplicationMoleculeBuilder))
             .WithIcon(ApplicationIcons.Add)
-            .WithCommandFor<AddNewApplicationMoleculeBuilderUICommand, IApplicationBuilder>(parent));
+            .WithCommandFor<AddNewApplicationMoleculeBuilderUICommand, IApplicationBuilder>(parent, _container));
 
          if (dto != null)
          {

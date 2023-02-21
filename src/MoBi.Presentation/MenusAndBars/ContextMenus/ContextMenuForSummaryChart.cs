@@ -15,9 +15,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    internal class ContextMenuSpecificationFactoryForSummaryChart : IContextMenuSpecificationFactory<IViewItem>
    {
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForSummaryChart(IContainer container)
+      {
+         _container = container;
+      }
+      
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var contextMenu = IoC.Resolve<ContextMenuForSummaryChart>();
+         var contextMenu = new ContextMenuForSummaryChart(_container);
          return contextMenu.InitializeWith(viewItem.DowncastTo<ChartNode>().Tag);
       }
 
@@ -29,8 +36,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuForSummaryChart : ContextMenuBase
    {
+      private readonly IContainer _container;
       private IList<IMenuBarItem> _allMenuItems;
 
+      public ContextMenuForSummaryChart(IContainer container)
+      {
+         _container = container;
+      }
+      
       public override IEnumerable<IMenuBarItem> AllMenuItems()
       {
          return _allMenuItems;
@@ -41,11 +54,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems = new List<IMenuBarItem>();
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditSummaryChartUICommand, CurveChart>(chart)
+            .WithCommandFor<EditSummaryChartUICommand, CurveChart>(chart, _container)
             .WithIcon(ApplicationIcons.Edit));
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithCommandFor<RemoveSummaryChartUICommand, CurveChart>(chart)
+            .WithCommandFor<RemoveSummaryChartUICommand, CurveChart>(chart, _container)
             .WithIcon(ApplicationIcons.Delete));
 
          return this;

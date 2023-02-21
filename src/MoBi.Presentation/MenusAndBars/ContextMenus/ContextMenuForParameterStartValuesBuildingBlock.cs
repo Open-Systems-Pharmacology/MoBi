@@ -9,12 +9,13 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class ContextMenuForParameterStartValuesBuildingBlock : ContextMenuForMergableBuildingBlock<IParameterStartValuesBuildingBlock>
    {
-      public ContextMenuForParameterStartValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
+      public ContextMenuForParameterStartValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
       }
 
@@ -24,7 +25,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          base.InitializeWith(dto, presenter);
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Import)
             .WithIcon(ApplicationIcons.ParameterStartValuesImport)
-            .WithCommandFor<ImportParameterStartValuesUICommand, IBuildingBlock>(buildingBlock));
+            .WithCommandFor<ImportParameterStartValuesUICommand, IBuildingBlock>(buildingBlock, _container));
 
          return this;
       }

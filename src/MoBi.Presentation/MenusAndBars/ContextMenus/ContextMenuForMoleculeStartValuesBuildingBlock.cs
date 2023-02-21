@@ -9,12 +9,13 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class ContextMenuForMoleculeStartValuesBuildingBlock : ContextMenuForMergableBuildingBlock<IMoleculeStartValuesBuildingBlock>
    {
-      public ContextMenuForMoleculeStartValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
+      public ContextMenuForMoleculeStartValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
       }
 
@@ -25,7 +26,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Import)
             .WithIcon(ApplicationIcons.MoleculeStartValuesImport)
-            .WithCommandFor<ImportMoleculeStartValuesUICommand, IBuildingBlock>(buildingBlock));
+            .WithCommandFor<ImportMoleculeStartValuesUICommand, IBuildingBlock>(buildingBlock, _container));
 
          return this;
       }

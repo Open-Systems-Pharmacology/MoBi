@@ -43,7 +43,7 @@ namespace MoBi.Core.Domain.Services
 
       public void RegisterAllIn(IWithId objectToRegister)
       {
-         //If already registered, no need to register the whole hiearchy again
+         //If already registered, no need to register the whole hierarchy again
          if (_withIdRepository.ContainsObjectWithId(objectToRegister.Id))
             return;
 

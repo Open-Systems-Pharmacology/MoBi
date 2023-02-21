@@ -4,6 +4,7 @@ using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.Presenter.ModelDiagram
 {
@@ -11,7 +12,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
    {
       private readonly IDialogCreator _dialogCreator;
 
-      public PopupMenuModelDiagram(ISimulationDiagramPresenter presenter, IDialogCreator dialogCreator, IStartOptions runOptions) : base(presenter, runOptions)
+      public PopupMenuModelDiagram(ISimulationDiagramPresenter presenter, IDialogCreator dialogCreator, IStartOptions runOptions, IContainer container) : base(presenter, runOptions, container)
       {
          _dialogCreator = dialogCreator;
       }

@@ -7,7 +7,6 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
@@ -26,16 +25,14 @@ namespace MoBi.Presentation.Tasks
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
       private Assembly _externalAssembly;
-      private readonly IShell _shell;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
 
       public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings,
-         IStartableProcessFactory startableProcessFactory, IShell shell, ICloneManagerForBuildingBlock cloneManager)
+         IStartableProcessFactory startableProcessFactory, ICloneManagerForBuildingBlock cloneManager)
       {
          _configuration = configuration;
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
-         _shell = shell;
          _cloneManager = cloneManager;
       }
 
@@ -65,7 +62,7 @@ namespace MoBi.Presentation.Tasks
 
          loadPKSimAssembly();
          var expressionProfileBuildingBlock =
-            executeMethodWithShell(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName)) as ExpressionProfileBuildingBlock;
+            executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName)) as ExpressionProfileBuildingBlock;
 
          //in case of cancelling
          if (expressionProfileBuildingBlock == null)
@@ -78,7 +75,7 @@ namespace MoBi.Presentation.Tasks
       {
          loadPKSimAssembly();
          var individualBuildingBlock =
-            executeMethodWithShell(getMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL)) as IndividualBuildingBlock;
+            executeMethod(getMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL)) as IndividualBuildingBlock;
 
          //in case of cancelling
          if (individualBuildingBlock == null)
@@ -87,14 +84,9 @@ namespace MoBi.Presentation.Tasks
          return _cloneManager.CloneBuildingBlock(individualBuildingBlock);
       }
 
-      private object executeMethodWithShell(MethodInfo method)
+      private object executeMethod(MethodInfo method)
       {
-         return executeMethod(method, new object[] { _shell });
-      }
-
-      private object executeMethod(MethodInfo method, object[] parameters)
-      {
-         return method.Invoke(null, parameters);
+         return method.Invoke(null, null);
       }
 
       private void loadPKSimAssembly()

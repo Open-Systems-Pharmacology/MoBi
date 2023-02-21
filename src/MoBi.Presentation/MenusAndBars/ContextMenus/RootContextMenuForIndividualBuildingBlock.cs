@@ -6,13 +6,14 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class RootContextMenuForIndividualBuildingBlock : RootContextMenuFor<IMoBiProject, IndividualBuildingBlock>
    {
-      public RootContextMenuForIndividualBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context) : base(objectTypeResolver,
-         context)
+      public RootContextMenuForIndividualBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver,
+         context, container)
       {
       }
 
@@ -22,10 +23,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(CreateAddExistingItemFor(parent));
       }
 
-      private static IMenuBarButton createAddNewIndividual()
+      private IMenuBarButton createAddNewIndividual()
       {
          return CreateMenuButton.WithCaption(AppConstants.Captions.AddIndividual)
-            .WithCommand<AddNewIndividualCommand>()
+            .WithCommand<AddNewIndividualCommand>(_container)
             .WithIcon(ApplicationIcons.Individual);
       }
    }

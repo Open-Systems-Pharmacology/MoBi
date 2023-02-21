@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -15,6 +16,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    internal class ReactionProductPartnerContextMenuSpecificationFactory : IReactionProductContextMenuSpecificationFactory
    {
+      private readonly IContainer _container;
+
+      public ReactionProductPartnerContextMenuSpecificationFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
          return (viewItem == null || viewItem.IsAnImplementationOf<ReactionPartnerBuilderDTO>()) &&
@@ -33,7 +41,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          IReactionPartnerBuilder reactionPartnerBuilder = null;
          if (reactionPartnerDTO != null)
             reactionPartnerBuilder = reactionBuilder.Products.FirstOrDefault(product => product.MoleculeName.Equals(reactionPartnerDTO.MoleculeName));
-         return new ContextMenuForProductBuilder(reactionBuilder, reactionPartnerBuilder);
+         return new ContextMenuForProductBuilder(reactionBuilder, reactionPartnerBuilder, _container);
       }
    }
 }

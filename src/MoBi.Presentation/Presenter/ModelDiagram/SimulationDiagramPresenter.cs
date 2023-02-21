@@ -29,23 +29,23 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
       private readonly ILayerLayouter _layerLayouter;
       private readonly IDiagramPopupMenuBase _moleculeAmountPopupMenu;
 
-      public SimulationDiagramPresenter(ISimulationDiagramView view, 
-         IContainerBaseLayouter layouter, 
+      public SimulationDiagramPresenter(ISimulationDiagramView view,
+         IContainerBaseLayouter layouter,
          IDialogCreator dialogCreator,
          IDiagramModelFactory diagramModelFactory,
-         IUserSettings userSettings, 
-         IMoBiContext context, 
-         IDiagramTask diagramTask, 
+         IUserSettings userSettings,
+         IMoBiContext context,
+         IDiagramTask diagramTask,
          IStartOptions runOptions,
-         IMoBiConfiguration configuration, 
-         ILayerLayouter layerLayouter)
-         : base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
+         IMoBiConfiguration configuration,
+         ILayerLayouter layerLayouter, OSPSuite.Utility.Container.IContainer container)
+         : base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions, container)
       {
          _configuration = configuration;
          _layerLayouter = layerLayouter;
-         _diagramPopupMenu = new PopupMenuModelDiagram(this, dialogCreator, runOptions);
+         _diagramPopupMenu = new PopupMenuModelDiagram(this, dialogCreator, runOptions, container);
          _containerPopupMenu = _diagramPopupMenu;
-         _moleculeAmountPopupMenu = new DiagramPopupMenuBaseWithContext(this, _context, runOptions);
+         _moleculeAmountPopupMenu = new DiagramPopupMenuBaseWithContext(this, _context, runOptions, container);
       }
 
       public override void Edit(IMoBiSimulation simulation)

@@ -12,14 +12,22 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    internal class ContextMenuSpecificationFactoryForDataRepository : IContextMenuSpecificationFactory<IViewItem>
    {
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForDataRepository(IContainer container)
+      {
+         _container = container;
+      }
+
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var contextMenu = new ContextMenuForDataRepository();
+         var contextMenu = new ContextMenuForDataRepository(_container);
          var repository = dataRepositoryFrom(viewItem);
          return contextMenu.InitializeWith(repository);
       }
@@ -39,6 +47,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    internal class ContextMenuForDataRepository : ContextMenuBase
    {
+      private readonly IContainer _container;
+
+      public ContextMenuForDataRepository(IContainer container)
+      {
+         _container = container;
+      }
       private IList<IMenuBarItem> _allMenuItems;
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -65,33 +79,33 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem exportToExcel(DataRepository dataRepository)
       {
          return CreateMenuButton.WithCaption(Captions.ExportToExcel.WithEllipsis())
-            .WithCommandFor<ExportObservedDataToExcelCommand, DataRepository>(dataRepository)
+            .WithCommandFor<ExportObservedDataToExcelCommand, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.Excel);
       }
 
       private IMenuBarItem addToJournalMenuItemFor(DataRepository dataRepository)
       {
-         return ObjectBaseCommonContextMenuItems.AddToJournal(dataRepository);
+         return ObjectBaseCommonContextMenuItems.AddToJournal(dataRepository, _container);
       }
 
-     private static IMenuBarButton renameMenuItemFor(DataRepository dataRepository)
+     private IMenuBarButton renameMenuItemFor(DataRepository dataRepository)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
             .WithIcon(ApplicationIcons.Rename)
-            .WithCommandFor<RenameDataRepositoryUICommand, DataRepository>(dataRepository);
+            .WithCommandFor<RenameDataRepositoryUICommand, DataRepository>(dataRepository, _container);
       }
 
-      private static IMenuBarButton deleteMenuItemFor(DataRepository dataRepository)
+      private IMenuBarButton deleteMenuItemFor(DataRepository dataRepository)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithCommandFor<RemoveDataRepositoryUICommand, DataRepository>(dataRepository)
+            .WithCommandFor<RemoveDataRepositoryUICommand, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.Delete);
       }
 
       private IMenuBarItem createReloadItemFor(DataRepository dataRepository)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.ReloadAll) //ToDo: move to Core, also from PK-Sim
-            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository)
+            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository, _container)
             .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
             .WithIcon(ApplicationIcons.Excel);
       }
@@ -100,13 +114,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
             .WithIcon(ApplicationIcons.PKMLSave)
-            .WithCommandFor<SaveUICommandFor<DataRepository>, DataRepository>(dataRepository);
+            .WithCommandFor<SaveUICommandFor<DataRepository>, DataRepository>(dataRepository, _container);
       }
 
       private IMenuBarItem editMenuItemFor(DataRepository dataRepository)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditObservedDataUICommand, DataRepository>(dataRepository)
+            .WithCommandFor<EditObservedDataUICommand, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.Edit);
       }
    }

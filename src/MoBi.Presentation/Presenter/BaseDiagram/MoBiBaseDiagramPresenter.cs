@@ -19,6 +19,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Presenter.BaseDiagram
 {
@@ -73,14 +74,14 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          IUserSettings userSettings,
          IMoBiContext context,
          IDiagramTask diagramTask,
-         IStartOptions runOptions)
+         IStartOptions runOptions, IContainer container)
          : base(view, layouter, dialogCreator, diagramModelFactory)
       {
          _context = context;
          _diagramTask = diagramTask;
          _userSettings = userSettings;
          LayoutConfiguration = userSettings.ForceLayoutConfigutation;
-         _diagramPopupMenu = new DiagramPopupMenuBase(this, runOptions);
+         _diagramPopupMenu = new DiagramPopupMenuBase(this, runOptions, container);
          _containerPopupMenu = _diagramPopupMenu;
          _neighborhoodPopupMenu = _diagramPopupMenu;
       }
