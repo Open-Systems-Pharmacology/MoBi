@@ -213,11 +213,13 @@ namespace MoBi.Presentation
       private IObserverBuildingBlock _observerBuildingBlock;
       private IEventGroupBuildingBlock _eventGroupBuildingBlock;
       private ISimulationSettings _simulationSettings;
+      private Module _module;
 
       protected override void Context()
       {
          base.Context();
          _project = A.Fake<IMoBiProject>();
+         _module = new Module();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
          _spatialStructure = A.Fake<IMoBiSpatialStructure>();
          _simulationSettings = A.Fake<ISimulationSettings>();
@@ -225,7 +227,7 @@ namespace MoBi.Presentation
          _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.Create<IMoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
-         A.CallTo(() => _context.Create<IMoBiReactionBuildingBlock>()).Returns(_moBiReactionBuildingBlock);
+         A.CallTo(() => _reactionBuildingBlockFactory.Create()).Returns(_moBiReactionBuildingBlock);
          A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).Returns(_spatialStructure);
          A.CallTo(() => _simulationSettingsFactory.CreateDefault()).Returns(_simulationSettings);
          _topContainer = A.Fake<IContainer>();
@@ -237,6 +239,7 @@ namespace MoBi.Presentation
          _eventGroupBuildingBlock = A.Fake<IEventGroupBuildingBlock>();
          A.CallTo(() => _context.Create<IEventGroupBuildingBlock>()).Returns(_eventGroupBuildingBlock);
          A.CallTo(() => _context.ObjectRepository).Returns(_objectBaseRepository);
+         A.CallTo(() => _context.Create<Module>()).Returns(_module);
       }
 
       protected override void Because()
@@ -251,6 +254,19 @@ namespace MoBi.Presentation
       }
 
       [Observation]
+      public void the_default_module_contains_appropriate_building_blocks()
+      {
+         _module.SpatialStructure.ShouldBeEqualTo(_spatialStructure);
+         _module.PassiveTransport.ShouldBeEqualTo(_passiveTransportBuildingBlock);
+         _module.EventGroup.ShouldBeEqualTo(_eventGroupBuildingBlock);
+         _module.Molecule.ShouldBeEqualTo(_moleculeBuildingBlock);
+         _module.Observer.ShouldBeEqualTo(_observerBuildingBlock);
+         _module.Reaction.ShouldBeEqualTo(_moBiReactionBuildingBlock);
+         _module.MoleculeStartValuesCollection.ShouldBeEmpty();
+         _module.ParameterStartValuesCollection.ShouldBeEmpty();
+      }
+
+      [Observation]
       public void should_have_created_default_project_entries()
       {
          A.CallTo(() => _context.Create<IMoleculeBuildingBlock>()).MustHaveHappened();
@@ -260,6 +276,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.Create<IEventGroupBuildingBlock>()).MustHaveHappened();
          A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).MustHaveHappened();
          A.CallTo(() => _simulationSettingsFactory.CreateDefault()).MustHaveHappened();
+         A.CallTo(() => _context.Create<Module>()).MustHaveHappened();
       }
 
       [Observation]
@@ -272,6 +289,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.Register(_observerBuildingBlock)).MustHaveHappened();
          A.CallTo(() => _context.Register(_eventGroupBuildingBlock)).MustHaveHappened();
          A.CallTo(() => _context.Register(_simulationSettings)).MustHaveHappened();
+         A.CallTo(() => _context.Register(_module)).MustHaveHappened();
       }
 
       [Observation]

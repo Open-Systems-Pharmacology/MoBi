@@ -38,6 +38,8 @@
          this.tbSpecies = new DevExpress.XtraEditors.TextEdit();
          this.tbMoleculeName = new DevExpress.XtraEditors.TextEdit();
          this.tbCategory = new DevExpress.XtraEditors.TextEdit();
+         this.lblPKSimVersion = new DevExpress.XtraEditors.LabelControl();
+         this.tbPKSimVersion = new DevExpress.XtraEditors.TextEdit();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
@@ -46,6 +48,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.tbSpecies.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbMoleculeName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbCategory.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbPKSimVersion.Properties)).BeginInit();
          this.SuspendLayout();
          // 
          // gridControl
@@ -53,11 +56,11 @@
          this.tablePanel.SetColumn(this.gridControl, 0);
          this.tablePanel.SetColumnSpan(this.gridControl, 2);
          this.gridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.gridControl.Location = new System.Drawing.Point(3, 81);
+         this.gridControl.Location = new System.Drawing.Point(3, 107);
          this.gridControl.MainView = this.gridView;
          this.gridControl.Name = "gridControl";
-         this.tablePanel.SetRow(this.gridControl, 3);
-         this.gridControl.Size = new System.Drawing.Size(831, 504);
+         this.tablePanel.SetRow(this.gridControl, 4);
+         this.gridControl.Size = new System.Drawing.Size(831, 478);
          this.gridControl.TabIndex = 0;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView});
@@ -81,6 +84,8 @@
          this.tablePanel.Columns.AddRange(new DevExpress.Utils.Layout.TablePanelColumn[] {
             new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 55F),
             new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 50F)});
+         this.tablePanel.Controls.Add(this.tbPKSimVersion);
+         this.tablePanel.Controls.Add(this.lblPKSimVersion);
          this.tablePanel.Controls.Add(this.lblCategory);
          this.tablePanel.Controls.Add(this.lblMoleculeName);
          this.tablePanel.Controls.Add(this.lblSpecies);
@@ -92,6 +97,7 @@
          this.tablePanel.Location = new System.Drawing.Point(0, 0);
          this.tablePanel.Name = "tablePanel";
          this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
@@ -162,6 +168,27 @@
          this.tbCategory.Size = new System.Drawing.Size(747, 20);
          this.tbCategory.TabIndex = 1;
          // 
+         // lblPKSimVersion
+         // 
+         this.tablePanel.SetColumn(this.lblPKSimVersion, 0);
+         this.lblPKSimVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.lblPKSimVersion.Location = new System.Drawing.Point(3, 81);
+         this.lblPKSimVersion.Name = "lblPKSimVersion";
+         this.tablePanel.SetRow(this.lblPKSimVersion, 3);
+         this.lblPKSimVersion.Size = new System.Drawing.Size(78, 20);
+         this.lblPKSimVersion.TabIndex = 7;
+         this.lblPKSimVersion.Text = "lblPKSimVersion";
+         // 
+         // tbPKSimVersion
+         // 
+         this.tablePanel.SetColumn(this.tbPKSimVersion, 1);
+         this.tbPKSimVersion.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.tbPKSimVersion.Location = new System.Drawing.Point(87, 81);
+         this.tbPKSimVersion.Name = "tbPKSimVersion";
+         this.tablePanel.SetRow(this.tbPKSimVersion, 3);
+         this.tbPKSimVersion.Size = new System.Drawing.Size(747, 20);
+         this.tbPKSimVersion.TabIndex = 8;
+         // 
          // ExpressionProfileBuildingBlockView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -178,6 +205,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.tbSpecies.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbMoleculeName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbCategory.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbPKSimVersion.Properties)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -192,5 +220,7 @@
         private DevExpress.XtraEditors.LabelControl lblCategory;
         private DevExpress.XtraEditors.LabelControl lblMoleculeName;
         private DevExpress.XtraEditors.LabelControl lblSpecies;
+        private DevExpress.XtraEditors.TextEdit tbPKSimVersion;
+        private DevExpress.XtraEditors.LabelControl lblPKSimVersion;
     }
 }

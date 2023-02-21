@@ -189,7 +189,7 @@ namespace MoBi.Presentation.Repositories
          .WithId(ButtonGroupIds.Tools);
 
       private IButtonGroup viewButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Views)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.BuildingBlockExplorerView)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ModuleExplorerView)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SimulationExplorerView)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.HistoryView)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ComparisonView)))

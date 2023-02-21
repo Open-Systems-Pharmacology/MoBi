@@ -90,7 +90,7 @@ namespace MoBi.Presentation.Presenter
 
       public void ChangeTransportName()
       {
-         _editTasks.ChangeTranportName(_transporterMoleculeContainer, BuildingBlock);
+         _editTasks.ChangeTransportName(_transporterMoleculeContainer, BuildingBlock);
          Edit(_transporterMoleculeContainer);
       }
 

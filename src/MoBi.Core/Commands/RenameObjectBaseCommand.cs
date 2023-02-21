@@ -1,22 +1,22 @@
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
    public class RenameObjectBaseCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
       private IObjectBase _objectBase;
-      private readonly string _newName;
+      protected readonly string _newName;
       public string OldName { get; private set; }
       public string ObjectId { get; private set; }
 
-      public RenameObjectBaseCommand(IObjectBase objectBase,string newName, IBuildingBlock buildingBlock):base(buildingBlock)
+      public RenameObjectBaseCommand(IObjectBase objectBase, string newName, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _objectBase = objectBase;
          _newName = newName;
@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new RenameObjectBaseCommand(_objectBase, OldName,_buildingBlock).AsInverseFor(this);
+         return new RenameObjectBaseCommand(_objectBase, OldName, _buildingBlock).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
@@ -39,6 +39,13 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+         RenameObjectBase(context);
+
+         context.PublishEvent(new RenamedEvent(_objectBase));
+      }
+
+      protected virtual void RenameObjectBase(IMoBiContext context)
+      {
          OldName = _objectBase.Name;
          _objectBase.Name = _newName;
          if (_objectBase.IsAnImplementationOf<IBuildingBlock>())
@@ -46,8 +53,6 @@ namespace MoBi.Core.Commands
             var renameBuildingBlockTask = context.Resolve<IRenameBuildingBlockTask>();
             renameBuildingBlockTask.RenameInSimulationUsingTemplateBuildingBlock(_objectBase.DowncastTo<IBuildingBlock>());
          }
-
-         context.PublishEvent(new RenamedEvent(_objectBase));
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

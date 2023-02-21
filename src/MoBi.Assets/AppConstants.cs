@@ -14,7 +14,7 @@ namespace MoBi.Assets
 {
    public static class AppConstants
    {
-      public static readonly int LayoutVersion = 24;
+      public static readonly int LayoutVersion = 25;
       public static readonly string NotMatch = "not tagged with";
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
@@ -88,6 +88,7 @@ namespace MoBi.Assets
       public static class DefaultNames
       {
          public static readonly string MoleculeBuildingBlock = "Molecules";
+         public static readonly string Module = "Module";
          public static readonly string ReactionBuildingBlock = "Reaction";
          public static readonly string SpatialStructure = "Organism";
          public static readonly string PassiveTransportBuildingBlock = "Passive Transports";
@@ -997,6 +998,7 @@ namespace MoBi.Assets
          public static readonly string ExportHistory = Captions.ExportHistory;
          public static readonly string StartPopulationSimulation = "Send Simulation to PK-Sim for Population Simulation...";
          public static readonly string BuildingBlockExplorer = "Building Blocks";
+         public static readonly string ModuleExplorer = "Modules";
          public static readonly string SimulationExplorer = "Simulations";
          public static readonly string New = "New";
          public static readonly string NewMolecule = AddNew(ObjectTypes.Molecule);
@@ -1611,6 +1613,7 @@ namespace MoBi.Assets
          public static readonly string AddIndividual = "Add Individual";
          public static readonly string Individuals = "Individuals";
          public static readonly string OriginData = "Origin Data";
+         public static readonly string PKSimVersion = "PK-Sim Version";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 
@@ -1839,6 +1842,9 @@ namespace MoBi.Assets
          public static readonly string EmptyAlias = "Alias has to be specified";
          public static readonly string AliasAlreadyUsed = "Alias is already in use";
          public static readonly string EmptyPath = "Path has to be specified";
+         public static readonly string SpeciesCannotBeEmpty = "Species cannot be empty";
+         public static readonly string MoleculeNameCannotBeEmpty = "Molecule name cannot be empty";
+         public static readonly string CategoryCannotBeEmpty = "Category cannot be empty";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
          {
@@ -1935,7 +1941,7 @@ namespace MoBi.Assets
       public static readonly string Undefined = "Undefined";
       public static readonly string PleaseSelectCurveInChartEditor = "Please select a curve from the chart editor to be displayed in the chart";
       public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN};
-
+      public static readonly string Clone = "Clone";
 
       public static string PathType(string pathTypeAsString)
       {

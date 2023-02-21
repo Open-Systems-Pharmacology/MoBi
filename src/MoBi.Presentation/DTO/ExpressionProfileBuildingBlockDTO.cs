@@ -18,5 +18,6 @@ namespace MoBi.Presentation.DTO
       public string Category => _buildingBlock.Category;
       public string MoleculeName => _buildingBlock.MoleculeName;
       public string NameType => _buildingBlock.Type.DisplayName;
+      public string PKSimVersion => _buildingBlock.PKSimVersion;
    }
 }

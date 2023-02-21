@@ -122,7 +122,7 @@ namespace MoBi.Assets
 
       public static class ViewRibbon
       {
-         public static readonly string ViewBBs = "Show or hide the building blocks explorer";
+         public static readonly string ViewModules = "Show or hide the module explorer";
          public static readonly string ViewSims = "Show or hide the simulations explorer";
          public static readonly string ViewsHistoryManager = "Show or hide the history";
          public static readonly string ViewSearch = "Show or hide the search window";

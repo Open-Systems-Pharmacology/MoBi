@@ -54,14 +54,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
       /// <summary>
-      ///    Clones the specified object with the name enterd by user.
+      ///    Clones the specified object with the name entered by user.
       /// </summary>
       /// <param name="buildingBlockToClone">The object to clone.</param>
       public IMoBiCommand Clone(TBuildingBlock buildingBlockToClone)
       {
-         var name = DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(AppConstants.CloneName(buildingBlockToClone)),
-               AppConstants.Captions.NewName,
-               AppConstants.CloneName(buildingBlockToClone), _editTask.GetForbiddenNames(buildingBlockToClone, Context.CurrentProject.All<TBuildingBlock>()));
+         var name = GetNewNameForClone(buildingBlockToClone);
 
          if (string.IsNullOrEmpty(name))
             return new MoBiEmptyCommand();
@@ -69,6 +67,14 @@ namespace MoBi.Presentation.Tasks.Interaction
          var clone = InteractionTask.Clone(buildingBlockToClone).WithName(name);
 
          return AddToProject(clone);
+      }
+
+      protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
+      {
+         var name = DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(AppConstants.CloneName(buildingBlockToClone)),
+            AppConstants.Captions.NewName,
+            AppConstants.CloneName(buildingBlockToClone), _editTask.GetForbiddenNames(buildingBlockToClone, Context.CurrentProject.All<TBuildingBlock>()));
+         return name;
       }
 
       public abstract IMoBiCommand Merge(TBuildingBlock buildingBlockToMerge, TBuildingBlock targetBuildingBlock);

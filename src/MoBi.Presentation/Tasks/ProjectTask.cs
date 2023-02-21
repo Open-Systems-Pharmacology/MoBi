@@ -5,6 +5,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -275,33 +276,47 @@ namespace MoBi.Presentation.Tasks
             return false;
 
          _mruProvider.Add(fileName);
-
+         
          notifyProjectLoaded();
+
          return true;
       }
 
       private void generateDefaultsInCurrentProject()
       {
-         addDefault<IMoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock);
-         addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create());
-         addDefault(AppConstants.DefaultNames.SpatialStructure, () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure));
-         addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock);
-         addDefault<IEventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock);
-         addDefault<IObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock);
+         var module = _context.Create<Module>();
+         module.Molecule = addDefault<IMoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock);
+         module.Reaction = addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create());
+         module.SpatialStructure = addDefault(AppConstants.DefaultNames.SpatialStructure, () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure));
+         module.PassiveTransport = addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock);
+         module.EventGroup = addDefault<IEventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock);
+         module.Observer = addDefault<IObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock);
+         module.WithName(AppConstants.DefaultNames.Module).WithIcon(ApplicationIcons.Folder.IconName);
+
+         addModule(module);
+
          addDefault(AppConstants.DefaultNames.SimulationSettings, _simulationSettingsFactory.CreateDefault);
       }
 
-      private void addDefault<T>(string defaultName) where T : class, IBuildingBlock
+      private void addModule(Module module)
       {
-         addDefault(defaultName, _context.Create<T>);
+         var project = _context.CurrentProject;
+         project.AddModule(module);
+         _context.Register(module);
       }
 
-      private void addDefault<T>(string defaultName, Func<T> buildingBlockCreator) where T : IBuildingBlock
+      private T addDefault<T>(string defaultName) where T : class, IBuildingBlock
+      {
+         return addDefault(defaultName, _context.Create<T>);
+      }
+
+      private T addDefault<T>(string defaultName, Func<T> buildingBlockCreator) where T : IBuildingBlock
       {
          var project = _context.CurrentProject;
          var buildingBlock = buildingBlockCreator().WithName(defaultName);
          project.AddBuildingBlock(buildingBlock);
          _context.Register(buildingBlock);
+         return buildingBlock;
       }
    }
 }
