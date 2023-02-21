@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Windows.Forms;
 using MoBi.Assets;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Container;
-using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.MenusAndBars;
 using MoBi.Presentation.UICommand;
@@ -187,6 +185,13 @@ namespace MoBi.Presentation.Repositories
            .WithDescription(ToolTips.ImportRibbon.LoadObservedData)
            .WithIcon(ApplicationIcons.PKMLLoad)
            .WithCommand<LoadDataRepositoryUICommand>(_container);
+         
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ModuleExplorer)
+            .WithId(MenuBarItemIds.ModuleExplorerView)
+            .WithIcon(ApplicationIcons.BuildingBlockExplorer)
+            .WithDescription(ToolTips.ViewRibbon.ViewModules)
+            .WithCommand<ShowModuleExplorerCommand>(_container)
+            .WithShortcut(Keys.Control | Keys.Shift | Keys.B);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.SimulationExplorer)
             .WithId(MenuBarItemIds.SimulationExplorerView)

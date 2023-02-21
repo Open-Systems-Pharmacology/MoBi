@@ -42,7 +42,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
-            .WithCommand(IoC.Resolve<RemoveModifierUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
+            .WithCommand(_container.Resolve<RemoveModifierUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
       }
    }
 }

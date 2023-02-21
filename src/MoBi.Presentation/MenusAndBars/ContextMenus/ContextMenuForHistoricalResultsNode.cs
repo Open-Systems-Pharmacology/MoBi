@@ -46,12 +46,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             _allMenuItems.Add(persitableCommand);
          }
 
-         var exportAllCommmand = IoC.Resolve<ExportSimulationResultsToExcelCommand>().InitializeWith(simulation, dataRepository);
+         var exportAllCommmand = _container.Resolve<ExportSimulationResultsToExcelCommand>().InitializeWith(simulation, dataRepository);
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportSimulationResultsToExcel)
             .WithCommand(exportAllCommmand)
             .WithIcon(ApplicationIcons.ObservedData));
 
-         var command = IoC.Resolve<RenameSimulationResultsUICommand>();
+         var command = _container.Resolve<RenameSimulationResultsUICommand>();
          command.Subject = dataRepository;
          command.Simulation = simulation;
 
