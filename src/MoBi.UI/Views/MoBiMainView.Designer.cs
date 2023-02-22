@@ -18,7 +18,7 @@ namespace MoBi.UI.Views
       {
          if (disposing && (components != null))
          {
-               components.Dispose();
+            components.Dispose();
          }
          base.Dispose(disposing);
       }
@@ -35,13 +35,15 @@ namespace MoBi.UI.Views
          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MoBiMainView));
          this.dockManager = new DevExpress.XtraBars.Docking.DockManager(this.components);
          this.panelContainer3 = new DevExpress.XtraBars.Docking.DockPanel();
-         this._panelJournal = new OSPSuite.UI.Controls.UxDockPanel();
-         this.controlContainer7 = new DevExpress.XtraBars.Docking.ControlContainer();
          this._panelSearch = new OSPSuite.UI.Controls.UxDockPanel();
          this.controlContainer3 = new DevExpress.XtraBars.Docking.ControlContainer();
+         this._panelJournal = new OSPSuite.UI.Controls.UxDockPanel();
+         this.controlContainer7 = new DevExpress.XtraBars.Docking.ControlContainer();
          this.panelContainer1 = new DevExpress.XtraBars.Docking.DockPanel();
          this._panelBuildingBlockExplorer = new OSPSuite.UI.Controls.UxDockPanel();
          this.dockPanel1_Container = new DevExpress.XtraBars.Docking.ControlContainer();
+         this._panelModuleExplorer = new OSPSuite.UI.Controls.UxDockPanel();
+         this.controlContainer8 = new DevExpress.XtraBars.Docking.ControlContainer();
          this._panelSimulationExplorer = new OSPSuite.UI.Controls.UxDockPanel();
          this.controlContainer1 = new DevExpress.XtraBars.Docking.ControlContainer();
          this.panelContainer2 = new DevExpress.XtraBars.Docking.DockPanel();
@@ -63,10 +65,11 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.xtraTabbedMdiManager)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dockManager)).BeginInit();
          this.panelContainer3.SuspendLayout();
-         this._panelJournal.SuspendLayout();
          this._panelSearch.SuspendLayout();
+         this._panelJournal.SuspendLayout();
          this.panelContainer1.SuspendLayout();
          this._panelBuildingBlockExplorer.SuspendLayout();
+         this._panelModuleExplorer.SuspendLayout();
          this._panelSimulationExplorer.SuspendLayout();
          this.panelContainer2.SuspendLayout();
          this._panelJournalDiagram.SuspendLayout();
@@ -96,46 +99,27 @@ namespace MoBi.UI.Views
          // 
          // panelContainer3
          // 
-         this.panelContainer3.ActiveChild = this._panelJournal;
+         this.panelContainer3.ActiveChild = this._panelSearch;
          this.panelContainer3.Controls.Add(this._panelJournal);
          this.panelContainer3.Controls.Add(this._panelSearch);
          this.panelContainer3.Dock = DevExpress.XtraBars.Docking.DockingStyle.Right;
          this.panelContainer3.ID = new System.Guid("bc71e420-92ce-49f2-82a9-a99eea92af7f");
-         this.panelContainer3.Location = new System.Drawing.Point(955, 49);
+         this.panelContainer3.Location = new System.Drawing.Point(955, 58);
          this.panelContainer3.Name = "panelContainer3";
          this.panelContainer3.OriginalSize = new System.Drawing.Size(272, 200);
-         this.panelContainer3.Size = new System.Drawing.Size(272, 753);
+         this.panelContainer3.Size = new System.Drawing.Size(272, 751);
          this.panelContainer3.Tabbed = true;
          this.panelContainer3.Text = "panelContainer3";
-         // 
-         // _panelJournal
-         // 
-         this._panelJournal.Controls.Add(this.controlContainer7);
-         this._panelJournal.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
-         this._panelJournal.ID = new System.Guid("ddba7258-95af-4806-86de-7b6330f476ac");
-         this._panelJournal.Location = new System.Drawing.Point(4, 23);
-         this._panelJournal.Name = "_panelJournal";
-         this._panelJournal.OriginalSize = new System.Drawing.Size(200, 200);
-         this._panelJournal.Size = new System.Drawing.Size(264, 699);
-         this._panelJournal.Text = "_panelJournal";
-         // 
-         // controlContainer7
-         // 
-         this.defaultToolTipController.SetAllowHtmlText(this.controlContainer7, DevExpress.Utils.DefaultBoolean.Default);
-         this.controlContainer7.Location = new System.Drawing.Point(0, 0);
-         this.controlContainer7.Name = "controlContainer7";
-         this.controlContainer7.Size = new System.Drawing.Size(264, 699);
-         this.controlContainer7.TabIndex = 0;
          // 
          // _panelSearch
          // 
          this._panelSearch.Controls.Add(this.controlContainer3);
          this._panelSearch.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
          this._panelSearch.ID = new System.Guid("e6d3b85b-98f4-46b5-94f7-b1e106c56515");
-         this._panelSearch.Location = new System.Drawing.Point(4, 23);
+         this._panelSearch.Location = new System.Drawing.Point(4, 26);
          this._panelSearch.Name = "_panelSearch";
-         this._panelSearch.OriginalSize = new System.Drawing.Size(200, 200);
-         this._panelSearch.Size = new System.Drawing.Size(264, 699);
+         this._panelSearch.OriginalSize = new System.Drawing.Size(264, 699);
+         this._panelSearch.Size = new System.Drawing.Size(265, 696);
          this._panelSearch.Text = "_panelSearch";
          // 
          // controlContainer3
@@ -143,21 +127,41 @@ namespace MoBi.UI.Views
          this.defaultToolTipController.SetAllowHtmlText(this.controlContainer3, DevExpress.Utils.DefaultBoolean.Default);
          this.controlContainer3.Location = new System.Drawing.Point(0, 0);
          this.controlContainer3.Name = "controlContainer3";
-         this.controlContainer3.Size = new System.Drawing.Size(264, 699);
+         this.controlContainer3.Size = new System.Drawing.Size(265, 696);
          this.controlContainer3.TabIndex = 0;
+         // 
+         // _panelJournal
+         // 
+         this._panelJournal.Controls.Add(this.controlContainer7);
+         this._panelJournal.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
+         this._panelJournal.ID = new System.Guid("ddba7258-95af-4806-86de-7b6330f476ac");
+         this._panelJournal.Location = new System.Drawing.Point(4, 26);
+         this._panelJournal.Name = "_panelJournal";
+         this._panelJournal.OriginalSize = new System.Drawing.Size(264, 699);
+         this._panelJournal.Size = new System.Drawing.Size(265, 696);
+         this._panelJournal.Text = "_panelJournal";
+         // 
+         // controlContainer7
+         // 
+         this.defaultToolTipController.SetAllowHtmlText(this.controlContainer7, DevExpress.Utils.DefaultBoolean.Default);
+         this.controlContainer7.Location = new System.Drawing.Point(0, 0);
+         this.controlContainer7.Name = "controlContainer7";
+         this.controlContainer7.Size = new System.Drawing.Size(265, 696);
+         this.controlContainer7.TabIndex = 0;
          // 
          // panelContainer1
          // 
          this.panelContainer1.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(236)))), ((int)(((byte)(239)))));
          this.panelContainer1.Appearance.Options.UseBackColor = true;
          this.panelContainer1.Controls.Add(this._panelBuildingBlockExplorer);
+         this.panelContainer1.Controls.Add(this._panelModuleExplorer);
          this.panelContainer1.Controls.Add(this._panelSimulationExplorer);
          this.panelContainer1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Left;
          this.panelContainer1.ID = new System.Guid("38102c06-df38-46bd-96b7-ca9a31525bba");
-         this.panelContainer1.Location = new System.Drawing.Point(0, 49);
+         this.panelContainer1.Location = new System.Drawing.Point(0, 58);
          this.panelContainer1.Name = "panelContainer1";
          this.panelContainer1.OriginalSize = new System.Drawing.Size(200, 200);
-         this.panelContainer1.Size = new System.Drawing.Size(200, 753);
+         this.panelContainer1.Size = new System.Drawing.Size(200, 751);
          this.panelContainer1.Text = "panelContainer1";
          // 
          // _panelBuildingBlockExplorer
@@ -169,17 +173,38 @@ namespace MoBi.UI.Views
          this._panelBuildingBlockExplorer.ID = new System.Guid("ab131c6d-2069-408e-9bba-7124cb69aac3");
          this._panelBuildingBlockExplorer.Location = new System.Drawing.Point(0, 0);
          this._panelBuildingBlockExplorer.Name = "_panelBuildingBlockExplorer";
-         this._panelBuildingBlockExplorer.OriginalSize = new System.Drawing.Size(200, 264);
-         this._panelBuildingBlockExplorer.Size = new System.Drawing.Size(200, 376);
+         this._panelBuildingBlockExplorer.OriginalSize = new System.Drawing.Size(200, 376);
+         this._panelBuildingBlockExplorer.Size = new System.Drawing.Size(200, 250);
          this._panelBuildingBlockExplorer.Text = "_panelBuildingBlockExplorer";
          // 
          // dockPanel1_Container
          // 
          this.defaultToolTipController.SetAllowHtmlText(this.dockPanel1_Container, DevExpress.Utils.DefaultBoolean.Default);
-         this.dockPanel1_Container.Location = new System.Drawing.Point(4, 23);
+         this.dockPanel1_Container.Location = new System.Drawing.Point(3, 26);
          this.dockPanel1_Container.Name = "dockPanel1_Container";
-         this.dockPanel1_Container.Size = new System.Drawing.Size(192, 349);
+         this.dockPanel1_Container.Size = new System.Drawing.Size(193, 220);
          this.dockPanel1_Container.TabIndex = 0;
+         // 
+         // _panelModuleExplorer
+         // 
+         this._panelModuleExplorer.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(236)))), ((int)(((byte)(239)))));
+         this._panelModuleExplorer.Appearance.Options.UseBackColor = true;
+         this._panelModuleExplorer.Controls.Add(this.controlContainer8);
+         this._panelModuleExplorer.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
+         this._panelModuleExplorer.ID = new System.Guid("a18c4d16-e6c8-46db-bcf9-e4a27c56f346");
+         this._panelModuleExplorer.Location = new System.Drawing.Point(0, 250);
+         this._panelModuleExplorer.Name = "_panelModuleExplorer";
+         this._panelModuleExplorer.OriginalSize = new System.Drawing.Size(200, 200);
+         this._panelModuleExplorer.Size = new System.Drawing.Size(200, 250);
+         this._panelModuleExplorer.Text = "_panelModuleExplorer";
+         // 
+         // controlContainer8
+         // 
+         this.defaultToolTipController.SetAllowHtmlText(this.controlContainer8, DevExpress.Utils.DefaultBoolean.Default);
+         this.controlContainer8.Location = new System.Drawing.Point(3, 26);
+         this.controlContainer8.Name = "controlContainer8";
+         this.controlContainer8.Size = new System.Drawing.Size(193, 220);
+         this.controlContainer8.TabIndex = 0;
          // 
          // _panelSimulationExplorer
          // 
@@ -188,18 +213,18 @@ namespace MoBi.UI.Views
          this._panelSimulationExplorer.Controls.Add(this.controlContainer1);
          this._panelSimulationExplorer.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
          this._panelSimulationExplorer.ID = new System.Guid("82f18ed9-e0cb-4b39-9b61-baa05d838a8c");
-         this._panelSimulationExplorer.Location = new System.Drawing.Point(0, 376);
+         this._panelSimulationExplorer.Location = new System.Drawing.Point(0, 500);
          this._panelSimulationExplorer.Name = "_panelSimulationExplorer";
-         this._panelSimulationExplorer.OriginalSize = new System.Drawing.Size(200, 264);
-         this._panelSimulationExplorer.Size = new System.Drawing.Size(200, 377);
+         this._panelSimulationExplorer.OriginalSize = new System.Drawing.Size(200, 377);
+         this._panelSimulationExplorer.Size = new System.Drawing.Size(200, 251);
          this._panelSimulationExplorer.Text = "_panelSimulationExplorer";
          // 
          // controlContainer1
          // 
          this.defaultToolTipController.SetAllowHtmlText(this.controlContainer1, DevExpress.Utils.DefaultBoolean.Default);
-         this.controlContainer1.Location = new System.Drawing.Point(4, 23);
+         this.controlContainer1.Location = new System.Drawing.Point(3, 26);
          this.controlContainer1.Name = "controlContainer1";
-         this.controlContainer1.Size = new System.Drawing.Size(192, 350);
+         this.controlContainer1.Size = new System.Drawing.Size(193, 222);
          this.controlContainer1.TabIndex = 0;
          // 
          // panelContainer2
@@ -212,7 +237,7 @@ namespace MoBi.UI.Views
          this.panelContainer2.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom;
          this.panelContainer2.FloatVertical = true;
          this.panelContainer2.ID = new System.Guid("6dced7fd-e36c-4393-b426-bcaf8926773c");
-         this.panelContainer2.Location = new System.Drawing.Point(200, 602);
+         this.panelContainer2.Location = new System.Drawing.Point(200, 609);
          this.panelContainer2.Name = "panelContainer2";
          this.panelContainer2.OriginalSize = new System.Drawing.Size(200, 200);
          this.panelContainer2.Size = new System.Drawing.Size(755, 200);
@@ -225,10 +250,10 @@ namespace MoBi.UI.Views
          this._panelJournalDiagram.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
          this._panelJournalDiagram.FloatVertical = true;
          this._panelJournalDiagram.ID = new System.Guid("d848fbb3-7f05-4dff-bf90-562918f8d25d");
-         this._panelJournalDiagram.Location = new System.Drawing.Point(4, 23);
+         this._panelJournalDiagram.Location = new System.Drawing.Point(3, 27);
          this._panelJournalDiagram.Name = "_panelJournalDiagram";
-         this._panelJournalDiagram.OriginalSize = new System.Drawing.Size(200, 200);
-         this._panelJournalDiagram.Size = new System.Drawing.Size(747, 146);
+         this._panelJournalDiagram.OriginalSize = new System.Drawing.Size(747, 146);
+         this._panelJournalDiagram.Size = new System.Drawing.Size(749, 144);
          this._panelJournalDiagram.Text = "_panelJournalDiagram";
          // 
          // controlContainer6
@@ -236,7 +261,7 @@ namespace MoBi.UI.Views
          this.defaultToolTipController.SetAllowHtmlText(this.controlContainer6, DevExpress.Utils.DefaultBoolean.Default);
          this.controlContainer6.Location = new System.Drawing.Point(0, 0);
          this.controlContainer6.Name = "controlContainer6";
-         this.controlContainer6.Size = new System.Drawing.Size(747, 146);
+         this.controlContainer6.Size = new System.Drawing.Size(749, 144);
          this.controlContainer6.TabIndex = 0;
          // 
          // _panelHistoryBrowser
@@ -247,10 +272,10 @@ namespace MoBi.UI.Views
          this._panelHistoryBrowser.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
          this._panelHistoryBrowser.FloatVertical = true;
          this._panelHistoryBrowser.ID = new System.Guid("7d442645-69c2-404d-aefc-4b4c044c3a48");
-         this._panelHistoryBrowser.Location = new System.Drawing.Point(4, 23);
+         this._panelHistoryBrowser.Location = new System.Drawing.Point(3, 27);
          this._panelHistoryBrowser.Name = "_panelHistoryBrowser";
-         this._panelHistoryBrowser.OriginalSize = new System.Drawing.Size(1019, 146);
-         this._panelHistoryBrowser.Size = new System.Drawing.Size(747, 146);
+         this._panelHistoryBrowser.OriginalSize = new System.Drawing.Size(747, 146);
+         this._panelHistoryBrowser.Size = new System.Drawing.Size(749, 144);
          this._panelHistoryBrowser.Text = "_panelHistoryBrowser";
          // 
          // controlContainer2
@@ -258,7 +283,7 @@ namespace MoBi.UI.Views
          this.defaultToolTipController.SetAllowHtmlText(this.controlContainer2, DevExpress.Utils.DefaultBoolean.Default);
          this.controlContainer2.Location = new System.Drawing.Point(0, 0);
          this.controlContainer2.Name = "controlContainer2";
-         this.controlContainer2.Size = new System.Drawing.Size(747, 146);
+         this.controlContainer2.Size = new System.Drawing.Size(749, 144);
          this.controlContainer2.TabIndex = 0;
          // 
          // _panelWarningList
@@ -266,10 +291,10 @@ namespace MoBi.UI.Views
          this._panelWarningList.Controls.Add(this.controlContainer4);
          this._panelWarningList.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
          this._panelWarningList.ID = new System.Guid("1f0ce5a0-aede-4240-b15c-7191ac1dc039");
-         this._panelWarningList.Location = new System.Drawing.Point(4, 23);
+         this._panelWarningList.Location = new System.Drawing.Point(3, 27);
          this._panelWarningList.Name = "_panelWarningList";
-         this._panelWarningList.OriginalSize = new System.Drawing.Size(1019, 146);
-         this._panelWarningList.Size = new System.Drawing.Size(747, 146);
+         this._panelWarningList.OriginalSize = new System.Drawing.Size(747, 146);
+         this._panelWarningList.Size = new System.Drawing.Size(749, 144);
          this._panelWarningList.Text = "_panelWarningList";
          // 
          // controlContainer4
@@ -277,7 +302,7 @@ namespace MoBi.UI.Views
          this.defaultToolTipController.SetAllowHtmlText(this.controlContainer4, DevExpress.Utils.DefaultBoolean.Default);
          this.controlContainer4.Location = new System.Drawing.Point(0, 0);
          this.controlContainer4.Name = "controlContainer4";
-         this.controlContainer4.Size = new System.Drawing.Size(747, 146);
+         this.controlContainer4.Size = new System.Drawing.Size(749, 144);
          this.controlContainer4.TabIndex = 0;
          // 
          // _panelComparison
@@ -286,10 +311,10 @@ namespace MoBi.UI.Views
          this._panelComparison.Dock = DevExpress.XtraBars.Docking.DockingStyle.Fill;
          this._panelComparison.FloatVertical = true;
          this._panelComparison.ID = new System.Guid("4885d682-375e-43bc-befc-dda4c7d6dd87");
-         this._panelComparison.Location = new System.Drawing.Point(4, 23);
+         this._panelComparison.Location = new System.Drawing.Point(3, 27);
          this._panelComparison.Name = "_panelComparison";
-         this._panelComparison.OriginalSize = new System.Drawing.Size(1019, 146);
-         this._panelComparison.Size = new System.Drawing.Size(747, 146);
+         this._panelComparison.OriginalSize = new System.Drawing.Size(747, 146);
+         this._panelComparison.Size = new System.Drawing.Size(749, 144);
          this._panelComparison.Text = "_panelComparison";
          // 
          // controlContainer5
@@ -297,32 +322,32 @@ namespace MoBi.UI.Views
          this.defaultToolTipController.SetAllowHtmlText(this.controlContainer5, DevExpress.Utils.DefaultBoolean.Default);
          this.controlContainer5.Location = new System.Drawing.Point(0, 0);
          this.controlContainer5.Name = "controlContainer5";
-         this.controlContainer5.Size = new System.Drawing.Size(747, 146);
+         this.controlContainer5.Size = new System.Drawing.Size(749, 144);
          this.controlContainer5.TabIndex = 0;
          // 
          // ribbonStatusBar1
          // 
-         this.ribbonStatusBar1.Location = new System.Drawing.Point(0, 802);
+         this.ribbonStatusBar1.Location = new System.Drawing.Point(0, 809);
          this.ribbonStatusBar1.Name = "ribbonStatusBar1";
          this.ribbonStatusBar1.Ribbon = this.ribbonControl;
-         this.ribbonStatusBar1.Size = new System.Drawing.Size(1227, 31);
+         this.ribbonStatusBar1.Size = new System.Drawing.Size(1227, 24);
          // 
          // ribbonControl
          // 
          this.ribbonControl.AllowTrimPageText = false;
          this.ribbonControl.ApplicationButtonDropDownControl = this.applicationMenu;
+         this.ribbonControl.ApplicationButtonImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("ribbonControl.ApplicationButtonImageOptions.Image")));
          this.ribbonControl.ApplicationButtonText = null;
-         this.ribbonControl.ApplicationIcon = ((System.Drawing.Bitmap)(resources.GetObject("ribbonControl.ApplicationIcon")));
          this.ribbonControl.AutoSizeItems = true;
-         this.ribbonControl.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
          this.ribbonControl.ExpandCollapseItem.Id = 0;
          this.ribbonControl.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
+            this.ribbonControl.SearchEditItem,
             this.ribbonControl.ExpandCollapseItem});
          this.ribbonControl.Location = new System.Drawing.Point(0, 0);
          this.ribbonControl.MaxItemId = 1;
          this.ribbonControl.Name = "ribbonControl";
          this.ribbonControl.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.Office2010;
-         this.ribbonControl.Size = new System.Drawing.Size(1227, 49);
+         this.ribbonControl.Size = new System.Drawing.Size(1227, 58);
          this.ribbonControl.StatusBar = this.ribbonStatusBar1;
          // 
          // applicationMenu
@@ -362,6 +387,7 @@ namespace MoBi.UI.Views
          // labelControl1
          // 
          this.labelControl1.Appearance.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+         this.labelControl1.Appearance.Options.UseFont = true;
          this.labelControl1.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
          this.labelControl1.Dock = System.Windows.Forms.DockStyle.Top;
          this.labelControl1.LineLocation = DevExpress.XtraEditors.LineLocation.Bottom;
@@ -395,7 +421,7 @@ namespace MoBi.UI.Views
          this.Controls.Add(this.panelContainer3);
          this.Controls.Add(this.ribbonStatusBar1);
          this.Controls.Add(this.ribbonControl);
-         this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+         this.IconOptions.Icon = ((System.Drawing.Icon)(resources.GetObject("MoBiMainView.IconOptions.Icon")));
          this.Name = "MoBiMainView";
          this.Ribbon = this.ribbonControl;
          this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -410,10 +436,11 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.xtraTabbedMdiManager)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dockManager)).EndInit();
          this.panelContainer3.ResumeLayout(false);
-         this._panelJournal.ResumeLayout(false);
          this._panelSearch.ResumeLayout(false);
+         this._panelJournal.ResumeLayout(false);
          this.panelContainer1.ResumeLayout(false);
          this._panelBuildingBlockExplorer.ResumeLayout(false);
+         this._panelModuleExplorer.ResumeLayout(false);
          this._panelSimulationExplorer.ResumeLayout(false);
          this.panelContainer2.ResumeLayout(false);
          this._panelJournalDiagram.ResumeLayout(false);
@@ -460,5 +487,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraBars.Docking.DockPanel panelContainer3;
       private OSPSuite.UI.Controls.UxDockPanel _panelJournal;
       private DevExpress.XtraBars.Docking.ControlContainer controlContainer7;
+      private OSPSuite.UI.Controls.UxDockPanel _panelModuleExplorer;
+      private DevExpress.XtraBars.Docking.ControlContainer controlContainer8;
    }
 }

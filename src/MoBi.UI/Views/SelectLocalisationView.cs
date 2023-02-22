@@ -40,12 +40,12 @@ namespace MoBi.UI.Views
          }
       }
 
-      public IObjectBaseDTO Selected
+      public ObjectBaseDTO Selected
       {
-         get { return SelectedNode.TagAsObject as IObjectBaseDTO; }
+         get { return SelectedNode.TagAsObject as ObjectBaseDTO; }
       }
 
-      public void Show(List<IObjectBaseDTO> dtos)
+      public void Show(List<ObjectBaseDTO> dtos)
       {
          foreach (var dto in dtos)
          {

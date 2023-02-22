@@ -73,6 +73,7 @@ namespace MoBi.Assets
          public static readonly string CreateEventGroupsBB = "Create a new Event Groups Building Block";
          public static readonly string CreateObserversBB = "Create a new Observers Building Block";
          public static readonly string CreateSimulationSettingsBB = "Create a new Simulation Settings Building Block";
+         public static readonly string CreateModule = "Create a new Module";
       }
 
       public static class EditRibbon
@@ -122,7 +123,7 @@ namespace MoBi.Assets
 
       public static class ViewRibbon
       {
-         public static readonly string ViewBBs = "Show or hide the building blocks explorer";
+         public static readonly string ViewModules = "Show or hide the module explorer";
          public static readonly string ViewSims = "Show or hide the simulations explorer";
          public static readonly string ViewsHistoryManager = "Show or hide the history";
          public static readonly string ViewSearch = "Show or hide the search window";

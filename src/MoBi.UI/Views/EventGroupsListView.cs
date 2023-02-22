@@ -64,7 +64,7 @@ namespace MoBi.UI.Views
             {
                _presenter.CreatePopupMenuFor((IViewItem) node.TagAsObject).At(e.Location);
             }
-            _presenter.Select(node.TagAsObject.DowncastTo<IObjectBaseDTO>());
+            _presenter.Select(node.TagAsObject.DowncastTo<ObjectBaseDTO>());
          });
       }
 

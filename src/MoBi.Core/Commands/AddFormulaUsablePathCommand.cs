@@ -8,11 +8,11 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
-   public class AddFormulaUsablePathCommand : AddItemCommand<IFormulaUsablePath, IFormula, IBuildingBlock>
+   public class AddFormulaUsablePathCommand : AddItemCommand<FormulaUsablePath, IFormula, IBuildingBlock>
    {
-      private readonly IFormulaUsablePath _pathToAdd;
+      private readonly FormulaUsablePath _pathToAdd;
 
-      public AddFormulaUsablePathCommand(IFormula parent, IFormulaUsablePath itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
+      public AddFormulaUsablePathCommand(IFormula parent, FormulaUsablePath itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
       {
          _pathToAdd = itemToAdd;
       }

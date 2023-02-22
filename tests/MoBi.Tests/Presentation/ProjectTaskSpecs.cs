@@ -49,8 +49,8 @@ namespace MoBi.Presentation
          _simulationSettingsFactory = A.Fake<ISimulationSettingsFactory>();
          _sbmlTask = A.Fake<ISbmlTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
-         sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _spatialStructureFactory, _heavyWorkManager, _simulationSettingsFactory, 
-            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _reactionBuildingBlockFactory);
+         sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _heavyWorkManager, 
+            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask);
       }
    }
 
@@ -225,7 +225,7 @@ namespace MoBi.Presentation
          _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.Create<IMoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
-         A.CallTo(() => _context.Create<IMoBiReactionBuildingBlock>()).Returns(_moBiReactionBuildingBlock);
+         A.CallTo(() => _reactionBuildingBlockFactory.Create()).Returns(_moBiReactionBuildingBlock);
          A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).Returns(_spatialStructure);
          A.CallTo(() => _simulationSettingsFactory.CreateDefault()).Returns(_simulationSettings);
          _topContainer = A.Fake<IContainer>();
@@ -248,30 +248,6 @@ namespace MoBi.Presentation
       public void should_tell_context_to_renew()
       {
          A.CallTo(() => _serializationTask.NewProject()).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_have_created_default_project_entries()
-      {
-         A.CallTo(() => _context.Create<IMoleculeBuildingBlock>()).MustHaveHappened();
-         A.CallTo(() => _reactionBuildingBlockFactory.Create()).MustHaveHappened();
-         A.CallTo(() => _context.Create<IPassiveTransportBuildingBlock>()).MustHaveHappened();
-         A.CallTo(() => _context.Create<IObserverBuildingBlock>()).MustHaveHappened();
-         A.CallTo(() => _context.Create<IEventGroupBuildingBlock>()).MustHaveHappened();
-         A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).MustHaveHappened();
-         A.CallTo(() => _simulationSettingsFactory.CreateDefault()).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_have_registered_default_project_entries()
-      {
-         A.CallTo(() => _context.Register(_moleculeBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _reactionBuildingBlockFactory.Create()).MustHaveHappened();
-         A.CallTo(() => _context.Register(_spatialStructure)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_passiveTransportBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_observerBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_eventGroupBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_simulationSettings)).MustHaveHappened();
       }
 
       [Observation]

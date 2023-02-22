@@ -11,7 +11,7 @@ namespace MoBi.UI.Views
 {
    public partial class EditBaseInfoView : BaseUserControl, IView<ICanEditPropertiesPresenter>
    {
-      private ScreenBinder<IObjectBaseDTO> _screenBinder;
+      private ScreenBinder<ObjectBaseDTO> _screenBinder;
       private ICanEditPropertiesPresenter _presenter;
       private bool _readOnly;
 
@@ -24,13 +24,13 @@ namespace MoBi.UI.Views
 
       private void initialiseBinding()
       {
-         _screenBinder = new ScreenBinder<IObjectBaseDTO>();
+         _screenBinder = new ScreenBinder<ObjectBaseDTO>();
          _screenBinder.Bind(item => item.Description).To(htmlEditor).OnValueUpdating += onPropertySet;
          _screenBinder.Bind(item => item.Name).To(bttxtName).OnValueUpdating += onPropertySet;
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
-      private void onPropertySet<T>(IObjectBaseDTO arg1, PropertyValueSetEventArgs<T> arg2)
+      private void onPropertySet<T>(ObjectBaseDTO arg1, PropertyValueSetEventArgs<T> arg2)
       {
          _presenter.SetPropertyValueFromView(arg2.PropertyName, arg2.NewValue, arg2.OldValue);
       }
@@ -51,7 +51,7 @@ namespace MoBi.UI.Views
          }
       }
 
-      public void BindToSource(IObjectBaseDTO dto)
+      public void BindToSource(ObjectBaseDTO dto)
       {
          _screenBinder.BindToSource(dto);
          bttxtName.Properties.ReadOnly = !dto.Name.IsNullOrEmpty();

@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Presenter
       ///    Called by the view when item is selected
       /// </summary>
       /// <param name="dto"></param>
-      void Select(IObjectBaseDTO dto);
+      void Select(ObjectBaseDTO dto);
 
       IMoleculeBuildingBlock MoleculeBuildingBlock { get; }
    }
@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Presenter
          contextMenu.Show(_view, popupLocation);
       }
 
-      public virtual void Select(IObjectBaseDTO dtoObjectBase)
+      public virtual void Select(ObjectBaseDTO dtoObjectBase)
       {
          if (Equals(dtoObjectBase, _favoritesNode.TagAsObject))
             raiseFavoritesSelectedEvent();
@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new FavoritesSelectedEvent(MoleculeBuildingBlock));
       }
 
-      private void raiseEntitySelectedEvent(IObjectBaseDTO objectBaseDTO)
+      private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
          var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
          _context.PublishEvent(new EntitySelectedEvent(objectBase, this));

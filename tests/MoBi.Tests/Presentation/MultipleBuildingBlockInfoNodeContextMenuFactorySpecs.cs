@@ -8,6 +8,7 @@ using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Nodes;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation
 {
@@ -16,13 +17,15 @@ namespace MoBi.Presentation
       private IMoBiContext _context;
       protected List<ITreeNode> _treeNodes;
       protected IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> _presenter;
+      private IContainer _container;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
          _treeNodes = new List<ITreeNode>();
          _presenter = A.Fake<IPresenterWithContextMenu<IReadOnlyList<ITreeNode>>>();
-         sut = new MultipleBuildingBlockInfoNodeContextMenuFactory(_context);
+         _container = A.Fake<IContainer>();
+         sut = new MultipleBuildingBlockInfoNodeContextMenuFactory(_context, _container);
       }
    }
 

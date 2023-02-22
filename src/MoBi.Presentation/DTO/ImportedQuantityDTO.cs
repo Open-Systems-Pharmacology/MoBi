@@ -12,7 +12,7 @@ namespace MoBi.Presentation.DTO
       public Unit DisplayUnit { get; set; }
       public bool IsPresent { get; set; }
       public double QuantityInBaseUnit { get; set; }
-      public IObjectPath ContainerPath { get; set; }
+      public ObjectPath ContainerPath { get; set; }
       public string Name { get; set; }
       public IDimension Dimension { get; set; }
       public double ScaleDivisor { get; set; }
@@ -27,10 +27,7 @@ namespace MoBi.Presentation.DTO
       /// </summary>
       public bool SkipImport { set; get; }
 
-      public IObjectPath Path
-      {
-         get { return ContainerPath.Clone<IObjectPath>().AndAdd(Name); }
-      }
+      public ObjectPath Path => ContainerPath.Clone<ObjectPath>().AndAdd(Name);
 
       public void SetWarning(DataRow row, int rowIndex, string suggestion)
       {

@@ -3,7 +3,6 @@ using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.UICommand;
-using MoBi.Presentation.Views;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -15,7 +14,7 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
 {
    public class PopupMenuFullContainerWithParametersNode : PopupMenuFullEntityNode<IContainer>
    {
-      public PopupMenuFullContainerWithParametersNode(IMoBiBaseDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions) : base(presenter, context, runOptions)
+      public PopupMenuFullContainerWithParametersNode(IMoBiBaseDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions, OSPSuite.Utility.Container.IContainer container) : base(presenter, context, runOptions, container)
       {
       }
 
@@ -24,23 +23,23 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
          var container = Get<IContainer>(node.Id);
 
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Container))
-            .WithCommandFor<AddNewCommandFor<IContainer, IContainer>, IContainer>(container)
+            .WithCommandFor<AddNewCommandFor<IContainer, IContainer>, IContainer>(container, _container)
             .WithIcon(ApplicationIcons.ContainerAdd));
 
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.Container))
-            .WithCommandFor<AddExistingCommandFor<IContainer, IContainer>, IContainer>(container)
+            .WithCommandFor<AddExistingCommandFor<IContainer, IContainer>, IContainer>(container, _container)
             .WithIcon(ApplicationIcons.ContainerLoad));
 
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Parameter))
-            .WithCommandFor<AddNewCommandFor<IContainer, IParameter>, IContainer>(container)
+            .WithCommandFor<AddNewCommandFor<IContainer, IParameter>, IContainer>(container, _container)
             .WithIcon(ApplicationIcons.Parameters));
 
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.Parameter))
-            .WithCommandFor<AddExistingCommandFor<IContainer, IParameter>, IContainer>(container)
+            .WithCommandFor<AddExistingCommandFor<IContainer, IParameter>, IContainer>(container, _container)
             .WithIcon(ApplicationIcons.PKMLLoad));
 
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.DistributedParameter))
-            .WithCommandFor<AddNewCommandFor<IContainer, IDistributedParameter>, IContainer>(container)
+            .WithCommandFor<AddNewCommandFor<IContainer, IDistributedParameter>, IContainer>(container, _container)
             .WithIcon(ApplicationIcons.ParameterDistribution));
 
          base.SetModelMenuItems(contextMenuView, containerBase, node);
@@ -49,7 +48,7 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
          {
             contextMenuView.RemoveMenuItem(AppConstants.MenuNames.Delete);
             contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-               .WithCommandFor<RemoveTopContainerCommand, IContainer>(Get<IContainer>(node.Id))
+               .WithCommandFor<RemoveTopContainerCommand, IContainer>(Get<IContainer>(node.Id), _container)
                .WithIcon(ApplicationIcons.Delete));
          }
       }
@@ -64,7 +63,7 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
 
    public class PopupMenuSpaceDiagram : PopupMenuFullBaseDiagram
    {
-      public PopupMenuSpaceDiagram(IMoBiBaseDiagramPresenter presenter, IStartOptions runOptions) : base(presenter, runOptions)
+      public PopupMenuSpaceDiagram(IMoBiBaseDiagramPresenter presenter, IStartOptions runOptions, OSPSuite.Utility.Container.IContainer container) : base(presenter, runOptions, container)
       {
       }
 

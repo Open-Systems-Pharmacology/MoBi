@@ -16,7 +16,7 @@ namespace MoBi.Core.Service
       protected string _firstPathEntry = "The";
       protected string _moleculeName = "name";
       protected MoleculeBuilder _builder;
-      protected IObjectPath _containerPath;
+      protected ObjectPath _containerPath;
       protected IMoleculeBuilder _result;
 
       protected override void Context()

@@ -84,7 +84,7 @@ namespace MoBi.Core
    internal class When_visiting_an_Formula_with_changed_Name : concern_for_CheckNameVisitor
    {
       private IFormula _formula;
-      private IFormulaUsablePath _path;
+      private FormulaUsablePath _path;
       private IEnumerable<IStringChange> _changes;
       private IMoleculeBuildingBlock _moleculeBuildingBlock;
 
@@ -139,7 +139,7 @@ namespace MoBi.Core
    {
       private IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
       private MoleculeStartValue _moleculeStartValue;
-      private IObjectPath _path;
+      private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
       private MoleculeStartValue _moleculeStartValue2;
 
@@ -196,7 +196,7 @@ namespace MoBi.Core
    {
       private IParameterStartValuesBuildingBlock _parameterStartValuesBuildingBlock;
       private ParameterStartValue _parameterStartValue;
-      private IObjectPath _path;
+      private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
       private ParameterStartValue _parameterStartValue2;
 

@@ -9,12 +9,13 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.Presenter.ReactionDiagram
 {
    public class PopupMenuReactionBuilder : PopupMenuFullEntityNode<IReactionBuilder>
    {
-      public PopupMenuReactionBuilder(IReactionDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions) : base(presenter, context, runOptions)
+      public PopupMenuReactionBuilder(IReactionDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions, IContainer container) : base(presenter, context, runOptions, container)
       {
       }
 
@@ -38,14 +39,11 @@ namespace MoBi.Presentation.Presenter.ReactionDiagram
 
    public class PopupMenuReactionDiagram : DiagramPopupMenuBase
    {
-      public PopupMenuReactionDiagram(IReactionDiagramPresenter presenter, IStartOptions runOptions) : base(presenter, runOptions)
+      public PopupMenuReactionDiagram(IReactionDiagramPresenter presenter, IStartOptions runOptions, IContainer container) : base(presenter, runOptions, container)
       {
       }
 
-      protected new IReactionDiagramPresenter Presenter
-      {
-         get { return (IReactionDiagramPresenter) base.Presenter; }
-      }
+      protected new IReactionDiagramPresenter Presenter => (IReactionDiagramPresenter) base.Presenter;
 
       protected override void SetModelMenuItems(IContextMenuView contextMenuView, IContainerBase containerBase, IBaseNode node)
       {
@@ -55,11 +53,11 @@ namespace MoBi.Presentation.Presenter.ReactionDiagram
 
          var parent = Presenter.Subject as IMoBiReactionBuildingBlock;
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Reaction))
-            .WithCommandFor<AddNewCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>, IMoBiReactionBuildingBlock>(parent)
+            .WithCommandFor<AddNewCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>, IMoBiReactionBuildingBlock>(parent, _container)
             .WithIcon(ApplicationIcons.ReactionAdd));
 
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.Reaction))
-            .WithCommandFor<AddExistingCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>, IMoBiReactionBuildingBlock>(parent)
+            .WithCommandFor<AddExistingCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>, IMoBiReactionBuildingBlock>(parent, _container)
             .WithIcon(ApplicationIcons.ReactionLoad));
 
          base.SetModelMenuItems(contextMenuView, containerBase, node);

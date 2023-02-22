@@ -171,10 +171,10 @@ namespace MoBi.Presentation.Presenter
 
       public void SetTargetPathFor(EventAssignmentBuilderDTO eventAssignmentBuilderDTO)
       {
-         IObjectPath objectPath;
-         using (var selectEventAssignmentTargetPresenter = _applicationController.Start<ISelectEventAssingmentTargetPresenter>())
+         ObjectPath objectPath;
+         using (var selectEventAssignmentTargetPresenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
-            selectEventAssignmentTargetPresenter.Init(_context.CurrentProject, _eventBuilder.RootContainer);
+            selectEventAssignmentTargetPresenter.Init(_eventBuilder.RootContainer);
             objectPath = selectEventAssignmentTargetPresenter.Select();
          }
 
@@ -190,7 +190,7 @@ namespace MoBi.Presentation.Presenter
          setChantedEntityPath(objectPath, dto);
       }
 
-      private void setChantedEntityPath(IObjectPath objectPath, EventAssignmentBuilderDTO dto)
+      private void setChantedEntityPath(ObjectPath objectPath, EventAssignmentBuilderDTO dto)
       {
          var eventAssignmentBuilder = eventAssignmentBuilderFor(dto);
          SetPropertyValueFor(dto, eventAssignmentBuilder.PropertyName(x => x.ObjectPath), objectPath, eventAssignmentBuilder.ObjectPath);

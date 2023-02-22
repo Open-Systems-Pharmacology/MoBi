@@ -21,14 +21,16 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
    public class DiagramPopupMenuBase : IDiagramPopupMenuBase
    {
       private readonly IStartOptions _runOptions;
+      protected readonly IContainer _container;
       protected IMoBiBaseDiagramPresenter Presenter { get; private set; }
       protected IMenuBarSubMenu SubMenuSelect { get; private set; }
       protected IMenuBarSubMenu SubMenuLayout { get; private set; }
       protected IMenuBarSubMenu SubMenuDiagram { get; private set; }
 
-      public DiagramPopupMenuBase(IMoBiBaseDiagramPresenter presenter, IStartOptions runOptions)
+      public DiagramPopupMenuBase(IMoBiBaseDiagramPresenter presenter, IStartOptions runOptions, IContainer container)
       {
          _runOptions = runOptions;
+         _container = container;
          Presenter = presenter;
       }
 
@@ -112,9 +114,9 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
 
 
-         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Zoom In").AsGroupStarter().WithCommand<ZoomInCommand>().WithIcon(ApplicationIcons.ZoomIn));
-         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Zoom Out").WithCommand<ZoomOutCommand>().WithIcon(ApplicationIcons.ZoomOut));
-         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Fit into Window").WithCommand<FitToPageCommand>().WithIcon(ApplicationIcons.FitToPage));
+         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Zoom In").AsGroupStarter().WithCommand<ZoomInCommand>(_container).WithIcon(ApplicationIcons.ZoomIn));
+         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Zoom Out").WithCommand<ZoomOutCommand>(_container).WithIcon(ApplicationIcons.ZoomOut));
+         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Fit into Window").WithCommand<FitToPageCommand>(_container).WithIcon(ApplicationIcons.FitToPage));
          SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Copy Image to Clipboard").AsGroupStarter().WithActionCommand(() => Presenter.CopyBitmapToClipboard(containerBase)));
          SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Save Image...").WithActionCommand(() => Presenter.SaveBitmapToFile(containerBase)));
 

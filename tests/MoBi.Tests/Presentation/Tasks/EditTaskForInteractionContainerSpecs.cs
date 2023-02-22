@@ -9,6 +9,7 @@ using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks
 {

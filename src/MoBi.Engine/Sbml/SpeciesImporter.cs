@@ -322,7 +322,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the path to a Container by a given compartment id.
       /// </summary>
-      protected internal IObjectPath GetPathToContainerOfCompartmentId(string compartmentId)
+      protected internal ObjectPath GetPathToContainerOfCompartmentId(string compartmentId)
       {
          return (from container in GetMainTopContainer().Children where container.Name == compartmentId select ObjectPathFactory.CreateAbsoluteObjectPath(container)).FirstOrDefault();
       }

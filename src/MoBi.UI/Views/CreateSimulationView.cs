@@ -15,12 +15,12 @@ namespace MoBi.UI.Views
 {
    public partial class CreateSimulationView : WizardView, ICreateSimulationView
    {
-      private readonly ScreenBinder<IObjectBaseDTO> _screenBinder;
+      private readonly ScreenBinder<ObjectBaseDTO> _screenBinder;
 
       public CreateSimulationView()
       {
          InitializeComponent();
-         _screenBinder = new ScreenBinder<IObjectBaseDTO>();
+         _screenBinder = new ScreenBinder<ObjectBaseDTO>();
          ClientSize = new Size(UIConstants.UI.SIMULATION_VIEW_WIDTH, UIConstants.UI.SIMULATION_VIEW_HEIGHT);
       }
 
@@ -41,7 +41,7 @@ namespace MoBi.UI.Views
          WizardPresenter = presenter;
       }
 
-      public void BindTo(IObjectBaseDTO simulationDTO)
+      public void BindTo(ObjectBaseDTO simulationDTO)
       {
          _screenBinder.BindToSource(simulationDTO);
          NotifyViewChanged();

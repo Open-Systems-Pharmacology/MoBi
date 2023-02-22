@@ -2,6 +2,6 @@
 {
    public class DummyMoleculeContainerDTO : ObjectBaseDTO
    {
-      public IObjectBaseDTO MoleculePropertiesContainer { get; set; }
+      public ObjectBaseDTO MoleculePropertiesContainer { get; set; }
    }
 }

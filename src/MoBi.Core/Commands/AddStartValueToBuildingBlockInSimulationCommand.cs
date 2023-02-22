@@ -8,7 +8,7 @@ namespace MoBi.Core.Commands
    public class AddStartValueToBuildingBlockInSimulationCommand<T> : StartValueBuildingBlockInSimulationCommandBase<T> where T : class, IStartValue
    {
       private readonly T _startValue;
-      private IObjectPath _objectPath;
+      private ObjectPath _objectPath;
 
       public AddStartValueToBuildingBlockInSimulationCommand(T startValue, IStartValuesBuildingBlock<T> startValuesBuildingBlock)
          : base(startValuesBuildingBlock)

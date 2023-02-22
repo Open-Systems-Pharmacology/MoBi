@@ -14,11 +14,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private readonly IReactionBuilder _reactionBuilder;
       private readonly IReactionPartnerBuilder _reactionPartnerBuilder;
+      private readonly IContainer _container;
 
-      public ContextMenuForEductBuilder(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder)
+      public ContextMenuForEductBuilder(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder, IContainer container)
       {
          _reactionBuilder = reactionBuilder;
          _reactionPartnerBuilder = reactionPartnerBuilder;
+         _container = container;
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -32,14 +34,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createAddItem(IReactionBuilder reactionBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.New.WithEllipsis())
-            .WithIcon(ApplicationIcons.Create).WithCommandFor<AddEductUICommand, IReactionBuilder>(reactionBuilder);
+            .WithIcon(ApplicationIcons.Create).WithCommandFor<AddEductUICommand, IReactionBuilder>(reactionBuilder, _container);
       }
 
       private IMenuBarItem createRemoveItem(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
-            .WithCommand(IoC.Resolve<RemoveEductUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
+            .WithCommand(_container.Resolve<RemoveEductUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
       }
    }
 }

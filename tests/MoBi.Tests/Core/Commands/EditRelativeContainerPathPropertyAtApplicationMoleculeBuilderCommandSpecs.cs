@@ -10,15 +10,15 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommandSpecs : ContextSpecification<EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand>
    {
       public IApplicationMoleculeBuilder _applicationMoleculeBuilder;
-      public IObjectPath _newPath;
-      public IObjectPath _oldPath;
+      public ObjectPath _newPath;
+      public ObjectPath _oldPath;
 
       protected override void Context()
       {
          _applicationMoleculeBuilder = A.Fake<IApplicationMoleculeBuilder>();
          _applicationMoleculeBuilder.Id = "ID";
-         _newPath = A.Fake<IObjectPath>();
-         _oldPath = A.Fake<IObjectPath>();
+         _newPath = A.Fake<ObjectPath>();
+         _oldPath = A.Fake<ObjectPath>();
          _applicationMoleculeBuilder.RelativeContainerPath = _oldPath;
          sut = new EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(_applicationMoleculeBuilder, _newPath, A.Fake<IBuildingBlock>());
       }

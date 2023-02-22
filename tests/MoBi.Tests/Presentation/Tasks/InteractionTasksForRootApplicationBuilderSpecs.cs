@@ -5,7 +5,6 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
-using NUnit.Framework;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -29,8 +28,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _interactionTask.ForbiddenNamesFor(_builder)).Returns(new List<string> {_builderName});
       }
    }
-
-   [Ignore("TODO THOMAS")]
+   
    internal class When_asking_for_forbidden_names_without_self_with_like_named_entity : concern_for_EditTasksForApplicationBuilderSpecs
    {
       private IEnumerable<string> _result;
@@ -40,7 +38,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
 
-         _parentContainer = new Container {_builder, new ApplicationBuilder {Name = _builderName}};
+         _parentContainer = new Container { _builder, new ApplicationBuilder { Name = _builderName } };
          _builder.Name = _builderName;
       }
 
@@ -52,7 +50,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_not_return_builder_name_as_forbidden()
       {
-         _result.ShouldOnlyContain(_builderName);
+         _result.ShouldNotContain(_builderName);
       }
    }
 

@@ -75,7 +75,7 @@ namespace MoBi.Presentation
         private DummyMoleculeContainerDTO _dummyMolecule;
         private ReferenceDTO _result;
         private string _moleculeName = "Drug"; 
-        private IObjectBaseDTO _moleculePropertiesDTO;
+        private ObjectBaseDTO _moleculePropertiesDTO;
         private string _moleculePropertiesID = Constants.MOLECULE_PROPERTIES;
         private IContainer _moleculeProperties;
         private IDimension _rightDimension;
@@ -120,7 +120,7 @@ namespace MoBi.Presentation
         private DummyMoleculeContainerDTO _dummyMolecule;
         private ReferenceDTO _result;
         private string _moleculeName = "Drug";
-        private IObjectBaseDTO _moleculePropertiesDTO;
+        private ObjectBaseDTO _moleculePropertiesDTO;
         private string _moleculePropertiesID = Constants.MOLECULE_PROPERTIES;
         private IContainer _moleculeProperties;
         private IDimension _rightDimension;
@@ -168,7 +168,7 @@ namespace MoBi.Presentation
         private DummyMoleculeContainerDTO _dummyMolecule;
         private ReferenceDTO _result;
         private string _moleculeName = "Drug";
-        private IObjectBaseDTO _moleculePropertiesDTO;
+        private ObjectBaseDTO _moleculePropertiesDTO;
         private string _moleculePropertiesID = Constants.MOLECULE_PROPERTIES;
         private IContainer _moleculeProperties;
         private IDimension _rightDimension;
@@ -522,7 +522,7 @@ namespace MoBi.Presentation
 
     class When_asking_object_path_creator_for_the_generic_Molecule_Reference : concern_for_ObjectPathCreatorSpecs
     {
-        private IObjectBaseDTO _dtoMolecule;
+        private ObjectBaseDTO _dtoMolecule;
         private ReferenceDTO _result;
         private IDimension _rightDimension;
 

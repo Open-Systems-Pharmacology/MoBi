@@ -16,8 +16,8 @@ namespace MoBi.Presentation.Presenter
    public interface ISelectLocalisationPresenter : IPresenter, IDisposable
    {
       IEntity Select(Localisations localisation);
-      IEnumerable<IObjectBaseDTO> GetChildObjects(string parentId);
-      bool SelectionIsValid(IObjectBaseDTO selectedDTO);
+      IEnumerable<ObjectBaseDTO> GetChildObjects(string parentId);
+      bool SelectionIsValid(ObjectBaseDTO selectedDTO);
    }
 
    internal class SelectLocalisationPresenter : AbstractPresenter<ISelectLocalisationView, ISelectLocalisationPresenter>, ISelectLocalisationPresenter
@@ -86,16 +86,16 @@ namespace MoBi.Presentation.Presenter
          return true;
       }
 
-      private IContainer getSelectedEntity(IObjectBaseDTO dto)
+      private IContainer getSelectedEntity(ObjectBaseDTO dto)
       {
          return _context.Get<IContainer>(dto.Id);
       }
 
-      public IEnumerable<IObjectBaseDTO> GetChildObjects(string parentId)
+      public IEnumerable<ObjectBaseDTO> GetChildObjects(string parentId)
       {
          var parent = _context.Get<IContainer>(parentId);
          if (parent == null)
-            return Enumerable.Empty<IObjectBaseDTO>();
+            return Enumerable.Empty<ObjectBaseDTO>();
 
          return parent.GetChildrenSortedByName<IContainer>(canAddContainer)
             .MapAllUsing(_mapper);
@@ -107,7 +107,7 @@ namespace MoBi.Presentation.Presenter
                 && !container.IsAnImplementationOf<IParameter>();
       }
 
-      public bool SelectionIsValid(IObjectBaseDTO selectedDTO)
+      public bool SelectionIsValid(ObjectBaseDTO selectedDTO)
       {
          return isUsableLocalisation(getSelectedEntity(selectedDTO));
       }

@@ -25,13 +25,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
          var contextMenu = IoC.Resolve<IContextMenuForContainerInEventGroups>();
-         var dto = objectRequestingContextMenu as IObjectBaseDTO;
+         var dto = objectRequestingContextMenu as ObjectBaseDTO;
          return contextMenu.InitializeWith(dto, presenter);
       }
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var dto = objectRequestingContextMenu as IObjectBaseDTO;
+         var dto = objectRequestingContextMenu as ObjectBaseDTO;
          if (dto == null) return false;
          if (!presenter.IsAnImplementationOf<IEventGroupListPresenter>()) return false;
          var entity = _context.Get<IObjectBase>(dto.Id);

@@ -11,15 +11,18 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    internal class ContextMenuForBuildingBlockInfo : ContextMenuBase, IContextMenuFor<IBuildingBlockInfo>
    {
+      private readonly IContainer _container;
       private readonly List<IMenuBarItem> _allMenuItems;
 
-      public ContextMenuForBuildingBlockInfo()
+      public ContextMenuForBuildingBlockInfo(IContainer container)
       {
+         _container = container;
          _allMenuItems = new List<IMenuBarItem>();
       }
 
@@ -28,7 +31,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      public IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          var buildingBlockInfoViewItem = dto.DowncastTo<BuildingBlockInfoViewItem>();
          var simulation = buildingBlockInfoViewItem.Simulation;
@@ -47,9 +50,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createDiffItem(IBuildingBlock templateBuildingBlock, IMoBiSimulation simulation)
       {
-
          var item = CreateMenuButton.WithCaption(MenuNames.Diff)
-            .WithCommand<ShowBuildingBlockDiffUICommand>()
+            .WithCommand<ShowBuildingBlockDiffUICommand>(_container)
             .WithIcon(ApplicationIcons.Comparison);
 
 
@@ -61,7 +63,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.Update)
             .WithIcon(ApplicationIcons.Update)
-            .WithCommand<UpdateSimulationFromBuildingBlockUICommand>();
+            .WithCommand<UpdateSimulationFromBuildingBlockUICommand>(_container);
 
          ((UpdateSimulationFromBuildingBlockUICommand) item.Command).Initialize(buildingBlock, simulation);
          return item;
@@ -71,7 +73,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.Commit)
             .WithIcon(ApplicationIcons.Commit)
-            .WithCommand<CommitSimulationChangesToBuildingBlockUICommand>();
+            .WithCommand<CommitSimulationChangesToBuildingBlockUICommand>(_container);
 
          ((CommitSimulationChangesToBuildingBlockUICommand) item.Command).Initialize(buildingBlock, simulation);
          return item;
@@ -80,9 +82,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuSpecificationFactoryForBuildingBlockForBuildingBlockInfo : IContextMenuSpecificationFactory<IViewItem>
    {
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForBuildingBlockForBuildingBlockInfo(IContainer container)
+      {
+         _container = container;
+      }
+
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var contextMenu = new ContextMenuForBuildingBlockInfo();
+         var contextMenu = new ContextMenuForBuildingBlockInfo(_container);
          return contextMenu.InitializeWith(viewItem.DowncastTo<BuildingBlockInfoViewItem>(), presenter);
       }
 

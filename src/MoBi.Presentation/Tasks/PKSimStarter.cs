@@ -7,7 +7,6 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
@@ -28,16 +27,14 @@ namespace MoBi.Presentation.Tasks
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
       private Assembly _externalAssembly;
-      private readonly IShell _shell;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
 
       public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings,
-         IStartableProcessFactory startableProcessFactory, IShell shell, ICloneManagerForBuildingBlock cloneManager)
+         IStartableProcessFactory startableProcessFactory, ICloneManagerForBuildingBlock cloneManager)
       {
          _configuration = configuration;
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
-         _shell = shell;
          _cloneManager = cloneManager;
       }
 
@@ -65,28 +62,24 @@ namespace MoBi.Presentation.Tasks
          if (string.IsNullOrEmpty(methodName))
             return null;
 
-         loadPKSimAssembly();
-         var expressionProfileBuildingBlock =
-            executeMethodWithShell(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName)) as ExpressionProfileBuildingBlock;
-
-         //in case of cancelling
-         if (expressionProfileBuildingBlock == null)
-            return null;
-
-         return _cloneManager.CloneBuildingBlock(expressionProfileBuildingBlock);
+         return executeAndCloneBuildingBlock<ExpressionProfileBuildingBlock>(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName));
       }
 
       public IBuildingBlock CreateIndividual()
       {
+         return executeAndCloneBuildingBlock<IndividualBuildingBlock>(getMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL));
+      }
+
+      private TBuildingBlock executeAndCloneBuildingBlock<TBuildingBlock>(MethodInfo method) where TBuildingBlock : class, IBuildingBlock
+      {
          loadPKSimAssembly();
-         var individualBuildingBlock =
-            executeMethodWithShell(getMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL)) as IndividualBuildingBlock;
+         var buildingBlock = executeMethod(method) as TBuildingBlock;
 
          //in case of cancelling
-         if (individualBuildingBlock == null)
+         if (buildingBlock == null)
             return null;
 
-         return _cloneManager.CloneBuildingBlock(individualBuildingBlock);
+         return _cloneManager.CloneBuildingBlock(buildingBlock) as TBuildingBlock;
       }
 
       public void GetQueryResultsFromDatabase(string speciesName)
@@ -95,28 +88,23 @@ namespace MoBi.Presentation.Tasks
          var individualBuildingBlock = executeMethod(getMethod(PKSIM_UI_EXPRESSION_DATABASE_QUERY, GET_EXPRESSION_DATABASE_QUERY), new object[] {speciesName});
       }
 
-      private object executeMethodWithShell(MethodInfo method)
-      {
-         return executeMethod(method, new object[] { _shell });
-      }
-
-      private object executeMethod(MethodInfo method, object[] parameters)
+      private object executeMethod(MethodInfo method, object[] parameters = null)
       {
          return method.Invoke(null, parameters);
       }
 
       private void loadPKSimAssembly()
       {
-         var assemblyFile = retrievePKSimUIStarterPath();
+         if (_externalAssembly != null)
+            return;
 
-         if (_externalAssembly == null)
-         {
-            _externalAssembly = Assembly.LoadFrom(assemblyFile);
-         }
+         _externalAssembly = Assembly.LoadFrom(retrievePKSimUIStarterPath());
       }
 
       private MethodInfo getMethod(string type, string methodName)
       {
+         loadPKSimAssembly();
+
          return _externalAssembly.GetType(type).GetMethod(methodName);
       }
 

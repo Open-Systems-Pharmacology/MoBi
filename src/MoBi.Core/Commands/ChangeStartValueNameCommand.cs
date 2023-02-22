@@ -18,7 +18,7 @@ namespace MoBi.Core.Commands
       protected TStartValue _originalStartValue;
       protected IEnumerable<string> _path;
 
-      protected ChangeStartValueNameCommand(TBuildingBlock buildingBlock, IObjectPath path, string newValue)
+      protected ChangeStartValueNameCommand(TBuildingBlock buildingBlock, ObjectPath path, string newValue)
          : base(buildingBlock)
       {
          _newValue = newValue;

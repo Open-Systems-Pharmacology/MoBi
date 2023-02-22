@@ -6,7 +6,9 @@ using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -17,7 +19,7 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class ExpressionProfileBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
-      IExpressionProfileBuildingBlockPresenter
+      IExpressionProfileBuildingBlockPresenter, IListener<RenamedEvent>
    {
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;
       private readonly IPKSimStarter _pkSimStarter;
@@ -53,6 +55,12 @@ namespace MoBi.Presentation.Presenter
       public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
       {
          return _expressionProfileBuildingBlockDTO.ParameterDTOs.HasAtLeastTwoDistinctValues(pathElementIndex);
+      }
+
+      public void Handle(RenamedEvent eventToHandle)
+      {
+         if(Equals(eventToHandle.RenamedObject, _buildingBlock))
+            rebind();
       }
    }
 }

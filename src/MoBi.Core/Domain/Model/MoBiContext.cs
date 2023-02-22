@@ -211,8 +211,8 @@ namespace MoBi.Core.Domain.Model
          if (value.IsAnImplementationOf<IDimension>())
             return value.DowncastTo<IDimension>().Name;
 
-         if (value.IsAnImplementationOf<IObjectPath>())
-            return value.DowncastTo<IObjectPath>().PathAsString;
+         if (value.IsAnImplementationOf<ObjectPath>())
+            return value.DowncastTo<ObjectPath>().PathAsString;
 
          if (value.IsAnImplementationOf<Unit>())
             return value.DowncastTo<Unit>().Name;
@@ -237,7 +237,7 @@ namespace MoBi.Core.Domain.Model
          if (propertyType.IsAnImplementationOf<IDimension>())
             return DimensionFactory.Dimension(valueAsString);
 
-         if (propertyType.IsAnImplementationOf<IObjectPath>())
+         if (propertyType.IsAnImplementationOf<ObjectPath>())
             return ObjectPathFactory.CreateObjectPathFrom(valueAsString.ToPathArray());
 
          if (propertyType.IsAnImplementationOf<Unit>())

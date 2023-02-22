@@ -56,7 +56,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_start_task_for_rename()
       {
-         A.CallTo(() => _interactionTasks.ChangeTranportName(_activeTransportBuilderContainer, _buildingBlock)).MustHaveHappened();
+         A.CallTo(() => _interactionTasks.ChangeTransportName(_activeTransportBuilderContainer, _buildingBlock)).MustHaveHappened();
       }
 
       [Observation]

@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
       protected IFormula _newFormula;
       protected IFormula _oldFormula;
       protected T _changedStartValue;
-      protected IObjectPath Path { get; set; }
+      protected ObjectPath Path { get; set; }
 
       public ChangeValueFormulaCommand(IBuildingBlock<T> buildingBlock, T startValue, IFormula newFormula, IFormula oldFormula): base(buildingBlock)
       {
@@ -69,7 +69,7 @@ namespace MoBi.Core.Commands
          Path = _changedStartValue.Path;
       }
 
-      // protected abstract IObjectPath PathFrom(T changedStartValue);
+      // protected abstract ObjectPath PathFrom(T changedStartValue);
 
 
       public override void RestoreExecutionData(IMoBiContext context)

@@ -18,7 +18,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      public override IContextMenu CreateFor(IObjectBaseDTO objectBaseDTO, IPresenterWithContextMenu<IViewItem> presenter)
+      public override IContextMenu CreateFor(ObjectBaseDTO objectBaseDTO, IPresenterWithContextMenu<IViewItem> presenter)
       {
          var contextMenu = IoC.Resolve<IContextMenuForContainer>();
          return contextMenu.InitializeWith(objectBaseDTO, presenter);

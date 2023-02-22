@@ -24,6 +24,7 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection { get; }
       IReadOnlyList<IndividualBuildingBlock> IndividualsCollection { get; }
       IReadOnlyList<ISimulationSettings> SimulationSettingsCollection { get; }
+      IReadOnlyList<Module> Modules { get; }
 
       ReactionDimensionMode ReactionDimensionMode { get; set; }
 
@@ -31,6 +32,8 @@ namespace MoBi.Core.Domain.Model
       void RemoveSimulation(IMoBiSimulation simulationToRemove);
       void AddChart(CurveChart chart);
       void RemoveChart(CurveChart chartToRemove);
+      void AddModule(Module module);
+      void RemoveModule(Module module);
 
       //only for serialization
       IReadOnlyList<IBuildingBlock> AllBuildingBlocks();
@@ -80,6 +83,9 @@ namespace MoBi.Core.Domain.Model
       private readonly List<IBuildingBlock> _buildingBlocks;
       private readonly List<CurveChart> _charts;
       private readonly List<IMoBiSimulation> _allSimulations;
+      private readonly List<Module> _modules = new List<Module>();
+
+      public IReadOnlyList<Module> Modules => _modules;
 
       public string ChartSettings { get; set; }
 
@@ -111,6 +117,16 @@ namespace MoBi.Core.Domain.Model
       public IEnumerable<CurveChart> Charts => _charts;
 
       public bool IsEmpty => !_buildingBlocks.Any() && !_allSimulations.Any();
+
+      public void AddModule(Module module)
+      {
+         _modules.Add(module);
+      }
+
+      public void RemoveModule(Module module)
+      {
+         _modules.Remove(module);
+      }
 
       public IReadOnlyList<IMoBiSimulation> Simulations => _allSimulations;
 

@@ -12,13 +12,13 @@ namespace MoBi.Presentation.DTO
 {
    public class FormulaUsablePathDTO : DxValidatableDTO, IViewItem
    {
-      public IFormulaUsablePath FormulaUsablePath { get; }
+      public FormulaUsablePath FormulaUsablePath { get; }
       private readonly IFormula _formula;
       public string Alias => FormulaUsablePath.Alias;
       public IDimension Dimension => FormulaUsablePath.Dimension;
       public string Path => FormulaUsablePath.PathAsString;
 
-      public FormulaUsablePathDTO(IFormulaUsablePath formulaUsablePath, IFormula formula)
+      public FormulaUsablePathDTO(FormulaUsablePath formulaUsablePath, IFormula formula)
       {
          FormulaUsablePath = formulaUsablePath;
          _formula = formula;

@@ -11,24 +11,25 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class ContextMenuForMergableBuildingBlock<T> : ContextMenuForBuildingBlock<T> where T : class, IBuildingBlock
    {
-      public ContextMenuForMergableBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver)
-         : base(context, objectTypeResolver)
+      public ContextMenuForMergableBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container)
+         : base(context, objectTypeResolver, container)
       {
       }
 
-      public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          var buildingBlock = _context.Get<T>(dto.Id);
          base.InitializeWith(dto, presenter);
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Merge.WithEllipsis())
             .WithIcon(ApplicationIcons.Merge)
-            .WithCommandFor<MergeBuildingBlockUICommand<T>, T>(buildingBlock));
+            .WithCommandFor<MergeBuildingBlockUICommand<T>, T>(buildingBlock, _container));
 
          return this;
       }

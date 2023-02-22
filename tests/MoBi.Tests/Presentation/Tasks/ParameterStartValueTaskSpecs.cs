@@ -64,13 +64,13 @@ namespace MoBi.Presentation.Tasks
          _containerPath = new ObjectPath("the", "container", "path");
 
          _parameterStartValueBuildingBlock.Add(
-            new ParameterStartValue {StartValue = 0.1, ContainerPath = _containerPath.Clone<IObjectPath>(), Name = "ConstantStartValue"});
+            new ParameterStartValue {StartValue = 0.1, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
 
-         _parameterStartValue = new ParameterStartValue {ContainerPath = _containerPath.Clone<IObjectPath>(), Name = "FormulaStartValue", StartValue = 4};
-         _clonedStartValue = new ParameterStartValue {ContainerPath = _containerPath.Clone<IObjectPath>(), Name = "FormulaStartValue", StartValue = 4};
+         _parameterStartValue = new ParameterStartValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", StartValue = 4};
+         _clonedStartValue = new ParameterStartValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", StartValue = 4};
 
          _templateStartValues.Add(_parameterStartValue);
-         _templateStartValues.Add(new ParameterStartValue {StartValue = 0.4, ContainerPath = _containerPath.Clone<IObjectPath>(), Name = "ConstantStartValue"});
+         _templateStartValues.Add(new ParameterStartValue {StartValue = 0.4, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
 
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_parameterStartValue, A<IFormulaCache>.Ignored)).Returns(_clonedStartValue);
       }
@@ -147,7 +147,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterResolver.Resolve(A<IObjectPath>._, A<string>._, A<ISpatialStructure>._, A<IMoleculeBuildingBlock>._)).Returns(_parameter);
+         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<ISpatialStructure>._, A<IMoleculeBuildingBlock>._)).Returns(_parameter);
       }
 
       [Observation]
@@ -162,7 +162,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterResolver.Resolve(A<IObjectPath>._, A<string>._, A<ISpatialStructure>._, A<IMoleculeBuildingBlock>._)).Returns(_parameter);
+         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<ISpatialStructure>._, A<IMoleculeBuildingBlock>._)).Returns(_parameter);
          _parameter.Formula = new ExplicitFormula("1+ Exp");
       }
 

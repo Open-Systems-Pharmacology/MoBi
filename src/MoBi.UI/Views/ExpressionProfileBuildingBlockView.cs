@@ -37,6 +37,7 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.Species).To(tbSpecies);
          _screenBinder.Bind(dto => dto.MoleculeName).To(tbMoleculeName);
          _screenBinder.Bind(dto => dto.Category).To(tbCategory);
+         _screenBinder.Bind(dto => dto.PKSimVersion).To(tbPKSimVersion);
          _unitControl = new UxComboBoxUnit<ExpressionParameterDTO>(gridControl);
 
          initializeBinders();
@@ -49,9 +50,11 @@ namespace MoBi.UI.Views
          tbSpecies.Enabled = false;
          tbMoleculeName.Enabled = false;
          tbCategory.Enabled = false;
+         tbPKSimVersion.Enabled = false;
 
          lblSpecies.Text = Captions.Species.FormatForLabel();
          lblCategory.Text = Captions.Category.FormatForLabel();
+         lblPKSimVersion.Text = PKSimVersion.FormatForLabel(checkCase: false);
 
          btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, "Query Database");
          tablePanel.AdjustLongButtonWidth(btnLoadFromDatabase);

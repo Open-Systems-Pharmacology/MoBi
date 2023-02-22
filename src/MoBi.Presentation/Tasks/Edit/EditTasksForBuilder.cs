@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {

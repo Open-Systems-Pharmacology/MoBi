@@ -7,7 +7,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 
@@ -26,9 +25,8 @@ namespace MoBi.Presentation
          _configuration = A.Fake<IMoBiConfiguration>();
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
          _applicationSettings = A.Fake<IApplicationSettings>();
-         var shell = A.Fake<IShell>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
-         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, shell, _cloneManager);
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager);
       }
    }
 

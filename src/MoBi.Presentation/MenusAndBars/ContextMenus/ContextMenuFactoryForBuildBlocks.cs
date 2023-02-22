@@ -5,7 +5,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -68,6 +67,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    public class RootContextMenuFactoryForIndividualBuildingBlock : RootNodeContextMenuFactoryFor<IndividualBuildingBlock>
    {
       public RootContextMenuFactoryForIndividualBuildingBlock() : base(MoBiRootNodeTypes.IndividualsFolder)
+      {
+      }
+   }
+
+   public class RootContextMenuFactoryForExtensionModule : RootNodeContextMenuFactoryFor<Module>
+   {
+      public RootContextMenuFactoryForExtensionModule() : base(MoBiRootNodeTypes.ExtensionModulesFolder)
       {
       }
    }

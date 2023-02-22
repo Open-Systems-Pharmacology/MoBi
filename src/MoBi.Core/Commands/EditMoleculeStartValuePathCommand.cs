@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
       /// <param name="buildingBlock">The building block this start value is a part of</param>
       /// <param name="startValue">The start value being modified</param>
       /// <param name="newContainerPath">The new container path for this start value</param>
-      public EditMoleculeStartValuePathCommand(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, IObjectPath newContainerPath)
+      public EditMoleculeStartValuePathCommand(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, ObjectPath newContainerPath)
          : base(buildingBlock, startValue, newContainerPath)
       {
 

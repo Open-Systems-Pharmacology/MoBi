@@ -12,6 +12,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -40,39 +41,48 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuSpecificationFactoryForPassiveTransportBuilder : ContextMenuSpecificationFactoryForTransportBuilderBase<IEditPassiveTransportBuildingBlockPresenter>
    {
-      public ContextMenuSpecificationFactoryForPassiveTransportBuilder(IMoBiContext context)
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForPassiveTransportBuilder(IMoBiContext context, IContainer container)
          : base(context)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(TransportBuilderDTO transportBuilderDTO, IEditPassiveTransportBuildingBlockPresenter presenter)
       {
-         return new ContextMenuForPassiveTransportBuilder(_context).InitializeWith(transportBuilderDTO, presenter);
+         return new ContextMenuForPassiveTransportBuilder(_context, _container).InitializeWith(transportBuilderDTO, presenter);
       }
    }
 
    public class ContextMenuSpecificationFactoryForPassiveTransportBuilderAtEventGroup : ContextMenuSpecificationFactoryForTransportBuilderBase<IEventGroupListPresenter>
    {
-      public ContextMenuSpecificationFactoryForPassiveTransportBuilderAtEventGroup(IMoBiContext context) : base(context)
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForPassiveTransportBuilderAtEventGroup(IMoBiContext context, IContainer container) : base(context)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(TransportBuilderDTO transportBuilderDTO, IEventGroupListPresenter presenter)
       {
-         return new ContextMenuForTransportBuilderAtEventGroup(_context).InitializeWith(transportBuilderDTO, presenter);
+         return new ContextMenuForTransportBuilderAtEventGroup(_context, _container).InitializeWith(transportBuilderDTO, presenter);
       }
    }
 
    public class ContextMenuSpecificationFactoryForTransportBuilderAtMoleculeBuilder : ContextMenuSpecificationFactoryForTransportBuilderBase<IMoleculeListPresenter>
    {
-      public ContextMenuSpecificationFactoryForTransportBuilderAtMoleculeBuilder(IMoBiContext context)
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForTransportBuilderAtMoleculeBuilder(IMoBiContext context, IContainer container)
          : base(context)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(TransportBuilderDTO transportBuilderDTO, IMoleculeListPresenter presenter)
       {
-         return new ContextMenuForTransportBuilderAtMoleculeBuilder(_context).InitializeWith(transportBuilderDTO, presenter);
+         return new ContextMenuForTransportBuilderAtMoleculeBuilder(_context, _container).InitializeWith(transportBuilderDTO, presenter);
       }
    }
 
@@ -80,10 +90,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private IList<IMenuBarItem> _allMenuItems;
       protected readonly IMoBiContext _context;
+      private readonly IContainer _container;
 
-      protected ContextMenuForTransportBuilderBase(IMoBiContext context)
+      protected ContextMenuForTransportBuilderBase(IMoBiContext context, IContainer container)
       {
          _context = context;
+         _container = container;
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -108,13 +120,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
             .WithIcon(ApplicationIcons.PKMLSave)
-            .WithCommandFor<SaveUICommandFor<ITransportBuilder>, ITransportBuilder>(transportBuilder);
+            .WithCommandFor<SaveUICommandFor<ITransportBuilder>, ITransportBuilder>(transportBuilder, _container);
       }
 
       private IMenuBarItem createEditItemFor(ITransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditCommandFor<ITransportBuilder>, ITransportBuilder>(transportBuilder)
+            .WithCommandFor<EditCommandFor<ITransportBuilder>, ITransportBuilder>(transportBuilder, _container)
             .WithIcon(ApplicationIcons.Edit);
       }
 
@@ -123,14 +135,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected IMenuBarItem CreateRenameItemFor(ITransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithCommandFor<RenameObjectCommand<ITransportBuilder>, ITransportBuilder>(transportBuilder)
+            .WithCommandFor<RenameObjectCommand<ITransportBuilder>, ITransportBuilder>(transportBuilder, _container)
             .WithIcon(ApplicationIcons.Rename);
       }
    }
 
    internal class ContextMenuForTransportBuilderAtMoleculeBuilder : ContextMenuForTransportBuilderBase
    {
-      public ContextMenuForTransportBuilderAtMoleculeBuilder(IMoBiContext context) : base(context)
+      public ContextMenuForTransportBuilderAtMoleculeBuilder(IMoBiContext context, IContainer container) : base(context, container)
       {
       }
 
@@ -144,7 +156,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuForPassiveTransportBuilder : ContextMenuForTransportBuilderBase
    {
-      public ContextMenuForPassiveTransportBuilder(IMoBiContext context) : base(context)
+      public ContextMenuForPassiveTransportBuilder(IMoBiContext context, IContainer container) : base(context, container)
       {
       }
 
@@ -159,7 +171,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    internal class ContextMenuForTransportBuilderAtEventGroup : ContextMenuForTransportBuilderBase
    {
-      public ContextMenuForTransportBuilderAtEventGroup(IMoBiContext context) : base(context)
+      public ContextMenuForTransportBuilderAtEventGroup(IMoBiContext context, IContainer container) : base(context, container)
       {
       }
 

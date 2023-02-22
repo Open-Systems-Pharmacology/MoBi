@@ -10,15 +10,23 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class MultipleChartNodeContextMenuFactory : MultipleNodeContextMenuFactory<CurveChart>
    {
+      private readonly IContainer _container;
+
+      public MultipleChartNodeContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       protected override IContextMenu CreateFor(IReadOnlyList<CurveChart> charts, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
       {
-         return new MultipleChartNodeContextMenu(charts);
+         return new MultipleChartNodeContextMenu(charts, _container);
       }
 
       public override bool IsSatisfiedBy(IReadOnlyList<ITreeNode> treeNodes, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
@@ -29,15 +37,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class MultipleChartNodeContextMenu : ContextMenu<IReadOnlyList<CurveChart>>
    {
-      public MultipleChartNodeContextMenu(IReadOnlyList<CurveChart> charts)
-         : base(charts)
+
+      public MultipleChartNodeContextMenu(IReadOnlyList<CurveChart> charts, IContainer container)
+         : base(charts, container)
       {
       }
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<CurveChart> charts)
       {
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithCommandFor<RemoveMultipleSummaryChartUICommand, IReadOnlyList<CurveChart>>(charts)
+            .WithCommandFor<RemoveMultipleSummaryChartUICommand, IReadOnlyList<CurveChart>>(charts, _container)
             .AsGroupStarter()
             .WithIcon(ApplicationIcons.Delete);
       }

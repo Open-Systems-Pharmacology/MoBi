@@ -122,7 +122,7 @@ namespace MoBi.UI.Views
          });
       }
 
-      public IObjectBaseDTO SelectedDTO => _treeView.SelectedNode?.TagAsObject as IObjectBaseDTO;
+      public ObjectBaseDTO SelectedDTO => _treeView.SelectedNode?.TagAsObject as ObjectBaseDTO;
 
       private void btEditSelectLocalisation_ButtonClick(object sender, ButtonPressedEventArgs e)
       {
@@ -173,10 +173,10 @@ namespace MoBi.UI.Views
 
       private IEnumerable<ITreeNode> containsNodeWithId(string id)
       {
-         return _treeView.RootNodes.SelectMany(rootNode => rootNode.AllNodes).Where(node => node.TagAsObject.IsAnImplementationOf<IObjectBaseDTO>() && objectIdMatches(node.TagAsObject as IObjectBaseDTO, id));
+         return _treeView.RootNodes.SelectMany(rootNode => rootNode.AllNodes).Where(node => node.TagAsObject.IsAnImplementationOf<ObjectBaseDTO>() && objectIdMatches(node.TagAsObject as ObjectBaseDTO, id));
       }
 
-      private bool objectIdMatches(IObjectBaseDTO objectBaseDTO, string id) => string.Equals(objectBaseDTO.Id, id);
+      private bool objectIdMatches(ObjectBaseDTO objectBaseDTO, string id) => string.Equals(objectBaseDTO.Id, id);
 
       private void rgReferenceType_SelectedIndexChanged(object sender, EventArgs e)
       {

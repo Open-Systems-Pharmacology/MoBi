@@ -8,7 +8,7 @@ namespace MoBi.Core.Extensions
       /// <summary>
       /// Creates a new object path that does not conain the last entry defined in <paramref name="objectPath"/>
       /// </summary>
-      public static IObjectPath ContainerPath(this IReadOnlyList<string> objectPath)
+      public static ObjectPath ContainerPath(this IReadOnlyList<string> objectPath)
       {
          var containerPath = new List<string>();
          for (int i = 0; i < objectPath.Count - 1; i++)
