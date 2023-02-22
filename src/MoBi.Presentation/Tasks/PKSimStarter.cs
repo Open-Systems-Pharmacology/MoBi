@@ -60,28 +60,24 @@ namespace MoBi.Presentation.Tasks
          if (string.IsNullOrEmpty(methodName))
             return null;
 
-         loadPKSimAssembly();
-         var expressionProfileBuildingBlock =
-            executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName)) as ExpressionProfileBuildingBlock;
-
-         //in case of cancelling
-         if (expressionProfileBuildingBlock == null)
-            return null;
-
-         return _cloneManager.CloneBuildingBlock(expressionProfileBuildingBlock);
+         return executeAndCloneBuildingBlock<ExpressionProfileBuildingBlock>(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName));
       }
 
       public IBuildingBlock CreateIndividual()
       {
+         return executeAndCloneBuildingBlock<IndividualBuildingBlock>(getMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL));
+      }
+
+      private TBuildingBlock executeAndCloneBuildingBlock<TBuildingBlock>(MethodInfo method) where TBuildingBlock : class, IBuildingBlock
+      {
          loadPKSimAssembly();
-         var individualBuildingBlock =
-            executeMethod(getMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL)) as IndividualBuildingBlock;
+         var buildingBlock = executeMethod(method) as TBuildingBlock;
 
          //in case of cancelling
-         if (individualBuildingBlock == null)
+         if (buildingBlock == null)
             return null;
 
-         return _cloneManager.CloneBuildingBlock(individualBuildingBlock);
+         return _cloneManager.CloneBuildingBlock(buildingBlock) as TBuildingBlock;
       }
 
       private object executeMethod(MethodInfo method)
@@ -91,16 +87,16 @@ namespace MoBi.Presentation.Tasks
 
       private void loadPKSimAssembly()
       {
-         var assemblyFile = retrievePKSimUIStarterPath();
+         if (_externalAssembly != null)
+            return;
 
-         if (_externalAssembly == null)
-         {
-            _externalAssembly = Assembly.LoadFrom(assemblyFile);
-         }
+         _externalAssembly = Assembly.LoadFrom(retrievePKSimUIStarterPath());
       }
 
       private MethodInfo getMethod(string type, string methodName)
       {
+         loadPKSimAssembly();
+
          return _externalAssembly.GetType(type).GetMethod(methodName);
       }
 
