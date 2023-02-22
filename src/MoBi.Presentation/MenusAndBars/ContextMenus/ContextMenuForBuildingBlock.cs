@@ -10,12 +10,13 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class ContextMenuForBuildingBlock<T> : ContextMenuFor<T>, IContextMenuForBuildingBlock<T> where T : class, IBuildingBlock
    {
-      public ContextMenuForBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
+      public ContextMenuForBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
       }
 
@@ -39,7 +40,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)
-            .WithCommandFor<CloneBuildingBlockUICommand<T>, T>(buildingBlock);
+            .WithCommandFor<CloneBuildingBlockUICommand<T>, T>(buildingBlock, _container);
       }
    }
 }

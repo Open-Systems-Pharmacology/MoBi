@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DevExpress.Services.Internal;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -13,6 +14,7 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -31,15 +33,17 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public abstract class ContextMenuFor<TObjectBase> : ContextMenuBase, IContextMenuFor<TObjectBase> where TObjectBase : class, IObjectBase
    {
-      protected ContextMenuFor(IMoBiContext context, IObjectTypeResolver objectTypeResolver)
+      protected ContextMenuFor(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container)
       {
          _context = context;
          _objectTypeResolver = objectTypeResolver;
+         _container = container;
       }
 
       protected readonly IMoBiContext _context;
       protected IList<IMenuBarItem> _allMenuItems;
       protected IObjectTypeResolver _objectTypeResolver;
+      protected readonly IContainer _container;
 
       public virtual IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
@@ -68,20 +72,20 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
             .WithIcon(ApplicationIcons.SaveIconFor(typeof(TObjectBase).Name))
-            .WithCommandFor<SaveUICommandFor<TObjectBase>, TObjectBase>(objectBase);
+            .WithCommandFor<SaveUICommandFor<TObjectBase>, TObjectBase>(objectBase, _container);
       }
 
       protected IMenuBarItem CreateEditItemFor(TObjectBase objectToEdit)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditCommandFor<TObjectBase>, TObjectBase>(objectToEdit)
+            .WithCommandFor<EditCommandFor<TObjectBase>, TObjectBase>(objectToEdit, _container)
             .WithIcon(ApplicationIcons.Edit);
       }
 
       protected IMenuBarItem CreateRenameItemFor(TObjectBase objectToEdit)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithCommandFor<RenameObjectCommand<TObjectBase>, TObjectBase>(objectToEdit)
+            .WithCommandFor<RenameObjectCommand<TObjectBase>, TObjectBase>(objectToEdit, _container)
             .WithIcon(ApplicationIcons.Rename);
       }
 
@@ -94,7 +98,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected IMenuBarItem AddToJournal(TObjectBase objectBase)
       {
-         return ObjectBaseCommonContextMenuItems.AddToJournal(objectBase);
+         return ObjectBaseCommonContextMenuItems.AddToJournal(objectBase, _container);
       }
    }
 }

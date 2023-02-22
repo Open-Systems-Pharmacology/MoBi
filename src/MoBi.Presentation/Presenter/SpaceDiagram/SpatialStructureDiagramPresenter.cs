@@ -30,13 +30,15 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
    {
       private readonly IMoBiConfiguration _configuration;
 
-      public SpatialStructureDiagramPresenter(ISpatialStructureDiagramView view, IContainerBaseLayouter layouter, IUserSettings userSettings, IMoBiContext context, IDialogCreator dialogCreator, IMoBiConfiguration configuration, IDiagramTask diagramTask, IStartOptions runOptions, IDiagramModelFactory diagramModelFactory)
-         : base(view, layouter, dialogCreator,diagramModelFactory, userSettings, context, diagramTask, runOptions)
+      public SpatialStructureDiagramPresenter(ISpatialStructureDiagramView view, IContainerBaseLayouter layouter, IUserSettings userSettings, 
+         IMoBiContext context, IDialogCreator dialogCreator, IMoBiConfiguration configuration, IDiagramTask diagramTask, IStartOptions runOptions, 
+         IDiagramModelFactory diagramModelFactory, OSPSuite.Utility.Container.IContainer container)
+         : base(view, layouter, dialogCreator,diagramModelFactory, userSettings, context, diagramTask, runOptions, container)
       {
          _configuration = configuration;
-         _diagramPopupMenu = new PopupMenuSpaceDiagram(this, runOptions);
-         _containerPopupMenu = new PopupMenuFullContainerWithParametersNode(this, _context, runOptions);
-         _neighborhoodPopupMenu = new PopupMenuFullEntityNode<INeighborhoodBuilder>(this, _context, runOptions);
+         _diagramPopupMenu = new PopupMenuSpaceDiagram(this, runOptions, container);
+         _containerPopupMenu = new PopupMenuFullContainerWithParametersNode(this, _context, runOptions, container);
+         _neighborhoodPopupMenu = new PopupMenuFullEntityNode<INeighborhoodBuilder>(this, _context, runOptions, container);
       }
 
       public override void Edit(IMoBiSpatialStructure spatialStructure)

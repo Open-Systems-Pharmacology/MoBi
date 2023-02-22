@@ -7,5 +7,6 @@ namespace MoBi.Core.Services
       void StartPopulationSimulationWithSimulationFile(string simulationFilePath);
       void StartWithWorkingJournalFile(string journalFilePath);
       IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
+      IBuildingBlock CreateIndividual();
    }
 }

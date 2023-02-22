@@ -7,12 +7,13 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class RootContextMenuForMoleculeBuildingBlock : RootContextMenuFor<IMoBiProject, IMoleculeBuildingBlock>
    {
-      public RootContextMenuForMoleculeBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context) : base(objectTypeResolver, context)
+      public RootContextMenuForMoleculeBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {
       }
 
@@ -24,7 +25,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewFromSelection)
             .WithIcon(ApplicationIcons.Molecule)
-            .WithCommand<AddNewMoleculeBuildingBlockFromSelectionUICommand>();
+            .WithCommand<AddNewMoleculeBuildingBlockFromSelectionUICommand>(_container);
       }
    }
 }

@@ -12,6 +12,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -28,11 +29,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private readonly IObjectTypeResolver _objectTypeResolver;
       protected readonly IList<IMenuBarItem> _allMenuItems;
       protected readonly IMoBiContext _context;
+      protected readonly IContainer _container;
 
-      public RootContextMenuFor(IObjectTypeResolver objectTypeResolver, IMoBiContext context)
+      public RootContextMenuFor(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container)
       {
          _objectTypeResolver = objectTypeResolver;
          _context = context;
+         _container = container;
          _allMenuItems = new List<IMenuBarItem>();
       }
 
@@ -45,21 +48,21 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypeName))
             .WithIcon(ApplicationIcons.AddIconFor(typeof(TObjectBase).Name))
-            .WithCommandFor<AddNewCommandFor<TParent, TObjectBase>, TParent>(parent);
+            .WithCommandFor<AddNewCommandFor<TParent, TObjectBase>, TParent>(parent, _container);
       }
 
       protected IMenuBarItem CreateAddExistingItemFor(TParent parent)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypeName))
             .WithIcon(ApplicationIcons.LoadIconFor(typeof(TObjectBase).Name))
-            .WithCommandFor<AddExistingCommandFor<TParent, TObjectBase>, TParent>(parent);
+            .WithCommandFor<AddExistingCommandFor<TParent, TObjectBase>, TParent>(parent, _container);
       }
 
       protected IMenuBarItem CreateAddExistingFromTemplateItemFor(TParent parent)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(ObjectTypeName))
             .WithIcon(ApplicationIcons.LoadTemplateIconFor(typeof(TObjectBase).Name))
-            .WithCommandFor<AddExistingFromTemplateCommandFor<TParent, TObjectBase>, TParent>(parent);
+            .WithCommandFor<AddExistingFromTemplateCommandFor<TParent, TObjectBase>, TParent>(parent, _container);
       }
 
       protected string ObjectTypeName => _objectTypeResolver.TypeFor<TObjectBase>();

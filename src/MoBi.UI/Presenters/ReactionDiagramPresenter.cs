@@ -25,6 +25,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
 using OSPSuite.UI.Diagram.Elements;
+using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
@@ -38,13 +39,13 @@ namespace MoBi.UI.Presenters
       private readonly IDiagramLayoutTask _diagramLayoutTask;
 
       public ReactionDiagramPresenter(IReactionDiagramView view, IContainerBaseLayouter layouter, IMoBiContext context, IUserSettings userSettings, IDialogCreator dialogCreator, IMoBiApplicationController applicationController, IDiagramTask diagramTask, IDiagramLayoutTask diagramLayoutTask,
-         IStartOptions runOptions, IDiagramModelFactory diagramModelFactory) :
-         base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
+         IStartOptions runOptions, IDiagramModelFactory diagramModelFactory, IContainer container) :
+         base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions, container)
       {
          _applicationController = applicationController;
-         _diagramPopupMenu = new PopupMenuReactionDiagram(this, runOptions);
+         _diagramPopupMenu = new PopupMenuReactionDiagram(this, runOptions, container);
          _moleculePopupMenu = _diagramPopupMenu;
-         _reactionPopupMenu = new PopupMenuReactionBuilder(this, context, runOptions);
+         _reactionPopupMenu = new PopupMenuReactionBuilder(this, context, runOptions, container);
          _diagramLayoutTask = diagramLayoutTask;
       }
 

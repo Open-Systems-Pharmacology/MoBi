@@ -13,11 +13,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    public class ContextMenuForModifierBuilder : ContextMenuBase
    {
       private readonly string _reactionModifier;
+      private readonly IContainer _container;
       private readonly IReactionBuilder _reactionBuilder;
 
-      public ContextMenuForModifierBuilder(IReactionBuilder reactionBuilder, string reactionModifier)
+      public ContextMenuForModifierBuilder(IReactionBuilder reactionBuilder, string reactionModifier, IContainer container)
       {
          _reactionModifier = reactionModifier;
+         _container = container;
          _reactionBuilder = reactionBuilder;
       }
 
@@ -33,14 +35,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.New.WithEllipsis())
             .WithIcon(ApplicationIcons.Add)
-            .WithCommandFor<AddModifierUICommand, IReactionBuilder>(reactionBuilder);
+            .WithCommandFor<AddModifierUICommand, IReactionBuilder>(reactionBuilder, _container);
       }
 
       private IMenuBarItem createRemoveItem(IReactionBuilder reactionBuilder, string reactionPartnerBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
-            .WithCommand(IoC.Resolve<RemoveModifierUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
+            .WithCommand(_container.Resolve<RemoveModifierUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
       }
    }
 }

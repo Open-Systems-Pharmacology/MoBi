@@ -7,7 +7,6 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
@@ -18,21 +17,22 @@ namespace MoBi.Presentation.Tasks
       private const string CREATE_INDIVIDUAL_ENZYME_EXPRESSION_PROFILE = "CreateIndividualEnzymeExpressionProfile";
       private const string CREATE_BINDING_PARTNER_EXPRESSION_PROFILE = "CreateBindingPartnerExpressionProfile";
       private const string CREATE_TRANSPORTER_EXPRESSION_PROFILE = "CreateTransporterExpressionProfile";
+      private const string CREATE_INDIVIDUAL = "CreateIndividual";
       private const string PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR = "PKSim.UI.Starter.ExpressionProfileCreator";
+      private const string PKSIM_UI_STARTER_INDIVIDUAL_CREATOR = "PKSim.UI.Starter.IndividualCreator";
       private const string PKSIM_UI_STARTER_DLL = "PKSim.UI.Starter.dll";
       private readonly IMoBiConfiguration _configuration;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
       private Assembly _externalAssembly;
-      private readonly IShell _shell;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
 
-      public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory, IShell shell, ICloneManagerForBuildingBlock cloneManager)
+      public PKSimStarter(IMoBiConfiguration configuration, IApplicationSettings applicationSettings,
+         IStartableProcessFactory startableProcessFactory, ICloneManagerForBuildingBlock cloneManager)
       {
          _configuration = configuration;
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
-         _shell = shell;
          _cloneManager = cloneManager;
       }
 
@@ -60,30 +60,44 @@ namespace MoBi.Presentation.Tasks
          if (string.IsNullOrEmpty(methodName))
             return null;
 
-         loadPKSimAssembly();
-         var expressionProfileBuildingBlock = executeMethod(getExpressionCreatorMethod(methodName)) as ExpressionProfileBuildingBlock;
+         return executeAndCloneBuildingBlock<ExpressionProfileBuildingBlock>(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName));
+      }
 
-         return _cloneManager.CloneBuildingBlock(expressionProfileBuildingBlock);
+      public IBuildingBlock CreateIndividual()
+      {
+         return executeAndCloneBuildingBlock<IndividualBuildingBlock>(getMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL));
+      }
+
+      private TBuildingBlock executeAndCloneBuildingBlock<TBuildingBlock>(MethodInfo method) where TBuildingBlock : class, IBuildingBlock
+      {
+         loadPKSimAssembly();
+         var buildingBlock = executeMethod(method) as TBuildingBlock;
+
+         //in case of cancelling
+         if (buildingBlock == null)
+            return null;
+
+         return _cloneManager.CloneBuildingBlock(buildingBlock) as TBuildingBlock;
       }
 
       private object executeMethod(MethodInfo method)
       {
-         return method.Invoke(null, new object[] { _shell });
+         return method.Invoke(null, null);
       }
 
       private void loadPKSimAssembly()
       {
-         var assemblyFile = retrievePKSimUIStarterPath();
+         if (_externalAssembly != null)
+            return;
 
-         if (_externalAssembly == null)
-         {
-            _externalAssembly = Assembly.LoadFrom(assemblyFile);
-         }
+         _externalAssembly = Assembly.LoadFrom(retrievePKSimUIStarterPath());
       }
 
-      private MethodInfo getExpressionCreatorMethod(string methodName)
+      private MethodInfo getMethod(string type, string methodName)
       {
-         return _externalAssembly.GetType(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR).GetMethod(methodName);
+         loadPKSimAssembly();
+
+         return _externalAssembly.GetType(type).GetMethod(methodName);
       }
 
       private void startPKSimWithFile(string filePathToStart, string option)

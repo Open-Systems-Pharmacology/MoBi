@@ -31,14 +31,17 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    internal interface IContextMenuForTransporterMoleculeContainer : IContextMenuFor<TransporterMoleculeContainer>
    {
    }
+   
    internal class ContextMenuForTransporterMoleculeContainer:ContextMenuBase, IContextMenuForTransporterMoleculeContainer
    {
       private IList<IMenuBarItem> _allMenuItems;
       private readonly IMoBiContext _context;
+      private readonly IContainer _container;
 
-      public ContextMenuForTransporterMoleculeContainer(IMoBiContext context) 
+      public ContextMenuForTransporterMoleculeContainer(IMoBiContext context, IContainer container)
       {
          _context = context;
+         _container = container;
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -64,14 +67,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected IMenuBarItem CreateEditItemFor(TransporterMoleculeContainer objectToEdit)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditCommandFor<TransporterMoleculeContainer>, TransporterMoleculeContainer>(objectToEdit)
+            .WithCommandFor<EditCommandFor<TransporterMoleculeContainer>, TransporterMoleculeContainer>(objectToEdit, _container)
             .WithIcon(ApplicationIcons.Edit);
       }
 
       protected IMenuBarItem CreateRenameItemFor(TransporterMoleculeContainer objectToEdit)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithCommandFor<RenameObjectCommand<TransporterMoleculeContainer>, TransporterMoleculeContainer>(objectToEdit)
+            .WithCommandFor<RenameObjectCommand<TransporterMoleculeContainer>, TransporterMoleculeContainer>(objectToEdit, _container)
             .WithIcon(ApplicationIcons.Rename);
       }
 
@@ -84,21 +87,21 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected virtual IMenuBarItem CreateAddNewTransportFor(TransporterMoleculeContainer selectedObject)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew("Transport"))
-            .WithCommandFor<AddNewCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject)
+            .WithCommandFor<AddNewCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
             .WithIcon(ApplicationIcons.Add);
       }
 
       protected virtual IMenuBarItem CreateAddExistingTransportFor(TransporterMoleculeContainer selectedObject)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting("Transport"))
-            .WithCommandFor<AddExistingCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject)
+            .WithCommandFor<AddExistingCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
             .WithIcon(ApplicationIcons.PKMLLoad);
       }
 
       protected virtual IMenuBarItem CreateAddExistingFromTemplateTransportFor(TransporterMoleculeContainer selectedObject)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate("Transport"))
-            .WithCommandFor<AddExistingFromTemplateCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject)
+            .WithCommandFor<AddExistingFromTemplateCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
             .WithIcon(ApplicationIcons.LoadFromTemplate);
       }
    }

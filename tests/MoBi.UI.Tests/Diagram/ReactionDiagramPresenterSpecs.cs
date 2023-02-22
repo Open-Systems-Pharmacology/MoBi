@@ -26,6 +26,7 @@ using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
 using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.UI.Diagram
 {
@@ -42,6 +43,7 @@ namespace MoBi.UI.Diagram
       private ICommandCollector _commandCollector;
       private IStartOptions _runOptions;
       private IDiagramModelFactory _diagramModelFactory;
+      private IContainer _container;
 
       protected override void Context()
       {
@@ -56,8 +58,9 @@ namespace MoBi.UI.Diagram
          _commandCollector = A.Fake<ICommandCollector>();
          _runOptions = A.Fake<IStartOptions>();
          _diagramModelFactory= A.Fake<IDiagramModelFactory>();
+         _container = A.Fake<IContainer>();
          sut = new ReactionDiagramPresenter(_reactionDiagramView, _containerBaseLayouter, _moBiContext, _userSettings,
-            _dialogCreator, _moBiApplicationController, _diagramTask, _diagramLayoutTask, _runOptions, _diagramModelFactory);
+            _dialogCreator, _moBiApplicationController, _diagramTask, _diagramLayoutTask, _runOptions, _diagramModelFactory, _container);
 
          sut.InitializeWith(_commandCollector);
       }
