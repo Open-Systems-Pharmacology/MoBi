@@ -40,7 +40,7 @@ namespace MoBi.Presentation
          _view = A.Fake<IExpressionProfileBuildingBlockView>();
          _interactionTaskForExpressionProfile = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
-         sut = new ExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper, _interactionTaskForExpressionProfile, _formulaToValueFormulaDTOMapper, _dimensionFactory, _pkSimStarter);
+         sut = new ExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper, _interactionTaskForExpressionProfile, _formulaToValueFormulaDTOMapper, _dimensionFactory);
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
 

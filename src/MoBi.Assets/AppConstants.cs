@@ -265,6 +265,7 @@ namespace MoBi.Assets
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
+         public static readonly string UpdateRelativeExpressions = "Update relative expressions";
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {

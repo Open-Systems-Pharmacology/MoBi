@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -8,6 +11,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -19,15 +23,16 @@ namespace MoBi.Presentation.Tasks
       protected ExpressionProfileBuildingBlock _buildingBlock;
       protected ExpressionParameter _expressionParameter;
       protected IFormula _formula;
+      protected IPKSimStarter _pkSimStarter;
 
       protected override void Context()
       {
          _editTask = A.Fake<IEditTasksForExpressionProfileBuildingBlock>();
          _formulaTask = A.Fake<IMoBiFormulaTask>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-
-
-         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask);
+         _pkSimStarter = A.Fake<IPKSimStarter>();
+         
+         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter);
 
          _formula = new ExplicitFormula("y=mx+b");
          _expressionParameter = GetExpressionParameter();
@@ -40,6 +45,47 @@ namespace MoBi.Presentation.Tasks
       protected virtual ExpressionParameter GetExpressionParameter()
       {
          return new ExpressionParameter { Formula = null, Value = 1.0 };
+      }
+   }
+
+   public class When_updating_expression_parameters_from_pksim : concern_for_InteractionTasksForExpressionProfileBuildingBlock
+   {
+      private ExpressionProfileBuildingBlockUpdate _expressionProfileUpdate;
+      private MoBiMacroCommand _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _expressionProfileUpdate = new ExpressionProfileBuildingBlockUpdate(_buildingBlock);
+         _expressionProfileUpdate.ExpressionParameters.Each(x =>
+         {
+            x.UpdatedValue = x.OriginalValue + 1;
+         });
+         A.CallTo(() => _pkSimStarter.UpdateExpressionProfileFromDatabase(_buildingBlock)).Returns(_expressionProfileUpdate);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.UpdateExpressionProfileFromDatabase(_buildingBlock) as MoBiMacroCommand;
+      }
+
+      [Observation]
+      public void the_value_should_be_updated()
+      {
+         _buildingBlock.First().Value.Value.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void the_command_should_update_parameters()
+      {
+         _result.Count.ShouldBeEqualTo(1);
+         _result.All().First().ShouldBeAnInstanceOf<PathAndValueEntityValueOrUnitChangedCommand<ExpressionParameter, ExpressionProfileBuildingBlock>>();
+      }
+
+      [Observation]
+      public void the_pk_sim_starter_is_used_to_update()
+      {
+         A.CallTo(() => _pkSimStarter.UpdateExpressionProfileFromDatabase(_buildingBlock)).MustHaveHappened();
       }
    }
 

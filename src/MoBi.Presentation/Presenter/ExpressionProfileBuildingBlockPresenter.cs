@@ -22,15 +22,15 @@ namespace MoBi.Presentation.Presenter
       IExpressionProfileBuildingBlockPresenter, IListener<RenamedEvent>
    {
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;
-      private readonly IPKSimStarter _pkSimStarter;
 
       private ExpressionProfileBuildingBlockDTO _expressionProfileBuildingBlockDTO;
+      private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTasksForExpressionProfile;
 
       public ExpressionProfileBuildingBlockPresenter(IExpressionProfileBuildingBlockView view, IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper expressionProfileToDTOMapper,
-         IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory, IPKSimStarter pkSimStarter) : base(view, interactionTaskForExpressionProfile, formulaToValueFormulaDTOMapper, dimensionFactory)
+         IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view, interactionTaskForExpressionProfile, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _expressionProfileToDTOMapper = expressionProfileToDTOMapper;
-         _pkSimStarter = pkSimStarter;
+         _interactionTasksForExpressionProfile = interactionTaskForExpressionProfile;
       }
 
       public override void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter
 
       public void LoadExpressionFromPKSimDatabaseQuery()
       {
-         _pkSimStarter.GetQueryResultsFromDatabase(_expressionProfileBuildingBlockDTO.Species);
+         AddCommand(_interactionTasksForExpressionProfile.UpdateExpressionProfileFromDatabase(_buildingBlock));
       }
 
       private void rebind()

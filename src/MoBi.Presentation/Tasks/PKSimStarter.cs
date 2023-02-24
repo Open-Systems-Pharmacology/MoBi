@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using MoBi.Assets;
 using MoBi.Core;
@@ -7,6 +9,7 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
@@ -22,7 +25,7 @@ namespace MoBi.Presentation.Tasks
       private const string PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR = "PKSim.UI.Starter.ExpressionProfileCreator";
       private const string PKSIM_UI_STARTER_INDIVIDUAL_CREATOR = "PKSim.UI.Starter.IndividualCreator";
       private const string PKSIM_UI_STARTER_DLL = "PKSim.UI.Starter.dll";
-      private const string PKSIM_UI_EXPRESSION_DATABASE_QUERY = "PKSim.UI.Starter.ExpressionDatabaseQuery";
+
       private readonly IMoBiConfiguration _configuration;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
@@ -82,10 +85,10 @@ namespace MoBi.Presentation.Tasks
          return _cloneManager.CloneBuildingBlock(buildingBlock) as TBuildingBlock;
       }
 
-      public void GetQueryResultsFromDatabase(string speciesName)
+      public ExpressionProfileBuildingBlockUpdate UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
       {
          loadPKSimAssembly();
-         var individualBuildingBlock = executeMethod(getMethod(PKSIM_UI_EXPRESSION_DATABASE_QUERY, GET_EXPRESSION_DATABASE_QUERY), new object[] {speciesName});
+         return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), new object[] { new ExpressionProfileBuildingBlockUpdate(expressionProfile) }) as ExpressionProfileBuildingBlockUpdate;
       }
 
       private object executeMethod(MethodInfo method, object[] parameters = null)

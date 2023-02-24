@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -10,22 +14,54 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForBuildingBlock<ExpressionProfileBuildingBlock>, IInteractionTasksForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>
    {
       IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML();
+      IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTasksForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
    {
       private readonly IEditTasksForExpressionProfileBuildingBlock _editTaskForExpressionProfileBuildingBlock;
+      private readonly IPKSimStarter _pkSimStarter;
 
-      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForExpressionProfileBuildingBlock editTask, IMoBiFormulaTask formulaTask) :
+      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForExpressionProfileBuildingBlock editTask, IMoBiFormulaTask formulaTask, IPKSimStarter pkSimStarter) :
          base(interactionTaskContext, editTask, formulaTask)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
+         _pkSimStarter = pkSimStarter;
       }
 
       public IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML()
       {
          var filename = AskForPKMLFileToOpen();
          return (string.IsNullOrEmpty(filename) ? Enumerable.Empty<ExpressionProfileBuildingBlock>() : LoadItems(filename)).ToList();
+      }
+
+      public IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock)
+      {
+         var expressionProfileUpdate = _pkSimStarter.UpdateExpressionProfileFromDatabase(buildingBlock);
+         
+         if (expressionProfileUpdate == null)
+            return new MoBiEmptyCommand();
+
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = ObjectTypes.ExpressionProfileBuildingBlock,
+            CommandType = AppConstants.Commands.EditCommand,
+            Description = AppConstants.Commands.UpdateRelativeExpressions
+         };
+
+         macroCommand.AddRange(expressionProfileUpdate.ExpressionParameters.Where(x => !Equals(x.OriginalValue, x.UpdatedValue)).Select(parameter => updateCommandFor(buildingBlock, parameter)));
+
+         return macroCommand.Run(Context);
+      }
+
+      private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ExpressionParameterUpdate parameter)
+      {
+         var parameterToUpdate = buildingBlock.FirstOrDefault(x => Equals(x.Path, parameter.Path));
+         
+         if (parameterToUpdate == null)
+            return new MoBiEmptyCommand();
+
+         return new PathAndValueEntityValueOrUnitChangedCommand<ExpressionParameter, ExpressionProfileBuildingBlock>(parameterToUpdate, parameter.UpdatedValue, parameterToUpdate.DisplayUnit, buildingBlock);
       }
 
       protected override string GetNewNameForClone(ExpressionProfileBuildingBlock buildingBlockToClone)

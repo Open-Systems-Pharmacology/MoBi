@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using DevExpress.Skins;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Views.Grid;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
@@ -58,6 +60,8 @@ namespace MoBi.UI.Views
 
          btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, "Query Database");
          tablePanel.AdjustLongButtonWidth(btnLoadFromDatabase);
+
+         gridView.RowCellStyle += (o, e) => OnEvent(updateRowCellStyle, o, e);
       }
 
       private void hideEditor()
@@ -144,6 +148,17 @@ namespace MoBi.UI.Views
       private void onExpressionParameterValueSet(ExpressionParameterDTO expressionParameterDTO, PropertyValueSetEventArgs<double?> e)
       {
          OnEvent(() => _presenter.SetParameterValue(expressionParameterDTO, e.NewValue));
+      }
+
+      private void updateRowCellStyle(object arg1, RowCellStyleEventArgs arg2)
+      {
+         if (arg2.Column.ReadOnly)
+         {
+            arg2.Appearance.BackColor = CommonSkins.GetSkin(DevExpress.LookAndFeel.UserLookAndFeel.Default).Colors["ReadOnly"];
+            arg2.Appearance.BackColor2 = CommonSkins.GetSkin(DevExpress.LookAndFeel.UserLookAndFeel.Default).Colors["ReadOnly"];
+
+            arg2.Appearance.ForeColor = CommonSkins.GetSkin(DevExpress.LookAndFeel.UserLookAndFeel.Default).Colors["DisabledText"];
+         }
       }
 
       private void initializePathElementColumn(Expression<Func<ExpressionParameterDTO, string>> expression, string caption)
