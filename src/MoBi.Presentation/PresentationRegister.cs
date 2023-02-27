@@ -153,6 +153,7 @@ namespace MoBi.Presentation
             scan.AssemblyContainingType<PresentationRegister>();
             scan.IncludeNamespaceContainingType<ContextMenuBase>();
             scan.IncludeNamespaceContainingType<IExitCommand>();
+            scan.ExcludeType(typeof(ContextMenuFactoryForBuildingBlock<>));
             scan.WithConvention<AllInterfacesAndConcreteTypeRegistrationConvention>();
          });
       }
@@ -263,9 +264,9 @@ namespace MoBi.Presentation
          registerContextMenuForBuildingBlockFactory<ISimulationSettings>(container);
       }
 
-      private void registerContextMenuForBuildingBlockFactory<T>(IContainer container) where T : IBuildingBlock
+      private void registerContextMenuForBuildingBlockFactory<TBuildingBlock>(IContainer container) where TBuildingBlock : IBuildingBlock
       {
-         container.Register<ContextMenuFactoryForBuildingBlock<T>, IContextMenuSpecificationFactory<IViewItem>, ContextMenuFactoryForBuildingBlock<T>>(LifeStyle.Singleton);
+         container.Register<IContextMenuSpecificationFactory<IViewItem>, ContextMenuFactoryForBuildingBlock<TBuildingBlock>>();
       }
 
       public class RegisterCreateAndEditPresenterConvention : IRegistrationConvention
