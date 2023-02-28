@@ -90,7 +90,7 @@ namespace MoBi.Presentation.Presenter.Main
       public int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
       {
          if (nodeTagIsModuleRootNode(node1) && nodeTagIsModuleRootNode(node2))
-            return nameComparison(node1, node2);
+            return rootNodeTypeComparison(node1, node2);
 
          if (nodeTagIsModuleRootNode(node1) && !nodeTagIsModuleRootNode(node2))
             return -1;
@@ -102,6 +102,14 @@ namespace MoBi.Presentation.Presenter.Main
             return 0;
 
          return nameComparison(node1, node2);
+      }
+
+      private int rootNodeTypeComparison(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
+      {
+         if (node1.Tag.Equals(MoBiRootNodeTypes.ExtensionModulesFolder))
+            return 1;
+
+         return -1;
       }
 
       private bool nodeTagIsBuildingBlock(ITreeNode<IWithName> node1)

@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.Presentation.Nodes;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Classifications;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
@@ -22,7 +23,7 @@ using OSPSuite.Presentation.Presenters.ObservedData;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Core.Domain.Repositories;
+using TreeNodeFactory = MoBi.Presentation.Nodes.TreeNodeFactory;
 
 namespace MoBi.Presentation
 {
@@ -32,7 +33,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       protected IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private IRegionResolver _regionResolver;
-      protected Nodes.TreeNodeFactory _treeNodeFactory;
+      protected TreeNodeFactory _treeNodeFactory;
       private IClassificationPresenter _classificationPresenter;
       private IToolTipPartCreator _toolTipPartCreator;
       protected IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
@@ -58,8 +59,8 @@ namespace MoBi.Presentation
          _observedDataInExplorerPresenter = A.Fake<IObservedDataInExplorerPresenter>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
          _editBuildingBlockStarter = A.Fake<IEditBuildingBlockStarter>();
-         _treeNodeFactory = new Nodes.TreeNodeFactory(_observedDataRepository, _toolTipPartCreator);
-         
+         _treeNodeFactory = new TreeNodeFactory(_observedDataRepository, _toolTipPartCreator);
+
          sut = new ModuleExplorerPresenter(_view, _regionResolver, _treeNodeFactory, _viewItemContextMenuFactory, _context,
             _classificationPresenter, _toolTipPartCreator, _observedDataInExplorerPresenter, _multipleTreeNodeContextMenuFactory, _projectRetriever, _editBuildingBlockStarter);
       }
@@ -177,6 +178,8 @@ namespace MoBi.Presentation
       private ITreeNode<SpatialStructure> _spatialStructureA;
       private ITreeNode<RootNodeType> _spatialStructureRootNode;
       private ITreeNode<RootNodeType> _moduleNode;
+      private ITreeNode<RootNodeType> _pkSimModuleNode;
+      private ITreeNode<RootNodeType> _extensionModuleNode;
 
       protected override void Context()
       {
@@ -184,6 +187,8 @@ namespace MoBi.Presentation
          _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.PKSimModuleFolder);
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _spatialStructureRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.SpatialStructureFolder);
+         _pkSimModuleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.PKSimModuleFolder);
+         _extensionModuleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExtensionModulesFolder);
       }
 
       [Observation]
@@ -191,6 +196,13 @@ namespace MoBi.Presentation
       {
          sut.OrderingComparisonFor(_moduleNode, _spatialStructureRootNode).ShouldBeEqualTo(-1);
          sut.OrderingComparisonFor(_moduleNode, _spatialStructureA).ShouldBeEqualTo(-1);
+      }
+
+      [Observation]
+      public void should_order_pksim_module_first()
+      {
+         sut.OrderingComparisonFor(_pkSimModuleNode, _extensionModuleNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor((_extensionModuleNode), _pkSimModuleNode).ShouldBeEqualTo(1);
       }
    }
 
@@ -226,7 +238,6 @@ namespace MoBi.Presentation
          sut.OrderingComparisonFor(_moduleNodeA, _moduleNodeZ).ShouldBeEqualTo(-1);
       }
 
-
       [Observation]
       public void should_compare_names_for_root_nodes()
       {
@@ -255,14 +266,11 @@ namespace MoBi.Presentation
 
          _module1.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
          _module1.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
-         
+
          _module1.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock());
 
          _allNodesAdded = new List<ITreeNode>();
-         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>
-         {
-            _allNodesAdded.Add(x.GetArgument<ITreeNode>(0));
-         });
+         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x => { _allNodesAdded.Add(x.GetArgument<ITreeNode>(0)); });
 
          _project.AddBuildingBlock(_observerBuildingBlock);
          _project.AddBuildingBlock(_simulationSettingsBuildingBlock);
@@ -292,7 +300,7 @@ namespace MoBi.Presentation
          _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.ParameterStartValuesCollection.ElementAt(0))).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.ParameterStartValuesCollection.ElementAt(1))).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.MoleculeStartValuesCollection.ElementAt(0))).ShouldBeEqualTo(1);
-         
+
          // Make sure nodes have not been added for null items
          _allNodesAdded.Count.ShouldBeEqualTo(11);
       }
