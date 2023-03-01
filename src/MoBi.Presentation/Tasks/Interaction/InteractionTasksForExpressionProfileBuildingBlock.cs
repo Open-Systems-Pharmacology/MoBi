@@ -7,6 +7,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -49,19 +50,19 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.UpdateRelativeExpressions
          };
 
-         macroCommand.AddRange(expressionProfileUpdate.ExpressionParameters.Where(x => !Equals(x.OriginalValue, x.UpdatedValue)).Select(parameter => updateCommandFor(buildingBlock, parameter)));
+         macroCommand.AddRange(expressionProfileUpdate.Select(parameter => updateCommandFor(buildingBlock, parameter.Path, parameter.UpdatedValue)));
 
          return macroCommand.Run(Context);
       }
 
-      private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ExpressionParameterUpdate parameter)
+      private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ObjectPath path, double? value)
       {
-         var parameterToUpdate = buildingBlock.FirstOrDefault(x => Equals(x.Path, parameter.Path));
+         var parameterToUpdate = buildingBlock.FirstOrDefault(x => Equals(x.Path, path));
          
          if (parameterToUpdate == null)
             return new MoBiEmptyCommand();
 
-         return new PathAndValueEntityValueOrUnitChangedCommand<ExpressionParameter, ExpressionProfileBuildingBlock>(parameterToUpdate, parameter.UpdatedValue, parameterToUpdate.DisplayUnit, buildingBlock);
+         return new PathAndValueEntityValueOrUnitChangedCommand<ExpressionParameter, ExpressionProfileBuildingBlock>(parameterToUpdate, value, parameterToUpdate.DisplayUnit, buildingBlock);
       }
 
       protected override string GetNewNameForClone(ExpressionProfileBuildingBlock buildingBlockToClone)

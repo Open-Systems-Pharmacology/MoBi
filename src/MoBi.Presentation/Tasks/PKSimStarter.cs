@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using MoBi.Assets;
 using MoBi.Core;
@@ -9,7 +8,6 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
@@ -85,10 +83,10 @@ namespace MoBi.Presentation.Tasks
          return _cloneManager.CloneBuildingBlock(buildingBlock) as TBuildingBlock;
       }
 
-      public ExpressionProfileBuildingBlockUpdate UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
+      public List<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
       {
          loadPKSimAssembly();
-         return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), new object[] { new ExpressionProfileBuildingBlockUpdate(expressionProfile) }) as ExpressionProfileBuildingBlockUpdate;
+         return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), new object[] { expressionProfile }) as List<ExpressionParameterValueUpdate>;
       }
 
       private object executeMethod(MethodInfo method, object[] parameters = null)
