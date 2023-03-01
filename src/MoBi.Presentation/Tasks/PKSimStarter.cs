@@ -128,7 +128,7 @@ namespace MoBi.Presentation.Tasks
                return assemblyFile;
          }
 
-         throw new MoBiException(AppConstants.PKSim.NotInstalled);
+         throw new MoBiException(AppConstants.PKSim.IncompatibleVersionInstalled);
       }
 
       private string retrievePKSimExecutablePath()
