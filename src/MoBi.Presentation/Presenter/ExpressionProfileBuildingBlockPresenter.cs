@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation.DTO;
+﻿using MoBi.Core.Services;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
@@ -14,6 +15,7 @@ namespace MoBi.Presentation.Presenter
    public interface IExpressionProfileBuildingBlockPresenter : IPresenter<IExpressionProfileBuildingBlockView>, IPathAndValueBuildingBlockPresenter<ExpressionParameterDTO>
    {
       void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
+      void LoadExpressionFromPKSimDatabaseQuery();
    }
 
    public class ExpressionProfileBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
@@ -22,18 +24,24 @@ namespace MoBi.Presentation.Presenter
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;
 
       private ExpressionProfileBuildingBlockDTO _expressionProfileBuildingBlockDTO;
+      private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTasksForExpressionProfile;
 
       public ExpressionProfileBuildingBlockPresenter(IExpressionProfileBuildingBlockView view, IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper expressionProfileToDTOMapper,
          IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view, interactionTaskForExpressionProfile, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _expressionProfileToDTOMapper = expressionProfileToDTOMapper;
+         _interactionTasksForExpressionProfile = interactionTaskForExpressionProfile;
       }
 
       public override void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
          _buildingBlock = expressionProfileBuildingBlock;
-
          rebind();
+      }
+
+      public void LoadExpressionFromPKSimDatabaseQuery()
+      {
+         AddCommand(_interactionTasksForExpressionProfile.UpdateExpressionProfileFromDatabase(_buildingBlock));
       }
 
       private void rebind()

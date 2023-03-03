@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using DevExpress.Skins;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Views.Grid;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
@@ -55,6 +57,9 @@ namespace MoBi.UI.Views
          lblSpecies.Text = Captions.Species.FormatForLabel();
          lblCategory.Text = Captions.Category.FormatForLabel();
          lblPKSimVersion.Text = PKSimVersion.FormatForLabel(checkCase: false);
+
+         btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, "Query Database");
+         tablePanel.AdjustLongButtonWidth(btnLoadFromDatabase);
       }
 
       private void hideEditor()
@@ -97,6 +102,7 @@ namespace MoBi.UI.Views
          _gridViewBinder.Bind(x => x.Dimension).WithRepository(createDimensionRepository).AsReadOnly();
 
          gridView.HiddenEditor += (o, e) => hideEditor();
+         btnLoadFromDatabase.Click += (ot, e) => OnEvent(_presenter.LoadExpressionFromPKSimDatabaseQuery);
       }
 
       private RepositoryItem createDimensionRepository(ExpressionParameterDTO arg)

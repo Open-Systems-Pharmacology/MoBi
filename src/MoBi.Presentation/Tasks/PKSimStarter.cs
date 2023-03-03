@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using MoBi.Assets;
 using MoBi.Core;
@@ -18,9 +19,11 @@ namespace MoBi.Presentation.Tasks
       private const string CREATE_BINDING_PARTNER_EXPRESSION_PROFILE = "CreateBindingPartnerExpressionProfile";
       private const string CREATE_TRANSPORTER_EXPRESSION_PROFILE = "CreateTransporterExpressionProfile";
       private const string CREATE_INDIVIDUAL = "CreateIndividual";
+      private const string GET_EXPRESSION_DATABASE_QUERY = "GetExpressionDatabaseQuery";
       private const string PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR = "PKSim.UI.Starter.ExpressionProfileCreator";
       private const string PKSIM_UI_STARTER_INDIVIDUAL_CREATOR = "PKSim.UI.Starter.IndividualCreator";
       private const string PKSIM_UI_STARTER_DLL = "PKSim.UI.Starter.dll";
+
       private readonly IMoBiConfiguration _configuration;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
@@ -80,9 +83,15 @@ namespace MoBi.Presentation.Tasks
          return _cloneManager.CloneBuildingBlock(buildingBlock) as TBuildingBlock;
       }
 
-      private object executeMethod(MethodInfo method)
+      public IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
       {
-         return method.Invoke(null, null);
+         loadPKSimAssembly();
+         return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), new object[] { expressionProfile }) as List<ExpressionParameterValueUpdate>;
+      }
+
+      private object executeMethod(MethodInfo method, object[] parameters = null)
+      {
+         return method.Invoke(null, parameters);
       }
 
       private void loadPKSimAssembly()

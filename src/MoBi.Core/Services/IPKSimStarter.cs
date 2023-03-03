@@ -1,4 +1,6 @@
-﻿using OSPSuite.Core.Domain.Builder;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using System.Collections.Generic;
 
 namespace MoBi.Core.Services
 {
@@ -8,5 +10,6 @@ namespace MoBi.Core.Services
       void StartWithWorkingJournalFile(string journalFilePath);
       IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
       IBuildingBlock CreateIndividual();
+      IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
    }
 }
