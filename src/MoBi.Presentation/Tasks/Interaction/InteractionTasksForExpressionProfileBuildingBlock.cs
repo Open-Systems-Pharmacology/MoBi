@@ -57,8 +57,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ObjectPath path, double? value)
       {
-         var parameterToUpdate = buildingBlock.FirstOrDefault(x => Equals(x.Path, path));
-         
+         var parameterToUpdate = buildingBlock[path];
+
          if (parameterToUpdate == null)
             return new MoBiEmptyCommand();
 

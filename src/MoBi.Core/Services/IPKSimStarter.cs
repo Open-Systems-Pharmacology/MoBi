@@ -10,6 +10,6 @@ namespace MoBi.Core.Services
       void StartWithWorkingJournalFile(string journalFilePath);
       IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
       IBuildingBlock CreateIndividual();
-      List<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
+      IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
    }
 }
