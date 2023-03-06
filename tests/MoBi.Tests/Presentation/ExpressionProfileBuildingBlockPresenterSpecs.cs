@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -28,11 +29,13 @@ namespace MoBi.Presentation
       private ICommandCollector _commandCollector;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
+      private IPKSimStarter _pkSimStarter;
 
       protected override void Context()
       {
          _expressionParameterToExpressionParameterDTOMapper = new ExpressionParameterToExpressionParameterDTOMapper(new FormulaToValueFormulaDTOMapper());
          _dimensionFactory = A.Fake<IDimensionFactory>();
+         _pkSimStarter = A.Fake<IPKSimStarter>();
          _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(_expressionParameterToExpressionParameterDTOMapper);
          _view = A.Fake<IExpressionProfileBuildingBlockView>();
          _interactionTaskForExpressionProfile = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();

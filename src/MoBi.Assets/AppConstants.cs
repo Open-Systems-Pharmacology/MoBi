@@ -265,6 +265,7 @@ namespace MoBi.Assets
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
+         public static readonly string UpdateRelativeExpressions = "Update relative expressions";
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
@@ -2090,7 +2091,8 @@ namespace MoBi.Assets
       {
          public static readonly string PopulationSimulationArgument = "/pop";
          public static readonly string JournalFileArgument = "/j";
-         public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup. Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
+         public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup.\nAlternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
+         public static readonly string IncompatibleVersionInstalled = "PK-Sim was found on the system, but it was not compatible with this feature. Please make sure that a compatible version of PK-Sim was installed using the provided setup.\nAlternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
       }
 
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)
