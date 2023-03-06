@@ -55,6 +55,9 @@ namespace MoBi.Presentation.Presenter.Main
          if (treeNode.TagAsObject is ClassifiableObservedData observedData)
             return ContextMenuFor(new ObservedDataViewItem(observedData.Repository));
 
+         if (treeNode.TagAsObject is Module module)
+            return ContextMenuFor(new ModuleViewItem(module));
+
          return base.ContextMenuFor(treeNode);
       }
 

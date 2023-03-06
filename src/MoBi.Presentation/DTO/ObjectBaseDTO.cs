@@ -154,4 +154,15 @@ namespace MoBi.Presentation.DTO
          Simulation = simulation;
       }
    }
+
+   public class ModuleViewItem : ObjectBaseDTO
+   {
+      public Module Module { get; private set; }
+
+      public ModuleViewItem(Module module)
+      {
+         Module = module;
+      }
+   }
+
 }

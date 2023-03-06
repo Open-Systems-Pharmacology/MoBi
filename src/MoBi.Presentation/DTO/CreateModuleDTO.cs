@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
@@ -11,6 +9,7 @@ namespace MoBi.Presentation.DTO
    {
       private IReadOnlyList<string> _prohibitedNames;
 
+      //create a child class and probably just overwrite the constructor should do. then we do not have the name rules
       public CreateModuleDTO()
       {
          Rules.Add(GenericRules.UniqueName);
@@ -23,6 +22,7 @@ namespace MoBi.Presentation.DTO
       }
 
       public string Name { get; set; }
+
       public bool IsNameUnique(string newName)
       {
          if (_prohibitedNames == null)

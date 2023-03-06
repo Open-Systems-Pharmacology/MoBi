@@ -1074,6 +1074,9 @@ namespace MoBi.Assets
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
          public static readonly string ReloadAll = "Reload all under same settings...";
+         public static readonly string AddBuildingBlocks = "Add Building Blocks...";
+         public static readonly string AddExistingBuildingBlocks = "Load Building Blocks...";
+         public static readonly string AddExistingBuildingBlocksFromTemplate = "Load Building Blocks From Template...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1083,7 +1086,6 @@ namespace MoBi.Assets
 
          public static string AddEmptyModule => $"Create Empty Module...";
          public static string AddModuleWithBuildingBlocks => $"Create Module with Building Blocks...";
-
       }
 
       public static class DimensionNames
@@ -1628,8 +1630,10 @@ namespace MoBi.Assets
          public static readonly string ExtensionModulesFolder = "Extension Modules";
          public static readonly string Module = "Module";
          public static readonly string CreateBuildingBlocks = "Create Building Blocks";
+         public static readonly string AddSelectedBuildingBlocks = "Add Selected Building Blocks";
          public static readonly string ParentPath = "Parent Path";
          public static readonly string SelectContainer = "Select Container";
+         public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 

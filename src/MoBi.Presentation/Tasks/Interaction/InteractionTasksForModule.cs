@@ -12,6 +12,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForModule : IInteractionTasksForChildren<IMoBiProject, Module>
    {
       void CreateNewModuleWithBuildingBlocks();
+      void AddBuildingBlocksToModule(Module module);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<IMoBiProject, Module>, IInteractionTasksForModule
@@ -46,6 +47,20 @@ namespace MoBi.Presentation.Tasks.Interaction
                return;
 
             _interactionTaskContext.Context.AddToHistory(GetAddCommand(module, _interactionTaskContext.Context.CurrentProject, null).Run(_interactionTaskContext.Context));
+         }
+      }
+
+      public void AddBuildingBlocksToModule(Module module)
+      {
+         using (var presenter = _interactionTaskContext.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>())
+         {
+            var moduleWithBewBuildingBlocks = presenter.AddBuildingBlocksToModule(module);
+
+            if (moduleWithBewBuildingBlocks == null)
+               return;
+
+            //_interactionTaskContext.Context.AddToHistory(GetAddCommand(module, _interactionTaskContext.Context.CurrentProject, null).Run(_interactionTaskContext.Context));
+
          }
       }
    }
