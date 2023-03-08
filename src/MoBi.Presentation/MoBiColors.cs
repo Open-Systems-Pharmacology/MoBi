@@ -15,11 +15,6 @@ namespace MoBi.Presentation
       public static Color Modified = Color.LightYellow;
 
       /// <summary>
-      /// Color used for cell that are locked/disabled 
-      /// </summary>
-      public static Color Disabled = Color.LightGray;
-
-      /// <summary>
       /// The default cell color
       /// </summary>
       public static Color Default = Color.White;
