@@ -59,6 +59,7 @@ namespace MoBi.Core.Domain.Services
          register(project);
          project.AllBuildingBlocks().Each(RegisterAllIn);
          project.AllObservedData.Each(RegisterAllIn);
+         project.Modules.Each(RegisterAllIn);
       }
    }
 }
