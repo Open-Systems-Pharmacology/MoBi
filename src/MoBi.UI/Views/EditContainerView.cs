@@ -1,7 +1,6 @@
 ﻿using DevExpress.LookAndFeel;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors.Controls;
 using MoBi.Assets;

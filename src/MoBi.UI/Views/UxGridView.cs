@@ -17,7 +17,6 @@ namespace MoBi.UI.Views
       protected override void DoInit()
       {
          base.DoInit();
-         _colorDisabled = MoBiColors.Disabled;
          ShowColumnChooser = true;
          ShowRowIndicator = true;
          MultiSelect = true;
