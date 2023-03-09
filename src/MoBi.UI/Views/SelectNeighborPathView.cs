@@ -40,6 +40,8 @@ namespace MoBi.UI.Views
       public string Label
       {
          set => layoutItemContainerPath.Text = value.FormatForLabel();
+         //this is just to satisfy tests. We don't care about the get in general
+         get => layoutItemContainerPath.Text;
       }
 
       public override void InitializeBinding()

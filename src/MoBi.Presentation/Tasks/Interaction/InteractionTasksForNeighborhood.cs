@@ -1,15 +1,14 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   //TODO REVIEW very special case-
    public interface IInteractionTasksForNeighborhood : IInteractionTasksForChildren<IContainer, INeighborhoodBuilder>
    {
       IMoBiCommand Add(IContainer firstNeighbor, IContainer secondNeighbor);
@@ -41,7 +40,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          neighborhoodBuilder.FirstNeighbor = firstNeighbor;
          neighborhoodBuilder.SecondNeighbor = secondNeighbor;
 
-         if (_editTask.EditEntityModal(neighborhoodBuilder,spatialStructure, macroCommand, spatialStructure))
+         if (_editTask.EditEntityModal(neighborhoodBuilder, spatialStructure, macroCommand, spatialStructure))
          {
             macroCommand.AddCommand(GetAddCommand(neighborhoodBuilder, spatialStructure.NeighborhoodsContainer, spatialStructure).Run(Context));
             macroCommand.Description = AppConstants.Commands.AddToDescription(ObjectName, neighborhoodBuilder.Name,
@@ -49,6 +48,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             _editTask.Edit(neighborhoodBuilder);
             return macroCommand;
          }
+
          return new MoBiEmptyCommand();
       }
 

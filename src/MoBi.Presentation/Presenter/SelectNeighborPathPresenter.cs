@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation.DTO;
+﻿using System.Linq;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -35,22 +36,26 @@ namespace MoBi.Presentation.Presenter
 
       private void onSelectedContainerPathChanged(IEntity entity, ObjectPath containerObjectPath)
       {
-         var container = entity as IContainer;
-         if (container == null)
+         if (!(entity is IContainer container))
             return;
 
          //Only physical containers can be selected as neighbors
-         if (container.Mode == ContainerMode.Physical)
-         {
-            _selectedPathDTO.Path = containerObjectPath.PathAsString;
-            ViewChanged();
-         }
+         if (container.Mode != ContainerMode.Physical) 
+            return;
+
+         _selectedPathDTO.Path = containerObjectPath.PathAsString;
+         ViewChanged();
       }
 
       public void Init(ISpatialStructure spatialStructure, string label)
       {
          _view.Label = label;
-         var organism = spatialStructure.TopContainers.Find(x => x.ContainerType == ContainerType.Organism);
+         var organism = spatialStructure.TopContainers.Find(x => x.ContainerType == ContainerType.Organism) ?? spatialStructure.TopContainers.FirstOrDefault();
+
+         //no organism found, nothing to do?
+         if (organism == null)
+            return;
+
          _selectContainerInTreePresenter.InitTreeStructure(new[] {_containerDTOMapper.MapFrom(organism)});
       }
 

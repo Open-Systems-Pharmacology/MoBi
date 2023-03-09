@@ -56,7 +56,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder.Bind(dto => dto.Name)
-            .To(tbName);
+            .To(tbName).OnValueUpdated += (o, e) => OnEvent(() => _presenter.UpdateName(e));
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }

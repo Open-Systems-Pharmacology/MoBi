@@ -8,6 +8,6 @@ namespace MoBi.Presentation.Views
    {
       void AddContainerCriteriaView(IView view);
       void BindTo(ObjectPathDTO objectPathDTO);
-      string Label { set; }
+      string Label { get; set; }
    }
 }
