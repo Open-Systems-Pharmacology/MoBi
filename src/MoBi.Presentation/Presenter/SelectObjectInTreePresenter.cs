@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Antlr.Runtime.Misc;
+﻿using System;
+using System.Collections.Generic;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
@@ -9,6 +9,18 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
+   public class SelectedEntityChangedArgs : EventArgs
+   {
+      public IEntity Entity { get; }
+      public ObjectPath Path { get; }
+
+      public SelectedEntityChangedArgs(IEntity entity, ObjectPath path)
+      {
+         Entity = entity;
+         Path = path;
+      }
+   }
+
    public interface ISelectEntityInTreePresenter : IPresenter<ISelectEntityInTreeView>
    {
       Func<ObjectBaseDTO, IReadOnlyList<ObjectBaseDTO>> GetChildren { get; set; }
@@ -17,19 +29,35 @@ namespace MoBi.Presentation.Presenter
       IEntity SelectedEntity { get; }
       ObjectBaseDTO SelectedDTO { get; }
       ITreeNode TreeNodeFor(ObjectBaseDTO dto);
-      IObjectBase ObjectFrom(ObjectBaseDTO parentDTO);
+      ObjectPath SelectedEntityPath { get; }
+      void SelectObjectBaseDTO(ObjectBaseDTO dto);
+      event EventHandler<SelectedEntityChangedArgs> OnSelectedEntityChanged;
    }
 
    public class SelectEntityInTreePresenter : AbstractPresenter<ISelectEntityInTreeView, ISelectEntityInTreePresenter>, ISelectEntityInTreePresenter
    {
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IMoBiContext _context;
+      public event EventHandler<SelectedEntityChangedArgs> OnSelectedEntityChanged = delegate { };
 
-      public SelectEntityInTreePresenter(ISelectEntityInTreeView view, IMoBiContext context) : base(view)
+      public SelectEntityInTreePresenter(ISelectEntityInTreeView view, IObjectPathFactory objectPathFactory, IMoBiContext context) : base(view)
       {
+         _objectPathFactory = objectPathFactory;
          _context = context;
       }
 
-      public IObjectBase ObjectFrom(ObjectBaseDTO dto) => _context.Get<IObjectBase>(dto.Id);
+      protected IEntity EntityFrom(ObjectBaseDTO dto) => _context.Get<IEntity>(dto.Id);
+
+      public ObjectPath SelectedEntityPath => SelectedEntity != null ? _objectPathFactory.CreateAbsoluteObjectPath(SelectedEntity) : null;
+
+      public virtual void SelectObjectBaseDTO(ObjectBaseDTO dto)
+      {
+         var entity = EntityFrom(dto);
+         if (entity == null)
+            return;
+
+         OnSelectedEntityChanged(this, new SelectedEntityChangedArgs(entity, _objectPathFactory.CreateAbsoluteObjectPath(entity)));
+      }
 
       public Func<ObjectBaseDTO, IReadOnlyList<ObjectBaseDTO>> GetChildren { get; set; }
 
@@ -43,7 +71,7 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(entityDTOs);
       }
 
-      public IEntity SelectedEntity => ObjectFrom(_view.Selected) as IEntity;
+      public IEntity SelectedEntity => EntityFrom(_view.Selected);
 
       public ObjectBaseDTO SelectedDTO => _view.Selected;
 

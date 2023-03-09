@@ -62,6 +62,8 @@ namespace MoBi.Presentation.Presenter
          _objectBaseDTOMapper = objectBaseDTOMapper;
          AddSubPresenters(_selectEntityInTreePresenter);
          _selectEntityInTreePresenter.GetChildren = GetChildren;
+         _selectEntityInTreePresenter.OnSelectedEntityChanged += (o, e) => _view.OkEnabled = e != null;
+
       }
 
       public FormulaUsablePath Select()

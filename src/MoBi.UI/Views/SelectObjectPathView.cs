@@ -8,7 +8,6 @@ namespace MoBi.UI.Views
 {
    public partial class SelectObjectPathView : BaseModalView, ISelectObjectPathView
    {
-      private ISelectEntityInTreeView _view;
       private ISelectObjectPathPresenter _presenter;
 
       public SelectObjectPathView()
@@ -29,9 +28,7 @@ namespace MoBi.UI.Views
 
       public void AddSelectionView(ISelectEntityInTreeView view)
       {
-         _view = view;
          panelControl.FillWith(view);
-         _view.OnNodeSelected += (o, e) => OnEvent(SetOkButtonEnable);
       }
    }
 }

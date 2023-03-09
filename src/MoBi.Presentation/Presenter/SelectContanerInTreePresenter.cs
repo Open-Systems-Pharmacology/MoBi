@@ -19,10 +19,10 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IContainerToContainerDTOMapper _containerDTOMapper;
 
-      public SelectContainerInTreePresenter(
-         ISelectEntityInTreeView view,
+      public SelectContainerInTreePresenter(ISelectEntityInTreeView view,
+         IObjectPathFactory objectPathFactory,
          IMoBiContext context,
-         IContainerToContainerDTOMapper containerDTOMapper) : base(view, context)
+         IContainerToContainerDTOMapper containerDTOMapper) : base(view, objectPathFactory, context)
       {
          _containerDTOMapper = containerDTOMapper;
          GetChildren = getChildren;
@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Presenter
 
       private IReadOnlyList<ObjectBaseDTO> getChildren(ObjectBaseDTO parentDTO)
       {
-         var parent = ObjectFrom(parentDTO);
+         var parent = EntityFrom(parentDTO);
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();
 

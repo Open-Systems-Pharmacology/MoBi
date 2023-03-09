@@ -17,31 +17,28 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IMoBiContext _context;
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
-      private readonly IObjectPathFactory _objectPathFactory;
       private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
 
       public SelectContainerPresenter(
          ISelectObjectPathView view,
          IMoBiContext context,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
-         IContainerToContainerDTOMapper containerDTOMapper,
-         IObjectPathFactory objectPathFactory,
          ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper) : base(view)
       {
          _context = context;
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
-         _objectPathFactory = objectPathFactory;
          _spatialStructureDTOMapper = spatialStructureDTOMapper;
          AddSubPresenters(_selectContainerInTreePresenter);
          _view.Caption = AppConstants.Captions.SelectContainer;
          _view.AddSelectionView(_selectContainerInTreePresenter.View);
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += (o, e) => _view.OkEnabled = e != null;
       }
 
       public ObjectPath Select()
       {
          init();
          _view.Display();
-         return _view.Canceled ? null : _objectPathFactory.CreateAbsoluteObjectPath(_selectContainerInTreePresenter.SelectedEntity);
+         return _view.Canceled ? null : _selectContainerInTreePresenter.SelectedEntityPath;
       }
 
       private void init()

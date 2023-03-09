@@ -30,22 +30,22 @@
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.tbName = new DevExpress.XtraEditors.TextEdit();
-         this.layoutItemName = new DevExpress.XtraLayout.LayoutControlItem();
-         this.panelFirstNeighbor = new DevExpress.XtraEditors.PanelControl();
-         this.layoutItemFirstNeighbor = new DevExpress.XtraLayout.LayoutControlItem();
          this.panelSecondNeighbor = new DevExpress.XtraEditors.PanelControl();
+         this.panelFirstNeighbor = new DevExpress.XtraEditors.PanelControl();
+         this.tbName = new DevExpress.XtraEditors.TextEdit();
+         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemFirstNeighbor = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemSecondNeighbor = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelFirstNeighbor)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemFirstNeighbor)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelSecondNeighbor)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelFirstNeighbor)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemFirstNeighbor)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemSecondNeighbor)).BeginInit();
          this.SuspendLayout();
          // 
@@ -63,6 +63,28 @@
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "uxLayoutControl1";
          // 
+         // panelSecondNeighbor
+         // 
+         this.panelSecondNeighbor.Location = new System.Drawing.Point(453, 34);
+         this.panelSecondNeighbor.Name = "panelSecondNeighbor";
+         this.panelSecondNeighbor.Size = new System.Drawing.Size(444, 527);
+         this.panelSecondNeighbor.TabIndex = 0;
+         // 
+         // panelFirstNeighbor
+         // 
+         this.panelFirstNeighbor.Location = new System.Drawing.Point(10, 34);
+         this.panelFirstNeighbor.Name = "panelFirstNeighbor";
+         this.panelFirstNeighbor.Size = new System.Drawing.Size(443, 527);
+         this.panelFirstNeighbor.TabIndex = 5;
+         // 
+         // tbName
+         // 
+         this.tbName.Location = new System.Drawing.Point(103, 12);
+         this.tbName.Name = "tbName";
+         this.tbName.Size = new System.Drawing.Size(792, 20);
+         this.tbName.StyleController = this.layoutControl;
+         this.tbName.TabIndex = 4;
+         // 
          // Root
          // 
          this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -75,13 +97,15 @@
          this.Root.Size = new System.Drawing.Size(907, 571);
          this.Root.TextVisible = false;
          // 
-         // tbName
+         // layoutItemFirstNeighbor
          // 
-         this.tbName.Location = new System.Drawing.Point(103, 12);
-         this.tbName.Name = "tbName";
-         this.tbName.Size = new System.Drawing.Size(792, 20);
-         this.tbName.StyleController = this.layoutControl;
-         this.tbName.TabIndex = 4;
+         this.layoutItemFirstNeighbor.Control = this.panelFirstNeighbor;
+         this.layoutItemFirstNeighbor.Location = new System.Drawing.Point(0, 24);
+         this.layoutItemFirstNeighbor.Name = "layoutItemFirstNeighbor";
+         this.layoutItemFirstNeighbor.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
+         this.layoutItemFirstNeighbor.Size = new System.Drawing.Size(443, 527);
+         this.layoutItemFirstNeighbor.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemFirstNeighbor.TextVisible = false;
          // 
          // layoutItemName
          // 
@@ -91,34 +115,12 @@
          this.layoutItemName.Size = new System.Drawing.Size(887, 24);
          this.layoutItemName.TextSize = new System.Drawing.Size(79, 13);
          // 
-         // panelFirstNeighbor
-         // 
-         this.panelFirstNeighbor.Location = new System.Drawing.Point(12, 36);
-         this.panelFirstNeighbor.Name = "panelFirstNeighbor";
-         this.panelFirstNeighbor.Size = new System.Drawing.Size(439, 523);
-         this.panelFirstNeighbor.TabIndex = 5;
-         // 
-         // layoutControlItem1
-         // 
-         this.layoutItemFirstNeighbor.Control = this.panelFirstNeighbor;
-         this.layoutItemFirstNeighbor.Location = new System.Drawing.Point(0, 24);
-         this.layoutItemFirstNeighbor.Name = "layoutItemFirstNeighbor";
-         this.layoutItemFirstNeighbor.Size = new System.Drawing.Size(443, 527);
-         this.layoutItemFirstNeighbor.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemFirstNeighbor.TextVisible = false;
-         // 
-         // panelSecondNeighbor
-         // 
-         this.panelSecondNeighbor.Location = new System.Drawing.Point(455, 36);
-         this.panelSecondNeighbor.Name = "panelSecondNeighbor";
-         this.panelSecondNeighbor.Size = new System.Drawing.Size(440, 523);
-         this.panelSecondNeighbor.TabIndex = 0;
-         // 
-         // layoutControlItem2
+         // layoutItemSecondNeighbor
          // 
          this.layoutItemSecondNeighbor.Control = this.panelSecondNeighbor;
          this.layoutItemSecondNeighbor.Location = new System.Drawing.Point(443, 24);
          this.layoutItemSecondNeighbor.Name = "layoutItemSecondNeighbor";
+         this.layoutItemSecondNeighbor.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutItemSecondNeighbor.Size = new System.Drawing.Size(444, 527);
          this.layoutItemSecondNeighbor.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemSecondNeighbor.TextVisible = false;
@@ -133,12 +135,12 @@
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelFirstNeighbor)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemFirstNeighbor)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelSecondNeighbor)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelFirstNeighbor)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemFirstNeighbor)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemSecondNeighbor)).EndInit();
          this.ResumeLayout(false);
 

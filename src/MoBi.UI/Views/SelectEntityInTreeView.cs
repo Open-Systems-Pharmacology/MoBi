@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using MoBi.Assets;
@@ -21,7 +20,6 @@ namespace MoBi.UI.Views
       private readonly IObjectBaseDTOToSpatialStructureNodeMapper _spatialStructureNodeMapper;
       private readonly UxTreeView _treeView;
       private ISelectEntityInTreePresenter _presenter;
-      public event EventHandler<ITreeNode> OnNodeSelected = delegate { };
 
       public SelectEntityInTreeView(IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper, IImageListRetriever imageListRetriever)
       {
@@ -68,7 +66,7 @@ namespace MoBi.UI.Views
 
       public override bool HasError => !_presenter.IsValidSelection(Selected);
 
-      private void onNodeClick(MouseEventArgs e, ITreeNode node) => OnNodeSelected(this, node);
+      private void onNodeClick(MouseEventArgs e, ITreeNode node) => _presenter.SelectObjectBaseDTO(Selected);
 
       private void initTreeView(IImageListRetriever imageListRetriever)
       {
