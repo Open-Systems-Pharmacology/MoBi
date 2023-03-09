@@ -37,6 +37,7 @@ namespace MoBi.Assets
       public static class BuildingBlockSpatialStructure
       {
          public static readonly string NewTopContainer = "Create a new Top Container";
+         public static readonly string NewNeighborhood = "Create a new neighborhood";
          public static readonly string LoadTopContainer = $"Load Top Container from Spatial Structures Building Block file (*{Constants.Filter.PKML_FILE_FILTER})";
       }
 

@@ -10,7 +10,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public abstract class ContextMenuForObjectBaseDTOSpecificationFactory<TEntityType> : IContextMenuSpecificationFactory<IViewItem> where TEntityType : IObjectBase
    {
-      private readonly IMoBiContext _context;
+      protected readonly IMoBiContext _context;
 
       protected ContextMenuForObjectBaseDTOSpecificationFactory(IMoBiContext context)
       {

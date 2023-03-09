@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Presenter
       public EditReactionBuilderPresenter(IEditReactionBuilderView view, IEditFormulaPresenter editFormulaPresenter,
          ISelectReferenceAtReactionPresenter selectReferencesPresenter, IReactionBuilderToReactionBuilderDTOMapper reactionBuilderToReactionBuilderDTOMapper,
          IViewItemContextMenuFactory viewItemContextMenuFactory, IEditTaskFor<IReactionBuilder> editTasks,
-         IFormulaToFormulaBuilderDTOMapper formulaBuilderMapper, IEditParametersInContainerPresenter editReactionParametersPresenter, IMoBiContext context, 
+         IFormulaToFormulaBuilderDTOMapper formulaBuilderMapper, IEditParametersInContainerPresenter editReactionParametersPresenter, IMoBiContext context,
          IDescriptorConditionListPresenter<IReactionBuilder> containerCriteriaPresenter, IReactionEductsPresenter reactionEductPresenter, IReactionProductsPresenter reactionProductPresenter,
          IReactionModifiersPresenter reactionModifiersPresenter)
          : base(view, editFormulaPresenter, selectReferencesPresenter)
@@ -94,6 +94,7 @@ namespace MoBi.Presentation.Presenter
             _view.Visible = false;
             return;
          }
+
          setUpFormulaEditView();
          _editReactionParametersPresenter.Edit(_reactionBuilder);
          _containerCriteriaPresenter.Edit(_reactionBuilder, x => x.ContainerCriteria, BuildingBlock);

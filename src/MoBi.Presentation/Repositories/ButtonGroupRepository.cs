@@ -155,6 +155,7 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ZoomIn)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ZoomOut)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.FitToPage)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewNeighborhood)))
          .WithId(ButtonGroupIds.EditDiagram);
 
       private IButtonGroup addMoleculeStartValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)

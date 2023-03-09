@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -20,7 +18,6 @@ namespace MoBi.Presentation.Mappers
    {
       private Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> _getChildren;
 
- 
       public HierarchicalStructureNode MapFrom(ObjectBaseDTO objectBase)
       {
          var node = new HierarchicalStructureNode(objectBase)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -20,7 +21,7 @@ namespace MoBi.Presentation.Presenter
       FormulaUsablePath Select();
    }
 
-   internal class SelectEventAssignmentTargetPresenter : AbstractDisposablePresenter<ISelectObjectPathView, ISelectObjectPathPresenter>, ISelectEventAssignmentTargetPresenter
+   public class SelectEventAssignmentTargetPresenter : AbstractDisposablePresenter<ISelectObjectPathView, ISelectObjectPathPresenter>, ISelectEventAssignmentTargetPresenter
    {
       private readonly IContainerToContainerDTOMapper _containerDTOMapper;
       private readonly IMoBiContext _context;
@@ -30,6 +31,8 @@ namespace MoBi.Presentation.Presenter
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IParameterToDummyParameterDTOMapper _dummyParameterDTOMapper;
       private readonly IReactionDimensionRetriever _dimensionRetriever;
+      private readonly ISelectEntityInTreePresenter _selectEntityInTreePresenter;
+      private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
       private IReadOnlyList<IMoleculeBuilder> _molecules;
       private IReadOnlyList<IReactionBuilder> _reactions;
 
@@ -41,41 +44,50 @@ namespace MoBi.Presentation.Presenter
          IMoleculeBuilderToDummyMoleculeDTOMapper dummyMoleculeDTOMapper,
          IObjectPathFactory objectPathFactory,
          IParameterToDummyParameterDTOMapper dummyParameterDTOMapper,
-         IReactionDimensionRetriever dimensionRetriever)
+         IReactionDimensionRetriever dimensionRetriever,
+         ISelectEntityInTreePresenter selectEntityInTreePresenter,
+         ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper
+      )
          : base(view)
       {
          _context = context;
          _dimensionRetriever = dimensionRetriever;
+         _selectEntityInTreePresenter = selectEntityInTreePresenter;
+         _spatialStructureDTOMapper = spatialStructureDTOMapper;
          _objectPathFactory = objectPathFactory;
          _dummyMoleculeDTOMapper = dummyMoleculeDTOMapper;
          _dummyReactionDTOMapper = dummyReactionDTOMapper;
          _containerDTOMapper = containerDTOMapper;
          _dummyParameterDTOMapper = dummyParameterDTOMapper;
          _objectBaseDTOMapper = objectBaseDTOMapper;
+         AddSubPresenters(_selectEntityInTreePresenter);
+         _selectEntityInTreePresenter.GetChildren = GetChildren;
       }
 
       public FormulaUsablePath Select()
       {
          _view.Display();
 
-         return _view.Canceled ? null : generatePathFromDTO(_view.Selected);
+         return _view.Canceled ? null : generatePathFromDTO(_selectEntityInTreePresenter.SelectedDTO);
       }
 
-      public IEnumerable<ObjectBaseDTO> GetChildren(ObjectBaseDTO parentDTO)
+
+      //make this method public so that it can be tested
+      public IReadOnlyList<ObjectBaseDTO> GetChildren(ObjectBaseDTO parentDTO)
       {
          var parent = getObjectFrom(parentDTO);
          if (parent.IsAnImplementationOf<IDistributedParameter>())
-            return Enumerable.Empty<ObjectBaseDTO>();
+            return Array.Empty<ObjectBaseDTO>();
 
          var container = parent as IContainer;
          if (container == null)
-            return Enumerable.Empty<ObjectBaseDTO>();
+            return Array.Empty<ObjectBaseDTO>();
 
          if (parent.IsAnImplementationOf<IMoleculeBuilder>() || parent.IsAnImplementationOf<IReactionBuilder>())
          {
             //Molecule builder and reaction builder are dummy entities at that stage=>add dummy parameters
             if (isDummy(parentDTO))
-               return dummyLocalParametersUnder(parent, container, parentDTO);
+               return dummyLocalParametersUnder(container, parentDTO);
 
             //not dummy, this is a top container that requires global parameters
             return map(globalParameterUnder(container));
@@ -97,14 +109,11 @@ namespace MoBi.Presentation.Presenter
          return list;
       }
 
-      private IReadOnlyList<ObjectBaseDTO> map(IEnumerable<IObjectBase> objectsToMap)
-      {
-         return objectsToMap.MapAllUsing(_objectBaseDTOMapper);
-      }
+      private IReadOnlyList<ObjectBaseDTO> map(IEnumerable<IObjectBase> objectsToMap) => objectsToMap.MapAllUsing(_objectBaseDTOMapper);
 
-      private IEnumerable<ObjectBaseDTO> dummyLocalParametersUnder(IObjectBase parent, IContainer container, ObjectBaseDTO parentDTO)
+      private IReadOnlyList<ObjectBaseDTO> dummyLocalParametersUnder(IContainer container, ObjectBaseDTO parentDTO)
       {
-         return localParametersUnder(container).Select(x => _dummyParameterDTOMapper.MapFrom(x, container, parentDTO));
+         return localParametersUnder(container).Select(x => _dummyParameterDTOMapper.MapFrom(x, container, parentDTO)).ToList();
       }
 
       private IEnumerable<IParameter> localParametersUnder(IContainer container)
@@ -117,7 +126,9 @@ namespace MoBi.Presentation.Presenter
          return container.GetChildrenSortedByName<IParameter>(para => para.BuildMode == ParameterBuildMode.Global);
       }
 
-      public bool IsValidSelection(ObjectBaseDTO selectedDTO)
+      public override bool CanClose => base.CanClose && isValidSelection(_selectEntityInTreePresenter.SelectedDTO);
+
+      private bool isValidSelection(ObjectBaseDTO selectedDTO)
       {
          if (selectedDTO == null)
             return false;
@@ -141,16 +152,14 @@ namespace MoBi.Presentation.Presenter
          var project = _context.CurrentProject;
          _molecules = project.MoleculeBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<IMoleculeBuilder>()).OrderBy(x => x.Name).ToList();
          _reactions = project.ReactionBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<IReactionBuilder>()).OrderBy(x => x.Name).ToList();
-         var list = project.SpatialStructureCollection.Select(createSpatialStructureDTOFrom).Cast<ObjectBaseDTO>().ToList();
+         var list = new List<ObjectBaseDTO>();
+         list.AddRange(project.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper));
          list.Add(_objectBaseDTOMapper.MapFrom(container));
          list.AddRange(globalReactionParameters());
-         _view.BindTo(list);
+         _selectEntityInTreePresenter.InitTreeStructure(list);
       }
 
-      private IEnumerable<ObjectBaseDTO> globalReactionParameters()
-      {
-         return _reactions.Where(x => globalParameterUnder(x).Any()).Select(x => _containerDTOMapper.MapFrom(x));
-      }
+      private IReadOnlyList<ObjectBaseDTO> globalReactionParameters() => _reactions.Where(x => globalParameterUnder(x).Any()).MapAllUsing(_containerDTOMapper);
 
       private FormulaUsablePath generatePathFromDTO(ObjectBaseDTO dto)
       {
@@ -200,7 +209,7 @@ namespace MoBi.Presentation.Presenter
 
       private IEntity getExistingParentContainerFromDTO(ObjectBaseDTO dto)
       {
-         var treeNode = _view.GetNode(dto.Id);
+         var treeNode = _selectEntityInTreePresenter.TreeNodeFor(dto);
          var dtoParent = treeNode.ParentNode.ParentNode.TagAsObject.DowncastTo<ObjectBaseDTO>();
          return _context.Get<IEntity>(dtoParent.Id);
       }
@@ -227,18 +236,6 @@ namespace MoBi.Presentation.Presenter
       private IEnumerable<ObjectBaseDTO> getLocalInformationForMolecules(IContainer container)
       {
          return _molecules.Select(x => _dummyMoleculeDTOMapper.MapFrom(x, container));
-      }
-
-      private SpatialStructureDTO createSpatialStructureDTOFrom(IMoBiSpatialStructure spatialStructure)
-      {
-         return new SpatialStructureDTO
-         {
-            Id = spatialStructure.Id,
-            Name = spatialStructure.Name,
-            Icon = spatialStructure.Icon,
-            TopContainer = spatialStructure.TopContainers.MapAllUsing(_containerDTOMapper),
-            Neighborhoods = _containerDTOMapper.MapFrom(spatialStructure.NeighborhoodsContainer)
-         };
       }
    }
 }
