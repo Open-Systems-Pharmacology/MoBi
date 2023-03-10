@@ -205,8 +205,7 @@ namespace MoBi.Presentation.Tasks.Edit
       /// </summary>
       protected virtual void InitializeSubPresenter(IPresenter subPresenter, IBuildingBlock buildingBlock, T entity)
       {
-         var presenterWithFormulaCache = subPresenter as IPresenterWithFormulaCache;
-         if (presenterWithFormulaCache != null)
+         if (subPresenter is IPresenterWithBuildingBlock presenterWithFormulaCache)
          {
             presenterWithFormulaCache.BuildingBlock = buildingBlock;
          }

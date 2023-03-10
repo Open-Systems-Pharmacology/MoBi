@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
@@ -8,6 +7,8 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
+using static MoBi.Assets.AppConstants.Captions;
+using static MoBi.Assets.AppConstants.Dialog;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -28,15 +29,27 @@ namespace MoBi.Presentation.Tasks.Edit
          return _interactionTaskContext.Active<IMoBiSpatialStructure>();
       }
 
-      public override bool EditEntityModal(INeighborhoodBuilder entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
+      public override bool EditEntityModal(INeighborhoodBuilder neighborhood, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
-         var name = _interactionTaskContext.DialogCreator.AskForInput(AppConstants.Dialog.AskForNewNeighborhoodBuilderName(entity.FirstNeighbor.Name, entity.SecondNeighbor.Name),
-            AppConstants.Captions.NewWindow(ObjectName), String.Empty,
-            GetForbiddenNamesWithoutSelf(entity, existingObjectsInParent));
+         // Either we are creating a neighborhood from the diagram to which case, to which case the neighborhood is connected
+         if (neighborhoodIsConnected(neighborhood))
+            return editConnectedNeighborhood(neighborhood, existingObjectsInParent);
+
+         //or we are creating the neighborhood from scratch
+         return base.EditEntityModal(neighborhood, existingObjectsInParent, commandCollector, buildingBlock);
+      }
+
+      private bool neighborhoodIsConnected(INeighborhoodBuilder neighborhood) =>
+         neighborhood.FirstNeighbor != null && neighborhood.SecondNeighbor != null;
+
+      private bool editConnectedNeighborhood(INeighborhoodBuilder neighborhood, IEnumerable<IObjectBase> existingObjectsInParent)
+      {
+         var title = AskForNewNeighborhoodBuilderName(neighborhood.FirstNeighbor.Name, neighborhood.SecondNeighbor.Name);
+         var name = _interactionTaskContext.DialogCreator.AskForInput(title, NewWindow(ObjectName), forbiddenValues: GetForbiddenNamesWithoutSelf(neighborhood, existingObjectsInParent));
          if (name.IsNullOrEmpty())
             return false;
 
-         entity.Name = name;
+         neighborhood.Name = name;
          return true;
       }
    }

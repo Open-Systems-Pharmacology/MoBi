@@ -5,15 +5,15 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface ISpatialStructureToDTOSpatialStructureMapper : IMapper<ISpatialStructure, SpatialStructureDTO>
+   public interface ISpatialStructureToSpatialStructureDTOMapper : IMapper<ISpatialStructure, SpatialStructureDTO>
    {
    }
 
-   internal class SpatialStructureToDTOSpatialStructureMapper : ObjectBaseToObjectBaseDTOMapperBase, ISpatialStructureToDTOSpatialStructureMapper
+   internal class SpatialStructureToSpatialStructureDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, ISpatialStructureToSpatialStructureDTOMapper
    {
       private readonly IContainerToContainerDTOMapper _containerToDTOContainerMapper;
 
-      public SpatialStructureToDTOSpatialStructureMapper(IContainerToContainerDTOMapper containerToDTOContainerMapper)
+      public SpatialStructureToSpatialStructureDTOMapper(IContainerToContainerDTOMapper containerToDTOContainerMapper)
       {
          _containerToDTOContainerMapper = containerToDTOContainerMapper;
       }

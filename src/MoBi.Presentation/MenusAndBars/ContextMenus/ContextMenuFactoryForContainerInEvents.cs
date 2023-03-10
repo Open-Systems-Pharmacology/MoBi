@@ -24,7 +24,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var contextMenu = IoC.Resolve<IContextMenuForContainerInEventGroups>();
+         var contextMenu = _context.Resolve<ContextMenuForContainerInEventGroups>();
          var dto = objectRequestingContextMenu as ObjectBaseDTO;
          return contextMenu.InitializeWith(dto, presenter);
       }

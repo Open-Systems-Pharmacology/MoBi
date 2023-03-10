@@ -30,6 +30,8 @@ namespace MoBi.Core.Helper
          _typeCache = new Cache<Type, string>();
          addToCache<IMoleculeBuildingBlock>(ObjectTypes.MoleculeBuildingBlock);
          addToCache<IReactionBuildingBlock>(ObjectTypes.ReactionBuildingBlock);
+         addToCache<INeighborhoodBuilder>(ObjectTypes.NeighborhoodBuilder);
+         addToCache<INeighborhood>(ObjectTypes.NeighborhoodBuilder);
          addToCache<ISpatialStructure>(ObjectTypes.SpatialStructure);
          addToCache<IPassiveTransportBuildingBlock>(ObjectTypes.PassiveTransportBuildingBlock);
          addToCache<IObserverBuildingBlock>(ObjectTypes.ObserverBuildingBlock);

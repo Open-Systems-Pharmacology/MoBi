@@ -1032,6 +1032,7 @@ namespace MoBi.Assets
          public static readonly string LoadEvent = AddExisting(ObjectTypes.EventBuilder);
          public static readonly string LoadEventFromTemplate = AddExistingFromTemplate(ObjectTypes.EventBuilder);
          public static readonly string NewPassiveTransport = AddNew(ObjectTypes.ActiveTransport);
+         public static readonly string NewNeighborhood = AddNew(ObjectTypes.NeighborhoodBuilder);
          public static readonly string LoadPassiveTransport = AddExisting(ObjectTypes.ActiveTransport);
          public static readonly string LoadPassiveTransportFromTemplate = AddExistingFromTemplate(ObjectTypes.ActiveTransport);
          public static readonly string AddPKSimMolecule = "Add PK-Sim Molecule...";
@@ -1631,6 +1632,8 @@ namespace MoBi.Assets
          public static readonly string CreateBuildingBlocks = "Create Building Blocks";
          public static readonly string ParentPath = "Parent Path";
          public static readonly string SelectContainer = "Select Container";
+         public static readonly string FirstNeighbor = "First Neighbor";
+         public static readonly string SecondNeighbor = "Second Neighbor";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 

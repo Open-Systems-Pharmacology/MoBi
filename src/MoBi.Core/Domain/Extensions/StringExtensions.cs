@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 
 namespace MoBi.Core.Domain.Extensions
 {
@@ -6,7 +7,7 @@ namespace MoBi.Core.Domain.Extensions
    {
       public static bool IsSpecialName(this string name)
       {
-         return Constants.MOLECULE_PROPERTIES.Equals(name) || Constants.NEIGHBORHOODS.Equals(name) ;
+         return name.IsOneOf(Constants.MOLECULE_PROPERTIES, Constants.NEIGHBORHOODS) ;
       }
 
       public static string TrimmedValueOf(this string valueToTrim)

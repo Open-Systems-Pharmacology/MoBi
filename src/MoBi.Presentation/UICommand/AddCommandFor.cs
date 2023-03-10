@@ -1,11 +1,11 @@
 using System;
-using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
@@ -100,6 +100,20 @@ namespace MoBi.Presentation.UICommand
       protected override void PerformExecute()
       {
          Subject = _activeSubjectRetriever.Active<IMoBiSpatialStructure>();
+         base.PerformExecute();
+      }
+   }
+
+   public class AddNewNeighborhoodCommand : AddNewCommandFor<IContainer, INeighborhoodBuilder>
+   {
+      public AddNewNeighborhoodCommand(IInteractionTasksForNeighborhood interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
+         : base(interactionTasks, context, activeSubjectRetriever)
+      {
+      }
+
+      protected override void PerformExecute()
+      {
+         Subject = _activeSubjectRetriever.Active<IMoBiSpatialStructure>().NeighborhoodsContainer;
          base.PerformExecute();
       }
    }
