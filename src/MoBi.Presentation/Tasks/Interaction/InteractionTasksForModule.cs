@@ -3,6 +3,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.UICommand;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -31,6 +32,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddModuleCommand(itemToAdd);
       }
 
+      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, Module moduleWithNewBuildingBlocks)
+      {
+         return new AddBuildingBlocksToModuleCommand(existingModule, moduleWithNewBuildingBlocks);
+      }
+
       protected override void SetAddCommandDescription(Module child, IMoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand, IBuildingBlock buildingBlock)
       {
          addCommand.Description = AppConstants.Commands.AddToProjectDescription(addCommand.ObjectType, child.Name);
@@ -54,13 +60,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          using (var presenter = _interactionTaskContext.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>())
          {
-            var moduleWithBewBuildingBlocks = presenter.AddBuildingBlocksToModule(module);
+            var moduleWithNewBuildingBlocks = presenter.AddBuildingBlocksToModule(module);
 
-            if (moduleWithBewBuildingBlocks == null)
+            if (moduleWithNewBuildingBlocks == null)
                return;
 
-            //_interactionTaskContext.Context.AddToHistory(GetAddCommand(module, _interactionTaskContext.Context.CurrentProject, null).Run(_interactionTaskContext.Context));
-
+            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, moduleWithNewBuildingBlocks).Run(_interactionTaskContext.Context));
          }
       }
    }

@@ -23,12 +23,10 @@ namespace MoBi.Presentation.Presenter
          _createModuleDTOToModuleMapper = createModuleDTOToModuleMapper;
       }
 
-      public void AddBuildingBlocksToModule(Module module)
+      public Module AddBuildingBlocksToModule(Module module)
       {
          _view.Caption = AppConstants.Captions.AddBuildingBlocksToModule(module.Name);
-
-         //OK, so create a new BB, add to the existing through the command the missing building blocks
-         //save the whole object in the command to be able to undo
+         
          var addBuildingBlocksToModuleDTO = new AddBuildingBlocksToModuleDTO(module);
          
          _view.BindTo(addBuildingBlocksToModuleDTO);
@@ -36,9 +34,9 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
 
          if (_view.Canceled)
-            return;
+            return null;
 
-         _createModuleDTOToModuleMapper.AddSelectedBuildingBlocks(addBuildingBlocksToModuleDTO, module);
+         return _createModuleDTOToModuleMapper.MapFrom(addBuildingBlocksToModuleDTO);
       }
    }
 }

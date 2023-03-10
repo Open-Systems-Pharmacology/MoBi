@@ -63,14 +63,41 @@ namespace MoBi.UI.Views
 
       public void DisableExistingBuildingBlocks(AddBuildingBlocksToModuleDTO addBuildingBlocksToModuleDTO)
       {
-         spatialStructureItem.Enabled = !addBuildingBlocksToModuleDTO.AlreadyHasSpatialStructure;
-         eventGroupItem.Enabled = !addBuildingBlocksToModuleDTO.AlreadyHasEventGroup;
-         reactionsItem.Enabled = !addBuildingBlocksToModuleDTO.AlreadyHasReaction;
-         moleculesItem.Enabled = !addBuildingBlocksToModuleDTO.AlreadyHasMolecule;
-         observersItem.Enabled = !addBuildingBlocksToModuleDTO.AlreadyHasObserver;
-         passiveTransportsItem.Enabled = !addBuildingBlocksToModuleDTO.AlreadyHasPassiveTransport;
-         moleculeStartValuesItem.Enabled = !addBuildingBlocksToModuleDTO.AlreadyHasMoleculeStartValues;
-         parameterStartValuesItem.Enabled = !addBuildingBlocksToModuleDTO.AlreadyHasParameterStartValues;
+         if (addBuildingBlocksToModuleDTO.AlreadyHasSpatialStructure)
+         {
+            cbSpatialStructure.Checked = true;
+            spatialStructureItem.Enabled = false;
+         }
+
+         if (addBuildingBlocksToModuleDTO.AlreadyHasEventGroup)
+         {
+            cbEventGroup.Checked = true;
+            eventGroupItem.Enabled = false;
+         }
+
+         if (addBuildingBlocksToModuleDTO.AlreadyHasReaction)
+         {
+            cbReactions.Checked = true;
+            reactionsItem.Enabled = false;
+         }
+
+         if (addBuildingBlocksToModuleDTO.AlreadyHasMolecule)
+         {
+            cbMolecules.Checked = true;
+            moleculesItem.Enabled = false;
+         }
+
+         if (addBuildingBlocksToModuleDTO.AlreadyHasObserver)
+         {
+            cbObservers.Checked = true;
+            observersItem.Enabled = false;
+         }
+
+         if (addBuildingBlocksToModuleDTO.AlreadyHasPassiveTransport)
+         {
+            cbPassiveTransports.Checked = true;
+            passiveTransportsItem.Enabled = false;
+         }
       }
    }
 }
