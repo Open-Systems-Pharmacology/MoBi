@@ -1,15 +1,16 @@
 using System.Drawing;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
+using MoBi.Core.Domain.Model;
 using MoBi.Presentation.UICommand.DiagramUICommands;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Presentation.Views.ContextMenus;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter.BaseDiagram
 {
@@ -21,16 +22,16 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
    public class DiagramPopupMenuBase : IDiagramPopupMenuBase
    {
       private readonly IStartOptions _runOptions;
-      protected readonly IContainer _container;
-      protected IMoBiBaseDiagramPresenter Presenter { get; private set; }
+      protected readonly IMoBiContext _context;
+      protected IMoBiBaseDiagramPresenter Presenter { get; }
       protected IMenuBarSubMenu SubMenuSelect { get; private set; }
       protected IMenuBarSubMenu SubMenuLayout { get; private set; }
       protected IMenuBarSubMenu SubMenuDiagram { get; private set; }
 
-      public DiagramPopupMenuBase(IMoBiBaseDiagramPresenter presenter, IStartOptions runOptions, IContainer container)
+      public DiagramPopupMenuBase(IMoBiBaseDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions)
       {
          _runOptions = runOptions;
-         _container = container;
+         _context = context;
          Presenter = presenter;
       }
 
@@ -114,9 +115,9 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
 
 
-         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Zoom In").AsGroupStarter().WithCommand<ZoomInCommand>(_container).WithIcon(ApplicationIcons.ZoomIn));
-         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Zoom Out").WithCommand<ZoomOutCommand>(_container).WithIcon(ApplicationIcons.ZoomOut));
-         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Fit into Window").WithCommand<FitToPageCommand>(_container).WithIcon(ApplicationIcons.FitToPage));
+         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Zoom In").AsGroupStarter().WithCommand<ZoomInCommand>(_context.Container).WithIcon(ApplicationIcons.ZoomIn));
+         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Zoom Out").WithCommand<ZoomOutCommand>(_context.Container).WithIcon(ApplicationIcons.ZoomOut));
+         SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Fit into Window").WithCommand<FitToPageCommand>(_context.Container).WithIcon(ApplicationIcons.FitToPage));
          SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Copy Image to Clipboard").AsGroupStarter().WithActionCommand(() => Presenter.CopyBitmapToClipboard(containerBase)));
          SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Save Image...").WithActionCommand(() => Presenter.SaveBitmapToFile(containerBase)));
 
@@ -205,8 +206,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
                      .WithActionCommand(() => Presenter.Position0Selection()));
             subMenuDetailed.AddItem(subMenuDeveloper);
          }
-         
-         
       }
 
       protected void AddExpandMenuItems(IMenuBarSubMenu subMenuExpand)
@@ -216,7 +215,5 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          subMenuExpand.AddItem(CreateMenuButton.WithCaption("Collapse Selection").WithActionCommand(() => Presenter.CollapseSelection()));
          subMenuExpand.AddItem(CreateMenuButton.WithCaption("Collapse all Except Selection").WithActionCommand(() => Presenter.CollapseAllExceptSelection()).AsGroupStarter());
       }
-
-
    }
 }

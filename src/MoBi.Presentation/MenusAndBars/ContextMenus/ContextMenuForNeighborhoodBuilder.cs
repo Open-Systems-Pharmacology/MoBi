@@ -13,7 +13,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   internal class ContextMenuForNeighborhoodBuilder : ContextMenuBase, IContextMenuFor<INeighborhoodBuilder>
+   internal class ContextMenuForNeighborhoodBuilder : ContextMenuBase, IContextMenuFor<NeighborhoodBuilder>
    {
       private readonly IList<IMenuBarItem> _allMenuItems;
       private readonly IMoBiContext _context;
@@ -33,14 +33,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         var neighborhoodBuilder = _context.Get<INeighborhoodBuilder>(dto.Id);
+         var neighborhoodBuilder = _context.Get<NeighborhoodBuilder>(dto.Id);
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
             .WithIcon(ApplicationIcons.Edit)
-            .WithCommandFor<EditCommandFor<INeighborhoodBuilder>, INeighborhoodBuilder>(neighborhoodBuilder, _container));
+            .WithCommandFor<EditCommandFor<NeighborhoodBuilder>, NeighborhoodBuilder>(neighborhoodBuilder, _container));
          
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
             .WithIcon(ApplicationIcons.Rename)
-            .WithCommandFor<RenameObjectCommand<INeighborhoodBuilder>, INeighborhoodBuilder>(neighborhoodBuilder, _container));
+            .WithCommandFor<RenameObjectCommand<NeighborhoodBuilder>, NeighborhoodBuilder>(neighborhoodBuilder, _container));
          
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)

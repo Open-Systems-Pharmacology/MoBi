@@ -117,7 +117,7 @@ namespace MoBi.Presentation.Presenter
 
             addChildrenFromSpatialStructure(children, objectBase as ISpatialStructure);
             addChildrenFromContainer(children, objectBase as IContainer);
-            addChildrenFromNeigborhood(children, objectBase as INeighborhoodBuilder);
+            addChildrenFromNeighborhood(children, objectBase as NeighborhoodBuilder);
             addParametersFromParameterContainer(children, objectBase as IContainsParameters);
          }
 
@@ -327,7 +327,7 @@ namespace MoBi.Presentation.Presenter
             .MapAllUsing(_objectBaseDTOMapper));
       }
 
-      private void addChildrenFromNeigborhood(List<ObjectBaseDTO> children, INeighborhoodBuilder neighborhood)
+      private void addChildrenFromNeighborhood(List<ObjectBaseDTO> children, NeighborhoodBuilder neighborhood)
       {
          if (neighborhood == null)
             return;

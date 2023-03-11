@@ -7,7 +7,7 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Mappers
 
 {
-   public interface INeighborhoodToDTONeighborhoodMapper : IMapper<INeighborhood, NeighborhoodDTO>
+   public interface INeighborhoodToDTONeighborhoodMapper : IMapper<Neighborhood, NeighborhoodDTO>
    {
    }
 
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Mappers
          _transportToTransportDTOMapper = transportToTransportDTOMapper;
       }
 
-      public NeighborhoodDTO MapFrom(INeighborhood neighborhood)
+      public NeighborhoodDTO MapFrom(Neighborhood neighborhood)
       {
          var dto = MapContainer(neighborhood, new NeighborhoodDTO());
          var transports = neighborhood.GetAllChildren<ITransport>();

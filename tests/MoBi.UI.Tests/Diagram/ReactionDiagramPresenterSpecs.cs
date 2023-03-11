@@ -26,7 +26,6 @@ using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
 using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
-using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.UI.Diagram
 {
@@ -43,7 +42,6 @@ namespace MoBi.UI.Diagram
       private ICommandCollector _commandCollector;
       private IStartOptions _runOptions;
       private IDiagramModelFactory _diagramModelFactory;
-      private IContainer _container;
 
       protected override void Context()
       {
@@ -57,10 +55,9 @@ namespace MoBi.UI.Diagram
          _diagramLayoutTask = A.Fake<IDiagramLayoutTask>();
          _commandCollector = A.Fake<ICommandCollector>();
          _runOptions = A.Fake<IStartOptions>();
-         _diagramModelFactory= A.Fake<IDiagramModelFactory>();
-         _container = A.Fake<IContainer>();
+         _diagramModelFactory = A.Fake<IDiagramModelFactory>();
          sut = new ReactionDiagramPresenter(_reactionDiagramView, _containerBaseLayouter, _moBiContext, _userSettings,
-            _dialogCreator, _moBiApplicationController, _diagramTask, _diagramLayoutTask, _runOptions, _diagramModelFactory, _container);
+            _dialogCreator, _moBiApplicationController, _diagramTask, _diagramLayoutTask, _runOptions, _diagramModelFactory);
 
          sut.InitializeWith(_commandCollector);
       }
@@ -78,13 +75,12 @@ namespace MoBi.UI.Diagram
          _multipleStringSelectionPresenter = A.Fake<IMultipleStringSelectionPresenter>();
          A.CallTo(() => _moBiApplicationController.Start<IMultipleStringSelectionPresenter>()).Returns(_multipleStringSelectionPresenter);
 
-         A.CallTo(() => _multipleStringSelectionPresenter.Show(A<string>._, A<string>._, A<IEnumerable<string>>._, A<string>._, true)).
-            Invokes(x => _possibleMoleculeNames = x.GetArgument<IEnumerable<string>>(2)).Returns(Enumerable.Empty<string>());
+         A.CallTo(() => _multipleStringSelectionPresenter.Show(A<string>._, A<string>._, A<IEnumerable<string>>._, A<string>._, true)).Invokes(x => _possibleMoleculeNames = x.GetArgument<IEnumerable<string>>(2)).Returns(Enumerable.Empty<string>());
 
          _moleculeBuildingBlocks = new List<IMoleculeBuildingBlock>
          {
-            new MoleculeBuildingBlock {new MoleculeBuilder{Name = "b"}, new MoleculeBuilder{Name = "a"}},
-            new MoleculeBuildingBlock {new MoleculeBuilder{Name = "a"}, new MoleculeBuilder{Name = "b"}}
+            new MoleculeBuildingBlock {new MoleculeBuilder {Name = "b"}, new MoleculeBuilder {Name = "a"}},
+            new MoleculeBuildingBlock {new MoleculeBuilder {Name = "a"}, new MoleculeBuilder {Name = "b"}}
          };
 
          A.CallTo(() => _moBiContext.CurrentProject.MoleculeBlockCollection).Returns(_moleculeBuildingBlocks);
@@ -98,7 +94,7 @@ namespace MoBi.UI.Diagram
       [Test]
       public void should_show_a_list_of_unique_names_and_those_names_should_be_ordered_alphabetically()
       {
-         _possibleMoleculeNames.ShouldOnlyContainInOrder("a", "b");  
+         _possibleMoleculeNames.ShouldOnlyContainInOrder("a", "b");
       }
    }
 
@@ -141,7 +137,7 @@ namespace MoBi.UI.Diagram
          var reactionLink = new ReactionLink();
 
          reactionLink.Initialize(ReactionLinkType.Educt, _reactionNode, _moleculeNode);
-         
+
          sut.Edit(_reactionBuildingBlock);
 
          var removeReactionCommand = new RemoveCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>(_interactionTask, _moBiContext, _activeSubjectRetriever);
@@ -157,7 +153,7 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _objectsToRemove = new List<GoObject> { _moleculeNode as MoleculeNode };
+         _objectsToRemove = new List<GoObject> {_moleculeNode as MoleculeNode};
       }
 
       protected override void Because()
@@ -183,7 +179,7 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _objectsToRemove = new List<GoObject> { _reactionNode, _moleculeNode as MoleculeNode };
+         _objectsToRemove = new List<GoObject> {_reactionNode, _moleculeNode as MoleculeNode};
       }
 
       protected override void Because()
@@ -208,9 +204,9 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _reaction= A.Fake<IReactionBuilder>();
+         _reaction = A.Fake<IReactionBuilder>();
          _reactionNode = A.Fake<IReactionNode>();
-         _reactionDiagramManager= A.Fake<IMoBiReactionDiagramManager>();
+         _reactionDiagramManager = A.Fake<IMoBiReactionDiagramManager>();
          _reactionBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>();
          A.CallTo(() => _reactionBuildingBlock.DiagramManager).Returns(_reactionDiagramManager);
          sut.Edit(_reactionBuildingBlock);
@@ -234,6 +230,5 @@ namespace MoBi.UI.Diagram
       {
          A.CallTo(() => _reactionDiagramView.Select(_reactionNode)).MustHaveHappened();
       }
-
    }
 }

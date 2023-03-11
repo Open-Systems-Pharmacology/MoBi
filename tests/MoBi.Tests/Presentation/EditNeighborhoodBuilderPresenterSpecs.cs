@@ -14,17 +14,17 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditNeighborhoodBuilderPresenter : ContextSpecification<IEditNeighborhoodBuilderPresenter>
    {
       protected IEditNeighborhoodBuilderView _view;
-      protected IEditTaskFor<INeighborhoodBuilder> _editTask;
+      protected IEditTaskFor<NeighborhoodBuilder> _editTask;
       protected ISelectNeighborPathPresenter _firstNeighborPresenter;
       protected ISelectNeighborPathPresenter _secondNeighborPresenter;
-      protected INeighborhoodBuilder _neighborhoodBuilder;
+      protected NeighborhoodBuilder _neighborhoodBuilder;
       protected Container _neighborhoodsContainer;
       protected SpatialStructure _spatialStructure;
 
       protected override void Context()
       {
          _view = A.Fake<IEditNeighborhoodBuilderView>();
-         _editTask = A.Fake<IEditTaskFor<INeighborhoodBuilder>>();
+         _editTask = A.Fake<IEditTaskFor<NeighborhoodBuilder>>();
          _firstNeighborPresenter = A.Fake<ISelectNeighborPathPresenter>();
          _secondNeighborPresenter = A.Fake<ISelectNeighborPathPresenter>();
          sut = new EditNeighborhoodBuilderPresenter(_view, _editTask, _firstNeighborPresenter, _secondNeighborPresenter);
@@ -75,6 +75,30 @@ namespace MoBi.Presentation
       public void should_have_updated_the_name_of_the_edited_neighborhood_builder()
       {
          _neighborhoodBuilder.Name.ShouldBeEqualTo("toto");
+      }
+   }
+
+   public class When_received_a_container_path_update_from_the_neighborhood_presenters : concern_for_EditNeighborhoodBuilderPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(_neighborhoodBuilder, _neighborhoodsContainer);
+         A.CallTo(() => _firstNeighborPresenter.NeighborPath).Returns(new ObjectPath("A|B|C"));
+         A.CallTo(() => _secondNeighborPresenter.NeighborPath).Returns(new ObjectPath("D|E|F"));
+      }
+
+      protected override void Because()
+      {
+         _firstNeighborPresenter.StatusChanged += Raise.WithEmpty();
+         _secondNeighborPresenter.StatusChanged += Raise.WithEmpty();
+      }
+
+      [Observation]
+      public void should_update_the_corresponding_path_in_the_builders()
+      {
+         _neighborhoodBuilder.FirstNeighborPath.ToString().ShouldBeEqualTo("A|B|C");
+         _neighborhoodBuilder.SecondNeighborPath.ToString().ShouldBeEqualTo("D|E|F");
       }
    }
 }

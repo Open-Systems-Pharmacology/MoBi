@@ -74,14 +74,14 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          IUserSettings userSettings,
          IMoBiContext context,
          IDiagramTask diagramTask,
-         IStartOptions runOptions, IContainer container)
+         IStartOptions runOptions)
          : base(view, layouter, dialogCreator, diagramModelFactory)
       {
          _context = context;
          _diagramTask = diagramTask;
          _userSettings = userSettings;
          LayoutConfiguration = userSettings.ForceLayoutConfigutation;
-         _diagramPopupMenu = new DiagramPopupMenuBase(this, runOptions, container);
+         _diagramPopupMenu = new DiagramPopupMenuBase(this, context, runOptions);
          _containerPopupMenu = _diagramPopupMenu;
          _neighborhoodPopupMenu = _diagramPopupMenu;
       }
@@ -93,8 +93,8 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       public PointF CurrentInsertLocation
       {
-         get { return DiagramManager.CurrentInsertLocation; }
-         set { DiagramManager.CurrentInsertLocation = value; }
+         get => DiagramManager.CurrentInsertLocation;
+         set => DiagramManager.CurrentInsertLocation = value;
       }
 
       /// <summary>

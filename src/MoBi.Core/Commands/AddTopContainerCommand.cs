@@ -46,8 +46,8 @@ namespace MoBi.Core.Commands
 
       private void removeNeighborhoods(IContainer entityToRemove, ICache<string, IObjectBase> removedIds, IMoBiSpatialStructure spatialStructure, IMoBiContext context)
       {
-         var containerTask = context.Resolve<IContainerTask>();
-         var neighborhoodsToDelete = containerTask.AllNeighborhoodBuildersConnectedWith(spatialStructure, entityToRemove).ToList();
+         var entityToRemovePath = context.ObjectPathFactory.CreateAbsoluteObjectPath(entityToRemove);
+         var neighborhoodsToDelete = spatialStructure.AllNeighborhoodBuildersConnectedWith(entityToRemovePath);
          foreach (var neighborhoodBuilder in neighborhoodsToDelete)
          {
             if (!removedIds.Contains(neighborhoodBuilder.Id))

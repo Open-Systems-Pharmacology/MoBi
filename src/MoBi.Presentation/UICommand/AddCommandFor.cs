@@ -104,7 +104,7 @@ namespace MoBi.Presentation.UICommand
       }
    }
 
-   public class AddNewNeighborhoodCommand : AddNewCommandFor<IContainer, INeighborhoodBuilder>
+   public class AddNewNeighborhoodCommand : AddNewCommandFor<IContainer, NeighborhoodBuilder>
    {
       public AddNewNeighborhoodCommand(IInteractionTasksForNeighborhood interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
          : base(interactionTasks, context, activeSubjectRetriever)

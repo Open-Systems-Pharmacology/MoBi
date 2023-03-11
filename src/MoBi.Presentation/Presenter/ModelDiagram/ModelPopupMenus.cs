@@ -1,3 +1,4 @@
+using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Services;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using OSPSuite.Core;
@@ -12,15 +13,12 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
    {
       private readonly IDialogCreator _dialogCreator;
 
-      public PopupMenuModelDiagram(ISimulationDiagramPresenter presenter, IDialogCreator dialogCreator, IStartOptions runOptions, IContainer container) : base(presenter, runOptions, container)
+      public PopupMenuModelDiagram(ISimulationDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions, IDialogCreator dialogCreator) : base(presenter, context, runOptions)
       {
          _dialogCreator = dialogCreator;
       }
 
-      protected new ISimulationDiagramPresenter Presenter
-      {
-         get { return (ISimulationDiagramPresenter) base.Presenter; }
-      }
+      protected new ISimulationDiagramPresenter Presenter => (ISimulationDiagramPresenter) base.Presenter;
 
       private void askAndApplySpaceReactionLayout()
       {

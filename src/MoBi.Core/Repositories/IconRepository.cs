@@ -1,8 +1,8 @@
 using System;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Repositories
 {
@@ -23,6 +23,10 @@ namespace MoBi.Core.Repositories
 
       private ApplicationIcon iconFor<T>(T objectBase)
       {
+         //no icons for neighborhood (as they are all displayed in a list)
+         if (objectBase.IsAnImplementationOf<INeighborhoodBase>())
+            return ApplicationIcons.EmptyIcon;
+
          if (objectBase.IsAnImplementationOf<IMoleculeBuilder>())
             return getMoleculeBuilderIconFor(objectBase.DowncastTo<IMoleculeBuilder>());
 
@@ -37,7 +41,7 @@ namespace MoBi.Core.Repositories
 
       private ApplicationIcon getMoleculeBuilderIconFor(IMoleculeBuilder objectBase)
       {
-         var iconName = Enum.GetName(typeof (QuantityType), objectBase.QuantityType);
+         var iconName = Enum.GetName(typeof(QuantityType), objectBase.QuantityType);
          return iconByName(iconName) ?? ApplicationIcons.Drug;
       }
 
@@ -53,14 +57,14 @@ namespace MoBi.Core.Repositories
 
          if (!ApplicationIcons.HasIconNamed(typeName))
             typeName = typeName.Remove(typeName.Length - "Builder".Length);
-         
+
          return ApplicationIcons.IconByName(typeName);
       }
 
       private ApplicationIcon getContainerIconFor(IContainer container)
       {
          return iconByName(container.Name) ??
-                iconByName(Enum.GetName(typeof (ContainerType), container.ContainerType)) ??
+                iconByName(Enum.GetName(typeof(ContainerType), container.ContainerType)) ??
                 getIconByTypeName(container);
       }
 
