@@ -46,12 +46,14 @@ namespace MoBi.Core.Commands
          {
             FirstNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_child1),
             SecondNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_child2),
+            Name = "N1"
          };
 
          _neighborhood2 = new NeighborhoodBuilder
          {
             FirstNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_otherChild1),
             SecondNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_otherChild2),
+            Name = "N2"
          };
 
          _spatialStructure.AddNeighborhood(_neighborhood1);
@@ -59,6 +61,7 @@ namespace MoBi.Core.Commands
          _spatialStructure.AddTopContainer(_parent);
 
          _context = A.Fake<IMoBiContext>();
+         A.CallTo(() => _context.ObjectPathFactory).Returns(new ObjectPathFactoryForSpecs());
       }
    }
 
