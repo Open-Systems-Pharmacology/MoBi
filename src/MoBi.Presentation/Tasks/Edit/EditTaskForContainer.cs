@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Tasks.Edit
          var existingSpatialStructure = _interactionTaskContext.Active<IMoBiSpatialStructure>();
          if (existingSpatialStructure != null)
          {
-            var neighborhoods = getConnectingNeighborhoods(new[] {entityToSerialize}, existingSpatialStructure);
+            var neighborhoods = existingSpatialStructure.GetConnectingNeighborhoods(new[] {entityToSerialize}, _objectPathFactory);
             neighborhoods.Each(tmpSpatialStructure.AddNeighborhood);
             if (existingSpatialStructure.DiagramModel != null)
                tmpSpatialStructure.DiagramModel = existingSpatialStructure.DiagramModel.CreateCopy(entityToSerialize.Id);
@@ -69,32 +69,20 @@ namespace MoBi.Presentation.Tasks.Edit
          return new SetContainerModeCommand(buildingBlock, container, containerMode).Run(_context);
       }
 
-
-      //TODO EXACT COPY PASTE from InteractionTasksForContainerBase
-      private IReadOnlyList<NeighborhoodBuilder> getConnectingNeighborhoods(IEnumerable<IContainer> existingItems, ISpatialStructure tmpSpatialStructure)
+      protected override IMoBiCommand GetRenameCommandFor(IContainer container, IBuildingBlock buildingBlock, string newName, string objectType)
       {
-         var allImportedContainers = existingItems.SelectMany(
-            cont => cont.GetAllContainersAndSelf<IContainer>().Where(x => !x.IsAnImplementationOf<IParameter>())).ToList();
+         //when renaming a container in a spatial structure, we need to ensure that we are also renaming the path in the neighborhood
+         if (buildingBlock.IsAnImplementationOf<ISpatialStructure>() && containerCanBePartOfNeighborhoodPath(container))
+            return new RenameContainerCommand(container, newName, buildingBlock.DowncastTo<ISpatialStructure>());
 
-         var neighborhoods = new List<NeighborhoodBuilder>();
-         foreach (var neighborhood in tmpSpatialStructure.Neighborhoods)
-         {
-            var firstFound = false;
-            var secondFound = false;
-            foreach (var cont in allImportedContainers)
-            {
-               var contObjectPath = _objectPathFactory.CreateAbsoluteObjectPath(cont);
-               if (Equals(neighborhood.FirstNeighborPath, contObjectPath))
-                  firstFound = true;
+         return base.GetRenameCommandFor(container, buildingBlock, newName, objectType);
+      }
 
-               if (Equals(neighborhood.SecondNeighborPath, contObjectPath))
-                  secondFound = true;
-            }
-
-            if (firstFound && secondFound) neighborhoods.Add(neighborhood);
-         }
-
-         return neighborhoods;
+      private bool containerCanBePartOfNeighborhoodPath(IContainer container)
+      {
+         return !(container.IsAnImplementationOf<NeighborhoodBuilder>() ||
+                  container.IsAnImplementationOf<IParameter>() ||
+                  container.IsNamed(Constants.MOLECULE_PROPERTIES));
       }
    }
 }

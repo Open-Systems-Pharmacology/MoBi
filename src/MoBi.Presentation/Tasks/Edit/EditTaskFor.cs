@@ -87,7 +87,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var newName = NewNameFor(objectBase, forbiddenNames.ToList());
 
-         var objectName = _interactionTaskContext.GetTypeFor(objectBase);
+         var objectType = _interactionTaskContext.GetTypeFor(objectBase);
 
          if (string.IsNullOrEmpty(newName))
             return new MoBiEmptyCommand();
@@ -95,20 +95,20 @@ namespace MoBi.Presentation.Tasks.Edit
          var commandCollector = new MoBiMacroCommand
          {
             CommandType = AppConstants.Commands.RenameCommand,
-            ObjectType = objectName,
+            ObjectType = objectType,
             Description = AppConstants.Commands.RenameDescription(objectBase, newName)
          };
 
          if (CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector))
-            commandCollector.AddCommand(GetRenameCommandFor(objectBase, buildingBlock, newName, objectName));
+            commandCollector.AddCommand(GetRenameCommandFor(objectBase, buildingBlock, newName, objectType));
 
          commandCollector.Run(_context);
          return commandCollector;
       }
 
-      protected virtual RenameObjectBaseCommand GetRenameCommandFor(T objectBase, IBuildingBlock buildingBlock, string newName, string objectName)
+      protected virtual IMoBiCommand GetRenameCommandFor(T objectBase, IBuildingBlock buildingBlock, string newName, string objectType)
       {
-         return new RenameObjectBaseCommand(objectBase, newName, buildingBlock) { ObjectType = objectName };
+         return new RenameObjectBaseCommand(objectBase, newName, buildingBlock) { ObjectType = objectType };
       }
 
       public bool CheckUsagesFor(string newName, string oldName, IObjectBase renamedObject, ICommandCollector commandCollector)

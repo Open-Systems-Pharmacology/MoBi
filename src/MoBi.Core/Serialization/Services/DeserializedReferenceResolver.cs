@@ -33,6 +33,8 @@ namespace MoBi.Core.Serialization.Services
          {
             case IMoBiProject proj:
                _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(proj);
+               proj.All<ISpatialStructure>().Each(resolveReferences);
+               proj.Simulations.Each(resolveReferences);
                break;
             case IMoBiSimulation simulation:
                resolveReferences(simulation);

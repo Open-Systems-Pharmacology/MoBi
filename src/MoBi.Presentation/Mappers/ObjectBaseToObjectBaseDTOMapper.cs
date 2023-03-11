@@ -1,5 +1,7 @@
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
@@ -20,10 +22,23 @@ namespace MoBi.Presentation.Mappers
       protected void MapProperties(IObjectBase objectBase, ObjectBaseDTO objectBaseDTO)
       {
          objectBaseDTO.Name = objectBase.Name;
-         objectBaseDTO.Description = objectBase.Description;
+         objectBaseDTO.Description = descriptionFor(objectBase);
          objectBaseDTO.Id = objectBase.Id;
          objectBaseDTO.Icon = objectBase.Icon;
          objectBase.PropertyChanged += objectBaseDTO.HandlePropertyChanged;
+      }
+
+      private static string descriptionFor(IObjectBase objectBase)
+      {
+         //special case for neighborhood where we can create a dynamic description if not there
+         if (!string.IsNullOrEmpty(objectBase.Description))
+            return objectBase.Description;
+
+
+         if (!(objectBase is NeighborhoodBuilder neighborhood))
+            return string.Empty;
+
+         return ToolTips.Neighborhood.Between(neighborhood);
       }
    }
 
