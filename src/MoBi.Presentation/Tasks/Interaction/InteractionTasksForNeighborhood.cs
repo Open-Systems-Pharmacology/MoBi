@@ -43,6 +43,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (!_editTask.EditEntityModal(neighborhoodBuilder, spatialStructure, macroCommand, spatialStructure))
             return new MoBiEmptyCommand();
 
+         //this needs to happen BEFORE we add the run the add command so that the diagram will refresh as expected
+         neighborhoodBuilder.ResolveReference(spatialStructure);
          macroCommand.AddCommand(GetAddCommand(neighborhoodBuilder, spatialStructure.NeighborhoodsContainer, spatialStructure).Run(Context));
          macroCommand.Description = AppConstants.Commands.AddToDescription(ObjectName, neighborhoodBuilder.Name, spatialStructure.Name);
          _editTask.Edit(neighborhoodBuilder);

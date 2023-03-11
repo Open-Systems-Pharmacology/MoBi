@@ -28,7 +28,7 @@ namespace MoBi.Core.Commands
          _spatialStructure.DiagramManager.RemoveObjectBase(childToRemove);
          _removedNeighborhoods = new Cache<string, NeighborhoodBuilder>(x => x.Id);
          removeNeighborhoods(childToRemove, _removedNeighborhoods, _spatialStructure, context);
-         //needs to remove the child after removing it from the neighborhood 
+         //needs to remove the child after removing it from the neighborhood otherwise the path to first and second neighbors won't match anymore
          parent.RemoveChild(childToRemove);
          childToRemove.GetChildren<IEntity>().Each(x => unregisterAllChildrenAndRemoveTheirNeighborHoods(x, _removedNeighborhoods, context));
       }

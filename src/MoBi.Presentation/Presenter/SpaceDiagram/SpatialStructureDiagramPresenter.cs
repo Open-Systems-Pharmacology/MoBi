@@ -15,9 +15,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.Presenter.SpaceDiagram
 {
@@ -106,7 +104,7 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
          var container1 = _context.Get<IContainer>(node1.Id);
          var container2 = _context.Get<IContainer>(node2.Id);
 
-         var addNeighborhoodTask = IoC.Resolve<IInteractionTasksForNeighborhood>();
+         var addNeighborhoodTask = _context.Resolve<IInteractionTasksForNeighborhood>();
          AddCommand(addNeighborhoodTask.Add(container1, container2));
          //because cannot undo this action, reset undo stack
          DiagramModel.ClearUndoStack();

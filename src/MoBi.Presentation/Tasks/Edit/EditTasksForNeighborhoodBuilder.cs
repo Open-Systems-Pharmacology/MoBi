@@ -24,14 +24,11 @@ namespace MoBi.Presentation.Tasks.Edit
          return spatialStructure.Neighborhoods.Select(x => x.Name).Union(AppConstants.UnallowedNames);
       }
 
-      private IMoBiSpatialStructure getSpatialStructure()
-      {
-         return _interactionTaskContext.Active<IMoBiSpatialStructure>();
-      }
+      private IMoBiSpatialStructure getSpatialStructure() => _interactionTaskContext.Active<IMoBiSpatialStructure>();
 
       public override bool EditEntityModal(NeighborhoodBuilder neighborhood, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
-         // Either we are creating a neighborhood from the diagram to which case, to which case the neighborhood is connected
+         // Neighborhood is connected if we are editing creating from the diagram
          if (neighborhoodIsConnected(neighborhood))
             return editConnectedNeighborhood(neighborhood, existingObjectsInParent);
 
