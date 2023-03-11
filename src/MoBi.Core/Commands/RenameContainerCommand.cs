@@ -67,7 +67,8 @@ namespace MoBi.Core.Commands
                   NeihgborPath = neighborPathFunc(x),
                   NeighborPathString = neighborPathFunc(x).ToString()
                })
-               .Where(x => x.NeighborPathString.StartsWith(oldContainerPath))
+               //either the path is the same or the path starts with the old container path exactly
+               .Where(x => x.NeighborPathString.Equals(oldContainerPath) || x.NeighborPathString.StartsWith($"{oldContainerPath}{ObjectPath.PATH_DELIMITER}"))
                .Each(x => x.NeihgborPath.ReplaceWith(x.NeighborPathString.Replace(oldContainerPath, newContainerPath).ToPathArray()));
          };
 

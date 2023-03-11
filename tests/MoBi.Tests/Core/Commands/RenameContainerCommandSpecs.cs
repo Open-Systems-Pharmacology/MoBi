@@ -24,12 +24,14 @@ namespace MoBi.Core.Commands
       private Container _otherChild2;
       protected Container _child3;
       protected IMoBiContext _context;
+      protected Container _similarContainer;
 
       protected override void Context()
       {
          //Making all of them having the same name to check that we are renaming the right part of the path
          _parent = new Container().WithName("A");
-         _container = new Container().WithName("A").WithParentContainer(_parent);
+         _container = new Container().WithName("AAA").WithParentContainer(_parent);
+         _similarContainer = new Container().WithName("A").WithParentContainer(_parent);
          _child1 = new Container().WithName("A").WithParentContainer(_container);
          _child2 = new Container().WithName("B").WithParentContainer(_container);
          _child3 = new Container().WithName("C").WithParentContainer(_container);
@@ -75,8 +77,8 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_not_rename_the_path_in_the_neighborhoods()
       {
-         _neighborhood1.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|A|A");
-         _neighborhood1.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|A|B");
+         _neighborhood1.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|AAA|A");
+         _neighborhood1.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|AAA|B");
 
          _neighborhood2.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|B|A");
          _neighborhood2.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|B|B");
@@ -105,6 +107,24 @@ namespace MoBi.Core.Commands
       }
    }
 
+   public class When_renaming_a_container_that_has_a_similar_path_as_another_container_but_is_not_used_neighborhood : concern_for_RenameContainerCommand
+   {
+      protected override void Because()
+      {
+         sut = new RenameContainerCommand(_similarContainer, "NEW_NAME", _spatialStructure).Run(_context);
+      }
+      
+      [Observation]
+      public void should_not_rename_the_path_in_the_neighborhoods_not_referencing_this_container()
+      {
+         _neighborhood1.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|AAA|A");
+         _neighborhood1.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|AAA|B");
+         _neighborhood2.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|B|A");
+         _neighborhood2.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|B|B");
+      }
+   }
+
+
    public class When_renaming_a_container_and_neighborhoods_and_executing_the_inverse_command : concern_for_RenameContainerCommand
    {
       protected override void Context()
@@ -123,8 +143,8 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_rename_the_path_in_the_neighborhoods_that_were_changed_during_the_first_execution()
       {
-         _neighborhood1.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|A|A");
-         _neighborhood1.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|A|B");
+         _neighborhood1.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|AAA|A");
+         _neighborhood1.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|AAA|B");
       }
    }
 }

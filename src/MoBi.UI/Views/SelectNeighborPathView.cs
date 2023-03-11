@@ -48,7 +48,8 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder.Bind(x => x.Path)
-            .To(tbContainerPath);
+            .To(tbContainerPath)
+            .OnValueUpdated += (o, e) => NotifyViewChanged();
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
