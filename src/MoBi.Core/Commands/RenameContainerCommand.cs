@@ -1,10 +1,13 @@
-﻿using MoBi.Assets;
+﻿using System;
+using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
@@ -42,29 +45,31 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          var objectPathFactory = context.ObjectPathFactory;
          var containerPath = objectPathFactory.CreateAbsoluteObjectPath(_container);
-         var allNeighborhoodsConnectedToContainer = _buildingBlock.AllNeighborhoodBuildersConnectedWith(containerPath);
-         renameContainer(context);
+
+         //perform the rename
+         _oldName = _container.Name;
+         _container.Name = _newName;
+
          //the container has been renamed, we need to update the path of all neighborhoods connected to it
-         var newContainerPath = objectPathFactory.CreateAbsoluteObjectPath(_container);
-         allNeighborhoodsConnectedToContainer.Each(x =>
-         {
-            if (x.FirstNeighborPath.Equals(containerPath))
-               x.FirstNeighborPath = newContainerPath;
-
-            if (x.SecondNeighborPath.Equals(containerPath))
-               x.SecondNeighborPath = newContainerPath;
-         });
-
          //no need to update referenced in the neighborhood as they have not changed
+         var updateNeighborhoods = updateNeighborhoodsDef(containerPath, objectPathFactory.CreateAbsoluteObjectPath(_container));
+         updateNeighborhoods(x => x.FirstNeighborPath);
+         updateNeighborhoods(x => x.SecondNeighborPath);
 
          context.PublishEvent(new RenamedEvent(_container));
       }
 
-      private void renameContainer(IMoBiContext context)
-      {
-         _oldName = _container.Name;
-         _container.Name = _newName;
-      }
+      private Action<Func<NeighborhoodBuilder, ObjectPath>> updateNeighborhoodsDef(string oldContainerPath, string newContainerPath) =>
+         (neighborPathFunc) =>
+         {
+            _buildingBlock.Neighborhoods.Select(x => new
+               {
+                  NeihgborPath = neighborPathFunc(x),
+                  NeighborPathString = neighborPathFunc(x).ToString()
+               })
+               .Where(x => x.NeighborPathString.StartsWith(oldContainerPath))
+               .Each(x => x.NeihgborPath.ReplaceWith(x.NeighborPathString.Replace(oldContainerPath, newContainerPath).ToPathArray()));
+         };
 
       public override void RestoreExecutionData(IMoBiContext context)
       {

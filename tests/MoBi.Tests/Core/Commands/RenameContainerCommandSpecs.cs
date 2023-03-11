@@ -104,4 +104,27 @@ namespace MoBi.Core.Commands
          _neighborhood2.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|B|B");
       }
    }
+
+   public class When_renaming_a_container_and_neighborhoods_and_executing_the_inverse_command : concern_for_RenameContainerCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut = new RenameContainerCommand(_container, "NEW_NAME", _spatialStructure);
+         A.CallTo(() => _context.Get<IContainer>(_container.Id)).Returns(_container);
+         A.CallTo(() => _context.Get<ISpatialStructure>(_spatialStructure.Id)).Returns(_spatialStructure);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void should_rename_the_path_in_the_neighborhoods_that_were_changed_during_the_first_execution()
+      {
+         _neighborhood1.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|A|A");
+         _neighborhood1.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|A|B");
+      }
+   }
 }
