@@ -12,9 +12,9 @@ using static MoBi.Assets.AppConstants.Dialog;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
-   public class EditTasksForNeighborhoodBuilder : EditTaskFor<NeighborhoodBuilder>
+   public class EditTaskForNeighborhoodBuilder : EditTaskFor<NeighborhoodBuilder>
    {
-      public EditTasksForNeighborhoodBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
+      public EditTaskForNeighborhoodBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 

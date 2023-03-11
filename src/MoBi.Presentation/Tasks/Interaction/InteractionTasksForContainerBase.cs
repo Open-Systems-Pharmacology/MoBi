@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
-using OSPSuite.Assets;
-using IContainer = OSPSuite.Core.Domain.IContainer;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -59,7 +57,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             .SelectMany(x => x.GetAllContainersAndSelf<IContainer>(cont => !cont.IsAnImplementationOf<IParameter>()));
 
          var allImportedContainers = selectContainersToImport(allAvailableContainersToImport).ToList();
-         var allImportedNeighborhoods = getConnectingNeighborhoods(allImportedContainers, sourceSpatialStructure);
+         var allImportedNeighborhoods = sourceSpatialStructure.GetConnectingNeighborhoods(allImportedContainers, _objectPathFactory);
 
          allImportedContainers.Each(registerLoadedIn);
          allImportedNeighborhoods.Each(registerLoadedIn);
@@ -156,33 +154,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             return containerToImport;
          }
-      }
-
-      private IReadOnlyList<NeighborhoodBuilder> getConnectingNeighborhoods(IEnumerable<IContainer> existingItems, ISpatialStructure tmpSpatialStructure)
-      {
-         var allImportedContainers = existingItems
-            .SelectMany(cont => cont.GetAllContainersAndSelf<IContainer>(x => !x.IsAnImplementationOf<IParameter>()))
-            .ToList();
-
-         var neighborhoods = new List<NeighborhoodBuilder>();
-         foreach (var neighborhood in tmpSpatialStructure.Neighborhoods)
-         {
-            var firstFound = false;
-            var secondFound = false;
-            foreach (var cont in allImportedContainers)
-            {
-               var contObjectPath = _objectPathFactory.CreateAbsoluteObjectPath(cont);
-               if (Equals(neighborhood.FirstNeighborPath, contObjectPath))
-                  firstFound = true;
-
-               if (Equals(neighborhood.SecondNeighborPath, contObjectPath))
-                  secondFound = true;
-            }
-
-            if (firstFound && secondFound) neighborhoods.Add(neighborhood);
-         }
-
-         return neighborhoods;
       }
 
       private void registerLoadedIn(IObjectBase deserializedObject)
