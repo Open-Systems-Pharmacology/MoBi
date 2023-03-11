@@ -49,7 +49,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          base.InitializeWith(dto, presenter);
          var neighborhoods = _context.Get<IContainer>(dto.Id);
          //TODO add icon for neighborhood
-         _allMenuItems.Add(CreateAddNewChild<INeighborhoodBuilder>(neighborhoods).WithIcon(ApplicationIcons.ActiveEfflux).AsGroupStarter());
+         _allMenuItems.Add(CreateAddNewChild<NeighborhoodBuilder>(neighborhoods).WithIcon(ApplicationIcons.ActiveEfflux).AsGroupStarter());
          AddParameterToContainerMenus(neighborhoods);
          return this;
       }

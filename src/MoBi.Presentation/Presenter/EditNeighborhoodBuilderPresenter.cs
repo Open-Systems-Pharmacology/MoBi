@@ -9,22 +9,22 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditNeighborhoodBuilderPresenter : ICreatePresenter<INeighborhoodBuilder>, IPresenterWithBuildingBlock
+   public interface IEditNeighborhoodBuilderPresenter : ICreatePresenter<NeighborhoodBuilder>, IPresenterWithBuildingBlock
    {
       void UpdateName(string name);
    }
 
    public class EditNeighborhoodBuilderPresenter : AbstractCommandCollectorPresenter<IEditNeighborhoodBuilderView, IEditNeighborhoodBuilderPresenter>, IEditNeighborhoodBuilderPresenter
    {
-      private readonly IEditTaskFor<INeighborhoodBuilder> _editTask;
+      private readonly IEditTaskFor<NeighborhoodBuilder> _editTask;
       private readonly ISelectNeighborPathPresenter _firstNeighborPresenter;
       private readonly ISelectNeighborPathPresenter _secondNeighborPresenter;
       private ObjectBaseDTO _objectBaseDTO;
-      private INeighborhoodBuilder _neighborhoodBuilder;
+      private NeighborhoodBuilder _neighborhoodBuilder;
       public IBuildingBlock BuildingBlock { get; set; }
 
       public EditNeighborhoodBuilderPresenter(IEditNeighborhoodBuilderView view,
-         IEditTaskFor<INeighborhoodBuilder> editTask,
+         IEditTaskFor<NeighborhoodBuilder> editTask,
          ISelectNeighborPathPresenter firstNeighborPresenter,
          ISelectNeighborPathPresenter secondNeighborPresenter) : base(view)
       {
@@ -41,15 +41,15 @@ namespace MoBi.Presentation.Presenter
 
       private void updateSecondNeighbor()
       {
-//TODO         _neighborhoodBuilder.SecondNeighbor =  _secondNeighborPresenter.NeighborPath;
+         _neighborhoodBuilder.SecondNeighborPath = _secondNeighborPresenter.NeighborPath;
       }
 
       private void updateFirstNeighbor()
       {
-       //  _neighborhoodBuilder.FirstNeighbor = _firstNeighborPresenter.NeighborPath;
+         _neighborhoodBuilder.FirstNeighborPath = _firstNeighborPresenter.NeighborPath;
       }
 
-      public void Edit(INeighborhoodBuilder neighborhoodBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(NeighborhoodBuilder neighborhoodBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          _objectBaseDTO = new ObjectBaseDTO();
          _neighborhoodBuilder = neighborhoodBuilder;

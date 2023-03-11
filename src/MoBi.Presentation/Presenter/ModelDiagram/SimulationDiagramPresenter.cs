@@ -38,14 +38,14 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
          IDiagramTask diagramTask,
          IStartOptions runOptions,
          IMoBiConfiguration configuration,
-         ILayerLayouter layerLayouter, OSPSuite.Utility.Container.IContainer container)
-         : base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions, container)
+         ILayerLayouter layerLayouter)
+         : base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
          _configuration = configuration;
          _layerLayouter = layerLayouter;
-         _diagramPopupMenu = new PopupMenuModelDiagram(this, dialogCreator, runOptions, container);
+         _diagramPopupMenu = new PopupMenuModelDiagram(this, context, runOptions, dialogCreator);
          _containerPopupMenu = _diagramPopupMenu;
-         _moleculeAmountPopupMenu = new DiagramPopupMenuBaseWithContext(this, _context, runOptions, container);
+         _moleculeAmountPopupMenu = new DiagramPopupMenuBaseWithContext(this, _context, runOptions);
       }
 
       public override void Edit(IMoBiSimulation simulation)

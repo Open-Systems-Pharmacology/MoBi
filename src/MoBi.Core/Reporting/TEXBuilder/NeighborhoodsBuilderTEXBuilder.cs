@@ -7,7 +7,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting.TEXBuilder
 {
-   class NeighborhoodsBuilderTEXBuilder : OSPSuiteTeXBuilder<IEnumerable<INeighborhoodBuilder>>
+   class NeighborhoodsBuilderTEXBuilder : OSPSuiteTeXBuilder<IEnumerable<NeighborhoodBuilder>>
    {
       private readonly ITeXBuilderRepository _builderRepository;
       private readonly IObjectPathFactory _objectPathFactory;
@@ -18,12 +18,12 @@ namespace MoBi.Core.Reporting.TEXBuilder
          _objectPathFactory = objectPathFactory;
       }
 
-      public override void Build(IEnumerable<INeighborhoodBuilder> neighborhoodBuilders, OSPSuiteTracker tracker)
+      public override void Build(IEnumerable<NeighborhoodBuilder> neighborhoodBuilders, OSPSuiteTracker tracker)
       {
          _builderRepository.Report(tableFor(neighborhoodBuilders), tracker);
       }
 
-      private DataTable tableFor(IEnumerable<INeighborhoodBuilder> neighborhoodBuilders)
+      private DataTable tableFor(IEnumerable<NeighborhoodBuilder> neighborhoodBuilders)
       {
          var dataTable = new DataTable(Constants.NEIGHBORHOODS);
 

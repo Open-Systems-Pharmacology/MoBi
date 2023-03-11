@@ -8,7 +8,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting.TEXBuilder
 {
-   class NeighborhoodBuilderTEXBuilder : OSPSuiteTeXBuilder<INeighborhoodBuilder>
+   class NeighborhoodBuilderTEXBuilder : OSPSuiteTeXBuilder<NeighborhoodBuilder>
    {
       private readonly ITeXBuilderRepository _builderRepository;
 
@@ -17,7 +17,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          _builderRepository = builderRepository;
       }
 
-      public override void Build(INeighborhoodBuilder neighborhood, OSPSuiteTracker tracker)
+      public override void Build(NeighborhoodBuilder neighborhood, OSPSuiteTracker tracker)
       {
          var listToReport = new List<object>();
          listToReport.Add(new SubSubSection(neighborhood.Name));

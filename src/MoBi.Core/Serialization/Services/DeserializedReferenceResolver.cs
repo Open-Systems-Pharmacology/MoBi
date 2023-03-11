@@ -1,6 +1,7 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
@@ -28,30 +29,26 @@ namespace MoBi.Core.Serialization.Services
 
       public void ResolveFormulaAndTemplateReferences(object deserializedObject, IMoBiProject project)
       {
-         if (deserializedObject.IsAnImplementationOf<IMoBiProject>())
+         switch (deserializedObject)
          {
-            var deserializedProject = deserializedObject.DowncastTo<IMoBiProject>();
-            _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(deserializedProject);
-         }
-         else if (deserializedObject.IsAnImplementationOf<IMoBiSimulation>())
-         {
-            var simulation = deserializedObject.DowncastTo<IMoBiSimulation>();
-            resolveReferences(simulation);
-         }
-         else if (deserializedObject.IsAnImplementationOf<SimulationTransfer>())
-         {
-            var simulationTransfer = deserializedObject.DowncastTo<SimulationTransfer>();
-            var simulation = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
-            updateOutputMappings(simulation, simulationTransfer.OutputMappings);
-            resolveReferences(simulation);
-         }
-         else if (deserializedObject.IsAnImplementationOf<IMoBiBuildConfiguration>())
-         {
-            _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(deserializedObject.DowncastTo<IMoBiBuildConfiguration>(), project);
-         }
-         else if (deserializedObject.IsAnImplementationOf<IModel>())
-         {
-            resolveReferences(deserializedObject.DowncastTo<IModel>());
+            case IMoBiProject proj:
+               _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(proj);
+               break;
+            case IMoBiSimulation simulation:
+               resolveReferences(simulation);
+               break;
+            case SimulationTransfer simulationTransfer:
+               var sim = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
+               updateOutputMappings(sim, simulationTransfer.OutputMappings);
+               resolveReferences(sim);
+               break;
+            case IMoBiBuildConfiguration buildConfiguration:
+               _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(buildConfiguration, project);
+               resolveReferences(buildConfiguration.MoBiSpatialStructure);
+               break;
+            case IModel model:
+               resolveReferences(model);
+               break;
          }
       }
 
@@ -70,6 +67,7 @@ namespace MoBi.Core.Serialization.Services
          if (simulation == null) return;
          //no need to update building block references at that stage. It will be done when the project itself is being deserialized
          resolveReferences(simulation.Model);
+         resolveReferences(simulation.BuildConfiguration);
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
       }
 
@@ -77,6 +75,13 @@ namespace MoBi.Core.Serialization.Services
       {
          if (model == null) return;
          _referencesResolver.ResolveReferencesIn(model);
+      }
+
+      private void resolveReferences(IBuildConfiguration buildConfiguration) => resolveReferences(buildConfiguration?.SpatialStructure);
+
+      private void resolveReferences(ISpatialStructure spatialStructure)
+      {
+         spatialStructure?.ResolveReferencesInNeighborhoods();
       }
    }
 }

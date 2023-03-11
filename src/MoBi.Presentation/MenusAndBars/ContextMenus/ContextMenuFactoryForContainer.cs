@@ -26,7 +26,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return presenter.IsAnImplementationOf<IHierarchicalSpatialStructurePresenter>()
                 && entity.IsAnImplementationOf<IContainer>()
-                && !entity.IsAnImplementationOf<INeighborhoodBuilder>()
+                && !entity.IsAnImplementationOf<NeighborhoodBuilder>()
                 //neighborhoods will be dealt with separately
                 && !entity.IsNamed(Constants.NEIGHBORHOODS);
       }

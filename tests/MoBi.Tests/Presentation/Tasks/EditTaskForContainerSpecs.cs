@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
@@ -15,14 +16,16 @@ namespace MoBi.Presentation.Tasks
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       protected IInteractionTaskContext _interactionTaskContext;
       protected IInteractionTask _interactionTask;
+      private IObjectPathFactory _objectPathFactory;
 
       protected override void Context()
       {
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _interactionTask = A.Fake<IInteractionTask>();
+         _objectPathFactory = new ObjectPathFactoryForSpecs();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory);
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory);
       }
    }
 
@@ -53,7 +56,6 @@ namespace MoBi.Presentation.Tasks
    {
       private IContainer _entityToSave;
       private Container _parentContainer;
-      
 
       protected override void Context()
       {
