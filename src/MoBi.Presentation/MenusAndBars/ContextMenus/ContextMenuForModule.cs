@@ -42,18 +42,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<AddBuildingBlocksToModuleUICommand, Module>(module, _container)
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)));
 
-         //.WithIcon(ApplicationIcons.LoadTemplateIconFor(typeName))
-
          _allMenuItems.Add(item);
-
-         var item_2 = CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingBuildingBlocks)
-            .WithIcon(ApplicationIcons.LoadIconFor(nameof(Module)));
-
-         var item_3 = CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingBuildingBlocksFromTemplate)
-            .WithIcon(ApplicationIcons.LoadTemplateIconFor(nameof(Module)));
-
-         _allMenuItems.Add(item_2);
-         _allMenuItems.Add(item_3);
          return this;
       }
    }

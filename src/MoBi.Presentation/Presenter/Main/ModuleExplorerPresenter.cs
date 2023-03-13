@@ -26,7 +26,8 @@ using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 namespace MoBi.Presentation.Presenter.Main
 {
    public interface IModuleExplorerPresenter : IExplorerPresenter, IPresenter<IModuleExplorerView>,
-   IListener<AddedEvent>
+   IListener<AddedEvent>,
+   IListener<RemovedEvent>
    {
       int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
@@ -192,36 +193,8 @@ namespace MoBi.Presentation.Presenter.Main
          var moduleNode = _view.TreeView.NodeById(module.Id);
 
          addBuildingBlockUnderNode(buildingBlock, moduleNode);
-
-         /*
-         if (buildingBlock.IsAnImplementationOf<PassiveTransportBuildingBlock>())
-            return addBuildingBlockaddBuildingBlockUnderNodeToTree(buildingBlock, MoBiRootNodeTypes.PassiveTransportFolder);
-
-         if (buildingBlock.IsAnImplementationOf<ReactionBuildingBlock>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.ReactionFolder);
-
-         if (buildingBlock.IsAnImplementationOf<ObserverBuildingBlock>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.ObserverFolder);
-
-         if (buildingBlock.IsAnImplementationOf<EventGroupBuildingBlock>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.EventFolder);
-
-         if (buildingBlock.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.MoleculeStartValuesFolder);
-
-         if (buildingBlock.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.ParameterStartValuesFolder);
-
-         if (buildingBlock.IsAnImplementationOf<SimulationSettings>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.SimulationSettingsFolder);
-
-         if (buildingBlock.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.ExpressionProfilesFolder);
-
-         if (buildingBlock.IsAnImplementationOf<IndividualBuildingBlock>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.IndividualsFolder);
-*/
       }
+
       private void addModule(Module module)
       {
          var moduleNode = _view.AddNode(_treeNodeFactory.CreateFor(module).WithIcon(ApplicationIcons.Module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
@@ -253,6 +226,11 @@ namespace MoBi.Presentation.Presenter.Main
                addBuildingBlockToModule(buildingBlock, eventToHandle.Parent as Module);
                break;
          }
+      }
+
+      public void Handle(RemovedEvent eventToHandle)
+      {
+         RemoveNodesFor(eventToHandle.RemovedObjects);
       }
    }
 }

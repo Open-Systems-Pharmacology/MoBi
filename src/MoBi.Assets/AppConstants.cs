@@ -294,6 +294,10 @@ namespace MoBi.Assets
          {
             return $"Solver reports {warningsCount} Warnings";
          }
+         public static string AddBuildingBlocksToModule(string moduleName)
+         {
+            return $"Add selected building blocks to {moduleName}";
+         }
 
          public static string AddToProjectDescription(string objectType, string objectName)
          {
@@ -1077,8 +1081,6 @@ namespace MoBi.Assets
          public static readonly string SaveAsPKML = "Save As PKML...";
          public static readonly string ReloadAll = "Reload all under same settings...";
          public static readonly string AddBuildingBlocks = "Add Building Blocks...";
-         public static readonly string AddExistingBuildingBlocks = "Load Building Blocks...";
-         public static readonly string AddExistingBuildingBlocksFromTemplate = "Load Building Blocks From Template...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
