@@ -30,9 +30,9 @@ namespace MoBi.Presentation.Tasks.Edit
          }
       }
 
-      protected override RenameObjectBaseCommand GetRenameCommandFor(ExpressionProfileBuildingBlock objectBase, IBuildingBlock buildingBlock, string newName, string objectName)
+      protected override IMoBiCommand GetRenameCommandFor(ExpressionProfileBuildingBlock expressionProfileBuildingBlock, IBuildingBlock buildingBlock, string newName, string objectType)
       {
-         return new RenameExpressionProfileBuildingBlockCommand(objectBase, newName, buildingBlock) { ObjectType = objectName };
+         return new RenameExpressionProfileBuildingBlockCommand(expressionProfileBuildingBlock, newName, buildingBlock) {ObjectType = objectType};
       }
    }
 }

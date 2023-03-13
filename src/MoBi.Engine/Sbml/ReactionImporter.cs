@@ -29,15 +29,24 @@ namespace MoBi.Engine.Sbml
       private readonly ISpeciesImporter _speciesImporter;
       private readonly IUnitDefinitionImporter _unitDefinitionImporter;
 
-      public ReactionImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory, IFunctionDefinitionImporter functionDefinitionImporter, ISpeciesImporter speciesImporter, IUnitDefinitionImporter unitDefinitionImporter)
-          : base(objectPathFactory, objectBaseFactory, astHandler, context)
+      public ReactionImporter(
+         IObjectPathFactory objectPathFactory,
+         IObjectBaseFactory objectBaseFactory,
+         IMoBiDimensionFactory moBiDimensionFactory,
+         ASTHandler astHandler,
+         IMoBiContext context,
+         IReactionBuildingBlockFactory reactionBuildingBlockFactory,
+         IFunctionDefinitionImporter functionDefinitionImporter,
+         ISpeciesImporter speciesImporter,
+         IUnitDefinitionImporter unitDefinitionImporter)
+         : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _dimensionFactory = moBiDimensionFactory;
          ReactionBuilderList = new List<IReactionBuilder>();
          _passiveTransportList = new List<ITransportBuilder>();
          _reactionBuildingBlock = reactionBuildingBlockFactory.Create().WithName(SBMLConstants.SBML_REACTION_BB);
          _passiveTransportBuildingBlock = ObjectBaseFactory.Create<IPassiveTransportBuildingBlock>()
-             .WithName(SBMLConstants.SBML_PASSIVETRANSPORTS_BB);
+            .WithName(SBMLConstants.SBML_PASSIVETRANSPORTS_BB);
          _functionDefinitionImporter = functionDefinitionImporter;
          _speciesImporter = speciesImporter;
          _unitDefinitionImporter = unitDefinitionImporter;
@@ -51,10 +60,7 @@ namespace MoBi.Engine.Sbml
          _astHandler.FunctionDefinitions = _functionDefinitionImporter.FunctionDefinitions;
          _astHandler.SetUnitDefinitionImporter(_unitDefinitionImporter);
          _astHandler.UseConcentrations = _speciesImporter.UseConcentrations;
-         for (long i = 0; i < model.getNumReactions(); i++)
-         {
-            CreateReaction(model.getReaction(i), model);
-         }
+         for (long i = 0; i < model.getNumReactions(); i++) CreateReaction(model.getReaction(i), model);
          AddToProject();
       }
 
@@ -74,10 +80,8 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       private void CreateMulticompartmentReaction(Reaction sbmlReaction, Model model)
       {
-         if ((sbmlReaction.getNumReactants() + sbmlReaction.getNumProducts() == 2) && (IsPassiveTransport(sbmlReaction, model)))
-         {
+         if (sbmlReaction.getNumReactants() + sbmlReaction.getNumProducts() == 2 && IsPassiveTransport(sbmlReaction, model))
             CreatePassiveTransport(sbmlReaction, model);
-         }
          else
             CreateGhostReaction(sbmlReaction, model);
       }
@@ -113,10 +117,10 @@ namespace MoBi.Engine.Sbml
       private void CreateStandardReaction(Reaction sbmlReaction, Model model)
       {
          var reactionBuilder = ObjectBaseFactory.Create<IReactionBuilder>()
-             .WithName(sbmlReaction.getId())
-             .WithDescription(sbmlReaction.getNotesString());
+            .WithName(sbmlReaction.getId())
+            .WithDescription(sbmlReaction.getNotesString());
 
-         CreateModifiers(sbmlReaction, reactionBuilder, String.Empty, model);
+         CreateModifiers(sbmlReaction, reactionBuilder, string.Empty, model);
          var parameters = CreateLocalParameters(sbmlReaction);
          if (parameters != null) parameters.ForEach(reactionBuilder.AddParameter);
 
@@ -153,10 +157,11 @@ namespace MoBi.Engine.Sbml
             if (_sbmlInformation.MoleculeInformation.All(info => info.SpeciesIds.TrueForAll(s => s != reactantSpecies.getId()))) continue;
 
             if (!eductCompartmentMoleculeDictionary.ContainsKey(compartment))
-               eductCompartmentMoleculeDictionary[compartment] = new List<SpeciesReference> { reactant };
+               eductCompartmentMoleculeDictionary[compartment] = new List<SpeciesReference> {reactant};
             else
                eductCompartmentMoleculeDictionary[compartment].Add(reactant);
          }
+
          return eductCompartmentMoleculeDictionary;
       }
 
@@ -174,13 +179,13 @@ namespace MoBi.Engine.Sbml
             if (_sbmlInformation.MoleculeInformation.All(info => info.SpeciesIds.TrueForAll(s => s != productSpecies.getId()))) continue;
 
             if (!productCompartmentMoleculeDictionary.ContainsKey(compartment))
-               productCompartmentMoleculeDictionary[compartment] = new List<SpeciesReference> { product };
+               productCompartmentMoleculeDictionary[compartment] = new List<SpeciesReference> {product};
             else
                productCompartmentMoleculeDictionary[compartment].Add(product);
          }
+
          return productCompartmentMoleculeDictionary;
       }
-
 
       /// <summary>
       ///     Creates for each compartment of the SBML Reaction one "Ghostreaction" to import multicompartment reactions.
@@ -188,12 +193,12 @@ namespace MoBi.Engine.Sbml
       private void CreateGhostReactions(Reaction sbmlReaction, Dictionary<string, List<SpeciesReference>> eductCompartmentMoleculeDictionary, Dictionary<string, List<SpeciesReference>> productCompartmentMoleculeDictionary, Model model)
       {
          var usedProducts = new List<string>();
-         
+
          foreach (var keyValuePair in eductCompartmentMoleculeDictionary)
          {
             var reactionBuilder = ObjectBaseFactory.Create<IReactionBuilder>()
-                .WithName(sbmlReaction.getId() + "_" + keyValuePair.Key + "_ghostReaction")
-                .WithDescription(sbmlReaction.getNotesString());
+               .WithName(sbmlReaction.getId() + "_" + keyValuePair.Key + "_ghostReaction")
+               .WithDescription(sbmlReaction.getNotesString());
 
             CreateModifiers(sbmlReaction, reactionBuilder, keyValuePair.Key, model);
             var parameters = CreateLocalParameters(sbmlReaction);
@@ -222,6 +227,7 @@ namespace MoBi.Engine.Sbml
                   if (reactionPartner != null) reactionBuilder.AddProduct(reactionPartner);
                }
             }
+
             ReactionBuilderList.Add(reactionBuilder);
          }
 
@@ -231,8 +237,8 @@ namespace MoBi.Engine.Sbml
             if (usedProducts.Contains(keyValuePair.Key)) continue;
 
             var reactionBuilder = ObjectBaseFactory.Create<IReactionBuilder>()
-                .WithName(sbmlReaction.getId() + "_" + keyValuePair.Key + "_ghostReaction")
-                .WithDescription(sbmlReaction.getNotesString());
+               .WithName(sbmlReaction.getId() + "_" + keyValuePair.Key + "_ghostReaction")
+               .WithDescription(sbmlReaction.getNotesString());
 
             CreateModifiers(sbmlReaction, reactionBuilder, keyValuePair.Key, model);
             var parameters = CreateLocalParameters(sbmlReaction);
@@ -250,6 +256,7 @@ namespace MoBi.Engine.Sbml
                var reactionPartner = CreateReactionPartner(species, model);
                if (reactionPartner != null) reactionBuilder.AddProduct(reactionPartner);
             }
+
             ReactionBuilderList.Add(reactionBuilder);
          }
       }
@@ -314,13 +321,13 @@ namespace MoBi.Engine.Sbml
       {
          _astHandler.NeedAbsolutePath = true;
          var formula = sbmlReaction.getKineticLaw() == null
-             ? ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(String.Empty)
-             : _astHandler.Parse(sbmlReaction.getKineticLaw().getMath(), sbmlReaction.getId(), _sbmlProject, _sbmlInformation);
+            ? ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(string.Empty)
+            : _astHandler.Parse(sbmlReaction.getKineticLaw().getMath(), sbmlReaction.getId(), _sbmlProject, _sbmlInformation);
          if (formula == null)
          {
             passiveTransport.Formula = ObjectBaseFactory.Create<ExplicitFormula>()
-                .WithFormulaString(String.Empty)
-                .WithName(SBMLConstants.DEFAULT_FORMULA_NAME);
+               .WithFormulaString(string.Empty)
+               .WithName(SBMLConstants.DEFAULT_FORMULA_NAME);
          }
          else
          {
@@ -337,15 +344,13 @@ namespace MoBi.Engine.Sbml
          var existant = false;
          if (GetMainSpatialStructure(model) == null) return;
          foreach (var n in GetMainSpatialStructure(model).Neighborhoods)
-         {
-            if (n.Name == (reactantCompartment.Id + "_" + productCompartment.Id))
+            if (n.Name == reactantCompartment.Id + "_" + productCompartment.Id)
                existant = true;
-         }
          if (existant) return;
-         var nbuilder = ObjectBaseFactory.Create<INeighborhoodBuilder>()
-             .WithName(reactantCompartment.Id + "_" + productCompartment.Id)
-             .WithFirstNeighbor(reactantCompartment)
-             .WithSecondNeighbor(productCompartment);
+         var nbuilder = ObjectBaseFactory.Create<NeighborhoodBuilder>()
+            .WithName(reactantCompartment.Id + "_" + productCompartment.Id);
+         nbuilder.FirstNeighborPath = ObjectPathFactory.CreateAbsoluteObjectPath(reactantCompartment);
+         nbuilder.SecondNeighborPath = ObjectPathFactory.CreateAbsoluteObjectPath(productCompartment);
          GetMainSpatialStructure(model).AddNeighborhood(nbuilder);
       }
 
@@ -354,15 +359,17 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       private bool IsMultiCompartmentReaction(Reaction sbmlReaction, Model model)
       {
-         var compartment = String.Empty;
+         var compartment = string.Empty;
 
          for (long i = 0; i < sbmlReaction.getNumReactants(); i++)
          {
             var x = sbmlReaction.getReactant(i).getSpecies();
 
             var species = GetSpeciesById(x, model);
-            if (compartment == String.Empty)
+            if (compartment == string.Empty)
+            {
                compartment = species.getCompartment();
+            }
             else
             {
                if (compartment != species.getCompartment())
@@ -374,14 +381,17 @@ namespace MoBi.Engine.Sbml
          {
             var x = sbmlReaction.getProduct(i).getSpecies();
             var species = GetSpeciesById(x, model);
-            if (compartment == String.Empty)
+            if (compartment == string.Empty)
+            {
                compartment = species.getCompartment();
+            }
             else
             {
                if (compartment != species.getCompartment())
                   return true;
             }
          }
+
          return false;
       }
 
@@ -418,12 +428,12 @@ namespace MoBi.Engine.Sbml
       private void CreateKineticLaw(KineticLaw kineticLaw, IReactionBuilder reactionBuilder, bool needAbsolutePath)
       {
          if (needAbsolutePath) _astHandler.NeedAbsolutePath = true;
-         var formula = kineticLaw == null ? ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(String.Empty).WithName(SBMLConstants.DEFAULT_FORMULA_NAME) : _astHandler.Parse(kineticLaw.getMath(), reactionBuilder, _sbmlProject, _sbmlInformation);
+         var formula = kineticLaw == null ? ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(string.Empty).WithName(SBMLConstants.DEFAULT_FORMULA_NAME) : _astHandler.Parse(kineticLaw.getMath(), reactionBuilder, _sbmlProject, _sbmlInformation);
          if (formula == null)
          {
             reactionBuilder.Formula = ObjectBaseFactory.Create<ExplicitFormula>()
-                .WithFormulaString(String.Empty)
-                .WithName(SBMLConstants.DEFAULT_FORMULA_NAME);
+               .WithFormulaString(string.Empty)
+               .WithName(SBMLConstants.DEFAULT_FORMULA_NAME);
          }
          else
          {
@@ -471,11 +481,11 @@ namespace MoBi.Engine.Sbml
          {
             var p = sbmlReaction.getKineticLaw().getLocalParameter(i);
             var formula = ObjectBaseFactory.Create<ConstantFormula>()
-                .WithValue(p.getValue());
+               .WithValue(p.getValue());
             var localParameter = ObjectBaseFactory.Create<IParameter>()
-                .WithName(p.getId())
-                .WithDescription(p.getNotesString())
-                .WithFormula(formula);
+               .WithName(p.getId())
+               .WithDescription(p.getNotesString())
+               .WithFormula(formula);
 
             var dim = GetDimension(p);
             if (dim != null) localParameter.Dimension = dim;
@@ -483,6 +493,7 @@ namespace MoBi.Engine.Sbml
             if (localParameter != null)
                parameter.Add(localParameter);
          }
+
          return parameter;
       }
 
@@ -509,7 +520,7 @@ namespace MoBi.Engine.Sbml
 
          IReactionPartnerBuilder productBuilder = new ReactionPartnerBuilder
          {
-            MoleculeName = molecule.Name,
+            MoleculeName = molecule.Name
          };
 
          if (speciesReference.isSetStoichiometryMath()) CreateStoichiometryErrorMsg(speciesReference.getSpecies());
@@ -541,10 +552,8 @@ namespace MoBi.Engine.Sbml
       private Species GetSpeciesById(string speciesId, Model model)
       {
          for (long i = 0; i < model.getNumSpecies(); i++)
-         {
             if (model.getSpecies(i).getId() == speciesId)
                return model.getSpecies(i);
-         }
          return null;
       }
 

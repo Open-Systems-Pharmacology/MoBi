@@ -1,27 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.MenusAndBars;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Journal;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.Presentation.Presenters.Events;
-using System.Collections.Generic;
-using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -42,7 +42,6 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<SensitivityAnalysisStartedEvent>,
       IListener<SensitivityAnalysisTerminatedEvent>
 
-
    {
    }
 
@@ -55,7 +54,9 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IButtonGroupRepository _buttonGroupRepository;
 
       private readonly ISkinManager _skinManager;
+
       private readonly IMoBiContext _context;
+
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
       private bool _sensitivityRunning;
@@ -63,7 +64,7 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
-         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager, 
+         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager,
          IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
          : base(view, menuBarItemRepository, mruProvider)
       {
@@ -103,7 +104,6 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddPageHeaderItemLinks(_menuBarItemRepository[MenuBarItemIds.Help]);
       }
 
-      
       private void initializeDynamicPages()
       {
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Molecules, Color.LightGreen);
@@ -118,16 +118,16 @@ namespace MoBi.Presentation.Presenter.Main
          _view.CreateDynamicPageCategory(RibbonCategories.ParameterIdentification, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.SensitivityAnalysis, Color.LightGreen);
 
-         _dynamicRibbonPageCache.Add(typeof (IMoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
-         _dynamicRibbonPageCache.Add(typeof (IReactionBuildingBlock), AppConstants.RibbonCategories.Reactions);
-         _dynamicRibbonPageCache.Add(typeof (IObserverBuildingBlock), AppConstants.RibbonCategories.Observers);
-         _dynamicRibbonPageCache.Add(typeof (ISpatialStructure), AppConstants.RibbonCategories.Organisms);
+         _dynamicRibbonPageCache.Add(typeof(IMoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
+         _dynamicRibbonPageCache.Add(typeof(IReactionBuildingBlock), AppConstants.RibbonCategories.Reactions);
+         _dynamicRibbonPageCache.Add(typeof(IObserverBuildingBlock), AppConstants.RibbonCategories.Observers);
+         _dynamicRibbonPageCache.Add(typeof(ISpatialStructure), AppConstants.RibbonCategories.Organisms);
 
-         _dynamicRibbonPageCache.Add(typeof (IPassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
-         _dynamicRibbonPageCache.Add(typeof (IEventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
-         _dynamicRibbonPageCache.Add(typeof (IMoleculeStartValuesBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
-         _dynamicRibbonPageCache.Add(typeof (IParameterStartValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
-         _dynamicRibbonPageCache.Add(typeof (IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
+         _dynamicRibbonPageCache.Add(typeof(IPassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
+         _dynamicRibbonPageCache.Add(typeof(IEventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
+         _dynamicRibbonPageCache.Add(typeof(IMoleculeStartValuesBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
+         _dynamicRibbonPageCache.Add(typeof(IParameterStartValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
+         _dynamicRibbonPageCache.Add(typeof(IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
          _dynamicRibbonPageCache.Add(typeof(ParameterIdentification), RibbonCategories.ParameterIdentification);
          _dynamicRibbonPageCache.Add(typeof(SensitivityAnalysis), RibbonCategories.SensitivityAnalysis);
 
@@ -258,6 +258,7 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.ZoomIn].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ZoomOut].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.FitToPage].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewNeighborhood].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.MoleculeStartValuesExtend].Enabled = enabled;
@@ -301,7 +302,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(ScreenActivatedEvent screenActivatedEvent)
       {
-         hideAllDyamicCategories();
+         hideAllDynamicCategories();
 
          var subject = screenActivatedEvent.Presenter.Subject;
          if (subject == null) return;
@@ -317,10 +318,10 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(NoActiveScreenEvent eventToHandle)
       {
          enableActiveSimulationItems = false;
-         hideAllDyamicCategories();
+         hideAllDynamicCategories();
       }
 
-      private void hideAllDyamicCategories()
+      private void hideAllDynamicCategories()
       {
          AppConstants.RibbonCategories.AllDynamicCategories()
             .Each(c => _view.SetPageCategoryVisibility(c, visible: false));
@@ -341,7 +342,6 @@ namespace MoBi.Presentation.Presenter.Main
          enableJournalItems = false;
       }
 
-
       private bool enableJournalItems
       {
          set
@@ -354,13 +354,13 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
-         updateParameterIdentifcationItems(parameterIdentification);
+         updateParameterIdentificationItems(parameterIdentification);
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
          _runningParameterIdentifications.Add(parameterIdentificationEvent.ParameterIdentification);
-         updateParameterIdentifcationItems(parameterIdentificationEvent.ParameterIdentification);
+         updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
       public void Handle(ParameterIdentificationTerminatedEvent parameterIdentificationEvent)
@@ -370,10 +370,10 @@ namespace MoBi.Presentation.Presenter.Main
          //only update if selected subject in the actual parameter identification terminated
          var activeSubject = _activeSubjectRetriever.Active<ParameterIdentification>();
          if (Equals(activeSubject, parameterIdentification))
-            updateParameterIdentifcationItems(parameterIdentification);
+            updateParameterIdentificationItems(parameterIdentification);
       }
 
-      private void updateParameterIdentifcationItems(ParameterIdentification parameterIdentification)
+      private void updateParameterIdentificationItems(ParameterIdentification parameterIdentification)
       {
          var parameterIdentificationRunning = _runningParameterIdentifications.Contains(parameterIdentification);
          var hasResult = !parameterIdentificationRunning && parameterIdentification.HasResults;
@@ -394,7 +394,6 @@ namespace MoBi.Presentation.Presenter.Main
       {
          enableActiveSimulationItems = true;
       }
-
 
       public void Handle(SensitivityAnalysisStartedEvent sensitivityAnalysisEvent)
       {

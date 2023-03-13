@@ -9,7 +9,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuFactoryForNeighborhoodBuilder : ContextMenuForObjectBaseDTOSpecificationFactory<INeighborhoodBuilder>
+   public class ContextMenuFactoryForNeighborhoodBuilder : ContextMenuForObjectBaseDTOSpecificationFactory<NeighborhoodBuilder>
    {
       public ContextMenuFactoryForNeighborhoodBuilder(IMoBiContext context) : base(context)
       {

@@ -119,6 +119,7 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewTopContainer)).WithCaption(AppConstants.RibbonButtonNames.New))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadTopContainer)).WithCaption(AppConstants.RibbonButtonNames.Load))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadTopContainerFromTemplate)).WithCaption(AppConstants.RibbonButtonNames.LoadFromTemplate))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewNeighborhood)).WithCaption(ObjectTypes.Neighborhood))
          .WithId(ButtonGroupIds.AddOrganism);
 
       private IButtonGroup addPassiveTransportButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Add)

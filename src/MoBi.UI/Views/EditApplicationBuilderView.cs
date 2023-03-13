@@ -82,7 +82,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          btName.ToolTip = ToolTips.Applications.ApplicationName;
-         cbApplicatedMoleculeName.ToolTip = ToolTips.Applications.ApplicatedMolecule;
+         cbApplicatedMoleculeName.ToolTip = ToolTips.Applications.AppliedMolecule;
          htmlEditor.ToolTip = ToolTips.Description;
          layoutGroupContainer.Text = AppConstants.Captions.InContainerWith;
          layoutGroupApplicationBuilder.Text = AppConstants.Captions.ApplicationMoleculeBuilder;

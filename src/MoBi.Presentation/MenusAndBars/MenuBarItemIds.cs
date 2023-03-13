@@ -113,6 +113,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId SensitivityAnalysisPKParameterAnalysis = createMenuBarItemId("SensitivityAnalysisPKParameterAnalysis");
       public static MenuBarItemId SensitivityAnalysisFeedbackView = createMenuBarItemId("SensitivityAnalysisFeedbackView");
       public static MenuBarItemId ClearHistory = createMenuBarItemId("ClearHistory");
+      public static MenuBarItemId NewNeighborhood = createMenuBarItemId("NewNeighborhood");
 
       private static MenuBarItemId createMenuBarItemId(string name)
       {

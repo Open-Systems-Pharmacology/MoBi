@@ -468,6 +468,12 @@ namespace MoBi.Presentation.Repositories
               .WithIcon(ApplicationIcons.SBML)
               .WithCommand<ImportSbmlUICommand>(_container);
 
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewNeighborhood)
+            .WithId(MenuBarItemIds.NewNeighborhood)
+            .WithDescription(ToolTips.BuildingBlockSpatialStructure.NewNeighborhood)
+            .WithIcon(ApplicationIcons.Create)
+            .WithCommand<AddNewNeighborhoodCommand>(_container);
+
          yield return CommonMenuBarButtons.ManageUserDisplayUnits(MenuBarItemIds.ManageUserDisplayUnits, _container);
          yield return CommonMenuBarButtons.ManageProjectDisplayUnits(MenuBarItemIds.ManageProjectDisplayUnits, _container);
          yield return CommonMenuBarButtons.UpdateAllToDisplayUnits(MenuBarItemIds.UpdateAllToDisplayUnits, _container);

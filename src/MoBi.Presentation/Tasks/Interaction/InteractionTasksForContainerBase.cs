@@ -1,30 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
-using OSPSuite.Assets;
-using IContainer = OSPSuite.Core.Domain.IContainer;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class InteractionTasksForContainerBase<TParent> : InteractionTasksForChildren<TParent, IContainer> where TParent : class, IObjectBase
    {
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectPathFactory _objectPathFactory;
 
-      protected InteractionTasksForContainerBase(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IContainer> editTask, IDialogCreator dialogCreator)
+      protected InteractionTasksForContainerBase(
+         IInteractionTaskContext interactionTaskContext,
+         IEditTaskFor<IContainer> editTask,
+         IObjectPathFactory objectPathFactory)
          : base(interactionTaskContext, editTask)
       {
-         _dialogCreator = dialogCreator;
+         _objectPathFactory = objectPathFactory;
       }
 
       public override IContainer CreateNewEntity(TParent parent)
@@ -44,19 +45,19 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
-         string filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
-         if (filename.IsNullOrEmpty()) 
+         var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
+         if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();
 
          var sourceSpatialStructure = InteractionTask.LoadItems<IMoBiSpatialStructure>(filename).FirstOrDefault();
-         if(sourceSpatialStructure==null)
+         if (sourceSpatialStructure == null)
             return new MoBiEmptyCommand();
 
          var allAvailableContainersToImport = sourceSpatialStructure.TopContainers
             .SelectMany(x => x.GetAllContainersAndSelf<IContainer>(cont => !cont.IsAnImplementationOf<IParameter>()));
 
          var allImportedContainers = selectContainersToImport(allAvailableContainersToImport).ToList();
-         var allImportedNeighborhoods = getConnectingNeighborhoods(allImportedContainers, sourceSpatialStructure);
+         var allImportedNeighborhoods = sourceSpatialStructure.GetConnectingNeighborhoods(allImportedContainers, _objectPathFactory);
 
          allImportedContainers.Each(registerLoadedIn);
          allImportedNeighborhoods.Each(registerLoadedIn);
@@ -64,7 +65,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          var targetSpatialStructure = GetSpatialStructure();
 
          var command = AddItemsToProject(allImportedContainers, parent, buildingBlockWithFormulaCache);
-         if (command.IsEmpty()) 
+         if (command.IsEmpty())
             return new MoBiEmptyCommand();
 
 
@@ -78,7 +79,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          if (sourceSpatialStructure.DiagramModel == null || targetSpatialStructure.DiagramModel == null) return macroCommand;
          var lcs = new LayoutCopyService();
-         
+
          foreach (var container in allImportedContainers)
          {
             var sourceContainer = sourceSpatialStructure.DiagramModel.GetNode<IContainerNode>(container.Id);
@@ -93,35 +94,38 @@ namespace MoBi.Presentation.Tasks.Interaction
                targetSpatialStructure.DiagramModel.EndUpdate();
             }
          }
+
          if (targetSpatialStructure.DiagramManager.IsInitialized)
             targetSpatialStructure.DiagramManager.RefreshFromDiagramOptions();
 
          return macroCommand;
       }
-      private IMoBiCommand addNeighborhoodsToProject(IList<INeighborhoodBuilder> neighborhoods, IMoBiSpatialStructure spatialStructure)
+
+      private IMoBiCommand addNeighborhoodsToProject(IReadOnlyList<NeighborhoodBuilder> neighborhoods, IMoBiSpatialStructure spatialStructure)
       {
          if (neighborhoods == null || !neighborhoods.Any()) return new MoBiEmptyCommand();
          var command = new MoBiMacroCommand
          {
             CommandType = AppConstants.Commands.AddCommand,
-            ObjectType =ObjectTypes.NeighborhoodBuilder,
-            Description = AppConstants.Commands.AddDependentDescription(spatialStructure,ObjectTypes.NeighborhoodBuilder,ObjectTypes.SpatialStructure)
+            ObjectType = ObjectTypes.Neighborhood,
+            Description = AppConstants.Commands.AddDependentDescription(spatialStructure, ObjectTypes.Neighborhood, ObjectTypes.SpatialStructure)
          };
 
          return neighborhoods.Any(existingItem => !addNeighborhood(existingItem, command, spatialStructure)) ? CancelCommand(command) : command;
       }
 
-      private bool addNeighborhood(INeighborhoodBuilder neighborhoodBuilder, MoBiMacroCommand command, IMoBiSpatialStructure spatialStructure)
+      private bool addNeighborhood(NeighborhoodBuilder neighborhoodBuilder, MoBiMacroCommand command, IMoBiSpatialStructure spatialStructure)
       {
          var forbiddenNames = spatialStructure.NeighborhoodsContainer.Children.Select(x => x.Name).Union(AppConstants.UnallowedNames).ToList();
          if (forbiddenNames.Contains(neighborhoodBuilder.Name))
          {
-            string newName = _dialogCreator.AskForInput(AppConstants.Dialog.AskForChangedName(neighborhoodBuilder.Name,ObjectTypes.NeighborhoodBuilder), AppConstants.Captions.NewName, neighborhoodBuilder.Name, forbiddenNames);
+            var newName = _interactionTaskContext.DialogCreator.AskForInput(AppConstants.Dialog.AskForChangedName(neighborhoodBuilder.Name, ObjectTypes.Neighborhood), AppConstants.Captions.NewName, neighborhoodBuilder.Name, forbiddenNames);
 
             if (string.IsNullOrEmpty(newName))
                return false;
             neighborhoodBuilder.Name = newName;
          }
+
          command.AddCommand(new AddContainerToSpatialStructureCommand(spatialStructure.NeighborhoodsContainer, neighborhoodBuilder, spatialStructure).Run(Context));
          return true;
       }
@@ -136,7 +140,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             modal.Encapsulate(presenter);
             if (!modal.Show())
                return Enumerable.Empty<IContainer>();
-            
+
             var containerToImport = presenter.Selections.ToList();
             var allChildContainer = containerToImport
                .SelectMany(container => container.GetAllChildren<IContainer>(cont => !cont.IsAnImplementationOf<IParameter>()));
@@ -147,38 +151,9 @@ namespace MoBi.Presentation.Tasks.Interaction
                containerDoubleImported.Each(c => containerToImport.Remove(c));
                DialogCreator.MessageBoxInfo(AppConstants.Exceptions.RemovedToPreventErrorDoubleImport(containerDoubleImported));
             }
+
             return containerToImport;
          }
-      }
-
-      private IList<INeighborhoodBuilder> getConnectingNeighborhoods(IEnumerable<IContainer> existingItems, ISpatialStructure tmpSpatialStructure)
-      {
-         var allImportedContainers = existingItems
-            .SelectMany(cont => cont.GetAllContainersAndSelf<IContainer>(x => !x.IsAnImplementationOf<IParameter>()))
-            .ToList();
-
-         var neighborhoods = new List<INeighborhoodBuilder>();
-         foreach (var neighborhood in tmpSpatialStructure.Neighborhoods)
-         {
-            bool firstFound = false;
-            bool secondFound = false;
-            foreach (var cont in allImportedContainers)
-            {
-               if (neighborhood.FirstNeighbor.Equals(cont))
-               {
-                  firstFound = true;
-               }
-               if (neighborhood.SecondNeighbor.Equals(cont))
-               {
-                  secondFound = true;
-               }
-            }
-            if (firstFound && secondFound)
-            {
-               neighborhoods.Add(neighborhood);
-            }
-         }
-         return neighborhoods;
       }
 
       private void registerLoadedIn(IObjectBase deserializedObject)

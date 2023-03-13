@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Assets
 {
@@ -37,6 +38,7 @@ namespace MoBi.Assets
       public static class BuildingBlockSpatialStructure
       {
          public static readonly string NewTopContainer = "Create a new Top Container";
+         public static readonly string NewNeighborhood = "Create a new neighborhood";
          public static readonly string LoadTopContainer = $"Load Top Container from Spatial Structures Building Block file (*{Constants.Filter.PKML_FILE_FILTER})";
       }
 
@@ -149,7 +151,10 @@ namespace MoBi.Assets
       public static class ParameterView
       {
          public static readonly string ParameterName = "Define a name for the Parameter";
-         public static readonly string ParameterType = "Specify the parameters area of validity \n \n Local: should only be used locally, i.e., within the corresponding reaction or for a molecule where a local parameter is defined \n \n Global:can also be used in other formulas  \n \n Property: are identical to Global parameters except that they will not be listed and set in the parameter start values";
+
+         public static readonly string ParameterType =
+            "Specify the parameters area of validity \n \n Local: should only be used locally, i.e., within the corresponding reaction or for a molecule where a local parameter is defined \n \n Global:can also be used in other formulas  \n \n Property: are identical to Global parameters except that they will not be listed and set in the parameter start values";
+
          public static readonly string ParameterDimension = "";
          public static readonly string IsStateVariable = "Parameter (P) is defined and calculated by solving a differential equation as: \n \n P: “dP/dt = Right Hand Side”; \n \n The selected formula defines the Right Hand Side. The Value defined above will be used as initial condition";
          public static readonly string Persistable = "Parameter values plotable";
@@ -235,11 +240,16 @@ namespace MoBi.Assets
          public static readonly string DeleteMolecule = "Delete molecule from list of molecules ";
       }
 
+      public static class Neighborhood
+      {
+         public static string Between(NeighborhoodBuilder neighborhood) => $"Neighborhood between '{neighborhood.FirstNeighborPath}' and '{neighborhood.SecondNeighborPath}'";
+      }
+
       public static class Applications
       {
          public static readonly string ApplicationName = "Define a name for the Application";
-         public static readonly string ApplicatedMolecule = "Select the molecule which is to be applicatedwhich the application will affect";
-         public static readonly string ApplicationMoleculeBuilderr = "Define the source amount of the application";
+         public static readonly string AppliedMolecule = "Select the molecule which is to be applied which the application will affect";
+         public static readonly string ApplicationMoleculeBuilder = "Define the source amount of the application";
          public static readonly string ApplicationMoleculeBuilderPath = "Path to container there application source is created";
          public static readonly string ApplicationMoleculeBuilderFormula = "Formula of application source amount";
       }

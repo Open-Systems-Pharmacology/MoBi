@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Diagram;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Extensions;
@@ -16,8 +17,8 @@ namespace MoBi.UI.Diagram.DiagramManagers
    {
       public SimulationDiagramManager()
       {
-         RegisterUpdateMethod(typeof(IObserver), updateObserver);
-         RegisterUpdateMethod(typeof(IReaction), UpdateReaction);
+         RegisterUpdateMethod<IObserver>(updateObserver);
+         RegisterUpdateMethod<IReaction>(UpdateReaction);
       }
 
       // complement and update ViewModel from PkModel and couple ViewModel and PkModel
@@ -42,7 +43,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
                AddObjectBase(diagramModel, topContainer, true, coupleAll);
          }
 
-         foreach (var neighborhood in simulation.Model.Neighborhoods.GetAllChildren<INeighborhood>())
+         foreach (var neighborhood in simulation.Model.Neighborhoods.GetAllChildren<Neighborhood>())
          {
             AddNeighborhood(neighborhood);
          }
@@ -55,7 +56,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
       {
          DecoupleObjectBase(PkModel.Model.Root, recursive: true);
 
-         foreach (var neighborhood in PkModel.Model.Neighborhoods.GetAllChildren<INeighborhood>())
+         foreach (var neighborhood in PkModel.Model.Neighborhoods.GetAllChildren<Neighborhood>())
          {
             DecoupleObjectBase(neighborhood, recursive: true);
          }

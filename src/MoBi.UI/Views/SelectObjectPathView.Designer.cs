@@ -30,33 +30,39 @@ namespace MoBi.UI.Views
       /// </summary>
       private void InitializeComponent()
       {
-         this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
+         this.panelControl = new DevExpress.XtraEditors.PanelControl();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelControl)).BeginInit();
          this.SuspendLayout();
+         // 
+         // tablePanel
+         // 
+         this.tablePanel.Location = new System.Drawing.Point(0, 591);
+         this.tablePanel.Size = new System.Drawing.Size(462, 43);
          // 
          // panelControl1
          // 
-         this.panelControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-         this.panelControl1.Location = new System.Drawing.Point(0, 0);
-         this.panelControl1.Name = "panelControl1";
-         this.panelControl1.Size = new System.Drawing.Size(459, 599);
-         this.panelControl1.TabIndex = 4;
+         this.panelControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.panelControl.Location = new System.Drawing.Point(0, 0);
+         this.panelControl.Name = "panelControl";
+         this.panelControl.Size = new System.Drawing.Size(462, 591);
+         this.panelControl.TabIndex = 39;
          // 
-         // SelectEventAssignmentTargetView
+         // SelectObjectPathView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "SelectEventAssignmentTargetView";
          this.ClientSize = new System.Drawing.Size(462, 634);
-         this.Controls.Add(this.panelControl1);
+         this.Controls.Add(this.panelControl);
          this.Name = "SelectObjectPathView";
          this.Text = "SelectEventAssignmentTargetView";
-         this.Controls.SetChildIndex(this.panelControl1, 0);
+         this.Controls.SetChildIndex(this.tablePanel, 0);
+         this.Controls.SetChildIndex(this.panelControl, 0);
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelControl)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -64,7 +70,6 @@ namespace MoBi.UI.Views
 
       #endregion
 
-
-      private DevExpress.XtraEditors.PanelControl panelControl1;
+      private DevExpress.XtraEditors.PanelControl panelControl;
    }
 }

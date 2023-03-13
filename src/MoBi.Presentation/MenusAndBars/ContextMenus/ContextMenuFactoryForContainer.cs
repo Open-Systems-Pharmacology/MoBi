@@ -6,9 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -20,7 +18,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public override IContextMenu CreateFor(ObjectBaseDTO objectBaseDTO, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var contextMenu = IoC.Resolve<IContextMenuForContainer>();
+         var contextMenu = _context.Resolve<ContextMenuForContainer>();
          return contextMenu.InitializeWith(objectBaseDTO, presenter);
       }
 
@@ -28,7 +26,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return presenter.IsAnImplementationOf<IHierarchicalSpatialStructurePresenter>()
                 && entity.IsAnImplementationOf<IContainer>()
-                && !entity.IsAnImplementationOf<INeighborhoodBuilder>();
+                && !entity.IsAnImplementationOf<NeighborhoodBuilder>()
+                //neighborhoods will be dealt with separately
+                && !entity.IsNamed(Constants.NEIGHBORHOODS);
       }
    }
 }

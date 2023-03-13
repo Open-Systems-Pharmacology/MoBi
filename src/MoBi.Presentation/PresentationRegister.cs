@@ -220,7 +220,7 @@ namespace MoBi.Presentation
          container.Register<IEditTaskFor<TransporterMoleculeContainer>, EditTasksForTransporterMoleculeContainer>();
          container.Register<IEditTaskFor<IApplicationMoleculeBuilder>, EditTaskForApplicationMoleculeBuilder>();
          container.Register<IEditTaskFor<IEventAssignmentBuilder>, EditTaskForEventAssignmentBuilder>();
-         container.Register<IEditTaskFor<INeighborhoodBuilder>, EditTasksForNeighborhoodBuilder>();
+         container.Register<IEditTaskFor<NeighborhoodBuilder>, EditTaskForNeighborhoodBuilder>();
          container.Register<IEditTaskFor<IMoBiSimulation>, EditTasksForSimulation>();
          container.Register<IEditTaskFor<IMoBiSpatialStructure>, EditTasksForSpatialStructure>();
          container.Register<IEditTaskFor<ExpressionProfileBuildingBlock>, EditTasksForExpressionProfileBuildingBlock>();

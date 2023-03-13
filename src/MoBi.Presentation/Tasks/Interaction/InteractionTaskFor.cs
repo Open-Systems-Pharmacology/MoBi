@@ -75,6 +75,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (!_editTask.EditEntityModal(newEntity, parentContainer, macroCommand, buildingBlockToAddTo))
             return CancelCommand(macroCommand);
 
+         //allow specific methods to do something with the new entity before it is returned to the caller
+         PerformPostAddActions(newEntity, parent, buildingBlockToAddTo);
+
          //Once the entity was created, select or edit the entity if required
          _editTask.Edit(newEntity);
 
@@ -86,6 +89,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          SetAddCommandDescription(newEntity, parent, addCommand, macroCommand, buildingBlockToAddTo);
 
          return macroCommand;
+      }
+
+      protected virtual void PerformPostAddActions(TChild newEntity, TParent parent, IBuildingBlock buildingBlockToAddTo)
+      {
+         //by default nothing to do
       }
 
       /// <summary>

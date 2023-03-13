@@ -13,13 +13,9 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public interface IContextMenuForContainer : IContextMenuFor<IContainer>
+   public abstract class ContextMenuForContainerBase<TContainer> : ContextMenuFor<TContainer> where TContainer : class, IContainer
    {
-   }
-
-   public class ContextMenuForContainerBase<TContainer> : ContextMenuFor<TContainer> where TContainer : class, IContainer
-   {
-      public ContextMenuForContainerBase(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
+      protected ContextMenuForContainerBase(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
       {
       }
 
@@ -27,10 +23,15 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          base.InitializeWith(dto, presenter);
          var container = _context.Get<TContainer>(dto.Id);
-         _allMenuItems.Add(CreateAddNewChild<IParameter>(container));
+         AddParameterToContainerMenus(container);
+         return this;
+      }
+
+      protected void AddParameterToContainerMenus(TContainer container)
+      {
+         _allMenuItems.Add(CreateAddNewChild<IParameter>(container).AsGroupStarter());
          _allMenuItems.Add(createAddExistingChild<IParameter>(container));
          _allMenuItems.Add(createAddExistingFromTemplateItemFor<IParameter>(container));
-         return this;
       }
 
       protected virtual IMenuBarItem CreateAddExistingItemFor(TContainer selectedObject)
@@ -80,7 +81,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class ContextMenuForContainer : ContextMenuForContainerBase<IContainer>, IContextMenuForContainer
+   public class ContextMenuForContainer : ContextMenuForContainerBase<IContainer>
    {
       public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
       {
@@ -101,11 +102,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public interface IContextMenuForContainerInEventGroups : IContextMenuFor<IContainer>
-   {
-   }
-
-   public class ContextMenuForContainerInEventGroups : ContextMenuForContainerBase<IContainer>, IContextMenuForContainerInEventGroups
+   public class ContextMenuForContainerInEventGroups : ContextMenuForContainerBase<IContainer>
    {
       public ContextMenuForContainerInEventGroups(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
       {

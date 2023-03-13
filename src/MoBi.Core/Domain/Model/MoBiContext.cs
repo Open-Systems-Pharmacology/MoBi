@@ -27,6 +27,8 @@ namespace MoBi.Core.Domain.Model
       IMoBiDimensionFactory DimensionFactory { get; }
       IObjectBaseFactory ObjectBaseFactory { get; }
       IWithIdRepository ObjectRepository { get; }
+      IContainer Container { get; }
+
       T Create<T>(string id) where T : class, IObjectBase;
       T Create<T>() where T : class, IObjectBase;
 
@@ -59,12 +61,12 @@ namespace MoBi.Core.Domain.Model
       private readonly IRegisterTask _registerTask;
       private readonly IUnregisterTask _unregisterTask;
       private readonly IClipboardManager _clipboardManager;
-      private readonly IContainer _container;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IJournalSession _journalSession;
 
+      public IContainer Container { get; }
       public IMoBiHistoryManager HistoryManager { get; set; }
       public IMoBiDimensionFactory DimensionFactory { get; }
       public IObjectBaseFactory ObjectBaseFactory { get; }
@@ -85,7 +87,7 @@ namespace MoBi.Core.Domain.Model
          DimensionFactory = dimensionFactory;
          ObjectPathFactory = objectPathFactory;
          _serializationService = serializationService;
-         _container = container;
+         Container = container;
          _objectTypeResolver = objectTypeResolver;
          _cloneManager = cloneManager;
          _lazyLoadTask = lazyLoadTask;
@@ -191,7 +193,7 @@ namespace MoBi.Core.Domain.Model
 
       public T Resolve<T>()
       {
-         return _container.Resolve<T>();
+         return Container.Resolve<T>();
       }
 
       public void LoadFrom(IMoBiProject project)

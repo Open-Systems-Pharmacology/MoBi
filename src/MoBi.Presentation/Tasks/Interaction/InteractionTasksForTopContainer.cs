@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class InteractionTasksForTopContainer : InteractionTasksForContainerBase<IMoBiSpatialStructure>, IInteractionTasksForTopContainer
    {
-      public InteractionTasksForTopContainer(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IContainer> editTask, IDialogCreator dialogCreator) : base(interactionTaskContext, editTask, dialogCreator)
+      public InteractionTasksForTopContainer(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IContainer> editTask, IObjectPathFactory objectPathFactory) : base(interactionTaskContext, editTask, objectPathFactory)
       {
       }
 

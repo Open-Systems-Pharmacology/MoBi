@@ -11,7 +11,6 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO

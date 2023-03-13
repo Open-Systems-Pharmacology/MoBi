@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public class InteractionTasksForContainer : InteractionTasksForContainerBase<IContainer>
    {
-      public InteractionTasksForContainer(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IContainer> editTask, IDialogCreator dialogCreator) : base(interactionTaskContext, editTask, dialogCreator)
+      public InteractionTasksForContainer(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IContainer> editTask, IObjectPathFactory objectPathFactory) : base(interactionTaskContext, editTask, objectPathFactory)
       {
       }
 
