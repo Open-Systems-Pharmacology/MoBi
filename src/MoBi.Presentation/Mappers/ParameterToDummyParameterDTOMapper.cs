@@ -13,11 +13,10 @@ namespace MoBi.Presentation.Mappers
    {
       public DummyParameterDTO MapFrom(IParameter parameter, IContainer structureParent, ObjectBaseDTO modelParent)
       {
-         var dto = Map(new DummyParameterDTO(parameter));
+         var dto = Map(new DummyParameterDTO());
          dto.ParameterToUse = Map(new ObjectBaseDTO(parameter));
          dto.Parent = structureParent;
          dto.ModelParentName = modelParent.Name;
-         dto.Id = ShortGuid.NewGuid();
          return dto;
       }
    }

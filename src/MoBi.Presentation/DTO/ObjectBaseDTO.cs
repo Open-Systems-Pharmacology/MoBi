@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 
@@ -32,11 +33,14 @@ namespace MoBi.Presentation.DTO
          Rules.AddRange(AllRules.All);
          _usedNames = new List<string>();
          AddUsedNames(AppConstants.UnallowedNames);
+         //by default, we'll set a random id that might be changed if using a real object underneath the hood
+         Id = ShortGuid.NewGuid();
       }
 
       public ObjectBaseDTO(IObjectBase objectBase) : this()
       {
          ObjectBase = objectBase;
+         Id = ObjectBase.Id;
          objectBase.PropertyChanged += HandlePropertyChanged;
       }
 
