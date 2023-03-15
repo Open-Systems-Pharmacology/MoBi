@@ -43,8 +43,7 @@ namespace MoBi.Presentation.Presenter
 
       public virtual IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate)
       {
-         var container = _context.Get<IContainer>(dto.Id);
-         return container == null ? new List<ObjectBaseDTO>() : GetChildrenSorted(container, predicate);
+         return (dto.ObjectBase is IContainer container) ? GetChildrenSorted(container, predicate) : Array.Empty<ObjectBaseDTO>();
       }
 
       protected virtual IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
@@ -73,10 +72,9 @@ namespace MoBi.Presentation.Presenter
             raiseEntitySelectedEvent(objectBaseDTO);
       }
 
-      private void raiseEntitySelectedEvent(ObjectBaseDTO dtoObjectBase)
+      private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
-         var objectBase = _context.Get<IObjectBase>(dtoObjectBase.Id);
-         _context.PublishEvent(new EntitySelectedEvent(objectBase, this));
+         _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)

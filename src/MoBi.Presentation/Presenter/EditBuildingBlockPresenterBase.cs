@@ -43,9 +43,9 @@ namespace MoBi.Presentation.Presenter
 
       protected TBuildingBlock BuildingBlock => Subject.DowncastTo<TBuildingBlock>();
 
-      protected virtual Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected virtual (bool canHandle, IObjectBase objectBase) SpecificCanHandle(IObjectBase selectedObject)
       {
-         return new Tuple<bool, IObjectBase>(false, selectedObject);
+         return (false, selectedObject);
       }
 
       protected virtual void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
@@ -93,19 +93,19 @@ namespace MoBi.Presentation.Presenter
          selectObjectAndParent(handled.Item2, eventToHandle.ObjectBase);
       }
 
-      internal virtual Tuple<bool, IObjectBase> CanHandle(IObjectBase selectedObject)
+      internal virtual (bool canHandle, IObjectBase objectBase) CanHandle(IObjectBase selectedObject)
       {
          var formula = selectedObject as IFormula;
          if (formula != null)
-            return new Tuple<bool, IObjectBase>(BuildingBlock.FormulaCache.Contains(formula), formula);
+            return (BuildingBlock.FormulaCache.Contains(formula), formula);
 
          var parameter = selectedObject as IParameter;
          if (parameter != null)
-            return new Tuple<bool, IObjectBase>(buildingBlockContains(parameter.RootContainer as TBuilder), parameter.ParentContainer);
+            return (buildingBlockContains(parameter.RootContainer as TBuilder), parameter.ParentContainer);
 
          var builder = selectedObject as TBuilder;
          if (builder != null)
-            return new Tuple<bool, IObjectBase>(BuildingBlock.Contains(builder), builder);
+            return (BuildingBlock.Contains(builder), builder);
 
          return SpecificCanHandle(selectedObject);
       }

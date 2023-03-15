@@ -11,7 +11,7 @@ using OSPSuite.Core.Domain;
 namespace MoBi.Presentation
 {
    public abstract class concern_for_EditSpatialStructurePresenterSpecs :
-      ContextSpecification<IEditSpatialStructurePresenter>
+      ContextSpecification<EditSpatialStructurePresenter>
    {
       protected IEditSpatialStructureView _view;
       protected IHierarchicalSpatialStructurePresenter _hierarchicalPresenter;

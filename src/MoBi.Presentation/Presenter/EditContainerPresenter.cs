@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -12,11 +11,13 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -28,9 +29,9 @@ namespace MoBi.Presentation.Presenter
       void SetParentPath(string parentPath);
       void UpdateParentPath();
       string ContainerModeDisplayFor(ContainerMode mode);
-      IEnumerable<ContainerMode> AllContainerModes();
+      IReadOnlyList<ContainerMode> AllContainerModes { get; }
       void SetContainerMode(ContainerMode newContainerMode);
-      IEnumerable<ContainerType> AllContainerTypes();
+      IReadOnlyList<ContainerType> AllContainerTypes { get; }
    }
 
    public class EditContainerPresenter : AbstractEntityEditPresenter<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
@@ -45,11 +46,11 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
 
       public EditContainerPresenter(
-         IEditContainerView view, 
-         IContainerToContainerDTOMapper containerMapper, 
+         IEditContainerView view,
+         IContainerToContainerDTOMapper containerMapper,
          IEditTaskForContainer editTasks,
-         IEditParametersInContainerPresenter editParametersInContainerPresenter, 
-         IMoBiContext context, 
+         IEditParametersInContainerPresenter editParametersInContainerPresenter,
+         IMoBiContext context,
          ITagsPresenter tagsPresenter,
          IApplicationController applicationController)
          : base(view)
@@ -95,10 +96,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public IEnumerable<ContainerMode> AllContainerModes()
-      {
-         return EnumHelper.AllValuesFor<ContainerMode>();
-      }
+      public IReadOnlyList<ContainerMode> AllContainerModes => EnumHelper.AllValuesFor<ContainerMode>().ToList();
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
@@ -120,18 +118,18 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_editTasks.SetContainerMode(BuildingBlock, _container, newContainerMode));
       }
 
-      public IEnumerable<ContainerType> AllContainerTypes()
+      public IReadOnlyList<ContainerType> AllContainerTypes { get; } = new[]
       {
-         yield return ContainerType.Application;
-         yield return ContainerType.Compartment;
-         yield return ContainerType.Event;
-         yield return ContainerType.EventGroup;
-         yield return ContainerType.Model;
-         yield return ContainerType.Neighborhood;
-         yield return ContainerType.Organ;
-         yield return ContainerType.Other;
-         yield return ContainerType.Organism;
-      }
+         ContainerType.Application,
+         ContainerType.Compartment,
+         ContainerType.Event,
+         ContainerType.EventGroup,
+         ContainerType.Model,
+         ContainerType.Neighborhood,
+         ContainerType.Organ,
+         ContainerType.Other,
+         ContainerType.Organism,
+      };
 
       public IBuildingBlock BuildingBlock
       {

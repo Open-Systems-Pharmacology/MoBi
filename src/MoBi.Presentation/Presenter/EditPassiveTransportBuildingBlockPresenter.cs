@@ -138,13 +138,13 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IObjectBase objectBase) SpecificCanHandle(IObjectBase selectedObject)
       {
          var transportBuilder = selectedObject as ITransportBuilder;
          if (transportBuilder != null)
-            return new Tuple<bool, IObjectBase>(_passiveTransports.Contains(transportBuilder), transportBuilder);
+            return (_passiveTransports.Contains(transportBuilder), transportBuilder);
 
-         return new Tuple<bool, IObjectBase>(false, selectedObject);
+         return (false, selectedObject);
       }
 
       protected override void SelectBuilder(ITransportBuilder builder)

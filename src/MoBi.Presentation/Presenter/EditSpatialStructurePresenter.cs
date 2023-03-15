@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
@@ -9,7 +8,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -18,10 +16,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditSpatialStructurePresenter : ISingleStartPresenter<IMoBiSpatialStructure>,
       IDiagramBuildingBlockPresenter,
-      IListener<EntitySelectedEvent>,
-      IListener<RemovedEvent>,
-      IListener<FavoritesSelectedEvent>,
-      IListener<UserDefinedSelectedEvent>
+      IListener<RemovedEvent>
    {
       void LoadDiagram();
    }
@@ -66,24 +61,24 @@ namespace MoBi.Presentation.Presenter
          _editPresenter.BuildingBlock = _spatialStructure;
          _hierarchicalSpatialStructurePresenter.Edit(spatialStructure);
          _favoritesPresenter.Edit(spatialStructure);
-         setInitalView();
+         setInitialView();
          UpdateCaption();
          _view.Display();
       }
 
-      private void setInitalView()
+      private void setInitialView()
       {
          ShowView(_favoritesPresenter.BaseView);
       }
 
       public override object Subject => _spatialStructure;
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IObjectBase objectBase) SpecificCanHandle(IObjectBase selectedObject)
       {
-         return new Tuple<bool, IObjectBase>(shoudHandleSelection(selectedObject as IEntity), selectedObject);
+         return (shouldHandleSelection(selectedObject as IEntity), selectedObject);
       }
 
-      internal override Tuple<bool, IObjectBase> CanHandle(IObjectBase selectedObject)
+      internal override (bool canHandle, IObjectBase objectBase) CanHandle(IObjectBase selectedObject)
       {
          var specificCanHandle = SpecificCanHandle(selectedObject);
          if (specificCanHandle.Item1)
@@ -112,7 +107,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private bool shoudHandleSelection(IEntity entity)
+      private bool shouldHandleSelection(IEntity entity)
       {
          return entity.IsAnImplementationOf<IContainer>() &&
                 !entity.IsAnImplementationOf<IDistributedParameter>() &&
@@ -154,7 +149,7 @@ namespace MoBi.Presentation.Presenter
          if (!eventToHandle.RemovedObjects.Any(shouldHandleRemoved))
             return;
 
-         setInitalView();
+         setInitialView();
       }
 
       private bool shouldHandleRemoved(IObjectBase objectBase)

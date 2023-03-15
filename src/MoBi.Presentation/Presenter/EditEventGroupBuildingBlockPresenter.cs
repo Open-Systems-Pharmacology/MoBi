@@ -16,11 +16,8 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditEventGroupBuildingBlockPresenter :
       ISingleStartPresenter<IEventGroupBuildingBlock>,
-      IListener<EntitySelectedEvent>,
       IListener<AddedEvent>,
-      IListener<RemovedEvent>,
-      IListener<FavoritesSelectedEvent>,
-      IListener<UserDefinedSelectedEvent>
+      IListener<RemovedEvent>
 
    {
    }
@@ -133,9 +130,9 @@ namespace MoBi.Presentation.Presenter
          return AllSubPresenters.OfType<T>();
       }
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IObjectBase objectBase) SpecificCanHandle(IObjectBase selectedObject)
       {
-         return new Tuple<bool, IObjectBase>(shouldShow(selectedObject), selectedObject);
+         return (shouldShow(selectedObject), selectedObject);
       }
 
       protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
@@ -234,7 +231,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      internal override Tuple<bool, IObjectBase> CanHandle(IObjectBase selectedObject)
+      internal override (bool canHandle, IObjectBase objectBase) CanHandle(IObjectBase selectedObject)
       {
          var specificCanHandle = SpecificCanHandle(selectedObject);
          if (specificCanHandle.Item1)

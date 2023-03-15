@@ -15,12 +15,9 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditMoleculeBuildingBlockPresenter :
       ISingleStartPresenter<IMoleculeBuildingBlock>,
-      IListener<EntitySelectedEvent>,
       IListener<RemovedEvent>,
       IListener<BulkUpdateFinishedEvent>,
-      IListener<BulkUpdateStartedEvent>,
-      IListener<FavoritesSelectedEvent>,
-      IListener<UserDefinedSelectedEvent>
+      IListener<BulkUpdateStartedEvent>
    {
    }
 
@@ -115,12 +112,12 @@ namespace MoBi.Presentation.Presenter
             editPresenter.SelectParameter(parameter);
       }
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IObjectBase objectBase) SpecificCanHandle(IObjectBase selectedObject)
       {
          if (shouldHandleType(selectedObject))
-            return new Tuple<bool, IObjectBase>(_moleculeBuildingBlock.ContainsBuilder(selectedObject), selectedObject);
+            return (_moleculeBuildingBlock.ContainsBuilder(selectedObject), selectedObject);
 
-         return new Tuple<bool, IObjectBase>(false, selectedObject);
+         return (false, selectedObject);
       }
 
       protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
@@ -166,6 +163,5 @@ namespace MoBi.Presentation.Presenter
       protected override void ShowView(IView viewToShow) => _view.SetEditView(viewToShow);
 
       protected override Action<IEditParameterListPresenter> ColumnConfiguration() => x => x.ConfigureForMolecule();
-
    }
 }

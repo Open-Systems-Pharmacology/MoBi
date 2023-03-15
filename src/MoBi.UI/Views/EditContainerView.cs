@@ -39,13 +39,13 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<ContainerDTO>();
          _screenBinder.Bind(dto => dto.Mode).To(cbContainerMode)
-            .WithValues(dto => _presenter.AllContainerModes())
+            .WithValues(dto => _presenter.AllContainerModes)
             .AndDisplays(mode => _presenter.ContainerModeDisplayFor(mode))
             .OnValueUpdating += (o, e) => OnEvent((() => _presenter.SetContainerMode(e.NewValue)));
 
          _screenBinder.Bind(dto => dto.ContainerType)
             .To(cbContainerType)
-            .WithValues(dto => _presenter.AllContainerTypes())
+            .WithValues(dto => _presenter.AllContainerTypes)
             .OnValueUpdating += onValueUpdating;
 
          _screenBinder.Bind(dto => dto.Name)
