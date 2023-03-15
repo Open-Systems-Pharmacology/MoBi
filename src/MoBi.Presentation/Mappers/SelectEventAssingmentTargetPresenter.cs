@@ -13,8 +13,7 @@ namespace MoBi.Presentation.Mappers
    {
       public DummyReactionDTO MapFrom(IReactionBuilder reactionBuilder, IContainer container)
       {
-         var dto = Map(new DummyReactionDTO());
-         dto.ReactionBuilder = reactionBuilder;
+         var dto = Map(new DummyReactionDTO(reactionBuilder));
          dto.StructureParent = container;
          return dto;
       }

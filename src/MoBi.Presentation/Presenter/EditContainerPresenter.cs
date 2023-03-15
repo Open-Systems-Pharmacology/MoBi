@@ -14,7 +14,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility;
@@ -34,7 +33,7 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<ContainerType> AllContainerTypes { get; }
    }
 
-   public class EditContainerPresenter : AbstractEntityEditPresenter<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
+   public class EditContainerPresenter : AbstractContainerEditPresenterWithParameters<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
    {
       private IContainer _container;
       private readonly IContainerToContainerDTOMapper _containerMapper;
@@ -43,7 +42,6 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiContext _context;
       private readonly ITagsPresenter _tagsPresenter;
       private readonly IApplicationController _applicationController;
-      private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
 
       public EditContainerPresenter(
          IEditContainerView view,
@@ -53,24 +51,16 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          ITagsPresenter tagsPresenter,
          IApplicationController applicationController)
-         : base(view)
+         : base(view, editParametersInContainerPresenter, context, editTasks)
       {
          _containerMapper = containerMapper;
          _context = context;
          _tagsPresenter = tagsPresenter;
          _applicationController = applicationController;
-         _editParametersInContainerPresenter = editParametersInContainerPresenter;
          _editTasks = editTasks;
          _view.AddParameterView(editParametersInContainerPresenter.BaseView);
          _view.AddTagsView(_tagsPresenter.BaseView);
-         AddSubPresenters(_editParametersInContainerPresenter, _tagsPresenter);
-         initParameterListPresenter();
-      }
-
-      private void initParameterListPresenter()
-      {
-         _editParametersInContainerPresenter.BlackBoxAllowed = true;
-         _editParametersInContainerPresenter.ChangeLocalisationAllowed = false;
+         AddSubPresenters(_tagsPresenter);
       }
 
       public void UpdateParentPath()
@@ -97,11 +87,6 @@ namespace MoBi.Presentation.Presenter
       }
 
       public IReadOnlyList<ContainerMode> AllContainerModes => EnumHelper.AllValuesFor<ContainerMode>().ToList();
-
-      public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
-      {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _container, BuildingBlock).Run(_context));
-      }
 
       public void SetParentPath(string parentPath)
       {
@@ -131,40 +116,23 @@ namespace MoBi.Presentation.Presenter
          ContainerType.Organism,
       };
 
-      public IBuildingBlock BuildingBlock
+      public override IBuildingBlock BuildingBlock
       {
-         get => _editParametersInContainerPresenter.BuildingBlock;
          set
          {
-            _editParametersInContainerPresenter.BuildingBlock = value;
+            base.BuildingBlock = value;
             _tagsPresenter.BuildingBlock = value;
          }
       }
 
-      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
+      protected override IContainer SubjectContainer => _container;
 
-      public void SelectParameter(IParameter childParameter)
-      {
-         _view.ShowParameters();
-         _editParametersInContainerPresenter.Select(childParameter);
-      }
-
-      public IEnumerable<FormulaBuilderDTO> GetFormulas()
-      {
-         return _editParametersInContainerPresenter.GetFormulas();
-      }
-
-      public void RenameSubject()
-      {
-         _editTasks.Rename(_container, _container.ParentContainer, BuildingBlock);
-      }
-
-      public override void Edit(IContainer container, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(IContainer container, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _container = container;
+         base.Edit(container, existingObjectsInParent);
          _containerDTO = _containerMapper.MapFrom(_container);
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));
-         _editParametersInContainerPresenter.Edit(_container);
          _view.BindTo(_containerDTO);
          _tagsPresenter.Edit(container);
          _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();

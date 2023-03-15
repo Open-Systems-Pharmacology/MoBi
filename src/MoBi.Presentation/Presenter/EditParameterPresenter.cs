@@ -205,7 +205,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public override void Edit(IParameter parameter, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(IParameter parameter, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _parameter = parameter;
          _editValueFormulaPresenter.Init(_parameter, BuildingBlock);

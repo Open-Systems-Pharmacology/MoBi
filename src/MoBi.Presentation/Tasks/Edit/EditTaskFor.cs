@@ -190,7 +190,7 @@ namespace MoBi.Presentation.Tasks.Edit
          using (var modalPresenter = GetCreateViewFor(entity, commandCollector))
          {
             InitializeSubPresenter(modalPresenter.SubPresenter, buildingBlock, entity);
-            ((ICreatePresenter<T>)modalPresenter.SubPresenter).Edit(entity, existingObjectsInParent);
+            ((ICreatePresenter<T>)modalPresenter.SubPresenter).Edit(entity, existingObjectsInParent.ToList());
             return modalPresenter.Show();
          }
       }

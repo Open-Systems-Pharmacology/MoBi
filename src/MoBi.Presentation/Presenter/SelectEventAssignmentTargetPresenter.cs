@@ -77,7 +77,7 @@ namespace MoBi.Presentation.Presenter
       //make this method public so that it can be tested
       public IReadOnlyList<ObjectBaseDTO> GetChildren(ObjectBaseDTO parentDTO)
       {
-         var parent = getObjectFrom(parentDTO);
+         var parent = parentDTO.ObjectBase;
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();
 
@@ -199,10 +199,7 @@ namespace MoBi.Presentation.Presenter
          return _objectPathFactory.CreateFormulaUsablePathFrom(objectPath).WithDimension(dimension);
       }
 
-      private IDimension getDimensionForDummyParameter(DummyParameterDTO dummy)
-      {
-         return _context.Get<IParameter>(dummy.ParameterToUse.Id).Dimension;
-      }
+      private IDimension getDimensionForDummyParameter(DummyParameterDTO dummy) => dummy.Parameter.Dimension;
 
       private IDimension getDimensionFor(ObjectBaseDTO dto)
       {
@@ -213,22 +210,10 @@ namespace MoBi.Presentation.Presenter
       {
          var treeNode = _selectEntityInTreePresenter.TreeNodeFor(dto);
          var dtoParent = treeNode.ParentNode.ParentNode.TagAsObject.DowncastTo<ObjectBaseDTO>();
-         return _context.Get<IEntity>(dtoParent.Id);
+         return dtoParent.ObjectBase as IEntity;
       }
 
-      private IObjectBase getObjectFrom(ObjectBaseDTO dto)
-      {
-         if (dto.IsAnImplementationOf<DummyMoleculeDTO>())
-            return dto.DowncastTo<DummyMoleculeDTO>().MoleculeBuilder;
-
-         if (dto.IsAnImplementationOf<DummyReactionDTO>())
-            return dto.DowncastTo<DummyReactionDTO>().ReactionBuilder;
-
-         if (dto.IsAnImplementationOf<DummyParameterDTO>())
-            return _context.Get<IObjectBase>((dto.DowncastTo<DummyParameterDTO>()).ParameterToUse.Id);
-
-         return _context.Get<IObjectBase>(dto.Id);
-      }
+   
 
       private IEnumerable<ObjectBaseDTO> getLocalInformationForReaction(IContainer container)
       {

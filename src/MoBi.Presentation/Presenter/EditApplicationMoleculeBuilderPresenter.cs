@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _applicationMoleculeBuilder;
 
-      public override void Edit(IApplicationMoleculeBuilder applicationMoleculeBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(IApplicationMoleculeBuilder applicationMoleculeBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _applicationMoleculeBuilder = applicationMoleculeBuilder;
          _editFormulaPresenter.Init(_applicationMoleculeBuilder, BuildingBlock);
@@ -91,10 +91,7 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
       public ObjectPath SetObjectPath()
       {

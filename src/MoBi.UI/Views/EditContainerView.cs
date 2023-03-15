@@ -1,35 +1,31 @@
 ﻿using DevExpress.LookAndFeel;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors.Controls;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
    public partial class EditContainerView : BaseUserControl, IEditContainerView
    {
-      private readonly IImageListRetriever _imageListRetriever;
       protected IEditContainerPresenter _presenter;
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
       private readonly UserLookAndFeel _lookAndFeel;
 
-
-      public EditContainerView(IImageListRetriever imageListRetriever, UserLookAndFeel lookAndFeel)
+      public EditContainerView(UserLookAndFeel lookAndFeel)
       {
-         _imageListRetriever = imageListRetriever;
          _lookAndFeel = lookAndFeel;
          InitializeComponent();
       }
@@ -97,7 +93,7 @@ namespace MoBi.UI.Views
       {
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }
-   
+
       public void AttachPresenter(IEditContainerPresenter presenter)
       {
          _presenter = presenter;
@@ -170,6 +166,5 @@ namespace MoBi.UI.Views
       {
          tabParameters.Show();
       }
-
    }
 }

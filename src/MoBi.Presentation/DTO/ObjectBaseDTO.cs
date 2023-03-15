@@ -40,8 +40,9 @@ namespace MoBi.Presentation.DTO
       public ObjectBaseDTO(IObjectBase objectBase) : this()
       {
          ObjectBase = objectBase;
-         Id = ObjectBase.Id;
-         objectBase.PropertyChanged += HandlePropertyChanged;
+         Id = ObjectBase?.Id;
+         if(objectBase != null)
+            objectBase.PropertyChanged += HandlePropertyChanged;
       }
 
       public override string ToString() => Name;

@@ -425,7 +425,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddMolecule()
       {
-         var dummyMolecule = new DummyParameterDTO {Name = ObjectPathKeywords.MOLECULE, Id = ObjectPathKeywords.MOLECULE};
+         var dummyMolecule = new DummyParameterDTO(null) {Name = ObjectPathKeywords.MOLECULE, Id = ObjectPathKeywords.MOLECULE};
          _view.AddNode(_referenceMapper.MapFrom(dummyMolecule));
       }
 

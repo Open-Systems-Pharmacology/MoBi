@@ -135,8 +135,8 @@ namespace MoBi.Presentation
          _subContainerDTO = new ObjectBaseDTO();
          _parameterDTO1 = new ObjectBaseDTO();
          _parameterDTO2 = new ObjectBaseDTO();
-         _dummyReactionDTO = new DummyReactionDTO();
-         _dummyMoleculeDTO = new DummyMoleculeDTO();
+         _dummyReactionDTO = new DummyReactionDTO(_reaction);
+         _dummyMoleculeDTO = new DummyMoleculeDTO(_moleculeBuilder);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_subContainer)).Returns(_subContainerDTO);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_parameter1)).Returns(_parameterDTO1);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_parameter2)).Returns(_parameterDTO2);

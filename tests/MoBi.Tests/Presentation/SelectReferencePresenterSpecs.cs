@@ -46,9 +46,9 @@ namespace MoBi.Presentation
    {
       private ObjectBaseDTO _moleculePropertiesDTO;
       private IEnumerable<ObjectBaseDTO> _result;
-      private readonly DummyParameterDTO _dtoP1 = new DummyParameterDTO().WithName("P1");
-      private readonly DummyParameterDTO _dtoPlocal = new DummyParameterDTO().WithName("local");
-      private readonly DummyParameterDTO _dtoPglobal = new DummyParameterDTO().WithName("global");
+      private  DummyParameterDTO _dtoP1;
+      private  DummyParameterDTO _dtoPlocal;
+      private  DummyParameterDTO _dtoPglobal;
 
       protected override void Context()
       {
@@ -59,11 +59,15 @@ namespace MoBi.Presentation
          var physical = new Container().WithName("PHYS").WithMode(ContainerMode.Physical);
          var moleculeProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES).WithParentContainer(physical);
          var p1 = new Parameter().WithName("P1");
+         _dtoP1 = new DummyParameterDTO(p1).WithName("P1");
+
          moleculeProperties.Add(p1);
          var moleculeName = "Drug";
-         _moleculePropertiesDTO =
-            new DummyMoleculeContainerDTO() {MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)}.WithId("ANY")
-               .WithName(moleculeName);
+         _moleculePropertiesDTO = new DummyMoleculeContainerDTO(new MoleculeAmount())
+            {
+               MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)
+            }.WithId("ANY").WithName(moleculeName);
+
          A.CallTo(() => _context.Get<IContainer>(id)).Returns(moleculeProperties);
          var objectBaseRepository = A.Fake<IWithIdRepository>();
          A.CallTo(() => _context.ObjectRepository).Returns(objectBaseRepository);
@@ -74,8 +78,11 @@ namespace MoBi.Presentation
          var moleculeBuildingBlock = new MoleculeBuildingBlock();
          var molecule = new MoleculeBuilder().WithName(moleculeName);
          var localP = new Parameter().WithName("local").WithMode(ParameterBuildMode.Local).WithParentContainer(molecule);
-         var globalP =
-            new Parameter().WithName("global").WithMode(ParameterBuildMode.Global).WithParentContainer(molecule);
+         _dtoPlocal = new DummyParameterDTO(localP).WithName("local");
+
+         var globalP = new Parameter().WithName("global").WithMode(ParameterBuildMode.Global).WithParentContainer(molecule);
+         _dtoPglobal = new DummyParameterDTO(localP).WithName("global");
+
          moleculeBuildingBlock.Add(molecule);
          A.CallTo(() => project.MoleculeBlockCollection).Returns(new[] {moleculeBuildingBlock});
          A.CallTo(() => _parameterMapper.MapFrom(localP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPlocal);
@@ -95,13 +102,13 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_return_molecule_properties_paramerters()
+      public void should_return_molecule_properties_parameters()
       {
          _result.ShouldContain(_dtoP1);
       }
 
       [Observation]
-      public void should_not_contain_gklobal_molecule_parameter()
+      public void should_not_contain_global_molecule_parameter()
       {
          _result.Contains(_dtoPglobal).ShouldBeFalse();
       }
@@ -112,9 +119,9 @@ namespace MoBi.Presentation
    {
       private ObjectBaseDTO _moleculePropertiesDTO;
       private IEnumerable<ObjectBaseDTO> _result;
-      private readonly DummyParameterDTO _dtoP1 = new DummyParameterDTO().WithName("P1");
-      private readonly DummyParameterDTO _dtoPlocal = new DummyParameterDTO().WithName("local");
-      private readonly DummyParameterDTO _dtoPglobal = new DummyParameterDTO().WithName("global");
+      private DummyParameterDTO _dtoP1;
+      private DummyParameterDTO _dtoPlocal;
+      private DummyParameterDTO _dtoPglobal;
 
       protected override void Context()
       {
@@ -125,11 +132,17 @@ namespace MoBi.Presentation
          var logical = new Container().WithName("PHYS").WithMode(ContainerMode.Logical);
          var moleculeProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES).WithParentContainer(logical);
          var p1 = new Parameter().WithName("P1");
+         _dtoP1 = new DummyParameterDTO(p1).WithName("P1");
+
          moleculeProperties.Add(p1);
          var moleculeName = "Drug";
          _moleculePropertiesDTO =
-            new DummyMoleculeContainerDTO() {MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)}.WithId("ANY")
+            new DummyMoleculeContainerDTO(new MoleculeAmount {Name = moleculeName})
+               {
+                  MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)
+               }.WithId("ANY")
                .WithName(moleculeName);
+
          A.CallTo(() => _context.Get<IContainer>(id)).Returns(moleculeProperties);
          var objectBaseRepository = A.Fake<IWithIdRepository>();
          A.CallTo(() => _context.ObjectRepository).Returns(objectBaseRepository);
@@ -140,8 +153,13 @@ namespace MoBi.Presentation
          var moleculeBuildingBlock = new MoleculeBuildingBlock();
          var molecule = new MoleculeBuilder().WithName(moleculeName);
          var localP = new Parameter().WithName("local").WithMode(ParameterBuildMode.Local).WithParentContainer(molecule);
-         var globalP =
-            new Parameter().WithName("global").WithMode(ParameterBuildMode.Global).WithParentContainer(molecule);
+
+         _dtoPlocal = new DummyParameterDTO(localP).WithName("local");
+
+
+         var globalP = new Parameter().WithName("global").WithMode(ParameterBuildMode.Global).WithParentContainer(molecule);
+         _dtoPglobal = new DummyParameterDTO(localP).WithName("global");
+
          moleculeBuildingBlock.Add(molecule);
          A.CallTo(() => project.MoleculeBlockCollection).Returns(new[] {moleculeBuildingBlock});
          A.CallTo(() => _parameterMapper.MapFrom(localP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPlocal);
@@ -161,13 +179,13 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_return_molecule_properties_paramerters()
+      public void should_return_molecule_properties_parameters()
       {
          _result.ShouldContain(_dtoP1);
       }
 
       [Observation]
-      public void should_not_contain_gklobal_molecule_parameter()
+      public void should_not_contain_global_molecule_parameter()
       {
          _result.Contains(_dtoPglobal).ShouldBeFalse();
       }

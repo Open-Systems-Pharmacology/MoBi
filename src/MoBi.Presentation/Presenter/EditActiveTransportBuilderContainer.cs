@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter
          _transporterMoleculeContainerMapper = transporterMoleculeContainerMapper;
       }
 
-      public override void Edit(TransporterMoleculeContainer transporterMoleculeContainer, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(TransporterMoleculeContainer transporterMoleculeContainer, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _transporterMoleculeContainer = transporterMoleculeContainer;
          _parameterBuilderPresenter.Edit(transporterMoleculeContainer);
@@ -51,10 +51,7 @@ namespace MoBi.Presentation.Presenter
          _view.Show(dto);
       }
 
-      public override object Subject
-      {
-         get { return _transporterMoleculeContainer; }
-      }
+      public override object Subject => _transporterMoleculeContainer;
 
       public void SelectParameter(IParameter parameter)
       {

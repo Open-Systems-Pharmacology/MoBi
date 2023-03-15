@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -13,10 +10,13 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Presenter
    {
       IEnumerable<string> GetCalculationMethodsForCategory(string category);
       void SetCalculationMethodForCategory(string category, string newValue, string oldValue);
-      IEnumerable<QuantityType> GetMoleculeTypes();
+      IReadOnlyList<QuantityType> MoleculeTypes { get; }
       void SetMoleculeType(QuantityType newType, QuantityType oldType);
       void SetStationaryProperty(bool isStationaryNewValue, bool oldValue);
    }
@@ -39,14 +39,14 @@ namespace MoBi.Presentation.Presenter
       private readonly ICoreCalculationMethodRepository _calculationMethodsRepository;
 
       public EditMoleculeBuilderPresenter(
-         IEditMoleculeBuilderView view, 
+         IEditMoleculeBuilderView view,
          IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderDTOMapper,
-         IEditParametersInContainerPresenter editMoleculeParameters, 
+         IEditParametersInContainerPresenter editMoleculeParameters,
          IEditTaskFor<IMoleculeBuilder> editTasks,
-         IEditFormulaPresenter editFormulaPresenter, 
-         IMoBiContext context, 
+         IEditFormulaPresenter editFormulaPresenter,
+         IMoBiContext context,
          ISelectReferenceAtMoleculePresenter selectReferencePresenter,
-         IReactionDimensionRetriever dimensionRetriever, 
+         IReactionDimensionRetriever dimensionRetriever,
          ICoreCalculationMethodRepository calculationMethodsRepository)
          : base(view, editFormulaPresenter, selectReferencePresenter)
       {
@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Presenter
          _editTasks.Rename(_moleculeBuilder, _moleculeBuilder.ParentContainer, BuildingBlock);
       }
 
-      public void Edit(IMoleculeBuilder moleculeBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(IMoleculeBuilder moleculeBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _moleculeBuilder = moleculeBuilder;
          _editMoleculeParameters.Edit(moleculeBuilder);
@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(IMoleculeBuilder moleculeBuilder)
       {
-         Edit(moleculeBuilder, moleculeBuilder.ParentContainer);
+         Edit(moleculeBuilder, moleculeBuilder.ParentContainer.Children);
       }
 
       public object Subject => _moleculeBuilder;
@@ -146,16 +146,16 @@ namespace MoBi.Presentation.Presenter
          AddCommand(new ChangeCalculationMethodForCategoryCommand(_moleculeBuilder, category, newValue, oldValue, BuildingBlock).Run(_context));
       }
 
-      public IEnumerable<QuantityType> GetMoleculeTypes()
+      public IReadOnlyList<QuantityType> MoleculeTypes { get; } = new[]
       {
-         yield return QuantityType.Drug;
-         yield return QuantityType.Enzyme;
-         yield return QuantityType.Transporter;
-         yield return QuantityType.Complex;
-         yield return QuantityType.Metabolite;
-         yield return QuantityType.Protein;
-         yield return QuantityType.OtherProtein;
-      }
+         QuantityType.Drug,
+         QuantityType.Enzyme,
+         QuantityType.Transporter,
+         QuantityType.Complex,
+         QuantityType.Metabolite,
+         QuantityType.Protein,
+         QuantityType.OtherProtein,
+      };
 
       public void SetMoleculeType(QuantityType newType, QuantityType oldType)
       {

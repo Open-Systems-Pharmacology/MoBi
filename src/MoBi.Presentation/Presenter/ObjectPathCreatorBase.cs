@@ -108,7 +108,7 @@ namespace MoBi.Presentation.Presenter
             return createMoleculeReference();
 
          var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
-         var parameterToUse = _context.Get<IParameter>(dtoDummyParameter.ParameterToUse.Id);
+         var parameterToUse = dtoDummyParameter.Parameter;
          ReferenceDTO dtoReference;
          if (parameterToUse.IsAtMolecule())
          {
@@ -135,6 +135,7 @@ namespace MoBi.Presentation.Presenter
             dtoReference.Path = _objectPathFactory.CreateFormulaUsablePathFrom(tmpPath)
                .WithAlias(_aliasCreator.CreateAliasFrom(parameterToUse.Name))
                .WithDimension(parameterToUse.Dimension);
+
             dtoReference.Path.Add(parameterToUse.Name);
          }
          else

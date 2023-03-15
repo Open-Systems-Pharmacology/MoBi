@@ -6,6 +6,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.Presenter.SpaceDiagram;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
@@ -27,30 +28,32 @@ namespace MoBi.Presentation.Presenter
       private IMoBiSpatialStructure _spatialStructure;
       private readonly IHierarchicalSpatialStructurePresenter _hierarchicalSpatialStructurePresenter;
       private readonly ISpatialStructureDiagramPresenter _spatialStructureDiagramPresenter;
-      private readonly IEditContainerPresenter _editPresenter;
+      private readonly IEditContainerPresenter _editContainerPresenter;
       private bool _diagramLoaded;
       private readonly IHeavyWorkManager _heavyWorkManager;
+      private readonly IEditNeighborhoodBuilderPresenter _neighborhoodBuilderPresenter;
 
-      public EditSpatialStructurePresenter(
-         IEditSpatialStructureView view,
-         IHierarchicalSpatialStructurePresenter hierarchicalSpatialStructurePresenter,
+      public EditSpatialStructurePresenter(IEditSpatialStructureView view,
          IFormulaCachePresenter formulaCachePresenter,
-         IEditContainerPresenter editPresenter,
-         ISpatialStructureDiagramPresenter spatialStructureDiagramPresenter,
-         IHeavyWorkManager heavyWorkManager,
          IEditFavoritesInSpatialStructurePresenter favoritesPresenter,
-         IUserDefinedParametersPresenter userDefinedParametersPresenter) :
+         IUserDefinedParametersPresenter userDefinedParametersPresenter,
+         IHierarchicalSpatialStructurePresenter hierarchicalSpatialStructurePresenter,
+         ISpatialStructureDiagramPresenter spatialStructureDiagramPresenter,
+         IEditContainerPresenter editContainerPresenter,
+         IHeavyWorkManager heavyWorkManager,
+         IEditNeighborhoodBuilderPresenter neighborhoodBuilderPresenter) :
          base(view, formulaCachePresenter, favoritesPresenter, userDefinedParametersPresenter)
       {
          _hierarchicalSpatialStructurePresenter = hierarchicalSpatialStructurePresenter;
          _spatialStructureDiagramPresenter = spatialStructureDiagramPresenter;
          _heavyWorkManager = heavyWorkManager;
+         _neighborhoodBuilderPresenter = neighborhoodBuilderPresenter;
          favoritesPresenter.ShouldHandleRemovedEvent = shouldHandleRemoved;
-         _editPresenter = editPresenter;
-         _view.SetEditView(_editPresenter.BaseView);
+         _editContainerPresenter = editContainerPresenter;
+         ShowView(_editContainerPresenter.BaseView);
          _view.SetHierarchicalStructureView(_hierarchicalSpatialStructurePresenter.BaseView);
          _view.SetSpaceDiagramView(spatialStructureDiagramPresenter.View);
-         AddSubPresenters(editPresenter, hierarchicalSpatialStructurePresenter, spatialStructureDiagramPresenter);
+         AddSubPresenters(_editContainerPresenter, hierarchicalSpatialStructurePresenter, spatialStructureDiagramPresenter, _neighborhoodBuilderPresenter);
       }
 
       public override void Edit(IMoBiSpatialStructure spatialStructure)
@@ -58,7 +61,8 @@ namespace MoBi.Presentation.Presenter
          _diagramLoaded = (_spatialStructure == spatialStructure) && _diagramLoaded;
          _spatialStructure = spatialStructure;
          EditFormulas(spatialStructure);
-         _editPresenter.BuildingBlock = _spatialStructure;
+         _editContainerPresenter.BuildingBlock = _spatialStructure;
+         _neighborhoodBuilderPresenter.BuildingBlock = _spatialStructure;
          _hierarchicalSpatialStructurePresenter.Edit(spatialStructure);
          _favoritesPresenter.Edit(spatialStructure);
          setInitialView();
@@ -73,12 +77,12 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _spatialStructure;
 
-      protected override (bool canHandle, IObjectBase objectBase) SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
       {
-         return (shouldHandleSelection(selectedObject as IEntity), selectedObject);
+         return (shouldHandleSelection(selectedObject as IEntity), null);
       }
 
-      internal override (bool canHandle, IObjectBase objectBase) CanHandle(IObjectBase selectedObject)
+      internal override (bool canHandle, IContainer parentObject) CanHandle(IObjectBase selectedObject)
       {
          var specificCanHandle = SpecificCanHandle(selectedObject);
          if (specificCanHandle.Item1)
@@ -87,36 +91,53 @@ namespace MoBi.Presentation.Presenter
          return base.CanHandle(selectedObject);
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
-         ShowView(_editPresenter.BaseView);
-         _editPresenter.Edit(parentObject);
-         _editPresenter.SelectParameter(parameter);
+         setupEditPresenterFor(parentObject, parameter);
       }
 
       protected override void SelectBuilder(IContainer builder)
       {
-         if (builder.IsAnImplementationOf<IDistributedParameter>())
+         setupEditPresenterFor(builder);
+      }
+
+      private void showPresenter<T>(IEditPresenterWithParameters<T> presenter, T objectToEdit, IParameter parameter)
+      {
+         presenter.Edit(objectToEdit);
+         ShowView(presenter.BaseView);
+
+         if (parameter != null)
+            presenter.SelectParameter(parameter);
+      }
+
+      private void setupEditPresenterFor(IContainer container, IParameter parameter = null)
+      {
+         if (container == null)
          {
-            EnsureItemsVisibility(builder.ParentContainer, (IDistributedParameter) builder);
+            _view.SetEditView(null);
+            return;
          }
-         else
+
+         switch (container)
          {
-            _view.SetEditView(_editPresenter.BaseView);
-            _editPresenter.Edit(builder);
+            case IDistributedParameter distributedParameter:
+               setupEditPresenterFor(distributedParameter.ParentContainer, distributedParameter);
+               return;
+            case NeighborhoodBuilder neighborhoodBuilder:
+               showPresenter(_neighborhoodBuilderPresenter, neighborhoodBuilder, parameter);
+               return;
+            default:
+               showPresenter(_editContainerPresenter, container, parameter);
+               return;
          }
       }
 
       private bool shouldHandleSelection(IEntity entity)
       {
-         return entity.IsAnImplementationOf<IContainer>() &&
-                !entity.IsAnImplementationOf<IDistributedParameter>() &&
-                IsInSubject((IContainer) entity);
-      }
+         if (!(entity is IContainer container))
+            return false;
 
-      public bool IsInSubject(IContainer container)
-      {
-         return _spatialStructure.IsInSpatialStructure(container);
+         return !container.IsAnImplementationOf<IDistributedParameter>() && _spatialStructure.IsInSpatialStructure(container);
       }
 
       protected override void UpdateCaption()
@@ -154,7 +175,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool shouldHandleRemoved(IObjectBase objectBase)
       {
-         return Equals(objectBase, _editPresenter.Subject);
+         return Equals(objectBase, _editContainerPresenter.Subject);
       }
 
       public void LoadDiagram()

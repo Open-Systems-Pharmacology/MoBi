@@ -128,7 +128,7 @@ namespace MoBi.Presentation.Presenter
          return objectBase.IsAnImplementationOf<IReactionBuilder>();
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
          SelectBuilder(parentObject as IReactionBuilder);
          _editReactionBuilderPresenter.SelectParameter(parameter);

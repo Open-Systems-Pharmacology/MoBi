@@ -31,8 +31,11 @@ namespace MoBi.Presentation.Presenter
       protected ITreeNode _favoritesNode;
       protected ITreeNode _userDefinedNode;
 
-      protected HierarchicalStructurePresenter(IHierarchicalStructureView view, IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, ITreeNodeFactory treeNodeFactory)
+      protected HierarchicalStructurePresenter(
+         IHierarchicalStructureView view, 
+         IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, 
+         ITreeNodeFactory treeNodeFactory)
          : base(view)
       {
          _context = context;

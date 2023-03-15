@@ -14,8 +14,7 @@ namespace MoBi.Presentation.Mappers
    {
       public DummyMoleculeDTO MapFrom(IMoleculeBuilder moleculeBuilder, IContainer container)
       {
-         var dto = Map(new DummyMoleculeDTO());
-         dto.MoleculeBuilder = moleculeBuilder;
+         var dto = Map(new DummyMoleculeDTO(moleculeBuilder));
          dto.StructureParent = container;
          return dto;
       }

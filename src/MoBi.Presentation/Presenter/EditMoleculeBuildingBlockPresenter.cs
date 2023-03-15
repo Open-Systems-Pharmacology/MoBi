@@ -112,15 +112,15 @@ namespace MoBi.Presentation.Presenter
             editPresenter.SelectParameter(parameter);
       }
 
-      protected override (bool canHandle, IObjectBase objectBase) SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
       {
          if (shouldHandleType(selectedObject))
-            return (_moleculeBuildingBlock.ContainsBuilder(selectedObject), selectedObject);
+            return (_moleculeBuildingBlock.ContainsBuilder(selectedObject), null);
 
-         return (false, selectedObject);
+         return (false, null);
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
          setupEditPresenterFor(parentObject, parameter);
       }

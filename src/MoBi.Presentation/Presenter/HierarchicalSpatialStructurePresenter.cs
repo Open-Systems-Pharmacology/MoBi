@@ -33,8 +33,12 @@ namespace MoBi.Presentation.Presenter
       private ISpatialStructure _spatialStructure;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
 
-      public HierarchicalSpatialStructurePresenter(IHierarchicalStructureView view, IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, IViewItemContextMenuFactory contextMenuFactory, ITreeNodeFactory treeNodeFactory)
+      public HierarchicalSpatialStructurePresenter(
+         IHierarchicalStructureView view, 
+         IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, 
+         IViewItemContextMenuFactory contextMenuFactory, 
+         ITreeNodeFactory treeNodeFactory)
          : base(view, context, objectBaseMapper, treeNodeFactory)
       {
          _contextMenuFactory = contextMenuFactory;
