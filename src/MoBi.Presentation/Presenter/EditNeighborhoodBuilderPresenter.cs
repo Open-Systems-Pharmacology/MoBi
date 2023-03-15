@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(NeighborhoodBuilder neighborhoodBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
       {
-         _objectBaseDTO = new ObjectBaseDTO();
+         _objectBaseDTO = new ObjectBaseDTO(neighborhoodBuilder);
          _neighborhoodBuilder = neighborhoodBuilder;
          _objectBaseDTO.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(neighborhoodBuilder, existingObjectsInParent));
          _firstNeighborPresenter.Init(spatialStructure, AppConstants.Captions.FirstNeighbor);

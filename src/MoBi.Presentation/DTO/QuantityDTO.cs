@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Domain.UnitSystem;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.DTO
 {
@@ -7,10 +8,14 @@ namespace MoBi.Presentation.DTO
       public FormulaBuilderDTO Formula { set; get; }
       public ValueEditDTO Value { get; set; }
 
+      public QuantityDTO(IQuantity quantity) : base(quantity)
+      {
+      }
+
       public IDimension Dimension
       {
-         get { return Value.Dimension; }
-         set { Value.Dimension = value; }
+         get => Value.Dimension;
+         set => Value.Dimension = value;
       }
    }
 }

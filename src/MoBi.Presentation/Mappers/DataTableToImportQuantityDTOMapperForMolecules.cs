@@ -71,7 +71,7 @@ namespace MoBi.Presentation.Mappers
 
       protected override void AddDTOToImportList(QuantityImporterDTO quantityImporterDTO, IStartValuesBuildingBlock<MoleculeStartValue> importTarget, ImportedQuantityDTO dto)
       {
-         quantityImporterDTO.QuantitDTOs.Add(dto);
+         quantityImporterDTO.QuantityDTOs.Add(dto);
          if (dto.HasWarning())
             quantityImporterDTO.AddToLog(dto.GetWarning());
 

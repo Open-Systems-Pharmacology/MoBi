@@ -6,9 +6,9 @@ namespace MoBi.Presentation.DTO
 {
    public class ReactionBuilderDTO : ReactionInfoDTO
    {
-      public IReactionBuilder ReactionBuilder { get; private set; }
+      public IReactionBuilder ReactionBuilder { get; }
 
-      public ReactionBuilderDTO(IReactionBuilder reactionBuilder)
+      public ReactionBuilderDTO(IReactionBuilder reactionBuilder) : base(reactionBuilder)
       {
          ReactionBuilder = reactionBuilder;
       }
@@ -18,14 +18,14 @@ namespace MoBi.Presentation.DTO
 
       public bool CreateProcessRateParameter
       {
-         get { return ReactionBuilder.CreateProcessRateParameter; }
-         set { ReactionBuilder.CreateProcessRateParameter = value; }
+         get => ReactionBuilder.CreateProcessRateParameter;
+         set => ReactionBuilder.CreateProcessRateParameter = value;
       }
 
       public bool ProcessRateParameterPersistable
       {
-         get { return ReactionBuilder.ProcessRateParameterPersistable; }
-         set { ReactionBuilder.ProcessRateParameterPersistable = value; }
+         get => ReactionBuilder.ProcessRateParameterPersistable;
+         set => ReactionBuilder.ProcessRateParameterPersistable = value;
       }
    }
 
@@ -50,10 +50,10 @@ namespace MoBi.Presentation.DTO
 
       public string MoleculeName
       {
-         get { return PartnerBuilder.MoleculeName; }
+         get => PartnerBuilder.MoleculeName;
          set
          {
-            /*nothign to do here. Set in command*/
+            /*nothing to do here. Set in command*/
          }
       }
 
@@ -61,10 +61,10 @@ namespace MoBi.Presentation.DTO
 
       public double StoichiometricCoefficient
       {
-         get { return PartnerBuilder.StoichiometricCoefficient; }
+         get => PartnerBuilder.StoichiometricCoefficient;
          set
          {
-            /*nothign to do here. Set in command*/
+            /*nothing to do here. Set in command*/
          }
       }
    }

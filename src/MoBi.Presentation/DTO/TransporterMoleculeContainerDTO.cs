@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 
@@ -11,26 +12,20 @@ namespace MoBi.Presentation.DTO
       public IEnumerable<ParameterDTO> Parameters { get; set; }
       public string TransportName { get; set; }
 
-      public TransporterMoleculeContainerDTO()
+      public TransporterMoleculeContainerDTO(TransporterMoleculeContainer transporterMoleculeContainer) :base(transporterMoleculeContainer)
       {
-         Rules.Add(notEmptyTransportNameRule());
-         Rules.Add(uniqueTransportNameRule());
+         Rules.Add(notEmptyTransportNameRule);
+         Rules.Add(uniqueTransportNameRule);
       }
 
-      private static IBusinessRule notEmptyTransportNameRule()
-      {
-         return CreateRule.For<TransporterMoleculeContainerDTO>()
-            .Property(x => x.TransportName)
-            .WithRule((dto, name) => !name.Trim().IsNullOrEmpty())
-            .WithError(AppConstants.Validation.EmptyTransportName);
-      }
+      private static IBusinessRule notEmptyTransportNameRule { get; } = CreateRule.For<TransporterMoleculeContainerDTO>()
+         .Property(x => x.TransportName)
+         .WithRule((dto, name) => !name.Trim().IsNullOrEmpty())
+         .WithError(AppConstants.Validation.EmptyTransportName);
 
-      private static IBusinessRule uniqueTransportNameRule()
-      {
-         return CreateRule.For<TransporterMoleculeContainerDTO>()
-            .Property(x => x.TransportName)
-            .WithRule((dto, name) => dto.IsNameUnique(name))
-            .WithError(AppConstants.Validation.TransportNameAlreadyUsed);
-      }
+      private static IBusinessRule uniqueTransportNameRule { get; } = CreateRule.For<TransporterMoleculeContainerDTO>()
+         .Property(x => x.TransportName)
+         .WithRule((dto, name) => dto.IsNameUnique(name))
+         .WithError(AppConstants.Validation.TransportNameAlreadyUsed);
    }
 }

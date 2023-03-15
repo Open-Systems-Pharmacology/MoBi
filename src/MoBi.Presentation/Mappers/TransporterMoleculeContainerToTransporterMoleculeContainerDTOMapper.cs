@@ -6,16 +6,16 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper : IMapper<TransporterMoleculeContainer, TransporterMoleculeContainerDTO>
+   public interface ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper : IMapper<TransporterMoleculeContainer, TransporterMoleculeContainerDTO>
    {
    }
 
-   internal class TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper
+   internal class TransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper
    {
       private readonly ITransportBuilderToTransportBuilderDTOMapper _activeTransportToDTOActiveTransportBuilderMapper;
       private readonly IParameterToParameterDTOMapper _parameterBuilderToDTOParameterBuilderMapper;
 
-      public TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper(ITransportBuilderToTransportBuilderDTOMapper activeTransportToDTOActiveTransportBuilderMapper, IParameterToParameterDTOMapper parameterBuilderTodtoParameterBuilderMapper)
+      public TransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper(ITransportBuilderToTransportBuilderDTOMapper activeTransportToDTOActiveTransportBuilderMapper, IParameterToParameterDTOMapper parameterBuilderTodtoParameterBuilderMapper)
       {
          _activeTransportToDTOActiveTransportBuilderMapper = activeTransportToDTOActiveTransportBuilderMapper;
          _parameterBuilderToDTOParameterBuilderMapper = parameterBuilderTodtoParameterBuilderMapper;
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Mappers
 
       public TransporterMoleculeContainerDTO MapFrom(TransporterMoleculeContainer transporterMoleculeContainer)
       {
-         var dto = Map<TransporterMoleculeContainerDTO>(transporterMoleculeContainer);
+         var dto = Map(new TransporterMoleculeContainerDTO(transporterMoleculeContainer));
          dto.TransportName = transporterMoleculeContainer.TransportName;
          dto.Realizations = transporterMoleculeContainer.ActiveTransportRealizations.MapAllUsing(_activeTransportToDTOActiveTransportBuilderMapper);
          dto.Parameters = transporterMoleculeContainer.Parameters.MapAllUsing(_parameterBuilderToDTOParameterBuilderMapper).Cast<ParameterDTO>();

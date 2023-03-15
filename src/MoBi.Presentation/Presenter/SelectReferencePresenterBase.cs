@@ -241,7 +241,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddTimeReference()
       {
-         var timeDTO = new ObjectBaseDTO
+         var timeDTO = new ObjectBaseDTO(new Parameter())
          {
             Id = AppConstants.Time,
             Name = AppConstants.Time,

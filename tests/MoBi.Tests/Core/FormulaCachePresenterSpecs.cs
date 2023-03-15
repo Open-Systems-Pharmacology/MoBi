@@ -59,8 +59,7 @@ namespace MoBi.Core
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
          sut.Edit(_buildingBlock);
-         _dtoFormula = new FormulaBuilderDTO();
-         _dtoFormula.Id = _formula.Id;
+         _dtoFormula = new FormulaBuilderDTO(_formula);
          A.CallTo(() => _formulaChecker.FormulaUsedIn(_buildingBlock,_formula)).Returns(false);
          A.CallTo(() => _messagePresenter.MessageBoxYesNo(AppConstants.Captions.ReallyDeleteFormula(_formula.Name), ViewResult.Yes))
           .Returns(ViewResult.Yes);

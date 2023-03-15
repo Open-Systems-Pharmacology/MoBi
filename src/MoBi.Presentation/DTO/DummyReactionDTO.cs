@@ -6,6 +6,6 @@ namespace MoBi.Presentation.DTO
    public class DummyReactionDTO : ObjectBaseDTO, IDummyContainer
    {
       public IContainer StructureParent { get; set; }
-      public IReactionBuilder ReactionBuilder{get;set;}
+      public IReactionBuilder ReactionBuilder { get; set; }
    }
 }

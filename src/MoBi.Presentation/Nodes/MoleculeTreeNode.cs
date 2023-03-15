@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Nodes
 
    public class MoleculeTreeNode : AbstractNode, IMoleculeTreeNode
    {
-      private ObjectBaseDTO _tag;
+      private readonly ObjectBaseDTO _tag;
 
       public MoleculeTreeNode(ObjectBaseDTO tag)
       {
@@ -18,15 +18,9 @@ namespace MoBi.Presentation.Nodes
          _tag.PropertyChanged += OnPropertyChanged;
       }
 
-      public override string Id
-      {
-         get { return _tag.Id; }
-      }
+      public override string Id => _tag.Id;
 
-      public override object TagAsObject
-      {
-         get { return _tag; }
-      }
+      public override object TagAsObject => _tag;
 
       public void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
       {

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
-using MoBi.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -43,7 +41,6 @@ namespace MoBi.Presentation
       }
    }
 
-
    internal class When_getting_children_for_local_molecule_properties_in_a_physical_container :
       concern_for_SelectReferencePresenter
    {
@@ -71,7 +68,7 @@ namespace MoBi.Presentation
          var objectBaseRepository = A.Fake<IWithIdRepository>();
          A.CallTo(() => _context.ObjectRepository).Returns(objectBaseRepository);
          A.CallTo(() => objectBaseRepository.ContainsObjectWithId(id)).Returns(true);
-         A.CallTo(() => _parameterMapper.MapFrom(p1,A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoP1);
+         A.CallTo(() => _parameterMapper.MapFrom(p1, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoP1);
          var project = A.Fake<IMoBiProject>();
 
          var moleculeBuildingBlock = new MoleculeBuildingBlock();

@@ -11,19 +11,19 @@ namespace MoBi.Core
 {
    public abstract class concern_for_MoleculeBuilderToDtoMoleculeBuilderMapper : ContextSpecification<IMoleculeBuilderToMoleculeBuilderDTOMapper>
    {
-      protected ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper _activeTransportToDTOTransporterMoleculeMapper;
+      protected ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper _activeTransportToDTOTransporterMoleculeMapper;
       protected IFormulaToFormulaBuilderDTOMapper _formulaToDtoFormulaBuilderMapper;
       protected IUsedCalcualtionMethodToUsedCalcualtionMethodDTOMapper _usedCalculationMethodToDTOCalculationMethodMapper;
-      protected IInteractionContainerToInteractionConatainerDTOMapper _interactionContainerToInteractionConatainerDTOMpaper;
+      protected IInteractionContainerToInteractionContainerDTOMapper _interactionContainerToInteractionContainerDTOMapper;
 
       protected override void Context()
       {
-         _activeTransportToDTOTransporterMoleculeMapper = A.Fake<ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper>();
+         _activeTransportToDTOTransporterMoleculeMapper = A.Fake<ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper>();
          _formulaToDtoFormulaBuilderMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _usedCalculationMethodToDTOCalculationMethodMapper =
             A.Fake<IUsedCalcualtionMethodToUsedCalcualtionMethodDTOMapper>();
-         _interactionContainerToInteractionConatainerDTOMpaper = A.Fake<IInteractionContainerToInteractionConatainerDTOMapper>();
-         sut = new MoleculeBuilderToMoleculeBuilderDTOMapper(_formulaToDtoFormulaBuilderMapper, _activeTransportToDTOTransporterMoleculeMapper, _usedCalculationMethodToDTOCalculationMethodMapper, _interactionContainerToInteractionConatainerDTOMpaper);
+         _interactionContainerToInteractionContainerDTOMapper = A.Fake<IInteractionContainerToInteractionContainerDTOMapper>();
+         sut = new MoleculeBuilderToMoleculeBuilderDTOMapper(_formulaToDtoFormulaBuilderMapper, _activeTransportToDTOTransporterMoleculeMapper, _usedCalculationMethodToDTOCalculationMethodMapper, _interactionContainerToInteractionContainerDTOMapper);
       }
    }
 
@@ -37,7 +37,6 @@ namespace MoBi.Core
       private TransporterMoleculeContainer _transporterMoleculeContainer;
       private UsedCalculationMethod _calculationMethod;
       private InteractionContainer _interactionContainer;
-
 
       protected override void Context()
       {
@@ -73,7 +72,7 @@ namespace MoBi.Core
          A.CallTo(() => _formulaToDtoFormulaBuilderMapper.MapFrom(_startFormula)).MustHaveHappened();
          A.CallTo(() => _activeTransportToDTOTransporterMoleculeMapper.MapFrom(_transporterMoleculeContainer)).MustHaveHappened();
          A.CallTo(() => _usedCalculationMethodToDTOCalculationMethodMapper.MapFrom(_calculationMethod)).MustHaveHappened();
-         A.CallTo(() => _interactionContainerToInteractionConatainerDTOMpaper.MapFrom(_interactionContainer)).MustHaveHappened();
+         A.CallTo(() => _interactionContainerToInteractionContainerDTOMapper.MapFrom(_interactionContainer)).MustHaveHappened();
       }
 
       [Observation]

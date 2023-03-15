@@ -24,13 +24,13 @@ namespace MoBi.Presentation.Presenter
       private TransporterMoleculeContainer _transporterMoleculeContainer;
       private readonly IEditTasksForTransporterMoleculeContainer _editTasks;
       private readonly IEditParametersInContainerPresenter _parameterBuilderPresenter;
-      private readonly ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
+      private readonly ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
       private readonly IMoBiContext _context;
 
       public EditTransporterMoleculeContainerPresenter(IEditActiveTransportBuilderContainerView view,
          IEditTasksForTransporterMoleculeContainer editTasks,
          IEditParametersInContainerPresenter parameterBuilderPresenter, 
-         ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper transporterMoleculeContainerMapper, IMoBiContext context)
+         ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper transporterMoleculeContainerMapper, IMoBiContext context)
          : base(view)
       {
          _editTasks = editTasks;

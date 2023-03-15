@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Mappers
 
       public TableFormulaWithOffsetDTO MapFrom(TableFormulaWithOffset tableFormulaWithOffset)
       {
-         var dto = Map<TableFormulaWithOffsetDTO>(tableFormulaWithOffset);
+         var dto = Map(new TableFormulaWithOffsetDTO(tableFormulaWithOffset));
 
          var offsetPath = getPathByAlias(tableFormulaWithOffset, tableFormulaWithOffset.OffsetObjectAlias);
          if (offsetPath != null)

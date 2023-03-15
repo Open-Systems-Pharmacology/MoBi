@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Mappers
 
       public EventBuilderDTO MapFrom(IEventBuilder eventBuilder)
       {
-         var dto = Map<EventBuilderDTO>(eventBuilder);
+         var dto = Map(new EventBuilderDTO(eventBuilder));
          dto.OneTime = eventBuilder.OneTime;
          dto.Condition = eventBuilder.Formula != null ? eventBuilder.Formula.Name : string.Empty;
          dto.Parameter = eventBuilder.Parameters.MapAllUsing(_parameterToDTOParameterMapper).Cast<ParameterDTO>();

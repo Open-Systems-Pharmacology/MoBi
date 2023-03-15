@@ -1,13 +1,13 @@
 using MoBi.Assets;
-using OSPSuite.Utility;
 using MoBi.Presentation.DTO;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Assets;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface ISimulationSettingsToObjectBaseDTOMapper : 
+   public interface ISimulationSettingsToObjectBaseDTOMapper :
       IMapper<SolverSettings, ObjectBaseDTO>,
       IMapper<OutputSchema, ObjectBaseDTO>,
       IMapper<ISimulationSettings, ObjectBaseDTO>
@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Mappers
    {
       public ObjectBaseDTO MapFrom(SolverSettings solverSettings)
       {
-         return new ObjectBaseDTO
+         return new ObjectBaseDTO(solverSettings)
          {
             Id = AppConstants.SolverSettingsId,
             Icon = ApplicationIcons.Solver.IconName,
@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Mappers
 
       public ObjectBaseDTO MapFrom(OutputSchema outputSchema)
       {
-         return new ObjectBaseDTO
+         return new ObjectBaseDTO(outputSchema)
          {
             Id = AppConstants.OutputIntervalId,
             Icon = ApplicationIcons.OutputInterval.IconName,
@@ -36,9 +36,9 @@ namespace MoBi.Presentation.Mappers
          };
       }
 
-      public ObjectBaseDTO MapFrom(ISimulationSettings input)
+      public ObjectBaseDTO MapFrom(ISimulationSettings simulationSettings)
       {
-         return new ObjectBaseDTO
+         return new ObjectBaseDTO(simulationSettings)
          {
             Id = AppConstants.SimulationSettingsId,
             Icon = ApplicationIcons.Settings.IconName,

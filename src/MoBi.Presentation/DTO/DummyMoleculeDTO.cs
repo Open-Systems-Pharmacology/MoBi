@@ -12,5 +12,5 @@ namespace MoBi.Presentation.DTO
    {
       public IMoleculeBuilder MoleculeBuilder { set; get; }
       public IContainer StructureParent { get; set; }
-   }  
+   }
 }

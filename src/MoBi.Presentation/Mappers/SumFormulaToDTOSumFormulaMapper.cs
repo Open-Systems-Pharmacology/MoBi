@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Mappers
 
       public SumFormulaDTO MapFrom(SumFormula sumFormula)
       {
-         var dto = Map<SumFormulaDTO>(sumFormula);
+         var dto = Map<SumFormulaDTO>(new SumFormulaDTO(sumFormula));
          dto.Variable = sumFormula.Variable;
          dto.Dimension = sumFormula.Dimension;
          dto.VariablePattern = sumFormula.VariablePattern;

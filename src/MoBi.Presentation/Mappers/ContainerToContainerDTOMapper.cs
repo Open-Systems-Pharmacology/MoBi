@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
 
       public virtual ContainerDTO MapFrom(IContainer container)
       {
-         var dto = MapContainer(container, new ContainerDTO());
+         var dto = MapContainer(container, new ContainerDTO(container));
          UpdateParentPath(container, dto);
          return dto;
       }
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Mappers
          }
       }
 
-      protected T MapContainer<T>(IContainer container, T dto) where T : ContainerDTO, new()
+      protected T MapContainer<T>(IContainer container, T dto) where T : ContainerDTO
       {
          MapProperties(container, dto);
          dto.ContainerType = container.ContainerType;

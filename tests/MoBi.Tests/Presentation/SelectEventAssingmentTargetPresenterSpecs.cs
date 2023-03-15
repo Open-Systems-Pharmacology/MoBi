@@ -129,7 +129,7 @@ namespace MoBi.Presentation
             .WithId("ContId");
 
 
-         _containerDTO = new ContainerDTO {Id = _container.Id};
+         _containerDTO = new ContainerDTO(_container);
          A.CallTo(() => _context.Get<IObjectBase>(_container.Id)).Returns(_container);
 
          _subContainerDTO = new ObjectBaseDTO();
