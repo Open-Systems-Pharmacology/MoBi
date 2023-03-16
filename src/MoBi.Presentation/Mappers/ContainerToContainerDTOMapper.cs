@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Mappers
          MapProperties(container, dto);
          dto.ContainerType = container.ContainerType;
          dto.Mode = container.Mode;
-         if (string.IsNullOrEmpty(dto.Icon))
+         if (dto.Icon == null)
             dto.Icon = _iconRepository.IconFor(container);
 
          return dto;

@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Mappers
          return new ObjectBaseDTO(solverSettings)
          {
             Id = AppConstants.SolverSettingsId,
-            Icon = ApplicationIcons.Solver.IconName,
+            Icon = ApplicationIcons.Solver,
             Name = AppConstants.Captions.SolverSettings,
          };
       }
@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Mappers
          return new ObjectBaseDTO(outputSchema)
          {
             Id = AppConstants.OutputIntervalId,
-            Icon = ApplicationIcons.OutputInterval.IconName,
+            Icon = ApplicationIcons.OutputInterval,
             Name = AppConstants.Captions.OutputIntervals,
          };
       }
@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Mappers
          return new ObjectBaseDTO(simulationSettings)
          {
             Id = AppConstants.SimulationSettingsId,
-            Icon = ApplicationIcons.Settings.IconName,
+            Icon = ApplicationIcons.Settings,
             Name = AppConstants.Captions.SimulationSettings,
          };
       }

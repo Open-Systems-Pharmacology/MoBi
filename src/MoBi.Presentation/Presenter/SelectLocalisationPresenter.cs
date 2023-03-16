@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -46,7 +47,7 @@ namespace MoBi.Presentation.Presenter
          {
             Id = spatialStructure.Id,
             Name = spatialStructure.Name,
-            Icon = spatialStructure.Icon
+            Icon =ApplicationIcons.IconByName(spatialStructure.Icon)
          };
 
          if (_localisation.Is(Localisations.ContainerOnly))

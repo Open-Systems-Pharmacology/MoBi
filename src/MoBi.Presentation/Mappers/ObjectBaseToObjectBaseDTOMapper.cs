@@ -1,8 +1,9 @@
-using MoBi.Assets;
 using MoBi.Presentation.DTO;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -22,7 +23,7 @@ namespace MoBi.Presentation.Mappers
       {
          objectBaseDTO.Name = objectBase.Name;
          objectBaseDTO.Description = descriptionFor(objectBase);
-         objectBaseDTO.Icon = objectBase.Icon;
+         objectBaseDTO.Icon = ApplicationIcons.IconByName(objectBase.Icon);
       }
 
       private static string descriptionFor(IObjectBase objectBase)

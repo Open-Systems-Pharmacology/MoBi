@@ -23,7 +23,7 @@ namespace MoBi.Presentation.DTO
 
       public string Name { set; get; }
       public string Description { set; get; }
-      public string Icon { get; set; }
+      public ApplicationIcon Icon { get; set; }
       public string Id { get; set; }
 
       protected readonly List<string> _usedNames;

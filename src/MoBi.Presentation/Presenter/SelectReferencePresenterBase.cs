@@ -241,11 +241,11 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddTimeReference()
       {
-         var timeDTO = new ObjectBaseDTO(new Parameter())
+         var timeDTO = new ObjectBaseDTO
          {
             Id = AppConstants.Time,
             Name = AppConstants.Time,
-            Icon = ApplicationIcons.Time.IconName
+            Icon = ApplicationIcons.Time
          };
          _view.AddNode(_referenceMapper.MapFrom(timeDTO));
       }

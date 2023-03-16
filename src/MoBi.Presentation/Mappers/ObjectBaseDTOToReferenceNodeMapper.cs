@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Mappers
       {
          return new ReferenceNode(objectBaseDTO)
          {
-            Icon = ApplicationIcons.IconByName(objectBaseDTO.Icon),
+            Icon = objectBaseDTO.Icon,
             GetChildren = x => _getChildren(x).Select(MapFrom).ToList()
          };
       }

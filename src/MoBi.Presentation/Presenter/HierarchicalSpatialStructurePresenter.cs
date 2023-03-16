@@ -27,8 +27,7 @@ namespace MoBi.Presentation.Presenter
       void Select(IEntity entity);
    }
 
-   public class HierarchicalSpatialStructurePresenter : HierarchicalStructurePresenter,
-      IHierarchicalSpatialStructurePresenter
+   public class HierarchicalSpatialStructurePresenter : HierarchicalStructurePresenter, IHierarchicalSpatialStructurePresenter
    {
       private ISpatialStructure _spatialStructure;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
@@ -113,11 +112,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(RemovedEvent eventToHandle)
       {
          if (_spatialStructure == null) return;
-
-         foreach (var objectBase in eventToHandle.RemovedObjects.OfType<IEntity>())
-         {
-            _view.Remove(_objectBaseMapper.MapFrom(objectBase));
-         }
+         eventToHandle.RemovedObjects.OfType<IEntity>().Each(_view.Remove);
       }
 
       public void Select(IEntity entity)
@@ -127,10 +122,15 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         if (eventToHandle.Sender == this) return;
+         if (eventToHandle.Sender == this) 
+            return;
+
          var entity = eventToHandle.ObjectBase as IEntity;
-         if (entity == null || _spatialStructure == null) return;
-         if (!_spatialStructure.TopContainers.Contains(entity.RootContainer)) return;
+         if (entity == null || _spatialStructure == null) 
+            return;
+
+         if (!_spatialStructure.TopContainers.Contains(entity.RootContainer)) 
+            return;
 
          var entityToSelect = entity.IsAnImplementationOf<IParameter>() ? entity.ParentContainer : entity;
          _view.Select(entityToSelect.Id);

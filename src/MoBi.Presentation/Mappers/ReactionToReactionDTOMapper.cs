@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Mappers
       public ReactionDTO MapFrom(IReaction reaction)
       {
          var dto = Map(new ReactionDTO(reaction));
-         dto.Icon = ApplicationIcons.Reaction.IconName;
+         dto.Icon = ApplicationIcons.Reaction;
          dto.Kinetic = reaction.Formula.ToString();
          dto.Stoichiometric = _stoichiometricStringCreator.CreateFrom(reaction.Educts, reaction.Products);
          return dto;

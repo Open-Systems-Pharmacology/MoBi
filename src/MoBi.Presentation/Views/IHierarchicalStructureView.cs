@@ -2,6 +2,7 @@
 using OSPSuite.Presentation.Nodes;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
@@ -10,7 +11,7 @@ namespace MoBi.Presentation.Views
    {
       void Show(IEnumerable<ObjectBaseDTO> roots);
       void Add(ObjectBaseDTO newChild, ObjectBaseDTO parent);
-      void Remove(ObjectBaseDTO dtoObjectBaseToRemove);
+      void Remove(IWithId withId);
       void AddNode(ITreeNode newNode);
       void AddRoot(ObjectBaseDTO dto);
       void Select(string id);
