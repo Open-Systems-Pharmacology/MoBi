@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -30,6 +31,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
          _parameter = A.Fake<IParameter>();
          _interactionContainer = A.Fake<InteractionContainer>();
+         _interactionContainer.Icon = ApplicationIcons.Container.IconName;
          A.CallTo(() => _interactionContainer.GetChildren<IParameter>()).Returns(new[] {_parameter});
       }
 
@@ -43,7 +45,7 @@ namespace MoBi.Presentation.Mapper
       {
          _result.ShouldNotBeNull();
          _result.Name.ShouldBeEqualTo(_interactionContainer.Name);
-         _result.Icon.ShouldBeEqualTo(_interactionContainer.Icon);
+         _result.Icon.ShouldBeEqualTo(ApplicationIcons.Container);
       }
 
       [Observation]

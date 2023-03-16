@@ -1,6 +1,7 @@
 using FakeItEasy;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -45,7 +46,7 @@ namespace MoBi.Core
          _startFormula = A.Fake<IFormula>();
          _moleculeBuilder.DefaultStartFormula = _startFormula;
          _moleculeBuilder.Description = "Description";
-         _moleculeBuilder.Icon = "Icon";
+         _moleculeBuilder.Icon = ApplicationIcons.Molecule.IconName;
          _moleculeBuilder.Id = "ID";
          _moleculeBuilder.IsFloating = true;
          _moleculeBuilder.QuantityType = QuantityType.Drug;
@@ -79,7 +80,7 @@ namespace MoBi.Core
       public void should_set_the_right_properties()
       {
          _result.Description.ShouldBeEqualTo(_moleculeBuilder.Description);
-         _result.Icon.ShouldBeEqualTo(_moleculeBuilder.Icon);
+         _result.Icon.ShouldBeEqualTo(ApplicationIcons.Molecule);
          _result.Stationary.ShouldBeEqualTo(!_moleculeBuilder.IsFloating);
          _result.Name.ShouldBeEqualTo(_moleculeBuilder.Name);
       }
