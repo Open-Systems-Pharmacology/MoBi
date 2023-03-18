@@ -272,7 +272,7 @@ namespace MoBi.Presentation.Presenter.Main
          _notificationMessage = notificationMessage;
       }
 
-      public ApplicationIcon Image => _notificationMessage.Image;
+      public Image Image => _notificationMessage.Image.ToImage();
       public NotificationType Type => _notificationMessage.Type;
       public NotificationMessage NotificationMessage => _notificationMessage;
       public IObjectBase Object => _notificationMessage.Object;

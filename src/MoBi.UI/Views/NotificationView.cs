@@ -29,7 +29,6 @@ namespace MoBi.UI.Views
       private readonly ICache<NotificationType, BarButtonItem> _buttonCache;
       private readonly GridViewBinder<NotificationMessageDTO> _gridViewBinder;
       private readonly RepositoryItemPictureEdit _statusIconRepository;
-      private readonly ToolTipController _toolTipController;
       private readonly BarManager _popupBarManager;
       private readonly IStartOptions _runOptions;
 
@@ -44,10 +43,10 @@ namespace MoBi.UI.Views
          _gridViewBinder = new GridViewBinder<NotificationMessageDTO>(gridViewMessages);
          gridViewMessages.CustomRowFilter += customRowFilter;
          _statusIconRepository = new RepositoryItemPictureEdit();
-         _toolTipController = new ToolTipController {ImageList = imageListRetriever.AllImages16x16};
-         _toolTipController.AutoPopDelay = AppConstants.NotificationToolTipDelay;
-         _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
-         gridMessages.ToolTipController = _toolTipController;
+         var toolTipController = new ToolTipController {ImageList = imageListRetriever.AllImages16x16};
+         toolTipController.AutoPopDelay = AppConstants.NotificationToolTipDelay;
+         toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
+         gridMessages.ToolTipController = toolTipController;
          gridViewMessages.MouseDown += (o, e) => this.DoWithinExceptionHandler(() => onGridViewMouseDown(e));
          gridViewMessages.DoubleClick += (o, e) => this.DoWithinExceptionHandler(onDoubleClick);
          gridViewMessages.ShouldUseColorForDisabledCell = false;
@@ -59,7 +58,7 @@ namespace MoBi.UI.Views
          if (notification == null) return;
          e.Visible = _presenter.ShouldShow(notification);
 
-         //handle filter only if we explicitely hide the record
+         //handle filter only if we explicitly hide the record
          if (!e.Visible)
             e.Handled = true;
       }
