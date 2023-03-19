@@ -31,7 +31,7 @@
     <PackageReference Include="OSPSuite.Presentation" Version="11.1.133" />
     <PackageReference Include="OSPSuite.Presentation.Serialization" Version="11.1.133" />
     <PackageReference Include="OSPSuite.Core" Version="11.1.133" />  
-   </ItemGroup>
+  </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
