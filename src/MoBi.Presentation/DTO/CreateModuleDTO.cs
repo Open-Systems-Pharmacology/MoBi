@@ -9,7 +9,6 @@ namespace MoBi.Presentation.DTO
    {
       private IReadOnlyList<string> _prohibitedNames;
 
-      //create a child class and probably just overwrite the constructor should do. then we do not have the name rules
       public CreateModuleDTO()
       {
          Rules.Add(GenericRules.UniqueName);
