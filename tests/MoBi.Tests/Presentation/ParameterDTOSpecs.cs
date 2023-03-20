@@ -18,7 +18,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_creating_a_parameter_dto_for_a_constant_a_parameter_with_an_undefined_value : concern_for_ParameterDTO
+   public class When_creating_a_parameter_dto_for_a_constant_parameter_with_an_undefined_value : concern_for_ParameterDTO
    {
       protected override void Context()
       {
@@ -35,7 +35,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_creating_a_parameter_dto_for_a_constant_a_parameter_with_an_well_defined_value : concern_for_ParameterDTO
+   public class When_creating_a_parameter_dto_for_a_constant_parameter_with_an_well_defined_value : concern_for_ParameterDTO
    {
       protected override void Context()
       {
