@@ -16,11 +16,11 @@ namespace MoBi.Presentation.Presenter
 
    public class AddBuildingBlocksToModulePresenter : AbstractDisposablePresenter<IAddBuildingBlocksToModuleView, IAddBuildingBlocksToModulePresenter>, IAddBuildingBlocksToModulePresenter
    {
-      private readonly ICreateModuleDTOToModuleMapper _createModuleDTOToModuleMapper;
+      private readonly IAddBuildingBlocksToModuleDTOToModuleMapper _addBuildingBlocksToModuleDTOToModuleMapper;
 
-      public AddBuildingBlocksToModulePresenter(IAddBuildingBlocksToModuleView view, ICreateModuleDTOToModuleMapper createModuleDTOToModuleMapper) : base(view)
+      public AddBuildingBlocksToModulePresenter(IAddBuildingBlocksToModuleView view, IAddBuildingBlocksToModuleDTOToModuleMapper addBuildingBlocksToModuleDTOToModuleMapper) : base(view)
       {
-         _createModuleDTOToModuleMapper = createModuleDTOToModuleMapper;
+         _addBuildingBlocksToModuleDTOToModuleMapper = addBuildingBlocksToModuleDTOToModuleMapper;
       }
 
       public Module AddBuildingBlocksToModule(Module module)
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Presenter
          if (_view.Canceled)
             return null;
 
-         return _createModuleDTOToModuleMapper.MapFrom(addBuildingBlocksToModuleDTO);
+         return _addBuildingBlocksToModuleDTOToModuleMapper.MapFrom(addBuildingBlocksToModuleDTO);
       }
    }
 }

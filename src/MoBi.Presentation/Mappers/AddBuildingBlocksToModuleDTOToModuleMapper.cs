@@ -2,9 +2,14 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
+   public interface IAddBuildingBlocksToModuleDTOToModuleMapper : IMapper<CreateModuleDTO, Module>
+   {
+   }
+
    public class AddBuildingBlocksToModuleDTOToModuleMapper : CreateModuleDTOToModuleMapper
    {
       public AddBuildingBlocksToModuleDTOToModuleMapper(IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory,
