@@ -6,11 +6,11 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IAddBuildingBlocksToModuleDTOToModuleMapper : IMapper<CreateModuleDTO, Module>
+   public interface IAddBuildingBlocksToModuleDTOToModuleMapper : IMapper<AddBuildingBlocksToModuleDTO, Module>
    {
    }
 
-   public class AddBuildingBlocksToModuleDTOToModuleMapper : CreateModuleDTOToModuleMapper
+   public class AddBuildingBlocksToModuleDTOToModuleMapper : CreateModuleDTOToModuleMapper, IAddBuildingBlocksToModuleDTOToModuleMapper
    {
       public AddBuildingBlocksToModuleDTOToModuleMapper(IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory,
          IMoBiSpatialStructureFactory spatialStructureFactory)
