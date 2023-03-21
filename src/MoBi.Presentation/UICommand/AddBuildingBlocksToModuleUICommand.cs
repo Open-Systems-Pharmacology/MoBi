@@ -9,12 +9,10 @@ namespace MoBi.Presentation.UICommand
    public class AddBuildingBlocksToModuleUICommand : ObjectUICommand<Module>
    {
       private readonly IInteractionTasksForModule _interactionTasks;
-      private readonly IMoBiContext _context;
 
-      public AddBuildingBlocksToModuleUICommand(IInteractionTasksForModule interactionTasksForModule, Module module, IMoBiContext context)
+      public AddBuildingBlocksToModuleUICommand(IInteractionTasksForModule interactionTasksForModule, IMoBiContext context)
       {
          _interactionTasks = interactionTasksForModule;
-         _context = context;
       }
 
       protected override void PerformExecute()

@@ -45,18 +45,6 @@ namespace MoBi.Presentation.DTO
             AlreadyHasObserver = true;
             WithObserver = false;
          }
-
-         if (module.ParameterStartValuesCollection.Any())
-         {
-            AlreadyHasParameterStartValues = true;
-            WithParameterStartValues = false;
-         }
-
-         if (module.MoleculeStartValuesCollection.Any())
-         {
-            AlreadyHasMoleculeStartValues = true;
-            WithMoleculeStartValues = false;
-         }
       }
 
       public bool AlreadyHasReaction { get; set; }
@@ -65,7 +53,5 @@ namespace MoBi.Presentation.DTO
       public bool AlreadyHasPassiveTransport { get; set; }
       public bool AlreadyHasMolecule { get; set; }
       public bool AlreadyHasObserver { get; set; }
-      public bool AlreadyHasMoleculeStartValues { get; set; }
-      public bool AlreadyHasParameterStartValues { get; set; }
    }
 }

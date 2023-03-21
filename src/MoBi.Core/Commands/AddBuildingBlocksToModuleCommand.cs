@@ -93,7 +93,7 @@ namespace MoBi.Core.Commands
                context.PublishEvent(new AddedEvent<ISpatialStructure>(_moduleWithNewBuildingBlocks.SpatialStructure, _existingModule));
          }
 
-         _moduleWithNewBuildingBlocks.ParameterStartValuesCollection.Each(x => _existingModule.AddMoleculeStartValueBlock(x));
+         _moduleWithNewBuildingBlocks.ParameterStartValuesCollection.Each(x => _existingModule.AddParameterStartValueBlock(x));
          _moduleWithNewBuildingBlocks.MoleculeStartValuesCollection.Each(x => _existingModule.AddMoleculeStartValueBlock(x));
       }
 
