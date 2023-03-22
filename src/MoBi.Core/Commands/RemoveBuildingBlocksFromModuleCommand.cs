@@ -4,8 +4,6 @@ using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -29,8 +27,6 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.AddBuildingBlocksToModule(_existingModule.Name);
       }
 
-
-      //OK, this needs some work more
       protected override void ExecuteWith(IMoBiContext context)
       {
          if (_moduleWithAddedBuildingBlocks.Molecule != null)
@@ -40,7 +36,7 @@ namespace MoBi.Core.Commands
             context.Unregister(_existingModule.Molecule);
 
             if (!Silent)
-               context.PublishEvent(new RemovedEvent(_existingModule.Molecule, _existingModule));
+               context.PublishEvent(new RemovedEvent(_moduleWithAddedBuildingBlocks.Molecule, _existingModule));
          }
 
 
@@ -51,47 +47,54 @@ namespace MoBi.Core.Commands
             context.Unregister(_existingModule.Observer);
 
             if (!Silent)
-               context.PublishEvent(new RemovedEvent(_existingModule.Observer, _existingModule));
+               context.PublishEvent(new RemovedEvent(_moduleWithAddedBuildingBlocks.Observer, _existingModule));
          }
 
          if (_moduleWithAddedBuildingBlocks.EventGroup != null)
          {
-            _existingModule.EventGroup = _moduleWithAddedBuildingBlocks.EventGroup;
+            _existingModule.EventGroup = null;
+
+            context.Unregister(_existingModule.EventGroup);
 
             if (!Silent)
-               context.PublishEvent(new AddedEvent<IEventGroupBuildingBlock>(_moduleWithAddedBuildingBlocks.EventGroup, _existingModule));
+               context.PublishEvent(new RemovedEvent(_moduleWithAddedBuildingBlocks.EventGroup, _existingModule));
          }
 
 
          if (_moduleWithAddedBuildingBlocks.PassiveTransport != null)
          {
-            _existingModule.PassiveTransport = _moduleWithAddedBuildingBlocks.PassiveTransport;
+            _existingModule.PassiveTransport = null;
+
+            context.Unregister(_existingModule.PassiveTransport);
 
             if (!Silent)
-               context.PublishEvent(new AddedEvent<IPassiveTransportBuildingBlock>(_moduleWithAddedBuildingBlocks.PassiveTransport, _existingModule));
+               context.PublishEvent(new RemovedEvent(_moduleWithAddedBuildingBlocks.PassiveTransport, _existingModule));
          }
 
 
          if (_moduleWithAddedBuildingBlocks.Reaction != null)
          {
-            _existingModule.Reaction = _moduleWithAddedBuildingBlocks.Reaction;
+            _existingModule.Reaction = null;
+
+            context.Unregister(_existingModule.Reaction);
 
             if (!Silent)
-               context.PublishEvent(new AddedEvent<IReactionBuildingBlock>(_moduleWithAddedBuildingBlocks.Reaction, _existingModule));
+               context.PublishEvent(new RemovedEvent(_moduleWithAddedBuildingBlocks.Reaction, _existingModule));
          }
 
 
          if (_moduleWithAddedBuildingBlocks.SpatialStructure != null)
          {
-            _existingModule.SpatialStructure = _moduleWithAddedBuildingBlocks.SpatialStructure;
+            _existingModule.SpatialStructure = null;
+
+            context.Unregister(_existingModule.SpatialStructure);
 
             if (!Silent)
-               context.PublishEvent(new AddedEvent<ISpatialStructure>(_moduleWithAddedBuildingBlocks.SpatialStructure, _existingModule));
+               context.PublishEvent(new RemovedEvent(_moduleWithAddedBuildingBlocks.SpatialStructure, _existingModule));
          }
 
-         _moduleWithAddedBuildingBlocks.ParameterStartValuesCollection.Each(x => _existingModule.AddParameterStartValueBlock(x));
-         _moduleWithAddedBuildingBlocks.MoleculeStartValuesCollection.Each(x => _existingModule.AddMoleculeStartValueBlock(x));
-
+         //_moduleWithAddedBuildingBlocks.ParameterStartValuesCollection.Each(x => _existingModule.AddParameterStartValueBlock(x));
+         //_moduleWithAddedBuildingBlocks.MoleculeStartValuesCollection.Each(x => _existingModule.AddMoleculeStartValueBlock(x));
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
