@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -43,7 +42,7 @@ namespace MoBi.Core.Commands
       {
          sut.ExecuteAndInvokeInverse(_context);
       }
-      
+
       [Observation]
       public void the_module_is_added_to_the_project()
       {

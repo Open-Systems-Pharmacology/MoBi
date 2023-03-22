@@ -28,6 +28,8 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.AddBuildingBlocksToModule(_existingModule.Name);
       }
 
+      //ToDo: this should be refactored to use a generic method - ideally also reflection 
+      //to go through the class members
       protected override void ExecuteWith(IMoBiContext context)
       {
          context.Register(_existingModule);
@@ -37,7 +39,7 @@ namespace MoBi.Core.Commands
          {
             _existingModule.Molecule = _moduleWithNewBuildingBlocks.Molecule;
 
-            context.Register(_existingModule.Molecule);
+            context.Register(_moduleWithNewBuildingBlocks.Molecule);
 
             if (!Silent)
                context.PublishEvent(new AddedEvent<IMoleculeBuildingBlock>(_existingModule.Molecule, _existingModule));
@@ -48,7 +50,7 @@ namespace MoBi.Core.Commands
          {
             _existingModule.Observer = _moduleWithNewBuildingBlocks.Observer;
 
-            context.Register(_existingModule.Observer);
+            context.Register(_moduleWithNewBuildingBlocks.Observer);
 
             if (!Silent)
                context.PublishEvent(new AddedEvent<IObserverBuildingBlock>(_existingModule.Observer, _existingModule));
@@ -58,7 +60,7 @@ namespace MoBi.Core.Commands
          {
             _existingModule.EventGroup = _moduleWithNewBuildingBlocks.EventGroup;
 
-            context.Register(_existingModule.Observer); 
+            context.Register(_moduleWithNewBuildingBlocks.EventGroup); 
 
             if (!Silent)
                context.PublishEvent(new AddedEvent<IEventGroupBuildingBlock>(_moduleWithNewBuildingBlocks.EventGroup, _existingModule));
@@ -69,7 +71,7 @@ namespace MoBi.Core.Commands
          {
             _existingModule.PassiveTransport = _moduleWithNewBuildingBlocks.PassiveTransport;
 
-            context.Register(_existingModule.PassiveTransport);
+            context.Register(_moduleWithNewBuildingBlocks.PassiveTransport);
 
             if (!Silent)
                context.PublishEvent(new AddedEvent<IPassiveTransportBuildingBlock>(_moduleWithNewBuildingBlocks.PassiveTransport, _existingModule));
@@ -80,6 +82,8 @@ namespace MoBi.Core.Commands
          {
             _existingModule.Reaction = _moduleWithNewBuildingBlocks.Reaction;
 
+            context.Register(_moduleWithNewBuildingBlocks.Reaction);
+
             if (!Silent)
                context.PublishEvent(new AddedEvent<IReactionBuildingBlock>(_moduleWithNewBuildingBlocks.Reaction, _existingModule));
          }
@@ -88,6 +92,8 @@ namespace MoBi.Core.Commands
          if (_moduleWithNewBuildingBlocks.SpatialStructure != null)
          {
             _existingModule.SpatialStructure = _moduleWithNewBuildingBlocks.SpatialStructure;
+
+            context.Register(_moduleWithNewBuildingBlocks.SpatialStructure);
 
             if (!Silent)
                context.PublishEvent(new AddedEvent<ISpatialStructure>(_moduleWithNewBuildingBlocks.SpatialStructure, _existingModule));
