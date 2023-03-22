@@ -3,7 +3,6 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
-using MoBi.Presentation.UICommand;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -18,7 +17,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class InteractionTasksForModule : InteractionTasksForChildren<IMoBiProject, Module>, IInteractionTasksForModule
    {
-      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext, editTask)
+      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext,
+         editTask)
       {
       }
 
@@ -37,7 +37,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddBuildingBlocksToModuleCommand(existingModule, moduleWithNewBuildingBlocks);
       }
 
-      protected override void SetAddCommandDescription(Module child, IMoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand, IBuildingBlock buildingBlock)
+      protected override void SetAddCommandDescription(Module child, IMoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand,
+         IBuildingBlock buildingBlock)
       {
          addCommand.Description = AppConstants.Commands.AddToProjectDescription(addCommand.ObjectType, child.Name);
          macroCommand.Description = addCommand.Description;
@@ -52,7 +53,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (module == null)
                return;
 
-            _interactionTaskContext.Context.AddToHistory(GetAddCommand(module, _interactionTaskContext.Context.CurrentProject, null).Run(_interactionTaskContext.Context));
+            _interactionTaskContext.Context.AddToHistory(GetAddCommand(module, _interactionTaskContext.Context.CurrentProject, null)
+               .Run(_interactionTaskContext.Context));
          }
       }
 
@@ -65,7 +67,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (moduleWithNewBuildingBlocks == null)
                return;
 
-            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, moduleWithNewBuildingBlocks).Run(_interactionTaskContext.Context));
+            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, moduleWithNewBuildingBlocks)
+               .Run(_interactionTaskContext.Context));
          }
       }
    }

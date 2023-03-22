@@ -60,7 +60,7 @@ namespace MoBi.Core.Commands
          {
             _existingModule.EventGroup = _moduleWithNewBuildingBlocks.EventGroup;
 
-            context.Register(_moduleWithNewBuildingBlocks.EventGroup); 
+            context.Register(_moduleWithNewBuildingBlocks.EventGroup);
 
             if (!Silent)
                context.PublishEvent(new AddedEvent<IEventGroupBuildingBlock>(_moduleWithNewBuildingBlocks.EventGroup, _existingModule));
@@ -111,7 +111,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new RemoveBuildingBlocksFromModuleCommand(_existingModule, _moduleWithNewBuildingBlocks).AsInverseFor(this); 
+         return new RemoveBuildingBlocksFromModuleCommand(_existingModule, _moduleWithNewBuildingBlocks).AsInverseFor(this);
       }
 
       protected override void ClearReferences()

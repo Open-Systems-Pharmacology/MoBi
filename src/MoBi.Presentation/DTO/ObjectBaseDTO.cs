@@ -62,7 +62,7 @@ namespace MoBi.Presentation.DTO
       {
          if (e.PropertyName.Equals(_propertyName))
          {
-            Name = ((IObjectBase) sender).Name;
+            Name = ((IObjectBase)sender).Name;
          }
 
          RaisePropertyChanged(e.PropertyName);
@@ -163,5 +163,4 @@ namespace MoBi.Presentation.DTO
          Module = module;
       }
    }
-
 }

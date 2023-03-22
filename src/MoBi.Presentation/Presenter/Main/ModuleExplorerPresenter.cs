@@ -26,13 +26,14 @@ using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 namespace MoBi.Presentation.Presenter.Main
 {
    public interface IModuleExplorerPresenter : IExplorerPresenter, IPresenter<IModuleExplorerView>,
-   IListener<AddedEvent>,
-   IListener<RemovedEvent>
+      IListener<AddedEvent>,
+      IListener<RemovedEvent>
    {
       int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
 
-   public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter, IListener<AddedEvent<Module>>
+   public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter,
+      IListener<AddedEvent<Module>>
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private readonly IEditBuildingBlockStarter _editBuildingBlockStarter;
@@ -40,7 +41,8 @@ namespace MoBi.Presentation.Presenter.Main
       public ModuleExplorerPresenter(IModuleExplorerView view, IRegionResolver regionResolver, ITreeNodeFactory treeNodeFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory, IMoBiContext context, IClassificationPresenter classificationPresenter,
          IToolTipPartCreator toolTipPartCreator, IObservedDataInExplorerPresenter observedDataInExplorerPresenter,
-         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IProjectRetriever projectRetriever, IEditBuildingBlockStarter editBuildingBlockStarter) :
+         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IProjectRetriever projectRetriever,
+         IEditBuildingBlockStarter editBuildingBlockStarter) :
          base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.ModuleExplorer,
             classificationPresenter, toolTipPartCreator, multipleTreeNodeContextMenuFactory, projectRetriever)
       {
@@ -151,7 +153,8 @@ namespace MoBi.Presentation.Presenter.Main
          return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
       }
 
-      private void addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType) where TBuildingBlock : IBuildingBlock
+      private void addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType)
+         where TBuildingBlock : IBuildingBlock
       {
          var buildingBockFolderNode = _view.NodeByType(buildingBlockFolderType);
 
@@ -197,7 +200,8 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void addModule(Module module)
       {
-         var moduleNode = _view.AddNode(_treeNodeFactory.CreateFor(module).WithIcon(ApplicationIcons.Module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
+         var moduleNode = _view.AddNode(_treeNodeFactory.CreateFor(module).WithIcon(ApplicationIcons.Module)
+            .Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
 
          addBuildingBlockUnderNode(module.SpatialStructure, moduleNode);
          addBuildingBlockUnderNode(module.Molecule, moduleNode);
@@ -206,14 +210,17 @@ namespace MoBi.Presentation.Presenter.Main
          addBuildingBlockUnderNode(module.Observer, moduleNode);
          addBuildingBlockUnderNode(module.EventGroup, moduleNode);
 
-         var moleculeStartValuesCollectionNode = collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);
-         var parameterStartValuesCollectionNode = collectionNodeFor(module.ParameterStartValuesCollection, MoBiRootNodeTypes.ParameterStartValuesFolder, moduleNode);
+         var moleculeStartValuesCollectionNode =
+            collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);
+         var parameterStartValuesCollectionNode =
+            collectionNodeFor(module.ParameterStartValuesCollection, MoBiRootNodeTypes.ParameterStartValuesFolder, moduleNode);
 
          module.MoleculeStartValuesCollection.Each(bb => addBuildingBlockUnderNode(bb, moleculeStartValuesCollectionNode));
          module.ParameterStartValuesCollection.Each(bb => addBuildingBlockUnderNode(bb, parameterStartValuesCollectionNode));
       }
 
-      private ITreeNode collectionNodeFor<T>(IReadOnlyList<IStartValuesBuildingBlock<T>> startValueBlockCollection, RootNodeType rootNodeType, ITreeNode moduleNode) where T : class, IStartValue
+      private ITreeNode collectionNodeFor<T>(IReadOnlyList<IStartValuesBuildingBlock<T>> startValueBlockCollection, RootNodeType rootNodeType,
+         ITreeNode moduleNode) where T : class, IStartValue
       {
          return startValueBlockCollection.Count > 1 ? _view.AddNode(_treeNodeFactory.CreateFor(rootNodeType).Under(moduleNode)) : moduleNode;
       }

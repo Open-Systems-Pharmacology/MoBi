@@ -2,7 +2,6 @@
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
-using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.UI.Views;
@@ -25,7 +24,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          ApplicationIcon = ApplicationIcons.Module;
-         
+
          cbSpatialStructure.Text = SpatialStructure;
          cbEventGroup.Text = Event;
          cbReactions.Text = Reactions;
@@ -54,7 +53,6 @@ namespace MoBi.UI.Views
 
          RegisterValidationFor(_screenBinder);
       }
-
 
       public void BindTo(AddBuildingBlocksToModuleDTO addBuildingBlocksToModuleDTO)
       {

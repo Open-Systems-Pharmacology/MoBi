@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;

@@ -12,6 +12,7 @@ namespace MoBi.Presentation.Mappers
 {
    public interface ICreateModuleDTOToModuleMapper : IMapper<CreateModuleDTO, Module>
    {
+
    }
    
    public class CreateModuleDTOToModuleMapper : ICreateModuleDTOToModuleMapper

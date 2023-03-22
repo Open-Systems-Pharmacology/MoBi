@@ -1,19 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using OSPSuite.Core.Domain.Data;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -47,7 +43,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-
    public class ContextMenuSpecificationFactoryForBuildingBlockForModule : IContextMenuSpecificationFactory<IViewItem>
    {
       private readonly IContainer _container;
@@ -68,5 +63,4 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return viewItem.IsAnImplementationOf<ModuleViewItem>();
       }
    }
-
 }

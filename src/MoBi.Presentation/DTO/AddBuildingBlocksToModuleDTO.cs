@@ -1,12 +1,9 @@
-﻿using System.Linq;
-using MoBi.Assets;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
+﻿using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.DTO
 {
    public class AddBuildingBlocksToModuleDTO : CreateModuleDTO
-   { 
+   {
       public AddBuildingBlocksToModuleDTO(Module module)
       {
          if (module.Molecule != null)
