@@ -15,7 +15,7 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IParameterStartValuesPresenter : IStartValuesPresenter<ParameterStartValueDTO>, IEditPresenter<IParameterStartValuesBuildingBlock>
+   public interface IParameterStartValuesPresenter : IStartValuesPresenter<ParameterStartValueDTO>, IEditPresenter<ParameterStartValuesBuildingBlock>
    {
       void UpdateDimension(ParameterStartValueDTO startValueObject, IDimension newDimension);
    }
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Presenter
    public class ParameterStartValuesPresenter
       : StartValuePresenter<IParameterStartValuesView,
             IParameterStartValuesPresenter,
-            IParameterStartValuesBuildingBlock,
+            ParameterStartValuesBuildingBlock,
             ParameterStartValueDTO, ParameterStartValue>,
          IParameterStartValuesPresenter
    {

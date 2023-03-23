@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Tasks
 
       public ICommand UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock)
       {
-         IMoBiBuildConfiguration buildConfigurationReferencingTemplate;
+         SimulationConfiguration simulationConfigurationReferencingTemplate;
          IMoBiCommand configurationCommands = null;
          var fixedValueQuantities = new PathCache<IQuantity>(_entityPathResolver);
 
@@ -71,16 +71,16 @@ namespace MoBi.Presentation.Tasks
                if (configurationCommands.IsEmpty())
                   return new MoBiEmptyCommand();
 
-               buildConfigurationReferencingTemplate = presenter.BuildConfiguration;
+               simulationConfigurationReferencingTemplate = presenter.SimulationConfiguration;
             }
          }
          else
          {
-            buildConfigurationReferencingTemplate = createBuildConfigurationUsingTemplates(simulationToUpdate, templateBuildingBlock);
+            simulationConfigurationReferencingTemplate = createBuildConfigurationUsingTemplates(simulationToUpdate, templateBuildingBlock);
             fixedValueQuantities.AddRange(simulationToUpdate.Model.Root.GetAllChildren<IQuantity>(x => x.IsFixedValue));
          }
 
-         return updateSimulation(simulationToUpdate, buildConfigurationReferencingTemplate, configurationCommands, templateBuildingBlock, fixedValueQuantities);
+         return updateSimulation(simulationToUpdate, simulationConfigurationReferencingTemplate, configurationCommands, templateBuildingBlock, fixedValueQuantities);
       }
 
       public ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure)
@@ -91,21 +91,21 @@ namespace MoBi.Presentation.Tasks
             if (configurationCommands.IsEmpty())
                return new MoBiEmptyCommand();
 
-            return updateSimulation(simulationToConfigure, presenter.BuildConfiguration, configurationCommands);
+            return updateSimulation(simulationToConfigure, presenter.SimulationConfiguration, configurationCommands);
          }
       }
 
       private ICommand<IMoBiContext> updateSimulation(
          IMoBiSimulation simulationToUpdate,
-         IMoBiBuildConfiguration buildConfigurationReferencingTemplates,
+         SimulationConfiguration simulationConfigurationReferencingTemplates,
          IMoBiCommand configurationCommands,
          IBuildingBlock templateBuildingBlock = null,
          PathCache<IQuantity> fixedValueQuantities = null)
       {
          //create model using referencing templates
-         var model = createModelAndValidate(simulationToUpdate.Model.Name, buildConfigurationReferencingTemplates);
+         var model = createModelAndValidate(simulationToUpdate.Model.Name, simulationConfigurationReferencingTemplates);
 
-         var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(buildConfigurationReferencingTemplates);
+         var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
 
          var updateSimulationCommand = templateBuildingBlock == null
             ? // is null when we a simulation is being configured. Otherwise this is the template building block to user
@@ -164,7 +164,7 @@ namespace MoBi.Presentation.Tasks
          simulationQuantity.Value = fixedValueQuantity.Value;
       }
 
-      private IModel createModelAndValidate(string modelName, IMoBiBuildConfiguration buildConfigurationReferencingTemplate)
+      private IModel createModelAndValidate(string modelName, SimulationConfiguration buildConfigurationReferencingTemplate)
       {
          var results = _modelConstructor.CreateModelFrom(buildConfigurationReferencingTemplate, modelName);
 
@@ -189,18 +189,18 @@ namespace MoBi.Presentation.Tasks
 
       private bool triggersReconfiguration(IBuildingBlock buildingBlock)
       {
-         return buildingBlock.IsAnImplementationOf<IMoleculeBuildingBlock>() ||
+         return buildingBlock.IsAnImplementationOf<MoleculeBuildingBlock>() ||
                 buildingBlock.IsAnImplementationOf<ISpatialStructure>();
       }
 
-      private IMoBiBuildConfiguration createBuildConfigurationUsingTemplates(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
+      private SimulationConfiguration createBuildConfigurationUsingTemplates(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
-         return _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.MoBiBuildConfiguration, templateBuildingBlock);
+         return simulation.Configuration;
       }
 
-      private IMoBiBuildConfiguration createBuildConfigurationToUseInSimulation(IMoBiBuildConfiguration buildConfiguration)
+      private SimulationConfiguration createBuildConfigurationToUseInSimulation(SimulationConfiguration simulationConfiguration)
       {
-         return _buildConfigurationFactory.CreateFromTemplateClones(buildConfiguration);
+         return simulationConfiguration;
       }
    }
 }

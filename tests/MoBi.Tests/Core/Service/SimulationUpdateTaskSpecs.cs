@@ -64,7 +64,7 @@ namespace MoBi.Core.Service
          _simulationToUpdate.Model.Name = "XX";
          _templateBuildingBlock = A.Fake<ISpatialStructure>();
          _updatedBuildConfiguration = A.Fake<IMoBiBuildConfiguration>();
-         A.CallTo(() => _configurePresenter.BuildConfiguration).Returns(_updatedBuildConfiguration);
+         A.CallTo(() => _configurePresenter.SimulationConfiguration).Returns(_updatedBuildConfiguration);
       }
 
       protected override void Because()
@@ -210,7 +210,7 @@ namespace MoBi.Core.Service
          _creationResult = new CreationResult(_model);
          _command = new MoBiMacroCommand();
          A.CallTo(() => _configurePresenter.CreateBuildConfiguration(_simulationToConfigure)).Returns(_command);
-         A.CallTo(() => _modelConstructor.CreateModelFrom(_configurePresenter.BuildConfiguration, _simulationToConfigure.Model.Name)).Returns(_creationResult);
+         A.CallTo(() => _modelConstructor.CreateModelFrom(_configurePresenter.SimulationConfiguration, _simulationToConfigure.Model.Name)).Returns(_creationResult);
       }
 
       protected override void Because()

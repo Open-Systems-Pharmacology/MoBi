@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
       protected double _oldScaleDivisor;
       protected double _newScaleDivisor;
       protected MoleculeStartValue _startValue;
-      protected IMoleculeStartValuesBuildingBlock _buildingBlock;
+      protected MoleculeStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
 
       protected override void Context()
@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
          _context = A.Fake<IMoBiContext>();
          sut = new UpdateMoleculeStartValueScaleDivisorCommand(_buildingBlock, _startValue, _newScaleDivisor, _oldScaleDivisor);
 
-         A.CallTo(() => _context.Get<IMoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<MoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

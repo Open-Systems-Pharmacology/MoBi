@@ -22,11 +22,11 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IMoleculeStartValuesTask : IStartValuesTask<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
+   public interface IMoleculeStartValuesTask : IStartValuesTask<MoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
-      IMoBiCommand SetIsPresent(IMoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool isPresent);
+      IMoBiCommand SetIsPresent(MoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool isPresent);
 
-      IMoBiCommand SetNegativeValuesAllowed(IMoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool negativeValuesAllowed);
+      IMoBiCommand SetNegativeValuesAllowed(MoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool negativeValuesAllowed);
       
       /// <summary>
       ///    Updates the scale divisor for a start value
@@ -36,10 +36,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="newScaleDivisor">The new value of the scale divisor</param>
       /// <param name="oldScaleDivisor">The old value of the scale divisor</param>
       /// <returns>The command used to modify the start value</returns>
-      IMoBiCommand UpdateStartValueScaleDivisor(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor);
+      IMoBiCommand UpdateStartValueScaleDivisor(MoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor);
    }
 
-   public class MoleculeStartValuesTask : AbstractStartValuesTask<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>, IMoleculeStartValuesTask
+   public class MoleculeStartValuesTask : AbstractStartValuesTask<MoleculeStartValuesBuildingBlock, MoleculeStartValue>, IMoleculeStartValuesTask
    {
       private readonly IMoleculeStartValuesCreator _startValuesCreator;
       private readonly IReactionDimensionRetriever _dimensionRetriever;
@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public MoleculeStartValuesTask(
          IInteractionTaskContext interactionTaskContext,
-         IEditTasksForBuildingBlock<IMoleculeStartValuesBuildingBlock> editTask,
+         IEditTasksForBuildingBlock<MoleculeStartValuesBuildingBlock> editTask,
          IMoleculeStartValuesCreator startValuesCreator,
          IImportedQuantityToMoleculeStartValueMapper dtoMapper,
          IMoleculeStartValueBuildingBlockMergeManager startValueBuildingBlockMergeManager,
@@ -62,38 +62,38 @@ namespace MoBi.Presentation.Tasks.Interaction
          _moleculeResolver = moleculeResolver;
       }
 
-      public override void ExtendStartValues(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
+      public override void ExtendStartValues(MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
       {
          var newStartValues = createStartValuesBasedOnUsedTemplates(moleculeStartValuesBuildingBlock);
          updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues, moleculeStartValuesBuildingBlock.ToCache());
          AddCommand(Extend(newStartValues, moleculeStartValuesBuildingBlock));
       }
 
-      private IMoleculeStartValuesBuildingBlock createStartValuesBasedOnUsedTemplates(IMoleculeStartValuesBuildingBlock moleculeStartValues)
+      private MoleculeStartValuesBuildingBlock createStartValuesBasedOnUsedTemplates(MoleculeStartValuesBuildingBlock moleculeStartValues)
       {
-         var molecules = BuildingBlockById<IMoleculeBuildingBlock>(moleculeStartValues.MoleculeBuildingBlockId);
+         var molecules = BuildingBlockById<MoleculeBuildingBlock>(moleculeStartValues.MoleculeBuildingBlockId);
          var spatialStructure = BuildingBlockById<ISpatialStructure>(moleculeStartValues.SpatialStructureId);
          return _startValuesCreator.CreateFrom(spatialStructure, molecules);
       }
 
-      public override IMoleculeStartValuesBuildingBlock CreateStartValuesForSimulation(IMoBiBuildConfiguration buildConfiguration)
+      public override MoleculeStartValuesBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration)
       {
-         var simulationStartValues = _startValuesCreator.CreateFrom(buildConfiguration.SpatialStructureInfo.TemplateBuildingBlock, buildConfiguration.MoleculesInfo.TemplateBuildingBlock)
-            .WithName(buildConfiguration.MoleculeStartValuesInfo.TemplateBuildingBlock.Name);
+         var simulationStartValues = _startValuesCreator.CreateFrom(simulationConfiguration.SpatialStructure, simulationConfiguration.Molecules)
+            .WithName(simulationConfiguration.MoleculeStartValues.Name);
 
-         var templateValues = UpdateValuesFromTemplate(simulationStartValues, buildConfiguration.MoleculeStartValuesInfo);
+         var templateValues = UpdateValuesFromTemplate(simulationStartValues, simulationConfiguration.MoleculeStartValues);
          updateDefaultIsPresentToFalseForSpecificExtendedValues(simulationStartValues, templateValues);
          return simulationStartValues;
       }
 
-      private void updateDefaultIsPresentToFalseForSpecificExtendedValues(IMoleculeStartValuesBuildingBlock startValues, ICache<string, MoleculeStartValue> templateValues)
+      private void updateDefaultIsPresentToFalseForSpecificExtendedValues(MoleculeStartValuesBuildingBlock startValues, ICache<string, MoleculeStartValue> templateValues)
       {
          var startValuesThatShouldPotentiallyNotBePresent = startValues.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ=> x.Key.Contains(organ)));
          var extendedStartValuesThatShouldNotBePresent = startValuesThatShouldPotentiallyNotBePresent.Where(x => !templateValues.Contains(x.Key));
          extendedStartValuesThatShouldNotBePresent.Each(x => x.Value.IsPresent = false);
       }
 
-      public IMoBiCommand SetIsPresent(IMoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool isPresent)
+      public IMoBiCommand SetIsPresent(MoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool isPresent)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -108,12 +108,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      private IMoBiCommand updateIsPresent(IMoleculeStartValuesBuildingBlock moleculeStartValues, MoleculeStartValue msv, bool isPresent)
+      private IMoBiCommand updateIsPresent(MoleculeStartValuesBuildingBlock moleculeStartValues, MoleculeStartValue msv, bool isPresent)
       {
          return new UpdateMoleculeStartValueIsPresentCommand(moleculeStartValues, msv, isPresent).Run(Context);
       }
 
-      public IMoBiCommand SetNegativeValuesAllowed(IMoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool negativeValuesAllowed)
+      public IMoBiCommand SetNegativeValuesAllowed(MoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool negativeValuesAllowed)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -128,22 +128,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      private IMoBiCommand updateNegativeValuesAllowed(IMoleculeStartValuesBuildingBlock moleculeStartValues, MoleculeStartValue msv, bool negativeValuesAllowed)
+      private IMoBiCommand updateNegativeValuesAllowed(MoleculeStartValuesBuildingBlock moleculeStartValues, MoleculeStartValue msv, bool negativeValuesAllowed)
       {
          return new UpdateMoleculeStartValueNegativeValuesAllowedCommand(moleculeStartValues, msv, negativeValuesAllowed).Run(Context);
       }
 
-      public ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue moleculeStartValue)
+      public ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(MoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue moleculeStartValue)
       {
          return AddNewFormulaAtBuildingBlock(buildingBlock, moleculeStartValue, referenceParameter: null);
       }
 
-      public override IMoBiCommand AddStartValueToBuildingBlock(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue moleculeStartValue)
+      public override IMoBiCommand AddStartValueToBuildingBlock(MoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue moleculeStartValue)
       {
          return GenerateAddCommand(buildingBlock, moleculeStartValue).Run(Context);
       }
 
-      public override IMoBiCommand ImportStartValuesToBuildingBlock(IMoleculeStartValuesBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues)
+      public override IMoBiCommand ImportStartValuesToBuildingBlock(MoleculeStartValuesBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues)
       {
          var macroCommand = new BulkUpdateMacroCommand
          {
@@ -157,12 +157,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand.Run(Context);
       }
 
-      public override IMoBiCommand RemoveStartValueFromBuildingBlockCommand(MoleculeStartValue startValue, IMoleculeStartValuesBuildingBlock buildingBlock)
+      public override IMoBiCommand RemoveStartValueFromBuildingBlockCommand(MoleculeStartValue startValue, MoleculeStartValuesBuildingBlock buildingBlock)
       {
          return new RemoveMoleculeStartValueFromBuildingBlockCommand(buildingBlock, startValue.Path);
       }
 
-      public override IMoBiCommand RefreshStartValuesFromBuildingBlocks(IMoleculeStartValuesBuildingBlock buildingBlock, IEnumerable<MoleculeStartValue> startValuesToRefresh)
+      public override IMoBiCommand RefreshStartValuesFromBuildingBlocks(MoleculeStartValuesBuildingBlock buildingBlock, IEnumerable<MoleculeStartValue> startValuesToRefresh)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -204,12 +204,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      public IMoBiCommand UpdateStartValueScaleDivisor(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor)
+      public IMoBiCommand UpdateStartValueScaleDivisor(MoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor)
       {
          return new UpdateMoleculeStartValueScaleDivisorCommand(buildingBlock, startValue, newScaleDivisor, oldScaleDivisor).Run(Context);
       }
 
-      public override bool IsEquivalentToOriginal(MoleculeStartValue startValue, IMoleculeStartValuesBuildingBlock buildingBlock)
+      protected override ISpatialStructure SpatialStructureReferencedBy(MoleculeStartValuesBuildingBlock buildingBlock)
+      {
+         return Context.Get<ISpatialStructure>(buildingBlock.SpatialStructureId) ?? _spatialStructureFactory.Create();
+      }
+
+      protected override MoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(MoleculeStartValuesBuildingBlock buildingBlock)
+      {
+         return Context.Get<MoleculeBuildingBlock>(buildingBlock.MoleculeBuildingBlockId) ?? Context.Create<MoleculeBuildingBlock>(buildingBlock.MoleculeBuildingBlockId);
+      }
+
+      public override bool IsEquivalentToOriginal(MoleculeStartValue startValue, MoleculeStartValuesBuildingBlock buildingBlock)
       {
          var moleculeBuilder = _moleculeResolver.Resolve(startValue.ContainerPath, startValue.MoleculeName, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock));
 
@@ -226,12 +236,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _dimensionRetriever.MoleculeDimension;
       }
 
-      public override bool CanResolve(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue)
+      public override bool CanResolve(MoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue)
       {
          return _moleculeResolver.Resolve(startValue.ContainerPath, startValue.MoleculeName, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock)) != null;
       }
 
-      protected override IMoBiCommand GetUpdateStartValueInBuildingBlockCommand(IMoleculeStartValuesBuildingBlock startValuesBuildingBlock, ImportedQuantityDTO dto)
+      protected override IMoBiCommand GetUpdateStartValueInBuildingBlockCommand(MoleculeStartValuesBuildingBlock startValuesBuildingBlock, ImportedQuantityDTO dto)
       {
          var scaleDisivor = dto.IsScaleDivisorSpecified ? dto.ScaleDivisor : startValuesBuildingBlock[dto.Path].ScaleDivisor;
          var startValue = dto.IsQuantitySpecified ? dto.QuantityInBaseUnit : startValuesBuildingBlock[dto.Path].Value;
@@ -239,7 +249,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateMoleculeStartValueInBuildingBlockCommand(startValuesBuildingBlock, dto.Path, startValue, dto.IsPresent, scaleDisivor, dto.NegativeValuesAllowed);
       }
 
-      protected override IMoBiCommand GenerateAddCommand(IMoleculeStartValuesBuildingBlock targetBuildingBlock, MoleculeStartValue startValueToAdd)
+      protected override IMoBiCommand GenerateAddCommand(MoleculeStartValuesBuildingBlock targetBuildingBlock, MoleculeStartValue startValueToAdd)
       {
          return new AddMoleculeStartValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
       }
@@ -249,7 +259,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return first.IsEquivalentTo(second);
       }
 
-      protected override IMoBiCommand GenerateRemoveCommand(IMoleculeStartValuesBuildingBlock targetBuildingBlock, MoleculeStartValue startValueToRemove)
+      protected override IMoBiCommand GenerateRemoveCommand(MoleculeStartValuesBuildingBlock targetBuildingBlock, MoleculeStartValue startValueToRemove)
       {
          return new RemoveMoleculeStartValueFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);
       }

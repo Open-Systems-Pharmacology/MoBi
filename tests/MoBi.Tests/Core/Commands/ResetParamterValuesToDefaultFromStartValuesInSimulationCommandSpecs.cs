@@ -10,10 +10,10 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_ResetParamterValuesToDefaultFromStartValuesInSimulationCommand : ContextSpecification<ResetParamterValuesToDefaultFromStartValuesInSimulationCommand>
+   public abstract class concern_for_ResetParamterValuesToDefaultFromStartValuesInSimulationCommand : ContextSpecification<ResetParameterValuesToDefaultFromStartValuesInSimulationCommand>
    {
       private IMoBiSimulation _simulation;
-      protected IParameterStartValuesBuildingBlock _parameterStartValues;
+      protected ParameterStartValuesBuildingBlock _parameterStartValues;
       protected IContainer _liver;
       protected IMoBiContext _context;
       protected IMoBiFormulaTask _formulaTask;
@@ -29,7 +29,7 @@ namespace MoBi.Core.Commands
          _simulation.Model.Root.Add(_liver);
          _parameterStartValues= new ParameterStartValuesBuildingBlock();
          _simulation.BuildConfiguration.ParameterStartValues = _parameterStartValues;
-         sut = new ResetParamterValuesToDefaultFromStartValuesInSimulationCommand(_simulation);
+         sut = new ResetParameterValuesToDefaultFromStartValuesInSimulationCommand(_simulation);
 
          _formulaTask= A.Fake<IMoBiFormulaTask>();
          _entityPathResolver=new EntityPathResolver(new ObjectPathFactory(new AliasCreator()));

@@ -52,8 +52,9 @@ namespace MoBi.Presentation.Presenter
          base.InitializeWith(commandCollector);
          BuildConfigurationPresenter.MoleculeStartValuesChangedEvent += (o,e) => MoleculeStartValuesPresenter.Refresh();
          BuildConfigurationPresenter.ParameterStartValuesChangedEvent += (o, e) => ParameterStartValuesPresenter.Refresh();
-         BuildConfigurationPresenter.SpatialStructureChangedEvent += (o, e) => refreshStartValues();
-         BuildConfigurationPresenter.MoleculeBuildingBlockChangedEvent += (o, e) => refreshStartValues();
+         BuildConfigurationPresenter.ModuleChangedEvent+= (o, e) => refreshStartValues();
+         // BuildConfigurationPresenter.SpatialStructureChangedEvent += (o, e) => refreshStartValues();
+         // BuildConfigurationPresenter.MoleculeBuildingBlockChangedEvent += (o, e) => refreshStartValues();
       }
 
       private void refreshStartValues()
@@ -70,11 +71,11 @@ namespace MoBi.Presentation.Presenter
          View.SetControlEnabled(subPresenterItem, configReady);
       }
 
-      protected IEditBuildConfigurationPresenter BuildConfigurationPresenter => PresenterAt(SimulationItems.BuildConfiguration);
+      protected IEditSimulationConfigurationPresenter BuildConfigurationPresenter => PresenterAt(SimulationItems.BuildConfiguration);
 
-      protected IMoleculeStartValuesBuildingBlock SelectedMoleculeStartValues => MoleculeStartValuesPresenter.StartValues;
+      protected MoleculeStartValuesBuildingBlock SelectedMoleculeStartValues => MoleculeStartValuesPresenter.StartValues;
 
-      protected IParameterStartValuesBuildingBlock SelectedParameterStartValues => ParameterStartValuesPresenter.StartValues;
+      protected ParameterStartValuesBuildingBlock SelectedParameterStartValues => ParameterStartValuesPresenter.StartValues;
 
       protected ISelectAndEditParameterStartValuesPresenter ParameterStartValuesPresenter => PresenterAt(SimulationItems.ParameterStartValues);
 

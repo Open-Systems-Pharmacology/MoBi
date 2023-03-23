@@ -15,19 +15,19 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForMoleculeBuildingBlock : IInteractionTasksForBuildingBlock<IMoleculeBuildingBlock>
+   public interface IInteractionTasksForMoleculeBuildingBlock : IInteractionTasksForBuildingBlock<MoleculeBuildingBlock>
    {
       void CreateNewFromSelection();
-      void Edit(IMoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder);
+      void Edit(MoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder);
    }
 
-   public class InteractionTasksForMoleculeBuildingBlock : InteractionTaskForCloneMergeBuildingBlock<IMoleculeBuildingBlock, IMoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
+   public class InteractionTasksForMoleculeBuildingBlock : InteractionTaskForCloneMergeBuildingBlock<MoleculeBuildingBlock, IMoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
    {
-      private readonly IEditTasksForBuildingBlock<IMoleculeBuildingBlock> _editTaskForBuildingBlock;
+      private readonly IEditTasksForBuildingBlock<MoleculeBuildingBlock> _editTaskForBuildingBlock;
 
       public InteractionTasksForMoleculeBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
-         IEditTasksForBuildingBlock<IMoleculeBuildingBlock> editTask,
+         IEditTasksForBuildingBlock<MoleculeBuildingBlock> editTask,
          IInteractionTasksForBuilder<IMoleculeBuilder> builderTask,
          IMoleculeBuildingBlockCloneManager moleculeBuildingBlockCloneManager)
          : base(interactionTaskContext, editTask, builderTask, moleculeBuildingBlockCloneManager)
@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (newMoleculeBuildingBlockDescription == null)
             return;
 
-         var moleculeBuildingBlock = Context.Create<IMoleculeBuildingBlock>().WithName(newMoleculeBuildingBlockDescription.Name);
+         var moleculeBuildingBlock = Context.Create<MoleculeBuildingBlock>().WithName(newMoleculeBuildingBlockDescription.Name);
          var cloneManagerForBuildingBlocks = new CloneManagerForBuildingBlock(Context.ObjectBaseFactory, new DataRepositoryTask()) {FormulaCache = moleculeBuildingBlock.FormulaCache};
          newMoleculeBuildingBlockDescription.Molecules.Each(x => moleculeBuildingBlock.Add(cloneManagerForBuildingBlocks.Clone(x)));
          var command = new MoBiMacroCommand
@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          AddCommand(command);
       }
 
-      public override IMoBiCommand Remove(IMoleculeBuildingBlock buildingBlockToRemove, IMoBiProject project, IBuildingBlock buildingBlock, bool silent)
+      public override IMoBiCommand Remove(MoleculeBuildingBlock buildingBlockToRemove, IMoBiProject project, IBuildingBlock buildingBlock, bool silent)
       {
          var referringStartValuesBuildingBlocks = project.ReferringStartValuesBuildingBlocks(buildingBlockToRemove);
          if (referringStartValuesBuildingBlocks.Any())
@@ -74,13 +74,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Remove(buildingBlockToRemove, project, buildingBlock, silent);
       }
 
-      public void Edit(IMoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder)
+      public void Edit(MoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder)
       {
          _editTaskForBuildingBlock.EditBuildingBlock(moleculeBuildingBlock);
          Context.PublishEvent(new EntitySelectedEvent(moleculeBuilder, this));
       }
 
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(IMoleculeBuilder builder, IMoleculeBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(IMoleculeBuilder builder, MoleculeBuildingBlock targetBuildingBlock, string originalBuilderName = null)
       {
          var defaultStartFormulaDecoder = new DefaultStartFormulaDecoder();
          var macroCommand = base.GenerateAddCommandAndUpdateFormulaReferences(builder, targetBuildingBlock);

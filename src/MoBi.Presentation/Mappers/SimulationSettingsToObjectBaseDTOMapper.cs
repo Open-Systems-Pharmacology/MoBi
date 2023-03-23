@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Mappers
    public interface ISimulationSettingsToObjectBaseDTOMapper : 
       IMapper<SolverSettings, ObjectBaseDTO>,
       IMapper<OutputSchema, ObjectBaseDTO>,
-      IMapper<ISimulationSettings, ObjectBaseDTO>
+      IMapper<SimulationSettings, ObjectBaseDTO>
    {
    }
 
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Mappers
          };
       }
 
-      public ObjectBaseDTO MapFrom(ISimulationSettings input)
+      public ObjectBaseDTO MapFrom(SimulationSettings input)
       {
          return new ObjectBaseDTO
          {

@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
 
       private bool nodeIsSimulationNode(TreeListNode node)
       {
-         return node != null && (node.Tag.IsAnImplementationOf<BuildConfigurationNode>() || node.Tag.IsAnImplementationOf<SimulationNode>());
+         return node != null && (node.Tag.IsAnImplementationOf<SimulationConfigurationNode>() || node.Tag.IsAnImplementationOf<SimulationNode>());
       }
    }
 }

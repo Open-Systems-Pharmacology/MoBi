@@ -36,7 +36,7 @@ namespace MoBi.Core.Domain.Extensions
 
    public static class MoleculeBuildingBlockExtensions
    {
-      public static bool ContainsBuilder(this IMoleculeBuildingBlock buildingBlock, IObjectBase entity)
+      public static bool ContainsBuilder(this MoleculeBuildingBlock buildingBlock, IObjectBase entity)
       {
          if (!entity.CouldBeInMoleculeBuildingBlock())
             return false;

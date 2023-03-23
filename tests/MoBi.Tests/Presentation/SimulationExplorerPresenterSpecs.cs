@@ -116,8 +116,8 @@ namespace MoBi.Presentation
          A.CallTo(() => buildConfiguration.BuildingInfoForTemplateById(spatialStructureInfo.TemplateBuildingBlockId)).Returns(spatialStructureInfo);
 
          var moleculesInfo = new MoleculesInfo();
-         var templateBuildingBlock = A.Fake<IMoleculeBuildingBlock>().WithId("TemplateMolecules");
-         var moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>().WithId("Molecules");
+         var templateBuildingBlock = A.Fake<MoleculeBuildingBlock>().WithId("TemplateMolecules");
+         var moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>().WithId("Molecules");
          moleculesInfo.TemplateBuildingBlock = templateBuildingBlock;
          moleculesInfo.BuildingBlock = moleculeBuildingBlock;
          A.CallTo(() => buildConfiguration.BuildingInfoForTemplateById(moleculesInfo.TemplateBuildingBlockId)).Returns(moleculesInfo);
@@ -130,7 +130,7 @@ namespace MoBi.Presentation
          _buildingBlockInfoDTOUnchanged = moleculesInfo;
 
          _treeView = A.Fake<IUxTreeView>();
-         var configNode = new BuildConfigurationNode(buildConfiguration).Under(_simulationNode);
+         var configNode = new SimulationConfigurationNode(buildConfiguration).Under(_simulationNode);
          _nodeToChange = new BuildingBlockInfoNode(_buildingBlockInfoDTOChanged)
             .WithIcon(ApplicationIcons.SpatialStructureGreen)
             .Under(configNode);

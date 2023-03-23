@@ -5,7 +5,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class BuildConfigurationReporter : OSPSuiteTeXReporter<IBuildConfiguration>
+   internal class BuildConfigurationReporter : OSPSuiteTeXReporter<SimulationConfiguration>
    {
       private readonly ReactionBuildingBlockReporter _reactionBuildingBlockReporter;
       private readonly SpatialStructureReporter _spatialStructureReporter;
@@ -20,19 +20,19 @@ namespace MoBi.Core.Reporting
          _displayUnitRetriever = displayUnitRetriever;
       }
 
-      public override IReadOnlyCollection<object> Report(IBuildConfiguration buildConfiguration, OSPSuiteTracker buildTracker)
+      public override IReadOnlyCollection<object> Report(SimulationConfiguration simulationConfiguration, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
 
-         listToReport.AddRange(_spatialStructureReporter.Report(buildConfiguration.SpatialStructure, buildTracker));
-         listToReport.AddRange(new MoleculeBuildingBlockReporter().Report(buildConfiguration.Molecules, buildTracker));
-         listToReport.AddRange(_reactionBuildingBlockReporter.Report(buildConfiguration.Reactions, buildTracker));
-         listToReport.AddRange(new PassiveTransportBuildingBlockReporter().Report(buildConfiguration.PassiveTransports, buildTracker));
-         listToReport.AddRange(new ObserverBuildingBlockReporter().Report(buildConfiguration.Observers, buildTracker));
-         listToReport.AddRange(_simulationSettingsReporter.Report(buildConfiguration.SimulationSettings, buildTracker));
-         listToReport.AddRange(new EventGroupBuildingBlockReporter().Report(buildConfiguration.EventGroups, buildTracker));
-         listToReport.AddRange(new MoleculeStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(buildConfiguration.MoleculeStartValues, buildTracker));
-         listToReport.AddRange(new ParameterStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(buildConfiguration.ParameterStartValues, buildTracker));
+         listToReport.AddRange(_spatialStructureReporter.Report(simulationConfiguration.SpatialStructure, buildTracker));
+         listToReport.AddRange(new MoleculeBuildingBlockReporter().Report(simulationConfiguration.Molecules, buildTracker));
+         listToReport.AddRange(_reactionBuildingBlockReporter.Report(simulationConfiguration.Reactions, buildTracker));
+         listToReport.AddRange(new PassiveTransportBuildingBlockReporter().Report(simulationConfiguration.PassiveTransports, buildTracker));
+         listToReport.AddRange(new ObserverBuildingBlockReporter().Report(simulationConfiguration.Observers, buildTracker));
+         listToReport.AddRange(_simulationSettingsReporter.Report(simulationConfiguration.SimulationSettings, buildTracker));
+         listToReport.AddRange(new EventGroupBuildingBlockReporter().Report(simulationConfiguration.EventGroups, buildTracker));
+         listToReport.AddRange(new MoleculeStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(simulationConfiguration.MoleculeStartValues, buildTracker));
+         listToReport.AddRange(new ParameterStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(simulationConfiguration.ParameterStartValues, buildTracker));
 
          return listToReport;
       }

@@ -14,7 +14,7 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditMoleculeBuildingBlockPresenter :
-      ISingleStartPresenter<IMoleculeBuildingBlock>,
+      ISingleStartPresenter<MoleculeBuildingBlock>,
       IListener<EntitySelectedEvent>,
       IListener<RemovedEvent>,
       IListener<BulkUpdateFinishedEvent>,
@@ -24,11 +24,11 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   public class EditMoleculeBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditMoleculesBuildingBlockView, IEditMoleculeBuildingBlockPresenter, IMoleculeBuildingBlock, IMoleculeBuilder>,
+   public class EditMoleculeBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditMoleculesBuildingBlockView, IEditMoleculeBuildingBlockPresenter, MoleculeBuildingBlock, IMoleculeBuilder>,
       IEditMoleculeBuildingBlockPresenter
    {
       private readonly IMoleculeListPresenter _moleculeListPresenter;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private readonly IEditMoleculeBuilderPresenter _editMoleculeBuilderPresenter;
       private readonly IEditTransporterMoleculeContainerPresenter _editTransporterMoleculeContainerPresenter;
       private readonly IEditTransportBuilderPresenter _editTransportBuilderPresenter;
@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _moleculeBuildingBlock;
 
-      public override void Edit(IMoleculeBuildingBlock moleculeBuildingBlockToEdit)
+      public override void Edit(MoleculeBuildingBlock moleculeBuildingBlockToEdit)
       {
          _moleculeBuildingBlock = moleculeBuildingBlockToEdit;
          _moleculeListPresenter.Edit(moleculeBuildingBlockToEdit);
@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
       }
 
-      private void refresh(IMoleculeBuildingBlock moleculeBuildingBlockToEdit)
+      private void refresh(MoleculeBuildingBlock moleculeBuildingBlockToEdit)
       {
          setupEditPresenterFor(moleculeBuildingBlockToEdit.FirstOrDefault());
          UpdateCaption();

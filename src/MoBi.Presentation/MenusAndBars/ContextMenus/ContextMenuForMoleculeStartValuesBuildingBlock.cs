@@ -13,7 +13,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuForMoleculeStartValuesBuildingBlock : ContextMenuForMergableBuildingBlock<IMoleculeStartValuesBuildingBlock>
+   public class ContextMenuForMoleculeStartValuesBuildingBlock : ContextMenuForMergableBuildingBlock<MoleculeStartValuesBuildingBlock>
    {
       public ContextMenuForMoleculeStartValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
@@ -21,7 +21,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         var buildingBlock = _context.Get<IMoleculeStartValuesBuildingBlock>(dto.Id);
+         var buildingBlock = _context.Get<MoleculeStartValuesBuildingBlock>(dto.Id);
          base.InitializeWith(dto, presenter);
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Import)

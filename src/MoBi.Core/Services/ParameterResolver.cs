@@ -14,15 +14,15 @@ namespace MoBi.Core.Services
       /// <param name="spatialStructure">The spatial structure used to resolve the path</param>
       /// <param name="buildingBlock">The building block used to resolve the path</param>
       /// <returns>The matching parameter if found, otherwise null</returns>
-      IParameter Resolve(ObjectPath containerPath, string name, ISpatialStructure spatialStructure, IMoleculeBuildingBlock buildingBlock);
+      IParameter Resolve(ObjectPath containerPath, string name, ISpatialStructure spatialStructure, MoleculeBuildingBlock buildingBlock);
    }
 
    public class ParameterResolver : IParameterResolver
    {
       private ISpatialStructure _spatialStructure;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
 
-      public IParameter Resolve(ObjectPath containerPath, string name, ISpatialStructure spatialStructure, IMoleculeBuildingBlock buildingBlock)
+      public IParameter Resolve(ObjectPath containerPath, string name, ISpatialStructure spatialStructure, MoleculeBuildingBlock buildingBlock)
       {
          _spatialStructure = spatialStructure;
          _moleculeBuildingBlock = buildingBlock;

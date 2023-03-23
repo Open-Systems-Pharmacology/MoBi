@@ -279,7 +279,7 @@ namespace MoBi.UI.Views
          if (startValue == null) return;
          var color = _presenter.BackgroundColorFor(startValue);
          if (!_presenter.IsColorDefault(color))
-            gridView.AdjustAppearance(e, color, e.Appearance.ForeColor);
+            gridView.AdjustAppearance(e, color);
       }
 
       protected void OnFormulaButtonClick(object sender, ButtonPressedEventArgs e)

@@ -5,7 +5,7 @@ namespace MoBi.Core.Domain.Builder
 {
    public interface ISimulationSettingsFactory
    {
-      ISimulationSettings CreateDefault();
+      SimulationSettings CreateDefault();
    }
 
    public class SimulationSettingsFactory : ISimulationSettingsFactory
@@ -21,9 +21,9 @@ namespace MoBi.Core.Domain.Builder
          _solverSettingsFactory = solverSettingsFactory;
       }
 
-      public ISimulationSettings CreateDefault()
+      public SimulationSettings CreateDefault()
       {
-         var simulationSettings = _objectBaseFactory.Create<ISimulationSettings>();
+         var simulationSettings = _objectBaseFactory.Create<SimulationSettings>();
          simulationSettings.OutputSchema = _outputSchemaFactory.CreateDefault();
          simulationSettings.Solver = _solverSettingsFactory.CreateCVODE();
          simulationSettings.OutputSelections = new OutputSelections();

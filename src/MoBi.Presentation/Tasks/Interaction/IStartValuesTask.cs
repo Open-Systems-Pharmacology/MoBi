@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       where TStartValue : class, IStartValue
    {
       void ExtendStartValues(TBuildingBlock startValuesBuildingBlock);
-      TBuildingBlock CreateStartValuesForSimulation(IMoBiBuildConfiguration buildConfiguration);
+      TBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration);
 
       /// <summary>
       ///    Generates a command that will add the startValue to the building block

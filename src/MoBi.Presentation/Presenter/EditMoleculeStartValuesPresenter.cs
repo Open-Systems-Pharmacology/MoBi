@@ -7,17 +7,17 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditMoleculeStartValuesPresenter : ISingleStartPresenter<IMoleculeStartValuesBuildingBlock>, IListener<EntitySelectedEvent>
+   public interface IEditMoleculeStartValuesPresenter : ISingleStartPresenter<MoleculeStartValuesBuildingBlock>, IListener<EntitySelectedEvent>
    {
       void ExtendStartValues();
       void AddNewEmptyStartValue();
    }
 
-   public class EditMoleculeStartValuesPresenter : EditBuildingBlockPresenterBase<IEditMoleculeStartValuesView, IEditMoleculeStartValuesPresenter, IMoleculeStartValuesBuildingBlock, MoleculeStartValue>,
+   public class EditMoleculeStartValuesPresenter : EditBuildingBlockPresenterBase<IEditMoleculeStartValuesView, IEditMoleculeStartValuesPresenter, MoleculeStartValuesBuildingBlock, MoleculeStartValue>,
       IEditMoleculeStartValuesPresenter
    {
       private readonly IMoleculeStartValuesPresenter _moleculeStartValuesPresenter;
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValues;
+      private MoleculeStartValuesBuildingBlock _moleculeStartValues;
 
       public EditMoleculeStartValuesPresenter(IEditMoleculeStartValuesView view, IMoleculeStartValuesPresenter moleculeStartValuesPresenter, IFormulaCachePresenter formulaCachePresenter) :
             base(view, formulaCachePresenter)
@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Presenter
          view.AddMoleculeStartValuesView(_moleculeStartValuesPresenter.BaseView);
       }
 
-      public override void Edit(IMoleculeStartValuesBuildingBlock moleculeStartValues)
+      public override void Edit(MoleculeStartValuesBuildingBlock moleculeStartValues)
       {
          if (moleculeStartValues == null) return;
          _moleculeStartValues = moleculeStartValues;

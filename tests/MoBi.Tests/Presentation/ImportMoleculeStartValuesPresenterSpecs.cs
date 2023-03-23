@@ -24,7 +24,7 @@ namespace MoBi.Presentation
       protected IDialogCreator _dialogCreator;
       protected IDataTableToImportQuantityDTOMapperForMolecules _dataTableToImportQuantityDTOMapperForMolecules;
       protected IMoleculeStartValuesTask _startValuesTask;
-      protected IMoleculeStartValuesBuildingBlock _buildingBlock;
+      protected MoleculeStartValuesBuildingBlock _buildingBlock;
       private IMoBiContext _context;
       private IImportFromExcelTask _excelTask;
       protected QuantityImporterDTO _quantityImporterDTO;

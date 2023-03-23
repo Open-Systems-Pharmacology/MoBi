@@ -8,7 +8,7 @@ namespace MoBi.Core.Service
 {
    public abstract class concern_for_MoleculeResolver : ContextSpecification<MoleculeResolver>
    {
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private ISpatialStructure _spatialStructure;
       private MoleculeStartValue _moleculeStartValue;
 

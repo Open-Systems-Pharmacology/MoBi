@@ -22,9 +22,9 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(DataRepository dataRepository);
       ITreeNode CreateFor(ClassifiableSimulation classifiableSimulation);
       ITreeNode CreateFor(CurveChart chart);
-      ITreeNode CreateFor(IMoBiBuildConfiguration buildConfiguration);
+      ITreeNode CreateFor(SimulationConfiguration simulationConfiguration);
       ITreeNode CreateFor(IBuildingBlock buildingBlock);
-      ITreeNode CreateFor(IMoleculeBuildingBlock moleculeBuildingBlock);
+      ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock);
       ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder);
       ITreeNode CreateFor(IBuildingBlockInfo buildingBlockInfo);
       ITreeNode CreateForFavorites();
@@ -54,10 +54,10 @@ namespace MoBi.Presentation.Nodes
          var simNode = new SimulationNode(classifiableSimulation);
          var simulation = classifiableSimulation.Simulation;
 
-         if (simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks())
-            simNode.Icon = ApplicationIcons.SimulationRed;
+         // if (simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks())
+         //    simNode.Icon = ApplicationIcons.SimulationRed;
 
-         var buildConfigNode = CreateFor(simulation.MoBiBuildConfiguration);
+         var buildConfigNode = CreateFor(simulation.Configuration);
 
          simNode.AddChild(buildConfigNode);
          if (simulation.ResultsDataRepository != null)
@@ -68,32 +68,32 @@ namespace MoBi.Presentation.Nodes
          return simNode;
       }
 
-      public ITreeNode CreateFor(IMoBiBuildConfiguration buildConfiguration)
+      public ITreeNode CreateFor(SimulationConfiguration simulationConfiguration)
       {
-         var buildConfigNode = new BuildConfigurationNode(buildConfiguration);
+         var buildConfigNode = new SimulationConfigurationNode(simulationConfiguration);
          //add one node for each Building Block
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.SpatialStructureInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.MoleculesInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.ReactionsInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.PassiveTransportsInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.ObserversInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.EventGroupsInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.SimulationSettingsInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.MoleculeStartValuesInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.ParameterStartValuesInfo);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.SpatialStructure);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Molecules);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Reactions);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.PassiveTransports);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Observers);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.EventGroups);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.MoleculeStartValues);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.ParameterStartValues);
          return buildConfigNode;
       }
 
       public ITreeNode CreateFor(IBuildingBlock buildingBlock)
       {
-         var moleculeBuildingBlock = buildingBlock as IMoleculeBuildingBlock;
+         var moleculeBuildingBlock = buildingBlock as MoleculeBuildingBlock;
          if (moleculeBuildingBlock != null)
             return CreateFor(moleculeBuildingBlock);
 
          return createFor(buildingBlock);
       }
 
-      public ITreeNode CreateFor(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          var moleculeBuildingBlockNode = createFor(moleculeBuildingBlock);
          foreach (var molecule in moleculeBuildingBlock)
@@ -120,15 +120,15 @@ namespace MoBi.Presentation.Nodes
             .WithIcon(ApplicationIcons.IconByName(objectBase.Icon));
       }
 
-      private void addConfigurationNodeUnder(ITreeNode buildConfigNode, IBuildingBlockInfo buildingBlockInfo)
+      private void addConfigurationNodeUnder(ITreeNode buildConfigNode, IBuildingBlock buildingBlock)
       {
-         var buildingBlock = buildingBlockInfo.UntypedBuildingBlock;
+         // TODO this used to use buildingBlockInfo to create the tree
+         var statusIcon = ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
+         // var statusIcon = buildingBlockInfo.BuildingBlockChanged
+         //    ? ApplicationIcons.RedOverlayFor(buildingBlock.Icon)
+         //    : ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
 
-         var statusIcon = buildingBlockInfo.BuildingBlockChanged
-            ? ApplicationIcons.RedOverlayFor(buildingBlock.Icon)
-            : ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
-
-         CreateFor(buildingBlockInfo)
+         CreateFor(buildingBlock)
             .WithIcon(statusIcon)
             .Under(buildConfigNode);
       }

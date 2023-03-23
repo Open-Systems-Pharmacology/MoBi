@@ -18,8 +18,8 @@ namespace MoBi.Core.Mapper
    public abstract class concern_for_MoleculeStartValuesBuildingBlockToParameterDataTableMapper : ContextSpecification<MoleculeStartValuesBuildingBlockToParameterDataTableMapper>
    {
       protected DataTable _result;
-      protected IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
-      protected IMoleculeBuildingBlock _moleculeBuildingBlock;
+      protected MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      protected MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {

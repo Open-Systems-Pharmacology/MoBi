@@ -49,7 +49,7 @@ namespace MoBi.Core.Domain.Model
          SimulationSettingsInfo = new SimulationSettingsBuildingBlockInfo();
       }
 
-      public override IMoleculeBuildingBlock Molecules
+      public override MoleculeBuildingBlock Molecules
       {
          get => MoleculesInfo.BuildingBlock;
          set => MoleculesInfo.BuildingBlock = value;
@@ -73,13 +73,13 @@ namespace MoBi.Core.Domain.Model
          set => SpatialStructureInfo.BuildingBlock = value.DowncastTo<IMoBiSpatialStructure>();
       }
 
-      public override IMoleculeStartValuesBuildingBlock MoleculeStartValues
+      public override MoleculeStartValuesBuildingBlock MoleculeStartValues
       {
          get => MoleculeStartValuesInfo.BuildingBlock;
          set => MoleculeStartValuesInfo.BuildingBlock = value;
       }
 
-      public override IParameterStartValuesBuildingBlock ParameterStartValues
+      public override ParameterStartValuesBuildingBlock ParameterStartValues
       {
          get => ParameterStartValuesInfo.BuildingBlock;
          set => ParameterStartValuesInfo.BuildingBlock = value;
@@ -97,15 +97,10 @@ namespace MoBi.Core.Domain.Model
          set => EventGroupsInfo.BuildingBlock = value;
       }
 
-      public override ISimulationSettings SimulationSettings
+      public override SimulationSettings SimulationSettings
       {
          get => SimulationSettingsInfo.BuildingBlock;
          set => SimulationSettingsInfo.BuildingBlock = value;
-      }
-
-      public override void ClearCache()
-      {
-         /*do nothing in MoBi*/
       }
 
       public IEnumerable<IBuildingBlockInfo> AllBuildingBlockInfos()

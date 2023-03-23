@@ -16,9 +16,9 @@ namespace MoBi.Core.Services
    public abstract class CreateCommitChangesToBuildingBlockCommandTask<T> : ICreateCommitChangesToBuildingBlockCommandTask where T : class, IBuildingBlock
    {
       private readonly ICloneManagerForBuildingBlock _cloneManager;
-      private readonly Func<IBuildConfiguration, T> _buildingBlockRetriever;
+      private readonly Func<SimulationConfiguration, T> _buildingBlockRetriever;
 
-      protected CreateCommitChangesToBuildingBlockCommandTask(ICloneManagerForBuildingBlock cloneManager, Func<IBuildConfiguration, T> buildingBlockRetriever)
+      protected CreateCommitChangesToBuildingBlockCommandTask(ICloneManagerForBuildingBlock cloneManager, Func<SimulationConfiguration, T> buildingBlockRetriever)
       {
          _cloneManager = cloneManager;
          _buildingBlockRetriever = buildingBlockRetriever;
@@ -29,14 +29,14 @@ namespace MoBi.Core.Services
          var macroCommand = new MoBiMacroCommand();
          macroCommand.Add(CreateCommitCommand(simulation, templateBuildingBlock));
          //hide this command that is only required for separation of concerns
-         macroCommand.Add(new ResetFixedConstantParametersToDefaultInSimulationCommand<T>(simulation, _buildingBlockRetriever(simulation.BuildConfiguration)) { Visible = false });
+         macroCommand.Add(new ResetFixedConstantParametersToDefaultInSimulationCommand<T>(simulation, _buildingBlockRetriever(simulation.Configuration)) { Visible = false });
          return macroCommand;
       }
 
       protected IMoBiCommand CreateCommitCommand(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
          var typedTemplateBuildingBlock = templateBuildingBlock.DowncastTo<T>();
-         var cloneOfBuildingBlockInSimulation = _cloneManager.CloneBuildingBlock(_buildingBlockRetriever(simulation.BuildConfiguration));
+         var cloneOfBuildingBlockInSimulation = _cloneManager.CloneBuildingBlock(_buildingBlockRetriever(simulation.Configuration));
 
          return new UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand<T>(typedTemplateBuildingBlock, cloneOfBuildingBlockInSimulation, simulation);
       }

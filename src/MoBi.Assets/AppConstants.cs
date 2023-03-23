@@ -1401,7 +1401,7 @@ namespace MoBi.Assets
          public static readonly string SelectedNegativeValuesAllowed = "Mark selected as allowing neg. values";
          public static readonly string SelectedNegativeValuesNotAllowed = "Mark selected as not allowing neg. values";
          public static readonly string PerformCheckSelection = "Apply";
-         public static readonly string BuildConfiguration = "Configuration";
+         public static readonly string SimulationConfiguration = "Configuration";
          public static readonly string Search = "Search";
          public static readonly string SearchScope = "Scope";
          public static readonly string SearchResults = "Search results";

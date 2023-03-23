@@ -128,7 +128,7 @@ namespace MoBi.Core.Services
 
       private IEnumerable<string> allMoleculeNamesFromProject()
       {
-         return allNamesFrom<IMoleculeBuildingBlock, IMoleculeBuilder>(_context.CurrentProject.MoleculeBlockCollection);
+         return allNamesFrom<MoleculeBuildingBlock, IMoleculeBuilder>(_context.CurrentProject.MoleculeBlockCollection);
       }
 
       private IEnumerable<string> allReactionNamesFromProject()

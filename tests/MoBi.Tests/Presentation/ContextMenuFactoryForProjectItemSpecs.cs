@@ -18,7 +18,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _presenter = A.Fake<IBuildingBlockExplorerPresenter>();
-         sut = new ContextMenuFactoryForBuildingBlock<IMoleculeBuildingBlock>();
+         sut = new ContextMenuFactoryForBuildingBlock<MoleculeBuildingBlock>();
       }
    }
 
@@ -28,7 +28,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _result = sut.IsSatisfiedBy(new BuildingBlockViewItem(A.Fake<IMoleculeBuildingBlock>()), _presenter);
+         _result = sut.IsSatisfiedBy(new BuildingBlockViewItem(A.Fake<MoleculeBuildingBlock>()), _presenter);
       }
 
       [Observation]

@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_RemoveParameterStartValueFromBuildingBlockCommand : ContextSpecification<RemoveParameterStartValueFromBuildingBlockCommand>
    {
-      protected IParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
       protected ParameterStartValue _psv;
 

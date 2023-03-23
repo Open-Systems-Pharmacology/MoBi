@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Mapper
 {
    public abstract class concern_for_DataTableToImportQuantityDTOMapperForParameters : ContextSpecificationForImportStartValues<DataTableToImportQuantityDTOMapperForParameters>
    {
-      protected IParameterStartValuesBuildingBlock _startValuesBuildingBlock;
+      protected ParameterStartValuesBuildingBlock _startValuesBuildingBlock;
 
       protected override void Context()
       {

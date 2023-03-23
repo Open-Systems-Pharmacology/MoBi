@@ -7,14 +7,14 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateParameterStartValueInBuildingBlockCommand : BuildingBlockChangeCommandBase<IParameterStartValuesBuildingBlock>
+   public class UpdateParameterStartValueInBuildingBlockCommand : BuildingBlockChangeCommandBase<ParameterStartValuesBuildingBlock>
    {
       private readonly ObjectPath _path;
       private readonly double? _value;
       private double? _originalValue;
 
       public UpdateParameterStartValueInBuildingBlockCommand(
-         IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, 
+         ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, 
          ObjectPath path,
          double? value) : base(parameterStartValuesBuildingBlock)
       {

@@ -10,10 +10,10 @@ namespace MoBi.Core.Commands
 {
    public class ReplaceBuildingBlockTemplatesCommand : MoBiMacroCommand
    {
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private IEnumerable<CurveChartTemplate> _newTemplates;
 
-      public ReplaceBuildingBlockTemplatesCommand(ISimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> newTemplates)
+      public ReplaceBuildingBlockTemplatesCommand(SimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> newTemplates)
       {
          _simulationSettings = simulationSettings;
          _newTemplates = newTemplates;

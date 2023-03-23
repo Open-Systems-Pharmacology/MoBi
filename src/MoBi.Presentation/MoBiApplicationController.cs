@@ -87,7 +87,7 @@ namespace MoBi.Presentation
 
       protected override ISingleStartPresenter CreatePresenterForSubject<TSubject>(TSubject subject)
       {
-         if (subject.IsAnImplementationOf<IMoleculeBuildingBlock>())
+         if (subject.IsAnImplementationOf<MoleculeBuildingBlock>())
             return Start<IEditMoleculeBuildingBlockPresenter>();
 
          if (subject.IsAnImplementationOf<IReactionBuildingBlock>())
@@ -102,10 +102,10 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<IEventGroupBuildingBlock>())
             return Start<IEditEventGroupBuildingBlockPresenter>();
 
-         if (subject.IsAnImplementationOf<IMoleculeStartValuesBuildingBlock>())
+         if (subject.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())
             return Start<IEditMoleculeStartValuesPresenter>();
 
-         if (subject.IsAnImplementationOf<IParameterStartValuesBuildingBlock>())
+         if (subject.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
             return Start<IEditParameterStartValuesPresenter>();
 
          if (subject.IsAnImplementationOf<IObserverBuildingBlock>())
@@ -114,7 +114,7 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<IModelCoreSimulation>())
             return Start<IEditSimulationPresenter>();
 
-         if (subject.IsAnImplementationOf<ISimulationSettings>())
+         if (subject.IsAnImplementationOf<SimulationSettings>())
             return Start<IEditSimulationSettingsPresenter>();
 
          if (subject.IsAnImplementationOf<CurveChart>())

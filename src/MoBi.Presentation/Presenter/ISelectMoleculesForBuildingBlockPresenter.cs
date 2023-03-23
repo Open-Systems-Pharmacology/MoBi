@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectMoleculesForBuildingBlockPresenter : IDisposablePresenter
    {
-      IEnumerable<IMoleculeBuildingBlock> MoleculeBuildinBlocks { set; }
+      IEnumerable<MoleculeBuildingBlock> MoleculeBuildinBlocks { set; }
       NewMoleculeBuildingBlockDescription Selected { get; }
       bool AskForCreation();
       string CheckSelection();
@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Presenter
 
    internal class SelectMoleculesForBuildingBlockPresenter : AbstractDisposablePresenter<ISelectMoleculesForBuildingBlockView, ISelectMoleculesForBuildingBlockPresenter>, ISelectMoleculesForBuildingBlockPresenter
    {
-      private IEnumerable<IMoleculeBuildingBlock> _moleculeBuidingBlocks;
+      private IEnumerable<MoleculeBuildingBlock> _moleculeBuidingBlocks;
       private NewMoleculeBuildingBlockDescription _selected;
       private IList<DTOMoleculeSelection> _dtoMolecules;
 
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      public IEnumerable<IMoleculeBuildingBlock> MoleculeBuildinBlocks
+      public IEnumerable<MoleculeBuildingBlock> MoleculeBuildinBlocks
       {
          set { _moleculeBuidingBlocks = value; }
       }
@@ -87,7 +87,7 @@ namespace MoBi.Presentation.Presenter
          return dtoMoleculeSelections.Where(dto => dto.Selected).Select(dto => dto.MoleculeBuilder).ToList();
       }
 
-      private void addMolecules(IMoleculeBuildingBlock moleculeBuilders, IList<DTOMoleculeSelection> dtos)
+      private void addMolecules(MoleculeBuildingBlock moleculeBuilders, IList<DTOMoleculeSelection> dtos)
       {
          moleculeBuilders.Each(x => dtos.Add(new DTOMoleculeSelection
             {

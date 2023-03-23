@@ -98,7 +98,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       private IDiagramModel getSpaceBlockDiagramModel()
       {
-         var spaceBlockName = DiagramManager.PkModel.BuildConfiguration.SpatialStructure.Name;
+         var spaceBlockName = DiagramManager.PkModel.Configuration.SpatialStructure.Name;
          var project = _context.CurrentProject;
          var spatialStructure = project.SpatialStructureCollection.FindByName(spaceBlockName);
          if (spatialStructure == null)
@@ -127,7 +127,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       private IDiagramModel getReactionBlockDiagramModel()
       {
-         var reactionBlockName = DiagramManager.PkModel.BuildConfiguration.Reactions.Name;
+         var reactionBlockName = DiagramManager.PkModel.Configuration.Reactions.Name;
          var project = _context.CurrentProject;
          var reactionBlock = project.ReactionBlockCollection.FindByName(reactionBlockName);
 

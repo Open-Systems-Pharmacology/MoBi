@@ -5,7 +5,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddPKSimMoleculeCommand : ActiveObjectUICommand<IMoleculeBuildingBlock>
+   public class AddPKSimMoleculeCommand : ActiveObjectUICommand<MoleculeBuildingBlock>
    {
       private readonly IInteractionTasksForMoleculeBuilder _interactionTasksForMoleculeBuilder;
 

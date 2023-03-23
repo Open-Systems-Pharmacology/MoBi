@@ -1,39 +1,20 @@
-using System;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
-using DevExpress.Utils;
-using DevExpress.XtraEditors;
-using DevExpress.XtraLayout.Utils;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Controls;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 
 namespace MoBi.UI.Views
 {
-   public partial class BuildingBlockSelectionView : BaseUserControl, IBuildingBlockSelectionView
+   public class BuildingBlockSelectionView : ObjectBaseSelectionView, IBuildingBlockSelectionView
    {
       private ScreenBinder<BuildingBlockSelectionDTO> _screenBinder;
       private IBuildingBlockSelectionPresenter _presenter;
-      public event EventHandler<ViewResizedEventArgs> HeightChanged = delegate { };
-
-      public BuildingBlockSelectionView()
-      {
-         InitializeComponent();
-      }
-
-      public void AttachPresenter(IBuildingBlockSelectionPresenter presenter)
-      {
-         _presenter = presenter;
-      }
-
+      
       public override void InitializeBinding()
       {
          _screenBinder = new ScreenBinder<BuildingBlockSelectionDTO>();
-         _screenBinder.Bind(x => x.BuildingBlock)
+         _screenBinder.Bind(x => x.SelectedObject)
             .To(cbBuildingBlocks)
             .WithValues(x => _presenter.AllAvailableBlocks)
             .AndDisplays(x => _presenter.DisplayNameFor(x))
@@ -43,11 +24,13 @@ namespace MoBi.UI.Views
          btnNew.Click += (o, e) => OnEvent(() => _presenter.CreateNew());
       }
 
-      public bool NewVisible
+      public override bool HasError => _screenBinder.HasError;
+      
+      public void AttachPresenter(IBuildingBlockSelectionPresenter presenter)
       {
-         set => layoutItemNew.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         _presenter = presenter;
       }
-
+      
       public void BindTo(BuildingBlockSelectionDTO buildingBlockSelectionDTO)
       {
          _screenBinder.BindToSource(buildingBlockSelectionDTO);
@@ -59,27 +42,43 @@ namespace MoBi.UI.Views
          _screenBinder.RefreshListElements();
       }
 
-      public void AdjustHeight()
+      protected override void DisposeBinders()
       {
-         HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
+         _screenBinder.Dispose();
+      }
+   }
+
+   public class ModuleSelectionView : ObjectBaseSelectionView, IModuleSelectionView
+   {
+      private IModuleSelectionPresenter _presenter;
+      private ScreenBinder<ModuleSelectionDTO> _screenBinder;
+      public override void InitializeBinding()
+      {
+         _screenBinder = new ScreenBinder<ModuleSelectionDTO>();
+         _screenBinder.Bind(x => x.SelectedObject)
+            .To(cbBuildingBlocks)
+            .WithValues(x => _presenter.AllAvailableModules)
+            .AndDisplays(x => _presenter.DisplayNameFor(x))
+            .Changed += () => OnEvent(_presenter.SelectedModuleChanged);
+
+         RegisterValidationFor(_screenBinder, NotifyViewChanged);
+         btnNew.Click += (o, e) => OnEvent(() => _presenter.CreateNew());
+      }
+      
+      protected override void DisposeBinders()
+      {
+         _screenBinder.Dispose();
       }
 
-      public void Repaint()
+      public void AttachPresenter(IModuleSelectionPresenter presenter)
       {
-         Refresh();
+         _presenter = presenter;
       }
 
-      public int OptimalHeight => layoutItemComboBox.Height;
-
-      public override bool HasError => _screenBinder.HasError;
-
-      public override void InitializeResources()
+      public void BindTo(ModuleSelectionDTO moduleSelectionDTO)
       {
-         base.InitializeResources();
-         btnNew.Image = ApplicationIcons.Create.ToImage(IconSizes.Size16x16);
-         btnNew.ImageLocation = ImageLocation.MiddleCenter;
-         layoutItemNew.AdjustButtonSizeWithImageOnly(layoutControl);
-         cbBuildingBlocks.Properties.AllowHtmlDraw = DefaultBoolean.True;
+         _screenBinder.BindToSource(moduleSelectionDTO);
+         AdjustHeight();
       }
    }
 }

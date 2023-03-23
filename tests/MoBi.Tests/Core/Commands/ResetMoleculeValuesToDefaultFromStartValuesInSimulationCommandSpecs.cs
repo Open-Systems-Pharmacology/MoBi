@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand : ContextSpecification<ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand>
    {
       private IMoBiSimulation _simulation;
-      protected IMoleculeStartValuesBuildingBlock _moleculeStartValues;
+      protected MoleculeStartValuesBuildingBlock _moleculeStartValues;
       protected IContainer _liver;
       protected IMoBiContext _context;
       protected IMoBiFormulaTask _formulaTask;

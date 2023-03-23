@@ -8,7 +8,6 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.SBML;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain;
@@ -205,14 +204,14 @@ namespace MoBi.Presentation
    {
       private IMoBiProject _project;
       private IWithIdRepository _objectBaseRepository;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private IMoBiReactionBuildingBlock _moBiReactionBuildingBlock;
       private IMoBiSpatialStructure _spatialStructure;
       private IContainer _topContainer;
       private IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       private IObserverBuildingBlock _observerBuildingBlock;
       private IEventGroupBuildingBlock _eventGroupBuildingBlock;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
 
       protected override void Context()
       {
@@ -220,11 +219,11 @@ namespace MoBi.Presentation
          _project = A.Fake<IMoBiProject>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
          _spatialStructure = A.Fake<IMoBiSpatialStructure>();
-         _simulationSettings = A.Fake<ISimulationSettings>();
+         _simulationSettings = A.Fake<SimulationSettings>();
          _moBiReactionBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _context.Create<IMoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
+         A.CallTo(() => _context.Create<MoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
          A.CallTo(() => _reactionBuildingBlockFactory.Create()).Returns(_moBiReactionBuildingBlock);
          A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).Returns(_spatialStructure);
          A.CallTo(() => _simulationSettingsFactory.CreateDefault()).Returns(_simulationSettings);

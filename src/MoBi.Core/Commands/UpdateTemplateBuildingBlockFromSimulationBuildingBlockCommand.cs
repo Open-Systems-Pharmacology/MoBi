@@ -37,7 +37,9 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         var buildingBlockInfo = _simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(oldTemplateBuildingBlock);
+         //TODO
+         /*var buildingBlockInfo = _simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(oldTemplateBuildingBlock);
+         
          var buildingBlockUsedInSimulation = buildingBlockInfo.UntypedBuildingBlock;
 
          //Update simulation info and save the old one for undo
@@ -55,7 +57,7 @@ namespace MoBi.Core.Commands
 
          //notify version changed
          var buildingBlockVersionUpdater = context.Resolve<IBuildingBlockVersionUpdater>();
-         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(newTemplateBuildingBlock, newTemplateBuildingBlock.Version);
+         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(newTemplateBuildingBlock, newTemplateBuildingBlock.Version);*/
       }
 
       private T oldTemplateBuildingBlock

@@ -41,7 +41,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _activeTransportBuilderContainer = new TransporterMoleculeContainer();
-         _buildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _buildingBlock = A.Fake<MoleculeBuildingBlock>();
          _dto = new TransporterMoleculeContainerDTO();
          A.CallTo(() => _transporterMoleculeContainerMapper.MapFrom(_activeTransportBuilderContainer)).Returns(_dto);
          sut.BuildingBlock = _buildingBlock;

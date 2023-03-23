@@ -6,14 +6,14 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateMoleculeStartValueScaleDivisorCommand : BuildingBlockChangeCommandBase<IMoleculeStartValuesBuildingBlock>
+   public class UpdateMoleculeStartValueScaleDivisorCommand : BuildingBlockChangeCommandBase<MoleculeStartValuesBuildingBlock>
    {
       private readonly double _newScaleDivisor;
       private readonly double _oldScaleDivisor;
       private MoleculeStartValue _startValue;
       private readonly string _startValueId;
 
-      public UpdateMoleculeStartValueScaleDivisorCommand(IMoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor) 
+      public UpdateMoleculeStartValueScaleDivisorCommand(MoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor) 
          : base(buildingBlock)
       {
          _newScaleDivisor = newScaleDivisor;

@@ -27,7 +27,7 @@ namespace MoBi.Core.Service
    internal class When_told_to_create_CommitChangesToParameterStartValuesCommand : concern_for_CreateCommitChangesToParameterStartValuesBuildingBlockCommandTaskSpecs
    {
       private IMoBiSimulation _simulation;
-      private IParameterStartValuesBuildingBlock _buildingBlock;
+      private ParameterStartValuesBuildingBlock _buildingBlock;
       private IMoBiCommand _resultCommand;
       private IBuildConfiguration _buildConfiguration;
 
@@ -36,7 +36,7 @@ namespace MoBi.Core.Service
          base.Context();
          _buildingBlock = new ParameterStartValuesBuildingBlock();
          _simulation = A.Fake<IMoBiSimulation>();
-         _buildConfiguration = new BuildConfiguration {ParameterStartValues = A.Fake<IParameterStartValuesBuildingBlock>()};
+         _buildConfiguration = new BuildConfiguration {ParameterStartValues = A.Fake<ParameterStartValuesBuildingBlock>()};
          A.CallTo(() => _simulation.BuildConfiguration).Returns(_buildConfiguration);
       }
 

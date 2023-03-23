@@ -67,7 +67,7 @@ namespace MoBi.UI.Diagram
    {
       private IMultipleStringSelectionPresenter _multipleStringSelectionPresenter;
       private IEnumerable<string> _possibleMoleculeNames;
-      private IReadOnlyList<IMoleculeBuildingBlock> _moleculeBuildingBlocks;
+      private IReadOnlyList<MoleculeBuildingBlock> _moleculeBuildingBlocks;
 
       protected override void Context()
       {
@@ -77,7 +77,7 @@ namespace MoBi.UI.Diagram
 
          A.CallTo(() => _multipleStringSelectionPresenter.Show(A<string>._, A<string>._, A<IEnumerable<string>>._, A<string>._, true)).Invokes(x => _possibleMoleculeNames = x.GetArgument<IEnumerable<string>>(2)).Returns(Enumerable.Empty<string>());
 
-         _moleculeBuildingBlocks = new List<IMoleculeBuildingBlock>
+         _moleculeBuildingBlocks = new List<MoleculeBuildingBlock>
          {
             new MoleculeBuildingBlock {new MoleculeBuilder {Name = "b"}, new MoleculeBuilder {Name = "a"}},
             new MoleculeBuildingBlock {new MoleculeBuilder {Name = "a"}, new MoleculeBuilder {Name = "b"}}

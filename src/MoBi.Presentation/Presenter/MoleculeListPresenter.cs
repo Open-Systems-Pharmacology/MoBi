@@ -20,7 +20,7 @@ using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IMoleculeListPresenter : IEditPresenter<IMoleculeBuildingBlock>,
+   public interface IMoleculeListPresenter : IEditPresenter<MoleculeBuildingBlock>,
       IPresenterWithContextMenu<IViewItem>,
       IListener<EntitySelectedEvent>,
       IListener<AddedEvent>,
@@ -35,10 +35,10 @@ namespace MoBi.Presentation.Presenter
       /// <param name="dto"></param>
       void Select(ObjectBaseDTO dto);
 
-      IMoleculeBuildingBlock MoleculeBuildingBlock { get; }
+      MoleculeBuildingBlock MoleculeBuildingBlock { get; }
    }
 
-   internal class MoleculeListPresenter : AbstractEditPresenter<IMoleculeListView, IMoleculeListPresenter, IMoleculeBuildingBlock>,
+   internal class MoleculeListPresenter : AbstractEditPresenter<IMoleculeListView, IMoleculeListPresenter, MoleculeBuildingBlock>,
       IMoleculeListPresenter
    {
       private readonly IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderToDTOMoleculeBuilderMapper;
@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Presenter
       private bool _disableEventsForHeavyWork;
       private readonly ITreeNode _favoritesNode;
       private readonly ITreeNode _userDefinedParametersNode;
-      public IMoleculeBuildingBlock MoleculeBuildingBlock { get; private set; }
+      public MoleculeBuildingBlock MoleculeBuildingBlock { get; private set; }
 
       public MoleculeListPresenter(IMoleculeListView view,
          IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderToDTOMoleculeBuilderMapper,
@@ -61,7 +61,7 @@ namespace MoBi.Presentation.Presenter
          _userDefinedParametersNode = treeNodeFactory.CreateForUserDefined();
       }
 
-      public override void Edit(IMoleculeBuildingBlock objectToEdit)
+      public override void Edit(MoleculeBuildingBlock objectToEdit)
       {
          MoleculeBuildingBlock = objectToEdit;
          _view.Clear();

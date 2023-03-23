@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Tasks
       IVisitor<TransporterMoleculeContainer>,
       IVisitor<ITransportBuilder>,
       IVisitor<IApplicationMoleculeBuilder>,
-      IVisitor<ISimulationSettings>,
+      IVisitor<SimulationSettings>,
       IVisitor<IEventGroupBuilder>
    {
       private readonly StringChanges _changes = new StringChanges();
@@ -344,14 +344,14 @@ namespace MoBi.Presentation.Tasks
          checkBuildingBlock(buildingBlock);
       }
 
-      public void Visit(ISimulationSettings simulationSettings)
+      public void Visit(SimulationSettings simulationSettings)
       {
          checkBuildingBlock(simulationSettings);
          checkOutputSelectionIn(simulationSettings);
          checkChartTemplatesIn(simulationSettings);
       }
 
-      private void checkChartTemplatesIn(ISimulationSettings simulationSettings)
+      private void checkChartTemplatesIn(SimulationSettings simulationSettings)
       {
          var chartTemplates = simulationSettings.ChartTemplates.ToList();
          if (!referencesOldName(chartTemplates))
@@ -377,7 +377,7 @@ namespace MoBi.Presentation.Tasks
          _changes.Add(simulationSettings, _buildingBlock, new ReplaceBuildingBlockTemplatesCommand(simulationSettings, newChartTemplates));
       }
 
-      private void checkOutputSelectionIn(ISimulationSettings simulationSettings)
+      private void checkOutputSelectionIn(SimulationSettings simulationSettings)
       {
          var outputSelections = simulationSettings.OutputSelections;
          if (!referencesOldName(outputSelections))

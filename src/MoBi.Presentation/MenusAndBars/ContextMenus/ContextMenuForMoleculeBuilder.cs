@@ -120,7 +120,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.Rename);
       }
 
-      private IMenuBarItem createRemoveItemFor(IMoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder)
+      private IMenuBarItem createRemoveItemFor(MoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithRemoveCommand(moleculeBuildingBlock, moleculeBuilder)
@@ -148,31 +148,31 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.LoadFromTemplate);
       }
       
-      private IMenuBarItem createAddNewMoleculeBuilder(IMoleculeBuildingBlock moleculeBuildingBlock)
+      private IMenuBarItem createAddNewMoleculeBuilder(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Molecule))
-            .WithCommandFor<AddNewCommandFor<IMoleculeBuildingBlock, IMoleculeBuilder>, IMoleculeBuildingBlock>(moleculeBuildingBlock, _container)
+            .WithCommandFor<AddNewCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>, MoleculeBuildingBlock>(moleculeBuildingBlock, _container)
             .WithIcon(ApplicationIcons.MoleculeAdd);
       }
 
-      private IMenuBarItem createAddPKSimMoleculeFromTemplate(IMoleculeBuildingBlock moleculeBuildingBlock)
+      private IMenuBarItem createAddPKSimMoleculeFromTemplate(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddPKSimMolecule)
-            .WithCommandFor<AddPKSimMoleculeCommand, IMoleculeBuildingBlock>(moleculeBuildingBlock, _container)
+            .WithCommandFor<AddPKSimMoleculeCommand, MoleculeBuildingBlock>(moleculeBuildingBlock, _container)
             .WithIcon(ApplicationIcons.PKSimMoleculeAdd);
       }
 
-      private IMenuBarItem createAddExistingMoleculeBuilder(IMoleculeBuildingBlock moleculeBuildingBlock)
+      private IMenuBarItem createAddExistingMoleculeBuilder(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.Molecule))
-            .WithCommandFor<AddExistingCommandFor<IMoleculeBuildingBlock, IMoleculeBuilder>, IMoleculeBuildingBlock>(moleculeBuildingBlock, _container)
+            .WithCommandFor<AddExistingCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>, MoleculeBuildingBlock>(moleculeBuildingBlock, _container)
             .WithIcon(ApplicationIcons.MoleculeLoad);
       }
 
-      private IMenuBarItem createAddExistingMoleculeBuilderFromTemplate(IMoleculeBuildingBlock moleculeBuildingBlock)
+      private IMenuBarItem createAddExistingMoleculeBuilderFromTemplate(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(ObjectTypes.Molecule))
-            .WithCommandFor<AddExistingFromTemplateCommandFor<IMoleculeBuildingBlock, IMoleculeBuilder>, IMoleculeBuildingBlock>(moleculeBuildingBlock, _container)
+            .WithCommandFor<AddExistingFromTemplateCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>, MoleculeBuildingBlock>(moleculeBuildingBlock, _container)
             .WithIcon(ApplicationIcons.LoadFromTemplate);
       }
 

@@ -39,13 +39,13 @@ namespace MoBi.Helpers
          return reactionBuildingBlockFactory.Create().WithName(buildingBlockName);
       }
 
-      public static ISimulationSettings CreateDefaultSimulationSettings(string buildingBlockName = "Reactions")
+      public static SimulationSettings CreateDefaultSimulationSettings(string buildingBlockName = "Reactions")
       {
          var simulationSettingsFactory = IoC.Resolve<ISimulationSettingsFactory>();
          return simulationSettingsFactory.CreateDefault().WithName(buildingBlockName);
       }
 
-      public static IMoleculeBuildingBlock CreateDefaultMolecules(string buildingBlockName = "Molecules") => createBuildingBlock<IMoleculeBuildingBlock>(buildingBlockName);
+      public static MoleculeBuildingBlock CreateDefaultMolecules(string buildingBlockName = "Molecules") => createBuildingBlock<MoleculeBuildingBlock>(buildingBlockName);
 
       public static IPassiveTransportBuildingBlock CreateDefaultPassiveTransports(string buildingBlockName = "PassiveTransports") => createBuildingBlock<IPassiveTransportBuildingBlock>(buildingBlockName);
 
@@ -74,13 +74,13 @@ namespace MoBi.Helpers
          return modelCreator.CreateModelFrom(buildConfiguration, simulationName);
       }
 
-      public static IParameterStartValuesBuildingBlock CreateParameterStartValuesFor(IMoBiBuildConfiguration buildConfiguration)
+      public static ParameterStartValuesBuildingBlock CreateParameterStartValuesFor(IMoBiBuildConfiguration buildConfiguration)
       {
          var startValuesCreator = IoC.Resolve<IParameterStartValuesCreator>();
          return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);
       }
 
-      public static IMoleculeStartValuesBuildingBlock CreateMoleculeStartValuesFor(IMoBiBuildConfiguration buildConfiguration)
+      public static MoleculeStartValuesBuildingBlock CreateMoleculeStartValuesFor(IMoBiBuildConfiguration buildConfiguration)
       {
          var startValuesCreator = IoC.Resolve<IMoleculeStartValuesCreator>();
          return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);

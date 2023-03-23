@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Tasks
 
    class When_Start_search_is_called_for_all_building_blocks_of_one_Type : concern_for_SearchTaskSpecs
    {
-      private IMoleculeStartValuesBuildingBlock _buildingBlock;
+      private MoleculeStartValuesBuildingBlock _buildingBlock;
       private SearchOptions _options;
       private IMoBiProject _project;
       private MoleculeStartValuesBuildingBlock _otherBuildingBlock;

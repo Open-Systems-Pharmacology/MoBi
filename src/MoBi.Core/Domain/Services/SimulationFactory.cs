@@ -2,6 +2,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 
@@ -10,10 +11,10 @@ namespace MoBi.Core.Domain.Services
    public interface ISimulationFactory
    {
       /// <summary>
-      ///    Creates and returns a new <see cref="IMoBiSimulation" /> using the <paramref name="buildConfiguration" /> and
+      ///    Creates and returns a new <see cref="IMoBiSimulation" /> using the <paramref name="simulationConfiguration" /> and
       ///    <paramref name="model" /> 
       /// </summary>
-      IMoBiSimulation CreateFrom(IMoBiBuildConfiguration buildConfiguration, IModel model);
+      IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model);
 
       /// <summary>
       ///    Creates and returns a new <see cref="IMoBiSimulation" /> with an empty <see cref="IMoBiBuildConfiguration" />
@@ -36,12 +37,12 @@ namespace MoBi.Core.Domain.Services
          _diagramManagerFactory = diagramManagerFactory;
       }
 
-      public IMoBiSimulation CreateFrom(IMoBiBuildConfiguration buildConfiguration, IModel model)
+      public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model)
       {
          var moBiSimulation = new MoBiSimulation()
          {
             DiagramManager = _diagramManagerFactory.Create<ISimulationDiagramManager>(),
-            BuildConfiguration = buildConfiguration,
+            Configuration = simulationConfiguration,
             Model = model,
             Creation = _creationMetaDataFactory.Create(),
             HasChanged = true,
@@ -55,7 +56,7 @@ namespace MoBi.Core.Domain.Services
 
       public IMoBiSimulation Create()
       {
-         return CreateFrom(new MoBiBuildConfiguration(), null);
+         return CreateFrom(new SimulationConfiguration(), null);
       }
    }
 }

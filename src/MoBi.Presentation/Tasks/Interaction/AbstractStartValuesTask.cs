@@ -27,8 +27,8 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       protected IIgnoreReplaceMergeManager<TStartValue> _startValueBuildingBlockMergeManager;
       protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
-      
-      private readonly ISpatialStructureFactory _spatialStructureFactory;
+
+      protected readonly ISpatialStructureFactory _spatialStructureFactory;
       private readonly IMapper<ImportedQuantityDTO, TStartValue> _dtoToQuantityToParameterStartValueMapper;
       private readonly IStartValuePathTask<TBuildingBlock, TStartValue> _startValuePathTask;
 
@@ -80,13 +80,13 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       /// <summary>
       ///    Updates the start values defined in <paramref name="startValuesToUpdate" /> with the values defined in
-      ///    <paramref name="startValueInfo" />. Returns a template cache containing all values defined in the template
+      ///    <paramref name="startValueBuildingBlock" />. Returns a template cache containing all values defined in the template
       /// </summary>
-      public ICache<string, TStartValue> UpdateValuesFromTemplate(TBuildingBlock startValuesToUpdate, IBuildingBlockInfo<TBuildingBlock> startValueInfo)
+      public ICache<string, TStartValue> UpdateValuesFromTemplate(TBuildingBlock startValuesToUpdate, TBuildingBlock startValueBuildingBlock)
       {
-         var templateStartValues = startValueInfo.BuildingBlock;
-         if (startValueInfo.BuildingBlockIsTemplate)
-            templateStartValues = startValueInfo.TemplateBuildingBlock;
+         var templateStartValues = startValueBuildingBlock;
+         // if (startValueInfo.BuildingBlockIsTemplate)
+         //    templateStartValues = startValueInfo.TemplateBuildingBlock;
 
          var startValueCache = startValuesToUpdate.ToCache();
          var templateCache = templateStartValues.ToCache();
@@ -145,17 +145,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          return nameList.Distinct();
       }
 
+      protected abstract MoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(TBuildingBlock buildingBlock);
+
+      protected abstract ISpatialStructure SpatialStructureReferencedBy(TBuildingBlock buildingBlock);
+
       public abstract bool IsEquivalentToOriginal(TStartValue startValue, TBuildingBlock buildingBlock);
-
-      protected ISpatialStructure SpatialStructureReferencedBy(TBuildingBlock buildingBlock)
-      {
-         return Context.Get<ISpatialStructure>(buildingBlock.SpatialStructureId) ?? _spatialStructureFactory.Create();
-      }
-
-      protected IMoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(TBuildingBlock buildingBlock)
-      {
-         return Context.Get<IMoleculeBuildingBlock>(buildingBlock.MoleculeBuildingBlockId) ?? Context.Create<IMoleculeBuildingBlock>(buildingBlock.MoleculeBuildingBlockId);
-      }
 
       /// <summary>
       ///    Checks that the formula is equivalent for the start value. This includes evaluation of constant formula to a double
@@ -258,7 +252,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected abstract IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToRemove);
       protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToAdd); 
       public abstract void ExtendStartValues(TBuildingBlock startValuesBuildingBlock);
-      public abstract TBuildingBlock CreateStartValuesForSimulation(IMoBiBuildConfiguration buildConfiguration);
+      public abstract TBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration buildConfiguration);
       public abstract IMoBiCommand AddStartValueToBuildingBlock(TBuildingBlock buildingBlock, TStartValue startValue);
       public abstract IMoBiCommand ImportStartValuesToBuildingBlock(TBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues);
       public abstract IMoBiCommand RemoveStartValueFromBuildingBlockCommand(TStartValue startValue, TBuildingBlock buildingBlock);

@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_RemoveMoleculeStartValueFromBuildingBlockCommand : ContextSpecification<RemoveMoleculeStartValueFromBuildingBlockCommand>
    {
-      protected IMoleculeStartValuesBuildingBlock _buildingBlock;
+      protected MoleculeStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
 
       private IDimension _fakeDimension;

@@ -9,7 +9,7 @@ namespace MoBi.Core.Commands
 {
    public class ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand : ResetQuantityValuesToDefaultFromStartValuesInSimulation<MoleculeStartValue>
    {
-      public ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand(IMoBiSimulation simulation) : base(simulation, simulation.BuildConfiguration.MoleculeStartValues)
+      public ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand(IMoBiSimulation simulation) : base(simulation, simulation.Configuration.MoleculeStartValues)
       {
       }
 

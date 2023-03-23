@@ -37,7 +37,7 @@ namespace MoBi.Presentation
    internal class When_handling_selected_event_for_MoleculeBuilder : concern_for_MoleculeListPresenterSpecs
    {
       private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {
@@ -64,7 +64,7 @@ namespace MoBi.Presentation
       concern_for_MoleculeListPresenterSpecs
    {
       private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private IParameter _parameter;
 
       protected override void Context()

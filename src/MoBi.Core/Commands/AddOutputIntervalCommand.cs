@@ -7,7 +7,7 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class OutputIntervalCommandBase : BuildingBlockChangeCommandBase<ISimulationSettings>
+   public abstract class OutputIntervalCommandBase : BuildingBlockChangeCommandBase<SimulationSettings>
    {
       protected OutputSchema _schema;
       protected OutputInterval _interval;
@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
          _schema = _buildingBlock.OutputSchema;
       }
 
-      protected OutputIntervalCommandBase(OutputSchema schema, OutputInterval interval, ISimulationSettings simulationSettings) : base(simulationSettings)
+      protected OutputIntervalCommandBase(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings) : base(simulationSettings)
       {
          _schema = schema;
          _interval = interval;
@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
 
    public class AddOutputIntervalCommand : OutputIntervalCommandBase
    {
-      public AddOutputIntervalCommand(OutputSchema schema, OutputInterval interval, ISimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
+      public AddOutputIntervalCommand(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
       {
          CommandType = AppConstants.Commands.AddCommand;
          Description = AppConstants.Commands.AddOutputIntervalTo(simulationSettings.Name);
@@ -55,7 +55,7 @@ namespace MoBi.Core.Commands
 
    public class RemoveOutputIntervalCommand : OutputIntervalCommandBase
    {
-      public RemoveOutputIntervalCommand(OutputSchema schema, OutputInterval interval, ISimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
+      public RemoveOutputIntervalCommand(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
       {
          CommandType = AppConstants.Commands.DeleteCommand;
          Description = AppConstants.Commands.RemoveOutputIntervalFrom(simulationSettings.Name);

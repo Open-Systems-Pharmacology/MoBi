@@ -29,23 +29,30 @@ namespace MoBi.Core.Domain.Services
 
       public IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone)
       {
-         var buildConfig = new MoBiBuildConfiguration
-         {
-            MoleculesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculesInfo),
-            ReactionsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ReactionsInfo),
-            SpatialStructureInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.SpatialStructureInfo),
-            PassiveTransportsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.PassiveTransportsInfo),
-            ObserversInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ObserversInfo),
-            EventGroupsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.EventGroupsInfo),
-            ParameterStartValuesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ParameterStartValuesInfo),
-            MoleculeStartValuesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculeStartValuesInfo),
-            SimulationSettingsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.SimulationSettingsInfo)
-         };
-
+         // var buildConfig = new MoBiBuildConfiguration
+         // {
+         //    MoleculesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculesInfo),
+         //    ReactionsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ReactionsInfo),
+         //    SpatialStructureInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.SpatialStructureInfo),
+         //    PassiveTransportsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.PassiveTransportsInfo),
+         //    ObserversInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ObserversInfo),
+         //    EventGroupsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.EventGroupsInfo),
+         //    ParameterStartValuesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.ParameterStartValuesInfo),
+         //    MoleculeStartValuesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculeStartValuesInfo),
+         //    SimulationSettingsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.SimulationSettingsInfo)
+         // };
+         
          var model = _cloneManagerForModel.CloneModel(simulationToClone.Model);
-         var simulation = _simulationFactory.CreateFrom(buildConfig, model);
+
+         var simulation = _simulationFactory.CreateFrom(simulationConfigurationCloneFor(simulationToClone.Configuration), model);
          simulation.UpdatePropertiesFrom(simulationToClone,_cloneManagerForModel);
          return simulation;
+      }
+
+      // TODO: do we need to create an actual clone?
+      private SimulationConfiguration simulationConfigurationCloneFor(SimulationConfiguration configuration)
+      {
+         return configuration;
       }
 
       public T CloneBuildingBlock<T>(T toClone) where T : class, IBuildingBlock

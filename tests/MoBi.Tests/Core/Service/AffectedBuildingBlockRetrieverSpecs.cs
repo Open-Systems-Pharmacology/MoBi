@@ -14,12 +14,12 @@ namespace MoBi.Core.Service
    {
       protected IMoBiSimulation _simulation;
       protected IModel _model;
-      protected IMoleculeBuildingBlock _moleculeBuidingBlock;
+      protected MoleculeBuildingBlock _moleculeBuidingBlock;
       protected IMoBiReactionBuildingBlock _reactionBuildingBlock;
       protected IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       protected IEventGroupBuildingBlock _eventGroupBuildingBlock;
-      protected IMoleculeStartValuesBuildingBlock _msvBuildingBlock;
-      protected IParameterStartValuesBuildingBlock _psvBuildingBlock;
+      protected MoleculeStartValuesBuildingBlock _msvBuildingBlock;
+      protected ParameterStartValuesBuildingBlock _psvBuildingBlock;
       protected IMoBiSpatialStructure _spatialStructure;
       protected IObserverBuildingBlock _observerBuildingBlock;
       protected IMoBiBuildConfiguration _buildConfiguration;

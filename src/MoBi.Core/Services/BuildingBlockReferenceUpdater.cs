@@ -42,7 +42,8 @@ namespace MoBi.Core.Services
 
       public void UpdateTemplatesReferencesIn(IMoBiSimulation simulation, IMoBiProject project)
       {
-         UpdateTemplatesReferencesIn(simulation.MoBiBuildConfiguration, project);
+         //TODO
+         // UpdateTemplatesReferencesIn(simulation.MoBiBuildConfiguration, project);
       }
 
       public void UpdateTemplatesReferencesIn(IMoBiBuildConfiguration buildConfiguration, IMoBiProject project)
@@ -55,11 +56,12 @@ namespace MoBi.Core.Services
 
       public void UpdateTemplateReference(IMoBiProject project, IBuildingBlock templateBuildingBlock)
       {
-         foreach (var simulation in project.SimulationsCreatedUsing(templateBuildingBlock))
-         {
-            var buildingBlockInfo = simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock);
-            buildingBlockInfo.UntypedTemplateBuildingBlock = templateBuildingBlock;
-         }
+         //TODO
+         // foreach (var simulation in project.SimulationsCreatedUsing(templateBuildingBlock))
+         // {
+         //    var buildingBlockInfo = simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock);
+         //    buildingBlockInfo.UntypedTemplateBuildingBlock = templateBuildingBlock;
+         // }
       }
    }
 }

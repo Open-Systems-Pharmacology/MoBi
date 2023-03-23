@@ -10,7 +10,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_SetParameterStartValueWithUnitCommandSpecs : ContextSpecification<PathAndValueEntityValueOrUnitChangedCommand<ParameterStartValue, IParameterStartValuesBuildingBlock>>
+   public abstract class concern_for_SetParameterStartValueWithUnitCommandSpecs : ContextSpecification<PathAndValueEntityValueOrUnitChangedCommand<ParameterStartValue, ParameterStartValuesBuildingBlock>>
    {
       protected ParameterStartValue _psv;
       protected double _newValue =2.2;
@@ -18,14 +18,14 @@ namespace MoBi.Core.Commands
       protected IDimension _dimension;
       protected double _oldValue=1.1;
       protected Unit _oldUnit;
-      protected IParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterStartValuesBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          _psv = new ParameterStartValue{StartValue = _oldValue, Dimension = _dimension};
          _dimension = A.Fake<IDimension>();
          _newUnit = new Unit("Neu",2,0);
-         _buildingBlock = A.Fake<IParameterStartValuesBuildingBlock>();
+         _buildingBlock = A.Fake<ParameterStartValuesBuildingBlock>();
          _buildingBlock.Version = 1;
          A.CallTo(() => _dimension.Unit("Neu")).Returns(_newUnit);
          _oldUnit = new Unit("Old",1,0);
@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          _psv.Dimension = _dimension;
          A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_oldUnit,_oldValue)).Returns(_oldValue);
          A.CallTo(() => _dimension.UnitValueToBaseUnitValue(_newUnit,_newValue)).Returns(_newValue);
-         sut = new PathAndValueEntityValueOrUnitChangedCommand<ParameterStartValue, IParameterStartValuesBuildingBlock>(_psv, _newValue, _newUnit, _buildingBlock);
+         sut = new PathAndValueEntityValueOrUnitChangedCommand<ParameterStartValue, ParameterStartValuesBuildingBlock>(_psv, _newValue, _newUnit, _buildingBlock);
       }
    }
 

@@ -19,33 +19,33 @@ namespace MoBi.Core.Commands
    {
       private IMoBiSimulation _simulationToUpdate;
       private IModel _newModel;
-      private IMoBiBuildConfiguration _updatedBuildConfiguration;
+      private SimulationConfiguration _updatedSimulationConfiguration;
       private readonly bool _hasChanged;
       private readonly string _simulationId;
       private bool _wasChanged;
-      private byte[] _buildConfigurationSerialization;
+      private byte[] _simulationConfigurationSerialization;
       private byte[] _modelSerialization;
       private readonly string _changedBuildingBlockName;
       private readonly string _changedBuildingBlockType;
 
-      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IMoBiBuildConfiguration updatedBuildConfiguration)
-         : this(simulationToUpdate, newModel, updatedBuildConfiguration, true, string.Empty, string.Empty)
+      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, SimulationConfiguration updatedSimulationConfiguration)
+         : this(simulationToUpdate, newModel, updatedSimulationConfiguration, true, string.Empty, string.Empty)
       {
       }
 
-      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IMoBiBuildConfiguration updatedBuildConfiguration, IBuildingBlock templateBuildingBlock)
-         : this(simulationToUpdate, newModel, updatedBuildConfiguration, true, templateBuildingBlock.Name, string.Empty)
+      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, SimulationConfiguration updatedSimulationConfiguration, IBuildingBlock templateBuildingBlock)
+         : this(simulationToUpdate, newModel, updatedSimulationConfiguration, true, templateBuildingBlock.Name, string.Empty)
       {
          _changedBuildingBlockType = new ObjectTypeResolver().TypeFor(templateBuildingBlock);
       }
 
-      private UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IMoBiBuildConfiguration updatedBuildConfiguration, bool wasChanged,
+      private UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, SimulationConfiguration updatedSimulationConfiguration, bool wasChanged,
          string buildingBlockName, string changedBuildingBlockType)
       {
          _hasChanged = wasChanged;
          _simulationToUpdate = simulationToUpdate;
          _newModel = newModel;
-         _updatedBuildConfiguration = updatedBuildConfiguration;
+         _updatedSimulationConfiguration = updatedSimulationConfiguration;
          _simulationId = _simulationToUpdate.Id;
          _changedBuildingBlockName = buildingBlockName;
          _changedBuildingBlockType = changedBuildingBlockType;
@@ -61,13 +61,13 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          _modelSerialization = context.Serialize(_simulationToUpdate.Model);
-         _buildConfigurationSerialization = context.Serialize(_simulationToUpdate.MoBiBuildConfiguration);
+         _simulationConfigurationSerialization = context.Serialize(_simulationToUpdate.Configuration);
          context.UnregisterSimulation(_simulationToUpdate);
          context.PublishEvent(new SimulationUnloadEvent(_simulationToUpdate));
 
          var oldIdCache = getEntityIdCache(_simulationToUpdate);
 
-         _simulationToUpdate.Update(_updatedBuildConfiguration, _newModel);
+         _simulationToUpdate.Update(_updatedSimulationConfiguration, _newModel);
 
          updateReferencesToSimulation(context);
 
@@ -119,12 +119,12 @@ namespace MoBi.Core.Commands
       {
          _simulationToUpdate = context.Get<IMoBiSimulation>(_simulationId);
          _newModel = context.Deserialize<IModel>(_modelSerialization);
-         _updatedBuildConfiguration = context.Deserialize<IMoBiBuildConfiguration>(_buildConfigurationSerialization);
+         _updatedSimulationConfiguration = context.Deserialize<SimulationConfiguration>(_simulationConfigurationSerialization);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new UpdateSimulationCommand(_simulationToUpdate, _newModel, _updatedBuildConfiguration, _wasChanged, _changedBuildingBlockName, _changedBuildingBlockType)
+         return new UpdateSimulationCommand(_simulationToUpdate, _newModel, _updatedSimulationConfiguration, _wasChanged, _changedBuildingBlockName, _changedBuildingBlockType)
             .AsInverseFor(this);
       }
 
@@ -132,7 +132,7 @@ namespace MoBi.Core.Commands
       {
          _simulationToUpdate = null;
          _newModel = null;
-         _updatedBuildConfiguration = null;
+         _updatedSimulationConfiguration = null;
       }
    }
 }

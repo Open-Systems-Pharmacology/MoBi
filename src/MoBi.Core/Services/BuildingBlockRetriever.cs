@@ -16,9 +16,9 @@ namespace MoBi.Core.Services
       IBuildingBlock GetBuildingBlockFor(IObjectBase objectBase, IBuildingBlock buildingBlock);
    }
 
-   public class BuildingBlockRetriever : IBuildingBlockRetriever, IVisitor<IMoBiReactionBuildingBlock>, IVisitor<IMoleculeBuildingBlock>,
+   public class BuildingBlockRetriever : IBuildingBlockRetriever, IVisitor<IMoBiReactionBuildingBlock>, IVisitor<MoleculeBuildingBlock>,
                                          IVisitor<IMoBiSpatialStructure>, IVisitor<IObserverBuildingBlock>, IVisitor<IEventGroupBuildingBlock>,
-                                         IVisitor<IPassiveTransportBuildingBlock>, IVisitor<IMoleculeStartValuesBuildingBlock>, IVisitor<IParameterStartValuesBuildingBlock>
+                                         IVisitor<IPassiveTransportBuildingBlock>, IVisitor<MoleculeStartValuesBuildingBlock>, IVisitor<ParameterStartValuesBuildingBlock>
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private IEntity _entity;
@@ -87,7 +87,7 @@ namespace MoBi.Core.Services
          _found = reactionBuildingBlock.Contains(_entity);
       }
 
-      public void Visit(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void Visit(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          _found = moleculeBuildingBlock.Contains(_entity);
       }
@@ -107,12 +107,12 @@ namespace MoBi.Core.Services
          _found = eventGroupBuildingBlock.Contains(_entity);
       }
 
-      public void Visit(IMoleculeStartValuesBuildingBlock objToVisit)
+      public void Visit(MoleculeStartValuesBuildingBlock objToVisit)
       {
          _found = objToVisit.Contains(_entity);
       }
 
-      public void Visit(IParameterStartValuesBuildingBlock objToVisit)
+      public void Visit(ParameterStartValuesBuildingBlock objToVisit)
       {
          _found = objToVisit.Contains(_entity);
       }

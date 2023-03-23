@@ -37,7 +37,7 @@ namespace MoBi.Core.Reporting
             _diagramModelToImageTask.ExportTo(simulation, figure.FullPath);
          }
 
-         listToReport.AddRange(_buildConfigurationReporter.Report(simulation.BuildConfiguration, buildTracker));
+         listToReport.AddRange(_buildConfigurationReporter.Report(simulation.Configuration, buildTracker));
 
          if (simulationHasChartWithCurves(simulation))
          {

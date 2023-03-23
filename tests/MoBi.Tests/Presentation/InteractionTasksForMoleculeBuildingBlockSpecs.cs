@@ -13,14 +13,14 @@ namespace MoBi.Presentation
    public abstract class concern_for_InteractionTasksForMoleculeBuildingBlock : ContextSpecification<InteractionTasksForMoleculeBuildingBlock>
    {
       private IInteractionTaskContext _interactionTaskContext;
-      private IEditTasksForBuildingBlock<IMoleculeBuildingBlock> _editTasksForBuildingBlock;
+      private IEditTasksForBuildingBlock<MoleculeBuildingBlock> _editTasksForBuildingBlock;
       private IInteractionTasksForBuilder<IMoleculeBuilder> _task;
       private IMoleculeBuildingBlockCloneManager _moleculeBuildingBlockCloneManager;
 
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _editTasksForBuildingBlock = A.Fake<IEditTasksForBuildingBlock<IMoleculeBuildingBlock>>();
+         _editTasksForBuildingBlock = A.Fake<IEditTasksForBuildingBlock<MoleculeBuildingBlock>>();
          _task = A.Fake<IInteractionTasksForBuilder<IMoleculeBuilder>>();
          _moleculeBuildingBlockCloneManager = A.Fake<IMoleculeBuildingBlockCloneManager>();
 
@@ -30,7 +30,7 @@ namespace MoBi.Presentation
 
    public class When_removing_molecule_building_block_that_is_referred_to_in_another_building_block : concern_for_InteractionTasksForMoleculeBuildingBlock
    {
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private IMoBiProject _project;
 
       protected override void Context()

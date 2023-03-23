@@ -73,8 +73,8 @@ namespace MoBi.Presentation
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
          _buildConfiguration = createBuildConfiguration();
          A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(_buildConfiguration);
-         A.CallTo(() => _moleculeStartValuesPresenter.StartValues).Returns(A.Fake<IMoleculeStartValuesBuildingBlock>().WithId(_useId));
-         A.CallTo(() => _parameterStartValuesPresenter.StartValues).Returns(A.Fake<IParameterStartValuesBuildingBlock>().WithId(_useId));
+         A.CallTo(() => _moleculeStartValuesPresenter.StartValues).Returns(A.Fake<MoleculeStartValuesBuildingBlock>().WithId(_useId));
+         A.CallTo(() => _parameterStartValuesPresenter.StartValues).Returns(A.Fake<ParameterStartValuesBuildingBlock>().WithId(_useId));
       }
 
       private MoBiBuildConfiguration createBuildConfiguration()

@@ -20,7 +20,7 @@ namespace MoBi.Presentation
       protected IChartTemplateManagerPresenter _chartTemplateManagerPresenter;
       protected IChartTemplatingTask _chartTemplatingTask;
       protected ICloneManager _cloneManager;
-      protected ISimulationSettings _simulationSettings;
+      protected SimulationSettings _simulationSettings;
 
       protected override void Context()
       {
@@ -28,7 +28,7 @@ namespace MoBi.Presentation
          _chartTemplateManagerPresenter = A.Fake<IChartTemplateManagerPresenter>();
          _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
          _cloneManager = A.Fake<ICloneManager>();
-         _simulationSettings = A.Fake<ISimulationSettings>();
+         _simulationSettings = A.Fake<SimulationSettings>();
 
          sut = new EditChartTemplateManagerPresenter(_view, _chartTemplateManagerPresenter, _cloneManager, _chartTemplatingTask);
          sut.InitializeWith(A.Fake<ICommandCollector>());
@@ -82,7 +82,7 @@ namespace MoBi.Presentation
       [Observation]
       public void A_call_to_the_templating_task_to_issue_commands_must_not_have_been_made()
       {
-         A.CallTo(() => _chartTemplatingTask.ReplaceTemplatesInBuildingBlockCommand(A<ISimulationSettings>._, A<IEnumerable<CurveChartTemplate>>._)).
+         A.CallTo(() => _chartTemplatingTask.ReplaceTemplatesInBuildingBlockCommand(A<SimulationSettings>._, A<IEnumerable<CurveChartTemplate>>._)).
             MustHaveHappened();
       }
    }
@@ -103,7 +103,7 @@ namespace MoBi.Presentation
       [Observation]
       public void A_call_to_the_templating_task_to_issue_commands_must_not_have_been_made()
       {
-         A.CallTo(() => _chartTemplatingTask.ReplaceTemplatesInBuildingBlockCommand(A<ISimulationSettings>._, A<IEnumerable<CurveChartTemplate>>._)).
+         A.CallTo(() => _chartTemplatingTask.ReplaceTemplatesInBuildingBlockCommand(A<SimulationSettings>._, A<IEnumerable<CurveChartTemplate>>._)).
             MustNotHaveHappened();
       }
    }

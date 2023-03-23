@@ -6,9 +6,9 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class EditSolverPropertyCommand : EditObjectPropertyInBuildingBlockCommand<ISimulationSettings>
+   public class EditSolverPropertyCommand : EditObjectPropertyInBuildingBlockCommand<SimulationSettings>
    {
-      public EditSolverPropertyCommand(string propertyName, object newValue, object oldValue, ISimulationSettings simulationSettings)
+      public EditSolverPropertyCommand(string propertyName, object newValue, object oldValue, SimulationSettings simulationSettings)
          : base(propertyName, newValue, oldValue, simulationSettings.Solver, simulationSettings, simulationSettings.Name)
       {
          ObjectType = ObjectTypes.SolverProperty;
