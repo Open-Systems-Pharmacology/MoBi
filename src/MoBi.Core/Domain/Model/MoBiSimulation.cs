@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Domain.Model
@@ -19,9 +18,9 @@ namespace MoBi.Core.Domain.Model
       CurveChart Chart { get; set; }
       SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
       SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
-      
+
       string ParameterIdentificationWorkingDirectory { get; set; }
-      void Update(SimulationConfiguration buildConfiguration, IModel model);
+      void Update(SimulationConfiguration simulationConfiguration, IModel model);
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
@@ -37,7 +36,6 @@ namespace MoBi.Core.Domain.Model
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    {
-      private bool _hasChanged;
       private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       private DataRepository _results;
       public IDiagramModel DiagramModel { get; set; }
@@ -56,8 +54,8 @@ namespace MoBi.Core.Domain.Model
       public bool HasChanged
       {
          //TODO
-         get => _hasChanged /*|| MoBiBuildConfiguration.HasChangedBuildingBlocks()*/;
-         set => _hasChanged = value;
+         get;
+         set;
       }
 
       public OutputSchema OutputSchema => Settings.OutputSchema;
@@ -97,9 +95,9 @@ namespace MoBi.Core.Domain.Model
          Chart?.AcceptVisitor(visitor);
       }
 
-      public void Update(SimulationConfiguration buildConfiguration, IModel model)
+      public void Update(SimulationConfiguration simulationConfiguration, IModel model)
       {
-         Configuration = buildConfiguration;
+         Configuration = simulationConfiguration;
          Model = model;
       }
 
@@ -133,13 +131,10 @@ namespace MoBi.Core.Domain.Model
 
       public void RemoveUsedObservedData(DataRepository dataRepository)
       {
-         
-
       }
 
       public void RemoveOutputMappings(DataRepository dataRepository)
       {
-         
       }
 
       public IEnumerable<CurveChart> Charts
@@ -160,7 +155,7 @@ namespace MoBi.Core.Domain.Model
       }
 
       public IEnumerable<CurveChartTemplate> ChartTemplates => Settings.ChartTemplates;
-      
+
       public CurveChartTemplate DefaultChartTemplate => Settings.DefaultChartTemplate;
 
       public bool IsLoaded { get; set; }

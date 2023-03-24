@@ -204,7 +204,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _simulationToConfigure = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
+         _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
          _creationResult = new CreationResult(_model);

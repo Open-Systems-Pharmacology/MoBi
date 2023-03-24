@@ -35,7 +35,7 @@ namespace MoBi.Core.Services
       IVisitor<IReactionBuilder>
    {
       private readonly IReactionDimensionRetriever _reactionDimensionRetriever;
-      private readonly IAmoutToConcentrationFormulaMapper _amoutToConcentrationFormulaMapper;
+      private readonly IAmoutToConcentrationFormulaMapper _amountToConcentrationFormulaMapper;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IFormulaTask _formulaTask;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
@@ -45,12 +45,12 @@ namespace MoBi.Core.Services
       private readonly IDimension _concentrationPerTimeDimension;
 
       public AmountToConcentrationConverter(IReactionDimensionRetriever reactionDimensionRetriever,
-         IDimensionFactory dimensionFactory, IAmoutToConcentrationFormulaMapper amoutToConcentrationFormulaMapper,
+         IDimensionFactory dimensionFactory, IAmoutToConcentrationFormulaMapper amountToConcentrationFormulaMapper,
          IObjectBaseFactory objectBaseFactory, IFormulaTask formulaTask, IDisplayUnitRetriever displayUnitRetriever, 
          IObjectTypeResolver objectTypeResolver, IFormulaFactory formulaFactory)
       {
          _reactionDimensionRetriever = reactionDimensionRetriever;
-         _amoutToConcentrationFormulaMapper = amoutToConcentrationFormulaMapper;
+         _amountToConcentrationFormulaMapper = amountToConcentrationFormulaMapper;
          _objectBaseFactory = objectBaseFactory;
          _formulaTask = formulaTask;
          _displayUnitRetriever = displayUnitRetriever;
@@ -140,9 +140,9 @@ namespace MoBi.Core.Services
             return;
 
          explicitFormula.Dimension = targetDimension;
-         if (_amoutToConcentrationFormulaMapper.HasMappingFor(explicitFormula))
+         if (_amountToConcentrationFormulaMapper.HasMappingFor(explicitFormula))
          {
-            explicitFormula.FormulaString = _amoutToConcentrationFormulaMapper.MappedFormulaFor(explicitFormula);
+            explicitFormula.FormulaString = _amountToConcentrationFormulaMapper.MappedFormulaFor(explicitFormula);
             return;
          }
 

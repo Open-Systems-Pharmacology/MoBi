@@ -109,6 +109,7 @@ namespace MoBi.Presentation.Nodes
             var moleculeNode = CreateFor(molecule);
             moleculeBuildingBlockNode.AddChild(moleculeNode);
          }
+
          return moleculeBuildingBlockNode;
       }
 
@@ -153,17 +154,17 @@ namespace MoBi.Presentation.Nodes
             Name = Captions.Favorites,
             Icon = ApplicationIcons.Favorites.IconName,
             Id = Captions.Favorites
-         }) {Icon = ApplicationIcons.Favorites};
+         }) { Icon = ApplicationIcons.Favorites };
       }
 
       public ITreeNode CreateForUserDefined()
       {
          return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new UserDefinedNodeViewItem
-            {
-               Name = AppConstants.Captions.UserDefined,
-               Icon = ApplicationIcons.UserDefinedVariability.IconName,
-               Id = AppConstants.Captions.UserDefined
-         }){ Icon = ApplicationIcons.UserDefinedVariability };
+         {
+            Name = AppConstants.Captions.UserDefined,
+            Icon = ApplicationIcons.UserDefinedVariability.IconName,
+            Id = AppConstants.Captions.UserDefined
+         }) { Icon = ApplicationIcons.UserDefinedVariability };
       }
    }
 }

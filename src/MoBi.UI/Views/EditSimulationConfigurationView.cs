@@ -1,14 +1,14 @@
 ﻿using System.Windows.Forms;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraLayout;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {

@@ -11,12 +11,12 @@ namespace MoBi.Core.Reporting
    internal class SimulationReporter : OSPSuiteTeXReporter<IMoBiSimulation>
    {
       private readonly IDiagramModelToImageTask _diagramModelToImageTask;
-      private readonly BuildConfigurationReporter _buildConfigurationReporter;
+      private readonly SimulationConfigurationReporter _simulationConfigurationReporter;
 
-      public SimulationReporter(IDiagramModelToImageTask diagramModelToImageTask, BuildConfigurationReporter buildConfigurationReporter)
+      public SimulationReporter(IDiagramModelToImageTask diagramModelToImageTask, SimulationConfigurationReporter simulationConfigurationReporter)
       {
          _diagramModelToImageTask = diagramModelToImageTask;
-         _buildConfigurationReporter = buildConfigurationReporter;
+         _simulationConfigurationReporter = simulationConfigurationReporter;
       }
 
       public override IReadOnlyCollection<object> Report(IMoBiSimulation simulation, OSPSuiteTracker buildTracker)
@@ -37,7 +37,7 @@ namespace MoBi.Core.Reporting
             _diagramModelToImageTask.ExportTo(simulation, figure.FullPath);
          }
 
-         listToReport.AddRange(_buildConfigurationReporter.Report(simulation.Configuration, buildTracker));
+         listToReport.AddRange(_simulationConfigurationReporter.Report(simulation.Configuration, buildTracker));
 
          if (simulationHasChartWithCurves(simulation))
          {

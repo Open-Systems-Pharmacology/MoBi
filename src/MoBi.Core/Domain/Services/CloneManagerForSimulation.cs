@@ -1,15 +1,15 @@
-﻿using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Services
 {
    public interface ICloneManagerForSimulation
    {
       IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone);
-      T CloneBuildingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo,new() ;
+      T CloneBuildingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo, new();
       T CloneBuildingBlock<T>(T toClone) where T : class, IBuildingBlock;
    }
 
@@ -26,7 +26,6 @@ namespace MoBi.Core.Domain.Services
          _simulationFactory = simulationFactory;
       }
 
-
       public IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone)
       {
          // var buildConfig = new MoBiBuildConfiguration
@@ -41,11 +40,11 @@ namespace MoBi.Core.Domain.Services
          //    MoleculeStartValuesInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.MoleculeStartValuesInfo),
          //    SimulationSettingsInfo = CloneBuildingBlockInfo(simulationToClone.MoBiBuildConfiguration.SimulationSettingsInfo)
          // };
-         
+
          var model = _cloneManagerForModel.CloneModel(simulationToClone.Model);
 
          var simulation = _simulationFactory.CreateFrom(simulationConfigurationCloneFor(simulationToClone.Configuration), model);
-         simulation.UpdatePropertiesFrom(simulationToClone,_cloneManagerForModel);
+         simulation.UpdatePropertiesFrom(simulationToClone, _cloneManagerForModel);
          return simulation;
       }
 
@@ -66,7 +65,7 @@ namespace MoBi.Core.Domain.Services
       public T CloneBuildingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo, new()
       {
          var formulaCache = new FormulaCache();
-         var copy = new T {UntypedBuildingBlock = CloneBuildingBlock(toClone.UntypedBuildingBlock)};
+         var copy = new T { UntypedBuildingBlock = CloneBuildingBlock(toClone.UntypedBuildingBlock) };
          formulaCache.Each(copy.UntypedBuildingBlock.AddFormula);
          copy.TemplateBuildingBlockId = toClone.TemplateBuildingBlockId;
          copy.SimulationChanges = toClone.SimulationChanges;

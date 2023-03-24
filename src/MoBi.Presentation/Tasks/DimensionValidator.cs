@@ -33,21 +33,21 @@ namespace MoBi.Presentation.Tasks
          _userSettings = userSettings;
          _hiddenNotifications = new Dictionary<string, string>
          {
-            {AppConstants.Parameters.SURFACE_AREA_INTERSTITIAL_INTRACELLULAR, dimensionAreaMessage},
-            {AppConstants.Parameters.BSA, dimensionAreaMessage},
-            {AppConstants.Parameters.PERMEABILITY, dimensionVelocityMessage},
-            {AppConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
-            {AppConstants.Parameters.RADIUS_SOLUTE, dimensionValidationMessage(AppConstants.DimensionNames.LENGTH)},
-            {AppConstants.Parameters.SECRETION_OF_LIQUID, dimensionFlowMessage},
-            {Constants.Parameters.VOLUME, $"Organism|Saliva|Volume' {dimensionValidationMessage(Constants.Dimension.VOLUME)}"},
-            {AppConstants.Parameters.RELEASE_RATE_OF_TABLET, dimensionValidationMessage(Constants.Dimension.AMOUNT_PER_TIME)},
-            {AppConstants.Parameters.V_MAX, dimensionValidationMessage(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME)},
-            {AppConstants.Parameters.LYMPH_FLOW_RATE, dimensionFlowMessage},
-            {AppConstants.Parameters.LYMPH_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
-            {AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE, dimensionFlowMessage},
-            {AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
-            {AppConstants.Parameters.CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
-            {AppConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT, "Arguments of MINUS-function must have the same dimension (Formula: MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098)"}
+            { AppConstants.Parameters.SURFACE_AREA_INTERSTITIAL_INTRACELLULAR, dimensionAreaMessage },
+            { AppConstants.Parameters.BSA, dimensionAreaMessage },
+            { AppConstants.Parameters.PERMEABILITY, dimensionVelocityMessage },
+            { AppConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage },
+            { AppConstants.Parameters.RADIUS_SOLUTE, dimensionValidationMessage(AppConstants.DimensionNames.LENGTH) },
+            { AppConstants.Parameters.SECRETION_OF_LIQUID, dimensionFlowMessage },
+            { Constants.Parameters.VOLUME, $"Organism|Saliva|Volume' {dimensionValidationMessage(Constants.Dimension.VOLUME)}" },
+            { AppConstants.Parameters.RELEASE_RATE_OF_TABLET, dimensionValidationMessage(Constants.Dimension.AMOUNT_PER_TIME) },
+            { AppConstants.Parameters.V_MAX, dimensionValidationMessage(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME) },
+            { AppConstants.Parameters.LYMPH_FLOW_RATE, dimensionFlowMessage },
+            { AppConstants.Parameters.LYMPH_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage },
+            { AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE, dimensionFlowMessage },
+            { AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage },
+            { AppConstants.Parameters.CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage },
+            { AppConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT, "Arguments of MINUS-function must have the same dimension (Formula: MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098)" }
          };
       }
 
@@ -56,9 +56,9 @@ namespace MoBi.Presentation.Tasks
       private static string dimensionVelocityMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.VELOCITY);
       private static string dimensionAreaMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.AREA);
 
-      public Task<ValidationResult> Validate(IContainer container, SimulationConfiguration simulationConfiguration) => Validate(new[] {container}, simulationConfiguration);
+      public Task<ValidationResult> Validate(IContainer container, SimulationConfiguration simulationConfiguration) => Validate(new[] { container }, simulationConfiguration);
 
-      public Task<ValidationResult> Validate(IModel model, SimulationConfiguration simulationConfiguration) => Validate(new[] {model.Root, model.Neighborhoods}, simulationConfiguration);
+      public Task<ValidationResult> Validate(IModel model, SimulationConfiguration simulationConfiguration) => Validate(new[] { model.Root, model.Neighborhoods }, simulationConfiguration);
 
       public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, SimulationConfiguration simulationConfiguration)
       {
@@ -180,7 +180,7 @@ namespace MoBi.Presentation.Tasks
             dimensionInfos.Add(new QuantityDimensionInformation(objectReference.Alias, createDimensionInfoFromBaseRepresentation(objectReference.Object.Dimension.BaseRepresentation)));
          }
 
-         var (dimInfo, parseSuccess, calculateDimensionSuccess, errorMessage ) = _dimensionParser.GetDimensionInformationFor(explicitFormula.FormulaString, dimensionInfos);
+         var (dimInfo, parseSuccess, calculateDimensionSuccess, errorMessage) = _dimensionParser.GetDimensionInformationFor(explicitFormula.FormulaString, dimensionInfos);
 
          if (!parseSuccess)
          {

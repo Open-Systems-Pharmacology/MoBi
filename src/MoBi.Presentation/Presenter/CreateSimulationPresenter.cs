@@ -16,7 +16,6 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
@@ -77,7 +76,7 @@ namespace MoBi.Presentation.Presenter
       {
          Simulation = simulation;
          _simulationConfiguration = simulation.Configuration;
-         _simulationDTO = new ObjectBaseDTO {Name = simulation.Name};
+         _simulationDTO = new ObjectBaseDTO { Name = simulation.Name };
          _simulationDTO.AddUsedNames(nameOfSimulationAlreadyUsed());
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation));
          _view.BindTo(_simulationDTO);
@@ -118,7 +117,7 @@ namespace MoBi.Presentation.Presenter
       {
          //Create the model using a build configuration referencing the templates building block so that references to template builders are defined properly 
          //we override the _buildConfiguration so that reference to builders are saved
-         
+
          // TODO
          // _simulationConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(_simulationConfiguration);
          var result = _modelConstructor.CreateModelFrom(_simulationConfiguration, _simulationDTO.Name);
@@ -150,7 +149,7 @@ namespace MoBi.Presentation.Presenter
       {
          //update the building block configuration to now use clones
          // var simulationBuildConfiguration = _buildConfigurationFactory.CreateFromTemplateClones(_simulationConfiguration);
-         
+
          var simulation = _simulationFactory.CreateFrom(_simulationConfiguration, model).WithName(_simulationDTO.Name);
          simulation.HasChanged = true;
          return simulation;

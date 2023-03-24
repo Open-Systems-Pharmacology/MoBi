@@ -12,7 +12,7 @@ namespace MoBi.Core.Domain.Services
    {
       /// <summary>
       ///    Creates and returns a new <see cref="IMoBiSimulation" /> using the <paramref name="simulationConfiguration" /> and
-      ///    <paramref name="model" /> 
+      ///    <paramref name="model" />
       /// </summary>
       IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model);
 

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -11,12 +9,14 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -60,9 +60,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          AddCommand(Extend(newStartValues, parameterStartValues));
       }
 
-      public override ParameterStartValuesBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration buildConfiguration)
+      public override ParameterStartValuesBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration)
       {
-         return _cloneManagerForBuildingBlock.Clone(buildConfiguration.ParameterStartValues);
+         return _cloneManagerForBuildingBlock.Clone(simulationConfiguration.ParameterStartValues);
       }
 
       public override IMoBiCommand AddStartValueToBuildingBlock(ParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue)
@@ -83,6 +83,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (parameter != null)
                return parameter;
          }
+
          return null;
       }
 
@@ -136,7 +137,6 @@ namespace MoBi.Presentation.Tasks.Interaction
                 HasEquivalentFormula(startValue, parameter.Formula) &&
                 HasEquivalentStartValue(startValue, parameter);
       }
-
 
       public override IDimension GetDefaultDimension()
       {

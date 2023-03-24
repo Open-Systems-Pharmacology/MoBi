@@ -1,5 +1,5 @@
-using OSPSuite.Assets;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views

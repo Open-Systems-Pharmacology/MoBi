@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
@@ -13,12 +10,15 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetIsPresent(MoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool isPresent);
 
       IMoBiCommand SetNegativeValuesAllowed(MoleculeStartValuesBuildingBlock moleculeStartValues, IEnumerable<MoleculeStartValue> startValues, bool negativeValuesAllowed);
-      
+
       /// <summary>
       ///    Updates the scale divisor for a start value
       /// </summary>
@@ -88,7 +88,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private void updateDefaultIsPresentToFalseForSpecificExtendedValues(MoleculeStartValuesBuildingBlock startValues, ICache<string, MoleculeStartValue> templateValues)
       {
-         var startValuesThatShouldPotentiallyNotBePresent = startValues.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ=> x.Key.Contains(organ)));
+         var startValuesThatShouldPotentiallyNotBePresent = startValues.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ => x.Key.Contains(organ)));
          var extendedStartValuesThatShouldNotBePresent = startValuesThatShouldPotentiallyNotBePresent.Where(x => !templateValues.Contains(x.Key));
          extendedStartValuesThatShouldNotBePresent.Each(x => x.Value.IsPresent = false);
       }

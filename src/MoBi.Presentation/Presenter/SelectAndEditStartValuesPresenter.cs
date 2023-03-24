@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -11,6 +10,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Presenter
          _objectTypeResolver = objectTypeResolver;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
          _editPresenter.CanCreateNewFormula = false;
-         legendPresenter.AddLegendItems(new []{ new LegendItemDTO {Description = AppConstants.Captions.AutomaticallyGeneratedValues, Color = MoBiColors.Extended} });
+         legendPresenter.AddLegendItems(new[] { new LegendItemDTO { Description = AppConstants.Captions.AutomaticallyGeneratedValues, Color = MoBiColors.Extended } });
          View.AddLegendView(legendPresenter.View);
          AddSubPresenters(_editPresenter, legendPresenter);
       }
@@ -103,7 +103,7 @@ namespace MoBi.Presentation.Presenter
             return;
          StartValues = _startValuesTask.CreateStartValuesForSimulation(_simulationConfiguration);
          _view.Description = AppConstants.Captions.TemporaryStartValuesBasedOn(_objectTypeResolver.TypeFor(StartValues), StartValues.Name);
-         
+
          // if (startValueBuildingBlockInfo.TemplateBuildingBlock == null) return;
          // _templateStartValues = startValueBuildingBlockInfo.TemplateBuildingBlock.ToCache();
          //

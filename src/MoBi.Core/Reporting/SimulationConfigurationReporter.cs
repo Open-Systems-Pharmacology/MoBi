@@ -5,14 +5,14 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class BuildConfigurationReporter : OSPSuiteTeXReporter<SimulationConfiguration>
+   internal class SimulationConfigurationReporter : OSPSuiteTeXReporter<SimulationConfiguration>
    {
       private readonly ReactionBuildingBlockReporter _reactionBuildingBlockReporter;
       private readonly SpatialStructureReporter _spatialStructureReporter;
       private readonly SimulationSettingReporter _simulationSettingsReporter;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
 
-      public BuildConfigurationReporter(ReactionBuildingBlockReporter reactionBuildingBlockReporter,SpatialStructureReporter spatialStructureReporter, SimulationSettingReporter simulationSettingsReporter, IDisplayUnitRetriever displayUnitRetriever)
+      public SimulationConfigurationReporter(ReactionBuildingBlockReporter reactionBuildingBlockReporter,SpatialStructureReporter spatialStructureReporter, SimulationSettingReporter simulationSettingsReporter, IDisplayUnitRetriever displayUnitRetriever)
       {
          _reactionBuildingBlockReporter = reactionBuildingBlockReporter;
          _spatialStructureReporter = spatialStructureReporter;

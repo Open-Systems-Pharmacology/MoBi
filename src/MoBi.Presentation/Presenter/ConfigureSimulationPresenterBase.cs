@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter.Simulation;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -48,9 +48,9 @@ namespace MoBi.Presentation.Presenter
       public override void InitializeWith(ICommandCollector commandCollector)
       {
          base.InitializeWith(commandCollector);
-         BuildConfigurationPresenter.MoleculeStartValuesChangedEvent += (o,e) => MoleculeStartValuesPresenter.Refresh();
+         BuildConfigurationPresenter.MoleculeStartValuesChangedEvent += (o, e) => MoleculeStartValuesPresenter.Refresh();
          BuildConfigurationPresenter.ParameterStartValuesChangedEvent += (o, e) => ParameterStartValuesPresenter.Refresh();
-         BuildConfigurationPresenter.ModuleChangedEvent+= (o, e) => refreshStartValues();
+         BuildConfigurationPresenter.ModuleChangedEvent += (o, e) => refreshStartValues();
          // BuildConfigurationPresenter.SpatialStructureChangedEvent += (o, e) => refreshStartValues();
          // BuildConfigurationPresenter.MoleculeBuildingBlockChangedEvent += (o, e) => refreshStartValues();
       }

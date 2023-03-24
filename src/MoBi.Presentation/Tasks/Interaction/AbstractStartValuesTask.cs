@@ -104,12 +104,14 @@ namespace MoBi.Presentation.Tasks.Interaction
                else
                   startValue.UpdatePropertiesFrom(templateKeyValue.Value, _cloneManagerForBuildingBlock);
             }
+
             startValuesToUpdate.Version = templateStartValues.Version;
          }
          finally
          {
             _cloneManagerForBuildingBlock.FormulaCache = null;
          }
+
          return templateCache;
       }
 
@@ -250,9 +252,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract bool AreEquivalentItems(TStartValue first, TStartValue second);
       protected abstract IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToRemove);
-      protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToAdd); 
+      protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToAdd);
       public abstract void ExtendStartValues(TBuildingBlock startValuesBuildingBlock);
-      public abstract TBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration buildConfiguration);
+      public abstract TBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration);
       public abstract IMoBiCommand AddStartValueToBuildingBlock(TBuildingBlock buildingBlock, TStartValue startValue);
       public abstract IMoBiCommand ImportStartValuesToBuildingBlock(TBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues);
       public abstract IMoBiCommand RemoveStartValueFromBuildingBlockCommand(TStartValue startValue, TBuildingBlock buildingBlock);

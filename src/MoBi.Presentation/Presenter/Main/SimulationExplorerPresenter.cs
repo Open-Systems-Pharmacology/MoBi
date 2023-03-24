@@ -214,7 +214,7 @@ namespace MoBi.Presentation.Presenter.Main
 
          //Update Simulation Icon
          // var isChangedSimulation = simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks();
-         
+
          var isChangedSimulation = true;
          simulationNode.Icon = isChangedSimulation ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
 

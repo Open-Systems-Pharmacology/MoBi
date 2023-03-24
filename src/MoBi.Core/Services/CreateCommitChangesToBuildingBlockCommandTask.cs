@@ -1,10 +1,10 @@
 ﻿using System;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
 {
