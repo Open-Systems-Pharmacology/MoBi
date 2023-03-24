@@ -10,7 +10,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForParameterStartValuesBuildingBlock : RootContextMenuFor<IMoBiProject, IParameterStartValuesBuildingBlock>
+   public class RootContextMenuForParameterStartValuesBuildingBlock : RootContextMenuFor<IMoBiProject, ParameterStartValuesBuildingBlock>
    {
       public RootContextMenuForParameterStartValuesBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {

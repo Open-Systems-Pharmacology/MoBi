@@ -8,11 +8,11 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand : ContextSpecification<UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand<IParameterStartValuesBuildingBlock>>
+   public abstract class concern_for_UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand : ContextSpecification<UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand<ParameterStartValuesBuildingBlock>>
    {
       protected IMoBiSimulation _simulation;
-      protected IParameterStartValuesBuildingBlock _oldTemplateBuildingBlock;
-      protected IParameterStartValuesBuildingBlock _clonedSimulationBuildingBlock;
+      protected ParameterStartValuesBuildingBlock _oldTemplateBuildingBlock;
+      protected ParameterStartValuesBuildingBlock _clonedSimulationBuildingBlock;
       protected IBuildingBlockInfo _simulationBuildingBlockInfo;
       protected IBuildingBlock _simulationBuildingBlock;
       protected IMoBiContext _context;
@@ -22,8 +22,8 @@ namespace MoBi.Core.Commands
       {
          _simulation = A.Fake<IMoBiSimulation>();
          _buildingBlockInfoUpdater= A.Fake<IBuildingBlockReferenceUpdater>();
-         _oldTemplateBuildingBlock = A.Fake<IParameterStartValuesBuildingBlock>().WithName("OLD TEMPLATE");
-         _clonedSimulationBuildingBlock = A.Fake<IParameterStartValuesBuildingBlock>().WithName("CLONE SIMULATION");
+         _oldTemplateBuildingBlock = A.Fake<ParameterStartValuesBuildingBlock>().WithName("OLD TEMPLATE");
+         _clonedSimulationBuildingBlock = A.Fake<ParameterStartValuesBuildingBlock>().WithName("CLONE SIMULATION");
          _oldTemplateBuildingBlock.Version = 7;
          _clonedSimulationBuildingBlock.Version = 4;
          _simulationBuildingBlockInfo = A.Fake<IBuildingBlockInfo>();
@@ -33,10 +33,10 @@ namespace MoBi.Core.Commands
          _simulationBuildingBlockInfo.UntypedBuildingBlock = _simulationBuildingBlock;
          _simulationBuildingBlock.Version = _clonedSimulationBuildingBlock.Version;
          _simulationBuildingBlock.Name = "TRALALA";
-         A.CallTo(_simulation.MoBiBuildConfiguration).WithReturnType<IBuildingBlockInfo>().Returns(_simulationBuildingBlockInfo);
+         A.CallTo(_simulation.Configuration).WithReturnType<IBuildingBlockInfo>().Returns(_simulationBuildingBlockInfo);
          _context= A.Fake<IMoBiContext>();
          A.CallTo(() =>_context.Resolve<IBuildingBlockReferenceUpdater>()).Returns(_buildingBlockInfoUpdater);
-         sut = new UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand<IParameterStartValuesBuildingBlock>(_oldTemplateBuildingBlock, _clonedSimulationBuildingBlock, _simulation);
+         sut = new UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand<ParameterStartValuesBuildingBlock>(_oldTemplateBuildingBlock, _clonedSimulationBuildingBlock, _simulation);
       }
    }
 

@@ -39,7 +39,7 @@ namespace MoBi.Core
    public class When_adding_a_simulation_to_a_project : concern_for_SimulationLoader
    {
       private ParameterStartValuesBuildingBlockInfo _psvInfo;
-      private IMoBiBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _buildConfiguration;
       private ParameterStartValuesBuildingBlock _cloneBuildingBlock;
       private MoleculesInfo _moleculesInfo;
       private MoleculeBuildingBlock _templateMoleculeBuildingBlock;
@@ -49,21 +49,21 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         _buildConfiguration = A.Fake<IMoBiBuildConfiguration>();
-         _psvInfo = new ParameterStartValuesBuildingBlockInfo {UntypedBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("psvbb1")};
+         _buildConfiguration = new SimulationConfiguration();
+         _psvInfo = new ParameterStartValuesBuildingBlockInfo { UntypedBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("psvbb1") };
 
-         _templateMoleculeBuildingBlock = new MoleculeBuildingBlock {Id = "templateMoleculeBuildingBlock"};
-         _templateSpatialStructure = new MoBiSpatialStructure() {Id = "templateSpatialStructure"};
-         _moleculesInfo = new MoleculesInfo {UntypedBuildingBlock = _templateMoleculeBuildingBlock};
-         _spatialStructureInfo = new SpatialStructureInfo {UntypedBuildingBlock = _templateSpatialStructure};
+         _templateMoleculeBuildingBlock = new MoleculeBuildingBlock { Id = "templateMoleculeBuildingBlock" };
+         _templateSpatialStructure = new MoBiSpatialStructure() { Id = "templateSpatialStructure" };
+         _moleculesInfo = new MoleculesInfo { UntypedBuildingBlock = _templateMoleculeBuildingBlock };
+         _spatialStructureInfo = new SpatialStructureInfo { UntypedBuildingBlock = _templateSpatialStructure };
 
-         _buildConfiguration.ParameterStartValuesInfo = _psvInfo;
-         _buildConfiguration.SpatialStructureInfo = _spatialStructureInfo;
-         _buildConfiguration.MoleculesInfo = _moleculesInfo;
-         A.CallTo(() => _buildConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] {_psvInfo, _moleculesInfo, _spatialStructureInfo});
+         // _buildConfiguration.ParameterStartValuesInfo = _psvInfo;
+         // _buildConfiguration.SpatialStructureInfo = _spatialStructureInfo;
+         // _buildConfiguration.MoleculesInfo = _moleculesInfo;
+         // A.CallTo(() => _buildConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] {_psvInfo, _moleculesInfo, _spatialStructureInfo});
          _cloneBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("psvbb2");
          A.CallTo(() => _cloneManager.CloneBuildingBlock(_psvInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
-         A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(_buildConfiguration);
+         A.CallTo(() => _simulation.Configuration).Returns(_buildConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }
 
@@ -75,11 +75,8 @@ namespace MoBi.Core
       [Observation]
       public void the_simulation_configuration_psv_and_msv_building_blocks_should_target_the_newly_created_template_building_blocks()
       {
-         _simulation.MoBiBuildConfiguration.ParameterStartValuesInfo.BuildingBlock.MoleculeBuildingBlockId.ShouldBeEqualTo(_templateMoleculeBuildingBlock.Id);
-         _simulation.MoBiBuildConfiguration.ParameterStartValuesInfo.BuildingBlock.SpatialStructureId.ShouldBeEqualTo(_templateSpatialStructure.Id);
-
-         _simulation.MoBiBuildConfiguration.MoleculeStartValuesInfo.BuildingBlock.MoleculeBuildingBlockId.ShouldBeEqualTo(_templateMoleculeBuildingBlock.Id);
-         _simulation.MoBiBuildConfiguration.MoleculeStartValuesInfo.BuildingBlock.SpatialStructureId.ShouldBeEqualTo(_templateSpatialStructure.Id);
+         _simulation.Configuration.MoleculeStartValues.MoleculeBuildingBlockId.ShouldBeEqualTo(_templateMoleculeBuildingBlock.Id);
+         _simulation.Configuration.MoleculeStartValues.SpatialStructureId.ShouldBeEqualTo(_templateSpatialStructure.Id);
       }
    }
 
@@ -87,18 +84,21 @@ namespace MoBi.Core
    {
       private ObserverBuildingBlockInfo _bbInfo;
       private ObserverBuildingBlock _cloneBuildingBlock;
-      private IMoBiBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _buildConfiguration;
 
       protected override void Context()
       {
          base.Context();
-         _buildConfiguration = A.Fake<IMoBiBuildConfiguration>();
-         _bbInfo = new ObserverBuildingBlockInfo {UntypedBuildingBlock = new ObserverBuildingBlock().WithId("SP1")};
-         _buildConfiguration.ObserversInfo = _bbInfo;
-         A.CallTo(() => _buildConfiguration.AllBuildingBlockInfos()).Returns(new[] {_bbInfo});
+         _buildConfiguration = new SimulationConfiguration();
+         _bbInfo = new ObserverBuildingBlockInfo { UntypedBuildingBlock = new ObserverBuildingBlock().WithId("SP1") };
+         _buildConfiguration.Module = new Module()
+         {
+            Observer = _bbInfo.BuildingBlock
+         };
+
          _cloneBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
          A.CallTo(() => _cloneManager.CloneBuildingBlock(_bbInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
-         A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(_buildConfiguration);
+         A.CallTo(() => _simulation.Configuration).Returns(_buildConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }
 
@@ -159,7 +159,7 @@ namespace MoBi.Core
          _newDataRepository = new DataRepository("New");
          _simulationTransfer = new SimulationTransfer();
          _simulationTransfer.Simulation = _simulation;
-         _simulationTransfer.AllObservedData = new List<DataRepository> {_dataRepository, _newDataRepository};
+         _simulationTransfer.AllObservedData = new List<DataRepository> { _dataRepository, _newDataRepository };
          _project.AddObservedData(_dataRepository);
       }
 

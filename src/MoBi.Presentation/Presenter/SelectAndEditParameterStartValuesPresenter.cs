@@ -9,11 +9,11 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface ISelectAndEditParameterStartValuesPresenter : ISelectAndEditStartValuesPresenter<IParameterStartValuesBuildingBlock>
+   public interface ISelectAndEditParameterStartValuesPresenter : ISelectAndEditStartValuesPresenter<ParameterStartValuesBuildingBlock>
    {
    }
 
-   internal class SelectAndEditParameterStartValuesPresenter : SelectAndEditStartValuesPresenter<IParameterStartValuesBuildingBlock, ParameterStartValue>, ISelectAndEditParameterStartValuesPresenter
+   internal class SelectAndEditParameterStartValuesPresenter : SelectAndEditStartValuesPresenter<ParameterStartValuesBuildingBlock, ParameterStartValue>, ISelectAndEditParameterStartValuesPresenter
    {
       private readonly IParameterStartValuesPresenter _editPresenter;
 
@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter
       public override void Refresh()
       {
          base.Refresh();
-         Refresh(_buildConfiguration.ParameterStartValuesInfo);
+         Refresh(_simulationConfiguration.ParameterStartValues);
          _editPresenter.Edit(StartValues);
       }
 

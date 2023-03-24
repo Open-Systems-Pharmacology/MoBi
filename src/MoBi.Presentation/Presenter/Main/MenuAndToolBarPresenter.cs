@@ -118,15 +118,15 @@ namespace MoBi.Presentation.Presenter.Main
          _view.CreateDynamicPageCategory(RibbonCategories.ParameterIdentification, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.SensitivityAnalysis, Color.LightGreen);
 
-         _dynamicRibbonPageCache.Add(typeof(IMoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
+         _dynamicRibbonPageCache.Add(typeof(MoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
          _dynamicRibbonPageCache.Add(typeof(IReactionBuildingBlock), AppConstants.RibbonCategories.Reactions);
          _dynamicRibbonPageCache.Add(typeof(IObserverBuildingBlock), AppConstants.RibbonCategories.Observers);
          _dynamicRibbonPageCache.Add(typeof(ISpatialStructure), AppConstants.RibbonCategories.Organisms);
 
          _dynamicRibbonPageCache.Add(typeof(IPassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
          _dynamicRibbonPageCache.Add(typeof(IEventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
-         _dynamicRibbonPageCache.Add(typeof(IMoleculeStartValuesBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
-         _dynamicRibbonPageCache.Add(typeof(IParameterStartValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
+         _dynamicRibbonPageCache.Add(typeof(MoleculeStartValuesBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
+         _dynamicRibbonPageCache.Add(typeof(ParameterStartValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
          _dynamicRibbonPageCache.Add(typeof(IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
          _dynamicRibbonPageCache.Add(typeof(ParameterIdentification), RibbonCategories.ParameterIdentification);
          _dynamicRibbonPageCache.Add(typeof(SensitivityAnalysis), RibbonCategories.SensitivityAnalysis);

@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ICreatePKSimMoleculePresenter : IDisposablePresenter
    {
-      IMoleculeBuilder CreateMolecule(IMoleculeBuildingBlock moleculeBuildingBlock);
+      IMoleculeBuilder CreateMolecule(MoleculeBuildingBlock moleculeBuildingBlock);
       void SetParameterUnit(ParameterDTO parameterDTO, Unit unit);
       void SetParameterValue(ParameterDTO parameterDTO, double newDisplayValue);
    }
@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IQuantityTask _quantityTask;
       private readonly IEditTaskFor<IMoleculeBuilder> _editTask;
       private IMoleculeBuilder _molecule;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private MoleculeBuilderDTO _moleculeDTO;
 
       public CreatePKSimMoleculePresenter(ICreatePKSimMoleculeView view, IMoBiConfiguration configuration,
@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Presenter
          _editTask = editTask;
       }
 
-      public IMoleculeBuilder CreateMolecule(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public IMoleculeBuilder CreateMolecule(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          _moleculeBuildingBlock = moleculeBuildingBlock;
          _molecule = loadMoleculeFromTemplate();

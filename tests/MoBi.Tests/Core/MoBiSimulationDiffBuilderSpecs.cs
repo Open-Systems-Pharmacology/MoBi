@@ -1,16 +1,12 @@
-﻿using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Validation;
-using FakeItEasy;
-
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Domain.Comparison;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.IntegrationTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Core
 {
@@ -41,16 +37,15 @@ namespace MoBi.Core
          var m1 = new Model().WithName("S1");
          var m2 = new Model().WithName("S1");
 
-         var bc1 = A.Fake<IMoBiBuildConfiguration>();
-         var bc2 = A.Fake<IMoBiBuildConfiguration>();
+         var bc1 = new SimulationConfiguration();
+         var bc2 = new SimulationConfiguration();
 
-         var sim1 = new MoBiSimulation{BuildConfiguration = bc1, Model = m1}.WithName("S1");
-         var sim2 = new MoBiSimulation{BuildConfiguration = bc2, Model = m2}.WithName("S1");
+         var sim1 = new MoBiSimulation { Configuration = bc1, Model = m1 }.WithName("S1");
+         var sim2 = new MoBiSimulation { Configuration = bc2, Model = m2 }.WithName("S1");
 
          _object1 = sim1;
          _object2 = sim2;
       }
-
 
       [Observation]
       public void should_not_report_any_differences()
@@ -67,30 +62,37 @@ namespace MoBi.Core
          var m1 = new Model().WithName("S1");
          var m2 = new Model().WithName("S1");
 
-         var bc1 = A.Fake<IMoBiBuildConfiguration>();
-         var bc2 = A.Fake<IMoBiBuildConfiguration>();
+         var bc1 = new SimulationConfiguration();
+         var bc2 = new SimulationConfiguration();
 
          var reactionInfo1 = new ReactionBuildingBlockInfo
          {
             BuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithName("R1"),
             TemplateBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithName("R1")
          };
-         bc1.ReactionsInfo = reactionInfo1;
+         bc1.Module = new Module()
+         {
+            Reaction = reactionInfo1.BuildingBlock
+         };
 
          var reactionInfo2 = new ReactionBuildingBlockInfo
          {
             BuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithName("R2"),
             TemplateBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithName("R2")
          };
-         bc2.ReactionsInfo = reactionInfo2;
 
-         var sim1 = new MoBiSimulation { BuildConfiguration = bc1, Model = m1 }.WithName("S1");
-         var sim2 = new MoBiSimulation { BuildConfiguration = bc2, Model = m2 }.WithName("S1");
+         bc2.Module = new Module()
+         {
+            Reaction = reactionInfo2.BuildingBlock
+         };
+         
+
+         var sim1 = new MoBiSimulation { Configuration = bc1, Model = m1 }.WithName("S1");
+         var sim2 = new MoBiSimulation { Configuration = bc2, Model = m2 }.WithName("S1");
 
          _object1 = sim1;
          _object2 = sim2;
       }
-
 
       [Observation]
       public void should_report_the_differences()
@@ -107,8 +109,8 @@ namespace MoBi.Core
          var m1 = new Model().WithName("S1");
          var m2 = new Model().WithName("S1");
 
-         var bc1 = A.Fake<IMoBiBuildConfiguration>();
-         var bc2 = A.Fake<IMoBiBuildConfiguration>();
+         var bc1 = new SimulationConfiguration();
+         var bc2 = new SimulationConfiguration();
 
          var reactionInfo1 = new ReactionBuildingBlockInfo
          {
@@ -116,7 +118,11 @@ namespace MoBi.Core
             TemplateBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithName("R1")
          };
          reactionInfo1.BuildingBlock.Version = 1;
-         bc1.ReactionsInfo = reactionInfo1;
+         bc1.Module = new Module
+         {
+            Reaction = reactionInfo1.BuildingBlock
+         };
+
 
          var reactionInfo2 = new ReactionBuildingBlockInfo
          {
@@ -124,15 +130,17 @@ namespace MoBi.Core
             TemplateBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithName("R1")
          };
          reactionInfo2.BuildingBlock.Version = 3;
-         bc2.ReactionsInfo = reactionInfo2;
+         bc2.Module = new Module()
+         {
+            Reaction = reactionInfo2.BuildingBlock
+         };
 
-         var sim1 = new MoBiSimulation { BuildConfiguration = bc1, Model = m1 }.WithName("S1");
-         var sim2 = new MoBiSimulation { BuildConfiguration = bc2, Model = m2 }.WithName("S1");
+         var sim1 = new MoBiSimulation { Configuration = bc1, Model = m1 }.WithName("S1");
+         var sim2 = new MoBiSimulation { Configuration = bc2, Model = m2 }.WithName("S1");
 
          _object1 = sim1;
          _object2 = sim2;
       }
-
 
       [Observation]
       public void should_report_the_differences()
@@ -140,4 +148,4 @@ namespace MoBi.Core
          _report.Count.ShouldBeEqualTo(1);
       }
    }
-}	
+}

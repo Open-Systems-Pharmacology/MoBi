@@ -8,7 +8,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_UpdateMoleculeStartValueIsPresentCommand : ContextSpecification<UpdateMoleculeStartValueIsPresentCommand>
    {
-      protected IMoleculeStartValuesBuildingBlock _startValueBuildingBlock;
+      protected MoleculeStartValuesBuildingBlock _startValueBuildingBlock;
       protected MoleculeStartValue _startValue;
       protected IMoBiContext _context;
 

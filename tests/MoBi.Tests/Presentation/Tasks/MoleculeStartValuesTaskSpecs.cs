@@ -30,8 +30,8 @@ namespace MoBi.Presentation.Tasks
    {
       protected IMoleculeStartValuesCreator _moleculeStartValuesCreator;
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
-      protected IMoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
-      private IEditTasksForBuildingBlock<IMoleculeStartValuesBuildingBlock> _editTask;
+      protected MoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
+      private IEditTasksForBuildingBlock<MoleculeStartValuesBuildingBlock> _editTask;
       protected IInteractionTaskContext _context;
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IMoleculeResolver _moleculeResolver;
@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          _context = A.Fake<IInteractionTaskContext>();
-         _editTask = A.Fake<IEditTasksForBuildingBlock<IMoleculeStartValuesBuildingBlock>>();
+         _editTask = A.Fake<IEditTasksForBuildingBlock<MoleculeStartValuesBuildingBlock>>();
          _moleculeStartValuesCreator = A.Fake<IMoleculeStartValuesCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _moleculeStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
@@ -445,7 +445,7 @@ namespace MoBi.Presentation.Tasks
          var targetUnit = _dim.Unit("kg");
 
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
-         sut.SetDisplayValueWithUnit(_startValue, _startValue.ConvertToDisplayUnit(_startValue.Value.Value), targetUnit, A.Fake<IMoleculeStartValuesBuildingBlock>());
+         sut.SetDisplayValueWithUnit(_startValue, _startValue.ConvertToDisplayUnit(_startValue.Value.Value), targetUnit, A.Fake<MoleculeStartValuesBuildingBlock>());
       }
 
       [Observation]
@@ -525,7 +525,7 @@ namespace MoBi.Presentation.Tasks
          moleculeBuindingBlock.Add(molecule);
          _nullStartValue = new MoleculeStartValue {Name = molecule.Name, StartValue = 1, Dimension = Constants.Dimension.NO_DIMENSION};
          _moleculeStartValueBuildingBlock.Add(_nullStartValue);
-         A.CallTo(_context.Context).WithReturnType<IMoleculeBuildingBlock>().Returns(moleculeBuindingBlock);
+         A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuindingBlock);
       }
 
       protected override void Because()
@@ -548,10 +548,10 @@ namespace MoBi.Presentation.Tasks
 
    public class When_creating_a_molecule_start_value_for_simulation_based_on_a_selected_template : concern_for_MoleculeStartValuesTask
    {
-      private IMoleculeStartValuesBuildingBlock _result;
-      private IMoBiBuildConfiguration _buildConfiguration;
-      private IMoleculeStartValuesBuildingBlock _templateStartValuesBuildingBlock;
-      private IMoleculeStartValuesBuildingBlock _newMoleculeStartValues;
+      private MoleculeStartValuesBuildingBlock _result;
+      private SimulationConfiguration _buildConfiguration;
+      private MoleculeStartValuesBuildingBlock _templateStartValuesBuildingBlock;
+      private MoleculeStartValuesBuildingBlock _newMoleculeStartValues;
       private MoleculeStartValue _newEndogenousValue;
       private MoleculeStartValue _existingEndogenousValue;
       private MoleculeStartValue _existingTemplateEndogenousValue;
@@ -560,13 +560,13 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _buildConfiguration = A.Fake<IMoBiBuildConfiguration>();
+         _buildConfiguration = new SimulationConfiguration();
          _templateStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
          _newMoleculeStartValues = new MoleculeStartValuesBuildingBlock();
 
-         _buildConfiguration.MoleculeStartValuesInfo = new MoleculeStartValuesBuildingBlockInfo {BuildingBlock = _templateStartValuesBuildingBlock, TemplateBuildingBlock = _templateStartValuesBuildingBlock};
+         // _buildConfiguration.MoleculeStartValuesInfo = new MoleculeStartValuesBuildingBlockInfo {BuildingBlock = _templateStartValuesBuildingBlock, TemplateBuildingBlock = _templateStartValuesBuildingBlock};
 
-         A.CallTo(_moleculeStartValuesCreator).WithReturnType<IMoleculeStartValuesBuildingBlock>().Returns(_newMoleculeStartValues);
+         A.CallTo(_moleculeStartValuesCreator).WithReturnType<MoleculeStartValuesBuildingBlock>().Returns(_newMoleculeStartValues);
 
          _newEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};
          _existingEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
@@ -605,7 +605,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_extending_a_given_molecule_start_value_with_building_block_based_on_used_templates : concern_for_MoleculeStartValuesTask
    {
-      private IMoleculeStartValuesBuildingBlock _templateMoleculeStartValues;
+      private MoleculeStartValuesBuildingBlock _templateMoleculeStartValues;
       private MoleculeStartValue _newEndogenousValue;
       private MoleculeStartValue _existingEndogenousValue;
       private MoleculeStartValue _existingTemplateEndogenousValue;
@@ -616,7 +616,7 @@ namespace MoBi.Presentation.Tasks
          _templateMoleculeStartValues = new MoleculeStartValuesBuildingBlock();
          A.CallTo(_context.Context.ObjectRepository).WithReturnType<bool>().Returns(true);
          var moleculeBuildingBlock = new MoleculeBuildingBlock();
-         A.CallTo(_context.Context).WithReturnType<IMoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
+         A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
 
          var spatialStructure = new SpatialStructure();
          A.CallTo(_context.Context).WithReturnType<ISpatialStructure>().Returns(spatialStructure);

@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Services
 {
-   public class CreateCommitChangesToParameterStartValuesBuildingBlockCommandTask : CreateCommitChangesToBuildingBlockCommandTask<IParameterStartValuesBuildingBlock>
+   public class CreateCommitChangesToParameterStartValuesBuildingBlockCommandTask : CreateCommitChangesToBuildingBlockCommandTask<ParameterStartValuesBuildingBlock>
    {
       public CreateCommitChangesToParameterStartValuesBuildingBlockCommandTask(ICloneManagerForBuildingBlock cloneManager) : base(cloneManager, x => x.ParameterStartValues)
       {
@@ -16,7 +16,7 @@ namespace MoBi.Core.Services
          var macroCommand = new MoBiMacroCommand();
          macroCommand.Add(CreateCommitCommand(simulation, templateBuildingBlock));
          //hide this command that is only required for separation of concerns
-         macroCommand.Add(new ResetParamterValuesToDefaultFromStartValuesInSimulationCommand(simulation) {Visible = false});
+         macroCommand.Add(new ResetParameterValuesToDefaultFromStartValuesInSimulationCommand(simulation) {Visible = false});
          return macroCommand;
       }
    }

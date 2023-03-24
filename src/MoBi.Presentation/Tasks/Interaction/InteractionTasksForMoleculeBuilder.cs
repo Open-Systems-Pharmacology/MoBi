@@ -13,17 +13,17 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForMoleculeBuilder : IInteractionTasksForBuilder<IMoleculeBuilder>
    {
-      void AddPKSimMoleculeTo(IMoleculeBuildingBlock moleculeBuildingBlock);
+      void AddPKSimMoleculeTo(MoleculeBuildingBlock moleculeBuildingBlock);
 
       /// <summary>
       ///    Adds the concentration parameter M/V referencing the volume of the container referencing the
       ///    <paramref name="moleculeBuilder" />.
       ///    The parameter is added only if it was not defined already
       /// </summary>
-      void AddConcentrationParameterTo(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock moleculeBuildingBlock);
+      void AddConcentrationParameterTo(IMoleculeBuilder moleculeBuilder, MoleculeBuildingBlock moleculeBuildingBlock);
    }
 
-   public class InteractionTasksForMoleculeBuilder : InteractionTasksForBuilder<IMoleculeBuilder, IMoleculeBuildingBlock>, IInteractionTasksForMoleculeBuilder
+   public class InteractionTasksForMoleculeBuilder : InteractionTasksForBuilder<IMoleculeBuilder, MoleculeBuildingBlock>, IInteractionTasksForMoleculeBuilder
    {
       private readonly ICoreCalculationMethodRepository _calculationMethodRepository;
       private readonly IReactionDimensionRetriever _dimensionRetriever;
@@ -40,22 +40,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          _formulaTask = formulaTask;
       }
 
-      public override IMoBiCommand GetRemoveCommand(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock parent, IBuildingBlock buildingBlock1)
+      public override IMoBiCommand GetRemoveCommand(IMoleculeBuilder moleculeBuilder, MoleculeBuildingBlock parent, IBuildingBlock buildingBlock1)
       {
          return new RemoveMoleculeBuilderCommand(parent, moleculeBuilder);
       }
 
-      public override IMoBiCommand GetRemoveCommand(IMoleculeBuilder builder, IMoleculeBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(IMoleculeBuilder builder, MoleculeBuildingBlock buildingBlock)
       {
          return GetRemoveCommand(builder, buildingBlock, null);
       }
 
-      public override IMoBiCommand GetAddCommand(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(IMoleculeBuilder moleculeBuilder, MoleculeBuildingBlock parent, IBuildingBlock buildingBlock)
       {
          return GetAddCommand(moleculeBuilder, parent);
       }
 
-      public void AddPKSimMoleculeTo(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void AddPKSimMoleculeTo(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          using (var presenter = ApplicationController.Start<ICreatePKSimMoleculePresenter>())
          {
@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      public void AddConcentrationParameterTo(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void AddConcentrationParameterTo(IMoleculeBuilder moleculeBuilder, MoleculeBuildingBlock moleculeBuildingBlock)
       {
          if (moleculeBuilder.Parameters.ExistsByName(AppConstants.Parameters.CONCENTRATION))
             return;
@@ -81,12 +81,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          moleculeBuilder.AddParameter(concentrationParameter);
       }
 
-      public override IMoBiCommand GetAddCommand(IMoleculeBuilder builder, IMoleculeBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(IMoleculeBuilder builder, MoleculeBuildingBlock buildingBlock)
       {
          return new AddMoleculeBuilderCommand(buildingBlock, builder);
       }
 
-      public override IMoleculeBuilder CreateNewEntity(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public override IMoleculeBuilder CreateNewEntity(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          var moleculeBuilder = base.CreateNewEntity(moleculeBuildingBlock);
          AddConcentrationParameterTo(moleculeBuilder, moleculeBuildingBlock);

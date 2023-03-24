@@ -66,7 +66,7 @@ namespace MoBi.Presentation.Mapper
       private IDimension _timeDimension;
       private IMoleculeStartValuesCreator _msvCreator;
 
-      protected IMoleculeStartValuesBuildingBlock _startValuesBuildingBlock;
+      protected MoleculeStartValuesBuildingBlock _startValuesBuildingBlock;
       private IReactionDimensionRetriever _reactionDimensionRetriever;
 
       protected override void Context()
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Mapper
          _timeDimension.Unit("s").Factor = 1.0 / 60;
 
          _dimensionFactory = A.Fake<IMoBiDimensionFactory>();
-         _startValuesBuildingBlock = A.Fake<IMoleculeStartValuesBuildingBlock>();
+         _startValuesBuildingBlock = A.Fake<MoleculeStartValuesBuildingBlock>();
 
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
 

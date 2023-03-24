@@ -91,7 +91,7 @@ namespace MoBi.Presentation.Presenter
       private PathCache<IMoleculeAmount> retrieveScalableMoleculeAmounts()
       {
          var allMoleculeAmounts = _containerTask.CacheAllChildren<IMoleculeAmount>(_simulation.Model.Root);
-         var moleculeStartValues = _simulation.BuildConfiguration.MoleculeStartValues;
+         var moleculeStartValues = _simulation.Configuration.MoleculeStartValues;
 
          foreach (var path in allMoleculeAmounts.Keys.ToList())
          {

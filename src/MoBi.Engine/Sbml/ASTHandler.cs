@@ -1078,7 +1078,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the MoBi Molecule Building Block generated for the SBML Import.
       /// </summary>
-      public IMoleculeBuildingBlock GetMainMoleculeBuildingBlock()
+      public MoleculeBuildingBlock GetMainMoleculeBuildingBlock()
       {
          return _sbmlProject.MoleculeBlockCollection.FirstOrDefault(mb => mb.Name == SBMLConstants.SBML_SPECIES_BB);
       }

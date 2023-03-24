@@ -3,7 +3,6 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
@@ -18,7 +17,7 @@ namespace MoBi.Core.Commands
       {
          _context = A.Fake<IMoBiContext>();
          _chartTemplate = new CurveChartTemplate {Name = "Template"};
-         _simulation = new MoBiSimulation{BuildConfiguration = new MoBiBuildConfiguration { SimulationSettings = new SimulationSettings()}};
+         _simulation = new MoBiSimulation{ Configuration = new SimulationConfiguration { SimulationSettings = new SimulationSettings()}};
          sut = new AddChartTemplateToSimulationSettingsCommand(_chartTemplate, _simulation);
       }
    }

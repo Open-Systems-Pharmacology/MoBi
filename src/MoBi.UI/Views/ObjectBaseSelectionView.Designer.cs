@@ -2,8 +2,8 @@ using System.Windows.Forms;
 
 namespace MoBi.UI.Views
 {
-    partial class BuildingBlockSelectionView
-    {
+    partial class ObjectBaseSelectionView
+   {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -19,7 +19,8 @@ namespace MoBi.UI.Views
            {
               components.Dispose();
            }
-           _screenBinder.Dispose();
+
+           DisposeBinders();
            base.Dispose(disposing);
         }
 
@@ -131,7 +132,7 @@ namespace MoBi.UI.Views
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
-         this.Name = "BuildingBlockSelectionView";
+         this.Name = "ObjectBaseSelectionView";
          this.Size = new System.Drawing.Size(418, 26);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
@@ -146,10 +147,10 @@ namespace MoBi.UI.Views
 
         #endregion
 
-        private DevExpress.XtraEditors.SimpleButton btnNew;
+        protected DevExpress.XtraEditors.SimpleButton btnNew;
         private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemNew;
-        private OSPSuite.UI.Controls.UxComboBoxEdit cbBuildingBlocks;
+        protected OSPSuite.UI.Controls.UxComboBoxEdit cbBuildingBlocks;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemComboBox;
         private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
 

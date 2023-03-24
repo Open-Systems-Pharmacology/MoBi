@@ -21,15 +21,17 @@ namespace MoBi.Core
    {
       protected ObjectPathFactory _pathFactory;
       protected IUserSettings _userSettings;
-      protected IBuildConfiguration _buildConfiguration;
+      protected SimulationConfiguration _buildConfiguration;
 
       protected override void Context()
       {
          _pathFactory = new ObjectPathFactory(new AliasCreator());
          _userSettings = A.Fake<IUserSettings>();
          _userSettings.CheckDimensions = true;
-         _buildConfiguration = A.Fake<IBuildConfiguration>();
+         _buildConfiguration = new SimulationConfiguration();
+
          A.CallTo(() => _buildConfiguration.BuilderFor(A<IObjectBase>._)).ReturnsLazily(x => x.GetArgument<IObjectBase>(0));
+         
          sut = new DimensionValidator(new DimensionParser(), _pathFactory, _userSettings);
       }
    }

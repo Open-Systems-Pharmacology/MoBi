@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
          _buildingBlock = new ParameterStartValuesBuildingBlock {_parameterStartValue};
          sut = new ChangeParameterStartValueNameCommand(_buildingBlock, _parameterStartValue.Path, "Name2");
 
-         A.CallTo(() => _context.Get<IParameterStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ParameterStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

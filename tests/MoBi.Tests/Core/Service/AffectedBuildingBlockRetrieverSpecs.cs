@@ -1,8 +1,8 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
+using NUnit.Framework;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -14,55 +14,57 @@ namespace MoBi.Core.Service
    {
       protected IMoBiSimulation _simulation;
       protected IModel _model;
-      protected IMoleculeBuildingBlock _moleculeBuidingBlock;
+      protected MoleculeBuildingBlock _moleculeBuidingBlock;
       protected IMoBiReactionBuildingBlock _reactionBuildingBlock;
       protected IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       protected IEventGroupBuildingBlock _eventGroupBuildingBlock;
-      protected IMoleculeStartValuesBuildingBlock _msvBuildingBlock;
-      protected IParameterStartValuesBuildingBlock _psvBuildingBlock;
+      protected MoleculeStartValuesBuildingBlock _msvBuildingBlock;
+      protected ParameterStartValuesBuildingBlock _psvBuildingBlock;
       protected IMoBiSpatialStructure _spatialStructure;
       protected IObserverBuildingBlock _observerBuildingBlock;
-      protected IMoBiBuildConfiguration _buildConfiguration;
+      protected SimulationConfiguration _buildConfiguration;
       protected IObjectPathFactory _objectPathFactory;
 
       protected EntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
-         _buildConfiguration = new MoBiBuildConfiguration();
+         _buildConfiguration = new SimulationConfiguration();
+         _buildConfiguration.Module = new Module();
+         
          _moleculeBuidingBlock = new MoleculeBuildingBlock().WithName("M");
-         _buildConfiguration.Molecules = _moleculeBuidingBlock;
+         _buildConfiguration.Module.Molecule  = _moleculeBuidingBlock;
 
          _reactionBuildingBlock = new MoBiReactionBuildingBlock().WithName("R");
          _reactionBuildingBlock.Add(new ReactionBuilder().WithName("R1"));
-         _buildConfiguration.Reactions = _reactionBuildingBlock;
+         _buildConfiguration.Module.Reaction = _reactionBuildingBlock;
 
          _passiveTransportBuildingBlock = new PassiveTransportBuildingBlock().WithName("PT");
          _passiveTransportBuildingBlock.Add(new TransportBuilder().WithName("PT2"));
          _passiveTransportBuildingBlock.Add(new TransportBuilder().WithName("PT1"));
-         _buildConfiguration.PassiveTransports = _passiveTransportBuildingBlock;
+         _buildConfiguration.Module.PassiveTransport = _passiveTransportBuildingBlock;
 
          _eventGroupBuildingBlock = new EventGroupBuildingBlock().WithName("EG");
-         _buildConfiguration.EventGroups = _eventGroupBuildingBlock;
+         _buildConfiguration.Module.EventGroup = _eventGroupBuildingBlock;
 
          _msvBuildingBlock = new MoleculeStartValuesBuildingBlock().WithName("MSV");
-         _buildConfiguration.MoleculeStartValues = _msvBuildingBlock;
+         _buildConfiguration.Module.AddMoleculeStartValueBlock(_msvBuildingBlock);
 
          _psvBuildingBlock = new ParameterStartValuesBuildingBlock().WithName("PSV");
-         _buildConfiguration.ParameterStartValues = _psvBuildingBlock;
+         _buildConfiguration.Module.AddParameterStartValueBlock(_psvBuildingBlock);
 
          _spatialStructure = new MoBiSpatialStructure().WithName("SPST");
-         _buildConfiguration.SpatialStructure = _spatialStructure;
+         _buildConfiguration.Module.SpatialStructure = _spatialStructure;
 
          _observerBuildingBlock = new ObserverBuildingBlock().WithName("O");
-         _buildConfiguration.Observers = _observerBuildingBlock;
+         _buildConfiguration.Module.Observer = _observerBuildingBlock;
 
          _objectPathFactory = new ObjectPathFactory(new AliasCreator());
          _entityPathResolver = new EntityPathResolver(_objectPathFactory);
          sut = new AffectedBuildingBlockRetriever(_entityPathResolver);
 
          //common setup
-         _simulation = new MoBiSimulation {BuildConfiguration = _buildConfiguration};
+         _simulation = new MoBiSimulation { Configuration = _buildConfiguration };
       }
    }
 
@@ -78,7 +80,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_spatial_structure()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.SpatialStructureInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.Module.SpatialStructure);
       }
    }
 
@@ -105,7 +108,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_parameter_start_value_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
+         Assert.False(true);
+         //  _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
       }
    }
 
@@ -149,7 +153,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_molecule_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.MoleculesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.MoleculesInfo);
       }
    }
 
@@ -159,13 +164,14 @@ namespace MoBi.Core.Service
       {
          _parameterBuildMode = ParameterBuildMode.Global;
          base.Context();
-         _psvBuildingBlock.Add(new ParameterStartValue {Path = _entityPathResolver.ObjectPathFor(_parameter)});
+         _psvBuildingBlock.Add(new ParameterStartValue { Path = _entityPathResolver.ObjectPathFor(_parameter) });
       }
 
       [Observation]
       public void should_return_parameter_start_value_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
       }
    }
 
@@ -175,13 +181,14 @@ namespace MoBi.Core.Service
       {
          _parameterBuildMode = ParameterBuildMode.Local;
          base.Context();
-         _psvBuildingBlock.Add(new ParameterStartValue {Path = _entityPathResolver.ObjectPathFor(_parameter)});
+         _psvBuildingBlock.Add(new ParameterStartValue { Path = _entityPathResolver.ObjectPathFor(_parameter) });
       }
 
       [Observation]
       public void should_return_parameter_start_value_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
       }
    }
 
@@ -196,7 +203,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_parameter_start_value_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
       }
    }
 
@@ -212,7 +220,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_the_observer_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ObserversInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ObserversInfo);
       }
    }
 
@@ -237,7 +246,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_event_group_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
       }
    }
 
@@ -260,7 +270,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_parameter_start_value_building_block_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
       }
    }
 
@@ -296,7 +307,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_reaction_buiding_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ReactionsInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ReactionsInfo);
       }
    }
 
@@ -306,17 +318,18 @@ namespace MoBi.Core.Service
       {
          _parameterBuildMode = ParameterBuildMode.Global;
          base.Context();
-         _psvBuildingBlock.Add(new ParameterStartValue {Path = _entityPathResolver.ObjectPathFor(_parameter)});
+         _psvBuildingBlock.Add(new ParameterStartValue { Path = _entityPathResolver.ObjectPathFor(_parameter) });
       }
 
       [Observation]
       public void should_return_reaction_buiding_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
       }
    }
 
-   public class When_asked_for_affected_building_block_for_a_propery_reaction_parameter_not_defined_in_parameter_start_value : When_asking_for_an_affected_building_block_for_a_parameter_defined_in_a_reaction
+   public class When_asked_for_affected_building_block_for_a_property_reaction_parameter_not_defined_in_parameter_start_value : When_asking_for_an_affected_building_block_for_a_parameter_defined_in_a_reaction
    {
       protected override void Context()
       {
@@ -327,7 +340,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_reaction_buiding_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ReactionsInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ReactionsInfo);
       }
    }
 
@@ -342,7 +356,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_parameter_start_value_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.ParameterStartValuesInfo);
       }
    }
 
@@ -358,7 +373,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_the_molecule_building_block()
       {
-         _result.ShouldBeEqualTo(_buildConfiguration.MoleculeStartValuesInfo);
+         Assert.False(true);
+         // _result.ShouldBeEqualTo(_buildConfiguration.MoleculeStartValuesInfo);
       }
    }
 
@@ -367,10 +383,11 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_the_simulation_settings_building_block()
       {
-         sut.RetrieveFor(new CurveChartTemplate(), _simulation).ShouldBeEqualTo(_buildConfiguration.SimulationSettingsInfo);
-         sut.RetrieveFor(new OutputSchema(), _simulation).ShouldBeEqualTo(_buildConfiguration.SimulationSettingsInfo);
-         sut.RetrieveFor(new OutputInterval(), _simulation).ShouldBeEqualTo(_buildConfiguration.SimulationSettingsInfo);
-         sut.RetrieveFor(new OutputSelections(), _simulation).ShouldBeEqualTo(_buildConfiguration.SimulationSettingsInfo);
+         Assert.False(true);
+         // sut.RetrieveFor(new CurveChartTemplate(), _simulation).ShouldBeEqualTo(_buildConfiguration.SimulationSettingsInfo);
+         // sut.RetrieveFor(new OutputSchema(), _simulation).ShouldBeEqualTo(_buildConfiguration.SimulationSettingsInfo);
+         // sut.RetrieveFor(new OutputInterval(), _simulation).ShouldBeEqualTo(_buildConfiguration.SimulationSettingsInfo);
+         // sut.RetrieveFor(new OutputSelections(), _simulation).ShouldBeEqualTo(_buildConfiguration.SimulationSettingsInfo);
       }
    }
 }

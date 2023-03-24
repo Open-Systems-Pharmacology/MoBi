@@ -147,13 +147,13 @@ namespace MoBi.Presentation
    {
       private ITreeNode _node;
       private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _moleculeBuilder = A.Fake<IMoleculeBuilder>();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          var moleculeBuildingBlockNode = A.Fake<ITreeNode>();
          A.CallTo(() => moleculeBuildingBlockNode.TagAsObject).Returns(_moleculeBuildingBlock);
          _node = A.Fake<ITreeNode>();

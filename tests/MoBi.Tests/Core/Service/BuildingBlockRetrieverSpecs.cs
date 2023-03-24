@@ -47,7 +47,7 @@ namespace MoBi.Core.Service
 
       private IReactionBuildingBlock _reactionBuildingBlock;
       private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private IObserverBuilder _obseverBuilder;
       private IObserverBuildingBlock _observerBuildingBlock;
       private ITransportBuilder _passiveTranportBuilder;
@@ -131,7 +131,7 @@ namespace MoBi.Core.Service
 
       private IReactionBuildingBlock _reactionBuildingBlock;
       private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private ITransportBuilder _passiveTranportBuilder;
       private IPassiveTransportBuildingBlock _passiveTranportBuildingBlock;
       private IApplicationBuilder _applicationBuilder;
@@ -206,8 +206,8 @@ namespace MoBi.Core.Service
    public class When_retrieving_the_building_block_for_a_formula_defined_in_a_molecule_start_values : concern_for_BuildingBlockRetriever
    {
       private IFormula _formula;
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValues;
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValuesTemplate;
+      private MoleculeStartValuesBuildingBlock _moleculeStartValues;
+      private MoleculeStartValuesBuildingBlock _moleculeStartValuesTemplate;
       private ExplicitFormula _templateFormula;
 
       protected override void Context()

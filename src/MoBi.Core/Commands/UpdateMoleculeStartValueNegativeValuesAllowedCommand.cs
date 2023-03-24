@@ -6,14 +6,14 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateMoleculeStartValueNegativeValuesAllowedCommand : BuildingBlockChangeCommandBase<IMoleculeStartValuesBuildingBlock>
+   public class UpdateMoleculeStartValueNegativeValuesAllowedCommand : BuildingBlockChangeCommandBase<MoleculeStartValuesBuildingBlock>
    {
       private readonly string _startValueId;
       private MoleculeStartValue _startValue;
       private readonly bool _oldNegativeValuesAllowed;
       private readonly bool _newNegativeValuesAllowed;
 
-      public UpdateMoleculeStartValueNegativeValuesAllowedCommand(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, MoleculeStartValue moleculeStartValue, bool negativeValuesAllowed)
+      public UpdateMoleculeStartValueNegativeValuesAllowedCommand(MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, MoleculeStartValue moleculeStartValue, bool negativeValuesAllowed)
          : base(moleculeStartValuesBuildingBlock)
       {
          _startValueId = moleculeStartValue.Id;

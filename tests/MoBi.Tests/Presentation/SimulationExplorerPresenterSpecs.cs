@@ -48,10 +48,10 @@ namespace MoBi.Presentation
          _classificationPresenter = A.Fake<IClassificationPresenter>();
          _toolTipPartCreator = A.Fake<IToolTipPartCreator>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
-         _interactionTaskForSimulation= A.Fake<IInteractionTasksForSimulation>();
-         _parameterAnalysablesInExplorerPresenter= A.Fake<IParameterAnalysablesInExplorerPresenter>();
+         _interactionTaskForSimulation = A.Fake<IInteractionTasksForSimulation>();
+         _parameterAnalysablesInExplorerPresenter = A.Fake<IParameterAnalysablesInExplorerPresenter>();
          sut = new SimulationExplorerPresenter(_view, _regionResolver, _treeNodeFactory, _viewItemContextMenuFactory, _context,
-            _classificationPresenter, _toolTipPartCreator, _multipleTreeNodeContextMenuFactory, _projectRetriever,_interactionTaskForSimulation, _parameterAnalysablesInExplorerPresenter);
+            _classificationPresenter, _toolTipPartCreator, _multipleTreeNodeContextMenuFactory, _projectRetriever, _interactionTaskForSimulation, _parameterAnalysablesInExplorerPresenter);
       }
    }
 
@@ -104,7 +104,7 @@ namespace MoBi.Presentation
          _simulationStatusChangedEvent = new SimulationStatusChangedEvent(_simulation);
          _simulationNode = new Nodes.TextNode("Simulation");
 
-         var buildConfiguration = A.Fake<IMoBiBuildConfiguration>();
+         var buildConfiguration = new SimulationConfiguration { Module = new Module() };
 
          var spatialStructure = A.Fake<IMoBiSpatialStructure>().WithId("SpatialStructure");
          spatialStructure.Version = 5;
@@ -112,25 +112,25 @@ namespace MoBi.Presentation
          var spatialStructureInfo = new SpatialStructureInfo();
          spatialStructureInfo.TemplateBuildingBlock = templateSpatialStructure;
          spatialStructureInfo.BuildingBlock = spatialStructure;
-         buildConfiguration.SpatialStructureInfo = spatialStructureInfo;
-         A.CallTo(() => buildConfiguration.BuildingInfoForTemplateById(spatialStructureInfo.TemplateBuildingBlockId)).Returns(spatialStructureInfo);
+         // buildConfiguration.SpatialStructureInfo = spatialStructureInfo;
+         // A.CallTo(() => buildConfiguration.BuildingInfoForTemplateById(spatialStructureInfo.TemplateBuildingBlockId)).Returns(spatialStructureInfo);
 
          var moleculesInfo = new MoleculesInfo();
-         var templateBuildingBlock = A.Fake<IMoleculeBuildingBlock>().WithId("TemplateMolecules");
-         var moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>().WithId("Molecules");
+         var templateBuildingBlock = A.Fake<MoleculeBuildingBlock>().WithId("TemplateMolecules");
+         var moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>().WithId("Molecules");
          moleculesInfo.TemplateBuildingBlock = templateBuildingBlock;
          moleculesInfo.BuildingBlock = moleculeBuildingBlock;
-         A.CallTo(() => buildConfiguration.BuildingInfoForTemplateById(moleculesInfo.TemplateBuildingBlockId)).Returns(moleculesInfo);
+         // A.CallTo(() => buildConfiguration.BuildingInfoForTemplateById(moleculesInfo.TemplateBuildingBlockId)).Returns(moleculesInfo);
 
-         buildConfiguration.MoleculesInfo = moleculesInfo;
-         A.CallTo(() => buildConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] {spatialStructureInfo, moleculesInfo});
-         A.CallTo(() => buildConfiguration.HasChangedBuildingBlocks()).Returns(true);
+         // buildConfiguration.MoleculesInfo = moleculesInfo;
+         // A.CallTo(() => buildConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] { spatialStructureInfo, moleculesInfo });
+         // A.CallTo(() => buildConfiguration.HasChangedBuildingBlocks()).Returns(true);
 
          _buildingBlockInfoDTOChanged = spatialStructureInfo;
          _buildingBlockInfoDTOUnchanged = moleculesInfo;
 
          _treeView = A.Fake<IUxTreeView>();
-         var configNode = new BuildConfigurationNode(buildConfiguration).Under(_simulationNode);
+         var configNode = new SimulationConfigurationNode(buildConfiguration).Under(_simulationNode);
          _nodeToChange = new BuildingBlockInfoNode(_buildingBlockInfoDTOChanged)
             .WithIcon(ApplicationIcons.SpatialStructureGreen)
             .Under(configNode);
@@ -141,7 +141,7 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _view.TreeView).Returns(_treeView);
          A.CallTo(() => _treeView.NodeById(_simulation.Id)).Returns(_simulationNode);
-         A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(buildConfiguration);
+         A.CallTo(() => _simulation.Configuration).Returns(buildConfiguration);
       }
 
       protected override void Because()
@@ -150,7 +150,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_ask_view_for_simulatuion_node()
+      public void should_ask_view_for_simulation_node()
       {
          A.CallTo(() => _treeView.NodeById(_simulation.Id)).MustHaveHappened();
       }

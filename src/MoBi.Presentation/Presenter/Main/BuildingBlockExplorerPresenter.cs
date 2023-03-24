@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Presenter.Main
             return;
          }
 
-         var moleculeBuildingBlock = node.ParentNode.TagAsObject.DowncastTo<IMoleculeBuildingBlock>();
+         var moleculeBuildingBlock = node.ParentNode.TagAsObject.DowncastTo<MoleculeBuildingBlock>();
          _editBuildingBlockStarter.EditMolecule(moleculeBuildingBlock, moleculeBuilder);
       }
 
@@ -128,12 +128,12 @@ namespace MoBi.Presentation.Presenter.Main
                addBuildingBlock(buildingBlock);
                break;
             case IMoleculeBuilder moleculeBuilder:
-               addMoleculeBuilder(moleculeBuilder, eventToHandle.Parent.DowncastTo<IMoleculeBuildingBlock>());
+               addMoleculeBuilder(moleculeBuilder, eventToHandle.Parent.DowncastTo<MoleculeBuildingBlock>());
                break;
          }
       }
 
-      private ITreeNode addMoleculeBuilder(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock moleculeBuildingBlock)
+      private ITreeNode addMoleculeBuilder(IMoleculeBuilder moleculeBuilder, MoleculeBuildingBlock moleculeBuildingBlock)
       {
          var moleculeBuildingBlockNode = _view.NodeById(moleculeBuildingBlock.Id);
          return _view.AddNode(_treeNodeFactory.CreateFor(moleculeBuilder)

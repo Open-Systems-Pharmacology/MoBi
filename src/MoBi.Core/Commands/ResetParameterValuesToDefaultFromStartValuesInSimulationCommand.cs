@@ -6,10 +6,10 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class ResetParamterValuesToDefaultFromStartValuesInSimulationCommand : ResetQuantityValuesToDefaultFromStartValuesInSimulation<ParameterStartValue>
+   public class ResetParameterValuesToDefaultFromStartValuesInSimulationCommand : ResetQuantityValuesToDefaultFromStartValuesInSimulation<ParameterStartValue>
    {
-      public ResetParamterValuesToDefaultFromStartValuesInSimulationCommand(IMoBiSimulation simulation)
-         : base(simulation, simulation.BuildConfiguration.ParameterStartValues)
+      public ResetParameterValuesToDefaultFromStartValuesInSimulationCommand(IMoBiSimulation simulation)
+         : base(simulation, simulation.Configuration.ParameterStartValues)
       {
       }
 

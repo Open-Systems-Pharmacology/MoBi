@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Presenter
       protected override void AddChildrenFromDummyMolecule(List<ObjectBaseDTO> children, DummyMoleculeContainerDTO dummyMolecule)
       {
          IEnumerable<TransporterMoleculeContainer> allTransporterMoleculeContainers = new List<TransporterMoleculeContainer>();
-         IMoleculeBuildingBlock editedMoleculeBuildingBlock = null;
+         MoleculeBuildingBlock editedMoleculeBuildingBlock = null;
          var allMoleculeBuildingBlocks = editedMoleculeBuildingBlock!=null ? new[] {editedMoleculeBuildingBlock} : _context.CurrentProject.MoleculeBlockCollection;
 
          foreach (var moleculeBuildingBlock in allMoleculeBuildingBlocks)

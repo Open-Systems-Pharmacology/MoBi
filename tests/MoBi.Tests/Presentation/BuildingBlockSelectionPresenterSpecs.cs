@@ -50,7 +50,7 @@ namespace MoBi.Presentation
    {
       protected override void Because()
       {
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
       }
 
       [Observation]
@@ -58,7 +58,7 @@ namespace MoBi.Presentation
       {
          _buildingBlockInfo.TemplateBuildingBlock.ShouldBeEqualTo(_templateBuildingBlock1);
          _buildingBlockInfo.BuildingBlock.ShouldBeEqualTo(_buildingBlockInfo.TemplateBuildingBlock);
-         _buildingBlockSelectionDTO.BuildingBlock.ShouldBeEqualTo(_templateBuildingBlock1);
+         _buildingBlockSelectionDTO.SelectedObject.ShouldBeEqualTo(_templateBuildingBlock1);
       }
    }
 
@@ -73,14 +73,14 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
       }
 
       [Observation]
       public void should_set_the_first_available_building_block_as_selected()
       {
          _buildingBlockInfo.TemplateBuildingBlock.ShouldBeEqualTo(_templateBuildingBlock2);
-         _buildingBlockSelectionDTO.BuildingBlock.ShouldBeEqualTo(_templateBuildingBlock2);
+         _buildingBlockSelectionDTO.SelectedObject.ShouldBeEqualTo(_templateBuildingBlock2);
       }
 
       [Observation]
@@ -101,14 +101,14 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
       }
 
       [Observation]
       public void should_set_the_first_available_building_block_as_selected()
       {
          _buildingBlockInfo.TemplateBuildingBlock.ShouldBeEqualTo(_templateBuildingBlock2);
-         _buildingBlockSelectionDTO.BuildingBlock.ShouldBeEqualTo(_simulationBuildingBlock);
+         _buildingBlockSelectionDTO.SelectedObject.ShouldBeEqualTo(_simulationBuildingBlock);
       }
 
       [Observation]
@@ -126,12 +126,12 @@ namespace MoBi.Presentation
          _buildingBlockInfo.BuildingBlock = _simulationBuildingBlock;
          _buildingBlockInfo.TemplateBuildingBlock = _templateBuildingBlock2;
          _buildingBlockInfo.SimulationChanges = 3;
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
       }
 
       protected override void Because()
       {
-         _buildingBlockSelectionDTO.BuildingBlock = _templateBuildingBlock1;
+         _buildingBlockSelectionDTO.SelectedObject = _templateBuildingBlock1;
          sut.SelectedBuildingBlockChanged();
       }
 
@@ -156,14 +156,14 @@ namespace MoBi.Presentation
          _buildingBlockInfo.BuildingBlock = _simulationBuildingBlock;
          _buildingBlockInfo.SimulationChanges = 3;
          _buildingBlockInfo.TemplateBuildingBlock = _templateBuildingBlock2;
-         sut.Edit(_buildingBlockInfo);
-         _buildingBlockSelectionDTO.BuildingBlock = _templateBuildingBlock1;
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
+         _buildingBlockSelectionDTO.SelectedObject = _templateBuildingBlock1;
          sut.SelectedBuildingBlockChanged();
       }
 
       protected override void Because()
       {
-         _buildingBlockSelectionDTO.BuildingBlock = _simulationBuildingBlock;
+         _buildingBlockSelectionDTO.SelectedObject = _simulationBuildingBlock;
          sut.SelectedBuildingBlockChanged();
       }
 

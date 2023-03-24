@@ -26,7 +26,7 @@ namespace MoBi.Core.Service
       private IBuildingBlock _templateBuildingBlock;
       private IMoBiCommand _resultCommand;
       private IMoBiSimulation _simulation;
-      private IMoleculeStartValuesBuildingBlock _cloneSimulationStartValueBuildingBlock;
+      private MoleculeStartValuesBuildingBlock _cloneSimulationStartValueBuildingBlock;
 
       protected override void Context()
       {
@@ -34,9 +34,9 @@ namespace MoBi.Core.Service
          _simulation = A.Fake<IMoBiSimulation>();
          _templateBuildingBlock = new MoleculeStartValuesBuildingBlock();
          _cloneSimulationStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
-         IMoleculeStartValuesBuildingBlock simulationStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         MoleculeStartValuesBuildingBlock simulationStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(simulationStartValueBuildingBlock)).Returns(_cloneSimulationStartValueBuildingBlock);
-         A.CallTo(() => _simulation.BuildConfiguration.MoleculeStartValues).Returns(simulationStartValueBuildingBlock);
+         A.CallTo(() => _simulation.Configuration.MoleculeStartValues).Returns(simulationStartValueBuildingBlock);
       }
 
       protected override void Because()

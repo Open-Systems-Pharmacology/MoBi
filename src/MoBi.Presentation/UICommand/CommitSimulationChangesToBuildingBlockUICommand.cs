@@ -40,7 +40,7 @@ namespace MoBi.Presentation.UICommand
                return;
 
             _context.AddToHistory(commitToBuildingBlockCommand.Run(_context));
-            _pendingChangesChecker.CheckForBuildingBlockChanges(_simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(_templateBuildingBlock), _templateBuildingBlock);
+            // _pendingChangesChecker.CheckForBuildingBlockChanges(_simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(_templateBuildingBlock), _templateBuildingBlock);
          }
          finally
          {

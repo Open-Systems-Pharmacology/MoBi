@@ -28,7 +28,7 @@ namespace MoBi.Presentation
 
    public class When_creating_the_node_for_a_molecule_building_block : concern_for_TreeNodeFactory
    {
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private ITreeNode _node;
 
       protected override void Context()

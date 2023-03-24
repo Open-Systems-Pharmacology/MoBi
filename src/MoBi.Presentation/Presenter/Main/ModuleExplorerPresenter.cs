@@ -67,7 +67,7 @@ namespace MoBi.Presentation.Presenter.Main
             return;
          }
 
-         var moleculeBuildingBlock = node.ParentNode.TagAsObject.DowncastTo<IMoleculeBuildingBlock>();
+         var moleculeBuildingBlock = node.ParentNode.TagAsObject.DowncastTo<MoleculeBuildingBlock>();
          _editBuildingBlockStarter.EditMolecule(moleculeBuildingBlock, moleculeBuilder);
       }
 

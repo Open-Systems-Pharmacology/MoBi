@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -11,28 +9,30 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IParameterStartValuesTask : IStartValuesTask<IParameterStartValuesBuildingBlock, ParameterStartValue>
+   public interface IParameterStartValuesTask : IStartValuesTask<ParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       IParameter GetPossibleParameterFromProject(ObjectPath parameterPath);
    }
 
-   public class ParameterStartValuesTask : AbstractStartValuesTask<IParameterStartValuesBuildingBlock, ParameterStartValue>, IParameterStartValuesTask
+   public class ParameterStartValuesTask : AbstractStartValuesTask<ParameterStartValuesBuildingBlock, ParameterStartValue>, IParameterStartValuesTask
    {
       private readonly IParameterStartValuesCreator _startValuesCreator;
       private readonly IParameterResolver _parameterResolver;
 
       public ParameterStartValuesTask(
          IInteractionTaskContext interactionTaskContext,
-         IEditTasksForBuildingBlock<IParameterStartValuesBuildingBlock> editTask,
+         IEditTasksForBuildingBlock<ParameterStartValuesBuildingBlock> editTask,
          IParameterStartValuesCreator startValuesCreator,
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IImportedQuantityToParameterStartValueMapper dtoToQuantityToParameterStartValueMapper,
@@ -46,36 +46,31 @@ namespace MoBi.Presentation.Tasks.Interaction
          _parameterResolver = parameterResolver;
       }
 
-      private IParameterStartValuesBuildingBlock createTempStartValues(IParameterStartValuesBuildingBlock parameterStartValues)
+      private ParameterStartValuesBuildingBlock createTempStartValues(ParameterStartValuesBuildingBlock parameterStartValues)
       {
-         var molecules = BuildingBlockById<IMoleculeBuildingBlock>(parameterStartValues.MoleculeBuildingBlockId);
-         var spatialStructure = BuildingBlockById<ISpatialStructure>(parameterStartValues.SpatialStructureId);
-         return _startValuesCreator.CreateFrom(spatialStructure, molecules);
+         return new ParameterStartValuesBuildingBlock();
+         // var molecules = BuildingBlockById<MoleculeBuildingBlock>(parameterStartValues.MoleculeBuildingBlockId);
+         // var spatialStructure = BuildingBlockById<ISpatialStructure>(parameterStartValues.SpatialStructureId);
+         // return _startValuesCreator.CreateFrom(spatialStructure, molecules);
       }
 
-      public override void ExtendStartValues(IParameterStartValuesBuildingBlock parameterStartValues)
+      public override void ExtendStartValues(ParameterStartValuesBuildingBlock parameterStartValues)
       {
          var newStartValues = createTempStartValues(parameterStartValues);
          AddCommand(Extend(newStartValues, parameterStartValues));
       }
 
-      public override IParameterStartValuesBuildingBlock CreateStartValuesForSimulation(IMoBiBuildConfiguration buildConfiguration)
+      public override ParameterStartValuesBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration)
       {
-         var startValues = _startValuesCreator.CreateFrom(buildConfiguration.SpatialStructureInfo.TemplateBuildingBlock,
-            buildConfiguration.MoleculesInfo.TemplateBuildingBlock)
-            .WithName(buildConfiguration.ParameterStartValuesInfo.TemplateBuildingBlock.Name);
-
-         UpdateValuesFromTemplate(startValues, buildConfiguration.ParameterStartValuesInfo);
-
-         return startValues;
+         return _cloneManagerForBuildingBlock.Clone(simulationConfiguration.ParameterStartValues);
       }
 
-      public override IMoBiCommand AddStartValueToBuildingBlock(IParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue)
+      public override IMoBiCommand AddStartValueToBuildingBlock(ParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue)
       {
          return GenerateAddCommand(buildingBlock, startValue).Run(Context);
       }
 
-      protected override IMoBiCommand GetUpdateStartValueInBuildingBlockCommand(IParameterStartValuesBuildingBlock startValuesBuildingBlock, ImportedQuantityDTO dto)
+      protected override IMoBiCommand GetUpdateStartValueInBuildingBlockCommand(ParameterStartValuesBuildingBlock startValuesBuildingBlock, ImportedQuantityDTO dto)
       {
          return new UpdateParameterStartValueInBuildingBlockCommand(startValuesBuildingBlock, dto.Path, dto.QuantityInBaseUnit);
       }
@@ -88,17 +83,18 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (parameter != null)
                return parameter;
          }
+
          return null;
       }
 
-      public ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(IParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue parameterStartValue)
+      public ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(ParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue parameterStartValue)
       {
          var parameter = GetPossibleParameterFromProject(parameterStartValue.Path);
 
          return AddNewFormulaAtBuildingBlock(buildingBlock, parameterStartValue, parameter);
       }
 
-      public override IMoBiCommand ImportStartValuesToBuildingBlock(IParameterStartValuesBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues)
+      public override IMoBiCommand ImportStartValuesToBuildingBlock(ParameterStartValuesBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues)
       {
          var macroCommand = new BulkUpdateMacroCommand
          {
@@ -112,12 +108,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand.Run(Context);
       }
 
-      public override IMoBiCommand RemoveStartValueFromBuildingBlockCommand(ParameterStartValue startValue, IParameterStartValuesBuildingBlock buildingBlock)
+      public override IMoBiCommand RemoveStartValueFromBuildingBlockCommand(ParameterStartValue startValue, ParameterStartValuesBuildingBlock buildingBlock)
       {
          return new RemoveParameterStartValueFromBuildingBlockCommand(buildingBlock, startValue.Path);
       }
 
-      public override bool IsEquivalentToOriginal(ParameterStartValue startValue, IParameterStartValuesBuildingBlock buildingBlock)
+      protected override MoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(ParameterStartValuesBuildingBlock buildingBlock)
+      {
+         return new MoleculeBuildingBlock();
+      }
+
+      protected override ISpatialStructure SpatialStructureReferencedBy(ParameterStartValuesBuildingBlock buildingBlock)
+      {
+         return new MoBiSpatialStructure();
+      }
+
+      public override bool IsEquivalentToOriginal(ParameterStartValue startValue, ParameterStartValuesBuildingBlock buildingBlock)
       {
          var spatialStructure = SpatialStructureReferencedBy(buildingBlock);
          var moleculeBuildingBlock = MoleculeBuildingBlockReferencedBy(buildingBlock);
@@ -132,18 +138,17 @@ namespace MoBi.Presentation.Tasks.Interaction
                 HasEquivalentStartValue(startValue, parameter);
       }
 
-
       public override IDimension GetDefaultDimension()
       {
          return Constants.Dimension.NO_DIMENSION;
       }
 
-      public override bool CanResolve(IParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue)
+      public override bool CanResolve(ParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue)
       {
          return _parameterResolver.Resolve(startValue.ContainerPath, startValue.Name, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock)) != null;
       }
 
-      public override IMoBiCommand RefreshStartValuesFromBuildingBlocks(IParameterStartValuesBuildingBlock buildingBlock, IEnumerable<ParameterStartValue> startValuesToRefresh)
+      public override IMoBiCommand RefreshStartValuesFromBuildingBlocks(ParameterStartValuesBuildingBlock buildingBlock, IEnumerable<ParameterStartValue> startValuesToRefresh)
       {
          var spatialStructure = SpatialStructureReferencedBy(buildingBlock);
          var moleculeBuildingBlock = MoleculeBuildingBlockReferencedBy(buildingBlock);
@@ -180,12 +185,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return first.IsEquivalentTo(second);
       }
 
-      protected override IMoBiCommand GenerateRemoveCommand(IParameterStartValuesBuildingBlock targetBuildingBlock, ParameterStartValue startValueToRemove)
+      protected override IMoBiCommand GenerateRemoveCommand(ParameterStartValuesBuildingBlock targetBuildingBlock, ParameterStartValue startValueToRemove)
       {
          return new RemoveParameterStartValueFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);
       }
 
-      protected override IMoBiCommand GenerateAddCommand(IParameterStartValuesBuildingBlock targetBuildingBlock, ParameterStartValue startValueToAdd)
+      protected override IMoBiCommand GenerateAddCommand(ParameterStartValuesBuildingBlock targetBuildingBlock, ParameterStartValue startValueToAdd)
       {
          return new AddParameterStartValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
       }

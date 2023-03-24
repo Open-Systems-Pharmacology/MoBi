@@ -173,13 +173,13 @@ namespace MoBi.Presentation
    {
       private ITreeNode _node;
       private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _moleculeBuilder = A.Fake<IMoleculeBuilder>();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          var moleculeBuildingBlockNode = A.Fake<ITreeNode>();
          A.CallTo(() => moleculeBuildingBlockNode.TagAsObject).Returns(_moleculeBuildingBlock);
          _node = A.Fake<ITreeNode>();
@@ -338,7 +338,7 @@ namespace MoBi.Presentation
    public class When_the_building_block_explorer_presenter_is_notified_that_a_molecule_was_added : concern_for_BuildingBlockExplorerPresenter
    {
       private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private ITreeNode _moleculeBuildingBlockNode;
       private ITreeNode _moleculeNode;
 
@@ -347,7 +347,7 @@ namespace MoBi.Presentation
          base.Context();
          _moleculeNode= A.Fake<ITreeNode>();
          _moleculeBuildingBlockNode = A.Fake<ITreeNode>();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>().WithId("Id");
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>().WithId("Id");
          _moleculeBuilder= A.Fake<IMoleculeBuilder>();
 
          A.CallTo(() => _view.TreeView.NodeById(_moleculeBuildingBlock.Id)).Returns(_moleculeBuildingBlockNode);

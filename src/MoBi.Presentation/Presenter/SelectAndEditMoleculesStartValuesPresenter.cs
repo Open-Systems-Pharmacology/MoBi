@@ -9,11 +9,11 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface ISelectAndEditMoleculesStartValuesPresenter : ISelectAndEditStartValuesPresenter<IMoleculeStartValuesBuildingBlock>
+   public interface ISelectAndEditMoleculesStartValuesPresenter : ISelectAndEditStartValuesPresenter<MoleculeStartValuesBuildingBlock>
    {
    }
 
-   internal class SelectAndEditMoleculesStartValuesPresenter : SelectAndEditStartValuesPresenter<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>, ISelectAndEditMoleculesStartValuesPresenter
+   internal class SelectAndEditMoleculesStartValuesPresenter : SelectAndEditStartValuesPresenter<MoleculeStartValuesBuildingBlock, MoleculeStartValue>, ISelectAndEditMoleculesStartValuesPresenter
    {
       private readonly IMoleculeStartValuesPresenter _editPresenter;
 
@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Presenter
       public override void Refresh()
       {
          base.Refresh();
-         Refresh(_buildConfiguration.MoleculeStartValuesInfo);
+         Refresh(_simulationConfiguration.MoleculeStartValues);
          _editPresenter.Edit(StartValues);
       }
 

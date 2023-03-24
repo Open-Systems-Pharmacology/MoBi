@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(SimulationUnloadEvent eventToHandle)
       {
          ClearComparisonIfComparing(eventToHandle.Simulation);
-         eventToHandle.Simulation.MoBiBuildConfiguration.AllBuildingBlocks.Each(ClearComparisonIfComparing);
+         eventToHandle.Simulation.Configuration.Module.AllBuildingBlocks().Each(ClearComparisonIfComparing);
       }
    }
 }

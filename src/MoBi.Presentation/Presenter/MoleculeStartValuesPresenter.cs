@@ -14,7 +14,7 @@ using OSPSuite.Presentation.Presenters;
 namespace MoBi.Presentation.Presenter
 {
    public interface IMoleculeStartValuesPresenter : IStartValuesPresenter<MoleculeStartValueDTO>,
-      IEditPresenter<IMoleculeStartValuesBuildingBlock>
+      IEditPresenter<MoleculeStartValuesBuildingBlock>
    {
       /// <summary>
       ///    Sets the Scale Divisor of the start value to the new value
@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Presenter
    public class MoleculeStartValuesPresenter : StartValuePresenter<
          IMoleculeStartValuesView,
          IMoleculeStartValuesPresenter,
-         IMoleculeStartValuesBuildingBlock,
+         MoleculeStartValuesBuildingBlock,
          MoleculeStartValueDTO,
          MoleculeStartValue>,
       IMoleculeStartValuesPresenter

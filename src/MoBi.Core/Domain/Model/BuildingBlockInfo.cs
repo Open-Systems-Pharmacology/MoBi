@@ -145,7 +145,7 @@ namespace MoBi.Core.Domain.Model
       }
    }
 
-   public class MoleculesInfo : BuildingBlockInfo<IMoleculeBuildingBlock>
+   public class MoleculesInfo : BuildingBlockInfo<MoleculeBuildingBlock>
    {
       public MoleculesInfo() : base(ApplicationIcons.Molecule, ObjectTypes.MoleculeBuildingBlock)
       {
@@ -180,21 +180,21 @@ namespace MoBi.Core.Domain.Model
       }
    }
 
-   public class ParameterStartValuesBuildingBlockInfo : BuildingBlockInfo<IParameterStartValuesBuildingBlock>
+   public class ParameterStartValuesBuildingBlockInfo : BuildingBlockInfo<ParameterStartValuesBuildingBlock>
    {
       public ParameterStartValuesBuildingBlockInfo() : base(ApplicationIcons.ParameterStartValues, ObjectTypes.ParameterStartValuesBuildingBlock)
       {
       }
    }
 
-   public class MoleculeStartValuesBuildingBlockInfo : BuildingBlockInfo<IMoleculeStartValuesBuildingBlock>
+   public class MoleculeStartValuesBuildingBlockInfo : BuildingBlockInfo<MoleculeStartValuesBuildingBlock>
    {
       public MoleculeStartValuesBuildingBlockInfo() : base(ApplicationIcons.MoleculeStartValues, ObjectTypes.MoleculeStartValuesBuildingBlock)
       {
       }
    }
 
-   public class SimulationSettingsBuildingBlockInfo : BuildingBlockInfo<ISimulationSettings>
+   public class SimulationSettingsBuildingBlockInfo : BuildingBlockInfo<SimulationSettings>
    {
       public SimulationSettingsBuildingBlockInfo() : base(ApplicationIcons.SimulationSettings, ObjectTypes.SimulationSettings)
       {

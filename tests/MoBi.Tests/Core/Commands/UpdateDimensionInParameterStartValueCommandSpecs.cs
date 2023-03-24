@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
       protected IDimension _newDimension;
       protected IDimension _oldDimension;
       protected ParameterStartValue _startValue;
-      protected IParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
       protected Unit _newDisplayUnit;
       protected Unit _oldDisplayUnit;

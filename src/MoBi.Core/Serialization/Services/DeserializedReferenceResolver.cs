@@ -69,7 +69,7 @@ namespace MoBi.Core.Serialization.Services
          if (simulation == null) return;
          //no need to update building block references at that stage. It will be done when the project itself is being deserialized
          resolveReferences(simulation.Model);
-         resolveReferences(simulation.BuildConfiguration);
+         resolveReferences(simulation.Configuration);
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
       }
 
@@ -79,7 +79,7 @@ namespace MoBi.Core.Serialization.Services
          _referencesResolver.ResolveReferencesIn(model);
       }
 
-      private void resolveReferences(IBuildConfiguration buildConfiguration) => resolveReferences(buildConfiguration?.SpatialStructure);
+      private void resolveReferences(SimulationConfiguration simulationConfiguration) => resolveReferences(simulationConfiguration?.SpatialStructure);
 
       private void resolveReferences(ISpatialStructure spatialStructure)
       {

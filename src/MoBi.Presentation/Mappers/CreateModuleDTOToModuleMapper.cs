@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Mappers
       {
          var module = _context.Create<Module>().WithIcon(ApplicationIcons.Module.IconName).WithName(createModuleDTO.Name);
 
-         module.Molecule = conditionalCreate(createModuleDTO.WithMolecule, () => addDefault<IMoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock));
+         module.Molecule = conditionalCreate(createModuleDTO.WithMolecule, () => addDefault<MoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock));
          module.Reaction = conditionalCreate(createModuleDTO.WithReaction, () => addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create()));
          module.SpatialStructure = conditionalCreate(createModuleDTO.WithSpatialStructure, () => addDefault(AppConstants.DefaultNames.SpatialStructure, () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)));
          module.PassiveTransport = conditionalCreate(createModuleDTO.WithPassiveTransport, () => addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock));
@@ -41,12 +41,12 @@ namespace MoBi.Presentation.Mappers
 
          if (createModuleDTO.WithParameterStartValues)
          {
-            module.AddParameterStartValueBlock(addDefault<IParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
+            module.AddParameterStartValueBlock(addDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
          }
 
          if (createModuleDTO.WithMoleculeStartValues)
          {
-            module.AddMoleculeStartValueBlock(addDefault<IMoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
+            module.AddMoleculeStartValueBlock(addDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
          }
 
          return module;

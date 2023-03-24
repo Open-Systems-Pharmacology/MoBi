@@ -39,8 +39,8 @@ namespace MoBi.Core.Service
          _buildInfoSim2= A.Fake<IBuildingBlockInfo>();
          _buildInfoSim2.TemplateBuildingBlockId = "T2";
 
-         A.CallTo(() => sim1.MoBiBuildConfiguration.AllBuildingBlockInfos()).Returns(new[]{_buildInfoSim1});
-         A.CallTo(() => sim2.MoBiBuildConfiguration.AllBuildingBlockInfos()).Returns(new[]{_buildInfoSim2});
+         // A.CallTo(() => sim1.MoBiBuildConfiguration.AllBuildingBlockInfos()).Returns(new[]{_buildInfoSim1});
+         // A.CallTo(() => sim2.MoBiBuildConfiguration.AllBuildingBlockInfos()).Returns(new[]{_buildInfoSim2});
          A.CallTo(() => _project.Simulations).Returns(new[]{sim1,sim2});
          A.CallTo(() => _project.TemplateById(_buildInfoSim1.TemplateBuildingBlockId)).Returns(_template1);
          A.CallTo(() => _project.TemplateById(_buildInfoSim2.TemplateBuildingBlockId)).Returns(_template2);
@@ -73,7 +73,7 @@ namespace MoBi.Core.Service
          _templateBuildingBlock= A.Fake<IBuildingBlock>();
          _buildingBlockInfo= A.Fake<IBuildingBlockInfo>();  
          A.CallTo(() => _project.SimulationsCreatedUsing(_templateBuildingBlock)).Returns(new []{sim1});
-         A.CallTo(() => sim1.MoBiBuildConfiguration.BuildingInfoForTemplate(_templateBuildingBlock)).Returns(_buildingBlockInfo);
+         // A.CallTo(() => sim1.MoBiBuildConfiguration.BuildingInfoForTemplate(_templateBuildingBlock)).Returns(_buildingBlockInfo);
       }
       protected override void Because()
       {

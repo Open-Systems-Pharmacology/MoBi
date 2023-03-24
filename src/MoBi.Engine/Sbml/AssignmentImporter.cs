@@ -40,10 +40,11 @@ namespace MoBi.Engine.Sbml
          var mb = GetMainMoleculeBuildingBlock();
          if (ss == null || mb == null) return;
 
-         var psvBb = parameterStartValuesCreator.CreateFrom(GetMainSpatialStructure(model), GetMainMoleculeBuildingBlock())
-            .WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB)
-            .WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
-         _command.AddCommand(new AddBuildingBlockCommand<IParameterStartValuesBuildingBlock>(psvBb).Run(_context));
+         
+         // var psvBb = parameterStartValuesCreator.CreateFrom(GetMainSpatialStructure(model), GetMainMoleculeBuildingBlock())
+         //    .WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB)
+         //    .WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
+         // _command.AddCommand(new AddBuildingBlockCommand<ParameterStartValuesBuildingBlock>(psvBb).Run(_context));
       }
 
       //For Rate Rule only

@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Services
 {
-   public class CreateCommitChangesToMoleculeStartValuesBuildingBlockCommandTask : CreateCommitChangesToBuildingBlockCommandTask<IMoleculeStartValuesBuildingBlock>
+   public class CreateCommitChangesToMoleculeStartValuesBuildingBlockCommandTask : CreateCommitChangesToBuildingBlockCommandTask<MoleculeStartValuesBuildingBlock>
    {
       public CreateCommitChangesToMoleculeStartValuesBuildingBlockCommandTask(ICloneManagerForBuildingBlock cloneManager) : base(cloneManager, x => x.MoleculeStartValues)
       {

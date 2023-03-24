@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
    {
       protected ParameterStartValue _parameterStartValue;
       protected ValueOrigin _newValueOrigin;
-      protected IParameterStartValuesBuildingBlock _startValueBuildingBlock;
+      protected ParameterStartValuesBuildingBlock _startValueBuildingBlock;
       protected IMoBiContext _context;
       protected ValueOrigin _originalValueOrigin;
 
@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          };
 
          _parameterStartValue.UpdateValueOriginFrom(_originalValueOrigin);
-         _startValueBuildingBlock = A.Fake<IParameterStartValuesBuildingBlock>().WithId("PSV BB");
+         _startValueBuildingBlock = A.Fake<ParameterStartValuesBuildingBlock>().WithId("PSV BB");
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterStartValue>>(_startValueBuildingBlock.Id)).Returns(_startValueBuildingBlock);
          sut = new UpdateValueOriginInStartValueCommand<ParameterStartValue>(_parameterStartValue, _newValueOrigin, _startValueBuildingBlock);

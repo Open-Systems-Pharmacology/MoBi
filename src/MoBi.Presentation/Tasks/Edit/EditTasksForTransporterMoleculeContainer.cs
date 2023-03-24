@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
          entity.Name = name;
          entity.TransportName = name;
-         var moleculesBuildingBlock = buildingBlock.DowncastTo<IMoleculeBuildingBlock>();
+         var moleculesBuildingBlock = buildingBlock.DowncastTo<MoleculeBuildingBlock>();
          var molecule = moleculesBuildingBlock.FindByName(entity.Name);
          if (molecule != null)
             return true;

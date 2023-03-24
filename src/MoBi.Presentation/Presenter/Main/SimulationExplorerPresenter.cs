@@ -213,7 +213,9 @@ namespace MoBi.Presentation.Presenter.Main
          var simulationNode = _view.NodeById(simulation.Id);
 
          //Update Simulation Icon
-         var isChangedSimulation = simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks();
+         // var isChangedSimulation = simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks();
+
+         var isChangedSimulation = true;
          simulationNode.Icon = isChangedSimulation ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
 
          // Update Building block
@@ -222,7 +224,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private ITreeNode simulationConfigurationNodeUnder(ITreeNode simulationNode)
       {
-         return simulationNode.Children<BuildConfigurationNode>().First();
+         return simulationNode.Children<SimulationConfigurationNode>().First();
       }
 
       private void refreshDisplayedBuildingBlock(ITreeNode treeNode)

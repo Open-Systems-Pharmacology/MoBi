@@ -10,7 +10,7 @@ using OSPSuite.Utility.Visitor;
 namespace MoBi.Core.Serialization.Converter.v10
 {
    public class Converter90To100 : IMoBiObjectConverter,
-      IVisitor<IParameterStartValuesBuildingBlock>,
+      IVisitor<ParameterStartValuesBuildingBlock>,
       IVisitor<SimulationTransfer>,
       IVisitor<IModelCoreSimulation>
 
@@ -38,7 +38,7 @@ namespace MoBi.Core.Serialization.Converter.v10
          return _coreConverter.ConvertXml(element);
       }
 
-      public void Visit(IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
+      public void Visit(ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
       {
          //we need to update the formula of some predefined expressions parameters from PK-Sim v9 to ensure that a simulation can still be built
          parameterStartValuesBuildingBlock?.FormulaCache.Each(convertFormula);
@@ -46,7 +46,7 @@ namespace MoBi.Core.Serialization.Converter.v10
 
       public void Visit(IModelCoreSimulation simulation)
       {
-         Visit(simulation?.BuildConfiguration?.ParameterStartValues);
+         Visit(simulation?.Configuration?.ParameterStartValues);
       }
 
       public void Visit(SimulationTransfer simulationTransfer)

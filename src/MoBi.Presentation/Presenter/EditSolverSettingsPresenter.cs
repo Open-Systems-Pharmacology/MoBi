@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly ISolverSettingsToDTOSolverSettingsMapper _solverSettingsMapper;
       private readonly IMoBiContext _context;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private IMoBiSimulation _simulation;
 
 
@@ -65,10 +65,10 @@ namespace MoBi.Presentation.Presenter
       public void Edit(IMoBiSimulation simulation)
       {
          _simulation = simulation;
-         Edit(_simulation.SimulationSettings);
+         Edit(_simulation.Settings);
       }
 
-      public void Edit(ISimulationSettings simulationSettings)
+      public void Edit(SimulationSettings simulationSettings)
       {
          _simulationSettings = simulationSettings;
          _view.Show(_solverSettingsMapper.MapFrom(_simulationSettings.Solver));

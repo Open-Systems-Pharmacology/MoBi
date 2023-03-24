@@ -2,8 +2,8 @@
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
          _quantity = new Parameter { IsFixedValue = true };
          _simulation = new MoBiSimulation
          {
-            BuildConfiguration = new MoBiBuildConfiguration()
+            Configuration = new SimulationConfiguration()
          };
 
          sut = new ResetQuantityValueInSimulationCommand(_quantity, _simulation);

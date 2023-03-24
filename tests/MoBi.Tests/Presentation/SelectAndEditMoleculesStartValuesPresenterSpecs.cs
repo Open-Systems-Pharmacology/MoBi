@@ -49,13 +49,13 @@ namespace MoBi.Presentation
       [Observation]
       public void should_generate_add_command_for_msv()
       {
-         A.CallTo(() => _moleculeStartValuesTask.AddToProject(A<IMoleculeStartValuesBuildingBlock>._)).MustHaveHappened();
+         A.CallTo(() => _moleculeStartValuesTask.AddToProject(A<MoleculeStartValuesBuildingBlock>._)).MustHaveHappened();
       }
 
       [Observation]
       public void should_have_cloned_the_msv()
       {
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(A<IMoleculeStartValuesBuildingBlock>._)).MustHaveHappened();
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(A<MoleculeStartValuesBuildingBlock>._)).MustHaveHappened();
       }
    }
 }

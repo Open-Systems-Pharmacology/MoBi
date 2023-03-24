@@ -28,7 +28,7 @@ namespace MoBi.Presentation
       private IMoBiProject _mobiProject;
       private Container _rootContainer;
       private IMoBiReactionBuildingBlock _reactionBB;
-      private IMoleculeBuildingBlock _moleculeBB;
+      private MoleculeBuildingBlock _moleculeBB;
       protected IReactionBuilder _reaction;
       protected IMoleculeBuilder _moleculeBuilder;
       private IParameter _localParameter;

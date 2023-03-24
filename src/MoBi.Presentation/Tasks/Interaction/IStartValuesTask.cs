@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -15,7 +14,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       where TStartValue : class, IStartValue
    {
       void ExtendStartValues(TBuildingBlock startValuesBuildingBlock);
-      TBuildingBlock CreateStartValuesForSimulation(IMoBiBuildConfiguration buildConfiguration);
+      TBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration);
 
       /// <summary>
       ///    Generates a command that will add the startValue to the building block
@@ -53,7 +52,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetDisplayValueWithUnit(TStartValue startValue, double? newDisplayValue, Unit unit, TBuildingBlock startValues);
 
       /// <summary>
-      ///    Returns a command that can be used to remove the start values contained in <paramref name="startValue"/> from <paramref name="buildingBlock"/>
+      ///    Returns a command that can be used to remove the start values contained in <paramref name="startValue" /> from
+      ///    <paramref name="buildingBlock" />
       /// </summary>
       /// <returns>The command, which has not been run</returns>
       IMoBiCommand RemoveStartValueFromBuildingBlockCommand(TStartValue startValue, TBuildingBlock buildingBlock);
@@ -110,13 +110,13 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand UpdateStartValueDimension(TBuildingBlock parameterStartValuesBuildingBlock, TStartValue startValue, IDimension newDimension);
 
       /// <summary>
-      /// Returns the default dimension for the start value type
+      ///    Returns the default dimension for the start value type
       /// </summary>
       /// <returns>A dimension which can be used as default when creating empty start values</returns>
       IDimension GetDefaultDimension();
 
       /// <summary>
-      /// Sets the value of a start value
+      ///    Sets the value of a start value
       /// </summary>
       /// <param name="buildingBlock">The building block that contains the start value</param>
       /// <param name="valueOrigin">The new value origin</param>
@@ -124,10 +124,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <returns>The command used to modify the start value</returns>
       ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TStartValue startValue);
 
-
-
       /// <summary>
-      /// Determines whether the source for the building block can be resolved
+      ///    Determines whether the source for the building block can be resolved
       /// </summary>
       /// <param name="buildingBlock">The building block containing the start value</param>
       /// <param name="startValue">The start value being resolved</param>

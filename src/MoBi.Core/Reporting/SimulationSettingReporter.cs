@@ -12,9 +12,9 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting
 {
-   internal class SimulationSettingReporter : OSPSuiteTeXReporter<ISimulationSettings>
+   internal class SimulationSettingReporter : OSPSuiteTeXReporter<SimulationSettings>
    {
-      public override IReadOnlyCollection<object> Report(ISimulationSettings simulationSettings, OSPSuiteTracker buildTracker)
+      public override IReadOnlyCollection<object> Report(SimulationSettings simulationSettings, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
 

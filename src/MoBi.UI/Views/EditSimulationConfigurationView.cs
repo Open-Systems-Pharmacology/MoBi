@@ -1,28 +1,25 @@
 ﻿using System.Windows.Forms;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraLayout;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
-   public partial class EditBuildConfigurationView : BaseUserControl, IEditBuildConfigurationView
+   public partial class EditSimulationConfigurationView : BaseUserControl, IEditSimulationConfigurationView
    {
-      public EditBuildConfigurationView(IImageListRetriever imageListRetriever)
+      private IEditSimulationConfigurationPresenter _presenter;
+
+      public EditSimulationConfigurationView(IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
          layoutControl.Images = imageListRetriever.AllImages16x16;
-      }
-
-      public void AttachPresenter(IEditBuildConfigurationPresenter presenter)
-      {
       }
 
       public void AddSelectionView(IResizableView view, string caption, ApplicationIcon icon)
@@ -51,10 +48,15 @@ namespace MoBi.UI.Views
          dummyGroup.GroupBordersVisible = false;
       }
 
+      public void AttachPresenter(IEditSimulationConfigurationPresenter presenter)
+      {
+         _presenter = presenter;
+      }
+
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Caption = AppConstants.Captions.BuildConfiguration;
+         Caption = AppConstants.Captions.SimulationConfiguration;
       }
 
       public override ApplicationIcon ApplicationIcon

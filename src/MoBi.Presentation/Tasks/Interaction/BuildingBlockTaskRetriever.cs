@@ -13,16 +13,16 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class BuildingBlockTaskRetriever : IBuildingBlockTaskRetriever,
                                              IStrictVisitor,
-                                             IVisitor<IMoleculeBuildingBlock>,
+                                             IVisitor<MoleculeBuildingBlock>,
                                              IVisitor<IObserverBuildingBlock>,
                                              IVisitor<IReactionBuildingBlock>,
                                              IVisitor<IMoBiReactionBuildingBlock>,
                                              IVisitor<IMoBiSpatialStructure>,
                                              IVisitor<IEventGroupBuildingBlock>,
                                              IVisitor<IPassiveTransportBuildingBlock>,
-                                             IVisitor<IMoleculeStartValuesBuildingBlock>,
-                                             IVisitor<IParameterStartValuesBuildingBlock>,
-                                             IVisitor<ISimulationSettings>
+                                             IVisitor<MoleculeStartValuesBuildingBlock>,
+                                             IVisitor<ParameterStartValuesBuildingBlock>,
+                                             IVisitor<SimulationSettings>
    {
       private readonly IContainer _container;
       private IInteractionTasksForBuildingBlock _task;
@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _task = _container.Resolve<IInteractionTasksForBuildingBlock<TBuildingBlock>>();
       }
  
-      public void Visit(IMoleculeBuildingBlock objToVisit)
+      public void Visit(MoleculeBuildingBlock objToVisit)
       {
          retrieveTask(objToVisit);
       }
@@ -73,12 +73,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          retrieveTask(objToVisit);
       }
-      public void Visit(IMoleculeStartValuesBuildingBlock objToVisit)
+      public void Visit(MoleculeStartValuesBuildingBlock objToVisit)
       {
          retrieveTask(objToVisit);
       }
 
-      public void Visit(IParameterStartValuesBuildingBlock objToVisit)
+      public void Visit(ParameterStartValuesBuildingBlock objToVisit)
       {
          retrieveTask(objToVisit);
       }
@@ -98,7 +98,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          retrieveTask(objToVisit);
       }
 
-      public void Visit(ISimulationSettings objToVisit)
+      public void Visit(SimulationSettings objToVisit)
       {
          retrieveTask(objToVisit);
       }

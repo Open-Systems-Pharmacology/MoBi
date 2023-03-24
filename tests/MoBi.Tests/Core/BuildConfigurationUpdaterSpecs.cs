@@ -31,11 +31,11 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         var buildConfiguration = A.Fake<IMoBiBuildConfiguration>();
+         var simulationConfiguration = new SimulationConfiguration();
          var affectedBuildingBlock = new EventGroupBuildingBlock();
          var eventGroupBuildingBlockInfo = new EventGroupBuildingBlockInfo() {BuildingBlock = affectedBuildingBlock};
          _buildingBlockInfo = eventGroupBuildingBlockInfo;
-         _simulation = new MoBiSimulation {BuildConfiguration = buildConfiguration, Model = A.Fake<IModel>()};
+         _simulation = new MoBiSimulation { Configuration = simulationConfiguration, Model = A.Fake<IModel>()};
          _changedQuantity = A.Fake<IQuantity>();
          A.CallTo(() => _affectedBuildingBlockRetriever.RetrieveFor(A<IQuantity>._, _simulation)).Returns(eventGroupBuildingBlockInfo);
       }

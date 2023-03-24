@@ -1,10 +1,10 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -27,17 +27,18 @@ namespace MoBi.Core.Service
    internal class When_told_to_create_CommitChangesToParameterStartValuesCommand : concern_for_CreateCommitChangesToParameterStartValuesBuildingBlockCommandTaskSpecs
    {
       private IMoBiSimulation _simulation;
-      private IParameterStartValuesBuildingBlock _buildingBlock;
+      private ParameterStartValuesBuildingBlock _buildingBlock;
       private IMoBiCommand _resultCommand;
-      private IBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _buildConfiguration;
 
       protected override void Context()
       {
          base.Context();
          _buildingBlock = new ParameterStartValuesBuildingBlock();
          _simulation = A.Fake<IMoBiSimulation>();
-         _buildConfiguration = new BuildConfiguration {ParameterStartValues = A.Fake<IParameterStartValuesBuildingBlock>()};
-         A.CallTo(() => _simulation.BuildConfiguration).Returns(_buildConfiguration);
+         _buildConfiguration = new SimulationConfiguration() { Module = new Module() };
+         _buildConfiguration.Module.AddParameterStartValueBlock(A.Fake<ParameterStartValuesBuildingBlock>());
+         A.CallTo(() => _simulation.Configuration).Returns(_buildConfiguration);
       }
 
       protected override void Because()
@@ -46,7 +47,7 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_return_right_configuered_ChangeParameterStartValueValuePropertyCommand()
+      public void should_return_right_configured_ChangeParameterStartValueValuePropertyCommand()
       {
          _resultCommand.IsEmpty().ShouldBeFalse();
       }

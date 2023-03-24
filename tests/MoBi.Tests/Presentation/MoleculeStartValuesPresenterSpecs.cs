@@ -29,7 +29,7 @@ namespace MoBi.Presentation
       protected IMoleculeIsPresentSelectionPresenter _isPresentSelectionPresenter;
       protected IMoleculeStartValuesTask _moleculeStartValueTask;
       protected ICommandCollector _commandCollector;
-      protected IMoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
+      protected MoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
       private IRefreshStartValueFromOriginalBuildingBlockPresenter _refreshStartValuesPresenter;
       protected IDeleteStartValuePresenter _deleteStartValuePresenter;
       private IMoleculeNegativeValuesAllowedSelectionPresenter _negativeStartValuesAllowedSelectionPresenter;

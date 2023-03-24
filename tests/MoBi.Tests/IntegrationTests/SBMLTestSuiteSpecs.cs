@@ -75,9 +75,9 @@ namespace MoBi.IntegrationTests
                continue;
             }
 
-            addjEmptyBBIfneeded(project);
+            addEmptyBBIfNeeded(project);
             addSettings(project, Path.Combine(directory.FullName, $"{caseName}-settings.txt"));
-            var buildConfigurtion = genreateBuildConfiguration(project);
+            var buildConfigurtion = generateBuildConfiguration(project);
             var result = _modelConstructor.CreateModelFrom(buildConfigurtion, caseName);
             if (result.IsInvalid)
             {
@@ -85,7 +85,7 @@ namespace MoBi.IntegrationTests
                continue;
             }
 
-            var simulation = new MoBiSimulation {BuildConfiguration = buildConfigurtion, Model = result.Model};
+            var simulation = new MoBiSimulation { Configuration = buildConfigurtion, Model = result.Model };
             var simModelManager = new SimModelManager(_simModelExporter, new SimModelSimulationFactory(),
                new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), IoC.Resolve<IDisplayUnitRetriever>(), IoC.Resolve<IDataRepositoryTask>()));
             var runResults = simModelManager.RunSimulation(simulation);
@@ -109,22 +109,23 @@ namespace MoBi.IntegrationTests
          project.AddBuildingBlock(simulationSettings);
       }
 
-      private IMoBiBuildConfiguration genreateBuildConfiguration(IMoBiProject project)
+      private SimulationConfiguration generateBuildConfiguration(IMoBiProject project)
       {
-         var buildConfiguration = _buildConfigurationFactory.Create();
-         buildConfiguration.SpatialStructure = project.SpatialStructureCollection.First();
-         buildConfiguration.Molecules = project.MoleculeBlockCollection.First();
-         buildConfiguration.Reactions = project.ReactionBlockCollection.First();
-         buildConfiguration.PassiveTransports = project.PassiveTransportCollection.First();
-         buildConfiguration.MoleculeStartValues = project.MoleculeStartValueBlockCollection.First();
-         buildConfiguration.ParameterStartValues = project.ParametersStartValueBlockCollection.First();
-         buildConfiguration.SimulationSettings = project.SimulationSettingsCollection.First();
-         buildConfiguration.EventGroups = project.EventBlockCollection.First();
-         buildConfiguration.Observers = project.ObserverBlockCollection.First();
-         return buildConfiguration;
+         var simulationConfiguration = new SimulationConfiguration { Module = new Module() };
+
+         simulationConfiguration.Module.SpatialStructure = project.SpatialStructureCollection.First();
+         simulationConfiguration.Module.Molecule = project.MoleculeBlockCollection.First();
+         simulationConfiguration.Module.Reaction = project.ReactionBlockCollection.First();
+         simulationConfiguration.Module.PassiveTransport = project.PassiveTransportCollection.First();
+         simulationConfiguration.Module.AddMoleculeStartValueBlock(project.MoleculeStartValueBlockCollection.First());
+         simulationConfiguration.Module.AddParameterStartValueBlock(project.ParametersStartValueBlockCollection.First());
+         simulationConfiguration.SimulationSettings = project.SimulationSettingsCollection.First();
+         simulationConfiguration.Module.EventGroup = project.EventBlockCollection.First();
+         simulationConfiguration.Module.Observer = project.ObserverBlockCollection.First();
+         return simulationConfiguration;
       }
 
-      private void addjEmptyBBIfneeded(IMoBiProject project)
+      private void addEmptyBBIfNeeded(IMoBiProject project)
       {
          project.AddBuildingBlock(new ObserverBuildingBlock().WithName("Empty"));
          if (!project.EventBlockCollection.Any())
