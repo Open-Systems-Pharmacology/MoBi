@@ -66,7 +66,7 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.Name).To(btName).OnValueUpdating += OnValueUpdating;
          _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueUpdating += OnValueUpdating;
          _screenBinder.Bind(dto => dto.MoleculeType).To(cbMoleculeType)
-            .WithValues(dto => _presenter.GetMoleculeTypes())
+            .WithValues(dto => _presenter.MoleculeTypes)
             .OnValueUpdating += (builder, args) => _presenter.SetMoleculeType(args.NewValue, args.OldValue);
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);

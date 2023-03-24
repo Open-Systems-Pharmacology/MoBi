@@ -1,5 +1,4 @@
-﻿using OSPSuite.Utility;
-using MoBi.Presentation.DTO;
+﻿using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -14,9 +13,7 @@ namespace MoBi.Presentation.Mappers
    {
       public DummyReactionDTO MapFrom(IReactionBuilder reactionBuilder, IContainer container)
       {
-         var dto = Map<DummyReactionDTO>(reactionBuilder);
-         dto.Id = ShortGuid.NewGuid();
-         dto.ReactionBuilder = reactionBuilder;
+         var dto = Map(new DummyReactionDTO(reactionBuilder));
          dto.StructureParent = container;
          return dto;
       }

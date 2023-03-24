@@ -36,7 +36,7 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<StartValuesDTO>();
          _screenBinder.Bind(dto => dto.Name).To(txtName);
          _screenBinder.Bind(dto => dto.Molecules).To(cmbMolecules).WithValues(dto => _presenter.GetMolecules());
-         _screenBinder.Bind(dto => dto.SpatialStructrue).To(cmbSpatialStructure).WithValues(dto => _presenter.GetSpatialStructures());
+         _screenBinder.Bind(dto => dto.SpatialStructure).To(cmbSpatialStructure).WithValues(dto => _presenter.GetSpatialStructures());
 
          RegisterValidationFor(_screenBinder);
       }

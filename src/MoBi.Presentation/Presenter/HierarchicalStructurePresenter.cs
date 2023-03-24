@@ -7,7 +7,9 @@ using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -31,8 +33,11 @@ namespace MoBi.Presentation.Presenter
       protected ITreeNode _favoritesNode;
       protected ITreeNode _userDefinedNode;
 
-      protected HierarchicalStructurePresenter(IHierarchicalStructureView view, IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, ITreeNodeFactory treeNodeFactory)
+      protected HierarchicalStructurePresenter(
+         IHierarchicalStructureView view, 
+         IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, 
+         ITreeNodeFactory treeNodeFactory)
          : base(view)
       {
          _context = context;
@@ -43,16 +48,36 @@ namespace MoBi.Presentation.Presenter
 
       public virtual IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate)
       {
-         var container = _context.Get<IContainer>(dto.Id);
-         return container == null ? new List<ObjectBaseDTO>() : GetChildrenSorted(container, predicate);
+         return (dto.ObjectBase is IContainer container) ? GetChildrenSorted(container, predicate) : Array.Empty<ObjectBaseDTO>();
       }
 
       protected virtual IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
       {
-         return container.GetChildren(predicate)
-            .OrderBy(groupingTypeFor)
-            .ThenBy(x => x.Name)
-            .MapAllUsing(_objectBaseMapper);
+         IReadOnlyList<ObjectBaseDTO> allChildrenDTO()
+         {
+            return container.GetChildren(predicate)
+               .OrderBy(groupingTypeFor)
+               .ThenBy(x => x.Name)
+               .MapAllUsing(_objectBaseMapper);
+         }
+
+         switch (container)
+         {
+            case NeighborhoodBuilder neighborhood:
+               return neighborsOf(neighborhood).Union(allChildrenDTO()).ToList();
+            default:
+               return allChildrenDTO();
+
+         }
+      }
+
+      private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
+      {
+         if(neighborhoodBuilder.FirstNeighborPath!=null)
+            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor };
+
+         if (neighborhoodBuilder.SecondNeighborPath != null)
+            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor };
       }
 
       private ContainerType groupingTypeFor(IEntity entity)
@@ -73,10 +98,9 @@ namespace MoBi.Presentation.Presenter
             raiseEntitySelectedEvent(objectBaseDTO);
       }
 
-      private void raiseEntitySelectedEvent(ObjectBaseDTO dtoObjectBase)
+      private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
-         var objectBase = _context.Get<IObjectBase>(dtoObjectBase.Id);
-         _context.PublishEvent(new EntitySelectedEvent(objectBase, this));
+         _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)

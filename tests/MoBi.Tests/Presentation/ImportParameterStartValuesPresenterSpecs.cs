@@ -130,12 +130,12 @@ namespace MoBi.Presentation
             new ImportedQuantityDTO{ContainerPath=new ObjectPath(new[] { "Path1" })}, 
             new ImportedQuantityDTO{ContainerPath=new ObjectPath(new[] { "Path2" })},
             new ImportedQuantityDTO{ContainerPath=new ObjectPath(new[] { "Path3" }),QuantityInBaseUnit = 0.0}
-         }.Each(_quantityImporterDTO.QuantitDTOs.Add);
+         }.Each(_quantityImporterDTO.QuantityDTOs.Add);
 
          A.CallTo(() => _dataTableToImportParameterQuantityDTOMapperForMolecules.MapFrom(A<DataTable>._, A<IParameterStartValuesBuildingBlock>.Ignored)).Returns(_quantityImporterDTO);
-         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantitDTOs[0].ContainerPath]).Returns(null);
-         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantitDTOs[1].ContainerPath]).Returns(null);
-         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantitDTOs[2].ContainerPath]).Returns(new ParameterStartValue{Path=new ObjectPath(new[] { "Path3" })});
+         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantityDTOs[0].ContainerPath]).Returns(null);
+         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantityDTOs[1].ContainerPath]).Returns(null);
+         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantityDTOs[2].ContainerPath]).Returns(new ParameterStartValue{Path=new ObjectPath(new[] { "Path3" })});
          A.CallTo(() => _view.Display()).Invokes(() =>
          {
             sut.StartImport();
@@ -148,7 +148,7 @@ namespace MoBi.Presentation
       [Observation]
       public void imported_values_added_via_start_values_task()
       {
-         A.CallTo(() => _startValuesTask.ImportStartValuesToBuildingBlock(_buildingBlock, _quantityImporterDTO.QuantitDTOs)).MustHaveHappened();
+         A.CallTo(() => _startValuesTask.ImportStartValuesToBuildingBlock(_buildingBlock, _quantityImporterDTO.QuantityDTOs)).MustHaveHappened();
       }
    }
 

@@ -16,11 +16,8 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditEventGroupBuildingBlockPresenter :
       ISingleStartPresenter<IEventGroupBuildingBlock>,
-      IListener<EntitySelectedEvent>,
       IListener<AddedEvent>,
-      IListener<RemovedEvent>,
-      IListener<FavoritesSelectedEvent>,
-      IListener<UserDefinedSelectedEvent>
+      IListener<RemovedEvent>
 
    {
    }
@@ -133,12 +130,12 @@ namespace MoBi.Presentation.Presenter
          return AllSubPresenters.OfType<T>();
       }
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
       {
-         return new Tuple<bool, IObjectBase>(shouldShow(selectedObject), selectedObject);
+         return (shouldShow(selectedObject), null);
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
          setupEditPresenterFor(parentObject, parameter);
       }
@@ -171,7 +168,7 @@ namespace MoBi.Presentation.Presenter
          if (!objectBase.IsAnImplementationOf<ITransportBuilder>())
             return false;
 
-         return eventGroupContainesTranportBuilder(objectBase);
+         return eventGroupContainsTransportBuilder(objectBase);
       }
 
       private bool eventGroupContainsEntity(IEntity testEntity)
@@ -185,16 +182,16 @@ namespace MoBi.Presentation.Presenter
          return false;
       }
 
-      private bool eventGroupContainesTranportBuilder(IObjectBase objectBase)
+      private bool eventGroupContainsTransportBuilder(IObjectBase objectBase)
       {
-         var tranportBuilder = (ITransportBuilder) objectBase;
+         var transportBuilder = (ITransportBuilder) objectBase;
          foreach (var eventGroup in _eventGroupBuildingBlock)
          {
             var applicationBuilder = eventGroup as IApplicationBuilder;
-            if (applicationBuilder != null && applicationBuilder.Transports.Contains(tranportBuilder))
+            if (applicationBuilder != null && applicationBuilder.Transports.Contains(transportBuilder))
                return true;
 
-            if (eventGroup.GetAllChildren<IApplicationBuilder>().Any(ab => ab.Transports.Contains(tranportBuilder)))
+            if (eventGroup.GetAllChildren<IApplicationBuilder>().Any(ab => ab.Transports.Contains(transportBuilder)))
                return true;
          }
 
@@ -234,10 +231,10 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      internal override Tuple<bool, IObjectBase> CanHandle(IObjectBase selectedObject)
+      internal override (bool canHandle, IContainer parentObject) CanHandle(IObjectBase selectedObject)
       {
          var specificCanHandle = SpecificCanHandle(selectedObject);
-         if (specificCanHandle.Item1)
+         if (specificCanHandle.canHandle)
             return specificCanHandle;
 
          return base.CanHandle(selectedObject);

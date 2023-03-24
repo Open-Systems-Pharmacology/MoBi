@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
@@ -13,18 +14,15 @@ namespace MoBi.Presentation.DTO
       public IEnumerable<ApplicationMoleculeBuilderDTO> Molecules { get; set; }
       public string MoleculeName { get; set; }
 
-      public ApplicationBuilderDTO()
+      public ApplicationBuilderDTO(IApplicationBuilder applicationBuilder) : base(applicationBuilder)
       {
-         Rules.Add(moleuleNameShouldBePresentInProjectRule());
+         Rules.Add(moleculeNameShouldBePresentInProjectRule);
       }
 
-      private IBusinessRule moleuleNameShouldBePresentInProjectRule()
-      {
-         return CreateRule.For<ApplicationBuilderDTO>()
-            .Property(x => x.MoleculeName)
-            .WithRule((dto, moleculeName) => _getMoleculeNames().Contains(moleculeName))
-            .WithError(AppConstants.Exceptions.AppliedMoleculeNotInProject);
-      }
+      private static IBusinessRule moleculeNameShouldBePresentInProjectRule { get; } = CreateRule.For<ApplicationBuilderDTO>()
+         .Property(x => x.MoleculeName)
+         .WithRule((dto, moleculeName) => dto._getMoleculeNames().Contains(moleculeName))
+         .WithError(AppConstants.Exceptions.AppliedMoleculeNotInProject);
 
       public void GetMoleculeNames(Func<IEnumerable<string>> getMoleculeNames)
       {

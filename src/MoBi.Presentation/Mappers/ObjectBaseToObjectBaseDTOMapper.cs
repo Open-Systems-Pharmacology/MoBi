@@ -1,8 +1,9 @@
-using MoBi.Assets;
 using MoBi.Presentation.DTO;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -12,10 +13,9 @@ namespace MoBi.Presentation.Mappers
 
    public abstract class ObjectBaseToObjectBaseDTOMapperBase
    {
-      protected T Map<T>(IObjectBase objectBase) where T : ObjectBaseDTO, new()
+      protected T Map<T>(T dto) where T : ObjectBaseDTO
       {
-         var dto = new T();
-         MapProperties(objectBase, dto);
+         MapProperties(dto.ObjectBase, dto);
          return dto;
       }
 
@@ -23,9 +23,7 @@ namespace MoBi.Presentation.Mappers
       {
          objectBaseDTO.Name = objectBase.Name;
          objectBaseDTO.Description = descriptionFor(objectBase);
-         objectBaseDTO.Id = objectBase.Id;
-         objectBaseDTO.Icon = objectBase.Icon;
-         objectBase.PropertyChanged += objectBaseDTO.HandlePropertyChanged;
+         objectBaseDTO.Icon = ApplicationIcons.IconByName(objectBase.Icon);
       }
 
       private static string descriptionFor(IObjectBase objectBase)
@@ -46,7 +44,7 @@ namespace MoBi.Presentation.Mappers
    {
       public ObjectBaseDTO MapFrom(IObjectBase objectBase)
       {
-         return Map<ObjectBaseDTO>(objectBase);
+         return Map(new ObjectBaseDTO(objectBase));
       }
    }
 }

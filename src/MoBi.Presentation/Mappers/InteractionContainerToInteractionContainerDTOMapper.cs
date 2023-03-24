@@ -7,21 +7,21 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IInteractionContainerToInteractionConatainerDTOMapper : IMapper<InteractionContainer, InteractionContainerDTO>
+   public interface IInteractionContainerToInteractionContainerDTOMapper : IMapper<InteractionContainer, InteractionContainerDTO>
    {
    }
-   class InteractionContainerToInteractionConatainerDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IInteractionContainerToInteractionConatainerDTOMapper
+   class InteractionContainerToInteractionContainerDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IInteractionContainerToInteractionContainerDTOMapper
    {
       private readonly IParameterToParameterDTOMapper _parameterToParameterDTOMapper;
 
-      public InteractionContainerToInteractionConatainerDTOMapper(IParameterToParameterDTOMapper parameterToParameterDTOMapper)
+      public InteractionContainerToInteractionContainerDTOMapper(IParameterToParameterDTOMapper parameterToParameterDTOMapper)
       {
          _parameterToParameterDTOMapper = parameterToParameterDTOMapper;
       }
 
       public InteractionContainerDTO MapFrom(InteractionContainer interactionContainer)
       {
-         var dto = Map<InteractionContainerDTO>(interactionContainer);
+         var dto = Map(new InteractionContainerDTO(interactionContainer));
          dto.Parameters = interactionContainer.GetChildren<IParameter>().MapAllUsing(_parameterToParameterDTOMapper).Cast<ParameterDTO>();
          return dto;
       }

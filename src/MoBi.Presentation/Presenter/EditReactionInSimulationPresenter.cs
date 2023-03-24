@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
@@ -35,7 +36,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editParametersInContainerPresenter);
       }
 
-      public void Edit(IReaction reaction, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(IReaction reaction, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _reaction = reaction;
          _editParametersInContainerPresenter.Edit(_reaction);
@@ -45,7 +46,7 @@ namespace MoBi.Presentation.Presenter
 
       public override void Edit(IReaction reaction)
       {
-         Edit(reaction, Enumerable.Empty<IObjectBase>());
+         Edit(reaction, Array.Empty<IObjectBase>());
       }
 
       private void initializeFormulaPresenter(IReaction reaction)

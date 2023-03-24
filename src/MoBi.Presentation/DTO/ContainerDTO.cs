@@ -4,6 +4,10 @@ namespace MoBi.Presentation.DTO
 {
    public class ContainerDTO : ObjectBaseDTO
    {
+      public ContainerDTO(IContainer container) : base(container)
+      {
+      }
+
       public ContainerMode Mode { set; get; }
 
       public ContainerType ContainerType { get; set; }

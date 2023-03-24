@@ -126,7 +126,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_not_allow_any_mapping()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -153,7 +153,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_not_allow_any_mapping()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -179,7 +179,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_not_allow_any_mapping()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -206,7 +206,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_indicate_that_scale_divisor_is_not_specified()
       {
-         _result.QuantitDTOs[0].ScaleDivisor.ShouldBeEqualTo(double.NaN);
+         _result.QuantityDTOs[0].ScaleDivisor.ShouldBeEqualTo(double.NaN);
       }
    }
 
@@ -233,7 +233,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_indicate_that_scale_divisor_is_not_specified()
       {
-         _result.QuantitDTOs[0].NegativeValuesAllowed.ShouldBeFalse();
+         _result.QuantityDTOs[0].NegativeValuesAllowed.ShouldBeFalse();
       }
    }
 
@@ -260,7 +260,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_not_allow_mapping_When_no_quantity_is_specified()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -287,7 +287,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_fail_to_validate_When_missing_a_quantity()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -317,13 +317,13 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_allow_import_of_new_values_without_quantity_When_updating_only()
       {
-         string.Equals(_result.QuantitDTOs[0].ContainerPath.ToString(), ContainerPathFromDataTableRow(_tables, 0).ToString()).ShouldBeTrue();
+         string.Equals(_result.QuantityDTOs[0].ContainerPath.ToString(), ContainerPathFromDataTableRow(_tables, 0).ToString()).ShouldBeTrue();
       }
 
       [Observation]
       public void the_value_for_quantity_is_not_specified()
       {
-         _result.QuantitDTOs[0].IsQuantitySpecified.ShouldBeFalse();
+         _result.QuantityDTOs[0].IsQuantitySpecified.ShouldBeFalse();
       }
    }
 
@@ -340,41 +340,41 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_convert_values_to_base_units_When_necessary()
       {
-         _result.QuantitDTOs[1].QuantityInBaseUnit.ShouldBeEqualTo(2 / 1000.0);
+         _result.QuantityDTOs[1].QuantityInBaseUnit.ShouldBeEqualTo(2 / 1000.0);
       }
 
       [Observation]
       public void should_return_correct_number_of_quantity()
       {
-         _result.QuantitDTOs.Count.ShouldBeEqualTo(6);
+         _result.QuantityDTOs.Count.ShouldBeEqualTo(6);
       }
 
       [Observation]
       public void is_present_is_converted_When_true()
       {
-         _result.QuantitDTOs[0].IsPresent.ShouldBeTrue();
-         _result.QuantitDTOs[2].IsPresent.ShouldBeTrue();
-         _result.QuantitDTOs[4].IsPresent.ShouldBeTrue();
+         _result.QuantityDTOs[0].IsPresent.ShouldBeTrue();
+         _result.QuantityDTOs[2].IsPresent.ShouldBeTrue();
+         _result.QuantityDTOs[4].IsPresent.ShouldBeTrue();
       }
 
       [Observation]
       public void is_present_is_converted_When_false()
       {
-         _result.QuantitDTOs[1].IsPresent.ShouldBeFalse();
-         _result.QuantitDTOs[3].IsPresent.ShouldBeFalse();
-         _result.QuantitDTOs[5].IsPresent.ShouldBeFalse();
+         _result.QuantityDTOs[1].IsPresent.ShouldBeFalse();
+         _result.QuantityDTOs[3].IsPresent.ShouldBeFalse();
+         _result.QuantityDTOs[5].IsPresent.ShouldBeFalse();
       }
 
       [Observation]
       public void molecule_name_is_converted()
       {
-         _result.QuantitDTOs.Each(msv => msv.Name.ShouldBeEqualTo("Drug"));
+         _result.QuantityDTOs.Each(msv => msv.Name.ShouldBeEqualTo("Drug"));
       }
 
       [Observation]
       public void should_determine_appropriate_path_arguments()
       {
-         foreach (var t in _result.QuantitDTOs)
+         foreach (var t in _result.QuantityDTOs)
          {
             t.ContainerPath.Count.ShouldBeEqualTo(5);
          }
@@ -402,7 +402,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void must_not_allow_import_When_the_quantity()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -430,7 +430,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void must_not_allow_import_When_the_quantity()
       {
-         _result.QuantitDTOs[0].IsQuantitySpecified.ShouldBeFalse();
+         _result.QuantityDTOs[0].IsQuantitySpecified.ShouldBeFalse();
       }
    }
 

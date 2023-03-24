@@ -1,10 +1,14 @@
 using System.Collections.Generic;
-using OSPSuite.Presentation.Core;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.DTO
 {
    public class SpatialStructureDTO : ObjectBaseDTO
    {
+      public SpatialStructureDTO(ISpatialStructure spatialStructure) : base(spatialStructure)
+      {
+      }
+
       public IEnumerable<ContainerDTO> TopContainer { get; set; }
       public ContainerDTO Neighborhoods { get; set; }
       public ContainerDTO MoleculeProperties { get; set; }
@@ -12,7 +16,5 @@ namespace MoBi.Presentation.DTO
 
    public class SpatialStructureRootItem : ObjectBaseDTO
    {
-      
    }
-   
 }

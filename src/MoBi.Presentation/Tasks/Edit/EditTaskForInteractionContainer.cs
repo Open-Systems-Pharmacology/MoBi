@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
@@ -18,7 +19,7 @@ namespace MoBi.Presentation.Tasks.Edit
          using (var modalPresenter = GetCreateViewFor(entity, commandCollector))
          {
             InitializeSubPresenter(modalPresenter.SubPresenter, buildingBlock, entity);
-            ((ICreatePresenter<IContainer>)modalPresenter.SubPresenter).Edit(entity, existingObjectsInParent);
+            ((ICreatePresenter<IContainer>)modalPresenter.SubPresenter).Edit(entity, existingObjectsInParent.ToList());
             return modalPresenter.Show();
          }
       }

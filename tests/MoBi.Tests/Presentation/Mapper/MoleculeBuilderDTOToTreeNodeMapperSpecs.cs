@@ -7,7 +7,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Nodes;
 using OSPSuite.Core.Domain;
-
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mapper
 {
@@ -34,9 +34,9 @@ namespace MoBi.Presentation.Mapper
       protected override void Context()
       {
          base.Context();
-         _moleculeBuilderDTO = new MoleculeBuilderDTO();
-         _transporterMolecule = new TransporterMoleculeContainerDTO().WithName("aa").WithId("bb");
-         _interactionContainer = new InteractionContainerDTO().WithName("cc").WithId("dd");
+         _moleculeBuilderDTO = new MoleculeBuilderDTO(new MoleculeBuilder());
+         _transporterMolecule = new TransporterMoleculeContainerDTO(new TransporterMoleculeContainer()).WithName("aa").WithId("bb");
+         _interactionContainer = new InteractionContainerDTO(new InteractionContainer()).WithName("cc").WithId("dd");
          _moleculeBuilderDTO.TransporterMolecules = new []{_transporterMolecule};
          _moleculeBuilderDTO.InteractionContainerCollection = new[] {_interactionContainer};
       }
@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void should_create_a_vailde_treeNode()
+      public void should_create_a_valid_treeNode()
       {
          _treeNode.ShouldNotBeNull();
       }

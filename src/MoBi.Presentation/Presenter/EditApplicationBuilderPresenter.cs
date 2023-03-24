@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Presenter
    {
       private IApplicationBuilder _applicationBuilder;
       private readonly IEditTaskFor<IApplicationBuilder> _editTasks;
-      private readonly IApplicationBuilderToApplicationBuilderDTOMapper _applicationBuilderToDTOApllicationBuilderMapper;
+      private readonly IApplicationBuilderToApplicationBuilderDTOMapper _applicationBuilderMapper;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> _interactionTasksForApplicationMoleculeBuilder;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Presenter
 
       public EditApplicationBuilderPresenter(IEditApplicationBuilderView view, IEditTaskFor<IApplicationBuilder> editTasks, 
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IApplicationBuilderToApplicationBuilderDTOMapper applicationBuilderToDTOApllicationBuilderMapper, 
+         IApplicationBuilderToApplicationBuilderDTOMapper applicationBuilderMapper, 
          IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> interactionTasksForApplicationMoleculeBuilder,
          IViewItemContextMenuFactory viewItemContextMenuFactory, 
          IEditParametersInContainerPresenter editParametersInContainerPresenter, IMoBiContext context,
@@ -70,7 +70,7 @@ namespace MoBi.Presentation.Presenter
          _view.SetParametersView(_editParametersInContainerPresenter.BaseView);
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _interactionTasksForApplicationMoleculeBuilder = interactionTasksForApplicationMoleculeBuilder;
-         _applicationBuilderToDTOApllicationBuilderMapper = applicationBuilderToDTOApllicationBuilderMapper;
+         _applicationBuilderMapper = applicationBuilderMapper;
          _formulaToDTOFormulaMapper = formulaToDTOFormulaMapper;
          _editTasks = editTasks;
          _view.AddDescriptorConditionListView(_descriptorConditionListPresenter.View);
@@ -79,12 +79,12 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editParametersInContainerPresenter, _descriptorConditionListPresenter);
       }
 
-      public override void Edit(IApplicationBuilder applicationBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(IApplicationBuilder applicationBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _applicationBuilder = applicationBuilder;
          _editParametersInContainerPresenter.BuildingBlock = BuildingBlock;
          _view.EnableDescriptors = (applicationBuilder.ParentContainer == null);
-         var dto = _applicationBuilderToDTOApllicationBuilderMapper.MapFrom(applicationBuilder);
+         var dto = _applicationBuilderMapper.MapFrom(applicationBuilder);
          dto.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(applicationBuilder, existingObjectsInParent));
          dto.GetMoleculeNames(GetMoleculeNames);
          _view.BindTo(dto);
@@ -92,10 +92,7 @@ namespace MoBi.Presentation.Presenter
          _descriptorConditionListPresenter.Edit(_applicationBuilder,  x=> x.SourceCriteria, BuildingBlock);
       }
 
-      public override object Subject
-      {
-         get { return _applicationBuilder; }
-      }
+      public override object Subject => _applicationBuilder;
 
       public void SelectParameter(IParameter parameter)
       {
@@ -115,10 +112,7 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
       public IEnumerable<FormulaBuilderDTO> GetFormulas()
       {

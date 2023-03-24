@@ -100,7 +100,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _configuration.StandardMoleculeTemplateFile).Returns(_templateFileName);
          A.CallTo(() => _serializationTask.Load<IMoleculeBuilder>(_templateFileName, true)).Returns(_templateMoleculeBuilder);
 
-         A.CallTo(() => _moleculeBuilderMapper.MapFrom(_templateMoleculeBuilder)).Returns(new MoleculeBuilderDTO());
+         A.CallTo(() => _moleculeBuilderMapper.MapFrom(_templateMoleculeBuilder)).Returns(new MoleculeBuilderDTO(_templateMoleculeBuilder));
 
          A.CallTo(() => _view.BindTo(A<MoleculeBuilderDTO>._))
             .Invokes(x => _dto = x.GetArgument<MoleculeBuilderDTO>(0));

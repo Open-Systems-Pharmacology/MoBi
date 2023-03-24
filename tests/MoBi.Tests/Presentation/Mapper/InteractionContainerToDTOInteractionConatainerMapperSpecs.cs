@@ -1,28 +1,26 @@
 ﻿using FakeItEasy;
-
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using NHibernate.Criterion;
+using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
-
 namespace MoBi.Presentation.Mapper
 {
-   public abstract class concern_for_InteractionContainerToDTOInteractionConatainerMappes : ContextSpecification<IInteractionContainerToInteractionConatainerDTOMapper>
+   public abstract class concern_for_InteractionContainerToDTOInteractionContainerMapper : ContextSpecification<IInteractionContainerToInteractionContainerDTOMapper>
    {
       protected IParameterToParameterDTOMapper _parameterToParameterDTOMapper;
 
       protected override void Context()
       {
          _parameterToParameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
-         sut = new InteractionContainerToInteractionConatainerDTOMapper(_parameterToParameterDTOMapper);
+         sut = new InteractionContainerToInteractionContainerDTOMapper(_parameterToParameterDTOMapper);
       }
    }
 
-   class When_mapping_an_interaction_container_to_a_dto : concern_for_InteractionContainerToDTOInteractionConatainerMappes
+   class When_mapping_an_interaction_container_to_a_dto : concern_for_InteractionContainerToDTOInteractionContainerMapper
    {
       private InteractionContainer _interactionContainer;
       private InteractionContainerDTO _result;
@@ -33,7 +31,8 @@ namespace MoBi.Presentation.Mapper
          base.Context();
          _parameter = A.Fake<IParameter>();
          _interactionContainer = A.Fake<InteractionContainer>();
-         A.CallTo(() => _interactionContainer.GetChildren<IParameter>()).Returns(new[]{_parameter});
+         _interactionContainer.Icon = ApplicationIcons.Container.IconName;
+         A.CallTo(() => _interactionContainer.GetChildren<IParameter>()).Returns(new[] {_parameter});
       }
 
       protected override void Because()
@@ -46,13 +45,13 @@ namespace MoBi.Presentation.Mapper
       {
          _result.ShouldNotBeNull();
          _result.Name.ShouldBeEqualTo(_interactionContainer.Name);
-         _result.Icon.ShouldBeEqualTo(_interactionContainer.Icon);
+         _result.Icon.ShouldBeEqualTo(ApplicationIcons.Container);
       }
 
       [Observation]
       public void should_also_map_all_child_parameter()
       {
-         A.CallTo(() => _parameterToParameterDTOMapper.MapFrom(_parameter)).MustHaveHappened();  
+         A.CallTo(() => _parameterToParameterDTOMapper.MapFrom(_parameter)).MustHaveHappened();
       }
    }
-}	
+}

@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Mappers
 
       public ReactionInfoDTO MapFrom(IReactionBuilder reactionBuilder)
       {
-         var dto = Map<ReactionInfoDTO>(reactionBuilder);
+         var dto = Map(new ReactionInfoDTO(reactionBuilder));
          dto.StoichiometricFormula = _stoichiometricStringCreator.CreateFrom(reactionBuilder.Educts, reactionBuilder.Products);
          if (reactionBuilder.Formula != null)
          {

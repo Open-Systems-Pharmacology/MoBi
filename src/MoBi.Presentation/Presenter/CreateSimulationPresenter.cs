@@ -16,7 +16,6 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
@@ -76,7 +75,7 @@ namespace MoBi.Presentation.Presenter
       {
          Simulation = simulation;
          _buildConfiguration = simulation.MoBiBuildConfiguration;
-         _simulationDTO = new ObjectBaseDTO {Name = simulation.Name};
+         _simulationDTO = new ObjectBaseDTO(simulation) {Name = simulation.Name};
          _simulationDTO.AddUsedNames(nameOfSimulationAlreadyUsed());
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation));
          _view.BindTo(_simulationDTO);

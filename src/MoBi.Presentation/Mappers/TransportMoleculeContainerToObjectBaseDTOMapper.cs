@@ -1,6 +1,6 @@
-using OSPSuite.Utility;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Mappers
    {
       public ObjectBaseDTO MapFrom(TransporterMoleculeContainer transporterMoleculeContainer)
       {
-         var dto = Map<ObjectBaseDTO>(transporterMoleculeContainer);
+         var dto = Map(new ObjectBaseDTO(transporterMoleculeContainer));
          dto.Name = transporterMoleculeContainer.TransportName;
          return dto;
       }

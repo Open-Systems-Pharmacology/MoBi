@@ -1,4 +1,5 @@
 ﻿using MoBi.Assets;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 
@@ -8,29 +9,22 @@ namespace MoBi.Presentation.DTO
    {
       public FormulaBuilderDTO Formula { get; set; }
 
-      public ApplicationMoleculeBuilderDTO()
+      public ApplicationMoleculeBuilderDTO(IApplicationMoleculeBuilder applicationMoleculeBuilder) : base(applicationMoleculeBuilder)
       {
-         Rules.Add(createRelativeContainerPathNotEmptyRule());
+         Rules.Add(createRelativeContainerPathNotEmptyRule);
       }
 
-      private IBusinessRule createRelativeContainerPathNotEmptyRule()
-      {
-         return CreateRule.For<ApplicationMoleculeBuilderDTO>()
-            .Property(x => x.RelativeContainerPath)
-            .WithRule((dto, path) => !path.IsNullOrEmpty())
-            .WithError(AppConstants.Validation.RelativeContainerPathNotSet);
-      }
+      private static IBusinessRule createRelativeContainerPathNotEmptyRule { get; } = CreateRule.For<ApplicationMoleculeBuilderDTO>()
+         .Property(x => x.RelativeContainerPath)
+         .WithRule((dto, path) => !path.IsNullOrEmpty())
+         .WithError(AppConstants.Validation.RelativeContainerPathNotSet);
 
       private string _relativeContainerPath;
 
-      public string RelativeContainerPath
+      public virtual string RelativeContainerPath
       {
-         get { return _relativeContainerPath; }
-         set
-         {
-            _relativeContainerPath = value;
-            OnPropertyChanged(() => RelativeContainerPath);
-         }
+         get => _relativeContainerPath;
+         set => SetProperty(ref _relativeContainerPath, value);
       }
    }
 }

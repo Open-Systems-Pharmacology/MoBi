@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Presentation.Nodes;
 using DevExpress.XtraBars;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Nodes;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -47,6 +46,7 @@ namespace MoBi.UI.Views
                _presenter.CreatePopupMenuFor(null).At(mouseEventArgs.Location);
             }
          }
+
          if (hitInfo.Node != null)
          {
             var treeNode = treeView.NodeFrom(hitInfo.Node);
@@ -65,30 +65,25 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public BarManager PopupBarManager
-      {
-         get { return barManager; }
-      }
+      public BarManager PopupBarManager => barManager;
 
       public void Add(ObjectBaseDTO newChild, ObjectBaseDTO parent)
       {
          var newNode = _spatialStructureNodeMapper.MapFrom(newChild);
          var parentNode = treeView.NodeById(parent.Id);
-         //Check if parentNode is allreadyDisplayed? else it's not nessesary to add new Node
-         if (parentNode != null)
-         {
-            parentNode.AddChild(newNode);
-            treeView.AddNode(newNode);
-         }
+         //Check if parentNode is already displayed? else it's not necessary to add new Node
+         if (parentNode == null) 
+            return;
+
+         parentNode.AddChild(newNode);
+         treeView.AddNode(newNode);
       }
 
-      public void Remove(ObjectBaseDTO dtoObjectBaseToRemove)
+      public void Remove(IWithId withId)
       {
-         ITreeNode nodeById = treeView.NodeById(dtoObjectBaseToRemove.Id);
-         if (nodeById != null)
-         {
-            treeView.DestroyNode(nodeById);
-         }
+         var nodeById = treeView.NodeById(withId.Id);
+         if (nodeById == null) return;
+         treeView.DestroyNode(nodeById);
       }
 
       public void AddNode(ITreeNode newNode)
@@ -104,10 +99,8 @@ namespace MoBi.UI.Views
       public void Select(string id)
       {
          var node = treeView.NodeById(id);
-         if (node != null)
-         {
-            treeView.SelectNode(node);
-         }
+         if (node == null) return;
+         treeView.SelectNode(node);
       }
 
       public void Clear()

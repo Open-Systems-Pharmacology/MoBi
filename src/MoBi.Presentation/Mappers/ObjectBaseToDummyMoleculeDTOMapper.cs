@@ -26,8 +26,7 @@ namespace MoBi.Presentation.Mappers
 
       public DummyMoleculeContainerDTO MapFrom(IObjectBase objectBase)
       {
-         var dto = Map<DummyMoleculeContainerDTO>(objectBase);
-         dto.Id = ShortGuid.NewGuid();
+         var dto = Map(new DummyMoleculeContainerDTO(objectBase));
          dto.MoleculePropertiesContainer = _objectBaseToDTOObjectBaseMapper.MapFrom(_moleculePropertiesContainer);
          return dto;
       }

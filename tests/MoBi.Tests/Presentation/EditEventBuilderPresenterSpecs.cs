@@ -49,7 +49,7 @@ namespace MoBi.Presentation
 
    class When_setting_a_new_formula_for_an_event_assingment : concern_for_EditEventBuilderPresenterSpecs
    {
-      private EventAssignmentBuilderDTO _assingmentDTO;
+      private EventAssignmentBuilderDTO _assignmentDTO;
       private FormulaBuilderDTO _formulaDTO;
       private ICommandCollector _commandCollector;
 
@@ -58,15 +58,15 @@ namespace MoBi.Presentation
          base.Context();
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
-         _assingmentDTO = new EventAssignmentBuilderDTO().WithId("AA");
-         _formulaDTO =new FormulaBuilderDTO().WithId("B");
+         _assignmentDTO = new EventAssignmentBuilderDTO(new EventAssignmentBuilder().WithId("AA"));
+         _formulaDTO =new FormulaBuilderDTO(new ExplicitFormula().WithId("B"));
          A.CallTo(() => _context.Get<ExplicitFormula>(A<string>._)).Returns(A.Fake<ExplicitFormula>());
          A.CallTo(() => _context.Get<IEventAssignmentBuilder>(A<string>._)).Returns(A.Fake<IEventAssignmentBuilder>());
       }
 
       protected override void Because()
       {
-         sut.SetFormulaFor(_assingmentDTO, _formulaDTO);
+         sut.SetFormulaFor(_assignmentDTO, _formulaDTO);
       }
 
       [Observation]
@@ -76,10 +76,10 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_retirieve_domain_objects()
+      public void should_retrieve_domain_objects()
       {
          A.CallTo(() => _context.Get<ExplicitFormula>(_formulaDTO.Id)).MustHaveHappened();
-         A.CallTo(() => _context.Get<IEventAssignmentBuilder>(_assingmentDTO.Id)).MustHaveHappened();
+         A.CallTo(() => _context.Get<IEventAssignmentBuilder>(_assignmentDTO.Id)).MustHaveHappened();
       }
    }
 }	
