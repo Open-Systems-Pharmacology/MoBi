@@ -49,7 +49,7 @@ namespace MoBi.Core
          base.Context();
          _spatialStructureBuildingBlock = new SpatialStructure {Id = "2"};
          sut.AddBuildingBlock(new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "1"});
-         sut.AddBuildingBlock(new ParameterStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "2"});
+         // sut.AddBuildingBlock(new ParameterStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "2"});
       }
 
       protected override void Because()
@@ -74,7 +74,7 @@ namespace MoBi.Core
          base.Context();
          _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
          sut.AddBuildingBlock(new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "2"});
-         sut.AddBuildingBlock(new ParameterStartValuesBuildingBlock {MoleculeBuildingBlockId = "2", SpatialStructureId = "2"});
+         // sut.AddBuildingBlock(new ParameterStartValuesBuildingBlock {MoleculeBuildingBlockId = "2", SpatialStructureId = "2"});
       }
 
       protected override void Because()

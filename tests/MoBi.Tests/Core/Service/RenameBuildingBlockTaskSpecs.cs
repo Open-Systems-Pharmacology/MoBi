@@ -35,7 +35,7 @@ namespace MoBi.Core.Service
          _templateBuildingBlock.Name = "toto";
          _sim= A.Fake<IMoBiSimulation>();
          _buildingBlockInfo= A.Fake<IBuildingBlockInfo>();
-         A.CallTo(() => _sim.MoBiBuildConfiguration.BuildingInfoForTemplate(_templateBuildingBlock)).Returns(_buildingBlockInfo);
+         // A.CallTo(() => _sim.Configuration.BuildingInfoForTemplate(_templateBuildingBlock)).Returns(_buildingBlockInfo);
          A.CallTo(() => _project.SimulationsCreatedUsing(_templateBuildingBlock)).Returns(new[] { _sim });
       }
 

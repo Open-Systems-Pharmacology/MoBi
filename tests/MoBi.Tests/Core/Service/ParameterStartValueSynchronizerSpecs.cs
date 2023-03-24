@@ -42,7 +42,8 @@ namespace MoBi.Core.Service
             StartValue = 33
          };
          parameterStartValues.Add(_parameterStartValue);
-         _simulation.BuildConfiguration.ParameterStartValues = parameterStartValues;
+         _simulation.Configuration.Module = new Module();
+         _simulation.Configuration.Module.AddParameterStartValueBlock(parameterStartValues);
          _parameter =
             new Parameter().WithName("P1").WithValue(11).WithDimension(A.Fake<IDimension>()).WithDisplayUnit(A.Fake<Unit>());
          A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(new ObjectPath("Organism","P1"));

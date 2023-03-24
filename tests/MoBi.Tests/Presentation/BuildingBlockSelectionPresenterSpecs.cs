@@ -50,7 +50,7 @@ namespace MoBi.Presentation
    {
       protected override void Because()
       {
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
       }
 
       [Observation]
@@ -73,7 +73,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
       }
 
       [Observation]
@@ -86,7 +86,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_list_of_avaiable_building_blocks_should_not_contain_the_template_building_block_twice()
       {
-         sut.AllAvailableSelections.ShouldOnlyContainInOrder(_templateBuildingBlock1, _templateBuildingBlock2);
+         sut.AllAvailableBlocks.ShouldOnlyContainInOrder(_templateBuildingBlock1, _templateBuildingBlock2);
       }
    }
 
@@ -101,7 +101,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
       }
 
       [Observation]
@@ -114,7 +114,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_list_of_avaiable_building_blocks_should_contain_the_simulation_building_block_first()
       {
-         sut.AllAvailableSelections.ShouldOnlyContainInOrder(_simulationBuildingBlock, _templateBuildingBlock1, _templateBuildingBlock2);
+         sut.AllAvailableBlocks.ShouldOnlyContainInOrder(_simulationBuildingBlock, _templateBuildingBlock1, _templateBuildingBlock2);
       }
    }
 
@@ -126,7 +126,7 @@ namespace MoBi.Presentation
          _buildingBlockInfo.BuildingBlock = _simulationBuildingBlock;
          _buildingBlockInfo.TemplateBuildingBlock = _templateBuildingBlock2;
          _buildingBlockInfo.SimulationChanges = 3;
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
       }
 
       protected override void Because()
@@ -156,7 +156,7 @@ namespace MoBi.Presentation
          _buildingBlockInfo.BuildingBlock = _simulationBuildingBlock;
          _buildingBlockInfo.SimulationChanges = 3;
          _buildingBlockInfo.TemplateBuildingBlock = _templateBuildingBlock2;
-         sut.Edit(_buildingBlockInfo);
+         sut.Edit(_buildingBlockInfo.BuildingBlock);
          _buildingBlockSelectionDTO.SelectedObject = _templateBuildingBlock1;
          sut.SelectedBuildingBlockChanged();
       }

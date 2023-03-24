@@ -24,11 +24,14 @@ namespace MoBi.Core.Commands
       {
          _context = A.Fake<IMoBiContext>();
          _liver = new Container().WithName("LIVER");
-         _simulation = A.Fake<IMoBiSimulation>();
+         _simulation = new MoBiSimulation();
+         _simulation.Configuration = new SimulationConfiguration();
          _simulation.Model.Root = new Container().WithContainerType(ContainerType.Simulation);
          _simulation.Model.Root.Add(_liver);
          _moleculeStartValues = new MoleculeStartValuesBuildingBlock();
-         _simulation.BuildConfiguration.MoleculeStartValues = _moleculeStartValues;
+
+         _simulation.Configuration.Module.AddMoleculeStartValueBlock(_moleculeStartValues);
+
          sut = new ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand(_simulation);
 
          _formulaTask = A.Fake<IMoBiFormulaTask>();
@@ -102,4 +105,4 @@ namespace MoBi.Core.Commands
          _startValueParameter.Formula.IsConstant().ShouldBeTrue();
       }
    }
-}	
+}

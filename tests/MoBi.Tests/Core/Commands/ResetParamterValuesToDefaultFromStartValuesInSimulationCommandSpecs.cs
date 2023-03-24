@@ -24,11 +24,13 @@ namespace MoBi.Core.Commands
       {
          _context= A.Fake<IMoBiContext>();
          _liver = new Container().WithName("LIVER");
-         _simulation= A.Fake<IMoBiSimulation>();
+         _simulation= new MoBiSimulation();
          _simulation.Model.Root = new Container().WithContainerType(ContainerType.Simulation);
          _simulation.Model.Root.Add(_liver);
          _parameterStartValues= new ParameterStartValuesBuildingBlock();
-         _simulation.BuildConfiguration.ParameterStartValues = _parameterStartValues;
+         _simulation.Configuration = new SimulationConfiguration { Module = new Module() };
+         
+         _simulation.Configuration.Module.AddParameterStartValueBlock(_parameterStartValues);
          sut = new ResetParameterValuesToDefaultFromStartValuesInSimulationCommand(_simulation);
 
          _formulaTask= A.Fake<IMoBiFormulaTask>();

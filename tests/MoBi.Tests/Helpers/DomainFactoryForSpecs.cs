@@ -11,18 +11,18 @@ namespace MoBi.Helpers
 {
    public static class DomainFactoryForSpecs
    {
-      public static IMoBiBuildConfiguration CreateDefaultConfiguration()
+      public static SimulationConfiguration CreateDefaultConfiguration()
       {
-         var buildConfigurationFactory = IoC.Resolve<IBuildConfigurationFactory>();
-         var buildConfiguration = buildConfigurationFactory.Create();
+         // var buildConfigurationFactory = IoC.Resolve<IBuildConfigurationFactory>();
+         var buildConfiguration = new SimulationConfiguration { Module = new Module() };
 
-         buildConfiguration.SpatialStructure = CreateDefaultSpatialStructure();
-         buildConfiguration.Reactions = CreateDefaultReactions();
+         buildConfiguration.Module.SpatialStructure = CreateDefaultSpatialStructure();
+         buildConfiguration.Module.Reaction = CreateDefaultReactions();
          buildConfiguration.SimulationSettings = CreateDefaultSimulationSettings();
-         buildConfiguration.Molecules = CreateDefaultMolecules();
-         buildConfiguration.PassiveTransports = CreateDefaultPassiveTransports();
-         buildConfiguration.EventGroups = CreateDefaultEventGroups();
-         buildConfiguration.Observers = CreateDefaultObservers();
+         buildConfiguration.Module.Molecule = CreateDefaultMolecules();
+         buildConfiguration.Module.PassiveTransport = CreateDefaultPassiveTransports();
+         buildConfiguration.Module.EventGroup = CreateDefaultEventGroups();
+         buildConfiguration.Module.Observer = CreateDefaultObservers();
 
          return buildConfiguration;
       }
@@ -55,35 +55,39 @@ namespace MoBi.Helpers
 
       private static T createBuildingBlock<T>(string buildingBlockName) where T : IBuildingBlock => IoC.Resolve<T>().WithName(buildingBlockName);
 
-      public static IMoBiSimulation CreateSimulationFor(IMoBiBuildConfiguration buildConfiguration, string simulationName = "Simulation")
+      public static IMoBiSimulation CreateSimulationFor(SimulationConfiguration buildConfiguration, string simulationName = "Simulation")
       {
          var createResult = CreateModelFor(buildConfiguration, simulationName);
          var simulationFactory = IoC.Resolve<ISimulationFactory>();
          return simulationFactory.CreateFrom(buildConfiguration, createResult.Model).WithName(simulationName);
       }
 
-      public static CreationResult CreateModelFor(IMoBiBuildConfiguration buildConfiguration, string simulationName)
+      public static CreationResult CreateModelFor(SimulationConfiguration buildConfiguration, string simulationName)
       {
+         if (buildConfiguration.Module == null)
+            buildConfiguration.Module = new Module();
+
          if (buildConfiguration.MoleculeStartValues == null)
-            buildConfiguration.MoleculeStartValues = CreateMoleculeStartValuesFor(buildConfiguration);
+            buildConfiguration.Module.AddMoleculeStartValueBlock(CreateMoleculeStartValuesFor(buildConfiguration));
 
          if (buildConfiguration.ParameterStartValues == null)
-            buildConfiguration.ParameterStartValues = CreateParameterStartValuesFor(buildConfiguration);
+            buildConfiguration.Module.AddParameterStartValueBlock(CreateParameterStartValuesFor(buildConfiguration));
 
          var modelCreator = IoC.Resolve<IModelConstructor>();
          return modelCreator.CreateModelFrom(buildConfiguration, simulationName);
       }
 
-      public static ParameterStartValuesBuildingBlock CreateParameterStartValuesFor(IMoBiBuildConfiguration buildConfiguration)
+      public static ParameterStartValuesBuildingBlock CreateParameterStartValuesFor(SimulationConfiguration buildConfiguration)
       {
          var startValuesCreator = IoC.Resolve<IParameterStartValuesCreator>();
-         return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);
+         return new ParameterStartValuesBuildingBlock();
+         // return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);
       }
 
-      public static MoleculeStartValuesBuildingBlock CreateMoleculeStartValuesFor(IMoBiBuildConfiguration buildConfiguration)
+      public static MoleculeStartValuesBuildingBlock CreateMoleculeStartValuesFor(SimulationConfiguration buildConfiguration)
       {
          var startValuesCreator = IoC.Resolve<IMoleculeStartValuesCreator>();
-         return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);
+         return startValuesCreator.CreateFrom(buildConfiguration.SpatialStructure, buildConfiguration.Molecules);
       }
 
       public static IDimension AmountDimension => DimensionByName(Constants.Dimension.MOLAR_AMOUNT);

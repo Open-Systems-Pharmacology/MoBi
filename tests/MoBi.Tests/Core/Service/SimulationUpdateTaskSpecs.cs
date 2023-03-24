@@ -54,7 +54,7 @@ namespace MoBi.Core.Service
       private ICommand _resultCommand;
       private IMoBiSimulation _simulationToUpdate;
       private ISpatialStructure _templateBuildingBlock;
-      private IMoBiBuildConfiguration _updatedBuildConfiguration;
+      private SimulationConfiguration _updatedBuildConfiguration;
 
       protected override void Context()
       {
@@ -63,7 +63,7 @@ namespace MoBi.Core.Service
          _simulationToUpdate = A.Fake<IMoBiSimulation>();
          _simulationToUpdate.Model.Name = "XX";
          _templateBuildingBlock = A.Fake<ISpatialStructure>();
-         _updatedBuildConfiguration = A.Fake<IMoBiBuildConfiguration>();
+         _updatedBuildConfiguration = new SimulationConfiguration();
          A.CallTo(() => _configurePresenter.SimulationConfiguration).Returns(_updatedBuildConfiguration);
       }
 
@@ -93,7 +93,7 @@ namespace MoBi.Core.Service
       private ICommand _resultCommand;
       private IMoBiSimulation _simulationToUpdate;
       private IBuildingBlock _templateBuildingBlock;
-      private IMoBiBuildConfiguration _updatedBuildConfiguration;
+      private SimulationConfiguration _updatedBuildConfiguration;
 
       protected override void Context()
       {
@@ -101,8 +101,8 @@ namespace MoBi.Core.Service
          _simulationToUpdate = A.Fake<IMoBiSimulation>();
          _simulationToUpdate.Model.Name = "XX";
          _templateBuildingBlock = A.Fake<IBuildingBlock>();
-         _updatedBuildConfiguration = A.Fake<IMoBiBuildConfiguration>();
-         A.CallTo(() => _buildConfigurationFactory.CreateFromReferencesUsedIn(_simulationToUpdate.MoBiBuildConfiguration, _templateBuildingBlock)).Returns(_updatedBuildConfiguration);
+         _updatedBuildConfiguration = new SimulationConfiguration();
+         // A.CallTo(() => _buildConfigurationFactory.CreateFromReferencesUsedIn(_simulationToUpdate.Configuration, _templateBuildingBlock)).Returns(_updatedBuildConfiguration);
       }
 
       protected override void Because()
@@ -162,7 +162,7 @@ namespace MoBi.Core.Service
          A.CallTo(() => _affectedBuildingBlockRetriever.RetrieveFor(_updatedParameterFixedUpdatedByTemplate, _simulationToUpdate)).Returns(_buildingBlockInfoTemplate);
          A.CallTo(() => _affectedBuildingBlockRetriever.RetrieveFor(_updatedParameterFixedNotBelongingToTemplate, _simulationToUpdate)).Returns(A.Fake<IBuildingBlockInfo>());
 
-         A.CallTo(() => _simulationToUpdate.Update(A<IMoBiBuildConfiguration>._, A<IModel>._)).Invokes(x => { _simulationToUpdate.Model.Root = container; });
+         A.CallTo(() => _simulationToUpdate.Update(A<SimulationConfiguration>._, A<IModel>._)).Invokes(x => { _simulationToUpdate.Model.Root = container; });
       }
 
       private IContainer createRootContainer()

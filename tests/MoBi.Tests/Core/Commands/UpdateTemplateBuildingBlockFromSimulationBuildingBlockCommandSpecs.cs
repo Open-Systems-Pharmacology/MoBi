@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          _simulationBuildingBlockInfo.UntypedBuildingBlock = _simulationBuildingBlock;
          _simulationBuildingBlock.Version = _clonedSimulationBuildingBlock.Version;
          _simulationBuildingBlock.Name = "TRALALA";
-         A.CallTo(_simulation.MoBiBuildConfiguration).WithReturnType<IBuildingBlockInfo>().Returns(_simulationBuildingBlockInfo);
+         A.CallTo(_simulation.Configuration).WithReturnType<IBuildingBlockInfo>().Returns(_simulationBuildingBlockInfo);
          _context= A.Fake<IMoBiContext>();
          A.CallTo(() =>_context.Resolve<IBuildingBlockReferenceUpdater>()).Returns(_buildingBlockInfoUpdater);
          sut = new UpdateTemplateBuildingBlockFromSimulationBuildingBlockCommand<ParameterStartValuesBuildingBlock>(_oldTemplateBuildingBlock, _clonedSimulationBuildingBlock, _simulation);

@@ -53,8 +53,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_initialise_also_the_build_configuration()
       {
-          _result.BuildConfiguration.ShouldNotBeNull();
-          _result.MoBiBuildConfiguration.ShouldNotBeNull();
+          _result.Configuration.ShouldNotBeNull();
       }
    }
 }	

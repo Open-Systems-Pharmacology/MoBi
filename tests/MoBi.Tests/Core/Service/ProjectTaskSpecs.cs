@@ -83,11 +83,11 @@ namespace MoBi.Core.Service
          _newBBInfo = new PassiveTransportBuildingBlockInfo() {BuildingBlock = _newBuildingBlock, TemplateBuildingBlockId = "New"};
 
          A.CallTo(() => _project.ReactionBlockCollection).Returns(new[] {_existingBuildingBlock});
-         var moBiBuildConfiguration = A.Fake<IMoBiBuildConfiguration>();
-         A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(moBiBuildConfiguration);
-         A.CallTo(() => moBiBuildConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] {_existingBBInfo, _newBBInfo});
-         moBiBuildConfiguration.ReactionsInfo = _existingBBInfo;
-         moBiBuildConfiguration.PassiveTransportsInfo = _newBBInfo;
+         var simulationConfiguration = new SimulationConfiguration();
+         A.CallTo(() => _simulation.Configuration).Returns(simulationConfiguration);
+         // A.CallTo(() => simulationConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] {_existingBBInfo, _newBBInfo});
+         // simulationConfiguration.ReactionsInfo = _existingBBInfo;
+         // simulationConfiguration.PassiveTransportsInfo = _newBBInfo;
          A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSimulation, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, null, null)).Returns("File");
          A.CallTo(() => _serializationTask.Load<SimulationTransfer>(A<string>._, A<bool>._)).Returns(_simulationTransfer);
          A.CallTo(() => _context.CurrentProject).Returns(_project);

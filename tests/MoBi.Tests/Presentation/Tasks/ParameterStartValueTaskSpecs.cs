@@ -77,7 +77,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.UpdateValuesFromTemplate(_parameterStartValueBuildingBlock, new ParameterStartValuesBuildingBlockInfo {TemplateBuildingBlock = _templateStartValues});
+         sut.UpdateValuesFromTemplate(_parameterStartValueBuildingBlock, _templateStartValues);
       }
 
       [Observation]

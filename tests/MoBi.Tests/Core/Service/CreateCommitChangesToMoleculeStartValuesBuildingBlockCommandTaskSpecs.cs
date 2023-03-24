@@ -36,7 +36,7 @@ namespace MoBi.Core.Service
          _cloneSimulationStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
          MoleculeStartValuesBuildingBlock simulationStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(simulationStartValueBuildingBlock)).Returns(_cloneSimulationStartValueBuildingBlock);
-         A.CallTo(() => _simulation.BuildConfiguration.MoleculeStartValues).Returns(simulationStartValueBuildingBlock);
+         A.CallTo(() => _simulation.Configuration.MoleculeStartValues).Returns(simulationStartValueBuildingBlock);
       }
 
       protected override void Because()
