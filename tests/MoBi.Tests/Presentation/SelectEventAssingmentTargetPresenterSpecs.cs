@@ -129,14 +129,14 @@ namespace MoBi.Presentation
             .WithId("ContId");
 
 
-         _containerDTO = new ContainerDTO {Id = _container.Id};
+         _containerDTO = new ContainerDTO(_container);
          A.CallTo(() => _context.Get<IObjectBase>(_container.Id)).Returns(_container);
 
          _subContainerDTO = new ObjectBaseDTO();
          _parameterDTO1 = new ObjectBaseDTO();
          _parameterDTO2 = new ObjectBaseDTO();
-         _dummyReactionDTO = new DummyReactionDTO();
-         _dummyMoleculeDTO = new DummyMoleculeDTO();
+         _dummyReactionDTO = new DummyReactionDTO(_reaction);
+         _dummyMoleculeDTO = new DummyMoleculeDTO(_moleculeBuilder);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_subContainer)).Returns(_subContainerDTO);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_parameter1)).Returns(_parameterDTO1);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_parameter2)).Returns(_parameterDTO2);

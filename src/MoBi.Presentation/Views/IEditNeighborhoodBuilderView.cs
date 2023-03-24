@@ -4,10 +4,9 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IEditNeighborhoodBuilderView : IView<IEditNeighborhoodBuilderPresenter>,  IActivatableView
+   public interface IEditNeighborhoodBuilderView : IView<IEditNeighborhoodBuilderPresenter>, IActivatableView, IEditViewWithParameters
    {
-      void AddFirstNeighborView(IView view);
-      void AddSecondNeighborView(IView view);
-      void BindTo(ObjectBaseDTO objectBaseDTO);
+      void AddTagsView(IView view);
+      void BindTo(NeighborhoodBuilderDTO neighborhoodBuilderDTO);
    }
 }

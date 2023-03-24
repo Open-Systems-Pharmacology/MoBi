@@ -25,12 +25,12 @@ namespace MoBi.Presentation.Presenter
    public interface IEditTableFormulaPresenter : IEditTypedFormulaPresenter, IListener<AddedValuePointEvent>, IListener<RemovedValuePointEvent>, IListener<TableFormulaUnitChangedEvent>, IListener<TableFormulaValueChangedEvent>, IListener<TableFormulaRestartSolverChangedEvent>
    {
       void AddValuePoint();
-      void RemoveValuePoint(DTOValuePoint dtoValuePoint);
+      void RemoveValuePoint(DTOValuePoint valuePointDTO);
       void SetUseDerivedValuesFor(TableFormulaBuilderDTO dtoTableFormula, bool newValue, bool oldValue);
       void SetXUnit(Unit unit);
       void SetYUnit(Unit unit);
-      void SetXValue(DTOValuePoint dtoValuePoint, double newValue);
-      void SetYValue(DTOValuePoint dtoValuePoint, double newValue);
+      void SetXValue(DTOValuePoint valuePointDTO, double newValue);
+      void SetYValue(DTOValuePoint valuePointDTO, double newValue);
 
       IEnumerable<Unit> AvailableUnitsFor(ValuePointColumn column);
       Unit UnitFor(ValuePointColumn column);
@@ -83,9 +83,9 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public void RemoveValuePoint(DTOValuePoint dtoValuePoint)
+      public void RemoveValuePoint(DTOValuePoint valuePointDTO)
       {
-         var valuePoint = dtoValuePoint.ValuePoint;
+         var valuePoint = valuePointDTO.ValuePoint;
          AddCommand(_moBiFormulaTask.RemoveValuePointFromTableFormula(_formula, valuePoint, BuildingBlock));
       }
 
@@ -107,10 +107,10 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_tableFormulaTask.SetXUnit(_formula, unit, BuildingBlock).Run(_context));
       }
 
-      public void SetXValue(DTOValuePoint dtoValuePoint, double newValue)
+      public void SetXValue(DTOValuePoint valuePointDTO, double newValue)
       {
          this.DoWithinLatch(() =>
-            AddCommand(_tableFormulaTask.SetXValuePoint(_formula, dtoValuePoint.ValuePoint, newValue, BuildingBlock).Run(_context))
+            AddCommand(_tableFormulaTask.SetXValuePoint(_formula, valuePointDTO.ValuePoint, newValue, BuildingBlock).Run(_context))
          );
       }
 
@@ -120,10 +120,10 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_tableFormulaTask.SetYUnit(_formula, unit, BuildingBlock).Run(_context));
       }
 
-      public void SetYValue(DTOValuePoint dtoValuePoint, double newValue)
+      public void SetYValue(DTOValuePoint valuePointDTO, double newValue)
       {
          this.DoWithinLatch(() =>
-            AddCommand(_tableFormulaTask.SetYValuePoint(_formula, dtoValuePoint.ValuePoint, newValue, BuildingBlock).Run(_context))
+            AddCommand(_tableFormulaTask.SetYValuePoint(_formula, valuePointDTO.ValuePoint, newValue, BuildingBlock).Run(_context))
          );
       }
 

@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Mappers
 
       public ApplicationMoleculeBuilderDTO MapFrom(IApplicationMoleculeBuilder applicationMoleculeBuilder)
       {
-         var dto = Map<ApplicationMoleculeBuilderDTO>(applicationMoleculeBuilder);
+         var dto = Map(new ApplicationMoleculeBuilderDTO(applicationMoleculeBuilder));
          dto.RelativeContainerPath = applicationMoleculeBuilder.RelativeContainerPath == null ? string.Empty : applicationMoleculeBuilder.RelativeContainerPath.PathAsString;
          dto.Formula = _formulaBuilderToDTOFormulaMapper.MapFrom(applicationMoleculeBuilder.Formula);
          return dto;

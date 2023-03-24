@@ -60,7 +60,7 @@ namespace MoBi.Presentation
          sut.BuildingBlock = _buildingBlock;
          _formula = new TableFormulaWithOffset();
          _usingFormula = new Parameter();
-         _dto = new TableFormulaWithOffsetDTO();
+         _dto = new TableFormulaWithOffsetDTO(_formula);
 
          _selectFormulaUsablePathPresenter = A.Fake<ISelectFormulaUsablePathPresenter>();
          A.CallTo(() => _applicationController.Start<ISelectFormulaUsablePathPresenter>()).Returns(_selectFormulaUsablePathPresenter);
@@ -73,7 +73,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_edit_table_formulat_with_offset_presenter_is_editing_a_table_formula : concern_for_EditTableFormulaWithOffSetFormulaPresenter
+   public class When_the_edit_table_formula_with_offset_presenter_is_editing_a_table_formula : concern_for_EditTableFormulaWithOffSetFormulaPresenter
    {
       protected override void Context()
       {

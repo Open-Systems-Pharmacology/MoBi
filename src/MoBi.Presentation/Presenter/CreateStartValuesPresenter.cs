@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Presenter
 
       private StartValuesDTO createDto(string name, MoleculeBuildingBlock moleculeBuildingBlock, IMoBiSpatialStructure spatialStructure)
       {
-         var dto = new StartValuesDTO {Name = name, Molecules = moleculeBuildingBlock, SpatialStructrue = spatialStructure};
+         var dto = new StartValuesDTO {Name = name, Molecules = moleculeBuildingBlock, SpatialStructure = spatialStructure};
          dto.AddUsedNames(AppConstants.UnallowedNames);
          dto.AddUsedNames(_unallowedNames);
          return dto;
@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override MoleculeStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
       {
-         return _startValuesCreator.CreateFrom(dto.SpatialStructrue, dto.Molecules).WithName(dto.Name);
+         return _startValuesCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
       }
    }
 
@@ -98,6 +98,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override ParameterStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
       {
+         // return _startValuesCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
          return new ParameterStartValuesBuildingBlock();
       }
    }

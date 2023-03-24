@@ -152,7 +152,7 @@ namespace MoBi.Presentation.Nodes
          return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new FavoritesNodeViewItem
          {
             Name = Captions.Favorites,
-            Icon = ApplicationIcons.Favorites.IconName,
+            Icon = ApplicationIcons.Favorites,
             Id = Captions.Favorites
          }) { Icon = ApplicationIcons.Favorites };
       }
@@ -160,11 +160,11 @@ namespace MoBi.Presentation.Nodes
       public ITreeNode CreateForUserDefined()
       {
          return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new UserDefinedNodeViewItem
-         {
-            Name = AppConstants.Captions.UserDefined,
-            Icon = ApplicationIcons.UserDefinedVariability.IconName,
-            Id = AppConstants.Captions.UserDefined
-         }) { Icon = ApplicationIcons.UserDefinedVariability };
+            {
+               Name = AppConstants.Captions.UserDefined,
+               Icon = ApplicationIcons.UserDefinedVariability,
+               Id = AppConstants.Captions.UserDefined
+         }){ Icon = ApplicationIcons.UserDefinedVariability };
       }
    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -63,7 +64,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_moleculeListPresenter, _descriptorConditionListPresenter);
       }
 
-      public void Edit(TObserverBuilder observerBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(TObserverBuilder observerBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _observerBuilder = observerBuilder;
          _moleculeListPresenter.Edit(observerBuilder);
@@ -71,14 +72,14 @@ namespace MoBi.Presentation.Presenter
          RefreshView(observerBuilder, existingObjectsInParent);
       }
 
-      public void Edit(IObserverBuilder observerBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(IObserverBuilder observerBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          Edit(observerBuilder.DowncastTo<TObserverBuilder>(), existingObjectsInParent);
       }
 
       public void Edit(TObserverBuilder observerBuilder)
       {
-         Edit(observerBuilder, observerBuildingBlock);
+         Edit(observerBuilder, observerBuildingBlock.ToList());
       }
 
       public IBuildingBlock BuildingBlock

@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Mappers
 
       public EventAssignmentBuilderDTO MapFrom(IEventAssignmentBuilder eventAssignmentBuilder)
       {
-         var dto = Map<EventAssignmentBuilderDTO>(eventAssignmentBuilder);
+         var dto = Map(new EventAssignmentBuilderDTO(eventAssignmentBuilder));
          dto.ChangedEntityPath = eventAssignmentBuilder.ObjectPath == null ? string.Empty : eventAssignmentBuilder.ObjectPath.PathAsString;
          dto.NewFormula = _formulaDTOMapper.MapFrom(eventAssignmentBuilder.Formula);
          dto.UseAsValue = eventAssignmentBuilder.UseAsValue;

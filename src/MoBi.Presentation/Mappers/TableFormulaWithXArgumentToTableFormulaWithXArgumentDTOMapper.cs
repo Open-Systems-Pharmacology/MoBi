@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Mappers
 
       public TableFormulaWithXArgumentDTO MapFrom(TableFormulaWithXArgument tableFormulaWithXArgument)
       {
-         var dto = Map<TableFormulaWithXArgumentDTO>(tableFormulaWithXArgument);
+         var dto = Map(new TableFormulaWithXArgumentDTO(tableFormulaWithXArgument));
 
          var xArgumentObjectPath = getPathByAlias(tableFormulaWithXArgument, tableFormulaWithXArgument.XArgumentAlias);
          if (xArgumentObjectPath != null)

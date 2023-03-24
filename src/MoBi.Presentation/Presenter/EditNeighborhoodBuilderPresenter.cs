@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
-using MoBi.Assets;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -9,62 +12,60 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditNeighborhoodBuilderPresenter : ICreatePresenter<NeighborhoodBuilder>, IPresenterWithBuildingBlock
+   public interface IEditNeighborhoodBuilderPresenter : IPresenter<IEditNeighborhoodBuilderView>, ICanEditPropertiesPresenter, IPresenterWithFormulaCache, IEditPresenterWithParameters<NeighborhoodBuilder>
    {
-      void UpdateName(string name);
+      void SetInitialName(string initialName);
    }
 
-   public class EditNeighborhoodBuilderPresenter : AbstractCommandCollectorPresenter<IEditNeighborhoodBuilderView, IEditNeighborhoodBuilderPresenter>, IEditNeighborhoodBuilderPresenter
+   public class EditNeighborhoodBuilderPresenter : AbstractContainerEditPresenterWithParameters<IEditNeighborhoodBuilderView, IEditNeighborhoodBuilderPresenter, NeighborhoodBuilder>, IEditNeighborhoodBuilderPresenter
    {
-      private readonly IEditTaskFor<NeighborhoodBuilder> _editTask;
-      private readonly ISelectNeighborPathPresenter _firstNeighborPresenter;
-      private readonly ISelectNeighborPathPresenter _secondNeighborPresenter;
-      private ObjectBaseDTO _objectBaseDTO;
+      private readonly ITagsPresenter _tagsPresenter;
+      private readonly INeighborhoodBuilderToNeighborhoodBuilderDTOMapper _neighborhoodBuilderMapper;
       private NeighborhoodBuilder _neighborhoodBuilder;
-      public IBuildingBlock BuildingBlock { get; set; }
+      private NeighborhoodBuilderDTO _neighborhoodBuilderDTO;
 
-      public EditNeighborhoodBuilderPresenter(IEditNeighborhoodBuilderView view,
-         IEditTaskFor<NeighborhoodBuilder> editTask,
-         ISelectNeighborPathPresenter firstNeighborPresenter,
-         ISelectNeighborPathPresenter secondNeighborPresenter) : base(view)
+      public EditNeighborhoodBuilderPresenter(
+         IEditNeighborhoodBuilderView view,
+         IEditParametersInContainerPresenter editParametersInContainerPresenter,
+         ITagsPresenter tagsPresenter,
+         IMoBiContext context,
+         IEditTaskForContainer editTask,
+         INeighborhoodBuilderToNeighborhoodBuilderDTOMapper neighborhoodBuilderMapper
+      ) : base(view, editParametersInContainerPresenter, context, editTask)
       {
-         _editTask = editTask;
-         _firstNeighborPresenter = firstNeighborPresenter;
-         _secondNeighborPresenter = secondNeighborPresenter;
-         AddSubPresenters(_firstNeighborPresenter, _secondNeighborPresenter);
-         _view.AddFirstNeighborView(_firstNeighborPresenter.BaseView);
-         _view.AddSecondNeighborView(_secondNeighborPresenter.BaseView);
-
-         _firstNeighborPresenter.StatusChanged += (o, e) => updateFirstNeighbor();
-         _secondNeighborPresenter.StatusChanged += (o, e) => updateSecondNeighbor();
+         _tagsPresenter = tagsPresenter;
+         _neighborhoodBuilderMapper = neighborhoodBuilderMapper;
+         AddSubPresenters(_tagsPresenter);
+         _view.AddTagsView(_tagsPresenter.BaseView);
       }
 
-      private void updateSecondNeighbor()
-      {
-         _neighborhoodBuilder.SecondNeighborPath = _secondNeighborPresenter.NeighborPath;
-      }
+      public override object Subject => _neighborhoodBuilder;
 
-      private void updateFirstNeighbor()
-      {
-         _neighborhoodBuilder.FirstNeighborPath = _firstNeighborPresenter.NeighborPath;
-      }
+      protected override IContainer SubjectContainer => _neighborhoodBuilder;
 
-      public void Edit(NeighborhoodBuilder neighborhoodBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(NeighborhoodBuilder neighborhoodBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
-         _objectBaseDTO = new ObjectBaseDTO();
          _neighborhoodBuilder = neighborhoodBuilder;
-         _objectBaseDTO.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(neighborhoodBuilder, existingObjectsInParent));
-         _firstNeighborPresenter.Init(spatialStructure, AppConstants.Captions.FirstNeighbor);
-         _secondNeighborPresenter.Init(spatialStructure, AppConstants.Captions.SecondNeighbor);
-
-         _view.BindTo(_objectBaseDTO);
+         base.Edit(neighborhoodBuilder, existingObjectsInParent);
+         _neighborhoodBuilderDTO = _neighborhoodBuilderMapper.MapFrom(neighborhoodBuilder);
+         _neighborhoodBuilderDTO.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(neighborhoodBuilder, existingObjectsInParent));
+         _tagsPresenter.Edit(neighborhoodBuilder);
+         _view.BindTo(_neighborhoodBuilderDTO);
       }
 
-      public void UpdateName(string name)
+      public void SetInitialName(string initialName)
       {
-         _neighborhoodBuilder.Name = name;
+         SetPropertyValueFromView(_neighborhoodBuilder.PropertyName(x => x.Name), initialName, string.Empty);
+         _neighborhoodBuilderDTO.Name = initialName;
       }
 
-      private ISpatialStructure spatialStructure => BuildingBlock as ISpatialStructure;
+      public override IBuildingBlock BuildingBlock
+      {
+         set
+         {
+            base.BuildingBlock = value;
+            _tagsPresenter.BuildingBlock = value;
+         }
+      }
    }
 }

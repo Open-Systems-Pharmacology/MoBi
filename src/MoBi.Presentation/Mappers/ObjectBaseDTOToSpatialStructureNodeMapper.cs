@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
       {
          var node = new HierarchicalStructureNode(objectBase)
          {
-            Icon = ApplicationIcons.IconByName(objectBase.Icon),
+            Icon = objectBase.Icon,
             Text = objectBase.Name,
             GetChildren = x => _getChildren(x).MapAllUsing(this),
          };

@@ -138,13 +138,13 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
       {
          var transportBuilder = selectedObject as ITransportBuilder;
          if (transportBuilder != null)
-            return new Tuple<bool, IObjectBase>(_passiveTransports.Contains(transportBuilder), transportBuilder);
+            return (_passiveTransports.Contains(transportBuilder), transportBuilder);
 
-         return new Tuple<bool, IObjectBase>(false, selectedObject);
+         return (false, null);
       }
 
       protected override void SelectBuilder(ITransportBuilder builder)
@@ -152,7 +152,7 @@ namespace MoBi.Presentation.Presenter
          editChild(builder);
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
          SelectBuilder(parentObject as ITransportBuilder);
          _editTransportBuilderPresenter.SelectParameter(parameter);

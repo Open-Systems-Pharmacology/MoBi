@@ -13,11 +13,9 @@ namespace MoBi.Presentation.Mappers
    {
       public DummyParameterDTO MapFrom(IParameter parameter, IContainer structureParent, ObjectBaseDTO modelParent)
       {
-         var dto = Map<DummyParameterDTO>(parameter);
-         dto.ParameterToUse = Map<ObjectBaseDTO>(parameter);
+         var dto = Map(new DummyParameterDTO(parameter));
          dto.Parent = structureParent;
          dto.ModelParentName = modelParent.Name;
-         dto.Id = ShortGuid.NewGuid();
          return dto;
       }
    }

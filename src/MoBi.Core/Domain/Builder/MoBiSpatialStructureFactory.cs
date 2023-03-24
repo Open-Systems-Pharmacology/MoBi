@@ -71,7 +71,7 @@ namespace MoBi.Core.Domain.Builder
 
       private void updateIcon(IObjectBase objectWithIcon)
       {
-         objectWithIcon.Icon = _iconRepository.IconFor(objectWithIcon);
+         objectWithIcon.Icon = _iconRepository.IconNameFor(objectWithIcon);
       }
    }
 }

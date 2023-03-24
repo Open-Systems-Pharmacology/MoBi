@@ -45,7 +45,7 @@ namespace MoBi.Core.Commands
          var iconRepository = context.Resolve<IIconRepository>();
          // Reset Icon so Iconrepository can retrieve the new icon based on type
          _moleculeBuilder.Icon = string.Empty;
-         _moleculeBuilder.Icon = iconRepository.IconFor(_moleculeBuilder);
+         _moleculeBuilder.Icon = iconRepository.IconNameFor(_moleculeBuilder);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

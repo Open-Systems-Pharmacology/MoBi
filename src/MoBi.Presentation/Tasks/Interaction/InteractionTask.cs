@@ -136,7 +136,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public string IconFor<T>(T entity) where T : IObjectBase
       {
-         return _iconRepository.IconFor(entity);
+         return _iconRepository.IconNameFor(entity);
       }
 
       public bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase

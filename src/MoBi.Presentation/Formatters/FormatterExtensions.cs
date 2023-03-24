@@ -25,14 +25,14 @@ namespace MoBi.Presentation.Formatters
          return new ValueAllowingNaNFormatter(expressionParameterDTO);
       }
 
-      public static IFormatter<double> ValuePointXFormatter(this DTOValuePoint dtoValuePoint)
+      public static IFormatter<double> ValuePointXFormatter(this DTOValuePoint valuePointDTO)
       {
-         return new ValuePointFormatter(dtoValuePoint.X);
+         return new ValuePointFormatter(valuePointDTO.X);
       }
 
-      public static IFormatter<double> ValuePointYFormatter(this DTOValuePoint dtoValuePoint)
+      public static IFormatter<double> ValuePointYFormatter(this DTOValuePoint valuePointDTO)
       {
-         return new ValuePointFormatter(dtoValuePoint.Y);
+         return new ValuePointFormatter(valuePointDTO.Y);
       }
    }
 }

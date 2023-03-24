@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ICreatePresenter<T> : ICommandCollectorPresenter
    {
-      void Edit(T objectToEdit, IEnumerable<IObjectBase> existingObjectsInParent);
+      void Edit(T objectToEdit, IReadOnlyList<IObjectBase> existingObjectsInParent);
    }
 
    public interface ICanEditPropertiesPresenter : IPresenter

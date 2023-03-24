@@ -76,7 +76,7 @@ namespace MoBi.Presentation.Presenter
       {
          Simulation = simulation;
          _simulationConfiguration = simulation.Configuration;
-         _simulationDTO = new ObjectBaseDTO { Name = simulation.Name };
+         _simulationDTO = new ObjectBaseDTO(simulation);
          _simulationDTO.AddUsedNames(nameOfSimulationAlreadyUsed());
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation));
          _view.BindTo(_simulationDTO);

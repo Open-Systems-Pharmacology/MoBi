@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditExplicitFormulaPresenter _editFormulaPresenter;
       private readonly IMoBiContext _context;
       private readonly IMoBiApplicationController _applicationController;
-      private readonly string _formulaPropertyName;
+      private string _formulaPropertyName;
       private readonly IDialogCreator _dialogCreator;
 
       public EditEventBuilderPresenter(IEditEventBuilderView view, IEventBuilderToEventBuilderDTOMapper eventToEventBuilderMapper,
@@ -74,8 +74,7 @@ namespace MoBi.Presentation.Presenter
          _editParametersPresenter = editParametersPresenter;
 
          _view.SetParametersView(editParametersPresenter.BaseView);
-         _formulaPropertyName = _eventBuilder.PropertyName(x => x.Formula);
-
+    
          AddSubPresenters(_editFormulaPresenter, _editParametersPresenter, _selectReferencePresenter);
       }
 
@@ -91,9 +90,10 @@ namespace MoBi.Presentation.Presenter
          Edit(objectToEdit.DowncastTo<IEventBuilder>());
       }
 
-      public void Edit(IEventBuilder eventBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(IEventBuilder eventBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventBuilder = eventBuilder;
+         _formulaPropertyName = _eventBuilder.PropertyName(x => x.Formula);
          _editParametersPresenter.Edit(eventBuilder);
 
          if (eventBuilder.Formula != null && eventBuilder.Formula.IsExplicit())
@@ -112,7 +112,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(IEventBuilder eventBuilder)
       {
-         Edit(eventBuilder, eventBuilder.ParentContainer);
+         Edit(eventBuilder, eventBuilder.ParentContainer.Children);
       }
 
       public object Subject => _eventBuilder;

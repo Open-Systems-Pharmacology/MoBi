@@ -6,11 +6,11 @@ namespace MoBi.Presentation.DTO
 {
    public class TransportBuilderDTO : ObjectBaseDTO
    {
-      public ITransportBuilder TransporBuilder { get; private set; }
+      public ITransportBuilder TransportBuilder { get; }
 
-      public TransportBuilderDTO(ITransportBuilder transportBuilder)
+      public TransportBuilderDTO(ITransportBuilder transportBuilder):base(transportBuilder)  
       {
-         TransporBuilder = transportBuilder;
+         TransportBuilder = transportBuilder;
       }
 
       public FormulaBuilderDTO Formula { get; set; }
@@ -19,14 +19,14 @@ namespace MoBi.Presentation.DTO
 
       public bool CreateProcessRateParameter
       {
-         get { return TransporBuilder.CreateProcessRateParameter; }
-         set { TransporBuilder.CreateProcessRateParameter = value; }
+         get => TransportBuilder.CreateProcessRateParameter;
+         set => TransportBuilder.CreateProcessRateParameter = value;
       }
 
       public bool ProcessRateParameterPersistable
       {
-         get { return TransporBuilder.ProcessRateParameterPersistable; }
-         set { TransporBuilder.ProcessRateParameterPersistable = value; }
+         get => TransportBuilder.ProcessRateParameterPersistable;
+         set => TransportBuilder.ProcessRateParameterPersistable = value;
       }
    }
 }
