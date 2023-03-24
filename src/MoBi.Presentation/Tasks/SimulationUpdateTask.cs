@@ -67,7 +67,7 @@ namespace MoBi.Presentation.Tasks
          {
             using (var presenter = _applicationController.Start<IConfigureSimulationPresenter>())
             {
-               configurationCommands = presenter.CreateBuildConfigurationBaseOn(simulationToUpdate, templateBuildingBlock);
+               configurationCommands = presenter.CreateBuildConfigurationBasedOn(simulationToUpdate, templateBuildingBlock);
                if (configurationCommands.IsEmpty())
                   return new MoBiEmptyCommand();
 
@@ -164,9 +164,9 @@ namespace MoBi.Presentation.Tasks
          simulationQuantity.Value = fixedValueQuantity.Value;
       }
 
-      private IModel createModelAndValidate(string modelName, SimulationConfiguration buildConfigurationReferencingTemplate)
+      private IModel createModelAndValidate(string modelName, SimulationConfiguration simulationConfiguration)
       {
-         var results = _modelConstructor.CreateModelFrom(buildConfigurationReferencingTemplate, modelName);
+         var results = _modelConstructor.CreateModelFrom(simulationConfiguration, modelName);
 
          if (results != null)
             showWarnings(results.ValidationResult);
@@ -176,7 +176,7 @@ namespace MoBi.Presentation.Tasks
 
          var model = results.Model;
 
-         _dimensionValidator.Validate(model, buildConfigurationReferencingTemplate)
+         _dimensionValidator.Validate(model, simulationConfiguration)
             .SecureContinueWith(t => showWarnings(t.Result));
 
          return model;

@@ -1,23 +1,24 @@
-﻿using MoBi.Assets;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
-using System.Collections.Generic;
 using OSPSuite.Utility.Extensions;
-using System.Linq;
-using OSPSuite.Core.Domain;
-using System;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditSimulationConfigurationPresenter : ISimulationConfigurationItemPresenter
    {
       event EventHandler MoleculeStartValuesChangedEvent;
+
       // event EventHandler SpatialStructureChangedEvent;
       // event EventHandler MoleculeBuildingBlockChangedEvent;
       event EventHandler ParameterStartValuesChangedEvent;
@@ -41,11 +42,12 @@ namespace MoBi.Presentation.Presenter
       public object Subject => _simulationConfiguration;
       public event EventHandler MoleculeStartValuesChangedEvent = delegate { };
       public event EventHandler ParameterStartValuesChangedEvent = delegate { };
+
       public event EventHandler ModuleChangedEvent = delegate { };
       // public event EventHandler MoleculeBuildingBlockChangedEvent = delegate { };
       // public event EventHandler SpatialStructureChangedEvent = delegate { };
 
-      public EditSimulationConfigurationPresenter(IEditSimulationConfigurationView view,  IMoBiApplicationController applicationController) :
+      public EditSimulationConfigurationPresenter(IEditSimulationConfigurationView view, IMoBiApplicationController applicationController) :
          base(view)
       {
          _applicationController = applicationController;
@@ -66,6 +68,7 @@ namespace MoBi.Presentation.Presenter
       private IStartValuesSelectionPresenter<T> createStartValuesPresenter<T>(string caption, ApplicationIcon applicationIcon) where T : class, IBuildingBlock
       {
          var presenter = _applicationController.Start<IStartValuesSelectionPresenter<T>>();
+         presenter.CanCreateBuildingBlock = false;
          _view.AddSelectionView(presenter.View, caption, applicationIcon);
          presenter.SelectionChanged += updateSimulationConfiguration;
          _allSelectionPresenter.Add(presenter);
@@ -75,6 +78,7 @@ namespace MoBi.Presentation.Presenter
       private IModuleSelectionPresenter createModuleSelectionPresenter(string caption, ApplicationIcon applicationIcon)
       {
          var presenter = _applicationController.Start<IModuleSelectionPresenter>();
+         presenter.CanCreateBuildingBlock = false;
          _view.AddSelectionView(presenter.View, caption, applicationIcon);
          presenter.SelectionChanged += moduleChanged;
          _allSelectionPresenter.Add(presenter);
@@ -83,9 +87,9 @@ namespace MoBi.Presentation.Presenter
 
       private void moduleChanged()
       {
-         updateSimulationConfiguration();
          _selectMoleculeStartValues.SetAvailableStartValueBuildingBlocks(_selectModule.SelectedModule.MoleculeStartValuesCollection);
          _selectParameterStartValues.SetAvailableStartValueBuildingBlocks(_selectModule.SelectedModule.ParameterStartValuesCollection);
+         updateSimulationConfiguration();
       }
 
       private void updateSimulationConfiguration()
@@ -116,6 +120,7 @@ namespace MoBi.Presentation.Presenter
          _selectExpressionProfile.Edit(_simulationConfiguration.ExpressionProfiles.FirstOrDefault());
          _selectIndividual.Edit(_simulationConfiguration.Individual);
          _selectModule.Edit(_simulationConfiguration.Module);
+         moduleChanged();
          _selectMoleculeStartValues.Edit(_simulationConfiguration.MoleculeStartValues);
          _selectParameterStartValues.Edit(_simulationConfiguration.ParameterStartValues);
 
