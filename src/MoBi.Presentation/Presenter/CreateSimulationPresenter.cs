@@ -44,13 +44,12 @@ namespace MoBi.Presentation.Presenter
          IModelConstructor modelConstructor,
          IDimensionValidator dimensionValidator,
          ISimulationFactory simulationFactory,
-         IBuildConfigurationFactory buildConfigurationFactory,
          IHeavyWorkManager heavyWorkManager,
          ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager,
          IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriever,
          IUserSettings userSettings)
-         : base(view, subPresenterManager, dialogCreator, buildConfigurationFactory, context, SimulationItems.All)
+         : base(view, subPresenterManager, dialogCreator, context, SimulationItems.All)
       {
          _simulationFactory = simulationFactory;
          _heavyWorkManager = heavyWorkManager;

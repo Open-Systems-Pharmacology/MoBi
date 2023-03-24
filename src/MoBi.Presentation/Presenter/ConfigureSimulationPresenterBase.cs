@@ -18,13 +18,11 @@ namespace MoBi.Presentation.Presenter
       where TView : IWizardView, IModalView<TPresenter>
    {
       protected IMoBiContext _context;
-      protected IBuildConfigurationFactory _buildConfigurationFactory;
       protected IMoBiMacroCommand _commands;
 
-      protected ConfigureSimulationPresenterBase(TView view, ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager, IDialogCreator dialogCreator, IBuildConfigurationFactory buildConfigurationFactory, IMoBiContext context, IReadOnlyList<ISubPresenterItem> subPresenterItems)
+      protected ConfigureSimulationPresenterBase(TView view, ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager, IDialogCreator dialogCreator, IMoBiContext context, IReadOnlyList<ISubPresenterItem> subPresenterItems)
          : base(view, subPresenterManager, subPresenterItems, dialogCreator)
       {
-         _buildConfigurationFactory = buildConfigurationFactory;
          _context = context;
          _commands = new MoBiMacroCommand();
 

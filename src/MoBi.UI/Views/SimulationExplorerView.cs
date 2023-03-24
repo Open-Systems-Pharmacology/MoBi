@@ -5,6 +5,7 @@ using DevExpress.XtraTreeList.Nodes;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Views;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 

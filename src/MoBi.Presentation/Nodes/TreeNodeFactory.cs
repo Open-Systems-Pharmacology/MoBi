@@ -81,6 +81,14 @@ namespace MoBi.Presentation.Nodes
          addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
          addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.MoleculeStartValues);
          addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.ParameterStartValues);
+         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Individual);
+
+
+         var expressionsNode = CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder)
+            .Under(buildConfigNode);
+
+         simulationConfiguration.ExpressionProfiles.Each(x => CreateFor(x).Under(expressionsNode));
+
          return buildConfigNode;
       }
 

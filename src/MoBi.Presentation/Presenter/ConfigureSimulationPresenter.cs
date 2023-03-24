@@ -24,8 +24,8 @@ namespace MoBi.Presentation.Presenter
       private readonly IDiagramManagerFactory _diagramManagerFactory;
       public SimulationConfiguration SimulationConfiguration { get; private set; }
 
-      public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, IDialogCreator dialogCreator, IBuildConfigurationFactory buildConfigurationFactory, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory)
-         : base(view, subPresenterSubjectManager, dialogCreator, buildConfigurationFactory, context, SimulationItems.AllConfigure)
+      public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory)
+         : base(view, subPresenterSubjectManager, dialogCreator, context, SimulationItems.AllConfigure)
       {
          _diagramManagerFactory = diagramManagerFactory;
       }
