@@ -14,7 +14,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Service
@@ -24,7 +23,6 @@ namespace MoBi.Core.Service
       protected IModelConstructor _modelConstructor;
       protected IBuildConfigurationFactory _buildConfigurationFactory;
       protected IObjectPathFactory _objectPathFactory;
-      protected IEventPublisher _eventPublisher;
       private IMoBiContext _context;
       private IMoBiApplicationController _applicationController;
       protected IConfigureSimulationPresenter _configurePresenter;
@@ -102,7 +100,6 @@ namespace MoBi.Core.Service
          _simulationToUpdate.Model.Name = "XX";
          _templateBuildingBlock = A.Fake<IBuildingBlock>();
          _updatedBuildConfiguration = new SimulationConfiguration();
-         // A.CallTo(() => _buildConfigurationFactory.CreateFromReferencesUsedIn(_simulationToUpdate.Configuration, _templateBuildingBlock)).Returns(_updatedBuildConfiguration);
       }
 
       protected override void Because()
@@ -116,12 +113,7 @@ namespace MoBi.Core.Service
          _resultCommand.ShouldNotBeNull();
          _resultCommand.ShouldBeAnInstanceOf<MoBiMacroCommand>();
       }
-
-      [Observation]
-      public void should_create_model_from_updated_build_configuration()
-      {
-         A.CallTo(() => _modelConstructor.CreateModelFrom(_updatedBuildConfiguration, _simulationToUpdate.Model.Name)).MustHaveHappened();
-      }
+      
    }
 
    public class When_updating_a_simulation_with_fixed_value_with_a_template_building_block_that_allows_quick_update : concern_for_SimulationUpdateTask

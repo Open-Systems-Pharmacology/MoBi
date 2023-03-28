@@ -25,8 +25,8 @@ namespace MoBi.Core.Domain.Services
       {
          var allSimulationUsingBuildingBlocks = _projectRetriever.Current.SimulationsCreatedUsing(templateBuildingBlock);
 
-         // TODO rename bb rename in SimulationConfiguration?
-         
+         // TODO rename bb rename in SimulationConfiguration? SIMULATION_CONFIGURATION
+
          // foreach (var usedBuildingBlock in allSimulationUsingBuildingBlocks.Select(x => x.MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock)))
          // {
          //    usedBuildingBlock.UntypedBuildingBlock.Name = templateBuildingBlock.Name;

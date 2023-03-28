@@ -39,31 +39,6 @@ namespace MoBi.Core
       }
    }
 
-   public class When_resolving_referred_spatial_structure_blocks : concern_for_MoBiProject
-   {
-      private IReadOnlyList<IBuildingBlock> _result;
-      private SpatialStructure _spatialStructureBuildingBlock;
-
-      protected override void Context()
-      {
-         base.Context();
-         _spatialStructureBuildingBlock = new SpatialStructure {Id = "2"};
-         sut.AddBuildingBlock(new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "1"});
-         // sut.AddBuildingBlock(new ParameterStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "2"});
-      }
-
-      protected override void Because()
-      {
-         _result = sut.ReferringStartValuesBuildingBlocks(_spatialStructureBuildingBlock);
-      }
-
-      [Observation]
-      public void should_find_only_building_block_with_reference()
-      {
-         _result.Count.ShouldBeEqualTo(1);
-      }
-   }
-
    public class When_resolving_referred_molecule_building_blocks : concern_for_MoBiProject
    {
       private MoleculeBuildingBlock _moleculeBuildingBlock;
@@ -74,7 +49,6 @@ namespace MoBi.Core
          base.Context();
          _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
          sut.AddBuildingBlock(new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "2"});
-         // sut.AddBuildingBlock(new ParameterStartValuesBuildingBlock {MoleculeBuildingBlockId = "2", SpatialStructureId = "2"});
       }
 
       protected override void Because()

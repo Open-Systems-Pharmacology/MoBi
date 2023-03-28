@@ -50,7 +50,7 @@ namespace MoBi.Engine.Sbml
          project.Name = getProjectName(model);
 
          reportConstraints(project, model);
-         _importerRepository.AllFor(model).OfType<IStartable>().Each(impoter => impoter.Start());
+         _importerRepository.AllFor(model).OfType<IStartable>().Each(importer => importer.Start());
 
          foreach (var importer in _importerRepository.AllFor(model))
          {

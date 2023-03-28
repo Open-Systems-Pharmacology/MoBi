@@ -36,68 +36,25 @@ namespace MoBi.Core
       }
    }
 
-   public class When_adding_a_simulation_to_a_project : concern_for_SimulationLoader
-   {
-      private ParameterStartValuesBuildingBlockInfo _psvInfo;
-      private SimulationConfiguration _buildConfiguration;
-      private ParameterStartValuesBuildingBlock _cloneBuildingBlock;
-      private MoleculesInfo _moleculesInfo;
-      private MoleculeBuildingBlock _templateMoleculeBuildingBlock;
-      private MoBiSpatialStructure _templateSpatialStructure;
-      private SpatialStructureInfo _spatialStructureInfo;
-
-      protected override void Context()
-      {
-         base.Context();
-         _buildConfiguration = new SimulationConfiguration();
-         _psvInfo = new ParameterStartValuesBuildingBlockInfo { UntypedBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("psvbb1") };
-
-         _templateMoleculeBuildingBlock = new MoleculeBuildingBlock { Id = "templateMoleculeBuildingBlock" };
-         _templateSpatialStructure = new MoBiSpatialStructure() { Id = "templateSpatialStructure" };
-         _moleculesInfo = new MoleculesInfo { UntypedBuildingBlock = _templateMoleculeBuildingBlock };
-         _spatialStructureInfo = new SpatialStructureInfo { UntypedBuildingBlock = _templateSpatialStructure };
-
-         // _buildConfiguration.ParameterStartValuesInfo = _psvInfo;
-         // _buildConfiguration.SpatialStructureInfo = _spatialStructureInfo;
-         // _buildConfiguration.MoleculesInfo = _moleculesInfo;
-         // A.CallTo(() => _buildConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] {_psvInfo, _moleculesInfo, _spatialStructureInfo});
-         _cloneBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("psvbb2");
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_psvInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
-         A.CallTo(() => _simulation.Configuration).Returns(_buildConfiguration);
-         A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
-      }
-
-      protected override void Because()
-      {
-         sut.AddSimulationToProject(_simulation);
-      }
-
-      [Observation]
-      public void the_simulation_configuration_psv_and_msv_building_blocks_should_target_the_newly_created_template_building_blocks()
-      {
-         _simulation.Configuration.MoleculeStartValues.MoleculeBuildingBlockId.ShouldBeEqualTo(_templateMoleculeBuildingBlock.Id);
-         _simulation.Configuration.MoleculeStartValues.SpatialStructureId.ShouldBeEqualTo(_templateSpatialStructure.Id);
-      }
-   }
-
    public class When_adding_a_simulation_to_project_that_does_not_contain_any_simulation_or_building_block : concern_for_SimulationLoader
    {
-      private ObserverBuildingBlockInfo _bbInfo;
+      
       private ObserverBuildingBlock _cloneBuildingBlock;
       private SimulationConfiguration _buildConfiguration;
 
       protected override void Context()
       {
          base.Context();
-         _buildConfiguration = new SimulationConfiguration();
-         _bbInfo = new ObserverBuildingBlockInfo { UntypedBuildingBlock = new ObserverBuildingBlock().WithId("SP1") };
-         _buildConfiguration.Module = new Module()
+         _buildConfiguration = new SimulationConfiguration
          {
-            Observer = _bbInfo.BuildingBlock
+            Module = new Module()
+            {
+               Observer = new ObserverBuildingBlock().WithId("SP1")
+            }
          };
 
          _cloneBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_bbInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(_buildConfiguration.Module.Observer)).Returns(_cloneBuildingBlock);
          A.CallTo(() => _simulation.Configuration).Returns(_buildConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }
@@ -122,7 +79,7 @@ namespace MoBi.Core
       [Observation]
       public void should_add_the_building_block_to_the_project_as_well()
       {
-         _project.AllBuildingBlocks().ShouldContain(_bbInfo.TemplateBuildingBlock);
+         _project.Modules[0].Observer.ShouldBeEqualTo(_buildConfiguration.Module.Observer);
       }
    }
 

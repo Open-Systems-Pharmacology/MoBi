@@ -40,6 +40,7 @@ namespace MoBi.Presentation.Presenter
 
       public void CreateNew()
       {
+         // TODO SIMULATION_CONFIGURATION
          throw new NotImplementedException();
       }
 

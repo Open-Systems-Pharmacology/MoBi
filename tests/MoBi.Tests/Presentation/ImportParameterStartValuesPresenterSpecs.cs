@@ -39,7 +39,7 @@ namespace MoBi.Presentation
          _view = A.Fake<IImportQuantityView>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataTableToImportParameterQuantityDTOMapperForMolecules = A.Fake<IDataTableToImportQuantityDTOMapperForParameters>();
-         _buildingBlock = A.Fake<ParameterStartValuesBuildingBlock>();
+         _buildingBlock = new ParameterStartValuesBuildingBlock();
          _excelTask = A.Fake<IImportFromExcelTask>();
          sut = new ImportParameterStartValuesPresenter(_view, _dialogCreator, _context, _excelTask, _startValuesTask, _dataTableToImportParameterQuantityDTOMapperForMolecules);
          sut.Initialize();
@@ -133,10 +133,6 @@ namespace MoBi.Presentation
          }.Each(_quantityImporterDTO.QuantityDTOs.Add);
 
          A.CallTo(() => _dataTableToImportParameterQuantityDTOMapperForMolecules.MapFrom(A<DataTable>._, A<ParameterStartValuesBuildingBlock>.Ignored)).Returns(_quantityImporterDTO);
-         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantityDTOs[0].ContainerPath]).Returns(null);
-         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantityDTOs[1].ContainerPath]).Returns(null);
-         A.CallTo(() => _buildingBlock[_quantityImporterDTO.QuantityDTOs[2].ContainerPath]).Returns(new ParameterStartValue{Path=new ObjectPath(new[] { "Path3" })});
-
          A.CallTo(() => _view.Display()).Invokes(() =>
          {
             sut.StartImport();

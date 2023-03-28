@@ -1,6 +1,8 @@
 ﻿using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Converters.v12;
+using OSPSuite.Core.Serialization.Xml.Extensions;
 using System.Xml.Linq;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.Converter.v12
 {
@@ -22,7 +24,14 @@ namespace MoBi.Core.Serialization.Converter.v12
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
       {
-         return _coreConverter.ConvertXml(element);
+         var (convertedToVersion, conversionHappened) = _coreConverter.ConvertXml(element);
+
+         element.DescendantsAndSelfNamed("MoBiSimulation").Each(simulationNode =>
+         {
+            _coreConverter.ConvertSimulation(simulationNode);
+            conversionHappened = true;
+         });
+         return (convertedToVersion, conversionHappened);
       }
    }
 }

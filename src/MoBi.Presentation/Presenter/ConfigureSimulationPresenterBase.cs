@@ -63,13 +63,13 @@ namespace MoBi.Presentation.Presenter
 
       private void setControlEnabled(ISubPresenterItem subPresenterItem, bool configReady)
       {
-         if (subPresenterItem == SimulationItems.BuildConfiguration)
+         if (subPresenterItem == SimulationItems.SimulationConfiguration)
             return;
 
          View.SetControlEnabled(subPresenterItem, configReady);
       }
 
-      protected IEditSimulationConfigurationPresenter BuildConfigurationPresenter => PresenterAt(SimulationItems.BuildConfiguration);
+      protected IEditSimulationConfigurationPresenter BuildConfigurationPresenter => PresenterAt(SimulationItems.SimulationConfiguration);
 
       protected MoleculeStartValuesBuildingBlock SelectedMoleculeStartValues => MoleculeStartValuesPresenter.StartValues;
 

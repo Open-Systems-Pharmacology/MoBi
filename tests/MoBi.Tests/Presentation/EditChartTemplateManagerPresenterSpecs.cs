@@ -28,7 +28,7 @@ namespace MoBi.Presentation
          _chartTemplateManagerPresenter = A.Fake<IChartTemplateManagerPresenter>();
          _chartTemplatingTask = A.Fake<IChartTemplatingTask>();
          _cloneManager = A.Fake<ICloneManager>();
-         _simulationSettings = A.Fake<SimulationSettings>();
+         _simulationSettings = new SimulationSettings();
 
          sut = new EditChartTemplateManagerPresenter(_view, _chartTemplateManagerPresenter, _cloneManager, _chartTemplatingTask);
          sut.InitializeWith(A.Fake<ICommandCollector>());
@@ -47,7 +47,7 @@ namespace MoBi.Presentation
          base.Context();
          _template1 = new CurveChartTemplate();
          _template1Clone = new CurveChartTemplate();
-         A.CallTo(() => _simulationSettings.ChartTemplates).Returns(new List<CurveChartTemplate>{_template1});
+         _simulationSettings.AddChartTemplate(_template1);
 
          A.CallTo(() => _cloneManager.Clone(_template1)).Returns(_template1Clone);
          A.CallTo(() => _chartTemplateManagerPresenter.EditTemplates(A<IEnumerable<CurveChartTemplate>>._))

@@ -90,8 +90,6 @@ namespace MoBi.Core
 
          registerComparers(container);
 
-         registerCommitTasks(container);
-
          registerConverters(container);
       }
 
@@ -126,16 +124,6 @@ namespace MoBi.Core
             scan.AssemblyContainingType<CoreRegister>();
             scan.IncludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
             scan.WithConvention<RegisterTypeConvention<IDiffBuilder>>();
-         });
-      }
-
-      private static void registerCommitTasks(IContainer container)
-      {
-         container.AddScanner(scan =>
-         {
-            scan.AssemblyContainingType<CoreRegister>();
-            scan.IncludeNamespaceContainingType<ICreateCommitChangesToBuildingBlockCommandTask>();
-            scan.WithConvention(new RegisterTypeConvention<ICreateCommitChangesToBuildingBlockCommandTask>(registerWithDefaultConvention: false));
          });
       }
 

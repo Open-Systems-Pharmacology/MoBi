@@ -25,7 +25,8 @@ namespace MoBi.Core.Commands
          _context = A.Fake<IMoBiContext>();
          _liver = new Container().WithName("LIVER");
          _simulation = new MoBiSimulation();
-         _simulation.Configuration = new SimulationConfiguration();
+         _simulation.Configuration = new SimulationConfiguration { Module = new Module() };
+         _simulation.Model = new Model();
          _simulation.Model.Root = new Container().WithContainerType(ContainerType.Simulation);
          _simulation.Model.Root.Add(_liver);
          _moleculeStartValues = new MoleculeStartValuesBuildingBlock();
@@ -45,7 +46,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_reseting_the_molecule_values_to_default_from_start_values : concern_for_ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand
+   public class When_resetting_the_molecule_values_to_default_from_start_values : concern_for_ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand
    {
       private MoleculeStartValue _msv1;
       private MoleculeStartValue _msv2;

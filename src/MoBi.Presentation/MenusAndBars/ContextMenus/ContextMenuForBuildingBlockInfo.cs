@@ -72,10 +72,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createCommitItem(IBuildingBlock buildingBlock, IMoBiSimulation simulation)
       {
          var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.Commit)
-            .WithIcon(ApplicationIcons.Commit)
-            .WithCommand<CommitSimulationChangesToBuildingBlockUICommand>(_container);
+            .WithIcon(ApplicationIcons.Commit);
+            // .WithCommand<CommitSimulationChangesToBuildingBlockUICommand>(_container);
 
-         ((CommitSimulationChangesToBuildingBlockUICommand) item.Command).Initialize(buildingBlock, simulation);
+         // ((CommitSimulationChangesToBuildingBlockUICommand) item.Command).Initialize(buildingBlock, simulation);
          return item;
       }
    }

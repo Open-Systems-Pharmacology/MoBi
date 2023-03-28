@@ -549,7 +549,7 @@ namespace MoBi.Presentation.Tasks
    public class When_creating_a_molecule_start_value_for_simulation_based_on_a_selected_template : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValuesBuildingBlock _result;
-      private SimulationConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
       private MoleculeStartValuesBuildingBlock _templateStartValuesBuildingBlock;
       private MoleculeStartValuesBuildingBlock _newMoleculeStartValues;
       private MoleculeStartValue _newEndogenousValue;
@@ -560,8 +560,10 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _buildConfiguration = new SimulationConfiguration();
          _templateStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _simulationConfiguration = new SimulationConfiguration {Module = new Module()};
+         _simulationConfiguration.Module.AddMoleculeStartValueBlock(_templateStartValuesBuildingBlock);
+         
          _newMoleculeStartValues = new MoleculeStartValuesBuildingBlock();
 
          // _buildConfiguration.MoleculeStartValuesInfo = new MoleculeStartValuesBuildingBlockInfo {BuildingBlock = _templateStartValuesBuildingBlock, TemplateBuildingBlock = _templateStartValuesBuildingBlock};
@@ -581,7 +583,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _result = sut.CreateStartValuesForSimulation(_buildConfiguration);
+         _result = sut.CreateStartValuesForSimulation(_simulationConfiguration);
       }
 
       [Observation]

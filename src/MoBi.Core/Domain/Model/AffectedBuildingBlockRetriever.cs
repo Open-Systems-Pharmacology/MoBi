@@ -24,7 +24,7 @@ namespace MoBi.Core.Domain.Model
 
       public IBuildingBlockInfo RetrieveFor(object changedObject, IMoBiSimulation affectedSimulation)
       {
-         //TODO
+         //TODO SIMULATION_CONFIGURATION
          /*var affectedBuildConfiguration = affectedSimulation.MoBiBuildConfiguration;
 
          var changedQuantity = changedObject as IQuantity;

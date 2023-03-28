@@ -25,19 +25,19 @@ namespace MoBi.Engine.Sbml
             {
                 var rule = model.getRule(i);
                 if (rule.isAssignment())
-                    CreateAssignmentRule(rule, model);
+                    createAssignmentRule(rule, model);
                 if (rule.isRate())
-                    CreateRateRule(rule, model);
+                    createRateRule(rule, model);
                 if (rule.isAlgebraic())
-                    CreateAlgebraicRule(model);
+                    createAlgebraicRule(model);
             }
             AddToProject();
         }
 
        /// <summary>
-       ///     The creation of Algrebraic Rules is not supported. 
+       ///     The creation of Algebraic Rules is not supported. 
        /// </summary>
-       private void CreateAlgebraicRule(Model model)
+       private void createAlgebraicRule(Model model)
         {
             var msg = new NotificationMessage(GetMainSpatialStructure(model), MessageOrigin.All, null, NotificationType.Warning)
             {
@@ -50,7 +50,7 @@ namespace MoBi.Engine.Sbml
        ///     Creates a Rate Rule by setting the formula of the affected Species/Compartment/Parameter
        ///     to the Rule's one. 
        /// </summary>
-       private void CreateRateRule(Rule rule, Model model)
+       private void createRateRule(Rule rule, Model model)
         {
             if (IsParameter(rule.getVariable()))
             {
@@ -68,7 +68,7 @@ namespace MoBi.Engine.Sbml
 
             if (IsSpeciesAssignment(rule.getVariable()))
             {
-                DoSpeciesAssignment(rule);
+                doSpeciesAssignment(rule);
             }
             
             CheckSpeciesReferences(rule.getId(), rule.getVariable(), model);
@@ -77,7 +77,7 @@ namespace MoBi.Engine.Sbml
        /// <summary>
        ///     Creates a Assignment Rule
        /// </summary>
-       private void CreateAssignmentRule(Rule rule, Model model)
+       private void createAssignmentRule(Rule rule, Model model)
         {
             if (IsParameter(rule.getVariable()))
             {
@@ -102,7 +102,7 @@ namespace MoBi.Engine.Sbml
         /// <summary>
         ///     Creates a reaction product with the default stoichiometry.
         /// </summary>
-        private static IReactionPartnerBuilder CreateProduct(string molculeName)
+        private static IReactionPartnerBuilder createProduct(string molculeName)
         {
             IReactionPartnerBuilder productBuilder = new ReactionPartnerBuilder
             {
@@ -116,7 +116,7 @@ namespace MoBi.Engine.Sbml
         /// <summary>
         ///     This is for the special Species Assignment in a RateRule.
         /// </summary>
-        private void DoSpeciesAssignment(Rule rule)
+        private void doSpeciesAssignment(Rule rule)
         {
             var formula = _astHandler.Parse(rule.getMath(), rule.getVariable(), true, _sbmlProject,_sbmlInformation);
             if (formula == null) return;
@@ -124,7 +124,7 @@ namespace MoBi.Engine.Sbml
                 .WithName(SBMLConstants.RATE_RULE + rule.getMetaId())
                 .WithFormula(formula);
 
-            var product = CreateProduct(rule.getVariable());
+            var product = createProduct(rule.getVariable());
             reactionBuilder.AddProduct(product);
 
             var rbb = GetMainReactionBuildingBlock();
