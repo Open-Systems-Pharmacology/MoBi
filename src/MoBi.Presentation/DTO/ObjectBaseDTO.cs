@@ -149,16 +149,4 @@ namespace MoBi.Presentation.DTO
    public class UserDefinedNodeViewItem : ObjectBaseDTO
    {
    }
-
-   public class BuildingBlockInfoViewItem : ObjectBaseDTO
-   {
-      public IMoBiSimulation Simulation { get; }
-      public IBuildingBlockInfo BuildingBlockInfo { get; }
-
-      public BuildingBlockInfoViewItem(IBuildingBlockInfo buildingBlockInfoInfo, IMoBiSimulation simulation)
-      {
-         BuildingBlockInfo = buildingBlockInfoInfo;
-         Simulation = simulation;
-      }
-   }
 }

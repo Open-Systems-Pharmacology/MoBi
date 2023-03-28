@@ -17,12 +17,6 @@ namespace MoBi.Core.Services
       ///    This step is required for example after loading a project from file
       /// </summary>
       void UpdateTemplatesReferencesIn(IMoBiSimulation simulation, IMoBiProject project);
-
-      /// <summary>
-      ///    Ensures that the <paramref name="buildConfiguration"/> is referencing template building blocks defined in the <paramref name="project" />.
-      ///    This step is required for example after loading a project from file
-      /// </summary>
-      void UpdateTemplatesReferencesIn(IMoBiBuildConfiguration buildConfiguration, IMoBiProject project);
      
       /// <summary>
       ///    Updates the references to the <paramref name="templateBuildingBlock" /> in all simulations using the template.
@@ -44,14 +38,6 @@ namespace MoBi.Core.Services
       {
          //TODO SIMULATION_CONFIGURATION
          // UpdateTemplatesReferencesIn(simulation.MoBiBuildConfiguration, project);
-      }
-
-      public void UpdateTemplatesReferencesIn(IMoBiBuildConfiguration buildConfiguration, IMoBiProject project)
-      {
-         foreach (var buildingBlockInfo in buildConfiguration.AllBuildingBlockInfos())
-         {
-            buildingBlockInfo.UntypedTemplateBuildingBlock = project.TemplateById(buildingBlockInfo.TemplateBuildingBlockId);
-         }
       }
 
       public void UpdateTemplateReference(IMoBiProject project, IBuildingBlock templateBuildingBlock)

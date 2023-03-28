@@ -79,17 +79,6 @@ namespace MoBi.Presentation.Presenter
 
       protected ISelectAndEditMoleculesStartValuesPresenter MoleculeStartValuesPresenter => PresenterAt(SimulationItems.MoleculeStartValues);
 
-      protected void UpdateStartValueInfo<TBuildingBlock, TStartValue>(IBuildingBlockInfo<TBuildingBlock> info, TBuildingBlock selectedBuildingBlock)
-         where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
-         where TStartValue : class, IStartValue
-      {
-         info.SimulationChanges += (selectedBuildingBlock.Version - info.TemplateBuildingBlock.Version);
-         if (changedDuringCreation(info.TemplateBuildingBlock, selectedBuildingBlock))
-            info.SimulationChanges++;
-
-         info.BuildingBlock = selectedBuildingBlock;
-      }
-
       private bool changedDuringCreation<T>(IStartValuesBuildingBlock<T> templateBuildingBlock, IStartValuesBuildingBlock<T> buildingBlock) where T : class, IStartValue
       {
          if (templateBuildingBlock.Count() != buildingBlock.Count())

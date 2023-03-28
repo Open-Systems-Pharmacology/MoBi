@@ -28,7 +28,6 @@ namespace MoBi.IntegrationTests
    public class SBMLTestSuiteSpecs : ContextForSBMLIntegration<ISbmlTask>
    {
       private static string _directory;
-      private IBuildConfigurationFactory _buildConfigurationFactory;
       private IModelConstructor _modelConstructor;
       private ISimModelExporter _simModelExporter;
       private IDataRepositoryExportTask _dateRepositoryTask;
@@ -36,8 +35,6 @@ namespace MoBi.IntegrationTests
       protected override void Context()
       {
          base.Context();
-
-         _buildConfigurationFactory = IoC.Resolve<IBuildConfigurationFactory>();
          _modelConstructor = IoC.Resolve<IModelConstructor>();
          _simModelExporter = IoC.Resolve<ISimModelExporter>();
          _dateRepositoryTask = IoC.Resolve<IDataRepositoryExportTask>();

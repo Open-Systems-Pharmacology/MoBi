@@ -14,7 +14,6 @@ namespace MoBi.Core.Commands
       private IMoBiSimulation _simulation;
       private TBuildingBlock _buildingBlockFromSimulation;
       private IMoBiFormulaTask _formulaTask;
-      private IAffectedBuildingBlockRetriever _affectedBuildingBlockRetriever;
 
       public ResetFixedConstantParametersToDefaultInSimulationCommand(IMoBiSimulation simulation, TBuildingBlock buildingBlockFromSimulation)
       {
@@ -25,7 +24,6 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          _formulaTask = context.Resolve<IMoBiFormulaTask>();
-         _affectedBuildingBlockRetriever = context.Resolve<IAffectedBuildingBlockRetriever>();
 
          var fixedParameters = fixedConstantParametersFromBuildingBlock();
          resetFixedParametersInSimulation(fixedParameters);
@@ -49,10 +47,12 @@ namespace MoBi.Core.Commands
          return parameter.IsFixedValue && parameter.Formula.IsConstant() && isFromBuildingBlock(parameter);
       }
 
-      private bool isFromBuildingBlock(IParameter paramter)
+      private bool isFromBuildingBlock(IParameter parameter)
       {
-         var buildingBlockInfo = _affectedBuildingBlockRetriever.RetrieveFor(paramter, _simulation);
-         return buildingBlockInfo != null && Equals(buildingBlockInfo.UntypedBuildingBlock, _buildingBlockFromSimulation);
+         //TODO SIMULATION_CONFIGURATION
+         return false;
+         // var buildingBlockInfo = _affectedBuildingBlockRetriever.RetrieveFor(paramter, _simulation);
+         // return buildingBlockInfo != null && Equals(buildingBlockInfo.UntypedBuildingBlock, _buildingBlockFromSimulation);
       }
 
       private void resetQuantity(IQuantity quantity)
@@ -65,7 +65,6 @@ namespace MoBi.Core.Commands
       {
          _simulation = null;
          _formulaTask = null;
-         _affectedBuildingBlockRetriever = null;
          _buildingBlockFromSimulation = null;
       }
    }

@@ -29,7 +29,6 @@ namespace MoBi.Core.Service
       protected IMoBiContext _context;
       protected ISerializationTask _serializationTask;
       protected IDialogCreator _dialogCreator;
-      protected IBuildConfigurationToMoBiBuildconfigurationMapper _buildConfigurationMapper;
       protected INameCorrector _nameCorrector;
       protected IMRUProvider _mruProvider;
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
@@ -45,7 +44,6 @@ namespace MoBi.Core.Service
          _context = A.Fake<IMoBiContext>();
          _serializationTask = A.Fake<ISerializationTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _buildConfigurationMapper = A.Fake<IBuildConfigurationToMoBiBuildconfigurationMapper>();
          _nameCorrector = A.Fake<INameCorrector>();
          _mruProvider = A.Fake<IMRUProvider>();
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
@@ -64,8 +62,6 @@ namespace MoBi.Core.Service
       private IMoBiProject _project;
       private SimulationTransfer _simulationTransfer;
       private IMoBiSimulation _simulation;
-      private ReactionBuildingBlockInfo _existingBBInfo;
-      private PassiveTransportBuildingBlockInfo _newBBInfo;
       private IPassiveTransportBuildingBlock _newBuildingBlock;
       private IMoBiReactionBuildingBlock _existingBuildingBlock;
 
@@ -79,8 +75,8 @@ namespace MoBi.Core.Service
          _simulationTransfer.Simulation = _simulation;
          _newBuildingBlock = A.Fake<IPassiveTransportBuildingBlock>();
          _existingBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithId("Existing");
-         _existingBBInfo = new ReactionBuildingBlockInfo() {BuildingBlock = _existingBuildingBlock, TemplateBuildingBlockId = "Existing"};
-         _newBBInfo = new PassiveTransportBuildingBlockInfo() {BuildingBlock = _newBuildingBlock, TemplateBuildingBlockId = "New"};
+         // _existingBBInfo = new ReactionBuildingBlockInfo() {BuildingBlock = _existingBuildingBlock, TemplateBuildingBlockId = "Existing"};
+         // _newBBInfo = new PassiveTransportBuildingBlockInfo() {BuildingBlock = _newBuildingBlock, TemplateBuildingBlockId = "New"};
 
          A.CallTo(() => _project.ReactionBlockCollection).Returns(new[] {_existingBuildingBlock});
          var simulationConfiguration = new SimulationConfiguration();
@@ -128,13 +124,6 @@ namespace MoBi.Core.Service
       public void should_clone_the_new_buidingblock()
       {
          A.CallTo(() => _cloneManager.CloneBuildingBlock(_newBuildingBlock)).MustHaveHappened();
-      }
-
-      [Observation]
-      [Ignore("46-7112: Problem with duplicate id")]
-      public void should_connect_the_existing_building_block()
-      {
-         _existingBBInfo.UntypedTemplateBuildingBlock.ShouldBeEqualTo(_existingBuildingBlock);
       }
    }
 

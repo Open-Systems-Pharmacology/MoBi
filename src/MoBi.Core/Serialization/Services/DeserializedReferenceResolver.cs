@@ -44,10 +44,6 @@ namespace MoBi.Core.Serialization.Services
                updateOutputMappings(sim, simulationTransfer.OutputMappings);
                resolveReferences(sim);
                break;
-            case IMoBiBuildConfiguration buildConfiguration:
-               _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(buildConfiguration, project);
-               resolveReferences(buildConfiguration.MoBiSpatialStructure);
-               break;
             case IModel model:
                resolveReferences(model);
                break;

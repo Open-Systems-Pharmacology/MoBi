@@ -26,7 +26,6 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(IBuildingBlock buildingBlock);
       ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock);
       ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder);
-      ITreeNode CreateFor(IBuildingBlockInfo buildingBlockInfo);
       ITreeNode CreateForFavorites();
       ITreeNode CreateForUserDefined();
    }
@@ -54,6 +53,8 @@ namespace MoBi.Presentation.Nodes
          var simNode = new SimulationNode(classifiableSimulation);
          var simulation = classifiableSimulation.Simulation;
 
+
+         //TODO SIMULATION_CONFIGURATION
          // if (simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks())
          //    simNode.Icon = ApplicationIcons.SimulationRed;
 
@@ -119,10 +120,6 @@ namespace MoBi.Presentation.Nodes
          return createFor(moleculeBuilder);
       }
 
-      public ITreeNode CreateFor(IBuildingBlockInfo buildingBlockInfo)
-      {
-         return new BuildingBlockInfoNode(buildingBlockInfo);
-      }
 
       private ITreeNode createFor<T>(T objectBase) where T : class, IObjectBase
       {

@@ -21,29 +21,25 @@ namespace MoBi.Core.Service
    public abstract class concern_for_SimulationUpdateTask : ContextSpecification<ISimulationUpdateTask>
    {
       protected IModelConstructor _modelConstructor;
-      protected IBuildConfigurationFactory _buildConfigurationFactory;
       protected IObjectPathFactory _objectPathFactory;
       private IMoBiContext _context;
       private IMoBiApplicationController _applicationController;
       protected IConfigureSimulationPresenter _configurePresenter;
       private IDimensionValidator _validationVisitor;
       protected IEntityPathResolver _entityPathResolver;
-      protected IAffectedBuildingBlockRetriever _affectedBuildingBlockRetriever;
 
       protected override void Context()
       {
          _modelConstructor = A.Fake<IModelConstructor>();
-         _buildConfigurationFactory = A.Fake<IBuildConfigurationFactory>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
          _context = A.Fake<IMoBiContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _configurePresenter = A.Fake<IConfigureSimulationPresenter>();
          _validationVisitor = A.Fake<IDimensionValidator>();
-         _affectedBuildingBlockRetriever = A.Fake<IAffectedBuildingBlockRetriever>();
          _entityPathResolver = new EntityPathResolverForSpecs();
          A.CallTo(() => _applicationController.Start<IConfigureSimulationPresenter>()).Returns(_configurePresenter);
 
-         sut = new SimulationUpdateTask(_modelConstructor, _buildConfigurationFactory, _context, _applicationController, _validationVisitor, _entityPathResolver, _affectedBuildingBlockRetriever);
+         sut = new SimulationUpdateTask(_modelConstructor, _context, _applicationController, _validationVisitor, _entityPathResolver);
       }
    }
 
@@ -122,7 +118,6 @@ namespace MoBi.Core.Service
       private IBuildingBlock _templateBuildingBlock;
       private IParameter _originalParameterFixedNotBelongingToTemplate;
       private IParameter _originalParameterFixedUpdatedByTemplate;
-      private IBuildingBlockInfo _buildingBlockInfoTemplate;
       private IParameter _updatedParameterFixedNotBelongingToTemplate;
       private IParameter _updatedParameterFixedUpdatedByTemplate;
 
@@ -142,8 +137,6 @@ namespace MoBi.Core.Service
          _originalParameterFixedUpdatedByTemplate.Value = 8;
 
 
-         _buildingBlockInfoTemplate = A.Fake<IBuildingBlockInfo>();
-         A.CallTo(() => _buildingBlockInfoTemplate.UntypedTemplateBuildingBlock).Returns(_templateBuildingBlock);
 
          //simulates the update command
          var container = createRootContainer();
@@ -151,8 +144,6 @@ namespace MoBi.Core.Service
          _updatedParameterFixedNotBelongingToTemplate = container.Parameter(_originalParameterFixedNotBelongingToTemplate.Name);
          _updatedParameterFixedUpdatedByTemplate = container.Parameter(_originalParameterFixedUpdatedByTemplate.Name);
 
-         A.CallTo(() => _affectedBuildingBlockRetriever.RetrieveFor(_updatedParameterFixedUpdatedByTemplate, _simulationToUpdate)).Returns(_buildingBlockInfoTemplate);
-         A.CallTo(() => _affectedBuildingBlockRetriever.RetrieveFor(_updatedParameterFixedNotBelongingToTemplate, _simulationToUpdate)).Returns(A.Fake<IBuildingBlockInfo>());
 
          A.CallTo(() => _simulationToUpdate.Update(A<SimulationConfiguration>._, A<IModel>._)).Invokes(x => { _simulationToUpdate.Model.Root = container; });
       }
@@ -170,13 +161,6 @@ namespace MoBi.Core.Service
       protected override void Because()
       {
          sut.UpdateSimulationFrom(_simulationToUpdate, _templateBuildingBlock);
-      }
-
-      [Observation]
-      public void should_keep_the_quantity_not_affected_by_the_updated_as_marked_with_a_fixed_value()
-      {
-         _updatedParameterFixedNotBelongingToTemplate.Value.ShouldBeEqualTo(_originalParameterFixedNotBelongingToTemplate.Value);
-         _updatedParameterFixedNotBelongingToTemplate.IsFixedValue.ShouldBeTrue();
       }
 
       [Observation]

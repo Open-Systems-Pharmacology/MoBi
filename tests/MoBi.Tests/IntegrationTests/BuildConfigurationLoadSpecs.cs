@@ -1,6 +1,6 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Serialization.Exchange;
 
 namespace MoBi.IntegrationTests
 {
@@ -11,10 +11,10 @@ namespace MoBi.IntegrationTests
    public class When_loading_a_pkml_file_created_in_pksim : concern_for_BuildConfigurationLoad
    {
       [Observation]
-      public void should_be_able_to_load_the_build_configuraion()
+      public void should_be_able_to_load_the_build_configuration()
       {
-         var buildConfiguration = LoadPKML<IMoBiBuildConfiguration>("warnings");
-         buildConfiguration.ShouldNotBeNull();
+         var simulationTransfer = LoadPKML<SimulationTransfer>("warnings");
+         simulationTransfer.Simulation.Configuration.ShouldNotBeNull();
       }
    }
 }
