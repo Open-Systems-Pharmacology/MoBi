@@ -35,16 +35,8 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       protected internal void CreateParameterStartValuesBuildingBlock(Model model)
       {
-         var parameterStartValuesCreator = IoC.Resolve<IParameterStartValuesCreator>();
-         var ss = GetMainSpatialStructure(model);
-         var mb = GetMainMoleculeBuildingBlock();
-         if (ss == null || mb == null) return;
-
-         
-         // var psvBb = parameterStartValuesCreator.CreateFrom(GetMainSpatialStructure(model), GetMainMoleculeBuildingBlock())
-         //    .WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB)
-         //    .WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
-         // _command.AddCommand(new AddBuildingBlockCommand<ParameterStartValuesBuildingBlock>(psvBb).Run(_context));
+         var psvBb = new ParameterStartValuesBuildingBlock().WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB).WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
+         _command.AddCommand(new AddBuildingBlockCommand<ParameterStartValuesBuildingBlock>(psvBb).Run(_context));
       }
 
       //For Rate Rule only

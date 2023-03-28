@@ -17,7 +17,7 @@ namespace MoBi.Core.Domain.Services
       IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model);
 
       /// <summary>
-      ///    Creates and returns a new <see cref="IMoBiSimulation" /> with an empty <see cref="IMoBiBuildConfiguration" />
+      ///    Creates and returns a new <see cref="IMoBiSimulation" />
       /// </summary>
       IMoBiSimulation Create();
    }

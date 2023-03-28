@@ -38,23 +38,19 @@ namespace MoBi.Presentation.Tasks
    internal class SimulationUpdateTask : ISimulationUpdateTask
    {
       private readonly IModelConstructor _modelConstructor;
-      private readonly IBuildConfigurationFactory _buildConfigurationFactory;
       private readonly IMoBiContext _context;
       private readonly IMoBiApplicationController _applicationController;
       private readonly IDimensionValidator _dimensionValidator;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly IAffectedBuildingBlockRetriever _affectedBuildingBlockRetriever;
 
-      public SimulationUpdateTask(IModelConstructor modelConstructor, IBuildConfigurationFactory buildConfigurationFactory,
-         IMoBiContext context, IMoBiApplicationController applicationController, IDimensionValidator dimensionValidator, IEntityPathResolver entityPathResolver, IAffectedBuildingBlockRetriever affectedBuildingBlockRetriever)
+      public SimulationUpdateTask(IModelConstructor modelConstructor, IMoBiContext context, IMoBiApplicationController applicationController, 
+         IDimensionValidator dimensionValidator, IEntityPathResolver entityPathResolver)
       {
          _modelConstructor = modelConstructor;
-         _buildConfigurationFactory = buildConfigurationFactory;
          _context = context;
          _applicationController = applicationController;
          _dimensionValidator = dimensionValidator;
          _entityPathResolver = entityPathResolver;
-         _affectedBuildingBlockRetriever = affectedBuildingBlockRetriever;
       }
 
       public ICommand UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock)
@@ -144,13 +140,16 @@ namespace MoBi.Presentation.Tasks
                continue;
 
             //building block corresponding to quantity could not be found. That should never happen
-            var affectedBuildingBlock = _affectedBuildingBlockRetriever.RetrieveFor(simulationQuantity, simulationToUpdate);
-            if (affectedBuildingBlock?.UntypedTemplateBuildingBlock == null)
-               continue;
 
-            //The quantity previously fixed is part of the template building block. We should not reset the changes
-            if (Equals(affectedBuildingBlock.UntypedTemplateBuildingBlock, templateBuildingBlock))
-               continue;
+            continue;
+            //TODO SIMULATION_CONFIGURATION
+            // var affectedBuildingBlock = _affectedBuildingBlockRetriever.RetrieveFor(simulationQuantity, simulationToUpdate);
+            // if (affectedBuildingBlock?.UntypedTemplateBuildingBlock == null)
+            //    continue;
+            //
+            // //The quantity previously fixed is part of the template building block. We should not reset the changes
+            // if (Equals(affectedBuildingBlock.UntypedTemplateBuildingBlock, templateBuildingBlock))
+            //    continue;
 
             synchronizeQuantities(fixedValueQuantity.Value, simulationQuantity);
          }

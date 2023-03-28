@@ -99,7 +99,7 @@ namespace MoBi.Presentation.Presenter
          _simulationConfiguration.Individual = _selectIndividual.SelectedBuildingBlock;
 
          ViewChanged();
-         // TODO these are not assignable atm
+         // TODO these are not assignable atm SIMULATION_CONFIGURATION
          // _simulationConfiguration.ParameterStartValues = _selectParameterStartValues.SelectedBuildingBlock;
          // _simulationConfiguration.MoleculeStartValues = _selectParameterStartValues.SelectedBuildingBlock;
       }

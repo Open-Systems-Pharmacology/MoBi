@@ -4,6 +4,8 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
+using MoBi.Helpers;
+using MoBi.IntegrationTests;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
@@ -17,7 +19,7 @@ using OSPSuite.FuncParser;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_DimensionValidator : ContextSpecification<IDimensionValidator>
+   public abstract class concern_for_DimensionValidator : ContextForIntegration<IDimensionValidator>
    {
       protected ObjectPathFactory _pathFactory;
       protected IUserSettings _userSettings;
@@ -28,15 +30,13 @@ namespace MoBi.Core
          _pathFactory = new ObjectPathFactory(new AliasCreator());
          _userSettings = A.Fake<IUserSettings>();
          _userSettings.CheckDimensions = true;
-         _buildConfiguration = new SimulationConfiguration();
+         _buildConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
 
-         A.CallTo(() => _buildConfiguration.BuilderFor(A<IObjectBase>._)).ReturnsLazily(x => x.GetArgument<IObjectBase>(0));
-         
          sut = new DimensionValidator(new DimensionParser(), _pathFactory, _userSettings);
       }
    }
 
-   internal class When_validating_a_parameter_from_pksim_that_should_not_be_shown_in_the_default_validaton : concern_for_DimensionValidator
+   internal class When_validating_a_parameter_from_pksim_that_should_not_be_shown_in_the_default_validation : concern_for_DimensionValidator
    {
       private IContainer _root;
       private ValidationResult _result;
@@ -88,13 +88,13 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_retrurn_valid()
+      public void should_return_valid()
       {
          _result.ValidationState.ShouldBeEqualTo(ValidationState.Valid, _result.Messages.Select(x=>x.Text).ToString("\n"));
       }
    }
 
-   internal class When_validating_a_parameter_whose_dimension_can_not_be_calculatetd : concern_for_DimensionValidator
+   internal class When_validating_a_parameter_whose_dimension_can_not_be_calculated : concern_for_DimensionValidator
    {
       private IContainer _root;
       private ValidationResult _result;
@@ -127,7 +127,7 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_retrurn_valid()
+      public void should_return_valid()
       {
          _result.ValidationState.ShouldBeEqualTo(ValidationState.Valid);
       }
@@ -166,7 +166,7 @@ namespace MoBi.Core
       }
    }
 
-   public class When_validating_an_invalide_entity : concern_for_DimensionValidator
+   public class When_validating_an_invalid_entity : concern_for_DimensionValidator
    {
       private IContainer _root;
       private ValidationResult _result;
@@ -175,9 +175,13 @@ namespace MoBi.Core
       {
          base.Context();
          _root = new Container().WithName("Root");
-         new Parameter().WithName("").WithParentContainer(_root)
+
+         
+         var parameter = new Parameter().WithName("").WithParentContainer(_root)
             .WithFormula(new ExplicitFormula().WithFormulaString("111"))
             .WithDimension(new Dimension(new BaseDimensionRepresentation(), "Dimensionless", ""));
+
+         _buildConfiguration.AddBuilderReference(parameter, parameter);
       }
 
       protected override void Because()
@@ -241,9 +245,13 @@ namespace MoBi.Core
          base.Context();
          _root = new Container().WithName("Root");
          var dimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, "Height", "m");
-         new Parameter().WithName("Parameter").WithParentContainer(_root)
+
+         var parameter = new Parameter().WithName("Parameter").WithParentContainer(_root)
             .WithFormula(new ExplicitFormula().WithFormulaString("1+1").WithDimension(dimension))
             .WithDimension(dimension);
+
+
+         _buildConfiguration.AddBuilderReference(parameter, parameter);
       }
 
       protected override void Because()
@@ -288,6 +296,8 @@ namespace MoBi.Core
          _para.Formula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, a).WithDimension(dimension1));
          _para.Formula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, b).WithDimension(dimension1));
          _para.Formula.ResolveObjectPathsFor(_para);
+
+         _buildConfiguration.AddBuilderReference(_para, _para);
       }
 
       protected override void Because()
@@ -337,6 +347,8 @@ namespace MoBi.Core
          _para.Formula.ResolveObjectPathsFor(_para);
 
          _userSettings.ShowCannotCalcErrors = true;
+
+         _buildConfiguration.AddBuilderReference(_para, _para);
       }
 
       protected override void Because()
@@ -368,11 +380,11 @@ namespace MoBi.Core
          base.Context();
          _root = new Container().WithName("Root");
          var dimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, "Height", "m");
-         var rhsdimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1, TimeExponent = -1}, "Height per Time", "m");
+         var rhsDimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1, TimeExponent = -1}, "Height per Time", "m");
 
          _para = new Parameter().WithName("Parameter").WithParentContainer(_root)
             .WithFormula(new ExplicitFormula().WithFormulaString("a").WithDimension(dimension))
-            .WithRHS(new ExplicitFormula().WithFormulaString("b").WithDimension(rhsdimension))
+            .WithRHS(new ExplicitFormula().WithFormulaString("b").WithDimension(rhsDimension))
             .WithDimension(dimension);
 
          var a = new Parameter().WithName("a").WithParentContainer(_root)
@@ -380,11 +392,11 @@ namespace MoBi.Core
             .WithDimension(dimension);
 
          var b = new Parameter().WithName("b").WithParentContainer(_root)
-            .WithFormula(new ExplicitFormula().WithFormulaString("2").WithDimension(rhsdimension))
-            .WithDimension(rhsdimension);
+            .WithFormula(new ExplicitFormula().WithFormulaString("2").WithDimension(rhsDimension))
+            .WithDimension(rhsDimension);
 
          _para.Formula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, a).WithDimension(dimension));
-         _para.RHSFormula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, b).WithDimension(rhsdimension));
+         _para.RHSFormula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, b).WithDimension(rhsDimension));
          _para.Formula.ResolveObjectPathsFor(_para);
          _para.RHSFormula.ResolveObjectPathsFor(_para);
       }
@@ -432,6 +444,8 @@ namespace MoBi.Core
          _para.RHSFormula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, b).WithDimension(rhsdimension1));
          _para.Formula.ResolveObjectPathsFor(_para);
          _para.RHSFormula.ResolveObjectPathsFor(_para);
+
+         _buildConfiguration.AddBuilderReference(_para, _para);
       }
 
       protected override void Because()

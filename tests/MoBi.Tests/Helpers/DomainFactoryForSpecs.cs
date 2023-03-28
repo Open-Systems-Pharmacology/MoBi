@@ -13,7 +13,6 @@ namespace MoBi.Helpers
    {
       public static SimulationConfiguration CreateDefaultConfiguration()
       {
-         // var buildConfigurationFactory = IoC.Resolve<IBuildConfigurationFactory>();
          var buildConfiguration = new SimulationConfiguration { Module = new Module() };
 
          buildConfiguration.Module.SpatialStructure = CreateDefaultSpatialStructure();
@@ -29,8 +28,8 @@ namespace MoBi.Helpers
 
       public static IMoBiSpatialStructure CreateDefaultSpatialStructure(string buildingBlockName = "Spatial Structure")
       {
-         var spatialStructrureFactory = IoC.Resolve<IMoBiSpatialStructureFactory>();
-         return spatialStructrureFactory.CreateDefault(buildingBlockName);
+         var spatialStructureFactory = IoC.Resolve<IMoBiSpatialStructureFactory>();
+         return spatialStructureFactory.CreateDefault(buildingBlockName);
       }
 
       public static IMoBiReactionBuildingBlock CreateDefaultReactions(string buildingBlockName = "Reactions")

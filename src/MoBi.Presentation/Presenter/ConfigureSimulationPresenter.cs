@@ -37,7 +37,7 @@ namespace MoBi.Presentation.Presenter
          //we create a build configuration where all current building blocks are referencing template building blocks
          // SimulationConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.Configuration, templateBuildingBlock);
 
-         // TODO should this be a clone?
+         // TODO should this be a clone? SIMULATION_CONFIGURATION
          SimulationConfiguration = simulation.Configuration;
 
          var tmpSimulation = new MoBiSimulation()

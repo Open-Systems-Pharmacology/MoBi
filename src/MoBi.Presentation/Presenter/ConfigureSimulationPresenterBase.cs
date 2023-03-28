@@ -63,13 +63,13 @@ namespace MoBi.Presentation.Presenter
 
       private void setControlEnabled(ISubPresenterItem subPresenterItem, bool configReady)
       {
-         if (subPresenterItem == SimulationItems.BuildConfiguration)
+         if (subPresenterItem == SimulationItems.SimulationConfiguration)
             return;
 
          View.SetControlEnabled(subPresenterItem, configReady);
       }
 
-      protected IEditSimulationConfigurationPresenter BuildConfigurationPresenter => PresenterAt(SimulationItems.BuildConfiguration);
+      protected IEditSimulationConfigurationPresenter BuildConfigurationPresenter => PresenterAt(SimulationItems.SimulationConfiguration);
 
       protected MoleculeStartValuesBuildingBlock SelectedMoleculeStartValues => MoleculeStartValuesPresenter.StartValues;
 
@@ -78,17 +78,6 @@ namespace MoBi.Presentation.Presenter
       protected ISelectAndEditParameterStartValuesPresenter ParameterStartValuesPresenter => PresenterAt(SimulationItems.ParameterStartValues);
 
       protected ISelectAndEditMoleculesStartValuesPresenter MoleculeStartValuesPresenter => PresenterAt(SimulationItems.MoleculeStartValues);
-
-      protected void UpdateStartValueInfo<TBuildingBlock, TStartValue>(IBuildingBlockInfo<TBuildingBlock> info, TBuildingBlock selectedBuildingBlock)
-         where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
-         where TStartValue : class, IStartValue
-      {
-         info.SimulationChanges += (selectedBuildingBlock.Version - info.TemplateBuildingBlock.Version);
-         if (changedDuringCreation(info.TemplateBuildingBlock, selectedBuildingBlock))
-            info.SimulationChanges++;
-
-         info.BuildingBlock = selectedBuildingBlock;
-      }
 
       private bool changedDuringCreation<T>(IStartValuesBuildingBlock<T> templateBuildingBlock, IStartValuesBuildingBlock<T> buildingBlock) where T : class, IStartValue
       {

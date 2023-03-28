@@ -15,16 +15,14 @@ namespace MoBi.BatchTool.Runners
    {
       private readonly IBatchLogger _logger;
       private readonly IModelConstructor _modelConstructor;
-      private readonly IBuildConfigurationFactory _buildConfigurationFactory;
       private readonly IMoBiContext _context;
       private readonly ISimModelManager _simModelManager;
 
-      public SimulationBatchRunner(IBatchLogger logger, IModelConstructor modelConstructor, IBuildConfigurationFactory buildConfigurationFactory, 
+      public SimulationBatchRunner(IBatchLogger logger, IModelConstructor modelConstructor, 
          IMoBiContext context, ISimModelManager simModelManager)
       {
          _logger = logger;
          _modelConstructor = modelConstructor;
-         _buildConfigurationFactory = buildConfigurationFactory;
          _context = context;
          _simModelManager = simModelManager;
       }
@@ -41,6 +39,7 @@ namespace MoBi.BatchTool.Runners
 
          var newSimulation = new MoBiSimulation
          {
+            // TODO SIMULATION_CONFIGURATION
             Configuration = simulation.Configuration,
             Model = results.Model,
             Id = "Sim"

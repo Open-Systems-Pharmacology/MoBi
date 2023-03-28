@@ -118,7 +118,7 @@ namespace MoBi.Presentation.Presenter
          //Create the model using a build configuration referencing the templates building block so that references to template builders are defined properly 
          //we override the _buildConfiguration so that reference to builders are saved
 
-         // TODO
+         // TODO SIMULATION_CONFIGURATION
          // _simulationConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(_simulationConfiguration);
          var result = _modelConstructor.CreateModelFrom(_simulationConfiguration, _simulationDTO.Name);
          if (result == null)

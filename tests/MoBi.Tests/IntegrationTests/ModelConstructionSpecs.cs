@@ -30,7 +30,7 @@ namespace MoBi.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _simulationConfiguration = new SimulationConfiguration();
+         _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
          var molecules = _simulationConfiguration.Molecules;
          _moleculeA = new MoleculeBuilder().WithName("A").WithDimension(DomainFactoryForSpecs.AmountDimension);
          _moleculeA.DefaultStartFormula = new ConstantFormula(10);

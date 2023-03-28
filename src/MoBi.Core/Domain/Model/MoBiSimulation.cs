@@ -53,7 +53,7 @@ namespace MoBi.Core.Domain.Model
 
       public bool HasChanged
       {
-         //TODO
+         //TODO SIMULATION_CONFIGURATION
          get;
          set;
       }
@@ -72,7 +72,7 @@ namespace MoBi.Core.Domain.Model
 
       public bool IsCreatedBy(IBuildingBlock templateBuildingBlock)
       {
-         //TODO 
+         //TODO SIMULATION_CONFIGURATION
          return false;
          // return MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock) != null;
       }

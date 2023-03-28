@@ -26,7 +26,6 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(IBuildingBlock buildingBlock);
       ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock);
       ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder);
-      ITreeNode CreateFor(IBuildingBlockInfo buildingBlockInfo);
       ITreeNode CreateForFavorites();
       ITreeNode CreateForUserDefined();
    }
@@ -54,6 +53,8 @@ namespace MoBi.Presentation.Nodes
          var simNode = new SimulationNode(classifiableSimulation);
          var simulation = classifiableSimulation.Simulation;
 
+
+         //TODO SIMULATION_CONFIGURATION
          // if (simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks())
          //    simNode.Icon = ApplicationIcons.SimulationRed;
 
@@ -81,7 +82,8 @@ namespace MoBi.Presentation.Nodes
          addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
          addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.MoleculeStartValues);
          addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.ParameterStartValues);
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Individual);
+         if(simulationConfiguration.Individual != null)
+            addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Individual);
 
 
          var expressionsNode = CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder)
@@ -118,10 +120,6 @@ namespace MoBi.Presentation.Nodes
          return createFor(moleculeBuilder);
       }
 
-      public ITreeNode CreateFor(IBuildingBlockInfo buildingBlockInfo)
-      {
-         return new BuildingBlockInfoNode(buildingBlockInfo);
-      }
 
       private ITreeNode createFor<T>(T objectBase) where T : class, IObjectBase
       {
@@ -131,7 +129,7 @@ namespace MoBi.Presentation.Nodes
 
       private void addConfigurationNodeUnder(ITreeNode buildConfigNode, IBuildingBlock buildingBlock)
       {
-         // TODO this used to use buildingBlockInfo to create the tree
+         // TODO this used to use buildingBlockInfo to create the tree SIMULATION_CONFIGURATION
          var statusIcon = ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
          // var statusIcon = buildingBlockInfo.BuildingBlockChanged
          //    ? ApplicationIcons.RedOverlayFor(buildingBlock.Icon)

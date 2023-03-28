@@ -1,5 +1,5 @@
 ﻿using FakeItEasy;
-
+using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Services;
@@ -22,7 +22,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   class When_synchronising_parameter_start_values : concern_for_ParameterStartValueSynchronizer
+   class When_synchronizing_parameter_start_values : concern_for_ParameterStartValueSynchronizer
    {
       private IModelCoreSimulation _simulation;
       private IParameter _parameter;
@@ -31,7 +31,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _simulation = A.Fake<IModelCoreSimulation>();
+         _simulation = new MoBiSimulation();
          var parameterStartValues = new ParameterStartValuesBuildingBlock();
          _parameterStartValue = new ParameterStartValue()
          {
@@ -42,7 +42,7 @@ namespace MoBi.Core.Service
             StartValue = 33
          };
          parameterStartValues.Add(_parameterStartValue);
-         _simulation.Configuration.Module = new Module();
+         _simulation.Configuration = new SimulationConfiguration { Module = new Module() };
          _simulation.Configuration.Module.AddParameterStartValueBlock(parameterStartValues);
          _parameter =
             new Parameter().WithName("P1").WithValue(11).WithDimension(A.Fake<IDimension>()).WithDisplayUnit(A.Fake<Unit>());

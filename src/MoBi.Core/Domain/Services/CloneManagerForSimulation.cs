@@ -9,7 +9,6 @@ namespace MoBi.Core.Domain.Services
    public interface ICloneManagerForSimulation
    {
       IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone);
-      T CloneBuildingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo, new();
       T CloneBuildingBlock<T>(T toClone) where T : class, IBuildingBlock;
    }
 
@@ -48,7 +47,7 @@ namespace MoBi.Core.Domain.Services
          return simulation;
       }
 
-      // TODO: do we need to create an actual clone?
+      // TODO: do we need to create an actual clone? SIMULATION_CONFIGURATION
       private SimulationConfiguration simulationConfigurationCloneFor(SimulationConfiguration configuration)
       {
          return configuration;
@@ -59,16 +58,6 @@ namespace MoBi.Core.Domain.Services
          var formulaCache = new FormulaCache();
          var copy = _cloneManagerForBuildingBlock.Clone(toClone, formulaCache);
          formulaCache.Each(copy.AddFormula);
-         return copy;
-      }
-
-      public T CloneBuildingBlockInfo<T>(T toClone) where T : class, IBuildingBlockInfo, new()
-      {
-         var formulaCache = new FormulaCache();
-         var copy = new T { UntypedBuildingBlock = CloneBuildingBlock(toClone.UntypedBuildingBlock) };
-         formulaCache.Each(copy.UntypedBuildingBlock.AddFormula);
-         copy.TemplateBuildingBlockId = toClone.TemplateBuildingBlockId;
-         copy.SimulationChanges = toClone.SimulationChanges;
          return copy;
       }
    }

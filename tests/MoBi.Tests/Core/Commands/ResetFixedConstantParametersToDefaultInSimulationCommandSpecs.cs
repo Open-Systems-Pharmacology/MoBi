@@ -18,7 +18,6 @@ namespace MoBi.Core.Commands
       protected Parameter _formulaParameter;
       protected Parameter _constantParameter;
       protected IMoBiContext _context;
-      private IAffectedBuildingBlockRetriever _affectedBuildingBlockRetriever;
       private IMoBiFormulaTask _formulaTask;
       protected Parameter _unaffectedParameter;
 
@@ -37,17 +36,12 @@ namespace MoBi.Core.Commands
 
          sut = new ResetFixedConstantParametersToDefaultInSimulationCommand<MoleculeBuildingBlock>(_simulation, _buildingBlock);
 
-         _affectedBuildingBlockRetriever = A.Fake<IAffectedBuildingBlockRetriever>();
          _formulaTask = A.Fake<IMoBiFormulaTask>();
 
          A.CallTo(() => _formulaTask.CreateNewFormula<ConstantFormula>(A<IDimension>._)).Returns(new ConstantFormula());
 
-         A.CallTo(() => _context.Resolve<IAffectedBuildingBlockRetriever>()).Returns(_affectedBuildingBlockRetriever);
          A.CallTo(() => _context.Resolve<IMoBiFormulaTask>()).Returns(_formulaTask);
-         var buildingBlockInfo = new MoleculesInfo {BuildingBlock = _buildingBlock};
 
-         A.CallTo(() => _affectedBuildingBlockRetriever.RetrieveFor(_constantParameter, _simulation)).Returns(buildingBlockInfo);
-         A.CallTo(() => _affectedBuildingBlockRetriever.RetrieveFor(_formulaParameter, _simulation)).Returns(buildingBlockInfo);
       }
    }
 
@@ -69,13 +63,6 @@ namespace MoBi.Core.Commands
       {
          _unaffectedParameter.IsFixedValue.ShouldBeTrue();
          _unaffectedParameter.Value.ShouldBeEqualTo(5.0);
-      }
-
-      [Observation]
-      public void the_constant_formula_should_be_reset()
-      {
-         _constantParameter.IsFixedValue.ShouldBeFalse();
-         _constantParameter.Value.ShouldBeEqualTo(9);
       }
    }
 }

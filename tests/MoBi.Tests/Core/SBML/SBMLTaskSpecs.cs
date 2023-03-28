@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using System;
 using System.Linq;
 
@@ -17,7 +16,6 @@ namespace MoBi.Core.SBML
    public class SBMLTaskSpecs : ContextForSBMLIntegration<SbmlTask>
    {
       protected ISimulationFactory _simulationFactory;
-      protected IBuildConfigurationFactory _buildConfigurationFactory;
       protected IModelConstructor _modelConstructor;
       protected ISimulationSettingsFactory _simulationSettingsFactory;
       protected IObserverBuilder _observerBuilder;
@@ -26,7 +24,6 @@ namespace MoBi.Core.SBML
       {
          base.Context();
          _simulationFactory = IoC.Resolve<ISimulationFactory>();
-         _buildConfigurationFactory = IoC.Resolve<IBuildConfigurationFactory>();
          _modelConstructor = IoC.Resolve<IModelConstructor>();
          _simulationSettingsFactory = IoC.Resolve<ISimulationSettingsFactory>();
          _observerBuilder = IoC.Resolve<IObserverBuilder>();

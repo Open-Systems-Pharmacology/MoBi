@@ -8,7 +8,7 @@ namespace MoBi.Presentation.Presenter.Simulation
    {
       private static readonly List<ISubPresenterItem> _allSimulationItems = new List<ISubPresenterItem>();
 
-      public static SimulationItem<IEditSimulationConfigurationPresenter> BuildConfiguration = createFor<IEditSimulationConfigurationPresenter>();
+      public static SimulationItem<IEditSimulationConfigurationPresenter> SimulationConfiguration = createFor<IEditSimulationConfigurationPresenter>();
       public static SimulationItem<ISelectAndEditMoleculesStartValuesPresenter> MoleculeStartValues = createFor<ISelectAndEditMoleculesStartValuesPresenter>();
       public static SimulationItem<ISelectAndEditParameterStartValuesPresenter> ParameterStartValues = createFor<ISelectAndEditParameterStartValuesPresenter>();
       public static SimulationItem<IFinalOptionsPresenter> FinalOptions = createFor<IFinalOptionsPresenter>();
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Presenter.Simulation
 
       public static IReadOnlyList<ISubPresenterItem> All => _allSimulationItems;
 
-      public static IReadOnlyList<ISubPresenterItem> AllConfigure => new List<ISubPresenterItem> { BuildConfiguration, MoleculeStartValues, ParameterStartValues };
+      public static IReadOnlyList<ISubPresenterItem> AllConfigure => new List<ISubPresenterItem> { SimulationConfiguration, MoleculeStartValues, ParameterStartValues };
    }
 
    public class SimulationItem<TSimulationItemPresenter> : SubPresenterItem<TSimulationItemPresenter> where TSimulationItemPresenter : ISimulationItemPresenter
