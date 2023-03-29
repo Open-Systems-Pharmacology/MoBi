@@ -235,13 +235,13 @@ namespace MoBi.Presentation.Repositories
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.E)
             .WithCommand<AddNewBuildingBlockCommand<IEventGroupBuildingBlock>>(_container);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewSimulationSettingsBuildingBlock)
-            .WithId(MenuBarItemIds.NewSimulationSettingsBB)
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.EditDefaultSimulationSettings)
+            .WithId(MenuBarItemIds.EditProjectSimulationSettings)
             .WithIcon(ApplicationIcons.SimulationSettings)
-            .WithDescription(ToolTips.ModellingRibbon.CreateSimulationSettingsBB)
+            .WithDescription(ToolTips.EditRibbon.EditDefaultSimulationSettings)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.N)
-            .WithCommand<AddNewBuildingBlockCommand<SimulationSettings>>(_container);
-
+            .WithCommand<EditProjectSimulationSettingsUICommand>(_container);
+         
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewObserverBuildingBlock)
             .WithId(MenuBarItemIds.NewObserverBB)
             .WithIcon(ApplicationIcons.Observer)

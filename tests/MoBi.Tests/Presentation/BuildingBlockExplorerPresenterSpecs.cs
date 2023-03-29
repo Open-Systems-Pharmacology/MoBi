@@ -23,6 +23,7 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
+using MoBi.Helpers;
 
 namespace MoBi.Presentation
 {
@@ -46,7 +47,6 @@ namespace MoBi.Presentation
       protected ITreeNode<RootNodeType> _nodePassiveTransportFolder;
       protected ITreeNode<RootNodeType> _nodeObserverFolder;
       protected ITreeNode<RootNodeType> _nodeEventFolder;
-      protected ITreeNode<RootNodeType> _nodeSimulationSettingsFolder;
       protected ITreeNode<RootNodeType> _nodeMoleculeStartValuesFolder;
       protected ITreeNode<RootNodeType> _nodeParameterStartValuesFolder;
       protected ITreeNode<RootNodeType> _expressionProfileFolder;
@@ -76,7 +76,6 @@ namespace MoBi.Presentation
          _nodePassiveTransportFolder = setupNode(MoBiRootNodeTypes.PassiveTransportFolder);
          _nodeObserverFolder = setupNode(MoBiRootNodeTypes.ObserverFolder);
          _nodeEventFolder = setupNode(MoBiRootNodeTypes.EventFolder);
-         _nodeSimulationSettingsFolder = setupNode(MoBiRootNodeTypes.SimulationSettingsFolder);
          _nodeMoleculeStartValuesFolder = setupNode(MoBiRootNodeTypes.MoleculeStartValuesFolder);
          _nodeParameterStartValuesFolder = setupNode(MoBiRootNodeTypes.ParameterStartValuesFolder);
          _expressionProfileFolder = setupNode(MoBiRootNodeTypes.ExpressionProfilesFolder);
@@ -193,7 +192,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_invoke_the_first_elementof_the_context_menu()
+      public void should_invoke_the_first_element_of_the_context_menu()
       {
          A.CallTo(() => _editBuildingBlockStarter.EditMolecule(_moleculeBuildingBlock, _moleculeBuilder)).MustHaveHappened();
       }
@@ -211,7 +210,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _project= new MoBiProject();
+         _project= DomainHelperForSpecs.NewProject();
          _observerBuildingBlock = new ObserverBuildingBlock().WithName("OBSERVERS");
          _simulationSettingsBuildingBlock = new SimulationSettings().WithName("SIMULATION_SETTINGS");
          _simulationSettingsNode= A.Fake<ITreeNode>();
@@ -240,7 +239,7 @@ namespace MoBi.Presentation
       public void should_add_a_folder_node_for_all_building_block_types()
       {
          _allNodesAdded.ShouldContain(_nodeSpatialStructureFolder, _nodeMoleculeFolder, _nodeReactionFolder, _nodePassiveTransportFolder,
-            _nodeObserverFolder, _nodeEventFolder, _nodeSimulationSettingsFolder, _nodeMoleculeStartValuesFolder, _nodeParameterStartValuesFolder, _expressionProfileFolder);
+            _nodeObserverFolder, _nodeEventFolder, _nodeMoleculeStartValuesFolder, _nodeParameterStartValuesFolder, _expressionProfileFolder);
       }
 
       [Observation]
@@ -252,9 +251,9 @@ namespace MoBi.Presentation
       [Observation]
       public void should_add_a_node_for_each_building_block_under_the_expected_folder()
       {
-         _allNodesAdded.ShouldContain(_simulationSettingsNode, _observerBuildingBlockNode);
+         _allNodesAdded.ShouldContain(_observerBuildingBlockNode);
+         _allNodesAdded.ShouldNotContain(_simulationSettingsNode);
 
-         A.CallTo(() => _nodeSimulationSettingsFolder.AddChild(_simulationSettingsNode)).MustHaveHappened();
          A.CallTo(() => _nodeObserverFolder.AddChild(_observerBuildingBlockNode)).MustHaveHappened();
       }
    }
@@ -298,11 +297,6 @@ namespace MoBi.Presentation
    public class When_the_building_block_explorer_presenter_is_being_notified_that_an_observer_building_block_was_added : When_the_building_block_explorer_presenter_is_being_notified_that_a_building_block_was_added<ObserverBuildingBlock>
    {
       protected override ITreeNode<RootNodeType> RetrieveFolderNode() => _nodeObserverFolder;
-   }
-
-   public class When_the_building_block_explorer_presenter_is_being_notified_that_an_simulation_settings_building_block_was_added : When_the_building_block_explorer_presenter_is_being_notified_that_a_building_block_was_added<SimulationSettings>
-   {
-      protected override ITreeNode<RootNodeType> RetrieveFolderNode() => _nodeSimulationSettingsFolder;
    }
 
    public class When_the_building_block_explorer_presenter_is_being_notified_that_a_spatial_structure_building_block_was_added : When_the_building_block_explorer_presenter_is_being_notified_that_a_building_block_was_added<SpatialStructure>

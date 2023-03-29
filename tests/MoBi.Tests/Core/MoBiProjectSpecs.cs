@@ -5,6 +5,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Core
 {
@@ -12,7 +13,7 @@ namespace MoBi.Core
    {
       protected override void Context()
       {
-         sut = new MoBiProject();
+         sut = DomainHelperForSpecs.NewProject();
       }
    }
 
@@ -33,7 +34,7 @@ namespace MoBi.Core
          sut.AddBuildingBlock(A.Fake<IBuildingBlock>());
          sut.IsEmpty.ShouldBeFalse();
 
-         sut = new MoBiProject();
+         sut = DomainHelperForSpecs.NewProject();
          sut.AddSimulation(A.Fake<IMoBiSimulation>());
          sut.IsEmpty.ShouldBeFalse();
       }

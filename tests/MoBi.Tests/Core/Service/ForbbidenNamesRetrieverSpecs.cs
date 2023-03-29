@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Core.Service
 {
@@ -33,7 +34,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);
@@ -76,7 +77,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);
@@ -123,7 +124,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var molecules= new MoleculeBuildingBlock(){molecule};
          _project.AddBuildingBlock(molecules);
@@ -166,7 +167,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);
@@ -236,7 +237,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);

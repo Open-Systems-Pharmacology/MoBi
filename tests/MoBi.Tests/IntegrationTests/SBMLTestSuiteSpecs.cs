@@ -103,7 +103,6 @@ namespace MoBi.IntegrationTests
       private void addSettings(IMoBiProject project, string settingFileName)
       {
          var simulationSettings = IoC.Resolve<ISimulationSettingsFactory>().CreateDefault();
-         project.AddBuildingBlock(simulationSettings);
       }
 
       private SimulationConfiguration generateBuildConfiguration(IMoBiProject project)
@@ -116,7 +115,7 @@ namespace MoBi.IntegrationTests
          simulationConfiguration.Module.PassiveTransport = project.PassiveTransportCollection.First();
          simulationConfiguration.Module.AddMoleculeStartValueBlock(project.MoleculeStartValueBlockCollection.First());
          simulationConfiguration.Module.AddParameterStartValueBlock(project.ParametersStartValueBlockCollection.First());
-         simulationConfiguration.SimulationSettings = project.SimulationSettingsCollection.First();
+         simulationConfiguration.SimulationSettings = project.SimulationSettings;
          simulationConfiguration.Module.EventGroup = project.EventBlockCollection.First();
          simulationConfiguration.Module.Observer = project.ObserverBlockCollection.First();
          return simulationConfiguration;

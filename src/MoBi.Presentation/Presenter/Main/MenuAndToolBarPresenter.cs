@@ -80,6 +80,7 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.File));
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.BuildingBlocks), AppConstants.RibbonPages.Modeling);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Workflows), AppConstants.RibbonPages.Modeling);
+         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Project), AppConstants.RibbonPages.Modeling);
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.ParameterIdentification), RibbonPages.ParameterIdentificationAndSensitivity);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.SensitivityAnalysis), RibbonPages.ParameterIdentificationAndSensitivity);
@@ -224,7 +225,7 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.NewObserverBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewPassiveTransportBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewReactionBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewSimulationSettingsBB].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.EditProjectSimulationSettings].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewSpatialStructure].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadSimulationIntoProject].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.HistoryReportGroup].Enabled = enabled;

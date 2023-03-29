@@ -4,8 +4,10 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -17,7 +19,9 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Core
 {
@@ -44,7 +48,7 @@ namespace MoBi.Core
          _changedObject.Name = "OLD";
          _changedName = _changedObject.Name;
          _newName = "new";
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IMoBiContext>();
          _cloneManager = A.Fake<ICloneManager>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);

@@ -4,6 +4,7 @@ using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Engine.Sbml;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -74,7 +75,7 @@ namespace MoBi.Core.SBML
 
 
          _sbmlModel.addUnitDefinition(_unitDef);
-         sut.DoImport(_sbmlModel, new MoBiProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
+         sut.DoImport(_sbmlModel, DomainHelperForSpecs.NewProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
       }
 
       [Observation]

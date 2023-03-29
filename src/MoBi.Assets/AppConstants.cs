@@ -805,6 +805,7 @@ namespace MoBi.Assets
          public static readonly string Views = "Views";
          public static readonly string Add = "Add";
          public static readonly string Edit = "Edit";
+         public static readonly string Project = "Project";
          public static readonly string Journal = "Journal";
          public static readonly string File = "File";
          public static readonly string Favorites = "Favorites";
@@ -820,7 +821,7 @@ namespace MoBi.Assets
          public static readonly string PassiveTransport = "Passive Transport";
          public static readonly string Events = "Events";
          public static readonly string Observer = "Observer";
-         public static readonly string SimulationSettings = "Simulation Settings";
+         public static readonly string Settings = "Settings";
          public static readonly string New = "New";
          public static readonly string Load = "Load";
          public static readonly string LoadFromTemplate = "Load From Template";
@@ -1000,7 +1001,6 @@ namespace MoBi.Assets
          public static readonly string NewPassiveTransportBuildingBlock = AddNew("Passive Transport Building Block");
          public static readonly string NewEventsBuildingBlock = AddNew("Event Building Block");
          public static readonly string NewObserverBuildingBlock = AddNew("Observer Building Block");
-         public static readonly string NewSimulationSettingsBuildingBlock = AddNew("Simulation Settings Building Block");
          public static readonly string RelativePath = "Relative Path";
          public static readonly string AbsolutePath = "Absolute Path";
          public static readonly string ExportHistory = Captions.ExportHistory;
@@ -1085,7 +1085,7 @@ namespace MoBi.Assets
 
          public static string AddEmptyModule => $"Create Empty Module...";
          public static string AddModuleWithBuildingBlocks => $"Create Module with Building Blocks...";
-
+         public static string EditDefaultSimulationSettings = "Edit Default Simulation Settings";
       }
 
       public static class DimensionNames
@@ -1634,6 +1634,7 @@ namespace MoBi.Assets
          public static readonly string SelectContainer = "Select Container";
          public static readonly string FirstNeighbor = "First Neighbor";
          public static readonly string SecondNeighbor = "Second Neighbor";
+         public static readonly string DefaultSimulationSettings = "Default Simulation Settings";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 

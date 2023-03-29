@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
@@ -37,7 +38,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
 
          _project.AddBuildingBlock(new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = _moleculeBuildingBlock.Id, SpatialStructureId = ""});
       }

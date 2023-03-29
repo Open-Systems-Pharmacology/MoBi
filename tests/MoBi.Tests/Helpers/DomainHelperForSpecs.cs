@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
+using MoBi.Core.Domain.Builder;
+using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Helpers
 {
@@ -64,6 +67,19 @@ namespace MoBi.Helpers
             DataInfo = { Origin = ColumnOrigins.Observation }
          };
          return data;
+      }
+
+      public static IMoBiProject NewProject()
+      {
+         return new MoBiProject(new SimulationSettingsFactoryForSpecs());
+      }
+   }
+
+   public class SimulationSettingsFactoryForSpecs : ISimulationSettingsFactory
+   {
+      public SimulationSettings CreateDefault()
+      {
+         return new SimulationSettings();
       }
    }
 

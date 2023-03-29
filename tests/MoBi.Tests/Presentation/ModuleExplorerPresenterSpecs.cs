@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
@@ -256,7 +257,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _observerBuildingBlock = new ObserverBuildingBlock().WithName("OBSERVERS");
          _simulationSettingsBuildingBlock = new SimulationSettings().WithName("SIMULATION_SETTINGS");
          _module1 = new Module
