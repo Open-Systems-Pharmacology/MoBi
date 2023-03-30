@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Serialization.Exchange;
+using MoBi.Helpers;
 
 namespace MoBi.Core
 {
@@ -29,7 +30,7 @@ namespace MoBi.Core
          _context = A.Fake<IMoBiContext>();
          sut = new SimulationLoader(_cloneManager, _nameCorrector, _context);
 
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _simulation = A.Fake<IMoBiSimulation>().WithId("SimId");
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.Project).Returns(_project);

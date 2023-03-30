@@ -42,6 +42,8 @@ namespace MoBi.Presentation
       protected IMoBiSimulation _simulation;
       protected string _templateId = "Template";
       protected SimulationConfiguration _simulationConfiguration;
+      private ICloneManagerForBuildingBlock _cloneManager;
+      protected SimulationSettings _clonedSimulationSettings;
       protected const string _useId = "ToUse";
 
       protected override void Context()
@@ -52,6 +54,8 @@ namespace MoBi.Presentation
          _moleculeStartValuesPresenter = _subPresenterManager.CreateFake(SimulationItems.MoleculeStartValues);
          _parameterStartValuesPresenter = _subPresenterManager.CreateFake(SimulationItems.ParameterStartValues);
          _finalActionPresenter = _subPresenterManager.CreateFake(SimulationItems.FinalOptions);
+         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
+         _clonedSimulationSettings = new SimulationSettings();
 
          A.CallTo(() => _subPresenterManager.AllSubPresenters).Returns(new ISimulationItemPresenter[] { _simulationConfigurationPresenter, _moleculeStartValuesPresenter, _parameterStartValuesPresenter, _finalActionPresenter });
          _context = A.Fake<IMoBiContext>();
@@ -68,7 +72,7 @@ namespace MoBi.Presentation
          _forbiddenNameRetriever = A.Fake<IForbiddenNamesRetriever>();
          sut = new CreateSimulationPresenter(_view, _context, _modelConstructor, _validationVisitor,
             _simulationFactory, _heavyWorkManager, _subPresenterManager, _dialogCreator,
-            _forbiddenNameRetriever, _userSettings);
+            _forbiddenNameRetriever, _userSettings, _cloneManager);
 
          _simulation = new MoBiSimulation();
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
@@ -76,6 +80,8 @@ namespace MoBi.Presentation
          _simulation.Configuration = _simulationConfiguration;
          A.CallTo(() => _moleculeStartValuesPresenter.StartValues).Returns(A.Fake<MoleculeStartValuesBuildingBlock>().WithId(_useId));
          A.CallTo(() => _parameterStartValuesPresenter.StartValues).Returns(A.Fake<ParameterStartValuesBuildingBlock>().WithId(_useId));
+
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings)).Returns(_clonedSimulationSettings);
       }
 
       private SimulationConfiguration createBuildConfiguration()
@@ -118,6 +124,12 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.Create();
+      }
+
+      [Observation]
+      public void the_cloned_simulation_settings_should_be_used_in_the_configuration()
+      {
+         _simulation.Configuration.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
       }
 
       [Observation]

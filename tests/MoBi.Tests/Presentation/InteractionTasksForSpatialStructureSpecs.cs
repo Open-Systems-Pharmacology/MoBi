@@ -8,6 +8,7 @@ using MoBi.Core.Exceptions;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Presentation
 {
@@ -31,7 +32,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _spatialStructure = new MoBiSpatialStructure() { Id = "1" };
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
 
          _project.AddBuildingBlock(new MoleculeStartValuesBuildingBlock { SpatialStructureId = _spatialStructure.Id, MoleculeBuildingBlockId = "" });
       }

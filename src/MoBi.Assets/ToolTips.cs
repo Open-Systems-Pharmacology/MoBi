@@ -74,13 +74,12 @@ namespace MoBi.Assets
          public static readonly string CreatePassiveTansportsBB = "Create a new Passive Transports Building Block";
          public static readonly string CreateEventGroupsBB = "Create a new Event Groups Building Block";
          public static readonly string CreateObserversBB = "Create a new Observers Building Block";
-         public static readonly string CreateSimulationSettingsBB = "Create a new Simulation Settings Building Block";
          public static readonly string CreateModule = "Create a new Module";
       }
 
       public static class EditRibbon
       {
-         public static readonly string UndoDescription = "Undo the last action";
+         public static readonly string EditDefaultSimulationSettings = "Edit the project default simulation settings";
       }
 
       public static class FileRibbon

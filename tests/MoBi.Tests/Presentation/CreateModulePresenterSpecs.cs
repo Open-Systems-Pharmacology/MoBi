@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -19,7 +20,7 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _view = A.Fake<ICreateModuleView>();
          _mapper = A.Fake<ICreateModuleDTOToModuleMapper>();
          _context = A.Fake<IMoBiContext>();

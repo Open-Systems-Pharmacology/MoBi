@@ -35,6 +35,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
       private readonly IUserSettings _userSettings;
       private SimulationConfiguration _simulationConfiguration;
+      private ICloneManagerForBuildingBlock _cloneManager;
       public IMoBiSimulation Simulation { get; private set; }
 
       public CreateSimulationPresenter(
@@ -47,7 +48,8 @@ namespace MoBi.Presentation.Presenter
          ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager,
          IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriever,
-         IUserSettings userSettings)
+         IUserSettings userSettings,
+         ICloneManagerForBuildingBlock cloneManager)
          : base(view, subPresenterManager, dialogCreator, context, SimulationItems.All)
       {
          _simulationFactory = simulationFactory;
@@ -56,12 +58,12 @@ namespace MoBi.Presentation.Presenter
          _userSettings = userSettings;
          _dimensionValidator = dimensionValidator;
          _modelConstructor = modelConstructor;
+         _cloneManager = cloneManager;
       }
 
       public IMoBiSimulation Create()
       {
          var moBiSimulation = _simulationFactory.Create();
-         moBiSimulation.Configuration.SimulationSettings = _context.CurrentProject.SimulationSettings;
          edit(moBiSimulation);
          _view.Display();
          if (_view.Canceled)
@@ -120,6 +122,8 @@ namespace MoBi.Presentation.Presenter
 
          // TODO SIMULATION_CONFIGURATION
          // _simulationConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(_simulationConfiguration);
+         
+         _simulationConfiguration.SimulationSettings = _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings);
          var result = _modelConstructor.CreateModelFrom(_simulationConfiguration, _simulationDTO.Name);
          if (result == null)
             return null;

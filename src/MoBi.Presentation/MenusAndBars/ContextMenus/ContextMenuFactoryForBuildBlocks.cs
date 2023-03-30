@@ -145,14 +145,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForSimulationSettingsBuildingBlock : RootNodeContextMenuFactoryFor<SimulationSettings>
-   {
-      public RootContextMenuFactoryForSimulationSettingsBuildingBlock()
-         : base(MoBiRootNodeTypes.SimulationSettingsFolder)
-      {
-      }
-   }
-
    public class RootContextMenuFactoryForEventGroupBuildingBlock : RootNodeContextMenuFactoryFor<IEventGroupBuildingBlock>
    {
       public RootContextMenuFactoryForEventGroupBuildingBlock()

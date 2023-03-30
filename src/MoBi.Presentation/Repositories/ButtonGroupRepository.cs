@@ -18,6 +18,7 @@ namespace MoBi.Presentation.Repositories
       {
          yield return applicationButtonGroup;
          yield return buildingBlocksButtonGroup;
+         yield return projectGroup;
          yield return toolsButtonGroup;
          yield return simulationButtonGroup;
          yield return viewButtonGroup;
@@ -42,7 +43,7 @@ namespace MoBi.Presentation.Repositories
          yield return parameterIdentificationConfidenceIntervalButtonGroup;
          yield return parameterSensitivityButtonGroup;
          yield return runSensitivityAnalysisButtonGroup;
-         yield return senstivityAnalysisButtonGroup;
+         yield return sensitivityAnalysisButtonGroup;
          yield return historyButtonGroup;
       }
 
@@ -180,9 +181,12 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewPassiveTransportBB)).WithCaption(AppConstants.RibbonButtonNames.PassiveTransport))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewObserverBB)).WithCaption(AppConstants.RibbonButtonNames.Observer))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewEventBB)).WithCaption(AppConstants.RibbonButtonNames.Events))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulationSettingsBB)).WithCaption(AppConstants.RibbonButtonNames.SimulationSettings))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
          .WithId(ButtonGroupIds.BuildingBlocks);
+
+      private IButtonGroup projectGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Project)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.EditProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Settings))
+         .WithId(ButtonGroupIds.Project);
 
       private IButtonGroup toolsButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Tools)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GarbageCollection)))
@@ -242,7 +246,7 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SensitivityAnalysisFeedbackView)))
          .WithId(ButtonGroupIds.RunSensitivityAnalysis);
 
-      private IButtonGroup senstivityAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterSensitivityAnalyses)
+      private IButtonGroup sensitivityAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterSensitivityAnalyses)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SensitivityAnalysisPKParameterAnalysis)))
          .WithId(ButtonGroupIds.SensitivityAnalysisPKParameterAnalyses);
 

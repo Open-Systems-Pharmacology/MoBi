@@ -9,6 +9,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Presentation
 {
@@ -43,7 +44,7 @@ namespace MoBi.Presentation
          molecules.AddTag(Constants.MOLECULE_PROPERTIES);
          _spatialStructure.GlobalMoleculeDependentProperties = molecules;
 
-         var mobiProject = new MoBiProject();
+         var mobiProject = DomainHelperForSpecs.NewProject();
          mobiProject.AddBuildingBlock(_spatialStructure);
 
          A.CallTo(() => _projectRetriever.Current).Returns(mobiProject);

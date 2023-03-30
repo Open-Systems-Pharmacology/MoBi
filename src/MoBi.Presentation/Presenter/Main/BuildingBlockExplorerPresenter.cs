@@ -59,7 +59,6 @@ namespace MoBi.Presentation.Presenter.Main
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.PassiveTransportFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ObserverFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.EventFolder));
-            _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.SimulationSettingsFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.MoleculeStartValuesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ParameterStartValuesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder));
@@ -76,8 +75,6 @@ namespace MoBi.Presentation.Presenter.Main
             project.ParametersStartValueBlockCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ParameterStartValuesFolder));
             project.ExpressionProfileCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ExpressionProfilesFolder));
             project.IndividualsCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.IndividualsFolder));
-
-            project.SimulationSettingsCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.SimulationSettingsFolder));
 
             _observedDataInExplorerPresenter.AddObservedDataToTree(project);
          }
@@ -180,9 +177,6 @@ namespace MoBi.Presentation.Presenter.Main
 
          if (buildingBlock.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
             return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.ParameterStartValuesFolder);
-
-         if (buildingBlock.IsAnImplementationOf<SimulationSettings>())
-            return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.SimulationSettingsFolder);
 
          if (buildingBlock.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
             return addBuildingBlockToTree(buildingBlock, MoBiRootNodeTypes.ExpressionProfilesFolder);

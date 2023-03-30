@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
+using MoBi.Core.Domain.Builder;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -23,7 +25,6 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyList<ParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection { get; }
       IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection { get; }
       IReadOnlyList<IndividualBuildingBlock> IndividualsCollection { get; }
-      IReadOnlyList<SimulationSettings> SimulationSettingsCollection { get; }
       IReadOnlyList<Module> Modules { get; }
 
       ReactionDimensionMode ReactionDimensionMode { get; set; }
@@ -33,7 +34,7 @@ namespace MoBi.Core.Domain.Model
       void AddChart(CurveChart chart);
       void RemoveChart(CurveChart chartToRemove);
       void AddModule(Module module);
-      
+
       void RemoveModule(Module module);
 
       //only for serialization
@@ -78,7 +79,7 @@ namespace MoBi.Core.Domain.Model
       /// </summary>
       bool IsEmpty { get; }
 
-      SimulationSettings SimulationSettings { get; }
+      SimulationSettings SimulationSettings { get; set; }
    }
 
    public class MoBiProject : Project, IMoBiProject
@@ -121,8 +122,7 @@ namespace MoBi.Core.Domain.Model
 
       public bool IsEmpty => !_buildingBlocks.Any() && !_allSimulations.Any();
 
-      // TODO we just use the first one from the defined settings SimulationSettings will eventually not be a building block
-      public SimulationSettings SimulationSettings => get<SimulationSettings>().FirstOrDefault();
+      public SimulationSettings SimulationSettings { get; set; }
 
       public void AddModule(Module module)
       {
@@ -148,8 +148,6 @@ namespace MoBi.Core.Domain.Model
       public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection => get<ExpressionProfileBuildingBlock>();
 
       public IReadOnlyList<IndividualBuildingBlock> IndividualsCollection => get<IndividualBuildingBlock>();
-
-      public IReadOnlyList<SimulationSettings> SimulationSettingsCollection => get<SimulationSettings>();
 
       public IReadOnlyList<IPassiveTransportBuildingBlock> PassiveTransportCollection => get<IPassiveTransportBuildingBlock>();
 

@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Tasks
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_dataImporter, _dimensionFactory, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver);
 
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.Project).Returns(_project);
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
