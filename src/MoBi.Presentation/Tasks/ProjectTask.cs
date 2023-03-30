@@ -1,13 +1,11 @@
-using System;
 using System.IO;
 using MoBi.Assets;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Exchange;
@@ -41,13 +39,16 @@ namespace MoBi.Presentation.Tasks
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly ISimulationLoader _simulationLoader;
       private readonly ISbmlTask _sbmlTask;
+      private readonly ISimulationSettingsFactory _simulationSettingsFactory;
 
       public ProjectTask(IMoBiContext context, ISerializationTask serializationTask, IDialogCreator dialogCreator,
-         IMRUProvider mruProvider, IHeavyWorkManager heavyWorkManager, ISimulationLoader simulationLoader, ISbmlTask sbmlTask)
+         IMRUProvider mruProvider, IHeavyWorkManager heavyWorkManager, ISimulationLoader simulationLoader, ISbmlTask sbmlTask, 
+         ISimulationSettingsFactory simulationSettingsFactory)
       {
          _context = context;
          _simulationLoader = simulationLoader;
          _sbmlTask = sbmlTask;
+         _simulationSettingsFactory = simulationSettingsFactory;
          _heavyWorkManager = heavyWorkManager;
          _mruProvider = mruProvider;
          _serializationTask = serializationTask;
@@ -211,9 +212,12 @@ namespace MoBi.Presentation.Tasks
 
       public void New(ReactionDimensionMode reactionDimensionMode)
       {
-         if (!CloseProject()) return;
+         if (!CloseProject()) 
+            return;
+         
          _serializationTask.NewProject();
          _context.CurrentProject.ReactionDimensionMode = reactionDimensionMode;
+         _context.CurrentProject.SimulationSettings = _simulationSettingsFactory.CreateDefault().WithName(AppConstants.Captions.DefaultSimulationSettings);
 
          _context.PublishEvent(new ProjectCreatedEvent(_context.CurrentProject));
          _context.PublishEvent(new ProjectLoadedEvent(_context.CurrentProject));

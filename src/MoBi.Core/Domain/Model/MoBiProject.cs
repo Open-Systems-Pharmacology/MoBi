@@ -79,7 +79,7 @@ namespace MoBi.Core.Domain.Model
       /// </summary>
       bool IsEmpty { get; }
 
-      SimulationSettings SimulationSettings { get; }
+      SimulationSettings SimulationSettings { get; set; }
    }
 
    public class MoBiProject : Project, IMoBiProject
@@ -99,13 +99,12 @@ namespace MoBi.Core.Domain.Model
 
       public ReactionDimensionMode ReactionDimensionMode { get; set; }
 
-      public MoBiProject(ISimulationSettingsFactory simulationSettingsFactory)
+      public MoBiProject()
       {
          _charts = new List<CurveChart>();
          _buildingBlocks = new List<IBuildingBlock>();
          _allSimulations = new List<IMoBiSimulation>();
          ReactionDimensionMode = ReactionDimensionMode.AmountBased;
-         SimulationSettings = simulationSettingsFactory.CreateDefault().WithName(AppConstants.Captions.DefaultSimulationSettings);
       }
 
       public override void AddParameterIdentification(ParameterIdentification parameterIdentification)
@@ -123,7 +122,7 @@ namespace MoBi.Core.Domain.Model
 
       public bool IsEmpty => !_buildingBlocks.Any() && !_allSimulations.Any();
 
-      public SimulationSettings SimulationSettings { get; }
+      public SimulationSettings SimulationSettings { get; set; }
 
       public void AddModule(Module module)
       {

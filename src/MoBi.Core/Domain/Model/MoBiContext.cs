@@ -8,7 +8,6 @@ using OSPSuite.Core;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -71,7 +70,6 @@ namespace MoBi.Core.Domain.Model
       public IMoBiDimensionFactory DimensionFactory { get; }
       public IObjectBaseFactory ObjectBaseFactory { get; }
       public IObjectPathFactory ObjectPathFactory { get; }
-      public ICoreCalculationMethodRepository CalculationMethodRepository { get; set; }
       public IEventPublisher EventPublisher { get; }
       public IWithIdRepository ObjectRepository { get; }
 
@@ -151,7 +149,6 @@ namespace MoBi.Core.Domain.Model
       {
          Clear();
          CurrentProject = ObjectBaseFactory.Create<IMoBiProject>();
-
          HistoryManager = _historyManagerFactory.Create() as IMoBiHistoryManager;
          LoadFrom(CurrentProject);
          AddToHistory(new CreateProjectCommand().Run(this));
