@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Domain;
+﻿using MoBi.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Domain.Builder
@@ -27,6 +28,7 @@ namespace MoBi.Core.Domain.Builder
          simulationSettings.OutputSchema = _outputSchemaFactory.CreateDefault();
          simulationSettings.Solver = _solverSettingsFactory.CreateCVODE();
          simulationSettings.OutputSelections = new OutputSelections();
+         simulationSettings.Name = AppConstants.Captions.DefaultSimulationSettings;
          return simulationSettings;
       }
    }

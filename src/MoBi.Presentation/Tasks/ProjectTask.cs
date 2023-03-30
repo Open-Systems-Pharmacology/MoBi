@@ -217,7 +217,7 @@ namespace MoBi.Presentation.Tasks
          
          _serializationTask.NewProject();
          _context.CurrentProject.ReactionDimensionMode = reactionDimensionMode;
-         _context.CurrentProject.SimulationSettings = _simulationSettingsFactory.CreateDefault().WithName(AppConstants.Captions.DefaultSimulationSettings);
+         _context.CurrentProject.SimulationSettings = _simulationSettingsFactory.CreateDefault();
 
          _context.PublishEvent(new ProjectCreatedEvent(_context.CurrentProject));
          _context.PublishEvent(new ProjectLoadedEvent(_context.CurrentProject));
