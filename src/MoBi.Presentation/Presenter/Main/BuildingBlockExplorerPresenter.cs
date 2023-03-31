@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Presenter.Main
          _observedDataInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ObservedDataFolder);
       }
 
-      protected override void AddProjectToTree(IMoBiProject project)
+      protected override void AddProjectToTree(MoBiProject project)
       {
          using (new BatchUpdate(_view))
          {

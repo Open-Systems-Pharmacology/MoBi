@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          throw new NotSupportedException("Merge is not supported for Simulation Settings");
       }
 
-      public override SimulationSettings CreateNewEntity(IMoBiProject moleculeBuildingBlock)
+      public override SimulationSettings CreateNewEntity(MoBiProject moleculeBuildingBlock)
       {
          return _simulationSettingsFactory.CreateDefault();
       }

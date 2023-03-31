@@ -100,15 +100,16 @@ namespace MoBi.Presentation.Tasks
 
    public class When_removing_building_block_referenced_by_simulation : concern_for_MoleculeStartValuesTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IMoBiSimulation _simulation;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = DomainHelperForSpecs.NewProject();
          _simulation = A.Fake<IMoBiSimulation>();
-         A.CallTo(() => _project.SimulationsCreatedUsing(_moleculeStartValueBuildingBlock)).Returns(new List<IMoBiSimulation> {_simulation});
+         _project.AddSimulation(_simulation);
+         A.CallTo(() => _simulation.IsCreatedBy(_moleculeStartValueBuildingBlock)).Returns(true);
       }
 
       [Observation]

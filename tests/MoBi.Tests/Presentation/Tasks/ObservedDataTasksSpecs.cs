@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Tasks
       protected IEventPublisher _eventPublisher;
       protected IDialogCreator _dialogCreator;
       protected DataRepository _dataRepository;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       private IInteractionTask _interactionTask;
       private IDataRepositoryExportTask _dataRepositoryTask;
       protected IContainerTask _containerTask;

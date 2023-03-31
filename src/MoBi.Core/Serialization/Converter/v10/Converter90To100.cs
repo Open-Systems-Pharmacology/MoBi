@@ -25,7 +25,7 @@ namespace MoBi.Core.Serialization.Converter.v10
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V9_0;
 
-      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, MoBiProject project)
       {
          _converted = false;
          var (_, coreConversionHappened) = _coreConverter.Convert(objectToUpdate);
@@ -33,7 +33,7 @@ namespace MoBi.Core.Serialization.Converter.v10
          return (ProjectVersions.V10_0, _converted || coreConversionHappened);
       }
 
-      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, MoBiProject project)
       {
          return _coreConverter.ConvertXml(element);
       }

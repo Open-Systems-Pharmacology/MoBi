@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.IntegrationTests
 {
-   public abstract class ContextWithLoadedProject : ContextForIntegration<IMoBiProject>
+   public abstract class ContextWithLoadedProject : ContextForIntegration<MoBiProject>
    {
       public TObject LoadPKML<TObject>(string pkmlFileName, ReactionDimensionMode reactionDimensionMode = ReactionDimensionMode.AmountBased)
       {
@@ -18,7 +18,7 @@ namespace MoBi.IntegrationTests
          return serializationTask.Load<TObject>(projectFile);
       }
 
-      public IMoBiProject LoadProject(string projectFileName)
+      public MoBiProject LoadProject(string projectFileName)
       {
          var projectFile = DomainHelperForSpecs.TestFileFullPath($"{projectFileName}.mbp3");
          var serializationTask = IoC.Resolve<ISerializationTask>();

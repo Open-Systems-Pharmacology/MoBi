@@ -2,6 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -73,7 +74,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.ObjectRepository).Returns(objectBaseRepository);
          A.CallTo(() => objectBaseRepository.ContainsObjectWithId(id)).Returns(true);
          A.CallTo(() => _parameterMapper.MapFrom(p1, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoP1);
-         var project = A.Fake<IMoBiProject>();
+         var project = DomainHelperForSpecs.NewProject();
 
          var moleculeBuildingBlock = new MoleculeBuildingBlock();
          var molecule = new MoleculeBuilder().WithName(moleculeName);
@@ -84,7 +85,7 @@ namespace MoBi.Presentation
          _dtoPglobal = new DummyParameterDTO(localP).WithName("global");
 
          moleculeBuildingBlock.Add(molecule);
-         A.CallTo(() => project.MoleculeBlockCollection).Returns(new[] {moleculeBuildingBlock});
+         project.AddBuildingBlock(moleculeBuildingBlock);
          A.CallTo(() => _parameterMapper.MapFrom(localP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPlocal);
          A.CallTo(() => _parameterMapper.MapFrom(globalP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPglobal);
          A.CallTo(() => _context.CurrentProject).Returns(project);
@@ -148,7 +149,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.ObjectRepository).Returns(objectBaseRepository);
          A.CallTo(() => objectBaseRepository.ContainsObjectWithId(id)).Returns(true);
          A.CallTo(() => _parameterMapper.MapFrom(p1, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoP1);
-         var project = A.Fake<IMoBiProject>();
+         var project = DomainHelperForSpecs.NewProject();
 
          var moleculeBuildingBlock = new MoleculeBuildingBlock();
          var molecule = new MoleculeBuilder().WithName(moleculeName);
@@ -161,7 +162,7 @@ namespace MoBi.Presentation
          _dtoPglobal = new DummyParameterDTO(localP).WithName("global");
 
          moleculeBuildingBlock.Add(molecule);
-         A.CallTo(() => project.MoleculeBlockCollection).Returns(new[] {moleculeBuildingBlock});
+         project.AddBuildingBlock(moleculeBuildingBlock);
          A.CallTo(() => _parameterMapper.MapFrom(localP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPlocal);
          A.CallTo(() => _parameterMapper.MapFrom(globalP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPglobal);
          A.CallTo(() => _context.CurrentProject).Returns(project);

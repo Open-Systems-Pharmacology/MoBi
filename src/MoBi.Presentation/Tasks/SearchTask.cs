@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Tasks
 
       }
 
-      private IEnumerable<SearchResult> searchInAllOfSameType(Type buildingBlockType, IMoBiProject project)
+      private IEnumerable<SearchResult> searchInAllOfSameType(Type buildingBlockType, MoBiProject project)
       {
          var result = new List<SearchResult>();
          var buildingBlocks = getBuildingBlocksOfType(buildingBlockType);

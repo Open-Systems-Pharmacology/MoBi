@@ -13,7 +13,7 @@ namespace MoBi.Core.SBML
    public abstract class ContextForSBMLIntegration<T> : ContextForIntegration<T>
    {  
       protected SbmlTask _sbmlTask;
-      protected IMoBiProject _moBiProject;
+      protected MoBiProject _moBiProject;
       protected string _fileName;
 
       protected override void Context()

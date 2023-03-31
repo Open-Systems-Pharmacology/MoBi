@@ -100,12 +100,12 @@ namespace MoBi.IntegrationTests
          messages.Count.ShouldBeEqualTo(0, messages.ToString("\n"));
       }
 
-      private void addSettings(IMoBiProject project, string settingFileName)
+      private void addSettings(MoBiProject project, string settingFileName)
       {
          var simulationSettings = IoC.Resolve<ISimulationSettingsFactory>().CreateDefault();
       }
 
-      private SimulationConfiguration generateBuildConfiguration(IMoBiProject project)
+      private SimulationConfiguration generateBuildConfiguration(MoBiProject project)
       {
          var simulationConfiguration = new SimulationConfiguration { Module = new Module() };
 
@@ -121,7 +121,7 @@ namespace MoBi.IntegrationTests
          return simulationConfiguration;
       }
 
-      private void addEmptyBBIfNeeded(IMoBiProject project)
+      private void addEmptyBBIfNeeded(MoBiProject project)
       {
          project.AddBuildingBlock(new ObserverBuildingBlock().WithName("Empty"));
          if (!project.EventBlockCollection.Any())

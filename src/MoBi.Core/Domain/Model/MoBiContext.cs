@@ -21,7 +21,7 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Core.Domain.Model
 {
-   public interface IMoBiContext : IOSPSuiteExecutionContext<IMoBiProject>, IWorkspace
+   public interface IMoBiContext : IOSPSuiteExecutionContext<MoBiProject>, IWorkspace
    {
       IMoBiDimensionFactory DimensionFactory { get; }
       IObjectBaseFactory ObjectBaseFactory { get; }
@@ -34,7 +34,7 @@ namespace MoBi.Core.Domain.Model
       IMoBiHistoryManager HistoryManager { get; set; }
       IObjectPathFactory ObjectPathFactory { get; }
       void NewProject();
-      void LoadFrom(IMoBiProject project);
+      void LoadFrom(MoBiProject project);
 
       /// <summary>
       ///    Converts the given <paramref name="value" /> to a representation that should be saved in commands. The returned
@@ -53,7 +53,7 @@ namespace MoBi.Core.Domain.Model
       void UnregisterSimulation(IMoBiSimulation simulation);
    }
 
-   public class MoBiContext : Workspace<IMoBiProject>, IMoBiContext
+   public class MoBiContext : Workspace<MoBiProject>, IMoBiContext
    {
       private readonly IXmlSerializationService _serializationService;
       private readonly IHistoryManagerFactory _historyManagerFactory;
@@ -96,7 +96,7 @@ namespace MoBi.Core.Domain.Model
          _journalSession = journalSession;
       }
 
-      public IMoBiProject CurrentProject
+      public MoBiProject CurrentProject
       {
          get => _project;
          set => _project = value;
@@ -148,7 +148,7 @@ namespace MoBi.Core.Domain.Model
       public void NewProject()
       {
          Clear();
-         CurrentProject = ObjectBaseFactory.Create<IMoBiProject>();
+         CurrentProject = ObjectBaseFactory.Create<MoBiProject>();
          HistoryManager = _historyManagerFactory.Create() as IMoBiHistoryManager;
          LoadFrom(CurrentProject);
          AddToHistory(new CreateProjectCommand().Run(this));
@@ -193,7 +193,7 @@ namespace MoBi.Core.Domain.Model
          return Container.Resolve<T>();
       }
 
-      public void LoadFrom(IMoBiProject project)
+      public void LoadFrom(MoBiProject project)
       {
          CurrentProject = project;
          _registerTask.Register(project);

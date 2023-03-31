@@ -44,7 +44,7 @@ namespace MoBi.Core.Commands
          _buildingBlock = null;
       }
 
-      private void removeFromProject(IMoBiProject project)
+      private void removeFromProject(MoBiProject project)
       {
          project.RemoveBuildingBlock(_buildingBlock);
       }

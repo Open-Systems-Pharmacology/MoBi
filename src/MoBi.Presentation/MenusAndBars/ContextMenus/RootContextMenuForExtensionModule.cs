@@ -12,24 +12,24 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForExtensionModule : RootContextMenuFor<IMoBiProject, Module>
+   public class RootContextMenuForExtensionModule : RootContextMenuFor<MoBiProject, Module>
    {
       public RootContextMenuForExtensionModule(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {
       }
 
-      private IMenuBarItem addNewWithContent(IMoBiProject project)
+      private IMenuBarItem addNewWithContent(MoBiProject project)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddModuleWithBuildingBlocks)
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)))
-            .WithCommandFor<NewModuleWithBuildingBlocksUICommand, IMoBiProject>(project, _container);
+            .WithCommandFor<NewModuleWithBuildingBlocksUICommand, MoBiProject>(project, _container);
       }
 
-      private IMenuBarItem addNewEmpty(IMoBiProject project)
+      private IMenuBarItem addNewEmpty(MoBiProject project)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddEmptyModule)
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)))
-            .WithCommandFor<NewEmptyModuleUICommand, IMoBiProject>(project, _container);
+            .WithCommandFor<NewEmptyModuleUICommand, MoBiProject>(project, _container);
       }
 
       public override IContextMenu InitializeWith(IPresenter presenter)
@@ -41,11 +41,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return this;
       }
 
-      private IMenuBarItem loadExisting(IMoBiProject project)
+      private IMenuBarItem loadExisting(MoBiProject project)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypeName))
             .WithIcon(ApplicationIcons.LoadIconFor(nameof(Module)))
-            .WithCommandFor<AddExistingCommandFor<IMoBiProject, Module>, IMoBiProject>(project, _container);
+            .WithCommandFor<AddExistingCommandFor<MoBiProject, Module>, MoBiProject>(project, _container);
       }
    }
 }

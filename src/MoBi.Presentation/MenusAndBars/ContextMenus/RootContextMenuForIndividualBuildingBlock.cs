@@ -10,14 +10,14 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForIndividualBuildingBlock : RootContextMenuFor<IMoBiProject, IndividualBuildingBlock>
+   public class RootContextMenuForIndividualBuildingBlock : RootContextMenuFor<MoBiProject, IndividualBuildingBlock>
    {
       public RootContextMenuForIndividualBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver,
          context, container)
       {
       }
 
-      protected override void CreateAddItems(IMoBiProject parent)
+      protected override void CreateAddItems(MoBiProject parent)
       {
          _allMenuItems.Add(createAddNewIndividual());
          _allMenuItems.Add(CreateAddExistingItemFor(parent));

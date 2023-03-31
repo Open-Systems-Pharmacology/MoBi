@@ -201,7 +201,7 @@ namespace MoBi.Presentation
    public class When_the_building_block_explorer_presenter_is_adding_the_project_to_the_tree : concern_for_BuildingBlockExplorerPresenter
    {
       private List<ITreeNode> _allNodesAdded;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private ObserverBuildingBlock _observerBuildingBlock;
       private SimulationSettings _simulationSettingsBuildingBlock;
       private ITreeNode _simulationSettingsNode;

@@ -25,7 +25,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_a_container : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName = "Drug";
       private string _parameterName = "Para";
@@ -67,7 +67,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_a_distributed_parameter : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName = "Drug";
       private string _parameterName = "Para";
@@ -116,7 +116,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_an_reaction : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName="Drug";
       private string _parameterName="Para";
@@ -156,7 +156,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_an_molecule : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName = "Drug";
       private string _parameterName = "Para";
@@ -224,7 +224,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_an_simulation : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName = "Drug";
       private string _parameterName = "Para";

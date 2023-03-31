@@ -12,77 +12,7 @@ using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Domain.Model
 {
-   public interface IMoBiProject : IProject
-   {
-      IReadOnlyList<IMoBiSimulation> Simulations { get; }
-      IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection { get; }
-      IReadOnlyList<IMoBiReactionBuildingBlock> ReactionBlockCollection { get; }
-      IReadOnlyList<IPassiveTransportBuildingBlock> PassiveTransportCollection { get; }
-      IReadOnlyList<IMoBiSpatialStructure> SpatialStructureCollection { get; }
-      IReadOnlyList<IObserverBuildingBlock> ObserverBlockCollection { get; }
-      IReadOnlyList<IEventGroupBuildingBlock> EventBlockCollection { get; }
-      IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection { get; }
-      IReadOnlyList<ParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection { get; }
-      IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection { get; }
-      IReadOnlyList<IndividualBuildingBlock> IndividualsCollection { get; }
-      IReadOnlyList<Module> Modules { get; }
-
-      ReactionDimensionMode ReactionDimensionMode { get; set; }
-
-      void AddSimulation(IMoBiSimulation newSimulation);
-      void RemoveSimulation(IMoBiSimulation simulationToRemove);
-      void AddChart(CurveChart chart);
-      void RemoveChart(CurveChart chartToRemove);
-      void AddModule(Module module);
-
-      void RemoveModule(Module module);
-
-      //only for serialization
-      IReadOnlyList<IBuildingBlock> AllBuildingBlocks();
-
-      /// <summary>
-      ///    Returns the template <see cref="BuildingBlock" /> with the given <paramref name="templateBuildingBlockId" />
-      ///    or null if no template exists with the given id.
-      /// </summary>
-      IBuildingBlock TemplateById(string templateBuildingBlockId);
-
-      void AddBuildingBlock(IBuildingBlock buildingBlock);
-      void RemoveBuildingBlock(IBuildingBlock buildingBlockToRemove);
-
-      /// <summary>
-      ///    Gets the list of start value building blocks that refer to
-      ///    <paramref name="buildingBlockToReference">buildingBlockToReference</paramref>
-      ///    through the MoleculeBuildingBlockId or SpatialStructureId
-      /// </summary>
-      /// <param name="buildingBlockToReference">
-      ///    This is the building block to check for reference. Normally a spatial structure
-      ///    or molecule building block
-      /// </param>
-      /// <returns>The list of referring building block names</returns>
-      IReadOnlyList<IBuildingBlock> ReferringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToReference);
-
-      /// <summary>
-      ///    Returns the list of simulations that were created using the given <paramref name="templateBuildingBlock" />
-      /// </summary>
-      IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(IBuildingBlock templateBuildingBlock);
-
-      /// <summary>
-      ///    Returns an enumeration containing all building blocks and simulation defined in the project
-      /// </summary>
-      /// <returns></returns>
-      IEnumerable<IObjectBase> All();
-
-      IEnumerable<CurveChart> Charts { get; }
-
-      /// <summary>
-      ///    Returns <c>true</c> if the project does not contain any building block and simulation otherwise <c>false</c>
-      /// </summary>
-      bool IsEmpty { get; }
-
-      SimulationSettings SimulationSettings { get; set; }
-   }
-
-   public class MoBiProject : Project, IMoBiProject
+   public class MoBiProject : Project
    {
       private readonly List<IBuildingBlock> _buildingBlocks;
       private readonly List<CurveChart> _charts;

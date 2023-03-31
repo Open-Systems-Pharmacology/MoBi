@@ -4,7 +4,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class NewEmptyModuleUICommand : ObjectUICommand<IMoBiProject>
+   public class NewEmptyModuleUICommand : ObjectUICommand<MoBiProject>
    {
       private readonly IInteractionTasksForModule _interactionTasksForModule;
       private readonly IMoBiContext _context;

@@ -9,7 +9,7 @@ using MoBi.Helpers;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_MoBiProject : ContextSpecification<IMoBiProject>
+   public abstract class concern_for_MoBiProject : ContextSpecification<MoBiProject>
    {
       protected override void Context()
       {

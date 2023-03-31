@@ -9,7 +9,7 @@ namespace MoBi.Core.Serialization.Services
 {
    public interface IPostSerializationStepsMaker
    {
-      void PerformPostDeserializationFor(IMoBiProject project, int originalFileVersion);
+      void PerformPostDeserializationFor(MoBiProject project, int originalFileVersion);
 
       void PerformPostDeserializationFor<T>(IReadOnlyList<T> deserializedObjects, int originalFileVersion, bool resetIds);
    }
@@ -32,7 +32,7 @@ namespace MoBi.Core.Serialization.Services
          _projectClassificationConverter = projectClassificationConverter;
       }
 
-      public void PerformPostDeserializationFor(IMoBiProject project, int originalFileVersion)
+      public void PerformPostDeserializationFor(MoBiProject project, int originalFileVersion)
       {
          if (originalFileVersion < ProjectVersions.V6_0_1)
             //this needs to be done after all object were loaded into project

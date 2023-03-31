@@ -2,6 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -25,7 +26,7 @@ namespace MoBi.Presentation
       protected IObjectPathFactory _objectPathFactory;
       protected IParameterToDummyParameterDTOMapper _parameterMapper;
       protected IReactionDimensionRetriever _dimensionRetriever;
-      private IMoBiProject _mobiProject;
+      private MoBiProject _mobiProject;
       private Container _rootContainer;
       private IMoBiReactionBuildingBlock _reactionBB;
       private MoleculeBuildingBlock _moleculeBB;
@@ -52,7 +53,7 @@ namespace MoBi.Presentation
          sut = new SelectEventAssignmentTargetPresenter(_view, _context, _objectBaseDTOMapper, _containerDTOMapper, _reactionMapper,
             _moleculeMapper, _objectPathFactory, _parameterMapper, _dimensionRetriever, _selectEntityInTreePresenter, _spatialStructureDTOMapper);
 
-         _mobiProject = A.Fake<IMoBiProject>();
+         _mobiProject = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.CurrentProject).Returns(_mobiProject);
          _rootContainer = new Container();
          _moleculeBuilder = new MoleculeBuilder().WithName("M");
@@ -63,13 +64,15 @@ namespace MoBi.Presentation
          _reaction.Add(_globalParameter);
          _reactionBB = new MoBiReactionBuildingBlock() {_reaction};
          _moleculeBB = new MoleculeBuildingBlock {_moleculeBuilder};
-         A.CallTo(() => _mobiProject.ReactionBlockCollection).Returns(new[] {_reactionBB});
-         A.CallTo(() => _mobiProject.MoleculeBlockCollection).Returns(new[] {_moleculeBB});
+
+         _mobiProject.AddBuildingBlock(_reactionBB);
+         _mobiProject.AddBuildingBlock(_moleculeBB);
+         
          sut.Init(_rootContainer);
       }
    }
 
-   internal class When_geting_children_for_a_distributeg_parameter : concern_for_SelectEventAssignmentTargetPresenter
+   internal class When_getting_children_for_a_distributed_parameter : concern_for_SelectEventAssignmentTargetPresenter
    {
       private ObjectBaseDTO _distributedParameterDTO;
       private IEnumerable<ObjectBaseDTO> _result;

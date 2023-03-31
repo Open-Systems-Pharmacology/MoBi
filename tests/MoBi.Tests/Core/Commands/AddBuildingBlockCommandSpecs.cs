@@ -1,6 +1,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -22,13 +23,13 @@ namespace MoBi.Core.Commands
    internal class When_executing_the_adding_command : concern_for_AddBuildingBlockCommand
    {
       private IMoBiContext _context;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private AddedEvent _event;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.PublishEvent(A<AddedEvent<IBuildingBlock>>._))
@@ -43,7 +44,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_add_building_block_to_project()
       {
-         A.CallTo(() => _project.AddBuildingBlock(_bb)).MustHaveHappened();
+         _project.AllBuildingBlocks().ShouldContain(_bb);
       }
 
       [Observation]
@@ -90,17 +91,19 @@ namespace MoBi.Core.Commands
    internal class When_executing_the_remove_BuildingBlockCommand_command : concern_for_RemoveBuildingBlockCommand
    {
       private IMoBiContext _context;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private RemovedEvent _event;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.PublishEvent(A<RemovedEvent>._))
             .Invokes(x => _event = x.GetArgument<RemovedEvent>(0));
+         
+         _project.AddBuildingBlock(_bb);
       }
 
       protected override void Because()
@@ -111,7 +114,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_remove_building_block_from_project()
       {
-         A.CallTo(() => _project.RemoveBuildingBlock(_bb)).MustHaveHappened();
+         _project.AllBuildingBlocks().ShouldNotContain(_bb);
       }
 
       [Observation]

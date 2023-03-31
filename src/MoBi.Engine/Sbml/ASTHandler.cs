@@ -14,7 +14,7 @@ namespace MoBi.Engine.Sbml
 {
    public class ASTHandler
    {
-      private IMoBiProject _sbmlProject;
+      private MoBiProject _sbmlProject;
       public List<FunctionDefinition> FunctionDefinitions { get; set; }
       public bool NeedAbsolutePath { get; set; }
       public bool UseConcentrations { get; set; } = false;
@@ -58,7 +58,7 @@ namespace MoBi.Engine.Sbml
       /// <param name="reactionBuilder"> The MoBi reactionBuilder the SBML reaction should be build with. </param>
       /// <param name="sbmlProject"></param>
       /// <param name="sbmlInformation"></param>
-      public IFormula Parse(ASTNode rootNode, IReactionBuilder reactionBuilder, IMoBiProject sbmlProject,
+      public IFormula Parse(ASTNode rootNode, IReactionBuilder reactionBuilder, MoBiProject sbmlProject,
          SBMLInformation sbmlInformation)
       {
          try
@@ -118,7 +118,7 @@ namespace MoBi.Engine.Sbml
       /// <param name="sbmlProject"></param>
       /// <param name="sbmlInformation"></param>
       public IFormula Parse(ASTNode rootNode, IEventAssignmentBuilder eventAssignmentBuilder, string assignmentVariable,
-         IMoBiProject sbmlProject, SBMLInformation sbmlInformation)
+         MoBiProject sbmlProject, SBMLInformation sbmlInformation)
       {
          try
          {
@@ -162,7 +162,7 @@ namespace MoBi.Engine.Sbml
       /// <param name="isRateRule"></param>
       /// <param name="sbmlProject"></param>
       /// <param name="sbmlInformation"></param>
-      public IFormula Parse(ASTNode rootNode, string rootObjectId, bool isRateRule, IMoBiProject sbmlProject,
+      public IFormula Parse(ASTNode rootNode, string rootObjectId, bool isRateRule, MoBiProject sbmlProject,
          SBMLInformation sbmlInformation)
       {
          try
@@ -203,7 +203,7 @@ namespace MoBi.Engine.Sbml
          }
       }
 
-      public IFormula Parse(ASTNode rootNode, string rootObjectId, IMoBiProject sbmlProject,
+      public IFormula Parse(ASTNode rootNode, string rootObjectId, MoBiProject sbmlProject,
          SBMLInformation sbmlInformation)
       {
          try

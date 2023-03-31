@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand AddToProject(IBuildingBlock buildingBlockToAdd);
    }
 
-   public interface IInteractionTasksForBuildingBlock<T> : IInteractionTasksForChildren<IMoBiProject, T>,
+   public interface IInteractionTasksForBuildingBlock<T> : IInteractionTasksForChildren<MoBiProject, T>,
       IInteractionTasksForBuildingBlock where T : class, IObjectBase
    {
       IMoBiCommand AddNew();
@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    }
 
    public abstract class InteractionTasksForBuildingBlock<TBuildingBlock> :
-      InteractionTasksForChildren<IMoBiProject, TBuildingBlock, IEditTasksForBuildingBlock<TBuildingBlock>>,
+      InteractionTasksForChildren<MoBiProject, TBuildingBlock, IEditTasksForBuildingBlock<TBuildingBlock>>,
       IInteractionTasksForBuildingBlock<TBuildingBlock>
       where TBuildingBlock : class, IBuildingBlock
    {
@@ -95,7 +95,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             targetBuildingBlock.DowncastTo<TBuildingBlock>());
       }
 
-      public override IMoBiCommand Remove(TBuildingBlock buildingBlockToRemove, IMoBiProject project,
+      public override IMoBiCommand Remove(TBuildingBlock buildingBlockToRemove, MoBiProject project,
          IBuildingBlock buildingBlock, bool silent)
       {
          var referringSimulations = project.SimulationsCreatedUsing(buildingBlockToRemove);
@@ -106,13 +106,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Remove(buildingBlockToRemove, project, buildingBlock, silent);
       }
 
-      public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, IMoBiProject parent,
+      public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, MoBiProject parent,
          IBuildingBlock buildingBlock)
       {
          return new RemoveBuildingBlockCommand<TBuildingBlock>(objectToRemove);
       }
 
-      public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, IMoBiProject parent,
+      public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, MoBiProject parent,
          IBuildingBlock buildingBlock)
       {
          return new AddBuildingBlockCommand<TBuildingBlock>(itemToAdd);
@@ -128,7 +128,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _editTask.DowncastTo<IEditTasksForBuildingBlock<TBuildingBlock>>().EditBuildingBlock(buildingBlock);
       }
 
-      protected override void SetAddCommandDescription(TBuildingBlock newEntity, IMoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand, IBuildingBlock buildingBlock)
+      protected override void SetAddCommandDescription(TBuildingBlock newEntity, MoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand, IBuildingBlock buildingBlock)
       {
          addCommand.Description = AppConstants.Commands.AddToProjectDescription(addCommand.ObjectType, newEntity.Name);
          macroCommand.Description = addCommand.Description;

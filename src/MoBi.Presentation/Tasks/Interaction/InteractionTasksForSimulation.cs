@@ -14,7 +14,7 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForSimulation : IInteractionTasksForChildren<IMoBiProject, IMoBiSimulation>
+   public interface IInteractionTasksForSimulation : IInteractionTasksForChildren<MoBiProject, IMoBiSimulation>
    {
       IMoBiCommand CreateSimulation();
       IMoBiCommand AddToProject(IMoBiSimulation simulation);
@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand RemoveMultipleSimulations(IReadOnlyList<IMoBiSimulation> simulations);
    }
 
-   public class InteractionTasksForSimulation : InteractionTasksForChildren<IMoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
+   public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
    {
       private readonly ISimulationReferenceUpdater _simulationReferenceUpdater;
 
@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override string ObjectName => ObjectTypes.Simulation;
 
-      protected override IMoBiCommand RunRemoveCommand(IMoBiSimulation simulationToRemove, IMoBiProject parent, IBuildingBlock buildingBlock)
+      protected override IMoBiCommand RunRemoveCommand(IMoBiSimulation simulationToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
       {
          _simulationReferenceUpdater.RemoveSimulationFromParameterIdentificationsAndSensitivityAnalyses(simulationToRemove);
 
@@ -93,17 +93,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      public override IMoBiCommand AddNew(IMoBiProject moBiProject, IBuildingBlock buildingBlockToAddTo)
+      public override IMoBiCommand AddNew(MoBiProject moBiProject, IBuildingBlock buildingBlockToAddTo)
       {
          return addSimulationToProjectCommmand(createSimulation()).Run(_interactionTaskContext.Context);
       }
 
-      public override IMoBiCommand GetRemoveCommand(IMoBiSimulation transportBuilderToRemove, IMoBiProject project, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(IMoBiSimulation transportBuilderToRemove, MoBiProject project, IBuildingBlock buildingBlock)
       {
          return new RemoveSimulationCommand(transportBuilderToRemove);
       }
 
-      public override IMoBiCommand GetAddCommand(IMoBiSimulation simulation, IMoBiProject project, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(IMoBiSimulation simulation, MoBiProject project, IBuildingBlock buildingBlock)
       {
          return addSimulationToProjectCommmand(simulation);
       }

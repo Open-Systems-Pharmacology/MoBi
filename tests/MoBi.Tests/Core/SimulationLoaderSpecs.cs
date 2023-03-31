@@ -19,7 +19,7 @@ namespace MoBi.Core
    {
       protected INameCorrector _nameCorrector;
       protected ICloneManagerForSimulation _cloneManager;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       protected IMoBiSimulation _simulation;
       protected IMoBiContext _context;
 
