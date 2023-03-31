@@ -399,7 +399,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new RemovedEvent(_buildingBlock, A.Fake<IMoBiProject>()));
+         sut.Handle(new RemovedEvent(_buildingBlock, A.Fake<MoBiProject>()));
       }
 
       [Observation]

@@ -11,7 +11,7 @@ namespace MoBi.Core.Serialization.Services
 {
    public interface IDeserializedReferenceResolver
    {
-      void ResolveFormulaAndTemplateReferences(object deserializedObject, IMoBiProject project);
+      void ResolveFormulaAndTemplateReferences(object deserializedObject, MoBiProject project);
    }
 
    public class DeserializedReferenceResolver : IDeserializedReferenceResolver
@@ -27,11 +27,11 @@ namespace MoBi.Core.Serialization.Services
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
       }
 
-      public void ResolveFormulaAndTemplateReferences(object deserializedObject, IMoBiProject project)
+      public void ResolveFormulaAndTemplateReferences(object deserializedObject, MoBiProject project)
       {
          switch (deserializedObject)
          {
-            case IMoBiProject proj:
+            case MoBiProject proj:
                _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(proj);
                proj.All<ISpatialStructure>().Each(resolveReferences);
                proj.Simulations.Each(resolveReferences);

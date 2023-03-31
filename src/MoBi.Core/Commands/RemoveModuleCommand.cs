@@ -48,7 +48,7 @@ namespace MoBi.Core.Commands
          _module = null;
       }
 
-      private void removeFromProject(IMoBiProject project)
+      private void removeFromProject(MoBiProject project)
       {
          project.RemoveModule(_module);
       }

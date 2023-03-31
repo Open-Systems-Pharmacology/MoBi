@@ -10,13 +10,13 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForExpressionProfileBuildingBlock : RootContextMenuFor<IMoBiProject, ExpressionProfileBuildingBlock>
+   public class RootContextMenuForExpressionProfileBuildingBlock : RootContextMenuFor<MoBiProject, ExpressionProfileBuildingBlock>
    {
       public RootContextMenuForExpressionProfileBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {
       }
 
-      protected override void CreateAddItems(IMoBiProject parent)
+      protected override void CreateAddItems(MoBiProject parent)
       {
          var newExpressionProfile = CreateSubMenu.WithCaption(MenuNames.NewExpressionProfile)
             .WithIcon(ApplicationIcons.ExpressionProfile)

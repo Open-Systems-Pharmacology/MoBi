@@ -16,7 +16,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
 
       public override MoBiProject CreateObject(XElement element, SerializationContext serializationContext)
       {
-         return IoC.Resolve<IMoBiProject>() as MoBiProject;
+         return serializationContext.Resolve<MoBiProject>();
       }
    }
 }

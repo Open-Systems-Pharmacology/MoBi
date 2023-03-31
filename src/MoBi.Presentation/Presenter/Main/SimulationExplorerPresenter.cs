@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Presenter.Main
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
-      protected override void AddProjectToTree(IMoBiProject project)
+      protected override void AddProjectToTree(MoBiProject project)
       {
          using (new BatchUpdate(_view))
          {

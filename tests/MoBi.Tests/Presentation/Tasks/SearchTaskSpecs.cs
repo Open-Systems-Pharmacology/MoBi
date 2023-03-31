@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
 using FakeItEasy;
+using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -52,7 +55,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_search_in_the_buildingBlock()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock,A<IMoBiProject>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock,A<MoBiProject>._)).MustHaveHappened();
       }
    }
 
@@ -60,13 +63,13 @@ namespace MoBi.Presentation.Tasks
    {
       private IObjectBase _buildingBlock;
       private SearchOptions _options;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
          _buildingBlock = A.Fake<IBuildingBlock>();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _options = new SearchOptions() { CaseSensitive = false, Expression = "*", Scope = SearchScope.Project, RegEx = true, WholeWord = true };
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
@@ -96,18 +99,19 @@ namespace MoBi.Presentation.Tasks
    {
       private MoleculeStartValuesBuildingBlock _buildingBlock;
       private SearchOptions _options;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private MoleculeStartValuesBuildingBlock _otherBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _buildingBlock = new MoleculeStartValuesBuildingBlock();
-         _project = A.Fake<IMoBiProject>();
+         _project = DomainHelperForSpecs.NewProject();
          _options = new SearchOptions() { CaseSensitive = false, Expression = "*", Scope = SearchScope.AllOfSameType, RegEx = true, WholeWord = true };
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          _otherBuildingBlock = new MoleculeStartValuesBuildingBlock();
-         A.CallTo(() => _project.MoleculeStartValueBlockCollection).Returns(new []{_buildingBlock,_otherBuildingBlock});  
+         _project.AddBuildingBlock(_buildingBlock);
+         _project.AddBuildingBlock(_otherBuildingBlock);
       }
 
       protected override void Because()
@@ -118,7 +122,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_retrieve_all_building_blocks_of_same_type()
       {
-         A.CallTo(() => _project.MoleculeStartValueBlockCollection).MustHaveHappened();  
+         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock, _project)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_otherBuildingBlock, _project)).MustHaveHappened();
       }
 
       [Observation]
@@ -143,18 +148,20 @@ namespace MoBi.Presentation.Tasks
    {
       private IMoBiSimulation _simulation;
       private SearchOptions _options;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IMoBiSimulation _otherSimulation;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
-         _project = A.Fake<IMoBiProject>();
-         _options = new SearchOptions() { CaseSensitive = false, Expression = "*", Scope = SearchScope.AllOfSameType, RegEx = true, WholeWord = true };
+         _project = DomainHelperForSpecs.NewProject();
+         _options = new SearchOptions { CaseSensitive = false, Expression = "*", Scope = SearchScope.AllOfSameType, RegEx = true, WholeWord = true };
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          _otherSimulation = A.Fake<IMoBiSimulation>(); 
-         A.CallTo(() => _project.Simulations).Returns(new []{_simulation,_otherSimulation});  
+         
+         _project.AddSimulation(_simulation);
+         _project.AddSimulation(_otherSimulation);
       }
 
       protected override void Because()
@@ -165,7 +172,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_retrieve_all_building_blocks_of_same_type()
       {
-         A.CallTo(() => _project.Simulations).MustHaveHappened();  
+         A.CallTo(() => _searchVisitor.SearchIn(_simulation, _project)).MustHaveHappened();
       }
 
       [Observation]
@@ -180,8 +187,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_search_in_the_buildingBlock()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_simulation,A<IMoBiProject>._)).MustHaveHappened();
-         A.CallTo(() => _searchVisitor.SearchIn(_otherSimulation, A<IMoBiProject>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_simulation,A<MoBiProject>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_otherSimulation, A<MoBiProject>._)).MustHaveHappened();
 
       }
    }
@@ -215,7 +222,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_search_in_the_buildingBlock()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_simulation, A<IMoBiProject>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_simulation, A<MoBiProject>._)).MustHaveHappened();
       }
    }
 }	

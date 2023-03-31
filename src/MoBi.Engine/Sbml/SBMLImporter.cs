@@ -18,7 +18,7 @@ namespace MoBi.Engine.Sbml
       MoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock();
       IEntity GetContainerFromCompartment(string compartment);
       IContainer GetContainerFromCompartment_(string compartment);
-      void DoImport(Model sbmlModel, IMoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command);
+      void DoImport(Model sbmlModel, MoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command);
       void AddToProject();
       IObjectPathFactory ObjectPathFactory { get; set; }
       IObjectBaseFactory ObjectBaseFactory { get; set; }
@@ -27,7 +27,7 @@ namespace MoBi.Engine.Sbml
    public abstract class SBMLImporter : ISBMLImporter
    {
       protected ASTHandler _astHandler;
-      protected IMoBiProject _sbmlProject;
+      protected MoBiProject _sbmlProject;
       protected SBMLInformation _sbmlInformation;
       protected ICommandCollector _command;
       protected IMoBiContext _context;
@@ -135,7 +135,7 @@ namespace MoBi.Engine.Sbml
          return null;
       }
 
-      public void DoImport(Model sbmlModel, IMoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command)
+      public void DoImport(Model sbmlModel, MoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command)
       {
          _sbmlProject = moBiProject;
          _sbmlInformation = sbmlInformation;

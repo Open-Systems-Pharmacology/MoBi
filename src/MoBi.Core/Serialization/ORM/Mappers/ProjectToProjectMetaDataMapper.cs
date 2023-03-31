@@ -13,7 +13,7 @@ using DataRepositoryMetaData = MoBi.Core.Serialization.ORM.MetaData.DataReposito
 
 namespace MoBi.Core.Serialization.ORM.Mappers
 {
-   public interface IProjectToProjectMetaDataMapper : IMapper<IMoBiProject, ProjectMetaData>
+   public interface IProjectToProjectMetaDataMapper : IMapper<MoBiProject, ProjectMetaData>
 
    {
    }
@@ -27,7 +27,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          _serializationService = serializationService;
       }
 
-      public ProjectMetaData MapFrom(IMoBiProject project)
+      public ProjectMetaData MapFrom(MoBiProject project)
       {
          var projectMetaData = new ProjectMetaData {Name = project.Name, Description = project.Description};
          serializeContent(projectMetaData, project);

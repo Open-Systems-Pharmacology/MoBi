@@ -162,7 +162,7 @@ namespace MoBi.Presentation.Presenter.Main
             .Under(folderNode));
       }
 
-      protected override void AddProjectToTree(IMoBiProject project)
+      protected override void AddProjectToTree(MoBiProject project)
       {
          using (new BatchUpdate(_view))
          {

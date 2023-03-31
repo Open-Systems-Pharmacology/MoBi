@@ -41,7 +41,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return IoC.Resolve<IRootContextMenuFor<IMoBiProject, TObjectBase>>().InitializeWith(_rootNodeType, presenter.DowncastTo<IExplorerPresenter>());
+         return IoC.Resolve<IRootContextMenuFor<MoBiProject, TObjectBase>>().InitializeWith(_rootNodeType, presenter.DowncastTo<IExplorerPresenter>());
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)

@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _spatialStructureFactory = spatialStructureFactory;
       }
 
-      public override IMoBiCommand Remove(IMoBiSpatialStructure buildingBlockToRemove, IMoBiProject project, IBuildingBlock buildingBlock, bool silent)
+      public override IMoBiCommand Remove(IMoBiSpatialStructure buildingBlockToRemove, MoBiProject project, IBuildingBlock buildingBlock, bool silent)
       {
          var referringStartValuesBuildingBlocks = project.ReferringStartValuesBuildingBlocks(buildingBlockToRemove);
          if (referringStartValuesBuildingBlocks.Any())
@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          throw new MoBiException(AppConstants.Exceptions.MergingSpatialStructuresIsNotSupported);
       }
 
-      public override IMoBiSpatialStructure CreateNewEntity(IMoBiProject moleculeBuildingBlock)
+      public override IMoBiSpatialStructure CreateNewEntity(MoBiProject moleculeBuildingBlock)
       {
          return _spatialStructureFactory.CreateDefault(spatialStructureName:string.Empty);
       }

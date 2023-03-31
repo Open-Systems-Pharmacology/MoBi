@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _startValuePathTask = startValuePathTask;
       }
 
-      public override IMoBiCommand AddNew(IMoBiProject project, IBuildingBlock buildingBlockToAddTo)
+      public override IMoBiCommand AddNew(MoBiProject project, IBuildingBlock buildingBlockToAddTo)
       {
          if (!project.MoleculeBlockCollection.Any() || !project.SpatialStructureCollection.Any())
             throw new MoBiException(AppConstants.Exceptions.UnableToCreateStartValues);

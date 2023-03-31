@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
       protected T _oldBuildingBlock;
       protected T _newBuildingBlock;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
 
       protected override void Context()
       {

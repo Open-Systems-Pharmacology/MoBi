@@ -250,7 +250,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_referenceMapper.MapFrom(timeDTO));
       }
 
-      private IEnumerable<T> getAllMoleculeChildren<T>(IMoBiProject currentProject, DummyMoleculeContainerDTO dummyMolecule) where T : class, IEntity
+      private IEnumerable<T> getAllMoleculeChildren<T>(MoBiProject currentProject, DummyMoleculeContainerDTO dummyMolecule) where T : class, IEntity
       {
          IEnumerable<T> children = new List<T>();
          foreach (var moleculeBuildingBlock in currentProject.MoleculeBlockCollection)

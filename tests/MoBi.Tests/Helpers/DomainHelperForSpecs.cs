@@ -67,7 +67,7 @@ namespace MoBi.Helpers
          return data;
       }
 
-      public static IMoBiProject NewProject()
+      public static MoBiProject NewProject()
       {
          return new MoBiProject { SimulationSettings = new SimulationSettings() };
       }

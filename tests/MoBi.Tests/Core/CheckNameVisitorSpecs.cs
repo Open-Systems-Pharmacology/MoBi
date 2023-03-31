@@ -33,7 +33,7 @@ namespace MoBi.Core
       protected IObjectTypeResolver _objectTypeResolver;
       protected IAliasCreator _aliasCreator;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       protected IParameterStartValuePathTask _psvTask;
       protected IMoleculeStartValuePathTask _msvTask;
       protected ICloneManager _cloneManager;

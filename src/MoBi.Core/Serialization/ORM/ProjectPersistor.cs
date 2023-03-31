@@ -7,7 +7,7 @@ using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace MoBi.Core.Serialization.ORM
 {
-   public interface IProjectPersistor : IPersistor<IMoBiProject>
+   public interface IProjectPersistor : IPersistor<MoBiProject>
    {
    }
 
@@ -30,7 +30,7 @@ namespace MoBi.Core.Serialization.ORM
          _serializationContextFactory = serializationContextFactory;
       }
 
-      public void Save(IMoBiProject project, IMoBiContext context)
+      public void Save(MoBiProject project, IMoBiContext context)
       {
          using (_serializationContextFactory.Create())
          {
@@ -44,7 +44,7 @@ namespace MoBi.Core.Serialization.ORM
          }
       }
 
-      public IMoBiProject Load(IMoBiContext context)
+      public MoBiProject Load(IMoBiContext context)
       {
          var projectFromDb = projectFromDatabase();
          if (projectFromDb == null)
@@ -70,12 +70,12 @@ namespace MoBi.Core.Serialization.ORM
          return projectsFromDb[0];
       }
 
-      private ProjectMetaData projectMetaDataFrom(IMoBiProject project)
+      private ProjectMetaData projectMetaDataFrom(MoBiProject project)
       {
          return _projectToProjectMetaDataMapper.MapFrom(project);
       }
 
-      private IMoBiProject projectFrom(ProjectMetaData projectMetaData)
+      private MoBiProject projectFrom(ProjectMetaData projectMetaData)
       {
          return _projectMetaDataToProjectMapper.MapFrom(projectMetaData);
       }

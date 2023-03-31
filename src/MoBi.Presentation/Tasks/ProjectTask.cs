@@ -133,7 +133,7 @@ namespace MoBi.Presentation.Tasks
          return _serializationTask.Load<SimulationTransfer>(fileName);
       }
 
-      private void loadJournalIfNotLoadedAlready(IMoBiProject project, string journalPath)
+      private void loadJournalIfNotLoadedAlready(MoBiProject project, string journalPath)
       {
          if (!string.IsNullOrEmpty(project.JournalPath))
             return;

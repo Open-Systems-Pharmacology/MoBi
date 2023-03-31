@@ -21,7 +21,7 @@ namespace MoBi.Core
 
    public class When_updating_a_project_afer_deserialization : concern_for_ProjectClassifiableUpdaterAfterDeserialization
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IClassifiableWrapper _classifiable1;
       private IClassifiableWrapper _classifiable2;
       private IMoBiSimulation _simulation;

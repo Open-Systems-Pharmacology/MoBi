@@ -8,11 +8,11 @@ namespace MoBi.Presentation.UICommand
 {
    internal class RemoveSimulationUICommand : ObjectUICommand<IMoBiSimulation>
    {
-      private readonly IInteractionTasksForChildren<IMoBiProject, IMoBiSimulation> _simulationTasks;
+      private readonly IInteractionTasksForChildren<MoBiProject, IMoBiSimulation> _simulationTasks;
       private readonly IMoBiContext _context;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      public RemoveSimulationUICommand(IMoBiContext context, IInteractionTasksForChildren<IMoBiProject, IMoBiSimulation> simulationTasks, IActiveSubjectRetriever activeSubjectRetriever)
+      public RemoveSimulationUICommand(IMoBiContext context, IInteractionTasksForChildren<MoBiProject, IMoBiSimulation> simulationTasks, IActiveSubjectRetriever activeSubjectRetriever)
       {
          _context = context;
          _simulationTasks = simulationTasks;

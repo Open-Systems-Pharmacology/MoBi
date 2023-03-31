@@ -11,11 +11,11 @@ namespace MoBi.Core.Service
    public abstract class concern_for_RenameBuildingBlockTask : ContextSpecification<IRenameBuildingBlockTask>
    {
       private IMoBiProjectRetriever _projectRetriever;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
 
       protected override void Context()
       {
-         _project= A.Fake<IMoBiProject>();
+         _project= A.Fake<MoBiProject>();
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          sut = new RenameBuildingBlockTask(_projectRetriever);

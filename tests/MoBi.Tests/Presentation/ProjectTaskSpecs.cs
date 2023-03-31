@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using FakeItEasy;
+using FluentNHibernate.Utils;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -58,7 +60,7 @@ namespace MoBi.Presentation
 
    internal class When_loading_a_simulation : concern_for_ProjectTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private SimulationTransfer _simulationTransfer;
       private IMoBiSimulation _simulation;
       private IPassiveTransportBuildingBlock _newBuildingBlock;
@@ -67,15 +69,15 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = DomainHelperForSpecs.NewProject();
          _simulationTransfer = A.Fake<SimulationTransfer>();
          _simulationTransfer.Favorites = new Favorites { "Fav1", "Fav2" };
          _simulation = A.Fake<IMoBiSimulation>();
          _simulationTransfer.Simulation = _simulation;
          _newBuildingBlock = A.Fake<IPassiveTransportBuildingBlock>();
          _existingBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithId("Existing");
-
-         A.CallTo(() => _project.ReactionBlockCollection).Returns(new[] { _existingBuildingBlock });
+         _project.AddBuildingBlock(_existingBuildingBlock);
+         
          var simulationConfiguration = new SimulationConfiguration();
          A.CallTo(() => _simulation.Configuration).Returns(simulationConfiguration);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSimulation, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, null, null)).Returns("File");
@@ -110,7 +112,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_update_favorites_in_projects()
       {
-         A.CallTo(() => _project.Favorites.AddFavorites(_simulationTransfer.Favorites)).MustHaveHappened();
+         _simulationTransfer.Favorites.Each(favorite => _project.Favorites.ShouldContain(favorite));
       }
    }
 
@@ -169,12 +171,12 @@ namespace MoBi.Presentation
 
    public class When_told_to_save_and_no_filename_is_given : concern_for_ProjectTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          A.CallTo(
                () => _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, _project.Name, null))
             .Returns("Name");
@@ -199,12 +201,12 @@ namespace MoBi.Presentation
 
    public class When_told_to_save : concern_for_ProjectTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.FilePath = "FilePath";
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
@@ -235,7 +237,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         var project = A.Fake<IMoBiProject>();
+         var project = A.Fake<MoBiProject>();
          _fileName = "file";
          A.CallTo(() => project.Name).Returns(_fileName);
          A.CallTo(() => _context.CurrentProject).Returns(project);
@@ -273,7 +275,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         var project = A.Fake<IMoBiProject>();
+         var project = A.Fake<MoBiProject>();
          _fileName = "file";
          A.CallTo(() => project.Name).Returns(_fileName);
          A.CallTo(() => _context.CurrentProject).Returns(project);
@@ -315,7 +317,7 @@ namespace MoBi.Presentation
 
    public class When_told_to_create_new_project : concern_for_ProjectTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IWithIdRepository _objectBaseRepository;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
       private IMoBiReactionBuildingBlock _moBiReactionBuildingBlock;
@@ -329,7 +331,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
          _spatialStructure = A.Fake<IMoBiSpatialStructure>();
          _simulationSettings = A.Fake<SimulationSettings>();
@@ -372,12 +374,12 @@ namespace MoBi.Presentation
    public class When_told_to_close_project_which_should_be_saved_but_save_was_canceled : concern_for_ProjectTask
    {
       private bool _result;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.HasChanged = true;
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -413,12 +415,12 @@ namespace MoBi.Presentation
    public class When_told_to_close_project_which_should_be_saved : concern_for_ProjectTask
    {
       private bool _result;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.HasChanged = true;
          _project.FilePath = "AA";
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -472,12 +474,12 @@ namespace MoBi.Presentation
    public class When_told_to_close_project_which_should_not_be_saved : concern_for_ProjectTask
    {
       private bool _result;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.HasChanged = true;
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
@@ -525,7 +527,7 @@ namespace MoBi.Presentation
    public class When_told_to_open : concern_for_ProjectTask
    {
       private string _fileName;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private bool _result;
 
       protected override void Context()
@@ -537,7 +539,7 @@ namespace MoBi.Presentation
                   _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
                      AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .Returns(_fileName);
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
 
@@ -585,13 +587,13 @@ namespace MoBi.Presentation
    {
       private string _fileName;
       private bool _result;
-      private IMoBiProject _oldProject;
+      private MoBiProject _oldProject;
 
       protected override void Context()
       {
          base.Context();
          _fileName = "Filename.xml";
-         _oldProject = A.Fake<IMoBiProject>();
+         _oldProject = A.Fake<MoBiProject>();
          _oldProject.HasChanged = true;
          _oldProject.FilePath = String.Empty;
          A.CallTo(() => _context.CurrentProject).Returns(_oldProject);
@@ -639,13 +641,13 @@ namespace MoBi.Presentation
    public class When_told_to_open_from_filename : concern_for_ProjectTask
    {
       private string _fileName;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
          _fileName = "Filename.mbp3";
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
 

@@ -32,7 +32,7 @@ namespace MoBi.Presentation
    public class When_removing_molecule_building_block_that_is_referred_to_in_another_building_block : concern_for_InteractionTasksForMoleculeBuildingBlock
    {
       private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {

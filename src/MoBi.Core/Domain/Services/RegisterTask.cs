@@ -16,7 +16,7 @@ namespace MoBi.Core.Domain.Services
       /// <summary>
       ///    Registers all objects defined in the <paramref name="project" /> but the simulations
       /// </summary>
-      void Register(IMoBiProject project);
+      void Register(MoBiProject project);
    }
 
    public class RegisterTask : AbstractRegistrationTask, IRegisterTask
@@ -54,7 +54,7 @@ namespace MoBi.Core.Domain.Services
             objectBase.AcceptVisitor(this);
       }
 
-      public void Register(IMoBiProject project)
+      public void Register(MoBiProject project)
       {
          register(project);
          project.AllBuildingBlocks().Each(RegisterAllIn);

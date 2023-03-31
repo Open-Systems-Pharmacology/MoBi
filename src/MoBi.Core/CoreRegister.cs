@@ -53,6 +53,7 @@ namespace MoBi.Core
             scan.WithConvention(new OSPSuiteRegistrationConvention());
          });
 
+         container.Register<MoBiProject, MoBiProject>();
          container.Register<IMoBiContext, IOSPSuiteExecutionContext, IWorkspace, MoBiContext>(LifeStyle.Singleton);
          container.Register<OSPSuite.Core.IApplicationSettings, IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
          container.Register<IMoBiDimensionFactory, IDimensionFactory, MoBiDimensionFactory>(LifeStyle.Singleton);

@@ -68,7 +68,7 @@ namespace MoBi.Core.Helper
          addToCache<ObjectPath>(ObjectTypes.Reference);
          addToCache<ObjectReference>(ObjectTypes.Reference);
          addToCache<IMoBiHistoryManager>(ObjectTypes.History);
-         addToCache<IMoBiProject>(ObjectTypes.Project);
+         addToCache<MoBiProject>(ObjectTypes.Project);
          addToCache<IDiagramModel>(ObjectTypes.DiagramModel);
          addToCache<IContainer>(ObjectTypes.Container);
          addToCache<FormulaUsablePath>(ObjectTypes.FormulaUsablePath);

@@ -10,18 +10,18 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForParameterStartValuesBuildingBlock : RootContextMenuFor<IMoBiProject, ParameterStartValuesBuildingBlock>
+   public class RootContextMenuForParameterStartValuesBuildingBlock : RootContextMenuFor<MoBiProject, ParameterStartValuesBuildingBlock>
    {
       public RootContextMenuForParameterStartValuesBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {
       }
 
-      protected override void CreateAddItems(IMoBiProject parent)
+      protected override void CreateAddItems(MoBiProject parent)
       {
          base.CreateAddItems(parent);
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.ExpressionProfileBuildingBlock)).AsGroupStarter()
             .WithIcon(ApplicationIcons.LoadIconFor(nameof(ExpressionProfileBuildingBlock)))
-            .WithCommandFor<AddExpressionAsParameterStartValuesCommand, IMoBiProject>(parent, _container));
+            .WithCommandFor<AddExpressionAsParameterStartValuesCommand, MoBiProject>(parent, _container));
       }
    }
 }

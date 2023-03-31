@@ -17,12 +17,12 @@ namespace MoBi.Core.Serialization.Converter.v7_1
          return version == ProjectVersions.V6_3_1;
       }
 
-      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) Convert(object objectToUpdate, MoBiProject project)
       {
          return _coreConverter.Convert(objectToUpdate);
       }
 
-      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, IMoBiProject project)
+      public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, MoBiProject project)
       {
          return _coreConverter.ConvertXml(element);
      }

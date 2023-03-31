@@ -50,7 +50,7 @@ namespace MoBi.Core.Commands
          _module = null;
       }
 
-      private void addToProject(IMoBiProject project)
+      private void addToProject(MoBiProject project)
       {
          project.AddModule(_module);
       }

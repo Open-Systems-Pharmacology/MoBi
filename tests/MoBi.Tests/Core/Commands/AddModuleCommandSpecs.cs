@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
    {
       protected Module _module;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       private RegisterTask _registrationTask;
       protected WithIdRepository _withIdRepository;
 

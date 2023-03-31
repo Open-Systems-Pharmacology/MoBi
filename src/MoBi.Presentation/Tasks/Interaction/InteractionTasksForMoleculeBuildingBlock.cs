@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          AddCommand(command);
       }
 
-      public override IMoBiCommand Remove(MoleculeBuildingBlock buildingBlockToRemove, IMoBiProject project, IBuildingBlock buildingBlock, bool silent)
+      public override IMoBiCommand Remove(MoleculeBuildingBlock buildingBlockToRemove, MoBiProject project, IBuildingBlock buildingBlock, bool silent)
       {
          var referringStartValuesBuildingBlocks = project.ReferringStartValuesBuildingBlocks(buildingBlockToRemove);
          if (referringStartValuesBuildingBlocks.Any())

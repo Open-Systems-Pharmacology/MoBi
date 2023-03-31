@@ -7,7 +7,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class ProjectReporter : OSPSuiteTeXReporter<IMoBiProject>
+   internal class ProjectReporter : OSPSuiteTeXReporter<MoBiProject>
    {
       private readonly SimulationsReporter _simulationsReporter;
       private readonly ReactionBuildingBlocksReporter _reactionBuildingBlocksReporter;
@@ -24,7 +24,7 @@ namespace MoBi.Core.Reporting
          _displayUnitRetriever = displayUnitRetriever;
       }
 
-      public override IReadOnlyCollection<object> Report(IMoBiProject project, OSPSuiteTracker buildTracker)
+      public override IReadOnlyCollection<object> Report(MoBiProject project, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
          listToReport.Add(new Part(Constants.BUILDING_BLOCKS));

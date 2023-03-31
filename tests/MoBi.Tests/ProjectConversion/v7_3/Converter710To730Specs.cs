@@ -10,7 +10,7 @@ namespace MoBi.ProjectConversion.v7_3
 {
    public class When_converting_a_project_to_7_3_0 : ContextWithLoadedProject
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       public override void GlobalContext()
       {

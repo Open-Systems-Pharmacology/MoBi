@@ -9,7 +9,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForParameterIdentification : RootContextMenuFor<IMoBiProject, ParameterIdentification>
+   public class RootContextMenuForParameterIdentification : RootContextMenuFor<MoBiProject, ParameterIdentification>
    {
       public RootContextMenuForParameterIdentification(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {

@@ -16,7 +16,7 @@ namespace MoBi.Presentation
       protected ICreateModuleDTOToModuleMapper _mapper;
       private IMoBiContext _context;
       protected ICreateModuleView _view;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
 
       protected override void Context()
       {

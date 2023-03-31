@@ -9,7 +9,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddExpressionAsParameterStartValuesCommand : ObjectUICommand<IMoBiProject>
+   public class AddExpressionAsParameterStartValuesCommand : ObjectUICommand<MoBiProject>
    {
       private readonly IMoBiContext _context;
       private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTaskForExpressionProfileBuildingBlock;
