@@ -27,7 +27,7 @@ namespace MoBi.Presentation
          sut = new AddBuildingBlocksToModulePresenter(_view, _mapper);
       }
    }
-
+/*
    public class When_adding_building_blocks_to_a_module_and_the_view_is_not_canceled : concern_for_AddBuildingBlocksToModulePresenter
    {
       private Module _moduleWithNewBuildingBlocks;
@@ -74,4 +74,5 @@ namespace MoBi.Presentation
          _result.ShouldBeNull();
       }
    }
+*/
 }

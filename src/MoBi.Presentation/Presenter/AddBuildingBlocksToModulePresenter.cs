@@ -1,15 +1,17 @@
+using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IAddBuildingBlocksToModulePresenter : IDisposablePresenter
    {
-      Module AddBuildingBlocksToModule(Module module);
+      IReadOnlyList<IBuildingBlock> AddBuildingBlocksToModule(Module module);
    }
 
    public class AddBuildingBlocksToModulePresenter : AbstractDisposablePresenter<IAddBuildingBlocksToModuleView, IAddBuildingBlocksToModulePresenter>,
@@ -23,7 +25,7 @@ namespace MoBi.Presentation.Presenter
          _addBuildingBlocksToModuleDTOToModuleMapper = addBuildingBlocksToModuleDTOToModuleMapper;
       }
 
-      public Module AddBuildingBlocksToModule(Module module)
+      public IReadOnlyList<IBuildingBlock> AddBuildingBlocksToModule(Module module)
       {
          _view.Caption = AppConstants.Captions.AddBuildingBlocksToModule(module.Name);
 
@@ -34,7 +36,7 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
 
          if (_view.Canceled)
-            return null;
+            return new List<IBuildingBlock>();
 
          return _addBuildingBlocksToModuleDTOToModuleMapper.MapFrom(addBuildingBlocksToModuleDTO);
       }

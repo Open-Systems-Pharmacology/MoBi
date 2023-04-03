@@ -28,15 +28,15 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          //Remove old building block
-         var removeCommand = new RemoveBuildingBlockCommand<T>(_oldBuildingBlock);
-         removeCommand.Execute(context);
+         //var removeCommand = new RemoveBuildingBlockCommand<T>(_oldBuildingBlock);
+         //removeCommand.Execute(context);
 
          //Update id before adding the new building block
          _newBuildingBlock.Id = _oldBuildingBlock.Id;
 
          //Add new building block
-         var addCommand = new AddBuildingBlockCommand<T>(_newBuildingBlock);
-         addCommand.Execute(context);
+         //var addCommand = new AddBuildingBlockCommand<T>(_newBuildingBlock);
+         //addCommand.Execute(context);
       }
    }
 }

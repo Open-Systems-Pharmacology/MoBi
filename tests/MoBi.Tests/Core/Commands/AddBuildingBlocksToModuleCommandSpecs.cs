@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class concern_for_AddBuildingBlocksToModuleCommand : ContextSpecification<AddBuildingBlocksToModuleCommand>
+   public class concern_for_AddBuildingBlocksToModuleCommand : ContextSpecification<AddMultipleBuildingBlocksToModuleCommand>
    {
       protected Module _existingModule;
       protected Module _moduleWithNewBuildingBlocks;
@@ -23,7 +23,7 @@ namespace MoBi.Core.Commands
          _moduleWithNewBuildingBlocks = new Module().WithId("moduleWithNewBuildingBlocksId");
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
-         sut = new AddBuildingBlocksToModuleCommand(_existingModule, _moduleWithNewBuildingBlocks);
+         sut = new AddMultipleBuildingBlocksToModuleCommand(_existingModule, _moduleWithNewBuildingBlocks);
          _project = new MoBiProject();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);

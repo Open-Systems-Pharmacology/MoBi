@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -32,9 +34,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddModuleCommand(itemToAdd);
       }
 
-      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, Module moduleWithNewBuildingBlocks)
+      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks)
       {
-         return new AddBuildingBlocksToModuleCommand(existingModule, moduleWithNewBuildingBlocks);
+         return new AddMultipleBuildingBlocksToModuleCommand(existingModule, listOfNewBuildingBlocks);
       }
 
       protected override void SetAddCommandDescription(Module child, IMoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand,
@@ -62,12 +64,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          using (var presenter = _interactionTaskContext.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>())
          {
-            var moduleWithNewBuildingBlocks = presenter.AddBuildingBlocksToModule(module);
+            var listOfNewBuildingBlocks = presenter.AddBuildingBlocksToModule(module);
 
-            if (moduleWithNewBuildingBlocks == null)
+            if (!listOfNewBuildingBlocks.Any())
                return;
 
-            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, moduleWithNewBuildingBlocks)
+            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, listOfNewBuildingBlocks)
                .Run(_interactionTaskContext.Context));
          }
       }
