@@ -23,7 +23,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _result = sut.IsSatisfiedBy(MoBiRootNodeTypes.MoleculeFolder, A.Fake<IBuildingBlockExplorerPresenter>());
+         _result = sut.IsSatisfiedBy(MoBiRootNodeTypes.MoleculeFolder, A.Fake<IModuleExplorerPresenter>());
       }
 
       [Observation]

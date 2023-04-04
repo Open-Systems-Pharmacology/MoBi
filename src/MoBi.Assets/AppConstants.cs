@@ -1005,7 +1005,6 @@ namespace MoBi.Assets
          public static readonly string AbsolutePath = "Absolute Path";
          public static readonly string ExportHistory = Captions.ExportHistory;
          public static readonly string StartPopulationSimulation = "Send Simulation to PK-Sim for Population Simulation...";
-         public static readonly string BuildingBlockExplorer = "Building Blocks";
          public static readonly string ModuleExplorer = "Modules";
          public static readonly string SimulationExplorer = "Simulations";
          public static readonly string New = "New";
