@@ -10,7 +10,6 @@ namespace MoBi.Presentation
    {
       private static readonly IList<RegionName> _allRegions = new List<RegionName>();
 
-      public static RegionName BuildingBlockExplorer = createRegionName("BuildingBlockExplorer", AppConstants.MenuNames.BuildingBlockExplorer, ApplicationIcons.BuildingBlockExplorer);
       public static RegionName ModuleExplorer = createRegionName("ModuleExplorer", AppConstants.MenuNames.ModuleExplorer, ApplicationIcons.ModuleExplorer);
       public static RegionName SimulationExplorer = createRegionName("ProjectExplorer", AppConstants.MenuNames.SimulationExplorer, ApplicationIcons.SimulationExplorer);
       public static RegionName History = createRegionName("History", AppConstants.BarNames.History, ApplicationIcons.History);

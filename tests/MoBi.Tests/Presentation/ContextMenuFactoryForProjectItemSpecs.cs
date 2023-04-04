@@ -3,7 +3,6 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.MenusAndBars.ContextMenus;
-using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter.Main;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
@@ -13,11 +12,11 @@ namespace MoBi.Presentation
 {
    public abstract class concern_for_ContextMenuFactoryForProjectItem : ContextSpecification<IContextMenuSpecificationFactory<IViewItem>>
    {
-      protected IBuildingBlockExplorerPresenter _presenter;
+      protected IModuleExplorerPresenter _presenter;
 
       protected override void Context()
       {
-         _presenter = A.Fake<IBuildingBlockExplorerPresenter>();
+         _presenter = A.Fake<IModuleExplorerPresenter>();
          sut = new ContextMenuFactoryForBuildingBlock<MoleculeBuildingBlock>();
       }
    }
