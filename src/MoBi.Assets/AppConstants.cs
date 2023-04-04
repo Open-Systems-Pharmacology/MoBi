@@ -806,7 +806,7 @@ namespace MoBi.Assets
          public static readonly string Views = "Views";
          public static readonly string Add = "Add";
          public static readonly string Edit = "Edit";
-         public static readonly string Project = "Project";
+         public static readonly string ProjectSimulationSettings = "Project Simulation Settings";
          public static readonly string Journal = "Journal";
          public static readonly string File = "File";
          public static readonly string Favorites = "Favorites";
@@ -822,7 +822,7 @@ namespace MoBi.Assets
          public static readonly string PassiveTransport = "Passive Transport";
          public static readonly string Events = "Events";
          public static readonly string Observer = "Observer";
-         public static readonly string Settings = "Settings";
+         public static readonly string Edit = "Edit";
          public static readonly string New = "New";
          public static readonly string Load = "Load";
          public static readonly string LoadFromTemplate = "Load From Template";

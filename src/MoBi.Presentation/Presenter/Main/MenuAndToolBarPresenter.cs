@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.File));
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.BuildingBlocks), AppConstants.RibbonPages.Modeling);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Workflows), AppConstants.RibbonPages.Modeling);
-         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Project), AppConstants.RibbonPages.Modeling);
+         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.ProjectSimulationSettings), AppConstants.RibbonPages.Modeling);
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.ParameterIdentification), RibbonPages.ParameterIdentificationAndSensitivity);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.SensitivityAnalysis), RibbonPages.ParameterIdentificationAndSensitivity);
