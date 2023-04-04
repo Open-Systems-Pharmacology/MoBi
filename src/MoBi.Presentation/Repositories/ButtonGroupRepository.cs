@@ -186,6 +186,8 @@ namespace MoBi.Presentation.Repositories
 
       private IButtonGroup projectGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Project)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.EditProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Settings))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SaveProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Save))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Load))
          .WithId(ButtonGroupIds.Project);
 
       private IButtonGroup toolsButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Tools)

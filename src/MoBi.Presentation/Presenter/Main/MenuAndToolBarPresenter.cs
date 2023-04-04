@@ -226,6 +226,8 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.NewPassiveTransportBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewReactionBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.EditProjectSimulationSettings].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.SaveProjectSimulationSettings].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.LoadProjectSimulationSettings].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewSpatialStructure].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadSimulationIntoProject].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.HistoryReportGroup].Enabled = enabled;

@@ -1,14 +1,16 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
+using MoBi.Core.Events;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditSimulationSettingsPresenter : ISingleStartPresenter<SimulationSettings>
+   public interface IEditSimulationSettingsPresenter : ISingleStartPresenter<SimulationSettings>, IListener<DefaultSimulationSettingsUpdatedEvent>
    {
    }
 
@@ -26,10 +28,7 @@ namespace MoBi.Presentation.Presenter
          View.Caption = AppConstants.Captions.SimulationSettingsBuildingBlockCaption(_simulationSettings.Name);
       }
 
-      public override object Subject
-      {
-         get { return _simulationSettings; }
-      }
+      public override object Subject => _simulationSettings;
 
       public override void Edit(SimulationSettings simulationSettings)
       {
@@ -44,6 +43,11 @@ namespace MoBi.Presentation.Presenter
          base.InitializeWith(commandRegister);
          PresenterAt(SimulationSettingsItems.OutputSchema).DowncastTo<IEditOutputSchemaPresenter>().ShowGroupCaption = false;
          PresenterAt(SimulationSettingsItems.Solver).DowncastTo<IEditSolverSettingsPresenter>().ShowGroupCaption = false;
+      }
+
+      public void Handle(DefaultSimulationSettingsUpdatedEvent eventToHandle)
+      {
+         Edit(eventToHandle.NewSimulationSettings);
       }
    }
 }
