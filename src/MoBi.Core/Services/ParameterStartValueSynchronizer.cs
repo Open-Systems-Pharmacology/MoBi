@@ -1,4 +1,6 @@
-﻿using OSPSuite.Core.Domain;
+﻿using FluentNHibernate.Utils;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Services
@@ -19,9 +21,17 @@ namespace MoBi.Core.Services
 
       public void SynchronizeValue(IModelCoreSimulation simulation, IParameter parameter)
       {
-         if (parameter == null) return;
-         var parameterStartValues = simulation.Configuration.ParameterStartValues;
+         if (parameter == null) 
+            return;
+         
+         var buildingBlocks = simulation.Configuration.ParameterStartValues;
          var objectPath = _entityPathResolver.ObjectPathFor(parameter);
+
+         buildingBlocks.Each(parameterStartValues => synchronizeValue(parameter, parameterStartValues, objectPath));
+      }
+
+      private static void synchronizeValue(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValues, ObjectPath objectPath)
+      {
          var parameterStartValue = parameterStartValues[objectPath];
 
          if (parameterStartValue == null)

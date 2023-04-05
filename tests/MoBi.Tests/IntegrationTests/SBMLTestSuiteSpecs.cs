@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -107,17 +106,24 @@ namespace MoBi.IntegrationTests
 
       private SimulationConfiguration generateBuildConfiguration(MoBiProject project)
       {
-         var simulationConfiguration = new SimulationConfiguration { Module = new Module() };
+         var simulationConfiguration = new SimulationConfiguration();
 
-         simulationConfiguration.Module.SpatialStructure = project.SpatialStructureCollection.First();
-         simulationConfiguration.Module.Molecule = project.MoleculeBlockCollection.First();
-         simulationConfiguration.Module.Reaction = project.ReactionBlockCollection.First();
-         simulationConfiguration.Module.PassiveTransport = project.PassiveTransportCollection.First();
-         simulationConfiguration.Module.AddMoleculeStartValueBlock(project.MoleculeStartValueBlockCollection.First());
-         simulationConfiguration.Module.AddParameterStartValueBlock(project.ParametersStartValueBlockCollection.First());
+         var module = new Module
+         {
+            SpatialStructure = project.SpatialStructureCollection.First(),
+            Molecules = project.MoleculeBlockCollection.First(),
+            Reactions = project.ReactionBlockCollection.First(),
+            PassiveTransports = project.PassiveTransportCollection.First(),
+            EventGroups = project.EventBlockCollection.First(),
+            Observers = project.ObserverBlockCollection.First()
+         };
+
+         var moduleConfiguration = new ModuleConfiguration(module, project.MoleculeStartValueBlockCollection.First(), project.ParametersStartValueBlockCollection.First());
+
          simulationConfiguration.SimulationSettings = project.SimulationSettings;
-         simulationConfiguration.Module.EventGroup = project.EventBlockCollection.First();
-         simulationConfiguration.Module.Observer = project.ObserverBlockCollection.First();
+
+
+         simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
          return simulationConfiguration;
       }
 

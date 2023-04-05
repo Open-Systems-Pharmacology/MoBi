@@ -155,8 +155,6 @@ namespace MoBi.Core.Domain.Model
          get { yield return Chart; }
       }
 
-      public new IReactionBuildingBlock Reactions => Configuration.Reactions;
-
       public void AddChartTemplate(CurveChartTemplate chartTemplate)
       {
          Settings.AddChartTemplate(chartTemplate);

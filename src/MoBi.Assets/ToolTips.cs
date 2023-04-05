@@ -66,20 +66,22 @@ namespace MoBi.Assets
          public static readonly string LoadEventGroup = $"Load Event Group from Event Groups Building Block file (*{Constants.Filter.PKML_FILE_FILTER})";
       }
 
-      public static class ModellingRibbon
+      public static class ModelingRibbon
       {
          public static readonly string CreateMoleculesBB = "Create a new Molecules Building Block";
          public static readonly string CreateReactionsBB = "Create a new Reactions Building Block";
          public static readonly string CreateSpatStructuresBB = "Create a new Spatial Structures Building Block";
-         public static readonly string CreatePassiveTansportsBB = "Create a new Passive Transports Building Block";
+         public static readonly string CreatePassiveTransportsBB = "Create a new Passive Transports Building Block";
          public static readonly string CreateEventGroupsBB = "Create a new Event Groups Building Block";
          public static readonly string CreateObserversBB = "Create a new Observers Building Block";
          public static readonly string CreateModule = "Create a new Module";
       }
 
-      public static class EditRibbon
+      public static class SimulationSettingsRibbon
       {
          public static readonly string EditDefaultSimulationSettings = "Edit the project default simulation settings";
+         public static readonly string SaveProjectSimulationSettings = "Save project settings to PKML...";
+         public static readonly string LoadProjectSimulationSettings = "Load project settings from PKML...";
       }
 
       public static class FileRibbon

@@ -35,6 +35,8 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId NewEventBB = createMenuBarItemId("NewEventBB");
       public static MenuBarItemId NewObserverBB = createMenuBarItemId("NewObserverBB");
       public static MenuBarItemId EditProjectSimulationSettings = createMenuBarItemId("EditProjectSimulationSettings");
+      public static MenuBarItemId SaveProjectSimulationSettings = createMenuBarItemId("SaveProjectSimulationSettings");
+      public static MenuBarItemId LoadProjectSimulationSettings = createMenuBarItemId("LoadProjectSimulationSettings");
       public static MenuBarItemId ExportHistoryToExcel = createMenuBarItemId("ExportHistoryToExcel");
       public static MenuBarItemId SimulationExplorerView = createMenuBarItemId("SimulationExplorerView");
       public static MenuBarItemId NewMolecule = createMenuBarItemId("NewMolecule");

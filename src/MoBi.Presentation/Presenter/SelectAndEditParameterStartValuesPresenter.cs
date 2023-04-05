@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter
       public override void Refresh()
       {
          base.Refresh();
-         Refresh(_simulationConfiguration.ParameterStartValues);
+         // Refresh(_simulationConfiguration.ParameterStartValues);
          _editPresenter.Edit(StartValues);
       }
 

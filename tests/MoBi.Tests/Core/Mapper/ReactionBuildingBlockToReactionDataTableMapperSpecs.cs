@@ -15,7 +15,7 @@ namespace MoBi.Core.Mapper
 {
    public abstract class concern_for_ReactionBuildingBlockToReactionDataTableMapper : ContextSpecification<ReactionBuildingBlockToReactionDataTableMapper>
    {
-      protected IMoBiReactionBuildingBlock _mobiReactionBuildingBlock;
+      protected IMoBiReactionBuildingBlock _moBiReactionBuildingBlock;
       protected DataTable _result;
 
       protected override void Context()
@@ -24,12 +24,12 @@ namespace MoBi.Core.Mapper
             new StoichiometricStringCreator(
                new ReactionPartnerToReactionPartnerBuilderMapper()));
 
-         _mobiReactionBuildingBlock = new MoBiReactionBuildingBlock();
+         _moBiReactionBuildingBlock = new MoBiReactionBuildingBlock();
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_mobiReactionBuildingBlock);
+         _result = sut.MapFrom(new []{_moBiReactionBuildingBlock});
       }
    }
 
@@ -38,7 +38,7 @@ namespace MoBi.Core.Mapper
       protected override void Context()
       {
          base.Context();
-         getReactions().Each(_mobiReactionBuildingBlock.Add);
+         getReactions().Each(_moBiReactionBuildingBlock.Add);
       }
 
       [Observation]

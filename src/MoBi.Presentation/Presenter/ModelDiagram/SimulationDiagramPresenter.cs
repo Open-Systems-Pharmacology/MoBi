@@ -98,7 +98,8 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       private IDiagramModel getSpaceBlockDiagramModel()
       {
-         var spaceBlockName = DiagramManager.PkModel.Configuration.SpatialStructure.Name;
+         //TODO OSMOSES
+         var spaceBlockName = DiagramManager.PkModel.Configuration.SpatialStructures.First().Name;
          var project = _context.CurrentProject;
          var spatialStructure = project.SpatialStructureCollection.FindByName(spaceBlockName);
          if (spatialStructure == null)
@@ -127,7 +128,8 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       private IDiagramModel getReactionBlockDiagramModel()
       {
-         var reactionBlockName = DiagramManager.PkModel.Configuration.Reactions.Name;
+         // TODO OSMOSES
+         var reactionBlockName = DiagramManager.PkModel.Configuration.Reactions.First().Name;
          var project = _context.CurrentProject;
          var reactionBlock = project.ReactionBlockCollection.FindByName(reactionBlockName);
 

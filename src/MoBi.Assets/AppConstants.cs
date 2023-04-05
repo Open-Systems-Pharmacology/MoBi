@@ -266,6 +266,7 @@ namespace MoBi.Assets
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
          public static readonly string UpdateRelativeExpressions = "Update relative expressions";
+         public static readonly string UpdateProjectDefaultSimulationSettings = "Update project default simulation settings";
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
@@ -809,7 +810,7 @@ namespace MoBi.Assets
          public static readonly string Views = "Views";
          public static readonly string Add = "Add";
          public static readonly string Edit = "Edit";
-         public static readonly string Project = "Project";
+         public static readonly string SimulationSettings = "Simulation Settings";
          public static readonly string Journal = "Journal";
          public static readonly string File = "File";
          public static readonly string Favorites = "Favorites";
@@ -825,12 +826,13 @@ namespace MoBi.Assets
          public static readonly string PassiveTransport = "Passive Transport";
          public static readonly string Events = "Events";
          public static readonly string Observer = "Observer";
-         public static readonly string Settings = "Settings";
+         public static readonly string Edit = "Edit";
          public static readonly string New = "New";
          public static readonly string Load = "Load";
          public static readonly string LoadFromTemplate = "Load From Template";
          public static readonly string NewMolecule = "Insert Molecule";
          public static readonly string AddPKSimMolecule = "PK-Sim Molecule";
+         public static readonly string Save = "Save";
       }
 
       public static class Dialog
@@ -1090,6 +1092,8 @@ namespace MoBi.Assets
          public static string AddEmptyModule => $"Create Empty Module...";
          public static string AddModuleWithBuildingBlocks => $"Create Module with Building Blocks...";
          public static string EditDefaultSimulationSettings = "Edit Default Simulation Settings";
+         public static string SaveProjectSimulationSettings = "Save Default Simulation Settings";
+         public static string LoadProjectSimulationSettings = "Load Default Simulation Settings";
       }
 
       public static class DimensionNames

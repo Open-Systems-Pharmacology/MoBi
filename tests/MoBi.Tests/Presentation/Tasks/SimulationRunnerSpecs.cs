@@ -234,15 +234,15 @@ namespace MoBi.Presentation.Tasks
             SimulationSettings = new SimulationSettings
             {
                OutputSelections = _outputSelections
-            },
-            Module = new Module()
-            {
-               Molecule = new MoleculeBuildingBlock
-               {
-                  _drug
-               }
             }
          };
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module
+         {
+            Molecules = new MoleculeBuildingBlock
+            {
+               _drug
+            }
+         }));
 
          A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
          _oldResults = new DataRepository("OLD");

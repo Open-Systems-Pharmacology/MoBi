@@ -192,7 +192,7 @@ namespace MoBi.Presentation.Tasks
          if (string.IsNullOrEmpty(moleculeName))
             return null;
 
-         return simulation.Configuration.Molecules[moleculeName];
+         return simulation.Configuration.Molecules.Select(x => x[moleculeName]).FirstOrDefault(x => x != null);
       }
 
       private bool isConcentrationColumn(DataColumn column)

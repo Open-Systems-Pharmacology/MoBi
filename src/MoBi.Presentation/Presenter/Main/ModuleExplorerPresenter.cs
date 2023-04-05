@@ -204,11 +204,11 @@ namespace MoBi.Presentation.Presenter.Main
             .Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
 
          addBuildingBlockUnderNode(module.SpatialStructure, moduleNode);
-         addBuildingBlockUnderNode(module.Molecule, moduleNode);
-         addBuildingBlockUnderNode(module.Reaction, moduleNode);
-         addBuildingBlockUnderNode(module.PassiveTransport, moduleNode);
-         addBuildingBlockUnderNode(module.Observer, moduleNode);
-         addBuildingBlockUnderNode(module.EventGroup, moduleNode);
+         addBuildingBlockUnderNode(module.Molecules, moduleNode);
+         addBuildingBlockUnderNode(module.Reactions, moduleNode);
+         addBuildingBlockUnderNode(module.PassiveTransports, moduleNode);
+         addBuildingBlockUnderNode(module.Observers, moduleNode);
+         addBuildingBlockUnderNode(module.EventGroups, moduleNode);
 
          var moleculeStartValuesCollectionNode =
             collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);

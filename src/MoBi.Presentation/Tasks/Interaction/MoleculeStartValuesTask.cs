@@ -78,10 +78,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override MoleculeStartValuesBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration)
       {
-         var simulationStartValues = _startValuesCreator.CreateFrom(simulationConfiguration.SpatialStructure, simulationConfiguration.Molecules)
-            .WithName(simulationConfiguration.MoleculeStartValues.Name);
-
-         var templateValues = UpdateValuesFromTemplate(simulationStartValues, simulationConfiguration.MoleculeStartValues);
+         //TODO OSMOSES combining multiple spatial structures and molecule building blocks is not supported yet
+         var simulationStartValues = _startValuesCreator.CreateFrom(simulationConfiguration.SpatialStructures.First(), simulationConfiguration.Molecules.First())
+            .WithName(simulationConfiguration.MoleculeStartValues.First().Name);
+         
+         var templateValues = UpdateValuesFromTemplate(simulationStartValues, simulationConfiguration.MoleculeStartValues.First());
          updateDefaultIsPresentToFalseForSpecificExtendedValues(simulationStartValues, templateValues);
          return simulationStartValues;
       }

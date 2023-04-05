@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Presenter
 
       private void updateSimulationConfiguration()
       {
-         _simulationConfiguration.Module = _selectModule.SelectedModule;
+         // _simulationConfiguration.Module = _selectModule.SelectedModule;
          _simulationConfiguration.AddExpressionProfile(_selectExpressionProfile.SelectedBuildingBlock);
          _simulationConfiguration.Individual = _selectIndividual.SelectedBuildingBlock;
 
@@ -119,10 +119,10 @@ namespace MoBi.Presentation.Presenter
          _simulationConfiguration = simulation.Configuration;
          _selectExpressionProfile.Edit(_simulationConfiguration.ExpressionProfiles.FirstOrDefault());
          _selectIndividual.Edit(_simulationConfiguration.Individual);
-         _selectModule.Edit(_simulationConfiguration.Module);
+         // _selectModule.Edit(_simulationConfiguration.Module);
          moduleChanged();
-         _selectMoleculeStartValues.Edit(_simulationConfiguration.MoleculeStartValues);
-         _selectParameterStartValues.Edit(_simulationConfiguration.ParameterStartValues);
+         // _selectMoleculeStartValues.Edit(_simulationConfiguration.MoleculeStartValues);
+         // _selectParameterStartValues.Edit(_simulationConfiguration.ParameterStartValues);
 
 
          OnStatusChanged();

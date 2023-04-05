@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -42,8 +43,9 @@ namespace MoBi.Core.Service
             StartValue = 33
          };
          parameterStartValues.Add(_parameterStartValue);
-         _simulation.Configuration = new SimulationConfiguration { Module = new Module() };
-         _simulation.Configuration.Module.AddParameterStartValueBlock(parameterStartValues);
+         _simulation.Configuration = new SimulationConfiguration();
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
+         _simulation.Configuration.ModuleConfigurations.First().Module.AddParameterStartValueBlock(parameterStartValues);
          _parameter =
             new Parameter().WithName("P1").WithValue(11).WithDimension(A.Fake<IDimension>()).WithDisplayUnit(A.Fake<Unit>());
          A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(new ObjectPath("Organism","P1"));
