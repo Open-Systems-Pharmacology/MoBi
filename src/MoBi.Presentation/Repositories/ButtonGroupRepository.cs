@@ -184,9 +184,11 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
          .WithId(ButtonGroupIds.BuildingBlocks);
 
-      private IButtonGroup projectGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Project)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.EditProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Settings))
-         .WithId(ButtonGroupIds.Project);
+      private IButtonGroup projectGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.SimulationSettings)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.EditProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Edit))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SaveProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Save))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Load))
+         .WithId(ButtonGroupIds.ProjectSimulationSettings);
 
       private IButtonGroup toolsButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Tools)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GarbageCollection)))

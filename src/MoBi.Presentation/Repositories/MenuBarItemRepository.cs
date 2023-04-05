@@ -203,13 +203,13 @@ namespace MoBi.Presentation.Repositories
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewMoleculeBuildingBlock)
             .WithId(MenuBarItemIds.NewMoleculesBB)
             .WithIcon(ApplicationIcons.Molecule)
-            .WithDescription(ToolTips.ModellingRibbon.CreateMoleculesBB)
+            .WithDescription(ToolTips.ModelingRibbon.CreateMoleculesBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.M)
             .WithCommand<AddNewBuildingBlockCommand<MoleculeBuildingBlock>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewReactionBuildingBlock)
             .WithId(MenuBarItemIds.NewReactionBB)
-            .WithDescription(ToolTips.ModellingRibbon.CreateReactionsBB)
+            .WithDescription(ToolTips.ModelingRibbon.CreateReactionsBB)
             .WithIcon(ApplicationIcons.Reaction)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.R)
             .WithCommand<AddNewBuildingBlockCommand<IMoBiReactionBuildingBlock>>(_container);
@@ -217,35 +217,48 @@ namespace MoBi.Presentation.Repositories
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewSpatialStructure)
             .WithId(MenuBarItemIds.NewSpatialStructure)
             .WithIcon(ApplicationIcons.SpatialStructure)
-            .WithDescription(ToolTips.ModellingRibbon.CreateSpatStructuresBB)
+            .WithDescription(ToolTips.ModelingRibbon.CreateSpatStructuresBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.P)
             .WithCommand<AddNewBuildingBlockCommand<IMoBiSpatialStructure>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewPassiveTransportBuildingBlock)
             .WithId(MenuBarItemIds.NewPassiveTransportBB)
             .WithIcon(ApplicationIcons.PassiveTransport)
-            .WithDescription(ToolTips.ModellingRibbon.CreatePassiveTansportsBB)
+            .WithDescription(ToolTips.ModelingRibbon.CreatePassiveTransportsBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.T)
             .WithCommand<AddNewBuildingBlockCommand<IPassiveTransportBuildingBlock>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewEventsBuildingBlock)
             .WithId(MenuBarItemIds.NewEventBB)
             .WithIcon(ApplicationIcons.Event)
-            .WithDescription(ToolTips.ModellingRibbon.CreateEventGroupsBB)
+            .WithDescription(ToolTips.ModelingRibbon.CreateEventGroupsBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.E)
             .WithCommand<AddNewBuildingBlockCommand<IEventGroupBuildingBlock>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.EditDefaultSimulationSettings)
             .WithId(MenuBarItemIds.EditProjectSimulationSettings)
             .WithIcon(ApplicationIcons.SimulationSettings)
-            .WithDescription(ToolTips.EditRibbon.EditDefaultSimulationSettings)
+            .WithDescription(ToolTips.SimulationSettingsRibbon.EditDefaultSimulationSettings)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.N)
             .WithCommand<EditProjectSimulationSettingsUICommand>(_container);
-         
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveProjectSimulationSettings)
+            .WithId(MenuBarItemIds.SaveProjectSimulationSettings)
+            .WithIcon(ApplicationIcons.PKMLSave)
+            .WithDescription(ToolTips.SimulationSettingsRibbon.SaveProjectSimulationSettings)
+            .WithCommand<SaveProjectSimulationSettingsUICommand>(_container);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadProjectSimulationSettings)
+            .WithId(MenuBarItemIds.LoadProjectSimulationSettings)
+            .WithIcon(ApplicationIcons.PKMLLoad)
+            .WithDescription(ToolTips.SimulationSettingsRibbon.LoadProjectSimulationSettings)
+            .WithCommand<LoadProjectSimulationSettingsUICommand>(_container);
+
+
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewObserverBuildingBlock)
             .WithId(MenuBarItemIds.NewObserverBB)
             .WithIcon(ApplicationIcons.Observer)
-            .WithDescription(ToolTips.ModellingRibbon.CreateObserversBB)
+            .WithDescription(ToolTips.ModelingRibbon.CreateObserversBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.O)
             .WithCommand<AddNewBuildingBlockCommand<IObserverBuildingBlock>>(_container);
 

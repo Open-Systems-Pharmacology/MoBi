@@ -46,6 +46,16 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class DefaultSimulationSettingsUpdatedEvent
+   {
+      public SimulationSettings NewSimulationSettings { get; }
+
+      public DefaultSimulationSettingsUpdatedEvent(SimulationSettings newSimulationSettings)
+      {
+         NewSimulationSettings = newSimulationSettings;
+      }
+   }
+
    public abstract class AddedEvent
    {
       protected AddedEvent(IObjectBase addedObject, IObjectBase parent)
@@ -92,7 +102,7 @@ namespace MoBi.Core.Events
       }
 
       public RemovedEvent(IObjectBase removedObject, IObjectBase parent)
-         : this(new[] {removedObject})
+         : this(new[] { removedObject })
       {
          Parent = parent;
       }
@@ -162,7 +172,7 @@ namespace MoBi.Core.Events
    {
       public IReadOnlyList<NotificationMessage> NotificationMessages { get; }
 
-      public ShowNotificationsEvent(NotificationMessage notification) : this(new[] {notification})
+      public ShowNotificationsEvent(NotificationMessage notification) : this(new[] { notification })
       {
       }
 
