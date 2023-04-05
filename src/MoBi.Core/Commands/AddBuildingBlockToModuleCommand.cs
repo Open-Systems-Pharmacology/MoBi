@@ -1,22 +1,21 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using DevExpress.XtraReports.Native;
 
 namespace MoBi.Core.Commands
 {
-   public class AddBuildingBlockToModuleCommand<T> : MoBiReversibleCommand, ISilentCommand where T : class, IBuildingBlock 
+   public class AddBuildingBlockToModuleCommand<T> : MoBiReversibleCommand, ISilentCommand where T : class, IBuildingBlock
    {
       protected T _buildingBlock;
-      private string _buildingBlockId;
+      private readonly string _buildingBlockId;
 
       private Module _existingModule;
-      private string _existingModuleId;
+      private readonly string _existingModuleId;
 
       public bool Silent { get; set; }
 
@@ -28,7 +27,7 @@ namespace MoBi.Core.Commands
          _buildingBlockId = buildingBlock.Id;
          _existingModule = existingModule;
          _existingModuleId = existingModule.Id;
-         
+
          Description = AppConstants.Commands.AddToDescription(ObjectType, buildingBlock.Name, _existingModule.Name);
          Silent = false;
       }
@@ -40,7 +39,6 @@ namespace MoBi.Core.Commands
 
          if (!Silent)
             context.PublishEvent(new AddedEvent<T>(_buildingBlock, _existingModule));
-
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
@@ -59,6 +57,5 @@ namespace MoBi.Core.Commands
          _buildingBlock = null;
          _existingModule = null;
       }
-
    }
 }

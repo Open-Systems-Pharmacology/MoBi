@@ -1,9 +1,7 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Chart;
+using MoBi.Core.Exceptions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Extensions
 {
@@ -37,7 +35,8 @@ namespace MoBi.Core.Domain.Extensions
             case IMoleculeStartValuesBuildingBlock moleculeStartValues:
                module.AddMoleculeStartValueBlock(moleculeStartValues);
                break;
-            //default?? throw exception
+            default:
+               throw new MoBiException(AppConstants.Exceptions.BuildingBlockTypeNotSupported(buildingBlock));
          }
       }
 
@@ -64,14 +63,14 @@ namespace MoBi.Core.Domain.Extensions
                module.Observer = null;
                break;
             case IParameterStartValuesBuildingBlock parameterStartValues:
-               module.AddParameterStartValueBlock(parameterStartValues);
+               //module.AddParameterStartValueBlock(parameterStartValues);
                break;
             case IMoleculeStartValuesBuildingBlock moleculeStartValues:
-               module.AddMoleculeStartValueBlock(moleculeStartValues);
+               //module.AddMoleculeStartValueBlock(moleculeStartValues);
                break;
-            //default?? throw exception
+            default:
+               throw new MoBiException(AppConstants.Exceptions.BuildingBlockTypeNotSupported(buildingBlock));
          }
       }
-
    }
 }
