@@ -806,7 +806,7 @@ namespace MoBi.Assets
          public static readonly string Views = "Views";
          public static readonly string Add = "Add";
          public static readonly string Edit = "Edit";
-         public static readonly string ProjectSimulationSettings = "Project Simulation Settings";
+         public static readonly string SimulationSettings = "Simulation Settings";
          public static readonly string Journal = "Journal";
          public static readonly string File = "File";
          public static readonly string Favorites = "Favorites";
