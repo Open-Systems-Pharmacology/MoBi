@@ -12,7 +12,7 @@ namespace MoBi.Presentation
    {
       protected IAddBuildingBlocksToModuleDTOToModuleMapper _mapper;
       protected IAddBuildingBlocksToModuleView _view;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       protected Module _existingModule;
 
       protected override void Context()

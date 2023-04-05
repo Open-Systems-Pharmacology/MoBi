@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
       protected Module _existingModule;
       protected List<IBuildingBlock> _listOfNewBuildingBlocks;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       protected RegisterTask _registrationTask;
       protected WithIdRepository _withIdRepository;
       protected IReactionBuildingBlock _newReactionBuildingBlock;

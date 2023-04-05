@@ -11,7 +11,7 @@ namespace MoBi.Core.Domain.Extensions
       {
          switch (buildingBlock)
          {
-            case IMoleculeBuildingBlock molecule:
+            case MoleculeBuildingBlock molecule:
                module.Molecule = molecule;
                break;
             case IReactionBuildingBlock reaction:
@@ -29,10 +29,10 @@ namespace MoBi.Core.Domain.Extensions
             case IObserverBuildingBlock observer:
                module.Observer = observer;
                break;
-            case IParameterStartValuesBuildingBlock parameterStartValues:
+            case ParameterStartValuesBuildingBlock parameterStartValues:
                module.AddParameterStartValueBlock(parameterStartValues);
                break;
-            case IMoleculeStartValuesBuildingBlock moleculeStartValues:
+            case MoleculeStartValuesBuildingBlock moleculeStartValues:
                module.AddMoleculeStartValueBlock(moleculeStartValues);
                break;
             default:
@@ -44,7 +44,7 @@ namespace MoBi.Core.Domain.Extensions
       {
          switch (buildingBlock)
          {
-            case IMoleculeBuildingBlock molecule:
+            case MoleculeBuildingBlock molecule:
                module.Molecule = null;
                break;
             case IReactionBuildingBlock reaction:
@@ -62,10 +62,10 @@ namespace MoBi.Core.Domain.Extensions
             case IObserverBuildingBlock observer:
                module.Observer = null;
                break;
-            case IParameterStartValuesBuildingBlock parameterStartValues:
+            case ParameterStartValuesBuildingBlock parameterStartValues:
                //module.AddParameterStartValueBlock(parameterStartValues);
                break;
-            case IMoleculeStartValuesBuildingBlock moleculeStartValues:
+            case MoleculeStartValuesBuildingBlock moleculeStartValues:
                //module.AddMoleculeStartValueBlock(moleculeStartValues);
                break;
             default:

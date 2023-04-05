@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Mappers
          var listOfBuildingBlocks = new List<IBuildingBlock>
          {
             conditionalCreate(addBuildingBlocksToModuleDTO.WithMolecule && !addBuildingBlocksToModuleDTO.AlreadyHasMolecule,
-               () => addDefault<IMoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock)),
+               () => addDefault<MoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock)),
             conditionalCreate(addBuildingBlocksToModuleDTO.WithReaction && !addBuildingBlocksToModuleDTO.AlreadyHasReaction,
                () => addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create())),
             conditionalCreate(addBuildingBlocksToModuleDTO.WithSpatialStructure && !addBuildingBlocksToModuleDTO.AlreadyHasSpatialStructure,
@@ -45,9 +45,9 @@ namespace MoBi.Presentation.Mappers
             conditionalCreate(addBuildingBlocksToModuleDTO.WithObserver && !addBuildingBlocksToModuleDTO.AlreadyHasObserver,
                () => addDefault<IObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)),
             conditionalCreate(addBuildingBlocksToModuleDTO.WithParameterStartValues,
-               () => addDefault<IParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues)),
+               () => addDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues)),
             conditionalCreate(addBuildingBlocksToModuleDTO.WithMoleculeStartValues,
-               () => addDefault<IMoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues))
+               () => addDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues))
          };
 
          _newBuildingBlocks = listOfBuildingBlocks.Where(x => x != null).ToList();

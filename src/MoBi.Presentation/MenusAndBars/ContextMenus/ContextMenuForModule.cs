@@ -31,8 +31,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         var moduleViewItem = dto.DowncastTo<ModuleViewItem>();
-         var module = moduleViewItem.Module;
+         var module = dto.ObjectBase.DowncastTo<Module>();
 
          var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.AddBuildingBlocks)
             .WithCommandFor<AddBuildingBlocksToModuleUICommand, Module>(module, _container)

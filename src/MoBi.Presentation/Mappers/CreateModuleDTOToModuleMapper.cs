@@ -60,7 +60,7 @@ namespace MoBi.Presentation.Mappers
          var module = _context.Create<Module>().WithIcon(ApplicationIcons.Module.IconName).WithName(createModuleDTO.Name);
 
          module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithMolecule,
-            () => addDefault<IMoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock)));
+            () => addDefault<MoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock)));
          module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithReaction,
             () => addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create())));
          module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithSpatialStructure,
@@ -75,12 +75,12 @@ namespace MoBi.Presentation.Mappers
 
          if (createModuleDTO.WithParameterStartValues)
          {
-            module.AddBuildingBlock(addDefault<IParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
+            module.AddBuildingBlock(addDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
          }
 
          if (createModuleDTO.WithMoleculeStartValues)
          {
-            module.AddBuildingBlock(addDefault<IMoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
+            module.AddBuildingBlock(addDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
          }
 
          return module;

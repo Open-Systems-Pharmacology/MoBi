@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddMultipleBuildingBlocksToModuleCommand(existingModule, listOfNewBuildingBlocks);
       }
 
-      protected override void SetAddCommandDescription(Module child, IMoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand,
+      protected override void SetAddCommandDescription(Module child, MoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand,
          IBuildingBlock buildingBlock)
       {
          addCommand.Description = AppConstants.Commands.AddToProjectDescription(addCommand.ObjectType, child.Name);
