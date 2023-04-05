@@ -12,8 +12,7 @@ namespace MoBi.Core.Commands
    public class RemoveBuildingBlockFromModuleCommand<T> : MoBiReversibleCommand where T : class, IBuildingBlock
    {
       protected Module _existingModule;
-      public string ExistingModuleId { get; private set; }
-      public string ModuleWithAddedBuildingBlocksId { get; private set; }
+      private readonly string _existingModuleId;
       public bool Silent { get; set; }
 
       protected T _buildingBlock;
@@ -24,6 +23,7 @@ namespace MoBi.Core.Commands
          ObjectType = new ObjectTypeResolver().TypeFor<T>();
          CommandType = AppConstants.Commands.DeleteCommand;
          _existingModule = existingModule;
+         _existingModuleId = existingModule.Id;
          _buildingBlock = buildingBlock;
 
          Silent = false;
@@ -41,6 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          _buildingBlock = context.Deserialize<T>(_serializationStream);
+         _existingModule = context.Get<Module>(_existingModuleId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

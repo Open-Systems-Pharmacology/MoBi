@@ -63,10 +63,10 @@ namespace MoBi.Core.Domain.Extensions
                module.Observer = null;
                break;
             case ParameterStartValuesBuildingBlock parameterStartValues:
-               //module.AddParameterStartValueBlock(parameterStartValues);
+               //module.RemoveParameterStartValueBlock(parameterStartValues);
                break;
             case MoleculeStartValuesBuildingBlock moleculeStartValues:
-               //module.AddMoleculeStartValueBlock(moleculeStartValues);
+               //module.RemoveMoleculeStartValueBlock(moleculeStartValues);
                break;
             default:
                throw new MoBiException(AppConstants.Exceptions.BuildingBlockTypeNotSupported(buildingBlock));

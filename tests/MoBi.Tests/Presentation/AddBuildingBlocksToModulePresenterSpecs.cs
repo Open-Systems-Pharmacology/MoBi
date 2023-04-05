@@ -10,7 +10,7 @@ namespace MoBi.Presentation
 {
    public class concern_for_AddBuildingBlocksToModulePresenter : ContextSpecification<AddBuildingBlocksToModulePresenter>
    {
-      protected IAddBuildingBlocksToModuleDTOToModuleMapper _mapper;
+      protected IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper _mapper;
       protected IAddBuildingBlocksToModuleView _view;
       protected MoBiProject _project;
       protected Module _existingModule;
@@ -20,7 +20,7 @@ namespace MoBi.Presentation
          _project = new MoBiProject();
          _existingModule = new Module();
          _view = A.Fake<IAddBuildingBlocksToModuleView>();
-         _mapper = A.Fake<IAddBuildingBlocksToModuleDTOToModuleMapper>();
+         _mapper = A.Fake<IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper>();
 
          sut = new AddBuildingBlocksToModulePresenter(_view, _mapper);
       }

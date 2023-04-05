@@ -9,17 +9,17 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IAddBuildingBlocksToModuleDTOToModuleMapper : IMapper<AddBuildingBlocksToModuleDTO, IReadOnlyList<IBuildingBlock>>
+   public interface IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper : IMapper<AddBuildingBlocksToModuleDTO, IReadOnlyList<IBuildingBlock>>
    {
    }
 
-   public class AddBuildingBlocksToModuleDTOToModuleMapper : ModuleDTOMapper, IAddBuildingBlocksToModuleDTOToModuleMapper
+   public class AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper : ModuleDTOMapper, IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper
    {
       private List<IBuildingBlock> _newBuildingBlocks;
       private readonly IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
 
-      public AddBuildingBlocksToModuleDTOToModuleMapper(IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory,
+      public AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper(IMoBiContext context, IReactionBuildingBlockFactory reactionBuildingBlockFactory,
          IMoBiSpatialStructureFactory spatialStructureFactory)
          : base(context)
       {
