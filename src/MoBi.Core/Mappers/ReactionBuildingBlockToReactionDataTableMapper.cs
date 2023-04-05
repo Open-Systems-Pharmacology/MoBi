@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -8,7 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Mappers
 {
-   public interface IReactionBuildingBlockToReactionDataTableMapper : IMapper<IReactionBuildingBlock, DataTable>
+   public interface IReactionBuildingBlockToReactionDataTableMapper : IMapper<IEnumerable<IReactionBuildingBlock>, DataTable>
    {
       
    }
@@ -37,9 +38,9 @@ namespace MoBi.Core.Mappers
          return dt;
       }
 
-      private void exportReactionBuildingBlock(IEnumerable<IReactionBuilder> reactionBuildingBlock, DataTable dt)
+      private void exportReactionBuildingBlock(IEnumerable<IReactionBuilder> reactionBuilders, DataTable dt)
       {
-         reactionBuildingBlock.Each(reactionBuilder => exportReactionBuilder(reactionBuilder, dt));
+         reactionBuilders.Each(reactionBuilder => exportReactionBuilder(reactionBuilder, dt));
       }
 
       private void exportReactionBuilder(IReactionBuilder reactionBuilder, DataTable dt)
@@ -58,11 +59,12 @@ namespace MoBi.Core.Mappers
          return _stoichiometricStringCreator.CreateFrom(reactionBuilder.Educts, reactionBuilder.Products);
       }
 
-      public DataTable MapFrom(IReactionBuildingBlock input)
+      public DataTable MapFrom(IEnumerable<IReactionBuildingBlock> reactionBuildingBlocks)
       {
+         var reactionBuilders = reactionBuildingBlocks.SelectMany(x => x);
          var reactionDataTable = generateEmptyReactionDataTable();
 
-         exportReactionBuildingBlock(input, reactionDataTable);
+         exportReactionBuildingBlock(reactionBuilders, reactionDataTable);
          return reactionDataTable;
       }
    }

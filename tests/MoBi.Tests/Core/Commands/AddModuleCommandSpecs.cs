@@ -58,11 +58,11 @@ namespace MoBi.Core.Commands
          base.Context();
 
          _module.SpatialStructure = new SpatialStructure().WithId("SpatialStructure");
-         _module.Molecule = new MoleculeBuildingBlock().WithId("Molecule");
-         _module.Reaction = new ReactionBuildingBlock().WithId("Reaction");
-         _module.PassiveTransport = new PassiveTransportBuildingBlock().WithId("PassiveTransport");
-         _module.Observer = new ObserverBuildingBlock().WithId("Observer");
-         _module.EventGroup = new EventGroupBuildingBlock().WithId("EventGroup");
+         _module.Molecules = new MoleculeBuildingBlock().WithId("Molecule");
+         _module.Reactions = new ReactionBuildingBlock().WithId("Reaction");
+         _module.PassiveTransports = new PassiveTransportBuildingBlock().WithId("PassiveTransport");
+         _module.Observers = new ObserverBuildingBlock().WithId("Observer");
+         _module.EventGroups = new EventGroupBuildingBlock().WithId("EventGroup");
          _module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock().WithId("MoleculeStartValues"));
          _module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("ParameterStartValues"));
       }
@@ -77,11 +77,11 @@ namespace MoBi.Core.Commands
       {
          var withIds = _withIdRepository.All().ToList();
          withIds.ShouldContain(_module.SpatialStructure);
-         withIds.ShouldContain(_module.Molecule);
-         withIds.ShouldContain(_module.Reaction);
-         withIds.ShouldContain(_module.PassiveTransport);
-         withIds.ShouldContain(_module.Observer);
-         withIds.ShouldContain(_module.EventGroup);
+         withIds.ShouldContain(_module.Molecules);
+         withIds.ShouldContain(_module.Reactions);
+         withIds.ShouldContain(_module.PassiveTransports);
+         withIds.ShouldContain(_module.Observers);
+         withIds.ShouldContain(_module.EventGroups);
          withIds.ShouldContain(_module.MoleculeStartValuesCollection.First());
          withIds.ShouldContain(_module.ParameterStartValuesCollection.First());
          withIds.ShouldContain(_module);

@@ -31,12 +31,12 @@ namespace MoBi.IntegrationTests
       {
          base.GlobalContext();
          _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
-         var molecules = _simulationConfiguration.Molecules;
+         var molecules = _simulationConfiguration.Molecules.First();
          _moleculeA = new MoleculeBuilder().WithName("A").WithDimension(DomainFactoryForSpecs.AmountDimension);
          _moleculeA.DefaultStartFormula = new ConstantFormula(10);
          molecules.Add(_moleculeA);
 
-         var reactions = _simulationConfiguration.Reactions;
+         var reactions = _simulationConfiguration.Reactions.First();
          _reactionR1 = new ReactionBuilder().WithName("R1");
          _reactionR1.CreateProcessRateParameter = true;
          _reactionR1.Formula = new ConstantFormula(5);
@@ -65,7 +65,7 @@ namespace MoBi.IntegrationTests
       {
          base.GlobalContext();
          _buildConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
-         var spatialStructure = _buildConfiguration.SpatialStructure;
+         var spatialStructure = _buildConfiguration.SpatialStructures.First();
          _organism = spatialStructure.TopContainers.ElementAt(0);
          var volumeParameter = _organism.EntityAt<IParameter>(Constants.Parameters.VOLUME);
          volumeParameter.Persistable = true;

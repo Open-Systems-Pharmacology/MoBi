@@ -562,9 +562,12 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _templateStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
-         _simulationConfiguration = new SimulationConfiguration {Module = new Module()};
-         _simulationConfiguration.Module.AddMoleculeStartValueBlock(_templateStartValuesBuildingBlock);
-         
+         _simulationConfiguration = new SimulationConfiguration();
+         var moduleConfiguration = new ModuleConfiguration(new Module());
+         _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
+         moduleConfiguration.Module.AddMoleculeStartValueBlock(_templateStartValuesBuildingBlock);
+         moduleConfiguration.SelectedMoleculeStartValues = _templateStartValuesBuildingBlock;
+
          _newMoleculeStartValues = new MoleculeStartValuesBuildingBlock();
 
          // _buildConfiguration.MoleculeStartValuesInfo = new MoleculeStartValuesBuildingBlockInfo {BuildingBlock = _templateStartValuesBuildingBlock, TemplateBuildingBlock = _templateStartValuesBuildingBlock};
@@ -594,7 +597,7 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_let_previous_molecule_present_in_endogenous_igg_comparmtent_to_present()
+      public void should_let_previous_molecule_present_in_endogenous_igg_compartment_to_present()
       {
          _existingEndogenousValue.IsPresent.ShouldBeTrue();
       }

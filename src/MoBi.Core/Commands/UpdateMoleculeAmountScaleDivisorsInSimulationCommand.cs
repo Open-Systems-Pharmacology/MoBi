@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FluentNHibernate.Utils;
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
@@ -34,7 +35,7 @@ namespace MoBi.Core.Commands
          var containerTask = context.Resolve<IContainerTask>();
          var msvBuildingBlockSynchronizer = context.Resolve<IQuantitySynchronizer>();
          var allMoleculeAmounts = containerTask.CacheAllChildren<IMoleculeAmount>(_simulation.Model.Root);
-         var moleculeStartValues = _simulation.Configuration.MoleculeStartValues;
+         var startValueBuildingBlocks = _simulation.Configuration.MoleculeStartValues;
 
          foreach (var scaleDivisor in _scaleFactors)
          {
@@ -46,7 +47,7 @@ namespace MoBi.Core.Commands
 
             _oldScaleFactors.Add(new ScaleDivisor { QuantityPath = scaleDivisor.QuantityPath, Value = moleculeAmount.ScaleDivisor });
             moleculeAmount.ScaleDivisor = scaleDivisor.Value;
-            msvBuildingBlockSynchronizer.SynchronizeMoleculeStartValues(moleculeAmount, moleculeStartValues);
+            startValueBuildingBlocks.Each(startValueBuildingBlock => msvBuildingBlockSynchronizer.SynchronizeMoleculeStartValues(moleculeAmount, startValueBuildingBlock));
          }
       }
 

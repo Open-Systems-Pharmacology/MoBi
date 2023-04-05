@@ -34,19 +34,28 @@ namespace MoBi.Core.SBML
       public void FormulaParameter_InitialAssignmentCreationTest()
       {
          var simulation = _simulationFactory.Create();
-         simulation.Configuration.Module = new Module
+         var moduleConfiguration = new ModuleConfiguration(new Module
          {
-            Observer = IoC.Resolve<IMoBiContext>().Create<IObserverBuildingBlock>(),
+            Observers = IoC.Resolve<IMoBiContext>().Create<IObserverBuildingBlock>(),
             SpatialStructure = _moBiProject.SpatialStructureCollection.FirstOrDefault(),
-            Reaction = _moBiProject.ReactionBlockCollection.FirstOrDefault(),
-            Molecule = _moBiProject.MoleculeBlockCollection.FirstOrDefault(),
-            PassiveTransport = _moBiProject.PassiveTransportCollection.FirstOrDefault(),
-            EventGroup = _moBiProject.EventBlockCollection.FirstOrDefault()
+            Reactions = _moBiProject.ReactionBlockCollection.FirstOrDefault(),
+            Molecules = _moBiProject.MoleculeBlockCollection.FirstOrDefault(),
+            PassiveTransports = _moBiProject.PassiveTransportCollection.FirstOrDefault(),
+            EventGroups = _moBiProject.EventBlockCollection.FirstOrDefault()
 
-         };
-         simulation.Configuration.Module.AddParameterStartValueBlock(_moBiProject.ParametersStartValueBlockCollection.FirstOrDefault());
-         simulation.Configuration.Module.AddMoleculeStartValueBlock(_moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault());
+         });
+
+         var parameterStartValuesBuildingBlock = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
+         var moleculeStartValuesBuildingBlock = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
          
+         moduleConfiguration.Module.AddParameterStartValueBlock(parameterStartValuesBuildingBlock);
+         moduleConfiguration.Module.AddMoleculeStartValueBlock(moleculeStartValuesBuildingBlock);
+
+         moduleConfiguration.SelectedMoleculeStartValues = moleculeStartValuesBuildingBlock;
+         moduleConfiguration.SelectedParameterStartValues = parameterStartValuesBuildingBlock;
+
+         simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
+
          simulation.Configuration.SimulationSettings = _simulationSettingsFactory.CreateDefault();
          
          // var buildConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.MoBiBuildConfiguration);

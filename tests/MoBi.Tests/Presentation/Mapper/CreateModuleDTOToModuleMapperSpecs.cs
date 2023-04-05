@@ -55,13 +55,13 @@ namespace MoBi.Presentation.Mapper
       public void the_module_should_contain_all_building_blocks()
       {
          _result.SpatialStructure.ShouldNotBeNull();
-         _result.Reaction.ShouldNotBeNull();
-         _result.EventGroup.ShouldNotBeNull();
+         _result.Reactions.ShouldNotBeNull();
+         _result.EventGroups.ShouldNotBeNull();
          _result.MoleculeStartValuesCollection.ShouldNotBeEmpty();
          _result.ParameterStartValuesCollection.ShouldNotBeEmpty();
-         _result.PassiveTransport.ShouldNotBeNull();
-         _result.Observer.ShouldNotBeNull();
-         _result.Molecule.ShouldNotBeNull();
+         _result.PassiveTransports.ShouldNotBeNull();
+         _result.Observers.ShouldNotBeNull();
+         _result.Molecules.ShouldNotBeNull();
       }
 
       [Observation]

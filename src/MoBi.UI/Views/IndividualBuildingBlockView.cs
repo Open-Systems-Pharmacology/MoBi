@@ -159,10 +159,9 @@ namespace MoBi.UI.Views
          flowGroup.Text = OriginData;
          flowGroup.LayoutMode = LayoutMode.Flow;
          flowGroup.Move(gridGroup, InsertType.Top);
-         var originDataDTO = buildingBlock.OriginData;
+         var extendedProperties = buildingBlock.OriginData;
 
-         originDataDTO.AllDataItems.Each(x => addOriginDataToView(x, flowGroup));
-         addValueOriginToView(originDataDTO.ValueOrigin, flowGroup);
+         extendedProperties.Each(x => addOriginDataToView(x, flowGroup));
          addPKSimVersionToView(buildingBlock.PKSimVersion, flowGroup);
          resizeTextBoxesToBestFit();
          uxLayoutControl.BestFit();
@@ -173,10 +172,6 @@ namespace MoBi.UI.Views
          addControlToFlowLayout(PKSimVersion, createTextBox(pkSimVersion), layoutControlGroup);
       }
 
-      private void addValueOriginToView(ValueOrigin valueOrigin, LayoutControlGroup layoutControlGroup)
-      {
-         addControlToFlowLayout(Captions.ValueOrigin, createTextBox(valueOrigin.Display), layoutControlGroup);
-      }
 
       private void resizeTextBoxesToBestFit()
       {
@@ -197,9 +192,9 @@ namespace MoBi.UI.Views
          layoutControlGroup.AddItem(layoutControlItem);
       }
 
-      private void addOriginDataToView(OriginDataItem originDataItem, LayoutControlGroup layoutControlGroup)
+      private void addOriginDataToView(IExtendedProperty originDataItem, LayoutControlGroup layoutControlGroup)
       {
-         addControlToFlowLayout(originDataItem.Name, createTextBox(originDataItem.Value), layoutControlGroup);
+         addControlToFlowLayout(originDataItem.Name, createTextBox(originDataItem.ValueAsObject.ToString()), layoutControlGroup);
       }
 
       private Control createTextBox(string textValue)

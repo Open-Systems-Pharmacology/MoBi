@@ -62,7 +62,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override ParameterStartValuesBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration)
       {
-         return _cloneManagerForBuildingBlock.Clone(simulationConfiguration.ParameterStartValues);
+         //TODO OSMOSES 
+         return new ParameterStartValuesBuildingBlock();
+         // return _cloneManagerForBuildingBlock.Clone(simulationConfiguration.ParameterStartValues);
       }
 
       public override IMoBiCommand AddStartValueToBuildingBlock(ParameterStartValuesBuildingBlock buildingBlock, ParameterStartValue startValue)

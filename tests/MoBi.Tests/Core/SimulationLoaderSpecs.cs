@@ -41,22 +41,21 @@ namespace MoBi.Core
    {
       
       private ObserverBuildingBlock _cloneBuildingBlock;
-      private SimulationConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
 
       protected override void Context()
       {
          base.Context();
-         _buildConfiguration = new SimulationConfiguration
+         var module = new Module()
          {
-            Module = new Module()
-            {
-               Observer = new ObserverBuildingBlock().WithId("SP1")
-            }
+            Observers = new ObserverBuildingBlock().WithId("SP1")
          };
+         _simulationConfiguration = new SimulationConfiguration();
+         _simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
 
          _cloneBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_buildConfiguration.Module.Observer)).Returns(_cloneBuildingBlock);
-         A.CallTo(() => _simulation.Configuration).Returns(_buildConfiguration);
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(_simulationConfiguration.ModuleConfigurations.First().Module.Observers)).Returns(_cloneBuildingBlock);
+         A.CallTo(() => _simulation.Configuration).Returns(_simulationConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }
 
@@ -80,7 +79,7 @@ namespace MoBi.Core
       [Observation]
       public void should_add_the_building_block_to_the_project_as_well()
       {
-         _project.Modules[0].Observer.ShouldBeEqualTo(_buildConfiguration.Module.Observer);
+         _project.Modules[0].Observers.ShouldBeEqualTo(_simulationConfiguration.ModuleConfigurations.First().Module.Observers);
       }
    }
 

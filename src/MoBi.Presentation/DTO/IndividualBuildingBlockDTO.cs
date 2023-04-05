@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.DTO
@@ -13,7 +14,7 @@ namespace MoBi.Presentation.DTO
       }
 
       public IReadOnlyList<IndividualParameterDTO> Parameters { get; set; }
-      public OriginDataItems OriginData => _individualBuildingBlock.OriginData;
+      public ExtendedProperties OriginData => _individualBuildingBlock.OriginData;
       public string PKSimVersion => _individualBuildingBlock.PKSimVersion;
    }
 }

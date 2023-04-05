@@ -73,16 +73,29 @@ namespace MoBi.Presentation.Nodes
       {
          var buildConfigNode = new SimulationConfigurationNode(simulationConfiguration);
          //add one node for each Building Block
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.SpatialStructure);
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Molecules);
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Reactions);
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.PassiveTransports);
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Observers);
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.EventGroups);
+         
+         simulationConfiguration.ModuleConfigurations.Each(moduleConfiguration =>
+         {
+            var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).Under(buildConfigNode);
+
+            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.SpatialStructure);
+            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Molecules);
+            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Reactions);
+            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.PassiveTransports);
+            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Observers);
+            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.EventGroups);
+            moduleConfiguration.Module.MoleculeStartValuesCollection.Each(x =>
+            {
+               addConfigurationNodeUnder(moduleConfigurationNode,x);
+            });
+            moduleConfiguration.Module.ParameterStartValuesCollection.Each(x =>
+            {
+               addConfigurationNodeUnder(moduleConfigurationNode, x);
+            });
+         });
+
          addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.MoleculeStartValues);
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.ParameterStartValues);
-         if(simulationConfiguration.Individual != null)
+         if (simulationConfiguration.Individual != null)
             addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Individual);
 
 
