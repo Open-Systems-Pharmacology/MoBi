@@ -37,10 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Presentation\Mapper\AddBuildingBlocksToModuleDTOToModuleMapperSpecs.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="7.2.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.0">
       <PrivateAssets>all</PrivateAssets>

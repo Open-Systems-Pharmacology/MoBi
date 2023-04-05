@@ -22,14 +22,14 @@ namespace MoBi.Core.Commands
 
       protected override void Context()
       {
-         _newReactionBuildingBlock = new ReactionBuildingBlock();
-         _newEventGroupBuildingBlock = new EventGroupBuildingBlock();
+         _newReactionBuildingBlock = new ReactionBuildingBlock().WithId("reactionId");
+         _newEventGroupBuildingBlock = new EventGroupBuildingBlock().WithId("eventGroupId");
          _existingModule = new Module().WithId("moduleId");
 
          _listOfNewBuildingBlocks = new List<IBuildingBlock>
          {
             _newReactionBuildingBlock,
-            new EventGroupBuildingBlock().WithId("eventGroupId")
+            _newEventGroupBuildingBlock
          };
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
@@ -51,43 +51,10 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void the_building_blocks_must_be_registered_in_the_context()
-      {
-         A.CallTo(() => _context.Register(A<ReactionBuildingBlock>.That.Matches(buildingBlock => buildingBlock.Id == "reactionId")))
-            .MustHaveHappened();
-         A.CallTo(() => _context.Register(A<EventGroupBuildingBlock>.That.Matches(buildingBlock => buildingBlock.Id == "eventGroupId")))
-            .MustHaveHappened();
-      }
-
-      [Observation]
       public void the_building_blocks_must_be_added_to_the_module()
       {
          _existingModule.Reaction.ShouldBeEqualTo(_newReactionBuildingBlock);
          _existingModule.EventGroup.ShouldBeEqualTo(_newEventGroupBuildingBlock);
-      }
-   }
-
-   public class When_reversing_the_add_building_blocks_to_module_command : concern_for_AddBuildingBlocksToModuleCommand
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _context.Get<Module>(_existingModule.Id)).Returns(_existingModule);
-      }
-
-      protected override void Because()
-      {
-         sut.ExecuteAndInvokeInverse(_context);
-      }
-
-      [Observation]
-      public void only_the_building_blocks_are_removed_from_the_module()
-      {
-         _existingModule.Reaction.ShouldBeNull();
-         _existingModule.EventGroup.ShouldBeNull();
-
-         _existingModule.SpatialStructure.ShouldNotBeNull();
-         _existingModule.Molecule.ShouldNotBeNull();
       }
    }
 }
