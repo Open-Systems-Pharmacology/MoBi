@@ -12,22 +12,22 @@ namespace MoBi.Core.Domain.Extensions
          switch (buildingBlock)
          {
             case MoleculeBuildingBlock molecule:
-               module.Molecule = molecule;
+               module.Molecules = molecule;
                break;
             case IReactionBuildingBlock reaction:
-               module.Reaction = reaction;
+               module.Reactions = reaction;
                break;
             case ISpatialStructure spatialStructure:
                module.SpatialStructure = spatialStructure;
                break;
             case IPassiveTransportBuildingBlock passiveTransport:
-               module.PassiveTransport = passiveTransport;
+               module.PassiveTransports = passiveTransport;
                break;
             case IEventGroupBuildingBlock eventGroup:
-               module.EventGroup = eventGroup;
+               module.EventGroups = eventGroup;
                break;
             case IObserverBuildingBlock observer:
-               module.Observer = observer;
+               module.Observers = observer;
                break;
             case ParameterStartValuesBuildingBlock parameterStartValues:
                module.AddParameterStartValueBlock(parameterStartValues);
@@ -45,22 +45,22 @@ namespace MoBi.Core.Domain.Extensions
          switch (buildingBlock)
          {
             case MoleculeBuildingBlock molecule:
-               module.Molecule = null;
+               module.Molecules = null;
                break;
             case IReactionBuildingBlock reaction:
-               module.Reaction = null;
+               module.Reactions = null;
                break;
             case ISpatialStructure spatialStructure:
                module.SpatialStructure = null;
                break;
             case IPassiveTransportBuildingBlock passiveTransport:
-               module.PassiveTransport = null;
+               module.PassiveTransports = null;
                break;
             case IEventGroupBuildingBlock eventGroup:
-               module.EventGroup = null;
+               module.EventGroups = null;
                break;
             case IObserverBuildingBlock observer:
-               module.Observer = null;
+               module.Observers = null;
                break;
             case ParameterStartValuesBuildingBlock parameterStartValues:
                //module.RemoveParameterStartValueBlock(parameterStartValues);

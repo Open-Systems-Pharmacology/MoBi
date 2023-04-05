@@ -6,13 +6,13 @@ namespace MoBi.Presentation.DTO
    {
       public AddBuildingBlocksToModuleDTO(Module module)
       {
-         if (module.Molecule != null)
+         if (module.Molecules != null)
          {
             AlreadyHasMolecule = true;
             WithMolecule = false;
          }
 
-         if (module.Reaction != null)
+         if (module.Reactions != null)
          {
             AlreadyHasReaction = true;
             WithReaction = false;
@@ -25,19 +25,19 @@ namespace MoBi.Presentation.DTO
             WithSpatialStructure = false;
          }
 
-         if (module.PassiveTransport != null)
+         if (module.PassiveTransports != null)
          {
             AlreadyHasPassiveTransport = true;
             WithPassiveTransport = false;
          }
 
-         if (module.EventGroup != null)
+         if (module.EventGroups != null)
          {
             AlreadyHasEventGroup = true;
             WithEventGroup = false;
          }
 
-         if (module.Observer != null)
+         if (module.Observers != null)
          {
             AlreadyHasObserver = true;
             WithObserver = false;

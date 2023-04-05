@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using DevExpress.Office;
+using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -10,7 +11,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mapper
 {
-   public class concern_for_AddBuildingBlocksToModuleDTOToModuleMapper : ContextSpecification<AddBuildingBlocksToModuleDTOToModuleMapper>
+   public class concern_for_AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper : ContextSpecification<AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper>
    {
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
@@ -21,27 +22,27 @@ namespace MoBi.Presentation.Mapper
          _context = A.Fake<IMoBiContext>();
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
-         sut = new AddBuildingBlocksToModuleDTOToModuleMapper(_context, _reactionBuildingBlockFactory, _spatialStructureFactory);
+         sut = new AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper(_context, _reactionBuildingBlockFactory, _spatialStructureFactory);
       }
    }
 
-   public class When_mapping_dto_to_module_with_all_building_blocks_already_existing : concern_for_AddBuildingBlocksToModuleDTOToModuleMapper
+   public class When_mapping_dto_to_list_with_all_building_blocks_already_existing : concern_for_AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper
    {
       private AddBuildingBlocksToModuleDTO _dto;
       private Module _existingModule;
-      private Module _result;
+      private System.Collections.Generic.IReadOnlyList<IBuildingBlock> _result;
 
       protected override void Context()
       {
          base.Context();
          _existingModule = new Module
          {
-            Observer = new ObserverBuildingBlock(),
-            Reaction = new ReactionBuildingBlock(),
+            Observers = new ObserverBuildingBlock(),
+            Reactions = new ReactionBuildingBlock(),
             SpatialStructure = new SpatialStructure(),
-            EventGroup = new EventGroupBuildingBlock(),
-            Molecule = new MoleculeBuildingBlock(),
-            PassiveTransport = new PassiveTransportBuildingBlock()
+            EventGroups = new EventGroupBuildingBlock(),
+            Molecules = new MoleculeBuildingBlock(),
+            PassiveTransports = new PassiveTransportBuildingBlock()
          };
          _existingModule.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock());
          _existingModule.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
@@ -54,8 +55,8 @@ namespace MoBi.Presentation.Mapper
             WithMolecule = true,
             WithObserver = true,
             WithPassiveTransport = true,
-            WithParameterStartValues = true,
-            WithMoleculeStartValues = true,
+            WithParameterStartValues = false,
+            WithMoleculeStartValues = false,
          };
       }
 
@@ -65,16 +66,9 @@ namespace MoBi.Presentation.Mapper
       }
 
       [Observation]
-      public void the_module_should_contain_only_the_start_values()
+      public void the_list_should_have_no_values()
       {
-         _result.SpatialStructure.ShouldBeNull();
-         _result.Reaction.ShouldBeNull();
-         _result.EventGroup.ShouldBeNull();
-         _result.MoleculeStartValuesCollection.ShouldNotBeEmpty();
-         _result.ParameterStartValuesCollection.ShouldNotBeEmpty();
-         _result.PassiveTransport.ShouldBeNull();
-         _result.Observer.ShouldBeNull();
-         _result.Molecule.ShouldBeNull();
+         _result.ShouldBeEmpty();
       }
    }
 }

@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
          A.CallTo(() => _context.CurrentProject).Returns(_project);
 
          _existingModule.SpatialStructure = new SpatialStructure().WithId("SpatialStructure");
-         _existingModule.Molecule = new MoleculeBuildingBlock().WithId("Molecule");
+         _existingModule.Molecules = new MoleculeBuildingBlock().WithId("Molecule");
       }
    }
 
@@ -53,8 +53,8 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_building_blocks_must_be_added_to_the_module()
       {
-         _existingModule.Reaction.ShouldBeEqualTo(_newReactionBuildingBlock);
-         _existingModule.EventGroup.ShouldBeEqualTo(_newEventGroupBuildingBlock);
+         _existingModule.Reactions.ShouldBeEqualTo(_newReactionBuildingBlock);
+         _existingModule.EventGroups.ShouldBeEqualTo(_newEventGroupBuildingBlock);
       }
    }
 }
