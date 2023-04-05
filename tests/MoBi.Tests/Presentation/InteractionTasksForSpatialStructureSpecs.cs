@@ -8,6 +8,7 @@ using MoBi.Core.Exceptions;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Presentation
 {
@@ -25,13 +26,13 @@ namespace MoBi.Presentation
    public class When_removing_spatial_structure_building_block_that_is_referred_to_in_another_building_block : concern_for_InteractionTasksForSpatialStructure
    {
       private IMoBiSpatialStructure _spatialStructure;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
          _spatialStructure = new MoBiSpatialStructure() { Id = "1" };
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
 
          _project.AddBuildingBlock(new MoleculeStartValuesBuildingBlock { SpatialStructureId = _spatialStructure.Id, MoleculeBuildingBlockId = "" });
       }

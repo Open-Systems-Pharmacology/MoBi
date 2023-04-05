@@ -20,7 +20,7 @@ namespace MoBi.Core.Services
       public void SynchronizeValue(IModelCoreSimulation simulation, IParameter parameter)
       {
          if (parameter == null) return;
-         var parameterStartValues = simulation.BuildConfiguration.ParameterStartValues;
+         var parameterStartValues = simulation.Configuration.ParameterStartValues;
          var objectPath = _entityPathResolver.ObjectPathFor(parameter);
          var parameterStartValue = parameterStartValues[objectPath];
 

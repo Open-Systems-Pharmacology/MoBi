@@ -57,7 +57,7 @@ namespace MoBi.Core.Commands
 
    public class AddParameterStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IParameter, ParameterStartValue>
    {
-      public AddParameterStartValueFromQuantityInSimulationCommand(IParameter parameter, IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
+      public AddParameterStartValueFromQuantityInSimulationCommand(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
          : base(parameter, parameterStartValuesBuildingBlock)
       {
       }
@@ -71,7 +71,7 @@ namespace MoBi.Core.Commands
 
    public class AddMoleculeStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IMoleculeAmount, MoleculeStartValue>
    {
-      public AddMoleculeStartValueFromQuantityInSimulationCommand(IMoleculeAmount moleculeAmount, IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
+      public AddMoleculeStartValueFromQuantityInSimulationCommand(IMoleculeAmount moleculeAmount, MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
          : base(moleculeAmount, moleculeStartValuesBuildingBlock)
       {
       }

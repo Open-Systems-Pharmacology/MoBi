@@ -36,7 +36,7 @@ namespace MoBi.Presentation
          _favorites = new ObjectBaseDTO()
          {
             Name = Captions.Favorites,
-            Icon = ApplicationIcons.Favorites.IconName,
+            Icon = ApplicationIcons.Favorites,
             Id = Captions.Favorites
          };
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();

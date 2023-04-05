@@ -131,7 +131,7 @@ namespace MoBi.Presentation.Mappers
          if (string.IsNullOrEmpty(dto.ContainerPath.PathAsString))
             throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.ImportedStartValueMustHaveContainerPath);
 
-         if (quantityImporterDTO.QuantitDTOs.Any(x => Equals(x.Path, dto.Path)))
+         if (quantityImporterDTO.QuantityDTOs.Any(x => Equals(x.Path, dto.Path)))
             throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
                AppConstants.Exceptions.DuplicatedImportedStartValue(dto.Path.PathAsString));
       }
@@ -140,7 +140,7 @@ namespace MoBi.Presentation.Mappers
       {
          var importerDTO = convertTableToQuantityDTOs(table, target);
 
-         if (!importerDTO.QuantitDTOs.Any())
+         if (!importerDTO.QuantityDTOs.Any())
             importerDTO.AddToLog(AppConstants.Captions.NoValuesFound);
 
          return importerDTO;
@@ -173,13 +173,13 @@ namespace MoBi.Presentation.Mappers
             catch (ImportQuantityDTOsFromDataTablesMapperException e)
             {
                importerDTO.AddToLog(e.Message);
-               importerDTO.QuantitDTOs.Clear();
+               importerDTO.QuantityDTOs.Clear();
                break;
             }
             catch (Exception e)
             {
                importerDTO.AddToLog($"{AppConstants.Exceptions.FrameworkExceptionOccurred}, {e.Message}, {row.ToNiceString()}");
-               importerDTO.QuantitDTOs.Clear();
+               importerDTO.QuantityDTOs.Clear();
                break;
             }
 

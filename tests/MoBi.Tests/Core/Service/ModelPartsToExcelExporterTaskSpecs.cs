@@ -50,8 +50,8 @@ namespace MoBi.Core.Service
          _moBiSimulation = A.Fake<IMoBiSimulation>();
          _parameterList = new List<IParameter>();
 
-         A.CallTo(() => _moBiSimulation.MoBiBuildConfiguration.MoBiReactions).Returns(_moBiReactionBuildingBlock);
-         A.CallTo(() => _moBiSimulation.MoBiBuildConfiguration.MoleculeStartValues).Returns(_moleculeStartValuesBuildingBlock);
+         A.CallTo(() => _moBiSimulation.Configuration.Reactions).Returns(_moBiReactionBuildingBlock);
+         A.CallTo(() => _moBiSimulation.Configuration.MoleculeStartValues).Returns(_moleculeStartValuesBuildingBlock);
          A.CallTo(() => _moBiSimulation.Model.Root.GetAllChildren<IParameter>()).Returns(_parameterList);
       }
 

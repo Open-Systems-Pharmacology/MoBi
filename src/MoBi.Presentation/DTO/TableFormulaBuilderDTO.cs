@@ -1,15 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Validation;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
    public class TableFormulaBuilderDTO : FormulaBuilderDTO
    {
+      public TableFormulaBuilderDTO(TableFormula tableFormula) : base(tableFormula)
+      {
+      }
+
       public IEnumerable<DTOValuePoint> ValuePoints { set; get; }
       public bool UseDerivedValues { get; set; }
       public string XDisplayName { get; set; }
@@ -55,7 +59,7 @@ namespace MoBi.Presentation.DTO
 
          private static bool cannotRepeat(DTOValuePoint valuePoint, double newValue)
          {
-            return valuePoint._tableFormulaDTO.ValuePoints.Except(new []{valuePoint}).All(x => x.XValue != newValue);
+            return valuePoint._tableFormulaDTO.ValuePoints.Except(new[] {valuePoint}).All(x => x.XValue != newValue);
          }
       }
    }

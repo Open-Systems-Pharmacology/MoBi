@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
             _moleculeStartValue.Path,
             "Name2");
 
-         A.CallTo(() => _context.Get<IMoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<MoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

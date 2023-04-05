@@ -44,13 +44,13 @@ namespace MoBi.Presentation
       [Observation]
       public void should_generate_add_command_for_psv()
       {
-         A.CallTo(() => _moleculeStartValuesTask.AddToProject(A<IParameterStartValuesBuildingBlock>._)).MustHaveHappened();
+         A.CallTo(() => _moleculeStartValuesTask.AddToProject(A<ParameterStartValuesBuildingBlock>._)).MustHaveHappened();
       }
 
       [Observation]
       public void should_have_cloned_the_psv()
       {
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(A<IParameterStartValuesBuildingBlock>._)).MustHaveHappened();
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(A<ParameterStartValuesBuildingBlock>._)).MustHaveHappened();
       }
    }
 }	

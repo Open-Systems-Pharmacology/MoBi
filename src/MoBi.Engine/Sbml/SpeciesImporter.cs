@@ -25,8 +25,8 @@ namespace MoBi.Engine.Sbml
    public class SpeciesImporter : SBMLImporter, IStartable, ISpeciesImporter
    {
       private readonly IMoleculeStartValuesCreator _moleculeStartValuesCreator;
-      internal IMoleculeBuildingBlock MoleculeBuildingBlock;
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      internal MoleculeBuildingBlock MoleculeBuildingBlock;
+      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
       private readonly IMoleculeBuilderFactory _moleculeBuilderFactory;
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly Dictionary<string, Dimension> _dimensionDictionary;
@@ -92,7 +92,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       internal void CreateMoleculeBuildingBlock()
       {
-         MoleculeBuildingBlock = ObjectBaseFactory.Create<IMoleculeBuildingBlock>()
+         MoleculeBuildingBlock = ObjectBaseFactory.Create<MoleculeBuildingBlock>()
              .WithName(SBMLConstants.SBML_SPECIES_BB);
       }
 
@@ -333,8 +333,8 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _command.AddCommand(new AddBuildingBlockCommand<IMoleculeBuildingBlock>(MoleculeBuildingBlock).Run(_context));
-         _command.AddCommand(new AddBuildingBlockCommand<IMoleculeStartValuesBuildingBlock>(_moleculeStartValuesBuildingBlock).Run(_context));
+         _command.AddCommand(new AddBuildingBlockCommand<MoleculeBuildingBlock>(MoleculeBuildingBlock).Run(_context));
+         _command.AddCommand(new AddBuildingBlockCommand<MoleculeStartValuesBuildingBlock>(_moleculeStartValuesBuildingBlock).Run(_context));
       }
 
       /// <summary>

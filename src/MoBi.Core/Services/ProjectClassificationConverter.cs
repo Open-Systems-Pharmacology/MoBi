@@ -5,12 +5,12 @@ namespace MoBi.Core.Services
 {
    public interface IProjectClassificationConverter
    {
-      void Convert(IMoBiProject project);
+      void Convert(MoBiProject project);
    }
 
    public class ProjectClassificationConverter : IProjectClassificationConverter
    {
-      public void Convert(IMoBiProject project)
+      public void Convert(MoBiProject project)
       {
          foreach (var simulation in project.Simulations)
          {

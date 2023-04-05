@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
@@ -147,13 +148,13 @@ namespace MoBi.Presentation
    {
       private ITreeNode _node;
       private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _moleculeBuilder = A.Fake<IMoleculeBuilder>();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          var moleculeBuildingBlockNode = A.Fake<ITreeNode>();
          A.CallTo(() => moleculeBuildingBlockNode.TagAsObject).Returns(_moleculeBuildingBlock);
          _node = A.Fake<ITreeNode>();
@@ -248,7 +249,7 @@ namespace MoBi.Presentation
    public class When_the_module_explorer_presenter_is_adding_the_project_to_the_tree : concern_for_ModuleExplorerPresenter
    {
       private List<ITreeNode> _allNodesAdded;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private ObserverBuildingBlock _observerBuildingBlock;
       private SimulationSettings _simulationSettingsBuildingBlock;
       private Module _module1;
@@ -256,7 +257,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _observerBuildingBlock = new ObserverBuildingBlock().WithName("OBSERVERS");
          _simulationSettingsBuildingBlock = new SimulationSettings().WithName("SIMULATION_SETTINGS");
          _module1 = new Module

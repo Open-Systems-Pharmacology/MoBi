@@ -3,7 +3,6 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Extensions;
@@ -13,6 +12,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISimulationChartPresenter : IChartPresenter
    {
+      void RefreshSimulationChart();
    }
 
    public class SimulationChartPresenter : ChartPresenter, ISimulationChartPresenter
@@ -36,6 +36,11 @@ namespace MoBi.Presentation.Presenter
       protected override string CurveNameDefinition(DataColumn column)
       {
          return _curveNamer.CurveNameForColumn(_dataRepositoryCache[column.Repository], column, addSimulationName: false);
+      }
+
+      public void RefreshSimulationChart()
+      {
+         Refresh();
       }
    }
 }

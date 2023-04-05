@@ -10,32 +10,42 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public class ObjectBaseDTO : DxValidatableDTO, IWithId, IWithName, IViewItem
+   public class ObjectBaseDTO : DxValidatableDTO, IWithName, IWithId, IViewItem
    {
+      public IObjectBase ObjectBase { get; }
       private static readonly string _propertyName = MoBiReflectionHelper.PropertyName<IObjectBase>(x => x.Name);
 
       public string Name { set; get; }
       public string Description { set; get; }
+      public ApplicationIcon Icon { get; set; }
       public string Id { get; set; }
-      public string Icon { get; set; }
+
       protected readonly List<string> _usedNames;
 
       public ObjectBaseDTO()
       {
-         Rules.AddRange(AllRules.All());
+         Rules.AddRange(AllRules.All);
          _usedNames = new List<string>();
          AddUsedNames(AppConstants.UnallowedNames);
+         //by default, we'll set a random id that might be changed if using a real object underneath the hood
+         Id = ShortGuid.NewGuid();
       }
 
-      public override string ToString()
+      public ObjectBaseDTO(IObjectBase objectBase) : this()
       {
-         return Name;
+         ObjectBase = objectBase;
+         Id = ObjectBase?.Id;
+         if(objectBase != null)
+            objectBase.PropertyChanged += HandlePropertyChanged;
       }
+
+      public override string ToString() => Name;
 
       public virtual bool IsNameUnique(string newName)
       {
@@ -58,11 +68,11 @@ namespace MoBi.Presentation.DTO
          _usedNames.AddRange(usedNames.Select(x => x.ToLower()));
       }
 
-      public virtual void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
+      protected virtual void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
       {
          if (e.PropertyName.Equals(_propertyName))
          {
-            Name = ((IObjectBase)sender).Name;
+            Name = ObjectBase.Name;
          }
 
          RaisePropertyChanged(e.PropertyName);
@@ -93,29 +103,28 @@ namespace MoBi.Presentation.DTO
             .WithRule((dto, name) => nameDoesNotContainerIllegalCharacters(name))
             .WithError(Error.NameCannotContainIllegalCharacters(Constants.ILLEGAL_CHARACTERS));
 
-         public static IEnumerable<IBusinessRule> All()
+         public static IReadOnlyList<IBusinessRule> All { get; } = new[]
          {
-            yield return notEmptyNameRule;
-            yield return nameDoesNotContainIllegalCharacters;
-            yield return uniqueNameRule;
-         }
+            notEmptyNameRule,
+            nameDoesNotContainIllegalCharacters,
+            uniqueNameRule,
+         };
       }
    }
 
    public class BuildingBlockViewItem : ObjectBaseDTO
    {
-      public IBuildingBlock BuildingBlock { get; private set; }
+      public IBuildingBlock BuildingBlock { get; }
 
-      public BuildingBlockViewItem(IBuildingBlock buildingBlock)
+      public BuildingBlockViewItem(IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          BuildingBlock = buildingBlock;
-         Id = buildingBlock.Id;
       }
    }
 
    public class ObservedDataViewItem : IViewItem
    {
-      public DataRepository Repository { get; private set; }
+      public DataRepository Repository { get; }
 
       public ObservedDataViewItem(DataRepository repository)
       {
@@ -125,12 +134,11 @@ namespace MoBi.Presentation.DTO
 
    public class SimulationViewItem : ObjectBaseDTO
    {
-      public IMoBiSimulation Simulation { get; private set; }
+      public IMoBiSimulation Simulation { get; }
 
-      public SimulationViewItem(IMoBiSimulation simulation)
+      public SimulationViewItem(IMoBiSimulation simulation) : base(simulation)
       {
          Simulation = simulation;
-         Id = simulation.Id;
       }
    }
 
@@ -140,27 +148,5 @@ namespace MoBi.Presentation.DTO
 
    public class UserDefinedNodeViewItem : ObjectBaseDTO
    {
-   }
-
-   public class BuildingBlockInfoViewItem : ObjectBaseDTO
-   {
-      public IMoBiSimulation Simulation { get; private set; }
-      public IBuildingBlockInfo BuildingBlockInfo { get; private set; }
-
-      public BuildingBlockInfoViewItem(IBuildingBlockInfo buildingBlockInfoInfo, IMoBiSimulation simulation)
-      {
-         BuildingBlockInfo = buildingBlockInfoInfo;
-         Simulation = simulation;
-      }
-   }
-
-   public class ModuleViewItem : ObjectBaseDTO
-   {
-      public Module Module { get; private set; }
-
-      public ModuleViewItem(Module module)
-      {
-         Module = module;
-      }
    }
 }

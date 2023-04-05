@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter.Simulation;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -18,13 +18,11 @@ namespace MoBi.Presentation.Presenter
       where TView : IWizardView, IModalView<TPresenter>
    {
       protected IMoBiContext _context;
-      protected IBuildConfigurationFactory _buildConfigurationFactory;
       protected IMoBiMacroCommand _commands;
 
-      protected ConfigureSimulationPresenterBase(TView view, ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager, IDialogCreator dialogCreator, IBuildConfigurationFactory buildConfigurationFactory, IMoBiContext context, IReadOnlyList<ISubPresenterItem> subPresenterItems)
+      protected ConfigureSimulationPresenterBase(TView view, ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager, IDialogCreator dialogCreator, IMoBiContext context, IReadOnlyList<ISubPresenterItem> subPresenterItems)
          : base(view, subPresenterManager, subPresenterItems, dialogCreator)
       {
-         _buildConfigurationFactory = buildConfigurationFactory;
          _context = context;
          _commands = new MoBiMacroCommand();
 
@@ -50,10 +48,11 @@ namespace MoBi.Presentation.Presenter
       public override void InitializeWith(ICommandCollector commandCollector)
       {
          base.InitializeWith(commandCollector);
-         BuildConfigurationPresenter.MoleculeStartValuesChangedEvent += (o,e) => MoleculeStartValuesPresenter.Refresh();
+         BuildConfigurationPresenter.MoleculeStartValuesChangedEvent += (o, e) => MoleculeStartValuesPresenter.Refresh();
          BuildConfigurationPresenter.ParameterStartValuesChangedEvent += (o, e) => ParameterStartValuesPresenter.Refresh();
-         BuildConfigurationPresenter.SpatialStructureChangedEvent += (o, e) => refreshStartValues();
-         BuildConfigurationPresenter.MoleculeBuildingBlockChangedEvent += (o, e) => refreshStartValues();
+         BuildConfigurationPresenter.ModuleChangedEvent += (o, e) => refreshStartValues();
+         // BuildConfigurationPresenter.SpatialStructureChangedEvent += (o, e) => refreshStartValues();
+         // BuildConfigurationPresenter.MoleculeBuildingBlockChangedEvent += (o, e) => refreshStartValues();
       }
 
       private void refreshStartValues()
@@ -64,32 +63,21 @@ namespace MoBi.Presentation.Presenter
 
       private void setControlEnabled(ISubPresenterItem subPresenterItem, bool configReady)
       {
-         if (subPresenterItem == SimulationItems.BuildConfiguration)
+         if (subPresenterItem == SimulationItems.SimulationConfiguration)
             return;
 
          View.SetControlEnabled(subPresenterItem, configReady);
       }
 
-      protected IEditBuildConfigurationPresenter BuildConfigurationPresenter => PresenterAt(SimulationItems.BuildConfiguration);
+      protected IEditSimulationConfigurationPresenter BuildConfigurationPresenter => PresenterAt(SimulationItems.SimulationConfiguration);
 
-      protected IMoleculeStartValuesBuildingBlock SelectedMoleculeStartValues => MoleculeStartValuesPresenter.StartValues;
+      protected MoleculeStartValuesBuildingBlock SelectedMoleculeStartValues => MoleculeStartValuesPresenter.StartValues;
 
-      protected IParameterStartValuesBuildingBlock SelectedParameterStartValues => ParameterStartValuesPresenter.StartValues;
+      protected ParameterStartValuesBuildingBlock SelectedParameterStartValues => ParameterStartValuesPresenter.StartValues;
 
       protected ISelectAndEditParameterStartValuesPresenter ParameterStartValuesPresenter => PresenterAt(SimulationItems.ParameterStartValues);
 
       protected ISelectAndEditMoleculesStartValuesPresenter MoleculeStartValuesPresenter => PresenterAt(SimulationItems.MoleculeStartValues);
-
-      protected void UpdateStartValueInfo<TBuildingBlock, TStartValue>(IBuildingBlockInfo<TBuildingBlock> info, TBuildingBlock selectedBuildingBlock)
-         where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
-         where TStartValue : class, IStartValue
-      {
-         info.SimulationChanges += (selectedBuildingBlock.Version - info.TemplateBuildingBlock.Version);
-         if (changedDuringCreation(info.TemplateBuildingBlock, selectedBuildingBlock))
-            info.SimulationChanges++;
-
-         info.BuildingBlock = selectedBuildingBlock;
-      }
 
       private bool changedDuringCreation<T>(IStartValuesBuildingBlock<T> templateBuildingBlock, IStartValuesBuildingBlock<T> buildingBlock) where T : class, IStartValue
       {

@@ -24,12 +24,12 @@ namespace MoBi.Core.Serialization.PlugIns
 
    public interface IMoBiImport : IMoBiPlugIn
    {
-      IMoBiProject LoadProject(bool silent);
+      MoBiProject LoadProject(bool silent);
    }
 
    public interface IMoBiExport : IMoBiPlugIn
    {
-      bool SaveProject(IMoBiProject root, bool silent);
+      bool SaveProject(MoBiProject root, bool silent);
    }
 
    public interface IMoBiDimensionImport : IMoBiPlugIn

@@ -18,7 +18,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.ORM.Mappers
 {
-   public interface IProjectMetaDataToProjectMapper : IMapper<ProjectMetaData, IMoBiProject>
+   public interface IProjectMetaDataToProjectMapper : IMapper<ProjectMetaData, MoBiProject>
    {
    }
 
@@ -27,7 +27,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       private readonly IXmlSerializationService _serializationService;
       private readonly ISerializationContextFactory _serializationContextFactory;
       private readonly IDeserializedReferenceResolver _deserializedReferenceResolver;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       public ProjectMetaDataToProjectMapper(
          IXmlSerializationService serializationService,
@@ -39,7 +39,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          _deserializedReferenceResolver = deserializedReferenceResolver;
       }
 
-      public IMoBiProject MapFrom(ProjectMetaData projectMetaData)
+      public MoBiProject MapFrom(ProjectMetaData projectMetaData)
       {
          try
          {
@@ -47,7 +47,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
             // then all other entities and finish with the project charts
             using (var serializationContext = _serializationContextFactory.Create())
             {
-               _project = deserializeContent<IMoBiProject>(projectMetaData.Content, serializationContext);
+               _project = deserializeContent<MoBiProject>(projectMetaData.Content, serializationContext);
                _project.Name = projectMetaData.Name;
                _project.Description = projectMetaData.Description;
 

@@ -8,22 +8,22 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditParameterStartValuesPresenter : ISingleStartPresenter<IParameterStartValuesBuildingBlock>
+   public interface IEditParameterStartValuesPresenter : ISingleStartPresenter<ParameterStartValuesBuildingBlock>
    {
       void ExtendStartValues();
       void AddNewEmptyStartValue();
    }
 
-   public class EditParameterStartValuesPresenter : EditBuildingBlockPresenterBase<IEditParameterStartValuesView, IEditParameterStartValuesPresenter, IParameterStartValuesBuildingBlock, ParameterStartValue>,
+   public class EditParameterStartValuesPresenter : EditBuildingBlockPresenterBase<IEditParameterStartValuesView, IEditParameterStartValuesPresenter, ParameterStartValuesBuildingBlock, ParameterStartValue>,
                                                     IEditParameterStartValuesPresenter
    {
       private readonly IParameterStartValuesPresenter _parameterStartValuesPresenter;
-      private IParameterStartValuesBuildingBlock _parameterStartValues;
-      private readonly IEditTaskFor<IParameterStartValuesBuildingBlock> _editTasks;
+      private ParameterStartValuesBuildingBlock _parameterStartValues;
+      private readonly IEditTaskFor<ParameterStartValuesBuildingBlock> _editTasks;
       private readonly IMoBiProjectRetriever _projectRetriever;
 
       public EditParameterStartValuesPresenter(IEditParameterStartValuesView view, IParameterStartValuesPresenter parameterStartValuesPresenter,
-                                               IFormulaCachePresenter formulaCachePresenter, IEditTaskFor<IParameterStartValuesBuildingBlock> editTasks, IMoBiProjectRetriever projectRetriever)
+                                               IFormulaCachePresenter formulaCachePresenter, IEditTaskFor<ParameterStartValuesBuildingBlock> editTasks, IMoBiProjectRetriever projectRetriever)
          : base(view, formulaCachePresenter)
       {
          _parameterStartValuesPresenter = parameterStartValuesPresenter;
@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_parameterStartValuesPresenter);
       }
 
-      public override void Edit(IParameterStartValuesBuildingBlock parameterStartValues)
+      public override void Edit(ParameterStartValuesBuildingBlock parameterStartValues)
       {
          _parameterStartValues = parameterStartValues;
          _parameterStartValuesPresenter.Edit(parameterStartValues);
@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Presenter
 
       public void RenameSubject()
       {
-         _editTasks.Rename(_parameterStartValues, _projectRetriever.Current.All<IParameterStartValuesBuildingBlock>(), _parameterStartValues);
+         _editTasks.Rename(_parameterStartValues, _projectRetriever.Current.All<ParameterStartValuesBuildingBlock>(), _parameterStartValues);
       }
 
       public void ExtendStartValues()

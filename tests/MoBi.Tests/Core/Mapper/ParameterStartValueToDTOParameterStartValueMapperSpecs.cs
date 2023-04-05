@@ -44,7 +44,7 @@ namespace MoBi.Core.Mapper
 
       protected override void Because()
       {
-         _resultDTO = sut.MapFrom(_parameterStartValue, A.Fake<IParameterStartValuesBuildingBlock>());
+         _resultDTO = sut.MapFrom(_parameterStartValue, A.Fake<ParameterStartValuesBuildingBlock>());
       }
 
       [Observation]
@@ -80,7 +80,7 @@ namespace MoBi.Core.Mapper
 
       protected override void Because()
       {
-         _resultDTO = sut.MapFrom(_parameterStartValue, A.Fake<IParameterStartValuesBuildingBlock>());
+         _resultDTO = sut.MapFrom(_parameterStartValue, A.Fake<ParameterStartValuesBuildingBlock>());
       }
 
       [Observation]

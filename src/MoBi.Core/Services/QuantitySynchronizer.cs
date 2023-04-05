@@ -31,41 +31,41 @@ namespace MoBi.Core.Services
       ///    Synchronizes the value <paramref name="quantity" /> with the corresponding entries defined in
       ///    <paramref name="moleculeStartValues" /> if available
       /// </summary>
-      void SynchronizeMoleculeStartValues(IQuantity quantity, IMoleculeStartValuesBuildingBlock moleculeStartValues);
+      void SynchronizeMoleculeStartValues(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValues);
    }
 
    public class QuantitySynchronizer : IQuantitySynchronizer,
       IVisitor<IReactionBuildingBlock>,
       IVisitor<ISpatialStructure>,
-      IVisitor<IMoleculeBuildingBlock>
+      IVisitor<MoleculeBuildingBlock>
    {
-      private readonly IAffectedBuildingBlockRetriever _affectedBuildingBlockRetriever;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IMoBiContext _context;
       private IParameter _parameter;
       private IMoBiCommand _command;
 
-      public QuantitySynchronizer(IAffectedBuildingBlockRetriever affectedBuildingBlockRetriever, IEntityPathResolver entityPathResolver, IMoBiContext context)
+      public QuantitySynchronizer(IEntityPathResolver entityPathResolver, IMoBiContext context)
       {
-         _affectedBuildingBlockRetriever = affectedBuildingBlockRetriever;
          _entityPathResolver = entityPathResolver;
          _context = context;
       }
 
       public IMoBiCommand SynchronizeCommand(IQuantity quantity, IMoBiSimulation simulation)
       {
-         var affectedBuildingBlockInfo = _affectedBuildingBlockRetriever.RetrieveFor(quantity, simulation);
-         if (affectedBuildingBlockInfo == null)
-            return new MoBiEmptyCommand();
-
-         var affectedBuildingBlock = affectedBuildingBlockInfo.UntypedBuildingBlock;
-         if (affectedBuildingBlock.IsAnImplementationOf<IParameterStartValuesBuildingBlock>())
-            return synchronizeParameterStartValueCommand(quantity as IParameter, affectedBuildingBlock.DowncastTo<IParameterStartValuesBuildingBlock>());
-
-         if (affectedBuildingBlock.IsAnImplementationOf<IMoleculeStartValuesBuildingBlock>())
-            return synchronizeMoleculeStartValueCommand(quantity, affectedBuildingBlock.DowncastTo<IMoleculeStartValuesBuildingBlock>());
-
-         return synchronizeStructuralBuildingBlockCommand(quantity as IParameter, affectedBuildingBlock);
+         //TODO SIMULATION_CONFIGURATION
+         return new MoBiEmptyCommand();
+         // var affectedBuildingBlockInfo = _affectedBuildingBlockRetriever.RetrieveFor(quantity, simulation);
+         // if (affectedBuildingBlockInfo == null)
+         //    return new MoBiEmptyCommand();
+         //
+         // var affectedBuildingBlock = affectedBuildingBlockInfo.UntypedBuildingBlock;
+         // if (affectedBuildingBlock.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
+         //    return synchronizeParameterStartValueCommand(quantity as IParameter, affectedBuildingBlock.DowncastTo<ParameterStartValuesBuildingBlock>());
+         //
+         // if (affectedBuildingBlock.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())
+         //    return synchronizeMoleculeStartValueCommand(quantity, affectedBuildingBlock.DowncastTo<MoleculeStartValuesBuildingBlock>());
+         //
+         // return synchronizeStructuralBuildingBlockCommand(quantity as IParameter, affectedBuildingBlock);
       }
 
       public IMoBiCommand Synchronize(IQuantity quantity, IMoBiSimulation simulation)
@@ -73,7 +73,7 @@ namespace MoBi.Core.Services
          return SynchronizeCommand(quantity, simulation).AsHidden().Run(_context);
       }
 
-      public void SynchronizeMoleculeStartValues(IQuantity quantity, IMoleculeStartValuesBuildingBlock moleculeStartValues)
+      public void SynchronizeMoleculeStartValues(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValues)
       {
          synchronizeMoleculeStartValueCommand(quantity, moleculeStartValues, allowCreation: false).Run(_context);
       }
@@ -98,7 +98,7 @@ namespace MoBi.Core.Services
          }
       }
 
-      private IMoBiCommand synchronizeMoleculeStartValueCommand(IQuantity quantity, IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, bool allowCreation = true)
+      private IMoBiCommand synchronizeMoleculeStartValueCommand(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, bool allowCreation = true)
       {
          var moleculeAmount = quantity as IMoleculeAmount ?? quantity.ParentContainer as IMoleculeAmount;
          return synchronizeStartValueCommand(moleculeAmount, moleculeStartValuesBuildingBlock, allowCreation,
@@ -106,7 +106,7 @@ namespace MoBi.Core.Services
             () => new AddMoleculeStartValueFromQuantityInSimulationCommand(moleculeAmount, moleculeStartValuesBuildingBlock));
       }
 
-      private IMoBiCommand synchronizeParameterStartValueCommand(IParameter parameter, IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, bool allowCreation = true)
+      private IMoBiCommand synchronizeParameterStartValueCommand(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, bool allowCreation = true)
       {
          return synchronizeStartValueCommand(parameter, parameterStartValuesBuildingBlock, allowCreation,
             psv => new SynchronizeParameterStartValueCommand(parameter, psv),
@@ -149,7 +149,7 @@ namespace MoBi.Core.Services
          synchronizeInParameters(spatialStructure);
       }
 
-      public void Visit(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void Visit(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          var command = synchronizeInParameters(moleculeBuildingBlock);
          if (!command.IsEmpty())

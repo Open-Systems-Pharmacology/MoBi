@@ -12,7 +12,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class ParameterStartValuesBuildingBlockReporter : BuildingBlockReporter<IParameterStartValuesBuildingBlock, ParameterStartValue>
+   internal class ParameterStartValuesBuildingBlockReporter : BuildingBlockReporter<ParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       private readonly ReportingHelper _reportingHelper;
 
@@ -21,7 +21,7 @@ namespace MoBi.Core.Reporting
          _reportingHelper = new ReportingHelper(displayUnitRetriever);
       }
 
-      protected override void AddBuildersReport(IParameterStartValuesBuildingBlock parameterStartValues, List<object> listToReport, OSPSuiteTracker buildTracker)
+      protected override void AddBuildersReport(ParameterStartValuesBuildingBlock parameterStartValues, List<object> listToReport, OSPSuiteTracker buildTracker)
       {
          var table = tableFor(parameterStartValues, buildTracker.Settings.Verbose);
          var containers = table.DefaultView.ToTable(true, Constants.CONTAINER_PATH, Constants.LEVELS).DefaultView;

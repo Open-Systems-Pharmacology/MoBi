@@ -1,27 +1,28 @@
 using System.Collections.Generic;
 using MoBi.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Validation;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
-   public class BuildingBlockSelectionDTO : ValidatableDTO
+   public class ObjectBaseSelectionDTO<TObjectBase> : ValidatableDTO
    {
-      public BuildingBlockSelectionDTO()
+      public ObjectBaseSelectionDTO()
       {
          Rules.AddRange(AllRules.All());
       }
 
-      private IBuildingBlock _buildingBlock;
+      private TObjectBase _selectedObject;
 
-      public IBuildingBlock BuildingBlock
+      public TObjectBase SelectedObject
       {
-         get { return _buildingBlock; }
+         get => _selectedObject;
          set
          {
-            _buildingBlock = value;
-            OnPropertyChanged(() => BuildingBlock);
+            _selectedObject = value;
+            OnPropertyChanged(() => SelectedObject);
          }
       }
 
@@ -31,10 +32,10 @@ namespace MoBi.Presentation.DTO
          {
             get
             {
-               return CreateRule.For<BuildingBlockSelectionDTO>()
-                   .Property(item => item.BuildingBlock)
-                   .WithRule((dto, block) => block != null)
-                   .WithError((dto, block) => AppConstants.Exceptions.NoBuildingBlockAvailable);
+               return CreateRule.For<ObjectBaseSelectionDTO<TObjectBase>>()
+                  .Property(item => item.SelectedObject)
+                  .WithRule((dto, block) => block != null)
+                  .WithError((dto, block) => AppConstants.Exceptions.NoBuildingBlockAvailable);
             }
          }
 
@@ -43,5 +44,15 @@ namespace MoBi.Presentation.DTO
             yield return buildingBlockNotNull;
          }
       }
+   }
+
+   public class ModuleSelectionDTO : ObjectBaseSelectionDTO<Module>
+   {
+
+   }
+   
+   public class BuildingBlockSelectionDTO : ObjectBaseSelectionDTO<IBuildingBlock>
+   {
+
    }
 }

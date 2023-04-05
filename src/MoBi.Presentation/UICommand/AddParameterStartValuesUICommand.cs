@@ -7,7 +7,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class AddParameterStartValuesUICommand : AbstractStartValueSubjectRetrieverUICommand<IParameterStartValuesBuildingBlock, ParameterStartValue>
+   internal class AddParameterStartValuesUICommand : AbstractStartValueSubjectRetrieverUICommand<ParameterStartValuesBuildingBlock, ParameterStartValue>
    {
       private readonly IMoBiApplicationController _applicationController;
       private readonly IMoBiHistoryManager _moBiHistoryManager;
@@ -24,7 +24,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         var presenter = _applicationController.Open<IEditParameterStartValuesPresenter, IParameterStartValuesBuildingBlock>(Subject, _moBiHistoryManager);
+         var presenter = _applicationController.Open<IEditParameterStartValuesPresenter, ParameterStartValuesBuildingBlock>(Subject, _moBiHistoryManager);
          presenter.AddNewEmptyStartValue();
       }
    }

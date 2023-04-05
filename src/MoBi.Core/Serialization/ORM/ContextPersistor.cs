@@ -75,7 +75,7 @@ namespace MoBi.Core.Serialization.ORM
          }
          catch (Exception)
          {
-            // Exeption occurs while opening the project! 
+            // Exception occurs while opening the project! 
             // close the file and rethrow the exception
             _sessionManager.CloseFactory();
             context.Clear();

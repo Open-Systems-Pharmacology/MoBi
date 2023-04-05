@@ -24,7 +24,7 @@ namespace MoBi.Presentation
       protected IDialogCreator _dialogCreator;
       protected IDataTableToImportQuantityDTOMapperForMolecules _dataTableToImportQuantityDTOMapperForMolecules;
       protected IMoleculeStartValuesTask _startValuesTask;
-      protected IMoleculeStartValuesBuildingBlock _buildingBlock;
+      protected MoleculeStartValuesBuildingBlock _buildingBlock;
       private IMoBiContext _context;
       private IImportFromExcelTask _excelTask;
       protected QuantityImporterDTO _quantityImporterDTO;
@@ -49,7 +49,7 @@ namespace MoBi.Presentation
          {
             new ImportedQuantityDTO {Name = "drug", ContainerPath = new ObjectPath("First")},
             new ImportedQuantityDTO {Name = "drug", ContainerPath = new ObjectPath("Second")},
-         }.Each(_quantityImporterDTO.QuantitDTOs.Add);
+         }.Each(_quantityImporterDTO.QuantityDTOs.Add);
 
          A.CallTo(() => _dataTableToImportQuantityDTOMapperForMolecules.MapFrom(A<DataTable>._, _buildingBlock)).Returns(_quantityImporterDTO);
 
@@ -75,10 +75,10 @@ namespace MoBi.Presentation
          _buildingBlock.Add(new MoleculeStartValue {ContainerPath = new ObjectPath("Second"), Name = "drug"});
 
          // These are both valid update scenarios. The first scenario without start value specified is only valid for update, not insert
-         _quantityImporterDTO.QuantitDTOs[0].QuantityInBaseUnit = double.NaN;
-         _quantityImporterDTO.QuantitDTOs[0].IsQuantitySpecified = false;
-         _quantityImporterDTO.QuantitDTOs[1].ScaleDivisor = double.NaN;
-         _quantityImporterDTO.QuantitDTOs[1].IsScaleDivisorSpecified = false;
+         _quantityImporterDTO.QuantityDTOs[0].QuantityInBaseUnit = double.NaN;
+         _quantityImporterDTO.QuantityDTOs[0].IsQuantitySpecified = false;
+         _quantityImporterDTO.QuantityDTOs[1].ScaleDivisor = double.NaN;
+         _quantityImporterDTO.QuantityDTOs[1].IsScaleDivisorSpecified = false;
       }
 
       [Observation]
@@ -90,7 +90,7 @@ namespace MoBi.Presentation
       [Observation]
       public void results_in_imported_values_returned()
       {
-         A.CallTo(() => _startValuesTask.ImportStartValuesToBuildingBlock(_buildingBlock, _quantityImporterDTO.QuantitDTOs)).MustHaveHappened();
+         A.CallTo(() => _startValuesTask.ImportStartValuesToBuildingBlock(_buildingBlock, _quantityImporterDTO.QuantityDTOs)).MustHaveHappened();
       }
 
       [Observation]

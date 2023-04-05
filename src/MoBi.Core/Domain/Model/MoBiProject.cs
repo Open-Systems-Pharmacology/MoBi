@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
+using MoBi.Core.Domain.Builder;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -10,75 +12,7 @@ using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Domain.Model
 {
-   public interface IMoBiProject : IProject
-   {
-      IReadOnlyList<IMoBiSimulation> Simulations { get; }
-      IReadOnlyList<IMoleculeBuildingBlock> MoleculeBlockCollection { get; }
-      IReadOnlyList<IMoBiReactionBuildingBlock> ReactionBlockCollection { get; }
-      IReadOnlyList<IPassiveTransportBuildingBlock> PassiveTransportCollection { get; }
-      IReadOnlyList<IMoBiSpatialStructure> SpatialStructureCollection { get; }
-      IReadOnlyList<IObserverBuildingBlock> ObserverBlockCollection { get; }
-      IReadOnlyList<IEventGroupBuildingBlock> EventBlockCollection { get; }
-      IReadOnlyList<IMoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection { get; }
-      IReadOnlyList<IParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection { get; }
-      IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection { get; }
-      IReadOnlyList<IndividualBuildingBlock> IndividualsCollection { get; }
-      IReadOnlyList<ISimulationSettings> SimulationSettingsCollection { get; }
-      IReadOnlyList<Module> Modules { get; }
-
-      ReactionDimensionMode ReactionDimensionMode { get; set; }
-
-      void AddSimulation(IMoBiSimulation newSimulation);
-      void RemoveSimulation(IMoBiSimulation simulationToRemove);
-      void AddChart(CurveChart chart);
-      void RemoveChart(CurveChart chartToRemove);
-      void AddModule(Module module);
-      void RemoveModule(Module module);
-
-      //only for serialization
-      IReadOnlyList<IBuildingBlock> AllBuildingBlocks();
-
-      /// <summary>
-      ///    Returns the template <see cref="BuildingBlock" /> with the given <paramref name="templateBuildingBlockId" />
-      ///    or null if no template exists with the given id.
-      /// </summary>
-      IBuildingBlock TemplateById(string templateBuildingBlockId);
-
-      void AddBuildingBlock(IBuildingBlock buildingBlock);
-      void RemoveBuildingBlock(IBuildingBlock buildingBlockToRemove);
-
-      /// <summary>
-      ///    Gets the list of start value building blocks that refer to
-      ///    <paramref name="buildingBlockToReference">buildingBlockToReference</paramref>
-      ///    through the MoleculeBuildingBlockId or SpatialStructureId
-      /// </summary>
-      /// <param name="buildingBlockToReference">
-      ///    This is the building block to check for reference. Normally a spatial structure
-      ///    or molecule building block
-      /// </param>
-      /// <returns>The list of referring building block names</returns>
-      IReadOnlyList<IBuildingBlock> ReferringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToReference);
-
-      /// <summary>
-      ///    Returns the list of simulations that were created using the given <paramref name="templateBuildingBlock" />
-      /// </summary>
-      IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(IBuildingBlock templateBuildingBlock);
-
-      /// <summary>
-      ///    Returns an enumeration containing all building blocks and simulation defined in the project
-      /// </summary>
-      /// <returns></returns>
-      IEnumerable<IObjectBase> All();
-
-      IEnumerable<CurveChart> Charts { get; }
-
-      /// <summary>
-      ///    Returns <c>true</c> if the project does not contain any building block and simulation otherwise <c>false</c>
-      /// </summary>
-      bool IsEmpty { get; }
-   }
-
-   public class MoBiProject : Project, IMoBiProject
+   public class MoBiProject : Project
    {
       private readonly List<IBuildingBlock> _buildingBlocks;
       private readonly List<CurveChart> _charts;
@@ -118,6 +52,8 @@ namespace MoBi.Core.Domain.Model
 
       public bool IsEmpty => !_buildingBlocks.Any() && !_allSimulations.Any();
 
+      public SimulationSettings SimulationSettings { get; set; }
+
       public void AddModule(Module module)
       {
          _modules.Add(module);
@@ -135,15 +71,13 @@ namespace MoBi.Core.Domain.Model
          return _buildingBlocks.OfType<T>().ToList();
       }
 
-      public IReadOnlyList<IMoleculeBuildingBlock> MoleculeBlockCollection => get<IMoleculeBuildingBlock>();
+      public IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection => get<MoleculeBuildingBlock>();
 
       public IReadOnlyList<IMoBiReactionBuildingBlock> ReactionBlockCollection => get<IMoBiReactionBuildingBlock>();
 
       public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection => get<ExpressionProfileBuildingBlock>();
 
       public IReadOnlyList<IndividualBuildingBlock> IndividualsCollection => get<IndividualBuildingBlock>();
-
-      public IReadOnlyList<ISimulationSettings> SimulationSettingsCollection => get<ISimulationSettings>();
 
       public IReadOnlyList<IPassiveTransportBuildingBlock> PassiveTransportCollection => get<IPassiveTransportBuildingBlock>();
 
@@ -153,9 +87,9 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<IEventGroupBuildingBlock> EventBlockCollection => get<IEventGroupBuildingBlock>();
 
-      public IReadOnlyList<IMoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection => get<IMoleculeStartValuesBuildingBlock>();
+      public IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection => get<MoleculeStartValuesBuildingBlock>();
 
-      public IReadOnlyList<IParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection => get<IParameterStartValuesBuildingBlock>();
+      public IReadOnlyList<ParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection => get<ParameterStartValuesBuildingBlock>();
 
       public void AddSimulation(IMoBiSimulation newSimulation)
       {
@@ -209,9 +143,7 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<IBuildingBlock> ReferringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToRemove)
       {
-         return referringStartValuesBuildingBlocks(buildingBlockToRemove, ParametersStartValueBlockCollection)
-            .Concat(referringStartValuesBuildingBlocks(buildingBlockToRemove, MoleculeStartValueBlockCollection))
-            .ToList();
+         return referringStartValuesBuildingBlocks(buildingBlockToRemove, MoleculeStartValueBlockCollection).ToList();
       }
 
       public IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(IBuildingBlock templateBuildingBlock)
@@ -224,7 +156,7 @@ namespace MoBi.Core.Domain.Model
          return All<IObjectBase>().Union(Simulations);
       }
 
-      private IEnumerable<IBuildingBlock> referringStartValuesBuildingBlocks<T>(IBuildingBlock buildingBlockToRemove, IEnumerable<IStartValuesBuildingBlock<T>> buildingBlockCollection) where T : class, IStartValue
+      private IEnumerable<IBuildingBlock> referringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToRemove, IReadOnlyList<MoleculeStartValuesBuildingBlock> buildingBlockCollection)
       {
          return buildingBlockCollection
             .Where(msvBB => msvBB.Uses(buildingBlockToRemove))

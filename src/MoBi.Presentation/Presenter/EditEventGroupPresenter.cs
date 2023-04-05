@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_parametersInContainerPresenter, _descriptorConditionListPresenter, _tagsPresenter);
       }
 
-      public override void Edit(IEventGroupBuilder eventGroupBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(IEventGroupBuilder eventGroupBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventGroupBuilder = eventGroupBuilder;
          _parametersInContainerPresenter.Edit(eventGroupBuilder);

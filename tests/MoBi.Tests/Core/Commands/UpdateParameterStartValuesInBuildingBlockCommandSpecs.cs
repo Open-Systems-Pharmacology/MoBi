@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_UpdateParameterStartValuesInBuildingBlockCommand : ContextSpecification<UpdateParameterStartValueInBuildingBlockCommand>
    {
-      protected IParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
       protected ObjectPath _path;
 
@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
          _buildingBlock.Add(new ParameterStartValue{Path = _path , StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) });
 
          sut = new UpdateParameterStartValueInBuildingBlockCommand(_buildingBlock, _path, 1.0);
-         A.CallTo(() => _context.Get<IParameterStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ParameterStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

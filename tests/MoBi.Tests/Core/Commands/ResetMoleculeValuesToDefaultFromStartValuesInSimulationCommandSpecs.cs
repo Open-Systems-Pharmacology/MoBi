@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand : ContextSpecification<ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand>
    {
       private IMoBiSimulation _simulation;
-      protected IMoleculeStartValuesBuildingBlock _moleculeStartValues;
+      protected MoleculeStartValuesBuildingBlock _moleculeStartValues;
       protected IContainer _liver;
       protected IMoBiContext _context;
       protected IMoBiFormulaTask _formulaTask;
@@ -24,11 +24,15 @@ namespace MoBi.Core.Commands
       {
          _context = A.Fake<IMoBiContext>();
          _liver = new Container().WithName("LIVER");
-         _simulation = A.Fake<IMoBiSimulation>();
+         _simulation = new MoBiSimulation();
+         _simulation.Configuration = new SimulationConfiguration { Module = new Module() };
+         _simulation.Model = new Model();
          _simulation.Model.Root = new Container().WithContainerType(ContainerType.Simulation);
          _simulation.Model.Root.Add(_liver);
          _moleculeStartValues = new MoleculeStartValuesBuildingBlock();
-         _simulation.BuildConfiguration.MoleculeStartValues = _moleculeStartValues;
+
+         _simulation.Configuration.Module.AddMoleculeStartValueBlock(_moleculeStartValues);
+
          sut = new ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand(_simulation);
 
          _formulaTask = A.Fake<IMoBiFormulaTask>();
@@ -42,7 +46,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_reseting_the_molecule_values_to_default_from_start_values : concern_for_ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand
+   public class When_resetting_the_molecule_values_to_default_from_start_values : concern_for_ResetMoleculeValuesToDefaultFromStartValuesInSimulationCommand
    {
       private MoleculeStartValue _msv1;
       private MoleculeStartValue _msv2;
@@ -102,4 +106,4 @@ namespace MoBi.Core.Commands
          _startValueParameter.Formula.IsConstant().ShouldBeTrue();
       }
    }
-}	
+}

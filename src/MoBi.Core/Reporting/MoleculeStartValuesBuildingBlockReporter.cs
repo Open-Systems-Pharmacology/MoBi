@@ -12,7 +12,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class MoleculeStartValuesBuildingBlockReporter : BuildingBlockReporter<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
+   internal class MoleculeStartValuesBuildingBlockReporter : BuildingBlockReporter<MoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
       private readonly ReportingHelper _reportingHelper;
 
@@ -22,7 +22,7 @@ namespace MoBi.Core.Reporting
          _reportingHelper = new ReportingHelper(displayUnitRetriever);
       }
 
-      protected override void AddBuildersReport(IMoleculeStartValuesBuildingBlock moleculeStartValues, List<object> listToReport, OSPSuiteTracker buildTracker)
+      protected override void AddBuildersReport(MoleculeStartValuesBuildingBlock moleculeStartValues, List<object> listToReport, OSPSuiteTracker buildTracker)
       {
          var table = tableFor(moleculeStartValues, buildTracker.Settings.Verbose);
          var view = table.DefaultView;

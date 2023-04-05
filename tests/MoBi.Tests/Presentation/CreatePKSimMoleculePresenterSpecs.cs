@@ -26,7 +26,7 @@ namespace MoBi.Presentation
       protected IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderMapper;
       protected IQuantityTask _quantityTask;
       protected ISerializationTask _serializationTask;
-      protected IMoleculeBuildingBlock _moleculeBuildingBlock;
+      protected MoleculeBuildingBlock _moleculeBuildingBlock;
       protected IEditTaskFor<IMoleculeBuilder> _editTask;
 
       protected override void Context()
@@ -37,7 +37,7 @@ namespace MoBi.Presentation
          _moleculeBuilderMapper = A.Fake<IMoleculeBuilderToMoleculeBuilderDTOMapper>();
          _quantityTask = A.Fake<IQuantityTask>();
          _serializationTask = A.Fake<ISerializationTask>();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          _editTask = A.Fake<IEditTaskFor<IMoleculeBuilder>>();
 
          sut = new CreatePKSimMoleculePresenter(_view, _configuration, _parameterDTOMapper, _moleculeBuilderMapper, _serializationTask, _quantityTask, _editTask);
@@ -100,7 +100,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _configuration.StandardMoleculeTemplateFile).Returns(_templateFileName);
          A.CallTo(() => _serializationTask.Load<IMoleculeBuilder>(_templateFileName, true)).Returns(_templateMoleculeBuilder);
 
-         A.CallTo(() => _moleculeBuilderMapper.MapFrom(_templateMoleculeBuilder)).Returns(new MoleculeBuilderDTO());
+         A.CallTo(() => _moleculeBuilderMapper.MapFrom(_templateMoleculeBuilder)).Returns(new MoleculeBuilderDTO(_templateMoleculeBuilder));
 
          A.CallTo(() => _view.BindTo(A<MoleculeBuilderDTO>._))
             .Invokes(x => _dto = x.GetArgument<MoleculeBuilderDTO>(0));

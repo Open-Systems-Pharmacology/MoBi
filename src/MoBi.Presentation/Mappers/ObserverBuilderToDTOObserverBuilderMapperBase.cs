@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Mappers
          _formulaToDTOFormulaMapper = formulaToDTOFormulaMapper;
       }
 
-      protected T MapObserverBuilder<T>(T dto, IObserverBuilder observerBuilder) where T : ObserverBuilderDTO, new()
+      protected T MapObserverBuilder<T>(T dto, IObserverBuilder observerBuilder) where T : ObserverBuilderDTO
       {
          MapProperties(observerBuilder, dto);
          dto.Dimension = observerBuilder.Dimension;
@@ -29,9 +29,9 @@ namespace MoBi.Presentation.Mappers
          return dto;
       }
 
-      public ObserverBuilderDTO MapFrom(IObserverBuilder input)
+      public ObserverBuilderDTO MapFrom(IObserverBuilder observerBuilder)
       {
-         return MapObserverBuilder(new ObserverBuilderDTO(), input);
+         return MapObserverBuilder(new ObserverBuilderDTO(observerBuilder), observerBuilder);
       }
    }
 }

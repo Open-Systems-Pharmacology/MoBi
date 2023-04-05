@@ -80,6 +80,7 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.File));
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.BuildingBlocks), AppConstants.RibbonPages.Modeling);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Workflows), AppConstants.RibbonPages.Modeling);
+         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Project), AppConstants.RibbonPages.Modeling);
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.ParameterIdentification), RibbonPages.ParameterIdentificationAndSensitivity);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.SensitivityAnalysis), RibbonPages.ParameterIdentificationAndSensitivity);
@@ -118,15 +119,15 @@ namespace MoBi.Presentation.Presenter.Main
          _view.CreateDynamicPageCategory(RibbonCategories.ParameterIdentification, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.SensitivityAnalysis, Color.LightGreen);
 
-         _dynamicRibbonPageCache.Add(typeof(IMoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
+         _dynamicRibbonPageCache.Add(typeof(MoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
          _dynamicRibbonPageCache.Add(typeof(IReactionBuildingBlock), AppConstants.RibbonCategories.Reactions);
          _dynamicRibbonPageCache.Add(typeof(IObserverBuildingBlock), AppConstants.RibbonCategories.Observers);
          _dynamicRibbonPageCache.Add(typeof(ISpatialStructure), AppConstants.RibbonCategories.Organisms);
 
          _dynamicRibbonPageCache.Add(typeof(IPassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
          _dynamicRibbonPageCache.Add(typeof(IEventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
-         _dynamicRibbonPageCache.Add(typeof(IMoleculeStartValuesBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
-         _dynamicRibbonPageCache.Add(typeof(IParameterStartValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
+         _dynamicRibbonPageCache.Add(typeof(MoleculeStartValuesBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
+         _dynamicRibbonPageCache.Add(typeof(ParameterStartValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
          _dynamicRibbonPageCache.Add(typeof(IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
          _dynamicRibbonPageCache.Add(typeof(ParameterIdentification), RibbonCategories.ParameterIdentification);
          _dynamicRibbonPageCache.Add(typeof(SensitivityAnalysis), RibbonCategories.SensitivityAnalysis);
@@ -224,7 +225,7 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.NewObserverBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewPassiveTransportBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewReactionBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewSimulationSettingsBB].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.EditProjectSimulationSettings].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewSpatialStructure].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadSimulationIntoProject].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.HistoryReportGroup].Enabled = enabled;

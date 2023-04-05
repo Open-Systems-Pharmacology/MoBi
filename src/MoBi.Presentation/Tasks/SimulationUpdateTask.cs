@@ -38,28 +38,24 @@ namespace MoBi.Presentation.Tasks
    internal class SimulationUpdateTask : ISimulationUpdateTask
    {
       private readonly IModelConstructor _modelConstructor;
-      private readonly IBuildConfigurationFactory _buildConfigurationFactory;
       private readonly IMoBiContext _context;
       private readonly IMoBiApplicationController _applicationController;
       private readonly IDimensionValidator _dimensionValidator;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly IAffectedBuildingBlockRetriever _affectedBuildingBlockRetriever;
 
-      public SimulationUpdateTask(IModelConstructor modelConstructor, IBuildConfigurationFactory buildConfigurationFactory,
-         IMoBiContext context, IMoBiApplicationController applicationController, IDimensionValidator dimensionValidator, IEntityPathResolver entityPathResolver, IAffectedBuildingBlockRetriever affectedBuildingBlockRetriever)
+      public SimulationUpdateTask(IModelConstructor modelConstructor, IMoBiContext context, IMoBiApplicationController applicationController, 
+         IDimensionValidator dimensionValidator, IEntityPathResolver entityPathResolver)
       {
          _modelConstructor = modelConstructor;
-         _buildConfigurationFactory = buildConfigurationFactory;
          _context = context;
          _applicationController = applicationController;
          _dimensionValidator = dimensionValidator;
          _entityPathResolver = entityPathResolver;
-         _affectedBuildingBlockRetriever = affectedBuildingBlockRetriever;
       }
 
       public ICommand UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock)
       {
-         IMoBiBuildConfiguration buildConfigurationReferencingTemplate;
+         SimulationConfiguration simulationConfigurationReferencingTemplate;
          IMoBiCommand configurationCommands = null;
          var fixedValueQuantities = new PathCache<IQuantity>(_entityPathResolver);
 
@@ -67,20 +63,20 @@ namespace MoBi.Presentation.Tasks
          {
             using (var presenter = _applicationController.Start<IConfigureSimulationPresenter>())
             {
-               configurationCommands = presenter.CreateBuildConfigurationBaseOn(simulationToUpdate, templateBuildingBlock);
+               configurationCommands = presenter.CreateBuildConfigurationBasedOn(simulationToUpdate, templateBuildingBlock);
                if (configurationCommands.IsEmpty())
                   return new MoBiEmptyCommand();
 
-               buildConfigurationReferencingTemplate = presenter.BuildConfiguration;
+               simulationConfigurationReferencingTemplate = presenter.SimulationConfiguration;
             }
          }
          else
          {
-            buildConfigurationReferencingTemplate = createBuildConfigurationUsingTemplates(simulationToUpdate, templateBuildingBlock);
+            simulationConfigurationReferencingTemplate = createBuildConfigurationUsingTemplates(simulationToUpdate, templateBuildingBlock);
             fixedValueQuantities.AddRange(simulationToUpdate.Model.Root.GetAllChildren<IQuantity>(x => x.IsFixedValue));
          }
 
-         return updateSimulation(simulationToUpdate, buildConfigurationReferencingTemplate, configurationCommands, templateBuildingBlock, fixedValueQuantities);
+         return updateSimulation(simulationToUpdate, simulationConfigurationReferencingTemplate, configurationCommands, templateBuildingBlock, fixedValueQuantities);
       }
 
       public ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure)
@@ -91,21 +87,21 @@ namespace MoBi.Presentation.Tasks
             if (configurationCommands.IsEmpty())
                return new MoBiEmptyCommand();
 
-            return updateSimulation(simulationToConfigure, presenter.BuildConfiguration, configurationCommands);
+            return updateSimulation(simulationToConfigure, presenter.SimulationConfiguration, configurationCommands);
          }
       }
 
       private ICommand<IMoBiContext> updateSimulation(
          IMoBiSimulation simulationToUpdate,
-         IMoBiBuildConfiguration buildConfigurationReferencingTemplates,
+         SimulationConfiguration simulationConfigurationReferencingTemplates,
          IMoBiCommand configurationCommands,
          IBuildingBlock templateBuildingBlock = null,
          PathCache<IQuantity> fixedValueQuantities = null)
       {
          //create model using referencing templates
-         var model = createModelAndValidate(simulationToUpdate.Model.Name, buildConfigurationReferencingTemplates);
+         var model = createModelAndValidate(simulationToUpdate.Model.Name, simulationConfigurationReferencingTemplates);
 
-         var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(buildConfigurationReferencingTemplates);
+         var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
 
          var updateSimulationCommand = templateBuildingBlock == null
             ? // is null when we a simulation is being configured. Otherwise this is the template building block to user
@@ -144,13 +140,16 @@ namespace MoBi.Presentation.Tasks
                continue;
 
             //building block corresponding to quantity could not be found. That should never happen
-            var affectedBuildingBlock = _affectedBuildingBlockRetriever.RetrieveFor(simulationQuantity, simulationToUpdate);
-            if (affectedBuildingBlock?.UntypedTemplateBuildingBlock == null)
-               continue;
 
-            //The quantity previously fixed is part of the template building block. We should not reset the changes
-            if (Equals(affectedBuildingBlock.UntypedTemplateBuildingBlock, templateBuildingBlock))
-               continue;
+            continue;
+            //TODO SIMULATION_CONFIGURATION
+            // var affectedBuildingBlock = _affectedBuildingBlockRetriever.RetrieveFor(simulationQuantity, simulationToUpdate);
+            // if (affectedBuildingBlock?.UntypedTemplateBuildingBlock == null)
+            //    continue;
+            //
+            // //The quantity previously fixed is part of the template building block. We should not reset the changes
+            // if (Equals(affectedBuildingBlock.UntypedTemplateBuildingBlock, templateBuildingBlock))
+            //    continue;
 
             synchronizeQuantities(fixedValueQuantity.Value, simulationQuantity);
          }
@@ -164,9 +163,9 @@ namespace MoBi.Presentation.Tasks
          simulationQuantity.Value = fixedValueQuantity.Value;
       }
 
-      private IModel createModelAndValidate(string modelName, IMoBiBuildConfiguration buildConfigurationReferencingTemplate)
+      private IModel createModelAndValidate(string modelName, SimulationConfiguration simulationConfiguration)
       {
-         var results = _modelConstructor.CreateModelFrom(buildConfigurationReferencingTemplate, modelName);
+         var results = _modelConstructor.CreateModelFrom(simulationConfiguration, modelName);
 
          if (results != null)
             showWarnings(results.ValidationResult);
@@ -176,7 +175,7 @@ namespace MoBi.Presentation.Tasks
 
          var model = results.Model;
 
-         _dimensionValidator.Validate(model, buildConfigurationReferencingTemplate)
+         _dimensionValidator.Validate(model, simulationConfiguration)
             .SecureContinueWith(t => showWarnings(t.Result));
 
          return model;
@@ -189,18 +188,18 @@ namespace MoBi.Presentation.Tasks
 
       private bool triggersReconfiguration(IBuildingBlock buildingBlock)
       {
-         return buildingBlock.IsAnImplementationOf<IMoleculeBuildingBlock>() ||
+         return buildingBlock.IsAnImplementationOf<MoleculeBuildingBlock>() ||
                 buildingBlock.IsAnImplementationOf<ISpatialStructure>();
       }
 
-      private IMoBiBuildConfiguration createBuildConfigurationUsingTemplates(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
+      private SimulationConfiguration createBuildConfigurationUsingTemplates(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
-         return _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.MoBiBuildConfiguration, templateBuildingBlock);
+         return simulation.Configuration;
       }
 
-      private IMoBiBuildConfiguration createBuildConfigurationToUseInSimulation(IMoBiBuildConfiguration buildConfiguration)
+      private SimulationConfiguration createBuildConfigurationToUseInSimulation(SimulationConfiguration simulationConfiguration)
       {
-         return _buildConfigurationFactory.CreateFromTemplateClones(buildConfiguration);
+         return simulationConfiguration;
       }
    }
 }

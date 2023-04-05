@@ -5,6 +5,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
@@ -44,7 +45,7 @@ namespace MoBi.Presentation
 
          _simulation = new MoBiSimulation
          {
-            BuildConfiguration = new MoBiBuildConfiguration(),
+            Configuration = new SimulationConfiguration(),
             Model = new Model
             {
                Root = new Container()

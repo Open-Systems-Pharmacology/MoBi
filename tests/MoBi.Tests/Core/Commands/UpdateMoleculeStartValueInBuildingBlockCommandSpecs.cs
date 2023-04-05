@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_UpdateMoleculeStartValuesInBuildingBlockCommand : ContextSpecification<UpdateMoleculeStartValueInBuildingBlockCommand>
    {
-      protected IMoleculeStartValuesBuildingBlock _buildingBlock;
+      protected MoleculeStartValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
       protected ObjectPath _path;
 
@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
          _path = msv.Path;
 
          sut = new UpdateMoleculeStartValueInBuildingBlockCommand(_buildingBlock, _path, 1.0, true, 22.0, true);
-         A.CallTo(() => _context.Get<IMoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<MoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

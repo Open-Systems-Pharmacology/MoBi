@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Tasks
 
       }
 
-      private IEnumerable<SearchResult> searchInAllOfSameType(Type buildingBlockType, IMoBiProject project)
+      private IEnumerable<SearchResult> searchInAllOfSameType(Type buildingBlockType, MoBiProject project)
       {
          var result = new List<SearchResult>();
          var buildingBlocks = getBuildingBlocksOfType(buildingBlockType);
@@ -71,7 +71,7 @@ namespace MoBi.Presentation.Tasks
          if (buildingBlockType.IsAnImplementationOf<IModelCoreSimulation>())
             return _context.CurrentProject.Simulations;
 
-         if (buildingBlockType.IsAnImplementationOf<IMoleculeBuildingBlock>())
+         if (buildingBlockType.IsAnImplementationOf<MoleculeBuildingBlock>())
             return _context.CurrentProject.MoleculeBlockCollection;
 
          if (buildingBlockType.IsAnImplementationOf<IReactionBuildingBlock>())
@@ -86,10 +86,10 @@ namespace MoBi.Presentation.Tasks
          if (buildingBlockType.IsAnImplementationOf<IEventGroupBuildingBlock>())
             return _context.CurrentProject.EventBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IMoleculeStartValuesBuildingBlock>())
+         if (buildingBlockType.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())
             return _context.CurrentProject.MoleculeStartValueBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IParameterStartValuesBuildingBlock>())
+         if (buildingBlockType.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
             return _context.CurrentProject.ParametersStartValueBlockCollection;
 
          return null;

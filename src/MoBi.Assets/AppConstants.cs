@@ -809,6 +809,7 @@ namespace MoBi.Assets
          public static readonly string Views = "Views";
          public static readonly string Add = "Add";
          public static readonly string Edit = "Edit";
+         public static readonly string Project = "Project";
          public static readonly string Journal = "Journal";
          public static readonly string File = "File";
          public static readonly string Favorites = "Favorites";
@@ -824,7 +825,7 @@ namespace MoBi.Assets
          public static readonly string PassiveTransport = "Passive Transport";
          public static readonly string Events = "Events";
          public static readonly string Observer = "Observer";
-         public static readonly string SimulationSettings = "Simulation Settings";
+         public static readonly string Settings = "Settings";
          public static readonly string New = "New";
          public static readonly string Load = "Load";
          public static readonly string LoadFromTemplate = "Load From Template";
@@ -1004,12 +1005,10 @@ namespace MoBi.Assets
          public static readonly string NewPassiveTransportBuildingBlock = AddNew("Passive Transport Building Block");
          public static readonly string NewEventsBuildingBlock = AddNew("Event Building Block");
          public static readonly string NewObserverBuildingBlock = AddNew("Observer Building Block");
-         public static readonly string NewSimulationSettingsBuildingBlock = AddNew("Simulation Settings Building Block");
          public static readonly string RelativePath = "Relative Path";
          public static readonly string AbsolutePath = "Absolute Path";
          public static readonly string ExportHistory = Captions.ExportHistory;
          public static readonly string StartPopulationSimulation = "Send Simulation to PK-Sim for Population Simulation...";
-         public static readonly string BuildingBlockExplorer = "Building Blocks";
          public static readonly string ModuleExplorer = "Modules";
          public static readonly string SimulationExplorer = "Simulations";
          public static readonly string New = "New";
@@ -1090,6 +1089,7 @@ namespace MoBi.Assets
 
          public static string AddEmptyModule => $"Create Empty Module...";
          public static string AddModuleWithBuildingBlocks => $"Create Module with Building Blocks...";
+         public static string EditDefaultSimulationSettings = "Edit Default Simulation Settings";
       }
 
       public static class DimensionNames
@@ -1407,7 +1407,7 @@ namespace MoBi.Assets
          public static readonly string SelectedNegativeValuesAllowed = "Mark selected as allowing neg. values";
          public static readonly string SelectedNegativeValuesNotAllowed = "Mark selected as not allowing neg. values";
          public static readonly string PerformCheckSelection = "Apply";
-         public static readonly string BuildConfiguration = "Configuration";
+         public static readonly string SimulationConfiguration = "Configuration";
          public static readonly string Search = "Search";
          public static readonly string SearchScope = "Scope";
          public static readonly string SearchResults = "Search results";
@@ -1641,6 +1641,7 @@ namespace MoBi.Assets
          public static readonly string SelectContainer = "Select Container";
          public static readonly string FirstNeighbor = "First Neighbor";
          public static readonly string SecondNeighbor = "Second Neighbor";
+         public static readonly string DefaultSimulationSettings = "Default Simulation Settings";
 
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          

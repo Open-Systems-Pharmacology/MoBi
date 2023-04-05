@@ -5,6 +5,7 @@ using MoBi.Core.Helper;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -53,16 +54,17 @@ namespace MoBi.Presentation.Tasks
 
       public void StartSimulationMerge()
       {
-         startMerge<IMoBiBuildConfiguration>((presenter, buildConfiguration) =>
-         {
-            presenter.AddMappingForAllBuildingBlocks(buildConfiguration.Molecules, shouldMergeByDefault: true);
-            presenter.AddMappingForAllBuildingBlocks(buildConfiguration.Reactions, shouldMergeByDefault: true);
-            presenter.AddMappingForAllBuildingBlocks(buildConfiguration.PassiveTransports, shouldMergeByDefault: true);
-            presenter.AddMappingForAllBuildingBlocks(buildConfiguration.Observers, shouldMergeByDefault: false);
-            presenter.AddMappingForAllBuildingBlocks(buildConfiguration.EventGroups, shouldMergeByDefault: false);
-            presenter.AddMappingForAllBuildingBlocks(buildConfiguration.MoleculeStartValues, shouldMergeByDefault: true);
-            presenter.AddMappingForAllBuildingBlocks(buildConfiguration.ParameterStartValues, shouldMergeByDefault: true);
-         }, AppConstants.Captions.MergeSimulationIntoProject, singleMerge: false);
+         // TODO SIMULATION_CONFIGURATION
+         // startMerge<IMoBiBuildConfiguration>((presenter, buildConfiguration) =>
+         // {
+         //    presenter.AddMappingForAllBuildingBlocks(buildConfiguration.Molecules, shouldMergeByDefault: true);
+         //    presenter.AddMappingForAllBuildingBlocks(buildConfiguration.Reactions, shouldMergeByDefault: true);
+         //    presenter.AddMappingForAllBuildingBlocks(buildConfiguration.PassiveTransports, shouldMergeByDefault: true);
+         //    presenter.AddMappingForAllBuildingBlocks(buildConfiguration.Observers, shouldMergeByDefault: false);
+         //    presenter.AddMappingForAllBuildingBlocks(buildConfiguration.EventGroups, shouldMergeByDefault: false);
+         //    presenter.AddMappingForAllBuildingBlocks(buildConfiguration.MoleculeStartValues, shouldMergeByDefault: true);
+         //    presenter.AddMappingForAllBuildingBlocks(buildConfiguration.ParameterStartValues, shouldMergeByDefault: true);
+         // }, AppConstants.Captions.MergeSimulationIntoProject, singleMerge: false);
       }
    }
 }

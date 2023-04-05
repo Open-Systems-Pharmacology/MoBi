@@ -245,12 +245,12 @@ namespace MoBi.Presentation.Presenter
          {
             Id = AppConstants.Time,
             Name = AppConstants.Time,
-            Icon = ApplicationIcons.Time.IconName
+            Icon = ApplicationIcons.Time
          };
          _view.AddNode(_referenceMapper.MapFrom(timeDTO));
       }
 
-      private IEnumerable<T> getAllMoleculeChildren<T>(IMoBiProject currentProject, DummyMoleculeContainerDTO dummyMolecule) where T : class, IEntity
+      private IEnumerable<T> getAllMoleculeChildren<T>(MoBiProject currentProject, DummyMoleculeContainerDTO dummyMolecule) where T : class, IEntity
       {
          IEnumerable<T> children = new List<T>();
          foreach (var moleculeBuildingBlock in currentProject.MoleculeBlockCollection)
@@ -425,7 +425,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddMolecule()
       {
-         var dummyMolecule = new DummyParameterDTO {Name = ObjectPathKeywords.MOLECULE, Id = ObjectPathKeywords.MOLECULE};
+         var dummyMolecule = new DummyParameterDTO(null) {Name = ObjectPathKeywords.MOLECULE, Id = ObjectPathKeywords.MOLECULE};
          _view.AddNode(_referenceMapper.MapFrom(dummyMolecule));
       }
 

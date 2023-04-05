@@ -53,6 +53,7 @@ namespace MoBi.Core
             scan.WithConvention(new OSPSuiteRegistrationConvention());
          });
 
+         container.Register<MoBiProject, MoBiProject>();
          container.Register<IMoBiContext, IOSPSuiteExecutionContext, IWorkspace, MoBiContext>(LifeStyle.Singleton);
          container.Register<OSPSuite.Core.IApplicationSettings, IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
          container.Register<IMoBiDimensionFactory, IDimensionFactory, MoBiDimensionFactory>(LifeStyle.Singleton);
@@ -90,8 +91,6 @@ namespace MoBi.Core
 
          registerComparers(container);
 
-         registerCommitTasks(container);
-
          registerConverters(container);
       }
 
@@ -126,16 +125,6 @@ namespace MoBi.Core
             scan.AssemblyContainingType<CoreRegister>();
             scan.IncludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
             scan.WithConvention<RegisterTypeConvention<IDiffBuilder>>();
-         });
-      }
-
-      private static void registerCommitTasks(IContainer container)
-      {
-         container.AddScanner(scan =>
-         {
-            scan.AssemblyContainingType<CoreRegister>();
-            scan.IncludeNamespaceContainingType<ICreateCommitChangesToBuildingBlockCommandTask>();
-            scan.WithConvention(new RegisterTypeConvention<ICreateCommitChangesToBuildingBlockCommandTask>(registerWithDefaultConvention: false));
          });
       }
 

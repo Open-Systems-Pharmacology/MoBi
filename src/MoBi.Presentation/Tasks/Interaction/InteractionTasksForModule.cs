@@ -11,25 +11,25 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForModule : IInteractionTasksForChildren<IMoBiProject, Module>
+   public interface IInteractionTasksForModule : IInteractionTasksForChildren<MoBiProject, Module>
    {
       void CreateNewModuleWithBuildingBlocks();
       void AddBuildingBlocksToModule(Module module);
    }
 
-   public class InteractionTasksForModule : InteractionTasksForChildren<IMoBiProject, Module>, IInteractionTasksForModule
+   public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
    {
       public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext,
          editTask)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(Module objectToRemove, IMoBiProject parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(Module objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
       {
          return new RemoveModuleCommand(objectToRemove);
       }
 
-      public override IMoBiCommand GetAddCommand(Module itemToAdd, IMoBiProject parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(Module itemToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
       {
          return new AddModuleCommand(itemToAdd);
       }

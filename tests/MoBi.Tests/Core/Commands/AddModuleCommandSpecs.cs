@@ -2,6 +2,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -13,7 +14,7 @@ namespace MoBi.Core.Commands
    {
       protected Module _module;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       private RegisterTask _registrationTask;
       protected WithIdRepository _withIdRepository;
 
@@ -23,7 +24,7 @@ namespace MoBi.Core.Commands
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
          sut = new AddModuleCommand(_module);
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Register(_module)).Invokes(() => _registrationTask.RegisterAllIn(_module));
          A.CallTo(() => _context.CurrentProject).Returns(_project);

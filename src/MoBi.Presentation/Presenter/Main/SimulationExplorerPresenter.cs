@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Presenter.Main
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
-      protected override void AddProjectToTree(IMoBiProject project)
+      protected override void AddProjectToTree(MoBiProject project)
       {
          using (new BatchUpdate(_view))
          {
@@ -94,14 +94,6 @@ namespace MoBi.Presentation.Presenter.Main
          return node.IsAnImplementationOf<SimulationNode>() ||
                 node.IsAnImplementationOf<ClassificationNode>() ||
                 _parameterAnalysablesInExplorerPresenter.CanDrag(node);
-      }
-
-      public override void NodeDoubleClicked(ITreeNode node)
-      {
-         if (node.IsAnImplementationOf<BuildingBlockInfoNode>())
-            return;
-
-         base.NodeDoubleClicked(node);
       }
 
       private ITreeNode addClassifiableSimulationToSimulationRootFolder(ClassifiableSimulation classifiableSimulation)
@@ -169,13 +161,6 @@ namespace MoBi.Presentation.Presenter.Main
          if (simulation != null)
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
 
-         var buildingBlockInfo = treeNode.TagAsObject as IBuildingBlockInfo;
-         if (buildingBlockInfo != null)
-         {
-            var simulationNode = parentSimulationNodeFor(treeNode);
-            return ContextMenuFor(new BuildingBlockInfoViewItem(buildingBlockInfo, simulationNode.Simulation));
-         }
-
          return base.ContextMenuFor(treeNode);
       }
 
@@ -213,27 +198,21 @@ namespace MoBi.Presentation.Presenter.Main
          var simulationNode = _view.NodeById(simulation.Id);
 
          //Update Simulation Icon
-         var isChangedSimulation = simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks();
+         // var isChangedSimulation = simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks();
+
+         var isChangedSimulation = true;
          simulationNode.Icon = isChangedSimulation ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
 
          // Update Building block
-         simulationConfigurationNodeUnder(simulationNode).Children.Each(refreshDisplayedBuildingBlock);
+         // TODO SIMULATION_CONFIGURATION
+         // simulationConfigurationNodeUnder(simulationNode).Children.Each(refreshDisplayedBuildingBlock);
       }
 
       private ITreeNode simulationConfigurationNodeUnder(ITreeNode simulationNode)
       {
-         return simulationNode.Children<BuildConfigurationNode>().First();
+         return simulationNode.Children<SimulationConfigurationNode>().First();
       }
 
-      private void refreshDisplayedBuildingBlock(ITreeNode treeNode)
-      {
-         var buildingBlockInfo = treeNode.TagAsObject as IBuildingBlockInfo;
-         if (buildingBlockInfo == null) return;
-
-         //Update TreeNode Icon
-         var icon = buildingBlockInfo.BuildingBlockChanged ? ApplicationIcons.RedOverlayFor(buildingBlockInfo.IconName) : ApplicationIcons.GreenOverlayFor(buildingBlockInfo.IconName);
-         treeNode.Icon = icon;
-      }
 
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
       {

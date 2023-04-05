@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -86,7 +87,7 @@ namespace MoBi.Presentation.Presenter
          Edit(objectToEdit.DowncastTo<IReactionBuilder>());
       }
 
-      public void Edit(IReactionBuilder reactionBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(IReactionBuilder reactionBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _reactionBuilder = reactionBuilder;
          if (_reactionBuilder == null)
@@ -110,7 +111,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(IReactionBuilder reactionBuilder)
       {
-         Edit(reactionBuilder, Enumerable.Empty<IObjectBase>());
+         Edit(reactionBuilder, Array.Empty<IObjectBase>());
       }
 
       private void setUpFormulaEditView()
@@ -164,7 +165,7 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
+         get => _buildingBlock;
          set
          {
             _buildingBlock = value;

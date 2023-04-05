@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Core.Commands
 {
@@ -13,14 +14,14 @@ namespace MoBi.Core.Commands
       protected T _oldBuildingBlock;
       protected T _newBuildingBlock;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
 
       protected override void Context()
       {
          _oldBuildingBlock = A.Fake<T>().WithId("OLD");
          _newBuildingBlock = A.Fake<T>().WithId("NEW");
          _context= A.Fake<IMoBiContext>();
-         _project= new MoBiProject();
+         _project= DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          sut = new SwapBuildingBlockCommand<T>(_oldBuildingBlock,_newBuildingBlock);
       }

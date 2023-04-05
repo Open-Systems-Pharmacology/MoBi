@@ -16,7 +16,6 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
@@ -35,7 +34,8 @@ namespace MoBi.Presentation.Presenter
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
       private readonly IUserSettings _userSettings;
-      private IMoBiBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
+      private ICloneManagerForBuildingBlock _cloneManager;
       public IMoBiSimulation Simulation { get; private set; }
 
       public CreateSimulationPresenter(
@@ -44,13 +44,13 @@ namespace MoBi.Presentation.Presenter
          IModelConstructor modelConstructor,
          IDimensionValidator dimensionValidator,
          ISimulationFactory simulationFactory,
-         IBuildConfigurationFactory buildConfigurationFactory,
          IHeavyWorkManager heavyWorkManager,
          ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager,
          IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriever,
-         IUserSettings userSettings)
-         : base(view, subPresenterManager, dialogCreator, buildConfigurationFactory, context, SimulationItems.All)
+         IUserSettings userSettings,
+         ICloneManagerForBuildingBlock cloneManager)
+         : base(view, subPresenterManager, dialogCreator, context, SimulationItems.All)
       {
          _simulationFactory = simulationFactory;
          _heavyWorkManager = heavyWorkManager;
@@ -58,11 +58,13 @@ namespace MoBi.Presentation.Presenter
          _userSettings = userSettings;
          _dimensionValidator = dimensionValidator;
          _modelConstructor = modelConstructor;
+         _cloneManager = cloneManager;
       }
 
       public IMoBiSimulation Create()
       {
-         edit(_simulationFactory.Create());
+         var moBiSimulation = _simulationFactory.Create();
+         edit(moBiSimulation);
          _view.Display();
          if (_view.Canceled)
             return null;
@@ -75,8 +77,8 @@ namespace MoBi.Presentation.Presenter
       private void edit(IMoBiSimulation simulation)
       {
          Simulation = simulation;
-         _buildConfiguration = simulation.MoBiBuildConfiguration;
-         _simulationDTO = new ObjectBaseDTO {Name = simulation.Name};
+         _simulationConfiguration = simulation.Configuration;
+         _simulationDTO = new ObjectBaseDTO(simulation);
          _simulationDTO.AddUsedNames(nameOfSimulationAlreadyUsed());
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation));
          _view.BindTo(_simulationDTO);
@@ -109,7 +111,7 @@ namespace MoBi.Presentation.Presenter
 
       private void validateDimensions(IModel model)
       {
-         _dimensionValidator.Validate(model, _buildConfiguration)
+         _dimensionValidator.Validate(model, _simulationConfiguration)
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 
@@ -117,8 +119,12 @@ namespace MoBi.Presentation.Presenter
       {
          //Create the model using a build configuration referencing the templates building block so that references to template builders are defined properly 
          //we override the _buildConfiguration so that reference to builders are saved
-         _buildConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(_buildConfiguration);
-         var result = _modelConstructor.CreateModelFrom(_buildConfiguration, _simulationDTO.Name);
+
+         // TODO SIMULATION_CONFIGURATION
+         // _simulationConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(_simulationConfiguration);
+         
+         _simulationConfiguration.SimulationSettings = _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings);
+         var result = _modelConstructor.CreateModelFrom(_simulationConfiguration, _simulationDTO.Name);
          if (result == null)
             return null;
 
@@ -136,18 +142,19 @@ namespace MoBi.Presentation.Presenter
       {
          ValidateStartValues();
 
-         UpdateStartValueInfo<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>(_buildConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
-         UpdateStartValueInfo<IParameterStartValuesBuildingBlock, ParameterStartValue>(_buildConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
+         // UpdateStartValueInfo<MoleculeStartValuesBuildingBlock, MoleculeStartValue>(_simulationConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
+         // UpdateStartValueInfo<ParameterStartValuesBuildingBlock, ParameterStartValue>(_simulationConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
 
-         _buildConfiguration.ShouldValidate = true;
-         _buildConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
+         _simulationConfiguration.ShouldValidate = true;
+         _simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
       }
 
       private IMoBiSimulation createSimulation(IModel model)
       {
          //update the building block configuration to now use clones
-         var simulationBuildConfiguration = _buildConfigurationFactory.CreateFromTemplateClones(_buildConfiguration);
-         var simulation = _simulationFactory.CreateFrom(simulationBuildConfiguration, model).WithName(_simulationDTO.Name);
+         // var simulationBuildConfiguration = _buildConfigurationFactory.CreateFromTemplateClones(_simulationConfiguration);
+
+         var simulation = _simulationFactory.CreateFrom(_simulationConfiguration, model).WithName(_simulationDTO.Name);
          simulation.HasChanged = true;
          return simulation;
       }

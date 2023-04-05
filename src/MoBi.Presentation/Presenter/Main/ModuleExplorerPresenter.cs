@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Presenter.Main
             return;
          }
 
-         var moleculeBuildingBlock = node.ParentNode.TagAsObject.DowncastTo<IMoleculeBuildingBlock>();
+         var moleculeBuildingBlock = node.ParentNode.TagAsObject.DowncastTo<MoleculeBuildingBlock>();
          _editBuildingBlockStarter.EditMolecule(moleculeBuildingBlock, moleculeBuilder);
       }
 
@@ -170,7 +170,7 @@ namespace MoBi.Presentation.Presenter.Main
             .Under(folderNode));
       }
 
-      protected override void AddProjectToTree(IMoBiProject project)
+      protected override void AddProjectToTree(MoBiProject project)
       {
          using (new BatchUpdate(_view))
          {

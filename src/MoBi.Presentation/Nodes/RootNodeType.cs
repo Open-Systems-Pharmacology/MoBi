@@ -16,7 +16,6 @@ namespace MoBi.Presentation.Nodes
       public static readonly RootNodeType ParameterStartValuesFolder = new RootNodeType(AppConstants.Captions.ParameterStartValues, ApplicationIcons.ParameterStartValuesFolder);
       public static readonly RootNodeType ExpressionProfilesFolder = new RootNodeType(AppConstants.Captions.ExpressionProfiles, ApplicationIcons.ExpressionProfileFolder);
       public static readonly RootNodeType IndividualsFolder = new RootNodeType(AppConstants.Captions.Individuals, ApplicationIcons.IndividualFolder);
-      public static readonly RootNodeType SimulationSettingsFolder = new RootNodeType(AppConstants.Captions.SimulationSettings, ApplicationIcons.SimulationSettingsFolder);
       public static readonly RootNodeType PKSimModuleFolder = new RootNodeType(AppConstants.Captions.PKSimModules, ApplicationIcons.PKSimModulesFolder);
       public static readonly RootNodeType ExtensionModulesFolder = new RootNodeType(AppConstants.Captions.ExtensionModulesFolder, ApplicationIcons.ExtensionModulesFolder);
    }

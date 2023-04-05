@@ -10,10 +10,10 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_ResetParamterValuesToDefaultFromStartValuesInSimulationCommand : ContextSpecification<ResetParamterValuesToDefaultFromStartValuesInSimulationCommand>
+   public abstract class concern_for_ResetParameterValuesToDefaultFromStartValuesInSimulationCommand : ContextSpecification<ResetParameterValuesToDefaultFromStartValuesInSimulationCommand>
    {
       private IMoBiSimulation _simulation;
-      protected IParameterStartValuesBuildingBlock _parameterStartValues;
+      protected ParameterStartValuesBuildingBlock _parameterStartValues;
       protected IContainer _liver;
       protected IMoBiContext _context;
       protected IMoBiFormulaTask _formulaTask;
@@ -24,12 +24,15 @@ namespace MoBi.Core.Commands
       {
          _context= A.Fake<IMoBiContext>();
          _liver = new Container().WithName("LIVER");
-         _simulation= A.Fake<IMoBiSimulation>();
+         _simulation= new MoBiSimulation();
+         _simulation.Model = new Model();
          _simulation.Model.Root = new Container().WithContainerType(ContainerType.Simulation);
          _simulation.Model.Root.Add(_liver);
          _parameterStartValues= new ParameterStartValuesBuildingBlock();
-         _simulation.BuildConfiguration.ParameterStartValues = _parameterStartValues;
-         sut = new ResetParamterValuesToDefaultFromStartValuesInSimulationCommand(_simulation);
+         _simulation.Configuration = new SimulationConfiguration { Module = new Module() };
+         
+         _simulation.Configuration.Module.AddParameterStartValueBlock(_parameterStartValues);
+         sut = new ResetParameterValuesToDefaultFromStartValuesInSimulationCommand(_simulation);
 
          _formulaTask= A.Fake<IMoBiFormulaTask>();
          _entityPathResolver=new EntityPathResolver(new ObjectPathFactory(new AliasCreator()));
@@ -42,7 +45,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_reseting_the_parameter_values_to_default_from_start_values: concern_for_ResetParamterValuesToDefaultFromStartValuesInSimulationCommand
+   public class When_resetting_the_parameter_values_to_default_from_start_values: concern_for_ResetParameterValuesToDefaultFromStartValuesInSimulationCommand
    {
       private ParameterStartValue _psv1;
       private ParameterStartValue _psv2;

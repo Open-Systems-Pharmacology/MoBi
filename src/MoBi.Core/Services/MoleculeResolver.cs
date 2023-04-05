@@ -6,7 +6,7 @@ namespace MoBi.Core.Services
 {
    public interface IMoleculeResolver
    {
-      IMoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, ISpatialStructure spatialStructure, IMoleculeBuildingBlock moleculeBuildingBlock);
+      IMoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, ISpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
    }
 
    public class MoleculeResolver : IMoleculeResolver
@@ -18,12 +18,12 @@ namespace MoBi.Core.Services
             .FirstOrDefault(container => container != null && (container.Mode == ContainerMode.Physical)) != null;
       }
 
-      private bool canResolveMolecule(IMoleculeBuildingBlock moleculeBuildingBlock, string moleculeName)
+      private bool canResolveMolecule(MoleculeBuildingBlock moleculeBuildingBlock, string moleculeName)
       {
          return moleculeBuildingBlock[moleculeName] != null;
       }
 
-      public IMoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, ISpatialStructure spatialStructure, IMoleculeBuildingBlock moleculeBuildingBlock)
+      public IMoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, ISpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock)
       {
          if (!canResolveMolecule(moleculeBuildingBlock, moleculeName) || !canResolvePhysicalContainer(containerPath, spatialStructure))
             return null;

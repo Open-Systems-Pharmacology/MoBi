@@ -6,14 +6,14 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateMoleculeStartValueIsPresentCommand : BuildingBlockChangeCommandBase<IMoleculeStartValuesBuildingBlock>
+   public class UpdateMoleculeStartValueIsPresentCommand : BuildingBlockChangeCommandBase<MoleculeStartValuesBuildingBlock>
    {
       private readonly string _startValueId;
       private MoleculeStartValue _startValue;
       private readonly bool _oldIsPresent;
       private readonly bool _newIsPresent;
 
-      public UpdateMoleculeStartValueIsPresentCommand(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, MoleculeStartValue moleculeStartValue, bool isPresent) : base(moleculeStartValuesBuildingBlock)
+      public UpdateMoleculeStartValueIsPresentCommand(MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, MoleculeStartValue moleculeStartValue, bool isPresent) : base(moleculeStartValuesBuildingBlock)
       {
          _startValueId = moleculeStartValue.Id;
          _startValue = moleculeStartValue;

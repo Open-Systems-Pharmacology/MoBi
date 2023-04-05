@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Presenter
          _context = context;
       }
 
-      public override void Edit(IDistributedParameter distributedParameter, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(IDistributedParameter distributedParameter, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _distributedParameter = distributedParameter;
          _distributedParameterDTO = _distributedParameterMapper.MapFrom(_distributedParameter);

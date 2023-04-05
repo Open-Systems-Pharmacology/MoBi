@@ -167,7 +167,7 @@ namespace MoBi.Presentation.Presenter
          {
             AllAvailableBuildingBlocks = allBuildingBlocks,
             BuildingBlockToMerge = buildingBlock ?? _noneBuildingBlock,
-            BuildingBlockIcon = ApplicationIcons.IconByName(_iconRepository.IconFor(buildingBlock))
+            BuildingBlockIcon = ApplicationIcons.IconByName(_iconRepository.IconNameFor(buildingBlock))
          };
 
          mapping.ProjectBuildingBlock = shouldMergeByDefault ? mapping.AllAvailableBuildingBlocks.First() : _noneBuildingBlock;

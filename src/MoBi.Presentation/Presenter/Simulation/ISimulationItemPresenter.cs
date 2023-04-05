@@ -10,6 +10,5 @@ namespace MoBi.Presentation.Presenter.Simulation
 
    public interface ISimulationConfigurationItemPresenter : ISimulationItemPresenter
    {
-   
    }
 }

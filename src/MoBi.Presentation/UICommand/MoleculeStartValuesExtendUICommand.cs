@@ -4,7 +4,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class MoleculeStartValuesExtendUICommand : AbstractStartValueSubjectRetrieverUICommand<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>
+   internal class MoleculeStartValuesExtendUICommand : AbstractStartValueSubjectRetrieverUICommand<MoleculeStartValuesBuildingBlock, MoleculeStartValue>
    {
       public MoleculeStartValuesExtendUICommand(IMoleculeStartValuesTask startValueTasks, IActiveSubjectRetriever activeSubjectRetriever)
          : base(startValueTasks, activeSubjectRetriever)

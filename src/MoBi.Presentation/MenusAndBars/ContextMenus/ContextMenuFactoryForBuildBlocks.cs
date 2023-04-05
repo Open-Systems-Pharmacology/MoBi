@@ -41,7 +41,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return IoC.Resolve<IRootContextMenuFor<IMoBiProject, TObjectBase>>().InitializeWith(_rootNodeType, presenter.DowncastTo<IExplorerPresenter>());
+         return IoC.Resolve<IRootContextMenuFor<MoBiProject, TObjectBase>>().InitializeWith(_rootNodeType, presenter.DowncastTo<IExplorerPresenter>());
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForMoleculeBuildingBlock : RootNodeContextMenuFactoryFor<IMoleculeBuildingBlock>
+   public class RootContextMenuFactoryForMoleculeBuildingBlock : RootNodeContextMenuFactoryFor<MoleculeBuildingBlock>
    {
       public RootContextMenuFactoryForMoleculeBuildingBlock() : base(MoBiRootNodeTypes.MoleculeFolder)
       {
@@ -145,14 +145,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForSimulationSettingsBuildingBlock : RootNodeContextMenuFactoryFor<ISimulationSettings>
-   {
-      public RootContextMenuFactoryForSimulationSettingsBuildingBlock()
-         : base(MoBiRootNodeTypes.SimulationSettingsFolder)
-      {
-      }
-   }
-
    public class RootContextMenuFactoryForEventGroupBuildingBlock : RootNodeContextMenuFactoryFor<IEventGroupBuildingBlock>
    {
       public RootContextMenuFactoryForEventGroupBuildingBlock()
@@ -161,7 +153,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForMoBiMoleculeStartValuesBuildingBlock : RootNodeContextMenuFactoryFor<IMoleculeStartValuesBuildingBlock>
+   public class RootContextMenuFactoryForMoBiMoleculeStartValuesBuildingBlock : RootNodeContextMenuFactoryFor<MoleculeStartValuesBuildingBlock>
    {
       public RootContextMenuFactoryForMoBiMoleculeStartValuesBuildingBlock()
          : base(MoBiRootNodeTypes.MoleculeStartValuesFolder)
@@ -169,7 +161,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForMoBiParameterStartValuesBuildingBlock : RootNodeContextMenuFactoryFor<IParameterStartValuesBuildingBlock>
+   public class RootContextMenuFactoryForMoBiParameterStartValuesBuildingBlock : RootNodeContextMenuFactoryFor<ParameterStartValuesBuildingBlock>
    {
       public RootContextMenuFactoryForMoBiParameterStartValuesBuildingBlock()
          : base(MoBiRootNodeTypes.ParameterStartValuesFolder)

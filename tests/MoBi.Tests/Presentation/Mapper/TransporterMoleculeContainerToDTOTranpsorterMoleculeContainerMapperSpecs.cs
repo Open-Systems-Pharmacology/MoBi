@@ -10,7 +10,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mapper
 {
-   public abstract class concern_for_ITransporterMoleculeContainerToDTOTranpsorterMoleculeContainerMapper : ContextSpecification<ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper>
+   public abstract class concern_for_TransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper : ContextSpecification<ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper>
    {
       protected IParameterToParameterDTOMapper _parameterToParameterDTOMapper;
       protected ITransportBuilderToTransportBuilderDTOMapper _transportBuilderToDTOTransporterBuilderMapper;
@@ -19,11 +19,11 @@ namespace MoBi.Presentation.Mapper
       {
          _parameterToParameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
          _transportBuilderToDTOTransporterBuilderMapper = A.Fake<ITransportBuilderToTransportBuilderDTOMapper>();
-         sut = new TransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper(_transportBuilderToDTOTransporterBuilderMapper,_parameterToParameterDTOMapper);
+         sut = new TransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper(_transportBuilderToDTOTransporterBuilderMapper,_parameterToParameterDTOMapper);
       }
    }
 
-   class When_mapping_a_transporter_molecule_container_to_a_dto : concern_for_ITransporterMoleculeContainerToDTOTranpsorterMoleculeContainerMapper
+   class MappingATransporterMoleculeContainerToTransporterMoleculeContainerADTO : concern_for_TransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper
    {
       private TransporterMoleculeContainer _transporterMoleculeContainer;
       private TransporterMoleculeContainerDTO _result;

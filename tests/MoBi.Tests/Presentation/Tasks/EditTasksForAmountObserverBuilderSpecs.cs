@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
@@ -16,7 +17,7 @@ namespace MoBi.Presentation.Tasks
    {
       private IInteractionTaskContext _interactionTaskContext;
       private IMoBiContext _context;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       protected ObserverBuildingBlock _buildingBlock;
       protected IAmountObserverBuilder _amountObserver;
       protected AmountObserverBuilder _amountObserverBuilderWithForbiddenName;
@@ -29,7 +30,7 @@ namespace MoBi.Presentation.Tasks
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _context = A.Fake<IMoBiContext>();
-         _project = A.Fake<IMoBiProject>();
+         _project = DomainHelperForSpecs.NewProject();
          _amountObserver = A.Fake<IAmountObserverBuilder>();
          _amountObserverBuilderWithForbiddenName = new AmountObserverBuilder {Name = "forbidden name"};
          _buildingBlock = new ObserverBuildingBlock {_amountObserverBuilderWithForbiddenName, _amountObserver};
@@ -39,7 +40,7 @@ namespace MoBi.Presentation.Tasks
 
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
-         A.CallTo(() => _project.ObserverBlockCollection).Returns(new[] {_buildingBlock});
+         _project.AddBuildingBlock(_buildingBlock);
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
          A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_applicationController);
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);

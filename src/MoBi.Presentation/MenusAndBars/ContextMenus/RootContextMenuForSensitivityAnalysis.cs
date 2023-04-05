@@ -9,7 +9,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForSensitivityAnalysis : RootContextMenuFor<IMoBiProject, SensitivityAnalysis>
+   public class RootContextMenuForSensitivityAnalysis : RootContextMenuFor<MoBiProject, SensitivityAnalysis>
    {
       public RootContextMenuForSensitivityAnalysis(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {

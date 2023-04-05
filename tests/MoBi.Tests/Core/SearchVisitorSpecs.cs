@@ -89,7 +89,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]
@@ -139,7 +139,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]
@@ -161,7 +161,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]
@@ -184,7 +184,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]
@@ -206,7 +206,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]
@@ -229,7 +229,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]
@@ -253,7 +253,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]
@@ -276,7 +276,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]

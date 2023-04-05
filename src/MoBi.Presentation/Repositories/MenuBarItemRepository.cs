@@ -205,7 +205,7 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.Molecule)
             .WithDescription(ToolTips.ModellingRibbon.CreateMoleculesBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.M)
-            .WithCommand<AddNewBuildingBlockCommand<IMoleculeBuildingBlock>>(_container);
+            .WithCommand<AddNewBuildingBlockCommand<MoleculeBuildingBlock>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewReactionBuildingBlock)
             .WithId(MenuBarItemIds.NewReactionBB)
@@ -235,13 +235,13 @@ namespace MoBi.Presentation.Repositories
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.E)
             .WithCommand<AddNewBuildingBlockCommand<IEventGroupBuildingBlock>>(_container);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewSimulationSettingsBuildingBlock)
-            .WithId(MenuBarItemIds.NewSimulationSettingsBB)
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.EditDefaultSimulationSettings)
+            .WithId(MenuBarItemIds.EditProjectSimulationSettings)
             .WithIcon(ApplicationIcons.SimulationSettings)
-            .WithDescription(ToolTips.ModellingRibbon.CreateSimulationSettingsBB)
+            .WithDescription(ToolTips.EditRibbon.EditDefaultSimulationSettings)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.N)
-            .WithCommand<AddNewBuildingBlockCommand<ISimulationSettings>>(_container);
-
+            .WithCommand<EditProjectSimulationSettingsUICommand>(_container);
+         
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewObserverBuildingBlock)
             .WithId(MenuBarItemIds.NewObserverBB)
             .WithIcon(ApplicationIcons.Observer)
@@ -270,19 +270,19 @@ namespace MoBi.Presentation.Repositories
             .WithId(MenuBarItemIds.NewMolecule)
             .WithDescription(ToolTips.BuildingBlockMolecule.NewMolecule)
             .WithIcon(ApplicationIcons.MoleculeAdd)
-            .WithCommand<AddNewCommandFor<IMoleculeBuildingBlock, IMoleculeBuilder>>(_container);
+            .WithCommand<AddNewCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadMolecule)
             .WithId(MenuBarItemIds.LoadMolecule)
             .WithDescription(ToolTips.BuildingBlockMolecule.LoadMolecule)
             .WithIcon(ApplicationIcons.MoleculeLoad)
-            .WithCommand<AddExistingCommandFor<IMoleculeBuildingBlock, IMoleculeBuilder>>(_container);
+            .WithCommand<AddExistingCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadMoleculeFromTemplate)
            .WithId(MenuBarItemIds.LoadMoleculeFromTemplate)
            .WithDescription(ToolTips.BuildingBlockMolecule.LoadMolecule)
            .WithIcon(ApplicationIcons.LoadFromTemplate)
-           .WithCommand<AddExistingFromTemplateCommandFor<IMoleculeBuildingBlock, IMoleculeBuilder>>(_container);
+           .WithCommand<AddExistingFromTemplateCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddPKSimMolecule)
             .WithId(MenuBarItemIds.AddPKSimMolecule)

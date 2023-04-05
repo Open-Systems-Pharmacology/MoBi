@@ -1,12 +1,11 @@
-﻿using OSPSuite.UI;
-using OSPSuite.Utility.Extensions;
-using DevExpress.XtraTreeList;
+﻿using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Nodes;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Views;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -33,14 +32,14 @@ namespace MoBi.UI.Views
          if (e.Node1.Level == 0)
             e.Result = 0;
 
-            //we do not want to sort the items under the simulation node (i.e. no children). Otherwise, Nodes are sorted alphabetically
+         //we do not want to sort the items under the simulation node (i.e. no children). Otherwise, Nodes are sorted alphabetically
          else if (nodeIsSimulationNode(e.Node1.ParentNode))
             e.Result = 0;
       }
 
       private bool nodeIsSimulationNode(TreeListNode node)
       {
-         return node != null && (node.Tag.IsAnImplementationOf<BuildConfigurationNode>() || node.Tag.IsAnImplementationOf<SimulationNode>());
+         return node != null && (node.Tag.IsAnImplementationOf<SimulationConfigurationNode>() || node.Tag.IsAnImplementationOf<SimulationNode>());
       }
    }
 }

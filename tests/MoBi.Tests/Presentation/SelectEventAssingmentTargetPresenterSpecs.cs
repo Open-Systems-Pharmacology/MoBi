@@ -2,6 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -25,10 +26,10 @@ namespace MoBi.Presentation
       protected IObjectPathFactory _objectPathFactory;
       protected IParameterToDummyParameterDTOMapper _parameterMapper;
       protected IReactionDimensionRetriever _dimensionRetriever;
-      private IMoBiProject _mobiProject;
+      private MoBiProject _mobiProject;
       private Container _rootContainer;
       private IMoBiReactionBuildingBlock _reactionBB;
-      private IMoleculeBuildingBlock _moleculeBB;
+      private MoleculeBuildingBlock _moleculeBB;
       protected IReactionBuilder _reaction;
       protected IMoleculeBuilder _moleculeBuilder;
       private IParameter _localParameter;
@@ -52,7 +53,7 @@ namespace MoBi.Presentation
          sut = new SelectEventAssignmentTargetPresenter(_view, _context, _objectBaseDTOMapper, _containerDTOMapper, _reactionMapper,
             _moleculeMapper, _objectPathFactory, _parameterMapper, _dimensionRetriever, _selectEntityInTreePresenter, _spatialStructureDTOMapper);
 
-         _mobiProject = A.Fake<IMoBiProject>();
+         _mobiProject = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.CurrentProject).Returns(_mobiProject);
          _rootContainer = new Container();
          _moleculeBuilder = new MoleculeBuilder().WithName("M");
@@ -63,13 +64,15 @@ namespace MoBi.Presentation
          _reaction.Add(_globalParameter);
          _reactionBB = new MoBiReactionBuildingBlock() {_reaction};
          _moleculeBB = new MoleculeBuildingBlock {_moleculeBuilder};
-         A.CallTo(() => _mobiProject.ReactionBlockCollection).Returns(new[] {_reactionBB});
-         A.CallTo(() => _mobiProject.MoleculeBlockCollection).Returns(new[] {_moleculeBB});
+
+         _mobiProject.AddBuildingBlock(_reactionBB);
+         _mobiProject.AddBuildingBlock(_moleculeBB);
+         
          sut.Init(_rootContainer);
       }
    }
 
-   internal class When_geting_children_for_a_distributeg_parameter : concern_for_SelectEventAssignmentTargetPresenter
+   internal class When_getting_children_for_a_distributed_parameter : concern_for_SelectEventAssignmentTargetPresenter
    {
       private ObjectBaseDTO _distributedParameterDTO;
       private IEnumerable<ObjectBaseDTO> _result;
@@ -129,14 +132,14 @@ namespace MoBi.Presentation
             .WithId("ContId");
 
 
-         _containerDTO = new ContainerDTO {Id = _container.Id};
+         _containerDTO = new ContainerDTO(_container);
          A.CallTo(() => _context.Get<IObjectBase>(_container.Id)).Returns(_container);
 
          _subContainerDTO = new ObjectBaseDTO();
          _parameterDTO1 = new ObjectBaseDTO();
          _parameterDTO2 = new ObjectBaseDTO();
-         _dummyReactionDTO = new DummyReactionDTO();
-         _dummyMoleculeDTO = new DummyMoleculeDTO();
+         _dummyReactionDTO = new DummyReactionDTO(_reaction);
+         _dummyMoleculeDTO = new DummyMoleculeDTO(_moleculeBuilder);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_subContainer)).Returns(_subContainerDTO);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_parameter1)).Returns(_parameterDTO1);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(_parameter2)).Returns(_parameterDTO2);

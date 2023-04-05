@@ -41,21 +41,20 @@ namespace MoBi.Presentation.Presenter
          if (!shouldCreateAbsolutePaths && !IsMoleculeReference(objectBaseDTO))
          {
             var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
-            var parameterToUse = _context.Get<IParameter>(dtoDummyParameter.ParameterToUse.Id);
-            correctMoleculeReferences(dtoDummyParameter.ModelParentName, parameterToUse, dtoReference.Path);
+            correctMoleculeReferences(dtoDummyParameter.ModelParentName, dtoDummyParameter.Parameter, dtoReference.Path);
          }
          return dtoReference;
       }
 
       private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : ObjectPath
       {
-         if (entity.IsAtMolecule())
-         {
-            if (path.Contains(moleculeName))
-            {
-               path.Replace(moleculeName, ObjectPathKeywords.MOLECULE);
-            }
-         }
+         if (!entity.IsAtMolecule()) 
+            return;
+
+         if (!path.Contains(moleculeName)) 
+            return;
+
+         path.Replace(moleculeName, ObjectPathKeywords.MOLECULE);
       }
    }
 }

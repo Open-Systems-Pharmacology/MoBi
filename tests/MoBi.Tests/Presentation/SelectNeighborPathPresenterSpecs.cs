@@ -37,7 +37,7 @@ namespace MoBi.Presentation
          _spatialStructure = new SpatialStructure();
          _organism = new Container().WithContainerType(ContainerType.Organism);
          _spatialStructure.AddTopContainer(_organism);
-         _organismDTO = new ContainerDTO();
+         _organismDTO = new ContainerDTO(_organism);
 
          A.CallTo(() => _containerDTOMapper.MapFrom(_organism)).Returns(_organismDTO);
       }

@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Mapper
 {
    public abstract class concern_for_DataTableToImportQuantityDTOMapperForParameters : ContextSpecificationForImportStartValues<DataTableToImportQuantityDTOMapperForParameters>
    {
-      protected IParameterStartValuesBuildingBlock _startValuesBuildingBlock;
+      protected ParameterStartValuesBuildingBlock _startValuesBuildingBlock;
 
       protected override void Context()
       {
@@ -53,7 +53,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void a_warning_should_have_been_produced()
       {
-         _result.QuantitDTOs[0].HasWarning().ShouldBeTrue();
+         _result.QuantityDTOs[0].HasWarning().ShouldBeTrue();
       }
    }
 
@@ -87,13 +87,13 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_have_changed_the_imported_dimension()
       {
-         _result.QuantitDTOs[0].Dimension.ShouldBeEqualTo(_similarDimension);
+         _result.QuantityDTOs[0].Dimension.ShouldBeEqualTo(_similarDimension);
       }
 
       [Observation]
       public void should_have_changed_the_imported_value_to_the_new_base_value()
       {
-         _result.QuantitDTOs[0].QuantityInBaseUnit.ShouldBeEqualTo(10);
+         _result.QuantityDTOs[0].QuantityInBaseUnit.ShouldBeEqualTo(10);
       }
    }
 
@@ -120,7 +120,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_fail_to_validate_When_missing_a_quantity()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -146,8 +146,8 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_fail_to_validate_When_missing_a_quantity()
       {
-         _result.QuantitDTOs[0].Dimension.Name.ShouldBeEqualTo("Becquerel");
-         _result.QuantitDTOs[1].Dimension.Name.ShouldBeEqualTo("Inversed time");
+         _result.QuantityDTOs[0].Dimension.Name.ShouldBeEqualTo("Becquerel");
+         _result.QuantityDTOs[1].Dimension.Name.ShouldBeEqualTo("Inversed time");
       }
    }
 
@@ -158,7 +158,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void no_results_should_be_mapped()
       {
-         _result.QuantitDTOs.Count.ShouldBeEqualTo(0);
+         _result.QuantityDTOs.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -230,20 +230,20 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_convert_values_to_base_units_When_necessary()
       {
-         _result.QuantitDTOs[1].QuantityInBaseUnit.ShouldBeEqualTo(2 / 1000.0);
-         _result.QuantitDTOs[2].QuantityInBaseUnit.ShouldBeEqualTo(3 / 60.0);
+         _result.QuantityDTOs[1].QuantityInBaseUnit.ShouldBeEqualTo(2 / 1000.0);
+         _result.QuantityDTOs[2].QuantityInBaseUnit.ShouldBeEqualTo(3 / 60.0);
       }
 
       [Observation]
       public void should_return_correct_number_of_quantities()
       {
-         _result.QuantitDTOs.Count.ShouldBeEqualTo(3);
+         _result.QuantityDTOs.Count.ShouldBeEqualTo(3);
       }
 
       [Observation]
       public void should_determine_appropriate_path_arguments()
       {
-         foreach (var t in _result.QuantitDTOs)
+         foreach (var t in _result.QuantityDTOs)
          {
             t.ContainerPath.Count.ShouldBeEqualTo(5);
          }

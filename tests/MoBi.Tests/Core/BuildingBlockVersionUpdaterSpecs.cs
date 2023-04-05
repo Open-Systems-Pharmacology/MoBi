@@ -3,6 +3,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -39,14 +40,16 @@ namespace MoBi.Core
          _changeBuildingBlock.Id = "TRALLLLA";
          _affectedSimulations = new List<IModelCoreSimulation>();
          _affectedSimulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _affectedSimulation.IsCreatedBy(_changeBuildingBlock)).Returns(true);
+         
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>._)).Invokes((call =>
          {
             var statusEvent = call.GetArgument<SimulationStatusChangedEvent>(0);
             _affectedSimulations.Add(statusEvent.Simulation);
          }));
 
-         var project = A.Fake<IMoBiProject>();
-         A.CallTo(() => project.SimulationsCreatedUsing(_changeBuildingBlock)).Returns(new[] { _affectedSimulation });
+         var project = DomainHelperForSpecs.NewProject();
+         project.AddSimulation(_affectedSimulation);
          A.CallTo(() => _projectRetriever.Current).Returns(project);
       }
 

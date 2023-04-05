@@ -13,12 +13,12 @@ namespace MoBi.Engine.Sbml
       IMoBiReactionBuildingBlock GetMainReactionBuildingBlock();
       IContainer GetMainTopContainer();
       IContainer GetEventsTopContainer();
-      IMoleculeBuildingBlock GetMainMoleculeBuildingBlock();
-      IParameterStartValuesBuildingBlock GetMainParameterStartValuesBuildingBlock();
-      IMoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock();
+      MoleculeBuildingBlock GetMainMoleculeBuildingBlock();
+      ParameterStartValuesBuildingBlock GetMainParameterStartValuesBuildingBlock();
+      MoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock();
       IEntity GetContainerFromCompartment(string compartment);
       IContainer GetContainerFromCompartment_(string compartment);
-      void DoImport(Model sbmlModel, IMoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command);
+      void DoImport(Model sbmlModel, MoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command);
       void AddToProject();
       IObjectPathFactory ObjectPathFactory { get; set; }
       IObjectBaseFactory ObjectBaseFactory { get; set; }
@@ -27,7 +27,7 @@ namespace MoBi.Engine.Sbml
    public abstract class SBMLImporter : ISBMLImporter
    {
       protected ASTHandler _astHandler;
-      protected IMoBiProject _sbmlProject;
+      protected MoBiProject _sbmlProject;
       protected SBMLInformation _sbmlInformation;
       protected ICommandCollector _command;
       protected IMoBiContext _context;
@@ -81,7 +81,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the MoBi Molecule Building Block generated for the SBML Import.
       /// </summary>
-      public IMoleculeBuildingBlock GetMainMoleculeBuildingBlock()
+      public MoleculeBuildingBlock GetMainMoleculeBuildingBlock()
       {
          return _sbmlProject.MoleculeBlockCollection.FirstOrDefault(mb => mb.Name == SBMLConstants.SBML_SPECIES_BB);
       }
@@ -89,7 +89,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the MoBi Parameter Start Values Building Block generated for the SBML Import.
       /// </summary>
-      public IParameterStartValuesBuildingBlock GetMainParameterStartValuesBuildingBlock()
+      public ParameterStartValuesBuildingBlock GetMainParameterStartValuesBuildingBlock()
       {
          return
             _sbmlProject.ParametersStartValueBlockCollection.FirstOrDefault(
@@ -99,7 +99,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the MoBi Molecule Start Values Building Block generated for the SBML Import.
       /// </summary>
-      public IMoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock()
+      public MoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock()
       {
          return
             _sbmlProject.MoleculeStartValueBlockCollection.FirstOrDefault(
@@ -135,7 +135,7 @@ namespace MoBi.Engine.Sbml
          return null;
       }
 
-      public void DoImport(Model sbmlModel, IMoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command)
+      public void DoImport(Model sbmlModel, MoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command)
       {
          _sbmlProject = moBiProject;
          _sbmlInformation = sbmlInformation;

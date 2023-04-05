@@ -29,13 +29,13 @@ namespace MoBi.Presentation.Tasks
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       protected ParameterStartValuesBuildingBlock _parameterStartValueBuildingBlock;
       protected IInteractionTaskContext _context;
-      private IEditTasksForBuildingBlock<IParameterStartValuesBuildingBlock> _editTasks;
+      private IEditTasksForBuildingBlock<ParameterStartValuesBuildingBlock> _editTasks;
       protected IParameterResolver _parameterResolver;
 
       protected override void Context()
       {
          _context = A.Fake<IInteractionTaskContext>();
-         _editTasks = A.Fake<IEditTasksForBuildingBlock<IParameterStartValuesBuildingBlock>>();
+         _editTasks = A.Fake<IEditTasksForBuildingBlock<ParameterStartValuesBuildingBlock>>();
          _parameterStartValuesCreator = A.Fake<IParameterStartValuesCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _parameterStartValueBuildingBlock = new ParameterStartValuesBuildingBlock();
@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_updating_parameter_start_values_from_template : concern_for_ParameterStartValuesTask
    {
-      private IParameterStartValuesBuildingBlock _templateStartValues;
+      private ParameterStartValuesBuildingBlock _templateStartValues;
       private ObjectPath _containerPath;
       private ParameterStartValue _parameterStartValue;
       private ParameterStartValue _clonedStartValue;
@@ -77,7 +77,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.UpdateValuesFromTemplate(_parameterStartValueBuildingBlock, new ParameterStartValuesBuildingBlockInfo {TemplateBuildingBlock = _templateStartValues});
+         sut.UpdateValuesFromTemplate(_parameterStartValueBuildingBlock, _templateStartValues);
       }
 
       [Observation]
@@ -147,7 +147,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<ISpatialStructure>._, A<IMoleculeBuildingBlock>._)).Returns(_parameter);
+         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<ISpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(_parameter);
       }
 
       [Observation]
@@ -162,7 +162,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<ISpatialStructure>._, A<IMoleculeBuildingBlock>._)).Returns(_parameter);
+         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<ISpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(_parameter);
          _parameter.Formula = new ExplicitFormula("1+ Exp");
       }
 

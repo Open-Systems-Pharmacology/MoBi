@@ -34,11 +34,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_creating_a_new_building_block : concern_for_InteractionTasksForReactionBuildingBlock
    {
-      private IMoBiProject _moBiProject;
+      private MoBiProject _moBiProject;
 
       protected override void Because()
       {
-         _moBiProject = A.Fake<IMoBiProject>();
+         _moBiProject = A.Fake<MoBiProject>();
          sut.CreateNewEntity(_moBiProject);
       }
 

@@ -70,12 +70,12 @@ namespace MoBi.Core
 
    public class When_told_to_clear : concern_for_MoBiContext
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.Name = "Neu";
          sut.LoadFrom(_project);
       }
@@ -106,9 +106,9 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         var project = A.Fake<IMoBiProject>();
+         var project = A.Fake<MoBiProject>();
          project.Name = "Neu";
-         A.CallTo(() => _objectBaseFactory.Create<IMoBiProject>()).Returns(project);
+         A.CallTo(() => _objectBaseFactory.Create<MoBiProject>()).Returns(project);
          sut.NewProject();
       }
 
@@ -127,12 +127,12 @@ namespace MoBi.Core
    public class When_told_to_create_a_new_ObjectBase : concern_for_MoBiContext
    {
       private IObjectBase _newObjectBase;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.Name = "Neu";
          sut.LoadFrom(_project);
          _newObjectBase = A.Fake<IObjectBase>();
@@ -160,13 +160,13 @@ namespace MoBi.Core
    public class When_told_to_create_a_new_ObjectBase_with_a_given_id : concern_for_MoBiContext
    {
       private IObjectBase _newObjectBase;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private string id;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.Name = "Neu";
          _newObjectBase = A.Fake<IObjectBase>();
          id = "ID";
@@ -195,14 +195,14 @@ namespace MoBi.Core
 
    public class When_creating_a_new_project : concern_for_MoBiContext
    {
-      private IMoBiProject _newProject;
+      private MoBiProject _newProject;
 
       protected override void Context()
       {
          base.Context();
-         _newProject = A.Fake<IMoBiProject>();
+         _newProject = A.Fake<MoBiProject>();
          _newProject.Name = "Neu";
-         A.CallTo(() => _objectBaseFactory.Create<IMoBiProject>()).Returns(_newProject);
+         A.CallTo(() => _objectBaseFactory.Create<MoBiProject>()).Returns(_newProject);
       }
 
       protected override void Because()

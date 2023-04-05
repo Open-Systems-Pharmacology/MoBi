@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Mappers
 
       public TransportDTO MapFrom(ITransport transport)
       {
-         var dto = Map<TransportDTO>(transport);
+         var dto = Map(new TransportDTO(transport));
          dto.Molecule = transport.SourceAmount.Name;
          dto.Source = _pathFactory.CreateAbsoluteObjectPath(transport.SourceAmount.ParentContainer).PathAsString;
          dto.Target = _pathFactory.CreateAbsoluteObjectPath(transport.TargetAmount.ParentContainer).PathAsString;

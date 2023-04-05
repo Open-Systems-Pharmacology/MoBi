@@ -44,12 +44,12 @@ namespace MoBi.Core
 
    public class When_the_serialization_task_is_saving_a_project : concern_for_SerializationTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.FilePath = "XXX";
          _context.ProjectIsReadOnly = true;
          A.CallTo(() => _context.CurrentProject).Returns(_project);

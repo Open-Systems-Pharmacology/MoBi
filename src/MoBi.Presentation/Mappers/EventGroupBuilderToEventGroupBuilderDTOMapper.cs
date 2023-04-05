@@ -34,11 +34,11 @@ namespace MoBi.Presentation.Mappers
          _eventBuilderDTOMapper = eventBuilderDTOMapper;
       }
 
-      public EventGroupBuilderDTO MapFrom(IEventGroupBuilder input)
+      public EventGroupBuilderDTO MapFrom(IEventGroupBuilder eventGroupBuilder)
       {
          //TODO -This should be refactor to avoid usage of IoC
          _applicationBuilderToDTOApplicationBuilderMapper = IoC.Resolve<IApplicationBuilderToApplicationBuilderDTOMapper>();
-         return MapEventGroupProperties(input, new EventGroupBuilderDTO());
+         return MapEventGroupProperties(eventGroupBuilder, new EventGroupBuilderDTO(eventGroupBuilder));
       }
 
       protected T MapEventGroupProperties<T>(IEventGroupBuilder input, T dto) where T : EventGroupBuilderDTO

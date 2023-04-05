@@ -15,7 +15,7 @@ namespace MoBi.Core.Domain.Comparison
       public override void Compare(IComparison<IMoBiSimulation> comparison)
       {
          _objectComparer.Compare(comparison.ChildComparison(x => x.Model));
-         _objectComparer.Compare(comparison.ChildComparison(x => x.MoBiBuildConfiguration));
+         _objectComparer.Compare(comparison.ChildComparison(x => x.Configuration));
       }
    }
 }

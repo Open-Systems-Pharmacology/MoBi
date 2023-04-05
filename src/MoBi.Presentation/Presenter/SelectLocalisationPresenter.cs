@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -40,13 +41,15 @@ namespace MoBi.Presentation.Presenter
          _modalPresenter.Text = AppConstants.Captions.SelectLocalReferencePoint;
       }
 
-      private SpatialStructureDTO createSpatialStuctureDTOFrom(IMoBiSpatialStructure spatialStructure)
+      private SpatialStructureDTO createSpatialStructureDTOFrom(IMoBiSpatialStructure spatialStructure)
       {
-         var dto = new SpatialStructureDTO();
-         dto.Id = spatialStructure.Id;
-         dto.Name = spatialStructure.Name;
-         dto.Icon = spatialStructure.Icon;
-         
+         var dto = new SpatialStructureDTO(spatialStructure)
+         {
+            Id = spatialStructure.Id,
+            Name = spatialStructure.Name,
+            Icon =ApplicationIcons.IconByName(spatialStructure.Icon)
+         };
+
          if (_localisation.Is(Localisations.ContainerOnly))
             dto.TopContainer = spatialStructure.TopContainers.MapAllUsing(_dtoContainerMapper);
 
@@ -66,7 +69,7 @@ namespace MoBi.Presentation.Presenter
       {
          _localisation = localisation;
          var spatialStructures = _context.CurrentProject.SpatialStructureCollection;
-         _view.Show(spatialStructures.Select(createSpatialStuctureDTOFrom).ToList());
+         _view.Show(spatialStructures.Select(createSpatialStructureDTOFrom).ToList());
 
          if (!_modalPresenter.Show())
             return null;

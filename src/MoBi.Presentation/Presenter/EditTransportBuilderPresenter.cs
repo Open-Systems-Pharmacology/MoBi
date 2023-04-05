@@ -98,10 +98,10 @@ namespace MoBi.Presentation.Presenter
 
       public virtual void Edit(ITransportBuilder transportBuilder)
       {
-         Edit(transportBuilder, transportBuilder.ParentContainer);
+         Edit(transportBuilder, transportBuilder.ParentContainer.Children);
       }
 
-      public void Edit(ITransportBuilder transportBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(ITransportBuilder transportBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _transportBuilder = transportBuilder;
          _transportBuilderDTO = _transportBuilderToDTOTransportBuilderMapper.MapFrom(transportBuilder);

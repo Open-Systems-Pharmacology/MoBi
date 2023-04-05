@@ -37,7 +37,7 @@ namespace MoBi.Engine.Sbml
         }
 
 
-        private void SaveSpeciesReferences(Model sbmlModel)
+        private void saveSpeciesReferences(Model sbmlModel)
         {
             SpeciesReferences = new List<SpeciesReference>();
             for (long i = 0; i < sbmlModel.getNumReactions(); i++)
@@ -65,7 +65,7 @@ namespace MoBi.Engine.Sbml
         {
             Level = (int)sbmlDoc.getLevel();
             Version = (int)sbmlDoc.getVersion();
-            SaveSpeciesReferences(sbmlModel);
+            saveSpeciesReferences(sbmlModel);
 
             if (sbmlModel.isSetConversionFactor())
                 ConversionFactor = sbmlModel.getConversionFactor();

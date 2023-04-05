@@ -6,6 +6,7 @@ using System.Linq;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using MoBi.Core.Domain.Services;
+using MoBi.Helpers;
 
 namespace MoBi.Core.Commands
 {
@@ -13,11 +14,11 @@ namespace MoBi.Core.Commands
    {
       protected Module _module;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
 
       protected override void Context()
       {
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IMoBiContext>();
          _module = new Module().WithId("moduleId");
          sut = new RemoveModuleCommand(_module);

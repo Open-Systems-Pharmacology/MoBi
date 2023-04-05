@@ -23,27 +23,27 @@ namespace MoBi.IntegrationTests
 
    public class When_creating_a_simulation_using_reactions_with_the_flag_create_rate_parameter_checked : concern_for_ModelConstruction
    {
-      private IMoBiBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
       private IMoleculeBuilder _moleculeA;
       private IReactionBuilder _reactionR1;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _buildConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
-         var molecules = _buildConfiguration.Molecules;
+         _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
+         var molecules = _simulationConfiguration.Molecules;
          _moleculeA = new MoleculeBuilder().WithName("A").WithDimension(DomainFactoryForSpecs.AmountDimension);
          _moleculeA.DefaultStartFormula = new ConstantFormula(10);
          molecules.Add(_moleculeA);
 
-         var reactions = _buildConfiguration.Reactions;
+         var reactions = _simulationConfiguration.Reactions;
          _reactionR1 = new ReactionBuilder().WithName("R1");
          _reactionR1.CreateProcessRateParameter = true;
          _reactionR1.Formula = new ConstantFormula(5);
          _reactionR1.AddEduct(new ReactionPartnerBuilder(_moleculeA.Name, 2));
          reactions.Add(_reactionR1);
 
-         _simulation = DomainFactoryForSpecs.CreateSimulationFor(_buildConfiguration);
+         _simulation = DomainFactoryForSpecs.CreateSimulationFor(_simulationConfiguration);
       }
 
       [Observation]
@@ -57,7 +57,7 @@ namespace MoBi.IntegrationTests
 
    public class When_running_a_simulation_with_a_parameter_whose_plot_parameter_flag_was_set_to_true : concern_for_ModelConstruction
    {
-      private IMoBiBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _buildConfiguration;
       private IContainer _organism;
       private IEntityValidationTask _entityValidationTask;
 

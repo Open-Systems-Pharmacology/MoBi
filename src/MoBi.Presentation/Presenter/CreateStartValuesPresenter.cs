@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ICreateStartValuesPresenter : IDisposablePresenter
    {
-      IEnumerable<IMoleculeBuildingBlock> GetMolecules();
+      IEnumerable<MoleculeBuildingBlock> GetMolecules();
       IEnumerable<IMoBiSpatialStructure> GetSpatialStructures();
    }
 
@@ -46,15 +46,15 @@ namespace MoBi.Presentation.Presenter
 
       protected abstract T CreateStartValuesFromDTO(StartValuesDTO dto);
 
-      private StartValuesDTO createDto(string name, IMoleculeBuildingBlock moleculeBuildingBlock, IMoBiSpatialStructure spatialStructure)
+      private StartValuesDTO createDto(string name, MoleculeBuildingBlock moleculeBuildingBlock, IMoBiSpatialStructure spatialStructure)
       {
-         var dto = new StartValuesDTO {Name = name, Molecules = moleculeBuildingBlock, SpatialStructrue = spatialStructure};
+         var dto = new StartValuesDTO {Name = name, Molecules = moleculeBuildingBlock, SpatialStructure = spatialStructure};
          dto.AddUsedNames(AppConstants.UnallowedNames);
          dto.AddUsedNames(_unallowedNames);
          return dto;
       }
 
-      public IEnumerable<IMoleculeBuildingBlock> GetMolecules()
+      public IEnumerable<MoleculeBuildingBlock> GetMolecules()
       {
          return _context.CurrentProject.MoleculeBlockCollection;
       }
@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
       }
    }
 
-   public class CreateMoleculeStartValuesPresenter : CreateStartValuesPresenter<IMoleculeStartValuesBuildingBlock>
+   public class CreateMoleculeStartValuesPresenter : CreateStartValuesPresenter<MoleculeStartValuesBuildingBlock>
    {
       private readonly IMoleculeStartValuesCreator _startValuesCreator;
 
@@ -77,13 +77,13 @@ namespace MoBi.Presentation.Presenter
          view.Caption = AppConstants.Captions.NewMoleculeStartValues;
       }
 
-      protected override IMoleculeStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
+      protected override MoleculeStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
       {
-         return _startValuesCreator.CreateFrom(dto.SpatialStructrue, dto.Molecules).WithName(dto.Name);
+         return _startValuesCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
       }
    }
 
-   public class CreateParameterStartValuesPresenter : CreateStartValuesPresenter<IParameterStartValuesBuildingBlock>
+   public class CreateParameterStartValuesPresenter : CreateStartValuesPresenter<ParameterStartValuesBuildingBlock>
    {
       private readonly IParameterStartValuesCreator _startValuesCreator;
 
@@ -96,9 +96,10 @@ namespace MoBi.Presentation.Presenter
          view.Caption = AppConstants.Captions.NewParameterStartValues;
       }
 
-      protected override IParameterStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
+      protected override ParameterStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
       {
-         return _startValuesCreator.CreateFrom(dto.SpatialStructrue, dto.Molecules).WithName(dto.Name);
+         // return _startValuesCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
+         return new ParameterStartValuesBuildingBlock();
       }
    }
 }

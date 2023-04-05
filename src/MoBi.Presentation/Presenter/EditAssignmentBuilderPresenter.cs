@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editFormulaPresenter, selectReferencePresenter);
       }
 
-      public override void Edit(IEventAssignmentBuilder eventAssignmentBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(IEventAssignmentBuilder eventAssignmentBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventAssignmentBuilder = eventAssignmentBuilder;
          bindToFormula();

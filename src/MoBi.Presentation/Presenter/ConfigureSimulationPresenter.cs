@@ -1,48 +1,50 @@
 using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.Simulation;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IConfigureSimulationPresenter : IWizardPresenter
    {
-      IMoBiCommand CreateBuildConfigurationBaseOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock);
+      IMoBiCommand CreateBuildConfigurationBasedOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock);
       IMoBiCommand CreateBuildConfiguration(IMoBiSimulation simulation);
-      IMoBiBuildConfiguration BuildConfiguration { get; }
+      SimulationConfiguration SimulationConfiguration { get; }
    }
 
    public class ConfigureSimulationPresenter : ConfigureSimulationPresenterBase<IConfigureSimulationView, IConfigureSimulationPresenter>, IConfigureSimulationPresenter
    {
       private readonly IDiagramManagerFactory _diagramManagerFactory;
-      public IMoBiBuildConfiguration BuildConfiguration { get; private set; }
+      public SimulationConfiguration SimulationConfiguration { get; private set; }
 
-
-      public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, IDialogCreator dialogCreator, IBuildConfigurationFactory buildConfigurationFactory, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory)
-         : base(view, subPresenterSubjectManager, dialogCreator, buildConfigurationFactory, context, SimulationItems.AllConfigure)
+      public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory)
+         : base(view, subPresenterSubjectManager, dialogCreator, context, SimulationItems.AllConfigure)
       {
          _diagramManagerFactory = diagramManagerFactory;
       }
 
-      public IMoBiCommand CreateBuildConfiguration(IMoBiSimulation simulation) => CreateBuildConfigurationBaseOn(simulation, null);
+      public IMoBiCommand CreateBuildConfiguration(IMoBiSimulation simulation) => CreateBuildConfigurationBasedOn(simulation, null);
 
-
-      public IMoBiCommand CreateBuildConfigurationBaseOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
+      public IMoBiCommand CreateBuildConfigurationBasedOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
          //we create a build configuration where all current building blocks are referencing template building blocks
-         BuildConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.MoBiBuildConfiguration, templateBuildingBlock);
+         // SimulationConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.Configuration, templateBuildingBlock);
+
+         // TODO should this be a clone? SIMULATION_CONFIGURATION
+         SimulationConfiguration = simulation.Configuration;
 
          var tmpSimulation = new MoBiSimulation()
          {
             DiagramManager = _diagramManagerFactory.Create<ISimulationDiagramManager>(),
-            BuildConfiguration = BuildConfiguration,
+
+            Configuration = SimulationConfiguration,
             Creation = simulation.Creation,
             Name = simulation.Name,
          };
@@ -54,8 +56,8 @@ namespace MoBi.Presentation.Presenter
             return new MoBiEmptyCommand();
 
          //Set the selected MSV AND PSV as per user inputs
-         UpdateStartValueInfo<IMoleculeStartValuesBuildingBlock, MoleculeStartValue>(BuildConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
-         UpdateStartValueInfo<IParameterStartValuesBuildingBlock, ParameterStartValue>(BuildConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
+         // UpdateStartValueInfo<MoleculeStartValuesBuildingBlock, MoleculeStartValue>(SimulationConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
+         // UpdateStartValueInfo<ParameterStartValuesBuildingBlock, ParameterStartValue>(SimulationConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
 
 
          return _commands;

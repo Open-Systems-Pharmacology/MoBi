@@ -10,56 +10,44 @@ namespace MoBi.Core.Services
       ///    Ensures that all simulations are referencing template building blocks defined in the <paramref name="project" />.
       ///    This step is required for example after loading a project from file
       /// </summary>
-      void UpdateTemplatesReferencesIn(IMoBiProject project);
+      void UpdateTemplatesReferencesIn(MoBiProject project);
 
       /// <summary>
       ///    Ensures that the <paramref name="simulation"/> is referencing template building blocks defined in the <paramref name="project" />.
       ///    This step is required for example after loading a project from file
       /// </summary>
-      void UpdateTemplatesReferencesIn(IMoBiSimulation simulation, IMoBiProject project);
-
-      /// <summary>
-      ///    Ensures that the <paramref name="buildConfiguration"/> is referencing template building blocks defined in the <paramref name="project" />.
-      ///    This step is required for example after loading a project from file
-      /// </summary>
-      void UpdateTemplatesReferencesIn(IMoBiBuildConfiguration buildConfiguration, IMoBiProject project);
+      void UpdateTemplatesReferencesIn(IMoBiSimulation simulation, MoBiProject project);
      
       /// <summary>
       ///    Updates the references to the <paramref name="templateBuildingBlock" /> in all simulations using the template.
       ///    This is required for instance when swapping two building blocks. References in simulation are out dated and should
       ///    be updated
       /// </summary>
-      void UpdateTemplateReference(IMoBiProject project, IBuildingBlock templateBuildingBlock);
+      void UpdateTemplateReference(MoBiProject project, IBuildingBlock templateBuildingBlock);
 
    }  
 
    public class BuildingBlockReferenceUpdater : IBuildingBlockReferenceUpdater
    {
-      public void UpdateTemplatesReferencesIn(IMoBiProject project)
+      public void UpdateTemplatesReferencesIn(MoBiProject project)
       {
          project.Simulations.Each(s => UpdateTemplatesReferencesIn(s, project));
       }
 
-      public void UpdateTemplatesReferencesIn(IMoBiSimulation simulation, IMoBiProject project)
+      public void UpdateTemplatesReferencesIn(IMoBiSimulation simulation, MoBiProject project)
       {
-         UpdateTemplatesReferencesIn(simulation.MoBiBuildConfiguration, project);
+         //TODO SIMULATION_CONFIGURATION
+         // UpdateTemplatesReferencesIn(simulation.MoBiBuildConfiguration, project);
       }
 
-      public void UpdateTemplatesReferencesIn(IMoBiBuildConfiguration buildConfiguration, IMoBiProject project)
+      public void UpdateTemplateReference(MoBiProject project, IBuildingBlock templateBuildingBlock)
       {
-         foreach (var buildingBlockInfo in buildConfiguration.AllBuildingBlockInfos())
-         {
-            buildingBlockInfo.UntypedTemplateBuildingBlock = project.TemplateById(buildingBlockInfo.TemplateBuildingBlockId);
-         }
-      }
-
-      public void UpdateTemplateReference(IMoBiProject project, IBuildingBlock templateBuildingBlock)
-      {
-         foreach (var simulation in project.SimulationsCreatedUsing(templateBuildingBlock))
-         {
-            var buildingBlockInfo = simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock);
-            buildingBlockInfo.UntypedTemplateBuildingBlock = templateBuildingBlock;
-         }
+         //TODO SIMULATION_CONFIGURATION
+         // foreach (var simulation in project.SimulationsCreatedUsing(templateBuildingBlock))
+         // {
+         //    var buildingBlockInfo = simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock);
+         //    buildingBlockInfo.UntypedTemplateBuildingBlock = templateBuildingBlock;
+         // }
       }
    }
 }

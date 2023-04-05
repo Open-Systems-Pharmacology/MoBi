@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
    {
       private readonly string _chartTemplateName;
 
-      public AddChartTemplateToBuildingBlockCommand(CurveChartTemplate chartTemplate, ISimulationSettings buildingBlock) : base(chartTemplate, buildingBlock)
+      public AddChartTemplateToBuildingBlockCommand(CurveChartTemplate chartTemplate, SimulationSettings buildingBlock) : base(chartTemplate, buildingBlock)
       {
          CommandType = AppConstants.Commands.AddCommand;
          _chartTemplateName = _chartTemplate.Name;

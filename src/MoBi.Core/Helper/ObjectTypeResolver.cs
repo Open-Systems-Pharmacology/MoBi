@@ -28,7 +28,7 @@ namespace MoBi.Core.Helper
       public ObjectTypeResolver()
       {
          _typeCache = new Cache<Type, string>();
-         addToCache<IMoleculeBuildingBlock>(ObjectTypes.MoleculeBuildingBlock);
+         addToCache<MoleculeBuildingBlock>(ObjectTypes.MoleculeBuildingBlock);
          addToCache<IReactionBuildingBlock>(ObjectTypes.ReactionBuildingBlock);
          addToCache<NeighborhoodBuilder>(ObjectTypes.Neighborhood);
          addToCache<Neighborhood>(ObjectTypes.Neighborhood);
@@ -36,8 +36,8 @@ namespace MoBi.Core.Helper
          addToCache<IPassiveTransportBuildingBlock>(ObjectTypes.PassiveTransportBuildingBlock);
          addToCache<IObserverBuildingBlock>(ObjectTypes.ObserverBuildingBlock);
          addToCache<IEventGroupBuildingBlock>(ObjectTypes.EventGroupBuildingBlock);
-         addToCache<IMoleculeStartValuesBuildingBlock>(ObjectTypes.MoleculeStartValuesBuildingBlock);
-         addToCache<IParameterStartValuesBuildingBlock>(ObjectTypes.ParameterStartValuesBuildingBlock);
+         addToCache<MoleculeStartValuesBuildingBlock>(ObjectTypes.MoleculeStartValuesBuildingBlock);
+         addToCache<ParameterStartValuesBuildingBlock>(ObjectTypes.ParameterStartValuesBuildingBlock);
          addToCache<IMoleculeBuilder>(ObjectTypes.Molecule);
          addToCache<TransporterMoleculeContainer>(ObjectTypes.TransporterMoleculeContainer);
          addToCache<ITransportBuilder>(ObjectTypes.TransportBuilder);
@@ -59,7 +59,7 @@ namespace MoBi.Core.Helper
          addToCache<BlackBoxFormula>(ObjectTypes.BlackBoxFormula);
          addToCache<IMoBiSimulation>(ObjectTypes.Simulation);
          addToCache<DataRepository>(ObjectTypes.ObservedData);
-         addToCache<ISimulationSettings>(ObjectTypes.SimulationSettings);
+         addToCache<SimulationSettings>(ObjectTypes.SimulationSettings);
          addToCache<CurveChartTemplate>(ObjectTypes.ChartTemplate);
          addToCache<MoleculeStartValue>(ObjectTypes.MoleculeStartValue);
          addToCache<ParameterStartValue>(ObjectTypes.ParameterStartValue);
@@ -68,7 +68,7 @@ namespace MoBi.Core.Helper
          addToCache<ObjectPath>(ObjectTypes.Reference);
          addToCache<ObjectReference>(ObjectTypes.Reference);
          addToCache<IMoBiHistoryManager>(ObjectTypes.History);
-         addToCache<IMoBiProject>(ObjectTypes.Project);
+         addToCache<MoBiProject>(ObjectTypes.Project);
          addToCache<IDiagramModel>(ObjectTypes.DiagramModel);
          addToCache<IContainer>(ObjectTypes.Container);
          addToCache<FormulaUsablePath>(ObjectTypes.FormulaUsablePath);

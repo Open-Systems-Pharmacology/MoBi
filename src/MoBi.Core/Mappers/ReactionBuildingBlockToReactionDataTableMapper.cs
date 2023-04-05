@@ -3,14 +3,12 @@ using System.Data;
 using MoBi.Assets;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Extensions;
 
 namespace MoBi.Core.Mappers
 {
-   public interface IReactionBuildingBlockToReactionDataTableMapper : IMapper<IMoBiReactionBuildingBlock, DataTable>
+   public interface IReactionBuildingBlockToReactionDataTableMapper : IMapper<IReactionBuildingBlock, DataTable>
    {
       
    }
@@ -60,7 +58,7 @@ namespace MoBi.Core.Mappers
          return _stoichiometricStringCreator.CreateFrom(reactionBuilder.Educts, reactionBuilder.Products);
       }
 
-      public DataTable MapFrom(IMoBiReactionBuildingBlock input)
+      public DataTable MapFrom(IReactionBuildingBlock input)
       {
          var reactionDataTable = generateEmptyReactionDataTable();
 

@@ -48,7 +48,7 @@ namespace MoBi.Core.Commands
          _buildingBlock = null;
       }
 
-      private void addToProject(IMoBiProject project)
+      private void addToProject(MoBiProject project)
       {
          project.AddBuildingBlock(_buildingBlock);
       }

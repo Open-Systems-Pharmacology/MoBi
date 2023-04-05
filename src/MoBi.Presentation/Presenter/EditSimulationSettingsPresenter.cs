@@ -8,13 +8,13 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditSimulationSettingsPresenter : ISingleStartPresenter<ISimulationSettings>
+   public interface IEditSimulationSettingsPresenter : ISingleStartPresenter<SimulationSettings>
    {
    }
 
-   public class EditSimulationSettingsPresenter : SingleStartContainerPresenter<IEditSimulationSettingsView, IEditSimulationSettingsPresenter, ISimulationSettings, ISimulationSettingsItemPresenter>, IEditSimulationSettingsPresenter
+   public class EditSimulationSettingsPresenter : SingleStartContainerPresenter<IEditSimulationSettingsView, IEditSimulationSettingsPresenter, SimulationSettings, ISimulationSettingsItemPresenter>, IEditSimulationSettingsPresenter
    {
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
 
       public EditSimulationSettingsPresenter(IEditSimulationSettingsView view, ISubPresenterItemManager<ISimulationSettingsItemPresenter> subPresenterSubjectManager)
          : base(view, subPresenterSubjectManager, SimulationSettingsItems.All)
@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Presenter
          get { return _simulationSettings; }
       }
 
-      public override void Edit(ISimulationSettings simulationSettings)
+      public override void Edit(SimulationSettings simulationSettings)
       {
          _simulationSettings = simulationSettings;
          _subPresenterItemManager.AllSubPresenters.Each(p => p.Edit(simulationSettings));

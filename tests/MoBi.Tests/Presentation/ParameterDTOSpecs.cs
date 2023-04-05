@@ -18,13 +18,14 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_creating_a_parameter_dto_for_a_constant_aprameter_with_an_undefined_value : concern_for_ParameterDTO
+   public class When_creating_a_parameter_dto_for_a_constant_parameter_with_an_undefined_value : concern_for_ParameterDTO
    {
       protected override void Context()
       {
          base.Context();
-         _parameter.Formula = new ConstantFormula(double.NaN);
-         sut.Formula = new ConstantFormulaBuilderDTO();
+         var constantFormula = new ConstantFormula(double.NaN);
+         _parameter.Formula = constantFormula;
+         sut.Formula = new ConstantFormulaBuilderDTO(constantFormula);
       }
 
       [Observation]
@@ -34,13 +35,14 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_creating_a_parameter_dto_for_a_constant_aprameter_with_an_well_defined_value : concern_for_ParameterDTO
+   public class When_creating_a_parameter_dto_for_a_constant_parameter_with_an_well_defined_value : concern_for_ParameterDTO
    {
       protected override void Context()
       {
          base.Context();
-         _parameter.Formula = new ConstantFormula(5);
-         sut.Formula = new ConstantFormulaBuilderDTO();
+         var constantFormula = new ConstantFormula(5);
+         _parameter.Formula = constantFormula;
+         sut.Formula = new ConstantFormulaBuilderDTO(constantFormula);
       }
 
       [Observation]

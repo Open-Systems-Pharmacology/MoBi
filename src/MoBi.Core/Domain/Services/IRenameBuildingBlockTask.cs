@@ -7,7 +7,7 @@ namespace MoBi.Core.Domain.Services
    public interface IRenameBuildingBlockTask
    {
       /// <summary>
-      ///    Update build the building block names of simulation using the given buildingblock;
+      ///    Update build the building block names of simulation using the given building block;
       /// </summary>
       void RenameInSimulationUsingTemplateBuildingBlock(IBuildingBlock templateBuildingBlock);
    }
@@ -25,10 +25,12 @@ namespace MoBi.Core.Domain.Services
       {
          var allSimulationUsingBuildingBlocks = _projectRetriever.Current.SimulationsCreatedUsing(templateBuildingBlock);
 
-         foreach (var usedBuildingBlock in allSimulationUsingBuildingBlocks.Select(x => x.MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock)))
-         {
-            usedBuildingBlock.UntypedBuildingBlock.Name = templateBuildingBlock.Name;
-         }
+         // TODO rename bb rename in SimulationConfiguration? SIMULATION_CONFIGURATION
+
+         // foreach (var usedBuildingBlock in allSimulationUsingBuildingBlocks.Select(x => x.MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock)))
+         // {
+         //    usedBuildingBlock.UntypedBuildingBlock.Name = templateBuildingBlock.Name;
+         // }
       }
    }
 }

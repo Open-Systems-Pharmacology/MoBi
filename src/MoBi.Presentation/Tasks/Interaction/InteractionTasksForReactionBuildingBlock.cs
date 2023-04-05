@@ -37,7 +37,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Merge(buildingBlockToMerge, targetBuildingBlock);
       }
 
-      public override IMoBiReactionBuildingBlock CreateNewEntity(IMoBiProject parent)
+      public override IMoBiReactionBuildingBlock CreateNewEntity(MoBiProject parent)
       {
          return _reactionBuildingBlockFactory.Create();
       }

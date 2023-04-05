@@ -53,7 +53,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
+      protected override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
       {
          if (e.PropertyName.Equals(_valueName))
          {
@@ -65,7 +65,7 @@ namespace MoBi.Presentation.DTO
 
       public string GroupName => Group.FullName;
 
-      public ParameterDTO(IParameter parameter)
+      public ParameterDTO(IParameter parameter): base(parameter) 
       {
          Parameter = parameter;
          Rules.Add(valueForConstantParameterShouldBeDefined());

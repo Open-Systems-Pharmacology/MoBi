@@ -9,17 +9,17 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddExpressionAsParameterStartValuesCommand : ObjectUICommand<IMoBiProject>
+   public class AddExpressionAsParameterStartValuesCommand : ObjectUICommand<MoBiProject>
    {
       private readonly IMoBiContext _context;
       private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTaskForExpressionProfileBuildingBlock;
-      private readonly IInteractionTasksForBuildingBlock<IParameterStartValuesBuildingBlock> _interactionTasksForPSVBuildingBlock;
+      private readonly IInteractionTasksForBuildingBlock<ParameterStartValuesBuildingBlock> _interactionTasksForPSVBuildingBlock;
       private readonly IExpressionProfileToParameterStartValuesMapper _mapper;
       private readonly IEditTasksForBuildingBlock<ExpressionProfileBuildingBlock> _editTask;
 
       public AddExpressionAsParameterStartValuesCommand(IMoBiContext context,
          IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfileBuildingBlock,
-         IInteractionTasksForBuildingBlock<IParameterStartValuesBuildingBlock> interactionTasksForPSVBuildingBlock,
+         IInteractionTasksForBuildingBlock<ParameterStartValuesBuildingBlock> interactionTasksForPSVBuildingBlock,
          IExpressionProfileToParameterStartValuesMapper mapper, IEditTasksForBuildingBlock<ExpressionProfileBuildingBlock> editTask)
       {
          _context = context;

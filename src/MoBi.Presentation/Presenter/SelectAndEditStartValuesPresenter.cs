@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -11,6 +10,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IStartValuesTask<TBuildingBlock, TStartValue> _startValuesTask;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
-      protected IMoBiBuildConfiguration _buildConfiguration;
+      protected SimulationConfiguration _simulationConfiguration;
       public TBuildingBlock StartValues { get; private set; }
       protected ICache<string, TStartValue> _templateStartValues;
       private readonly IStartValuesPresenter _editPresenter;
@@ -45,14 +45,14 @@ namespace MoBi.Presentation.Presenter
          _objectTypeResolver = objectTypeResolver;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
          _editPresenter.CanCreateNewFormula = false;
-         legendPresenter.AddLegendItems(new []{ new LegendItemDTO {Description = AppConstants.Captions.AutomaticallyGeneratedValues, Color = MoBiColors.Extended} });
+         legendPresenter.AddLegendItems(new[] { new LegendItemDTO { Description = AppConstants.Captions.AutomaticallyGeneratedValues, Color = MoBiColors.Extended } });
          View.AddLegendView(legendPresenter.View);
          AddSubPresenters(_editPresenter, legendPresenter);
       }
 
       public void Edit(IMoBiSimulation simulation)
       {
-         _buildConfiguration = simulation.MoBiBuildConfiguration;
+         _simulationConfiguration = simulation.Configuration;
          Refresh();
       }
 
@@ -96,14 +96,20 @@ namespace MoBi.Presentation.Presenter
          _editPresenter.OnlyShowFilterSelection();
       }
 
-      protected void Refresh(IBuildingBlockInfo<TBuildingBlock> startValueBuildingBlockInfo)
+      protected void Refresh(TBuildingBlock startValueBuildingBlock)
       {
-         if (startValueBuildingBlockInfo.TemplateBuildingBlock == null) return;
-         _templateStartValues = startValueBuildingBlockInfo.TemplateBuildingBlock.ToCache();
-
-         StartValues = _startValuesTask.CreateStartValuesForSimulation(_buildConfiguration);
-         StartValues.Version = startValueBuildingBlockInfo.TemplateBuildingBlock.Version;
+         _templateStartValues = startValueBuildingBlock?.ToCache();
+         if (_templateStartValues == null)
+            return;
+         StartValues = _startValuesTask.CreateStartValuesForSimulation(_simulationConfiguration);
          _view.Description = AppConstants.Captions.TemporaryStartValuesBasedOn(_objectTypeResolver.TypeFor(StartValues), StartValues.Name);
+
+         // if (startValueBuildingBlockInfo.TemplateBuildingBlock == null) return;
+         // _templateStartValues = startValueBuildingBlockInfo.TemplateBuildingBlock.ToCache();
+         //
+         // StartValues = _startValuesTask.CreateStartValuesForSimulation(_simulationConfiguration);
+         // StartValues.Version = startValueBuildingBlockInfo.TemplateBuildingBlock.Version;
+         // _view.Description = AppConstants.Captions.TemporaryStartValuesBasedOn(_objectTypeResolver.TypeFor(StartValues), StartValues.Name);
       }
    }
 }

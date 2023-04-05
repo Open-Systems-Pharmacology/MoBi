@@ -11,7 +11,7 @@ namespace MoBi.Core.Serialization.Services
 {
    public interface IDeserializedReferenceResolver
    {
-      void ResolveFormulaAndTemplateReferences(object deserializedObject, IMoBiProject project);
+      void ResolveFormulaAndTemplateReferences(object deserializedObject, MoBiProject project);
    }
 
    public class DeserializedReferenceResolver : IDeserializedReferenceResolver
@@ -27,11 +27,11 @@ namespace MoBi.Core.Serialization.Services
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
       }
 
-      public void ResolveFormulaAndTemplateReferences(object deserializedObject, IMoBiProject project)
+      public void ResolveFormulaAndTemplateReferences(object deserializedObject, MoBiProject project)
       {
          switch (deserializedObject)
          {
-            case IMoBiProject proj:
+            case MoBiProject proj:
                _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(proj);
                proj.All<ISpatialStructure>().Each(resolveReferences);
                proj.Simulations.Each(resolveReferences);
@@ -43,10 +43,6 @@ namespace MoBi.Core.Serialization.Services
                var sim = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
                updateOutputMappings(sim, simulationTransfer.OutputMappings);
                resolveReferences(sim);
-               break;
-            case IMoBiBuildConfiguration buildConfiguration:
-               _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(buildConfiguration, project);
-               resolveReferences(buildConfiguration.MoBiSpatialStructure);
                break;
             case IModel model:
                resolveReferences(model);
@@ -69,7 +65,7 @@ namespace MoBi.Core.Serialization.Services
          if (simulation == null) return;
          //no need to update building block references at that stage. It will be done when the project itself is being deserialized
          resolveReferences(simulation.Model);
-         resolveReferences(simulation.BuildConfiguration);
+         resolveReferences(simulation.Configuration);
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
       }
 
@@ -79,7 +75,7 @@ namespace MoBi.Core.Serialization.Services
          _referencesResolver.ResolveReferencesIn(model);
       }
 
-      private void resolveReferences(IBuildConfiguration buildConfiguration) => resolveReferences(buildConfiguration?.SpatialStructure);
+      private void resolveReferences(SimulationConfiguration simulationConfiguration) => resolveReferences(simulationConfiguration?.SpatialStructure);
 
       private void resolveReferences(ISpatialStructure spatialStructure)
       {

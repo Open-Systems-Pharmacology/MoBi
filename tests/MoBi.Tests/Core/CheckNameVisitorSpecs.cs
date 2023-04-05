@@ -4,8 +4,10 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -17,7 +19,9 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Core
 {
@@ -29,7 +33,7 @@ namespace MoBi.Core
       protected IObjectTypeResolver _objectTypeResolver;
       protected IAliasCreator _aliasCreator;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       protected IParameterStartValuePathTask _psvTask;
       protected IMoleculeStartValuePathTask _msvTask;
       protected ICloneManager _cloneManager;
@@ -44,7 +48,7 @@ namespace MoBi.Core
          _changedObject.Name = "OLD";
          _changedName = _changedObject.Name;
          _newName = "new";
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IMoBiContext>();
          _cloneManager = A.Fake<ICloneManager>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -86,7 +90,7 @@ namespace MoBi.Core
       private IFormula _formula;
       private FormulaUsablePath _path;
       private IEnumerable<IStringChange> _changes;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {
@@ -137,7 +141,7 @@ namespace MoBi.Core
 
    internal class When_visiting_an_MoleculesStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
       private MoleculeStartValue _moleculeStartValue;
       private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
@@ -194,7 +198,7 @@ namespace MoBi.Core
 
    internal class When_visiting_an_ParameterStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
-      private IParameterStartValuesBuildingBlock _parameterStartValuesBuildingBlock;
+      private ParameterStartValuesBuildingBlock _parameterStartValuesBuildingBlock;
       private ParameterStartValue _parameterStartValue;
       private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
@@ -257,7 +261,7 @@ namespace MoBi.Core
       private string _oldAlias;
       private string _newAlias;
       private IEnumerable<IStringChange> _changes;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       
       protected override void Context()
       {
@@ -368,7 +372,7 @@ namespace MoBi.Core
    internal class When_checking_for_dependent_changes_in_simulation_settings_with_output_selection_using_the_modified_path : concern_for_CheckNameVisitor
    {
       private IReadOnlyList<IStringChange> _resultChanges;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private readonly string _oldName = "OldName";
 
       protected override void Context()
@@ -394,7 +398,7 @@ namespace MoBi.Core
    internal class When_checking_for_dependent_changes_in_simulation_settings_with_output_selection_not_using_the_modified_path : concern_for_CheckNameVisitor
    {
       private IReadOnlyList<IStringChange> _resultChanges;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private readonly string _oldName = "OldName";
 
       protected override void Context()
@@ -419,7 +423,7 @@ namespace MoBi.Core
    internal class When_checking_for_dependent_changes_in_simulation_settings_with_chart_template_using_the_modified_path : concern_for_CheckNameVisitor
    {
       private IReadOnlyList<IStringChange> _resultChanges;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private readonly string _oldName = "OldName";
       private CurveChartTemplate _curveChartTemplate;
       private CurveTemplate _curveTemplate;
@@ -462,7 +466,7 @@ namespace MoBi.Core
    internal class When_checking_for_dependent_changes_in_simulation_settings_with_chart_template_not_using_the_modified_path : concern_for_CheckNameVisitor
    {
       private IReadOnlyList<IStringChange> _resultChanges;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private readonly string _oldName = "OldName";
       private CurveChartTemplate _curveChartTemplate;
 

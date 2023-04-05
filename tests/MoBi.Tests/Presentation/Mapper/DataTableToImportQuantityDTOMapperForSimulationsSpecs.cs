@@ -60,7 +60,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_not_import_any_rows_When_a_mandatory_value_is_missing_from_one_row()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_add_one_value_and_warn_about_two_values_that_cannot_be_found_in_the_simulation()
       {
-         _result.QuantitDTOs.Count.ShouldBeEqualTo(1);
+         _result.QuantityDTOs.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
@@ -84,7 +84,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void no_new_values_can_be_inserted()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
 
       [Observation]

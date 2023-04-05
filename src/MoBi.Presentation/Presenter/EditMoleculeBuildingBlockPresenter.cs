@@ -14,21 +14,20 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditMoleculeBuildingBlockPresenter :
-      ISingleStartPresenter<IMoleculeBuildingBlock>,
+
+      ISingleStartPresenter<MoleculeBuildingBlock>,
       IListener<EntitySelectedEvent>,
       IListener<RemovedEvent>,
       IListener<BulkUpdateFinishedEvent>,
-      IListener<BulkUpdateStartedEvent>,
-      IListener<FavoritesSelectedEvent>,
-      IListener<UserDefinedSelectedEvent>
+      IListener<BulkUpdateStartedEvent>
    {
    }
 
-   public class EditMoleculeBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditMoleculesBuildingBlockView, IEditMoleculeBuildingBlockPresenter, IMoleculeBuildingBlock, IMoleculeBuilder>,
+   public class EditMoleculeBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditMoleculesBuildingBlockView, IEditMoleculeBuildingBlockPresenter, MoleculeBuildingBlock, IMoleculeBuilder>,
       IEditMoleculeBuildingBlockPresenter
    {
       private readonly IMoleculeListPresenter _moleculeListPresenter;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private readonly IEditMoleculeBuilderPresenter _editMoleculeBuilderPresenter;
       private readonly IEditTransporterMoleculeContainerPresenter _editTransporterMoleculeContainerPresenter;
       private readonly IEditTransportBuilderPresenter _editTransportBuilderPresenter;
@@ -65,7 +64,7 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _moleculeBuildingBlock;
 
-      public override void Edit(IMoleculeBuildingBlock moleculeBuildingBlockToEdit)
+      public override void Edit(MoleculeBuildingBlock moleculeBuildingBlockToEdit)
       {
          _moleculeBuildingBlock = moleculeBuildingBlockToEdit;
          _moleculeListPresenter.Edit(moleculeBuildingBlockToEdit);
@@ -80,7 +79,7 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
       }
 
-      private void refresh(IMoleculeBuildingBlock moleculeBuildingBlockToEdit)
+      private void refresh(MoleculeBuildingBlock moleculeBuildingBlockToEdit)
       {
          setupEditPresenterFor(moleculeBuildingBlockToEdit.FirstOrDefault());
          UpdateCaption();
@@ -115,15 +114,15 @@ namespace MoBi.Presentation.Presenter
             editPresenter.SelectParameter(parameter);
       }
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
       {
          if (shouldHandleType(selectedObject))
-            return new Tuple<bool, IObjectBase>(_moleculeBuildingBlock.ContainsBuilder(selectedObject), selectedObject);
+            return (_moleculeBuildingBlock.ContainsBuilder(selectedObject), null);
 
-         return new Tuple<bool, IObjectBase>(false, selectedObject);
+         return (false, null);
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
          setupEditPresenterFor(parentObject, parameter);
       }
@@ -166,6 +165,5 @@ namespace MoBi.Presentation.Presenter
       protected override void ShowView(IView viewToShow) => _view.SetEditView(viewToShow);
 
       protected override Action<IEditParameterListPresenter> ColumnConfiguration() => x => x.ConfigureForMolecule();
-
    }
 }

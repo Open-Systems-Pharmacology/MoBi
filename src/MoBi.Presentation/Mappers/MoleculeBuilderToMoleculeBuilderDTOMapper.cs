@@ -14,12 +14,12 @@ namespace MoBi.Presentation.Mappers
       IMoleculeBuilderToMoleculeBuilderDTOMapper
    {
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaBuilderMapper;
-      private readonly ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
+      private readonly ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
       private readonly IUsedCalcualtionMethodToUsedCalcualtionMethodDTOMapper _usedCalculationMethodMapper;
-      private readonly IInteractionContainerToInteractionConatainerDTOMapper _interactionContainerMapper;
+      private readonly IInteractionContainerToInteractionContainerDTOMapper _interactionContainerMapper;
 
-      public MoleculeBuilderToMoleculeBuilderDTOMapper(IFormulaToFormulaBuilderDTOMapper formulaBuilderMapper, ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper transporterMoleculeContainerMapper,
-         IUsedCalcualtionMethodToUsedCalcualtionMethodDTOMapper usedCalculationMethodMapper, IInteractionContainerToInteractionConatainerDTOMapper interactionContainerMapper)
+      public MoleculeBuilderToMoleculeBuilderDTOMapper(IFormulaToFormulaBuilderDTOMapper formulaBuilderMapper, ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper transporterMoleculeContainerMapper,
+         IUsedCalcualtionMethodToUsedCalcualtionMethodDTOMapper usedCalculationMethodMapper, IInteractionContainerToInteractionContainerDTOMapper interactionContainerMapper)
       {
          _formulaBuilderMapper = formulaBuilderMapper;
          _usedCalculationMethodMapper = usedCalculationMethodMapper;
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Mappers
 
       public MoleculeBuilderDTO MapFrom(IMoleculeBuilder moleculeBuilder)
       {
-         var dto = Map<MoleculeBuilderDTO>(moleculeBuilder);
+         var dto = Map(new MoleculeBuilderDTO(moleculeBuilder));
          dto.TransporterMolecules = allTransporterMoleculesDTOFrom(moleculeBuilder);
          dto.InteractionContainerCollection = allInteractionContainersDTOFrom(moleculeBuilder);
          dto.DefaultStartFormula = _formulaBuilderMapper.MapFrom(moleculeBuilder.DefaultStartFormula);

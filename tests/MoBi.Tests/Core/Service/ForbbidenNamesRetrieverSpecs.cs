@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Core.Service
 {
@@ -24,7 +25,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_a_container : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName = "Drug";
       private string _parameterName = "Para";
@@ -33,7 +34,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);
@@ -66,7 +67,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_a_distributed_parameter : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName = "Drug";
       private string _parameterName = "Para";
@@ -76,7 +77,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);
@@ -115,7 +116,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_an_reaction : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName="Drug";
       private string _parameterName="Para";
@@ -123,7 +124,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var molecules= new MoleculeBuildingBlock(){molecule};
          _project.AddBuildingBlock(molecules);
@@ -155,7 +156,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_an_molecule : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName = "Drug";
       private string _parameterName = "Para";
@@ -166,7 +167,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);
@@ -223,7 +224,7 @@ namespace MoBi.Core.Service
 
    class When_retrieving_forbidden_names_for_an_simulation : concern_for_ForbbidenNamesRetrieverSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
       private string _moleculeName = "Drug";
       private string _parameterName = "Para";
@@ -236,7 +237,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);

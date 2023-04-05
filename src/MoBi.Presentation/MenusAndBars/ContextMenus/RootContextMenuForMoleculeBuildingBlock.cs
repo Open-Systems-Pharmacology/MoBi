@@ -11,7 +11,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForMoleculeBuildingBlock : RootContextMenuFor<IMoBiProject, IMoleculeBuildingBlock>
+   public class RootContextMenuForMoleculeBuildingBlock : RootContextMenuFor<MoBiProject, MoleculeBuildingBlock>
    {
       public RootContextMenuForMoleculeBuildingBlock(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {

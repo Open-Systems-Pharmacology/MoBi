@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 
@@ -53,8 +54,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_initialise_also_the_build_configuration()
       {
-          _result.BuildConfiguration.ShouldNotBeNull();
-          _result.MoBiBuildConfiguration.ShouldNotBeNull();
+          _result.Configuration.ShouldNotBeNull();
       }
    }
 }	

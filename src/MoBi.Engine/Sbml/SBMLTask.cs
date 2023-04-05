@@ -35,7 +35,7 @@ namespace MoBi.Engine.Sbml
          _moBiDimensionFactory = moBiDimensionFactory;
       }
 
-      public IMoBiCommand ImportModelFromSbml(string filename, IMoBiProject project)
+      public IMoBiCommand ImportModelFromSbml(string filename, MoBiProject project)
       {
          var command = new MoBiMacroCommand()
          {
@@ -50,7 +50,7 @@ namespace MoBi.Engine.Sbml
          project.Name = getProjectName(model);
 
          reportConstraints(project, model);
-         _importerRepository.AllFor(model).OfType<IStartable>().Each(impoter => impoter.Start());
+         _importerRepository.AllFor(model).OfType<IStartable>().Each(importer => importer.Start());
 
          foreach (var importer in _importerRepository.AllFor(model))
          {
@@ -61,7 +61,7 @@ namespace MoBi.Engine.Sbml
          return command;
       }
 
-      private void reportConstraints(IMoBiProject project, Model model)
+      private void reportConstraints(MoBiProject project, Model model)
       {
          if (model.getNumConstraints() != 0)
          {

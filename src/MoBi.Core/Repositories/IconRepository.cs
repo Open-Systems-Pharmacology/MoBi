@@ -8,17 +8,24 @@ namespace MoBi.Core.Repositories
 {
    public interface IIconRepository
    {
-      string IconFor<T>(T objectBase) where T : IObjectBase;
+      string IconNameFor<T>(T objectBase) where T : IObjectBase;
+      ApplicationIcon IconFor<T>(T objectBase) where T : IObjectBase;
    }
 
    public class IconRepository : IIconRepository
    {
-      public string IconFor<T>(T objectBase) where T : IObjectBase
+      public string IconNameFor<T>(T objectBase) where T : IObjectBase
       {
          if (!string.IsNullOrEmpty(objectBase.Icon))
             return objectBase.Icon;
 
          return iconFor(objectBase).IconName;
+      }
+
+      public ApplicationIcon IconFor<T>(T objectBase) where T : IObjectBase
+      {
+         var iconName = IconNameFor(objectBase);
+         return ApplicationIcons.IconByName(iconName);
       }
 
       private ApplicationIcon iconFor<T>(T objectBase)

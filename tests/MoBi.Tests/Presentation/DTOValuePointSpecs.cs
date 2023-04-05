@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Validation;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Presentation
 {
@@ -12,7 +13,7 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _tableFormulaBuilderDTO = new TableFormulaBuilderDTO();
+         _tableFormulaBuilderDTO = new TableFormulaBuilderDTO(new TableFormula());
          var timeDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Time);
 
          sut = new DTOValuePoint(_tableFormulaBuilderDTO)

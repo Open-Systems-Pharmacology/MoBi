@@ -12,6 +12,7 @@ using Reaction = libsbmlcs.Reaction;
 using MoBi.Core.Exceptions;
 using NUnit.Framework;
 using OSPSuite.Core.Domain.Formulas;
+using MoBi.Helpers;
 
 namespace MoBi.Core.SBML
 {
@@ -69,7 +70,7 @@ namespace MoBi.Core.SBML
 
       protected override void Because()
       {
-         sut.DoImport(_sbmlModel, new MoBiProject(), _sbmlInformation, new MoBiMacroCommand());
+         sut.DoImport(_sbmlModel, DomainHelperForSpecs.NewProject(), _sbmlInformation, new MoBiMacroCommand());
       }
 
       [Observation]
