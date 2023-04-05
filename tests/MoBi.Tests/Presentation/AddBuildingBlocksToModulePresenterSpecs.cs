@@ -1,11 +1,9 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation

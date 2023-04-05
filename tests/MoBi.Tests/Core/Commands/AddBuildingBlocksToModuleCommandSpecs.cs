@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using OSPSuite.BDDHelper;
@@ -11,28 +12,34 @@ namespace MoBi.Core.Commands
    public class concern_for_AddBuildingBlocksToModuleCommand : ContextSpecification<AddMultipleBuildingBlocksToModuleCommand>
    {
       protected Module _existingModule;
-      protected Module _moduleWithNewBuildingBlocks;
+      protected List<IBuildingBlock> _listOfNewBuildingBlocks;
       protected IMoBiContext _context;
       protected IMoBiProject _project;
       protected RegisterTask _registrationTask;
       protected WithIdRepository _withIdRepository;
+      protected IReactionBuildingBlock _newReactionBuildingBlock;
+      protected IEventGroupBuildingBlock _newEventGroupBuildingBlock;
 
       protected override void Context()
       {
+         _newReactionBuildingBlock = new ReactionBuildingBlock();
+         _newEventGroupBuildingBlock = new EventGroupBuildingBlock();
          _existingModule = new Module().WithId("moduleId");
-         _moduleWithNewBuildingBlocks = new Module().WithId("moduleWithNewBuildingBlocksId");
+
+         _listOfNewBuildingBlocks = new List<IBuildingBlock>
+         {
+            _newReactionBuildingBlock,
+            new EventGroupBuildingBlock().WithId("eventGroupId")
+         };
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
-         sut = new AddMultipleBuildingBlocksToModuleCommand(_existingModule, _moduleWithNewBuildingBlocks);
+         sut = new AddMultipleBuildingBlocksToModuleCommand(_existingModule, _listOfNewBuildingBlocks);
          _project = new MoBiProject();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
 
          _existingModule.SpatialStructure = new SpatialStructure().WithId("SpatialStructure");
          _existingModule.Molecule = new MoleculeBuildingBlock().WithId("Molecule");
-
-         _moduleWithNewBuildingBlocks.Reaction = new ReactionBuildingBlock().WithId("reactionId");
-         _moduleWithNewBuildingBlocks.EventGroup = new EventGroupBuildingBlock().WithId("eventGroupId");
       }
    }
 
@@ -55,8 +62,8 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_building_blocks_must_be_added_to_the_module()
       {
-         _existingModule.Reaction.ShouldBeEqualTo(_moduleWithNewBuildingBlocks.Reaction);
-         _existingModule.EventGroup.ShouldBeEqualTo(_moduleWithNewBuildingBlocks.EventGroup);
+         _existingModule.Reaction.ShouldBeEqualTo(_newReactionBuildingBlock);
+         _existingModule.EventGroup.ShouldBeEqualTo(_newEventGroupBuildingBlock);
       }
    }
 
@@ -66,7 +73,6 @@ namespace MoBi.Core.Commands
       {
          base.Context();
          A.CallTo(() => _context.Get<Module>(_existingModule.Id)).Returns(_existingModule);
-         A.CallTo(() => _context.Get<Module>(_moduleWithNewBuildingBlocks.Id)).Returns(_moduleWithNewBuildingBlocks);
       }
 
       protected override void Because()

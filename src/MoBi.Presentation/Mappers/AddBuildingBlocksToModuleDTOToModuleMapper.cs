@@ -11,6 +11,7 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
+   //TO DELETE I WOULD SAY
    public interface IAddBuildingBlocksToModuleDTOToModuleMapper : IMapper<AddBuildingBlocksToModuleDTO, IReadOnlyList<IBuildingBlock>>
    {
    }

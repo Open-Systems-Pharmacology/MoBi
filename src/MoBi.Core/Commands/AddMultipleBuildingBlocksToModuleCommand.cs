@@ -22,8 +22,6 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.AddBuildingBlocksToModule(_existingModule.Name);
       }
 
-      //ToDo: this should be refactored to use a generic method - ideally also reflection 
-      //to go through the class members
       public override void Execute(IMoBiContext context)
       {
          var allCommands = new List<IMoBiCommand>();
