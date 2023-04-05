@@ -40,5 +40,38 @@ namespace MoBi.Core.Domain.Extensions
             //default?? throw exception
          }
       }
+
+      public static void RemoveBuildingBlock(this Module module, IBuildingBlock buildingBlock)
+      {
+         switch (buildingBlock)
+         {
+            case IMoleculeBuildingBlock molecule:
+               module.Molecule = null;
+               break;
+            case IReactionBuildingBlock reaction:
+               module.Reaction = null;
+               break;
+            case ISpatialStructure spatialStructure:
+               module.SpatialStructure = null;
+               break;
+            case IPassiveTransportBuildingBlock passiveTransport:
+               module.PassiveTransport = null;
+               break;
+            case IEventGroupBuildingBlock eventGroup:
+               module.EventGroup = null;
+               break;
+            case IObserverBuildingBlock observer:
+               module.Observer = null;
+               break;
+            case IParameterStartValuesBuildingBlock parameterStartValues:
+               module.AddParameterStartValueBlock(parameterStartValues);
+               break;
+            case IMoleculeStartValuesBuildingBlock moleculeStartValues:
+               module.AddMoleculeStartValueBlock(moleculeStartValues);
+               break;
+            //default?? throw exception
+         }
+      }
+
    }
 }

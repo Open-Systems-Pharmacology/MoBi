@@ -6,6 +6,7 @@ using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using DevExpress.XtraReports.Native;
 
 namespace MoBi.Core.Commands
 {
@@ -19,8 +20,6 @@ namespace MoBi.Core.Commands
 
       public bool Silent { get; set; }
 
-      //ALSO ADD TO PROJECT????
-
       public AddBuildingBlockToModuleCommand(T buildingBlock, Module existingModule)
       {
          ObjectType = new ObjectTypeResolver().TypeFor<T>();
@@ -30,8 +29,7 @@ namespace MoBi.Core.Commands
          _existingModule = existingModule;
          _existingModuleId = existingModule.Id;
          
-         //description should also change
-         //Description = AppConstants.Commands.AddToProjectDescription(ObjectType, buildingBlock.Name);
+         Description = AppConstants.Commands.AddToDescription(ObjectType, buildingBlock.Name, _existingModule.Name);
          Silent = false;
       }
 
@@ -40,7 +38,6 @@ namespace MoBi.Core.Commands
          context.Register(_buildingBlock);
          _existingModule.AddBuildingBlock(_buildingBlock);
 
-         //this is correct
          if (!Silent)
             context.PublishEvent(new AddedEvent<T>(_buildingBlock, _existingModule));
 
@@ -49,12 +46,12 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          _buildingBlock = context.Get<T>(_buildingBlockId);
+         _existingModule = context.Get<Module>(_existingModuleId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return null;
-         // return new RemoveBuildingBlockFromModuleCommand<T>(_buildingBlock).AsInverseFor(this);
+         return new RemoveBuildingBlockFromModuleCommand<T>(_buildingBlock, _existingModule).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
