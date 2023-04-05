@@ -226,9 +226,9 @@ namespace MoBi.Core.Services
 
       public void Visit(SimulationConfiguration simulationConfiguration)
       {
-         Visit(simulationConfiguration.Molecules);
-         Visit(simulationConfiguration.Reactions);
-         Visit(simulationConfiguration.MoleculeStartValues);
+         simulationConfiguration.Molecules.Each(Visit);
+         simulationConfiguration.Reactions.Each(Visit);
+         simulationConfiguration.MoleculeStartValues.Each(Visit);
       }
 
       public void Visit(MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)

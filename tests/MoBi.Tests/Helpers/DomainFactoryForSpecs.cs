@@ -1,4 +1,6 @@
-﻿using MoBi.Core.Domain.Builder;
+﻿using System.Linq;
+using FluentNHibernate.Conventions;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using OSPSuite.Core.Domain;
@@ -13,15 +15,18 @@ namespace MoBi.Helpers
    {
       public static SimulationConfiguration CreateDefaultConfiguration()
       {
-         var buildConfiguration = new SimulationConfiguration { Module = new Module() };
+         var buildConfiguration = new SimulationConfiguration();
+         var moduleConfiguration = new ModuleConfiguration(new Module());
+         buildConfiguration.AddModuleConfiguration(moduleConfiguration);
 
-         buildConfiguration.Module.SpatialStructure = CreateDefaultSpatialStructure();
-         buildConfiguration.Module.Reaction = CreateDefaultReactions();
+
+         moduleConfiguration.Module.SpatialStructure = CreateDefaultSpatialStructure();
+         moduleConfiguration.Module.Reactions = CreateDefaultReactions();
          buildConfiguration.SimulationSettings = CreateDefaultSimulationSettings();
-         buildConfiguration.Module.Molecule = CreateDefaultMolecules();
-         buildConfiguration.Module.PassiveTransport = CreateDefaultPassiveTransports();
-         buildConfiguration.Module.EventGroup = CreateDefaultEventGroups();
-         buildConfiguration.Module.Observer = CreateDefaultObservers();
+         moduleConfiguration.Module.Molecules = CreateDefaultMolecules();
+         moduleConfiguration.Module.PassiveTransports = CreateDefaultPassiveTransports();
+         moduleConfiguration.Module.EventGroups = CreateDefaultEventGroups();
+         moduleConfiguration.Module.Observers = CreateDefaultObservers();
 
          return buildConfiguration;
       }
@@ -50,7 +55,7 @@ namespace MoBi.Helpers
 
       public static IEventGroupBuildingBlock CreateDefaultEventGroups(string buildingBlockName = "EventGroups") => createBuildingBlock<IEventGroupBuildingBlock>(buildingBlockName);
 
-      public static IObserverBuildingBlock CreateDefaultObservers(string buildingBlockName = "OBservers") => createBuildingBlock<IObserverBuildingBlock>(buildingBlockName);
+      public static IObserverBuildingBlock CreateDefaultObservers(string buildingBlockName = "Observers") => createBuildingBlock<IObserverBuildingBlock>(buildingBlockName);
 
       private static T createBuildingBlock<T>(string buildingBlockName) where T : IBuildingBlock => IoC.Resolve<T>().WithName(buildingBlockName);
 
@@ -63,14 +68,21 @@ namespace MoBi.Helpers
 
       public static CreationResult CreateModelFor(SimulationConfiguration buildConfiguration, string simulationName)
       {
-         if (buildConfiguration.Module == null)
-            buildConfiguration.Module = new Module();
+         if (buildConfiguration.ModuleConfigurations.IsEmpty())
+            buildConfiguration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
 
-         if (buildConfiguration.MoleculeStartValues == null)
-            buildConfiguration.Module.AddMoleculeStartValueBlock(CreateMoleculeStartValuesFor(buildConfiguration));
+         var moduleConfiguration = buildConfiguration.ModuleConfigurations.First();
+         if (moduleConfiguration.Module.MoleculeStartValuesCollection.IsEmpty())
+         {
+            moduleConfiguration.Module.AddMoleculeStartValueBlock(CreateMoleculeStartValuesFor(buildConfiguration));
+            moduleConfiguration.SelectedMoleculeStartValues = moduleConfiguration.Module.MoleculeStartValuesCollection.First();
+         }
 
-         if (buildConfiguration.ParameterStartValues == null)
-            buildConfiguration.Module.AddParameterStartValueBlock(CreateParameterStartValuesFor(buildConfiguration));
+         if (moduleConfiguration.Module.ParameterStartValuesCollection.IsEmpty())
+         {
+            moduleConfiguration.Module.AddParameterStartValueBlock(CreateParameterStartValuesFor(buildConfiguration));
+            moduleConfiguration.SelectedParameterStartValues = moduleConfiguration.Module.ParameterStartValuesCollection.First();
+         }
 
          var modelCreator = IoC.Resolve<IModelConstructor>();
          return modelCreator.CreateModelFrom(buildConfiguration, simulationName);
@@ -86,7 +98,7 @@ namespace MoBi.Helpers
       public static MoleculeStartValuesBuildingBlock CreateMoleculeStartValuesFor(SimulationConfiguration buildConfiguration)
       {
          var startValuesCreator = IoC.Resolve<IMoleculeStartValuesCreator>();
-         return startValuesCreator.CreateFrom(buildConfiguration.SpatialStructure, buildConfiguration.Molecules);
+         return startValuesCreator.CreateFrom(buildConfiguration.SpatialStructures.First(), buildConfiguration.Molecules.First());
       }
 
       public static IDimension AmountDimension => DimensionByName(Constants.Dimension.MOLAR_AMOUNT);

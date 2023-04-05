@@ -88,7 +88,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///    Displays all the Notification messsage of the SBML Import.
+      ///    Displays all the Notification message of the SBML Import.
       /// </summary>
       public void ShowNotificationsMessages()
       {

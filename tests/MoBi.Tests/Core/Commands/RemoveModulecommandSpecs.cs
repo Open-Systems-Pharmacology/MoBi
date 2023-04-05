@@ -59,11 +59,11 @@ namespace MoBi.Core.Commands
          _registrationTask = new RegisterTask(_withIdRepository);
 
          _module.SpatialStructure = new SpatialStructure().WithId("SpatialStructure");
-         _module.Molecule = new MoleculeBuildingBlock().WithId("Molecule");
-         _module.Reaction = new ReactionBuildingBlock().WithId("Reaction");
-         _module.PassiveTransport = new PassiveTransportBuildingBlock().WithId("PassiveTransport");
-         _module.Observer = new ObserverBuildingBlock().WithId("Observer");
-         _module.EventGroup = new EventGroupBuildingBlock().WithId("EventGroup");
+         _module.Molecules = new MoleculeBuildingBlock().WithId("Molecule");
+         _module.Reactions = new ReactionBuildingBlock().WithId("Reaction");
+         _module.PassiveTransports = new PassiveTransportBuildingBlock().WithId("PassiveTransport");
+         _module.Observers = new ObserverBuildingBlock().WithId("Observer");
+         _module.EventGroups = new EventGroupBuildingBlock().WithId("EventGroup");
          _module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock().WithId("MoleculeStartValues"));
          _module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("ParameterStartValues"));
 
@@ -83,11 +83,11 @@ namespace MoBi.Core.Commands
       {
          var withIds = _withIdRepository.All().ToList();
          withIds.ShouldNotContain(_module.SpatialStructure);
-         withIds.ShouldNotContain(_module.Molecule);
-         withIds.ShouldNotContain(_module.Reaction);
-         withIds.ShouldNotContain(_module.PassiveTransport);
-         withIds.ShouldNotContain(_module.Observer);
-         withIds.ShouldNotContain(_module.EventGroup);
+         withIds.ShouldNotContain(_module.Molecules);
+         withIds.ShouldNotContain(_module.Reactions);
+         withIds.ShouldNotContain(_module.PassiveTransports);
+         withIds.ShouldNotContain(_module.Observers);
+         withIds.ShouldNotContain(_module.EventGroups);
          withIds.ShouldNotContain(_module.MoleculeStartValuesCollection.First());
          withIds.ShouldNotContain(_module.ParameterStartValuesCollection.First());
          withIds.ShouldNotContain(_module);

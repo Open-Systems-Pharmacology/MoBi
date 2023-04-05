@@ -91,11 +91,11 @@ namespace MoBi.Presentation.Presenter
       private PathCache<IMoleculeAmount> retrieveScalableMoleculeAmounts()
       {
          var allMoleculeAmounts = _containerTask.CacheAllChildren<IMoleculeAmount>(_simulation.Model.Root);
-         var moleculeStartValues = _simulation.Configuration.MoleculeStartValues;
+         var buildingBlocks = _simulation.Configuration.MoleculeStartValues;
 
          foreach (var path in allMoleculeAmounts.Keys.ToList())
          {
-            if (moleculeStartValues[new ObjectPath(path.ToPathArray())] == null)
+            if (buildingBlocks.All(buildingBlock => buildingBlock[new ObjectPath(path.ToPathArray())] == null))
                allMoleculeAmounts.Remove(path);
          }
 

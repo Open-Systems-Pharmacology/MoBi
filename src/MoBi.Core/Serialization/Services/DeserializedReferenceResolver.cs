@@ -75,7 +75,7 @@ namespace MoBi.Core.Serialization.Services
          _referencesResolver.ResolveReferencesIn(model);
       }
 
-      private void resolveReferences(SimulationConfiguration simulationConfiguration) => resolveReferences(simulationConfiguration?.SpatialStructure);
+      private void resolveReferences(SimulationConfiguration simulationConfiguration) => simulationConfiguration?.SpatialStructures.Each(resolveReferences);
 
       private void resolveReferences(ISpatialStructure spatialStructure)
       {

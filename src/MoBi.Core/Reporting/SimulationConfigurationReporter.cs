@@ -24,7 +24,7 @@ namespace MoBi.Core.Reporting
       {
          var listToReport = new List<object>();
 
-         listToReport.AddRange(_spatialStructureReporter.Report(simulationConfiguration.SpatialStructure, buildTracker));
+         listToReport.AddRange(_spatialStructureReporter.Report(simulationConfiguration.SpatialStructures, buildTracker));
          listToReport.AddRange(new MoleculeBuildingBlockReporter().Report(simulationConfiguration.Molecules, buildTracker));
          listToReport.AddRange(_reactionBuildingBlockReporter.Report(simulationConfiguration.Reactions, buildTracker));
          listToReport.AddRange(new PassiveTransportBuildingBlockReporter().Report(simulationConfiguration.PassiveTransports, buildTracker));

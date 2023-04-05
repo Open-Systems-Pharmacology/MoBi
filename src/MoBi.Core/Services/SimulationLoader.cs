@@ -109,7 +109,8 @@ namespace MoBi.Core.Services
       private void addSimulationConfigurationToProject(IMoBiSimulation simulation, ICommandCollector commandCollector)
       {
          var config = simulation.Configuration;
-         commandCollector.AddCommand(new AddModuleCommand(config.Module));
+         config.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(moduleConfiguration.Module)));
+         
          addToProject(commandCollector, config.Individual);
          config.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile));
 
