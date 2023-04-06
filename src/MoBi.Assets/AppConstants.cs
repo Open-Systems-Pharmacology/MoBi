@@ -1243,8 +1243,6 @@ namespace MoBi.Assets
 
          public static string BuildingBlockNotFoundFor(IObjectBase objectBase) => $"BuildingBlock not found for {objectBase.Name}";
 
-         public static string BuildingBlockTypeNotSupported(IObjectBase objectBase) => $"BuildingBlock type for {objectBase.Name} is not supported";
-
          public static string UnknownDimension(string name) => $"Dimension '{name}' not available in DimensionFactory.";
 
          public static string CouldNotFindDimensionFromUnits(string unit) => $"Could not find the dimension for this unit: {unit}";
