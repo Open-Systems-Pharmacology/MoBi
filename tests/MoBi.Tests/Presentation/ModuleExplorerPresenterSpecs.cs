@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Helpers;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Views;
+using NPOI.SS.Formula.Functions;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -245,6 +249,52 @@ namespace MoBi.Presentation
          sut.OrderingComparisonFor(_spatialStructureRootNode, _eventGroupRootNode).ShouldBeEqualTo(1);
       }
    }
+
+   public abstract class When_the_module_explorer_presenter_receives_an_added_event<T> : concern_for_ModuleExplorerPresenter where T : new()
+   {
+      protected MoBiProject _project;
+      protected T _addedObject;
+
+      protected override void Context()
+      {
+         base.Context();
+         _addedObject = new T();
+         _project = DomainHelperForSpecs.NewProject();
+      }
+
+      [Observation]
+      public void the_tree_node_should_be_added_to_the_root_node()
+      {
+         A.CallTo(() => _view.AddNode(A<ITreeNode>.That.Matches(x => x.TagAsObject.Equals(_addedObject)))).MustHaveHappened();
+      }
+   }
+
+   public class When_the_module_explorer_presenter_receives_an_added_individual_event : When_the_module_explorer_presenter_receives_an_added_event<IndividualBuildingBlock>
+   {
+      protected override void Because()
+      {
+         sut.Handle(new AddedEvent<IndividualBuildingBlock>(_addedObject, _project));
+      }
+   }
+
+   public class When_the_module_explorer_presenter_receives_an_added_module_event : When_the_module_explorer_presenter_receives_an_added_event<Module>
+   {
+      protected override void Because()
+      {
+         sut.Handle(new AddedEvent<Module>(_addedObject, _project));
+      }
+   }
+
+   public class When_the_module_explorer_presenter_receives_an_added_expression_event : When_the_module_explorer_presenter_receives_an_added_event<ExpressionProfileBuildingBlock>
+   {
+      protected override void Because()
+      {
+         _addedObject.Type = ExpressionTypes.MetabolizingEnzyme;
+         sut.Handle(new AddedEvent<ExpressionProfileBuildingBlock>(_addedObject, _project));
+      }
+   }
+
+
 
    public class When_the_module_explorer_presenter_is_adding_the_project_to_the_tree : concern_for_ModuleExplorerPresenter
    {
