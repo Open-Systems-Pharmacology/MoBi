@@ -35,6 +35,8 @@ namespace MoBi.Core.Domain.Extensions
             case MoleculeStartValuesBuildingBlock moleculeStartValues:
                module.AddMoleculeStartValueBlock(moleculeStartValues);
                break;
+            case null:
+               return;
             default:
                throw new MoBiException(AppConstants.Exceptions.BuildingBlockTypeNotSupported(buildingBlock));
          }
@@ -68,6 +70,8 @@ namespace MoBi.Core.Domain.Extensions
             case MoleculeStartValuesBuildingBlock moleculeStartValues:
                //module.RemoveMoleculeStartValueBlock(moleculeStartValues);
                break;
+            case null:
+               return;
             default:
                throw new MoBiException(AppConstants.Exceptions.BuildingBlockTypeNotSupported(buildingBlock));
          }
