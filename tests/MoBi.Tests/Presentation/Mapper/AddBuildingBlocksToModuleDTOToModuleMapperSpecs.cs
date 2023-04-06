@@ -1,4 +1,4 @@
-﻿using DevExpress.Office;
+﻿using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -11,7 +11,8 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mapper
 {
-   public class concern_for_AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper : ContextSpecification<AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper>
+   public class concern_for_AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper : ContextSpecification<
+      AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper>
    {
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
@@ -26,11 +27,12 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
-   public class When_mapping_dto_to_list_with_all_building_blocks_already_existing : concern_for_AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper
+   public class
+      When_mapping_dto_to_list_with_all_building_blocks_already_existing : concern_for_AddBuildingBlocksToModuleDTOToBuildingBlocksListMapper
    {
       private AddBuildingBlocksToModuleDTO _dto;
       private Module _existingModule;
-      private System.Collections.Generic.IReadOnlyList<IBuildingBlock> _result;
+      private IReadOnlyList<IBuildingBlock> _result;
 
       protected override void Context()
       {
