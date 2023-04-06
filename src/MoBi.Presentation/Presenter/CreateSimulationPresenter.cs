@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
       private readonly IUserSettings _userSettings;
       private SimulationConfiguration _simulationConfiguration;
-      private ICloneManagerForBuildingBlock _cloneManager;
+      private readonly ICloneManagerForBuildingBlock _cloneManager;
       public IMoBiSimulation Simulation { get; private set; }
 
       public CreateSimulationPresenter(
@@ -140,8 +140,6 @@ namespace MoBi.Presentation.Presenter
 
       private void saveBuildConfiguration()
       {
-         ValidateStartValues();
-
          // UpdateStartValueInfo<MoleculeStartValuesBuildingBlock, MoleculeStartValue>(_simulationConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
          // UpdateStartValueInfo<ParameterStartValuesBuildingBlock, ParameterStartValue>(_simulationConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
 
@@ -158,7 +156,5 @@ namespace MoBi.Presentation.Presenter
          simulation.HasChanged = true;
          return simulation;
       }
-
-      protected IFinalOptionsPresenter FinalOptionsPresenter => PresenterAt(SimulationItems.FinalOptions);
    }
 }
