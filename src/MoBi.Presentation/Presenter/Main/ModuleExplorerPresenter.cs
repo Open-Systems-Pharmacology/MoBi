@@ -30,7 +30,10 @@ namespace MoBi.Presentation.Presenter.Main
       int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
 
-   public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter, IListener<AddedEvent<Module>>
+   public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter, 
+      IListener<AddedEvent<Module>>,
+      IListener<AddedEvent<IndividualBuildingBlock>>,
+      IListener<AddedEvent<ExpressionProfileBuildingBlock>>
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private readonly IEditBuildingBlockStarter _editBuildingBlockStarter;
@@ -74,6 +77,16 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(AddedEvent<Module> eventToHandle)
       {
          addModule(eventToHandle.AddedObject);
+      }
+
+      public void Handle(AddedEvent<IndividualBuildingBlock> eventToHandle)
+      {
+         addBuildingBlockToTree(eventToHandle.AddedObject, MoBiRootNodeTypes.IndividualsFolder);
+      }
+
+      public void Handle(AddedEvent<ExpressionProfileBuildingBlock> eventToHandle)
+      {
+         addBuildingBlockToTree(eventToHandle.AddedObject, MoBiRootNodeTypes.ExpressionProfilesFolder);
       }
 
       public override bool CanDrag(ITreeNode node)
