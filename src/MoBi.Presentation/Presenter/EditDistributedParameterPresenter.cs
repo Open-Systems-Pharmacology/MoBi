@@ -112,7 +112,7 @@ namespace MoBi.Presentation.Presenter
 
       public void UpdateDistributionFormula()
       {
-         IDistributionFormula newFormula;
+         DistributionFormula newFormula;
          switch (_distributedParameterDTO.FormulaType)
          {
             case DistributionFormulaType.DiscreteDistribution:
@@ -146,7 +146,7 @@ namespace MoBi.Presentation.Presenter
          rebind();
       }
 
-      private void updateDistributedFormula(IDistributionFormula newFormula)
+      private void updateDistributedFormula(DistributionFormula newFormula)
       {
          AddCommand(_formulaTask.UpdateDistributedFormula(_distributedParameter, newFormula, DisplayFormulaTypeFor(_distributedParameterDTO.FormulaType), BuildingBlock));
       }

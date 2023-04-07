@@ -260,7 +260,7 @@ namespace MoBi.Presentation.Tasks
          return CreateNewFormula(typeof(TFormula), formulaDimension).DowncastTo<TFormula>();
       }
 
-      public IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, IDistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock)
+      public IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, DistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock)
       {
          _context.Register(newDistributedFormula);
          _context.Register(distributedParameter.Formula);
