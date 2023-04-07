@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
@@ -23,6 +21,7 @@ namespace MoBi.Presentation.DTO
       }
 
       public string Name { get; set; }
+
       public bool IsNameUnique(string newName)
       {
          if (_prohibitedNames == null)

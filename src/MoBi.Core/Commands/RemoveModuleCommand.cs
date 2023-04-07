@@ -1,16 +1,13 @@
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveModuleCommand : MoBiReversibleCommand 
+   public class RemoveModuleCommand : MoBiReversibleCommand
    {
       protected Module _module;
       private byte[] _serializationStream;

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -12,11 +14,13 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForModule : IInteractionTasksForChildren<MoBiProject, Module>
    {
       void CreateNewModuleWithBuildingBlocks();
+      void AddBuildingBlocksToModule(Module module);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
    {
-      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext, editTask)
+      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext,
+         editTask)
       {
       }
 
@@ -30,7 +34,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddModuleCommand(itemToAdd);
       }
 
-      protected override void SetAddCommandDescription(Module child, MoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand, IBuildingBlock buildingBlock)
+      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks)
+      {
+         return new AddMultipleBuildingBlocksToModuleCommand(existingModule, listOfNewBuildingBlocks);
+      }
+
+      protected override void SetAddCommandDescription(Module child, MoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand,
+         IBuildingBlock buildingBlock)
       {
          addCommand.Description = AppConstants.Commands.AddToProjectDescription(addCommand.ObjectType, child.Name);
          macroCommand.Description = addCommand.Description;
@@ -45,7 +55,22 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (module == null)
                return;
 
-            _interactionTaskContext.Context.AddToHistory(GetAddCommand(module, _interactionTaskContext.Context.CurrentProject, null).Run(_interactionTaskContext.Context));
+            _interactionTaskContext.Context.AddToHistory(GetAddCommand(module, _interactionTaskContext.Context.CurrentProject, null)
+               .Run(_interactionTaskContext.Context));
+         }
+      }
+
+      public void AddBuildingBlocksToModule(Module module)
+      {
+         using (var presenter = _interactionTaskContext.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>())
+         {
+            var listOfNewBuildingBlocks = presenter.AddBuildingBlocksToModule(module);
+
+            if (!listOfNewBuildingBlocks.Any())
+               return;
+
+            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, listOfNewBuildingBlocks)
+               .Run(_interactionTaskContext.Context));
          }
       }
    }

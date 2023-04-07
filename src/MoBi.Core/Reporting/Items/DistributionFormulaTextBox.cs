@@ -5,9 +5,9 @@ namespace MoBi.Core.Reporting.Items
    public class DistributionFormulaTextBox
    {
       private readonly string _caption;
-      private readonly IDistributionFormula _formula;
+      private readonly DistributionFormula _formula;
 
-      public DistributionFormulaTextBox(string caption, IDistributionFormula formula)
+      public DistributionFormulaTextBox(string caption, DistributionFormula formula)
       {
          _caption = caption;
          _formula = formula;
