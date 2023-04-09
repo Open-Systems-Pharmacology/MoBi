@@ -1082,6 +1082,7 @@ namespace MoBi.Assets
          public static readonly string SaveAsPKML = "Save As PKML...";
          public static readonly string ReloadAll = "Reload all under same settings...";
          public static readonly string AddBuildingBlocks = "Add Building Blocks...";
+         public static readonly string LoadBuildingBlocks = "Load Building Blocks...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 

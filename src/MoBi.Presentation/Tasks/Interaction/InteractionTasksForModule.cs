@@ -5,9 +5,11 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using NPOI.POIFS.Properties;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -15,6 +17,8 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       void CreateNewModuleWithBuildingBlocks();
       void AddBuildingBlocksToModule(Module module);
+      //void LoadBuildingBlocksToModule(Module module);
+      
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
@@ -73,5 +77,22 @@ namespace MoBi.Presentation.Tasks.Interaction
                .Run(_interactionTaskContext.Context));
          }
       }
+
+      /*
+      public void LoadBuildingBlocksToModule(Module module)
+      {
+         var filename = AskForPKMLFileToOpen();
+
+         if (filename.IsNullOrEmpty())
+            return;// new MoBiEmptyCommand();
+
+         var items = LoadItems(filename);
+
+         //doing now just for reaction as a test
+         _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, LoadItems(filename))
+            .Run(_interactionTaskContext.Context));
+
+      }*/
+
    }
 }

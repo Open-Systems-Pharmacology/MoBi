@@ -34,12 +34,26 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var moduleViewItem = dto.DowncastTo<ModuleViewItem>();
          var module = moduleViewItem.Module;
 
+         addNewBuildingBlocksItem(module);
+         addExistingBuildingBlockItem(module);
+         return this;
+      }
+
+      private void addNewBuildingBlocksItem(Module module)
+      {
          var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.AddBuildingBlocks)
             .WithCommandFor<AddBuildingBlocksToModuleUICommand, Module>(module, _container)
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)));
 
          _allMenuItems.Add(item);
-         return this;
+      }
+      private void addExistingBuildingBlockItem(Module module)
+      {
+         var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadBuildingBlocks)
+            .WithCommandFor<LoadBuildingBlocksToModuleUICommand, Module>(module, _container)
+            .WithIcon(ApplicationIcons.PKMLLoad);
+
+         _allMenuItems.Add(item);
       }
    }
 
