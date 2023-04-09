@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DevExpress.Data.Helpers;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -11,17 +12,22 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 
+/*
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForBuildingBlocks : IInteractionTasksForChildren<Module, ObserverBuildingBlock>
+   public interface IInteractionTasksForBuildingBlocksGeneric<TModule, TBuildingBlock> //: IInteractionTasksForChildren<Module, T>  where T: class, IBuildingBlock
+      where TBuildingBlock : class, IBuildingBlock
+      where TModule : Module
    {
       void LoadBuildingBlocksToModule(Module module);
       
    }
 
-   public class InteractionTasksForBuildingBlocks : InteractionTasksForChildren<Module, ObserverBuildingBlock>, IInteractionTasksForBuildingBlocks
+   public class InteractionTasksForBuildingBlocksGeneric<TModule, TBuildingBlock> : InteractionTasksForChildren<TModule, TBuildingBlock> , IInteractionTasksForBuildingBlocksGeneric<TModule, TBuildingBlock>
+      where TBuildingBlock : class, IBuildingBlock
+      where TModule : Module
    {
-   public InteractionTasksForBuildingBlocks(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<ObserverBuildingBlock> editTask) : base(
+   public InteractionTasksForBuildingBlocksGeneric(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask) : base(
       interactionTaskContext,
       editTask)
    {
@@ -33,20 +39,6 @@ namespace MoBi.Presentation.Tasks.Interaction
    }
 
 
-
-   public void AddBuildingBlocksToModule(Module module)
-   {
-      using (var presenter = _interactionTaskContext.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>())
-      {
-         var listOfNewBuildingBlocks = presenter.AddBuildingBlocksToModule(module);
-
-         if (!listOfNewBuildingBlocks.Any())
-            return;
-
-         _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, listOfNewBuildingBlocks)
-            .Run(_interactionTaskContext.Context));
-      }
-   }
 
    public void LoadBuildingBlocksToModule(Module module)
    {
@@ -65,14 +57,15 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    //not sure what to do with those here underneath
 
-   public override IMoBiCommand GetRemoveCommand(ObserverBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
+   public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, TModule parent, IBuildingBlock buildingBlock)
    {
       throw new System.NotImplementedException();
    }
 
-   public override IMoBiCommand GetAddCommand(ObserverBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
+   public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, TModule parent, IBuildingBlock buildingBlock)
    {
       throw new System.NotImplementedException();
    }
    }
 }
+*/

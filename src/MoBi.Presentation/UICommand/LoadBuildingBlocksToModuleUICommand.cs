@@ -8,9 +8,9 @@ namespace MoBi.Presentation.UICommand
 {
    public class LoadBuildingBlocksToModuleUICommand : ObjectUICommand<Module>
    {
-      private readonly IInteractionTasksForBuildingBlocksGeneric _interactionTasks;
+      private readonly IInteractionTasksForBuildingBlocks _interactionTasks;
 
-      public LoadBuildingBlocksToModuleUICommand(IInteractionTasksForBuildingBlocksGeneric interactionTasksForModule, IMoBiContext context)
+      public LoadBuildingBlocksToModuleUICommand(IInteractionTasksForBuildingBlocks interactionTasksForModule, IMoBiContext context)
       {
          _interactionTasks = interactionTasksForModule;
       }
