@@ -1652,7 +1652,7 @@ namespace MoBi.Assets
          public static readonly string SecondNeighbor = "Second Neighbor";
          public static readonly string DefaultSimulationSettings = "Default Simulation Settings";
          public static readonly string SelectBuildingBlockType = "Select the type of Building Block you want to load to the module";
-         public static readonly string AddingBuildingBlockToModuleClarification = "The Building BlocK Types that are already present in the module and cannot have multiple items are not listed in the list above";
+         public static readonly string AddingBuildingBlockToModuleClarification = "The Building Block Types that are already present in the module and cannot have multiple items are not listed in the list above";
 
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
