@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
@@ -21,35 +19,36 @@ namespace MoBi.Presentation.DTO
 
    public class SelectBuildingBlockTypeDTO : ValidatableDTO
    {
-      //probably a list internally, readonlyList to the public
-      public List<BuildingBlockType> AllowedBuildingBlockTypes { get; set; }
-
+      public IReadOnlyList<BuildingBlockType> AllowedBuildingBlockTypes => _allowedBuildingBlocks;
       public BuildingBlockType SelectedBuildingBlockType { get; set; }
+
+      private readonly List<BuildingBlockType> _allowedBuildingBlocks;
+
       public SelectBuildingBlockTypeDTO(Module module)
       {
          SelectedBuildingBlockType = BuildingBlockType.None;
-         AllowedBuildingBlockTypes = new List<BuildingBlockType>();
+         _allowedBuildingBlocks = new List<BuildingBlockType>();
 
          if (module.Molecules == null)
-            AllowedBuildingBlockTypes.Add(BuildingBlockType.Molecule);
-         
+            _allowedBuildingBlocks.Add(BuildingBlockType.Molecule);
+
          if (module.Reactions == null)
-            AllowedBuildingBlockTypes.Add(BuildingBlockType.Reaction);
+            _allowedBuildingBlocks.Add(BuildingBlockType.Reaction);
 
          if (module.SpatialStructure == null)
-            AllowedBuildingBlockTypes.Add(BuildingBlockType.SpatialStructure);
+            _allowedBuildingBlocks.Add(BuildingBlockType.SpatialStructure);
 
          if (module.PassiveTransports == null)
-            AllowedBuildingBlockTypes.Add(BuildingBlockType.PassiveTransport);
+            _allowedBuildingBlocks.Add(BuildingBlockType.PassiveTransport);
 
          if (module.EventGroups == null)
-            AllowedBuildingBlockTypes.Add(BuildingBlockType.EventGroup);
+            _allowedBuildingBlocks.Add(BuildingBlockType.EventGroup);
 
          if (module.Observers == null)
-            AllowedBuildingBlockTypes.Add(BuildingBlockType.Observer);
+            _allowedBuildingBlocks.Add(BuildingBlockType.Observer);
 
-         AllowedBuildingBlockTypes.Add(BuildingBlockType.MoleculeStartValues);
-         AllowedBuildingBlockTypes.Add(BuildingBlockType.ParameterStartValues);
+         _allowedBuildingBlocks.Add(BuildingBlockType.MoleculeStartValues);
+         _allowedBuildingBlocks.Add(BuildingBlockType.ParameterStartValues);
       }
    }
 }

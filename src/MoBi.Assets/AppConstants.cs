@@ -1083,6 +1083,7 @@ namespace MoBi.Assets
          public static readonly string ReloadAll = "Reload all under same settings...";
          public static readonly string AddBuildingBlocks = "Add Building Blocks...";
          public static readonly string LoadBuildingBlocks = "Load Building Blocks...";
+         public static readonly string LoadBuildingBlocksFromTemplate = "Load Building Blocks from Template...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1224,6 +1225,11 @@ namespace MoBi.Assets
          public static string NoEditPresenterFoundFor(IObjectBase objectToEdit)
          {
             return $"No edit presenter found for {objectToEdit.Name}. {ShouldNeverHappen}";
+         }
+
+         public static string MoreThanOneBuildingBlocks(string buildingBlockType)
+         {
+            return $"A module is allowed to have only one Building Block of type {buildingBlockType}. The file you are trying to load contains multiple.";
          }
 
          public static string FormulaInUse(IFormula formula) => $"Unable to remove Formula '{formula.Name}' still in use.";

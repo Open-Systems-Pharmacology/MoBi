@@ -19,7 +19,6 @@ namespace MoBi.Presentation.Presenter
    public interface ISelectBuildingBlockTypePresenter : IDisposablePresenter
    {
       BuildingBlockType GetBuildingBlockType(Module module);
-      List<BuildingBlockType> AllowedBuildingBlockTypes { get; }
    }
 
    public class SelectBuildingBlockTypePresenter : AbstractDisposablePresenter<ISelectBuildingBlockTypeView, ISelectBuildingBlockTypePresenter>,
@@ -39,7 +38,5 @@ namespace MoBi.Presentation.Presenter
 
          return _view.Canceled ? BuildingBlockType.None : selectBuildingBlockTypeDTO.SelectedBuildingBlockType;
       }
-
-      public List<BuildingBlockType> AllowedBuildingBlockTypes { get; private set; }
    }
 }

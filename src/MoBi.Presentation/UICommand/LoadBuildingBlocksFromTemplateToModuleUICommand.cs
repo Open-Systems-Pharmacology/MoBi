@@ -5,18 +5,18 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class LoadBuildingBlocksToModuleUICommand : ObjectUICommand<Module>
+   public class LoadBuildingBlocksFromTemplateToModuleUICommand : ObjectUICommand<Module>
    {
       private readonly IInteractionTasksForModuleBuildingBlocks _interactionTasks;
 
-      public LoadBuildingBlocksToModuleUICommand(IInteractionTasksForModuleBuildingBlocks interactionTasksForModuleModule, IMoBiContext context)
+      public LoadBuildingBlocksFromTemplateToModuleUICommand(IInteractionTasksForModuleBuildingBlocks interactionTasksForModuleModule, IMoBiContext context)
       {
          _interactionTasks = interactionTasksForModuleModule;
       }
 
       protected override void PerformExecute()
       {
-         _interactionTasks.LoadBuildingBlocksToModule(Subject);
+         _interactionTasks.LoadBuildingBlocksFromTemplateToModule(Subject);
       }
    }
 }

@@ -36,6 +36,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          addNewBuildingBlocksItem(module);
          addExistingBuildingBlockItem(module);
+         addExistingBuildingBlockFromTemplateItem(module);
+
          return this;
       }
 
@@ -47,11 +49,21 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          _allMenuItems.Add(item);
       }
+
       private void addExistingBuildingBlockItem(Module module)
       {
          var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadBuildingBlocks)
             .WithCommandFor<LoadBuildingBlocksToModuleUICommand, Module>(module, _container)
             .WithIcon(ApplicationIcons.PKMLLoad);
+
+         _allMenuItems.Add(item);
+      }
+
+      private void addExistingBuildingBlockFromTemplateItem(Module module)
+      {
+         var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadBuildingBlocksFromTemplate)
+            .WithCommandFor<LoadBuildingBlocksToModuleUICommand, Module>(module, _container)
+            .WithIcon(ApplicationIcons.LoadFromTemplate);
 
          _allMenuItems.Add(item);
       }

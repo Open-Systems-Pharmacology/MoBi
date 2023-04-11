@@ -1,6 +1,7 @@
-using System;
 using System.Collections.Generic;
+using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -14,11 +15,14 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForModuleBuildingBlocks
    {
       void LoadBuildingBlocksToModule(Module module);
+      void LoadBuildingBlocksFromTemplateToModule(Module module);
    }
 
-   public class InteractionTasksForModuleBuildingBlocks : InteractionTasksForChildren<Module, IBuildingBlock>, IInteractionTasksForModuleBuildingBlocks
+   public class InteractionTasksForModuleBuildingBlocks : InteractionTasksForChildren<Module, IBuildingBlock>,
+      IInteractionTasksForModuleBuildingBlocks
    {
-      public InteractionTasksForModuleBuildingBlocks(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<IBuildingBlock> editTask) :
+      public InteractionTasksForModuleBuildingBlocks(IInteractionTaskContext interactionTaskContext,
+         IEditTasksForBuildingBlock<IBuildingBlock> editTask) :
          base(
             interactionTaskContext,
             editTask)
@@ -40,6 +44,32 @@ namespace MoBi.Presentation.Tasks.Interaction
                return;
 
             var filename = AskForPKMLFileToOpen();
+
+            if (filename.IsNullOrEmpty())
+               return;
+
+            var items = loadBuildingBlock(buildingBlockType, filename);
+
+            if (items.Count < 1)
+               return;
+
+            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, items)
+               .Run(_interactionTaskContext.Context));
+         }
+      }
+
+      public void LoadBuildingBlocksFromTemplateToModule(Module module)
+      {
+         using (var presenter = _interactionTaskContext.ApplicationController.Start<ISelectBuildingBlockTypePresenter>())
+         {
+            var buildingBlockType = presenter.GetBuildingBlockType(module);
+
+            if (buildingBlockType == BuildingBlockType.None)
+               return;
+
+            _interactionTaskContext.UpdateTemplateDirectories();
+            var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.LoadFromTemplate(_editTask.ObjectName),
+               Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
 
             if (filename.IsNullOrEmpty())
                return;
@@ -97,12 +127,11 @@ namespace MoBi.Presentation.Tasks.Interaction
                return items;
          }
 
-         //make this more specific
+         //if there are multiple BBs where only one is allowed, abort
          if (items.Count > 1)
-            throw new Exception();
+            throw new MoBiException(AppConstants.Exceptions.MoreThanOneBuildingBlocks(buildingBlockType.ToString()));
 
-         return items;  
+         return items;
       }
-
    }
 }
