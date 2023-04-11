@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
+using MoBi.Core.Commands;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
@@ -34,38 +35,48 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var moduleViewItem = dto.DowncastTo<ModuleViewItem>();
          var module = moduleViewItem.Module;
 
-         addNewBuildingBlocksItem(module);
-         addExistingBuildingBlockItem(module);
-         addExistingBuildingBlockFromTemplateItem(module);
+         _allMenuItems.Add(createNewBuildingBlocksItemFor(module));
+         _allMenuItems.Add(createExistingBuildingBlockItemFor(module));
+         _allMenuItems.Add(createExistingBuildingBlockFromTemplateItemFor(module));
+         _allMenuItems.Add(createRenameItemFor(module));
+         _allMenuItems.Add(createRemoveItemFor(module));
 
          return this;
       }
 
-      private void addNewBuildingBlocksItem(Module module)
+      private IMenuBarItem createNewBuildingBlocksItemFor(Module module)
       {
-         var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.AddBuildingBlocks)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddBuildingBlocks)
             .WithCommandFor<AddBuildingBlocksToModuleUICommand, Module>(module, _container)
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)));
-
-         _allMenuItems.Add(item);
       }
 
-      private void addExistingBuildingBlockItem(Module module)
+      private IMenuBarItem createExistingBuildingBlockItemFor(Module module)
       {
-         var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadBuildingBlocks)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadBuildingBlocks)
             .WithCommandFor<LoadBuildingBlocksToModuleUICommand, Module>(module, _container)
             .WithIcon(ApplicationIcons.PKMLLoad);
-
-         _allMenuItems.Add(item);
       }
 
-      private void addExistingBuildingBlockFromTemplateItem(Module module)
+      private IMenuBarItem createExistingBuildingBlockFromTemplateItemFor(Module module)
       {
-         var item = CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadBuildingBlocksFromTemplate)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadBuildingBlocksFromTemplate)
             .WithCommandFor<LoadBuildingBlocksToModuleUICommand, Module>(module, _container)
             .WithIcon(ApplicationIcons.LoadFromTemplate);
+      }
 
-         _allMenuItems.Add(item);
+      private IMenuBarItem createRemoveItemFor(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
+            .WithCommandFor<RemoveModuleUICommand, Module>(module, _container)
+            .WithIcon(ApplicationIcons.Delete);
+      }
+
+      private IMenuBarItem createRenameItemFor(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
+            .WithCommandFor<RenameObjectCommand<Module>, Module>(module, _container)
+            .WithIcon(ApplicationIcons.Rename);
       }
    }
 

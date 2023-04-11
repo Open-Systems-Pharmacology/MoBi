@@ -17,6 +17,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       void LoadBuildingBlocksToModule(Module module);
       void LoadBuildingBlocksFromTemplateToModule(Module module);
+      void RemoveModule(Module module);
    }
 
    public class InteractionTasksForModuleBuildingBlocks : InteractionTasksForChildren<Module, IBuildingBlock>,
@@ -24,9 +25,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       public InteractionTasksForModuleBuildingBlocks(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<IBuildingBlock> editTask) :
-         base(
-            interactionTaskContext,
-            editTask)
+         base(interactionTaskContext, editTask)
       {
       }
 
@@ -42,6 +41,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void LoadBuildingBlocksFromTemplateToModule(Module module)
       {
          loadBuildingBlocksToModuleBase(module, openTemplateFile);
+      }
+
+      public void RemoveModule(Module module)
+      {
+         _interactionTaskContext.Context.AddToHistory(new RemoveModuleCommand(module)
+            .Run(_interactionTaskContext.Context));
       }
 
       private void loadBuildingBlocksToModuleBase(Module module, Func<string> getFilename)
