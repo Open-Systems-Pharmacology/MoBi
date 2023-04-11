@@ -38,6 +38,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          loadBuildingBlocksToModuleBase(module, AskForPKMLFileToOpen);
       }
+
       public void LoadBuildingBlocksFromTemplateToModule(Module module)
       {
          loadBuildingBlocksToModuleBase(module, openTemplateFile);
@@ -79,6 +80,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return InteractionTask.AskForFileToOpen(AppConstants.Dialog.LoadFromTemplate(_editTask.ObjectName),
             Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
       }
+
       public override IMoBiCommand GetRemoveCommand(IBuildingBlock objectToRemove, Module module, IBuildingBlock buildingBlock)
       {
          return new RemoveBuildingBlockFromModuleCommand<IBuildingBlock>(objectToRemove, module);
