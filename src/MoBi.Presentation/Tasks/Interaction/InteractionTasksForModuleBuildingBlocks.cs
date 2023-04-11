@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Antlr.Runtime.Misc;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Exceptions;
@@ -36,29 +37,14 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void LoadBuildingBlocksToModule(Module module)
       {
-         using (var presenter = _interactionTaskContext.ApplicationController.Start<ISelectBuildingBlockTypePresenter>())
-         {
-            var buildingBlockType = presenter.GetBuildingBlockType(module);
-
-            if (buildingBlockType == BuildingBlockType.None)
-               return;
-
-            var filename = AskForPKMLFileToOpen();
-
-            if (filename.IsNullOrEmpty())
-               return;
-
-            var items = loadBuildingBlock(buildingBlockType, filename);
-
-            if (items.Count < 1)
-               return;
-
-            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, items)
-               .Run(_interactionTaskContext.Context));
-         }
+         loadBuildingBlocksToModuleBase(module, AskForPKMLFileToOpen);
+      }
+      public void LoadBuildingBlocksFromTemplateToModule(Module module)
+      {
+         loadBuildingBlocksToModuleBase(module, openTemplateFile);
       }
 
-      public void LoadBuildingBlocksFromTemplateToModule(Module module)
+      private void loadBuildingBlocksToModuleBase(Module module, Func<string> getFilename)
       {
          using (var presenter = _interactionTaskContext.ApplicationController.Start<ISelectBuildingBlockTypePresenter>())
          {
@@ -67,9 +53,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (buildingBlockType == BuildingBlockType.None)
                return;
 
-            _interactionTaskContext.UpdateTemplateDirectories();
-            var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.LoadFromTemplate(_editTask.ObjectName),
-               Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
+            var filename = getFilename();
 
             if (filename.IsNullOrEmpty())
                return;
@@ -84,6 +68,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
+      private string openTemplateFile()
+      {
+         _interactionTaskContext.UpdateTemplateDirectories();
+         return InteractionTask.AskForFileToOpen(AppConstants.Dialog.LoadFromTemplate(_editTask.ObjectName),
+            Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
+      }
       public override IMoBiCommand GetRemoveCommand(IBuildingBlock objectToRemove, Module module, IBuildingBlock buildingBlock)
       {
          return new RemoveBuildingBlockFromModuleCommand<IBuildingBlock>(objectToRemove, module);
