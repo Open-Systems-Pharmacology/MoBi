@@ -31,12 +31,15 @@ namespace MoBi.UI.Views
       private void InitializeComponent()
       {
          this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+         this.clarificationLabelControl = new DevExpress.XtraEditors.LabelControl();
          this.buildingBlockSelectionComboBoxEdit = new DevExpress.XtraEditors.ComboBoxEdit();
          this.descriptionLabelControl = new DevExpress.XtraEditors.LabelControl();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.buildingBlockSelectionlayoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
+         this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.emptySpaceItem2 = new DevExpress.XtraLayout.EmptySpaceItem();
+         this.emptySpaceItem3 = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -45,7 +48,9 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.buildingBlockSelectionlayoutControlItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem3)).BeginInit();
          this.SuspendLayout();
          // 
          // tablePanel
@@ -55,6 +60,7 @@ namespace MoBi.UI.Views
          // 
          // layoutControl1
          // 
+         this.layoutControl1.Controls.Add(this.clarificationLabelControl);
          this.layoutControl1.Controls.Add(this.buildingBlockSelectionComboBoxEdit);
          this.layoutControl1.Controls.Add(this.descriptionLabelControl);
          this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -65,13 +71,22 @@ namespace MoBi.UI.Views
          this.layoutControl1.TabIndex = 39;
          this.layoutControl1.Text = "layoutControl1";
          // 
+         // clarificationLabelControl
+         // 
+         this.clarificationLabelControl.Location = new System.Drawing.Point(12, 456);
+         this.clarificationLabelControl.Name = "clarificationLabelControl";
+         this.clarificationLabelControl.Size = new System.Drawing.Size(282, 33);
+         this.clarificationLabelControl.StyleController = this.layoutControl1;
+         this.clarificationLabelControl.TabIndex = 6;
+         this.clarificationLabelControl.Text = "clarificationLabelControl";
+         // 
          // buildingBlockSelectionComboBoxEdit
          // 
-         this.buildingBlockSelectionComboBoxEdit.Location = new System.Drawing.Point(499, 49);
+         this.buildingBlockSelectionComboBoxEdit.Location = new System.Drawing.Point(499, 83);
          this.buildingBlockSelectionComboBoxEdit.Name = "buildingBlockSelectionComboBoxEdit";
          this.buildingBlockSelectionComboBoxEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.buildingBlockSelectionComboBoxEdit.Size = new System.Drawing.Size(551, 48);
+         this.buildingBlockSelectionComboBoxEdit.Size = new System.Drawing.Size(920, 48);
          this.buildingBlockSelectionComboBoxEdit.StyleController = this.layoutControl1;
          this.buildingBlockSelectionComboBoxEdit.TabIndex = 5;
          // 
@@ -91,7 +106,9 @@ namespace MoBi.UI.Views
          this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItem1,
             this.buildingBlockSelectionlayoutControlItem,
-            this.emptySpaceItem1});
+            this.layoutControlItem2,
+            this.emptySpaceItem3,
+            this.emptySpaceItem2});
          this.Root.Name = "Root";
          this.Root.Size = new System.Drawing.Size(1431, 501);
          this.Root.TextVisible = false;
@@ -108,18 +125,35 @@ namespace MoBi.UI.Views
          // buildingBlockSelectionlayoutControlItem
          // 
          this.buildingBlockSelectionlayoutControlItem.Control = this.buildingBlockSelectionComboBoxEdit;
-         this.buildingBlockSelectionlayoutControlItem.Location = new System.Drawing.Point(0, 37);
+         this.buildingBlockSelectionlayoutControlItem.Location = new System.Drawing.Point(0, 71);
          this.buildingBlockSelectionlayoutControlItem.Name = "buildingBlockSelectionlayoutControlItem";
-         this.buildingBlockSelectionlayoutControlItem.Size = new System.Drawing.Size(1042, 444);
+         this.buildingBlockSelectionlayoutControlItem.Size = new System.Drawing.Size(1411, 52);
          this.buildingBlockSelectionlayoutControlItem.TextSize = new System.Drawing.Size(475, 33);
          // 
-         // emptySpaceItem1
+         // layoutControlItem2
          // 
-         this.emptySpaceItem1.AllowHotTrack = false;
-         this.emptySpaceItem1.Location = new System.Drawing.Point(1042, 37);
-         this.emptySpaceItem1.Name = "emptySpaceItem1";
-         this.emptySpaceItem1.Size = new System.Drawing.Size(369, 444);
-         this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem2.Control = this.clarificationLabelControl;
+         this.layoutControlItem2.Location = new System.Drawing.Point(0, 444);
+         this.layoutControlItem2.Name = "layoutControlItem2";
+         this.layoutControlItem2.Size = new System.Drawing.Size(1411, 37);
+         this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem2.TextVisible = false;
+         // 
+         // emptySpaceItem2
+         // 
+         this.emptySpaceItem2.AllowHotTrack = false;
+         this.emptySpaceItem2.Location = new System.Drawing.Point(0, 37);
+         this.emptySpaceItem2.Name = "emptySpaceItem2";
+         this.emptySpaceItem2.Size = new System.Drawing.Size(1411, 34);
+         this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
+         // 
+         // emptySpaceItem3
+         // 
+         this.emptySpaceItem3.AllowHotTrack = false;
+         this.emptySpaceItem3.Location = new System.Drawing.Point(0, 123);
+         this.emptySpaceItem3.Name = "emptySpaceItem3";
+         this.emptySpaceItem3.Size = new System.Drawing.Size(1411, 321);
+         this.emptySpaceItem3.TextSize = new System.Drawing.Size(0, 0);
          // 
          // SelectBuildingBlockTypeView
          // 
@@ -140,7 +174,9 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.buildingBlockSelectionlayoutControlItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem3)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -154,6 +190,9 @@ namespace MoBi.UI.Views
       private DevExpress.XtraEditors.LabelControl descriptionLabelControl;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private DevExpress.XtraLayout.LayoutControlItem buildingBlockSelectionlayoutControlItem;
-      private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
+      private DevExpress.XtraEditors.LabelControl clarificationLabelControl;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
+      private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem3;
+      private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem2;
    }
 }

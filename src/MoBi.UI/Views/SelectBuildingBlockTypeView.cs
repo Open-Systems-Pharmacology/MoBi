@@ -6,6 +6,7 @@ using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Format;
 
@@ -36,6 +37,8 @@ namespace MoBi.UI.Views
          ApplicationIcon = ApplicationIcons.Module;
          descriptionLabelControl.Text = AppConstants.Captions.SelectBuildingBlockType.FormatForLabel();
          buildingBlockSelectionlayoutControlItem.Text = AppConstants.Captions.BuildingBlockType.FormatForLabel();
+         clarificationLabelControl.AsDescription();
+         clarificationLabelControl.Text = AppConstants.Captions.AddingBuildingBlockToModuleClarification.FormatForDescription();
       }
 
       public override void InitializeBinding()
