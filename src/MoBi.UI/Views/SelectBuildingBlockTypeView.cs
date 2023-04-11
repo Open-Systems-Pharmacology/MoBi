@@ -1,29 +1,18 @@
-﻿using DevExpress.XtraEditors;
+﻿using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Presentation.Formatters;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Format;
 
 namespace MoBi.UI.Views
 {
-   public class BuildingBlockTypeFormatter : IFormatter<BuildingBlockType>
-   {
-      public string Format(BuildingBlockType valueToFormat)
-      {
-         return valueToFormat.ToString();
-      }
-   }
-
-
    public partial class SelectBuildingBlockTypeView : BaseModalView, ISelectBuildingBlockTypeView
    {
-      private ISelectBuildingBlockTypePresenter _presenter;
       private readonly ScreenBinder<SelectBuildingBlockTypeDTO> _screenBinder = new ScreenBinder<SelectBuildingBlockTypeDTO>();
       private readonly IFormatter<BuildingBlockType> _formatter = new BuildingBlockTypeFormatter();
 
@@ -34,12 +23,19 @@ namespace MoBi.UI.Views
 
       public void AttachPresenter(ISelectBuildingBlockTypePresenter presenter)
       {
-         _presenter = presenter;
       }
 
       public void BindTo(SelectBuildingBlockTypeDTO selectBuildingBlockTypeDTO)
       {
          _screenBinder.BindToSource(selectBuildingBlockTypeDTO);
+      }
+
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Module;
+         descriptionLabelControl.Text = AppConstants.Captions.SelectBuildingBlockType.FormatForLabel();
+         buildingBlockSelectionlayoutControlItem.Text = AppConstants.Captions.BuildingBlockType.FormatForLabel();
       }
 
       public override void InitializeBinding()

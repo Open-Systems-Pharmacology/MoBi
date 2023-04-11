@@ -11,14 +11,14 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForBuildingBlocks
+   public interface IInteractionTasksForModuleBuildingBlocks
    {
       void LoadBuildingBlocksToModule(Module module);
    }
 
-   public class InteractionTasksForBuildingBlocks : InteractionTasksForChildren<Module, IBuildingBlock>, IInteractionTasksForBuildingBlocks
+   public class InteractionTasksForModuleBuildingBlocks : InteractionTasksForChildren<Module, IBuildingBlock>, IInteractionTasksForModuleBuildingBlocks
    {
-      public InteractionTasksForBuildingBlocks(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<IBuildingBlock> editTask) :
+      public InteractionTasksForModuleBuildingBlocks(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<IBuildingBlock> editTask) :
          base(
             interactionTaskContext,
             editTask)
@@ -34,7 +34,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          using (var presenter = _interactionTaskContext.ApplicationController.Start<ISelectBuildingBlockTypePresenter>())
          {
-            //probably returning a list makes more sense
             var buildingBlockType = presenter.GetBuildingBlockType(module);
 
             if (buildingBlockType == BuildingBlockType.None)
@@ -53,16 +52,16 @@ namespace MoBi.Presentation.Tasks.Interaction
             _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, items)
                .Run(_interactionTaskContext.Context));
          }
+      }
 
-         //var items = LoadItems(filename);
-         // one solution would be to pass the interactionTask by interface directly to the presenter
-         //and just let the mapper directly do the work for us
-         //actually the mapper I think could only need _interactionTaskContext.InteractionTask
-         //so if it resolves just the _interactionTaskContext from the IoC, it should not need anything more.
-         //var items = InteractionTask.LoadItems<ObserverBuildingBlock>(filename).ToList();
-         //then: pass the interaction task + restraints for the drop down
-         //check if there can be more than one item in the file. actually there should not
-         //except of course of the StartValues...so we can check or not
+      public override IMoBiCommand GetRemoveCommand(IBuildingBlock objectToRemove, Module module, IBuildingBlock buildingBlock)
+      {
+         return new RemoveBuildingBlockFromModuleCommand<IBuildingBlock>(objectToRemove, module);
+      }
+
+      public override IMoBiCommand GetAddCommand(IBuildingBlock itemToAdd, Module module, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<IBuildingBlock>(itemToAdd, module);
       }
 
       private List<IBuildingBlock> loadBuildingBlock(BuildingBlockType buildingBlockType, string filename)
@@ -89,27 +88,21 @@ namespace MoBi.Presentation.Tasks.Interaction
             case BuildingBlockType.Observer:
                items.AddRange(InteractionTask.LoadItems<ObserverBuildingBlock>(filename));
                break;
+            //for the cases underneath, we could have multiple buildingBlocks being loaded
             case BuildingBlockType.MoleculeStartValues:
                items.AddRange(InteractionTask.LoadItems<MoleculeStartValuesBuildingBlock>(filename));
-               break;
+               return items;
             case BuildingBlockType.ParameterStartValues:
                items.AddRange(InteractionTask.LoadItems<ParameterStartValuesBuildingBlock>(filename));
-               break;
+               return items;
          }
 
-         return items;
+         //make this more specific
+         if (items.Count > 1)
+            throw new Exception();
+
+         return items;  
       }
 
-      //not sure what to do with those here underneath
-
-      public override IMoBiCommand GetRemoveCommand(IBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
-      {
-         throw new NotImplementedException();
-      }
-
-      public override IMoBiCommand GetAddCommand(IBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
-      {
-         throw new NotImplementedException();
-      }
    }
 }
