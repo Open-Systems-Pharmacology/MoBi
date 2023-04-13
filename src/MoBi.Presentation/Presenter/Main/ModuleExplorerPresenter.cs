@@ -198,25 +198,9 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void addModule(Module module)
       {
-         var moduleNode = _view.AddNode(_treeNodeFactory.CreateFor(module).WithIcon(ApplicationIcons.Module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
-
-         addBuildingBlockUnderNode(module.SpatialStructure, moduleNode);
-         addBuildingBlockUnderNode(module.Molecules, moduleNode);
-         addBuildingBlockUnderNode(module.Reactions, moduleNode);
-         addBuildingBlockUnderNode(module.PassiveTransports, moduleNode);
-         addBuildingBlockUnderNode(module.Observers, moduleNode);
-         addBuildingBlockUnderNode(module.EventGroups, moduleNode);
-
-         var moleculeStartValuesCollectionNode = collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);
-         var parameterStartValuesCollectionNode = collectionNodeFor(module.ParameterStartValuesCollection, MoBiRootNodeTypes.ParameterStartValuesFolder, moduleNode);
-
-         module.MoleculeStartValuesCollection.Each(bb => addBuildingBlockUnderNode(bb, moleculeStartValuesCollectionNode));
-         module.ParameterStartValuesCollection.Each(bb => addBuildingBlockUnderNode(bb, parameterStartValuesCollectionNode));
+         _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
       }
 
-      private ITreeNode collectionNodeFor<T>(IReadOnlyList<IStartValuesBuildingBlock<T>> startValueBlockCollection, RootNodeType rootNodeType, ITreeNode moduleNode) where T : class, IStartValue
-      {
-         return startValueBlockCollection.Count > 1 ? _view.AddNode(_treeNodeFactory.CreateFor(rootNodeType).Under(moduleNode)) : moduleNode;
-      }
+
    }
 }

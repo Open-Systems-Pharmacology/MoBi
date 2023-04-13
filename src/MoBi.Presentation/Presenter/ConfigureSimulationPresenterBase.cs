@@ -9,14 +9,14 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
-   public abstract class ConfigureSimulationPresenterBase<TView, TPresenter> : WizardPresenter<TView, TPresenter, ISimulationItemPresenter>
+   public abstract class ConfigureSimulationPresenterBase<TView, TPresenter> : WizardPresenter<TView, TPresenter, ISimulationConfigurationItemPresenter>
       where TPresenter : IWizardPresenter
       where TView : IWizardView, IModalView<TPresenter>
    {
       protected IMoBiContext _context;
       protected IMoBiMacroCommand _commands;
 
-      protected ConfigureSimulationPresenterBase(TView view, ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager, IDialogCreator dialogCreator, IMoBiContext context, IReadOnlyList<ISubPresenterItem> subPresenterItems)
+      protected ConfigureSimulationPresenterBase(TView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterManager, IDialogCreator dialogCreator, IMoBiContext context, IReadOnlyList<ISubPresenterItem> subPresenterItems)
          : base(view, subPresenterManager, subPresenterItems, dialogCreator)
       {
          _context = context;

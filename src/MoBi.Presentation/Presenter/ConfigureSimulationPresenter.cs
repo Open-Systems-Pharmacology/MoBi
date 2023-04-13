@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
       public SimulationConfiguration SimulationConfiguration { get; private set; }
 
       public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory)
-         : base(view, subPresenterSubjectManager, dialogCreator, context, SimulationItems.AllConfigure)
+         : base(view, subPresenterSubjectManager, dialogCreator, context, SimulationItems.All)
       {
          _diagramManagerFactory = diagramManagerFactory;
       }
@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
 
       private void edit(IMoBiSimulation simulation)
       {
-         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation));
+         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation.Configuration));
       }
    }
 }

@@ -32,7 +32,7 @@ namespace MoBi.Presentation
       protected ISimulationFactory _simulationFactory;
       protected IMoBiApplicationController _applicationController;
       protected IHeavyWorkManager _heavyWorkManager;
-      private ISubPresenterItemManager<ISimulationItemPresenter> _subPresenterManager;
+      private ISubPresenterItemManager<ISimulationConfigurationItemPresenter> _subPresenterManager;
       private IDialogCreator _dialogCreator;
       private IForbiddenNamesRetriever _forbiddenNameRetriever;
       protected IMoBiSimulation _simulation;
@@ -40,12 +40,13 @@ namespace MoBi.Presentation
       protected SimulationConfiguration _simulationConfiguration;
       private ICloneManagerForBuildingBlock _cloneManager;
       protected SimulationSettings _clonedSimulationSettings;
+      private MoBiProject _moBiProject;
       protected const string _useId = "ToUse";
 
       protected override void Context()
       {
          _view = A.Fake<ICreateSimulationView>();
-         _subPresenterManager = A.Fake<ISubPresenterItemManager<ISimulationItemPresenter>>();
+         _subPresenterManager = A.Fake<ISubPresenterItemManager<ISimulationConfigurationItemPresenter>>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _clonedSimulationSettings = new SimulationSettings();
 
@@ -69,6 +70,11 @@ namespace MoBi.Presentation
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
          _simulationConfiguration = createBuildConfiguration();
          _simulation.Configuration = _simulationConfiguration;
+         _moBiProject = new MoBiProject
+         {
+            SimulationSettings = new SimulationSettings()
+         };
+         A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
 
          A.CallTo(() => _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings)).Returns(_clonedSimulationSettings);
       }

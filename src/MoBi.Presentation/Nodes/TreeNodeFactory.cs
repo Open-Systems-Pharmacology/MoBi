@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
@@ -28,6 +29,8 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder);
       ITreeNode CreateForFavorites();
       ITreeNode CreateForUserDefined();
+      ITreeNode CreateFor(Module module);
+      ITreeNode CreateFor(ModuleConfiguration moduleConfiguration);
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -69,6 +72,32 @@ namespace MoBi.Presentation.Nodes
          return simNode;
       }
 
+      public ITreeNode CreateFor(Module module)
+      {
+         var moduleNode = createFor(module);
+         addModuleBuildingBlocks(moduleNode, module);
+         addStartValueCollections(moduleNode, module);
+
+         return moduleNode;
+      }
+
+      private void addStartValueCollections(ITreeNode moduleNode, Module module)
+      {
+         var psvCollectionNode = collectionNodeFor(module.ParameterStartValuesCollection, MoBiRootNodeTypes.ParameterStartValuesFolder, moduleNode);
+         module.ParameterStartValuesCollection.Each(psv =>
+         {
+            createAndAddNodeUnder(psvCollectionNode, psv);
+         });
+
+         var msvCollectionNode = collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);
+         module.MoleculeStartValuesCollection.Each(msv => createAndAddNodeUnder(msvCollectionNode, msv));
+      }
+
+      private ITreeNode collectionNodeFor<T>(IReadOnlyList<IStartValuesBuildingBlock<T>> startValueBlockCollection, RootNodeType rootNodeType, ITreeNode moduleNode) where T : class, IStartValue
+      {
+         return startValueBlockCollection.Count > 1 ? CreateFor(rootNodeType).Under(moduleNode) : moduleNode;
+      }
+
       public ITreeNode CreateFor(SimulationConfiguration simulationConfiguration)
       {
          var buildConfigNode = new SimulationConfigurationNode(simulationConfiguration);
@@ -76,27 +105,14 @@ namespace MoBi.Presentation.Nodes
          
          simulationConfiguration.ModuleConfigurations.Each(moduleConfiguration =>
          {
-            var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).Under(buildConfigNode);
+            var moduleConfigurationNode = CreateFor(moduleConfiguration);
 
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.SpatialStructure);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Molecules);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Reactions);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.PassiveTransports);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Observers);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.EventGroups);
-            moduleConfiguration.Module.MoleculeStartValuesCollection.Each(x =>
-            {
-               addConfigurationNodeUnder(moduleConfigurationNode,x);
-            });
-            moduleConfiguration.Module.ParameterStartValuesCollection.Each(x =>
-            {
-               addConfigurationNodeUnder(moduleConfigurationNode, x);
-            });
+            moduleConfigurationNode.Under(buildConfigNode);
          });
 
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
+         createAndAddNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
          if (simulationConfiguration.Individual != null)
-            addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Individual);
+            createAndAddNodeUnder(buildConfigNode, simulationConfiguration.Individual);
 
 
          var expressionsNode = CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder)
@@ -105,6 +121,38 @@ namespace MoBi.Presentation.Nodes
          simulationConfiguration.ExpressionProfiles.Each(x => CreateFor(x).Under(expressionsNode));
 
          return buildConfigNode;
+      }
+
+      public ITreeNode CreateFor(ModuleConfiguration moduleConfiguration)
+      {
+         var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).WithIcon(ApplicationIcons.Module);
+         var module = moduleConfiguration.Module;
+
+         addModuleBuildingBlocks(moduleConfigurationNode, module);
+         
+         if(moduleConfiguration.SelectedMoleculeStartValues != null)
+            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedMoleculeStartValues);
+         if(moduleConfiguration.SelectedParameterStartValues != null)
+            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterStartValues);
+         
+         return moduleConfigurationNode;
+      }
+
+      private void addModuleBuildingBlocks(ITreeNode rootTreeNode, Module module)
+      {
+         addBuildingBlockNodeUnder(rootTreeNode, module.SpatialStructure);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Molecules);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Reactions);
+         addBuildingBlockNodeUnder(rootTreeNode, module.PassiveTransports);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Observers);
+         addBuildingBlockNodeUnder(rootTreeNode, module.EventGroups);
+      }
+
+      private void addBuildingBlockNodeUnder(ITreeNode rootTreeNode, IBuildingBlock buildingBlock)
+      {
+         if (buildingBlock == null)
+            return;
+         createAndAddNodeUnder(rootTreeNode, buildingBlock);
       }
 
       public ITreeNode CreateFor(IBuildingBlock buildingBlock)
@@ -140,7 +188,7 @@ namespace MoBi.Presentation.Nodes
             .WithIcon(ApplicationIcons.IconByName(objectBase.Icon));
       }
 
-      private void addConfigurationNodeUnder(ITreeNode buildConfigNode, IBuildingBlock buildingBlock)
+      private void createAndAddNodeUnder(ITreeNode rootNode, IBuildingBlock buildingBlock)
       {
          // TODO this used to use buildingBlockInfo to create the tree SIMULATION_CONFIGURATION
          var statusIcon = ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
@@ -150,7 +198,7 @@ namespace MoBi.Presentation.Nodes
 
          CreateFor(buildingBlock)
             .WithIcon(statusIcon)
-            .Under(buildConfigNode);
+            .Under(rootNode);
       }
 
       public ITreeNode CreateFor(CurveChart chart)

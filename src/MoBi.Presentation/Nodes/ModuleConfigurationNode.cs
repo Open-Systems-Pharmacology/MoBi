@@ -1,5 +1,4 @@
-﻿using MoBi.Assets;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility;
 

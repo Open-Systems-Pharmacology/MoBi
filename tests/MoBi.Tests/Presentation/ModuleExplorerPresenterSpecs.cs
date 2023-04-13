@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -28,6 +29,7 @@ using OSPSuite.Presentation.Presenters.ObservedData;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Extensions;
 using TreeNodeFactory = MoBi.Presentation.Nodes.TreeNodeFactory;
 
 namespace MoBi.Presentation
@@ -223,8 +225,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _moduleNodeA = _treeNodeFactory.CreateFor(new Module().WithName("A"));
-         _moduleNodeZ = _treeNodeFactory.CreateFor(new Module().WithName("Z"));
+         _moduleNodeA = _treeNodeFactory.CreateFor(new Module().WithName("A")) as ITreeNode<Module>;
+         _moduleNodeZ = _treeNodeFactory.CreateFor(new Module().WithName("Z")) as ITreeNode<Module>;
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _spatialStructureZ = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("Z"));
          _spatialStructureRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.SpatialStructureFolder);
@@ -293,9 +295,7 @@ namespace MoBi.Presentation
          sut.Handle(new AddedEvent<ExpressionProfileBuildingBlock>(_addedObject, _project));
       }
    }
-
-
-
+   
    public class When_the_module_explorer_presenter_is_adding_the_project_to_the_tree : concern_for_ModuleExplorerPresenter
    {
       private List<ITreeNode> _allNodesAdded;
@@ -315,17 +315,27 @@ namespace MoBi.Presentation
             SpatialStructure = new MoBiSpatialStructure()
          };
 
-         _module1.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
-         _module1.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
+         _module1.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("PSV1"));
+         _module1.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("PSV2"));
 
-         _module1.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock());
+         _module1.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock().WithId("MSV"));
 
          _allNodesAdded = new List<ITreeNode>();
-         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x => { _allNodesAdded.Add(x.GetArgument<ITreeNode>(0)); });
+         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>
+         {
+            var treeNode = x.GetArgument<ITreeNode>(0);
+            flattenAndAdd(treeNode);
+         });
 
          _project.AddBuildingBlock(_observerBuildingBlock);
          _project.AddBuildingBlock(_simulationSettingsBuildingBlock);
          _project.AddModule(_module1);
+      }
+
+      private void flattenAndAdd(ITreeNode treeNode)
+      {
+         treeNode.Children.Each(flattenAndAdd);
+         _allNodesAdded.Add(treeNode);
       }
 
       protected override void Because()
