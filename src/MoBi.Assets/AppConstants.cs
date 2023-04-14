@@ -295,6 +295,10 @@ namespace MoBi.Assets
          {
             return $"Solver reports {warningsCount} Warnings";
          }
+         public static string AddBuildingBlocksToModule(string moduleName)
+         {
+            return $"Add selected building blocks to {moduleName}";
+         }
 
          public static string AddToProjectDescription(string objectType, string objectName)
          {
@@ -1077,6 +1081,9 @@ namespace MoBi.Assets
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
          public static readonly string ReloadAll = "Reload all under same settings...";
+         public static readonly string AddBuildingBlocks = "Add Building Blocks...";
+         public static readonly string LoadBuildingBlocks = "Load Building Blocks...";
+         public static readonly string LoadBuildingBlocksFromTemplate = "Load Building Blocks from Template...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1218,6 +1225,11 @@ namespace MoBi.Assets
          public static string NoEditPresenterFoundFor(IObjectBase objectToEdit)
          {
             return $"No edit presenter found for {objectToEdit.Name}. {ShouldNeverHappen}";
+         }
+
+         public static string MoreThanOneBuildingBlocks(string buildingBlockType)
+         {
+            return $"A module is allowed to have only one Building Block of type {buildingBlockType}. The file you are trying to load contains multiple.";
          }
 
          public static string FormulaInUse(IFormula formula) => $"Unable to remove Formula '{formula.Name}' still in use.";
@@ -1633,11 +1645,14 @@ namespace MoBi.Assets
          public static readonly string ExtensionModulesFolder = "Extension Modules";
          public static readonly string Module = "Module";
          public static readonly string CreateBuildingBlocks = "Create Building Blocks";
+         public static readonly string AddSelectedBuildingBlocks = "Add Selected Building Blocks";
          public static readonly string ParentPath = "Parent Path";
          public static readonly string SelectContainer = "Select Container";
          public static readonly string FirstNeighbor = "First Neighbor";
          public static readonly string SecondNeighbor = "Second Neighbor";
          public static readonly string DefaultSimulationSettings = "Default Simulation Settings";
+         public static readonly string SelectBuildingBlockType = "Select the type of Building Block you want to load to the module";
+         public static readonly string AddingBuildingBlockToModuleClarification = "The Building Block Types that are already present in the module and cannot have multiple items are not listed in the list above";
          public static readonly string SelectStartValues = "Select Start Values";
          public static readonly string NoMoleculeStartValues = "No Molecule Start Values";
          public static readonly string NoParameterStartValues = "No Parameter Start Values";
@@ -1646,6 +1661,9 @@ namespace MoBi.Assets
          public static readonly string ProjectModules = "Project Modules";
          public static readonly string ConfigureIndividualAndExpressions = "Configure Individual and Expressions";
          public static readonly string IndividualNotSelected = "Individual Not Selected";
+
+         public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
+         public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 

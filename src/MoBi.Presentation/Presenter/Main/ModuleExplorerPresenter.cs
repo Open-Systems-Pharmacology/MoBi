@@ -25,7 +25,9 @@ using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter.Main
 {
-   public interface IModuleExplorerPresenter : IExplorerPresenter, IPresenter<IModuleExplorerView>
+   public interface IModuleExplorerPresenter : IExplorerPresenter, IPresenter<IModuleExplorerView>,
+      IListener<AddedEvent>,
+      IListener<RemovedEvent>
    {
       int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
@@ -41,7 +43,8 @@ namespace MoBi.Presentation.Presenter.Main
       public ModuleExplorerPresenter(IModuleExplorerView view, IRegionResolver regionResolver, ITreeNodeFactory treeNodeFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory, IMoBiContext context, IClassificationPresenter classificationPresenter,
          IToolTipPartCreator toolTipPartCreator, IObservedDataInExplorerPresenter observedDataInExplorerPresenter,
-         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IProjectRetriever projectRetriever, IEditBuildingBlockStarter editBuildingBlockStarter) :
+         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IProjectRetriever projectRetriever,
+         IEditBuildingBlockStarter editBuildingBlockStarter) :
          base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.ModuleExplorer,
             classificationPresenter, toolTipPartCreator, multipleTreeNodeContextMenuFactory, projectRetriever)
       {
@@ -57,6 +60,9 @@ namespace MoBi.Presentation.Presenter.Main
 
          if (treeNode.TagAsObject is ClassifiableObservedData observedData)
             return ContextMenuFor(new ObservedDataViewItem(observedData.Repository));
+
+         if (treeNode.TagAsObject is Module module)
+            return ContextMenuFor(new ModuleViewItem(module));
 
          return base.ContextMenuFor(treeNode);
       }
@@ -159,7 +165,8 @@ namespace MoBi.Presentation.Presenter.Main
          return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
       }
 
-      private void addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType) where TBuildingBlock : IBuildingBlock
+      private void addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType)
+         where TBuildingBlock : IBuildingBlock
       {
          var buildingBockFolderNode = _view.NodeByType(buildingBlockFolderType);
 
@@ -196,11 +203,33 @@ namespace MoBi.Presentation.Presenter.Main
          }
       }
 
+      private void addBuildingBlockToModule(IBuildingBlock buildingBlock, Module module)
+      {
+         var moduleNode = _view.TreeView.NodeById(module.Id);
+
+         addBuildingBlockUnderNode(buildingBlock, moduleNode);
+      }
+
       private void addModule(Module module)
       {
          _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
       }
 
 
+
+      public void Handle(AddedEvent eventToHandle)
+      {
+         switch (eventToHandle.AddedObject)
+         {
+            case IBuildingBlock buildingBlock:
+               addBuildingBlockToModule(buildingBlock, eventToHandle.Parent as Module);
+               break;
+         }
+      }
+
+      public void Handle(RemovedEvent eventToHandle)
+      {
+         RemoveNodesFor(eventToHandle.RemovedObjects);
+      }
    }
 }
