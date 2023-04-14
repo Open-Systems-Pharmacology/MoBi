@@ -22,11 +22,11 @@ namespace MoBi.Core.Services
    /// </summary>
    public interface IForbiddenNamesRetriever
    {
-      IEnumerable<string> For(IMoleculeBuilder moleculeBuilder);
-      IEnumerable<string> For(IReactionBuilder moleculeBuilder);
+      IEnumerable<string> For(MoleculeBuilder moleculeBuilder);
+      IEnumerable<string> For(ReactionBuilder moleculeBuilder);
       IEnumerable<string> For(IParameter parameter);
-      IEnumerable<string> For(IObserverBuilder parameter);
-      IEnumerable<string> For(ITransportBuilder transportBuilder);
+      IEnumerable<string> For(ObserverBuilder parameter);
+      IEnumerable<string> For(TransportBuilder transportBuilder);
       IEnumerable<string> For(IContainer container);
       IEnumerable<string> For(TransporterMoleculeContainer transporterMoleculeContainer);
       IEnumerable<string> For(IModelCoreSimulation simulation);
@@ -34,13 +34,13 @@ namespace MoBi.Core.Services
    }
 
    public class ForbiddenNamesRetriever : IForbiddenNamesRetriever,
-      IVisitor<IMoleculeBuilder>,
+      IVisitor<MoleculeBuilder>,
       IVisitor<IParameter>,
-      IVisitor<IObserverBuilder>,
-      IVisitor<ITransportBuilder>,
+      IVisitor<ObserverBuilder>,
+      IVisitor<TransportBuilder>,
       IVisitor<IContainer>,
       IVisitor<TransporterMoleculeContainer>,
-      IVisitor<IReactionBuilder>,
+      IVisitor<ReactionBuilder>,
       IVisitor<IDistributedParameter>,
       IVisitor<IModelCoreSimulation>
 
@@ -53,7 +53,7 @@ namespace MoBi.Core.Services
          _context = context;
       }
 
-      public IEnumerable<string> For(IMoleculeBuilder moleculeBuilder)
+      public IEnumerable<string> For(MoleculeBuilder moleculeBuilder)
       {
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
@@ -63,7 +63,7 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      public IEnumerable<string> For(IReactionBuilder moleculeBuilder)
+      public IEnumerable<string> For(ReactionBuilder moleculeBuilder)
       {
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
@@ -80,12 +80,12 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      public IEnumerable<string> For(IObserverBuilder observerBuilder)
+      public IEnumerable<string> For(ObserverBuilder observerBuilder)
       {
          return allLocalParametersFromMoleculesInProject();
       }
 
-      public IEnumerable<string> For(ITransportBuilder transportBuilder)
+      public IEnumerable<string> For(TransportBuilder transportBuilder)
       {
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allMoleculeNamesFromProject());
@@ -123,20 +123,20 @@ namespace MoBi.Core.Services
 
       private IEnumerable<string> allObserverNamesFromProject()
       {
-         return allNamesFrom<IObserverBuildingBlock, IObserverBuilder>(_context.CurrentProject.ObserverBlockCollection);
+         return allNamesFrom<ObserverBuildingBlock, ObserverBuilder>(_context.CurrentProject.ObserverBlockCollection);
       }
 
       private IEnumerable<string> allMoleculeNamesFromProject()
       {
-         return allNamesFrom<MoleculeBuildingBlock, IMoleculeBuilder>(_context.CurrentProject.MoleculeBlockCollection);
+         return allNamesFrom<MoleculeBuildingBlock, MoleculeBuilder>(_context.CurrentProject.MoleculeBlockCollection);
       }
 
       private IEnumerable<string> allReactionNamesFromProject()
       {
-         return allNamesFrom<IMoBiReactionBuildingBlock, IReactionBuilder>(_context.CurrentProject.ReactionBlockCollection);
+         return allNamesFrom<MoBiReactionBuildingBlock, ReactionBuilder>(_context.CurrentProject.ReactionBlockCollection);
       }
 
-      private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IObjectBase
+      private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder
       {
          return buildingBlock.SelectMany(x => x.All()).Select(x => x.Name);
       }
@@ -174,7 +174,7 @@ namespace MoBi.Core.Services
       ///    This is necessary when a molecule was removed and another molecule should be renamed. It
       ///    should not be possible to rename to the removed named to prevent double definitions of StartValues
       /// </remarks>
-      private IEnumerable<string> allMoleculeNamesFromStartValues(IMoleculeBuilder moleculeBuilder)
+      private IEnumerable<string> allMoleculeNamesFromStartValues(MoleculeBuilder moleculeBuilder)
       {
          var nameHash = new HashSet<string>();
          // We need to retrieve Names from here if a removed Molecule is still in MSV
@@ -187,7 +187,7 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      private IEnumerable<MoleculeStartValue> getAllMoleculeStartValuesFromBuildingBlocksFor(IMoleculeBuilder builder)
+      private IEnumerable<MoleculeStartValue> getAllMoleculeStartValuesFromBuildingBlocksFor(MoleculeBuilder builder)
       {
          var builderName = builder.Name;
          return _context.CurrentProject.MoleculeStartValueBlockCollection
@@ -220,7 +220,7 @@ namespace MoBi.Core.Services
          return container.GetAllChildren(selector).Select(x => x.Name);
       }
 
-      public void Visit(IMoleculeBuilder moleculeBuilder)
+      public void Visit(MoleculeBuilder moleculeBuilder)
       {
          addNamesToHash(_nameHashForVisitor, For(moleculeBuilder));
       }
@@ -235,12 +235,12 @@ namespace MoBi.Core.Services
          addNamesToHash(_nameHashForVisitor, For(parameter.DowncastTo<IParameter>()));
       }
 
-      public void Visit(IObserverBuilder observerBuilder)
+      public void Visit(ObserverBuilder observerBuilder)
       {
          addNamesToHash(_nameHashForVisitor, For(observerBuilder));
       }
 
-      public void Visit(ITransportBuilder transportBuilder)
+      public void Visit(TransportBuilder transportBuilder)
       {
          addNamesToHash(_nameHashForVisitor, For(transportBuilder));
       }
@@ -255,7 +255,7 @@ namespace MoBi.Core.Services
          addNamesToHash(_nameHashForVisitor, For(transporterMoleculeContainer));
       }
 
-      public void Visit(IReactionBuilder objToVisit)
+      public void Visit(ReactionBuilder objToVisit)
       {
          addNamesToHash(_nameHashForVisitor, For(objToVisit));
       }

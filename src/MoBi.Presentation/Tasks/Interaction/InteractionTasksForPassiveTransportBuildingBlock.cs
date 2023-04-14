@@ -10,7 +10,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForPassiveTransportBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<IPassiveTransportBuildingBlock, ITransportBuilder>
+   public class InteractionTasksForPassiveTransportBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<PassiveTransportBuildingBlock, TransportBuilder>
    {
       private readonly IMoleculeListTasks _moleculeListTasks;
       private readonly IPassiveTranportBuildingBlockMergeManager _mergeIgnoreReplaceMergeManager;
@@ -19,8 +19,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public InteractionTasksForPassiveTransportBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
-         IEditTasksForBuildingBlock<IPassiveTransportBuildingBlock> editTask,
-         IInteractionTasksForBuilder<ITransportBuilder> builderTask,
+         IEditTasksForBuildingBlock<PassiveTransportBuildingBlock> editTask,
+         IInteractionTasksForBuilder<TransportBuilder> builderTask,
          IMoleculeListTasks moleculeListTasks,
          IFormulaTask formulaTask,
          IPassiveTranportBuildingBlockMergeManager mergeIgnoreReplaceMergeManager,
@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _moBiFormulaTask = moBiFormulaTask;
       }
 
-      public override IMoBiCommand Merge(IPassiveTransportBuildingBlock buildingBlockToMerge, IPassiveTransportBuildingBlock targetBuildingBlock)
+      public override IMoBiCommand Merge(PassiveTransportBuildingBlock buildingBlockToMerge, PassiveTransportBuildingBlock targetBuildingBlock)
       {
          if (targetBuildingBlock == null)
             return AddToProject(buildingBlockToMerge);
@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moBiMacroCommand;
       }
 
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(ITransportBuilder builder, IPassiveTransportBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TransportBuilder builder, PassiveTransportBuildingBlock targetBuildingBlock, string originalBuilderName = null)
       {
          var macroCommand = base.GenerateAddCommandAndUpdateFormulaReferences(builder, targetBuildingBlock);
          macroCommand.Add(_moBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, builder));

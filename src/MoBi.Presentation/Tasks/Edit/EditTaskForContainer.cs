@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (existingObjectsInParent != null)
             return existingObjectsInParent.AllNames();
 
-         var spatialStructure = _interactionTaskContext.Active<ISpatialStructure>();
+         var spatialStructure = _interactionTaskContext.Active<SpatialStructure>();
          if (spatialStructure == null)
             return Enumerable.Empty<string>();
 
@@ -45,14 +45,14 @@ namespace MoBi.Presentation.Tasks.Edit
          var fileName = _interactionTask.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, entityToSerialize.Name);
          if (fileName.IsNullOrEmpty()) return;
 
-         var tmpSpatialStructure = (IMoBiSpatialStructure) _spatialStructureFactory.Create();
+         var tmpSpatialStructure = (MoBiSpatialStructure) _spatialStructureFactory.Create();
 
          // make a backup of the parent and reset that after as there is a side effect
          // of removing the reference to parent container.
          var parent = entityToSerialize.ParentContainer;
          tmpSpatialStructure.AddTopContainer(entityToSerialize);
          entityToSerialize.ParentContainer = parent;
-         var existingSpatialStructure = _interactionTaskContext.Active<IMoBiSpatialStructure>();
+         var existingSpatialStructure = _interactionTaskContext.Active<MoBiSpatialStructure>();
          if (existingSpatialStructure != null)
          {
             var neighborhoods = existingSpatialStructure.GetConnectingNeighborhoods(new[] {entityToSerialize}, _objectPathFactory);
@@ -72,8 +72,8 @@ namespace MoBi.Presentation.Tasks.Edit
       protected override IMoBiCommand GetRenameCommandFor(IContainer container, IBuildingBlock buildingBlock, string newName, string objectType)
       {
          //when renaming a container in a spatial structure, we need to ensure that we are also renaming the path in the neighborhood
-         if (buildingBlock.IsAnImplementationOf<ISpatialStructure>() && containerCanBePartOfNeighborhoodPath(container))
-            return new RenameContainerCommand(container, newName, buildingBlock.DowncastTo<ISpatialStructure>());
+         if (buildingBlock.IsAnImplementationOf<SpatialStructure>() && containerCanBePartOfNeighborhoodPath(container))
+            return new RenameContainerCommand(container, newName, buildingBlock.DowncastTo<SpatialStructure>());
 
          return base.GetRenameCommandFor(container, buildingBlock, newName, objectType);
       }

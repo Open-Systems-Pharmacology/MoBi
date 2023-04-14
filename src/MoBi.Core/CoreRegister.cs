@@ -50,10 +50,9 @@ namespace MoBi.Core
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
             scan.ExcludeNamespaceContainingType<ProjectReporter>();
             scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
-            scan.WithConvention(new OSPSuiteRegistrationConvention());
+            scan.WithConvention(new OSPSuiteRegistrationConvention(registerConcreteType: true));
          });
 
-         container.Register<MoBiProject, MoBiProject>();
          container.Register<IMoBiContext, IOSPSuiteExecutionContext, IWorkspace, MoBiContext>(LifeStyle.Singleton);
          container.Register<OSPSuite.Core.IApplicationSettings, IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
          container.Register<IMoBiDimensionFactory, IDimensionFactory, MoBiDimensionFactory>(LifeStyle.Singleton);

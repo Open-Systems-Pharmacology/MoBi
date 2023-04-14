@@ -30,7 +30,7 @@ using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Presenters
 {
-   public class ReactionDiagramPresenter : MoBiBaseDiagramPresenter<IReactionDiagramView, IReactionDiagramPresenter, IMoBiReactionBuildingBlock>, IReactionDiagramPresenter
+   public class ReactionDiagramPresenter : MoBiBaseDiagramPresenter<IReactionDiagramView, IReactionDiagramPresenter, MoBiReactionBuildingBlock>, IReactionDiagramPresenter
    {
       private readonly IMoBiApplicationController _applicationController;
       private readonly IDiagramPopupMenuBase _moleculePopupMenu;
@@ -71,7 +71,7 @@ namespace MoBi.UI.Presenters
          return reactionNode != null;
       }
 
-      public override void Edit(IMoBiReactionBuildingBlock reactionBuildingBlock)
+      public override void Edit(MoBiReactionBuildingBlock reactionBuildingBlock)
       {
          base.Edit(reactionBuildingBlock);
          _view.GridVisible = DiagramManager.DiagramOptions.SnapGridVisible;
@@ -166,7 +166,7 @@ namespace MoBi.UI.Presenters
             promptForRemoveLinks();
       }
 
-      public void Select(IReactionBuilder reactionBuilder)
+      public void Select(ReactionBuilder reactionBuilder)
       {
          var reactionNode = reactionDiagramManager?.ReactionNodeFor(reactionBuilder);
          if (reactionNode == null) return;
@@ -208,16 +208,16 @@ namespace MoBi.UI.Presenters
 
       public void RemoveReactionNode(ReactionNode reactionNode)
       {
-         var removeCommand = _context.Resolve<RemoveCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>>();
+         var removeCommand = _context.Resolve<RemoveCommandFor<MoBiReactionBuildingBlock, ReactionBuilder>>();
          removeCommand.Parent = _model;
-         removeCommand.Child = _context.Get<IReactionBuilder>(reactionNode.Id);
+         removeCommand.Child = _context.Get<ReactionBuilder>(reactionNode.Id);
          removeCommand.Execute();
       }
 
       public override void Link(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
          getLinkProperties(node1, node2, portObject1, portObject2, out var reactionNode, out var moleculeNode, out var reactionLinkType);
-         var reactionBuilder = _context.Get<IReactionBuilder>(reactionNode.Id);
+         var reactionBuilder = _context.Get<ReactionBuilder>(reactionNode.Id);
 
          var addLinkCommand = new AddNamedPartnerUICommand(_context, _model, reactionBuilder, moleculeNode.Name, reactionLinkType);
          addLinkCommand.Execute();
@@ -236,7 +236,7 @@ namespace MoBi.UI.Presenters
 
          getLinkProperties(node1, node2, portObject1, portObject2, out reactionNode, out moleculeNode, out reactionLinkType);
 
-         var reactionBuilder = _context.Get<IReactionBuilder>(reactionNode.Id);
+         var reactionBuilder = _context.Get<ReactionBuilder>(reactionNode.Id);
 
          var removeLinkCommand = new RemoveNamedPartnerUICommand(_context, _model, reactionBuilder, moleculeNode.Name, reactionLinkType);
          removeLinkCommand.Execute();

@@ -13,27 +13,27 @@ namespace MoBi.Presentation.Tasks
    public abstract class concern_for_InteractionTasksForRootEventGroup : ContextSpecification<InteractionTasksForRootEventGroup>
    {
       protected IInteractionTaskContext _context;
-      private IEditTaskFor<IEventGroupBuilder> _editTask;
+      private IEditTaskFor<EventGroupBuilder> _editTask;
 
       protected override void Context()
       {
          _context = A.Fake<IInteractionTaskContext>();
-         _editTask = A.Fake<IEditTaskFor<IEventGroupBuilder>>();
+         _editTask = A.Fake<IEditTaskFor<EventGroupBuilder>>();
          sut = new InteractionTasksForRootEventGroup(_context, _editTask);
       }
    }
 
    internal class When_Asking_for_an_add_command : concern_for_InteractionTasksForRootEventGroup
    {
-      private IEventGroupBuildingBlock _buildingBlock;
-      private IEventGroupBuilder _eventGroupBuilder;
+      private EventGroupBuildingBlock _buildingBlock;
+      private EventGroupBuilder _eventGroupBuilder;
       private IMoBiCommand _addCommand;
 
       protected override void Context()
       {
          base.Context();
-         _buildingBlock = A.Fake<IEventGroupBuildingBlock>().WithId("BB");
-         _eventGroupBuilder = A.Fake<IEventGroupBuilder>().WithId("EGB");
+         _buildingBlock = A.Fake<EventGroupBuildingBlock>().WithId("BB");
+         _eventGroupBuilder = A.Fake<EventGroupBuilder>().WithId("EGB");
       }
 
       protected override void Because()
@@ -50,13 +50,13 @@ namespace MoBi.Presentation.Tasks
 
    public class When_creating_the_application_event_group : concern_for_InteractionTasksForRootEventGroup
    {
-      private IEventGroupBuildingBlock _eventGroupBuilder;
+      private EventGroupBuildingBlock _eventGroupBuilder;
 
       protected override void Context()
       {
          base.Context();
          _eventGroupBuilder = new EventGroupBuildingBlock();
-         A.CallTo(() => _context.Context.Create<IEventGroupBuilder>()).Returns(new EventGroupBuilder());
+         A.CallTo(() => _context.Context.Create<EventGroupBuilder>()).Returns(new EventGroupBuilder());
       }
       protected override void Because()
       {

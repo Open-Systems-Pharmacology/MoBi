@@ -1893,7 +1893,7 @@ namespace MoBi.Assets
             return $"{objectName} should be greater or equal than 0";
          }
 
-         public static string RenameReaction(string oldName, string newName, IReactionBuildingBlock buildingBlock)
+         public static string RenameReaction(string oldName, string newName, ReactionBuildingBlock buildingBlock)
          {
             return string.Format("'{2}' already contains a different reaction named '{0}'. Renamed to '{1}'", oldName, newName, buildingBlock.Name);
          }

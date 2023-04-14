@@ -6,6 +6,6 @@ namespace MoBi.Presentation.DTO
    public class StartValuesDTO : ObjectBaseDTO
    {
       public MoleculeBuildingBlock Molecules { get; set; }
-      public IMoBiSpatialStructure SpatialStructure { get; set; }
+      public MoBiSpatialStructure SpatialStructure { get; set; }
    }
 }

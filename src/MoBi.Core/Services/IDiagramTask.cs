@@ -14,7 +14,7 @@ namespace MoBi.Core.Services
       ///    <paramref name="sourceBuildingBlock" />
       /// </summary>
       /// <returns>The command used to move the nodes</returns>
-      ICommand<IMoBiContext> MoveDiagramNodes(IMoBiReactionBuildingBlock sourceBuildingBlock, IMoBiReactionBuildingBlock targetBuildingBlock, IReactionBuilder builder, string builderOriginalName);
+      ICommand<IMoBiContext> MoveDiagramNodes(MoBiReactionBuildingBlock sourceBuildingBlock, MoBiReactionBuildingBlock targetBuildingBlock, ReactionBuilder builder, string builderOriginalName);
 
       void RenameObjectBase(IObjectBase objectBase, IDiagramModel model, Predicate<string> mustHandleExisting);
       void ApplyLayoutTemplate(IContainerBase containerBase, string diagramTemplateXmlFilePath, IDiagramModel model, Action refreshFromDiagramOptions, bool recursive);

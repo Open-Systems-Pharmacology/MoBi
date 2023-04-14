@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   public class EditMoleculeBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditMoleculesBuildingBlockView, IEditMoleculeBuildingBlockPresenter, MoleculeBuildingBlock, IMoleculeBuilder>,
+   public class EditMoleculeBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditMoleculesBuildingBlockView, IEditMoleculeBuildingBlockPresenter, MoleculeBuildingBlock, MoleculeBuilder>,
       IEditMoleculeBuildingBlockPresenter
    {
       private readonly IMoleculeListPresenter _moleculeListPresenter;
@@ -89,14 +89,14 @@ namespace MoBi.Presentation.Presenter
       {
          switch (objectBase)
          {
-            case IMoleculeBuilder moleculeBuilder:
+            case MoleculeBuilder moleculeBuilder:
                editPresenter(moleculeBuilder, _editMoleculeBuilderPresenter, parameter);
                return;
             case TransporterMoleculeContainer transporterMoleculeContainer:
                editPresenter(transporterMoleculeContainer, _editTransporterMoleculeContainerPresenter, parameter);
                return;
 
-            case ITransportBuilder transportBuilder:
+            case TransportBuilder transportBuilder:
                editPresenter(transportBuilder, _editTransportBuilderPresenter, parameter);
                return;
 
@@ -127,15 +127,15 @@ namespace MoBi.Presentation.Presenter
          setupEditPresenterFor(parentObject, parameter);
       }
 
-      protected override void SelectBuilder(IMoleculeBuilder builder)
+      protected override void SelectBuilder(MoleculeBuilder builder)
       {
          setupEditPresenterFor(builder);
       }
 
       private bool shouldHandleType(IObjectBase selectedEntity)
       {
-         return selectedEntity.IsAnImplementationOf<IMoleculeBuilder>()
-                || selectedEntity.IsAnImplementationOf<ITransportBuilder>()
+         return selectedEntity.IsAnImplementationOf<MoleculeBuilder>()
+                || selectedEntity.IsAnImplementationOf<TransportBuilder>()
                 || selectedEntity.IsAnImplementationOf<TransporterMoleculeContainer>()
                 || selectedEntity.IsAnImplementationOf<InteractionContainer>();
       }

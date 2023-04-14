@@ -86,7 +86,7 @@ namespace MoBi.Presentation
          _editPresenter = A.Fake<IEditMoleculeBuildingBlockPresenter>();
          _commandCollector = A.Fake<ICommandCollector>();
          A.CallTo(() => _container.Resolve<IEditMoleculeBuildingBlockPresenter>()).Returns(_editPresenter);
-         _selectedObject = A.Fake<IMoleculeBuilder>();
+         _selectedObject = A.Fake<MoleculeBuilder>();
       }
 
       protected override void Because()

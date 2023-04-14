@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_ChangeMoleculeTypeCommandSpecs : ContextSpecification<ChangeMoleculeTypeCommand>
    {
-      protected IMoleculeBuilder _moleculeBuilder;
+      protected MoleculeBuilder _moleculeBuilder;
       protected QuantityType _newType = QuantityType.Enzyme;
       private readonly QuantityType _oldType = QuantityType.Drug;
       private IBuildingBlock _buildingBlock;

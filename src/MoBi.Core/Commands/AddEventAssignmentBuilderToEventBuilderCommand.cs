@@ -4,26 +4,26 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddEventAssignmentBuilderToEventBuilderCommand:AddObjectBaseCommand<IEventAssignmentBuilder,IEventBuilder>
+   public class AddEventAssignmentBuilderToEventBuilderCommand:AddObjectBaseCommand<EventAssignmentBuilder,EventBuilder>
    {
-      public AddEventAssignmentBuilderToEventBuilderCommand(IEventBuilder parent, IEventAssignmentBuilder itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
+      public AddEventAssignmentBuilderToEventBuilderCommand(EventBuilder parent, EventAssignmentBuilder itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
       {
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new RemoveEventAssigmentBuilderFromEventBuilderCommand(_parent,_itemToAdd,_buildingBlock).AsInverseFor(this);
+         return new RemoveEventAssignmentBuilderFromEventBuilderCommand(_parent,_itemToAdd,_buildingBlock).AsInverseFor(this);
       }
 
-      protected override void AddTo(IEventAssignmentBuilder child, IEventBuilder parent, IMoBiContext context)
+      protected override void AddTo(EventAssignmentBuilder child, EventBuilder parent, IMoBiContext context)
       {
          parent.AddAssignment(child);
       }
    }
 
-   public class RemoveEventAssigmentBuilderFromEventBuilderCommand : RemoveObjectBaseCommand<IEventAssignmentBuilder,IEventBuilder>
+   public class RemoveEventAssignmentBuilderFromEventBuilderCommand : RemoveObjectBaseCommand<EventAssignmentBuilder,EventBuilder>
    {
-      public RemoveEventAssigmentBuilderFromEventBuilderCommand(IEventBuilder parent, IEventAssignmentBuilder itemToRemove, IBuildingBlock buildingBlock)
+      public RemoveEventAssignmentBuilderFromEventBuilderCommand(EventBuilder parent, EventAssignmentBuilder itemToRemove, IBuildingBlock buildingBlock)
          : base(parent, itemToRemove, buildingBlock)
       {
       }
@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          return new AddEventAssignmentBuilderToEventBuilderCommand(_parent,_itemToRemove,_buildingBlock).AsInverseFor(this);
       }
      
-      protected override void RemoveFrom(IEventAssignmentBuilder childToRemove, IEventBuilder parent, IMoBiContext context)
+      protected override void RemoveFrom(EventAssignmentBuilder childToRemove, EventBuilder parent, IMoBiContext context)
       {
          parent.RemoveAssignment(childToRemove);
       }

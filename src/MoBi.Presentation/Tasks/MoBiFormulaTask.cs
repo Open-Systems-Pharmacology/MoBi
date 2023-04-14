@@ -91,13 +91,13 @@ namespace MoBi.Presentation.Tasks
          if (usingObject == null)
             return string.Empty;
 
-         if (usingObject.IsAnImplementationOf<ITransportBuilder>())
+         if (usingObject.IsAnImplementationOf<TransportBuilder>())
             return AppConstants.Captions.AmountRightHandSide;
 
          if (usingObject.IsAnImplementationOf<IParameter>() && isRHS)
             return AppConstants.Captions.ParameterRightHandSide(usingObject.Name);
 
-         if (usingObject.IsAnImplementationOf<IReactionBuilder>())
+         if (usingObject.IsAnImplementationOf<ReactionBuilder>())
             return reactionMode == ReactionDimensionMode.AmountBased ? AppConstants.Captions.AmountRightHandSide : AppConstants.Captions.ConcentrationRightHandSide;
 
          return string.Empty;
@@ -260,7 +260,7 @@ namespace MoBi.Presentation.Tasks
          return CreateNewFormula(typeof(TFormula), formulaDimension).DowncastTo<TFormula>();
       }
 
-      public IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, IDistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock)
+      public IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, DistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock)
       {
          _context.Register(newDistributedFormula);
          _context.Register(distributedParameter.Formula);

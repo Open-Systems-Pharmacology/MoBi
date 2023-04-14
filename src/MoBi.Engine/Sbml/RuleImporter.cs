@@ -102,9 +102,9 @@ namespace MoBi.Engine.Sbml
         /// <summary>
         ///     Creates a reaction product with the default stoichiometry.
         /// </summary>
-        private static IReactionPartnerBuilder createProduct(string molculeName)
+        private static ReactionPartnerBuilder createProduct(string molculeName)
         {
-            IReactionPartnerBuilder productBuilder = new ReactionPartnerBuilder
+            ReactionPartnerBuilder productBuilder = new ReactionPartnerBuilder
             {
                 MoleculeName = molculeName
                 
@@ -120,7 +120,7 @@ namespace MoBi.Engine.Sbml
         {
             var formula = _astHandler.Parse(rule.getMath(), rule.getVariable(), true, _sbmlProject,_sbmlInformation);
             if (formula == null) return;
-            var reactionBuilder = ObjectBaseFactory.Create<IReactionBuilder>()
+            var reactionBuilder = ObjectBaseFactory.Create<ReactionBuilder>()
                 .WithName(SBMLConstants.RATE_RULE + rule.getMetaId())
                 .WithFormula(formula);
 
@@ -132,7 +132,7 @@ namespace MoBi.Engine.Sbml
             {
                 rbb = _reactionBuildingBlockFactory.Create()
                     .WithName(SBMLConstants.SBML_REACTION_BB);
-               _context.AddToHistory(new AddBuildingBlockCommand<IMoBiReactionBuildingBlock>(rbb));
+               _context.AddToHistory(new AddBuildingBlockCommand<MoBiReactionBuildingBlock>(rbb));
             }
             rbb.FormulaCache.Add(formula);
             rbb.Add(reactionBuilder);

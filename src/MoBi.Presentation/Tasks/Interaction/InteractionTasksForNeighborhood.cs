@@ -21,9 +21,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
       }
 
-      private IMoBiSpatialStructure getSpatialStructure()
+      private MoBiSpatialStructure getSpatialStructure()
       {
-         return _interactionTaskContext.Active<IMoBiSpatialStructure>();
+         return _interactionTaskContext.Active<MoBiSpatialStructure>();
       }
 
       public IMoBiCommand Add(IContainer firstNeighbor, IContainer secondNeighbor)
@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          base.PerformPostAddActions(newNeighborhood, parent, buildingBlockToAddTo);
          //this should be a spatial structure by construction but better be safe
-         var spatialStructure = buildingBlockToAddTo as ISpatialStructure;
+         var spatialStructure = buildingBlockToAddTo as SpatialStructure;
          if (spatialStructure == null) return;
 
          //let's update the references for the neighbors 

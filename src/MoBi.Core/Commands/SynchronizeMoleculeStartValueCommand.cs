@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
    public class SynchronizeMoleculeStartValueCommand : MoBiReversibleCommand
    {
       private IQuantity _quantity;
-      private IMoleculeAmount _moleculeAmount;
+      private MoleculeAmount _moleculeAmount;
       private readonly MoleculeStartValue _moleculeStartValue;
       private readonly string _quantityId;
 
@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
          _quantity = quantity;
          _quantityId = quantity.Id;
          _moleculeStartValue = moleculeStartValue;
-         _moleculeAmount = quantity as IMoleculeAmount ?? quantity.ParentContainer as IMoleculeAmount;
+         _moleculeAmount = quantity as MoleculeAmount ?? quantity.ParentContainer as MoleculeAmount;
       }
 
       protected override void ExecuteWith(IMoBiContext context)

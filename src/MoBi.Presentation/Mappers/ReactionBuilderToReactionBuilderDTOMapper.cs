@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IReactionBuilderToReactionBuilderDTOMapper : IMapper<IReactionBuilder, ReactionBuilderDTO>
+   public interface IReactionBuilderToReactionBuilderDTOMapper : IMapper<ReactionBuilder, ReactionBuilderDTO>
    {
    }
 
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
          _stoichiometricStringCreator = stoichiometricStringCreator;
       }
 
-      public ReactionBuilderDTO MapFrom(IReactionBuilder reactionBuilder)
+      public ReactionBuilderDTO MapFrom(ReactionBuilder reactionBuilder)
       {
          var dto = new ReactionBuilderDTO(reactionBuilder);
          MapProperties(reactionBuilder, dto);
@@ -40,13 +40,13 @@ namespace MoBi.Presentation.Mappers
       }
    }
 
-   public interface IReactionPartnerBuilderToDTOReactionBuilderPartnerMapper : IMapper<IReactionPartnerBuilder, ReactionPartnerBuilderDTO>
+   public interface IReactionPartnerBuilderToDTOReactionBuilderPartnerMapper : IMapper<ReactionPartnerBuilder, ReactionPartnerBuilderDTO>
    {
    }
 
    internal class ReactionPartnerBuilderToDTOReactionBuilderPartnerMapper : IReactionPartnerBuilderToDTOReactionBuilderPartnerMapper
    {
-      public ReactionPartnerBuilderDTO MapFrom(IReactionPartnerBuilder reactionPartnerBuilder)
+      public ReactionPartnerBuilderDTO MapFrom(ReactionPartnerBuilder reactionPartnerBuilder)
       {
          return new ReactionPartnerBuilderDTO(reactionPartnerBuilder);
       }

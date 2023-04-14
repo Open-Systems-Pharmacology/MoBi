@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(SimulationConfiguration simulationConfiguration);
       ITreeNode CreateFor(IBuildingBlock buildingBlock);
       ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock);
-      ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder);
+      ITreeNode CreateFor(MoleculeBuilder moleculeBuilder);
       ITreeNode CreateForFavorites();
       ITreeNode CreateForUserDefined();
       ITreeNode CreateFor(Module module);
@@ -176,7 +176,7 @@ namespace MoBi.Presentation.Nodes
          return moleculeBuildingBlockNode;
       }
 
-      public ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder)
+      public ITreeNode CreateFor(MoleculeBuilder moleculeBuilder)
       {
          return createFor(moleculeBuilder);
       }

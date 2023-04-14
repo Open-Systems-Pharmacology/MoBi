@@ -8,7 +8,7 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IObserverBuilderToObjectBaseSummaryDTOMapper : IMapper<IObserverBuilder, ObjectBaseSummaryDTO>
+   public interface IObserverBuilderToObjectBaseSummaryDTOMapper : IMapper<ObserverBuilder, ObjectBaseSummaryDTO>
    {
 
    }
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
          _objectTypeResolver = objectTypeResolver;
       }
 
-      public ObjectBaseSummaryDTO MapFrom(IObserverBuilder observerBuilder)
+      public ObjectBaseSummaryDTO MapFrom(ObserverBuilder observerBuilder)
       {
          var dto = new ObjectBaseSummaryDTO
          {

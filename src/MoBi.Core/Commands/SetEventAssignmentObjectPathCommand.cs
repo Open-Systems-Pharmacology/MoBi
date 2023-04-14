@@ -10,12 +10,12 @@ namespace MoBi.Core.Commands
 {
    public class SetEventAssignmentObjectPathCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
-      private IEventAssignmentBuilder _assignment;
+      private EventAssignmentBuilder _assignment;
       private readonly FormulaUsablePath _oldObjectPath;
       private readonly FormulaUsablePath _newObjectPath;
       private readonly string _assignmentId;
 
-      public SetEventAssignmentObjectPathCommand(IEventAssignmentBuilder assignment, FormulaUsablePath newObjectPath, IBuildingBlock buildingBlock)
+      public SetEventAssignmentObjectPathCommand(EventAssignmentBuilder assignment, FormulaUsablePath newObjectPath, IBuildingBlock buildingBlock)
          : base(buildingBlock)
       {
          _assignment = assignment;
@@ -51,7 +51,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _assignment = context.Get<IEventAssignmentBuilder>(_assignmentId);
+         _assignment = context.Get<EventAssignmentBuilder>(_assignmentId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

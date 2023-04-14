@@ -21,9 +21,9 @@ namespace MoBi.Presentation
       private IEditEventBuilderView _view;
       private IEventBuilderToEventBuilderDTOMapper _eventBuilderMapper;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
-      private IEditTaskFor<IEventBuilder> _eventBuilderTasks;
+      private IEditTaskFor<EventBuilder> _eventBuilderTasks;
       private IEditParametersInContainerPresenter _parameterPresenter;
-      private IInteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder> _assingmentBuilderTasks;
+      private IInteractionTasksForChildren<EventBuilder, EventAssignmentBuilder> _assingmentBuilderTasks;
       private IEditExplicitFormulaPresenter _formulaPresenter;
       protected IMoBiContext _context;
       private ISelectReferenceAtEventPresenter _selectReferencePresenter;
@@ -35,9 +35,9 @@ namespace MoBi.Presentation
          _view = A.Fake<IEditEventBuilderView>();
          _eventBuilderMapper=A.Fake<IEventBuilderToEventBuilderDTOMapper>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _eventBuilderTasks = A.Fake<IEditTaskFor<IEventBuilder>>();
+         _eventBuilderTasks = A.Fake<IEditTaskFor<EventBuilder>>();
          _parameterPresenter = A.Fake<IEditParametersInContainerPresenter>();
-         _assingmentBuilderTasks = A.Fake<IInteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder>>();
+         _assingmentBuilderTasks = A.Fake<IInteractionTasksForChildren<EventBuilder, EventAssignmentBuilder>>();
          _formulaPresenter = A.Fake<IEditExplicitFormulaPresenter>();
          _context = A.Fake<IMoBiContext>();
          _selectReferencePresenter = A.Fake<ISelectReferenceAtEventPresenter>();
@@ -61,7 +61,7 @@ namespace MoBi.Presentation
          _assignmentDTO = new EventAssignmentBuilderDTO(new EventAssignmentBuilder().WithId("AA"));
          _formulaDTO =new FormulaBuilderDTO(new ExplicitFormula().WithId("B"));
          A.CallTo(() => _context.Get<ExplicitFormula>(A<string>._)).Returns(A.Fake<ExplicitFormula>());
-         A.CallTo(() => _context.Get<IEventAssignmentBuilder>(A<string>._)).Returns(A.Fake<IEventAssignmentBuilder>());
+         A.CallTo(() => _context.Get<EventAssignmentBuilder>(A<string>._)).Returns(A.Fake<EventAssignmentBuilder>());
       }
 
       protected override void Because()
@@ -79,7 +79,7 @@ namespace MoBi.Presentation
       public void should_retrieve_domain_objects()
       {
          A.CallTo(() => _context.Get<ExplicitFormula>(_formulaDTO.Id)).MustHaveHappened();
-         A.CallTo(() => _context.Get<IEventAssignmentBuilder>(_assignmentDTO.Id)).MustHaveHappened();
+         A.CallTo(() => _context.Get<EventAssignmentBuilder>(_assignmentDTO.Id)).MustHaveHappened();
       }
    }
 }	

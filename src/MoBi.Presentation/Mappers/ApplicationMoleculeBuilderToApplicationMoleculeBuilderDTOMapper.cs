@@ -4,7 +4,7 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper : IMapper<IApplicationMoleculeBuilder, ApplicationMoleculeBuilderDTO>
+   public interface IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper : IMapper<ApplicationMoleculeBuilder, ApplicationMoleculeBuilderDTO>
    {
    }
 
@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Mappers
          _formulaBuilderToDTOFormulaMapper = formulaBuilderToDTOFormulaMapper;
       }
 
-      public ApplicationMoleculeBuilderDTO MapFrom(IApplicationMoleculeBuilder applicationMoleculeBuilder)
+      public ApplicationMoleculeBuilderDTO MapFrom(ApplicationMoleculeBuilder applicationMoleculeBuilder)
       {
          var dto = Map(new ApplicationMoleculeBuilderDTO(applicationMoleculeBuilder));
          dto.RelativeContainerPath = applicationMoleculeBuilder.RelativeContainerPath == null ? string.Empty : applicationMoleculeBuilder.RelativeContainerPath.PathAsString;

@@ -24,7 +24,7 @@ namespace MoBi.Core.Services
       /// <param name="simulation">Simulation containing the <paramref name="moleculeAmount" /> to update</param>
       /// <param name="moleculeAmount">Molecule amount whose scale factor will be updated</param>
       /// <param name="newScaleDivisor">Scale factor value to set in the molecule amount</param>
-      IMoBiCommand UpdateScaleDivisor(IMoBiSimulation simulation, IMoleculeAmount moleculeAmount, double newScaleDivisor);
+      IMoBiCommand UpdateScaleDivisor(IMoBiSimulation simulation, MoleculeAmount moleculeAmount, double newScaleDivisor);
    }
 
    public class MoleculeAmountTask : IMoleculeAmountTask
@@ -41,7 +41,7 @@ namespace MoBi.Core.Services
          return new UpdateMoleculeAmountScaleDivisorsInSimulationCommand(scaleDivisors, simulation).Run(_context);
       }
 
-      public IMoBiCommand UpdateScaleDivisor(IMoBiSimulation simulation, IMoleculeAmount moleculeAmount, double newScaleDivisor)
+      public IMoBiCommand UpdateScaleDivisor(IMoBiSimulation simulation, MoleculeAmount moleculeAmount, double newScaleDivisor)
       {
          return new UpdateMoleculeAmountScaleDivisorInSimulationCommand(moleculeAmount, newScaleDivisor, simulation).Run(_context);
       }

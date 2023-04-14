@@ -16,9 +16,9 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_AddReactionPartnerToEductCollection : ContextSpecification<AddReactionPartnerToEductCollection>
    {
-      protected IReactionBuilder _reaction;
-      private IMoBiReactionBuildingBlock _reactionBuildingBlock;
-      private IReactionPartnerBuilder _reactionPartner;
+      protected ReactionBuilder _reaction;
+      private MoBiReactionBuildingBlock _reactionBuildingBlock;
+      private ReactionPartnerBuilder _reactionPartner;
       private IMoBiContext _context;
       protected IReactionDimensionRetriever _dimensionRetriever;
       protected ExplicitFormula _kinetic;
@@ -29,7 +29,7 @@ namespace MoBi.Core.Commands
          _moleculeDimension= A.Fake<IDimension>();
          _kinetic = new ExplicitFormula();
          _reaction = new ReactionBuilder {Formula = _kinetic};
-         _reactionBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>();
+         _reactionBuildingBlock = A.Fake<MoBiReactionBuildingBlock>();
          _reactionBuildingBlock.DiagramManager= A.Fake<IMoBiReactionDiagramManager>();
          _reactionPartner = new ReactionPartnerBuilder("A", 1);
          sut = new AddReactionPartnerToEductCollection(_reactionBuildingBlock, _reactionPartner, _reaction);

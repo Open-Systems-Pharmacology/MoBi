@@ -6,12 +6,12 @@ namespace MoBi.Core.Services
 {
    public interface IMoleculeResolver
    {
-      IMoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, ISpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
+      MoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
    }
 
    public class MoleculeResolver : IMoleculeResolver
    {
-      private static bool canResolvePhysicalContainer(ObjectPath containerPath, ISpatialStructure spatialStructure)
+      private static bool canResolvePhysicalContainer(ObjectPath containerPath, SpatialStructure spatialStructure)
       {
          return spatialStructure
             .Select(containerPath.TryResolve<IContainer>)
@@ -23,7 +23,7 @@ namespace MoBi.Core.Services
          return moleculeBuildingBlock[moleculeName] != null;
       }
 
-      public IMoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, ISpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock)
+      public MoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock)
       {
          if (!canResolveMolecule(moleculeBuildingBlock, moleculeName) || !canResolvePhysicalContainer(containerPath, spatialStructure))
             return null;

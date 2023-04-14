@@ -7,6 +7,7 @@ using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Core.Domain.Model;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -14,11 +15,17 @@ namespace MoBi.Presentation.Tasks
    {
       private IInteractionTaskContext _interactionContext;
       private IEditTaskFor<NeighborhoodBuilder> _editTask;
+      private MoBiSpatialStructure _spatialStructure;
 
       protected override void Context()
       {
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container().WithName("Neighborhoods")
+         };
          _interactionContext = A.Fake<IInteractionTaskContext>();
          _editTask = A.Fake<IEditTaskFor<NeighborhoodBuilder>>();
+         A.CallTo(() => _interactionContext.Active<MoBiSpatialStructure>()).Returns(_spatialStructure);
          sut = new InteractionTasksForNeighborhood(_interactionContext, _editTask);
       }
    }
@@ -38,7 +45,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.CreateRemoveCommand(_neighborhoodBuilder, A.Fake<ISpatialStructure>());
+         _command = sut.CreateRemoveCommand(_neighborhoodBuilder, A.Fake<SpatialStructure>());
       }
 
       [Observation]

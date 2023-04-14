@@ -46,9 +46,9 @@ namespace MoBi.Core.Helper
    /// <summary>
    ///    Encapsulates read and write access to DefaultStartFormula on a molecule builder
    /// </summary>
-   public class DefaultStartFormulaDecoder : FormulaDecoder<IMoleculeBuilder>
+   public class DefaultStartFormulaDecoder : FormulaDecoder<MoleculeBuilder>
    {
-      public override string PropertyName { get; } = MoBiReflectionHelper.PropertyName<IMoleculeBuilder>(x => x.DefaultStartFormula);
+      public override string PropertyName { get; } = MoBiReflectionHelper.PropertyName<MoleculeBuilder>(x => x.DefaultStartFormula);
 
       public DefaultStartFormulaDecoder()
       {

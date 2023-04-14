@@ -23,7 +23,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 namespace MoBi.Presentation.Presenter
 {
    public interface IObserverBuilderListPresenter : IPresenterWithContextMenu<IViewItem>, 
-      IEditPresenter<IObserverBuildingBlock>, 
+      IEditPresenter<ObserverBuildingBlock>, 
       IListener<AddedEvent>, 
       IListener<RemovedEvent>, 
       IListener<EntitySelectedEvent>,
@@ -36,10 +36,10 @@ namespace MoBi.Presentation.Presenter
       void Select(ObserverBuilderDTO dto);
    }
 
-   public abstract class ObserverBuilderListPresenterBase : AbstractEditPresenter<IObserverListView, IObserverBuilderListPresenter, IObserverBuildingBlock>, IObserverBuilderListPresenter
+   public abstract class ObserverBuilderListPresenterBase : AbstractEditPresenter<IObserverListView, IObserverBuilderListPresenter, ObserverBuildingBlock>, IObserverBuilderListPresenter
    {
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
-      private IObserverBuildingBlock _buildingBlock;
+      private ObserverBuildingBlock _buildingBlock;
       private readonly IMoBiDimensionFactory _dimensionFactory;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IMoBiContext _context;
@@ -78,7 +78,7 @@ namespace MoBi.Presentation.Presenter
       {
          var newFormula = _buildingBlock.FormulaCache[newValue.Id];
          var oldFormula = _buildingBlock.FormulaCache[oldValue.Id];
-         var observerBuilder = _context.Get<IObserverBuilder>(dtoObserverBuilder.Id);
+         var observerBuilder = _context.Get<ObserverBuilder>(dtoObserverBuilder.Id);
          AddCommand(new EditObjectBasePropertyInBuildingBlockCommand("Formula", newFormula, oldFormula, observerBuilder, BuildingBlock).Run(_context)); //<IFormula>
       }
 
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromViewFor<T>(ObjectBaseDTO dtoObserverBuilder, string propertyName, T newValue, T oldValue)
       {
-         var observerBuilder = _context.Get<IObserverBuilder>(dtoObserverBuilder.Id);
+         var observerBuilder = _context.Get<ObserverBuilder>(dtoObserverBuilder.Id);
          AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, observerBuilder, BuildingBlock).Run(_context)); // <T>
       }
 
@@ -95,14 +95,14 @@ namespace MoBi.Presentation.Presenter
          Parent.Select(dto);
       }
 
-      public override void Edit(IObserverBuildingBlock objectToEdit)
+      public override void Edit(ObserverBuildingBlock objectToEdit)
       {
          _buildingBlock = objectToEdit;
          BuildingBlock = _buildingBlock;
          _view.Show(GetListToShow(objectToEdit).ToList());
       }
 
-      protected abstract IEnumerable<ObserverBuilderDTO> GetListToShow(IObserverBuildingBlock observerBuildingBlock);
+      protected abstract IEnumerable<ObserverBuilderDTO> GetListToShow(ObserverBuildingBlock observerBuildingBlock);
 
       public override object Subject
       {
@@ -149,14 +149,14 @@ namespace MoBi.Presentation.Presenter
       public void Handle(EntitySelectedEvent eventToHandle)
       {
          if (_buildingBlock == null) return;
-         var selectedObserver = eventToHandle.ObjectBase as IObserverBuilder;
+         var selectedObserver = eventToHandle.ObjectBase as ObserverBuilder;
          if (selectedObserver != null && ShouldShow(selectedObserver))
          {
             SelectObserver(selectedObserver);
          }
       }
 
-      protected abstract void SelectObserver(IObserverBuilder selectedObserver);
+      protected abstract void SelectObserver(ObserverBuilder selectedObserver);
    }
 
    public interface IAmountObserverBuilderListPresenter : IObserverBuilderListPresenter
@@ -178,25 +178,25 @@ namespace MoBi.Presentation.Presenter
          return new AmountObserverBuilderRootItem();
       }
 
-      protected override IEnumerable<ObserverBuilderDTO> GetListToShow(IObserverBuildingBlock observerBuildingBlock)
+      protected override IEnumerable<ObserverBuilderDTO> GetListToShow(ObserverBuildingBlock observerBuildingBlock)
       {
          return observerBuildingBlock.AmountObserverBuilders.MapAllUsing(_amountObserverBuilderToDTOAmountObserverBuilderMapper);
       }
 
       protected override bool ShouldShow(IObjectBase addedObject)
       {
-         return addedObject.IsAnImplementationOf<IAmountObserverBuilder>();
+         return addedObject.IsAnImplementationOf<AmountObserverBuilder>();
       }
 
-      protected override void SelectObserver(IObserverBuilder selectedObserver)
+      protected override void SelectObserver(ObserverBuilder selectedObserver)
       {
-         var amountObserver = (IAmountObserverBuilder) selectedObserver;
+         var amountObserver = (AmountObserverBuilder) selectedObserver;
          if (amountObserver == null) return;
          Select(_amountObserverBuilderToDTOAmountObserverBuilderMapper.MapFrom(amountObserver));
       }
    }
 
-   public class AmountObserverBuilderRootItem : IRootViewItem<IAmountObserverBuilder>
+   public class AmountObserverBuilderRootItem : IRootViewItem<AmountObserverBuilder>
    {
    }
 
@@ -219,17 +219,17 @@ namespace MoBi.Presentation.Presenter
          return new ContainerObserverBuilderRootItem();
       }
 
-      protected override IEnumerable<ObserverBuilderDTO> GetListToShow(IObserverBuildingBlock observerBuildingBlock)
+      protected override IEnumerable<ObserverBuilderDTO> GetListToShow(ObserverBuildingBlock observerBuildingBlock)
       {
          return observerBuildingBlock.ContainerObserverBuilders.MapAllUsing(_containerObserverBuilderToDTOContainerObserverBuilderMapper);
       }
 
       protected override bool ShouldShow(IObjectBase addedObject)
       {
-         return addedObject.IsAnImplementationOf<IContainerObserverBuilder>();
+         return addedObject.IsAnImplementationOf<ContainerObserverBuilder>();
       }
 
-      protected override void SelectObserver(IObserverBuilder selectedObserver)
+      protected override void SelectObserver(ObserverBuilder selectedObserver)
       {
          var containerObserver = selectedObserver as ContainerObserverBuilder;
          if (containerObserver == null) return;
@@ -237,11 +237,11 @@ namespace MoBi.Presentation.Presenter
       }
    }
 
-   public class ContainerObserverBuilderRootItem : IRootViewItem<IContainerObserverBuilder>
+   public class ContainerObserverBuilderRootItem : IRootViewItem<ContainerObserverBuilder>
    {
    }
 
-   public class NeighborhoodBuilderRootItem : IRootViewItem<IAmountObserverBuilder>
+   public class NeighborhoodBuilderRootItem : IRootViewItem<AmountObserverBuilder>
    {
    }
 }

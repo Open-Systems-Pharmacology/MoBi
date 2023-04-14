@@ -18,7 +18,7 @@ namespace MoBi.Core.SBML
       protected ISimulationFactory _simulationFactory;
       protected IModelConstructor _modelConstructor;
       protected ISimulationSettingsFactory _simulationSettingsFactory;
-      protected IObserverBuilder _observerBuilder;
+      protected ObserverBuilder _observerBuilder;
 
       protected override void Context()
       {
@@ -26,7 +26,7 @@ namespace MoBi.Core.SBML
          _simulationFactory = IoC.Resolve<ISimulationFactory>();
          _modelConstructor = IoC.Resolve<IModelConstructor>();
          _simulationSettingsFactory = IoC.Resolve<ISimulationSettingsFactory>();
-         _observerBuilder = IoC.Resolve<IObserverBuilder>();
+         _observerBuilder = IoC.Resolve<ObserverBuilder>();
          _fileName = Helper.TestFileFullPath("tiny_example_12.xml");
       }
 
@@ -36,7 +36,7 @@ namespace MoBi.Core.SBML
          var simulation = _simulationFactory.Create();
          var moduleConfiguration = new ModuleConfiguration(new Module
          {
-            Observers = IoC.Resolve<IMoBiContext>().Create<IObserverBuildingBlock>(),
+            Observers = IoC.Resolve<IMoBiContext>().Create<ObserverBuildingBlock>(),
             SpatialStructure = _moBiProject.SpatialStructureCollection.FirstOrDefault(),
             Reactions = _moBiProject.ReactionBlockCollection.FirstOrDefault(),
             Molecules = _moBiProject.MoleculeBlockCollection.FirstOrDefault(),

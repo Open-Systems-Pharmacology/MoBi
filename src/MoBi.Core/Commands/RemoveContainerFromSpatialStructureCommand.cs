@@ -12,11 +12,11 @@ namespace MoBi.Core.Commands
 {
    public class RemoveContainerFromSpatialStructureCommand : RemoveObjectBaseCommand<IContainer, IContainer>
    {
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private Cache<string, NeighborhoodBuilder> _removedNeighborhoods;
       public string SpatialStructureId { get; }
 
-      public RemoveContainerFromSpatialStructureCommand(IContainer parent, IContainer childToRemove, IMoBiSpatialStructure spatialStructure)
+      public RemoveContainerFromSpatialStructureCommand(IContainer parent, IContainer childToRemove, MoBiSpatialStructure spatialStructure)
          : base(parent, childToRemove, spatialStructure)
       {
          _spatialStructure = spatialStructure;
@@ -40,7 +40,7 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new RemovedEvent(_removedNeighborhoods));
       }
 
-      private void removeNeighborhoods(IContainer entityToRemove, Cache<string, NeighborhoodBuilder> removedIds, IMoBiSpatialStructure spatialStructure, IMoBiContext context)
+      private void removeNeighborhoods(IContainer entityToRemove, Cache<string, NeighborhoodBuilder> removedIds, MoBiSpatialStructure spatialStructure, IMoBiContext context)
       {
          var entityToRemovePath = context.ObjectPathFactory.CreateAbsoluteObjectPath(entityToRemove);
          var neighborhoodsToDelete = spatialStructure.AllNeighborhoodBuildersConnectedWith(entityToRemovePath);
@@ -77,7 +77,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _spatialStructure = context.Get<IMoBiSpatialStructure>(SpatialStructureId);
+         _spatialStructure = context.Get<MoBiSpatialStructure>(SpatialStructureId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

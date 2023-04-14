@@ -15,7 +15,7 @@ namespace MoBi.Core.Domain.Builder
       ///    Creates the strict minimum default spatial structure
       /// </summary>
       /// <returns></returns>
-      IMoBiSpatialStructure CreateDefault(string spatialStructureName);
+      MoBiSpatialStructure CreateDefault(string spatialStructureName);
    }
 
    public class MoBiSpatialStructureFactory : SpatialStructureFactory, IMoBiSpatialStructureFactory
@@ -33,14 +33,14 @@ namespace MoBi.Core.Domain.Builder
          _diagramManagerFactory = diagramManagerFactory;
       }
 
-      protected override ISpatialStructure CreateSpatialStructure()
+      protected override SpatialStructure CreateSpatialStructure()
       {
-         var spatialStructure = _objectBaseFactory.Create<IMoBiSpatialStructure>();
+         var spatialStructure = _objectBaseFactory.Create<MoBiSpatialStructure>();
          spatialStructure.DiagramManager = _diagramManagerFactory.Create<ISpatialStructureDiagramManager>();
          return spatialStructure;
       }
 
-      public IMoBiSpatialStructure CreateDefault(string spatialStructureName)
+      public MoBiSpatialStructure CreateDefault(string spatialStructureName)
       {
          var topContainer = _objectBaseFactory.Create<IContainer>()
             .WithName(spatialStructureName)
@@ -60,7 +60,7 @@ namespace MoBi.Core.Domain.Builder
 
          var spatialStructure = Create()
             .WithName(spatialStructureName)
-            .WithTopContainer(topContainer).DowncastTo<IMoBiSpatialStructure>();
+            .WithTopContainer(topContainer).DowncastTo<MoBiSpatialStructure>();
 
          spatialStructure.DiagramManager = _diagramManagerFactory.Create<ISpatialStructureDiagramManager>();
          spatialStructure.DiagramManager.AddObjectBase(topContainer);

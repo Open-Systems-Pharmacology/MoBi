@@ -7,27 +7,27 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForTopContainer : IInteractionTasksForChildren<IMoBiSpatialStructure, IContainer>
+   public interface IInteractionTasksForTopContainer : IInteractionTasksForChildren<MoBiSpatialStructure, IContainer>
    {
    }
 
-   public class InteractionTasksForTopContainer : InteractionTasksForContainerBase<IMoBiSpatialStructure>, IInteractionTasksForTopContainer
+   public class InteractionTasksForTopContainer : InteractionTasksForContainerBase<MoBiSpatialStructure>, IInteractionTasksForTopContainer
    {
       public InteractionTasksForTopContainer(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IContainer> editTask, IObjectPathFactory objectPathFactory) : base(interactionTaskContext, editTask, objectPathFactory)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(IContainer entityToRemove, IMoBiSpatialStructure parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(IContainer entityToRemove, MoBiSpatialStructure parent, IBuildingBlock buildingBlock)
       {
-         return new RemoveTopContainerCommand((IMoBiSpatialStructure) buildingBlock, entityToRemove);
+         return new RemoveTopContainerCommand((MoBiSpatialStructure) buildingBlock, entityToRemove);
       }
 
-      public override IMoBiCommand GetAddCommand(IContainer container, IMoBiSpatialStructure spatialStructure, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(IContainer container, MoBiSpatialStructure spatialStructure, IBuildingBlock buildingBlock)
       {
          return new AddTopContainerCommand(spatialStructure, container);
       }
 
-      public override IContainer CreateNewEntity(IMoBiSpatialStructure spatialStructure)
+      public override IContainer CreateNewEntity(MoBiSpatialStructure spatialStructure)
       {
          var newEntity = base.CreateNewEntity(spatialStructure);
          newEntity.ContainerType = ContainerType.Organism;

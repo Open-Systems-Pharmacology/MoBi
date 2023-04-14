@@ -9,12 +9,12 @@ namespace MoBi.Presentation.Presenter
 {
    internal interface IObjectPathCreatorAtTransport : IObjectPathCreator
    {
-      ITransportBuilder Transport { set; }
+      TransportBuilder Transport { set; }
    }
 
    internal class ObjectPathCreatorAtTransport : ObjectPathCreatorBase, IObjectPathCreatorAtTransport
    {
-      public ITransportBuilder Transport { private get; set; }
+      public TransportBuilder Transport { private get; set; }
 
       public ObjectPathCreatorAtTransport(IObjectPathFactory objectPathFactory, IAliasCreator aliasCreator, IMoBiContext context) : base(objectPathFactory, aliasCreator, context)
       {

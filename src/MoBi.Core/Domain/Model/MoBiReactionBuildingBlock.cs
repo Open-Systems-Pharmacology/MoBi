@@ -9,20 +9,15 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Model
 {
-   public interface IMoBiReactionBuildingBlock : IReactionBuildingBlock, IWithDiagramFor<IMoBiReactionBuildingBlock>
+   public class MoBiReactionBuildingBlock : ReactionBuildingBlock, IWithDiagramFor<MoBiReactionBuildingBlock>
    {
-      IEnumerable<string> AllMolecules { get; }
-   }
-
-   public class MoBiReactionBuildingBlock : ReactionBuildingBlock, IMoBiReactionBuildingBlock
-   {
-      public IDiagramManager<IMoBiReactionBuildingBlock> DiagramManager { get; set; }
+      public IDiagramManager<MoBiReactionBuildingBlock> DiagramManager { get; set; }
       public IDiagramModel DiagramModel { get; set; }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
-         var sourceReactionBuildingBlock = sourceObject as IMoBiReactionBuildingBlock;
+         var sourceReactionBuildingBlock = sourceObject as MoBiReactionBuildingBlock;
          if (sourceReactionBuildingBlock == null) return;
 
          this.UpdateDiagramFrom(sourceReactionBuildingBlock);

@@ -72,17 +72,17 @@ namespace MoBi.Presentation.Tasks.Interaction
       private MoleculeStartValuesBuildingBlock createStartValuesBasedOnUsedTemplates(MoleculeStartValuesBuildingBlock moleculeStartValues)
       {
          var molecules = BuildingBlockById<MoleculeBuildingBlock>(moleculeStartValues.MoleculeBuildingBlockId);
-         var spatialStructure = BuildingBlockById<ISpatialStructure>(moleculeStartValues.SpatialStructureId);
+         var spatialStructure = BuildingBlockById<SpatialStructure>(moleculeStartValues.SpatialStructureId);
          return _startValuesCreator.CreateFrom(spatialStructure, molecules);
       }
 
       public override MoleculeStartValuesBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration)
       {
          //TODO OSMOSES combining multiple spatial structures and molecule building blocks is not supported yet
-         var simulationStartValues = _startValuesCreator.CreateFrom(simulationConfiguration.SpatialStructures.First(), simulationConfiguration.Molecules.First())
-            .WithName(simulationConfiguration.MoleculeStartValues.First().Name);
+         var simulationStartValues = _startValuesCreator.CreateFrom(simulationConfiguration.All<SpatialStructure>().First(), simulationConfiguration.All<MoleculeBuildingBlock>().First())
+            .WithName(simulationConfiguration.All<MoleculeStartValuesBuildingBlock>().First().Name);
          
-         var templateValues = UpdateValuesFromTemplate(simulationStartValues, simulationConfiguration.MoleculeStartValues.First());
+         var templateValues = UpdateValuesFromTemplate(simulationStartValues, simulationConfiguration.All<MoleculeStartValuesBuildingBlock>().First());
          updateDefaultIsPresentToFalseForSpecificExtendedValues(simulationStartValues, templateValues);
          return simulationStartValues;
       }
@@ -210,9 +210,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateMoleculeStartValueScaleDivisorCommand(buildingBlock, startValue, newScaleDivisor, oldScaleDivisor).Run(Context);
       }
 
-      protected override ISpatialStructure SpatialStructureReferencedBy(MoleculeStartValuesBuildingBlock buildingBlock)
+      protected override SpatialStructure SpatialStructureReferencedBy(MoleculeStartValuesBuildingBlock buildingBlock)
       {
-         return Context.Get<ISpatialStructure>(buildingBlock.SpatialStructureId) ?? _spatialStructureFactory.Create();
+         return Context.Get<SpatialStructure>(buildingBlock.SpatialStructureId) ?? _spatialStructureFactory.Create();
       }
 
       protected override MoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(MoleculeStartValuesBuildingBlock buildingBlock)

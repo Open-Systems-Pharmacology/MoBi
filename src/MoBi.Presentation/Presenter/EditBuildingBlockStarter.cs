@@ -6,7 +6,7 @@ namespace MoBi.Presentation.Presenter
    public interface IEditBuildingBlockStarter
    {
       void EditBuildingBlock(IBuildingBlock buildingBlock);
-      void EditMolecule(MoleculeBuildingBlock buildingBlock, IMoleculeBuilder moleculeBuilder);
+      void EditMolecule(MoleculeBuildingBlock buildingBlock, MoleculeBuilder moleculeBuilder);
    }
 
    public class EditBuildingBlockStarter : IEditBuildingBlockStarter
@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Presenter
          task.EditBuildingBlock(buildingBlock);
       }
 
-      public void EditMolecule(MoleculeBuildingBlock buildingBlock, IMoleculeBuilder moleculeBuilder)
+      public void EditMolecule(MoleculeBuildingBlock buildingBlock, MoleculeBuilder moleculeBuilder)
       {
          _editTasksForMoleculeBuildingBlock.Edit(buildingBlock, moleculeBuilder);
       }

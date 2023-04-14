@@ -9,7 +9,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForReactionBuildingBlock : InteractionTaskForCloneMergeBuildingBlock<IMoBiReactionBuildingBlock, IReactionBuilder>
+   public class InteractionTasksForReactionBuildingBlock : InteractionTaskForCloneMergeBuildingBlock<MoBiReactionBuildingBlock, ReactionBuilder>
    {
       private readonly IReactionBuildingBlockMergeManager _reactionBuildingBlockMergeManager;
       private readonly IDiagramTask _diagramTask;
@@ -17,8 +17,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public InteractionTasksForReactionBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
-         IEditTasksForBuildingBlock<IMoBiReactionBuildingBlock> editTask,
-         IInteractionTasksForBuilder<IReactionBuilder> builderTask,
+         IEditTasksForBuildingBlock<MoBiReactionBuildingBlock> editTask,
+         IInteractionTasksForBuilder<ReactionBuilder> builderTask,
          IReactionBuildingBlockMergeManager reactionBuildingBlockMergeManager,
          IDiagramTask diagramTask,
          IReactionBuildingBlockFactory reactionBuildingBlockFactory)
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _reactionBuildingBlockFactory = reactionBuildingBlockFactory;
       }
 
-      public override IMoBiCommand Merge(IMoBiReactionBuildingBlock buildingBlockToMerge, IMoBiReactionBuildingBlock targetBuildingBlock)
+      public override IMoBiCommand Merge(MoBiReactionBuildingBlock buildingBlockToMerge, MoBiReactionBuildingBlock targetBuildingBlock)
       {
          _reactionBuildingBlockMergeManager.SourceBuildingBlock = buildingBlockToMerge;
          _reactionBuildingBlockMergeManager.TargetBuildingBlock = targetBuildingBlock;
@@ -37,12 +37,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Merge(buildingBlockToMerge, targetBuildingBlock);
       }
 
-      public override IMoBiReactionBuildingBlock CreateNewEntity(MoBiProject parent)
+      public override MoBiReactionBuildingBlock CreateNewEntity(MoBiProject parent)
       {
          return _reactionBuildingBlockFactory.Create();
       }
 
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(IReactionBuilder builder, IMoBiReactionBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(ReactionBuilder builder, MoBiReactionBuildingBlock targetBuildingBlock, string originalBuilderName = null)
       {
          var macroCommand = base.GenerateAddCommandAndUpdateFormulaReferences(builder, targetBuildingBlock);
          macroCommand.Add(_diagramTask.MoveDiagramNodes(_reactionBuildingBlockMergeManager.SourceBuildingBlock, _reactionBuildingBlockMergeManager.TargetBuildingBlock, builder, originalBuilderName));

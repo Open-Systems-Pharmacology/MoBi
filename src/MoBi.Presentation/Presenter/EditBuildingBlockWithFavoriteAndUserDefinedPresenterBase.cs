@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -15,17 +16,17 @@ namespace MoBi.Presentation.Presenter
       IListener<UserDefinedSelectedEvent>
       where TView : IView<TPresenter>, IEditBuildingBlockBaseView
       where TPresenter : IPresenter, ISingleStartPresenter
-      where TBuildingBlock : IBuildingBlock<TBuilder>
+      where TBuildingBlock : IBuildingBlock, IEnumerable<TBuilder>
       where TBuilder : class, IContainer
 
    {
-      protected readonly IEditFavoritesPresenter<IBuildingBlock<TBuilder>> _favoritesPresenter;
+      protected readonly IEditFavoritesPresenter<TBuildingBlock> _favoritesPresenter;
       protected readonly IUserDefinedParametersPresenter _userDefinedParametersPresenter;
 
       protected EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase(
          TView view,
          IFormulaCachePresenter formulaCachePresenter,
-         IEditFavoritesPresenter<IBuildingBlock<TBuilder>> favoritesPresenter,
+         IEditFavoritesPresenter<TBuildingBlock> favoritesPresenter,
          IUserDefinedParametersPresenter userDefinedParametersPresenter) : base(view, formulaCachePresenter)
       {
          _favoritesPresenter = favoritesPresenter;

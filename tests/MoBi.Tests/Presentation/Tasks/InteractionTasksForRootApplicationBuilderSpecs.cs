@@ -10,12 +10,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_EditTasksForApplicationBuilderSpecs : ContextSpecification<IEditTaskFor<IApplicationBuilder>>
+   public abstract class concern_for_EditTasksForApplicationBuilderSpecs : ContextSpecification<IEditTaskFor<ApplicationBuilder>>
    {
       protected const string _builderName = "Name";
       protected IInteractionTaskContext _interactionTaskContext;
       private IInteractionTask _interactionTask;
-      protected IApplicationBuilder _builder;
+      protected ApplicationBuilder _builder;
 
       protected override void Context()
       {
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = A.Fake<IInteractionTask>();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
          _builder = new ApplicationBuilder();
-         sut = new EditTasksForEventGroupBuilder<IApplicationBuilder>(_interactionTaskContext);
+         sut = new EditTasksForEventGroupBuilder<ApplicationBuilder>(_interactionTaskContext);
 
          A.CallTo(() => _interactionTask.ForbiddenNamesFor(_builder)).Returns(new List<string> {_builderName});
       }
@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Tasks
          _eventGroupBuildingBlock.Add(new EventGroupBuilder().WithName("EG1"));
          _allNames = _eventGroupBuildingBlock.Select(x => x.Name).ToArray();
 
-         A.CallTo(() => _interactionTaskContext.Active<IEventGroupBuildingBlock>()).Returns(_eventGroupBuildingBlock);
+         A.CallTo(() => _interactionTaskContext.Active<EventGroupBuildingBlock>()).Returns(_eventGroupBuildingBlock);
       }
 
       protected override void Because()

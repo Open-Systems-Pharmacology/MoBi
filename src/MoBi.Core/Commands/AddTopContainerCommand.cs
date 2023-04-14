@@ -9,13 +9,13 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
-   public class AddTopContainerCommand : AddObjectBaseCommand<IContainer, IMoBiSpatialStructure>
+   public class AddTopContainerCommand : AddObjectBaseCommand<IContainer, MoBiSpatialStructure>
    {
-      public AddTopContainerCommand(IMoBiSpatialStructure parent, IContainer itemToAdd) : base(parent, itemToAdd, parent)
+      public AddTopContainerCommand(MoBiSpatialStructure parent, IContainer itemToAdd) : base(parent, itemToAdd, parent)
       {
       }
 
-      protected override void AddTo(IContainer child, IMoBiSpatialStructure spatialStructure, IMoBiContext context)
+      protected override void AddTo(IContainer child, MoBiSpatialStructure spatialStructure, IMoBiContext context)
       {
          spatialStructure.AddTopContainer(child);
          spatialStructure.DiagramManager.AddObjectBase(child);
@@ -27,15 +27,15 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveTopContainerCommand : RemoveObjectBaseCommand<IContainer, IMoBiSpatialStructure>
+   public class RemoveTopContainerCommand : RemoveObjectBaseCommand<IContainer, MoBiSpatialStructure>
    {
       private Cache<string, IObjectBase> _removedIds;
 
-      public RemoveTopContainerCommand(IMoBiSpatialStructure parent, IContainer itemToRemove) : base(parent, itemToRemove, parent)
+      public RemoveTopContainerCommand(MoBiSpatialStructure parent, IContainer itemToRemove) : base(parent, itemToRemove, parent)
       {
       }
 
-      protected override void RemoveFrom(IContainer childToRemove, IMoBiSpatialStructure spatialStructure, IMoBiContext context)
+      protected override void RemoveFrom(IContainer childToRemove, MoBiSpatialStructure spatialStructure, IMoBiContext context)
       {
          spatialStructure.RemoveTopContainer(childToRemove);
          _removedIds = new Cache<string, IObjectBase>(x => x.Id);
@@ -44,7 +44,7 @@ namespace MoBi.Core.Commands
          spatialStructure.DiagramManager.RemoveObjectBase(childToRemove);
       }
 
-      private void removeNeighborhoods(IContainer entityToRemove, ICache<string, IObjectBase> removedIds, IMoBiSpatialStructure spatialStructure, IMoBiContext context)
+      private void removeNeighborhoods(IContainer entityToRemove, ICache<string, IObjectBase> removedIds, MoBiSpatialStructure spatialStructure, IMoBiContext context)
       {
          var entityToRemovePath = context.ObjectPathFactory.CreateAbsoluteObjectPath(entityToRemove);
          var neighborhoodsToDelete = spatialStructure.AllNeighborhoodBuildersConnectedWith(entityToRemovePath);
@@ -58,7 +58,7 @@ namespace MoBi.Core.Commands
          }
       }
 
-      private void unregisterAllChildrenAndRemoveTheirNeighborHoods(IObjectBase entityToRemove, ICache<string, IObjectBase> removedIds, IMoBiSpatialStructure spatialStructure, IMoBiContext context)
+      private void unregisterAllChildrenAndRemoveTheirNeighborHoods(IObjectBase entityToRemove, ICache<string, IObjectBase> removedIds, MoBiSpatialStructure spatialStructure, IMoBiContext context)
       {
          if (removedIds.Contains(entityToRemove.Id))
             return;

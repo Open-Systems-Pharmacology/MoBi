@@ -18,9 +18,9 @@ namespace MoBi.Engine.Sbml
    public class EventImporter : SBMLImporter
    {
       internal EventGroupBuildingBlock EventGroupBuildingBlock;
-      private readonly List<IEventAssignment> _eventAssignmentList;
+      private readonly List<EventAssignment> _eventAssignmentList;
 
-      public List<IEventAssignment> EventAssignmentList
+      public List<EventAssignment> EventAssignmentList
       {
          get { return _eventAssignmentList; }
       }
@@ -31,7 +31,7 @@ namespace MoBi.Engine.Sbml
 
       public EventImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, ASTHandler astHandler, IMoBiContext context) : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
-         _eventAssignmentList = new List<IEventAssignment>();
+         _eventAssignmentList = new List<EventAssignment>();
          _counter = 0;
       }
 
@@ -165,7 +165,7 @@ namespace MoBi.Engine.Sbml
          if (eventAssignment.isSetNotes()) description += eventAssignment.getNotesString();
          if (eventAssignment.isSetSBOTerm()) description += (SBMLConstants.SPACE + eventAssignment.getSBOTerm());
 
-         IEventAssignmentBuilder eab = new EventAssignmentBuilder()
+         EventAssignmentBuilder eab = new EventAssignmentBuilder()
             .WithId(eventAssignment.getId() + SBMLConstants.SPACE + eventAssignment.getName() + SBMLConstants.SPACE + alias)
             .WithName(SBMLConstants.SBML_EVENT_ASSIGNMENT + eventAssignment.getId())
             .WithDescription(description);
@@ -182,7 +182,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _context.HistoryManager.AddCommand(new AddBuildingBlockCommand<IEventGroupBuildingBlock>(EventGroupBuildingBlock).Run(_context));
+         _context.HistoryManager.AddCommand(new AddBuildingBlockCommand<EventGroupBuildingBlock>(EventGroupBuildingBlock).Run(_context));
       }
    }
 }

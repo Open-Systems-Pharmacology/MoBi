@@ -6,7 +6,7 @@ namespace MoBi.Presentation.UICommand
 {
    internal interface IActiveTransporterMoelculeRetriever
    {
-      TransporterMoleculeContainer GetTransporterMoleculeFrom(ITransportBuilder transportBuilder);
+      TransporterMoleculeContainer GetTransporterMoleculeFrom(TransportBuilder transportBuilder);
    }
 
    internal class ActiveTransporterMoelculeRetriever : IActiveTransporterMoelculeRetriever
@@ -18,7 +18,7 @@ namespace MoBi.Presentation.UICommand
          _context = context;
       }
 
-      public TransporterMoleculeContainer GetTransporterMoleculeFrom(ITransportBuilder transportBuilder)
+      public TransporterMoleculeContainer GetTransporterMoleculeFrom(TransportBuilder transportBuilder)
       {
          foreach (var moleculeBuildingBlock in _context.CurrentProject.MoleculeBlockCollection)
          {

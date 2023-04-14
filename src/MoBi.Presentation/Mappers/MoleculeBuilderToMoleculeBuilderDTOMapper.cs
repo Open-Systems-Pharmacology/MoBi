@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IMoleculeBuilderToMoleculeBuilderDTOMapper : IMapper<IMoleculeBuilder, MoleculeBuilderDTO>
+   public interface IMoleculeBuilderToMoleculeBuilderDTOMapper : IMapper<MoleculeBuilder, MoleculeBuilderDTO>
    {
    }
 
@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Mappers
          _transporterMoleculeContainerMapper = transporterMoleculeContainerMapper;
       }
 
-      public MoleculeBuilderDTO MapFrom(IMoleculeBuilder moleculeBuilder)
+      public MoleculeBuilderDTO MapFrom(MoleculeBuilder moleculeBuilder)
       {
          var dto = Map(new MoleculeBuilderDTO(moleculeBuilder));
          dto.TransporterMolecules = allTransporterMoleculesDTOFrom(moleculeBuilder);
@@ -39,12 +39,12 @@ namespace MoBi.Presentation.Mappers
          return dto;
       }
 
-      private IReadOnlyList<InteractionContainerDTO> allInteractionContainersDTOFrom(IMoleculeBuilder moleculeBuilder)
+      private IReadOnlyList<InteractionContainerDTO> allInteractionContainersDTOFrom(MoleculeBuilder moleculeBuilder)
       {
          return moleculeBuilder.InteractionContainerCollection.MapAllUsing(_interactionContainerMapper);
       }
 
-      private IReadOnlyList<TransporterMoleculeContainerDTO> allTransporterMoleculesDTOFrom(IMoleculeBuilder moleculeBuilder)
+      private IReadOnlyList<TransporterMoleculeContainerDTO> allTransporterMoleculesDTOFrom(MoleculeBuilder moleculeBuilder)
       {
          return moleculeBuilder.TransporterMoleculeContainerCollection.MapAllUsing(_transporterMoleculeContainerMapper);
       }

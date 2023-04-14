@@ -25,7 +25,7 @@ namespace MoBi.Engine.Sbml
       private readonly IAliasCreator _aliasCreator;
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private int _counter;
-      private IReactionBuilder _reactionBuilder;
+      private ReactionBuilder _reactionBuilder;
       private SBMLInformation _sbmlInformation;
       private IUnitDefinitionImporter _unitDefinitionImporter;
 
@@ -58,7 +58,7 @@ namespace MoBi.Engine.Sbml
       /// <param name="reactionBuilder"> The MoBi reactionBuilder the SBML reaction should be build with. </param>
       /// <param name="sbmlProject"></param>
       /// <param name="sbmlInformation"></param>
-      public IFormula Parse(ASTNode rootNode, IReactionBuilder reactionBuilder, MoBiProject sbmlProject,
+      public IFormula Parse(ASTNode rootNode, ReactionBuilder reactionBuilder, MoBiProject sbmlProject,
          SBMLInformation sbmlInformation)
       {
          try
@@ -117,7 +117,7 @@ namespace MoBi.Engine.Sbml
       /// <param name="assignmentVariable"> The Parameter, Molecule, Species or SpeciesReference that should be assigned when the Event is triggered. </param>
       /// <param name="sbmlProject"></param>
       /// <param name="sbmlInformation"></param>
-      public IFormula Parse(ASTNode rootNode, IEventAssignmentBuilder eventAssignmentBuilder, string assignmentVariable,
+      public IFormula Parse(ASTNode rootNode, EventAssignmentBuilder eventAssignmentBuilder, string assignmentVariable,
          MoBiProject sbmlProject, SBMLInformation sbmlInformation)
       {
          try
@@ -915,7 +915,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the object path name of a Molecule.
       /// </summary>
-      private string getObjectPathNameOfMolecule(IMoleculeBuilder molecule, Species species)
+      private string getObjectPathNameOfMolecule(MoleculeBuilder molecule, Species species)
       {
          //reaction 
          if (NeedAbsolutePath == false)
@@ -1061,6 +1061,7 @@ namespace MoBi.Engine.Sbml
             _sbmlProject.SpatialStructureCollection.Select(
                ss => ss.TopContainers.FindById(SBMLConstants.SBML_TOP_CONTAINER)).FirstOrDefault();
       }
+
 
       /// <summary>
       ///     Gets the Mobi Container by a given SBML Compartment.

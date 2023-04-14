@@ -18,7 +18,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<ISpatialStructure>,
+   public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<SpatialStructure>,
       IHierarchicalStructurePresenter,
       IListener<AddedEvent>, 
       IListener<RemovedEvent>, 
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
 
    public class HierarchicalSpatialStructurePresenter : HierarchicalStructurePresenter, IHierarchicalSpatialStructurePresenter
    {
-      private ISpatialStructure _spatialStructure;
+      private SpatialStructure _spatialStructure;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
 
       public HierarchicalSpatialStructurePresenter(
@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
          _contextMenuFactory = contextMenuFactory;
       }
 
-      public void InitializeWith(ISpatialStructure spatialStructure)
+      public void InitializeWith(SpatialStructure spatialStructure)
       {
          _spatialStructure = spatialStructure;
 
@@ -61,7 +61,7 @@ namespace MoBi.Presentation.Presenter
          _view.Show(roots);
       }
 
-      public void Edit(ISpatialStructure spatialStructure)
+      public void Edit(SpatialStructure spatialStructure)
       {
          InitializeWith(spatialStructure);
       }
@@ -70,7 +70,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(object objectToEdit)
       {
-         Edit(objectToEdit.DowncastTo<ISpatialStructure>());
+         Edit(objectToEdit.DowncastTo<SpatialStructure>());
       }
 
       protected override void RaiseFavoritesSelectedEvent()

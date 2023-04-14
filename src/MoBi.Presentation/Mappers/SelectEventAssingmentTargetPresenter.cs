@@ -6,12 +6,12 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IReactionBuilderToDummyReactionDTOMapper
    {
-      DummyReactionDTO MapFrom(IReactionBuilder reactionBuilder, IContainer container);
+      DummyReactionDTO MapFrom(ReactionBuilder reactionBuilder, IContainer container);
    }
 
    internal class ReactionBuilderToDummyReactionDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IReactionBuilderToDummyReactionDTOMapper
    {
-      public DummyReactionDTO MapFrom(IReactionBuilder reactionBuilder, IContainer container)
+      public DummyReactionDTO MapFrom(ReactionBuilder reactionBuilder, IContainer container)
       {
          var dto = Map(new DummyReactionDTO(reactionBuilder));
          dto.StructureParent = container;

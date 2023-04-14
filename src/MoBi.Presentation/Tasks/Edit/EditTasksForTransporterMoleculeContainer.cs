@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (molecule != null)
             return true;
 
-         var moleculeBuilder = _context.Create<IMoleculeBuilder>().WithName(entity.Name).WithIcon(ApplicationIcons.Transporter.IconName);
+         var moleculeBuilder = _context.Create<MoleculeBuilder>().WithName(entity.Name).WithIcon(ApplicationIcons.Transporter.IconName);
          moleculeBuilder.QuantityType = QuantityType.Transporter;
          moleculeBuilder.DefaultStartFormula = _context.Create<ConstantFormula>().WithValue(0).WithDimension(_dimensionRetriever.MoleculeDimension);
 

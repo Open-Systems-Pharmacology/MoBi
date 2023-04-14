@@ -9,7 +9,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_MoveDiagramNodeCommand : ContextSpecification<MoveDiagramNodeCommand>
    {
-      protected IMoBiReactionBuildingBlock _buildingBlock;
+      protected MoBiReactionBuildingBlock _buildingBlock;
       protected IBaseNode _destinationNode, _targetNode;
       protected PointF _parentLocation;
       protected IMoBiContext _context;
@@ -17,7 +17,7 @@ namespace MoBi.Core.Commands
 
       protected override void Context()
       {
-         _buildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithId("id");
+         _buildingBlock = A.Fake<MoBiReactionBuildingBlock>().WithId("id");
          _destinationNode = A.Fake<IBaseNode>();
          _targetNode = A.Fake<IBaseNode>();
          _parentLocation = new PointF();
@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
          _diagramModel = A.Fake<IDiagramModel>();
          _buildingBlock.DiagramModel = _diagramModel;
 
-         A.CallTo(() => _context.Get<IMoBiReactionBuildingBlock>("id")).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<MoBiReactionBuildingBlock>("id")).Returns(_buildingBlock);
          A.CallTo(() => _destinationNode.Name).Returns("NamedNode");
          A.CallTo(() => _diagramModel.FindByName(_destinationNode.Name)).Returns(_targetNode);
 

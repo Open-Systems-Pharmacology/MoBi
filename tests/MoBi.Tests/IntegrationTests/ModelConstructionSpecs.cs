@@ -24,19 +24,19 @@ namespace MoBi.IntegrationTests
    public class When_creating_a_simulation_using_reactions_with_the_flag_create_rate_parameter_checked : concern_for_ModelConstruction
    {
       private SimulationConfiguration _simulationConfiguration;
-      private IMoleculeBuilder _moleculeA;
-      private IReactionBuilder _reactionR1;
+      private MoleculeBuilder _moleculeA;
+      private ReactionBuilder _reactionR1;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
-         var molecules = _simulationConfiguration.Molecules.First();
+         var molecules = _simulationConfiguration.All<MoleculeBuildingBlock>().First();
          _moleculeA = new MoleculeBuilder().WithName("A").WithDimension(DomainFactoryForSpecs.AmountDimension);
          _moleculeA.DefaultStartFormula = new ConstantFormula(10);
          molecules.Add(_moleculeA);
 
-         var reactions = _simulationConfiguration.Reactions.First();
+         var reactions = _simulationConfiguration.All<ReactionBuildingBlock>().First();
          _reactionR1 = new ReactionBuilder().WithName("R1");
          _reactionR1.CreateProcessRateParameter = true;
          _reactionR1.Formula = new ConstantFormula(5);
@@ -49,7 +49,7 @@ namespace MoBi.IntegrationTests
       [Observation]
       public void should_create_a_parameter_name_process_rate_in_each_local_reaction()
       {
-         var allReactions = _simulation.Model.Root.GetAllChildren<IReaction>(x => x.IsNamed(_reactionR1.Name));
+         var allReactions = _simulation.Model.Root.GetAllChildren<Reaction>(x => x.IsNamed(_reactionR1.Name));
          allReactions.Count.ShouldBeGreaterThan(0);
          allReactions.Each(x => x.Parameter(Constants.Parameters.PROCESS_RATE).ShouldNotBeNull());
       }
@@ -65,7 +65,7 @@ namespace MoBi.IntegrationTests
       {
          base.GlobalContext();
          _buildConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
-         var spatialStructure = _buildConfiguration.SpatialStructures.First();
+         var spatialStructure = _buildConfiguration.All<SpatialStructure>().First();
          _organism = spatialStructure.TopContainers.ElementAt(0);
          var volumeParameter = _organism.EntityAt<IParameter>(Constants.Parameters.VOLUME);
          volumeParameter.Persistable = true;

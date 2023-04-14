@@ -2,7 +2,7 @@
 
 namespace MoBi.Core.Domain.Model.Diagram
 {
-   public interface ISpatialStructureDiagramManager : IDiagramManager<IMoBiSpatialStructure>
+   public interface ISpatialStructureDiagramManager : IDiagramManager<MoBiSpatialStructure>
    {
    }
 }

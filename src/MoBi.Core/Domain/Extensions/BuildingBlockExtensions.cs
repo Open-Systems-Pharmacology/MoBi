@@ -41,10 +41,10 @@ namespace MoBi.Core.Domain.Extensions
          if (!entity.CouldBeInMoleculeBuildingBlock())
             return false;
 
-         if (entity.IsAnImplementationOf<IMoleculeBuilder>())
-            return buildingBlock.Contains((IMoleculeBuilder) entity);
+         if (entity.IsAnImplementationOf<MoleculeBuilder>())
+            return buildingBlock.Contains((MoleculeBuilder) entity);
          
-         if (entity.IsAnImplementationOf<ITransportBuilder>())
+         if (entity.IsAnImplementationOf<TransportBuilder>())
          {
             var transporterMoleculeContainers = buildingBlock.SelectMany(mb => mb.TransporterMoleculeContainerCollection);
             var allTransports = transporterMoleculeContainers.SelectMany(x => x.ActiveTransportRealizations);

@@ -16,7 +16,7 @@ namespace MoBi.Presentation
       protected ISelectNeighborPathView _view;
       protected ISelectContainerInTreePresenter _selectContainerInTreePresenter;
       protected IContainerToContainerDTOMapper _containerDTOMapper;
-      protected ISpatialStructure _spatialStructure;
+      protected SpatialStructure _spatialStructure;
       private IContainer _organism;
       protected ContainerDTO _organismDTO;
       protected ObjectPathDTO _selectedPathDTO;

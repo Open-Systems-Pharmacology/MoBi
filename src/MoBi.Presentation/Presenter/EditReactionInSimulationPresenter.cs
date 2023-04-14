@@ -11,13 +11,13 @@ using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditReactionInSimulationPresenter : IEditInSimulationPresenter, IEditPresenterWithParameters<IReaction>
+   public interface IEditReactionInSimulationPresenter : IEditInSimulationPresenter, IEditPresenterWithParameters<Reaction>
    {
    }
 
-   public class EditReactionInSimulationPresenter : AbstractEditPresenter<IEditReactionInSimulationView, IEditReactionInSimulationPresenter, IReaction>, IEditReactionInSimulationPresenter
+   public class EditReactionInSimulationPresenter : AbstractEditPresenter<IEditReactionInSimulationView, IEditReactionInSimulationPresenter, Reaction>, IEditReactionInSimulationPresenter
    {
-      private IReaction _reaction;
+      private Reaction _reaction;
       private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
       private readonly IReactionToReactionDTOMapper _reactionToReactionDTOMapper;
       private readonly IFormulaPresenterCache _formulaPresenterCache;
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editParametersInContainerPresenter);
       }
 
-      public void Edit(IReaction reaction, IReadOnlyList<IObjectBase> existingObjectsInParent)
+      public void Edit(Reaction reaction, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _reaction = reaction;
          _editParametersInContainerPresenter.Edit(_reaction);
@@ -44,12 +44,12 @@ namespace MoBi.Presentation.Presenter
          initializeFormulaPresenter(reaction);
       }
 
-      public override void Edit(IReaction reaction)
+      public override void Edit(Reaction reaction)
       {
          Edit(reaction, Array.Empty<IObjectBase>());
       }
 
-      private void initializeFormulaPresenter(IReaction reaction)
+      private void initializeFormulaPresenter(Reaction reaction)
       {
          _formulaPresenter = _formulaPresenterCache.PresenterFor(reaction.Formula);
          _formulaPresenter.InitializeWith(CommandCollector);

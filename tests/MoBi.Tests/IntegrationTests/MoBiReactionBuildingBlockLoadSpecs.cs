@@ -10,7 +10,7 @@ namespace MoBi.IntegrationTests
       [Observation]
       public void should_have_a_diagram_manager_initialized()
       {
-         var reactionBuildingBlock = LoadPKML<IMoBiReactionBuildingBlock>("warnings");
+         var reactionBuildingBlock = LoadPKML<MoBiReactionBuildingBlock>("warnings");
          reactionBuildingBlock.ShouldNotBeNull();
          reactionBuildingBlock.DiagramManager.ShouldNotBeNull();
       }

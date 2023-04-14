@@ -6,7 +6,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IEventBuilderToEventBuilderDTOMapper : IMapper<IEventBuilder, EventBuilderDTO>
+   public interface IEventBuilderToEventBuilderDTOMapper : IMapper<EventBuilder, EventBuilderDTO>
    {
    }
 
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
          _assignmentToDTOAssignmentMapper = assignmentToDTOAssignmentMapper;
       }
 
-      public EventBuilderDTO MapFrom(IEventBuilder eventBuilder)
+      public EventBuilderDTO MapFrom(EventBuilder eventBuilder)
       {
          var dto = Map(new EventBuilderDTO(eventBuilder));
          dto.OneTime = eventBuilder.OneTime;

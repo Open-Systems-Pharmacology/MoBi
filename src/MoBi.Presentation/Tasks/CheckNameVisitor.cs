@@ -39,18 +39,18 @@ namespace MoBi.Presentation.Tasks
       IVisitor<IFormula>,
       IVisitor<ParameterStartValue>,
       IVisitor<MoleculeStartValue>,
-      IVisitor<IObserverBuilder>,
-      IVisitor<IReactionBuilder>,
-      IVisitor<IApplicationBuilder>,
-      IVisitor<IMoleculeBuilder>,
-      IVisitor<IEventAssignmentBuilder>,
+      IVisitor<ObserverBuilder>,
+      IVisitor<ReactionBuilder>,
+      IVisitor<ApplicationBuilder>,
+      IVisitor<MoleculeBuilder>,
+      IVisitor<EventAssignmentBuilder>,
       IVisitor<IMoBiSimulation>,
       IVisitor<IBuildingBlock>,
       IVisitor<TransporterMoleculeContainer>,
-      IVisitor<ITransportBuilder>,
-      IVisitor<IApplicationMoleculeBuilder>,
+      IVisitor<TransportBuilder>,
+      IVisitor<ApplicationMoleculeBuilder>,
       IVisitor<SimulationSettings>,
-      IVisitor<IEventGroupBuilder>
+      IVisitor<EventGroupBuilder>
    {
       private readonly StringChanges _changes = new StringChanges();
       private string _newName;
@@ -79,13 +79,13 @@ namespace MoBi.Presentation.Tasks
          Expression<Func<IObjectBase, string>> nameString = x => x.Name;
          _namePropertyName = nameString.Name();
 
-         Expression<Func<IApplicationBuilder, string>> appBuilderMoleculeName = x => x.MoleculeName;
+         Expression<Func<ApplicationBuilder, string>> appBuilderMoleculeName = x => x.MoleculeName;
          _appBuilderMoleculeNamePropertyName = appBuilderMoleculeName.Name();
 
-         Expression<Func<IReactionPartnerBuilder, string>> reactionPartnerMoleculeName = x => x.MoleculeName;
+         Expression<Func<ReactionPartnerBuilder, string>> reactionPartnerMoleculeName = x => x.MoleculeName;
          _reactionPartnerMoleculeNamePropertyName = reactionPartnerMoleculeName.Name();
 
-         Expression<Func<IEventAssignmentBuilder, ObjectPath>> eventObjectPath = x => x.ObjectPath;
+         Expression<Func<EventAssignmentBuilder, ObjectPath>> eventObjectPath = x => x.ObjectPath;
          _eventObjectPathPropertyName = eventObjectPath.Name();
 
          Expression<Func<TransporterMoleculeContainer, string>> transportName = x => x.TransportName;
@@ -228,7 +228,7 @@ namespace MoBi.Presentation.Tasks
          // Formula is not checked here, only checked in Chache cause double will cause errors in undo
       }
 
-      public void Visit(ITransportBuilder transportBuilder)
+      public void Visit(TransportBuilder transportBuilder)
       {
          checkMoleculeDependentBuilder(transportBuilder, _objectTypeResolver.TypeFor(transportBuilder));
          checkDescriptorCriteria(transportBuilder, x => x.SourceCriteria);
@@ -251,7 +251,7 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      public void Visit(IObserverBuilder observerBuilder)
+      public void Visit(ObserverBuilder observerBuilder)
       {
          checkMoleculeDependentBuilder(observerBuilder, ObjectTypes.ObserverBuilder);
          checkDescriptorCriteria(observerBuilder, x => x.ContainerCriteria);
@@ -269,13 +269,13 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      public void Visit(IEventGroupBuilder eventGroupBuilder)
+      public void Visit(EventGroupBuilder eventGroupBuilder)
       {
          checkObjectBase(eventGroupBuilder);
          checkDescriptorCriteria(eventGroupBuilder, x => x.SourceCriteria);
       }
 
-      public void Visit(IReactionBuilder reaction)
+      public void Visit(ReactionBuilder reaction)
       {
          checkObjectBase(reaction);
          checkReactionPartnerIn(reaction.Educts, reaction, educt: true);
@@ -284,7 +284,7 @@ namespace MoBi.Presentation.Tasks
          checkDescriptorCriteria(reaction, x => x.ContainerCriteria);
       }
 
-      private void checkModifier(IReactionBuilder reaction)
+      private void checkModifier(ReactionBuilder reaction)
       {
          if (!reaction.ModifierNames.Contains(_oldName)) return;
 
@@ -292,12 +292,12 @@ namespace MoBi.Presentation.Tasks
          _changes.Add(reaction, reactionBuildingBlock, new ChangeModifierCommand(_newName, _oldName, reaction, reactionBuildingBlock));
       }
 
-      private IMoBiReactionBuildingBlock getReactionBuildingBlockContaining(IReactionBuilder reaction)
+      private MoBiReactionBuildingBlock getReactionBuildingBlockContaining(ReactionBuilder reaction)
       {
-         return _buildingBlock as IMoBiReactionBuildingBlock;
+         return _buildingBlock as MoBiReactionBuildingBlock;
       }
 
-      private void checkReactionPartnerIn(IEnumerable<IReactionPartnerBuilder> reactionPartners, IReactionBuilder reaction, bool educt)
+      private void checkReactionPartnerIn(IEnumerable<ReactionPartnerBuilder> reactionPartners, ReactionBuilder reaction, bool educt)
       {
          foreach (var reactionPartner in reactionPartners.Where(reactionPartner => reactionPartner.MoleculeName.Equals(_oldName)))
          {
@@ -306,9 +306,9 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      public void Visit(IApplicationBuilder applicationBuilder)
+      public void Visit(ApplicationBuilder applicationBuilder)
       {
-         Visit(applicationBuilder.DowncastTo<IEventGroupBuilder>());
+         Visit(applicationBuilder.DowncastTo<EventGroupBuilder>());
 
          if (!string.Equals(applicationBuilder.MoleculeName, _oldName))
             return;
@@ -318,13 +318,13 @@ namespace MoBi.Presentation.Tasks
             AppConstants.Commands.EditDescription(ObjectTypes.Application, _appBuilderMoleculeNamePropertyName, _oldName, _newName, applicationBuilder.Name));
       }
 
-      public void Visit(IMoleculeBuilder moleculeBuilder)
+      public void Visit(MoleculeBuilder moleculeBuilder)
       {
          checkObjectBase(moleculeBuilder);
          // Formula is not checked here, only checked in Chache cause double will cause errors in undo
       }
 
-      public void Visit(IEventAssignmentBuilder eventAssignmentBuilder)
+      public void Visit(EventAssignmentBuilder eventAssignmentBuilder)
       {
          Visit(eventAssignmentBuilder as IUsingFormula);
          if (!eventAssignmentBuilder.ObjectPath.Contains(_oldName)) return;
@@ -457,7 +457,7 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      public void Visit(IApplicationMoleculeBuilder applicationMoleculeBuilder)
+      public void Visit(ApplicationMoleculeBuilder applicationMoleculeBuilder)
       {
          checkObjectBase(applicationMoleculeBuilder);
          // possible path adjustments

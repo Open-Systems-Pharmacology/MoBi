@@ -4,7 +4,7 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IEventAssignmentBuilderToEventAssignmentDTOMapper : IMapper<IEventAssignmentBuilder, EventAssignmentBuilderDTO>
+   public interface IEventAssignmentBuilderToEventAssignmentDTOMapper : IMapper<EventAssignmentBuilder, EventAssignmentBuilderDTO>
    {
    }
 
@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Mappers
          _formulaDTOMapper = formulaDTOMapper;
       }
 
-      public EventAssignmentBuilderDTO MapFrom(IEventAssignmentBuilder eventAssignmentBuilder)
+      public EventAssignmentBuilderDTO MapFrom(EventAssignmentBuilder eventAssignmentBuilder)
       {
          var dto = Map(new EventAssignmentBuilderDTO(eventAssignmentBuilder));
          dto.ChangedEntityPath = eventAssignmentBuilder.ObjectPath == null ? string.Empty : eventAssignmentBuilder.ObjectPath.PathAsString;

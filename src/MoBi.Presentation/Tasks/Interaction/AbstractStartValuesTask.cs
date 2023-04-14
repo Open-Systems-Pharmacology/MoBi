@@ -149,7 +149,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract MoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(TBuildingBlock buildingBlock);
 
-      protected abstract ISpatialStructure SpatialStructureReferencedBy(TBuildingBlock buildingBlock);
+      protected abstract SpatialStructure SpatialStructureReferencedBy(TBuildingBlock buildingBlock);
 
       public abstract bool IsEquivalentToOriginal(TStartValue startValue, TBuildingBlock buildingBlock);
 

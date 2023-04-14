@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_RenameContainerCommand : ContextSpecification<RenameContainerCommand>
    {
-      protected ISpatialStructure _spatialStructure;
+      protected SpatialStructure _spatialStructure;
       protected IContainer _container;
       protected NeighborhoodBuilder _neighborhood1;
       protected NeighborhoodBuilder _neighborhood2;
@@ -132,7 +132,7 @@ namespace MoBi.Core.Commands
          base.Context();
          sut = new RenameContainerCommand(_container, "NEW_NAME", _spatialStructure);
          A.CallTo(() => _context.Get<IContainer>(_container.Id)).Returns(_container);
-         A.CallTo(() => _context.Get<ISpatialStructure>(_spatialStructure.Id)).Returns(_spatialStructure);
+         A.CallTo(() => _context.Get<SpatialStructure>(_spatialStructure.Id)).Returns(_spatialStructure);
       }
 
       protected override void Because()

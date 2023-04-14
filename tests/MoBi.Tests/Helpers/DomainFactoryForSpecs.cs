@@ -31,13 +31,13 @@ namespace MoBi.Helpers
          return buildConfiguration;
       }
 
-      public static IMoBiSpatialStructure CreateDefaultSpatialStructure(string buildingBlockName = "Spatial Structure")
+      public static MoBiSpatialStructure CreateDefaultSpatialStructure(string buildingBlockName = "Spatial Structure")
       {
          var spatialStructureFactory = IoC.Resolve<IMoBiSpatialStructureFactory>();
          return spatialStructureFactory.CreateDefault(buildingBlockName);
       }
 
-      public static IMoBiReactionBuildingBlock CreateDefaultReactions(string buildingBlockName = "Reactions")
+      public static MoBiReactionBuildingBlock CreateDefaultReactions(string buildingBlockName = "Reactions")
       {
          var reactionBuildingBlockFactory = IoC.Resolve<IReactionBuildingBlockFactory>();
          return reactionBuildingBlockFactory.Create().WithName(buildingBlockName);
@@ -51,11 +51,11 @@ namespace MoBi.Helpers
 
       public static MoleculeBuildingBlock CreateDefaultMolecules(string buildingBlockName = "Molecules") => createBuildingBlock<MoleculeBuildingBlock>(buildingBlockName);
 
-      public static IPassiveTransportBuildingBlock CreateDefaultPassiveTransports(string buildingBlockName = "PassiveTransports") => createBuildingBlock<IPassiveTransportBuildingBlock>(buildingBlockName);
+      public static PassiveTransportBuildingBlock CreateDefaultPassiveTransports(string buildingBlockName = "PassiveTransports") => createBuildingBlock<PassiveTransportBuildingBlock>(buildingBlockName);
 
-      public static IEventGroupBuildingBlock CreateDefaultEventGroups(string buildingBlockName = "EventGroups") => createBuildingBlock<IEventGroupBuildingBlock>(buildingBlockName);
+      public static EventGroupBuildingBlock CreateDefaultEventGroups(string buildingBlockName = "EventGroups") => createBuildingBlock<EventGroupBuildingBlock>(buildingBlockName);
 
-      public static IObserverBuildingBlock CreateDefaultObservers(string buildingBlockName = "Observers") => createBuildingBlock<IObserverBuildingBlock>(buildingBlockName);
+      public static ObserverBuildingBlock CreateDefaultObservers(string buildingBlockName = "Observers") => createBuildingBlock<ObserverBuildingBlock>(buildingBlockName);
 
       private static T createBuildingBlock<T>(string buildingBlockName) where T : IBuildingBlock => IoC.Resolve<T>().WithName(buildingBlockName);
 
@@ -98,7 +98,7 @@ namespace MoBi.Helpers
       public static MoleculeStartValuesBuildingBlock CreateMoleculeStartValuesFor(SimulationConfiguration buildConfiguration)
       {
          var startValuesCreator = IoC.Resolve<IMoleculeStartValuesCreator>();
-         return startValuesCreator.CreateFrom(buildConfiguration.SpatialStructures.First(), buildConfiguration.Molecules.First());
+         return startValuesCreator.CreateFrom(buildConfiguration.All<SpatialStructure>().First(), buildConfiguration.All<MoleculeBuildingBlock>().First());
       }
 
       public static IDimension AmountDimension => DimensionByName(Constants.Dimension.MOLAR_AMOUNT);

@@ -11,17 +11,17 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
-   public interface IEditTasksForSpatialStructure : IEditTasksForBuildingBlock<IMoBiSpatialStructure>
+   public interface IEditTasksForSpatialStructure : IEditTasksForBuildingBlock<MoBiSpatialStructure>
    {
    }
 
-   public class EditTasksForSpatialStructure : EditTasksForBuildingBlock<IMoBiSpatialStructure>, IEditTasksForSpatialStructure
+   public class EditTasksForSpatialStructure : EditTasksForBuildingBlock<MoBiSpatialStructure>, IEditTasksForSpatialStructure
    {
       public EditTasksForSpatialStructure(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 
-      public override bool EditEntityModal(IMoBiSpatialStructure entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
+      public override bool EditEntityModal(MoBiSpatialStructure entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
          // we edit the properties of the top container, not of Spatial Structure.
          var topContainer = entity.TopContainers.First();

@@ -106,12 +106,12 @@ namespace MoBi.Presentation.Presenter
 
          Simulation = createSimulation(result.Model);
 
-         validateDimensions(Simulation.Model);
+         validateDimensions(Simulation.Model, result.SimulationBuilder);
       }
 
-      private void validateDimensions(IModel model)
+      private void validateDimensions(IModel model, SimulationBuilder simulationBuilder)
       {
-         _dimensionValidator.Validate(model, _simulationConfiguration)
+         _dimensionValidator.Validate(model, simulationBuilder)
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 

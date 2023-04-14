@@ -9,7 +9,7 @@ namespace MoBi.Core.Service
    public abstract class concern_for_MoleculeResolver : ContextSpecification<MoleculeResolver>
    {
       private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private ISpatialStructure _spatialStructure;
+      private SpatialStructure _spatialStructure;
       private MoleculeStartValue _moleculeStartValue;
 
       protected ContainerMode _containerMode = ContainerMode.Physical;
@@ -17,7 +17,7 @@ namespace MoBi.Core.Service
       protected string _moleculeName = "name";
       protected MoleculeBuilder _builder;
       protected ObjectPath _containerPath;
-      protected IMoleculeBuilder _result;
+      protected MoleculeBuilder _result;
 
       protected override void Context()
       {

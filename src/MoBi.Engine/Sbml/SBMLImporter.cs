@@ -9,8 +9,8 @@ namespace MoBi.Engine.Sbml
 {
    public interface ISBMLImporter
    {
-      IMoBiSpatialStructure GetMainSpatialStructure(Model model);
-      IMoBiReactionBuildingBlock GetMainReactionBuildingBlock();
+      MoBiSpatialStructure GetMainSpatialStructure(Model model);
+      MoBiReactionBuildingBlock GetMainReactionBuildingBlock();
       IContainer GetMainTopContainer();
       IContainer GetEventsTopContainer();
       MoleculeBuildingBlock GetMainMoleculeBuildingBlock();
@@ -43,7 +43,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the MoBi Spatial Structure generated for the SBML Import.
       /// </summary>
-      public IMoBiSpatialStructure GetMainSpatialStructure(Model model)
+      public MoBiSpatialStructure GetMainSpatialStructure(Model model)
       {
          return _sbmlProject.SpatialStructureCollection.FindByName(SBMLConstants.SBML_MODEL + model.getName());
       }
@@ -51,7 +51,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the MoBi Reaction Building Block generated for the SBML Import.
       /// </summary>
-      public IMoBiReactionBuildingBlock GetMainReactionBuildingBlock()
+      public MoBiReactionBuildingBlock GetMainReactionBuildingBlock()
       {
          return _sbmlProject.ReactionBlockCollection.FindByName(SBMLConstants.SBML_REACTION_BB);
       }
@@ -124,7 +124,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the MoBi Molecule by it's name.
       /// </summary>
-      protected IMoleculeBuilder GetMoleculeByName(string moleculeName)
+      protected MoleculeBuilder GetMoleculeByName(string moleculeName)
       {
          var mbEnumerator = _sbmlProject.MoleculeBlockCollection.GetEnumerator();
          while (mbEnumerator.MoveNext())

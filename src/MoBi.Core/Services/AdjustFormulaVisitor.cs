@@ -27,7 +27,7 @@ namespace MoBi.Core.Services
       bool Canceled { get; }
    }
 
-   public class AdjustFormulasVisitor : IVisitor<IMoleculeBuilder>, IVisitor<IUsingFormula>, IAdjustFormulasVisitor, IVisitor<IParameter>
+   public class AdjustFormulasVisitor : IVisitor<MoleculeBuilder>, IVisitor<IUsingFormula>, IAdjustFormulasVisitor, IVisitor<IParameter>
    {
       private IFormulaCache _formulaCache;
       private IBuildingBlock _buildingBlock;
@@ -66,7 +66,7 @@ namespace MoBi.Core.Services
          get { return _canceled; }
       }
 
-      public void Visit(IMoleculeBuilder moleculeBuilder)
+      public void Visit(MoleculeBuilder moleculeBuilder)
       {
          if (_canceled) return;
          moleculeBuilder.DefaultStartFormula = checkFormula(_formulaCache, moleculeBuilder.DefaultStartFormula);

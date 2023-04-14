@@ -7,9 +7,9 @@ namespace MoBi.Presentation.DTO
    public class DummyReactionDTO : ObjectBaseDTO, IDummyContainer
    {
       public IContainer StructureParent { get; set; }
-      public IReactionBuilder ReactionBuilder { get; }
+      public ReactionBuilder ReactionBuilder { get; }
 
-      public DummyReactionDTO(IReactionBuilder reactionBuilder) : base(reactionBuilder)
+      public DummyReactionDTO(ReactionBuilder reactionBuilder) : base(reactionBuilder)
       {
          ReactionBuilder = reactionBuilder;
          Id = ShortGuid.NewGuid();

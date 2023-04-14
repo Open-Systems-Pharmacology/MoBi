@@ -60,7 +60,7 @@ namespace MoBi.Core
    {
       private IContainer _objectBase;
       private IEnumerable<IStringChange> _changes;
-      private ISpatialStructure _spatialStructure;
+      private SpatialStructure _spatialStructure;
 
       protected override void Context()
       {
@@ -310,9 +310,9 @@ namespace MoBi.Core
 
    internal class When_visiting_an_observer_builder : concern_for_CheckNameVisitor
    {
-      private IObserverBuilder _observer;
+      private ObserverBuilder _observer;
       private IEnumerable<IStringChange> _changes;
-      private IObserverBuildingBlock _observerBuildingBlock;
+      private ObserverBuildingBlock _observerBuildingBlock;
 
       protected override void Context()
       {
@@ -333,14 +333,14 @@ namespace MoBi.Core
       {
          _changes.Count().ShouldBeEqualTo(1);
          var change = _changes.First();
-         change.ChangeCommand.ShouldBeAnInstanceOf<EditTagCommand<IObserverBuilder>>();
+         change.ChangeCommand.ShouldBeAnInstanceOf<EditTagCommand<ObserverBuilder>>();
       }
    }
 
    internal class When_checking_for_dependent_changes_in_a_transport_builder : concern_for_CheckNameVisitor
    {
       private IEnumerable<IStringChange> _resultChanges;
-      private IPassiveTransportBuildingBlock _test;
+      private PassiveTransportBuildingBlock _test;
       private readonly string _oldName = "OldName";
 
       protected override void Context()
@@ -499,7 +499,7 @@ namespace MoBi.Core
    {
       private IReadOnlyList<IStringChange> _resultChanges;
       private readonly string _oldName = "OldName";
-      private IApplicationBuilder _applicationBuilder;
+      private ApplicationBuilder _applicationBuilder;
 
       protected override void Context()
       {

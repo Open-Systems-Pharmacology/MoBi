@@ -6,9 +6,9 @@ namespace MoBi.Presentation.DTO
 {
    public class ReactionBuilderDTO : ReactionInfoDTO
    {
-      public IReactionBuilder ReactionBuilder { get; }
+      public ReactionBuilder ReactionBuilder { get; }
 
-      public ReactionBuilderDTO(IReactionBuilder reactionBuilder) : base(reactionBuilder)
+      public ReactionBuilderDTO(ReactionBuilder reactionBuilder) : base(reactionBuilder)
       {
          ReactionBuilder = reactionBuilder;
       }
@@ -41,9 +41,9 @@ namespace MoBi.Presentation.DTO
 
    public class ReactionPartnerBuilderDTO : IViewItem
    {
-      public IReactionPartnerBuilder PartnerBuilder { get; }
+      public ReactionPartnerBuilder PartnerBuilder { get; }
 
-      public ReactionPartnerBuilderDTO(IReactionPartnerBuilder reactionPartnerBuilder)
+      public ReactionPartnerBuilderDTO(ReactionPartnerBuilder reactionPartnerBuilder)
       {
          PartnerBuilder = reactionPartnerBuilder;
       }

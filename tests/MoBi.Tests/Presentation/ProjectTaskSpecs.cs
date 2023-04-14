@@ -63,8 +63,8 @@ namespace MoBi.Presentation
       private MoBiProject _project;
       private SimulationTransfer _simulationTransfer;
       private IMoBiSimulation _simulation;
-      private IPassiveTransportBuildingBlock _newBuildingBlock;
-      private IMoBiReactionBuildingBlock _existingBuildingBlock;
+      private PassiveTransportBuildingBlock _newBuildingBlock;
+      private MoBiReactionBuildingBlock _existingBuildingBlock;
 
       protected override void Context()
       {
@@ -74,8 +74,8 @@ namespace MoBi.Presentation
          _simulationTransfer.Favorites = new Favorites { "Fav1", "Fav2" };
          _simulation = A.Fake<IMoBiSimulation>();
          _simulationTransfer.Simulation = _simulation;
-         _newBuildingBlock = A.Fake<IPassiveTransportBuildingBlock>();
-         _existingBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>().WithId("Existing");
+         _newBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();
+         _existingBuildingBlock = A.Fake<MoBiReactionBuildingBlock>().WithId("Existing");
          _project.AddBuildingBlock(_existingBuildingBlock);
          
          var simulationConfiguration = new SimulationConfiguration();
@@ -83,7 +83,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSimulation, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, null, null)).Returns("File");
          A.CallTo(() => _serializationTask.Load<SimulationTransfer>(A<string>._, A<bool>._)).Returns(_simulationTransfer);
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _nameCorrector.CorrectName(A<IEnumerable<IPassiveTransportBuildingBlock>>._, _newBuildingBlock)).Returns(true);
+         A.CallTo(() => _nameCorrector.CorrectName(A<IEnumerable<PassiveTransportBuildingBlock>>._, _newBuildingBlock)).Returns(true);
       }
 
       protected override void Because()
@@ -320,12 +320,12 @@ namespace MoBi.Presentation
       private MoBiProject _project;
       private IWithIdRepository _objectBaseRepository;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private IMoBiReactionBuildingBlock _moBiReactionBuildingBlock;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiReactionBuildingBlock _moBiReactionBuildingBlock;
+      private MoBiSpatialStructure _spatialStructure;
       private IContainer _topContainer;
-      private IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
-      private IObserverBuildingBlock _observerBuildingBlock;
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private PassiveTransportBuildingBlock _passiveTransportBuildingBlock;
+      private ObserverBuildingBlock _observerBuildingBlock;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private SimulationSettings _simulationSettings;
 
       protected override void Context()
@@ -333,9 +333,9 @@ namespace MoBi.Presentation
          base.Context();
          _project = A.Fake<MoBiProject>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
-         _spatialStructure = A.Fake<IMoBiSpatialStructure>();
+         _spatialStructure = A.Fake<MoBiSpatialStructure>();
          _simulationSettings = A.Fake<SimulationSettings>();
-         _moBiReactionBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>();
+         _moBiReactionBuildingBlock = A.Fake<MoBiReactionBuildingBlock>();
          _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.Create<MoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
@@ -344,12 +344,12 @@ namespace MoBi.Presentation
          A.CallTo(() => _simulationSettingsFactory.CreateDefault()).Returns(_simulationSettings);
          _topContainer = A.Fake<IContainer>();
          A.CallTo(() => _context.Create<IContainer>()).Returns(_topContainer);
-         _passiveTransportBuildingBlock = A.Fake<IPassiveTransportBuildingBlock>();
-         A.CallTo(() => _context.Create<IPassiveTransportBuildingBlock>()).Returns(_passiveTransportBuildingBlock);
-         _observerBuildingBlock = A.Fake<IObserverBuildingBlock>();
-         A.CallTo(() => _context.Create<IObserverBuildingBlock>()).Returns(_observerBuildingBlock);
-         _eventGroupBuildingBlock = A.Fake<IEventGroupBuildingBlock>();
-         A.CallTo(() => _context.Create<IEventGroupBuildingBlock>()).Returns(_eventGroupBuildingBlock);
+         _passiveTransportBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();
+         A.CallTo(() => _context.Create<PassiveTransportBuildingBlock>()).Returns(_passiveTransportBuildingBlock);
+         _observerBuildingBlock = A.Fake<ObserverBuildingBlock>();
+         A.CallTo(() => _context.Create<ObserverBuildingBlock>()).Returns(_observerBuildingBlock);
+         _eventGroupBuildingBlock = A.Fake<EventGroupBuildingBlock>();
+         A.CallTo(() => _context.Create<EventGroupBuildingBlock>()).Returns(_eventGroupBuildingBlock);
          A.CallTo(() => _context.ObjectRepository).Returns(_objectBaseRepository);
       }
 

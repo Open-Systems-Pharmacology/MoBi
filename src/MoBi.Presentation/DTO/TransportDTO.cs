@@ -5,7 +5,7 @@ namespace MoBi.Presentation.DTO
 {
    public class TransportDTO : ObjectBaseDTO
    {
-      public TransportDTO(ITransport transport) : base(transport)
+      public TransportDTO(Transport transport) : base(transport)
       {
       }
 

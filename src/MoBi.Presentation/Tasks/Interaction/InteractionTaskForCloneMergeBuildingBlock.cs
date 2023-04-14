@@ -8,8 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class InteractionTaskForCloneMergeBuildingBlock<TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<TBuildingBlock, TBuilder>
-      where TBuilder : class, IContainer 
-      where TBuildingBlock : class, IBuildingBlock<TBuilder>
+      where TBuilder : class, IContainer, IBuilder where TBuildingBlock : class, IBuildingBlock<TBuilder>
    {
       protected IIgnoreReplaceCloneMergeManager<TBuilder> _ignoreReplaceCloneMergeManager;
 

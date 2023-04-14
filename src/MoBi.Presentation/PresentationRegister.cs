@@ -107,7 +107,7 @@ namespace MoBi.Presentation
          container.Register(typeof(ICreateBuildingBlockMergePresenter<>), typeof(CreateBuildingBlockMergePresenter<>));
          container.Register<ISelectManyPresenter<XElement>, SelectXmlElementPresenter>();
          container.Register<ISelectManyPresenter<OSPSuite.Core.Domain.IContainer>, SelectObjectBasePresenter<OSPSuite.Core.Domain.IContainer>>();
-         container.Register<ISelectManyPresenter<IEventGroupBuilder>, SelectObjectBasePresenter<IEventGroupBuilder>>();
+         container.Register<ISelectManyPresenter<EventGroupBuilder>, SelectObjectBasePresenter<EventGroupBuilder>>();
 
          container.Register<ICreateStartValuesPresenter<MoleculeStartValuesBuildingBlock>, CreateMoleculeStartValuesPresenter>();
          container.Register<ICreateStartValuesPresenter<ParameterStartValuesBuildingBlock>, CreateParameterStartValuesPresenter>();
@@ -142,7 +142,7 @@ namespace MoBi.Presentation
       private void registerDiagramPresenter(IContainer container)
       {
          container.Register<ISimulationDiagramPresenter, IMoBiBaseDiagramPresenter<IMoBiSimulation>, IBaseDiagramPresenter<IMoBiSimulation>, SimulationDiagramPresenter>(LifeStyle.Transient);
-         container.Register<ISpatialStructureDiagramPresenter, IMoBiBaseDiagramPresenter<IMoBiSpatialStructure>, IBaseDiagramPresenter<IMoBiSpatialStructure>, SpatialStructureDiagramPresenter>(LifeStyle.Transient);
+         container.Register<ISpatialStructureDiagramPresenter, IMoBiBaseDiagramPresenter<MoBiSpatialStructure>, IBaseDiagramPresenter<MoBiSpatialStructure>, SpatialStructureDiagramPresenter>(LifeStyle.Transient);
       }
 
       private static void registerContextMenuAndCommands(IContainer container)
@@ -204,23 +204,23 @@ namespace MoBi.Presentation
          });
 
          container.Register<IEditTaskFor<InteractionContainer>, EditTaskForInteractionContainer>();
-         container.Register<IEditTaskFor<IMoleculeBuilder>, EditTasksForMoleculeBuilder>();
-         container.Register<IEditTaskFor<IReactionBuilder>, EditTasksForReactionBuilder>();
-         container.Register<IEditTaskFor<ITransportBuilder>, EditTasksForTransportBuilder>();
-         container.Register<IEditTaskFor<IEventGroupBuilder>, EditTasksForEventGroupBuilder>();
-         container.Register<IEditTaskFor<IApplicationBuilder>, EditTasksForApplicationBuilder>();
-         container.Register<IEditTaskFor<IContainerObserverBuilder>, EditTasksForContainerObserverBuilder>();
-         container.Register<IEditTaskFor<IAmountObserverBuilder>, EditTasksForAmountObserverBuilder>();
+         container.Register<IEditTaskFor<MoleculeBuilder>, EditTasksForMoleculeBuilder>();
+         container.Register<IEditTaskFor<ReactionBuilder>, EditTasksForReactionBuilder>();
+         container.Register<IEditTaskFor<TransportBuilder>, EditTasksForTransportBuilder>();
+         container.Register<IEditTaskFor<EventGroupBuilder>, EditTasksForEventGroupBuilder>();
+         container.Register<IEditTaskFor<ApplicationBuilder>, EditTasksForApplicationBuilder>();
+         container.Register<IEditTaskFor<ContainerObserverBuilder>, EditTasksForContainerObserverBuilder>();
+         container.Register<IEditTaskFor<AmountObserverBuilder>, EditTasksForAmountObserverBuilder>();
          container.Register<IEditTaskFor<OSPSuite.Core.Domain.IContainer>, EditTaskForContainer>();
          container.Register<IEditTaskFor<IDistributedParameter>, EditTasksForDistributedParameter>();
          container.Register<IEditTaskFor<IParameter>, EditTasksForParameter>();
-         container.Register<IEditTaskFor<IEventBuilder>, EditTaskForEventBuilder>();
+         container.Register<IEditTaskFor<EventBuilder>, EditTaskForEventBuilder>();
          container.Register<IEditTaskFor<TransporterMoleculeContainer>, EditTasksForTransporterMoleculeContainer>();
-         container.Register<IEditTaskFor<IApplicationMoleculeBuilder>, EditTaskForApplicationMoleculeBuilder>();
-         container.Register<IEditTaskFor<IEventAssignmentBuilder>, EditTaskForEventAssignmentBuilder>();
+         container.Register<IEditTaskFor<ApplicationMoleculeBuilder>, EditTaskForApplicationMoleculeBuilder>();
+         container.Register<IEditTaskFor<EventAssignmentBuilder>, EditTaskForEventAssignmentBuilder>();
          container.Register<IEditTaskFor<NeighborhoodBuilder>, EditTaskForNeighborhoodBuilder>();
          container.Register<IEditTaskFor<IMoBiSimulation>, EditTasksForSimulation>();
-         container.Register<IEditTaskFor<IMoBiSpatialStructure>, EditTasksForSpatialStructure>();
+         container.Register<IEditTaskFor<MoBiSpatialStructure>, EditTasksForSpatialStructure>();
          container.Register<IEditTaskFor<ExpressionProfileBuildingBlock>, EditTasksForExpressionProfileBuildingBlock>();
          container.Register(typeof(IEditTasksForBuildingBlock<>), typeof(EditTasksForBuildingBlock<>));
          container.Register(typeof(IEditTaskFor<>), typeof(EditTasksForBuildingBlock<>));
@@ -238,11 +238,11 @@ namespace MoBi.Presentation
          container.Register<IContextMenuForBuildingBlock<MoleculeStartValuesBuildingBlock>, ContextMenuForMoleculeStartValuesBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<ExpressionProfileBuildingBlock>, ContextMenuForExpressionProfileBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IndividualBuildingBlock>, ContextMenuForIndividualBuildingBlock>();
-         container.Register<IContextMenuForBuildingBlock<IMoBiReactionBuildingBlock>, ContextMenuForMergableBuildingBlock<IMoBiReactionBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<IObserverBuildingBlock>, ContextMenuForMergableBuildingBlock<IObserverBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<IPassiveTransportBuildingBlock>, ContextMenuForMergableBuildingBlock<IPassiveTransportBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<MoBiReactionBuildingBlock>, ContextMenuForMergableBuildingBlock<MoBiReactionBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<ObserverBuildingBlock>, ContextMenuForMergableBuildingBlock<ObserverBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<PassiveTransportBuildingBlock>, ContextMenuForMergableBuildingBlock<PassiveTransportBuildingBlock>>();
          container.Register<IContextMenuForBuildingBlock<MoleculeBuildingBlock>, ContextMenuForMergableBuildingBlock<MoleculeBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<IEventGroupBuildingBlock>, ContextMenuForMergableBuildingBlock<IEventGroupBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<EventGroupBuildingBlock>, ContextMenuForMergableBuildingBlock<EventGroupBuildingBlock>>();
 
          container.Register(typeof(IContextMenuForBuildingBlock<>), typeof(ContextMenuForBuildingBlock<>));
          container.Register(typeof(IContextMenuFor<>), typeof(ContextMenuFor<>));
@@ -250,11 +250,11 @@ namespace MoBi.Presentation
 
          //Generic context menu factory: One for each building block type
          registerContextMenuForBuildingBlockFactory<MoleculeBuildingBlock>(container);
-         registerContextMenuForBuildingBlockFactory<IMoBiReactionBuildingBlock>(container);
-         registerContextMenuForBuildingBlockFactory<IPassiveTransportBuildingBlock>(container);
-         registerContextMenuForBuildingBlockFactory<IMoBiSpatialStructure>(container);
-         registerContextMenuForBuildingBlockFactory<IObserverBuildingBlock>(container);
-         registerContextMenuForBuildingBlockFactory<IEventGroupBuildingBlock>(container);
+         registerContextMenuForBuildingBlockFactory<MoBiReactionBuildingBlock>(container);
+         registerContextMenuForBuildingBlockFactory<PassiveTransportBuildingBlock>(container);
+         registerContextMenuForBuildingBlockFactory<MoBiSpatialStructure>(container);
+         registerContextMenuForBuildingBlockFactory<ObserverBuildingBlock>(container);
+         registerContextMenuForBuildingBlockFactory<EventGroupBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<MoleculeStartValuesBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<ExpressionProfileBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<IndividualBuildingBlock>(container);

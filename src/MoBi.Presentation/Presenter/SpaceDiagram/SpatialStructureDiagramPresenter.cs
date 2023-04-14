@@ -19,11 +19,11 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter.SpaceDiagram
 {
-   public interface ISpatialStructureDiagramPresenter : IMoBiBaseDiagramPresenter<IMoBiSpatialStructure>, IPresenter<ISpatialStructureDiagramView>
+   public interface ISpatialStructureDiagramPresenter : IMoBiBaseDiagramPresenter<MoBiSpatialStructure>, IPresenter<ISpatialStructureDiagramView>
    {
    }
 
-   public class SpatialStructureDiagramPresenter : MoBiBaseDiagramPresenter<ISpatialStructureDiagramView, ISpatialStructureDiagramPresenter, IMoBiSpatialStructure>, ISpatialStructureDiagramPresenter
+   public class SpatialStructureDiagramPresenter : MoBiBaseDiagramPresenter<ISpatialStructureDiagramView, ISpatialStructureDiagramPresenter, MoBiSpatialStructure>, ISpatialStructureDiagramPresenter
    {
       private readonly IMoBiConfiguration _configuration;
 
@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
          _neighborhoodPopupMenu = new PopupMenuFullEntityNode<NeighborhoodBuilder>(this, context, runOptions);
       }
 
-      public override void Edit(IMoBiSpatialStructure spatialStructure)
+      public override void Edit(MoBiSpatialStructure spatialStructure)
       {
          base.Edit(spatialStructure);
 
@@ -84,7 +84,7 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
          }
       }
 
-      private IContainer firstTopContainerWithNode(IMoBiSpatialStructure spatialStructure)
+      private IContainer firstTopContainerWithNode(MoBiSpatialStructure spatialStructure)
       {
          return spatialStructure.TopContainers.FirstOrDefault(topContainer => DiagramModel.GetAllChildren<IBaseNode>().Any(node => string.Equals(node.Id, topContainer.Id)));
       }

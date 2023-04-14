@@ -81,27 +81,27 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected virtual IMenuBarItem CreateRemoveItemFor(TransporterMoleculeContainer objectToEdit)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithRemoveCommand(objectToEdit.ParentContainer.DowncastTo<IMoleculeBuilder>(),objectToEdit)
+            .WithRemoveCommand(objectToEdit.ParentContainer.DowncastTo<MoleculeBuilder>(),objectToEdit)
             .WithIcon(ApplicationIcons.Delete);
       }
       protected virtual IMenuBarItem CreateAddNewTransportFor(TransporterMoleculeContainer selectedObject)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew("Transport"))
-            .WithCommandFor<AddNewCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
+            .WithCommandFor<AddNewCommandFor<TransporterMoleculeContainer, TransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
             .WithIcon(ApplicationIcons.Add);
       }
 
       protected virtual IMenuBarItem CreateAddExistingTransportFor(TransporterMoleculeContainer selectedObject)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting("Transport"))
-            .WithCommandFor<AddExistingCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
+            .WithCommandFor<AddExistingCommandFor<TransporterMoleculeContainer, TransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
             .WithIcon(ApplicationIcons.PKMLLoad);
       }
 
       protected virtual IMenuBarItem CreateAddExistingFromTemplateTransportFor(TransporterMoleculeContainer selectedObject)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate("Transport"))
-            .WithCommandFor<AddExistingFromTemplateCommandFor<TransporterMoleculeContainer, ITransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
+            .WithCommandFor<AddExistingFromTemplateCommandFor<TransporterMoleculeContainer, TransportBuilder>, TransporterMoleculeContainer>(selectedObject, _container)
             .WithIcon(ApplicationIcons.LoadFromTemplate);
       }
    }

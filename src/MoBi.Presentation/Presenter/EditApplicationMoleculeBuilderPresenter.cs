@@ -18,22 +18,22 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditApplicationMoleculeBuilderPresenter : IPresenterWithFormulaCache, ICanEditPropertiesPresenter, IEditPresenter<IApplicationMoleculeBuilder>, ICreatePresenter<IApplicationMoleculeBuilder>
+   public interface IEditApplicationMoleculeBuilderPresenter : IPresenterWithFormulaCache, ICanEditPropertiesPresenter, IEditPresenter<ApplicationMoleculeBuilder>, ICreatePresenter<ApplicationMoleculeBuilder>
    {
       ObjectPath SetObjectPath();
    }
 
-   public class EditApplicationMoleculeBuilderPresenter : AbstractEntityEditPresenter<IEditApplicationMoleculeBuilderView, IEditApplicationMoleculeBuilderPresenter, IApplicationMoleculeBuilder>, IEditApplicationMoleculeBuilderPresenter
+   public class EditApplicationMoleculeBuilderPresenter : AbstractEntityEditPresenter<IEditApplicationMoleculeBuilderView, IEditApplicationMoleculeBuilderPresenter, ApplicationMoleculeBuilder>, IEditApplicationMoleculeBuilderPresenter
    {
-      private IApplicationMoleculeBuilder _applicationMoleculeBuilder;
-      private readonly IEditTaskFor<IApplicationMoleculeBuilder> _editTask;
+      private ApplicationMoleculeBuilder _applicationMoleculeBuilder;
+      private readonly IEditTaskFor<ApplicationMoleculeBuilder> _editTask;
       private readonly IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper _applicationMoleculeMapper;
       private readonly IEditFormulaPresenter _editFormulaPresenter;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IMoBiContext _context;
       private readonly ISelectReferencePresenterAtApplicationBuilder _selectItemPresenter;
 
-      public EditApplicationMoleculeBuilderPresenter(IEditApplicationMoleculeBuilderView view, IEditTaskFor<IApplicationMoleculeBuilder> editTask,
+      public EditApplicationMoleculeBuilderPresenter(IEditApplicationMoleculeBuilderView view, IEditTaskFor<ApplicationMoleculeBuilder> editTask,
          IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper applicationMoleculeMapper, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
          IEditFormulaPresenter editFormulaPresenter, IMoBiContext context, ISelectReferencePresenterAtApplicationBuilder selectItemPresenter)
          : base(view)
@@ -49,23 +49,23 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editFormulaPresenter, _selectItemPresenter);
       }
 
-      private IApplicationBuilder getParent(IApplicationMoleculeBuilder applicationMoleculeBuilder, IBuildingBlock buildingBlock)
+      private ApplicationBuilder getParent(ApplicationMoleculeBuilder applicationMoleculeBuilder, IBuildingBlock buildingBlock)
       {
          var eventGroupBuilding = getEventGroupBuilding(buildingBlock);
 
-         return eventGroupBuilding.Select(x => x.GetAllContainersAndSelf<IApplicationBuilder>()
+         return eventGroupBuilding.Select(x => x.GetAllContainersAndSelf<ApplicationBuilder>()
             .FirstOrDefault(ab => ab.Molecules.Contains(applicationMoleculeBuilder)))
             .FirstOrDefault(applicationBuilder => applicationBuilder != null);
       }
 
-      private IEventGroupBuildingBlock getEventGroupBuilding(IBuildingBlock buildingBlockWithFormulaCache)
+      private EventGroupBuildingBlock getEventGroupBuilding(IBuildingBlock buildingBlockWithFormulaCache)
       {
-         return buildingBlockWithFormulaCache.DowncastTo<IEventGroupBuildingBlock>();
+         return buildingBlockWithFormulaCache.DowncastTo<EventGroupBuildingBlock>();
       }
 
       public override object Subject => _applicationMoleculeBuilder;
 
-      public override void Edit(IApplicationMoleculeBuilder applicationMoleculeBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
+      public override void Edit(ApplicationMoleculeBuilder applicationMoleculeBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _applicationMoleculeBuilder = applicationMoleculeBuilder;
          _editFormulaPresenter.Init(_applicationMoleculeBuilder, BuildingBlock);
@@ -103,7 +103,7 @@ namespace MoBi.Presentation.Presenter
             if (modalPresenter.Show())
             {
                var path = _selectItemPresenter.GetSelection();
-               SetPropertyValueFromView(MoBiReflectionHelper.PropertyName<IApplicationMoleculeBuilder>(x => x.RelativeContainerPath), path, _applicationMoleculeBuilder.RelativeContainerPath);
+               SetPropertyValueFromView(MoBiReflectionHelper.PropertyName<ApplicationMoleculeBuilder>(x => x.RelativeContainerPath), path, _applicationMoleculeBuilder.RelativeContainerPath);
                return path;
             }
          }

@@ -12,11 +12,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    internal class ContextMenuForEductBuilder : ContextMenuBase
    {
-      private readonly IReactionBuilder _reactionBuilder;
-      private readonly IReactionPartnerBuilder _reactionPartnerBuilder;
+      private readonly ReactionBuilder _reactionBuilder;
+      private readonly ReactionPartnerBuilder _reactionPartnerBuilder;
       private readonly IContainer _container;
 
-      public ContextMenuForEductBuilder(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder, IContainer container)
+      public ContextMenuForEductBuilder(ReactionBuilder reactionBuilder, ReactionPartnerBuilder reactionPartnerBuilder, IContainer container)
       {
          _reactionBuilder = reactionBuilder;
          _reactionPartnerBuilder = reactionPartnerBuilder;
@@ -31,13 +31,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          yield return createAddItem(_reactionBuilder);
       }
 
-      private IMenuBarItem createAddItem(IReactionBuilder reactionBuilder)
+      private IMenuBarItem createAddItem(ReactionBuilder reactionBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.New.WithEllipsis())
-            .WithIcon(ApplicationIcons.Create).WithCommandFor<AddEductUICommand, IReactionBuilder>(reactionBuilder, _container);
+            .WithIcon(ApplicationIcons.Create).WithCommandFor<AddEductUICommand, ReactionBuilder>(reactionBuilder, _container);
       }
 
-      private IMenuBarItem createRemoveItem(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder)
+      private IMenuBarItem createRemoveItem(ReactionBuilder reactionBuilder, ReactionPartnerBuilder reactionPartnerBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)

@@ -22,7 +22,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         var buildingBlock = _activeSubjectRetriever.Active<IMoBiSpatialStructure>();
+         var buildingBlock = _activeSubjectRetriever.Active<MoBiSpatialStructure>();
          _context.AddToHistory(_editTasksForTopContainer.Remove(Subject, buildingBlock,buildingBlock));
       }
    }

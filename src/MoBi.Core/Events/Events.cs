@@ -110,10 +110,10 @@ namespace MoBi.Core.Events
 
    public class AddedReactionPartnerEvent
    {
-      public IReactionPartnerBuilder ReactionPartnerBuilder { get; set; }
-      public IReactionBuilder Reaction { get; set; }
+      public ReactionPartnerBuilder ReactionPartnerBuilder { get; set; }
+      public ReactionBuilder Reaction { get; set; }
 
-      public AddedReactionPartnerEvent(IReactionPartnerBuilder value, IReactionBuilder reaction)
+      public AddedReactionPartnerEvent(ReactionPartnerBuilder value, ReactionBuilder reaction)
       {
          ReactionPartnerBuilder = value;
          Reaction = reaction;
@@ -122,10 +122,10 @@ namespace MoBi.Core.Events
 
    public class RemovedReactionPartnerEvent
    {
-      public IReactionPartnerBuilder ReactionPartnerBuilder { get; set; }
-      public IReactionBuilder Reaction { get; set; }
+      public ReactionPartnerBuilder ReactionPartnerBuilder { get; set; }
+      public ReactionBuilder Reaction { get; set; }
 
-      public RemovedReactionPartnerEvent(IReactionPartnerBuilder reactionPartnerBuilder, IReactionBuilder reaction)
+      public RemovedReactionPartnerEvent(ReactionPartnerBuilder reactionPartnerBuilder, ReactionBuilder reaction)
       {
          ReactionPartnerBuilder = reactionPartnerBuilder;
          Reaction = reaction;

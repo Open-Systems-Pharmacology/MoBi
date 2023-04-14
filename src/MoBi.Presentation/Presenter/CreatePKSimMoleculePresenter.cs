@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ICreatePKSimMoleculePresenter : IDisposablePresenter
    {
-      IMoleculeBuilder CreateMolecule(MoleculeBuildingBlock moleculeBuildingBlock);
+      MoleculeBuilder CreateMolecule(MoleculeBuildingBlock moleculeBuildingBlock);
       void SetParameterUnit(ParameterDTO parameterDTO, Unit unit);
       void SetParameterValue(ParameterDTO parameterDTO, double newDisplayValue);
    }
@@ -31,14 +31,14 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderDTOMapper;
       private readonly ISerializationTask _serializationTask;
       private readonly IQuantityTask _quantityTask;
-      private readonly IEditTaskFor<IMoleculeBuilder> _editTask;
-      private IMoleculeBuilder _molecule;
+      private readonly IEditTaskFor<MoleculeBuilder> _editTask;
+      private MoleculeBuilder _molecule;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
       private MoleculeBuilderDTO _moleculeDTO;
 
       public CreatePKSimMoleculePresenter(ICreatePKSimMoleculeView view, IMoBiConfiguration configuration,
          IParameterToParameterDTOMapper parameterDTOMapper, IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderDTOMapper,
-         ISerializationTask serializationTask, IQuantityTask quantityTask, IEditTaskFor<IMoleculeBuilder> editTask) : base(view)
+         ISerializationTask serializationTask, IQuantityTask quantityTask, IEditTaskFor<MoleculeBuilder> editTask) : base(view)
       {
          _configuration = configuration;
          _parameterDTOMapper = parameterDTOMapper;
@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Presenter
          _editTask = editTask;
       }
 
-      public IMoleculeBuilder CreateMolecule(MoleculeBuildingBlock moleculeBuildingBlock)
+      public MoleculeBuilder CreateMolecule(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          _moleculeBuildingBlock = moleculeBuildingBlock;
          _molecule = loadMoleculeFromTemplate();
@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Presenter
          return _molecule;
       }
 
-      private MoleculeBuilderDTO moleculeBuilderDTOFrom(IMoleculeBuilder molecule)
+      private MoleculeBuilderDTO moleculeBuilderDTOFrom(MoleculeBuilder molecule)
       {
          var dto = _moleculeBuilderDTOMapper.MapFrom(molecule);
          dto.Parameters = allTemplateParametersFor(molecule);
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Presenter
          _quantityTask.SetQuantityDisplayValue(parameterFrom(parameterDTO), newDisplayValue, _moleculeBuildingBlock);
       }
 
-      private IEnumerable<ParameterDTO> allTemplateParametersFor(IMoleculeBuilder molecule)
+      private IEnumerable<ParameterDTO> allTemplateParametersFor(MoleculeBuilder molecule)
       {
          var templateParameter = molecule.Parameters.Where(isTemplateParameter).ToList();
          return templateParameter.MapAllUsing(_parameterDTOMapper).Cast<ParameterDTO>();
@@ -97,9 +97,9 @@ namespace MoBi.Presentation.Presenter
          return parameter.Visible && parameter.Formula.IsConstant() && double.IsNaN(parameter.Value);
       }
 
-      private IMoleculeBuilder loadMoleculeFromTemplate()
+      private MoleculeBuilder loadMoleculeFromTemplate()
       {
-         return _serializationTask.Load<IMoleculeBuilder>(_configuration.StandardMoleculeTemplateFile, resetIds: true);
+         return _serializationTask.Load<MoleculeBuilder>(_configuration.StandardMoleculeTemplateFile, resetIds: true);
       }
 
       public override void ViewChanged()

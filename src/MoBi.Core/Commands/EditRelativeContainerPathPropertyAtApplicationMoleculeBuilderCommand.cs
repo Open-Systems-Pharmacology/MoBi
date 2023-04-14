@@ -9,12 +9,12 @@ namespace MoBi.Core.Commands
 {
    public class EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
-      private IApplicationMoleculeBuilder _applicationMoleculeBuilder;
+      private ApplicationMoleculeBuilder _applicationMoleculeBuilder;
       private readonly ObjectPath _newPath;
       private readonly ObjectPath _oldPath;
       private readonly string _applicationMoleculeBuilderId;
 
-      public EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(IApplicationMoleculeBuilder applicationMoleculeBuilder, ObjectPath newPath, IBuildingBlock buildingBlock)
+      public EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(ApplicationMoleculeBuilder applicationMoleculeBuilder, ObjectPath newPath, IBuildingBlock buildingBlock)
          : base(buildingBlock)
       {
          _applicationMoleculeBuilder = applicationMoleculeBuilder;
@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _applicationMoleculeBuilder = context.Get<IApplicationMoleculeBuilder>(_applicationMoleculeBuilderId);
+         _applicationMoleculeBuilder = context.Get<ApplicationMoleculeBuilder>(_applicationMoleculeBuilderId);
       }
    }
 }

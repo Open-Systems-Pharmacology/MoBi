@@ -18,7 +18,7 @@ namespace MoBi.Core
    {
       private ICloneManager _cloneManager;
       private ISpatialStructureDiagramManager _diagramManager;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
 
       protected override void Context()
       {

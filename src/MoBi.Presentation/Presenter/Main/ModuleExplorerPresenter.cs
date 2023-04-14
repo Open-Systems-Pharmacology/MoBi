@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public override void NodeDoubleClicked(ITreeNode node)
       {
-         var moleculeBuilder = node.TagAsObject as IMoleculeBuilder;
+         var moleculeBuilder = node.TagAsObject as MoleculeBuilder;
          if (moleculeBuilder == null)
          {
             base.NodeDoubleClicked(node);

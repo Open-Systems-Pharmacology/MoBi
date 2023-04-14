@@ -11,7 +11,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectReferenceAtReactionPresenter : ISelectReferencePresenter
    {
-      void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, IReactionBuilder reactionBuilder);
+      void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, ReactionBuilder reactionBuilder);
    }
    internal class SelectReferenceAtReactionPresenter : SelectReferencePresenterBase, ISelectReferenceAtReactionPresenter
    {
@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Presenter
          _objectPathCreatorAtReaction = objectPathCreator;
       }
 
-      public void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, IReactionBuilder reactionBuilder)
+      public void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, ReactionBuilder reactionBuilder)
       {
          _objectPathCreatorAtReaction.Reaction = reactionBuilder;
          base.Init(refObjectBase, entities, reactionBuilder);

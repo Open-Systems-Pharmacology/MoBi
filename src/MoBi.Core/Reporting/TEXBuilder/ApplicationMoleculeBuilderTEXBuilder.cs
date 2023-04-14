@@ -7,7 +7,7 @@ using OSPSuite.TeXReporting.Items;
 
 namespace MoBi.Core.Reporting.TEXBuilder
 {
-   internal class ApplicationMoleculeBuilderTEXBuilder : OSPSuiteTeXBuilder<IApplicationMoleculeBuilder>
+   internal class ApplicationMoleculeBuilderTEXBuilder : OSPSuiteTeXBuilder<ApplicationMoleculeBuilder>
    {
       private readonly ITeXBuilderRepository _builderRepository;
 
@@ -16,7 +16,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          _builderRepository = builderRepository;
       }
 
-      public override void Build(IApplicationMoleculeBuilder applicationMoleculeBuilder, OSPSuiteTracker tracker)
+      public override void Build(ApplicationMoleculeBuilder applicationMoleculeBuilder, OSPSuiteTracker tracker)
       {
          var listToReport = new List<object>();
 

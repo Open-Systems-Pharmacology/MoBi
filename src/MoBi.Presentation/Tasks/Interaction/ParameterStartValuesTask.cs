@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return new ParameterStartValuesBuildingBlock();
          // var molecules = BuildingBlockById<MoleculeBuildingBlock>(parameterStartValues.MoleculeBuildingBlockId);
-         // var spatialStructure = BuildingBlockById<ISpatialStructure>(parameterStartValues.SpatialStructureId);
+         // var spatialStructure = BuildingBlockById<SpatialStructure>(parameterStartValues.SpatialStructureId);
          // return _startValuesCreator.CreateFrom(spatialStructure, molecules);
       }
 
@@ -120,7 +120,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new MoleculeBuildingBlock();
       }
 
-      protected override ISpatialStructure SpatialStructureReferencedBy(ParameterStartValuesBuildingBlock buildingBlock)
+      protected override SpatialStructure SpatialStructureReferencedBy(ParameterStartValuesBuildingBlock buildingBlock)
       {
          return new MoBiSpatialStructure();
       }

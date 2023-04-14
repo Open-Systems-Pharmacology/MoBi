@@ -16,12 +16,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand GetAddCommand(IContainer container, IContainer parent, IBuildingBlock buildingBlock)
       {
-         return new AddContainerToSpatialStructureCommand(parent, container, buildingBlock.DowncastTo<IMoBiSpatialStructure>());
+         return new AddContainerToSpatialStructureCommand(parent, container, buildingBlock.DowncastTo<MoBiSpatialStructure>());
       }
 
       public override IMoBiCommand GetRemoveCommand(IContainer entityToRemove, IContainer parent, IBuildingBlock buildingBlock)
       {
-         return new RemoveContainerFromSpatialStructureCommand(parent, entityToRemove, buildingBlock.DowncastTo<IMoBiSpatialStructure>());
+         return new RemoveContainerFromSpatialStructureCommand(parent, entityToRemove, buildingBlock.DowncastTo<MoBiSpatialStructure>());
       }
 
       public override IContainer CreateNewEntity(IContainer container)

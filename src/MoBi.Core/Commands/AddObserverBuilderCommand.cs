@@ -4,9 +4,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddObserverBuilderCommand : AddObjectBaseCommand<IObserverBuilder, IObserverBuildingBlock>
+   public class AddObserverBuilderCommand : AddObjectBaseCommand<ObserverBuilder, ObserverBuildingBlock>
    {
-      public AddObserverBuilderCommand(IObserverBuildingBlock observerBuildingBlock, IObserverBuilder itemToAdd) : base(observerBuildingBlock, itemToAdd, observerBuildingBlock)
+      public AddObserverBuilderCommand(ObserverBuildingBlock observerBuildingBlock, ObserverBuilder itemToAdd) : base(observerBuildingBlock, itemToAdd, observerBuildingBlock)
       {
       }
 
@@ -15,15 +15,15 @@ namespace MoBi.Core.Commands
          return new RemoveObserverBuilderCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
 
-      protected override void AddTo(IObserverBuilder child, IObserverBuildingBlock parent, IMoBiContext context)
+      protected override void AddTo(ObserverBuilder child, ObserverBuildingBlock parent, IMoBiContext context)
       {
          parent.Add(child);
       }
    }
 
-   public class RemoveObserverBuilderCommand : RemoveObjectBaseCommand<IObserverBuilder, IObserverBuildingBlock>
+   public class RemoveObserverBuilderCommand : RemoveObjectBaseCommand<ObserverBuilder, ObserverBuildingBlock>
    {
-      public RemoveObserverBuilderCommand(IObserverBuildingBlock parent, IObserverBuilder itemToRemove) : base(parent, itemToRemove, parent)
+      public RemoveObserverBuilderCommand(ObserverBuildingBlock parent, ObserverBuilder itemToRemove) : base(parent, itemToRemove, parent)
       {
       }
 
@@ -32,7 +32,7 @@ namespace MoBi.Core.Commands
          return new AddObserverBuilderCommand(_parent, _itemToRemove).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(IObserverBuilder childToRemove, IObserverBuildingBlock parent, IMoBiContext context)
+      protected override void RemoveFrom(ObserverBuilder childToRemove, ObserverBuildingBlock parent, IMoBiContext context)
       {
          parent.Remove(childToRemove);
       }

@@ -12,8 +12,8 @@ namespace MoBi.Presentation.Tasks
    public abstract class concern_for_InteractionTasksForReactionBuildingBlock : ContextSpecification<InteractionTasksForReactionBuildingBlock>
    {
       protected IInteractionTaskContext _interactionTaskContext;
-      protected IEditTasksForBuildingBlock<IMoBiReactionBuildingBlock> _editTasksForBuildingBlock;
-      protected IInteractionTasksForBuilder<IReactionBuilder> _interactionTasksForBuilder;
+      protected IEditTasksForBuildingBlock<MoBiReactionBuildingBlock> _editTasksForBuildingBlock;
+      protected IInteractionTasksForBuilder<ReactionBuilder> _interactionTasksForBuilder;
       protected IReactionBuildingBlockMergeManager _reactionBuildingBlockMergeManager;
       protected IDiagramTask _diagramTask;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
@@ -21,8 +21,8 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _editTasksForBuildingBlock = A.Fake<IEditTasksForBuildingBlock<IMoBiReactionBuildingBlock>>();
-         _interactionTasksForBuilder = A.Fake<IInteractionTasksForBuilder<IReactionBuilder>>();
+         _editTasksForBuildingBlock = A.Fake<IEditTasksForBuildingBlock<MoBiReactionBuildingBlock>>();
+         _interactionTasksForBuilder = A.Fake<IInteractionTasksForBuilder<ReactionBuilder>>();
          _reactionBuildingBlockMergeManager = A.Fake<IReactionBuildingBlockMergeManager>();
          _diagramTask = A.Fake<IDiagramTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();

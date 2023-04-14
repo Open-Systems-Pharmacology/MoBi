@@ -15,7 +15,7 @@ namespace MoBi.Core
    public abstract class concern_for_MoBiSpatialStructureFactory : ContextSpecification<IMoBiSpatialStructureFactory>
    {
       private IObjectBaseFactory _objectBaseFactory;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private IParameterFactory _parameterFactory;
       protected IParameter _volumeParameter;
       private IIconRepository _iconRepository;
@@ -29,7 +29,7 @@ namespace MoBi.Core
          _volumeParameter = A.Fake<IParameter>().WithName(Constants.Parameters.VOLUME);
          A.CallTo(() => _parameterFactory.CreateVolumeParameter()).Returns(_volumeParameter);
          _spatialStructure = new MoBiSpatialStructure();
-         A.CallTo(() => _objectBaseFactory.Create<IMoBiSpatialStructure>()).Returns(_spatialStructure);
+         A.CallTo(() => _objectBaseFactory.Create<MoBiSpatialStructure>()).Returns(_spatialStructure);
          A.CallTo(() => _objectBaseFactory.Create<IContainer>()).ReturnsLazily(x => new Container());
          _diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
          sut = new MoBiSpatialStructureFactory(_objectBaseFactory,_parameterFactory,_iconRepository, _diagramManagerFactory);
@@ -38,7 +38,7 @@ namespace MoBi.Core
 
    public class When_creating_a_default_spatial_structure : concern_for_MoBiSpatialStructureFactory
    {
-      private IMoBiSpatialStructure _result;
+      private MoBiSpatialStructure _result;
 
       protected override void Because()
       {

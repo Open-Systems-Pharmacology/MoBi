@@ -16,7 +16,7 @@ namespace MoBi.Core.Commands
    {
       protected IContainer _parent;
       protected IContainer _containerToRemove;
-      protected IMoBiSpatialStructure _spatialStructure;
+      protected MoBiSpatialStructure _spatialStructure;
       protected IContainer _otherContainer;
       protected NeighborhoodBuilder _neighborhood;
       protected string _parentId = "parent";
@@ -73,7 +73,7 @@ namespace MoBi.Core.Commands
       {
          base.Context();
          _context = A.Fake<IMoBiContext>();
-         A.CallTo(() => _context.Get<IMoBiSpatialStructure>(A<string>._)).Returns(_spatialStructure);
+         A.CallTo(() => _context.Get<MoBiSpatialStructure>(A<string>._)).Returns(_spatialStructure);
          A.CallTo(() => _context.Get<IContainer>(_parentId)).Returns(_parent);
          A.CallTo(() => _context.Deserialize<IContainer>(A<byte[]>._)).Returns(_containerToRemove);
       }

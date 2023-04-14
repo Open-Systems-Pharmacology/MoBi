@@ -14,12 +14,12 @@ namespace MoBi.Presentation.Tasks.Interaction
    public class BuildingBlockTaskRetriever : IBuildingBlockTaskRetriever,
                                              IStrictVisitor,
                                              IVisitor<MoleculeBuildingBlock>,
-                                             IVisitor<IObserverBuildingBlock>,
-                                             IVisitor<IReactionBuildingBlock>,
-                                             IVisitor<IMoBiReactionBuildingBlock>,
-                                             IVisitor<IMoBiSpatialStructure>,
-                                             IVisitor<IEventGroupBuildingBlock>,
-                                             IVisitor<IPassiveTransportBuildingBlock>,
+                                             IVisitor<ObserverBuildingBlock>,
+                                             IVisitor<ReactionBuildingBlock>,
+                                             IVisitor<MoBiReactionBuildingBlock>,
+                                             IVisitor<MoBiSpatialStructure>,
+                                             IVisitor<EventGroupBuildingBlock>,
+                                             IVisitor<PassiveTransportBuildingBlock>,
                                              IVisitor<MoleculeStartValuesBuildingBlock>,
                                              IVisitor<ParameterStartValuesBuildingBlock>,
                                              IVisitor<SimulationSettings>
@@ -59,17 +59,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          retrieveTask(objToVisit);
       }
 
-      public void Visit(IObserverBuildingBlock objToVisit)
+      public void Visit(ObserverBuildingBlock objToVisit)
       {
          retrieveTask(objToVisit);
       }
 
-      public void Visit(IReactionBuildingBlock objToVisit)
+      public void Visit(ReactionBuildingBlock objToVisit)
       {
-         retrieveTask<IMoBiReactionBuildingBlock>();
+         retrieveTask<MoBiReactionBuildingBlock>();
       }
 
-      public void Visit(IPassiveTransportBuildingBlock objToVisit)
+      public void Visit(PassiveTransportBuildingBlock objToVisit)
       {
          retrieveTask(objToVisit);
       }
@@ -83,17 +83,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          retrieveTask(objToVisit);
       }
 
-      public void Visit(IMoBiReactionBuildingBlock objToVisit)
+      public void Visit(MoBiReactionBuildingBlock objToVisit)
       {
          retrieveTask(objToVisit);
       }
 
-      public void Visit(IEventGroupBuildingBlock objToVisit)
+      public void Visit(EventGroupBuildingBlock objToVisit)
       {
          retrieveTask(objToVisit);
       }
 
-      public void Visit(IMoBiSpatialStructure objToVisit)
+      public void Visit(MoBiSpatialStructure objToVisit)
       {
          retrieveTask(objToVisit);
       }

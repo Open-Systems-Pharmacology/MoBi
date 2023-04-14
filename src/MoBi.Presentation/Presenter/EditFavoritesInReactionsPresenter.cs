@@ -6,11 +6,11 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditFavoritesInReactionsPresenter : IEditFavoritesPresenter<IBuildingBlock<IReactionBuilder>>
+   public interface IEditFavoritesInReactionsPresenter : IEditFavoritesPresenter<ReactionBuildingBlock>
    {
    }
 
-   internal class EditFavoritesInReactionsPresenter : EditFavoritesInBuildindBlockPresenter<IReactionBuilder>,
+   internal class EditFavoritesInReactionsPresenter : EditFavoritesInBuildingBlockPresenter<ReactionBuildingBlock, ReactionBuilder>,
       IEditFavoritesInReactionsPresenter
    {
       public EditFavoritesInReactionsPresenter(IEditFavoritesView view, IFavoriteRepository favoriteRepository, IEntityPathResolver entityPathResolver, IEditParameterListPresenter editParameterListPresenter, IFavoriteTask favoriteTask)

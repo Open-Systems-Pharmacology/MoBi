@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Mappers;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Infrastructure.Export;
 
 namespace MoBi.Core.Services
@@ -36,10 +37,11 @@ namespace MoBi.Core.Services
 
       public void ExportModelPartsToExcelFile(string excelFileName, IMoBiSimulation simulation, bool openExcel)
       {
-         var reactionDataTable = _reactionBuildingBlockToReactionDataTableMapper.MapFrom(simulation.Configuration.Reactions);
+         var reactionDataTable = _reactionBuildingBlockToReactionDataTableMapper.MapFrom(simulation.Configuration.All<ReactionBuildingBlock>());
          var simulationParameterDataTable = _parameterListToSimulationParameterDataTableMapper.MapFrom(simulation.Model.Root.GetAllChildren<IParameter>());
 
-         var moleculeParameterDataTable = _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(simulation.Configuration.MoleculeStartValues.SelectMany(x => x).Where(msv => msv.IsPresent), simulation.Configuration.Molecules.SelectMany(x => x));
+         var moleculeParameterDataTable = _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(simulation.Configuration.All<MoleculeStartValuesBuildingBlock>().SelectMany(x => x).Where(msv => msv.IsPresent), 
+            simulation.Configuration.All<MoleculeBuildingBlock>().SelectMany(x => x));
 
          var dataTables = new List<DataTable> {reactionDataTable, simulationParameterDataTable, moleculeParameterDataTable};
          ExportToExcelTask.ExportDataTablesToExcel(dataTables, excelFileName, openExcel: openExcel);

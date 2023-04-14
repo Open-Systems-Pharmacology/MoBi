@@ -35,9 +35,9 @@ namespace MoBi.Presentation.Mappers
          module.Molecules = conditionalCreate(createModuleDTO.WithMolecule, () => addDefault<MoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock));
          module.Reactions = conditionalCreate(createModuleDTO.WithReaction, () => addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create()));
          module.SpatialStructure = conditionalCreate(createModuleDTO.WithSpatialStructure, () => addDefault(AppConstants.DefaultNames.SpatialStructure, () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)));
-         module.PassiveTransports = conditionalCreate(createModuleDTO.WithPassiveTransport, () => addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock));
-         module.EventGroups = conditionalCreate(createModuleDTO.WithEventGroup, () => addDefault<IEventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock));
-         module.Observers = conditionalCreate(createModuleDTO.WithObserver, () => addDefault<IObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock));
+         module.PassiveTransports = conditionalCreate(createModuleDTO.WithPassiveTransport, () => addDefault<PassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock));
+         module.EventGroups = conditionalCreate(createModuleDTO.WithEventGroup, () => addDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock));
+         module.Observers = conditionalCreate(createModuleDTO.WithObserver, () => addDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock));
 
          if (createModuleDTO.WithParameterStartValues)
          {

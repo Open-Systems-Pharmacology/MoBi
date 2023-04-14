@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -8,21 +9,21 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Presenter
 {
-   public class EditFavoritesInBuildindBlockPresenter<T> : EditFavoritesPresenter<IBuildingBlock<T>>
-      where T : class, IContainer
+   public class EditFavoritesInBuildingBlockPresenter<TBuildingBlock, TBuilder> : EditFavoritesPresenter<TBuildingBlock>
+      where TBuilder : class, IContainer where TBuildingBlock : IBuildingBlock, IEnumerable<TBuilder>
    {
-      public EditFavoritesInBuildindBlockPresenter(IEditFavoritesView view, IFavoriteRepository favoriteRepository, IEntityPathResolver entityPathResolver, IEditParameterListPresenter editParameterListPresenter, IFavoriteTask favoriteTask)
+      public EditFavoritesInBuildingBlockPresenter(IEditFavoritesView view, IFavoriteRepository favoriteRepository, IEntityPathResolver entityPathResolver, IEditParameterListPresenter editParameterListPresenter, IFavoriteTask favoriteTask)
          : base(view, favoriteRepository, entityPathResolver, editParameterListPresenter, favoriteTask)
       {
       }
 
-      public override void Edit(IBuildingBlock<T> buildingBlock)
+      public override void Edit(TBuildingBlock buildingBlock)
       {
          base.Edit(buildingBlock);
          _editParameterListPresenter.BuildingBlock = buildingBlock;
       }
 
-      protected override void CacheParameters(IBuildingBlock<T> buildingBlock)
+      protected override void CacheParameters(TBuildingBlock buildingBlock)
       {
          foreach (var builder in buildingBlock)
          {
@@ -32,7 +33,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override bool IsAddedToParent(IObjectBase parent)
       {
-         var typedParent = parent as T;
+         var typedParent = parent as TBuilder;
          return typedParent != null && _projectItem.Any(builder => builder.GetAllContainersAndSelf<IContainer>().Contains(typedParent));
       }
    }

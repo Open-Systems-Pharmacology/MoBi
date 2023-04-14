@@ -43,19 +43,19 @@ namespace MoBi.Core.Service
    internal class When_asking_building_block_retriever_to_get_a_buiding_block_for_an_objectbase : concern_for_BuildingBlockRetriever
    {
       private IList<IBuildingBlock> _returnedBuildingBlocks;
-      private IReactionBuilder _childReactionBuilder;
+      private ReactionBuilder _childReactionBuilder;
 
-      private IReactionBuildingBlock _reactionBuildingBlock;
-      private IMoleculeBuilder _moleculeBuilder;
+      private ReactionBuildingBlock _reactionBuildingBlock;
+      private MoleculeBuilder _moleculeBuilder;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private IObserverBuilder _obseverBuilder;
-      private IObserverBuildingBlock _observerBuildingBlock;
-      private ITransportBuilder _passiveTranportBuilder;
-      private IPassiveTransportBuildingBlock _passiveTranportBuildingBlock;
-      private IApplicationBuilder _applicationBuilder;
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private ObserverBuilder _obseverBuilder;
+      private ObserverBuildingBlock _observerBuildingBlock;
+      private TransportBuilder _passiveTranportBuilder;
+      private PassiveTransportBuildingBlock _passiveTranportBuildingBlock;
+      private ApplicationBuilder _applicationBuilder;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private IParameter _parameter;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private IObjectBaseFactory _objectBaseFactory;
       private IFormula _formula;
       private ParameterStartValue _parameterStartValue;
@@ -89,9 +89,9 @@ namespace MoBi.Core.Service
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _parmaeterFactory = A.Fake<IParameterFactory>();
          A.CallTo(() => _objectBaseFactory.Create<IContainer>()).Returns(A.Fake<IContainer>());
-         A.CallTo(() => _objectBaseFactory.Create<IMoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
+         A.CallTo(() => _objectBaseFactory.Create<MoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
          var diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
-         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parmaeterFactory, A.Fake<IconRepository>(), diagramManagerFactory).Create().DowncastTo<IMoBiSpatialStructure>();
+         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parmaeterFactory, A.Fake<IconRepository>(), diagramManagerFactory).Create().DowncastTo<MoBiSpatialStructure>();
          _spatialStructure.AddTopContainer(container);
          _allBuildingBlocks.Add(_spatialStructure);
          _formula = new ExplicitFormula();
@@ -127,23 +127,23 @@ namespace MoBi.Core.Service
    internal class When_asking_building_block_retriever_to_get_a_buiding_block_for_an_parameter : concern_for_BuildingBlockRetriever
    {
       private IList<IBuildingBlock> _returnedBuildingBlocks;
-      private IReactionBuilder _childReactionBuilder;
+      private ReactionBuilder _childReactionBuilder;
 
-      private IReactionBuildingBlock _reactionBuildingBlock;
-      private IMoleculeBuilder _moleculeBuilder;
+      private ReactionBuildingBlock _reactionBuildingBlock;
+      private MoleculeBuilder _moleculeBuilder;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private ITransportBuilder _passiveTranportBuilder;
-      private IPassiveTransportBuildingBlock _passiveTranportBuildingBlock;
-      private IApplicationBuilder _applicationBuilder;
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private TransportBuilder _passiveTranportBuilder;
+      private PassiveTransportBuildingBlock _passiveTranportBuildingBlock;
+      private ApplicationBuilder _applicationBuilder;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private IParameter _parameter;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private IObjectBaseFactory _objectBaseFactory;
       private IFormula _formula;
       private IParameter _moleculeParameter;
       private Parameter _reactionParameter;
       private Parameter _passiveTransportParameter;
-      private IApplicationBuilder _applicationBuilderParameter;
+      private ApplicationBuilder _applicationBuilderParameter;
       private IParameterFactory _parameterFactory;
 
       protected override void Context()
@@ -176,9 +176,9 @@ namespace MoBi.Core.Service
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _parameterFactory = A.Fake<IParameterFactory>();
          A.CallTo(() => _objectBaseFactory.Create<IContainer>()).Returns(new Container());
-         A.CallTo(() => _objectBaseFactory.Create<IMoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
+         A.CallTo(() => _objectBaseFactory.Create<MoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
          var diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
-         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parameterFactory, A.Fake<IIconRepository>(), diagramManagerFactory).Create() as IMoBiSpatialStructure;
+         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parameterFactory, A.Fake<IIconRepository>(), diagramManagerFactory).Create() as MoBiSpatialStructure;
          _spatialStructure.AddTopContainer(container);
          _allBuildingBlocks.Add(_spatialStructure);
          _formula = new ExplicitFormula();

@@ -181,7 +181,6 @@ namespace MoBi.Core.Serialization.Xml.Services
       {
          return deserializeType.IsAnImplementationOf<IModelCoreSimulation>()
                 || deserializeType.IsAnImplementationOf<IBuildingBlock>()
-                || deserializeType.IsAnImplementationOf<IBuildConfiguration>()
                 || deserializeType.IsAnImplementationOf<MoBiProject>()
                 || deserializeType.IsAnImplementationOf<IModel>()
                 || deserializeType.IsAnImplementationOf<SimulationTransfer>();

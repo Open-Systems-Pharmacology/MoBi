@@ -8,12 +8,12 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IObjectPathCreatorAtReaction : IObjectPathCreator
    {
-      IReactionBuilder Reaction { set; }
+      ReactionBuilder Reaction { set; }
    }
 
    class ObjectPathCreatorAtReaction : ObjectPathCreatorBase, IObjectPathCreatorAtReaction
    {
-      public IReactionBuilder Reaction { private get; set; }
+      public ReactionBuilder Reaction { private get; set; }
 
       public ObjectPathCreatorAtReaction(IObjectPathFactory objectPathFactory, IAliasCreator aliasCreator, IMoBiContext context) : base(objectPathFactory, aliasCreator, context)
       {

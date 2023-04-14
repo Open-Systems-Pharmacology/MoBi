@@ -96,7 +96,7 @@ namespace MoBi.Core.Service
    public class When_resetting_all_persistable_object_defined_in_a_given_simulation : concern_for_SimulationPersistableUpdater
    {
       private IMoBiSimulation _simulation;
-      private IMoleculeAmount _moleculeAmount;
+      private MoleculeAmount _moleculeAmount;
       private Parameter _concentrationParameter;
       private Observer _observer;
       private Parameter _anotherParameter;

@@ -9,7 +9,7 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter.ReactionDiagram
 {
-   public interface IReactionDiagramPresenter : IMoBiBaseDiagramPresenter<IMoBiReactionBuildingBlock>,
+   public interface IReactionDiagramPresenter : IMoBiBaseDiagramPresenter<MoBiReactionBuildingBlock>,
       IPresenter<IReactionDiagramView>
    {
       void SetDisplayEductsRightForDiagramSelection(bool displayEductsRight);
@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Presenter.ReactionDiagram
       void LayerLayout(IContainerBase containerBase);
       void LayerLayout();
       void RemoveSelection(IReadOnlyList<GoObject> objectsToBeRemoved);
-      void Select(IReactionBuilder reactionBuilder);
+      void Select(ReactionBuilder reactionBuilder);
       bool IsReactionNode(IBaseNode node);
       bool DisplayEductsRight(IBaseNode node);
    }

@@ -21,7 +21,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       protected IEditParameterListPresenter _editParameterListPresenter;
       protected IFavoriteTask _favoriteTask;
-      protected IMoBiSpatialStructure _spatialStructure;
+      protected MoBiSpatialStructure _spatialStructure;
       protected IParameter _para;
       protected IParameter _fav;
 

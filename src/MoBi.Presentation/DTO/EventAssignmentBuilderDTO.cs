@@ -10,7 +10,7 @@ namespace MoBi.Presentation.DTO
       public FormulaBuilderDTO NewFormula { get; set; }
       public bool UseAsValue { get; set; }
 
-      public EventAssignmentBuilderDTO(IEventAssignmentBuilder eventAssignmentBuilder) : base(eventAssignmentBuilder)
+      public EventAssignmentBuilderDTO(EventAssignmentBuilder eventAssignmentBuilder) : base(eventAssignmentBuilder)
       {
          Rules.Add(createTargetHasToBeSetRule);
       }

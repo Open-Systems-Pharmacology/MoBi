@@ -15,14 +15,14 @@ namespace MoBi.Presentation
    {
       private IInteractionTaskContext _interactionTaskContext;
       private IEditTasksForBuildingBlock<MoleculeBuildingBlock> _editTasksForBuildingBlock;
-      private IInteractionTasksForBuilder<IMoleculeBuilder> _task;
+      private IInteractionTasksForBuilder<MoleculeBuilder> _task;
       private IMoleculeBuildingBlockCloneManager _moleculeBuildingBlockCloneManager;
 
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _editTasksForBuildingBlock = A.Fake<IEditTasksForBuildingBlock<MoleculeBuildingBlock>>();
-         _task = A.Fake<IInteractionTasksForBuilder<IMoleculeBuilder>>();
+         _task = A.Fake<IInteractionTasksForBuilder<MoleculeBuilder>>();
          _moleculeBuildingBlockCloneManager = A.Fake<IMoleculeBuildingBlockCloneManager>();
 
          sut = new InteractionTasksForMoleculeBuildingBlock(_interactionTaskContext, _editTasksForBuildingBlock, _task, _moleculeBuildingBlockCloneManager);

@@ -225,7 +225,7 @@ namespace MoBi.Core
 
    public class When_adjusting_Formulas_at_a_totaly_new_moleculeBuilder : concern_for_AdjustFormulaVisitor
    {
-      private IMoleculeBuilder _totalyNewObject;
+      private MoleculeBuilder _totalyNewObject;
       private IBuildingBlock _buildingBlockToAddTo;
       private IFormulaCache _formulaCache;
       private ExplicitFormula _newFormula;

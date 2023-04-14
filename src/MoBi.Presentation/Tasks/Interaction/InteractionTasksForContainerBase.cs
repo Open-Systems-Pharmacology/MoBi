@@ -38,9 +38,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return newEntity;
       }
 
-      protected IMoBiSpatialStructure GetSpatialStructure()
+      protected MoBiSpatialStructure GetSpatialStructure()
       {
-         return _interactionTaskContext.Active<IMoBiSpatialStructure>();
+         return _interactionTaskContext.Active<MoBiSpatialStructure>();
       }
 
       public override IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();
 
-         var sourceSpatialStructure = InteractionTask.LoadItems<IMoBiSpatialStructure>(filename).FirstOrDefault();
+         var sourceSpatialStructure = InteractionTask.LoadItems<MoBiSpatialStructure>(filename).FirstOrDefault();
          if (sourceSpatialStructure == null)
             return new MoBiEmptyCommand();
 
@@ -101,7 +101,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      private IMoBiCommand addNeighborhoodsToProject(IReadOnlyList<NeighborhoodBuilder> neighborhoods, IMoBiSpatialStructure spatialStructure)
+      private IMoBiCommand addNeighborhoodsToProject(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
       {
          if (neighborhoods == null || !neighborhoods.Any()) return new MoBiEmptyCommand();
          var command = new MoBiMacroCommand
@@ -114,7 +114,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return neighborhoods.Any(existingItem => !addNeighborhood(existingItem, command, spatialStructure)) ? CancelCommand(command) : command;
       }
 
-      private bool addNeighborhood(NeighborhoodBuilder neighborhoodBuilder, MoBiMacroCommand command, IMoBiSpatialStructure spatialStructure)
+      private bool addNeighborhood(NeighborhoodBuilder neighborhoodBuilder, MoBiMacroCommand command, MoBiSpatialStructure spatialStructure)
       {
          var forbiddenNames = spatialStructure.NeighborhoodsContainer.Children.Select(x => x.Name).Union(AppConstants.UnallowedNames).ToList();
          if (forbiddenNames.Contains(neighborhoodBuilder.Name))

@@ -5,9 +5,9 @@ using OSPSuite.UI.Diagram.Managers;
 
 namespace MoBi.UI.Diagram.DiagramManagers
 {
-   public class MoBiReactionDiagramManager : ReactionDiagramManager<IMoBiReactionBuildingBlock>, IMoBiReactionDiagramManager
+   public class MoBiReactionDiagramManager : ReactionDiagramManager<MoBiReactionBuildingBlock>, IMoBiReactionDiagramManager
    {
-      public override IDiagramManager<IMoBiReactionBuildingBlock> Create()
+      public override IDiagramManager<MoBiReactionBuildingBlock> Create()
       {
          return new MoBiReactionDiagramManager();
       }

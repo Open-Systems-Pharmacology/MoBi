@@ -90,7 +90,7 @@ namespace MoBi.Core.Domain.Services
       IFormula CreateNewFormula(Type formulaType, IDimension formulaDimension);
       TFormula CreateNewFormula<TFormula>(IDimension formulaDimension) where TFormula : IFormula;
 
-      IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, IDistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock);
+      IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, DistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Changes the <paramref name="oldAlias" /> to <paramref name="newAlias" /> in the <paramref name="formula" />. The

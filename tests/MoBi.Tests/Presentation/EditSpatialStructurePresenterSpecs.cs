@@ -48,12 +48,12 @@ namespace MoBi.Presentation
 
    internal class When_selecting_the_favorites : concern_for_EditSpatialStructurePresenterSpecs
    {
-      private IMoBiSpatialStructure _spSt;
+      private MoBiSpatialStructure _spSt;
 
       protected override void Context()
       {
          base.Context();
-         _spSt = A.Fake<IMoBiSpatialStructure>();
+         _spSt = A.Fake<MoBiSpatialStructure>();
          sut.Edit(_spSt);
       }
 
@@ -71,12 +71,12 @@ namespace MoBi.Presentation
 
    internal class When_selecting_the_user_defined_nodes : concern_for_EditSpatialStructurePresenterSpecs
    {
-      private IMoBiSpatialStructure _spSt;
+      private MoBiSpatialStructure _spSt;
 
       protected override void Context()
       {
          base.Context();
-         _spSt = A.Fake<IMoBiSpatialStructure>();
+         _spSt = A.Fake<MoBiSpatialStructure>();
          sut.Edit(_spSt);
       }
 
@@ -98,7 +98,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.Edit(A.Fake<IMoBiSpatialStructure>());
+         sut.Edit(A.Fake<MoBiSpatialStructure>());
       }
 
       protected override void Because()
@@ -118,7 +118,7 @@ namespace MoBi.Presentation
    {
       private IDistributedParameter _distributedParameter;
       private IContainer _parent;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
 
       protected override void Context()
       {
@@ -149,7 +149,7 @@ namespace MoBi.Presentation
 
    internal class When_edit_spatial_structure_presenter_handles_a_select_event_for_a_neighborhood_builder : concern_for_EditSpatialStructurePresenterSpecs
    {
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private NeighborhoodBuilder _neighborhoodBuilder;
 
       protected override void Context()
@@ -177,12 +177,12 @@ namespace MoBi.Presentation
    public class When_tell_edit_spatial_structure_presenter_to_load_diagram :
       concern_for_EditSpatialStructurePresenterSpecs
    {
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
 
       protected override void Context()
       {
          base.Context();
-         _spatialStructure = A.Fake<IMoBiSpatialStructure>();
+         _spatialStructure = A.Fake<MoBiSpatialStructure>();
          sut.Edit(_spatialStructure);
       }
 
@@ -202,15 +202,15 @@ namespace MoBi.Presentation
    public class When_tell_edit_spatial_structure_presenter_to_edit_spatial_structure :
       concern_for_EditSpatialStructurePresenterSpecs
    {
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private IContainer _topContainer;
 
       protected override void Context()
       {
          base.Context();
-         _spatialStructure = A.Fake<IMoBiSpatialStructure>();
-         _topContainer = A.Fake<IContainer>();
-         A.CallTo(() => _spatialStructure.TopContainers).Returns(new[] {_topContainer});
+         _spatialStructure = new MoBiSpatialStructure();
+         _topContainer = new Container();
+         _spatialStructure.AddTopContainer(_topContainer);
       }
 
       protected override void Because()

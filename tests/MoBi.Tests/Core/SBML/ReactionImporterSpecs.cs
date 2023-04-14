@@ -101,9 +101,9 @@ namespace MoBi.Core.SBML
 
    public class MultiCompartmentReactionImporterTests : ReactionImporterSpecs
    {
-      private IReactionBuilder _eductGhostReaction;
-      private IReactionBuilder _productGhostReaction;
-      private IMoBiReactionBuildingBlock _rbb;
+      private ReactionBuilder _eductGhostReaction;
+      private ReactionBuilder _productGhostReaction;
+      private MoBiReactionBuildingBlock _rbb;
 
       protected override void Context()
       {

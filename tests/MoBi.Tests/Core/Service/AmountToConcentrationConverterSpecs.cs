@@ -22,7 +22,7 @@ namespace MoBi.Core.Service
       protected IDimensionFactory _dimensionFactory;
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IAmoutToConcentrationFormulaMapper _amoutToConcentrationFormulaMapper;
-      protected IMoleculeBuilder _moleculeBuilder;
+      protected MoleculeBuilder _moleculeBuilder;
       private IObjectBaseFactory _objectBaseFactory;
       private IFormulaTask _formulaTask;
       protected MoleculeStartValue _moleculeStartValue;
@@ -213,7 +213,7 @@ namespace MoBi.Core.Service
 
    public class When_converting_a_reaction_builder_from_amount_to_concentration: concern_for_AmountToConcentrationConverter
    {
-      private IReactionBuilder _reactionBuilder;
+      private ReactionBuilder _reactionBuilder;
       private ExplicitFormula _explicitFormula;
 
       protected override void Context()

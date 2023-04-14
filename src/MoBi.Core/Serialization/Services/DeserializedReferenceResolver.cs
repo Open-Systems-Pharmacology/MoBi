@@ -33,7 +33,7 @@ namespace MoBi.Core.Serialization.Services
          {
             case MoBiProject proj:
                _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(proj);
-               proj.All<ISpatialStructure>().Each(resolveReferences);
+               proj.All<SpatialStructure>().Each(resolveReferences);
                proj.Simulations.Each(resolveReferences);
                break;
             case IMoBiSimulation simulation:
@@ -75,9 +75,9 @@ namespace MoBi.Core.Serialization.Services
          _referencesResolver.ResolveReferencesIn(model);
       }
 
-      private void resolveReferences(SimulationConfiguration simulationConfiguration) => simulationConfiguration?.SpatialStructures.Each(resolveReferences);
+      private void resolveReferences(SimulationConfiguration simulationConfiguration) => simulationConfiguration?.All<SpatialStructure>().Each(resolveReferences);
 
-      private void resolveReferences(ISpatialStructure spatialStructure)
+      private void resolveReferences(SpatialStructure spatialStructure)
       {
          spatialStructure?.ResolveReferencesInNeighborhoods();
       }

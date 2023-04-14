@@ -6,14 +6,14 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForObserverBuildingBlock : InteractionTasksForMergableBuildingBlock<IObserverBuildingBlock, IObserverBuilder>
+   public class InteractionTasksForObserverBuildingBlock : InteractionTasksForMergableBuildingBlock<ObserverBuildingBlock, ObserverBuilder>
    {
       private readonly IMoBiFormulaTask _moBiFormulaTask;
 
       public InteractionTasksForObserverBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
-         IEditTasksForBuildingBlock<IObserverBuildingBlock> editTask,
-         IInteractionTasksForBuilder<IObserverBuilder> builderTask,
+         IEditTasksForBuildingBlock<ObserverBuildingBlock> editTask,
+         IInteractionTasksForBuilder<ObserverBuilder> builderTask,
          IMoleculeListTasks moleculeListTasks,
          IObserverBuildingBlockMergeManager mergeIgnoreReplaceMergeManager,
          IFormulaTask formulaTask,
@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _moBiFormulaTask = moBiFormulaTask;
       }
 
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(IObserverBuilder builder, IObserverBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(ObserverBuilder builder, ObserverBuildingBlock targetBuildingBlock, string originalBuilderName = null)
       {
          var macroCommand = CreateAddBuilderMacroCommand(builder, targetBuildingBlock);
 

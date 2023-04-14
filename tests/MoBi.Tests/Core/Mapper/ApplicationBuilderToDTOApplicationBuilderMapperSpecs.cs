@@ -25,7 +25,7 @@ namespace MoBi.Core.Mapper
    class When_mapping_an_application_builder_to_the_dto : concern_for_ApplicationBuilderToDTOApplicationBuilderMapperIntegrationTests
    {
       private ApplicationBuilderDTO _resultEventGroupBuilderDTO;
-      private IApplicationBuilder _applicationBuilder;
+      private ApplicationBuilder _applicationBuilder;
 
       protected override void Context()
       {

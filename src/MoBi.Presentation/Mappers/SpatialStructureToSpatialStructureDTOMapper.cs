@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface ISpatialStructureToSpatialStructureDTOMapper : IMapper<ISpatialStructure, SpatialStructureDTO>
+   public interface ISpatialStructureToSpatialStructureDTOMapper : IMapper<SpatialStructure, SpatialStructureDTO>
    {
    }
 
@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Mappers
          _containerToDTOContainerMapper = containerToDTOContainerMapper;
       }
 
-      public SpatialStructureDTO MapFrom(ISpatialStructure spatialStructure)
+      public SpatialStructureDTO MapFrom(SpatialStructure spatialStructure)
       {
          var dto = Map(new SpatialStructureDTO(spatialStructure));
          dto.TopContainer = spatialStructure.TopContainers.MapAllUsing(_containerToDTOContainerMapper);

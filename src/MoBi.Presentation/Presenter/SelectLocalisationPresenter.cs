@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter
          _modalPresenter.Text = AppConstants.Captions.SelectLocalReferencePoint;
       }
 
-      private SpatialStructureDTO createSpatialStructureDTOFrom(IMoBiSpatialStructure spatialStructure)
+      private SpatialStructureDTO createSpatialStructureDTOFrom(MoBiSpatialStructure spatialStructure)
       {
          var dto = new SpatialStructureDTO(spatialStructure)
          {

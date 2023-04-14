@@ -215,7 +215,7 @@ namespace MoBi.Presentation.Tasks
       private SimulationRunResults _simulationResults;
       private DataRepository _newResults;
       private DataRepository _oldResults;
-      private IMoleculeBuilder _drug;
+      private MoleculeBuilder _drug;
       private DataColumn _concentrationColumn;
       private DataColumn _fractionColumn;
 

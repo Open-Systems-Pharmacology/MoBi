@@ -36,7 +36,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IContextMenu createFor(ReactionModifierBuilderDTO reactionPartnerDTO, IReactionModifiersPresenter presenter)
       {
-         var reactionBuilder = presenter.Subject.DowncastTo<IReactionBuilder>();
+         var reactionBuilder = presenter.Subject.DowncastTo<ReactionBuilder>();
 
          var reactionModifier = string.Empty;
          if (reactionPartnerDTO != null)

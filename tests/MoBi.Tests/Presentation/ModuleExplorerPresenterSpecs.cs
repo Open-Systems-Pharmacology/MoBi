@@ -153,13 +153,13 @@ namespace MoBi.Presentation
    public class When_double_clicking_on_a_node_that_is_a_molecule_builder_node_in_module_explorer : concern_for_ModuleExplorerPresenter
    {
       private ITreeNode _node;
-      private IMoleculeBuilder _moleculeBuilder;
+      private MoleculeBuilder _moleculeBuilder;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _moleculeBuilder = A.Fake<IMoleculeBuilder>();
+         _moleculeBuilder = A.Fake<MoleculeBuilder>();
          _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          var moleculeBuildingBlockNode = A.Fake<ITreeNode>();
          A.CallTo(() => moleculeBuildingBlockNode.TagAsObject).Returns(_moleculeBuildingBlock);

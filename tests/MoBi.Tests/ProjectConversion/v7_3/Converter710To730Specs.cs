@@ -1,4 +1,5 @@
-﻿using FluentNHibernate.Utils;
+﻿using System.Collections.Generic;
+using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
 using MoBi.IntegrationTests;
 using OSPSuite.BDDHelper;
@@ -29,7 +30,7 @@ namespace MoBi.ProjectConversion.v7_3
          _project.ParametersStartValueBlockCollection.Each(validateIsDefaultFlagInParameters);
       }
 
-      private void validateIsDefaultFlagInParameters<T>(IBuildingBlock<T> buildingBlock) where T : class, IObjectBase
+      private void validateIsDefaultFlagInParameters<T>(IEnumerable<T> buildingBlock) where T : class
       {
          foreach (var builder in buildingBlock)
          {
