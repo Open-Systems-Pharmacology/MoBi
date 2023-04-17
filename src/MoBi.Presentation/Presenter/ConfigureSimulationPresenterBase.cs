@@ -24,18 +24,13 @@ namespace MoBi.Presentation.Presenter
 
          InitializeWith(_commands);
          AllowQuickFinish = true;
+
       }
 
       protected override void UpdateControls(int currentIndex)
       {
-         // View.NextEnabled = configReady;
-         // _subPresenterItems.Each(p => setControlEnabled(p, configReady));
          View.OkEnabled = CanClose;
       }
 
-      private void setControlEnabled(ISubPresenterItem subPresenterItem, bool configReady)
-      {
-         View.SetControlEnabled(subPresenterItem, configReady);
-      }
    }
 }

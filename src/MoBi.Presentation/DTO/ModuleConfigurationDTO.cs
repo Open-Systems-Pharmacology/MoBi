@@ -8,14 +8,14 @@ namespace MoBi.Presentation.DTO
    public class ModuleConfigurationDTO
    {
       private readonly ModuleConfiguration _moduleConfiguration;
-      private readonly List<MoleculeStartValuesBuildingBlock> _moleculeStartValuesCollection = new List<MoleculeStartValuesBuildingBlock> { NullMoleculeStartValues };
-      private readonly List<ParameterStartValuesBuildingBlock> _parameterStartValuesCollection = new List<ParameterStartValuesBuildingBlock> { NullParameterStartValues };
+      private readonly List<MoleculeStartValuesBuildingBlock> _moleculeStartValuesCollection = new List<MoleculeStartValuesBuildingBlock> { NullStartValues.NullMoleculeStartValues };
+      private readonly List<ParameterStartValuesBuildingBlock> _parameterStartValuesCollection = new List<ParameterStartValuesBuildingBlock> { NullStartValues.NullParameterStartValues };
 
       public ModuleConfigurationDTO(ModuleConfiguration moduleConfiguration)
       {
          _moduleConfiguration = moduleConfiguration;
-         SelectedMoleculeStartValues = moduleConfiguration.SelectedMoleculeStartValues ?? NullMoleculeStartValues;
-         SelectedParameterStartValues = moduleConfiguration.SelectedParameterStartValues ?? NullParameterStartValues;
+         SelectedMoleculeStartValues = moduleConfiguration.SelectedMoleculeStartValues ?? NullStartValues.NullMoleculeStartValues;
+         SelectedParameterStartValues = moduleConfiguration.SelectedParameterStartValues ?? NullStartValues.NullParameterStartValues;
          _moleculeStartValuesCollection.AddRange(moduleConfiguration.Module.MoleculeStartValuesCollection);
          _parameterStartValuesCollection.AddRange(moduleConfiguration.Module.ParameterStartValuesCollection);
       }
@@ -25,10 +25,8 @@ namespace MoBi.Presentation.DTO
       public IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValuesCollection => _moleculeStartValuesCollection;
       public IReadOnlyList<ParameterStartValuesBuildingBlock> ParameterStartValuesCollection => _parameterStartValuesCollection;
 
-      public static MoleculeStartValuesBuildingBlock NullMoleculeStartValues { get; } = new MoleculeStartValuesBuildingBlock().WithName(AppConstants.Captions.NoMoleculeStartValues);
-      public static ParameterStartValuesBuildingBlock NullParameterStartValues { get; } = new ParameterStartValuesBuildingBlock().WithName(AppConstants.Captions.NoParameterStartValues);
-
       public ModuleConfiguration ModuleConfiguration => _moduleConfiguration;
+      public Module Module => ModuleConfiguration.Module;
 
       public bool Uses(Module module)
       {
@@ -38,6 +36,16 @@ namespace MoBi.Presentation.DTO
       public bool Uses(ModuleConfiguration moduleConfiguration)
       {
          return Equals(_moduleConfiguration, moduleConfiguration);
+      }
+
+      public bool HasMoleculeStartValues()
+      {
+         return !NullStartValues.NullMoleculeStartValues.Equals(SelectedMoleculeStartValues);
+      }
+
+      public bool HasParameterStartValues()
+      {
+         return !NullStartValues.NullParameterStartValues.Equals(SelectedParameterStartValues);
       }
    }
 }

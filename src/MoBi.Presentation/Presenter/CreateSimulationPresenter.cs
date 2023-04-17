@@ -65,6 +65,7 @@ namespace MoBi.Presentation.Presenter
       {
          var moBiSimulation = _simulationFactory.Create();
          edit(moBiSimulation);
+         UpdateControls();
          _view.Display();
          if (_view.Canceled)
             return null;

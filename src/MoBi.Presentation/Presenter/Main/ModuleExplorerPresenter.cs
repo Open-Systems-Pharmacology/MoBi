@@ -150,20 +150,14 @@ namespace MoBi.Presentation.Presenter.Main
          return rootNodeList.Contains(node?.Tag);
       }
 
-      public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
-      {
-         return _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
-      }
+      public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode) => _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
 
       public override void AddToClassificationTree(ITreeNode<IClassification> parentNode, string category)
       {
          _observedDataInExplorerPresenter.GroupObservedDataByCategory(parentNode, category);
       }
 
-      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode)
-      {
-         return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
-      }
+      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode) => _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
 
       private void addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType)
          where TBuildingBlock : IBuildingBlock
@@ -214,8 +208,6 @@ namespace MoBi.Presentation.Presenter.Main
       {
          _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
       }
-
-
 
       public void Handle(AddedEvent eventToHandle)
       {

@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateForFavorites();
       ITreeNode CreateForUserDefined();
       ITreeNode CreateFor(Module module);
-      ITreeNode CreateFor(ModuleConfiguration moduleConfiguration);
+      ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration);
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -102,7 +102,7 @@ namespace MoBi.Presentation.Nodes
 
          simulationConfiguration.ModuleConfigurations.Each(moduleConfiguration =>
          {
-            var moduleConfigurationNode = CreateFor(moduleConfiguration);
+            var moduleConfigurationNode = CreateFor(new ModuleConfigurationDTO(moduleConfiguration));
 
             moduleConfigurationNode.Under(buildConfigNode);
          });
@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Nodes
          return buildConfigNode;
       }
 
-      public ITreeNode CreateFor(ModuleConfiguration moduleConfiguration)
+      public ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration)
       {
          var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).WithIcon(ApplicationIcons.Module);
          var module = moduleConfiguration.Module;
