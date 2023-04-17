@@ -5,12 +5,12 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateMoleculeAmountScaleDivisorInSimulationCommand : SetQuantityPropertyInSimulationCommandBase<IMoleculeAmount>
+   public class UpdateMoleculeAmountScaleDivisorInSimulationCommand : SetQuantityPropertyInSimulationCommandBase<MoleculeAmount>
    {
       private readonly double _newScaleDivisor;
       private readonly double _oldScaleDivisor;
 
-      public UpdateMoleculeAmountScaleDivisorInSimulationCommand(IMoleculeAmount quantity, double newScaleDivisor, IMoBiSimulation simulation) : base(quantity, simulation)
+      public UpdateMoleculeAmountScaleDivisorInSimulationCommand(MoleculeAmount quantity, double newScaleDivisor, IMoBiSimulation simulation) : base(quantity, simulation)
       {
          _newScaleDivisor = newScaleDivisor;
          _oldScaleDivisor = _quantity.ScaleDivisor;

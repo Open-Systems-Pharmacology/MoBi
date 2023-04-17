@@ -8,14 +8,14 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeModifierCommand : BuildingBlockChangeCommandBase<IMoBiReactionBuildingBlock>
+   public class ChangeModifierCommand : BuildingBlockChangeCommandBase<MoBiReactionBuildingBlock>
    {
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
       private readonly string _reactionId;
       private readonly string _oldModifier;
       private readonly string _newModifier;
 
-      public ChangeModifierCommand(string newModifier, string oldModifier, IReactionBuilder reaction, IMoBiReactionBuildingBlock buildingBlock) : base(buildingBlock)
+      public ChangeModifierCommand(string newModifier, string oldModifier, ReactionBuilder reaction, MoBiReactionBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _newModifier = newModifier;
          _oldModifier = oldModifier;
@@ -57,7 +57,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _reaction = context.Get<IReactionBuilder>(_reactionId);
+         _reaction = context.Get<ReactionBuilder>(_reactionId);
       }
    }
 }

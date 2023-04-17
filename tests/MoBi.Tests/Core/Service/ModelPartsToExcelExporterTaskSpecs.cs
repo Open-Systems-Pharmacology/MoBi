@@ -31,9 +31,9 @@ namespace MoBi.Core.Service
             _moleculeStartValuesBuildingBlockToParameterDataTableMapper
             );
 
-         A.CallTo(() => _reactionBuildingBlockToReactionDataTableMapper.MapFrom(A<IEnumerable<IMoBiReactionBuildingBlock>>.Ignored)).Returns(new DataTable { TableName = "reactions" });
+         A.CallTo(() => _reactionBuildingBlockToReactionDataTableMapper.MapFrom(A<IEnumerable<MoBiReactionBuildingBlock>>.Ignored)).Returns(new DataTable { TableName = "reactions" });
          A.CallTo(() => _parameterListToSimulationDataTableMapper.MapFrom(A<IReadOnlyList<IParameter>>.Ignored)).Returns(new DataTable { TableName = "parameters" });
-         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<MoleculeStartValue>>.Ignored, A<IEnumerable<IMoleculeBuilder>>.Ignored)).Returns(new DataTable { TableName = "molecules" });
+         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<MoleculeStartValue>>.Ignored, A<IEnumerable<MoleculeBuilder>>.Ignored)).Returns(new DataTable { TableName = "molecules" });
       }
    }
 
@@ -73,7 +73,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void calls_reaction_building_block_mapper()
       {
-         A.CallTo(() => _reactionBuildingBlockToReactionDataTableMapper.MapFrom(A<IEnumerable<IReactionBuildingBlock>>.That.Matches(x => x.Contains(_moBiReactionBuildingBlock)))).MustHaveHappened();
+         A.CallTo(() => _reactionBuildingBlockToReactionDataTableMapper.MapFrom(A<IEnumerable<ReactionBuildingBlock>>.That.Matches(x => x.Contains(_moBiReactionBuildingBlock)))).MustHaveHappened();
       }
 
       [Observation]
@@ -85,7 +85,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void calls_molecule_building_block_mapper()
       {
-         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<MoleculeStartValue>>._, A<IEnumerable<IMoleculeBuilder>>._)).MustHaveHappened();
+         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<MoleculeStartValue>>._, A<IEnumerable<MoleculeBuilder>>._)).MustHaveHappened();
       }
    }
 }

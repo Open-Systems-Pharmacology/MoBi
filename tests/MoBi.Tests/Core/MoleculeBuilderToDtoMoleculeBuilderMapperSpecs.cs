@@ -1,3 +1,4 @@
+using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -30,10 +31,10 @@ namespace MoBi.Core
 
    public class When_mapping_from_a_MoleculeBuilder : concern_for_MoleculeBuilderToDtoMoleculeBuilderMapper
    {
-      private IMoleculeBuilder _moleculeBuilder;
+      private MoleculeBuilder _moleculeBuilder;
       private MoleculeBuilderDTO _result;
       private IFormula _startFormula;
-      private ITransportBuilder _activeTransport;
+      private TransportBuilder _activeTransport;
       private IParameter _parameter;
       private TransporterMoleculeContainer _transporterMoleculeContainer;
       private UsedCalculationMethod _calculationMethod;
@@ -42,7 +43,7 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         _moleculeBuilder = A.Fake<IMoleculeBuilder>();
+         _moleculeBuilder = new MoleculeBuilder();
          _startFormula = A.Fake<IFormula>();
          _moleculeBuilder.DefaultStartFormula = _startFormula;
          _moleculeBuilder.Description = "Description";
@@ -50,16 +51,22 @@ namespace MoBi.Core
          _moleculeBuilder.Id = "ID";
          _moleculeBuilder.IsFloating = true;
          _moleculeBuilder.QuantityType = QuantityType.Drug;
-         _activeTransport = A.Fake<ITransportBuilder>();
-         _transporterMoleculeContainer = A.Fake<TransporterMoleculeContainer>();
-         A.CallTo(() => _moleculeBuilder.TransporterMoleculeContainerCollection).Returns(new[] {_transporterMoleculeContainer});
-         A.CallTo(() => _transporterMoleculeContainer.ActiveTransportRealizations).Returns(new[] {_activeTransport});
-         _parameter = A.Fake<IParameter>();
-         A.CallTo(() => _moleculeBuilder.Parameters).Returns(new[] {_parameter});
-         _calculationMethod = A.Fake<UsedCalculationMethod>();
-         A.CallTo(() => _moleculeBuilder.UsedCalculationMethods).Returns(new[] {_calculationMethod});
+         _activeTransport = A.Fake<TransportBuilder>();
+         _transporterMoleculeContainer = new TransporterMoleculeContainer().WithName("transport");
+         
+         _moleculeBuilder.AddTransporterMoleculeContainer(_transporterMoleculeContainer);
+         
+         _transporterMoleculeContainer.AddActiveTransportRealization(_activeTransport);
+         
+         _parameter = A.Fake<IParameter>().WithName("parameter");
+         _moleculeBuilder.AddParameter(_parameter);
+         
+         _calculationMethod = new UsedCalculationMethod("category", "method");
+         _moleculeBuilder.AddUsedCalculationMethod(_calculationMethod);
+         
          _interactionContainer = A.Fake<InteractionContainer>();
-         A.CallTo(() => _moleculeBuilder.InteractionContainerCollection).Returns(new[] {_interactionContainer});
+         _moleculeBuilder.AddInteractionContainer(_interactionContainer);
+         
       }
 
       protected override void Because()

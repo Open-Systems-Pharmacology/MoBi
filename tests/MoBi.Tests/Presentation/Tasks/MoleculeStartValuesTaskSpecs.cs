@@ -124,8 +124,8 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _context.Context.Get<ISpatialStructure>(_moleculeStartValueBuildingBlock.SpatialStructureId)).Returns(null);
-         A.CallTo(() => _context.Context.Create<ISpatialStructure>(_moleculeStartValueBuildingBlock.SpatialStructureId)).Returns(new SpatialStructure());
+         A.CallTo(() => _context.Context.Get<SpatialStructure>(_moleculeStartValueBuildingBlock.SpatialStructureId)).Returns(null);
+         A.CallTo(() => _context.Context.Create<SpatialStructure>(_moleculeStartValueBuildingBlock.SpatialStructureId)).Returns(new SpatialStructure());
       }
 
       [Observation]
@@ -162,7 +162,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_original_buidler_cannot_be_found : When_comparing_start_value_to_original_builder
+   public class When_original_builder_cannot_be_found : When_comparing_start_value_to_original_builder
    {
       [Observation]
       public void should_test_as_not_equivalent()
@@ -176,7 +176,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         if (_builder != null) A.CallTo(_moleculeResolver).WithReturnType<IMoleculeBuilder>().Returns(_builder);
+         if (_builder != null) A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(_builder);
       }
 
       [Observation]
@@ -411,7 +411,7 @@ namespace MoBi.Presentation.Tasks
          var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ConstantFormula(double.NaN)};
          var nanStartValue = new MoleculeStartValue {Formula = new ConstantFormula(double.NaN), Name = molecule.Name, StartValue = double.NaN, Dimension = Constants.Dimension.NO_DIMENSION};
          _moleculeStartValueBuildingBlock.Add(nanStartValue);
-         A.CallTo(_moleculeResolver).WithReturnType<IMoleculeBuilder>().Returns(molecule);
+         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
       }
 
       protected override void Because()
@@ -473,7 +473,7 @@ namespace MoBi.Presentation.Tasks
          var startValue = new MoleculeStartValue {Name = builder.Name, StartValue = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null};
          _moleculeStartValueBuildingBlock.Add(startValue);
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _moleculeStartValueBuildingBlock.FormulaCache)).Returns(new ExplicitFormula("M/V"));
-         A.CallTo(_moleculeResolver).WithReturnType<IMoleculeBuilder>().Returns(builder);
+         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(builder);
       }
 
       protected override void Because()
@@ -498,7 +498,7 @@ namespace MoBi.Presentation.Tasks
          var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION};
          var nanStartValue = new MoleculeStartValue {Name = molecule.Name, StartValue = null, Dimension = Constants.Dimension.NO_DIMENSION};
          _moleculeStartValueBuildingBlock.Add(nanStartValue);
-         A.CallTo(_moleculeResolver).WithReturnType<IMoleculeBuilder>().Returns(molecule);
+         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
       }
 
       protected override void Because()
@@ -521,12 +521,13 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         var moleculeBuindingBlock = new MoleculeBuildingBlock();
+         var moleculeBuildingBlock = new MoleculeBuildingBlock();
          var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION};
-         moleculeBuindingBlock.Add(molecule);
+         moleculeBuildingBlock.Add(molecule);
          _nullStartValue = new MoleculeStartValue {Name = molecule.Name, StartValue = 1, Dimension = Constants.Dimension.NO_DIMENSION};
          _moleculeStartValueBuildingBlock.Add(_nullStartValue);
-         A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuindingBlock);
+         A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
+         A.CallTo(() => _moleculeResolver.Resolve(_nullStartValue.ContainerPath, _nullStartValue.MoleculeName, A<SpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(molecule);
       }
 
       protected override void Because()
@@ -563,7 +564,12 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _templateStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
          _simulationConfiguration = new SimulationConfiguration();
-         var moduleConfiguration = new ModuleConfiguration(new Module());
+         var module = new Module
+         {
+            SpatialStructure = new SpatialStructure(),
+            Molecules = new MoleculeBuildingBlock()
+         };
+         var moduleConfiguration = new ModuleConfiguration(module);
          _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
          moduleConfiguration.Module.AddMoleculeStartValueBlock(_templateStartValuesBuildingBlock);
          moduleConfiguration.SelectedMoleculeStartValues = _templateStartValuesBuildingBlock;
@@ -625,7 +631,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
 
          var spatialStructure = new SpatialStructure();
-         A.CallTo(_context.Context).WithReturnType<ISpatialStructure>().Returns(spatialStructure);
+         A.CallTo(_context.Context).WithReturnType<SpatialStructure>().Returns(spatialStructure);
          A.CallTo(() => _moleculeStartValuesCreator.CreateFrom(spatialStructure, moleculeBuildingBlock)).Returns(_templateMoleculeStartValues);
 
          _newEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};

@@ -252,11 +252,11 @@ namespace MoBi.Presentation.Presenter
          return GetReactionBuilderFor(formulaUsable).Name;
       }
 
-      protected IReactionBuilder GetReactionBuilderFor(IFormulaUsable formulaUsable)
+      protected ReactionBuilder GetReactionBuilderFor(IFormulaUsable formulaUsable)
       {
          var parameter = formulaUsable as IParameter;
          if (parameter != null && parameter.IsAtReaction())
-            return parameter.RootContainer as IReactionBuilder;
+            return parameter.RootContainer as ReactionBuilder;
          
          throw new MoBiException($"cant find reaction for parameter{formulaUsable.Name}");
       }

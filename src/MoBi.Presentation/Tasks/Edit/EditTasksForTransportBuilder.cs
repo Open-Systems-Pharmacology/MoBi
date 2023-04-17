@@ -6,13 +6,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
-   public class EditTasksForTransportBuilder : EditTaskFor<ITransportBuilder>
+   public class EditTasksForTransportBuilder : EditTaskFor<TransportBuilder>
    {
       public EditTasksForTransportBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 
-      protected override IEnumerable<string> GetUnallowedNames(ITransportBuilder transportBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      protected override IEnumerable<string> GetUnallowedNames(TransportBuilder transportBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          if (existingObjectsInParent != null)
             return existingObjectsInParent.AllNames();
@@ -21,10 +21,10 @@ namespace MoBi.Presentation.Tasks.Edit
          return activePassiveTransportBuildingBlock?.Select(x => x.Name) ?? Enumerable.Empty<string>();
       }
 
-      private IPassiveTransportBuildingBlock getPassiveTransportBuildingBlockFor(ITransportBuilder objectBase)
+      private PassiveTransportBuildingBlock getPassiveTransportBuildingBlockFor(TransportBuilder objectBase)
       {
          var passiveTransportBuildingBlock = _context.CurrentProject.PassiveTransportCollection.FirstOrDefault(x => x.Contains(objectBase));
-         return passiveTransportBuildingBlock ?? _interactionTaskContext.Active<IPassiveTransportBuildingBlock>();
+         return passiveTransportBuildingBlock ?? _interactionTaskContext.Active<PassiveTransportBuildingBlock>();
       }
    }
 }

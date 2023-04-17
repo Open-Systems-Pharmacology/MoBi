@@ -56,7 +56,7 @@ namespace MoBi.Presentation
       private ReferenceDTO _result;
       private IParameter _reacPara2;
       private IParameter _reacPara1;
-      private IReactionBuilder _reaction2;
+      private ReactionBuilder _reaction2;
 
       protected override void Context()
       {

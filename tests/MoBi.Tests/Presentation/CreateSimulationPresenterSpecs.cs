@@ -25,10 +25,6 @@ namespace MoBi.Presentation
    public abstract class concern_for_CreateSimulationPresenter : ContextForIntegration<ICreateSimulationPresenter>
    {
       protected ICreateSimulationView _view;
-      protected IEditSimulationConfigurationPresenter _simulationConfigurationPresenter;
-      protected ISelectAndEditMoleculesStartValuesPresenter _moleculeStartValuesPresenter;
-      protected ISelectAndEditParameterStartValuesPresenter _parameterStartValuesPresenter;
-      protected IFinalOptionsPresenter _finalActionPresenter;
       protected IMoBiContext _context;
       protected IModelConstructor _modelConstructor;
       protected IDimensionValidator _validationVisitor;
@@ -36,7 +32,7 @@ namespace MoBi.Presentation
       protected ISimulationFactory _simulationFactory;
       protected IMoBiApplicationController _applicationController;
       protected IHeavyWorkManager _heavyWorkManager;
-      private ISubPresenterItemManager<ISimulationItemPresenter> _subPresenterManager;
+      private ISubPresenterItemManager<ISimulationConfigurationItemPresenter> _subPresenterManager;
       private IDialogCreator _dialogCreator;
       private IForbiddenNamesRetriever _forbiddenNameRetriever;
       protected IMoBiSimulation _simulation;
@@ -44,20 +40,16 @@ namespace MoBi.Presentation
       protected SimulationConfiguration _simulationConfiguration;
       private ICloneManagerForBuildingBlock _cloneManager;
       protected SimulationSettings _clonedSimulationSettings;
+      private MoBiProject _moBiProject;
       protected const string _useId = "ToUse";
 
       protected override void Context()
       {
          _view = A.Fake<ICreateSimulationView>();
-         _subPresenterManager = A.Fake<ISubPresenterItemManager<ISimulationItemPresenter>>();
-         _simulationConfigurationPresenter = _subPresenterManager.CreateFake(SimulationItems.SimulationConfiguration);
-         _moleculeStartValuesPresenter = _subPresenterManager.CreateFake(SimulationItems.MoleculeStartValues);
-         _parameterStartValuesPresenter = _subPresenterManager.CreateFake(SimulationItems.ParameterStartValues);
-         _finalActionPresenter = _subPresenterManager.CreateFake(SimulationItems.FinalOptions);
+         _subPresenterManager = A.Fake<ISubPresenterItemManager<ISimulationConfigurationItemPresenter>>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _clonedSimulationSettings = new SimulationSettings();
 
-         A.CallTo(() => _subPresenterManager.AllSubPresenters).Returns(new ISimulationItemPresenter[] { _simulationConfigurationPresenter, _moleculeStartValuesPresenter, _parameterStartValuesPresenter, _finalActionPresenter });
          _context = A.Fake<IMoBiContext>();
          _modelConstructor = A.Fake<IModelConstructor>();
          _dialogCreator = A.Fake<IDialogCreator>();
@@ -78,8 +70,11 @@ namespace MoBi.Presentation
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
          _simulationConfiguration = createBuildConfiguration();
          _simulation.Configuration = _simulationConfiguration;
-         A.CallTo(() => _moleculeStartValuesPresenter.StartValues).Returns(A.Fake<MoleculeStartValuesBuildingBlock>().WithId(_useId));
-         A.CallTo(() => _parameterStartValuesPresenter.StartValues).Returns(A.Fake<ParameterStartValuesBuildingBlock>().WithId(_useId));
+         _moBiProject = new MoBiProject
+         {
+            SimulationSettings = new SimulationSettings()
+         };
+         A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
 
          A.CallTo(() => _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings)).Returns(_clonedSimulationSettings);
       }
@@ -136,12 +131,6 @@ namespace MoBi.Presentation
       public void should_ask_simulation_factory_for_new_simulation()
       {
          A.CallTo(() => _simulationFactory.Create()).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_initialise_sub_edit_presenter()
-      {
-         A.CallTo(() => _simulationConfigurationPresenter.Edit(_simulation)).MustHaveHappened();
       }
 
       [Observation]

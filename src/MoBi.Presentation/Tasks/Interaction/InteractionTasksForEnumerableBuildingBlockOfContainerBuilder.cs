@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<TBuildingBlock, TBuilder> 
       : InteractionTasksForEnumerableBuildingBlock<TBuildingBlock, TBuilder> 
-      where TBuilder : class, IContainer where TBuildingBlock : class, IBuildingBlock<TBuilder>
+      where TBuilder : class, IContainer, IBuilder where TBuildingBlock : class, IBuildingBlock<TBuilder>
    {
       protected InteractionTasksForEnumerableBuildingBlockOfContainerBuilder(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask, IInteractionTasksForBuilder<TBuilder> builderTask) : base(interactionTaskContext, editTask, builderTask)
       {

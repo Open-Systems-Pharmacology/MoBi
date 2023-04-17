@@ -7,12 +7,12 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IMoleculeBuilderToDummyMoleculeDTOMapper
    {
-      DummyMoleculeDTO MapFrom(IMoleculeBuilder moleculeBuilder, IContainer container);
+      DummyMoleculeDTO MapFrom(MoleculeBuilder moleculeBuilder, IContainer container);
    }
 
    internal class MoleculeBuilderToDummyMoleculeDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IMoleculeBuilderToDummyMoleculeDTOMapper
    {
-      public DummyMoleculeDTO MapFrom(IMoleculeBuilder moleculeBuilder, IContainer container)
+      public DummyMoleculeDTO MapFrom(MoleculeBuilder moleculeBuilder, IContainer container)
       {
          var dto = Map(new DummyMoleculeDTO(moleculeBuilder));
          dto.StructureParent = container;

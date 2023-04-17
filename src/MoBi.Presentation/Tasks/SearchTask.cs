@@ -74,16 +74,16 @@ namespace MoBi.Presentation.Tasks
          if (buildingBlockType.IsAnImplementationOf<MoleculeBuildingBlock>())
             return _context.CurrentProject.MoleculeBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IReactionBuildingBlock>())
+         if (buildingBlockType.IsAnImplementationOf<ReactionBuildingBlock>())
             return _context.CurrentProject.ReactionBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<ISpatialStructure>())
+         if (buildingBlockType.IsAnImplementationOf<SpatialStructure>())
             return _context.CurrentProject.SpatialStructureCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IObserverBuildingBlock>())
+         if (buildingBlockType.IsAnImplementationOf<ObserverBuildingBlock>())
             return _context.CurrentProject.ObserverBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IEventGroupBuildingBlock>())
+         if (buildingBlockType.IsAnImplementationOf<EventGroupBuildingBlock>())
             return _context.CurrentProject.EventBlockCollection;
 
          if (buildingBlockType.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())

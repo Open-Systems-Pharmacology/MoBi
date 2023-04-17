@@ -39,10 +39,10 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       private void createRemoveCommandFor(IContextMenuView contextMenuView, T entity)
       {
-         if (entity.IsAnImplementationOf<IReactionBuilder>())
+         if (entity.IsAnImplementationOf<ReactionBuilder>())
          {
             contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-               .WithRemoveCommand(Presenter.Subject.DowncastTo<IMoBiReactionBuildingBlock>(), entity).WithIcon(ApplicationIcons.Delete));
+               .WithRemoveCommand(Presenter.Subject.DowncastTo<MoBiReactionBuildingBlock>(), entity).WithIcon(ApplicationIcons.Delete));
          }
          else
          {
@@ -60,9 +60,9 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       protected override void SetModelMenuItems(IContextMenuView contextMenuView, IContainerBase containerBase, IBaseNode node)
       {
-         var parent = Presenter.Subject as IMoBiSpatialStructure;
+         var parent = Presenter.Subject as MoBiSpatialStructure;
          var menuItem = CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew("Top Container"))
-            .WithCommandFor<AddNewTopContainerCommand, IMoBiSpatialStructure>(parent, _context.Container)
+            .WithCommandFor<AddNewTopContainerCommand, MoBiSpatialStructure>(parent, _context.Container)
             .WithIcon(ApplicationIcons.ContainerAdd);
          contextMenuView.AddMenuItem(menuItem);
 

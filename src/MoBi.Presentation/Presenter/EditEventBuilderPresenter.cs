@@ -23,7 +23,7 @@ using OSPSuite.Core.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditEventBuilderPresenter : IEditPresenterWithParameters<IEventBuilder>, ICanEditPropertiesPresenter, IPresenterWithFormulaCache
+   public interface IEditEventBuilderPresenter : IEditPresenterWithParameters<EventBuilder>, ICanEditPropertiesPresenter, IPresenterWithFormulaCache
       , IListener<AddedEvent>, IListener<RemovedEvent>
    {
       void AddAssignment();
@@ -40,10 +40,10 @@ namespace MoBi.Presentation.Presenter
    public class EditEventBuilderPresenter : AbstractCommandCollectorPresenter<IEditEventBuilderView, IEditEventBuilderPresenter>, IEditEventBuilderPresenter
    {
       private readonly IEventBuilderToEventBuilderDTOMapper _eventToEventBuilderMapper;
-      private IEventBuilder _eventBuilder;
+      private EventBuilder _eventBuilder;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
-      private readonly IEditTaskFor<IEventBuilder> _editTasks;
-      private readonly IInteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder> _interactionTasksForEventAssignmentBuilder;
+      private readonly IEditTaskFor<EventBuilder> _editTasks;
+      private readonly IInteractionTasksForChildren<EventBuilder, EventAssignmentBuilder> _interactionTasksForEventAssignmentBuilder;
       private readonly IEditParametersInContainerPresenter _editParametersPresenter;
       private readonly ISelectReferenceAtEventPresenter _selectReferencePresenter;
       private IBuildingBlock _buildingBlock;
@@ -55,8 +55,8 @@ namespace MoBi.Presentation.Presenter
 
       public EditEventBuilderPresenter(IEditEventBuilderView view, IEventBuilderToEventBuilderDTOMapper eventToEventBuilderMapper,
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IEditTaskFor<IEventBuilder> editTasks, IEditParametersInContainerPresenter editParametersPresenter,
-         IInteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder> interactionTasksForEventAssignmentBuilder,
+         IEditTaskFor<EventBuilder> editTasks, IEditParametersInContainerPresenter editParametersPresenter,
+         IInteractionTasksForChildren<EventBuilder, EventAssignmentBuilder> interactionTasksForEventAssignmentBuilder,
          IEditExplicitFormulaPresenter editFormulaPresenter, IMoBiContext context,
          ISelectReferenceAtEventPresenter selectReferencePresenter,
          IMoBiApplicationController applicationController, IDialogCreator dialogCreator)
@@ -87,10 +87,10 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(object objectToEdit)
       {
-         Edit(objectToEdit.DowncastTo<IEventBuilder>());
+         Edit(objectToEdit.DowncastTo<EventBuilder>());
       }
 
-      public void Edit(IEventBuilder eventBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
+      public void Edit(EventBuilder eventBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventBuilder = eventBuilder;
          _formulaPropertyName = _eventBuilder.PropertyName(x => x.Formula);
@@ -110,7 +110,7 @@ namespace MoBi.Presentation.Presenter
          checkFormulaName(dto.Condition);
       }
 
-      public void Edit(IEventBuilder eventBuilder)
+      public void Edit(EventBuilder eventBuilder)
       {
          Edit(eventBuilder, eventBuilder.ParentContainer.Children);
       }
@@ -203,7 +203,7 @@ namespace MoBi.Presentation.Presenter
          AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, eventAssignmentBuilder, BuildingBlock).Run(_context));
       }
 
-      private IEventAssignmentBuilder eventAssignmentBuilderFor(EventAssignmentBuilderDTO eventAssignmentBuilderDTO)
+      private EventAssignmentBuilder eventAssignmentBuilderFor(EventAssignmentBuilderDTO eventAssignmentBuilderDTO)
       {
          return _eventBuilder.Assignments.Single(dto => dto.Id.Equals(eventAssignmentBuilderDTO.Id));
       }
@@ -235,7 +235,7 @@ namespace MoBi.Presentation.Presenter
       public void SetFormulaFor(EventAssignmentBuilderDTO eventAssignmentBuilderDTO, FormulaBuilderDTO formulaBuilderDTO)
       {
          var newFormula = _context.Get<ExplicitFormula>(formulaBuilderDTO.Id);
-         var eventAssignmentBuilder = _context.Get<IEventAssignmentBuilder>(eventAssignmentBuilderDTO.Id);
+         var eventAssignmentBuilder = _context.Get<EventAssignmentBuilder>(eventAssignmentBuilderDTO.Id);
          AddCommand(
             new EditObjectBasePropertyInBuildingBlockCommand(eventAssignmentBuilder.PropertyName(b => b.Formula), newFormula, eventAssignmentBuilder.Formula, eventAssignmentBuilder, BuildingBlock).Run(_context));
       }
@@ -255,7 +255,7 @@ namespace MoBi.Presentation.Presenter
          if (addedObject.IsAnImplementationOf<IParameter>())
             return _eventBuilder.Parameters.Contains((IParameter) addedObject);
 
-         return addedObject.IsAnImplementationOf<IEventAssignmentBuilder>();
+         return addedObject.IsAnImplementationOf<EventAssignmentBuilder>();
       }
 
       public void Handle(RemovedEvent eventToHandle)
@@ -281,7 +281,7 @@ namespace MoBi.Presentation.Presenter
       private bool canHandle(RemovedEvent eventToHandle)
       {
          if (_eventBuilder == null) return false;
-         return eventToHandle.RemovedObjects.Any(removedObject => removedObject.IsAnImplementationOf<IEventAssignmentBuilder>() ||
+         return eventToHandle.RemovedObjects.Any(removedObject => removedObject.IsAnImplementationOf<EventAssignmentBuilder>() ||
                                                                   removedObject.IsAnImplementationOf<IParameter>());
       }
    }

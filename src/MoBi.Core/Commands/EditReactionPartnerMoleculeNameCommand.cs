@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
       private readonly string _newMoleculeName;
       private string _oldMoleculeName;
 
-      public EditReactionPartnerMoleculeNameCommand(string newMoleculeName, IReactionBuilder reaction, IReactionPartnerBuilder reactionPartner, IMoBiReactionBuildingBlock buildingBlock) :
+      public EditReactionPartnerMoleculeNameCommand(string newMoleculeName, ReactionBuilder reaction, ReactionPartnerBuilder reactionPartner, MoBiReactionBuildingBlock buildingBlock) :
          base(reaction, reactionPartner, buildingBlock)
       {
          _newMoleculeName = newMoleculeName;

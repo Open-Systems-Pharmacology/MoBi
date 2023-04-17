@@ -8,18 +8,10 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Model
 {
-   public interface IMoBiSpatialStructure : ISpatialStructure, IWithDiagramFor<IMoBiSpatialStructure>
-   {
-      /// <summary>
-      ///    Return the list of neighborhood connected to this neighbor;
-      /// </summary>
-      IReadOnlyList<NeighborhoodBuilder> GetConnectingNeighborhoods(IReadOnlyList<IContainer> neighbors, IObjectPathFactory objectPathFactory);
-   }
-
-   public class MoBiSpatialStructure : SpatialStructure, IMoBiSpatialStructure
+   public class MoBiSpatialStructure : SpatialStructure, IWithDiagramFor<MoBiSpatialStructure>
    {
       public IDiagramModel DiagramModel { get; set; }
-      public IDiagramManager<IMoBiSpatialStructure> DiagramManager { get; set; }
+      public IDiagramManager<MoBiSpatialStructure> DiagramManager { get; set; }
 
       public IReadOnlyList<NeighborhoodBuilder> GetConnectingNeighborhoods(IReadOnlyList<IContainer> neighbors, IObjectPathFactory objectPathFactory)
       {
@@ -52,7 +44,7 @@ namespace MoBi.Core.Domain.Model
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
-         var sourceSpatialStructure = sourceObject as IMoBiSpatialStructure;
+         var sourceSpatialStructure = sourceObject as MoBiSpatialStructure;
          if (sourceSpatialStructure == null) return;
 
          this.UpdateDiagramFrom(sourceSpatialStructure);

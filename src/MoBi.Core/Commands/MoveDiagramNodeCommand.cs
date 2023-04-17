@@ -5,14 +5,14 @@ using OSPSuite.Core.Diagram;
 
 namespace MoBi.Core.Commands
 {
-   public class MoveDiagramNodeCommand : BuildingBlockChangeCommandBase<IMoBiReactionBuildingBlock>
+   public class MoveDiagramNodeCommand : BuildingBlockChangeCommandBase<MoBiReactionBuildingBlock>
    {
       private IBaseNode _destinationNode;
       private IBaseNode _originalNode;
       private readonly PointF _destinationParentLocation;
       private readonly string _targetNodeName;
 
-      public MoveDiagramNodeCommand(IMoBiReactionBuildingBlock targetBuildingBlock, string targetNodeName, IBaseNode destinationNode)
+      public MoveDiagramNodeCommand(MoBiReactionBuildingBlock targetBuildingBlock, string targetNodeName, IBaseNode destinationNode)
          : base(targetBuildingBlock)
       {
          _destinationNode = destinationNode;
@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         var targetBuildingBlock = context.Get<IMoBiReactionBuildingBlock>(_buildingBlockId);
+         var targetBuildingBlock = context.Get<MoBiReactionBuildingBlock>(_buildingBlockId);
 
          var targetNode = targetBuildingBlock.DiagramModel?.FindByName(_targetNodeName);
 

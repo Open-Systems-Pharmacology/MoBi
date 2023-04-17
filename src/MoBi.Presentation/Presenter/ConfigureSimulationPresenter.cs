@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
       public SimulationConfiguration SimulationConfiguration { get; private set; }
 
       public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory)
-         : base(view, subPresenterSubjectManager, dialogCreator, context, SimulationItems.AllConfigure)
+         : base(view, subPresenterSubjectManager, dialogCreator, context, SimulationItems.All)
       {
          _diagramManagerFactory = diagramManagerFactory;
       }
@@ -34,13 +34,10 @@ namespace MoBi.Presentation.Presenter
 
       public IMoBiCommand CreateBuildConfigurationBasedOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
-         //we create a build configuration where all current building blocks are referencing template building blocks
-         // SimulationConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.Configuration, templateBuildingBlock);
-
          // TODO should this be a clone? SIMULATION_CONFIGURATION
          SimulationConfiguration = simulation.Configuration;
 
-         var tmpSimulation = new MoBiSimulation()
+         var tmpSimulation = new MoBiSimulation
          {
             DiagramManager = _diagramManagerFactory.Create<ISimulationDiagramManager>(),
 
@@ -51,21 +48,17 @@ namespace MoBi.Presentation.Presenter
 
          edit(tmpSimulation);
          _view.Caption = AppConstants.Captions.ConfigureSimulation(simulation.Name);
+         UpdateControls();
          _view.Display();
          if (_view.Canceled)
             return new MoBiEmptyCommand();
-
-         //Set the selected MSV AND PSV as per user inputs
-         // UpdateStartValueInfo<MoleculeStartValuesBuildingBlock, MoleculeStartValue>(SimulationConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
-         // UpdateStartValueInfo<ParameterStartValuesBuildingBlock, ParameterStartValue>(SimulationConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
-
 
          return _commands;
       }
 
       private void edit(IMoBiSimulation simulation)
       {
-         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation));
+         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation.Configuration));
       }
    }
 }

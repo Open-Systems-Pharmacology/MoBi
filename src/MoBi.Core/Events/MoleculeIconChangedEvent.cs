@@ -4,9 +4,9 @@ namespace MoBi.Core.Events
 {
    public class MoleculeIconChangedEvent
    {
-      public IMoleculeBuilder MoleculeBuilder { get; set; }
+      public MoleculeBuilder MoleculeBuilder { get; set; }
 
-      public MoleculeIconChangedEvent(IMoleculeBuilder moleculeBuilder)
+      public MoleculeIconChangedEvent(MoleculeBuilder moleculeBuilder)
       {
          MoleculeBuilder = moleculeBuilder;
       }

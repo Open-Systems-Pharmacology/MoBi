@@ -11,10 +11,10 @@ namespace MoBi.Presentation.DTO
 
    public class DummyMoleculeDTO : ObjectBaseDTO, IDummyContainer
    {
-      public IMoleculeBuilder MoleculeBuilder { get; }
+      public MoleculeBuilder MoleculeBuilder { get; }
       public IContainer StructureParent { get; set; }
 
-      public DummyMoleculeDTO(IMoleculeBuilder moleculeBuilder) : base(moleculeBuilder)
+      public DummyMoleculeDTO(MoleculeBuilder moleculeBuilder) : base(moleculeBuilder)
       {
          MoleculeBuilder = moleculeBuilder;
          Id = ShortGuid.NewGuid();

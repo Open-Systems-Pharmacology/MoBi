@@ -18,17 +18,17 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForMoleculeBuildingBlock : IInteractionTasksForBuildingBlock<MoleculeBuildingBlock>
    {
       void CreateNewFromSelection();
-      void Edit(MoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder);
+      void Edit(MoleculeBuildingBlock moleculeBuildingBlock, MoleculeBuilder moleculeBuilder);
    }
 
-   public class InteractionTasksForMoleculeBuildingBlock : InteractionTaskForCloneMergeBuildingBlock<MoleculeBuildingBlock, IMoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
+   public class InteractionTasksForMoleculeBuildingBlock : InteractionTaskForCloneMergeBuildingBlock<MoleculeBuildingBlock, MoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
    {
       private readonly IEditTasksForBuildingBlock<MoleculeBuildingBlock> _editTaskForBuildingBlock;
 
       public InteractionTasksForMoleculeBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<MoleculeBuildingBlock> editTask,
-         IInteractionTasksForBuilder<IMoleculeBuilder> builderTask,
+         IInteractionTasksForBuilder<MoleculeBuilder> builderTask,
          IMoleculeBuildingBlockCloneManager moleculeBuildingBlockCloneManager)
          : base(interactionTaskContext, editTask, builderTask, moleculeBuildingBlockCloneManager)
       {
@@ -74,13 +74,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Remove(buildingBlockToRemove, project, buildingBlock, silent);
       }
 
-      public void Edit(MoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder)
+      public void Edit(MoleculeBuildingBlock moleculeBuildingBlock, MoleculeBuilder moleculeBuilder)
       {
          _editTaskForBuildingBlock.EditBuildingBlock(moleculeBuildingBlock);
          Context.PublishEvent(new EntitySelectedEvent(moleculeBuilder, this));
       }
 
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(IMoleculeBuilder builder, MoleculeBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(MoleculeBuilder builder, MoleculeBuildingBlock targetBuildingBlock, string originalBuilderName = null)
       {
          var defaultStartFormulaDecoder = new DefaultStartFormulaDecoder();
          var macroCommand = base.GenerateAddCommandAndUpdateFormulaReferences(builder, targetBuildingBlock);

@@ -9,7 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForSpatialStructure : InteractionTasksForBuildingBlock<IMoBiSpatialStructure>
+   public class InteractionTasksForSpatialStructure : InteractionTasksForBuildingBlock<MoBiSpatialStructure>
    {
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
 
@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _spatialStructureFactory = spatialStructureFactory;
       }
 
-      public override IMoBiCommand Remove(IMoBiSpatialStructure buildingBlockToRemove, MoBiProject project, IBuildingBlock buildingBlock, bool silent)
+      public override IMoBiCommand Remove(MoBiSpatialStructure buildingBlockToRemove, MoBiProject project, IBuildingBlock buildingBlock, bool silent)
       {
          var referringStartValuesBuildingBlocks = project.ReferringStartValuesBuildingBlocks(buildingBlockToRemove);
          if (referringStartValuesBuildingBlocks.Any())
@@ -30,12 +30,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
 
-      public override IMoBiCommand Merge(IMoBiSpatialStructure buildingBlockToMerge, IMoBiSpatialStructure targetBuildingBlock)
+      public override IMoBiCommand Merge(MoBiSpatialStructure buildingBlockToMerge, MoBiSpatialStructure targetBuildingBlock)
       {
          throw new MoBiException(AppConstants.Exceptions.MergingSpatialStructuresIsNotSupported);
       }
 
-      public override IMoBiSpatialStructure CreateNewEntity(MoBiProject moleculeBuildingBlock)
+      public override MoBiSpatialStructure CreateNewEntity(MoBiProject moleculeBuildingBlock)
       {
          return _spatialStructureFactory.CreateDefault(spatialStructureName:string.Empty);
       }

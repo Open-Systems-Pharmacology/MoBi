@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectReferenceAtEventPresenter : ISelectReferencePresenter
    {
-      void Init(IEntity refObject, IEnumerable<IObjectBase> entities, IEventBuilder assingment);
+      void Init(IEntity refObject, IEnumerable<IObjectBase> entities, EventBuilder assingment);
    }
 
    internal class SelectReferenceAtEventPresenter : SelectReferencePresenterBase, ISelectReferenceAtEventPresenter
@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_referenceMapper.MapFrom(rootContainer));
       }
 
-      public void Init(IEntity refObject, IEnumerable<IObjectBase> entities, IEventBuilder eventBuilder)
+      public void Init(IEntity refObject, IEnumerable<IObjectBase> entities, EventBuilder eventBuilder)
       {
          addEventGroupParameter(eventBuilder.RootContainer);
       }

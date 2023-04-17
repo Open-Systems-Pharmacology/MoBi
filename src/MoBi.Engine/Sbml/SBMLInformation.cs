@@ -73,7 +73,7 @@ namespace MoBi.Engine.Sbml
                 SboTerm = sbmlModel.getSBOTerm();
         }
 
-        public IMoleculeBuilder GetMoleculeBySBMLId(string sbmlSpeciesId)
+        public MoleculeBuilder GetMoleculeBySBMLId(string sbmlSpeciesId)
         {
            var moleculeInformation =MoleculeInformation.FirstOrDefault(info => info.SpeciesIds.Exists(s => s == sbmlSpeciesId));
            if (moleculeInformation == null) return null;

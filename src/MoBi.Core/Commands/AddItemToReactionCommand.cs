@@ -16,22 +16,22 @@ namespace MoBi.Core.Commands
 {
    public class AddedReactionModifierEvent
    {
-      public IReactionBuilder Reaction { get; set; }
+      public ReactionBuilder Reaction { get; set; }
       public string ModifierName { get; set; }
 
-      public AddedReactionModifierEvent(IReactionBuilder reaction, string modifierName)
+      public AddedReactionModifierEvent(ReactionBuilder reaction, string modifierName)
       {
          Reaction = reaction;
          ModifierName = modifierName;
       }
    }
 
-   public abstract class AddItemToReactionCommand<T> : AddItemCommand<T, IReactionBuilder, IMoBiReactionBuildingBlock>
+   public abstract class AddItemToReactionCommand<T> : AddItemCommand<T, ReactionBuilder, MoBiReactionBuildingBlock>
    {
-      private readonly Func<IReactionBuilder, Action<T>> _addMethod;
+      private readonly Func<ReactionBuilder, Action<T>> _addMethod;
       protected string _moleculeName;
 
-      protected AddItemToReactionCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, T itemToAdd, IReactionBuilder reactionBuilder, Func<IReactionBuilder, Action<T>> addMethod)
+      protected AddItemToReactionCommand(MoBiReactionBuildingBlock reactionBuildingBlock, T itemToAdd, ReactionBuilder reactionBuilder, Func<ReactionBuilder, Action<T>> addMethod)
          : base(reactionBuilder, itemToAdd, reactionBuildingBlock)
       {
          _addMethod = addMethod;
@@ -81,9 +81,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public abstract class AddPartnerToReactionCommand<T> : AddItemToReactionCommand<T> where T : IReactionPartnerBuilder
+   public abstract class AddPartnerToReactionCommand<T> : AddItemToReactionCommand<T> where T : ReactionPartnerBuilder
    {
-      protected AddPartnerToReactionCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, T reactionPartnerBuilder, IReactionBuilder reactionBuilder, Func<IReactionBuilder, Action<T>> addMethod) :
+      protected AddPartnerToReactionCommand(MoBiReactionBuildingBlock reactionBuildingBlock, T reactionPartnerBuilder, ReactionBuilder reactionBuilder, Func<ReactionBuilder, Action<T>> addMethod) :
          base(reactionBuildingBlock, reactionPartnerBuilder, reactionBuilder, addMethod)
       {
       }
@@ -100,9 +100,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddReactionPartnerToEductCollection : AddPartnerToReactionCommand<IReactionPartnerBuilder>
+   public class AddReactionPartnerToEductCollection : AddPartnerToReactionCommand<ReactionPartnerBuilder>
    {
-      public AddReactionPartnerToEductCollection(IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionPartnerBuilder reactionPartnerBuilder, IReactionBuilder reactionBuilder) :
+      public AddReactionPartnerToEductCollection(MoBiReactionBuildingBlock reactionBuildingBlock, ReactionPartnerBuilder reactionPartnerBuilder, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, reactionPartnerBuilder, reactionBuilder, x => x.AddEduct)
       {
          ObjectType =ObjectTypes.Educt;
@@ -120,9 +120,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddReactionPartnerToProductCollection : AddPartnerToReactionCommand<IReactionPartnerBuilder>
+   public class AddReactionPartnerToProductCollection : AddPartnerToReactionCommand<ReactionPartnerBuilder>
    {
-      public AddReactionPartnerToProductCollection(IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionPartnerBuilder reactionPartnerBuilder, IReactionBuilder reactionBuilder) :
+      public AddReactionPartnerToProductCollection(MoBiReactionBuildingBlock reactionBuildingBlock, ReactionPartnerBuilder reactionPartnerBuilder, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, reactionPartnerBuilder, reactionBuilder, x => x.AddProduct)
       {
          ObjectType =ObjectTypes.Product;
@@ -142,7 +142,7 @@ namespace MoBi.Core.Commands
 
    public class AddItemToModifierCollectionCommand : AddItemToReactionCommand<string>
    {
-      public AddItemToModifierCollectionCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, string modifier, IReactionBuilder reactionBuilder) :
+      public AddItemToModifierCollectionCommand(MoBiReactionBuildingBlock reactionBuildingBlock, string modifier, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, modifier, reactionBuilder, x => x.AddModifier)
       {
          ObjectType =ObjectTypes.Modifier;

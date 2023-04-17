@@ -65,6 +65,6 @@ namespace MoBi.Presentation.Presenter
          _neighborhoodBuilder.Name = name;
       }
 
-      private ISpatialStructure spatialStructure => BuildingBlock as ISpatialStructure;
+      private SpatialStructure spatialStructure => BuildingBlock as SpatialStructure;
    }
 }

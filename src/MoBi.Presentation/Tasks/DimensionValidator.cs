@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IUserSettings _userSettings;
       private bool _checkDimensions;
-      private SimulationConfiguration _simulationConfiguration;
+      private SimulationBuilder _simulationBuilder;
       private ValidationResult _result;
       private readonly IDictionary<string, string> _hiddenNotifications;
       private bool _checkRules;
@@ -56,11 +56,11 @@ namespace MoBi.Presentation.Tasks
       private static string dimensionVelocityMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.VELOCITY);
       private static string dimensionAreaMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.AREA);
 
-      public Task<ValidationResult> Validate(IContainer container, SimulationConfiguration simulationConfiguration) => Validate(new[] { container }, simulationConfiguration);
+      public Task<ValidationResult> Validate(IContainer container, SimulationBuilder simulationBuilder) => Validate(new[] { container }, simulationBuilder);
 
-      public Task<ValidationResult> Validate(IModel model, SimulationConfiguration simulationConfiguration) => Validate(new[] { model.Root, model.Neighborhoods }, simulationConfiguration);
+      public Task<ValidationResult> Validate(IModel model, SimulationBuilder simulationBuilder) => Validate(new[] { model.Root, model.Neighborhoods }, simulationBuilder);
 
-      public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, SimulationConfiguration simulationConfiguration)
+      public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, SimulationBuilder simulationBuilder)
       {
          return Task.Run(() =>
          {
@@ -69,13 +69,13 @@ namespace MoBi.Presentation.Tasks
                _result = new ValidationResult();
                _checkDimensions = _userSettings.CheckDimensions;
                _checkRules = _userSettings.CheckRules;
-               _simulationConfiguration = simulationConfiguration;
+               _simulationBuilder = simulationBuilder;
                containers.Each(c => c.AcceptVisitor(this));
                return _result;
             }
             finally
             {
-               _simulationConfiguration = null;
+               _simulationBuilder = null;
                _result = null;
             }
          });
@@ -133,7 +133,7 @@ namespace MoBi.Presentation.Tasks
 
       private void addNotification(NotificationType notificationType, IObjectBase entityToValidate, string notification)
       {
-         var builder = _simulationConfiguration.BuilderFor(entityToValidate);
+         var builder = _simulationBuilder.BuilderFor(entityToValidate);
          if (!shouldShowNotification(entityToValidate, notification))
             return;
 

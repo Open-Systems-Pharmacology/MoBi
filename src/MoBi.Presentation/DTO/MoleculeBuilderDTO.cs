@@ -6,7 +6,7 @@ namespace MoBi.Presentation.DTO
 {
    public class MoleculeBuilderDTO : ObjectBaseDTO
    {
-      public MoleculeBuilderDTO(IMoleculeBuilder moleculeBuilder) : base(moleculeBuilder)
+      public MoleculeBuilderDTO(MoleculeBuilder moleculeBuilder) : base(moleculeBuilder)
       {
       }
 

@@ -28,10 +28,10 @@ namespace MoBi.Presentation
       protected IReactionDimensionRetriever _dimensionRetriever;
       private MoBiProject _mobiProject;
       private Container _rootContainer;
-      private IMoBiReactionBuildingBlock _reactionBB;
+      private MoBiReactionBuildingBlock _reactionBB;
       private MoleculeBuildingBlock _moleculeBB;
-      protected IReactionBuilder _reaction;
-      protected IMoleculeBuilder _moleculeBuilder;
+      protected ReactionBuilder _reaction;
+      protected MoleculeBuilder _moleculeBuilder;
       private IParameter _localParameter;
       private IParameter _globalParameter;
       private ISelectEntityInTreePresenter _selectEntityInTreePresenter;

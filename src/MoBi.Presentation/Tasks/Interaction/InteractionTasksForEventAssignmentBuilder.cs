@@ -4,19 +4,19 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForEventAssignmentBuilder : InteractionTasksForChildren<IEventBuilder, IEventAssignmentBuilder>
+   public class InteractionTasksForEventAssignmentBuilder : InteractionTasksForChildren<EventBuilder, EventAssignmentBuilder>
    {
-      public InteractionTasksForEventAssignmentBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IEventAssignmentBuilder> editTasks)
+      public InteractionTasksForEventAssignmentBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<EventAssignmentBuilder> editTasks)
          : base(interactionTaskContext, editTasks)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(IEventAssignmentBuilder eventAssignmentBuildertoRemove, IEventBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(EventAssignmentBuilder eventAssignmentBuildertoRemove, EventBuilder parent, IBuildingBlock buildingBlock)
       {
-         return new RemoveEventAssigmentBuilderFromEventBuilderCommand(parent, eventAssignmentBuildertoRemove, buildingBlock);
+         return new RemoveEventAssignmentBuilderFromEventBuilderCommand(parent, eventAssignmentBuildertoRemove, buildingBlock);
       }
 
-      public override IMoBiCommand GetAddCommand(IEventAssignmentBuilder eventAssignmentBuilder, IEventBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(EventAssignmentBuilder eventAssignmentBuilder, EventBuilder parent, IBuildingBlock buildingBlock)
       {
          return new AddEventAssignmentBuilderToEventBuilderCommand(parent, eventAssignmentBuilder, buildingBlock);
       }

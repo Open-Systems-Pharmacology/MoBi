@@ -34,19 +34,19 @@ namespace MoBi.Core.Repositories
          if (objectBase.IsAnImplementationOf<INeighborhoodBase>())
             return ApplicationIcons.EmptyIcon;
 
-         if (objectBase.IsAnImplementationOf<IMoleculeBuilder>())
-            return getMoleculeBuilderIconFor(objectBase.DowncastTo<IMoleculeBuilder>());
+         if (objectBase.IsAnImplementationOf<MoleculeBuilder>())
+            return getMoleculeBuilderIconFor(objectBase.DowncastTo<MoleculeBuilder>());
 
          if (objectBase.IsAnImplementationOf<IContainer>())
             return getContainerIconFor(objectBase.DowncastTo<IContainer>());
 
-         if (objectBase.IsAnImplementationOf<IObserverBuilder>())
+         if (objectBase.IsAnImplementationOf<ObserverBuilder>())
             return ApplicationIcons.Observer;
 
          return getIconByTypeName(objectBase);
       }
 
-      private ApplicationIcon getMoleculeBuilderIconFor(IMoleculeBuilder objectBase)
+      private ApplicationIcon getMoleculeBuilderIconFor(MoleculeBuilder objectBase)
       {
          var iconName = Enum.GetName(typeof(QuantityType), objectBase.QuantityType);
          return iconByName(iconName) ?? ApplicationIcons.Drug;

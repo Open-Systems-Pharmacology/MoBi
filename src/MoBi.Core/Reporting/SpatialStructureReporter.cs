@@ -8,7 +8,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting
 {
-   internal class SpatialStructureReporter : OSPSuiteTeXReporter<IMoBiSpatialStructure>
+   internal class SpatialStructureReporter : OSPSuiteTeXReporter<MoBiSpatialStructure>
    {
       private readonly IDiagramModelToImageTask _diagramModelToImageTask;
 
@@ -17,7 +17,7 @@ namespace MoBi.Core.Reporting
          _diagramModelToImageTask = diagramModelToImageTask;
       }
 
-      public override IReadOnlyCollection<object> Report(IMoBiSpatialStructure spatialStructure, OSPSuiteTracker buildTracker)
+      public override IReadOnlyCollection<object> Report(MoBiSpatialStructure spatialStructure, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
          listToReport.Add(new Section(string.Format(Constants.BUILDING_BLOCK_PROMPT_FORMAT, Constants.SPATIAL_STRUCTURE, spatialStructure.Name)));

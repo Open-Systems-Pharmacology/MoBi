@@ -16,20 +16,20 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditAssignmentBuilderPresenter : IEditPresenter<IEventAssignmentBuilder>,
+   public interface IEditAssignmentBuilderPresenter : IEditPresenter<EventAssignmentBuilder>,
       IPresenter<IEditEventAssignmentBuilderView>,
       IPresenterWithFormulaCache,
       ICanEditPropertiesPresenter,
-      ICreatePresenter<IEventAssignmentBuilder>
+      ICreatePresenter<EventAssignmentBuilder>
    {
       void SelectPath();
    }
 
-   public class EditAssignmentBuilderPresenter : AbstractEntityEditPresenter<IEditEventAssignmentBuilderView, IEditAssignmentBuilderPresenter, IEventAssignmentBuilder>, IEditAssignmentBuilderPresenter
+   public class EditAssignmentBuilderPresenter : AbstractEntityEditPresenter<IEditEventAssignmentBuilderView, IEditAssignmentBuilderPresenter, EventAssignmentBuilder>, IEditAssignmentBuilderPresenter
    {
-      private IEventAssignmentBuilder _eventAssignmentBuilder;
+      private EventAssignmentBuilder _eventAssignmentBuilder;
       private readonly IEventAssignmentBuilderToEventAssignmentDTOMapper _eventAssignmentToDTOAssignmentMapper;
-      private readonly IEditTaskFor<IEventAssignmentBuilder> _editTasksForAssignment;
+      private readonly IEditTaskFor<EventAssignmentBuilder> _editTasksForAssignment;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IEditFormulaPresenter _editFormulaPresenter;
       private readonly IMoBiContext _context;
@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Presenter
       public IBuildingBlock BuildingBlock { get; set; }
 
       public EditAssignmentBuilderPresenter(IEditEventAssignmentBuilderView view, IEventAssignmentBuilderToEventAssignmentDTOMapper eventAssignmentToDTOAssignmentMapper,
-         IEditTaskFor<IEventAssignmentBuilder> editTasksForAssignment, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
+         IEditTaskFor<EventAssignmentBuilder> editTasksForAssignment, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
          IEditFormulaPresenter editFormulaPresenter, IMoBiContext context,
          ISelectReferenceAtEventAssignmentPresenter selectReferencePresenter,
          IContextSpecificReferencesRetriever contextSpecificReferencesRetriever, IMoBiApplicationController applicationController) : base(view)
@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editFormulaPresenter, selectReferencePresenter);
       }
 
-      public override void Edit(IEventAssignmentBuilder eventAssignmentBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
+      public override void Edit(EventAssignmentBuilder eventAssignmentBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventAssignmentBuilder = eventAssignmentBuilder;
          bindToFormula();

@@ -15,9 +15,9 @@ namespace MoBi.Core.Services
 {
    public interface IAmountToConcentrationConverter
    {
-      void Convert(IReactionBuilder reaction, IFormulaCache formulaCache);
-      void Convert(IReactionBuildingBlock reactionBuildingBlock);
-      void Convert(IMoleculeBuilder moleculeBuilder, IFormulaCache formulaCache);
+      void Convert(ReactionBuilder reaction, IFormulaCache formulaCache);
+      void Convert(ReactionBuildingBlock reactionBuildingBlock);
+      void Convert(MoleculeBuilder moleculeBuilder, IFormulaCache formulaCache);
       void Convert(MoleculeBuildingBlock moleculeBuildingBlock);
       void Convert(MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock);
       void Convert(MoleculeStartValue moleculeStartValue, IFormulaCache formulaCache);
@@ -26,13 +26,13 @@ namespace MoBi.Core.Services
 
    public class AmountToConcentrationConverter : IAmountToConcentrationConverter,
       IVisitor<MoleculeBuildingBlock>,
-      IVisitor<IReactionBuildingBlock>,
+      IVisitor<ReactionBuildingBlock>,
       IVisitor<SimulationTransfer>,
       IVisitor<IModelCoreSimulation>,
       IVisitor<SimulationConfiguration>,
       IVisitor<MoleculeStartValuesBuildingBlock>,
-      IVisitor<IMoleculeBuilder>,
-      IVisitor<IReactionBuilder>
+      IVisitor<MoleculeBuilder>,
+      IVisitor<ReactionBuilder>
    {
       private readonly IReactionDimensionRetriever _reactionDimensionRetriever;
       private readonly IAmoutToConcentrationFormulaMapper _amountToConcentrationFormulaMapper;
@@ -60,7 +60,7 @@ namespace MoBi.Core.Services
          _concentrationPerTimeDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME);
       }
 
-      public void Convert(IReactionBuilder reaction, IFormulaCache formulaCache)
+      public void Convert(ReactionBuilder reaction, IFormulaCache formulaCache)
       {
          if (!conversionRequired(reaction))
             return;
@@ -90,7 +90,7 @@ namespace MoBi.Core.Services
          moleculeStartValue.Formula = createConcentrationFormulaFromConstantValue(startValue, moleculeStartValue.Path.ToPathString(), formulaCache);
       }
 
-      public void Convert(IMoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
+      public void Convert(MoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
       {
          if (!conversionRequired(moleculeBuilder))
             return;
@@ -150,7 +150,7 @@ namespace MoBi.Core.Services
          explicitFormula.FormulaString = string.Format("({0})/{1}", explicitFormula.FormulaString, volumeAlias);
       }
 
-      public void Convert(IReactionBuildingBlock reactionBuildingBlock)
+      public void Convert(ReactionBuildingBlock reactionBuildingBlock)
       {
          reactionBuildingBlock.Each(r => Convert(r, reactionBuildingBlock.FormulaCache));
       }
@@ -185,12 +185,12 @@ namespace MoBi.Core.Services
          return conversionRequired(moleculeStartValue, Constants.Dimension.MOLAR_AMOUNT);
       }
 
-      private bool conversionRequired(IMoleculeBuilder moleculeBuilder)
+      private bool conversionRequired(MoleculeBuilder moleculeBuilder)
       {
          return conversionRequired(moleculeBuilder, Constants.Dimension.MOLAR_AMOUNT);
       }
 
-      private bool conversionRequired(IReactionBuilder reaction)
+      private bool conversionRequired(ReactionBuilder reaction)
       {
          return conversionRequired(reaction, Constants.Dimension.AMOUNT_PER_TIME);
       }
@@ -209,7 +209,7 @@ namespace MoBi.Core.Services
          Convert(moleculeBuildingBlock);
       }
 
-      public void Visit(IReactionBuildingBlock reactionBuildingBlock)
+      public void Visit(ReactionBuildingBlock reactionBuildingBlock)
       {
          Convert(reactionBuildingBlock);
       }
@@ -226,9 +226,9 @@ namespace MoBi.Core.Services
 
       public void Visit(SimulationConfiguration simulationConfiguration)
       {
-         simulationConfiguration.Molecules.Each(Visit);
-         simulationConfiguration.Reactions.Each(Visit);
-         simulationConfiguration.MoleculeStartValues.Each(Visit);
+         simulationConfiguration.All<MoleculeBuildingBlock>().Each(Visit);
+         simulationConfiguration.All<ReactionBuildingBlock>().Each(Visit);
+         simulationConfiguration.All<MoleculeStartValuesBuildingBlock>().Each(Visit);
       }
 
       public void Visit(MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
@@ -236,12 +236,12 @@ namespace MoBi.Core.Services
          Convert(moleculeStartValuesBuildingBlock);
       }
 
-      public void Visit(IMoleculeBuilder moleculeBuilder)
+      public void Visit(MoleculeBuilder moleculeBuilder)
       {
          Convert(moleculeBuilder, new FormulaCache());
       }
 
-      public void Visit(IReactionBuilder reactionBuilder)
+      public void Visit(ReactionBuilder reactionBuilder)
       {
          Convert(reactionBuilder, new FormulaCache());
       }

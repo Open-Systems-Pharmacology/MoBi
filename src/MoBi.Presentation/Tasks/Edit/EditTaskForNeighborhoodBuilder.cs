@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Tasks.Edit
          return spatialStructure.Neighborhoods.Select(x => x.Name).Union(AppConstants.UnallowedNames);
       }
 
-      private IMoBiSpatialStructure getSpatialStructure() => _interactionTaskContext.Active<IMoBiSpatialStructure>();
+      private MoBiSpatialStructure getSpatialStructure() => _interactionTaskContext.Active<MoBiSpatialStructure>();
 
       public override bool EditEntityModal(NeighborhoodBuilder neighborhood, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {

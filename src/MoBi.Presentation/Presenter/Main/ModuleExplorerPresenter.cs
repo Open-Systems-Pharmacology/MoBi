@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public override void NodeDoubleClicked(ITreeNode node)
       {
-         var moleculeBuilder = node.TagAsObject as IMoleculeBuilder;
+         var moleculeBuilder = node.TagAsObject as MoleculeBuilder;
          if (moleculeBuilder == null)
          {
             base.NodeDoubleClicked(node);
@@ -150,20 +150,14 @@ namespace MoBi.Presentation.Presenter.Main
          return rootNodeList.Contains(node?.Tag);
       }
 
-      public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
-      {
-         return _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
-      }
+      public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode) => _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
 
       public override void AddToClassificationTree(ITreeNode<IClassification> parentNode, string category)
       {
          _observedDataInExplorerPresenter.GroupObservedDataByCategory(parentNode, category);
       }
 
-      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode)
-      {
-         return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
-      }
+      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode) => _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
 
       private void addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType)
          where TBuildingBlock : IBuildingBlock
@@ -212,29 +206,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void addModule(Module module)
       {
-         var moduleNode = _view.AddNode(_treeNodeFactory.CreateFor(module).WithIcon(ApplicationIcons.Module)
-            .Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
-
-         addBuildingBlockUnderNode(module.SpatialStructure, moduleNode);
-         addBuildingBlockUnderNode(module.Molecules, moduleNode);
-         addBuildingBlockUnderNode(module.Reactions, moduleNode);
-         addBuildingBlockUnderNode(module.PassiveTransports, moduleNode);
-         addBuildingBlockUnderNode(module.Observers, moduleNode);
-         addBuildingBlockUnderNode(module.EventGroups, moduleNode);
-
-         var moleculeStartValuesCollectionNode =
-            collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);
-         var parameterStartValuesCollectionNode =
-            collectionNodeFor(module.ParameterStartValuesCollection, MoBiRootNodeTypes.ParameterStartValuesFolder, moduleNode);
-
-         module.MoleculeStartValuesCollection.Each(bb => addBuildingBlockUnderNode(bb, moleculeStartValuesCollectionNode));
-         module.ParameterStartValuesCollection.Each(bb => addBuildingBlockUnderNode(bb, parameterStartValuesCollectionNode));
-      }
-
-      private ITreeNode collectionNodeFor<T>(IReadOnlyList<IStartValuesBuildingBlock<T>> startValueBlockCollection, RootNodeType rootNodeType,
-         ITreeNode moduleNode) where T : class, IStartValue
-      {
-         return startValueBlockCollection.Count > 1 ? _view.AddNode(_treeNodeFactory.CreateFor(rootNodeType).Under(moduleNode)) : moduleNode;
+         _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
       }
 
       public void Handle(AddedEvent eventToHandle)

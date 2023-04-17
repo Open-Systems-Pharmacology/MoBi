@@ -14,7 +14,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    internal interface IContextMenuForEventBuilder : IContextMenu
    {
-      IContextMenu InitializeWith(ObjectBaseDTO dto, IEventGroupBuilder parent);
+      IContextMenu InitializeWith(ObjectBaseDTO dto, EventGroupBuilder parent);
    }
 
    internal class ContextMenuForEventBuilder : ContextMenuBase, IContextMenuForEventBuilder
@@ -34,23 +34,23 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      public IContextMenu InitializeWith(ObjectBaseDTO dto, IEventGroupBuilder parent)
+      public IContextMenu InitializeWith(ObjectBaseDTO dto, EventGroupBuilder parent)
       {
-         var eventBuilder = _context.Get<IEventBuilder>(dto.Id);
+         var eventBuilder = _context.Get<EventBuilder>(dto.Id);
          _allMenuItems = new List<IMenuBarItem>
          {
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
                .WithIcon(ApplicationIcons.Edit)
-               .WithCommandFor<EditCommandFor<IEventBuilder>, IEventBuilder>(eventBuilder, _container),
+               .WithCommandFor<EditCommandFor<EventBuilder>, EventBuilder>(eventBuilder, _container),
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
                .WithIcon(ApplicationIcons.Rename)
-               .WithCommandFor<RenameObjectCommand<IEventBuilder>, IEventBuilder>(eventBuilder, _container)
+               .WithCommandFor<RenameObjectCommand<EventBuilder>, EventBuilder>(eventBuilder, _container)
          };
 
 
          var removeItem = CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Remove)
-            .WithCommandFor<IRemoveRootEventBuilderFromEventGroupBuilderUICommand, IEventBuilder>(eventBuilder, _container);
+            .WithCommandFor<IRemoveRootEventBuilderFromEventGroupBuilderUICommand, EventBuilder>(eventBuilder, _container);
          _allMenuItems.Add(removeItem);
 
          return this;

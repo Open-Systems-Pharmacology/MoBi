@@ -212,28 +212,28 @@ namespace MoBi.Presentation.Repositories
             .WithDescription(ToolTips.ModelingRibbon.CreateReactionsBB)
             .WithIcon(ApplicationIcons.Reaction)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.R)
-            .WithCommand<AddNewBuildingBlockCommand<IMoBiReactionBuildingBlock>>(_container);
+            .WithCommand<AddNewBuildingBlockCommand<MoBiReactionBuildingBlock>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewSpatialStructure)
             .WithId(MenuBarItemIds.NewSpatialStructure)
             .WithIcon(ApplicationIcons.SpatialStructure)
             .WithDescription(ToolTips.ModelingRibbon.CreateSpatStructuresBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.P)
-            .WithCommand<AddNewBuildingBlockCommand<IMoBiSpatialStructure>>(_container);
+            .WithCommand<AddNewBuildingBlockCommand<MoBiSpatialStructure>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewPassiveTransportBuildingBlock)
             .WithId(MenuBarItemIds.NewPassiveTransportBB)
             .WithIcon(ApplicationIcons.PassiveTransport)
             .WithDescription(ToolTips.ModelingRibbon.CreatePassiveTransportsBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.T)
-            .WithCommand<AddNewBuildingBlockCommand<IPassiveTransportBuildingBlock>>(_container);
+            .WithCommand<AddNewBuildingBlockCommand<PassiveTransportBuildingBlock>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewEventsBuildingBlock)
             .WithId(MenuBarItemIds.NewEventBB)
             .WithIcon(ApplicationIcons.Event)
             .WithDescription(ToolTips.ModelingRibbon.CreateEventGroupsBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.E)
-            .WithCommand<AddNewBuildingBlockCommand<IEventGroupBuildingBlock>>(_container);
+            .WithCommand<AddNewBuildingBlockCommand<EventGroupBuildingBlock>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.EditDefaultSimulationSettings)
             .WithId(MenuBarItemIds.EditProjectSimulationSettings)
@@ -260,7 +260,7 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.Observer)
             .WithDescription(ToolTips.ModelingRibbon.CreateObserversBB)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.O)
-            .WithCommand<AddNewBuildingBlockCommand<IObserverBuildingBlock>>(_container);
+            .WithCommand<AddNewBuildingBlockCommand<ObserverBuildingBlock>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewSimulation)
             .WithId(MenuBarItemIds.NewSimulation)
@@ -283,19 +283,19 @@ namespace MoBi.Presentation.Repositories
             .WithId(MenuBarItemIds.NewMolecule)
             .WithDescription(ToolTips.BuildingBlockMolecule.NewMolecule)
             .WithIcon(ApplicationIcons.MoleculeAdd)
-            .WithCommand<AddNewCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>>(_container);
+            .WithCommand<AddNewCommandFor<MoleculeBuildingBlock, MoleculeBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadMolecule)
             .WithId(MenuBarItemIds.LoadMolecule)
             .WithDescription(ToolTips.BuildingBlockMolecule.LoadMolecule)
             .WithIcon(ApplicationIcons.MoleculeLoad)
-            .WithCommand<AddExistingCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>>(_container);
+            .WithCommand<AddExistingCommandFor<MoleculeBuildingBlock, MoleculeBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadMoleculeFromTemplate)
            .WithId(MenuBarItemIds.LoadMoleculeFromTemplate)
            .WithDescription(ToolTips.BuildingBlockMolecule.LoadMolecule)
            .WithIcon(ApplicationIcons.LoadFromTemplate)
-           .WithCommand<AddExistingFromTemplateCommandFor<MoleculeBuildingBlock, IMoleculeBuilder>>(_container);
+           .WithCommand<AddExistingFromTemplateCommandFor<MoleculeBuildingBlock, MoleculeBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddPKSimMolecule)
             .WithId(MenuBarItemIds.AddPKSimMolecule)
@@ -307,19 +307,19 @@ namespace MoBi.Presentation.Repositories
             .WithId(MenuBarItemIds.NewReaction)
             .WithDescription(ToolTips.BuildingBlockReaction.NewReaction)
             .WithIcon(ApplicationIcons.ReactionAdd)
-            .WithCommand<AddNewCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>>(_container);
+            .WithCommand<AddNewCommandFor<MoBiReactionBuildingBlock, ReactionBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadReaction)
             .WithId(MenuBarItemIds.LoadReaction)
             .WithDescription(ToolTips.BuildingBlockReaction.LoadReaction)
             .WithIcon(ApplicationIcons.ReactionLoad)
-            .WithCommand<AddExistingCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>>(_container);
+            .WithCommand<AddExistingCommandFor<MoBiReactionBuildingBlock, ReactionBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadReactionFromTemplate)
             .WithId(MenuBarItemIds.LoadReactionFromTemplate)
             .WithDescription(ToolTips.BuildingBlockReaction.LoadReaction)
             .WithIcon(ApplicationIcons.LoadFromTemplate)
-            .WithCommand<AddExistingFromTemplateCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>>(_container);
+            .WithCommand<AddExistingFromTemplateCommandFor<MoBiReactionBuildingBlock, ReactionBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewTopContainer)
             .WithId(MenuBarItemIds.NewTopContainer)
@@ -343,19 +343,19 @@ namespace MoBi.Presentation.Repositories
             .WithId(MenuBarItemIds.NewPassiveTransport)
             .WithDescription(ToolTips.BuildingBlockPassiveTransport.NewTransport)
             .WithIcon(ApplicationIcons.Create)
-            .WithCommand<AddNewCommandFor<IPassiveTransportBuildingBlock, ITransportBuilder>>(_container);
+            .WithCommand<AddNewCommandFor<PassiveTransportBuildingBlock, TransportBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadPassiveTransport)
             .WithId(MenuBarItemIds.LoadPassiveTransport)
             .WithIcon(ApplicationIcons.PKMLLoad)
             .WithDescription(ToolTips.BuildingBlockPassiveTransport.LoadTransport)
-            .WithCommand<AddExistingCommandFor<IPassiveTransportBuildingBlock, ITransportBuilder>>(_container);
+            .WithCommand<AddExistingCommandFor<PassiveTransportBuildingBlock, TransportBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadPassiveTransportFromTemplate)
            .WithId(MenuBarItemIds.LoadPassiveTransportFromTemplate)
            .WithIcon(ApplicationIcons.LoadFromTemplate)
            .WithDescription(ToolTips.BuildingBlockPassiveTransport.LoadTransport)
-           .WithCommand<AddExistingFromTemplateCommandFor<IPassiveTransportBuildingBlock, ITransportBuilder>>(_container);
+           .WithCommand<AddExistingFromTemplateCommandFor<PassiveTransportBuildingBlock, TransportBuilder>>(_container);
 
          yield return CreateSubMenu.WithCaption(AppConstants.MenuNames.NewObserver)
             .WithId(MenuBarItemIds.NewObserverGroup)
@@ -376,55 +376,55 @@ namespace MoBi.Presentation.Repositories
             .WithId(MenuBarItemIds.NewAmountObserver)
             .WithIcon(ApplicationIcons.Create)
             .WithDescription(ToolTips.BuildingBlockObserver.NewAmountObs)
-            .WithCommand<AddNewCommandFor<IObserverBuildingBlock, IAmountObserverBuilder>>(_container);
+            .WithCommand<AddNewCommandFor<ObserverBuildingBlock, AmountObserverBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewContainerObserver)
             .WithId(MenuBarItemIds.NewContainerObserver)
             .WithDescription(ToolTips.BuildingBlockObserver.NewContainerObs)
             .WithIcon(ApplicationIcons.Create)
-            .WithCommand<AddNewCommandFor<IObserverBuildingBlock, IContainerObserverBuilder>>(_container);
+            .WithCommand<AddNewCommandFor<ObserverBuildingBlock, ContainerObserverBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadContainerObserver)
             .WithId(MenuBarItemIds.LoadContainerObserver)
             .WithDescription(ToolTips.BuildingBlockObserver.LoadContainerObs)
             .WithIcon(ApplicationIcons.ObserverLoad)
-            .WithCommand<AddExistingCommandFor<IObserverBuildingBlock, IContainerObserverBuilder>>(_container);
+            .WithCommand<AddExistingCommandFor<ObserverBuildingBlock, ContainerObserverBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadContainerObserverFromTemplate)
            .WithId(MenuBarItemIds.LoadContainerObserverFromTemplate)
            .WithDescription(ToolTips.BuildingBlockObserver.LoadContainerObs)
            .WithIcon(ApplicationIcons.LoadFromTemplate)
-           .WithCommand<AddExistingFromTemplateCommandFor<IObserverBuildingBlock, IContainerObserverBuilder>>(_container);
+           .WithCommand<AddExistingFromTemplateCommandFor<ObserverBuildingBlock, ContainerObserverBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadAmountObserver)
             .WithId(MenuBarItemIds.LoadAmountObserver)
             .WithDescription(ToolTips.BuildingBlockObserver.LoadAmountObs)
             .WithIcon(ApplicationIcons.ObserverLoad)
-            .WithCommand<AddExistingCommandFor<IObserverBuildingBlock, IAmountObserverBuilder>>(_container);
+            .WithCommand<AddExistingCommandFor<ObserverBuildingBlock, AmountObserverBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadAmountObserverFromTemplate)
             .WithId(MenuBarItemIds.LoadAmountObserverFromTemplate)
             .WithDescription(ToolTips.BuildingBlockObserver.LoadAmountObs)
             .WithIcon(ApplicationIcons.LoadFromTemplate)
-            .WithCommand<AddExistingFromTemplateCommandFor<IObserverBuildingBlock, IAmountObserverBuilder>>(_container);
+            .WithCommand<AddExistingFromTemplateCommandFor<ObserverBuildingBlock, AmountObserverBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewEvent)
             .WithId(MenuBarItemIds.NewEvent)
             .WithDescription(ToolTips.BuildingBlockEventGroup.NewEventGroup)
             .WithIcon(ApplicationIcons.EventAdd)
-            .WithCommand<AddNewCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>>(_container);
+            .WithCommand<AddNewCommandFor<EventGroupBuildingBlock, EventGroupBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadEvent)
             .WithId(MenuBarItemIds.LoadEvent)
             .WithDescription(ToolTips.BuildingBlockEventGroup.LoadEventGroup)
             .WithIcon(ApplicationIcons.EventLoad)
-            .WithCommand<AddExistingCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>>(_container);
+            .WithCommand<AddExistingCommandFor<EventGroupBuildingBlock, EventGroupBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadEventFromTemplate)
             .WithId(MenuBarItemIds.LoadEventFromTemplate)
             .WithDescription(ToolTips.BuildingBlockEventGroup.LoadEventGroup)
             .WithIcon(ApplicationIcons.LoadFromTemplate)
-            .WithCommand<AddExistingFromTemplateCommandFor<IEventGroupBuildingBlock, IEventGroupBuilder>>(_container);
+            .WithCommand<AddExistingFromTemplateCommandFor<EventGroupBuildingBlock, EventGroupBuilder>>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.RibbonButtonNames.NewMolecule)
             .WithId(MenuBarItemIds.NewReactionMolecule)

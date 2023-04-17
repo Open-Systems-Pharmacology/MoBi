@@ -1,9 +1,7 @@
-using System;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.IntegrationTests;
 using MoBi.Presentation.Settings;
@@ -40,6 +38,7 @@ namespace MoBi.Core
    {
       private IContainer _root;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
@@ -80,11 +79,13 @@ namespace MoBi.Core
 
          radiusFormula.ResolveObjectPathsFor(pksimPara);
          bsaFormula.ResolveObjectPathsFor(BSA);
+
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_root, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -98,6 +99,7 @@ namespace MoBi.Core
    {
       private IContainer _root;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
@@ -119,11 +121,13 @@ namespace MoBi.Core
 
          new Parameter().WithName("MW").WithParentContainer(_root).WithDimension(molWeight).WithFormula(new ConstantFormula(1));
          explicitFormula.ResolveObjectPathsFor(pksimPara);
+
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_root, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -137,6 +141,7 @@ namespace MoBi.Core
    {
       private IContainer _root;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
@@ -146,11 +151,13 @@ namespace MoBi.Core
          new Parameter().WithName("Parameter").WithParentContainer(_root)
             .WithFormula(new ExplicitFormula().WithFormulaString("111").WithDimension(dimension))
             .WithDimension(dimension);
+
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_root, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -168,25 +175,25 @@ namespace MoBi.Core
 
    public class When_validating_an_invalid_entity : concern_for_DimensionValidator
    {
-      private IContainer _root;
+      private IContainer topContainer;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
          base.Context();
-         _root = new Container().WithName("Root");
-
+         topContainer = _buildConfiguration.All<SpatialStructure>().First().TopContainers.First();
          
-         var parameter = new Parameter().WithName("").WithParentContainer(_root)
+         var parameter = new Parameter().WithName("").WithParentContainer(topContainer)
             .WithFormula(new ExplicitFormula().WithFormulaString("111"))
             .WithDimension(new Dimension(new BaseDimensionRepresentation(), "Dimensionless", ""));
 
-         _buildConfiguration.AddBuilderReference(parameter, parameter);
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_creationResult.Model, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -206,20 +213,23 @@ namespace MoBi.Core
    {
       private IContainer _root;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
          base.Context();
-         _root = new Container().WithName("Root");
+         _root = _buildConfiguration.All<SpatialStructure>().First().TopContainers.First();
          var dimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, "Height", "m");
          new Parameter().WithName("Parameter").WithParentContainer(_root)
             .WithFormula(new ExplicitFormula().WithFormulaString("111").WithDimension(dimension))
             .WithDimension(dimension);
+
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_creationResult.Model, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -239,11 +249,12 @@ namespace MoBi.Core
    {
       private IContainer _root;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
          base.Context();
-         _root = new Container().WithName("Root");
+         _root = _buildConfiguration.All<SpatialStructure>().First().TopContainers.First();
          var dimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, "Height", "m");
 
          var parameter = new Parameter().WithName("Parameter").WithParentContainer(_root)
@@ -251,12 +262,12 @@ namespace MoBi.Core
             .WithDimension(dimension);
 
 
-         _buildConfiguration.AddBuilderReference(parameter, parameter);
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_creationResult.Model, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -277,11 +288,12 @@ namespace MoBi.Core
       private IContainer _root;
       private IParameter _para;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
          base.Context();
-         _root = new Container().WithName("Root");
+         _root = _buildConfiguration.All<SpatialStructure>().First().TopContainers.First();
          var dimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, "Height", "m");
          _para = new Parameter().WithName("Parameter").WithParentContainer(_root)
             .WithFormula(new ExplicitFormula().WithFormulaString("a+b").WithDimension(dimension))
@@ -297,12 +309,12 @@ namespace MoBi.Core
          _para.Formula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, b).WithDimension(dimension1));
          _para.Formula.ResolveObjectPathsFor(_para);
 
-         _buildConfiguration.AddBuilderReference(_para, _para);
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_creationResult.Model, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -314,7 +326,7 @@ namespace MoBi.Core
       [Observation]
       public void should_have_the_right_messages()
       {
-         _result.Messages.Single().Text.ShouldBeEqualTo(AppConstants.Validation.FormulaDimensionMismatch(_pathFactory.CreateAbsoluteObjectPath(_para).PathAsString, _para.Dimension.Name));
+         _result.Messages.Single().Text.ShouldBeEqualTo(AppConstants.Validation.FormulaDimensionMismatch($"thename|{_pathFactory.CreateAbsoluteObjectPath(_para).PathAsString}", _para.Dimension.Name));
       }
    }
 
@@ -324,11 +336,12 @@ namespace MoBi.Core
       private IParameter _para;
       private string _formulaString;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
          base.Context();
-         _root = new Container().WithName("Root");
+         _root = _buildConfiguration.All<SpatialStructure>().First().TopContainers.First();
          var dimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, "Height", "m");
          _formulaString = "a+b";
          _para = new Parameter().WithName("Parameter").WithParentContainer(_root)
@@ -348,16 +361,16 @@ namespace MoBi.Core
 
          _userSettings.ShowCannotCalcErrors = true;
 
-         _buildConfiguration.AddBuilderReference(_para, _para);
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_creationResult.Model, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
-      public void should_return_invalid()
+      public void should_return_valid_with_warnings()
       {
          _result.ValidationState.ShouldBeEqualTo(ValidationState.ValidWithWarnings);
       }
@@ -374,6 +387,7 @@ namespace MoBi.Core
       private IContainer _root;
       private IParameter _para;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
@@ -399,11 +413,13 @@ namespace MoBi.Core
          _para.RHSFormula.AddObjectPath(_pathFactory.CreateRelativeFormulaUsablePath(_para, b).WithDimension(rhsDimension));
          _para.Formula.ResolveObjectPathsFor(_para);
          _para.RHSFormula.ResolveObjectPathsFor(_para);
+
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_root, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -418,11 +434,12 @@ namespace MoBi.Core
       private IContainer _root;
       private IParameter _para;
       private ValidationResult _result;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
          base.Context();
-         _root = new Container().WithName("Root");
+         _root = _buildConfiguration.All<SpatialStructure>().First().TopContainers.First(); ;
          var dimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, "Height", "m");
          var rhsdimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1, TimeExponent = -1}, "Height per Time", "m");
          var rhsdimension1 = new Dimension(new BaseDimensionRepresentation {LengthExponent = 2, TimeExponent = -1}, "Height per Time", "m");
@@ -445,12 +462,12 @@ namespace MoBi.Core
          _para.Formula.ResolveObjectPathsFor(_para);
          _para.RHSFormula.ResolveObjectPathsFor(_para);
 
-         _buildConfiguration.AddBuilderReference(_para, _para);
+         _creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
       }
 
       protected override void Because()
       {
-         _result = sut.Validate(_root, _buildConfiguration).Result;
+         _result = sut.Validate(_creationResult.Model, _creationResult.SimulationBuilder).Result;
       }
 
       [Observation]
@@ -462,7 +479,7 @@ namespace MoBi.Core
       [Observation]
       public void should_have_the_right_messages()
       {
-         _result.Messages.Single().Text.ShouldBeEqualTo(AppConstants.Validation.FormulaDimensionMismatch(_pathFactory.CreateAbsoluteObjectPath(_para).PathAsString, _para.RHSFormula.Dimension.Name));
+         _result.Messages.Single().Text.ShouldBeEqualTo(AppConstants.Validation.FormulaDimensionMismatch($"thename|{_pathFactory.CreateAbsoluteObjectPath(_para).PathAsString}", _para.RHSFormula.Dimension.Name));
       }
    }
 }

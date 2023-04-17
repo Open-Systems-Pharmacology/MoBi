@@ -41,7 +41,7 @@ namespace MoBi.Presentation
    class When_told_to_select_an_parameter : concern_for_EditQuantityInSimulationPresenter
    {
       private IParameter _selectedParameter;
-      private IMoleculeAmount _parentMolecule;
+      private MoleculeAmount _parentMolecule;
 
       protected override void Context()
       {
@@ -71,7 +71,7 @@ namespace MoBi.Presentation
 
    public class When_changing_the_value_of_the_start_value_concentration_of_a_molecule_amount    : concern_for_EditQuantityInSimulationPresenter
    {
-      private IMoleculeAmount _moleculeAmount;
+      private MoleculeAmount _moleculeAmount;
       private Parameter _startValueParameter;
       private IFormula _explicitFormula;
 
@@ -99,7 +99,7 @@ namespace MoBi.Presentation
 
    public class When_changing_the_display_unit_of_the_start_value_concentration_of_a_molecule_amount : concern_for_EditQuantityInSimulationPresenter
    {
-      private IMoleculeAmount _moleculeAmount;
+      private MoleculeAmount _moleculeAmount;
       private Parameter _startValueParameter;
       private IFormula _explicitFormula;
       private Unit _displayUnit;

@@ -8,12 +8,12 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
 {
-   public class AddMoleculeToReactionBuildingBlockCommand : BuildingBlockChangeCommandBase<IMoBiReactionBuildingBlock>
+   public class AddMoleculeToReactionBuildingBlockCommand : BuildingBlockChangeCommandBase<MoBiReactionBuildingBlock>
    {
       private readonly string _moleculeName;
       private string _moleculeNodeId;
 
-      public AddMoleculeToReactionBuildingBlockCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, string moleculeName) : base(reactionBuildingBlock)
+      public AddMoleculeToReactionBuildingBlockCommand(MoBiReactionBuildingBlock reactionBuildingBlock, string moleculeName) : base(reactionBuildingBlock)
       {
          _moleculeName = moleculeName;
          ObjectType = ObjectTypes.Molecule;

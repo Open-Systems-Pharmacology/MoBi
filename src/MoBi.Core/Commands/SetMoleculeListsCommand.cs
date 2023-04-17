@@ -42,7 +42,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _targetBuilder = context.Get<ITransportBuilder>(_targetBuilderId);
+         _targetBuilder = context.Get<TransportBuilder>(_targetBuilderId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

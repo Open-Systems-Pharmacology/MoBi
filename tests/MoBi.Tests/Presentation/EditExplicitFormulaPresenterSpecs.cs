@@ -111,7 +111,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _formula = new ExplicitFormula("TOTO");
-         _transportBuilder = A.Fake<ITransportBuilder>();
+         _transportBuilder = A.Fake<TransportBuilder>();
          A.CallTo(() => _moBiFormulaTask.GetFormulaCaption(_transportBuilder, A<ReactionDimensionMode>._, false)).Returns("THE_RHS_CAPTION");
       }
 
@@ -136,7 +136,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _formula = new ExplicitFormula("TOTO");
-         _reactionBuilder = A.Fake<IReactionBuilder>();
+         _reactionBuilder = A.Fake<ReactionBuilder>();
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.AmountBased);
          A.CallTo(() => _moBiFormulaTask.GetFormulaCaption(_reactionBuilder, ReactionDimensionMode.AmountBased, false)).Returns("THE_RHS_CAPTION");
       }
@@ -162,7 +162,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _formula = new ExplicitFormula("TOTO");
-         _reactionBuilder = A.Fake<IReactionBuilder>();
+         _reactionBuilder = A.Fake<ReactionBuilder>();
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.ConcentrationBased);
          A.CallTo(() => _moBiFormulaTask.GetFormulaCaption(_reactionBuilder, ReactionDimensionMode.ConcentrationBased, false)).Returns("THE_RHS_CAPTION");
       }

@@ -11,8 +11,8 @@ namespace MoBi.Core.Services
 {
    public interface IStoichiometricStringCreator
    {
-      string CreateFrom(IEnumerable<IReactionPartnerBuilder> educts, IEnumerable<IReactionPartnerBuilder> products);
-      string CreateFrom(IEnumerable<IReactionPartner> educts, IEnumerable<IReactionPartner> products);
+      string CreateFrom(IEnumerable<ReactionPartnerBuilder> educts, IEnumerable<ReactionPartnerBuilder> products);
+      string CreateFrom(IEnumerable<ReactionPartner> educts, IEnumerable<ReactionPartner> products);
    }
 
    public class StoichiometricStringCreator : IStoichiometricStringCreator
@@ -24,21 +24,21 @@ namespace MoBi.Core.Services
          _reactionPartnerToReactionPartnerBuilderMapper = reactionPartnerToReactionPartnerBuilderMapper;
       }
 
-      public string CreateFrom(IEnumerable<IReactionPartnerBuilder> educts, IEnumerable<IReactionPartnerBuilder> products)
+      public string CreateFrom(IEnumerable<ReactionPartnerBuilder> educts, IEnumerable<ReactionPartnerBuilder> products)
       {
          return createStoiciometricSubString(educts) + " => " + createStoiciometricSubString(products);
       }
 
-      public string CreateFrom(IEnumerable<IReactionPartner> educts, IEnumerable<IReactionPartner> products)
+      public string CreateFrom(IEnumerable<ReactionPartner> educts, IEnumerable<ReactionPartner> products)
       {
          var mappedEducts = educts.MapAllUsing(_reactionPartnerToReactionPartnerBuilderMapper);
          var mappedProducts = products.MapAllUsing(_reactionPartnerToReactionPartnerBuilderMapper);
          return CreateFrom(mappedEducts,mappedProducts);
       }
 
-      private string createStoiciometricSubString(IEnumerable<IReactionPartnerBuilder> educts)
+      private string createStoiciometricSubString(IEnumerable<ReactionPartnerBuilder> educts)
       {
-         var reactionPartnerBuilders = educts as IList<IReactionPartnerBuilder> ?? educts.ToList();
+         var reactionPartnerBuilders = educts as IList<ReactionPartnerBuilder> ?? educts.ToList();
          
          if (educts == null || !reactionPartnerBuilders.Any()) return string.Empty;
          
@@ -60,13 +60,13 @@ namespace MoBi.Core.Services
       }
    }
 
-   public interface IReactionPartnerToReactionPartnerBuilderMapper:IMapper<IReactionPartner,IReactionPartnerBuilder>
+   public interface IReactionPartnerToReactionPartnerBuilderMapper:IMapper<ReactionPartner,ReactionPartnerBuilder>
    {
    }
 
    class ReactionPartnerToReactionPartnerBuilderMapper : IReactionPartnerToReactionPartnerBuilderMapper
    {
-      public IReactionPartnerBuilder MapFrom(IReactionPartner input)
+      public ReactionPartnerBuilder MapFrom(ReactionPartner input)
       {
          return new ReactionPartnerBuilder(input.Partner.Name,input.StoichiometricCoefficient);
       }

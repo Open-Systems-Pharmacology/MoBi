@@ -24,7 +24,7 @@ namespace MoBi.Core.Services
          if (parameter == null) 
             return;
          
-         var buildingBlocks = simulation.Configuration.ParameterStartValues;
+         var buildingBlocks = simulation.Configuration.All<ParameterStartValuesBuildingBlock>();
          var objectPath = _entityPathResolver.ObjectPathFor(parameter);
 
          buildingBlocks.Each(parameterStartValues => synchronizeValue(parameter, parameterStartValues, objectPath));

@@ -18,6 +18,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -39,7 +40,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiMacroCommand _commands;
       private readonly Cache<string, ScaleDivisorDTO> _scaleDivisors = new Cache<string, ScaleDivisorDTO>(x => x.PathAsString, onMissingKey: x => null);
       private IMoBiSimulation _simulation;
-      private PathCache<IMoleculeAmount> _allMoleculeAmounts;
+      private PathCache<MoleculeAmount> _allMoleculeAmounts;
 
       public CalculateScaleDivisorsPresenter(ICalculateScaleDivisorsView view, ICommandTask commandTask, IContainerTask containerTask,
          IScaleDivisorCalculator scaleDivisorCalculator, IMoleculeAmountTask moleculeAmountTask, IMoBiContext context)
@@ -88,10 +89,10 @@ namespace MoBi.Presentation.Presenter
       ///    Only molecule amounts defined in molecule start values can be scaled
       /// </summary>
       /// <returns></returns>
-      private PathCache<IMoleculeAmount> retrieveScalableMoleculeAmounts()
+      private PathCache<MoleculeAmount> retrieveScalableMoleculeAmounts()
       {
-         var allMoleculeAmounts = _containerTask.CacheAllChildren<IMoleculeAmount>(_simulation.Model.Root);
-         var buildingBlocks = _simulation.Configuration.MoleculeStartValues;
+         var allMoleculeAmounts = _containerTask.CacheAllChildren<MoleculeAmount>(_simulation.Model.Root);
+         var buildingBlocks = _simulation.Configuration.All<MoleculeStartValuesBuildingBlock>();
 
          foreach (var path in allMoleculeAmounts.Keys.ToList())
          {
@@ -111,7 +112,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private ScaleDivisorDTO scaleFactorDTOFor(string path, IMoleculeAmount moleculeAmount)
+      private ScaleDivisorDTO scaleFactorDTOFor(string path, MoleculeAmount moleculeAmount)
       {
          return new ScaleDivisorDTO(moleculeAmount)
          {

@@ -13,7 +13,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.Presenter.ReactionDiagram
 {
-   public class PopupMenuReactionBuilder : PopupMenuFullEntityNode<IReactionBuilder>
+   public class PopupMenuReactionBuilder : PopupMenuFullEntityNode<ReactionBuilder>
    {
       public PopupMenuReactionBuilder(IReactionDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions) : base(presenter, context, runOptions)
       {
@@ -48,13 +48,13 @@ namespace MoBi.Presentation.Presenter.ReactionDiagram
             .WithActionCommand(() => Presenter.AddMoleculeNode())
             .WithIcon(ApplicationIcons.MoleculeAdd));
 
-         var parent = Presenter.Subject as IMoBiReactionBuildingBlock;
+         var parent = Presenter.Subject as MoBiReactionBuildingBlock;
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Reaction))
-            .WithCommandFor<AddNewCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>, IMoBiReactionBuildingBlock>(parent, _context.Container)
+            .WithCommandFor<AddNewCommandFor<MoBiReactionBuildingBlock, ReactionBuilder>, MoBiReactionBuildingBlock>(parent, _context.Container)
             .WithIcon(ApplicationIcons.ReactionAdd));
 
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.Reaction))
-            .WithCommandFor<AddExistingCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>, IMoBiReactionBuildingBlock>(parent, _context.Container)
+            .WithCommandFor<AddExistingCommandFor<MoBiReactionBuildingBlock, ReactionBuilder>, MoBiReactionBuildingBlock>(parent, _context.Container)
             .WithIcon(ApplicationIcons.ReactionLoad));
 
          base.SetModelMenuItems(contextMenuView, containerBase, node);

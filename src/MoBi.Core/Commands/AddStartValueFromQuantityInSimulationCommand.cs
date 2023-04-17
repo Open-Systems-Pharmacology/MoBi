@@ -69,9 +69,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddMoleculeStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IMoleculeAmount, MoleculeStartValue>
+   public class AddMoleculeStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<MoleculeAmount, MoleculeStartValue>
    {
-      public AddMoleculeStartValueFromQuantityInSimulationCommand(IMoleculeAmount moleculeAmount, MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
+      public AddMoleculeStartValueFromQuantityInSimulationCommand(MoleculeAmount moleculeAmount, MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
          : base(moleculeAmount, moleculeStartValuesBuildingBlock)
       {
       }

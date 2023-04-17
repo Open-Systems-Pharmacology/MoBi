@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ITagVisitor : IVisitor
    {
-      IEnumerable<string> AllTagsFrom(ISpatialStructure spatialStructure);
+      IEnumerable<string> AllTagsFrom(SpatialStructure spatialStructure);
 
       /// <summary>
       /// Returns all tags defined in the current project
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Presenter
          _projectRetriever = projectRetriever;
       }
 
-      public IEnumerable<string> AllTagsFrom(ISpatialStructure spatialStructure)
+      public IEnumerable<string> AllTagsFrom(SpatialStructure spatialStructure)
       {
          _tags = new HashSet<string>();
          spatialStructure.AcceptVisitor(this);

@@ -58,11 +58,11 @@ namespace MoBi.Presentation.Tasks
       Action<T, string> CloneAction { set; }
    }
 
-   public interface IMoleculeBuildingBlockCloneManager : IIgnoreReplaceCloneMergeManager<IMoleculeBuilder>
+   public interface IMoleculeBuildingBlockCloneManager : IIgnoreReplaceCloneMergeManager<MoleculeBuilder>
    {
    }
 
-   public class MoleculeBuildingBlockCloneManager : IgnoreReplaceCloneMergeManager<IMoleculeBuilder>, IMoleculeBuildingBlockCloneManager
+   public class MoleculeBuildingBlockCloneManager : IgnoreReplaceCloneMergeManager<MoleculeBuilder>, IMoleculeBuildingBlockCloneManager
    {
       public MoleculeBuildingBlockCloneManager(
          IApplicationController applicationController,
@@ -74,13 +74,13 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public interface IReactionBuildingBlockMergeManager : IIgnoreReplaceCloneMergeManager<IReactionBuilder>
+   public interface IReactionBuildingBlockMergeManager : IIgnoreReplaceCloneMergeManager<ReactionBuilder>
    {
-      IMoBiReactionBuildingBlock SourceBuildingBlock { set; get; }
-      IMoBiReactionBuildingBlock TargetBuildingBlock { set; get; }
+      MoBiReactionBuildingBlock SourceBuildingBlock { set; get; }
+      MoBiReactionBuildingBlock TargetBuildingBlock { set; get; }
    }
 
-   public class ReactionBuildingBlockMergeManager : IgnoreReplaceCloneMergeManager<IReactionBuilder>, IReactionBuildingBlockMergeManager
+   public class ReactionBuildingBlockMergeManager : IgnoreReplaceCloneMergeManager<ReactionBuilder>, IReactionBuildingBlockMergeManager
    {
       public ReactionBuildingBlockMergeManager(
          IApplicationController applicationController,
@@ -91,15 +91,15 @@ namespace MoBi.Presentation.Tasks
       {
       }
 
-      public IMoBiReactionBuildingBlock SourceBuildingBlock { get; set; }
-      public IMoBiReactionBuildingBlock TargetBuildingBlock { get; set; }
+      public MoBiReactionBuildingBlock SourceBuildingBlock { get; set; }
+      public MoBiReactionBuildingBlock TargetBuildingBlock { get; set; }
    }
 
-   public interface IEventBuildingBlockMergeManager : IIgnoreReplaceCloneMergeManager<IEventGroupBuilder>
+   public interface IEventBuildingBlockMergeManager : IIgnoreReplaceCloneMergeManager<EventGroupBuilder>
    {
    }
 
-   public class EventBuildingBlockMergeManager : IgnoreReplaceCloneMergeManager<IEventGroupBuilder>, IEventBuildingBlockMergeManager
+   public class EventBuildingBlockMergeManager : IgnoreReplaceCloneMergeManager<EventGroupBuilder>, IEventBuildingBlockMergeManager
    {
       public EventBuildingBlockMergeManager(
          IApplicationController applicationController,
@@ -111,11 +111,11 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public interface IObserverBuildingBlockMergeManager : IMergeIgnoreReplaceMergeManager<IObserverBuilder>
+   public interface IObserverBuildingBlockMergeManager : IMergeIgnoreReplaceMergeManager<ObserverBuilder>
    {
    }
 
-   public class ObserverBuildingBlockMergeManager : MergeIgnoreReplaceMergeManager<IObserverBuilder>, IObserverBuildingBlockMergeManager
+   public class ObserverBuildingBlockMergeManager : MergeIgnoreReplaceMergeManager<ObserverBuilder>, IObserverBuildingBlockMergeManager
    {
       public ObserverBuildingBlockMergeManager(IApplicationController applicationController, IObserverBuilderToObjectBaseSummaryDTOMapper dtoMapper, IMoBiContext context)
          : base(applicationController, dtoMapper, context)
@@ -153,11 +153,11 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public interface IPassiveTranportBuildingBlockMergeManager : IMergeIgnoreReplaceMergeManager<ITransportBuilder>
+   public interface IPassiveTranportBuildingBlockMergeManager : IMergeIgnoreReplaceMergeManager<TransportBuilder>
    {
    }
 
-   public class PassiveTranportBuildingBlockMergeManager : MergeIgnoreReplaceMergeManager<ITransportBuilder>, IPassiveTranportBuildingBlockMergeManager
+   public class PassiveTranportBuildingBlockMergeManager : MergeIgnoreReplaceMergeManager<TransportBuilder>, IPassiveTranportBuildingBlockMergeManager
    {
       public PassiveTranportBuildingBlockMergeManager(
          IApplicationController applicationController,

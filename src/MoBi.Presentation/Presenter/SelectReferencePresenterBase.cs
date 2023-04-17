@@ -115,7 +115,7 @@ namespace MoBi.Presentation.Presenter
             if (objectBase.IsAnImplementationOf<IDistributedParameter>())
                return children;
 
-            addChildrenFromSpatialStructure(children, objectBase as ISpatialStructure);
+            addChildrenFromSpatialStructure(children, objectBase as SpatialStructure);
             addChildrenFromContainer(children, objectBase as IContainer);
             addChildrenFromNeighborhood(children, objectBase as NeighborhoodBuilder);
             addParametersFromParameterContainer(children, objectBase as IContainsParameters);
@@ -306,7 +306,7 @@ namespace MoBi.Presentation.Presenter
       private bool isGlobalMoleculePropertiesContainer(IContainer moleculePropertiesContainer)
       {
          return moleculePropertiesContainer.ParentContainer == null ||
-                moleculePropertiesContainer.ParentContainer.IsAnImplementationOf<IMoleculeBuilder>();
+                moleculePropertiesContainer.ParentContainer.IsAnImplementationOf<MoleculeBuilder>();
       }
 
       private bool selectionPredicate<T>(T objectBase) where T : IObjectBase
@@ -357,8 +357,8 @@ namespace MoBi.Presentation.Presenter
          {
             //Improve a "generic" Moelcule Layer
             var molecules = allMolecules
-               .Distinct(new NameComparer<IMoleculeBuilder>())
-               .ToEnumerable<IMoleculeBuilder, IObjectBase>();
+               .Distinct(new NameComparer<MoleculeBuilder>())
+               .ToEnumerable<MoleculeBuilder, IObjectBase>();
             _dummyMoleculeDTOMapper.Initialise(container);
             children.AddRange(molecules.MapAllUsing(_dummyMoleculeDTOMapper));
          }
@@ -380,7 +380,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private void addChildrenFromSpatialStructure(List<ObjectBaseDTO> children, ISpatialStructure spatialStructure)
+      private void addChildrenFromSpatialStructure(List<ObjectBaseDTO> children, SpatialStructure spatialStructure)
       {
          if (spatialStructure == null)
             return;
@@ -404,7 +404,7 @@ namespace MoBi.Presentation.Presenter
          return _objectPathCreator.CreatePathsFromEntity(entity, shouldCreateAbsolutePaths, _refObject, _editedObject);
       }
 
-      private IEnumerable<IMoleculeBuilder> allMolecules
+      private IEnumerable<MoleculeBuilder> allMolecules
       {
          get
          {
@@ -418,7 +418,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNodes(getReactions.MapAllUsing(_referenceMapper));
       }
 
-      private IEnumerable<IReactionBuilder> getReactions
+      private IEnumerable<ReactionBuilder> getReactions
       {
          get { return _context.CurrentProject.ReactionBlockCollection.SelectMany(x => x).OrderBy(x => x.Name); }
       }

@@ -1653,6 +1653,14 @@ namespace MoBi.Assets
          public static readonly string DefaultSimulationSettings = "Default Simulation Settings";
          public static readonly string SelectBuildingBlockType = "Select the type of Building Block you want to load to the module";
          public static readonly string AddingBuildingBlockToModuleClarification = "The Building Block Types that are already present in the module and cannot have multiple items are not listed in the list above";
+         public static readonly string SelectStartValues = "Select Start Values";
+         public static readonly string NoMoleculeStartValues = "No Molecule Start Values";
+         public static readonly string NoParameterStartValues = "No Parameter Start Values";
+         public static readonly string ConfigureModules = "Configure Modules";
+         public static readonly string SimulationModules = "Simulation Modules";
+         public static readonly string ProjectModules = "Project Modules";
+         public static readonly string ConfigureIndividualAndExpressions = "Configure Individual and Expressions";
+         public static readonly string IndividualNotSelected = "Individual Not Selected";
 
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
@@ -1903,7 +1911,7 @@ namespace MoBi.Assets
             return $"{objectName} should be greater or equal than 0";
          }
 
-         public static string RenameReaction(string oldName, string newName, IReactionBuildingBlock buildingBlock)
+         public static string RenameReaction(string oldName, string newName, ReactionBuildingBlock buildingBlock)
          {
             return string.Format("'{2}' already contains a different reaction named '{0}'. Renamed to '{1}'", oldName, newName, buildingBlock.Name);
          }

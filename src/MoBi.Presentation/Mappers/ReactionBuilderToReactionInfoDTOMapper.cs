@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IReactionBuilderToReactionInfoDTOMapper : IMapper<IReactionBuilder, ReactionInfoDTO>
+   public interface IReactionBuilderToReactionInfoDTOMapper : IMapper<ReactionBuilder, ReactionInfoDTO>
    {
    }
 
@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Mappers
          _stoichiometricStringCreator = stoichiometricStringCreator;
       }
 
-      public ReactionInfoDTO MapFrom(IReactionBuilder reactionBuilder)
+      public ReactionInfoDTO MapFrom(ReactionBuilder reactionBuilder)
       {
          var dto = Map(new ReactionInfoDTO(reactionBuilder));
          dto.StoichiometricFormula = _stoichiometricStringCreator.CreateFrom(reactionBuilder.Educts, reactionBuilder.Products);

@@ -7,6 +7,7 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
@@ -34,8 +35,8 @@ namespace MoBi.Core.Commands
       {
          var containerTask = context.Resolve<IContainerTask>();
          var msvBuildingBlockSynchronizer = context.Resolve<IQuantitySynchronizer>();
-         var allMoleculeAmounts = containerTask.CacheAllChildren<IMoleculeAmount>(_simulation.Model.Root);
-         var startValueBuildingBlocks = _simulation.Configuration.MoleculeStartValues;
+         var allMoleculeAmounts = containerTask.CacheAllChildren<MoleculeAmount>(_simulation.Model.Root);
+         var startValueBuildingBlocks = _simulation.Configuration.All<MoleculeStartValuesBuildingBlock>();
 
          foreach (var scaleDivisor in _scaleFactors)
          {

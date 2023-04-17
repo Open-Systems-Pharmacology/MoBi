@@ -2,12 +2,12 @@
 
 namespace MoBi.Presentation.DTO
 {
-   public class ScaleDivisorDTO : BreadCrumbsDTO<IMoleculeAmount>
+   public class ScaleDivisorDTO : BreadCrumbsDTO<MoleculeAmount>
    {
-      public IMoleculeAmount MoleculeAmount { get; private set; }
+      public MoleculeAmount MoleculeAmount { get; private set; }
 
 
-      public ScaleDivisorDTO(IMoleculeAmount moleculeAmount) : base(moleculeAmount)
+      public ScaleDivisorDTO(MoleculeAmount moleculeAmount) : base(moleculeAmount)
       {
          MoleculeAmount = moleculeAmount;
       }

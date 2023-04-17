@@ -46,7 +46,7 @@ namespace MoBi.Core.Serialization.Converter.v10
 
       public void Visit(IModelCoreSimulation simulation)
       {
-         simulation?.Configuration?.ParameterStartValues.Each(Visit);
+         simulation?.Configuration?.All<ParameterStartValuesBuildingBlock>().Each(Visit);
       }
 
       public void Visit(SimulationTransfer simulationTransfer)

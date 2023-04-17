@@ -14,10 +14,13 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using MoBi.UI.Diagram.DiagramManagers;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.UI.Diagram.Elements;
 
 namespace MoBi.Presentation
 {
@@ -27,7 +30,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       protected IReactionPartnerView _view;
       protected IReadOnlyList<ReactionPartnerBuilderDTO> _partnerBuilders;
-      protected IMoBiReactionBuildingBlock _reactionBuildingBlock;
+      protected MoBiReactionBuildingBlock _reactionBuildingBlock;
       protected ReactionBuilderDTO _reactionBuilderDTO;
       protected IInteractionTasksForReactionBuilder _interactionTaskForReactionBuilder;
       protected ICommandCollector _commandCollector;
@@ -41,8 +44,12 @@ namespace MoBi.Presentation
          _commandCollector = A.Fake<ICommandCollector>();
          sut = new ReactionEductsPresenter(_view, _context, _viewItemContextMenuFactory, _interactionTaskForReactionBuilder);
          sut.InitializeWith(_commandCollector);
-         _reactionBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>();
-         A.CallTo(() => _reactionBuildingBlock.DiagramManager).Returns(A.Fake<IMoBiReactionDiagramManager>());
+         _reactionBuildingBlock = new MoBiReactionBuildingBlock
+         {
+            DiagramManager = new MoBiReactionDiagramManager(),
+            DiagramModel = new DiagramModel()
+         };
+         _reactionBuildingBlock.DiagramManager.InitializeWith(_reactionBuildingBlock, new DiagramOptions());
          _reactionBuilderDTO = new ReactionBuilderDTO(new ReactionBuilder() {Formula = A.Fake<IFormula>()}) { Educts = new BindingList<ReactionPartnerBuilderDTO>() };
       }
    }
@@ -65,7 +72,7 @@ namespace MoBi.Presentation
    {
 
       private ReactionPartnerBuilderDTO _reactionPartnerDTO;
-      private IReactionPartnerBuilder _reactionPartnerBuilder;
+      private ReactionPartnerBuilder _reactionPartnerBuilder;
 
       protected override void Context()
       {
@@ -98,13 +105,17 @@ namespace MoBi.Presentation
    public class When_setting_the_partner_molecule_name : concern_for_ReactionEductsPresenter
    {
       private ReactionPartnerBuilderDTO _reactionPartnerDTO;
-      private IReactionPartnerBuilder _reactionPartnerBuilder;
+      private ReactionPartnerBuilder _reactionPartnerBuilder;
 
       protected override void Context()
       {
          base.Context();
          _reactionPartnerBuilder = new ReactionPartnerBuilder("moleculeName", 1.0);
          _reactionPartnerDTO = new ReactionPartnerBuilderDTO(_reactionPartnerBuilder);
+         var builderToAdd = new ReactionBuilder();
+         builderToAdd.AddEduct(_reactionPartnerBuilder);
+         _reactionBuildingBlock.Add(builderToAdd);
+         _reactionBuildingBlock.DiagramManager.RefreshDiagramFromModel();
          sut.InitializeWith(_commandCollector);
          sut.Edit(_reactionBuilderDTO, _reactionBuildingBlock);
       }
@@ -139,8 +150,12 @@ namespace MoBi.Presentation
          _reactionPartnerDTO = new ReactionPartnerBuilderDTO(_reactionPartnerBuilder);
          _reactionBuilderDTO.Educts.Add(_reactionPartnerDTO);
          _reactionBuilderDTO.ReactionBuilder.AddEduct(_reactionPartnerBuilder);
-         _reactionBuildingBlock.DiagramModel = A.Fake<IDiagramModel>();
 
+         var builderToAdd = new ReactionBuilder();
+         builderToAdd.AddEduct(_reactionPartnerBuilder);
+
+         _reactionBuildingBlock.Add(builderToAdd);
+         _reactionBuildingBlock.DiagramManager.RefreshDiagramFromModel();
          A.CallTo(() => _interactionTaskForReactionBuilder.SelectMoleculeNames(_reactionBuildingBlock, A<IEnumerable<string>>._, A<string>._, AppConstants.Captions.Educts)).Returns(new List<string> { "moleculeName" });
 
          sut.Edit(_reactionBuilderDTO, _reactionBuildingBlock);
@@ -161,7 +176,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_adding_a_new_educt_ : When_adding_or_removing_an_educt
+   public class When_adding_a_new_educt : When_adding_or_removing_an_educt
    {
       protected override void Because()
       {

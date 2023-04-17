@@ -6,9 +6,9 @@ namespace MoBi.Presentation.DTO
 {
    public class TransportBuilderDTO : ObjectBaseDTO
    {
-      public ITransportBuilder TransportBuilder { get; }
+      public TransportBuilder TransportBuilder { get; }
 
-      public TransportBuilderDTO(ITransportBuilder transportBuilder):base(transportBuilder)  
+      public TransportBuilderDTO(TransportBuilder transportBuilder):base(transportBuilder)  
       {
          TransportBuilder = transportBuilder;
       }

@@ -41,7 +41,7 @@ namespace MoBi.Presentation
 
    public class When_a_event_group_builder_is_selected : concern_for_EditEventGroupBuildingBlockPresenter
    {
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private EventGroupBuilder _eventGroup;
 
       protected override void Context()

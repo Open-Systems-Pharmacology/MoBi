@@ -82,7 +82,7 @@ namespace MoBi.Presentation.Presenter
          return selected.Count().Equals(uniqueName.Count());
       }
 
-      private IEnumerable<IMoleculeBuilder> getSelected(IEnumerable<DTOMoleculeSelection> dtoMoleculeSelections)
+      private IEnumerable<MoleculeBuilder> getSelected(IEnumerable<DTOMoleculeSelection> dtoMoleculeSelections)
       {
          return dtoMoleculeSelections.Where(dto => dto.Selected).Select(dto => dto.MoleculeBuilder).ToList();
       }
@@ -109,7 +109,7 @@ namespace MoBi.Presentation.Presenter
 
       public string Molecule { get; set; }
 
-      public IMoleculeBuilder MoleculeBuilder { get; set; }
+      public MoleculeBuilder MoleculeBuilder { get; set; }
 
       public bool Selected { get; set; }
    }

@@ -6,13 +6,13 @@ namespace MoBi.Core.Domain.Extensions
 {
    public static class SpatialStructureExtensions
    {
-      public static T WithTopContainer<T>(this T spatialStructure, IContainer topContainer) where T : ISpatialStructure
+      public static T WithTopContainer<T>(this T spatialStructure, IContainer topContainer) where T : SpatialStructure
       {
          spatialStructure.AddTopContainer(topContainer);
          return spatialStructure;
       }
 
-      public static bool IsInSpatialStructure<T>(this ISpatialStructure spatialStructure, T lookFor) where T : class, IEntity
+      public static bool IsInSpatialStructure<T>(this SpatialStructure spatialStructure, T lookFor) where T : class, IEntity
       {
          if (spatialStructure.Any(c => c.Equals(lookFor)))
             return true;

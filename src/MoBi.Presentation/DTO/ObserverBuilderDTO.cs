@@ -6,7 +6,7 @@ namespace MoBi.Presentation.DTO
 {
    public class ObserverBuilderDTO : ObjectBaseDTO
    {
-      public ObserverBuilderDTO(IObserverBuilder observerBuilder) : base(observerBuilder)
+      public ObserverBuilderDTO(ObserverBuilder observerBuilder) : base(observerBuilder)
       {
       }
 

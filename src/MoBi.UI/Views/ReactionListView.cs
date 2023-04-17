@@ -16,7 +16,7 @@ using OSPSuite.UI.Services;
 
 namespace MoBi.UI.Views
 {
-   public partial class ReactionListView : BaseUserControl, IReactionListView, IRootViewItem<IReactionBuilder>, IViewWithPopup
+   public partial class ReactionListView : BaseUserControl, IReactionListView, IRootViewItem<ReactionBuilder>, IViewWithPopup
    {
       private GridViewBinder<ReactionInfoDTO> _gridViewBinder;
       private IReactionsListSubPresenter _presenter;

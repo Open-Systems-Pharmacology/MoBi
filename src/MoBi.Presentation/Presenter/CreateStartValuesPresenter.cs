@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Presenter
    public interface ICreateStartValuesPresenter : IDisposablePresenter
    {
       IEnumerable<MoleculeBuildingBlock> GetMolecules();
-      IEnumerable<IMoBiSpatialStructure> GetSpatialStructures();
+      IEnumerable<MoBiSpatialStructure> GetSpatialStructures();
    }
 
    public interface ICreateStartValuesPresenter<T> : ICreateStartValuesPresenter
@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Presenter
 
       protected abstract T CreateStartValuesFromDTO(StartValuesDTO dto);
 
-      private StartValuesDTO createDto(string name, MoleculeBuildingBlock moleculeBuildingBlock, IMoBiSpatialStructure spatialStructure)
+      private StartValuesDTO createDto(string name, MoleculeBuildingBlock moleculeBuildingBlock, MoBiSpatialStructure spatialStructure)
       {
          var dto = new StartValuesDTO {Name = name, Molecules = moleculeBuildingBlock, SpatialStructure = spatialStructure};
          dto.AddUsedNames(AppConstants.UnallowedNames);
@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Presenter
          return _context.CurrentProject.MoleculeBlockCollection;
       }
 
-      public IEnumerable<IMoBiSpatialStructure> GetSpatialStructures()
+      public IEnumerable<MoBiSpatialStructure> GetSpatialStructures()
       {
          return _context.CurrentProject.SpatialStructureCollection;
       }

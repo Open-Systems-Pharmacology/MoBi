@@ -175,7 +175,7 @@ namespace MoBi.Presentation.Tasks
 
          var model = results.Model;
 
-         _dimensionValidator.Validate(model, simulationConfiguration)
+         _dimensionValidator.Validate(model, results.SimulationBuilder)
             .SecureContinueWith(t => showWarnings(t.Result));
 
          return model;
@@ -189,7 +189,7 @@ namespace MoBi.Presentation.Tasks
       private bool triggersReconfiguration(IBuildingBlock buildingBlock)
       {
          return buildingBlock.IsAnImplementationOf<MoleculeBuildingBlock>() ||
-                buildingBlock.IsAnImplementationOf<ISpatialStructure>();
+                buildingBlock.IsAnImplementationOf<SpatialStructure>();
       }
 
       private SimulationConfiguration createBuildConfigurationUsingTemplates(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)

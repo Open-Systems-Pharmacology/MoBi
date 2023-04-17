@@ -12,14 +12,14 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
-   public class RenameContainerCommand : BuildingBlockChangeCommandBase<ISpatialStructure>
+   public class RenameContainerCommand : BuildingBlockChangeCommandBase<SpatialStructure>
    {
       private IContainer _container;
       private readonly string _newName;
       private string _oldName;
       private readonly string _containerId;
 
-      public RenameContainerCommand(IContainer container, string newName, ISpatialStructure spatialStructure) : base(spatialStructure)
+      public RenameContainerCommand(IContainer container, string newName, SpatialStructure spatialStructure) : base(spatialStructure)
       {
          _container = container;
          _newName = newName;

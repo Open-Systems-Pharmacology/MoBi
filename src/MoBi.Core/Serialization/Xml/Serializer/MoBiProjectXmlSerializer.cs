@@ -11,6 +11,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       {
          base.PerformMapping();
          Map(x => x.ReactionDimensionMode);
+         Map(x => x.SimulationSettings);
          MapEnumerable(x => x.AllObservedData, x => x.AddObservedData);
       }
 

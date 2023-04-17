@@ -17,15 +17,15 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public interface IContextMenuForAmountObserverBuilder : IContextMenuFor<IAmountObserverBuilder>
+   public interface IContextMenuForAmountObserverBuilder : IContextMenuFor<AmountObserverBuilder>
    {
    }
 
-   public interface IContextMenuForContainerObserverBuilder : IContextMenuFor<IContainerObserverBuilder>
+   public interface IContextMenuForContainerObserverBuilder : IContextMenuFor<ContainerObserverBuilder>
    {
    }
 
-   public class ContextMenuForContainerObserverBuilder : ContextMenuForObserverBuilder<IContainerObserverBuilder>, IContextMenuForContainerObserverBuilder
+   public class ContextMenuForContainerObserverBuilder : ContextMenuForObserverBuilder<ContainerObserverBuilder>, IContextMenuForContainerObserverBuilder
    {
       public ContextMenuForContainerObserverBuilder(IMoBiContext context,
          IObjectTypeResolver objectTypeResolver,
@@ -34,7 +34,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class ContextMenuForAmountObserverBuilder : ContextMenuForObserverBuilder<IAmountObserverBuilder>, IContextMenuForAmountObserverBuilder
+   public class ContextMenuForAmountObserverBuilder : ContextMenuForObserverBuilder<AmountObserverBuilder>, IContextMenuForAmountObserverBuilder
    {
       public ContextMenuForAmountObserverBuilder(IMoBiContext context,
          IObjectTypeResolver objectTypeResolver,
@@ -55,7 +55,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected override IMenuBarItem CreateDeleteItemFor(T objectToRemove)
       {
-         var buildingBlock = _activeSubjectRetriever.Active<IObserverBuildingBlock>();
+         var buildingBlock = _activeSubjectRetriever.Active<ObserverBuildingBlock>();
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
             .WithRemoveCommand(buildingBlock, objectToRemove);
@@ -68,7 +68,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          if (viewItem.IsAnImplementationOf<AmountObserverBuilderRootItem>())
          {
-            return IoC.Resolve<IRootContextMenuFor<IObserverBuildingBlock, IAmountObserverBuilder>>().InitializeWith(presenter);
+            return IoC.Resolve<IRootContextMenuFor<ObserverBuildingBlock, AmountObserverBuilder>>().InitializeWith(presenter);
          }
          return IoC.Resolve<IContextMenuForAmountObserverBuilder>().InitializeWith(viewItem as ObserverBuilderDTO, presenter);
       }
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          if (viewItem.IsAnImplementationOf<AmountObserverBuilderRootItem>())
          {
-            return IoC.Resolve<IRootContextMenuFor<IObserverBuildingBlock, IContainerObserverBuilder>>().InitializeWith(presenter);
+            return IoC.Resolve<IRootContextMenuFor<ObserverBuildingBlock, ContainerObserverBuilder>>().InitializeWith(presenter);
          }
          return IoC.Resolve<IContextMenuForContainerObserverBuilder>().InitializeWith(viewItem as ObserverBuilderDTO, presenter);
       }

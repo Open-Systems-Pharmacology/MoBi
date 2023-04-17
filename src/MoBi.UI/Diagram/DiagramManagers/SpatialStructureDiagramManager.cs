@@ -11,10 +11,10 @@ using OSPSuite.UI.Diagram.Elements;
 
 namespace MoBi.UI.Diagram.DiagramManagers
 {
-   public class SpatialStructureDiagramManager : BaseDiagramManager<SimpleContainerNode, SimpleNeighborhoodNode, IMoBiSpatialStructure>, ISpatialStructureDiagramManager
+   public class SpatialStructureDiagramManager : BaseDiagramManager<SimpleContainerNode, SimpleNeighborhoodNode, MoBiSpatialStructure>, ISpatialStructureDiagramManager
    {
       // complement and update ViewModel from PkModel and couple ViewModel and PkModel
-      protected override void UpdateDiagramModel(IMoBiSpatialStructure spatialStructure, IDiagramModel diagramModel, bool coupleAll)
+      protected override void UpdateDiagramModel(MoBiSpatialStructure spatialStructure, IDiagramModel diagramModel, bool coupleAll)
       {
          var unusedNodeIds = new HashSet<string>();
          diagramModel.GetAllChildren<IBaseNode>().Each(x => unusedNodeIds.Add(x.Id));
@@ -91,7 +91,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
          return false;
       }
 
-      public override IDiagramManager<IMoBiSpatialStructure> Create()
+      public override IDiagramManager<MoBiSpatialStructure> Create()
       {
          return new SpatialStructureDiagramManager();
       }

@@ -178,7 +178,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Checks of a molecule with this name is already existant.
       /// </summary>
-      private IMoleculeBuilder GetMoleculeFromSpecies(string name)
+      private MoleculeBuilder GetMoleculeFromSpecies(string name)
       {
          return MoleculeBuildingBlock.FirstOrDefault(mol => mol.Name == name);
       }

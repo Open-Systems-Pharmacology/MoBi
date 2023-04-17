@@ -186,13 +186,13 @@ namespace MoBi.Presentation.Tasks
          column.DataInfo.MolWeight = mwPara.Value;
       }
 
-      private IMoleculeBuilder getMoleculeFor(IMoBiSimulation simulation, DataColumn dataColumn)
+      private MoleculeBuilder getMoleculeFor(IMoBiSimulation simulation, DataColumn dataColumn)
       {
          var moleculeName = _keyPathMapper.MoleculeNameFrom(dataColumn);
          if (string.IsNullOrEmpty(moleculeName))
             return null;
 
-         return simulation.Configuration.Molecules.Select(x => x[moleculeName]).FirstOrDefault(x => x != null);
+         return simulation.Configuration.All<MoleculeBuildingBlock>().Select(x => x[moleculeName]).FirstOrDefault(x => x != null);
       }
 
       private bool isConcentrationColumn(DataColumn column)

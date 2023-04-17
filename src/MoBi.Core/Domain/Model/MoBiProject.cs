@@ -73,19 +73,19 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection => get<MoleculeBuildingBlock>();
 
-      public IReadOnlyList<IMoBiReactionBuildingBlock> ReactionBlockCollection => get<IMoBiReactionBuildingBlock>();
+      public IReadOnlyList<MoBiReactionBuildingBlock> ReactionBlockCollection => get<MoBiReactionBuildingBlock>();
 
       public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection => get<ExpressionProfileBuildingBlock>();
 
       public IReadOnlyList<IndividualBuildingBlock> IndividualsCollection => get<IndividualBuildingBlock>();
 
-      public IReadOnlyList<IPassiveTransportBuildingBlock> PassiveTransportCollection => get<IPassiveTransportBuildingBlock>();
+      public IReadOnlyList<PassiveTransportBuildingBlock> PassiveTransportCollection => get<PassiveTransportBuildingBlock>();
 
-      public IReadOnlyList<IMoBiSpatialStructure> SpatialStructureCollection => get<IMoBiSpatialStructure>();
+      public IReadOnlyList<MoBiSpatialStructure> SpatialStructureCollection => get<MoBiSpatialStructure>();
 
-      public IReadOnlyList<IObserverBuildingBlock> ObserverBlockCollection => get<IObserverBuildingBlock>();
+      public IReadOnlyList<ObserverBuildingBlock> ObserverBlockCollection => get<ObserverBuildingBlock>();
 
-      public IReadOnlyList<IEventGroupBuildingBlock> EventBlockCollection => get<IEventGroupBuildingBlock>();
+      public IReadOnlyList<EventGroupBuildingBlock> EventBlockCollection => get<EventGroupBuildingBlock>();
 
       public IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection => get<MoleculeStartValuesBuildingBlock>();
 

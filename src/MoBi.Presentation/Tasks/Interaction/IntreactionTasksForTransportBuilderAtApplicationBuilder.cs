@@ -4,18 +4,18 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class IntreactionTasksForTransportBuilderAtApplicationBuilder : InteractionTasksForChildren<IApplicationBuilder, ITransportBuilder>
+   public class IntreactionTasksForTransportBuilderAtApplicationBuilder : InteractionTasksForChildren<ApplicationBuilder, TransportBuilder>
    {
-      public IntreactionTasksForTransportBuilderAtApplicationBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<ITransportBuilder> editTask) : base(interactionTaskContext, editTask)
+      public IntreactionTasksForTransportBuilderAtApplicationBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<TransportBuilder> editTask) : base(interactionTaskContext, editTask)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(ITransportBuilder objectToRemove, IApplicationBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(TransportBuilder objectToRemove, ApplicationBuilder parent, IBuildingBlock buildingBlock)
       {
          return new RemoveTransportBuilderFromApplicationBuilderCommand(parent, objectToRemove, buildingBlock);
       }
 
-      public override IMoBiCommand GetAddCommand(ITransportBuilder itemToAdd, IApplicationBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(TransportBuilder itemToAdd, ApplicationBuilder parent, IBuildingBlock buildingBlock)
       {
          return new AddTransportBuilderToApplicationBuilderCommand(parent, itemToAdd, buildingBlock);
       }

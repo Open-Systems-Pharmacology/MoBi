@@ -9,7 +9,7 @@ namespace MoBi.Presentation.DTO
    {
       public FormulaBuilderDTO Formula { get; set; }
 
-      public ApplicationMoleculeBuilderDTO(IApplicationMoleculeBuilder applicationMoleculeBuilder) : base(applicationMoleculeBuilder)
+      public ApplicationMoleculeBuilderDTO(ApplicationMoleculeBuilder applicationMoleculeBuilder) : base(applicationMoleculeBuilder)
       {
          Rules.Add(createRelativeContainerPathNotEmptyRule);
       }

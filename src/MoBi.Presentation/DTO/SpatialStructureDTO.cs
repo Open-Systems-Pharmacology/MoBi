@@ -5,7 +5,7 @@ namespace MoBi.Presentation.DTO
 {
    public class SpatialStructureDTO : ObjectBaseDTO
    {
-      public SpatialStructureDTO(ISpatialStructure spatialStructure) : base(spatialStructure)
+      public SpatialStructureDTO(SpatialStructure spatialStructure) : base(spatialStructure)
       {
       }
 

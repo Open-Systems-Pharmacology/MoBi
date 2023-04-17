@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Mapper
 {
    public abstract class concern_for_MoleculeBuilderToObjectBaseSummaryDTOMapper : ContextSpecification<MoleculeBuilderToObjectBaseSummaryDTOMapper>
    {
-      protected IMoleculeBuilder _builder;
+      protected MoleculeBuilder _builder;
 
       protected override void Context()
       {

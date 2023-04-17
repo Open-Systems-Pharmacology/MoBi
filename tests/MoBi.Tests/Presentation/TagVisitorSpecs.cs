@@ -16,7 +16,7 @@ namespace MoBi.Presentation
    public abstract class concern_for_TagVisitor : ContextSpecification<ITagVisitor>
    {
       private IMoBiProjectRetriever _projectRetriever;
-      protected ISpatialStructure _spatialStructure;
+      protected SpatialStructure _spatialStructure;
 
       protected override void Context()
       {

@@ -20,7 +20,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditMoleculeBuilderPresenter : ICanEditPropertiesPresenter, IEditPresenterWithParameters<IMoleculeBuilder>, IPresenterWithFormulaCache
+   public interface IEditMoleculeBuilderPresenter : ICanEditPropertiesPresenter, IEditPresenterWithParameters<MoleculeBuilder>, IPresenterWithFormulaCache
    {
       IEnumerable<string> GetCalculationMethodsForCategory(string category);
       void SetCalculationMethodForCategory(string category, string newValue, string oldValue);
@@ -31,9 +31,9 @@ namespace MoBi.Presentation.Presenter
 
    internal class EditMoleculeBuilderPresenter : AbstractSubPresenterWithFormula<IEditMoleculeBuilderView, IEditMoleculeBuilderPresenter>, IEditMoleculeBuilderPresenter, IListener<ChangedCalculationMethodEvent>
    {
-      private IMoleculeBuilder _moleculeBuilder;
+      private MoleculeBuilder _moleculeBuilder;
       private readonly IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderDTOMapper;
-      private readonly IEditTaskFor<IMoleculeBuilder> _editTasks;
+      private readonly IEditTaskFor<MoleculeBuilder> _editTasks;
       private readonly IEditParametersInContainerPresenter _editMoleculeParameters;
       private readonly IMoBiContext _context;
       private readonly ICoreCalculationMethodRepository _calculationMethodsRepository;
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Presenter
          IEditMoleculeBuilderView view,
          IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderDTOMapper,
          IEditParametersInContainerPresenter editMoleculeParameters,
-         IEditTaskFor<IMoleculeBuilder> editTasks,
+         IEditTaskFor<MoleculeBuilder> editTasks,
          IEditFormulaPresenter editFormulaPresenter,
          IMoBiContext context,
          ISelectReferenceAtMoleculePresenter selectReferencePresenter,
@@ -73,7 +73,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(object objectToEdit)
       {
-         Edit(objectToEdit.DowncastTo<IMoleculeBuilder>());
+         Edit(objectToEdit.DowncastTo<MoleculeBuilder>());
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Presenter
          _editTasks.Rename(_moleculeBuilder, _moleculeBuilder.ParentContainer, BuildingBlock);
       }
 
-      public void Edit(IMoleculeBuilder moleculeBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
+      public void Edit(MoleculeBuilder moleculeBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _moleculeBuilder = moleculeBuilder;
          _editMoleculeParameters.Edit(moleculeBuilder);
@@ -103,7 +103,7 @@ namespace MoBi.Presentation.Presenter
          _view.Show(dto);
       }
 
-      public void Edit(IMoleculeBuilder moleculeBuilder)
+      public void Edit(MoleculeBuilder moleculeBuilder)
       {
          Edit(moleculeBuilder, moleculeBuilder.ParentContainer.Children);
       }

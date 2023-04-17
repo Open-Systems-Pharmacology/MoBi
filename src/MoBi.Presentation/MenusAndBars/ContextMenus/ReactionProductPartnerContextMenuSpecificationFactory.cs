@@ -36,9 +36,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IContextMenu createFor(ReactionPartnerBuilderDTO reactionPartnerDTO, IReactionProductsPresenter presenter)
       {
-         var reactionBuilder = presenter.Subject.DowncastTo<IReactionBuilder>();
+         var reactionBuilder = presenter.Subject.DowncastTo<ReactionBuilder>();
 
-         IReactionPartnerBuilder reactionPartnerBuilder = null;
+         ReactionPartnerBuilder reactionPartnerBuilder = null;
          if (reactionPartnerDTO != null)
             reactionPartnerBuilder = reactionBuilder.Products.FirstOrDefault(product => product.MoleculeName.Equals(reactionPartnerDTO.MoleculeName));
          return new ContextMenuForProductBuilder(reactionBuilder, reactionPartnerBuilder, _container);

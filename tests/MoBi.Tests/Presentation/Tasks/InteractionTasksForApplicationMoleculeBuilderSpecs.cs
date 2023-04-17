@@ -8,31 +8,31 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_InteractionTasksForApplicationMoleculeBuilder : ContextSpecification<InteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder>>
+   public abstract class concern_for_InteractionTasksForApplicationMoleculeBuilder : ContextSpecification<InteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder>>
    {
       protected IIdGenerator _idGenerator;
       private IInteractionTaskContext _interactionTaskContext;
-      private IEditTaskFor<IApplicationMoleculeBuilder> _editTask;
+      private IEditTaskFor<ApplicationMoleculeBuilder> _editTask;
 
       protected override void Context()
       {
          _idGenerator = A.Fake<IIdGenerator>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _editTask = A.Fake<IEditTaskFor<IApplicationMoleculeBuilder>>();
+         _editTask = A.Fake<IEditTaskFor<ApplicationMoleculeBuilder>>();
          sut = new InteractionTasksForApplicationMoleculeBuilder(_interactionTaskContext, _editTask, _idGenerator);
       }
    }
 
    public class When_creating_a_new_application_molecule_builder : concern_for_InteractionTasksForApplicationMoleculeBuilder
    {
-      private IApplicationBuilder _applicationBuilder;
-      private IApplicationMoleculeBuilder _applicationMoleculeBuilder;
+      private ApplicationBuilder _applicationBuilder;
+      private ApplicationMoleculeBuilder _applicationMoleculeBuilder;
 
       protected override void Context()
       {
          base.Context();
-         _applicationBuilder = A.Fake<IApplicationBuilder>();
-         _applicationMoleculeBuilder = A.Fake<IApplicationMoleculeBuilder>();
+         _applicationBuilder = A.Fake<ApplicationBuilder>();
+         _applicationMoleculeBuilder = A.Fake<ApplicationMoleculeBuilder>();
          A.CallTo(() => _idGenerator.NewId()).Returns("XXX");
       }
 

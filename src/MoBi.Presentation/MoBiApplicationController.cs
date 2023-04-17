@@ -90,16 +90,16 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<MoleculeBuildingBlock>())
             return Start<IEditMoleculeBuildingBlockPresenter>();
 
-         if (subject.IsAnImplementationOf<IReactionBuildingBlock>())
+         if (subject.IsAnImplementationOf<ReactionBuildingBlock>())
             return Start<IEditReactionBuildingBlockPresenter>();
 
-         if (subject.IsAnImplementationOf<ISpatialStructure>())
+         if (subject.IsAnImplementationOf<SpatialStructure>())
             return Start<IEditSpatialStructurePresenter>();
 
-         if (subject.IsAnImplementationOf<IPassiveTransportBuildingBlock>())
+         if (subject.IsAnImplementationOf<PassiveTransportBuildingBlock>())
             return Start<IEditPassiveTransportBuildingBlockPresenter>();
 
-         if (subject.IsAnImplementationOf<IEventGroupBuildingBlock>())
+         if (subject.IsAnImplementationOf<EventGroupBuildingBlock>())
             return Start<IEditEventGroupBuildingBlockPresenter>();
 
          if (subject.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())
@@ -108,7 +108,7 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
             return Start<IEditParameterStartValuesPresenter>();
 
-         if (subject.IsAnImplementationOf<IObserverBuildingBlock>())
+         if (subject.IsAnImplementationOf<ObserverBuildingBlock>())
             return Start<IEditObserverBuildingBlockPresenter>();
 
          if (subject.IsAnImplementationOf<IModelCoreSimulation>())

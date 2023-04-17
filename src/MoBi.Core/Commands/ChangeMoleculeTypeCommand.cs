@@ -11,12 +11,12 @@ namespace MoBi.Core.Commands
 {
    public class ChangeMoleculeTypeCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
-      private IMoleculeBuilder _moleculeBuilder;
+      private MoleculeBuilder _moleculeBuilder;
       private readonly QuantityType _oldType;
       private readonly QuantityType _newType;
       private readonly string _moleculeBuilderId;
 
-      public ChangeMoleculeTypeCommand(IMoleculeBuilder moleculeBuilder, QuantityType newType, QuantityType oldType, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public ChangeMoleculeTypeCommand(MoleculeBuilder moleculeBuilder, QuantityType newType, QuantityType oldType, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _moleculeBuilder = moleculeBuilder;
          _moleculeBuilderId = _moleculeBuilder.Id;
@@ -51,7 +51,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _moleculeBuilder = context.Get<IMoleculeBuilder>(_moleculeBuilderId);
+         _moleculeBuilder = context.Get<MoleculeBuilder>(_moleculeBuilderId);
       }
    }
 }

@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Presenter
       }
    }
 
-   public class DropAllowedTypesForSwitch : DropAllowedTypesFor<IEvent>
+   public class DropAllowedTypesForSwitch : DropAllowedTypesFor<Event>
    {
       public DropAllowedTypesForSwitch()
          : base(new List<Type> {typeof (IFormulaUsable), typeof (IEntity)})

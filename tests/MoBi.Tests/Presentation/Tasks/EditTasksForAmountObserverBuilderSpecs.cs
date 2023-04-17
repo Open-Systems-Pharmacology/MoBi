@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Tasks
       private IMoBiContext _context;
       private MoBiProject _project;
       protected ObserverBuildingBlock _buildingBlock;
-      protected IAmountObserverBuilder _amountObserver;
+      protected AmountObserverBuilder _amountObserver;
       protected AmountObserverBuilder _amountObserverBuilderWithForbiddenName;
       protected IInteractionTask _interactionTask;
 
@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _context = A.Fake<IMoBiContext>();
          _project = DomainHelperForSpecs.NewProject();
-         _amountObserver = A.Fake<IAmountObserverBuilder>();
+         _amountObserver = A.Fake<AmountObserverBuilder>();
          _amountObserverBuilderWithForbiddenName = new AmountObserverBuilder {Name = "forbidden name"};
          _buildingBlock = new ObserverBuildingBlock {_amountObserverBuilderWithForbiddenName, _amountObserver};
          _interactionTask = A.Fake<IInteractionTask>();
@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_renaming_a_different_object_base : concern_for_EditTasksForAmountObserverBuilder
    {
-      private IAmountObserverBuilder _amountObserverBuilder;
+      private AmountObserverBuilder _amountObserverBuilder;
 
       protected override void Context()
       {

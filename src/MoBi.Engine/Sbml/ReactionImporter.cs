@@ -20,10 +20,10 @@ namespace MoBi.Engine.Sbml
 {
    public class ReactionImporter : SBMLImporter
    {
-      internal readonly List<IReactionBuilder> ReactionBuilderList;
-      private readonly List<ITransportBuilder> _passiveTransportList;
-      private readonly IMoBiReactionBuildingBlock _reactionBuildingBlock;
-      private readonly IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
+      internal readonly List<ReactionBuilder> ReactionBuilderList;
+      private readonly List<TransportBuilder> _passiveTransportList;
+      private readonly MoBiReactionBuildingBlock _reactionBuildingBlock;
+      private readonly PassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IFunctionDefinitionImporter _functionDefinitionImporter;
       private readonly ISpeciesImporter _speciesImporter;
@@ -42,10 +42,10 @@ namespace MoBi.Engine.Sbml
          : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _dimensionFactory = moBiDimensionFactory;
-         ReactionBuilderList = new List<IReactionBuilder>();
-         _passiveTransportList = new List<ITransportBuilder>();
+         ReactionBuilderList = new List<ReactionBuilder>();
+         _passiveTransportList = new List<TransportBuilder>();
          _reactionBuildingBlock = reactionBuildingBlockFactory.Create().WithName(SBMLConstants.SBML_REACTION_BB);
-         _passiveTransportBuildingBlock = ObjectBaseFactory.Create<IPassiveTransportBuildingBlock>()
+         _passiveTransportBuildingBlock = ObjectBaseFactory.Create<PassiveTransportBuildingBlock>()
             .WithName(SBMLConstants.SBML_PASSIVETRANSPORTS_BB);
          _functionDefinitionImporter = functionDefinitionImporter;
          _speciesImporter = speciesImporter;
@@ -116,7 +116,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       private void CreateStandardReaction(Reaction sbmlReaction, Model model)
       {
-         var reactionBuilder = ObjectBaseFactory.Create<IReactionBuilder>()
+         var reactionBuilder = ObjectBaseFactory.Create<ReactionBuilder>()
             .WithName(sbmlReaction.getId())
             .WithDescription(sbmlReaction.getNotesString());
 
@@ -196,7 +196,7 @@ namespace MoBi.Engine.Sbml
 
          foreach (var keyValuePair in eductCompartmentMoleculeDictionary)
          {
-            var reactionBuilder = ObjectBaseFactory.Create<IReactionBuilder>()
+            var reactionBuilder = ObjectBaseFactory.Create<ReactionBuilder>()
                .WithName(sbmlReaction.getId() + "_" + keyValuePair.Key + "_ghostReaction")
                .WithDescription(sbmlReaction.getNotesString());
 
@@ -236,7 +236,7 @@ namespace MoBi.Engine.Sbml
          {
             if (usedProducts.Contains(keyValuePair.Key)) continue;
 
-            var reactionBuilder = ObjectBaseFactory.Create<IReactionBuilder>()
+            var reactionBuilder = ObjectBaseFactory.Create<ReactionBuilder>()
                .WithName(sbmlReaction.getId() + "_" + keyValuePair.Key + "_ghostReaction")
                .WithDescription(sbmlReaction.getNotesString());
 
@@ -282,7 +282,7 @@ namespace MoBi.Engine.Sbml
          //must be the same Molecule
          if (molInfoReactant.GetMoleculeBuilder() != molInfoProduct.GetMoleculeBuilder()) CreateErrorMessage();
 
-         var passiveTransport = ObjectBaseFactory.Create<ITransportBuilder>().WithName(sbmlReaction.getId());
+         var passiveTransport = ObjectBaseFactory.Create<TransportBuilder>().WithName(sbmlReaction.getId());
          passiveTransport.ForAll = false;
          if (molInfoReactant.GetMoleculeBuilderName() == null) return;
          passiveTransport.MoleculeList.AddMoleculeName(molInfoReactant.GetMoleculeBuilderName());
@@ -317,7 +317,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Creates the Kinetic Formula for a passive Transport.
       /// </summary>
-      private void CreateKinetic(Reaction sbmlReaction, ITransportBuilder passiveTransport)
+      private void CreateKinetic(Reaction sbmlReaction, TransportBuilder passiveTransport)
       {
          _astHandler.NeedAbsolutePath = true;
          var formula = sbmlReaction.getKineticLaw() == null
@@ -398,7 +398,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Imports the SBML Modifiers to MoBi Modifiers. 
       /// </summary>
-      private void CreateModifiers(Reaction sbmlReaction, IReactionBuilder reactionBuilder, string reactionCompartment, Model model)
+      private void CreateModifiers(Reaction sbmlReaction, ReactionBuilder reactionBuilder, string reactionCompartment, Model model)
       {
          for (long i = 0; i < sbmlReaction.getNumModifiers(); i++)
          {
@@ -425,7 +425,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Creates the MoBi Reaction Formula by the given SBML Kinetic Law. 
       /// </summary>
-      private void CreateKineticLaw(KineticLaw kineticLaw, IReactionBuilder reactionBuilder, bool needAbsolutePath)
+      private void CreateKineticLaw(KineticLaw kineticLaw, ReactionBuilder reactionBuilder, bool needAbsolutePath)
       {
          if (needAbsolutePath) _astHandler.NeedAbsolutePath = true;
          var formula = kineticLaw == null ? ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(string.Empty).WithName(SBMLConstants.DEFAULT_FORMULA_NAME) : _astHandler.Parse(kineticLaw.getMath(), reactionBuilder, _sbmlProject, _sbmlInformation);
@@ -445,7 +445,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Creates the Educts of the MoBi reaction.
       /// </summary>
-      private void CreateEducts(Reaction sbmlReaction, IReactionBuilder reactionBuilder, Model model)
+      private void CreateEducts(Reaction sbmlReaction, ReactionBuilder reactionBuilder, Model model)
       {
          for (long i = 0; i < sbmlReaction.getNumReactants(); i++)
          {
@@ -457,7 +457,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Creates the Products of the MoBi reaction.
       /// </summary>
-      private void CreateProducts(Reaction sbmlReaction, IReactionBuilder reactionBuilder, Model model)
+      private void CreateProducts(Reaction sbmlReaction, ReactionBuilder reactionBuilder, Model model)
       {
          for (long i = 0; i < sbmlReaction.getNumProducts(); i++)
          {
@@ -513,12 +513,12 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Creates a MoBi ReactionPartner by a given SBML Species Reference
       /// </summary>
-      private IReactionPartnerBuilder CreateReactionPartner(SpeciesReference speciesReference, Model model)
+      private ReactionPartnerBuilder CreateReactionPartner(SpeciesReference speciesReference, Model model)
       {
          var molecule = _sbmlInformation.GetMoleculeBySBMLId(speciesReference.getSpecies());
          if (molecule == null) return null;
 
-         IReactionPartnerBuilder productBuilder = new ReactionPartnerBuilder
+         ReactionPartnerBuilder productBuilder = new ReactionPartnerBuilder
          {
             MoleculeName = molecule.Name
          };
@@ -569,8 +569,8 @@ namespace MoBi.Engine.Sbml
          foreach (var passiveTransport in _passiveTransportList)
             _passiveTransportBuildingBlock.Add(passiveTransport);
 
-         _context.AddToHistory(new AddBuildingBlockCommand<IMoBiReactionBuildingBlock>(_reactionBuildingBlock).Run(_context));
-         _context.AddToHistory(new AddBuildingBlockCommand<IPassiveTransportBuildingBlock>(_passiveTransportBuildingBlock).Run(_context));
+         _context.AddToHistory(new AddBuildingBlockCommand<MoBiReactionBuildingBlock>(_reactionBuildingBlock).Run(_context));
+         _context.AddToHistory(new AddBuildingBlockCommand<PassiveTransportBuildingBlock>(_passiveTransportBuildingBlock).Run(_context));
       }
    }
 }

@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Mapper
    {
       private TransporterMoleculeContainer _transporterMoleculeContainer;
       private TransporterMoleculeContainerDTO _result;
-      private ITransportBuilder _transporter;
+      private TransportBuilder _transporter;
       private IParameter _parameter;
 
       protected override void Context()
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Mapper
          _transporterMoleculeContainer = A.Fake<TransporterMoleculeContainer>();
          _transporterMoleculeContainer.Name = "Cyp";
          _parameter = A.Fake<IParameter>();
-         _transporter = A.Fake<ITransportBuilder>();
+         _transporter = A.Fake<TransportBuilder>();
          A.CallTo(() => _transporterMoleculeContainer.ActiveTransportRealizations).Returns(new []{_transporter});
          A.CallTo(() => _transporterMoleculeContainer.Parameters).Returns(new[] { _parameter });
          

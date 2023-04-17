@@ -105,7 +105,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu InitializeWith(TransportBuilderDTO dto, IPresenter presenter)
       {
-         var transportBuilder = _context.Get<ITransportBuilder>(dto.Id);
+         var transportBuilder = _context.Get<TransportBuilder>(dto.Id);
          _allMenuItems = new List<IMenuBarItem>
          {
             createEditItemFor(transportBuilder),
@@ -116,26 +116,26 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return this;
       }
 
-      private IMenuBarItem createSaveItemFor(ITransportBuilder transportBuilder)
+      private IMenuBarItem createSaveItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
             .WithIcon(ApplicationIcons.PKMLSave)
-            .WithCommandFor<SaveUICommandFor<ITransportBuilder>, ITransportBuilder>(transportBuilder, _container);
+            .WithCommandFor<SaveUICommandFor<TransportBuilder>, TransportBuilder>(transportBuilder, _container);
       }
 
-      private IMenuBarItem createEditItemFor(ITransportBuilder transportBuilder)
+      private IMenuBarItem createEditItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditCommandFor<ITransportBuilder>, ITransportBuilder>(transportBuilder, _container)
+            .WithCommandFor<EditCommandFor<TransportBuilder>, TransportBuilder>(transportBuilder, _container)
             .WithIcon(ApplicationIcons.Edit);
       }
 
-      protected abstract IMenuBarItem CreateRemoveItemFor(ITransportBuilder transportBuilder);
+      protected abstract IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder);
 
-      protected IMenuBarItem CreateRenameItemFor(ITransportBuilder transportBuilder)
+      protected IMenuBarItem CreateRenameItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithCommandFor<RenameObjectCommand<ITransportBuilder>, ITransportBuilder>(transportBuilder, _container)
+            .WithCommandFor<RenameObjectCommand<TransportBuilder>, TransportBuilder>(transportBuilder, _container)
             .WithIcon(ApplicationIcons.Rename);
       }
    }
@@ -146,7 +146,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      protected override IMenuBarItem CreateRemoveItemFor(ITransportBuilder transportBuilder)
+      protected override IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithRemoveCommand(transportBuilder.ParentContainer.DowncastTo<TransporterMoleculeContainer>(), transportBuilder)
@@ -160,7 +160,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      protected override IMenuBarItem CreateRemoveItemFor(ITransportBuilder transportBuilder)
+      protected override IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder)
       {
          var buildingblock = _context.CurrentProject.PassiveTransportCollection.FirstOrDefault(x => x.Contains(transportBuilder));
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
@@ -175,10 +175,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      protected override IMenuBarItem CreateRemoveItemFor(ITransportBuilder transportBuilder)
+      protected override IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithRemoveCommand(transportBuilder.ParentContainer.DowncastTo<IApplicationBuilder>(), transportBuilder)
+            .WithRemoveCommand(transportBuilder.ParentContainer.DowncastTo<ApplicationBuilder>(), transportBuilder)
             .WithIcon(ApplicationIcons.Delete);
       }
    }

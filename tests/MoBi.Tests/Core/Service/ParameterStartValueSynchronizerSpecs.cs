@@ -45,15 +45,17 @@ namespace MoBi.Core.Service
          parameterStartValues.Add(_parameterStartValue);
          _simulation.Configuration = new SimulationConfiguration();
          _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
-         _simulation.Configuration.ModuleConfigurations.First().Module.AddParameterStartValueBlock(parameterStartValues);
+         var moduleConfiguration = _simulation.Configuration.ModuleConfigurations.First();
+         moduleConfiguration.Module.AddParameterStartValueBlock(parameterStartValues);
+         moduleConfiguration.SelectedParameterStartValues = parameterStartValues;
          _parameter =
             new Parameter().WithName("P1").WithValue(11).WithDimension(A.Fake<IDimension>()).WithDisplayUnit(A.Fake<Unit>());
-         A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(new ObjectPath("Organism","P1"));
+         A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(new ObjectPath("Organism", "P1"));
       }
 
       protected override void Because()
       {
-         sut.SynchronizeValue(_simulation,_parameter);
+         sut.SynchronizeValue(_simulation, _parameter);
       }
 
 
@@ -71,4 +73,4 @@ namespace MoBi.Core.Service
          _parameterStartValue.DisplayUnit.ShouldBeEqualTo(_parameter.DisplayUnit);
       }
    }
-}	
+}

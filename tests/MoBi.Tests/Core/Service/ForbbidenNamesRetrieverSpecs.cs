@@ -192,7 +192,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         IMoleculeBuilder testMolecule = new MoleculeBuilder().WithName(_moleculeName);
+         MoleculeBuilder testMolecule = new MoleculeBuilder().WithName(_moleculeName);
          _forbiddenNames = sut.For(testMolecule);
       }
 

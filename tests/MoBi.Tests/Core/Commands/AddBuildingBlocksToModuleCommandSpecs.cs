@@ -17,8 +17,8 @@ namespace MoBi.Core.Commands
       protected MoBiProject _project;
       protected RegisterTask _registrationTask;
       protected WithIdRepository _withIdRepository;
-      protected IReactionBuildingBlock _newReactionBuildingBlock;
-      protected IEventGroupBuildingBlock _newEventGroupBuildingBlock;
+      protected ReactionBuildingBlock _newReactionBuildingBlock;
+      protected EventGroupBuildingBlock _newEventGroupBuildingBlock;
 
       protected override void Context()
       {

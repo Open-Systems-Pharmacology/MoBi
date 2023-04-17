@@ -116,7 +116,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private bool isPKSimObserverMessage(NotificationMessageDTO notification)
       {
-         if (!notification.Object.IsAnImplementationOf<IObserverBuilder>())
+         if (!notification.Object.IsAnImplementationOf<ObserverBuilder>())
             return false;
 
          if (AppConstants.DefaultNames.PKSimStaticObservers.Contains(notification.ObjectName))

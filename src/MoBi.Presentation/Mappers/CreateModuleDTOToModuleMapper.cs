@@ -67,11 +67,11 @@ namespace MoBi.Presentation.Mappers
             () => addDefault(AppConstants.DefaultNames.SpatialStructure,
                () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure))));
          module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithPassiveTransport,
-            () => addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock)));
+            () => addDefault<PassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock)));
          module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithEventGroup,
-            () => addDefault<IEventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)));
+            () => addDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)));
          module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithObserver,
-            () => addDefault<IObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)));
+            () => addDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)));
 
          if (createModuleDTO.WithParameterStartValues)
          {

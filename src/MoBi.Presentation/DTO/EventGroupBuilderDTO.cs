@@ -5,7 +5,7 @@ namespace MoBi.Presentation.DTO
 {
    public class EventGroupBuilderDTO : ObjectBaseDTO
    {
-      public EventGroupBuilderDTO(IEventGroupBuilder eventGroupBuilder) : base(eventGroupBuilder)
+      public EventGroupBuilderDTO(EventGroupBuilder eventGroupBuilder) : base(eventGroupBuilder)
       {
       }
 

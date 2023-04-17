@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Presenter
          AddCommand(new EditReactionPartnerMoleculeNameCommand(newMoleculeName, _reactionBuilderDTO.ReactionBuilder, partner, ReactionBuildingBlock).Run(_context));
       }
 
-      protected IMoBiReactionBuildingBlock ReactionBuildingBlock => _buildingBlock.DowncastTo<IMoBiReactionBuildingBlock>();
+      protected MoBiReactionBuildingBlock ReactionBuildingBlock => _buildingBlock.DowncastTo<MoBiReactionBuildingBlock>();
 
       public virtual void Edit(ReactionBuilderDTO reactionBuilderDTO, IBuildingBlock buildingBlock)
       {

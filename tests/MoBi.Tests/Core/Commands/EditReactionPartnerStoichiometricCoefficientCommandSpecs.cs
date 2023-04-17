@@ -10,9 +10,9 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_EditReactionPartnerStoichiometricCoefficientCommand : ContextSpecification<EditReactionPartnerStoichiometricCoefficientCommand>
    {
       protected double _newCoefficient;
-      protected IReactionBuilder _reaction;
-      protected IReactionPartnerBuilder _reactionPartner;
-      private IMoBiReactionBuildingBlock _buildingBlock;
+      protected ReactionBuilder _reaction;
+      protected ReactionPartnerBuilder _reactionPartner;
+      private MoBiReactionBuildingBlock _buildingBlock;
       protected double _oldCoefficient;
       protected IMoBiContext _context;
 
@@ -24,7 +24,7 @@ namespace MoBi.Core.Commands
          _reactionPartner = new ReactionPartnerBuilder("A", _oldCoefficient);
          _buildingBlock = new MoBiReactionBuildingBlock();
          _context = A.Fake<IMoBiContext>();
-         A.CallTo(() => _context.Get<IReactionBuilder>(_reaction.Id)).Returns(_reaction);
+         A.CallTo(() => _context.Get<ReactionBuilder>(_reaction.Id)).Returns(_reaction);
          AddPartnerToReaction();
          sut = new EditReactionPartnerStoichiometricCoefficientCommand(_newCoefficient, _reaction, _reactionPartner, _buildingBlock);
       }

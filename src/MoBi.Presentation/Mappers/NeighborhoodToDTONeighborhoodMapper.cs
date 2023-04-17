@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Mappers
       public NeighborhoodDTO MapFrom(Neighborhood neighborhood)
       {
          var dto = MapContainer(neighborhood, new NeighborhoodDTO(neighborhood));
-         var transports = neighborhood.GetAllChildren<ITransport>();
+         var transports = neighborhood.GetAllChildren<Transport>();
          dto.Transports = transports.MapAllUsing(_transportToTransportDTOMapper);
          return dto;
       }

@@ -15,17 +15,17 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditSpatialStructurePresenter : ISingleStartPresenter<IMoBiSpatialStructure>,
+   public interface IEditSpatialStructurePresenter : ISingleStartPresenter<MoBiSpatialStructure>,
       IDiagramBuildingBlockPresenter,
       IListener<RemovedEvent>
    {
       void LoadDiagram();
    }
 
-   public class EditSpatialStructurePresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditSpatialStructureView, IEditSpatialStructurePresenter, IMoBiSpatialStructure, IContainer>,
+   public class EditSpatialStructurePresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditSpatialStructureView, IEditSpatialStructurePresenter, MoBiSpatialStructure, IContainer>,
       IEditSpatialStructurePresenter
    {
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private readonly IHierarchicalSpatialStructurePresenter _hierarchicalSpatialStructurePresenter;
       private readonly ISpatialStructureDiagramPresenter _spatialStructureDiagramPresenter;
       private readonly IEditContainerPresenter _editContainerPresenter;
@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editContainerPresenter, hierarchicalSpatialStructurePresenter, spatialStructureDiagramPresenter, _neighborhoodBuilderPresenter);
       }
 
-      public override void Edit(IMoBiSpatialStructure spatialStructure)
+      public override void Edit(MoBiSpatialStructure spatialStructure)
       {
          _diagramLoaded = (_spatialStructure == spatialStructure) && _diagramLoaded;
          _spatialStructure = spatialStructure;

@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Tasks.Edit
       IEnumerable<string> GetForbiddenNames(IBuildingBlock buildingBlock);
    }
 
-   public abstract class EditTasksForBuilder<TBuilder, TBuildingBlock> : EditTaskFor<TBuilder>, IEditTasksForBuilder where TBuilder : class, IObjectBase where TBuildingBlock : class
+   public abstract class EditTasksForBuilder<TBuilder, TBuildingBlock> : EditTaskFor<TBuilder>, IEditTasksForBuilder where TBuilder : class, IBuilder where TBuildingBlock : class
    {
       protected EditTasksForBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {

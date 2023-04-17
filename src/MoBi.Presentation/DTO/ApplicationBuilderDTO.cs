@@ -14,7 +14,7 @@ namespace MoBi.Presentation.DTO
       public IEnumerable<ApplicationMoleculeBuilderDTO> Molecules { get; set; }
       public string MoleculeName { get; set; }
 
-      public ApplicationBuilderDTO(IApplicationBuilder applicationBuilder) : base(applicationBuilder)
+      public ApplicationBuilderDTO(ApplicationBuilder applicationBuilder) : base(applicationBuilder)
       {
          Rules.Add(moleculeNameShouldBePresentInProjectRule);
       }

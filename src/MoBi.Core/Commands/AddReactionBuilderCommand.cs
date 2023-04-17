@@ -6,12 +6,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveReactionBuilderCommand : RemoveObjectBaseCommand<IReactionBuilder, IMoBiReactionBuildingBlock>
+   public class RemoveReactionBuilderCommand : RemoveObjectBaseCommand<ReactionBuilder, MoBiReactionBuildingBlock>
    {
       private IBaseNode _originalNode;
       private PointF _originalParentLocation;
 
-      public RemoveReactionBuilderCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionBuilder reactionBuilder)
+      public RemoveReactionBuilderCommand(MoBiReactionBuildingBlock reactionBuildingBlock, ReactionBuilder reactionBuilder)
          : base(reactionBuildingBlock, reactionBuilder, reactionBuildingBlock)
       {
       }
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
          return new AddReactionBuilderCommand(_parent, _itemToRemove, _originalNode, _originalParentLocation).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(IReactionBuilder reactionBuilderToRemove, IMoBiReactionBuildingBlock reactionBuildingBlock, IMoBiContext context)
+      protected override void RemoveFrom(ReactionBuilder reactionBuilderToRemove, MoBiReactionBuildingBlock reactionBuildingBlock, IMoBiContext context)
       {
          reactionBuildingBlock.Remove(reactionBuilderToRemove);
          if (reactionBuildingBlock.DiagramModel == null)
@@ -38,17 +38,17 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddReactionBuilderCommand : AddObjectBaseCommand<IReactionBuilder, IMoBiReactionBuildingBlock>
+   public class AddReactionBuilderCommand : AddObjectBaseCommand<ReactionBuilder, MoBiReactionBuildingBlock>
    {
       private readonly IBaseNode _destinationNode;
       private readonly PointF _parentLocation;
 
-      public AddReactionBuilderCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionBuilder reactionBuilder)
+      public AddReactionBuilderCommand(MoBiReactionBuildingBlock reactionBuildingBlock, ReactionBuilder reactionBuilder)
          : this(reactionBuildingBlock, reactionBuilder, null, null)
       {
       }
 
-      public AddReactionBuilderCommand(IMoBiReactionBuildingBlock buildingBlock, IReactionBuilder reactionBuilder, IBaseNode destinationNode, PointF? parentLocation)
+      public AddReactionBuilderCommand(MoBiReactionBuildingBlock buildingBlock, ReactionBuilder reactionBuilder, IBaseNode destinationNode, PointF? parentLocation)
          : base(buildingBlock, reactionBuilder, buildingBlock)
 
       {
@@ -61,7 +61,7 @@ namespace MoBi.Core.Commands
          return new RemoveReactionBuilderCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
 
-      protected override void AddTo(IReactionBuilder reactionBuilder, IMoBiReactionBuildingBlock reactionBuildingBlock, IMoBiContext context)
+      protected override void AddTo(ReactionBuilder reactionBuilder, MoBiReactionBuildingBlock reactionBuildingBlock, IMoBiContext context)
       {
          reactionBuildingBlock.Add(reactionBuilder);
          reactionBuildingBlock.DiagramManager.AddObjectBase(reactionBuilder);

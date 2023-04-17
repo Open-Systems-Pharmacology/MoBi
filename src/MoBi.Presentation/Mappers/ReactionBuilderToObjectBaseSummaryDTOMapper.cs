@@ -11,7 +11,7 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IReactionBuilderToObjectBaseSummaryDTOMapper : IMapper<IReactionBuilder, ObjectBaseSummaryDTO>
+   public interface IReactionBuilderToObjectBaseSummaryDTOMapper : IMapper<ReactionBuilder, ObjectBaseSummaryDTO>
    {
       
    }
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Mappers
          _objectTypeResolver = objectTypeResolver;
       }
 
-      public ObjectBaseSummaryDTO MapFrom(IReactionBuilder reactionBuilder)
+      public ObjectBaseSummaryDTO MapFrom(ReactionBuilder reactionBuilder)
       {
          var dto = new ObjectBaseSummaryDTO
          {

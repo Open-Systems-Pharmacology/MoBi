@@ -11,7 +11,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectNeighborPathPresenter : IPresenter<ISelectNeighborPathView>
    {
-      void Init(ISpatialStructure spatialStructure, string label);
+      void Init(SpatialStructure spatialStructure, string label);
       ObjectPath NeighborPath { get; }
    }
 
@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Presenter
          ViewChanged();
       }
 
-      public void Init(ISpatialStructure spatialStructure, string label)
+      public void Init(SpatialStructure spatialStructure, string label)
       {
          _view.Label = label;
          var organism = spatialStructure.TopContainers.Find(x => x.ContainerType == ContainerType.Organism) ?? spatialStructure.TopContainers.FirstOrDefault();

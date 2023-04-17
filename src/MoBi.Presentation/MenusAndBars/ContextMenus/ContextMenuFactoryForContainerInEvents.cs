@@ -41,9 +41,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private static bool isContainerWithSpecialContextMenu(IObjectBase entity)
       {
          return entity.IsAnImplementationOf<IContainer>() && 
-            !entity.IsAnImplementationOf<ITransportBuilder>() && 
-            !entity.IsAnImplementationOf<IEventGroupBuilder>() && 
-            !entity.IsAnImplementationOf<IEventBuilder>();
+            !entity.IsAnImplementationOf<TransportBuilder>() && 
+            !entity.IsAnImplementationOf<EventGroupBuilder>() && 
+            !entity.IsAnImplementationOf<EventBuilder>();
       }
    }
 }

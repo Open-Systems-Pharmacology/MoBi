@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
@@ -25,9 +26,11 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(SimulationConfiguration simulationConfiguration);
       ITreeNode CreateFor(IBuildingBlock buildingBlock);
       ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock);
-      ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder);
+      ITreeNode CreateFor(MoleculeBuilder moleculeBuilder);
       ITreeNode CreateForFavorites();
       ITreeNode CreateForUserDefined();
+      ITreeNode CreateFor(Module module);
+      ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration);
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -69,34 +72,43 @@ namespace MoBi.Presentation.Nodes
          return simNode;
       }
 
+      public ITreeNode CreateFor(Module module)
+      {
+         var moduleNode = createFor(module);
+         addModuleBuildingBlocks(moduleNode, module);
+         addStartValueCollections(moduleNode, module);
+
+         return moduleNode;
+      }
+
+      private void addStartValueCollections(ITreeNode moduleNode, Module module)
+      {
+         var psvCollectionNode = collectionNodeFor(module.ParameterStartValuesCollection, MoBiRootNodeTypes.ParameterStartValuesFolder, moduleNode);
+         module.ParameterStartValuesCollection.Each(psv => { createAndAddNodeUnder(psvCollectionNode, psv); });
+
+         var msvCollectionNode = collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);
+         module.MoleculeStartValuesCollection.Each(msv => createAndAddNodeUnder(msvCollectionNode, msv));
+      }
+
+      private ITreeNode collectionNodeFor<T>(IReadOnlyList<IStartValuesBuildingBlock<T>> startValueBlockCollection, RootNodeType rootNodeType, ITreeNode moduleNode) where T : class, IStartValue
+      {
+         return startValueBlockCollection.Count > 1 ? CreateFor(rootNodeType).Under(moduleNode) : moduleNode;
+      }
+
       public ITreeNode CreateFor(SimulationConfiguration simulationConfiguration)
       {
          var buildConfigNode = new SimulationConfigurationNode(simulationConfiguration);
          //add one node for each Building Block
-         
+
          simulationConfiguration.ModuleConfigurations.Each(moduleConfiguration =>
          {
-            var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).Under(buildConfigNode);
+            var moduleConfigurationNode = CreateFor(new ModuleConfigurationDTO(moduleConfiguration));
 
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.SpatialStructure);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Molecules);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Reactions);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.PassiveTransports);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.Observers);
-            addConfigurationNodeUnder(moduleConfigurationNode, moduleConfiguration.Module.EventGroups);
-            moduleConfiguration.Module.MoleculeStartValuesCollection.Each(x =>
-            {
-               addConfigurationNodeUnder(moduleConfigurationNode,x);
-            });
-            moduleConfiguration.Module.ParameterStartValuesCollection.Each(x =>
-            {
-               addConfigurationNodeUnder(moduleConfigurationNode, x);
-            });
+            moduleConfigurationNode.Under(buildConfigNode);
          });
 
-         addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
-         if (simulationConfiguration.Individual != null)
-            addConfigurationNodeUnder(buildConfigNode, simulationConfiguration.Individual);
+         createAndAddNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
+         createAndAddNodeUnder(buildConfigNode, simulationConfiguration.Individual);
 
 
          var expressionsNode = CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder)
@@ -107,10 +119,37 @@ namespace MoBi.Presentation.Nodes
          return buildConfigNode;
       }
 
+      public ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration)
+      {
+         var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).WithIcon(ApplicationIcons.Module);
+         var module = moduleConfiguration.Module;
+
+         addModuleBuildingBlocks(moduleConfigurationNode, module);
+
+         createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedMoleculeStartValues);
+         createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterStartValues);
+
+         return moduleConfigurationNode;
+      }
+
+      private void addModuleBuildingBlocks(ITreeNode rootTreeNode, Module module)
+      {
+         addBuildingBlockNodeUnder(rootTreeNode, module.SpatialStructure);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Molecules);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Reactions);
+         addBuildingBlockNodeUnder(rootTreeNode, module.PassiveTransports);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Observers);
+         addBuildingBlockNodeUnder(rootTreeNode, module.EventGroups);
+      }
+
+      private void addBuildingBlockNodeUnder(ITreeNode rootTreeNode, IBuildingBlock buildingBlock)
+      {
+         createAndAddNodeUnder(rootTreeNode, buildingBlock);
+      }
+
       public ITreeNode CreateFor(IBuildingBlock buildingBlock)
       {
-         var moleculeBuildingBlock = buildingBlock as MoleculeBuildingBlock;
-         if (moleculeBuildingBlock != null)
+         if (buildingBlock is MoleculeBuildingBlock moleculeBuildingBlock)
             return CreateFor(moleculeBuildingBlock);
 
          return createFor(buildingBlock);
@@ -128,11 +167,10 @@ namespace MoBi.Presentation.Nodes
          return moleculeBuildingBlockNode;
       }
 
-      public ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder)
+      public ITreeNode CreateFor(MoleculeBuilder moleculeBuilder)
       {
          return createFor(moleculeBuilder);
       }
-
 
       private ITreeNode createFor<T>(T objectBase) where T : class, IObjectBase
       {
@@ -140,8 +178,11 @@ namespace MoBi.Presentation.Nodes
             .WithIcon(ApplicationIcons.IconByName(objectBase.Icon));
       }
 
-      private void addConfigurationNodeUnder(ITreeNode buildConfigNode, IBuildingBlock buildingBlock)
+      private void createAndAddNodeUnder(ITreeNode rootNode, IBuildingBlock buildingBlock)
       {
+         if (buildingBlock == null)
+            return;
+         
          // TODO this used to use buildingBlockInfo to create the tree SIMULATION_CONFIGURATION
          var statusIcon = ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
          // var statusIcon = buildingBlockInfo.BuildingBlockChanged
@@ -150,7 +191,7 @@ namespace MoBi.Presentation.Nodes
 
          CreateFor(buildingBlock)
             .WithIcon(statusIcon)
-            .Under(buildConfigNode);
+            .Under(rootNode);
       }
 
       public ITreeNode CreateFor(CurveChart chart)
@@ -171,11 +212,11 @@ namespace MoBi.Presentation.Nodes
       public ITreeNode CreateForUserDefined()
       {
          return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new UserDefinedNodeViewItem
-            {
-               Name = AppConstants.Captions.UserDefined,
-               Icon = ApplicationIcons.UserDefinedVariability,
-               Id = AppConstants.Captions.UserDefined
-         }){ Icon = ApplicationIcons.UserDefinedVariability };
+         {
+            Name = AppConstants.Captions.UserDefined,
+            Icon = ApplicationIcons.UserDefinedVariability,
+            Id = AppConstants.Captions.UserDefined
+         }) { Icon = ApplicationIcons.UserDefinedVariability };
       }
    }
 }

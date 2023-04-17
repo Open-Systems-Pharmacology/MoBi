@@ -9,17 +9,19 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks.Interaction;
+using MoBi.UI.Diagram.DiagramManagers;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Diagram.Elements;
+using OSPSuite.UI.Diagram.Elements;
 
 namespace MoBi.Presentation.Tasks
 {
    public abstract class concern_for_DiagramTask : ContextSpecification<DiagramTask>
    {
-      protected IMoBiReactionBuildingBlock _targetBuildingBlock;
-      protected IMoBiReactionBuildingBlock _sourceBuildingBlock;
+      protected MoBiReactionBuildingBlock _targetBuildingBlock;
+      protected MoBiReactionBuildingBlock _sourceBuildingBlock;
 
       protected override void Context()
       {
@@ -48,21 +50,6 @@ namespace MoBi.Presentation.Tasks
          reaction.AddProduct(new ReactionPartnerBuilder("product", 1.0));
          reaction.AddModifier("modifier");
          return reaction;
-      }
-
-      protected static List<IMoleculeNode> createMoleculeNodes()
-      {
-         var eductNode = A.Fake<IMoleculeNode>();
-         eductNode.Name = "educt";
-
-         var productNode = A.Fake<IMoleculeNode>();
-         productNode.Name = "product";
-
-         var modifierNode = A.Fake<IMoleculeNode>();
-         modifierNode.Name = "modifier";
-
-         var moleculeNodes = new List<IMoleculeNode> {eductNode, productNode, modifierNode};
-         return moleculeNodes;
       }
    }
 
@@ -109,11 +96,16 @@ namespace MoBi.Presentation.Tasks
          _targetReaction = createReaction();
          _sourceBuildingBlock.Add(_sourceReaction);
 
-         _targetBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>();
-         A.CallTo(_targetBuildingBlock).WithReturnType<IEnumerable<IReactionBuilder>>().Returns(new[] {_targetReaction});
+         _targetBuildingBlock = new MoBiReactionBuildingBlock
+         {
+            DiagramManager = new MoBiReactionDiagramManager(),
+            DiagramModel = new DiagramModel()
+         };
+
+         _targetBuildingBlock.Add(_sourceReaction);
+         _targetBuildingBlock.Add(_targetReaction);
+         _targetBuildingBlock.DiagramManager.InitializeWith(_targetBuildingBlock, new DiagramOptions());
          
-         var moleculeNodes = createMoleculeNodes();
-         A.CallTo(() => _targetBuildingBlock.AllMolecules).Returns(moleculeNodes.Select(x => x.Name));
       }
 
       protected override void Because()
@@ -167,7 +159,7 @@ namespace MoBi.Presentation.Tasks
    {
       private MoBiCommand moveDiagramNodes(MoBiReactionBuildingBlock source, MoBiReactionBuildingBlock target)
       {
-         IReactionBuilder sourceBuilder = new ReactionBuilder().WithName("sourceBuilder");
+         ReactionBuilder sourceBuilder = new ReactionBuilder().WithName("sourceBuilder");
          return sut.MoveDiagramNodes(source, target, sourceBuilder, sourceBuilder.Name) as MoBiCommand;
       }
 

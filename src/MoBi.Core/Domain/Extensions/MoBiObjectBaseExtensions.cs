@@ -8,8 +8,8 @@ namespace MoBi.Core.Domain.Extensions
    {
       public static bool CouldBeInMoleculeBuildingBlock(this IObjectBase objectbase)
       {
-         return objectbase.IsAnImplementationOf<IMoleculeBuilder>() ||
-                objectbase.IsAnImplementationOf<ITransportBuilder>() ||
+         return objectbase.IsAnImplementationOf<MoleculeBuilder>() ||
+                objectbase.IsAnImplementationOf<TransportBuilder>() ||
                 objectbase.IsAnImplementationOf<TransporterMoleculeContainer>() ||
                 objectbase.IsAnImplementationOf<InteractionContainer>() ||
                 objectbase.IsAnImplementationOf<IParameter>();

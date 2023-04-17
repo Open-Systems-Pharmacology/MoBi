@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
@@ -17,8 +18,8 @@ namespace MoBi.Presentation.Presenter
       IListener<EntitySelectedEvent>
       where TView : IView<TPresenter>, IEditBuildingBlockBaseView
       where TPresenter : IPresenter, ISingleStartPresenter
-      where TBuildingBlock : IBuildingBlock<TBuilder>
-      where TBuilder : class, IObjectBase
+      where TBuildingBlock : IBuildingBlock, IEnumerable<TBuilder>
+      where TBuilder : class
    {
       private readonly IFormulaCachePresenter _formulaCachePresenter;
 
@@ -70,7 +71,7 @@ namespace MoBi.Presentation.Presenter
          }
 
          _view.ShowDefault();
-         if (selectedObject.IsAnImplementationOf<IApplicationMoleculeBuilder>())
+         if (selectedObject.IsAnImplementationOf<ApplicationMoleculeBuilder>())
          {
             return;
          }

@@ -35,8 +35,8 @@ namespace MoBi.Presentation
       {
          base.Context();
          _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
-         _moleculeBuildingBlock.Add(A.Fake<IMoleculeBuilder>().WithId("2"));
-         _moleculeBuildingBlock.Add(A.Fake<IMoleculeBuilder>().WithId("3"));
+         _moleculeBuildingBlock.Add(A.Fake<MoleculeBuilder>().WithId("2"));
+         _moleculeBuildingBlock.Add(A.Fake<MoleculeBuilder>().WithId("3"));
       }
 
       protected override void Because()

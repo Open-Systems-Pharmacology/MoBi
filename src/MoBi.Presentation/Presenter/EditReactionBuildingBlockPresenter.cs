@@ -13,7 +13,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditReactionBuildingBlockPresenter : ISingleStartPresenter<IMoBiReactionBuildingBlock>,
+   public interface IEditReactionBuildingBlockPresenter : ISingleStartPresenter<MoBiReactionBuildingBlock>,
       IDiagramBuildingBlockPresenter,
       IListener<RemovedEvent>,
       IListener<EntitySelectedEvent>
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Presenter
       void UpdateUserDefinedParameters();
    }
 
-   public class EditReactionBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditReactionBuildingBlockView, IEditReactionBuildingBlockPresenter, IMoBiReactionBuildingBlock, IReactionBuilder>,
+   public class EditReactionBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditReactionBuildingBlockView, IEditReactionBuildingBlockPresenter, MoBiReactionBuildingBlock, ReactionBuilder>,
       IEditReactionBuildingBlockPresenter
    {
       private readonly IReactionsListSubPresenter _reactionListPresenter;
@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditReactionBuilderPresenter _editReactionBuilderPresenter;
       private readonly IEditFavoritesInReactionsPresenter _editFavoritesInReactionsPresenter;
       private readonly IUserDefinedParametersPresenter _userDefinedParametersPresenter;
-      private IMoBiReactionBuildingBlock _reactionBuildingBlock;
+      private MoBiReactionBuildingBlock _reactionBuildingBlock;
 
       public EditReactionBuildingBlockPresenter(IEditReactionBuildingBlockView view,
          IReactionsListSubPresenter reactionListPresenter,
@@ -60,7 +60,7 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _reactionBuildingBlock;
 
-      public override void Edit(IMoBiReactionBuildingBlock reactionBuildingBlock)
+      public override void Edit(MoBiReactionBuildingBlock reactionBuildingBlock)
       {
          _reactionBuildingBlock = reactionBuildingBlock;
          _editReactionBuilderPresenter.BuildingBlock = _reactionBuildingBlock;
@@ -125,16 +125,16 @@ namespace MoBi.Presentation.Presenter
 
       private bool shouldHandleRemoved(IObjectBase objectBase)
       {
-         return objectBase.IsAnImplementationOf<IReactionBuilder>();
+         return objectBase.IsAnImplementationOf<ReactionBuilder>();
       }
 
       protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
-         SelectBuilder(parentObject as IReactionBuilder);
+         SelectBuilder(parentObject as ReactionBuilder);
          _editReactionBuilderPresenter.SelectParameter(parameter);
       }
 
-      protected override void SelectBuilder(IReactionBuilder reactionBuilder)
+      protected override void SelectBuilder(ReactionBuilder reactionBuilder)
       {
          _editReactionBuilderPresenter.Edit(reactionBuilder);
          _reactionDiagramPresenter.Select(reactionBuilder);

@@ -9,10 +9,10 @@ namespace MoBi.Core.Commands
    public class ChangePathElementAtContainerPathCommand:BuildingBlockChangeCommandBase<IBuildingBlock>
    {
       private readonly string _newElement;
-      private readonly IApplicationMoleculeBuilder _applicationMoleculeBuilder;
+      private readonly ApplicationMoleculeBuilder _applicationMoleculeBuilder;
       private readonly string _oldElement;
 
-      public ChangePathElementAtContainerPathCommand(string newElement, IApplicationMoleculeBuilder applicationMoleculeBuilder, string oldElement,IBuildingBlock buildingBlock) : base(buildingBlock)
+      public ChangePathElementAtContainerPathCommand(string newElement, ApplicationMoleculeBuilder applicationMoleculeBuilder, string oldElement,IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _newElement = newElement;
          _applicationMoleculeBuilder = applicationMoleculeBuilder;

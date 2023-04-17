@@ -147,7 +147,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<ISpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(_parameter);
+         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<SpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(_parameter);
       }
 
       [Observation]
@@ -162,7 +162,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<ISpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(_parameter);
+         A.CallTo(() => _parameterResolver.Resolve(A<ObjectPath>._, A<string>._, A<SpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(_parameter);
          _parameter.Formula = new ExplicitFormula("1+ Exp");
       }
 

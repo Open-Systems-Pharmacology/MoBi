@@ -10,6 +10,7 @@ using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Diagram.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters;
@@ -99,7 +100,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
       private IDiagramModel getSpaceBlockDiagramModel()
       {
          //TODO OSMOSES
-         var spaceBlockName = DiagramManager.PkModel.Configuration.SpatialStructures.First().Name;
+         var spaceBlockName = DiagramManager.PkModel.Configuration.All<SpatialStructure>().First().Name;
          var project = _context.CurrentProject;
          var spatialStructure = project.SpatialStructureCollection.FindByName(spaceBlockName);
          if (spatialStructure == null)
@@ -129,7 +130,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
       private IDiagramModel getReactionBlockDiagramModel()
       {
          // TODO OSMOSES
-         var reactionBlockName = DiagramManager.PkModel.Configuration.Reactions.First().Name;
+         var reactionBlockName = DiagramManager.PkModel.Configuration.All<ReactionBuildingBlock>().First().Name;
          var project = _context.CurrentProject;
          var reactionBlock = project.ReactionBlockCollection.FindByName(reactionBlockName);
 

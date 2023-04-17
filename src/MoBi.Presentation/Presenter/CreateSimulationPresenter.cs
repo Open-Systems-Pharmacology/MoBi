@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
       private readonly IUserSettings _userSettings;
       private SimulationConfiguration _simulationConfiguration;
-      private ICloneManagerForBuildingBlock _cloneManager;
+      private readonly ICloneManagerForBuildingBlock _cloneManager;
       public IMoBiSimulation Simulation { get; private set; }
 
       public CreateSimulationPresenter(
@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Presenter
          IDimensionValidator dimensionValidator,
          ISimulationFactory simulationFactory,
          IHeavyWorkManager heavyWorkManager,
-         ISubPresenterItemManager<ISimulationItemPresenter> subPresenterManager,
+         ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterManager,
          IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriever,
          IUserSettings userSettings,
@@ -65,6 +65,7 @@ namespace MoBi.Presentation.Presenter
       {
          var moBiSimulation = _simulationFactory.Create();
          edit(moBiSimulation);
+         UpdateControls();
          _view.Display();
          if (_view.Canceled)
             return null;
@@ -80,7 +81,7 @@ namespace MoBi.Presentation.Presenter
          _simulationConfiguration = simulation.Configuration;
          _simulationDTO = new ObjectBaseDTO(simulation);
          _simulationDTO.AddUsedNames(nameOfSimulationAlreadyUsed());
-         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation));
+         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation.Configuration));
          _view.BindTo(_simulationDTO);
       }
 
@@ -96,7 +97,7 @@ namespace MoBi.Presentation.Presenter
       /// </summary>
       private void finish()
       {
-         saveBuildConfiguration();
+         saveSimulationConfiguration();
          CreationResult result = null;
 
          _heavyWorkManager.Start(() => { result = createModel(); }, AppConstants.Captions.CreatingSimulation);
@@ -106,23 +107,17 @@ namespace MoBi.Presentation.Presenter
 
          Simulation = createSimulation(result.Model);
 
-         validateDimensions(Simulation.Model);
+         validateDimensions(Simulation.Model, result.SimulationBuilder);
       }
 
-      private void validateDimensions(IModel model)
+      private void validateDimensions(IModel model, SimulationBuilder simulationBuilder)
       {
-         _dimensionValidator.Validate(model, _simulationConfiguration)
+         _dimensionValidator.Validate(model, simulationBuilder)
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 
       private CreationResult createModel()
       {
-         //Create the model using a build configuration referencing the templates building block so that references to template builders are defined properly 
-         //we override the _buildConfiguration so that reference to builders are saved
-
-         // TODO SIMULATION_CONFIGURATION
-         // _simulationConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(_simulationConfiguration);
-         
          _simulationConfiguration.SimulationSettings = _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings);
          var result = _modelConstructor.CreateModelFrom(_simulationConfiguration, _simulationDTO.Name);
          if (result == null)
@@ -138,27 +133,23 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new ShowValidationResultsEvent(validationResult));
       }
 
-      private void saveBuildConfiguration()
+      private void saveSimulationConfiguration()
       {
-         ValidateStartValues();
-
-         // UpdateStartValueInfo<MoleculeStartValuesBuildingBlock, MoleculeStartValue>(_simulationConfiguration.MoleculeStartValuesInfo, SelectedMoleculeStartValues);
-         // UpdateStartValueInfo<ParameterStartValuesBuildingBlock, ParameterStartValue>(_simulationConfiguration.ParameterStartValuesInfo, SelectedParameterStartValues);
+         PresenterAt(SimulationItems.ModuleConfiguration).ModuleConfigurations.Each(_simulationConfiguration.AddModuleConfiguration);
+         var individualAndExpressionPresenter = PresenterAt(SimulationItems.IndividualAndExpressionConfiguration);
+         _simulationConfiguration.Individual = individualAndExpressionPresenter.SelectedIndividual;
+         individualAndExpressionPresenter.ExpressionProfiles.Each(_simulationConfiguration.AddExpressionProfile);
 
          _simulationConfiguration.ShouldValidate = true;
          _simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
       }
 
+
       private IMoBiSimulation createSimulation(IModel model)
       {
-         //update the building block configuration to now use clones
-         // var simulationBuildConfiguration = _buildConfigurationFactory.CreateFromTemplateClones(_simulationConfiguration);
-
          var simulation = _simulationFactory.CreateFrom(_simulationConfiguration, model).WithName(_simulationDTO.Name);
          simulation.HasChanged = true;
          return simulation;
       }
-
-      protected IFinalOptionsPresenter FinalOptionsPresenter => PresenterAt(SimulationItems.FinalOptions);
    }
 }

@@ -10,7 +10,7 @@ namespace MoBi.Presentation.DTO
       private string _stoichiometricFormula;
       public string Kinetic { get; set; }
 
-      public ReactionInfoDTO(IReactionBuilder reactionBuilder) : base(reactionBuilder)
+      public ReactionInfoDTO(ReactionBuilder reactionBuilder) : base(reactionBuilder)
       {
       }
 
@@ -26,7 +26,7 @@ namespace MoBi.Presentation.DTO
 
       protected override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
       {
-         var reactionBuilder = sender.DowncastTo<IReactionBuilder>();
+         var reactionBuilder = sender.DowncastTo<ReactionBuilder>();
          if (e.PropertyName == "Formula")
          {
             Kinetic = reactionBuilder.Formula == null ? string.Empty : reactionBuilder.Formula.ToString();

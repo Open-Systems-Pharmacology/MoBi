@@ -113,7 +113,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForMoBiReactionBuildingBlock : RootNodeContextMenuFactoryFor<IMoBiReactionBuildingBlock>
+   public class RootContextMenuFactoryForMoBiReactionBuildingBlock : RootNodeContextMenuFactoryFor<MoBiReactionBuildingBlock>
    {
       public RootContextMenuFactoryForMoBiReactionBuildingBlock()
          : base(MoBiRootNodeTypes.ReactionFolder)
@@ -121,7 +121,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForPassiveTransportBuildingBlock : RootNodeContextMenuFactoryFor<IPassiveTransportBuildingBlock>
+   public class RootContextMenuFactoryForPassiveTransportBuildingBlock : RootNodeContextMenuFactoryFor<PassiveTransportBuildingBlock>
    {
       public RootContextMenuFactoryForPassiveTransportBuildingBlock()
          : base(MoBiRootNodeTypes.PassiveTransportFolder)
@@ -129,7 +129,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForMoBiSpatialStructure : RootNodeContextMenuFactoryFor<IMoBiSpatialStructure>
+   public class RootContextMenuFactoryForMoBiSpatialStructure : RootNodeContextMenuFactoryFor<MoBiSpatialStructure>
    {
       public RootContextMenuFactoryForMoBiSpatialStructure()
          : base(MoBiRootNodeTypes.SpatialStructureFolder)
@@ -137,7 +137,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForObserverBuildingBlock : RootNodeContextMenuFactoryFor<IObserverBuildingBlock>
+   public class RootContextMenuFactoryForObserverBuildingBlock : RootNodeContextMenuFactoryFor<ObserverBuildingBlock>
    {
       public RootContextMenuFactoryForObserverBuildingBlock()
          : base(MoBiRootNodeTypes.ObserverFolder)
@@ -145,7 +145,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForEventGroupBuildingBlock : RootNodeContextMenuFactoryFor<IEventGroupBuildingBlock>
+   public class RootContextMenuFactoryForEventGroupBuildingBlock : RootNodeContextMenuFactoryFor<EventGroupBuildingBlock>
    {
       public RootContextMenuFactoryForEventGroupBuildingBlock()
          : base(MoBiRootNodeTypes.EventFolder)
@@ -169,19 +169,19 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForReactionBuilder : RootContextMenuFactoryFor<IMoBiReactionBuildingBlock, IReactionBuilder>
+   public class RootContextMenuFactoryForReactionBuilder : RootContextMenuFactoryFor<MoBiReactionBuildingBlock, ReactionBuilder>
    {
    }
 
-   public class RootContextMenuFactoryForTransportBuilder : RootContextMenuFactoryFor<IPassiveTransportBuildingBlock, ITransportBuilder>
+   public class RootContextMenuFactoryForTransportBuilder : RootContextMenuFactoryFor<PassiveTransportBuildingBlock, TransportBuilder>
    {
    }
 
-   public class RootContextMenuFactoryForAmountObserverBuilder : RootContextMenuFactoryFor<IObserverBuildingBlock, IAmountObserverBuilder>
+   public class RootContextMenuFactoryForAmountObserverBuilder : RootContextMenuFactoryFor<ObserverBuildingBlock, AmountObserverBuilder>
    {
    }
 
-   public class RootContextMenuFactoryForContainerObserverBuilder : RootContextMenuFactoryFor<IObserverBuildingBlock, IContainerObserverBuilder>
+   public class RootContextMenuFactoryForContainerObserverBuilder : RootContextMenuFactoryFor<ObserverBuildingBlock, ContainerObserverBuilder>
    {
    }
 }

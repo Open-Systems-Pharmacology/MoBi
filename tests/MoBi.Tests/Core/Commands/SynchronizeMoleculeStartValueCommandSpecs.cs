@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_SynchronizeMoleculeStartValueCommand : ContextSpecification<SynchronizeMoleculeStartValueCommand>
    {
       protected MoleculeStartValue _moleculeStartValue;
-      protected IMoleculeAmount _moleculeAmount;
+      protected MoleculeAmount _moleculeAmount;
       protected IDimension _dimension1;
       protected IDimension _dimension2;
       private Unit _displayUnit1;

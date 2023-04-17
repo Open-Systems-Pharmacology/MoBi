@@ -35,8 +35,8 @@ namespace MoBi.Core.Services
    }
 
    public class QuantitySynchronizer : IQuantitySynchronizer,
-      IVisitor<IReactionBuildingBlock>,
-      IVisitor<ISpatialStructure>,
+      IVisitor<ReactionBuildingBlock>,
+      IVisitor<SpatialStructure>,
       IVisitor<MoleculeBuildingBlock>
    {
       private readonly IEntityPathResolver _entityPathResolver;
@@ -100,7 +100,7 @@ namespace MoBi.Core.Services
 
       private IMoBiCommand synchronizeMoleculeStartValueCommand(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, bool allowCreation = true)
       {
-         var moleculeAmount = quantity as IMoleculeAmount ?? quantity.ParentContainer as IMoleculeAmount;
+         var moleculeAmount = quantity as MoleculeAmount ?? quantity.ParentContainer as MoleculeAmount;
          return synchronizeStartValueCommand(moleculeAmount, moleculeStartValuesBuildingBlock, allowCreation,
             msv => new SynchronizeMoleculeStartValueCommand(quantity, msv),
             () => new AddMoleculeStartValueFromQuantityInSimulationCommand(moleculeAmount, moleculeStartValuesBuildingBlock));
@@ -130,7 +130,7 @@ namespace MoBi.Core.Services
          return new MoBiEmptyCommand();
       }
 
-      public void Visit(IReactionBuildingBlock reactionBuildingBlock)
+      public void Visit(ReactionBuildingBlock reactionBuildingBlock)
       {
          synchronizeInParameters(reactionBuildingBlock);
       }
@@ -144,7 +144,7 @@ namespace MoBi.Core.Services
          return setSynchronizeCommand(buildingBlockParameter);
       }
 
-      public void Visit(ISpatialStructure spatialStructure)
+      public void Visit(SpatialStructure spatialStructure)
       {
          synchronizeInParameters(spatialStructure);
       }

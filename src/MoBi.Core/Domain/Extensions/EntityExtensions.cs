@@ -18,7 +18,7 @@ namespace MoBi.Core.Domain.Extensions
 
       public static bool IsAtMoleculeBuilder(this IEntity entity)
       {
-         return entity.RootContainer.IsAnImplementationOf<IMoleculeBuilder>();
+         return entity.RootContainer.IsAnImplementationOf<MoleculeBuilder>();
       }
 
       public static bool IsAtReaction(this IEntity entity)
@@ -27,8 +27,8 @@ namespace MoBi.Core.Domain.Extensions
          if (parent == null)
             return false;
 
-         return parent.IsAnImplementationOf<IReaction>() ||
-                parent.IsAnImplementationOf<IReactionBuilder>() ||
+         return parent.IsAnImplementationOf<Reaction>() ||
+                parent.IsAnImplementationOf<ReactionBuilder>() ||
                 parent.ContainerType == ContainerType.Reaction;
       }
    }

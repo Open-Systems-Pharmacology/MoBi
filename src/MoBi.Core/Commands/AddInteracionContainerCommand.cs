@@ -4,9 +4,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddInteracionContainerCommand : AddObjectBaseCommand<InteractionContainer, IMoleculeBuilder>
+   public class AddInteracionContainerCommand : AddObjectBaseCommand<InteractionContainer, MoleculeBuilder>
    {
-      public AddInteracionContainerCommand(IMoleculeBuilder parent, InteractionContainer itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
+      public AddInteracionContainerCommand(MoleculeBuilder parent, InteractionContainer itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
       {
       }
 
@@ -15,15 +15,15 @@ namespace MoBi.Core.Commands
          return new RemoveInteracionContainerCommand(_parent,_itemToAdd,_buildingBlock).AsInverseFor(this);
       }
 
-      protected override void AddTo(InteractionContainer child, IMoleculeBuilder parent, IMoBiContext context)
+      protected override void AddTo(InteractionContainer child, MoleculeBuilder parent, IMoBiContext context)
       {
          parent.AddInteractionContainer(child);
       }
    }
 
-   public class RemoveInteracionContainerCommand:RemoveObjectBaseCommand<InteractionContainer,IMoleculeBuilder>
+   public class RemoveInteracionContainerCommand:RemoveObjectBaseCommand<InteractionContainer,MoleculeBuilder>
    {
-      public RemoveInteracionContainerCommand(IMoleculeBuilder parent, InteractionContainer itemToRemove, IBuildingBlock buildingBlock) : base(parent, itemToRemove, buildingBlock)
+      public RemoveInteracionContainerCommand(MoleculeBuilder parent, InteractionContainer itemToRemove, IBuildingBlock buildingBlock) : base(parent, itemToRemove, buildingBlock)
       {
       }
 
@@ -32,7 +32,7 @@ namespace MoBi.Core.Commands
          return new AddInteracionContainerCommand(_parent,_itemToRemove,_buildingBlock).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(InteractionContainer childToRemove, IMoleculeBuilder parent, IMoBiContext context)
+      protected override void RemoveFrom(InteractionContainer childToRemove, MoleculeBuilder parent, IMoBiContext context)
       {
          parent.RemoveInteractionContainer(childToRemove);
       }
