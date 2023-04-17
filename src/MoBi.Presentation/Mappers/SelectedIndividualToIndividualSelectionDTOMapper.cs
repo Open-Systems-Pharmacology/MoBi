@@ -21,10 +21,11 @@ namespace MoBi.Presentation.Mappers
       
       public IndividualSelectionDTO MapFrom(IndividualBuildingBlock individualBuildingBlock)
       {
-         var individualSelectionDTO = new IndividualSelectionDTO(_moBiContext.CurrentProject.IndividualsCollection);
-         if(individualBuildingBlock != null)
-            individualSelectionDTO.SelectedIndividualBuildingBlock = individualBuildingBlock;
-         
+         var individualSelectionDTO = new IndividualSelectionDTO(_moBiContext.CurrentProject.IndividualsCollection)
+         {
+            SelectedIndividualBuildingBlock = individualBuildingBlock
+         };
+
          return individualSelectionDTO;
       }
    }

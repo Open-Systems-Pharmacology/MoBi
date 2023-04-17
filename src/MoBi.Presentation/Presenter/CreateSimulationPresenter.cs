@@ -117,7 +117,7 @@ namespace MoBi.Presentation.Presenter
 
       private CreationResult createModel()
       {
-         _simulationConfiguration.SimulationSettings = _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings ?? new SimulationSettings { Solver = new SolverSettings() });
+         _simulationConfiguration.SimulationSettings = _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings);
          var result = _modelConstructor.CreateModelFrom(_simulationConfiguration, _simulationDTO.Name);
          if (result == null)
             return null;

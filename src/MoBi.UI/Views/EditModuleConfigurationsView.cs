@@ -34,6 +34,7 @@ namespace MoBi.UI.Views
 
       public override void InitializeResources()
       {
+         base.InitializeResources();
          Caption = AppConstants.Captions.ConfigureModules;
          ApplicationIcon = ApplicationIcons.Module;
          layoutItemBtnAdd.AsAddButton();
@@ -67,8 +68,8 @@ namespace MoBi.UI.Views
          selectedModuleTreeView.SelectedNodeChanged += selectedNode => OnEvent(() => _presenter.SelectedModuleConfigurationNodeChanged(selectedNode));
          moduleSelectionTreeView.TreeView.SelectedNodeChanged += selectedNode => OnEvent(() => _presenter.SelectedModuleNodeChanged(selectedNode));
 
-         _screenBinder.Bind(x => x.SelectedParameterStartValues).To(cbParameterStartValuesSelection).WithValues(x => getParameterStartValues());
-         _screenBinder.Bind(x => x.SelectedMoleculeStartValues).To(cbMoleculeStartValuesSelection).WithValues(x => getMoleculeStartValues());
+         _screenBinder.Bind(x => x.SelectedParameterStartValues).To(cbParameterStartValuesSelection).WithValues(x => getParameterStartValues()).Changed += () => OnEvent(refreshStartValues);
+         _screenBinder.Bind(x => x.SelectedMoleculeStartValues).To(cbMoleculeStartValuesSelection).WithValues(x => getMoleculeStartValues()).Changed += () => OnEvent(refreshStartValues);
 
          moduleSelectionTreeView.TreeView.Columns[0].SortOrder = SortOrder.Ascending;
          clearStartValueSelectors();
@@ -78,6 +79,11 @@ namespace MoBi.UI.Views
          selectedModuleTreeView.CompareNodeValues += compareNodeValues;
          selectedModuleTreeView.DataColumn.SortMode = ColumnSortMode.Custom;
          selectedModuleTreeView.DataColumn.SortOrder = SortOrder.Ascending;
+      }
+
+      private void refreshStartValues()
+      {
+         _presenter.UpdateStartValuesFor(selectedModuleTreeView.SelectedNode);
       }
 
       private void compareNodeValues(object sender, CompareNodeValuesEventArgs e)
@@ -110,8 +116,13 @@ namespace MoBi.UI.Views
 
       public void AddModuleConfigurationNode(ITreeNode nodeToAdd)
       {
-         selectedModuleTreeView.AddNode(nodeToAdd);
+         AddNodeToSelectedModuleConfigurations(nodeToAdd);
          selectedModuleTreeView.SelectNode(nodeToAdd);
+      }
+
+      public void AddNodeToSelectedModuleConfigurations(ITreeNode nodeToAdd)
+      {
+         AddSelectedStartValue(nodeToAdd);
       }
 
       public void UnbindModuleConfiguration()
@@ -129,6 +140,11 @@ namespace MoBi.UI.Views
       public void SortSelectedModules()
       {
          selectedModuleTreeView.Sort();
+      }
+
+      public void AddSelectedStartValue(ITreeNode startValueNode)
+      {
+         selectedModuleTreeView.AddNode(startValueNode);
       }
 
       public bool EnableRemove

@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Nodes
       public ModuleConfigurationNode(ModuleConfiguration moduleConfiguration)
          : base(moduleConfiguration)
       {
-         Id = ShortGuid.NewGuid();
+         Id = moduleConfiguration.Module.Id;
          Text = moduleConfiguration.Module.Name;
       }
 

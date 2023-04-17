@@ -84,10 +84,7 @@ namespace MoBi.Presentation.Nodes
       private void addStartValueCollections(ITreeNode moduleNode, Module module)
       {
          var psvCollectionNode = collectionNodeFor(module.ParameterStartValuesCollection, MoBiRootNodeTypes.ParameterStartValuesFolder, moduleNode);
-         module.ParameterStartValuesCollection.Each(psv =>
-         {
-            createAndAddNodeUnder(psvCollectionNode, psv);
-         });
+         module.ParameterStartValuesCollection.Each(psv => { createAndAddNodeUnder(psvCollectionNode, psv); });
 
          var msvCollectionNode = collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);
          module.MoleculeStartValuesCollection.Each(msv => createAndAddNodeUnder(msvCollectionNode, msv));
@@ -102,7 +99,7 @@ namespace MoBi.Presentation.Nodes
       {
          var buildConfigNode = new SimulationConfigurationNode(simulationConfiguration);
          //add one node for each Building Block
-         
+
          simulationConfiguration.ModuleConfigurations.Each(moduleConfiguration =>
          {
             var moduleConfigurationNode = CreateFor(moduleConfiguration);
@@ -111,8 +108,7 @@ namespace MoBi.Presentation.Nodes
          });
 
          createAndAddNodeUnder(buildConfigNode, simulationConfiguration.SimulationSettings);
-         if (simulationConfiguration.Individual != null)
-            createAndAddNodeUnder(buildConfigNode, simulationConfiguration.Individual);
+         createAndAddNodeUnder(buildConfigNode, simulationConfiguration.Individual);
 
 
          var expressionsNode = CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder)
@@ -129,12 +125,10 @@ namespace MoBi.Presentation.Nodes
          var module = moduleConfiguration.Module;
 
          addModuleBuildingBlocks(moduleConfigurationNode, module);
-         
-         if(moduleConfiguration.SelectedMoleculeStartValues != null)
-            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedMoleculeStartValues);
-         if(moduleConfiguration.SelectedParameterStartValues != null)
-            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterStartValues);
-         
+
+         createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedMoleculeStartValues);
+         createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterStartValues);
+
          return moduleConfigurationNode;
       }
 
@@ -150,15 +144,12 @@ namespace MoBi.Presentation.Nodes
 
       private void addBuildingBlockNodeUnder(ITreeNode rootTreeNode, IBuildingBlock buildingBlock)
       {
-         if (buildingBlock == null)
-            return;
          createAndAddNodeUnder(rootTreeNode, buildingBlock);
       }
 
       public ITreeNode CreateFor(IBuildingBlock buildingBlock)
       {
-         var moleculeBuildingBlock = buildingBlock as MoleculeBuildingBlock;
-         if (moleculeBuildingBlock != null)
+         if (buildingBlock is MoleculeBuildingBlock moleculeBuildingBlock)
             return CreateFor(moleculeBuildingBlock);
 
          return createFor(buildingBlock);
@@ -181,7 +172,6 @@ namespace MoBi.Presentation.Nodes
          return createFor(moleculeBuilder);
       }
 
-
       private ITreeNode createFor<T>(T objectBase) where T : class, IObjectBase
       {
          return new ObjectWithIdAndNameNode<T>(objectBase)
@@ -190,6 +180,9 @@ namespace MoBi.Presentation.Nodes
 
       private void createAndAddNodeUnder(ITreeNode rootNode, IBuildingBlock buildingBlock)
       {
+         if (buildingBlock == null)
+            return;
+         
          // TODO this used to use buildingBlockInfo to create the tree SIMULATION_CONFIGURATION
          var statusIcon = ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
          // var statusIcon = buildingBlockInfo.BuildingBlockChanged
@@ -219,11 +212,11 @@ namespace MoBi.Presentation.Nodes
       public ITreeNode CreateForUserDefined()
       {
          return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new UserDefinedNodeViewItem
-            {
-               Name = AppConstants.Captions.UserDefined,
-               Icon = ApplicationIcons.UserDefinedVariability,
-               Id = AppConstants.Captions.UserDefined
-         }){ Icon = ApplicationIcons.UserDefinedVariability };
+         {
+            Name = AppConstants.Captions.UserDefined,
+            Icon = ApplicationIcons.UserDefinedVariability,
+            Id = AppConstants.Captions.UserDefined
+         }) { Icon = ApplicationIcons.UserDefinedVariability };
       }
    }
 }

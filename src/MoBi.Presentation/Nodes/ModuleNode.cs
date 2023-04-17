@@ -1,17 +1,12 @@
 ﻿using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility;
+using OSPSuite.Presentation.Presenters.Nodes;
 
 namespace MoBi.Presentation.Nodes
 {
-   public class ModuleNode : AbstractNode<Module>
+   public class ModuleNode : ObjectWithIdAndNameNode<Module>
    {
       public ModuleNode(Module module) : base(module)
       {
-         Id = ShortGuid.NewGuid();
-         Text = module.Name;
       }
-
-      public override string Id { get; }
    }
 }

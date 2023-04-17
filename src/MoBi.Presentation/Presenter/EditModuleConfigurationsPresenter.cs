@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Views;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Nodes;
@@ -14,6 +16,19 @@ using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter
 {
+   public interface IEditModuleConfigurationsPresenter : ISimulationConfigurationItemPresenter, ICanDragDropPresenter
+   {
+      void AddModuleConfiguration(ITreeNode selectedNode);
+      void RemoveModuleConfiguration(ITreeNode selectedTreeNode);
+      void SelectedModuleConfigurationNodeChanged(ITreeNode selectedTreeNode);
+      void SelectedModuleNodeChanged(ITreeNode selectedNode);
+      IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValuesCollectionFor(ITreeNode selectedNode);
+      IReadOnlyList<ParameterStartValuesBuildingBlock> ParameterStartValuesCollectionFor(ITreeNode selectedNode);
+      int CompareSelectedNodes(ITreeNode node1, ITreeNode node2);
+      IReadOnlyList<ModuleConfiguration> ModuleConfigurations { get; }
+      void UpdateStartValuesFor(ITreeNode selectedModuleConfigurationNode);
+   }
+
    public class EditModuleConfigurationsPresenter : AbstractSubPresenter<IEditModuleConfigurationsView, IEditModuleConfigurationsPresenter>, IEditModuleConfigurationsPresenter
    {
       private readonly ITreeNodeFactory _treeNodeFactory;
@@ -32,7 +47,7 @@ namespace MoBi.Presentation.Presenter
       public void Edit(SimulationConfiguration simulationConfiguration)
       {
          _moduleConfigurations = simulationConfiguration.ModuleConfigurations.Select(_moduleConfigurationDTOMapper.MapFrom).ToList();
-         
+
          addUnusedModulesToSelectionView();
          addUsedModuleConfigurationsToSelectedView(simulationConfiguration);
       }
@@ -56,7 +71,6 @@ namespace MoBi.Presentation.Presenter
       {
          return _moduleConfigurations.FirstOrDefault(x => x.Uses(moduleConfiguration));
       }
-
 
       private void addModuleToSelectionView(Module module)
       {
@@ -111,20 +125,13 @@ namespace MoBi.Presentation.Presenter
       public void SelectedModuleNodeChanged(ITreeNode selectedNode)
       {
          var module = projectModuleFor(selectedNode);
-
          _view.EnableAdd = module != null;
       }
 
-      private Module projectModuleFor(ITreeNode selectedNode)
-      {
-         return selectedNode?.TagAsObject as Module;
-      }
+      private Module projectModuleFor(ITreeNode selectedNode) => selectedNode?.TagAsObject as Module;
 
-      private ModuleConfiguration moduleConfigurationFor(ITreeNode treeNode)
-      {
-         return treeNode?.TagAsObject as ModuleConfiguration;
-      }
-      
+      private ModuleConfiguration moduleConfigurationFor(ITreeNode treeNode) => treeNode?.TagAsObject as ModuleConfiguration;
+
       private ModuleConfigurationDTO moduleConfigurationDTOFor(ITreeNode treeNode)
       {
          var moduleConfiguration = moduleConfigurationFor(treeNode);
@@ -158,21 +165,27 @@ namespace MoBi.Presentation.Presenter
       }
 
       public IReadOnlyList<ModuleConfiguration> ModuleConfigurations => _moduleConfigurations.Select(x => x.ModuleConfiguration).ToList();
-
-      public bool CanDrag(ITreeNode node)
+      
+      public void UpdateStartValuesFor(ITreeNode selectedModuleConfigurationNode)
       {
-         return nodeIsModuleConfiguration(node);
+         selectedModuleConfigurationNode.AllLeafNodes.Where(x => x.TagAsObject is ParameterStartValuesBuildingBlock).Each(x => removeNode(selectedModuleConfigurationNode, x));
+         selectedModuleConfigurationNode.AllLeafNodes.Where(x => x.TagAsObject is MoleculeStartValuesBuildingBlock).Each(x => removeNode(selectedModuleConfigurationNode, x));
+
+         _view.AddNodeToSelectedModuleConfigurations(_treeNodeFactory.CreateFor(moduleConfigurationDTOFor(selectedModuleConfigurationNode).SelectedMoleculeStartValues).Under(selectedModuleConfigurationNode));
+         _view.AddNodeToSelectedModuleConfigurations(_treeNodeFactory.CreateFor(moduleConfigurationDTOFor(selectedModuleConfigurationNode).SelectedParameterStartValues).Under(selectedModuleConfigurationNode));
       }
 
-      private bool nodeIsModuleConfiguration(ITreeNode node)
+      private void removeNode(ITreeNode parentNode, ITreeNode nodeToRemove)
       {
-         return moduleConfigurationFor(node) != null;
+         parentNode.RemoveChild(nodeToRemove);
+         _view.RemoveNodeFromSelectedView(nodeToRemove);
       }
 
-      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode)
-      {
-         return nodeIsModuleConfiguration(targetNode);
-      }
+      public bool CanDrag(ITreeNode node) => nodeIsModuleConfiguration(node);
+
+      private bool nodeIsModuleConfiguration(ITreeNode node) => moduleConfigurationFor(node) != null;
+
+      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode);
 
       public void MoveNode(ITreeNode dragNode, ITreeNode targetNode)
       {
@@ -180,24 +193,12 @@ namespace MoBi.Presentation.Presenter
          var targetConfiguration = moduleConfigurationDTOFor(targetNode);
          if (movingConfiguration == null || targetConfiguration == null)
             return;
-         
+
          _moduleConfigurations.Remove(movingConfiguration);
 
          var targetNodeIndex = _moduleConfigurations.IndexOf(targetConfiguration);
          _moduleConfigurations.Insert(targetNodeIndex, movingConfiguration);
          _view.SortSelectedModules();
       }
-   }
-
-   public interface IEditModuleConfigurationsPresenter : ISimulationConfigurationItemPresenter, ICanDragDropPresenter
-   {
-      void AddModuleConfiguration(ITreeNode selectedNode);
-      void RemoveModuleConfiguration(ITreeNode selectedTreeNode);
-      void SelectedModuleConfigurationNodeChanged(ITreeNode selectedTreeNode);
-      void SelectedModuleNodeChanged(ITreeNode selectedNode);
-      IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValuesCollectionFor(ITreeNode selectedNode);
-      IReadOnlyList<ParameterStartValuesBuildingBlock> ParameterStartValuesCollectionFor(ITreeNode selectedNode);
-      int CompareSelectedNodes(ITreeNode node1, ITreeNode node2);
-      IReadOnlyList<ModuleConfiguration> ModuleConfigurations { get; }
    }
 }

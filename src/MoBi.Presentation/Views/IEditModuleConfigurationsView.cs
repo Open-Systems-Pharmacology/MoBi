@@ -30,5 +30,6 @@ namespace MoBi.Presentation.Views
       bool EnableRemove { get; set; }
       bool EnableAdd { get; set; }
       void SortSelectedModules();
+      void AddNodeToSelectedModuleConfigurations(ITreeNode nodeToAdd);
    }
 }

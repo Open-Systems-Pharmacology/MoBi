@@ -10,17 +10,23 @@ namespace MoBi.Presentation.DTO
       public IndividualSelectionDTO(IReadOnlyList<IndividualBuildingBlock> allIndividuals)
       {
          _allIndividuals.AddRange(allIndividuals);
+         SelectedIndividualBuildingBlock= NullIndividual.NullIndividualBuildingBlock;
       }
       
-      public static IndividualBuildingBlock NullIndividualBuildingBlock = new IndividualBuildingBlock().WithName(AppConstants.Captions.IndividualNotSelected);
-      private readonly List<IndividualBuildingBlock> _allIndividuals = new List<IndividualBuildingBlock> {NullIndividualBuildingBlock};
-      public IndividualBuildingBlock SelectedIndividualBuildingBlock { set; get; } = NullIndividualBuildingBlock;
+      private readonly List<IndividualBuildingBlock> _allIndividuals = new List<IndividualBuildingBlock> { NullIndividual.NullIndividualBuildingBlock};
+      private IndividualBuildingBlock _selectedIndividualBuildingBlock;
+
+      public IndividualBuildingBlock SelectedIndividualBuildingBlock 
+      {
+         set => _selectedIndividualBuildingBlock = value ?? NullIndividual.NullIndividualBuildingBlock;
+         get => _selectedIndividualBuildingBlock;
+      }
 
       public IReadOnlyList<IndividualBuildingBlock> AllIndividuals => _allIndividuals;
 
       public bool IsNull()
       {
-         return SelectedIndividualBuildingBlock.Equals(NullIndividualBuildingBlock);
+         return SelectedIndividualBuildingBlock.Equals(NullIndividual.NullIndividualBuildingBlock);
       }
    }
 }
