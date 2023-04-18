@@ -126,8 +126,10 @@ namespace MoBi.Presentation.Nodes
 
          addModuleBuildingBlocks(moduleConfigurationNode, module);
 
-         createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedMoleculeStartValues);
-         createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterStartValues);
+         if(moduleConfiguration.HasMoleculeStartValues)
+            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedMoleculeStartValues);
+         if(moduleConfiguration.HasParameterStartValues)
+            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterStartValues);
 
          return moduleConfigurationNode;
       }

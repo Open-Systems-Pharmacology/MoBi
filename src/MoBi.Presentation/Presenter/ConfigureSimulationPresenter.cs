@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.Simulation;
+using MoBi.Presentation.Settings;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
@@ -24,8 +25,9 @@ namespace MoBi.Presentation.Presenter
       private readonly IDiagramManagerFactory _diagramManagerFactory;
       public SimulationConfiguration SimulationConfiguration { get; private set; }
 
-      public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory)
-         : base(view, subPresenterSubjectManager, dialogCreator, context, SimulationItems.All)
+      public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, 
+         IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory, IUserSettings userSettings)
+         : base(view, subPresenterSubjectManager, dialogCreator, context, userSettings, SimulationItems.All)
       {
          _diagramManagerFactory = diagramManagerFactory;
       }
@@ -34,24 +36,18 @@ namespace MoBi.Presentation.Presenter
 
       public IMoBiCommand CreateBuildConfigurationBasedOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
-         // TODO should this be a clone? SIMULATION_CONFIGURATION
-         SimulationConfiguration = simulation.Configuration;
-
-         var tmpSimulation = new MoBiSimulation
-         {
-            DiagramManager = _diagramManagerFactory.Create<ISimulationDiagramManager>(),
-
-            Configuration = SimulationConfiguration,
-            Creation = simulation.Creation,
-            Name = simulation.Name,
-         };
-
-         edit(tmpSimulation);
+         edit(simulation);
          _view.Caption = AppConstants.Captions.ConfigureSimulation(simulation.Name);
          UpdateControls();
          _view.Display();
+
          if (_view.Canceled)
             return new MoBiEmptyCommand();
+
+         SimulationConfiguration = new SimulationConfiguration();
+         // UpdateSimulationConfiguration(SimulationConfiguration);
+
+         _commands.AddCommand(new UpdateSimulationConfigurationCommand(simulation, SimulationConfiguration));
 
          return _commands;
       }

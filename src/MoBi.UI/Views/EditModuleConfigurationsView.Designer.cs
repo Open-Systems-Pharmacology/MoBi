@@ -39,17 +39,17 @@
          this.btnAdd = new DevExpress.XtraEditors.SimpleButton();
          this.btnRemove = new DevExpress.XtraEditors.SimpleButton();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutItemModuleSelection = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemBtnRemove = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemBtnAdd = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
          this.emptySpaceItem2 = new DevExpress.XtraLayout.EmptySpaceItem();
-         this.layoutItemSelectedModules = new DevExpress.XtraLayout.LayoutControlItem();
          this.startValuesSelectionGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemPSVSelection = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemMSVSelection = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupModuleSelection = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemModuleSelection = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupSelectedModules = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemSelectedModules = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).BeginInit();
          this.uxLayoutControl1.SuspendLayout();
@@ -57,17 +57,17 @@
          ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeStartValuesSelection.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.selectedModuleTreeView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemModuleSelection)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBtnRemove)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBtnAdd)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSelectedModules)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.startValuesSelectionGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPSVSelection)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMSVSelection)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupModuleSelection)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemModuleSelection)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupSelectedModules)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSelectedModules)).BeginInit();
          this.SuspendLayout();
          // 
          // moduleSelectionTreeView
@@ -90,7 +90,7 @@
          this.uxLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
          this.uxLayoutControl1.Location = new System.Drawing.Point(0, 0);
          this.uxLayoutControl1.Name = "uxLayoutControl1";
-         this.uxLayoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1631, 476, 650, 400);
+         this.uxLayoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(666, 549, 650, 400);
          this.uxLayoutControl1.Root = this.Root;
          this.uxLayoutControl1.Size = new System.Drawing.Size(1166, 768);
          this.uxLayoutControl1.TabIndex = 2;
@@ -98,23 +98,23 @@
          // 
          // cbParameterStartValuesSelection
          // 
-         this.cbParameterStartValuesSelection.Location = new System.Drawing.Point(653, 700);
+         this.cbParameterStartValuesSelection.Location = new System.Drawing.Point(660, 700);
          this.cbParameterStartValuesSelection.Name = "cbParameterStartValuesSelection";
          this.cbParameterStartValuesSelection.Properties.AllowMouseWheel = false;
          this.cbParameterStartValuesSelection.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbParameterStartValuesSelection.Size = new System.Drawing.Size(489, 20);
+         this.cbParameterStartValuesSelection.Size = new System.Drawing.Size(482, 20);
          this.cbParameterStartValuesSelection.StyleController = this.uxLayoutControl1;
          this.cbParameterStartValuesSelection.TabIndex = 8;
          // 
          // cbMoleculeStartValuesSelection
          // 
-         this.cbMoleculeStartValuesSelection.Location = new System.Drawing.Point(653, 724);
+         this.cbMoleculeStartValuesSelection.Location = new System.Drawing.Point(660, 724);
          this.cbMoleculeStartValuesSelection.Name = "cbMoleculeStartValuesSelection";
          this.cbMoleculeStartValuesSelection.Properties.AllowMouseWheel = false;
          this.cbMoleculeStartValuesSelection.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbMoleculeStartValuesSelection.Size = new System.Drawing.Size(489, 20);
+         this.cbMoleculeStartValuesSelection.Size = new System.Drawing.Size(482, 20);
          this.cbMoleculeStartValuesSelection.StyleController = this.uxLayoutControl1;
          this.cbMoleculeStartValuesSelection.TabIndex = 7;
          // 
@@ -136,18 +136,18 @@
          // 
          // btnAdd
          // 
-         this.btnAdd.Location = new System.Drawing.Point(514, 176);
+         this.btnAdd.Location = new System.Drawing.Point(523, 176);
          this.btnAdd.Name = "btnAdd";
-         this.btnAdd.Size = new System.Drawing.Size(124, 22);
+         this.btnAdd.Size = new System.Drawing.Size(106, 22);
          this.btnAdd.StyleController = this.uxLayoutControl1;
          this.btnAdd.TabIndex = 5;
          this.btnAdd.Text = "btnAdd";
          // 
          // btnRemove
          // 
-         this.btnRemove.Location = new System.Drawing.Point(514, 202);
+         this.btnRemove.Location = new System.Drawing.Point(523, 202);
          this.btnRemove.Name = "btnRemove";
-         this.btnRemove.Size = new System.Drawing.Size(124, 22);
+         this.btnRemove.Size = new System.Drawing.Size(106, 22);
          this.btnRemove.StyleController = this.uxLayoutControl1;
          this.btnRemove.TabIndex = 4;
          this.btnRemove.Text = "btnRemove";
@@ -168,22 +168,13 @@
          this.Root.Size = new System.Drawing.Size(1166, 768);
          this.Root.TextVisible = false;
          // 
-         // layoutItemModuleSelection
-         // 
-         this.layoutItemModuleSelection.Control = this.moduleSelectionTreeView;
-         this.layoutItemModuleSelection.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemModuleSelection.Name = "layoutItemModuleSelection";
-         this.layoutItemModuleSelection.Size = new System.Drawing.Size(478, 703);
-         this.layoutItemModuleSelection.TextLocation = DevExpress.Utils.Locations.Top;
-         this.layoutItemModuleSelection.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemModuleSelection.TextVisible = false;
-         // 
          // layoutItemBtnRemove
          // 
          this.layoutItemBtnRemove.Control = this.btnRemove;
          this.layoutItemBtnRemove.Location = new System.Drawing.Point(502, 190);
          this.layoutItemBtnRemove.Name = "layoutItemBtnRemove";
          this.layoutItemBtnRemove.Size = new System.Drawing.Size(128, 26);
+         this.layoutItemBtnRemove.Spacing = new DevExpress.XtraLayout.Utils.Padding(9, 9, 0, 0);
          this.layoutItemBtnRemove.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemBtnRemove.TextVisible = false;
          // 
@@ -193,6 +184,7 @@
          this.layoutItemBtnAdd.Location = new System.Drawing.Point(502, 164);
          this.layoutItemBtnAdd.Name = "layoutItemBtnAdd";
          this.layoutItemBtnAdd.Size = new System.Drawing.Size(128, 26);
+         this.layoutItemBtnAdd.Spacing = new DevExpress.XtraLayout.Utils.Padding(9, 9, 0, 0);
          this.layoutItemBtnAdd.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemBtnAdd.TextVisible = false;
          // 
@@ -212,16 +204,6 @@
          this.emptySpaceItem2.Size = new System.Drawing.Size(128, 439);
          this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
          // 
-         // layoutItemSelectedModules
-         // 
-         this.layoutItemSelectedModules.Control = this.selectedModuleTreeView;
-         this.layoutItemSelectedModules.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemSelectedModules.Name = "layoutItemSelectedModules";
-         this.layoutItemSelectedModules.Size = new System.Drawing.Size(492, 610);
-         this.layoutItemSelectedModules.TextLocation = DevExpress.Utils.Locations.Top;
-         this.layoutItemSelectedModules.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemSelectedModules.TextVisible = false;
-         // 
          // startValuesSelectionGroup
          // 
          this.startValuesSelectionGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
@@ -230,13 +212,14 @@
          this.startValuesSelectionGroup.Location = new System.Drawing.Point(502, 655);
          this.startValuesSelectionGroup.Name = "startValuesSelectionGroup";
          this.startValuesSelectionGroup.Size = new System.Drawing.Size(644, 93);
+         this.startValuesSelectionGroup.Spacing = new DevExpress.XtraLayout.Utils.Padding(9, 2, 2, 2);
          // 
          // layoutItemPSVSelection
          // 
          this.layoutItemPSVSelection.Control = this.cbParameterStartValuesSelection;
          this.layoutItemPSVSelection.Location = new System.Drawing.Point(0, 0);
          this.layoutItemPSVSelection.Name = "layoutItemPSVSelection";
-         this.layoutItemPSVSelection.Size = new System.Drawing.Size(620, 24);
+         this.layoutItemPSVSelection.Size = new System.Drawing.Size(613, 24);
          this.layoutItemPSVSelection.TextSize = new System.Drawing.Size(115, 13);
          // 
          // layoutItemMSVSelection
@@ -244,7 +227,7 @@
          this.layoutItemMSVSelection.Control = this.cbMoleculeStartValuesSelection;
          this.layoutItemMSVSelection.Location = new System.Drawing.Point(0, 24);
          this.layoutItemMSVSelection.Name = "layoutItemMSVSelection";
-         this.layoutItemMSVSelection.Size = new System.Drawing.Size(620, 24);
+         this.layoutItemMSVSelection.Size = new System.Drawing.Size(613, 24);
          this.layoutItemMSVSelection.TextSize = new System.Drawing.Size(115, 13);
          // 
          // layoutGroupModuleSelection
@@ -255,6 +238,16 @@
          this.layoutGroupModuleSelection.Name = "layoutGroupModuleSelection";
          this.layoutGroupModuleSelection.Size = new System.Drawing.Size(502, 748);
          // 
+         // layoutItemModuleSelection
+         // 
+         this.layoutItemModuleSelection.Control = this.moduleSelectionTreeView;
+         this.layoutItemModuleSelection.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemModuleSelection.Name = "layoutItemModuleSelection";
+         this.layoutItemModuleSelection.Size = new System.Drawing.Size(478, 703);
+         this.layoutItemModuleSelection.TextLocation = DevExpress.Utils.Locations.Top;
+         this.layoutItemModuleSelection.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemModuleSelection.TextVisible = false;
+         // 
          // layoutGroupSelectedModules
          // 
          this.layoutGroupSelectedModules.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
@@ -262,6 +255,16 @@
          this.layoutGroupSelectedModules.Location = new System.Drawing.Point(630, 0);
          this.layoutGroupSelectedModules.Name = "layoutGroupSelectedModules";
          this.layoutGroupSelectedModules.Size = new System.Drawing.Size(516, 655);
+         // 
+         // layoutItemSelectedModules
+         // 
+         this.layoutItemSelectedModules.Control = this.selectedModuleTreeView;
+         this.layoutItemSelectedModules.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemSelectedModules.Name = "layoutItemSelectedModules";
+         this.layoutItemSelectedModules.Size = new System.Drawing.Size(492, 610);
+         this.layoutItemSelectedModules.TextLocation = DevExpress.Utils.Locations.Top;
+         this.layoutItemSelectedModules.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemSelectedModules.TextVisible = false;
          // 
          // EditModuleConfigurationsView
          // 
@@ -277,17 +280,17 @@
          ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeStartValuesSelection.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.selectedModuleTreeView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemModuleSelection)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBtnRemove)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBtnAdd)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSelectedModules)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.startValuesSelectionGroup)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPSVSelection)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMSVSelection)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupModuleSelection)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemModuleSelection)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupSelectedModules)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSelectedModules)).EndInit();
          this.ResumeLayout(false);
 
       }

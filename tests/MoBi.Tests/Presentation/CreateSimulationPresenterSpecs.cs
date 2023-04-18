@@ -19,6 +19,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using MoBi.IntegrationTests;
+using MoBi.Presentation.Mappers;
 
 namespace MoBi.Presentation
 {
@@ -41,6 +42,7 @@ namespace MoBi.Presentation
       private ICloneManagerForBuildingBlock _cloneManager;
       protected SimulationSettings _clonedSimulationSettings;
       private MoBiProject _moBiProject;
+      private IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
       protected const string _useId = "ToUse";
 
       protected override void Context()
@@ -49,6 +51,7 @@ namespace MoBi.Presentation
          _subPresenterManager = A.Fake<ISubPresenterItemManager<ISimulationConfigurationItemPresenter>>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _clonedSimulationSettings = new SimulationSettings();
+         _moduleConfigurationMapper = A.Fake<IModuleConfigurationDTOToModuleConfigurationMapper>();
 
          _context = A.Fake<IMoBiContext>();
          _modelConstructor = A.Fake<IModelConstructor>();
@@ -64,7 +67,7 @@ namespace MoBi.Presentation
          _forbiddenNameRetriever = A.Fake<IForbiddenNamesRetriever>();
          sut = new CreateSimulationPresenter(_view, _context, _modelConstructor, _validationVisitor,
             _simulationFactory, _heavyWorkManager, _subPresenterManager, _dialogCreator,
-            _forbiddenNameRetriever, _userSettings, _cloneManager);
+            _forbiddenNameRetriever, _userSettings, _moduleConfigurationMapper, _cloneManager);
 
          _simulation = new MoBiSimulation();
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);

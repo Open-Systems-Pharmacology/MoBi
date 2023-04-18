@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Views;
-using NPOI.OpenXmlFormats.Spreadsheet;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Nodes;
@@ -25,7 +23,7 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValuesCollectionFor(ITreeNode selectedNode);
       IReadOnlyList<ParameterStartValuesBuildingBlock> ParameterStartValuesCollectionFor(ITreeNode selectedNode);
       int CompareSelectedNodes(ITreeNode node1, ITreeNode node2);
-      IReadOnlyList<ModuleConfiguration> ModuleConfigurations { get; }
+      IReadOnlyList<ModuleConfigurationDTO> ModuleConfigurationDTOs { get; }
       void UpdateStartValuesFor(ITreeNode selectedModuleConfigurationNode);
    }
 
@@ -34,7 +32,7 @@ namespace MoBi.Presentation.Presenter
       private readonly ITreeNodeFactory _treeNodeFactory;
       private readonly IMoBiContext _context;
       private readonly IModuleConfigurationToModuleConfigurationDTOMapper _moduleConfigurationDTOMapper;
-      private List<ModuleConfigurationDTO> _moduleConfigurationsDTOs;
+      private List<ModuleConfigurationDTO> _moduleConfigurationDTOs;
 
       public EditModuleConfigurationsPresenter(IEditModuleConfigurationsView view, ITreeNodeFactory treeNodeFactory, IMoBiContext context,
          IModuleConfigurationToModuleConfigurationDTOMapper moduleConfigurationDTOMapper) : base(view)
@@ -46,15 +44,15 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(SimulationConfiguration simulationConfiguration)
       {
-         _moduleConfigurationsDTOs = simulationConfiguration.ModuleConfigurations.MapAllUsing(_moduleConfigurationDTOMapper).ToList();
+         _moduleConfigurationDTOs = simulationConfiguration.ModuleConfigurations.MapAllUsing(_moduleConfigurationDTOMapper).ToList();
 
          addUnusedModulesToSelectionView();
-         addUsedModuleConfigurationsToSelectedView(_moduleConfigurationsDTOs);
+         addUsedModuleConfigurationsToSelectedView(_moduleConfigurationDTOs);
       }
 
-      private void addUsedModuleConfigurationsToSelectedView(List<ModuleConfigurationDTO> simulationConfiguration)
+      private void addUsedModuleConfigurationsToSelectedView(List<ModuleConfigurationDTO> moduleConfigurations)
       {
-         simulationConfiguration.Each(addModuleConfigurationToSelectedView);
+         moduleConfigurations.Each(addModuleConfigurationToSelectedView);
       }
 
       private void addUnusedModulesToSelectionView()
@@ -64,7 +62,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool moduleInUse(Module module)
       {
-         return _moduleConfigurationsDTOs.Any(x => x.Uses(module));
+         return _moduleConfigurationDTOs.Any(x => x.Uses(module));
       }
 
       private void addModuleToSelectionView(Module module)
@@ -80,7 +78,7 @@ namespace MoBi.Presentation.Presenter
 
          var moduleConfiguration = new ModuleConfiguration(selectedModule);
          var moduleConfigurationDTO = _moduleConfigurationDTOMapper.MapFrom(moduleConfiguration);
-         _moduleConfigurationsDTOs.Add(moduleConfigurationDTO);
+         _moduleConfigurationDTOs.Add(moduleConfigurationDTO);
          addModuleConfigurationToSelectedView(moduleConfigurationDTO);
          _view.RemoveNodeFromSelectionView(selectedTreeNode);
       }
@@ -96,7 +94,7 @@ namespace MoBi.Presentation.Presenter
             return;
 
          var moduleConfigurationToRemove = moduleConfigurationDTOFor(selectedTreeNode);
-         _moduleConfigurationsDTOs.Remove(moduleConfigurationToRemove);
+         _moduleConfigurationDTOs.Remove(moduleConfigurationToRemove);
          _view.RemoveNodeFromSelectedView(selectedTreeNode);
 
          addModuleToSelectionView(moduleConfigurationDTOFor(selectedTreeNode).Module);
@@ -151,17 +149,17 @@ namespace MoBi.Presentation.Presenter
          var dto1 = moduleConfigurationDTOFor(node1);
          var dto2 = moduleConfigurationDTOFor(node2);
 
-         return _moduleConfigurationsDTOs.IndexOf(dto1) - _moduleConfigurationsDTOs.IndexOf(dto2);
+         return _moduleConfigurationDTOs.IndexOf(dto1) - _moduleConfigurationDTOs.IndexOf(dto2);
       }
 
-      public IReadOnlyList<ModuleConfiguration> ModuleConfigurations => _moduleConfigurationsDTOs.Select(x => x.ModuleConfiguration).ToList();
+      public IReadOnlyList<ModuleConfigurationDTO> ModuleConfigurationDTOs => _moduleConfigurationDTOs;
 
       public void UpdateStartValuesFor(ITreeNode selectedModuleConfigurationNode)
       {
          var dto = moduleConfigurationDTOFor(selectedModuleConfigurationNode);
 
-         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedParameterStartValues, removeOnly: !dto.HasParameterStartValues());
-         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedMoleculeStartValues, removeOnly: !dto.HasMoleculeStartValues());
+         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedParameterStartValues, removeOnly: !dto.HasParameterStartValues);
+         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedMoleculeStartValues, removeOnly: !dto.HasMoleculeStartValues);
       }
 
       private void updateStartValueIfRequired<TBuildingBlock>(ITreeNode selectedModuleConfigurationNode, TBuildingBlock buildingBlock, bool removeOnly) where TBuildingBlock : class, IBuildingBlock
@@ -184,9 +182,9 @@ namespace MoBi.Presentation.Presenter
 
       public bool CanDrag(ITreeNode node) => nodeIsModuleConfiguration(node);
 
-      private bool nodeIsModuleConfiguration(ITreeNode node) => node.TagAsObject is ModuleConfigurationDTO;
+      private bool nodeIsModuleConfiguration(ITreeNode node) => node?.TagAsObject is ModuleConfigurationDTO;
 
-      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode);
+      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
 
       public void MoveNode(ITreeNode dragNode, ITreeNode targetNode)
       {
@@ -195,10 +193,10 @@ namespace MoBi.Presentation.Presenter
          if (movingConfiguration == null || targetConfiguration == null)
             return;
 
-         _moduleConfigurationsDTOs.Remove(movingConfiguration);
+         _moduleConfigurationDTOs.Remove(movingConfiguration);
 
-         var targetNodeIndex = _moduleConfigurationsDTOs.IndexOf(targetConfiguration);
-         _moduleConfigurationsDTOs.Insert(targetNodeIndex, movingConfiguration);
+         var targetNodeIndex = _moduleConfigurationDTOs.IndexOf(targetConfiguration);
+         _moduleConfigurationDTOs.Insert(targetNodeIndex, movingConfiguration);
          _view.SortSelectedModules();
       }
    }
