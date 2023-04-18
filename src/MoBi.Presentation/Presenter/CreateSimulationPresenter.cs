@@ -120,7 +120,6 @@ namespace MoBi.Presentation.Presenter
 
       private CreationResult createModel()
       {
-         Simulation.Configuration.SimulationSettings = _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings);
          var result = _modelConstructor.CreateModelFrom(Simulation.Configuration, _simulationDTO.Name);
          if (result == null)
             return null;
@@ -141,8 +140,8 @@ namespace MoBi.Presentation.Presenter
 
          var individualAndExpressionPresenter = PresenterAt(SimulationItems.IndividualAndExpressionConfiguration);
          if(individualAndExpressionPresenter.SelectedIndividual != null)
-            Simulation.Configuration.Individual = _cloneManager.CloneBuildingBlock(individualAndExpressionPresenter.SelectedIndividual);
-         individualAndExpressionPresenter.ExpressionProfiles.Each(x => Simulation.Configuration.AddExpressionProfile(_cloneManager.CloneBuildingBlock(x)));
+            Simulation.Configuration.Individual = _cloneManager.Clone(individualAndExpressionPresenter.SelectedIndividual);
+         individualAndExpressionPresenter.ExpressionProfiles.Each(x => Simulation.Configuration.AddExpressionProfile(_cloneManager.Clone(x)));
 
          Simulation.Configuration.ShouldValidate = true;
          Simulation.Configuration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;

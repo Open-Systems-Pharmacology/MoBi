@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Tasks
          if (buildingBlock == null)
             return null;
 
-         return _cloneManager.CloneBuildingBlock(buildingBlock) as TBuildingBlock;
+         return _cloneManager.Clone(buildingBlock) as TBuildingBlock;
       }
 
       public IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
