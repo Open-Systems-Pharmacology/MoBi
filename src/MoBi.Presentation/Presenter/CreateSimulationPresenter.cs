@@ -6,6 +6,7 @@ using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
@@ -33,7 +34,8 @@ namespace MoBi.Presentation.Presenter
       private ObjectBaseDTO _simulationDTO;
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
-      private readonly IUserSettings _userSettings;
+      private readonly IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
+
       private SimulationConfiguration _simulationConfiguration;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       public IMoBiSimulation Simulation { get; private set; }
@@ -49,13 +51,15 @@ namespace MoBi.Presentation.Presenter
          IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriever,
          IUserSettings userSettings,
+         IModuleConfigurationDTOToModuleConfigurationMapper moduleConfigurationMapper,
          ICloneManagerForBuildingBlock cloneManager)
-         : base(view, subPresenterManager, dialogCreator, context, SimulationItems.All)
+         : base(view, subPresenterManager, dialogCreator, context, userSettings, SimulationItems.All)
       {
          _simulationFactory = simulationFactory;
          _heavyWorkManager = heavyWorkManager;
          _forbiddenNamesRetriever = forbiddenNamesRetriever;
-         _userSettings = userSettings;
+         _moduleConfigurationMapper = moduleConfigurationMapper;
+
          _dimensionValidator = dimensionValidator;
          _modelConstructor = modelConstructor;
          _cloneManager = cloneManager;
@@ -97,7 +101,7 @@ namespace MoBi.Presentation.Presenter
       /// </summary>
       private void finish()
       {
-         saveSimulationConfiguration();
+         updateSimulationConfiguration(_simulationConfiguration);
          CreationResult result = null;
 
          _heavyWorkManager.Start(() => { result = createModel(); }, AppConstants.Captions.CreatingSimulation);
@@ -133,18 +137,17 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new ShowValidationResultsEvent(validationResult));
       }
 
-      private void saveSimulationConfiguration()
+      private void updateSimulationConfiguration(SimulationConfiguration simulationConfiguration)
       {
-         PresenterAt(SimulationItems.ModuleConfiguration).ModuleConfigurations.Each(_simulationConfiguration.AddModuleConfiguration);
+         PresenterAt(SimulationItems.ModuleConfiguration).ModuleConfigurationDTOs.MapAllUsing(_moduleConfigurationMapper).Each(simulationConfiguration.AddModuleConfiguration);
+
          var individualAndExpressionPresenter = PresenterAt(SimulationItems.IndividualAndExpressionConfiguration);
-         _simulationConfiguration.Individual = individualAndExpressionPresenter.SelectedIndividual;
-         individualAndExpressionPresenter.ExpressionProfiles.Each(_simulationConfiguration.AddExpressionProfile);
+         simulationConfiguration.Individual = _cloneManager.CloneBuildingBlock(individualAndExpressionPresenter.SelectedIndividual);
+         individualAndExpressionPresenter.ExpressionProfiles.Each(x => simulationConfiguration.AddExpressionProfile(_cloneManager.CloneBuildingBlock(x)));
 
-         _simulationConfiguration.ShouldValidate = true;
-         _simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
+         simulationConfiguration.ShouldValidate = true;
+         simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
       }
-
-
       private IMoBiSimulation createSimulation(IModel model)
       {
          var simulation = _simulationFactory.CreateFrom(_simulationConfiguration, model).WithName(_simulationDTO.Name);

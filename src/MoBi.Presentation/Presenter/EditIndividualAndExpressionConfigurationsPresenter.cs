@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -32,14 +33,13 @@ namespace MoBi.Presentation.Presenter
       private IndividualSelectionDTO _individualSelectionDTO;
       private readonly List<ExpressionProfileBuildingBlock> _selectedExpressions;
 
-      public EditIndividualAndExpressionConfigurationsPresenter(IEditIndividualAndExpressionConfigurationsView view, ISelectedIndividualToIndividualSelectionDTOMapper selectedIndividualDTOMapper, 
+      public EditIndividualAndExpressionConfigurationsPresenter(IEditIndividualAndExpressionConfigurationsView view, ISelectedIndividualToIndividualSelectionDTOMapper selectedIndividualDTOMapper,
          ITreeNodeFactory treeNodeFactory, IMoBiContext context) : base(view)
       {
          _selectedExpressions = new List<ExpressionProfileBuildingBlock>();
          _selectedIndividualDTOMapper = selectedIndividualDTOMapper;
          _treeNodeFactory = treeNodeFactory;
          _context = context;
-         
       }
 
       public void Edit(SimulationConfiguration simulationConfiguration)
@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addUnusedExpressionsToSelectionView()
       {
-         _context.CurrentProject.ExpressionProfileCollection.Where(x => !_selectedExpressions.Contains(x)).Each(addUnusedExpressionToSelectionView);
+         _context.CurrentProject.ExpressionProfileCollection.Where(x => !_selectedExpressions.AllNames().Contains(x.Name)).Each(addUnusedExpressionToSelectionView);
       }
 
       private void addUnusedExpressionToSelectionView(ExpressionProfileBuildingBlock expression)
@@ -95,9 +95,9 @@ namespace MoBi.Presentation.Presenter
 
       public void AddSelectedExpression(ITreeNode selectedNode)
       {
-         if (!(selectedNode.TagAsObject is ExpressionProfileBuildingBlock expression)) 
+         if (!(selectedNode.TagAsObject is ExpressionProfileBuildingBlock expression))
             return;
-         
+
          _selectedExpressions.Add(expression);
          addUsedExpressionToSelectedView(expression);
          _view.RemoveUnusedExpression(selectedNode);

@@ -791,6 +791,11 @@ namespace MoBi.Assets
          {
             return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin, startValueType, startValuePath, BuildingBlockType, startValueBuildingBlockName);
          }
+
+         public static string ChangeSimulationConfiguration(string simulationName)
+         {
+            return $"Changed the simulation configuration of simulation '{simulationName}'";
+         }
       }
 
       public static class BarNames

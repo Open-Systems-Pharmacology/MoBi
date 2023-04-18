@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MoBi.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -28,9 +27,9 @@ namespace MoBi.Presentation.DTO
       public ModuleConfiguration ModuleConfiguration => _moduleConfiguration;
       public Module Module => ModuleConfiguration.Module;
 
-      public bool Uses(Module module)
+      public bool HasModuleWithName(string moduleName)
       {
-         return Equals(module, _moduleConfiguration.Module);
+         return Equals(moduleName, _moduleConfiguration.Module.Name);
       }
 
       public bool Uses(ModuleConfiguration moduleConfiguration)
