@@ -95,7 +95,7 @@ namespace MoBi.Presentation.Tasks
          _relatedItem = A.Fake<RelatedItem>();
          A.CallTo(() => _relatedItemSerializer.Deserialize(_relatedItem)).Returns(_buildingBlock);
          A.CallTo(() => _taskRetriever.TaskFor(_buildingBlock)).Returns(_task);
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_buildingBlock)).Returns(_clone);
+         A.CallTo(() => _cloneManager.Clone(_buildingBlock)).Returns(_clone);
          A.CallTo(() => _task.AddToProject(_clone)).Returns(_addCommand);
       }
 
@@ -108,7 +108,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_clone_the_building_block()
       {
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_buildingBlock)).MustHaveHappened();
+         A.CallTo(() => _cloneManager.Clone(_buildingBlock)).MustHaveHappened();
       }
 
       [Observation]

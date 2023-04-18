@@ -157,20 +157,10 @@ namespace MoBi.Presentation.Presenter.Main
 
       protected override IContextMenu ContextMenuFor(ITreeNode treeNode)
       {
-         var simulation = treeNode.TagAsObject as ClassifiableSimulation;
-         if (simulation != null)
+         if (treeNode.TagAsObject is ClassifiableSimulation simulation)
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
 
          return base.ContextMenuFor(treeNode);
-      }
-
-      private SimulationNode parentSimulationNodeFor(ITreeNode treeNode)
-      {
-         var simulationNode = treeNode as SimulationNode;
-         if (simulationNode != null)
-            return simulationNode;
-
-         return parentSimulationNodeFor(treeNode.ParentNode);
       }
 
       public void Handle(SimulationReloadEvent eventToHandle)
@@ -181,16 +171,12 @@ namespace MoBi.Presentation.Presenter.Main
       private void reCreateSimulationNode(IMoBiSimulation simulation)
       {
          var simulationNode = _view.NodeById(simulation.Id);
-         var configurationNode = simulationConfigurationNodeUnder(simulationNode);
          bool simulationNodeExpanded = _view.IsNodeExpanded(simulationNode);
-         bool configurationNodeExpanded = _view.IsNodeExpanded(configurationNode);
          var parentNode = simulationNode.ParentNode.DowncastTo<ITreeNode<IClassification>>();
          RemoveNodeFor(simulation);
          var classifiableSimulation = _projectRetriever.CurrentProject.GetOrCreateClassifiableFor<ClassifiableSimulation, IMoBiSimulation>(simulation);
          simulationNode = addClassifiableSimulationToTree(parentNode, classifiableSimulation);
-         configurationNode = simulationConfigurationNodeUnder(simulationNode);
          _view.ExpandNodeIfRequired(simulationNode, simulationNodeExpanded);
-         _view.ExpandNodeIfRequired(configurationNode, configurationNodeExpanded);
       }
 
       private void refreshDisplayedSimulation(IMoBiSimulation simulation)
@@ -207,13 +193,7 @@ namespace MoBi.Presentation.Presenter.Main
          // TODO SIMULATION_CONFIGURATION
          // simulationConfigurationNodeUnder(simulationNode).Children.Each(refreshDisplayedBuildingBlock);
       }
-
-      private ITreeNode simulationConfigurationNodeUnder(ITreeNode simulationNode)
-      {
-         return simulationNode.Children<SimulationConfigurationNode>().First();
-      }
-
-
+      
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
       {
          return Enumerable.Empty<ClassificationTemplate>();

@@ -95,7 +95,7 @@ namespace MoBi.Presentation.Tasks
       {
          var task = _taskRetriever.TaskFor(buildingBlock);
          // Clone to get new ID's
-         var clone = _cloneManagerForBuildingBlock.CloneBuildingBlock(buildingBlock);
+         var clone = _cloneManagerForBuildingBlock.Clone(buildingBlock);
          addCommand(task.AddToProject(clone));
       }
 

@@ -18,6 +18,7 @@ namespace MoBi.Core.Service
       protected ICreationMetaDataFactory _metaDataFactory;
       protected ISimulationParameterOriginIdUpdater _parameterIdUpdater;
       private IDiagramManagerFactory _diagramManagerFactory;
+      private ISimulationConfigurationFactory _simulationConfigurationFactory;
 
       protected override void Context()
       {
@@ -25,7 +26,8 @@ namespace MoBi.Core.Service
          _metaDataFactory = A.Fake<ICreationMetaDataFactory>();
          _parameterIdUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
          _diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
-         sut = new SimulationFactory(_idGenerator,_metaDataFactory, _parameterIdUpdater, _diagramManagerFactory);
+         _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
+         sut = new SimulationFactory(_idGenerator,_metaDataFactory, _parameterIdUpdater, _diagramManagerFactory, _simulationConfigurationFactory);
       }
    }
 

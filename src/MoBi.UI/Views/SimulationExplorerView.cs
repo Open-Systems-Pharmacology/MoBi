@@ -37,6 +37,6 @@ namespace MoBi.UI.Views
             e.Result = 0;
       }
 
-      private bool nodeIsSimulationNode(TreeListNode node) => node != null && (node.Tag.IsAnImplementationOf<SimulationConfigurationNode>() || node.Tag.IsAnImplementationOf<SimulationNode>());
+      private bool nodeIsSimulationNode(TreeListNode node) => node != null && node.Tag.IsAnImplementationOf<SimulationNode>();
    }
 }

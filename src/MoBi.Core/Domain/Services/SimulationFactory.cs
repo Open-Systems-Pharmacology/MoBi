@@ -28,13 +28,16 @@ namespace MoBi.Core.Domain.Services
       private readonly ICreationMetaDataFactory _creationMetaDataFactory;
       private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
       private readonly IDiagramManagerFactory _diagramManagerFactory;
+      private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
 
-      public SimulationFactory(IIdGenerator idGenerator, ICreationMetaDataFactory creationMetaDataFactory, ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater, IDiagramManagerFactory diagramManagerFactory)
+      public SimulationFactory(IIdGenerator idGenerator, ICreationMetaDataFactory creationMetaDataFactory, ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater, 
+         IDiagramManagerFactory diagramManagerFactory, ISimulationConfigurationFactory simulationConfigurationFactory)
       {
          _idGenerator = idGenerator;
          _creationMetaDataFactory = creationMetaDataFactory;
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
          _diagramManagerFactory = diagramManagerFactory;
+         _simulationConfigurationFactory = simulationConfigurationFactory;
       }
 
       public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model)
@@ -56,7 +59,7 @@ namespace MoBi.Core.Domain.Services
 
       public IMoBiSimulation Create()
       {
-         return CreateFrom(new SimulationConfiguration(), null);
+         return CreateFrom(_simulationConfigurationFactory.Create(), null);
       }
    }
 }

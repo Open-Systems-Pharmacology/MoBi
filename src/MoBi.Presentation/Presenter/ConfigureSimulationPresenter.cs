@@ -1,7 +1,6 @@
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Settings;
@@ -22,14 +21,14 @@ namespace MoBi.Presentation.Presenter
 
    public class ConfigureSimulationPresenter : ConfigureSimulationPresenterBase<IConfigureSimulationView, IConfigureSimulationPresenter>, IConfigureSimulationPresenter
    {
-      private readonly IDiagramManagerFactory _diagramManagerFactory;
       public SimulationConfiguration SimulationConfiguration { get; private set; }
 
       public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, 
-         IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory, IUserSettings userSettings)
+         IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory, IUserSettings userSettings, SimulationConfiguration simulationConfiguration)
          : base(view, subPresenterSubjectManager, dialogCreator, context, userSettings, SimulationItems.All)
       {
          _diagramManagerFactory = diagramManagerFactory;
+         SimulationConfiguration = simulationConfiguration;
       }
 
       public IMoBiCommand CreateBuildConfiguration(IMoBiSimulation simulation) => CreateBuildConfigurationBasedOn(simulation, null);
@@ -44,7 +43,7 @@ namespace MoBi.Presentation.Presenter
          if (_view.Canceled)
             return new MoBiEmptyCommand();
 
-         SimulationConfiguration = new SimulationConfiguration();
+         // SimulationConfiguration = Factory and replace the settings;
          // UpdateSimulationConfiguration(SimulationConfiguration);
 
          _commands.AddCommand(new UpdateSimulationConfigurationCommand(simulation, SimulationConfiguration));

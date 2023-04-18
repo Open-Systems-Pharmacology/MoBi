@@ -78,8 +78,6 @@ namespace MoBi.Presentation
             SimulationSettings = new SimulationSettings()
          };
          A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
-
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_context.CurrentProject.SimulationSettings)).Returns(_clonedSimulationSettings);
       }
 
       private SimulationConfiguration createBuildConfiguration()
@@ -122,12 +120,6 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.Create();
-      }
-
-      [Observation]
-      public void the_cloned_simulation_settings_should_be_used_in_the_configuration()
-      {
-         _simulation.Configuration.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
       }
 
       [Observation]
