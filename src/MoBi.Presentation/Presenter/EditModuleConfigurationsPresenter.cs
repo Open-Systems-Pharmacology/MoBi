@@ -154,7 +154,22 @@ namespace MoBi.Presentation.Presenter
          return _moduleConfigurationsDTOs.IndexOf(dto1) - _moduleConfigurationsDTOs.IndexOf(dto2);
       }
 
-      public IReadOnlyList<ModuleConfiguration> ModuleConfigurations => _moduleConfigurationsDTOs.Select(x => x.ModuleConfiguration).ToList();
+      public IReadOnlyList<ModuleConfiguration> ModuleConfigurations => _moduleConfigurationsDTOs.Select(mapNewModuleConfiguration).ToList();
+
+      private ModuleConfiguration mapNewModuleConfiguration(ModuleConfigurationDTO dto)
+      {
+         return new ModuleConfiguration(dto.Module, selectedMoleculeStartValues(dto), selectedParameterStartValues(dto));
+      }
+
+      private static ParameterStartValuesBuildingBlock selectedParameterStartValues(ModuleConfigurationDTO x)
+      {
+         return x.HasParameterStartValues() ? x.SelectedParameterStartValues : null;
+      }
+
+      private static MoleculeStartValuesBuildingBlock selectedMoleculeStartValues(ModuleConfigurationDTO x)
+      {
+         return x.HasMoleculeStartValues() ? x.SelectedMoleculeStartValues : null;
+      }
 
       public void UpdateStartValuesFor(ITreeNode selectedModuleConfigurationNode)
       {
@@ -184,9 +199,9 @@ namespace MoBi.Presentation.Presenter
 
       public bool CanDrag(ITreeNode node) => nodeIsModuleConfiguration(node);
 
-      private bool nodeIsModuleConfiguration(ITreeNode node) => node.TagAsObject is ModuleConfigurationDTO;
+      private bool nodeIsModuleConfiguration(ITreeNode node) => node?.TagAsObject is ModuleConfigurationDTO;
 
-      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode);
+      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
 
       public void MoveNode(ITreeNode dragNode, ITreeNode targetNode)
       {
