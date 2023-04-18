@@ -21,17 +21,19 @@ namespace MoBi.Presentation.Presenter
 
    public class ConfigureSimulationPresenter : ConfigureSimulationPresenterBase<IConfigureSimulationView, IConfigureSimulationPresenter>, IConfigureSimulationPresenter
    {
-      public SimulationConfiguration SimulationConfiguration { get; private set; }
+      private readonly IDiagramManagerFactory _diagramManagerFactory;
+      private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
 
       public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterSubjectManager, 
-         IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory, IUserSettings userSettings, SimulationConfiguration simulationConfiguration)
+         IDialogCreator dialogCreator, IMoBiContext context, IDiagramManagerFactory diagramManagerFactory, IUserSettings userSettings, ISimulationConfigurationFactory simulationConfigurationFactory)
          : base(view, subPresenterSubjectManager, dialogCreator, context, userSettings, SimulationItems.All)
       {
          _diagramManagerFactory = diagramManagerFactory;
-         SimulationConfiguration = simulationConfiguration;
+         _simulationConfigurationFactory = simulationConfigurationFactory;
       }
 
       public IMoBiCommand CreateBuildConfiguration(IMoBiSimulation simulation) => CreateBuildConfigurationBasedOn(simulation, null);
+      public SimulationConfiguration SimulationConfiguration { get; private set; }
 
       public IMoBiCommand CreateBuildConfigurationBasedOn(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
       {
@@ -43,7 +45,9 @@ namespace MoBi.Presentation.Presenter
          if (_view.Canceled)
             return new MoBiEmptyCommand();
 
-         // SimulationConfiguration = Factory and replace the settings;
+         SimulationConfiguration = _simulationConfigurationFactory.Create();
+         SimulationConfiguration.SimulationSettings = simulation.Configuration.SimulationSettings;
+         // TODO
          // UpdateSimulationConfiguration(SimulationConfiguration);
 
          _commands.AddCommand(new UpdateSimulationConfigurationCommand(simulation, SimulationConfiguration));
