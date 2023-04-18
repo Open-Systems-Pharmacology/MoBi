@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addUnusedExpressionsToSelectionView()
       {
-         _context.CurrentProject.ExpressionProfileCollection.Where(x => !_selectedExpressions.AllNames().Contains(x.Name)).Each(addUnusedExpressionToSelectionView);
+         _context.CurrentProject.ExpressionProfileCollection.Where(x => !_selectedExpressions.ExistsByName(x.Name)).Each(addUnusedExpressionToSelectionView);
       }
 
       private void addUnusedExpressionToSelectionView(ExpressionProfileBuildingBlock expression)

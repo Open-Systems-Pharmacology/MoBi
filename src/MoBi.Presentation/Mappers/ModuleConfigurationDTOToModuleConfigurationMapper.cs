@@ -27,12 +27,12 @@ namespace MoBi.Presentation.Mappers
 
       private static ParameterStartValuesBuildingBlock selectedParameterStartValues(ModuleConfigurationDTO dto, Module targetModule)
       {
-         return dto.HasParameterStartValues() ? targetModule.ParameterStartValuesCollection.FindByName(dto.SelectedParameterStartValues.Name) : null;
+         return dto.HasParameterStartValues ? targetModule.ParameterStartValuesCollection.FindByName(dto.SelectedParameterStartValues.Name) : null;
       }
 
       private static MoleculeStartValuesBuildingBlock selectedMoleculeStartValues(ModuleConfigurationDTO dto, Module targetModule)
       {
-         return dto.HasMoleculeStartValues() ? targetModule.MoleculeStartValuesCollection.FindByName(dto.SelectedMoleculeStartValues.Name) : null;
+         return dto.HasMoleculeStartValues ? targetModule.MoleculeStartValuesCollection.FindByName(dto.SelectedMoleculeStartValues.Name) : null;
       }
    }
 }

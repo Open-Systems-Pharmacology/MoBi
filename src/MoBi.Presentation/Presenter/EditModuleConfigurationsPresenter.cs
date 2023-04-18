@@ -62,7 +62,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool moduleInUse(Module module)
       {
-         return _moduleConfigurationDTOs.Any(x => x.HasModuleWithName(module.Name));
+         return _moduleConfigurationDTOs.Any(x => x.Uses(module));
       }
 
       private void addModuleToSelectionView(Module module)
@@ -158,8 +158,8 @@ namespace MoBi.Presentation.Presenter
       {
          var dto = moduleConfigurationDTOFor(selectedModuleConfigurationNode);
 
-         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedParameterStartValues, removeOnly: !dto.HasParameterStartValues());
-         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedMoleculeStartValues, removeOnly: !dto.HasMoleculeStartValues());
+         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedParameterStartValues, removeOnly: !dto.HasParameterStartValues);
+         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedMoleculeStartValues, removeOnly: !dto.HasMoleculeStartValues);
       }
 
       private void updateStartValueIfRequired<TBuildingBlock>(ITreeNode selectedModuleConfigurationNode, TBuildingBlock buildingBlock, bool removeOnly) where TBuildingBlock : class, IBuildingBlock

@@ -27,9 +27,9 @@ namespace MoBi.Presentation.DTO
       public ModuleConfiguration ModuleConfiguration => _moduleConfiguration;
       public Module Module => ModuleConfiguration.Module;
 
-      public bool HasModuleWithName(string moduleName)
+      public bool Uses(Module module)
       {
-         return Equals(moduleName, _moduleConfiguration.Module.Name);
+         return Equals(module.Name, _moduleConfiguration.Module.Name);
       }
 
       public bool Uses(ModuleConfiguration moduleConfiguration)
@@ -37,14 +37,8 @@ namespace MoBi.Presentation.DTO
          return Equals(_moduleConfiguration, moduleConfiguration);
       }
 
-      public bool HasMoleculeStartValues()
-      {
-         return !NullStartValues.NullMoleculeStartValues.Equals(SelectedMoleculeStartValues);
-      }
+      public bool HasMoleculeStartValues => !NullStartValues.NullMoleculeStartValues.Equals(SelectedMoleculeStartValues);
 
-      public bool HasParameterStartValues()
-      {
-         return !NullStartValues.NullParameterStartValues.Equals(SelectedParameterStartValues);
-      }
+      public bool HasParameterStartValues => !NullStartValues.NullParameterStartValues.Equals(SelectedParameterStartValues);
    }
 }
