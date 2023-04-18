@@ -43,9 +43,9 @@ namespace MoBi.Core.Service
          _clonedMethod1 = new CoreCalculationMethod();
          _clonedMethod2 = new CoreCalculationMethod();
          _clonedMethod3 = new CoreCalculationMethod();
-         A.CallTo(() => _cloneManager.Clone(method1, A<FormulaCache>._)).Returns(_clonedMethod1);
-         A.CallTo(() => _cloneManager.Clone(method2, A<FormulaCache>._)).Returns(_clonedMethod2);
-         A.CallTo(() => _cloneManager.Clone(method3, A<FormulaCache>._)).Returns(_clonedMethod3);
+         A.CallTo(() => _cloneManager.Clone(method1)).Returns(_clonedMethod1);
+         A.CallTo(() => _cloneManager.Clone(method2)).Returns(_clonedMethod2);
+         A.CallTo(() => _cloneManager.Clone(method3)).Returns(_clonedMethod3);
 
          sut = new SimulationConfigurationFactory(_calculationMethodRepository, _cloneManager, _context);
 

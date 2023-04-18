@@ -30,8 +30,11 @@ namespace MoBi.Core.Domain.Services
       private readonly IDiagramManagerFactory _diagramManagerFactory;
       private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
 
-      public SimulationFactory(IIdGenerator idGenerator, ICreationMetaDataFactory creationMetaDataFactory, ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater, 
-         IDiagramManagerFactory diagramManagerFactory, ISimulationConfigurationFactory simulationConfigurationFactory)
+      public SimulationFactory(IIdGenerator idGenerator, 
+         ICreationMetaDataFactory creationMetaDataFactory, 
+         ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater, 
+         IDiagramManagerFactory diagramManagerFactory, 
+         ISimulationConfigurationFactory simulationConfigurationFactory)
       {
          _idGenerator = idGenerator;
          _creationMetaDataFactory = creationMetaDataFactory;

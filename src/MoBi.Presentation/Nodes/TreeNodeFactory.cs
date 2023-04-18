@@ -95,7 +95,7 @@ namespace MoBi.Presentation.Nodes
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)
       {
-         var treeNode = new ExpressionProfilesNode();
+         var treeNode = new ExpressionProfileFolderNode();
          var nodes = simulationConfiguration.ModuleConfigurations.Select(moduleConfiguration => CreateFor(new ModuleConfigurationDTO(moduleConfiguration)))
             .Append(createWithIcon(simulationConfiguration.Individual))
             .Append(treeNode);

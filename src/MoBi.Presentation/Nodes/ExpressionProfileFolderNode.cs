@@ -5,9 +5,9 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Nodes
 {
-   public class ExpressionProfilesNode : AbstractNode
+   public class ExpressionProfileFolderNode : AbstractNode
    {
-      public ExpressionProfilesNode()
+      public ExpressionProfileFolderNode()
       {
          Id = ShortGuid.NewGuid();
          Text = AppConstants.Captions.ExpressionProfiles;

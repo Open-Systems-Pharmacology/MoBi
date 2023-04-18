@@ -1,6 +1,5 @@
 ﻿using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 
@@ -32,7 +31,7 @@ namespace MoBi.Core.Services
          };
 
          _calculationMethodRepository.All().Each(
-            cm => simulationConfiguration.AddCalculationMethod(_cloneManager.Clone(cm, new FormulaCache())));
+            cm => simulationConfiguration.AddCalculationMethod(_cloneManager.Clone(cm)));
 
          return simulationConfiguration;
       }
