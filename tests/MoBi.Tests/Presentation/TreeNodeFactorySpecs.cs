@@ -52,7 +52,7 @@ namespace MoBi.Presentation
          _molecules = new MoleculeBuildingBlock().WithId("3");
          _reactions = new ReactionBuildingBlock().WithId("4");
          _observers = new ObserverBuildingBlock().WithId("5");
-         _passiveTransports = new PassiveTransportBuildingBlock().WithId("6");
+         _passiveTransports = new PassiveTransportBuildingBlock().WithId("7");
          
          _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module
          {
