@@ -1,7 +1,6 @@
 ﻿using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
@@ -12,27 +11,25 @@ namespace MoBi.Presentation.Mappers
    
    public class ModuleConfigurationDTOToModuleConfigurationMapper : IModuleConfigurationDTOToModuleConfigurationMapper
    {
-      private readonly ICloneManagerForBuildingBlock _cloneManager;
 
-      public ModuleConfigurationDTOToModuleConfigurationMapper(ICloneManagerForBuildingBlock cloneManager)
+      public ModuleConfigurationDTOToModuleConfigurationMapper()
       {
-         _cloneManager = cloneManager;
+
       }
       
       public ModuleConfiguration MapFrom(ModuleConfigurationDTO dto)
       {
-         var clonedModule = _cloneManager.Clone(dto.Module);
-         return new ModuleConfiguration(clonedModule, selectedMoleculeStartValues(dto, clonedModule), selectedParameterStartValues(dto, clonedModule));
+         return new ModuleConfiguration(dto.Module, selectedMoleculeStartValues(dto), selectedParameterStartValues(dto));
       }
 
-      private static ParameterStartValuesBuildingBlock selectedParameterStartValues(ModuleConfigurationDTO dto, Module targetModule)
+      private static ParameterStartValuesBuildingBlock selectedParameterStartValues(ModuleConfigurationDTO dto)
       {
-         return dto.HasParameterStartValues ? targetModule.ParameterStartValuesCollection.FindByName(dto.SelectedParameterStartValues.Name) : null;
+         return dto.HasParameterStartValues ? dto.SelectedParameterStartValues : null;
       }
 
-      private static MoleculeStartValuesBuildingBlock selectedMoleculeStartValues(ModuleConfigurationDTO dto, Module targetModule)
+      private static MoleculeStartValuesBuildingBlock selectedMoleculeStartValues(ModuleConfigurationDTO dto)
       {
-         return dto.HasMoleculeStartValues ? targetModule.MoleculeStartValuesCollection.FindByName(dto.SelectedMoleculeStartValues.Name) : null;
+         return dto.HasMoleculeStartValues ? dto.SelectedMoleculeStartValues : null;
       }
    }
 }

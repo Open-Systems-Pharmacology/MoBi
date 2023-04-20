@@ -95,15 +95,17 @@ namespace MoBi.Presentation.Nodes
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)
       {
-         var treeNode = new ExpressionProfileFolderNode();
-         var nodes = simulationConfiguration.ModuleConfigurations.Select(moduleConfiguration => CreateFor(new ModuleConfigurationDTO(moduleConfiguration)))
-            .Append(createWithIcon(simulationConfiguration.Individual))
-            .Append(treeNode);
+         var expressionProfileFolderNode = new ExpressionProfileFolderNode();
+         var nodes = simulationConfiguration.ModuleConfigurations.Select(moduleConfiguration => CreateFor(new ModuleConfigurationDTO(moduleConfiguration))).ToList();
+         if (simulationConfiguration.Individual != null)
+            nodes.Add(createWithIcon(simulationConfiguration.Individual));
 
-         simulationConfiguration.ExpressionProfiles.Each(x => createAndAddNodeUnder(treeNode, x));
-         return nodes.ToList();
+         simulationConfiguration.ExpressionProfiles.Each(x => createAndAddNodeUnder(expressionProfileFolderNode, x));
+         nodes.Add(expressionProfileFolderNode);
+
+         return nodes;
       }
-
+      
       public ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration)
       {
          var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).WithIcon(ApplicationIcons.Module);

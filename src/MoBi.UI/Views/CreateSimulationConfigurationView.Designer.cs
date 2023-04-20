@@ -1,6 +1,6 @@
 ﻿namespace MoBi.UI.Views
 {
-   partial class CreateSimulationView
+   partial class CreateSimulationConfigurationView
    {
       /// <summary>
       /// Required designer variable.
@@ -116,7 +116,7 @@
          this.Caption = "CreateSimulationView";
          this.ClientSize = new System.Drawing.Size(606, 743);
          this.Controls.Add(this.layoutControl);
-         this.Name = "CreateSimulationView";
+         this.Name = "CreateSimulationConfigurationView";
          this.Text = "CreateSimulationView";
          this.Controls.SetChildIndex(this.layoutControl, 0);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();

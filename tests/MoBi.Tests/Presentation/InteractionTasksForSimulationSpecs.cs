@@ -7,22 +7,27 @@ using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_InteractionTasksForSimulationSpecs : ContextSpecification<IInteractionTasksForSimulation>
+   public abstract class concern_for_InteractionTasksForSimulationSpecs : ContextSpecification<InteractionTasksForSimulation>
    {
       protected IEditTasksForSimulation _editTask;
       private IInteractionTaskContext _context;
       protected IMoBiApplicationController _applicationController;
       protected IDialogCreator _dialogCreator;
       protected ISimulationReferenceUpdater _simulationReferenceUpdater;
+      protected ISimulationFactory _simulationFactory;
 
       protected override void Context()
       {
@@ -33,7 +38,8 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.ApplicationController).Returns(_applicationController);
          A.CallTo(() => _context.DialogCreator).Returns(_dialogCreator);
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
-         sut = new InteractionTasksForSimulation(_context, _editTask, _simulationReferenceUpdater);
+         _simulationFactory = A.Fake<ISimulationFactory>();
+         sut = new InteractionTasksForSimulation(_context, _editTask, _simulationReferenceUpdater, _simulationFactory);
       }
    }
 
@@ -106,17 +112,23 @@ namespace MoBi.Presentation
 
    internal class When_adding_a_new_simulation : concern_for_InteractionTasksForSimulationSpecs
    {
-      private ICreateSimulationPresenter _presenter;
+      private ICreateSimulationConfigurationPresenter _presenter;
       private IMoBiSimulation _simulation;
+      private SimulationConfiguration _simulationConfiguration;
+      private IMoBiSimulation _configuredSimulation;
 
       protected override void Context()
       {
          base.Context();
-         _presenter = A.Fake<ICreateSimulationPresenter>();
-         _simulation = A.Fake<IMoBiSimulation>();
-         A.CallTo(() => _presenter.Create()).Returns(_simulation);
-         A.CallTo(() => _applicationController.Start<ICreateSimulationPresenter>()).Returns(_presenter);
+         _presenter = A.Fake<ICreateSimulationConfigurationPresenter>();
+         _simulation = new MoBiSimulation();
+         _configuredSimulation = new MoBiSimulation();
+         _simulationConfiguration = new SimulationConfiguration();
+         A.CallTo(() => _presenter.CreateBasedOn(_simulation, true)).Returns(_simulationConfiguration);
+         A.CallTo(() => _applicationController.Start<ICreateSimulationConfigurationPresenter>()).Returns(_presenter);
          A.CallTo(() => _applicationController.PresenterFor(_simulation)).Returns(A.Fake<IEditSimulationPresenter>());
+         A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
+         A.CallTo(() => _simulationFactory.CreateSimulationAndValidate(_simulationConfiguration, A<string>._)).Returns(_configuredSimulation);
       }
 
       protected override void Because()
@@ -127,13 +139,13 @@ namespace MoBi.Presentation
       [Observation]
       public void should_get_create_presenter_from_application_controller()
       {
-         A.CallTo(() => _applicationController.Start<ICreateSimulationPresenter>()).MustHaveHappened();
+         A.CallTo(() => _applicationController.Start<ICreateSimulationConfigurationPresenter>()).MustHaveHappened();
       }
 
       [Observation]
-      public void should_start_edit_action_for_the_new_simulaation()
+      public void should_start_edit_action_for_the_new_simulation()
       {
-         A.CallTo(() => _editTask.Edit(_simulation)).MustHaveHappened();
+         A.CallTo(() => _editTask.Edit(_configuredSimulation)).MustHaveHappened();
       }
    }
 }

@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -29,11 +30,16 @@ namespace MoBi.Presentation.Tasks.Interaction
    public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
    {
       private readonly ISimulationReferenceUpdater _simulationReferenceUpdater;
+      private readonly ISimulationFactory _simulationFactory;
 
-      public InteractionTasksForSimulation(IInteractionTaskContext interactionTaskContext, IEditTasksForSimulation editTask, ISimulationReferenceUpdater simulationReferenceUpdater)
+      public InteractionTasksForSimulation(IInteractionTaskContext interactionTaskContext,
+         IEditTasksForSimulation editTask,
+         ISimulationReferenceUpdater simulationReferenceUpdater,
+         ISimulationFactory simulationFactory)
          : base(interactionTaskContext, editTask)
       {
          _simulationReferenceUpdater = simulationReferenceUpdater;
+         _simulationFactory = simulationFactory;
       }
 
       protected override string ObjectName => ObjectTypes.Simulation;
@@ -75,7 +81,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (simulation == null)
             return new MoBiEmptyCommand();
 
-         var command = addSimulationToProjectCommmand(simulation).Run(_interactionTaskContext.Context);
+         var command = addSimulationToProjectCommand(simulation).Run(_interactionTaskContext.Context);
          _editTask.Edit(simulation);
          return command;
       }
@@ -87,15 +93,23 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private IMoBiSimulation createSimulation()
       {
-         using (var presenter = ApplicationController.Start<ICreateSimulationPresenter>())
+         using (var presenter = ApplicationController.Start<ICreateSimulationConfigurationPresenter>())
          {
-            return presenter.Create();
+            IMoBiSimulation simulation = null;
+            var simulationConfiguration = presenter.CreateBasedOn(_simulationFactory.Create());
+
+            if (simulationConfiguration != null)
+            {
+               simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, presenter.SimulationName);
+            }
+
+            return simulation;
          }
       }
 
       public override IMoBiCommand AddNew(MoBiProject moBiProject, IBuildingBlock buildingBlockToAddTo)
       {
-         return addSimulationToProjectCommmand(createSimulation()).Run(_interactionTaskContext.Context);
+         return addSimulationToProjectCommand(createSimulation()).Run(_interactionTaskContext.Context);
       }
 
       public override IMoBiCommand GetRemoveCommand(IMoBiSimulation transportBuilderToRemove, MoBiProject project, IBuildingBlock buildingBlock)
@@ -105,10 +119,10 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand GetAddCommand(IMoBiSimulation simulation, MoBiProject project, IBuildingBlock buildingBlock)
       {
-         return addSimulationToProjectCommmand(simulation);
+         return addSimulationToProjectCommand(simulation);
       }
 
-      private IMoBiCommand addSimulationToProjectCommmand(IMoBiSimulation simulation)
+      private IMoBiCommand addSimulationToProjectCommand(IMoBiSimulation simulation)
       {
          if (simulation == null)
             return new MoBiEmptyCommand();

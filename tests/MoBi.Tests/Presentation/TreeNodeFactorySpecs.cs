@@ -24,8 +24,6 @@ namespace MoBi.Presentation
       }
    }
 
-
-
    public class When_creating_the_node_for_a_molecule_building_block : concern_for_TreeNodeFactory
    {
       private MoleculeBuildingBlock _moleculeBuildingBlock;
