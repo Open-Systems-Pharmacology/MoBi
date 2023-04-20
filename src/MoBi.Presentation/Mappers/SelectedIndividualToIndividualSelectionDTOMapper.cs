@@ -8,7 +8,6 @@ namespace MoBi.Presentation.Mappers
 {
    public interface ISelectedIndividualToIndividualSelectionDTOMapper : IMapper<IndividualBuildingBlock, IndividualSelectionDTO>
    {
-
    }
 
    public class SelectedIndividualToIndividualSelectionDTOMapper : ISelectedIndividualToIndividualSelectionDTOMapper
@@ -19,13 +18,12 @@ namespace MoBi.Presentation.Mappers
       {
          _moBiContext = moBiContext;
       }
-      
+
       public IndividualSelectionDTO MapFrom(IndividualBuildingBlock individualBuildingBlock)
       {
-         var individualSelectionDTO = new IndividualSelectionDTO(_moBiContext.CurrentProject.IndividualsCollection)
-         {
-            SelectedIndividualBuildingBlock = _moBiContext.CurrentProject.IndividualsCollection.FindByName(individualBuildingBlock.Name)
-         };
+         var individualSelectionDTO = new IndividualSelectionDTO(_moBiContext.CurrentProject.IndividualsCollection);
+         if (individualBuildingBlock != null)
+            individualSelectionDTO.SelectedIndividualBuildingBlock = _moBiContext.CurrentProject.IndividualsCollection.FindByName(individualBuildingBlock.Name);
 
          return individualSelectionDTO;
       }
