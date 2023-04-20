@@ -48,6 +48,7 @@ namespace MoBi.UI.Views
          layoutGroupModuleSelection.Text = AppConstants.Captions.ProjectModules;
          EnableRemove = false;
          EnableAdd = false;
+         selectedModuleTreeView.ShouldExpandAddedNode = false;
       }
 
       protected virtual void TreeMouseMove(MouseEventArgs e)
@@ -145,6 +146,7 @@ namespace MoBi.UI.Views
       public void AddSelectedStartValue(ITreeNode startValueNode)
       {
          selectedModuleTreeView.AddNode(startValueNode);
+         selectedModuleTreeView.ExpandNode(startValueNode);
       }
 
       public bool EnableRemove

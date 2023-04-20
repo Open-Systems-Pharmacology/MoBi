@@ -26,7 +26,7 @@ namespace MoBi.Core.Domain.Services
       IMoBiSimulation Create();
 
       IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string name);
-      
+
       IModel CreateModelAndValidate(string modelName, SimulationConfiguration simulationConfiguration);
    }
 
@@ -42,11 +42,15 @@ namespace MoBi.Core.Domain.Services
       private readonly IModelConstructor _modelConstructor;
       private readonly IMoBiContext _context;
 
-      public SimulationFactory(IIdGenerator idGenerator, 
-         ICreationMetaDataFactory creationMetaDataFactory, 
-         ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater, 
-         IDiagramManagerFactory diagramManagerFactory, 
-         ISimulationConfigurationFactory simulationConfigurationFactory, IDimensionValidator dimensionValidator, IHeavyWorkManager heavyWorkManager, IModelConstructor modelConstructor, IMoBiContext context)
+      public SimulationFactory(IIdGenerator idGenerator,
+         ICreationMetaDataFactory creationMetaDataFactory,
+         ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
+         IDiagramManagerFactory diagramManagerFactory,
+         ISimulationConfigurationFactory simulationConfigurationFactory,
+         IDimensionValidator dimensionValidator,
+         IHeavyWorkManager heavyWorkManager,
+         IModelConstructor modelConstructor,
+         IMoBiContext context)
       {
          _idGenerator = idGenerator;
          _creationMetaDataFactory = creationMetaDataFactory;
@@ -90,15 +94,15 @@ namespace MoBi.Core.Domain.Services
       public IModel CreateModelAndValidate(string modelName, SimulationConfiguration simulationConfiguration)
       {
          var results = createModel(simulationConfiguration, modelName);
-      
+
          if (results == null || results.IsInvalid)
             throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
-      
+
          validateDimensions(results.Model, results.SimulationBuilder);
-      
+
          return results.Model;
       }
-      
+
       public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string name)
       {
          CreationResult result = null;
@@ -130,7 +134,7 @@ namespace MoBi.Core.Domain.Services
       {
          _context.PublishEvent(new ShowValidationResultsEvent(validationResult));
       }
-      
+
       private IMoBiSimulation createSimulation(IModel model, SimulationConfiguration configuration, string name)
       {
          var simulation = CreateFrom(configuration, model).WithName(name);
