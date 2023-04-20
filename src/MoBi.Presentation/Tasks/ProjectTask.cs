@@ -1,6 +1,5 @@
 using System.IO;
 using MoBi.Assets;
-using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
@@ -39,16 +38,20 @@ namespace MoBi.Presentation.Tasks
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly ISimulationLoader _simulationLoader;
       private readonly ISbmlTask _sbmlTask;
-      private readonly ISimulationSettingsFactory _simulationSettingsFactory;
 
-      public ProjectTask(IMoBiContext context, ISerializationTask serializationTask, IDialogCreator dialogCreator,
-         IMRUProvider mruProvider, IHeavyWorkManager heavyWorkManager, ISimulationLoader simulationLoader, ISbmlTask sbmlTask, 
-         ISimulationSettingsFactory simulationSettingsFactory)
+      public ProjectTask(
+         IMoBiContext context,
+         ISerializationTask serializationTask,
+         IDialogCreator dialogCreator,
+         IMRUProvider mruProvider,
+         IHeavyWorkManager heavyWorkManager,
+         ISimulationLoader simulationLoader,
+         ISbmlTask sbmlTask
+      )
       {
          _context = context;
          _simulationLoader = simulationLoader;
          _sbmlTask = sbmlTask;
-         _simulationSettingsFactory = simulationSettingsFactory;
          _heavyWorkManager = heavyWorkManager;
          _mruProvider = mruProvider;
          _serializationTask = serializationTask;
@@ -149,24 +152,26 @@ namespace MoBi.Presentation.Tasks
 
       public void OpenSBMLModel()
       {
-         bool readyForOpen = CloseProject();
-         if (!readyForOpen) return;
+         var readyForOpen = CloseProject();
+         if (!readyForOpen)
+            return;
 
-         string fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSBMLProject, AppConstants.Filter.SBML_MODEL_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
-         if (fileName.IsNullOrEmpty()) return;
+         var fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSBMLProject, AppConstants.Filter.SBML_MODEL_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
+         if (fileName.IsNullOrEmpty())
+            return;
 
-         _context.NewProject();
-         _context.AddToHistory(_sbmlTask.ImportModelFromSbml(fileName, _context.CurrentProject));
+         var project = _serializationTask.NewProject();
+         _context.AddToHistory(_sbmlTask.ImportModelFromSbml(fileName, project));
          notifyProjectLoaded();
       }
 
       public bool Open()
       {
-         bool readyForOpen = CloseProject();
+         var readyForOpen = CloseProject();
          if (!readyForOpen)
             return false;
 
-         string fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT);
+         var fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT);
 
          if (fileName.IsNullOrEmpty())
             return false;
@@ -189,7 +194,7 @@ namespace MoBi.Presentation.Tasks
 
       public bool SaveAs()
       {
-         bool defaultNameIsUndefined = string.Equals(Constants.PROJECT_UNDEFINED, _context.CurrentProject.Name);
+         var defaultNameIsUndefined = string.Equals(Constants.PROJECT_UNDEFINED, _context.CurrentProject.Name);
          var defaultFileName = defaultNameIsUndefined ? string.Empty : _context.CurrentProject.Name;
 
          var newFilePath = _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
@@ -212,15 +217,14 @@ namespace MoBi.Presentation.Tasks
 
       public void New(ReactionDimensionMode reactionDimensionMode)
       {
-         if (!CloseProject()) 
+         if (!CloseProject())
             return;
-         
-         _serializationTask.NewProject();
-         _context.CurrentProject.ReactionDimensionMode = reactionDimensionMode;
-         _context.CurrentProject.SimulationSettings = _simulationSettingsFactory.CreateDefault();
 
-         _context.PublishEvent(new ProjectCreatedEvent(_context.CurrentProject));
-         _context.PublishEvent(new ProjectLoadedEvent(_context.CurrentProject));
+         var project = _serializationTask.NewProject();
+         project.ReactionDimensionMode = reactionDimensionMode;
+
+         _context.PublishEvent(new ProjectCreatedEvent(project));
+         _context.PublishEvent(new ProjectLoadedEvent(project));
       }
 
       public bool CloseProject()
@@ -271,7 +275,7 @@ namespace MoBi.Presentation.Tasks
             return false;
 
          _mruProvider.Add(fileName);
-         
+
          notifyProjectLoaded();
 
          return true;

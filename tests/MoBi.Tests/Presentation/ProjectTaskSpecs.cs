@@ -35,7 +35,6 @@ namespace MoBi.Presentation
       protected IMRUProvider _mruProvider;
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       private IHeavyWorkManager _heavyWorkManager;
-      protected ISimulationSettingsFactory _simulationSettingsFactory;
       private ISbmlTask _sbmlTask;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
 
@@ -50,11 +49,10 @@ namespace MoBi.Presentation
          _cloneManager = A.Fake<ICloneManagerForSimulation>();
          _mruProvider = A.Fake<IMRUProvider>();
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
-         _simulationSettingsFactory = A.Fake<ISimulationSettingsFactory>();
          _sbmlTask = A.Fake<ISbmlTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
          sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _heavyWorkManager,
-            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _simulationSettingsFactory);
+            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask);
       }
    }
 
@@ -71,13 +69,13 @@ namespace MoBi.Presentation
          base.Context();
          _project = DomainHelperForSpecs.NewProject();
          _simulationTransfer = A.Fake<SimulationTransfer>();
-         _simulationTransfer.Favorites = new Favorites { "Fav1", "Fav2" };
+         _simulationTransfer.Favorites = new Favorites {"Fav1", "Fav2"};
          _simulation = A.Fake<IMoBiSimulation>();
          _simulationTransfer.Simulation = _simulation;
          _newBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();
          _existingBuildingBlock = A.Fake<MoBiReactionBuildingBlock>().WithId("Existing");
          _project.AddBuildingBlock(_existingBuildingBlock);
-         
+
          var simulationConfiguration = new SimulationConfiguration();
          A.CallTo(() => _simulation.Configuration).Returns(simulationConfiguration);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSimulation, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, null, null)).Returns("File");
@@ -326,7 +324,6 @@ namespace MoBi.Presentation
       private PassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       private ObserverBuildingBlock _observerBuildingBlock;
       private EventGroupBuildingBlock _eventGroupBuildingBlock;
-      private SimulationSettings _simulationSettings;
 
       protected override void Context()
       {
@@ -334,14 +331,12 @@ namespace MoBi.Presentation
          _project = A.Fake<MoBiProject>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
          _spatialStructure = A.Fake<MoBiSpatialStructure>();
-         _simulationSettings = A.Fake<SimulationSettings>();
          _moBiReactionBuildingBlock = A.Fake<MoBiReactionBuildingBlock>();
          _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.Create<MoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
          A.CallTo(() => _reactionBuildingBlockFactory.Create()).Returns(_moBiReactionBuildingBlock);
          A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).Returns(_spatialStructure);
-         A.CallTo(() => _simulationSettingsFactory.CreateDefault()).Returns(_simulationSettings);
          _topContainer = A.Fake<IContainer>();
          A.CallTo(() => _context.Create<IContainer>()).Returns(_topContainer);
          _passiveTransportBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();
@@ -674,13 +669,6 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.New(ReactionDimensionMode.AmountBased);
-      }
-
-      [Observation]
-      public void there_should_be_a_simulation_settings_created_by_the_simulation_settings_factory()
-      {
-         _context.CurrentProject.SimulationSettings.ShouldNotBeNull();
-         A.CallTo(() => _simulationSettingsFactory.CreateDefault()).MustHaveHappened();
       }
 
       [Observation]

@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Tasks
          var project = _context.CurrentProject;
          if (project == null) return;
 
-         //try to lock the file if it exisits or is not lock already
+         //try to lock the file if it exists or is not lock already
          _context.LockFile(project.FilePath);
 
          _contextPersistor.Save(_context);
@@ -95,15 +95,9 @@ namespace MoBi.Presentation.Tasks
          _context.ProjectIsReadOnly = false;
       }
 
-      public void CloseProject()
-      {
-         _contextPersistor.CloseProject(_context);
-      }
+      public void CloseProject() => _contextPersistor.CloseProject(_context);
 
-      public void NewProject()
-      {
-         _contextPersistor.NewProject(_context);
-      }
+      public MoBiProject NewProject() => _contextPersistor.NewProject(_context);
 
       public void LoadJournal(string journalPath, string projectFullPath = null, bool showJournal = false)
       {
