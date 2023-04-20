@@ -88,9 +88,14 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateControls(int currentIndex)
       {
+         if (currentIndex == FirstIndex)
+         {
+            View.NextEnabled = PresenterAt(SimulationItems.ModuleConfiguration).CanClose;
+         }
+
          View.OkEnabled = CanClose;
       }
-      
+
       private void updateSimulationConfiguration(SimulationConfiguration simulationConfiguration)
       {
          var moduleConfigurations = PresenterAt(SimulationItems.ModuleConfiguration).ModuleConfigurationDTOs.MapAllUsing(_moduleConfigurationMapper);

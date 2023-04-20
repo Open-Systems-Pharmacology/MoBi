@@ -45,7 +45,6 @@ namespace MoBi.Presentation.Presenter
       public void Edit(SimulationConfiguration simulationConfiguration)
       {
          _individualSelectionDTO = _selectedIndividualDTOMapper.MapFrom(simulationConfiguration.Individual);
-         _selectedExpressions.AddRange(simulationConfiguration.ExpressionProfiles);
 
          addUnusedExpressionsToSelectionView();
          addUsedExpressionsToSelectedView(simulationConfiguration);
@@ -55,7 +54,12 @@ namespace MoBi.Presentation.Presenter
 
       private void addUsedExpressionsToSelectedView(SimulationConfiguration simulationConfiguration)
       {
-         simulationConfiguration.ExpressionProfiles.Each(addUsedExpressionToSelectedView);
+         simulationConfiguration.ExpressionProfiles.Each(profile =>
+         {
+            var projectProfile = _context.CurrentProject.ExpressionProfileCollection.FindByName(profile.Name);
+            addUsedExpressionToSelectedView(projectProfile);
+            _selectedExpressions.Add(projectProfile);
+         });
       }
 
       private void addUsedExpressionToSelectedView(ExpressionProfileBuildingBlock expression)

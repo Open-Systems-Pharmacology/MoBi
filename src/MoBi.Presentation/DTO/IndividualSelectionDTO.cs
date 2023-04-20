@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using MoBi.Assets;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.DTO

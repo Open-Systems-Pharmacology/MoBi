@@ -1,5 +1,6 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 
@@ -23,7 +24,7 @@ namespace MoBi.Presentation.Mappers
       {
          var individualSelectionDTO = new IndividualSelectionDTO(_moBiContext.CurrentProject.IndividualsCollection)
          {
-            SelectedIndividualBuildingBlock = individualBuildingBlock
+            SelectedIndividualBuildingBlock = _moBiContext.CurrentProject.IndividualsCollection.FindByName(individualBuildingBlock.Name)
          };
 
          return individualSelectionDTO;

@@ -42,6 +42,8 @@ namespace MoBi.Presentation.Presenter
          _moduleConfigurationDTOMapper = moduleConfigurationDTOMapper;
       }
 
+      public override bool CanClose => ModuleConfigurationDTOs.Any();
+
       public void Edit(SimulationConfiguration simulationConfiguration)
       {
          _moduleConfigurationDTOs = simulationConfiguration.ModuleConfigurations.MapAllUsing(_moduleConfigurationDTOMapper).ToList();
@@ -72,6 +74,7 @@ namespace MoBi.Presentation.Presenter
 
       public void AddModuleConfiguration(ITreeNode selectedTreeNode)
       {
+         
          var selectedModule = projectModuleFor(selectedTreeNode);
          if (selectedModule == null)
             return;
@@ -81,11 +84,13 @@ namespace MoBi.Presentation.Presenter
          _moduleConfigurationDTOs.Add(moduleConfigurationDTO);
          addModuleConfigurationToSelectedView(moduleConfigurationDTO);
          _view.RemoveNodeFromSelectionView(selectedTreeNode);
+         ViewChanged();
       }
 
       private void addModuleConfigurationToSelectedView(ModuleConfigurationDTO moduleConfiguration)
       {
-         _view.AddModuleConfigurationNode(_treeNodeFactory.CreateFor(moduleConfiguration));
+         var nodeToAdd = _treeNodeFactory.CreateFor(moduleConfiguration);
+         _view.AddModuleConfigurationNode(nodeToAdd);
       }
 
       public void RemoveModuleConfiguration(ITreeNode selectedTreeNode)
@@ -98,6 +103,7 @@ namespace MoBi.Presentation.Presenter
          _view.RemoveNodeFromSelectedView(selectedTreeNode);
 
          addModuleToSelectionView(moduleConfigurationDTOFor(selectedTreeNode).Module);
+         ViewChanged();
       }
 
       public void SelectedModuleConfigurationNodeChanged(ITreeNode selectedTreeNode)
