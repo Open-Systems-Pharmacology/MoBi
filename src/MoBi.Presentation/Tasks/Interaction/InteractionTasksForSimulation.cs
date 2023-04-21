@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -96,7 +97,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          using (var presenter = ApplicationController.Start<ICreateSimulationConfigurationPresenter>())
          {
             IMoBiSimulation simulation = null;
-            var simulationConfiguration = presenter.CreateBasedOn(_simulationFactory.Create());
+            var moBiSimulation = _simulationFactory.Create();
+            initializeDefaultIndividual(moBiSimulation);
+            var simulationConfiguration = presenter.CreateBasedOn(moBiSimulation);
 
             if (simulationConfiguration != null)
             {
@@ -105,6 +108,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             return simulation;
          }
+      }
+
+      private void initializeDefaultIndividual(IMoBiSimulation moBiSimulation)
+      {
+         moBiSimulation.Configuration.Individual = _interactionTaskContext.Context.CurrentProject.IndividualsCollection.FirstOrDefault();
       }
 
       public override IMoBiCommand AddNew(MoBiProject moBiProject, IBuildingBlock buildingBlockToAddTo)

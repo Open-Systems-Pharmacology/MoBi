@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -28,6 +29,8 @@ namespace MoBi.Presentation
       protected IDialogCreator _dialogCreator;
       protected ISimulationReferenceUpdater _simulationReferenceUpdater;
       protected ISimulationFactory _simulationFactory;
+      protected IMoBiContext _moBiContext;
+      protected IndividualBuildingBlock _individualBuildingBlock;
 
       protected override void Context()
       {
@@ -39,6 +42,12 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.DialogCreator).Returns(_dialogCreator);
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
          _simulationFactory = A.Fake<ISimulationFactory>();
+         _moBiContext = A.Fake<IMoBiContext>();
+         var moBiProject = new MoBiProject();
+         _individualBuildingBlock = new IndividualBuildingBlock().WithName("common individual");
+         moBiProject.AddBuildingBlock(_individualBuildingBlock);
+         A.CallTo(() => _moBiContext.CurrentProject).Returns(moBiProject);
+         A.CallTo(() => _context.Context).Returns(_moBiContext);
          sut = new InteractionTasksForSimulation(_context, _editTask, _simulationReferenceUpdater, _simulationFactory);
       }
    }
@@ -122,6 +131,7 @@ namespace MoBi.Presentation
          base.Context();
          _presenter = A.Fake<ICreateSimulationConfigurationPresenter>();
          _simulation = new MoBiSimulation();
+         _simulation.Configuration = new SimulationConfiguration();
          _configuredSimulation = new MoBiSimulation();
          _simulationConfiguration = new SimulationConfiguration();
          A.CallTo(() => _presenter.CreateBasedOn(_simulation, true)).Returns(_simulationConfiguration);
@@ -134,6 +144,12 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.CreateSimulation();
+      }
+
+      [Observation]
+      public void the_configuration_should_use_the_default_individual_for_the_project()
+      {
+         _simulation.Configuration.Individual.ShouldBeEqualTo(_individualBuildingBlock);
       }
 
       [Observation]

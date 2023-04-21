@@ -9,7 +9,7 @@ namespace MoBi.Presentation.DTO
       public IndividualSelectionDTO(IReadOnlyList<IndividualBuildingBlock> allIndividuals)
       {
          _allIndividuals.AddRange(allIndividuals);
-         SelectedIndividualBuildingBlock = allIndividuals.Any() ? allIndividuals.First() : NullIndividual.NullIndividualBuildingBlock;
+         SelectedIndividualBuildingBlock = NullIndividual.NullIndividualBuildingBlock;
       }
 
       private readonly List<IndividualBuildingBlock> _allIndividuals = new List<IndividualBuildingBlock> { NullIndividual.NullIndividualBuildingBlock };
