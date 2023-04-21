@@ -29,6 +29,7 @@ namespace MoBi.Helpers
          };
 
          var moduleConfiguration = new ModuleConfiguration(module);
+         buildConfiguration.SimulationSettings = CreateDefaultSimulationSettings();
          buildConfiguration.AddModuleConfiguration(moduleConfiguration);
 
          return buildConfiguration;
