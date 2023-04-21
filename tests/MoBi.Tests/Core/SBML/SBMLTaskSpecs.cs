@@ -36,20 +36,20 @@ namespace MoBi.Core.SBML
          var simulation = _simulationFactory.Create();
          var moduleConfiguration = new ModuleConfiguration(new Module
          {
-            Observers = IoC.Resolve<IMoBiContext>().Create<ObserverBuildingBlock>(),
-            SpatialStructure = _moBiProject.SpatialStructureCollection.FirstOrDefault(),
-            Reactions = _moBiProject.ReactionBlockCollection.FirstOrDefault(),
-            Molecules = _moBiProject.MoleculeBlockCollection.FirstOrDefault(),
-            PassiveTransports = _moBiProject.PassiveTransportCollection.FirstOrDefault(),
-            EventGroups = _moBiProject.EventBlockCollection.FirstOrDefault()
+            IoC.Resolve<IMoBiContext>().Create<ObserverBuildingBlock>(),
+            _moBiProject.SpatialStructureCollection.FirstOrDefault(),
+            _moBiProject.ReactionBlockCollection.FirstOrDefault(),
+            _moBiProject.MoleculeBlockCollection.FirstOrDefault(),
+            _moBiProject.PassiveTransportCollection.FirstOrDefault(),
+            _moBiProject.EventBlockCollection.FirstOrDefault()
 
          });
 
          var parameterStartValuesBuildingBlock = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
          var moleculeStartValuesBuildingBlock = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
          
-         moduleConfiguration.Module.AddParameterStartValueBlock(parameterStartValuesBuildingBlock);
-         moduleConfiguration.Module.AddMoleculeStartValueBlock(moleculeStartValuesBuildingBlock);
+         moduleConfiguration.Module.Add(parameterStartValuesBuildingBlock);
+         moduleConfiguration.Module.Add(moleculeStartValuesBuildingBlock);
 
          moduleConfiguration.SelectedMoleculeStartValues = moleculeStartValuesBuildingBlock;
          moduleConfiguration.SelectedParameterStartValues = parameterStartValuesBuildingBlock;

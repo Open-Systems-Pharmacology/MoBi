@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void clearAllBuildingBlockComparisons(ModuleConfiguration moduleConfiguration)
       {
-         moduleConfiguration.Module.AllBuildingBlocks().Each(ClearComparisonIfComparing);
+         moduleConfiguration.Module.BuildingBlocks.Each(ClearComparisonIfComparing);
       }
    }
 }

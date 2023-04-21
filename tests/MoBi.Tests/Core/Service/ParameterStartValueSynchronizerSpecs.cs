@@ -46,7 +46,7 @@ namespace MoBi.Core.Service
          _simulation.Configuration = new SimulationConfiguration();
          _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
          var moduleConfiguration = _simulation.Configuration.ModuleConfigurations.First();
-         moduleConfiguration.Module.AddParameterStartValueBlock(parameterStartValues);
+         moduleConfiguration.Module.Add(parameterStartValues);
          moduleConfiguration.SelectedParameterStartValues = parameterStartValues;
          _parameter =
             new Parameter().WithName("P1").WithValue(11).WithDimension(A.Fake<IDimension>()).WithDisplayUnit(A.Fake<Unit>());

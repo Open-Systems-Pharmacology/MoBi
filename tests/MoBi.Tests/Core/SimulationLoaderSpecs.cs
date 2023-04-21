@@ -48,7 +48,7 @@ namespace MoBi.Core
          base.Context();
          var module = new Module()
          {
-            Observers = new ObserverBuildingBlock().WithId("SP1")
+            new ObserverBuildingBlock().WithId("SP1")
          };
          _simulationConfiguration = new SimulationConfiguration();
          _simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));

@@ -58,14 +58,14 @@ namespace MoBi.Core.Commands
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
 
-         _module.SpatialStructure = new SpatialStructure().WithId("SpatialStructure");
-         _module.Molecules = new MoleculeBuildingBlock().WithId("Molecule");
-         _module.Reactions = new ReactionBuildingBlock().WithId("Reaction");
-         _module.PassiveTransports = new PassiveTransportBuildingBlock().WithId("PassiveTransport");
-         _module.Observers = new ObserverBuildingBlock().WithId("Observer");
-         _module.EventGroups = new EventGroupBuildingBlock().WithId("EventGroup");
-         _module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock().WithId("MoleculeStartValues"));
-         _module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("ParameterStartValues"));
+         _module.Add(new SpatialStructure().WithId("SpatialStructure"));
+         _module.Add(new MoleculeBuildingBlock().WithId("Molecule"));
+         _module.Add(new ReactionBuildingBlock().WithId("Reaction"));
+         _module.Add(new PassiveTransportBuildingBlock().WithId("PassiveTransport"));
+         _module.Add(new ObserverBuildingBlock().WithId("Observer"));
+         _module.Add(new EventGroupBuildingBlock().WithId("EventGroup"));
+         _module.Add(new MoleculeStartValuesBuildingBlock().WithId("MoleculeStartValues"));
+         _module.Add(new ParameterStartValuesBuildingBlock().WithId("ParameterStartValues"));
 
          A.CallTo(() => _context.Register(_module)).Invokes(() => _registrationTask.RegisterAllIn(_module));
          A.CallTo(() => _context.CurrentProject).Returns(_project);

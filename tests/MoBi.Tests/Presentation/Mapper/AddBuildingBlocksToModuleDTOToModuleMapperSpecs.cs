@@ -39,15 +39,15 @@ namespace MoBi.Presentation.Mapper
          base.Context();
          _existingModule = new Module
          {
-            Observers = new ObserverBuildingBlock(),
-            Reactions = new ReactionBuildingBlock(),
-            SpatialStructure = new SpatialStructure(),
-            EventGroups = new EventGroupBuildingBlock(),
-            Molecules = new MoleculeBuildingBlock(),
-            PassiveTransports = new PassiveTransportBuildingBlock()
+            new ObserverBuildingBlock(),
+            new ReactionBuildingBlock(),
+            new SpatialStructure(),
+            new EventGroupBuildingBlock(),
+            new MoleculeBuildingBlock(),
+            new PassiveTransportBuildingBlock(),
+            new MoleculeStartValuesBuildingBlock(),
+            new ParameterStartValuesBuildingBlock()
          };
-         _existingModule.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock());
-         _existingModule.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
 
          _dto = new AddBuildingBlocksToModuleDTO(_existingModule)
          {

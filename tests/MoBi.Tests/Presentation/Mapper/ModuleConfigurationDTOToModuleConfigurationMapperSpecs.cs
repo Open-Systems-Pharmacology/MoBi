@@ -14,9 +14,11 @@ namespace MoBi.Presentation.Mapper
 
       protected override void Context()
       {
-         _module = new Module();
-         _module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock());
-         _module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
+         _module = new Module
+         {
+            new MoleculeStartValuesBuildingBlock(),
+            new ParameterStartValuesBuildingBlock()
+         };
 
          sut = new ModuleConfigurationDTOToModuleConfigurationMapper();
       }
@@ -64,9 +66,11 @@ namespace MoBi.Presentation.Mapper
       protected override void Context()
       {
          base.Context();
-         var module = new Module();
-         module.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock());
-         module.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock());
+         var module = new Module
+         {
+            new MoleculeStartValuesBuildingBlock(),
+            new ParameterStartValuesBuildingBlock()
+         };
          _dto = new ModuleConfigurationDTO(new ModuleConfiguration(module))
          {
             SelectedMoleculeStartValues = NullStartValues.NullMoleculeStartValues,

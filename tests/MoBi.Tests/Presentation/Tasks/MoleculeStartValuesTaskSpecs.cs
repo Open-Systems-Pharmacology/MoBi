@@ -566,12 +566,12 @@ namespace MoBi.Presentation.Tasks
          _simulationConfiguration = new SimulationConfiguration();
          var module = new Module
          {
-            SpatialStructure = new SpatialStructure(),
-            Molecules = new MoleculeBuildingBlock()
+            new SpatialStructure(),
+            new MoleculeBuildingBlock()
          };
          var moduleConfiguration = new ModuleConfiguration(module);
          _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
-         moduleConfiguration.Module.AddMoleculeStartValueBlock(_templateStartValuesBuildingBlock);
+         moduleConfiguration.Module.Add(_templateStartValuesBuildingBlock);
          moduleConfiguration.SelectedMoleculeStartValues = _templateStartValuesBuildingBlock;
 
          _newMoleculeStartValues = new MoleculeStartValuesBuildingBlock();

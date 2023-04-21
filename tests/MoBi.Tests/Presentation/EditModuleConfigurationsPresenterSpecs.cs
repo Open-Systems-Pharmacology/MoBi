@@ -126,8 +126,8 @@ namespace MoBi.Presentation
          _usedModule = new Module().WithName("usedModule").WithId("3");
 
          _projectModule = new Module().WithName("usedModule").WithId("4");
-         _projectModule.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock().WithId("1"));
-         _projectModule.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("2"));
+         _projectModule.Add(new MoleculeStartValuesBuildingBlock().WithId("1"));
+         _projectModule.Add(new ParameterStartValuesBuildingBlock().WithId("2"));
          var moduleConfiguration = new ModuleConfiguration(_usedModule);
          _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
          _moBiProject.AddModule(_projectModule);

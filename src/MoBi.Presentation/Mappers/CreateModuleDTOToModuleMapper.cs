@@ -59,28 +59,28 @@ namespace MoBi.Presentation.Mappers
       {
          var module = _context.Create<Module>().WithIcon(ApplicationIcons.Module.IconName).WithName(createModuleDTO.Name);
 
-         module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithMolecule,
+         module.Add(conditionalCreate(createModuleDTO.WithMolecule,
             () => addDefault<MoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock)));
-         module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithReaction,
+         module.Add(conditionalCreate(createModuleDTO.WithReaction,
             () => addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create())));
-         module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithSpatialStructure,
+         module.Add(conditionalCreate(createModuleDTO.WithSpatialStructure,
             () => addDefault(AppConstants.DefaultNames.SpatialStructure,
                () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure))));
-         module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithPassiveTransport,
+         module.Add(conditionalCreate(createModuleDTO.WithPassiveTransport,
             () => addDefault<PassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock)));
-         module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithEventGroup,
+         module.Add(conditionalCreate(createModuleDTO.WithEventGroup,
             () => addDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)));
-         module.AddBuildingBlock(conditionalCreate(createModuleDTO.WithObserver,
+         module.Add(conditionalCreate(createModuleDTO.WithObserver,
             () => addDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)));
 
          if (createModuleDTO.WithParameterStartValues)
          {
-            module.AddBuildingBlock(addDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
+            module.Add(addDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
          }
 
          if (createModuleDTO.WithMoleculeStartValues)
          {
-            module.AddBuildingBlock(addDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
+            module.Add(addDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
          }
 
          return module;

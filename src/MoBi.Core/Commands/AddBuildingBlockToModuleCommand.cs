@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          context.Register(_buildingBlock);
-         _existingModule.AddBuildingBlock(_buildingBlock);
+         _existingModule.Add(_buildingBlock);
 
          if (!Silent)
             context.PublishEvent(new AddedEvent<T>(_buildingBlock, _existingModule));
