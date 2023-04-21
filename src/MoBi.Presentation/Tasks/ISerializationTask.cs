@@ -1,3 +1,4 @@
+using MoBi.Core.Domain.Model;
 using System.Collections.Generic;
 
 namespace MoBi.Presentation.Tasks
@@ -7,7 +8,7 @@ namespace MoBi.Presentation.Tasks
       void LoadProject(string fileName);
       void SaveProject();
       void CloseProject();
-      void NewProject();
+      MoBiProject NewProject();
       IEnumerable<T> LoadMany<T>(string fileName, bool resetIds = false);
       void LoadJournal(string journalPath, string projectFullPath = null, bool showJournal = false);
    }

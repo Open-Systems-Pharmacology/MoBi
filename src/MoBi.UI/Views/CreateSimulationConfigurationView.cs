@@ -13,11 +13,11 @@ using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views
 {
-   public partial class CreateSimulationView : WizardView, ICreateSimulationView
+   public partial class CreateSimulationConfigurationView : WizardView, ICreateSimulationConfigurationView
    {
       private readonly ScreenBinder<ObjectBaseDTO> _screenBinder;
 
-      public CreateSimulationView()
+      public CreateSimulationConfigurationView()
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<ObjectBaseDTO>();
@@ -36,7 +36,7 @@ namespace MoBi.UI.Views
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
-      public void AttachPresenter(ICreateSimulationPresenter presenter)
+      public void AttachPresenter(ICreateSimulationConfigurationPresenter presenter)
       {
          WizardPresenter = presenter;
       }
@@ -47,12 +47,17 @@ namespace MoBi.UI.Views
          NotifyViewChanged();
       }
 
+      public void DisableNaming()
+      {
+         tbName.Enabled = false;
+      }
+
       public override void InitializeResources()
       {
          base.InitializeResources();
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          ApplicationIcon = ApplicationIcons.Simulation;
-         Caption = AppConstants.Captions.SimulationCreationCaption;
+         Caption = AppConstants.Captions.SimulationConfigurationWizard;
          this.ReziseForCurrentScreen(fractionHeight: UIConstants.UI.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.UI.SCREEN_RESIZE_FRACTION);
       }
 

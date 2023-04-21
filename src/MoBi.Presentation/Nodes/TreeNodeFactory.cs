@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Nodes
 
          return nodes;
       }
-
+      
       public ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration)
       {
          var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).WithIcon(ApplicationIcons.Module);

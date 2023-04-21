@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
@@ -30,17 +30,19 @@ namespace MoBi.Presentation.Presenter
    public class EditModuleConfigurationsPresenter : AbstractSubPresenter<IEditModuleConfigurationsView, IEditModuleConfigurationsPresenter>, IEditModuleConfigurationsPresenter
    {
       private readonly ITreeNodeFactory _treeNodeFactory;
-      private readonly IMoBiContext _context;
+      private readonly IMoBiProjectRetriever _projectRetriever;
       private readonly IModuleConfigurationToModuleConfigurationDTOMapper _moduleConfigurationDTOMapper;
       private List<ModuleConfigurationDTO> _moduleConfigurationDTOs;
 
-      public EditModuleConfigurationsPresenter(IEditModuleConfigurationsView view, ITreeNodeFactory treeNodeFactory, IMoBiContext context,
+      public EditModuleConfigurationsPresenter(IEditModuleConfigurationsView view, ITreeNodeFactory treeNodeFactory, IMoBiProjectRetriever projectRetriever,
          IModuleConfigurationToModuleConfigurationDTOMapper moduleConfigurationDTOMapper) : base(view)
       {
          _treeNodeFactory = treeNodeFactory;
-         _context = context;
+         _projectRetriever = projectRetriever;
          _moduleConfigurationDTOMapper = moduleConfigurationDTOMapper;
       }
+
+      public override bool CanClose => ModuleConfigurationDTOs.Any();
 
       public void Edit(SimulationConfiguration simulationConfiguration)
       {
@@ -57,7 +59,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addUnusedModulesToSelectionView()
       {
-         _context.CurrentProject.Modules.Where(module => !moduleInUse(module)).Each(addModuleToSelectionView);
+         _projectRetriever.Current.Modules.Where(module => !moduleInUse(module)).Each(addModuleToSelectionView);
       }
 
       private bool moduleInUse(Module module)
@@ -81,11 +83,17 @@ namespace MoBi.Presentation.Presenter
          _moduleConfigurationDTOs.Add(moduleConfigurationDTO);
          addModuleConfigurationToSelectedView(moduleConfigurationDTO);
          _view.RemoveNodeFromSelectionView(selectedTreeNode);
+
+         // We are informing the parent presenter that something has changed in the view
+         // In this case, the addition/removal of configuration means we could/or could not advance
+         // to the next step
+         ViewChanged();
       }
 
       private void addModuleConfigurationToSelectedView(ModuleConfigurationDTO moduleConfiguration)
       {
-         _view.AddModuleConfigurationNode(_treeNodeFactory.CreateFor(moduleConfiguration));
+         var nodeToAdd = _treeNodeFactory.CreateFor(moduleConfiguration);
+         _view.AddModuleConfigurationNode(nodeToAdd);
       }
 
       public void RemoveModuleConfiguration(ITreeNode selectedTreeNode)
@@ -98,6 +106,11 @@ namespace MoBi.Presentation.Presenter
          _view.RemoveNodeFromSelectedView(selectedTreeNode);
 
          addModuleToSelectionView(moduleConfigurationDTOFor(selectedTreeNode).Module);
+         
+         // We are informing the parent presenter that something has changed in the view
+         // In this case, the addition/removal of configuration means we could/or could not advance
+         // to the next step
+         ViewChanged();
       }
 
       public void SelectedModuleConfigurationNodeChanged(ITreeNode selectedTreeNode)

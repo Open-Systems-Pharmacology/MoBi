@@ -4,8 +4,9 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface ICreateSimulationView : IWizardView, IModalView<ICreateSimulationPresenter>
+   public interface ICreateSimulationConfigurationView : IWizardView, IModalView<ICreateSimulationConfigurationPresenter>
    {
       void BindTo(ObjectBaseDTO simulationDTO);
+      void DisableNaming();
    }
 }

@@ -18,28 +18,27 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Service
 {
-   public abstract class concern_for_SimulationUpdateTask : ContextSpecification<ISimulationUpdateTask>
+   public abstract class concern_for_SimulationUpdateTask : ContextSpecification<SimulationUpdateTask>
    {
-      protected IModelConstructor _modelConstructor;
       protected IObjectPathFactory _objectPathFactory;
       private IMoBiContext _context;
       private IMoBiApplicationController _applicationController;
-      protected IConfigureSimulationPresenter _configurePresenter;
-      private IDimensionValidator _validationVisitor;
+
       protected IEntityPathResolver _entityPathResolver;
+      protected ICreateSimulationConfigurationPresenter _configurePresenter;
+      protected ISimulationFactory _simulationFactory;
 
       protected override void Context()
       {
-         _modelConstructor = A.Fake<IModelConstructor>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
          _context = A.Fake<IMoBiContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
-         _configurePresenter = A.Fake<IConfigureSimulationPresenter>();
-         _validationVisitor = A.Fake<IDimensionValidator>();
          _entityPathResolver = new EntityPathResolverForSpecs();
-         A.CallTo(() => _applicationController.Start<IConfigureSimulationPresenter>()).Returns(_configurePresenter);
+         _configurePresenter = A.Fake<ICreateSimulationConfigurationPresenter>();
+         _simulationFactory = A.Fake<ISimulationFactory>();
+         A.CallTo(() => _applicationController.Start<ICreateSimulationConfigurationPresenter>()).Returns(_configurePresenter);
 
-         sut = new SimulationUpdateTask(_modelConstructor, _context, _applicationController, _validationVisitor, _entityPathResolver);
+         sut = new SimulationUpdateTask(_context, _applicationController, _entityPathResolver, _simulationFactory);
       }
    }
 
@@ -58,7 +57,7 @@ namespace MoBi.Core.Service
          _simulationToUpdate.Model.Name = "XX";
          _templateBuildingBlock = A.Fake<SpatialStructure>();
          _updatedBuildConfiguration = new SimulationConfiguration();
-         A.CallTo(() => _configurePresenter.SimulationConfiguration).Returns(_updatedBuildConfiguration);
+         A.CallTo(() => _configurePresenter.CreateBasedOn(_simulationToUpdate, false)).Returns(_updatedBuildConfiguration);
       }
 
       protected override void Because()
@@ -72,13 +71,13 @@ namespace MoBi.Core.Service
          var allCommands = _resultCommand.DowncastTo<MoBiMacroCommand>();
          allCommands.ShouldNotBeNull();
          allCommands.All().SingleOrDefault(c => c.IsAnImplementationOf<UpdateSimulationCommand>()).ShouldNotBeNull();
-         allCommands.Count.ShouldBeEqualTo(2);
+         allCommands.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
       public void should_create_model_from_updated_build_configuration()
       {
-         A.CallTo(() => _modelConstructor.CreateModelFrom(_updatedBuildConfiguration, _simulationToUpdate.Model.Name)).MustHaveHappened();
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(_updatedBuildConfiguration, _simulationToUpdate.Model.Name, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -109,7 +108,6 @@ namespace MoBi.Core.Service
          _resultCommand.ShouldNotBeNull();
          _resultCommand.ShouldBeAnInstanceOf<MoBiMacroCommand>();
       }
-      
    }
 
    public class When_updating_a_simulation_with_fixed_value_with_a_template_building_block_that_allows_quick_update : concern_for_SimulationUpdateTask
@@ -135,7 +133,6 @@ namespace MoBi.Core.Service
 
          _originalParameterFixedUpdatedByTemplate = rootContainer.Parameter("P2");
          _originalParameterFixedUpdatedByTemplate.Value = 8;
-
 
 
          //simulates the update command
@@ -173,9 +170,8 @@ namespace MoBi.Core.Service
    public class When_configuration_a_simulation : concern_for_SimulationUpdateTask
    {
       private IMoBiSimulation _simulationToConfigure;
-      private IMoBiCommand _command;
-      private CreationResult _creationResult;
       private IModel _model;
+      private CreationResult _creationResult;
 
       protected override void Context()
       {
@@ -185,9 +181,7 @@ namespace MoBi.Core.Service
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
          _creationResult = new CreationResult(_model, new SimulationBuilder(_simulationToConfigure.Configuration));
-         _command = new MoBiMacroCommand();
-         A.CallTo(() => _configurePresenter.CreateBuildConfiguration(_simulationToConfigure)).Returns(_command);
-         A.CallTo(() => _modelConstructor.CreateModelFrom(_configurePresenter.SimulationConfiguration, _simulationToConfigure.Model.Name)).Returns(_creationResult);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(_model);
       }
 
       protected override void Because()
@@ -198,7 +192,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_start_the_configure_workflow_for_the_user()
       {
-         A.CallTo(() => _configurePresenter.CreateBuildConfiguration(_simulationToConfigure)).MustHaveHappened();
+         A.CallTo(() => _configurePresenter.CreateBasedOn(_simulationToConfigure, false)).MustHaveHappened();
       }
 
       [Observation]

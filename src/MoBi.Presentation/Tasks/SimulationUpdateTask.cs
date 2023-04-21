@@ -1,15 +1,11 @@
-using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.Events;
-using MoBi.Core.Exceptions;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -35,40 +31,39 @@ namespace MoBi.Presentation.Tasks
       ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure);
    }
 
-   internal class SimulationUpdateTask : ISimulationUpdateTask
+   public class SimulationUpdateTask : ISimulationUpdateTask
    {
-      private readonly IModelConstructor _modelConstructor;
       private readonly IMoBiContext _context;
       private readonly IMoBiApplicationController _applicationController;
-      private readonly IDimensionValidator _dimensionValidator;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly ISimulationFactory _simulationFactory;
 
-      public SimulationUpdateTask(IModelConstructor modelConstructor, IMoBiContext context, IMoBiApplicationController applicationController, 
-         IDimensionValidator dimensionValidator, IEntityPathResolver entityPathResolver)
+      public SimulationUpdateTask(IMoBiContext context, IMoBiApplicationController applicationController, IEntityPathResolver entityPathResolver, ISimulationFactory simulationFactory)
       {
-         _modelConstructor = modelConstructor;
          _context = context;
          _applicationController = applicationController;
-         _dimensionValidator = dimensionValidator;
          _entityPathResolver = entityPathResolver;
+         _simulationFactory = simulationFactory;
       }
 
       public ICommand UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock)
       {
          SimulationConfiguration simulationConfigurationReferencingTemplate;
-         IMoBiCommand configurationCommands = null;
+         var configurationCommands = new MoBiMacroCommand();
          var fixedValueQuantities = new PathCache<IQuantity>(_entityPathResolver);
 
          if (triggersReconfiguration(templateBuildingBlock))
          {
-            using (var presenter = _applicationController.Start<IConfigureSimulationPresenter>())
+            SimulationConfiguration simulationConfiguration;
+            using (var presenter = _applicationController.Start<ICreateSimulationConfigurationPresenter>())
             {
-               configurationCommands = presenter.CreateBuildConfigurationBasedOn(simulationToUpdate, templateBuildingBlock);
-               if (configurationCommands.IsEmpty())
-                  return new MoBiEmptyCommand();
-
-               simulationConfigurationReferencingTemplate = presenter.SimulationConfiguration;
+               simulationConfiguration = presenter.CreateBasedOn(simulationToUpdate, allowNaming: false);
             }
+
+            if (simulationConfiguration == null)
+               return new MoBiEmptyCommand();
+
+            simulationConfigurationReferencingTemplate = simulationConfiguration;
          }
          else
          {
@@ -81,14 +76,16 @@ namespace MoBi.Presentation.Tasks
 
       public ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure)
       {
-         using (var presenter = _applicationController.Start<IConfigureSimulationPresenter>())
+         SimulationConfiguration simulationConfiguration;
+         using (var presenter = _applicationController.Start<ICreateSimulationConfigurationPresenter>())
          {
-            var configurationCommands = presenter.CreateBuildConfiguration(simulationToConfigure);
-            if (configurationCommands.IsEmpty())
-               return new MoBiEmptyCommand();
-
-            return updateSimulation(simulationToConfigure, presenter.SimulationConfiguration, configurationCommands);
+            simulationConfiguration = presenter.CreateBasedOn(simulationToConfigure, allowNaming: false);
          }
+
+         if (simulationConfiguration == null)
+            return new MoBiEmptyCommand();
+
+         return updateSimulation(simulationToConfigure, simulationConfiguration, new MoBiMacroCommand());
       }
 
       private ICommand<IMoBiContext> updateSimulation(
@@ -99,7 +96,7 @@ namespace MoBi.Presentation.Tasks
          PathCache<IQuantity> fixedValueQuantities = null)
       {
          //create model using referencing templates
-         var model = createModelAndValidate(simulationToUpdate.Model.Name, simulationConfigurationReferencingTemplates);
+         var model = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
 
          var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
 
@@ -161,29 +158,6 @@ namespace MoBi.Presentation.Tasks
          //also formula should be set first and then value
          simulationQuantity.Formula = fixedValueQuantity.Formula;
          simulationQuantity.Value = fixedValueQuantity.Value;
-      }
-
-      private IModel createModelAndValidate(string modelName, SimulationConfiguration simulationConfiguration)
-      {
-         var results = _modelConstructor.CreateModelFrom(simulationConfiguration, modelName);
-
-         if (results != null)
-            showWarnings(results.ValidationResult);
-
-         if (results == null || results.IsInvalid)
-            throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
-
-         var model = results.Model;
-
-         _dimensionValidator.Validate(model, results.SimulationBuilder)
-            .SecureContinueWith(t => showWarnings(t.Result));
-
-         return model;
-      }
-
-      private void showWarnings(ValidationResult validationResult)
-      {
-         _context.PublishEvent(new ShowValidationResultsEvent(validationResult));
       }
 
       private bool triggersReconfiguration(IBuildingBlock buildingBlock)

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
@@ -29,23 +29,22 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly ISelectedIndividualToIndividualSelectionDTOMapper _selectedIndividualDTOMapper;
       private readonly ITreeNodeFactory _treeNodeFactory;
-      private readonly IMoBiContext _context;
       private IndividualSelectionDTO _individualSelectionDTO;
+      private readonly IMoBiProjectRetriever _projectRetriever;
       private readonly List<ExpressionProfileBuildingBlock> _selectedExpressions;
 
       public EditIndividualAndExpressionConfigurationsPresenter(IEditIndividualAndExpressionConfigurationsView view, ISelectedIndividualToIndividualSelectionDTOMapper selectedIndividualDTOMapper,
-         ITreeNodeFactory treeNodeFactory, IMoBiContext context) : base(view)
+         ITreeNodeFactory treeNodeFactory, IMoBiProjectRetriever projectRetriever) : base(view)
       {
          _selectedExpressions = new List<ExpressionProfileBuildingBlock>();
          _selectedIndividualDTOMapper = selectedIndividualDTOMapper;
          _treeNodeFactory = treeNodeFactory;
-         _context = context;
+         _projectRetriever = projectRetriever;
       }
 
       public void Edit(SimulationConfiguration simulationConfiguration)
       {
          _individualSelectionDTO = _selectedIndividualDTOMapper.MapFrom(simulationConfiguration.Individual);
-         _selectedExpressions.AddRange(simulationConfiguration.ExpressionProfiles);
 
          addUnusedExpressionsToSelectionView();
          addUsedExpressionsToSelectedView(simulationConfiguration);
@@ -55,7 +54,12 @@ namespace MoBi.Presentation.Presenter
 
       private void addUsedExpressionsToSelectedView(SimulationConfiguration simulationConfiguration)
       {
-         simulationConfiguration.ExpressionProfiles.Each(addUsedExpressionToSelectedView);
+         simulationConfiguration.ExpressionProfiles.Each(profile =>
+         {
+            var projectProfile = _projectRetriever.Current.ExpressionProfileByName(profile.Name);
+            addUsedExpressionToSelectedView(projectProfile);
+            _selectedExpressions.Add(projectProfile);
+         });
       }
 
       private void addUsedExpressionToSelectedView(ExpressionProfileBuildingBlock expression)
@@ -65,7 +69,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addUnusedExpressionsToSelectionView()
       {
-         _context.CurrentProject.ExpressionProfileCollection.Where(x => !_selectedExpressions.ExistsByName(x.Name)).Each(addUnusedExpressionToSelectionView);
+         _projectRetriever.Current.ExpressionProfileCollection.Where(x => !_selectedExpressions.ExistsByName(x.Name)).Each(addUnusedExpressionToSelectionView);
       }
 
       private void addUnusedExpressionToSelectionView(ExpressionProfileBuildingBlock expression)
