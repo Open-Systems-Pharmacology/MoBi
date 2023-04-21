@@ -27,14 +27,12 @@ namespace MoBi.Presentation.Presenter
    {
       private ObjectBaseDTO _simulationDTO;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
-      protected IMoBiContext _context;
       protected readonly IUserSettings _userSettings;
       private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
 
       public CreateSimulationConfigurationPresenter(
          ICreateSimulationConfigurationView view,
-         IMoBiContext context,
          ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterManager,
          IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriever,
@@ -44,7 +42,6 @@ namespace MoBi.Presentation.Presenter
          : base(view, subPresenterManager, SimulationItems.All, dialogCreator)
       {
          _forbiddenNamesRetriever = forbiddenNamesRetriever;
-         _context = context;
          IMoBiMacroCommand commands = new MoBiMacroCommand();
          _moduleConfigurationMapper = moduleConfigurationMapper;
          _userSettings = userSettings;
@@ -104,7 +101,7 @@ namespace MoBi.Presentation.Presenter
          var selectedIndividual = individualAndExpressionPresenter.SelectedIndividual;
 
          _simulationConfigurationTask.UpdateFrom(simulationConfiguration, moduleConfigurations, selectedIndividual, selectedExpressions);
-         
+
          simulationConfiguration.ShouldValidate = true;
          simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
       }

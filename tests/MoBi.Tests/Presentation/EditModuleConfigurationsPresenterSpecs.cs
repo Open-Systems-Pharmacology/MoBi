@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -22,7 +22,7 @@ namespace MoBi.Presentation
    public class concern_for_EditModuleConfigurationsPresenter : ContextSpecification<EditModuleConfigurationsPresenter>
    {
       protected IModuleConfigurationToModuleConfigurationDTOMapper _moduleConfigurationMapper;
-      private IMoBiContext _context;
+      protected IMoBiProjectRetriever _projectRetriever;
       protected ITreeNodeFactory _treeNodeFactory;
       protected IEditModuleConfigurationsView _view;
       protected MoBiProject _moBiProject;
@@ -35,12 +35,12 @@ namespace MoBi.Presentation
          _tooltipCreator = A.Fake<IToolTipPartCreator>();
          _observedDataRepository = A.Fake<IObservedDataRepository>();
          _treeNodeFactory = new TreeNodeFactory(_observedDataRepository, _tooltipCreator);
-         _context = A.Fake<IMoBiContext>();
-         _moduleConfigurationMapper = new ModuleConfigurationToModuleConfigurationDTOMapper(_context);
+         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _moduleConfigurationMapper = new ModuleConfigurationToModuleConfigurationDTOMapper(_projectRetriever);
 
          _moBiProject = new MoBiProject();
-         A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
-         sut = new EditModuleConfigurationsPresenter(_view, _treeNodeFactory, _context, _moduleConfigurationMapper);
+         A.CallTo(() => _projectRetriever.Current).Returns(_moBiProject);
+         sut = new EditModuleConfigurationsPresenter(_view, _treeNodeFactory, _projectRetriever, _moduleConfigurationMapper);
       }
    }
 
@@ -133,12 +133,11 @@ namespace MoBi.Presentation
          _moBiProject.AddModule(_projectModule);
 
          sut.Edit(_simulationConfiguration);
-         
+
          var moduleConfigurationDTO = sut.ModuleConfigurationDTOs.First();
          _treeNode = _treeNodeFactory.CreateFor(moduleConfigurationDTO);
          moduleConfigurationDTO.SelectedMoleculeStartValues = moduleConfigurationDTO.ModuleConfiguration.Module.MoleculeStartValuesCollection.First();
          moduleConfigurationDTO.SelectedParameterStartValues = moduleConfigurationDTO.ModuleConfiguration.Module.ParameterStartValuesCollection.First();
-         
       }
 
       protected override void Because()
@@ -177,7 +176,7 @@ namespace MoBi.Presentation
          var moduleConfiguration = new ModuleConfiguration(_usedModule);
          _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
          _moBiProject.AddModule(_projectModule);
-         
+
          sut.Edit(_simulationConfiguration);
          _treeNode = _treeNodeFactory.CreateFor(sut.ModuleConfigurationDTOs.First());
       }
@@ -221,7 +220,7 @@ namespace MoBi.Presentation
          _moBiProject.AddModule(_projectModule);
 
          _treeNode = _treeNodeFactory.CreateFor(_addedModule);
-         
+
          sut.Edit(_simulationConfiguration);
       }
 
@@ -279,13 +278,12 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _view.AddModuleNode(A<ITreeNode>.That.Matches(x => x.TagAsObject.Equals(_unusedModule)))).MustHaveHappened();
       }
-      
+
       [Observation]
       public void adds_the_used_module_configuration_to_the_view()
       {
          A.CallTo(() => _view.AddModuleConfigurationNode(A<ITreeNode>.That.Matches(x => (x.TagAsObject as ModuleConfigurationDTO).Module.Equals(_projectModule)))).MustHaveHappened();
       }
-      
 
       [Observation]
       public void should_use_the_project_modules_to_create_dtos()

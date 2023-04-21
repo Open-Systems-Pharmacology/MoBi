@@ -1,30 +1,29 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Helpers;
-using MoBi.Presentation.Settings;
+using MoBi.IntegrationTests;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Simulation;
+using MoBi.Presentation.Settings;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using MoBi.IntegrationTests;
-using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks;
 
 namespace MoBi.Presentation
 {
    public abstract class concern_for_CreateSimulationConfigurationPresenter : ContextForIntegration<CreateSimulationConfigurationPresenter>
    {
       protected ICreateSimulationConfigurationView _view;
-      protected IMoBiContext _context;
       protected IModelConstructor _modelConstructor;
       protected IDimensionValidator _validationVisitor;
       protected IUserSettings _userSettings;
@@ -37,7 +36,6 @@ namespace MoBi.Presentation
       protected IMoBiSimulation _simulation;
       protected SimulationConfiguration _simulationConfiguration;
       protected SimulationSettings _clonedSimulationSettings;
-      private MoBiProject _moBiProject;
       private IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
       protected ISimulationConfigurationTask _simulationConfigurationTask;
 
@@ -49,7 +47,6 @@ namespace MoBi.Presentation
          _moduleConfigurationMapper = A.Fake<IModuleConfigurationDTOToModuleConfigurationMapper>();
          _simulationConfigurationTask = A.Fake<ISimulationConfigurationTask>();
 
-         _context = A.Fake<IMoBiContext>();
          _modelConstructor = A.Fake<IModelConstructor>();
          _dialogCreator = A.Fake<IDialogCreator>();
          A.CallTo(() => _modelConstructor.CreateModelFrom(A<SimulationConfiguration>._, A<string>._)).Returns(A.Fake<CreationResult>());
@@ -61,18 +58,13 @@ namespace MoBi.Presentation
          _simulationFactory = A.Fake<ISimulationFactory>();
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
          _forbiddenNameRetriever = A.Fake<IForbiddenNamesRetriever>();
-         sut = new CreateSimulationConfigurationPresenter(_view, _context, _subPresenterManager, _dialogCreator,
+         sut = new CreateSimulationConfigurationPresenter(_view, _subPresenterManager, _dialogCreator,
             _forbiddenNameRetriever, _userSettings, _moduleConfigurationMapper, _simulationConfigurationTask);
 
          _simulation = new MoBiSimulation();
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
          _simulationConfiguration = createBuildConfiguration();
          _simulation.Configuration = _simulationConfiguration;
-         _moBiProject = new MoBiProject
-         {
-            SimulationSettings = new SimulationSettings()
-         };
-         A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
       }
 
       private SimulationConfiguration createBuildConfiguration()
@@ -85,13 +77,13 @@ namespace MoBi.Presentation
    internal class When_cancelling_the_create_of_a_new_configuration : concern_for_CreateSimulationConfigurationPresenter
    {
       private SimulationConfiguration _result;
-      
+
       protected override void Context()
       {
          base.Context();
          A.CallTo(() => _view.Canceled).Returns(true);
       }
-      
+
       protected override void Because()
       {
          _result = sut.CreateBasedOn(_simulation);
@@ -140,7 +132,6 @@ namespace MoBi.Presentation
       public void the_forbidden_names_must_not_be_initialized()
       {
          A.CallTo(() => _forbiddenNameRetriever.For(_simulation)).MustNotHaveHappened();
-
       }
 
       [Observation]

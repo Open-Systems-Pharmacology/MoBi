@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Assets;
-using MoBi.Core.Domain.Builder;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -91,6 +89,16 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<ParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection => get<ParameterStartValuesBuildingBlock>();
 
+      public IndividualBuildingBlock IndividualByName(string buildingBlockName)
+      {
+         return IndividualsCollection.FindByName(buildingBlockName);
+      }
+
+      public ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName)
+      {
+         return ExpressionProfileCollection.FindByName(buildingBlockName);
+      }
+      
       public void AddSimulation(IMoBiSimulation newSimulation)
       {
          _allSimulations.Add(newSimulation);

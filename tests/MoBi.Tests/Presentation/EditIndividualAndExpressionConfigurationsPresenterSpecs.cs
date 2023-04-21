@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using OSPSuite.BDDHelper;
@@ -16,18 +17,18 @@ namespace MoBi.Presentation
 {
    public class concern_for_EditIndividualAndExpressionConfigurationsPresenter : ContextSpecification<EditIndividualAndExpressionConfigurationsPresenter>
    {
-      protected IMoBiContext _context;
+      protected IMoBiProjectRetriever _projectRetriever;
       protected ITreeNodeFactory _treeNodeFactory;
       protected ISelectedIndividualToIndividualSelectionDTOMapper _selectedIndividualDTOMapper;
       protected IEditIndividualAndExpressionConfigurationsView _view;
 
       protected override void Context()
       {
-         _context = A.Fake<IMoBiContext>();
+         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
          _selectedIndividualDTOMapper = A.Fake<ISelectedIndividualToIndividualSelectionDTOMapper>();
          _view = A.Fake<IEditIndividualAndExpressionConfigurationsView>();
-         sut = new EditIndividualAndExpressionConfigurationsPresenter(_view, _selectedIndividualDTOMapper, _treeNodeFactory, _context);
+         sut = new EditIndividualAndExpressionConfigurationsPresenter(_view, _selectedIndividualDTOMapper, _treeNodeFactory, _projectRetriever);
       }
    }
 
@@ -48,20 +49,20 @@ namespace MoBi.Presentation
          _expressionProfile2 = new ExpressionProfileBuildingBlock().WithName("molecule2|species|category");
          _treeNode1 = new ObjectWithIdAndNameNode<ExpressionProfileBuildingBlock>(_expressionProfile1);
          _treeNode2 = new ObjectWithIdAndNameNode<ExpressionProfileBuildingBlock>(_expressionProfile2);
-         
+
          var moBiProject = new MoBiProject();
 
-         A.CallTo(() => _context.CurrentProject).Returns(moBiProject);
+         A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
          moBiProject.AddBuildingBlock(_expressionProfile1);
          moBiProject.AddBuildingBlock(_expressionProfile2);
-         
+
          _simulationConfiguration.AddExpressionProfile(_expressionProfile1);
          _simulationConfiguration.AddExpressionProfile(_expressionProfile2);
-         
+
          A.CallTo(() => _treeNodeFactory.CreateFor(_expressionProfile1)).Returns(_treeNode1);
          A.CallTo(() => _treeNodeFactory.CreateFor(_expressionProfile2)).Returns(_treeNode2);
-         
+
          sut.Edit(_simulationConfiguration);
       }
 
@@ -92,7 +93,7 @@ namespace MoBi.Presentation
          _expressionProfile = new ExpressionProfileBuildingBlock().WithName("molecule|species|category");
          var moBiProject = new MoBiProject();
 
-         A.CallTo(() => _context.CurrentProject).Returns(moBiProject);
+         A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
          moBiProject.AddBuildingBlock(_expressionProfile);
          sut.Edit(_simulationConfiguration);
@@ -136,15 +137,15 @@ namespace MoBi.Presentation
       {
          base.Context();
          _simulationConfiguration = new SimulationConfiguration();
-         
+
          _expressionProfile = new ExpressionProfileBuildingBlock().WithName("molecule|species|category");
          var moBiProject = new MoBiProject();
-         
-         A.CallTo(() => _context.CurrentProject).Returns(moBiProject);
-         
+
+         A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
+
          moBiProject.AddBuildingBlock(_expressionProfile);
          sut.Edit(_simulationConfiguration);
-         
+
          _treeNode = new ObjectWithIdAndNameNode<ExpressionProfileBuildingBlock>(_expressionProfile);
          A.CallTo(() => _treeNodeFactory.CreateFor(_expressionProfile)).Returns(_treeNode);
       }
@@ -183,7 +184,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          var moBiProject = new MoBiProject();
-         A.CallTo(() => _context.CurrentProject).Returns(moBiProject);
+         A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
          _simulationConfiguration = new SimulationConfiguration
          {
             Individual = new IndividualBuildingBlock()

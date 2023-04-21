@@ -96,17 +96,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          using (var presenter = ApplicationController.Start<ICreateSimulationConfigurationPresenter>())
          {
-            IMoBiSimulation simulation = null;
             var moBiSimulation = _simulationFactory.Create();
             initializeDefaultIndividual(moBiSimulation);
             var simulationConfiguration = presenter.CreateBasedOn(moBiSimulation);
 
-            if (simulationConfiguration != null)
-            {
-               simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, presenter.SimulationName);
-            }
+            if (simulationConfiguration == null)
+               return null;
 
-            return simulation;
+
+            return _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, presenter.SimulationName);
          }
       }
 

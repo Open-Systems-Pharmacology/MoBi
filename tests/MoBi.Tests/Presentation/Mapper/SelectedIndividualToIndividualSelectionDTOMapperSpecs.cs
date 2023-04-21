@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.BDDHelper;
@@ -11,16 +12,16 @@ namespace MoBi.Presentation.Mapper
 {
    public class concern_for_SelectedIndividualToIndividualSelectionDTOMapper : ContextSpecification<SelectedIndividualToIndividualSelectionDTOMapper>
    {
-      private IMoBiContext _context;
+      private IMoBiProjectRetriever _projectRetriever;
       protected MoBiProject _moBiProject;
 
       protected override void Context()
       {
-         _context = A.Fake<IMoBiContext>();
+         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
          _moBiProject = new MoBiProject();
-         A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
+         A.CallTo(() => _projectRetriever.Current).Returns(_moBiProject);
          
-         sut = new SelectedIndividualToIndividualSelectionDTOMapper(_context);
+         sut = new SelectedIndividualToIndividualSelectionDTOMapper(_projectRetriever);
       }
    }
 

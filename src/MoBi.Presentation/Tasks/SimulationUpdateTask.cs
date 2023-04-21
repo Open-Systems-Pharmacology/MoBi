@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Tasks
             {
                simulationConfiguration = presenter.CreateBasedOn(simulationToUpdate, allowNaming: false);
             }
-            
+
             if (simulationConfiguration == null)
                return new MoBiEmptyCommand();
 
@@ -96,7 +96,7 @@ namespace MoBi.Presentation.Tasks
          PathCache<IQuantity> fixedValueQuantities = null)
       {
          //create model using referencing templates
-         var model = _simulationFactory.CreateModelAndValidate(simulationToUpdate.Model.Name, simulationConfigurationReferencingTemplates);
+         var model = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
 
          var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
 

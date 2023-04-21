@@ -25,9 +25,9 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       IMoBiSimulation Create();
 
-      IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string name);
+      IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string simulationName);
 
-      IModel CreateModelAndValidate(string modelName, SimulationConfiguration simulationConfiguration);
+      IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -91,9 +91,11 @@ namespace MoBi.Core.Domain.Services
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 
-      public IModel CreateModelAndValidate(string modelName, SimulationConfiguration simulationConfiguration)
+      public IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName)
       {
-         var results = createModel(simulationConfiguration, modelName);
+         CreationResult results = null;
+
+         _heavyWorkManager.Start(() => { results = createModel(simulationConfiguration, modelName); }, AppConstants.Captions.CreatingSimulation);
 
          if (results == null || results.IsInvalid)
             throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
@@ -103,20 +105,10 @@ namespace MoBi.Core.Domain.Services
          return results.Model;
       }
 
-      public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string name)
+      public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string simulationName)
       {
-         CreationResult result = null;
-
-         _heavyWorkManager.Start(() => { result = createModel(configuration, name); }, AppConstants.Captions.CreatingSimulation);
-
-         if (result == null || result.IsInvalid)
-            throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
-
-         var simulation = createSimulation(result.Model, configuration, name);
-
-         validateDimensions(simulation.Model, result.SimulationBuilder);
-
-         return simulation;
+         var model = CreateModelAndValidate(configuration, simulationName);
+         return createSimulation(model, configuration, simulationName);
       }
 
       private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name)

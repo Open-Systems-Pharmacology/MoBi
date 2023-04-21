@@ -1,6 +1,6 @@
-﻿using DevExpress.Utils.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.BDDHelper;
@@ -11,12 +11,12 @@ namespace MoBi.Presentation.Mapper
 {
    public class concern_for_ModuleConfigurationToModuleConfigurationDTOMapper : ContextSpecification<ModuleConfigurationToModuleConfigurationDTOMapper>
    {
-      protected IMoBiContext _context;
+      protected IMoBiProjectRetriever _projectRetriever;
 
       protected override void Context()
       {
-         _context = A.Fake<IMoBiContext>();
-         sut = new ModuleConfigurationToModuleConfigurationDTOMapper(_context);
+         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         sut = new ModuleConfigurationToModuleConfigurationDTOMapper(_projectRetriever);
       }
    }
 
@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Mapper
          _projectModule = new Module().WithName("common name");
          _project = new MoBiProject();
          _project.AddModule(_projectModule);
-         A.CallTo(() => _context.CurrentProject).Returns(_project);
+         A.CallTo(() => _projectRetriever.Current).Returns(_project);
          _existingConfiguration = new ModuleConfiguration(_projectModule);
       }
 
@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Mapper
          _result.ModuleConfiguration.Module.ShouldBeEqualTo(_projectModule);
       }
    }
-   
+
    public class When_mapping_simulation_module_configurations_to_dto : concern_for_ModuleConfigurationToModuleConfigurationDTOMapper
    {
       private ModuleConfigurationDTO _result;
@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Mapper
          _projectModule = new Module().WithName("common name");
          _project = new MoBiProject();
          _project.AddModule(_projectModule);
-         A.CallTo(() => _context.CurrentProject).Returns(_project);
+         A.CallTo(() => _projectRetriever.Current).Returns(_project);
          _existingConfiguration = new ModuleConfiguration(_existingModule);
       }
 

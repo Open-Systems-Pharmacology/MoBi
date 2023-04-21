@@ -20,7 +20,6 @@ namespace MoBi.Core.Service
 {
    public abstract class concern_for_SimulationUpdateTask : ContextSpecification<SimulationUpdateTask>
    {
-      
       protected IObjectPathFactory _objectPathFactory;
       private IMoBiContext _context;
       private IMoBiApplicationController _applicationController;
@@ -78,7 +77,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_create_model_from_updated_build_configuration()
       {
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(_simulationToUpdate.Model.Name, _updatedBuildConfiguration)).MustHaveHappened();
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(_updatedBuildConfiguration, _simulationToUpdate.Model.Name)).MustHaveHappened();
       }
    }
 
@@ -109,7 +108,6 @@ namespace MoBi.Core.Service
          _resultCommand.ShouldNotBeNull();
          _resultCommand.ShouldBeAnInstanceOf<MoBiMacroCommand>();
       }
-      
    }
 
    public class When_updating_a_simulation_with_fixed_value_with_a_template_building_block_that_allows_quick_update : concern_for_SimulationUpdateTask
@@ -135,7 +133,6 @@ namespace MoBi.Core.Service
 
          _originalParameterFixedUpdatedByTemplate = rootContainer.Parameter("P2");
          _originalParameterFixedUpdatedByTemplate.Value = 8;
-
 
 
          //simulates the update command
@@ -184,7 +181,7 @@ namespace MoBi.Core.Service
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
          _creationResult = new CreationResult(_model, new SimulationBuilder(_simulationToConfigure.Configuration));
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<string>._, A<SimulationConfiguration>._)).Returns(_model);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._)).Returns(_model);
       }
 
       protected override void Because()
