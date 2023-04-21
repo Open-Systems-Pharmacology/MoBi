@@ -27,7 +27,7 @@ namespace MoBi.Core.Domain.Services
 
       IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string simulationName);
 
-      IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName);
+      IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -65,7 +65,7 @@ namespace MoBi.Core.Domain.Services
 
       public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model)
       {
-         var moBiSimulation = new MoBiSimulation()
+         var moBiSimulation = new MoBiSimulation
          {
             DiagramManager = _diagramManagerFactory.Create<ISimulationDiagramManager>(),
             Configuration = simulationConfiguration,
@@ -91,11 +91,11 @@ namespace MoBi.Core.Domain.Services
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 
-      public IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName)
+      public IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation)
       {
          CreationResult results = null;
 
-         _heavyWorkManager.Start(() => { results = createModel(simulationConfiguration, modelName); }, AppConstants.Captions.CreatingSimulation);
+         _heavyWorkManager.Start(() => { results = createModel(simulationConfiguration, modelName); }, message);
 
          if (results == null || results.IsInvalid)
             throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
@@ -107,7 +107,7 @@ namespace MoBi.Core.Domain.Services
 
       public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string simulationName)
       {
-         var model = CreateModelAndValidate(configuration, simulationName);
+         var model = CreateModelAndValidate(configuration, simulationName, AppConstants.Captions.CreatingSimulation);
          return createSimulation(model, configuration, simulationName);
       }
 

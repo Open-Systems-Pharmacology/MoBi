@@ -1358,7 +1358,8 @@ namespace MoBi.Assets
          public static readonly string TargetBuildingBlock = "Embed in target building block";
          public static readonly string MergeSimulationIntoProject = "Merge Simulation into Project";
          public static readonly string ImportAsNew = "<Import as new>";
-         public static readonly string CreatingSimulation = "Creating...";
+         public const string CreatingSimulation = "Creating...";
+         public const string ConfiguringSimulation = "Configuring...";
          public static readonly string AddParameter = "Add Parameter ";
          public static readonly string AddMolecule = "Add Molecule";
          public static readonly string LoadParameter = "Load Parameter ";

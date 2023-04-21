@@ -77,7 +77,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_create_model_from_updated_build_configuration()
       {
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(_updatedBuildConfiguration, _simulationToUpdate.Model.Name)).MustHaveHappened();
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(_updatedBuildConfiguration, _simulationToUpdate.Model.Name, A<string>._)).MustHaveHappened();
       }
    }
 
@@ -181,7 +181,7 @@ namespace MoBi.Core.Service
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
          _creationResult = new CreationResult(_model, new SimulationBuilder(_simulationToConfigure.Configuration));
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._)).Returns(_model);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(_model);
       }
 
       protected override void Because()
