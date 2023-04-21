@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.DTO
@@ -8,13 +9,13 @@ namespace MoBi.Presentation.DTO
       public IndividualSelectionDTO(IReadOnlyList<IndividualBuildingBlock> allIndividuals)
       {
          _allIndividuals.AddRange(allIndividuals);
-         SelectedIndividualBuildingBlock= NullIndividual.NullIndividualBuildingBlock;
+         SelectedIndividualBuildingBlock = allIndividuals.Any() ? allIndividuals.First() : NullIndividual.NullIndividualBuildingBlock;
       }
-      
-      private readonly List<IndividualBuildingBlock> _allIndividuals = new List<IndividualBuildingBlock> { NullIndividual.NullIndividualBuildingBlock};
+
+      private readonly List<IndividualBuildingBlock> _allIndividuals = new List<IndividualBuildingBlock> { NullIndividual.NullIndividualBuildingBlock };
       private IndividualBuildingBlock _selectedIndividualBuildingBlock;
 
-      public IndividualBuildingBlock SelectedIndividualBuildingBlock 
+      public IndividualBuildingBlock SelectedIndividualBuildingBlock
       {
          set => _selectedIndividualBuildingBlock = value ?? NullIndividual.NullIndividualBuildingBlock;
          get => _selectedIndividualBuildingBlock;
