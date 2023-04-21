@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Mappers
       private ModuleConfiguration createProjectModuleConfiguration(ModuleConfiguration moduleConfiguration)
       {
          // If the module configuration already contains project building blocks then use it
-         var module = _projectRetriever.Current.Modules.First(x => Equals(x.Name, moduleConfiguration.Module.Name));
+         var module = _projectRetriever.Current.ModuleByName(moduleConfiguration.Module.Name);
          if (module.Equals(moduleConfiguration.Module))
             return moduleConfiguration;
 

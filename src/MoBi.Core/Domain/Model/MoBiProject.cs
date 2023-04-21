@@ -89,6 +89,11 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<ParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection => get<ParameterStartValuesBuildingBlock>();
 
+      public Module ModuleByName(string moduleName)
+      {
+         return Modules.FindByName(moduleName);
+      }
+      
       public IndividualBuildingBlock IndividualByName(string buildingBlockName)
       {
          return IndividualsCollection.FindByName(buildingBlockName);
