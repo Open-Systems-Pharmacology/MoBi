@@ -27,6 +27,7 @@ namespace MoBi.Presentation.DTO
          if (_prohibitedNames == null)
             return true;
 
+         // Always compare as case insensitive and whitespace insensitive
          return !_prohibitedNames.Contains(newName.Trim().ToLower());
       }
 
