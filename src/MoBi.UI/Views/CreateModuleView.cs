@@ -36,6 +36,7 @@ namespace MoBi.UI.Views
          cbMoleculeStartValues.Text = MoleculeStartValues;
          cbParameterStartValues.Text = ParameterStartValues;
          createBuildingBlocksGroup.Text = CreateBuildingBlocks;
+         tbModuleName.Select();
       }
 
       public override void InitializeBinding()
