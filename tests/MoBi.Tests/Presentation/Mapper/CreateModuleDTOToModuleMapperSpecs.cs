@@ -25,6 +25,46 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
+   public class When_mapping_dto_to_module_with_no_building_blocks : concern_for_CreateModuleDTOToModuleMapper
+   {
+      private CreateModuleDTO _dto;
+      private Module _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dto = new CreateModuleDTO
+         {
+            WithReaction = false,
+            WithEventGroup = false,
+            WithSpatialStructure = false,
+            WithMolecule = false,
+            WithObserver = false,
+            WithPassiveTransport = false,
+            WithParameterStartValues = false,
+            WithMoleculeStartValues = false
+         };
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_dto);
+      }
+
+      [Observation]
+      public void the_module_should_contain_no_building_blocks()
+      {
+         _result.SpatialStructure.ShouldBeNull();
+         _result.Reactions.ShouldBeNull();
+         _result.EventGroups.ShouldBeNull();
+         _result.MoleculeStartValuesCollection.ShouldBeEmpty();
+         _result.ParameterStartValuesCollection.ShouldBeEmpty();
+         _result.PassiveTransports.ShouldBeNull();
+         _result.Observers.ShouldBeNull();
+         _result.Molecules.ShouldBeNull();
+      }
+   }
+
    public class When_mapping_dto_to_module_with_all_building_blocks : concern_for_CreateModuleDTOToModuleMapper
    {
       private CreateModuleDTO _dto;

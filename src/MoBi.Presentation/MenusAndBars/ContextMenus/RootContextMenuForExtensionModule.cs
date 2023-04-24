@@ -4,6 +4,7 @@ using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
@@ -20,21 +21,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem addNewWithContent(MoBiProject project)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddModuleWithBuildingBlocks)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddModuleWithBuildingBlocks.WithEllipsis())
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)))
             .WithCommandFor<NewModuleWithBuildingBlocksUICommand, MoBiProject>(project, _container);
       }
 
-      private IMenuBarItem addNewEmpty(MoBiProject project)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddEmptyModule)
-            .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)))
-            .WithCommandFor<NewEmptyModuleUICommand, MoBiProject>(project, _container);
-      }
-
       public override IContextMenu InitializeWith(IPresenter presenter)
       {
-         _allMenuItems.Add(addNewEmpty(_context.CurrentProject));
          _allMenuItems.Add(addNewWithContent(_context.CurrentProject));
          _allMenuItems.Add(loadExisting(_context.CurrentProject));
 

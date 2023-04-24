@@ -38,6 +38,12 @@ namespace MoBi.UI.Views
          createBuildingBlocksGroup.Text = CreateBuildingBlocks;
       }
 
+      protected override void SetActiveControl()
+      {
+         base.SetActiveControl();
+         ActiveControl = tbModuleName;
+      }
+
       public override void InitializeBinding()
       {
          _screenBinder.Bind(dto => dto.Name).To(tbModuleName);
