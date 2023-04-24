@@ -32,7 +32,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.AddForbiddenNames(new[] { "name" });
+         sut.AddUsedNames(new[] { "name" });
       }
 
       protected override void Because()
