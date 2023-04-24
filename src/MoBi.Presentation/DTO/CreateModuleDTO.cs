@@ -17,7 +17,7 @@ namespace MoBi.Presentation.DTO
 
       public void AddForbiddenNames(IReadOnlyList<string> prohibitedNames)
       {
-         _prohibitedNames = prohibitedNames;
+         _prohibitedNames = prohibitedNames.Select(x => x.Trim().ToLower()).ToList();
       }
 
       public string Name { get; set; }
@@ -27,7 +27,7 @@ namespace MoBi.Presentation.DTO
          if (_prohibitedNames == null)
             return true;
 
-         return !_prohibitedNames.Contains(newName.Trim());
+         return !_prohibitedNames.Contains(newName.Trim().ToLower());
       }
 
       public bool WithReaction { get; set; }

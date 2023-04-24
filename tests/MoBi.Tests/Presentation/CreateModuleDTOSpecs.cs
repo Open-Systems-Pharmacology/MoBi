@@ -37,7 +37,8 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Name = "name";
+         // case and whitespace variation
+         sut.Name = "namE ";
       }
 
       [Observation]
