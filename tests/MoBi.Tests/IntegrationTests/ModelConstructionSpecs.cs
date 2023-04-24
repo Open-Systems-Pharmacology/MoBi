@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using FakeItEasy;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
@@ -57,19 +56,19 @@ namespace MoBi.IntegrationTests
 
    public class When_running_a_simulation_with_a_parameter_whose_plot_parameter_flag_was_set_to_true : concern_for_ModelConstruction
    {
-      private SimulationConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
       private IContainer _organism;
       private IEntityValidationTask _entityValidationTask;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _buildConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
-         var spatialStructure = _buildConfiguration.All<SpatialStructure>().First();
+         _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
+         var spatialStructure = _simulationConfiguration.All<SpatialStructure>().First();
          _organism = spatialStructure.TopContainers.ElementAt(0);
          var volumeParameter = _organism.EntityAt<IParameter>(Constants.Parameters.VOLUME);
          volumeParameter.Persistable = true;
-         _simulation = DomainFactoryForSpecs.CreateSimulationFor(_buildConfiguration);
+         _simulation = DomainFactoryForSpecs.CreateSimulationFor(_simulationConfiguration);
          _entityValidationTask = IoC.Resolve<IEntityValidationTask>();
          A.CallTo(() => _entityValidationTask.Validate(_simulation)).Returns(true);
 

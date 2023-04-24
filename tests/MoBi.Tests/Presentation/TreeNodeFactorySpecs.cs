@@ -56,12 +56,12 @@ namespace MoBi.Presentation
          
          _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module
          {
-            SpatialStructure = _spatialStructure,
-            EventGroups = _eventGroups,
-            Molecules = _molecules,
-            Reactions = _reactions,
-            Observers = _observers,
-            PassiveTransports = _passiveTransports,
+            _spatialStructure,
+            _eventGroups,
+            _molecules,
+            _reactions,
+            _observers,
+            _passiveTransports,
 
          }));
          _classifiableSimulation = new ClassifiableSimulation

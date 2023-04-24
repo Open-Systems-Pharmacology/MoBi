@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_add_building_block_to_project()
       {
-         _existingModule.AllBuildingBlocks().ShouldContain(_bb);
+         _existingModule.BuildingBlocks.ShouldContain(_bb);
       }
 
       [Observation]
@@ -101,7 +101,7 @@ namespace MoBi.Core.Commands
          A.CallTo(() => _context.PublishEvent(A<RemovedEvent>._))
             .Invokes(x => _event = x.GetArgument<RemovedEvent>(0));
 
-         _existingModule.AddBuildingBlock(_bb);
+         _existingModule.Add(_bb);
       }
 
       protected override void Because()
@@ -112,7 +112,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_remove_building_block_from_project()
       {
-         _existingModule.AllBuildingBlocks().ShouldNotContain(_bb);
+         _existingModule.BuildingBlocks.ShouldNotContain(_bb);
       }
 
       [Observation]

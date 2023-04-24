@@ -57,7 +57,7 @@ namespace MoBi.Core.Commands
 
       private void removeBuildingBlockFromModule()
       {
-         _existingModule.RemoveBuildingBlock(_buildingBlock);
+         _existingModule.Remove(_buildingBlock);
       }
    }
 }

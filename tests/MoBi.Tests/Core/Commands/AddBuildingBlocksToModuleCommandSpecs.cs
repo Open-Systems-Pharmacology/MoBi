@@ -38,8 +38,8 @@ namespace MoBi.Core.Commands
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
 
-         _existingModule.SpatialStructure = new SpatialStructure().WithId("SpatialStructure");
-         _existingModule.Molecules = new MoleculeBuildingBlock().WithId("Molecule");
+         _existingModule.Add(new SpatialStructure().WithId("SpatialStructure"));
+         _existingModule.Add(new MoleculeBuildingBlock().WithId("Molecule"));
       }
    }
 

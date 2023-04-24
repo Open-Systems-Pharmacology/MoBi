@@ -81,7 +81,7 @@ namespace MoBi.IntegrationTests
                continue;
             }
 
-            var simulation = new MoBiSimulation { Configuration = buildConfigurtion, Model = result.Model };
+            var simulation = new MoBiSimulation {Configuration = buildConfigurtion, Model = result.Model};
             var simModelManager = new SimModelManager(_simModelExporter, new SimModelSimulationFactory(),
                new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), IoC.Resolve<IDisplayUnitRetriever>(), IoC.Resolve<IDataRepositoryTask>()));
             var runResults = simModelManager.RunSimulation(simulation);
@@ -110,13 +110,14 @@ namespace MoBi.IntegrationTests
 
          var module = new Module
          {
-            SpatialStructure = project.SpatialStructureCollection.First(),
-            Molecules = project.MoleculeBlockCollection.First(),
-            Reactions = project.ReactionBlockCollection.First(),
-            PassiveTransports = project.PassiveTransportCollection.First(),
-            EventGroups = project.EventBlockCollection.First(),
-            Observers = project.ObserverBlockCollection.First()
+            project.SpatialStructureCollection.First(),
+            project.MoleculeBlockCollection.First(),
+            project.ReactionBlockCollection.First(),
+            project.PassiveTransportCollection.First(),
+            project.EventBlockCollection.First(),
+            project.ObserverBlockCollection.First()
          };
+
 
          var moduleConfiguration = new ModuleConfiguration(module, project.MoleculeStartValueBlockCollection.First(), project.ParametersStartValueBlockCollection.First());
 

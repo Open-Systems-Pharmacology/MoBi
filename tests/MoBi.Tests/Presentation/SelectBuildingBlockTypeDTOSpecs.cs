@@ -41,14 +41,14 @@ namespace MoBi.Presentation
    {
       protected override void Because()
       {
-         _module.AddBuildingBlock(new MoleculeBuildingBlock());
-         _module.AddBuildingBlock(new ReactionBuildingBlock());
-         _module.AddBuildingBlock(new SpatialStructure());
-         _module.AddBuildingBlock(new PassiveTransportBuildingBlock());
-         _module.AddBuildingBlock(new EventGroupBuildingBlock());
-         _module.AddBuildingBlock(new ObserverBuildingBlock());
-         _module.AddBuildingBlock(new ParameterStartValuesBuildingBlock());
-         _module.AddBuildingBlock(new MoleculeStartValuesBuildingBlock());
+         _module.Add(new MoleculeBuildingBlock());
+         _module.Add(new ReactionBuildingBlock());
+         _module.Add(new SpatialStructure());
+         _module.Add(new PassiveTransportBuildingBlock());
+         _module.Add(new EventGroupBuildingBlock());
+         _module.Add(new ObserverBuildingBlock());
+         _module.Add(new ParameterStartValuesBuildingBlock());
+         _module.Add(new MoleculeStartValuesBuildingBlock());
          sut = new SelectBuildingBlockTypeDTO(_module);
       }
 

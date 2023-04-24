@@ -1,17 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using OSPSuite.BDDHelper;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
-using NUnit.Framework;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.Diagram;
 
 namespace MoBi.Core.Service
 {
@@ -20,6 +17,7 @@ namespace MoBi.Core.Service
       protected IReactionBuildingBlockToReactionDataTableMapper _reactionBuildingBlockToReactionDataTableMapper;
       protected IParameterListToSimulationParameterDataTableMapper _parameterListToSimulationDataTableMapper;
       protected IMoleculeStartValuesBuildingBlockToParameterDataTableMapper _moleculeStartValuesBuildingBlockToParameterDataTableMapper;
+
       protected override void Context()
       {
          _reactionBuildingBlockToReactionDataTableMapper = A.Fake<IReactionBuildingBlockToReactionDataTableMapper>();
@@ -29,11 +27,11 @@ namespace MoBi.Core.Service
             _reactionBuildingBlockToReactionDataTableMapper,
             _parameterListToSimulationDataTableMapper,
             _moleculeStartValuesBuildingBlockToParameterDataTableMapper
-            );
+         );
 
-         A.CallTo(() => _reactionBuildingBlockToReactionDataTableMapper.MapFrom(A<IEnumerable<MoBiReactionBuildingBlock>>.Ignored)).Returns(new DataTable { TableName = "reactions" });
-         A.CallTo(() => _parameterListToSimulationDataTableMapper.MapFrom(A<IReadOnlyList<IParameter>>.Ignored)).Returns(new DataTable { TableName = "parameters" });
-         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<MoleculeStartValue>>.Ignored, A<IEnumerable<MoleculeBuilder>>.Ignored)).Returns(new DataTable { TableName = "molecules" });
+         A.CallTo(() => _reactionBuildingBlockToReactionDataTableMapper.MapFrom(A<IEnumerable<MoBiReactionBuildingBlock>>.Ignored)).Returns(new DataTable {TableName = "reactions"});
+         A.CallTo(() => _parameterListToSimulationDataTableMapper.MapFrom(A<IReadOnlyList<IParameter>>.Ignored)).Returns(new DataTable {TableName = "parameters"});
+         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<MoleculeStartValue>>.Ignored, A<IEnumerable<MoleculeBuilder>>.Ignored)).Returns(new DataTable {TableName = "molecules"});
       }
    }
 
@@ -57,9 +55,9 @@ namespace MoBi.Core.Service
 
          var moduleConfiguration = new ModuleConfiguration(new Module
          {
-            Reactions = _moBiReactionBuildingBlock
+            _moBiReactionBuildingBlock
          });
-         moduleConfiguration.Module.AddMoleculeStartValueBlock(_moleculeStartValuesBuildingBlock);
+         moduleConfiguration.Module.Add(_moleculeStartValuesBuildingBlock);
          _moBiSimulation.Configuration.AddModuleConfiguration(moduleConfiguration);
          moduleConfiguration.SelectedMoleculeStartValues = _moleculeStartValuesBuildingBlock;
          _parameterList = _moBiSimulation.Model.Root.GetAllChildren<IParameter>();

@@ -312,13 +312,11 @@ namespace MoBi.Presentation
          _simulationSettingsBuildingBlock = new SimulationSettings().WithName("SIMULATION_SETTINGS");
          _module1 = new Module
          {
-            SpatialStructure = new MoBiSpatialStructure()
+            new MoBiSpatialStructure(),
+            new ParameterStartValuesBuildingBlock().WithId("PSV1"),
+            new ParameterStartValuesBuildingBlock().WithId("PSV2"),
+            new MoleculeStartValuesBuildingBlock().WithId("MSV")
          };
-
-         _module1.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("PSV1"));
-         _module1.AddParameterStartValueBlock(new ParameterStartValuesBuildingBlock().WithId("PSV2"));
-
-         _module1.AddMoleculeStartValueBlock(new MoleculeStartValuesBuildingBlock().WithId("MSV"));
 
          _allNodesAdded = new List<ITreeNode>();
          A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>

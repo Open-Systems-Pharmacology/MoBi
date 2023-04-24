@@ -16,17 +16,21 @@ namespace MoBi.Helpers
       public static SimulationConfiguration CreateDefaultConfiguration()
       {
          var buildConfiguration = new SimulationConfiguration();
-         var moduleConfiguration = new ModuleConfiguration(new Module());
-         buildConfiguration.AddModuleConfiguration(moduleConfiguration);
 
+         var module = new Module
+         {
+            CreateDefaultSpatialStructure(),
+            CreateDefaultReactions(),
+            CreateDefaultSimulationSettings(),
+            CreateDefaultMolecules(),
+            CreateDefaultPassiveTransports(),
+            CreateDefaultEventGroups(),
+            CreateDefaultObservers(),
+         };
 
-         moduleConfiguration.Module.SpatialStructure = CreateDefaultSpatialStructure();
-         moduleConfiguration.Module.Reactions = CreateDefaultReactions();
+         var moduleConfiguration = new ModuleConfiguration(module);
          buildConfiguration.SimulationSettings = CreateDefaultSimulationSettings();
-         moduleConfiguration.Module.Molecules = CreateDefaultMolecules();
-         moduleConfiguration.Module.PassiveTransports = CreateDefaultPassiveTransports();
-         moduleConfiguration.Module.EventGroups = CreateDefaultEventGroups();
-         moduleConfiguration.Module.Observers = CreateDefaultObservers();
+         buildConfiguration.AddModuleConfiguration(moduleConfiguration);
 
          return buildConfiguration;
       }
@@ -72,16 +76,17 @@ namespace MoBi.Helpers
             buildConfiguration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
 
          var moduleConfiguration = buildConfiguration.ModuleConfigurations.First();
-         if (moduleConfiguration.Module.MoleculeStartValuesCollection.IsEmpty())
+         var module = moduleConfiguration.Module;
+         if (module.MoleculeStartValuesCollection.IsEmpty())
          {
-            moduleConfiguration.Module.AddMoleculeStartValueBlock(CreateMoleculeStartValuesFor(buildConfiguration));
-            moduleConfiguration.SelectedMoleculeStartValues = moduleConfiguration.Module.MoleculeStartValuesCollection.First();
+            module.Add(CreateMoleculeStartValuesFor(buildConfiguration));
+            moduleConfiguration.SelectedMoleculeStartValues = module.MoleculeStartValuesCollection.First();
          }
 
-         if (moduleConfiguration.Module.ParameterStartValuesCollection.IsEmpty())
+         if (module.ParameterStartValuesCollection.IsEmpty())
          {
-            moduleConfiguration.Module.AddParameterStartValueBlock(CreateParameterStartValuesFor(buildConfiguration));
-            moduleConfiguration.SelectedParameterStartValues = moduleConfiguration.Module.ParameterStartValuesCollection.First();
+            module.Add(CreateParameterStartValuesFor(buildConfiguration));
+            moduleConfiguration.SelectedParameterStartValues = module.ParameterStartValuesCollection.First();
          }
 
          var modelCreator = IoC.Resolve<IModelConstructor>();

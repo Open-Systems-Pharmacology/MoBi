@@ -238,7 +238,7 @@ namespace MoBi.Presentation.Tasks
          };
          _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module
          {
-            Molecules = new MoleculeBuildingBlock
+            new MoleculeBuildingBlock
             {
                _drug
             }
