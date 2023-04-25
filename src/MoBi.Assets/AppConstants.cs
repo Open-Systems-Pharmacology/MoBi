@@ -1099,9 +1099,8 @@ namespace MoBi.Assets
          public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
-
-         public static string AddEmptyModule => $"Create Empty Module...";
-         public static string AddModuleWithBuildingBlocks => $"Create Module with Building Blocks...";
+         
+         public static string AddModuleWithBuildingBlocks => $"Create Module";
          public static string EditDefaultSimulationSettings = "Edit Default Simulation Settings";
          public static string SaveProjectSimulationSettings = "Save Default Simulation Settings";
          public static string LoadProjectSimulationSettings = "Load Default Simulation Settings";
