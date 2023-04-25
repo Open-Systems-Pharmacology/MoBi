@@ -220,6 +220,10 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.ManageProjectDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.UpdateAllToDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewSimulation].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewIndividual].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewMetabolizingEnzyme].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewTransportProtein].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewSpecificBindingPartner].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewEventBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewMoleculesBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewObserverBB].Enabled = enabled;

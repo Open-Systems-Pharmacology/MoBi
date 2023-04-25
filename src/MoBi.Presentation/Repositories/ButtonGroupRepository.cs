@@ -175,13 +175,11 @@ namespace MoBi.Presentation.Repositories
          .WithId(ButtonGroupIds.Export);
 
       private IButtonGroup buildingBlocksButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.BuildingBlocks)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSpatialStructure)).WithCaption(AppConstants.RibbonButtonNames.SpatialStructure))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewMoleculesBB)).WithCaption(AppConstants.RibbonButtonNames.Molecules))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewReactionBB)).WithCaption(AppConstants.RibbonButtonNames.Reactions))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewPassiveTransportBB)).WithCaption(AppConstants.RibbonButtonNames.PassiveTransport))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewObserverBB)).WithCaption(AppConstants.RibbonButtonNames.Observer))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewEventBB)).WithCaption(AppConstants.RibbonButtonNames.Events))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewMetabolizingEnzyme)).WithCaption(AppConstants.RibbonButtonNames.NewMetabolizingEnzyme))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewTransportProtein)).WithCaption(AppConstants.RibbonButtonNames.NewTransportProtein))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSpecificBindingPartner)).WithCaption(AppConstants.RibbonButtonNames.NewSpecificBindingPartner))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewIndividual)).WithCaption(AppConstants.RibbonButtonNames.Individual))
          .WithId(ButtonGroupIds.BuildingBlocks);
 
       private IButtonGroup projectGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.SimulationSettings)

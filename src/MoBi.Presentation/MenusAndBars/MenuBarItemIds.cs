@@ -21,6 +21,10 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId GarbageCollection = createMenuBarItemId("GarbageCollection");
       public static MenuBarItemId Exit = createMenuBarItemId("Exit");
       public static MenuBarItemId NewSimulation = createMenuBarItemId("NewSimulation");
+      public static MenuBarItemId NewIndividual = createMenuBarItemId("NewIndividual");
+      public static MenuBarItemId NewMetabolizingEnzyme = createMenuBarItemId("NewMetabolizingEnzyme");
+      public static MenuBarItemId NewTransportProtein = createMenuBarItemId("NewTransportProtein");
+      public static MenuBarItemId NewSpecificBindingPartner = createMenuBarItemId("NewSpecificBindingPartner");
       public static MenuBarItemId Run = createMenuBarItemId("Run");
       public static MenuBarItemId Stop = createMenuBarItemId("Stop");
       public static MenuBarItemId OpenSimulation = createMenuBarItemId("OpenSimulation");

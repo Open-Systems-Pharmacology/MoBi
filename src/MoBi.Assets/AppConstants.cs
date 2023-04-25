@@ -824,6 +824,10 @@ namespace MoBi.Assets
       public static class RibbonButtonNames
       {
          public static readonly string ObservedData = "Observed Data";
+         public static readonly string Individual = "Individual";
+         public static readonly string NewMetabolizingEnzyme = "Metabolizing Enzyme";
+         public static readonly string NewTransportProtein = "Transport Protein";
+         public static readonly string NewSpecificBindingPartner = "Specific Binding Partner";
          public static readonly string Simulation = MenuNames.Simulation;
          public static readonly string Molecules = "Molecules";
          public static readonly string Reactions = "Reactions";

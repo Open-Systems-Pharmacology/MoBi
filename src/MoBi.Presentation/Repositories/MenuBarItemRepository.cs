@@ -269,6 +269,28 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.Simulation)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.S);
 
+         //is this actually like this also in the context menu for simulation??
+         //if yes, replace because this is code duplication
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddIndividual)
+            .WithId(MenuBarItemIds.NewIndividual)
+            .WithCommand<AddNewIndividualCommand>(_container)
+            .WithIcon(ApplicationIcons.Individual);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddMetabolizingEnzyme)
+            .WithId(MenuBarItemIds.NewMetabolizingEnzyme)
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.MetabolizingEnzyme, _container)
+            .WithIcon(ApplicationIcons.Enzyme);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddTransportProtein)
+            .WithId(MenuBarItemIds.NewTransportProtein)
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.TransportProtein, _container)
+            .WithIcon(ApplicationIcons.Transporter);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddSpecificBindingPartner)
+            .WithId(MenuBarItemIds.NewSpecificBindingPartner)
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.ProteinBindingPartner, _container)
+            .WithIcon(ApplicationIcons.SpecificBinding);
+
          yield return CreateSubMenu.WithCaption(AppConstants.MenuNames.ExportHistory)
             .WithId(MenuBarItemIds.HistoryReportGroup)
             .WithIcon(ApplicationIcons.HistoryExport);
