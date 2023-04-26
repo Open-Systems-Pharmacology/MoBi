@@ -13,7 +13,7 @@ namespace MoBi.Core.Service
    {
       protected ICoreCalculationMethodRepository _calculationMethodRepository;
       protected ICloneManagerForBuildingBlock _cloneManager;
-      private IMoBiContext _context;
+      private IMoBiProjectRetriever _projectRetriever;
       protected SimulationSettings _clonedSimulationSettings;
       private MoBiProject _currentProject;
       protected CoreCalculationMethod _clonedMethod1, _clonedMethod2, _clonedMethod3;
@@ -22,7 +22,7 @@ namespace MoBi.Core.Service
       {
          _calculationMethodRepository = new CoreCalculationMethodRepository();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
-         _context = A.Fake<IMoBiContext>();
+         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
          
          _clonedSimulationSettings = new SimulationSettings();
          _currentProject = new MoBiProject
@@ -30,7 +30,8 @@ namespace MoBi.Core.Service
             SimulationSettings = new SimulationSettings()
          };
          
-         A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
+         A.CallTo(() => _projectRetriever.CurrentProject).Returns(_currentProject);
+         A.CallTo(() => _projectRetriever.Current).Returns(_currentProject);
          A.CallTo(() => _cloneManager.Clone(_currentProject.SimulationSettings)).Returns(_clonedSimulationSettings);
 
          var method1 = new CoreCalculationMethod();
@@ -47,7 +48,7 @@ namespace MoBi.Core.Service
          A.CallTo(() => _cloneManager.Clone(method2)).Returns(_clonedMethod2);
          A.CallTo(() => _cloneManager.Clone(method3)).Returns(_clonedMethod3);
 
-         sut = new SimulationConfigurationFactory(_calculationMethodRepository, _cloneManager, _context);
+         sut = new SimulationConfigurationFactory(_calculationMethodRepository, _cloneManager, _projectRetriever);
 
       }
    }

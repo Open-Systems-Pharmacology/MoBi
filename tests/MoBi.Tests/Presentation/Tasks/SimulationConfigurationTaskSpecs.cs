@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.IntegrationTests;
-using MoBi.Presentation.Settings;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -53,19 +51,17 @@ namespace MoBi.Presentation.Tasks
          sut.UpdateFrom(_simulationConfiguration, _moduleConfigurations, _selectedIndividual, _selectedExpressions);
       }
 
-      [Observation]
-      public void the_simulation_configuration_should_contain_clones_of_the_building_blocks_and_module()
+      [Observation] 
+      public void the_simulation_configuration_should_reference_the_template_building_blocks()
       {
          _simulationConfiguration.ExpressionProfiles.Count.ShouldBeEqualTo(1);
-         _simulationConfiguration.ExpressionProfiles[0].ShouldNotBeEqualTo(_selectedExpressions[0]);
-         _simulationConfiguration.ExpressionProfiles[0].Name.ShouldBeEqualTo(_selectedExpressions[0].Name);
+         _simulationConfiguration.ExpressionProfiles[0].ShouldBeEqualTo(_selectedExpressions[0]);
 
          _simulationConfiguration.ModuleConfigurations.Count.ShouldBeEqualTo(1);
          _simulationConfiguration.ModuleConfigurations[0].ShouldNotBeEqualTo(_moduleConfigurations[0]);
-         _simulationConfiguration.ModuleConfigurations[0].Module.ShouldNotBeEqualTo(_moduleConfigurations[0].Module);
-         _simulationConfiguration.ModuleConfigurations[0].Module.Name.ShouldBeEqualTo(_moduleConfigurations[0].Module.Name);
+         _simulationConfiguration.ModuleConfigurations[0].Module.ShouldBeEqualTo(_moduleConfigurations[0].Module);
 
-         _simulationConfiguration.Individual.ShouldNotBeEqualTo(_selectedIndividual);
+         _simulationConfiguration.Individual.ShouldBeEqualTo(_selectedIndividual);
          _simulationConfiguration.Individual.Name.ShouldBeEqualTo(_selectedIndividual.Name);
       }
    }

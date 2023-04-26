@@ -14,20 +14,20 @@ namespace MoBi.Core.Services
    {
       private readonly ICoreCalculationMethodRepository _calculationMethodRepository;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
-      private readonly IMoBiContext _context;
+      private readonly IMoBiProjectRetriever _projectRetriever;
 
-      public SimulationConfigurationFactory(ICoreCalculationMethodRepository calculationMethodRepository, ICloneManagerForBuildingBlock cloneManager, IMoBiContext context)
+      public SimulationConfigurationFactory(ICoreCalculationMethodRepository calculationMethodRepository, ICloneManagerForBuildingBlock cloneManager, IMoBiProjectRetriever projectRetriever)
       {
          _calculationMethodRepository = calculationMethodRepository;
          _cloneManager = cloneManager;
-         _context = context;
+         _projectRetriever = projectRetriever;
       }
 
       public SimulationConfiguration Create()
       {
          var simulationConfiguration = new SimulationConfiguration
          {
-            SimulationSettings = _cloneManager.Clone(_context.CurrentProject.SimulationSettings)
+            SimulationSettings = _cloneManager.Clone(_projectRetriever.Current.SimulationSettings)
          };
 
          _calculationMethodRepository.All().Each(

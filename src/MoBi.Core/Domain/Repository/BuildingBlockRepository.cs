@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Domain.Repository
@@ -13,11 +14,11 @@ namespace MoBi.Core.Domain.Repository
 
    public class BuildingBlockRepository : IBuildingBlockRepository
    {
-      private readonly IMoBiContext _context;
-
-      public BuildingBlockRepository(IMoBiContext context)
+      private readonly IMoBiProjectRetriever _projectRetriever;
+      
+      public BuildingBlockRepository(IMoBiProjectRetriever projectRetriever)
       {
-         _context = context;
+         _projectRetriever = projectRetriever;
       }
 
       public IEnumerable<IBuildingBlock> All()
@@ -27,10 +28,16 @@ namespace MoBi.Core.Domain.Repository
 
       public IEnumerable<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : IBuildingBlock
       {
-         if (_context.CurrentProject == null)
+         var currentProject = _projectRetriever.Current;
+         if (currentProject == null)
             return new List<TBuildingBlock>();
 
-         return _context.CurrentProject.AllBuildingBlocks().OfType<TBuildingBlock>();
+         return currentProject.AllBuildingBlocks().OfType<TBuildingBlock>().Concat(moduleBuildingBlocks<TBuildingBlock>(currentProject));
+      }
+
+      private static IEnumerable<TBuildingBlock> moduleBuildingBlocks<TBuildingBlock>(MoBiProject currentProject) where TBuildingBlock : IBuildingBlock
+      {
+         return currentProject.Modules.SelectMany(x => x.BuildingBlocks.OfType<TBuildingBlock>());
       }
    }
 }
