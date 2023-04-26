@@ -10,24 +10,6 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddNewBuildingBlockCommand<TBuildingBlock> : IUICommand
-      where TBuildingBlock : class, IBuildingBlock
-   {
-      private readonly IInteractionTasksForBuildingBlock<TBuildingBlock> _interactionTask;
-      private readonly IMoBiContext _context;
-
-      public AddNewBuildingBlockCommand(IInteractionTasksForBuildingBlock<TBuildingBlock> interactionTask, IMoBiContext context)
-      {
-         _interactionTask = interactionTask;
-         _context = context;
-      }
-
-      public void Execute()
-      {
-         _context.AddToHistory(_interactionTask.AddNew());
-      }
-   }
-
    public class AddNewCommandFor<TParent, TChild> : ObjectUICommand<TParent> where TParent : class where TChild : class
    {
       protected readonly IInteractionTasksForChildren<TParent, TChild> _interactionTasks;

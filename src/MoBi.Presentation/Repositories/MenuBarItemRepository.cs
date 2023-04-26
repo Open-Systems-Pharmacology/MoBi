@@ -13,6 +13,7 @@ using OSPSuite.Presentation.UICommands;
 using OSPSuite.Assets;
 using Keys = OSPSuite.Presentation.Core.Keys;
 using ToolTips = MoBi.Assets.ToolTips;
+
 namespace MoBi.Presentation.Repositories
 {
    public class MenuBarItemRepository : OSPSuite.Presentation.Repositories.MenuBarItemRepository
@@ -200,41 +201,6 @@ namespace MoBi.Presentation.Repositories
             .WithCommand<ShowSimulationExplorerCommand>(_container)
             .WithShortcut(Keys.Control | Keys.Shift | Keys.S);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewMoleculeBuildingBlock)
-            .WithId(MenuBarItemIds.NewMoleculesBB)
-            .WithIcon(ApplicationIcons.Molecule)
-            .WithDescription(ToolTips.ModelingRibbon.CreateMoleculesBB)
-            .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.M)
-            .WithCommand<AddNewBuildingBlockCommand<MoleculeBuildingBlock>>(_container);
-
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewReactionBuildingBlock)
-            .WithId(MenuBarItemIds.NewReactionBB)
-            .WithDescription(ToolTips.ModelingRibbon.CreateReactionsBB)
-            .WithIcon(ApplicationIcons.Reaction)
-            .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.R)
-            .WithCommand<AddNewBuildingBlockCommand<MoBiReactionBuildingBlock>>(_container);
-
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewSpatialStructure)
-            .WithId(MenuBarItemIds.NewSpatialStructure)
-            .WithIcon(ApplicationIcons.SpatialStructure)
-            .WithDescription(ToolTips.ModelingRibbon.CreateSpatStructuresBB)
-            .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.P)
-            .WithCommand<AddNewBuildingBlockCommand<MoBiSpatialStructure>>(_container);
-
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewPassiveTransportBuildingBlock)
-            .WithId(MenuBarItemIds.NewPassiveTransportBB)
-            .WithIcon(ApplicationIcons.PassiveTransport)
-            .WithDescription(ToolTips.ModelingRibbon.CreatePassiveTransportsBB)
-            .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.T)
-            .WithCommand<AddNewBuildingBlockCommand<PassiveTransportBuildingBlock>>(_container);
-
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewEventsBuildingBlock)
-            .WithId(MenuBarItemIds.NewEventBB)
-            .WithIcon(ApplicationIcons.Event)
-            .WithDescription(ToolTips.ModelingRibbon.CreateEventGroupsBB)
-            .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.E)
-            .WithCommand<AddNewBuildingBlockCommand<EventGroupBuildingBlock>>(_container);
-
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.EditDefaultSimulationSettings)
             .WithId(MenuBarItemIds.EditProjectSimulationSettings)
             .WithIcon(ApplicationIcons.SimulationSettings)
@@ -254,20 +220,45 @@ namespace MoBi.Presentation.Repositories
             .WithDescription(ToolTips.SimulationSettingsRibbon.LoadProjectSimulationSettings)
             .WithCommand<LoadProjectSimulationSettingsUICommand>(_container);
 
-
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewObserverBuildingBlock)
-            .WithId(MenuBarItemIds.NewObserverBB)
-            .WithIcon(ApplicationIcons.Observer)
-            .WithDescription(ToolTips.ModelingRibbon.CreateObserversBB)
-            .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.O)
-            .WithCommand<AddNewBuildingBlockCommand<ObserverBuildingBlock>>(_container);
-
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewSimulation)
             .WithId(MenuBarItemIds.NewSimulation)
             .WithCommand<NewSimulationCommand>(_container)
             .WithDescription(ToolTips.SimulationRibbon.CreateSimulation)
             .WithIcon(ApplicationIcons.Simulation)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.S);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddIndividual)
+            .WithId(MenuBarItemIds.NewIndividual)
+            .WithDescription(ToolTips.SimulationRibbon.CreateSimulation)
+            .WithCommand<AddNewIndividualCommand>(_container)
+            .WithDescription(ToolTips.ModelingRibbon.CreateIndividual)
+            .WithIcon(ApplicationIcons.Individual);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.Module)
+            .WithId(MenuBarItemIds.NewExtensionModule)
+            .WithCommand<NewModuleWithBuildingBlocksUICommand>(_container)
+            .WithDescription(ToolTips.ModelingRibbon.CreateExtensionModule)
+            .WithIcon(ApplicationIcons.Module);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.ExpressionProfile)
+            .WithId(MenuBarItemIds.NewExpressionProfile)
+            .WithIcon(ApplicationIcons.ExpressionProfile)
+            .WithDescription(ToolTips.ModelingRibbon.CreateExpressionProfile);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddMetabolizingEnzyme)
+            .WithId(MenuBarItemIds.NewMetabolizingEnzyme)
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.MetabolizingEnzyme, _container)
+            .WithIcon(ApplicationIcons.Enzyme);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddTransportProtein)
+            .WithId(MenuBarItemIds.NewTransportProtein)
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.TransportProtein, _container)
+            .WithIcon(ApplicationIcons.Transporter);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddSpecificBindingPartner)
+            .WithId(MenuBarItemIds.NewSpecificBindingPartner)
+            .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.ProteinBindingPartner, _container)
+            .WithIcon(ApplicationIcons.SpecificBinding);
 
          yield return CreateSubMenu.WithCaption(AppConstants.MenuNames.ExportHistory)
             .WithId(MenuBarItemIds.HistoryReportGroup)

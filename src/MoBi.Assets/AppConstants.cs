@@ -824,6 +824,8 @@ namespace MoBi.Assets
       public static class RibbonButtonNames
       {
          public static readonly string ObservedData = "Observed Data";
+         public static readonly string Individual = Captions.Individual;
+         public static readonly string NewExtensionModule = "Extension Module";
          public static readonly string Simulation = MenuNames.Simulation;
          public static readonly string Molecules = "Molecules";
          public static readonly string Reactions = "Reactions";
@@ -1007,11 +1009,6 @@ namespace MoBi.Assets
          public static readonly string LoadObservedData = AddExisting(ObjectTypes.ObservedData);
          public static readonly string CompareSimulationResults = "Compare Results...";
          public static readonly string SaveGroup = "Save";
-         public static readonly string NewMoleculeBuildingBlock = AddNew("Molecule Building Block");
-         public static readonly string NewReactionBuildingBlock = AddNew("Reaction Building Block");
-         public static readonly string NewPassiveTransportBuildingBlock = AddNew("Passive Transport Building Block");
-         public static readonly string NewEventsBuildingBlock = AddNew("Event Building Block");
-         public static readonly string NewObserverBuildingBlock = AddNew("Observer Building Block");
          public static readonly string RelativePath = "Relative Path";
          public static readonly string AbsolutePath = "Absolute Path";
          public static readonly string ExportHistory = Captions.ExportHistory;

@@ -21,6 +21,12 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId GarbageCollection = createMenuBarItemId("GarbageCollection");
       public static MenuBarItemId Exit = createMenuBarItemId("Exit");
       public static MenuBarItemId NewSimulation = createMenuBarItemId("NewSimulation");
+      public static MenuBarItemId NewIndividual = createMenuBarItemId("NewIndividual");
+      public static MenuBarItemId NewMetabolizingEnzyme = createMenuBarItemId("NewMetabolizingEnzyme");
+      public static MenuBarItemId NewExpressionProfile = createMenuBarItemId("NewExpressionProfile");
+      public static MenuBarItemId NewExtensionModule = createMenuBarItemId("NewExtensionModule");
+      public static MenuBarItemId NewTransportProtein = createMenuBarItemId("NewTransportProtein");
+      public static MenuBarItemId NewSpecificBindingPartner = createMenuBarItemId("NewSpecificBindingPartner");
       public static MenuBarItemId Run = createMenuBarItemId("Run");
       public static MenuBarItemId Stop = createMenuBarItemId("Stop");
       public static MenuBarItemId OpenSimulation = createMenuBarItemId("OpenSimulation");
@@ -28,12 +34,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId AddObservedData = createMenuBarItemId("AddObservedData");
       public static MenuBarItemId LoadObservedData = createMenuBarItemId("LoadObservedData");
       public static MenuBarItemId SaveGroup = createMenuBarItemId("SaveGroup");
-      public static MenuBarItemId NewMoleculesBB = createMenuBarItemId("NewMoleculesBB");
-      public static MenuBarItemId NewReactionBB = createMenuBarItemId("NewReactionBB");
-      public static MenuBarItemId NewSpatialStructure = createMenuBarItemId("NewSpatialStructure");
-      public static MenuBarItemId NewPassiveTransportBB = createMenuBarItemId("NewPassiveTransportBB");
-      public static MenuBarItemId NewEventBB = createMenuBarItemId("NewEventBB");
-      public static MenuBarItemId NewObserverBB = createMenuBarItemId("NewObserverBB");
       public static MenuBarItemId EditProjectSimulationSettings = createMenuBarItemId("EditProjectSimulationSettings");
       public static MenuBarItemId SaveProjectSimulationSettings = createMenuBarItemId("SaveProjectSimulationSettings");
       public static MenuBarItemId LoadProjectSimulationSettings = createMenuBarItemId("LoadProjectSimulationSettings");
