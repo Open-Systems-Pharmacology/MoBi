@@ -179,8 +179,7 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewExpressionProfile))
             .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewMetabolizingEnzyme))
             .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewTransportProtein))
-            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewSpecificBindingPartner))
-            .WithCaption(AppConstants.RibbonButtonNames.NewExpressionProfile))
+            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewSpecificBindingPartner)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewIndividual)).WithCaption(AppConstants.RibbonButtonNames.Individual))
          .WithId(ButtonGroupIds.BuildingBlocks);

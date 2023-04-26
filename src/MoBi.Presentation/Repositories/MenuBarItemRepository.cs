@@ -270,8 +270,6 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.Simulation)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.Shift | Keys.S);
 
-         //is this actually like this also in the context menu for simulation??
-         //if yes, replace because this is code duplication
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddIndividual)
             .WithId(MenuBarItemIds.NewIndividual)
             .WithCommand<AddNewIndividualCommand>(_container)
@@ -282,7 +280,7 @@ namespace MoBi.Presentation.Repositories
             .WithCommand<NewModuleWithBuildingBlocksUICommand>(_container)
             .WithIcon(ApplicationIcons.Module);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.Captions.NewExpressionProfile)
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.ExpressionProfile)
             .WithId(MenuBarItemIds.NewExpressionProfile)
             .WithIcon(ApplicationIcons.ExpressionProfile);
 
