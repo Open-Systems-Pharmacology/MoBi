@@ -34,12 +34,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId AddObservedData = createMenuBarItemId("AddObservedData");
       public static MenuBarItemId LoadObservedData = createMenuBarItemId("LoadObservedData");
       public static MenuBarItemId SaveGroup = createMenuBarItemId("SaveGroup");
-      public static MenuBarItemId NewMoleculesBB = createMenuBarItemId("NewMoleculesBB");
-      public static MenuBarItemId NewReactionBB = createMenuBarItemId("NewReactionBB");
-      public static MenuBarItemId NewSpatialStructure = createMenuBarItemId("NewSpatialStructure");
-      public static MenuBarItemId NewPassiveTransportBB = createMenuBarItemId("NewPassiveTransportBB");
-      public static MenuBarItemId NewEventBB = createMenuBarItemId("NewEventBB");
-      public static MenuBarItemId NewObserverBB = createMenuBarItemId("NewObserverBB");
       public static MenuBarItemId EditProjectSimulationSettings = createMenuBarItemId("EditProjectSimulationSettings");
       public static MenuBarItemId SaveProjectSimulationSettings = createMenuBarItemId("SaveProjectSimulationSettings");
       public static MenuBarItemId LoadProjectSimulationSettings = createMenuBarItemId("LoadProjectSimulationSettings");

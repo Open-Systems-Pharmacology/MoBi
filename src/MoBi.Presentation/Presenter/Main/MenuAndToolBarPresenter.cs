@@ -226,15 +226,9 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.NewMetabolizingEnzyme].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewTransportProtein].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewSpecificBindingPartner].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewEventBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewMoleculesBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewObserverBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewPassiveTransportBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewReactionBB].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.EditProjectSimulationSettings].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SaveProjectSimulationSettings].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadProjectSimulationSettings].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewSpatialStructure].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadSimulationIntoProject].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.HistoryReportGroup].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ExportHistoryToExcel].Enabled = enabled;

@@ -68,13 +68,7 @@ namespace MoBi.Assets
 
       public static class ModelingRibbon
       {
-         public static readonly string CreateMoleculesBB = "Create a new Molecules Building Block";
          public static readonly string CreateIndividual = "Create a new Individual";
-         public static readonly string CreateReactionsBB = "Create a new Reactions Building Block";
-         public static readonly string CreateSpatStructuresBB = "Create a new Spatial Structures Building Block";
-         public static readonly string CreatePassiveTransportsBB = "Create a new Passive Transports Building Block";
-         public static readonly string CreateEventGroupsBB = "Create a new Event Groups Building Block";
-         public static readonly string CreateObserversBB = "Create a new Observers Building Block";
          public static readonly string CreateExtensionModule = "Create a new Extension Module";
          public static readonly string CreateExpressionProfile = "Create a new Expression Profile";
       }
