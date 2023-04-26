@@ -19,16 +19,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
       }
 
-      private IMenuBarItem addNewWithContent(MoBiProject project)
+      private IMenuBarItem addNewWithContent()
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddModuleWithBuildingBlocks.WithEllipsis())
             .WithIcon(ApplicationIcons.AddIconFor(nameof(Module)))
-            .WithCommandFor<NewModuleWithBuildingBlocksUICommand, MoBiProject>(project, _container);
+            .WithCommand<NewModuleWithBuildingBlocksUICommand>(_container);
       }
 
       public override IContextMenu InitializeWith(IPresenter presenter)
       {
-         _allMenuItems.Add(addNewWithContent(_context.CurrentProject));
+         _allMenuItems.Add(addNewWithContent());
          _allMenuItems.Add(loadExisting(_context.CurrentProject));
 
          return this;

@@ -221,6 +221,8 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.UpdateAllToDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewSimulation].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewIndividual].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewExpressionProfile].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewExtensionModule].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewMetabolizingEnzyme].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewTransportProtein].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewSpecificBindingPartner].Enabled = enabled;

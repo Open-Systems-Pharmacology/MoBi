@@ -175,9 +175,12 @@ namespace MoBi.Presentation.Repositories
          .WithId(ButtonGroupIds.Export);
 
       private IButtonGroup buildingBlocksButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.BuildingBlocks)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewMetabolizingEnzyme)).WithCaption(AppConstants.RibbonButtonNames.NewMetabolizingEnzyme))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewTransportProtein)).WithCaption(AppConstants.RibbonButtonNames.NewTransportProtein))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSpecificBindingPartner)).WithCaption(AppConstants.RibbonButtonNames.NewSpecificBindingPartner))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewExtensionModule)).WithCaption(AppConstants.RibbonButtonNames.NewExtensionModule))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewExpressionProfile))
+            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewMetabolizingEnzyme))
+            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewTransportProtein))
+            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewSpecificBindingPartner))
+            .WithCaption(AppConstants.RibbonButtonNames.NewExpressionProfile))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewIndividual)).WithCaption(AppConstants.RibbonButtonNames.Individual))
          .WithId(ButtonGroupIds.BuildingBlocks);

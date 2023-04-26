@@ -825,7 +825,9 @@ namespace MoBi.Assets
       {
          public static readonly string ObservedData = "Observed Data";
          public static readonly string Individual = "Individual";
+         public static readonly string NewExtensionModule = "Extension Module";
          public static readonly string NewMetabolizingEnzyme = "Metabolizing Enzyme";
+         public static readonly string NewExpressionProfile = "Expression Profile";
          public static readonly string NewTransportProtein = "Transport Protein";
          public static readonly string NewSpecificBindingPartner = "Specific Binding Partner";
          public static readonly string Simulation = MenuNames.Simulation;
@@ -1643,6 +1645,7 @@ namespace MoBi.Assets
          public static readonly string GeometricDeviation = "Geometric Deviation";
          public static readonly string List = "List";
          public static readonly string UserDefined = "User Defined";
+         public static readonly string NewExpressionProfile = "Expression Profile";
          public static readonly string AddMetabolizingEnzyme = "Add Metabolizing Enzyme";
          public static readonly string AddTransportProtein = "Add Transport Protein";
          public static readonly string AddSpecificBindingPartner = "Add Binding Partner";

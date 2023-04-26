@@ -1,10 +1,11 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class NewModuleWithBuildingBlocksUICommand : ObjectUICommand<MoBiProject>
+   public class NewModuleWithBuildingBlocksUICommand : IUICommand
    {
       private readonly IInteractionTasksForModule _interactionTasks;
 
@@ -13,7 +14,7 @@ namespace MoBi.Presentation.UICommand
          _interactionTasks = interactionTasksForModule;
       }
 
-      protected override void PerformExecute()
+      public void Execute()
       {
          _interactionTasks.CreateNewModuleWithBuildingBlocks();
       }

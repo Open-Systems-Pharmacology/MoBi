@@ -13,6 +13,7 @@ using OSPSuite.Presentation.UICommands;
 using OSPSuite.Assets;
 using Keys = OSPSuite.Presentation.Core.Keys;
 using ToolTips = MoBi.Assets.ToolTips;
+
 namespace MoBi.Presentation.Repositories
 {
    public class MenuBarItemRepository : OSPSuite.Presentation.Repositories.MenuBarItemRepository
@@ -275,6 +276,15 @@ namespace MoBi.Presentation.Repositories
             .WithId(MenuBarItemIds.NewIndividual)
             .WithCommand<AddNewIndividualCommand>(_container)
             .WithIcon(ApplicationIcons.Individual);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddIndividual)
+            .WithId(MenuBarItemIds.NewExtensionModule)
+            .WithCommand<NewModuleWithBuildingBlocksUICommand>(_container)
+            .WithIcon(ApplicationIcons.Module);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.NewExpressionProfile)
+            .WithId(MenuBarItemIds.NewExpressionProfile)
+            .WithIcon(ApplicationIcons.ExpressionProfile);
 
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddMetabolizingEnzyme)
             .WithId(MenuBarItemIds.NewMetabolizingEnzyme)
