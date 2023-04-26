@@ -272,17 +272,21 @@ namespace MoBi.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddIndividual)
             .WithId(MenuBarItemIds.NewIndividual)
+            .WithDescription(ToolTips.SimulationRibbon.CreateSimulation)
             .WithCommand<AddNewIndividualCommand>(_container)
+            .WithDescription(ToolTips.ModelingRibbon.CreateIndividual)
             .WithIcon(ApplicationIcons.Individual);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddIndividual)
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.Module)
             .WithId(MenuBarItemIds.NewExtensionModule)
             .WithCommand<NewModuleWithBuildingBlocksUICommand>(_container)
+            .WithDescription(ToolTips.ModelingRibbon.CreateExtensionModule)
             .WithIcon(ApplicationIcons.Module);
 
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.ExpressionProfile)
             .WithId(MenuBarItemIds.NewExpressionProfile)
-            .WithIcon(ApplicationIcons.ExpressionProfile);
+            .WithIcon(ApplicationIcons.ExpressionProfile)
+            .WithDescription(ToolTips.ModelingRibbon.CreateExpressionProfile);
 
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddMetabolizingEnzyme)
             .WithId(MenuBarItemIds.NewMetabolizingEnzyme)
