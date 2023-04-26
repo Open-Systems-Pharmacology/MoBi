@@ -180,8 +180,8 @@ namespace MoBi.Presentation.Repositories
             .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewMetabolizingEnzyme))
             .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewTransportProtein))
             .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewSpecificBindingPartner)))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewIndividual)).WithCaption(AppConstants.RibbonButtonNames.Individual))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
          .WithId(ButtonGroupIds.BuildingBlocks);
 
       private IButtonGroup projectGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.SimulationSettings)
