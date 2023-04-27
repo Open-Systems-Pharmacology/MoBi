@@ -37,7 +37,7 @@ namespace MoBi.Presentation
       protected SimulationConfiguration _simulationConfiguration;
       protected SimulationSettings _clonedSimulationSettings;
       private IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
-      protected ISimulationConfigurationTask _simulationConfigurationTask;
+      protected ISimulationConfigurationFactory _simulationConfigurationFactory;
 
       protected override void Context()
       {
@@ -45,13 +45,12 @@ namespace MoBi.Presentation
          _subPresenterManager = A.Fake<ISubPresenterItemManager<ISimulationConfigurationItemPresenter>>();
          _clonedSimulationSettings = new SimulationSettings();
          _moduleConfigurationMapper = A.Fake<IModuleConfigurationDTOToModuleConfigurationMapper>();
-         _simulationConfigurationTask = A.Fake<ISimulationConfigurationTask>();
 
          _modelConstructor = A.Fake<IModelConstructor>();
          _dialogCreator = A.Fake<IDialogCreator>();
          A.CallTo(() => _modelConstructor.CreateModelFrom(A<SimulationConfiguration>._, A<string>._)).Returns(A.Fake<CreationResult>());
 
-
+         _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
          _validationVisitor = A.Fake<IDimensionValidator>();
          _userSettings = A.Fake<IUserSettings>();
          _userSettings.CheckCircularReference = true;
@@ -59,7 +58,7 @@ namespace MoBi.Presentation
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
          _forbiddenNameRetriever = A.Fake<IForbiddenNamesRetriever>();
          sut = new CreateSimulationConfigurationPresenter(_view, _subPresenterManager, _dialogCreator,
-            _forbiddenNameRetriever, _userSettings, _moduleConfigurationMapper, _simulationConfigurationTask);
+            _forbiddenNameRetriever, _userSettings, _moduleConfigurationMapper, _simulationConfigurationFactory);
 
          _simulation = new MoBiSimulation();
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
@@ -105,29 +104,14 @@ namespace MoBi.Presentation
          base.Context();
          _newSimulationConfiguration = new SimulationConfiguration();
          A.CallTo(() => _view.Canceled).Returns(false);
-         A.CallTo(() => _simulationConfigurationTask.Create()).ReturnsLazily(x => _newSimulationConfiguration);
+         A.CallTo(() => _simulationConfigurationFactory.Create()).ReturnsLazily(x => _newSimulationConfiguration);
       }
 
       protected override void Because()
       {
          sut.CreateBasedOn(_simulation, false);
       }
-
-      [Observation]
-      public void the_new_simulation_configuration_is_updated_with_module_configurations_individuals_and_expressions()
-      {
-         A.CallTo(() => _simulationConfigurationTask.UpdateFrom(_newSimulationConfiguration,
-            A<IReadOnlyList<ModuleConfiguration>>._,
-            A<IndividualBuildingBlock>._,
-            A<IReadOnlyList<ExpressionProfileBuildingBlock>>._)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_task_must_be_used_to_generate_a_default_configuration()
-      {
-         A.CallTo(() => _simulationConfigurationTask.Create()).MustHaveHappened();
-      }
-
+      
       [Observation]
       public void the_forbidden_names_must_not_be_initialized()
       {
