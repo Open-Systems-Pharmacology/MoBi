@@ -4,8 +4,10 @@ using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using MoBi.IntegrationTests;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
@@ -22,7 +24,7 @@ namespace MoBi.Core.Service
       private IDimensionValidator _dimensionValidator;
       private IHeavyWorkManager _heavyWorkManager;
       private IModelConstructor _modelConstructor;
-      private ICloneManagerForBuildingBlock _cloneManager;
+      protected ICloneManagerForBuildingBlock _cloneManager;
       private IMoBiContext _context;
 
       protected override void Context()
@@ -49,6 +51,30 @@ namespace MoBi.Core.Service
             _modelConstructor, 
             _context, 
             _cloneManager);
+      }
+   }
+
+   class When_creating_a_simulation_from_a_configuration : concern_for_SimulationFactory
+   {
+      private SimulationConfiguration _simulationConfiguration;
+      private IMoBiSimulation _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateSimulationAndValidate(_simulationConfiguration, "name");
+      }
+
+      [Observation]
+      public void the_simulation_must_have_cloned_the_configuration()
+      {
+         _simulationConfiguration.ShouldNotBeEqualTo(_result.Configuration);
+         _simulationConfiguration.ModuleConfigurations.Count.ShouldBeEqualTo(_result.Configuration.ModuleConfigurations.Count);
       }
    }
 
