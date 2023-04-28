@@ -238,13 +238,14 @@ namespace MoBi.Presentation
          container.Register<IContextMenuForBuildingBlock<MoleculeStartValuesBuildingBlock>, ContextMenuForMoleculeStartValuesBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<ExpressionProfileBuildingBlock>, ContextMenuForExpressionProfileBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IndividualBuildingBlock>, ContextMenuForIndividualBuildingBlock>();
-         container.Register<IContextMenuForBuildingBlock<MoBiReactionBuildingBlock>, ContextMenuForBuildingBlock<MoBiReactionBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<ObserverBuildingBlock>, ContextMenuForBuildingBlock<ObserverBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<PassiveTransportBuildingBlock>, ContextMenuForBuildingBlock<PassiveTransportBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<MoleculeBuildingBlock>, ContextMenuForBuildingBlock<MoleculeBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<EventGroupBuildingBlock>, ContextMenuForBuildingBlock<EventGroupBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<MoBiReactionBuildingBlock>, ContextMenuForModuleBuildingBlock<MoBiReactionBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<ObserverBuildingBlock>, ContextMenuForModuleBuildingBlock<ObserverBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<PassiveTransportBuildingBlock>, ContextMenuForModuleBuildingBlock<PassiveTransportBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<MoleculeBuildingBlock>, ContextMenuForModuleBuildingBlock<MoleculeBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<EventGroupBuildingBlock>, ContextMenuForModuleBuildingBlock<EventGroupBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<MoBiSpatialStructure>, ContextMenuForModuleBuildingBlock<MoBiSpatialStructure>>();
 
-         container.Register(typeof(IContextMenuForBuildingBlock<>), typeof(ContextMenuForBuildingBlock<>));
+         container.Register(typeof(IContextMenuForBuildingBlock<>), typeof(ContextMenuForModuleBuildingBlock<>));
          container.Register(typeof(IContextMenuFor<>), typeof(ContextMenuFor<>));
          container.Register(typeof(IRootContextMenuFor<,>), typeof(RootContextMenuFor<,>));
 

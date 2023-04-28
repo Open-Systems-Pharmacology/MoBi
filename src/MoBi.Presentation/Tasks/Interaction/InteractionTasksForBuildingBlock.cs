@@ -40,17 +40,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return AddNew(Context.CurrentProject, null);
       }
 
-      protected MoBiMacroCommand CreateMergeMacroCommand(TBuildingBlock targetBuildingBlock)
-      {
-         var moBiMacroCommand = new BulkUpdateMacroCommand
-         {
-            CommandType = AppConstants.Commands.MergeCommand,
-            Description = AppConstants.Commands.MergeBuildingBlocks,
-            ObjectType = _interactionTaskContext.GetTypeFor(targetBuildingBlock)
-         };
-         return moBiMacroCommand;
-      }
-
       /// <summary>
       ///    Clones the specified object with the name entered by user.
       /// </summary>

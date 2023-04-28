@@ -5,12 +5,12 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class CloneBuildingBlockUICommand<T> : ObjectUICommand<T> where T : class, IBuildingBlock
+   internal class CloneProjectBuildingBlockUICommand<T> : ObjectUICommand<T> where T : class, IBuildingBlock
    {
       private readonly IMoBiContext _context;
       private readonly IInteractionTasksForBuildingBlock<T> _tasks;
 
-      public CloneBuildingBlockUICommand(IMoBiContext context, IInteractionTasksForBuildingBlock<T> tasks)
+      public CloneProjectBuildingBlockUICommand(IMoBiContext context, IInteractionTasksForBuildingBlock<T> tasks)
       {
          _context = context;
          _tasks = tasks;
