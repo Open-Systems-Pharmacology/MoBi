@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Tasks
          sut = new ParameterStartValuesTask(_context, _editTasks,
             _parameterStartValuesCreator,
             _cloneManagerForBuildingBlock,
-            new ImportedQuantityToParameterStartValueMapper(_parameterStartValuesCreator), _parameterResolver, A.Fake<IParameterStartValueBuildingBlockMergeManager>(),
+            new ImportedQuantityToParameterStartValueMapper(_parameterStartValuesCreator), _parameterResolver, A.Fake<IParameterStartValueBuildingBlockExtendManager>(),
             A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterStartValuePathTask(A.Fake<IFormulaTask>(), _context.Context));
       }
    }

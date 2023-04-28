@@ -23,9 +23,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTasksForPathAndValueEntity<TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
       where TBuildingBlock : class, IBuildingBlock, IStartValuesBuildingBlock<TStartValue>
-      where TStartValue : PathAndValueEntity, IStartValue
+      where TStartValue : StartValueBase, IStartValue
    {
-      protected IIgnoreReplaceMergeManager<TStartValue> _startValueBuildingBlockMergeManager;
+      protected IExtendStartValuesManager<TStartValue> _startValueBuildingBlockExtendManager;
       protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
 
       protected readonly ISpatialStructureFactory _spatialStructureFactory;
@@ -33,12 +33,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IStartValuePathTask<TBuildingBlock, TStartValue> _startValuePathTask;
 
       protected AbstractStartValuesTask(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
-         IIgnoreReplaceMergeManager<TStartValue> startValueBuildingBlockMergeManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
+         IExtendStartValuesManager<TStartValue> startValueBuildingBlockExtendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TStartValue> dtoToQuantityToParameterStartValueMapper,
          IStartValuePathTask<TBuildingBlock, TStartValue> startValuePathTask)
          : base(interactionTaskContext, editTask, moBiFormulaTask)
       {
-         _startValueBuildingBlockMergeManager = startValueBuildingBlockMergeManager;
+         _startValueBuildingBlockExtendManager = startValueBuildingBlockExtendManager;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
          _spatialStructureFactory = spatialStructureFactory;
          _dtoToQuantityToParameterStartValueMapper = dtoToQuantityToParameterStartValueMapper;
@@ -201,46 +201,28 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          var macro = createExtendMacroCommand(buildingBlockToExtend);
 
-         prepareMergeActions(buildingBlockToExtend, macro);
+         prepareExtendActions(buildingBlockToExtend, macro);
 
-         var cacheToMerge = newStartValues.ToCache();
+         var cacheToExtend = newStartValues.ToCache();
          var targetCache = buildingBlockToExtend.ToCache();
 
-         // Use the merge manager to implement the extend. We can take advantage of the equivalency checker to favour the existing 
+         // Use the merge manager to implement the extend. We can take advantage of the equivalency checker to favor the existing 
          // start value if a conflict is found (always prefer the existing start value)
-         _startValueBuildingBlockMergeManager.Merge(cacheToMerge, targetCache, areElementsEquivalent: (s1, s2) => true);
+         _startValueBuildingBlockExtendManager.Merge(cacheToExtend, targetCache, areElementsEquivalent: (s1, s2) => true);
 
          macro.Run(Context);
 
          return macro;
       }
 
-      public override IMoBiCommand Merge(TBuildingBlock buildingBlockToMerge, TBuildingBlock targetBuildingBlock)
+      private void prepareExtendActions(TBuildingBlock targetBuildingBlock, MoBiMacroCommand macro)
       {
-         if (targetBuildingBlock == null)
-            return AddToProject(buildingBlockToMerge);
-
-         var macro = CreateMergeMacroCommand(targetBuildingBlock);
-
-         prepareMergeActions(targetBuildingBlock, macro);
-
-         var cacheToMerge = buildingBlockToMerge.ToCache();
-         var targetCache = targetBuildingBlock.ToCache();
-
-         _startValueBuildingBlockMergeManager.Merge(cacheToMerge, targetCache, AreEquivalentItems);
-         macro.Run(Context);
-
-         return macro;
+         _startValueBuildingBlockExtendManager.AddAction = startValueToMerge => macro.Add(GenerateAddCommandAndUpdateFormulaReferences(startValueToMerge, targetBuildingBlock));
+         _startValueBuildingBlockExtendManager.RemoveAction = startValueToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, startValueToMerge));
+         _startValueBuildingBlockExtendManager.CancelAction = macro.Clear;
       }
 
-      private void prepareMergeActions(TBuildingBlock targetBuildingBlock, MoBiMacroCommand macro)
-      {
-         _startValueBuildingBlockMergeManager.AddAction = startValueToMerge => macro.Add(GenerateAddCommandAndUpdateFormulaReferences(startValueToMerge, targetBuildingBlock));
-         _startValueBuildingBlockMergeManager.RemoveAction = startValueToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, startValueToMerge));
-         _startValueBuildingBlockMergeManager.CancelAction = macro.Clear;
-      }
-
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TStartValue startValueToMerge, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      protected IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TStartValue startValueToMerge, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
       {
          var macroCommand = CreateAddBuilderMacroCommand(startValueToMerge, targetBuildingBlock);
 
@@ -250,7 +232,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      protected abstract bool AreEquivalentItems(TStartValue first, TStartValue second);
       protected abstract IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToRemove);
       protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TStartValue startValueToAdd);
       public abstract void ExtendStartValues(TBuildingBlock startValuesBuildingBlock);

@@ -11,11 +11,12 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_IgnoreReplaceMergeManager : ContextSpecification<IgnoreReplaceMergeManager<FakeObject>>
+   public abstract class concern_for_IgnoreReplaceMergeManager : ContextSpecification<ExtendStartValuesManager<FakeObject>>
    {
       protected IMergeConflictResolverPresenter _mergeConflictResolverPresenter;
       private IApplicationController _applicationController;
@@ -137,12 +138,12 @@ namespace MoBi.Presentation
       }
    }
 
-   public class FakeObject : ObjectBase
+   public class FakeObject : StartValueBase
    {
       
    }
 
-   class FakeObjectMergeManager : IgnoreReplaceMergeManager<FakeObject>
+   class FakeObjectMergeManager : ExtendStartValuesManager<FakeObject>
    {
       public FakeObjectMergeManager(IApplicationController applicationController)
          : base(applicationController, A.Fake<IMapper<FakeObject, ObjectBaseSummaryDTO>>(), A.Fake<IMoBiContext>())

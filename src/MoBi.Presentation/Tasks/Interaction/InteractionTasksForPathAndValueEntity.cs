@@ -167,17 +167,5 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(builder, unitValueToBaseUnitValue, unit, buildingBlock).Run(Context);
       }
-
-      public override IMoBiCommand Merge(TBuildingBlock buildingBlockToMerge, TBuildingBlock targetBuildingBlock)
-      {
-         // TODO
-         return new MoBiEmptyCommand();
-      }
-
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TBuilder builder, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
-      {
-         // You cannot add Individual Parameters to the buildingBlock
-         return new MoBiMacroCommand();
-      }
    }
 }

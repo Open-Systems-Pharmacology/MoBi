@@ -18,22 +18,5 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected InteractionTasksForEnumerableBuildingBlockOfContainerBuilder(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask) : base(interactionTaskContext, editTask)
       {
       }
-
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TBuilder builder, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
-      {
-         var rhsFormulaDecoder = new RHSFormulaDecoder();
-         var macroCommand = CreateAddBuilderMacroCommand(builder, targetBuildingBlock);
-
-         macroCommand.Add(_builderTask.GetAddCommand(builder, targetBuildingBlock));
-
-         builder.GetAllChildren<IUsingFormula>().Each(
-            usingFormula => macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, usingFormula)));
-
-         builder.GetAllChildren<IParameter>().Each(parameter =>
-            macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, parameter, rhsFormulaDecoder))
-            );
-
-         return macroCommand;
-      }
    }
 }

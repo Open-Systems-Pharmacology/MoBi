@@ -12,7 +12,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForBuildingBlock
    {
-      IMoBiCommand Merge(IBuildingBlock buildingBlockToMerge, IBuildingBlock targetBuildingBlock);
       void EditBuildingBlock(IBuildingBlock buildingBlock);
       IMoBiCommand AddToProject(IBuildingBlock buildingBlockToAdd);
    }
@@ -22,7 +21,6 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       IMoBiCommand AddNew();
       IMoBiCommand Clone(T buildingBlockToClone);
-      IMoBiCommand Merge(T buildingBlockToMerge, T targetBuildingBlock);
       IMoBiCommand AddToProject(T buildingBlockToAdd);
    }
 
@@ -77,8 +75,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return name;
       }
 
-      public abstract IMoBiCommand Merge(TBuildingBlock buildingBlockToMerge, TBuildingBlock targetBuildingBlock);
-
       public IMoBiCommand AddToProject(IBuildingBlock buildingBlockToAdd)
       {
          return AddToProject(buildingBlockToAdd as TBuildingBlock);
@@ -87,12 +83,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand AddToProject(TBuildingBlock buildingBlockToAdd)
       {
          return AddToProject(buildingBlockToAdd, Context.CurrentProject, null);
-      }
-
-      public IMoBiCommand Merge(IBuildingBlock buildingBlockToMerge, IBuildingBlock targetBuildingBlock)
-      {
-         return Merge(buildingBlockToMerge.DowncastTo<TBuildingBlock>(),
-            targetBuildingBlock.DowncastTo<TBuildingBlock>());
       }
 
       public override IMoBiCommand Remove(TBuildingBlock buildingBlockToRemove, MoBiProject project,

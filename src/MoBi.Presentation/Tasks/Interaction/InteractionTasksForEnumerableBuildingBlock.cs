@@ -26,8 +26,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          
       }
 
-      protected abstract IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TBuilder builder, TBuildingBlock targetBuildingBlock, string originalBuilderName = null);
-
       protected MoBiMacroCommand CreateAddBuilderMacroCommand(TBuilder builder, TBuildingBlock targetBuildingBlock)
       {
          var objectType = _interactionTaskContext.GetTypeFor<TBuilder>();

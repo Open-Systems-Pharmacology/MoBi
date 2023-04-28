@@ -238,11 +238,11 @@ namespace MoBi.Presentation
          container.Register<IContextMenuForBuildingBlock<MoleculeStartValuesBuildingBlock>, ContextMenuForMoleculeStartValuesBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<ExpressionProfileBuildingBlock>, ContextMenuForExpressionProfileBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IndividualBuildingBlock>, ContextMenuForIndividualBuildingBlock>();
-         container.Register<IContextMenuForBuildingBlock<MoBiReactionBuildingBlock>, ContextMenuForMergableBuildingBlock<MoBiReactionBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<ObserverBuildingBlock>, ContextMenuForMergableBuildingBlock<ObserverBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<PassiveTransportBuildingBlock>, ContextMenuForMergableBuildingBlock<PassiveTransportBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<MoleculeBuildingBlock>, ContextMenuForMergableBuildingBlock<MoleculeBuildingBlock>>();
-         container.Register<IContextMenuForBuildingBlock<EventGroupBuildingBlock>, ContextMenuForMergableBuildingBlock<EventGroupBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<MoBiReactionBuildingBlock>, ContextMenuForBuildingBlock<MoBiReactionBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<ObserverBuildingBlock>, ContextMenuForBuildingBlock<ObserverBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<PassiveTransportBuildingBlock>, ContextMenuForBuildingBlock<PassiveTransportBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<MoleculeBuildingBlock>, ContextMenuForBuildingBlock<MoleculeBuildingBlock>>();
+         container.Register<IContextMenuForBuildingBlock<EventGroupBuildingBlock>, ContextMenuForBuildingBlock<EventGroupBuildingBlock>>();
 
          container.Register(typeof(IContextMenuForBuildingBlock<>), typeof(ContextMenuForBuildingBlock<>));
          container.Register(typeof(IContextMenuFor<>), typeof(ContextMenuFor<>));

@@ -2,7 +2,6 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Helpers;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -16,16 +15,14 @@ namespace MoBi.Presentation
       private IInteractionTaskContext _interactionTaskContext;
       private IEditTasksForBuildingBlock<MoleculeBuildingBlock> _editTasksForBuildingBlock;
       private IInteractionTasksForBuilder<MoleculeBuilder> _task;
-      private IMoleculeBuildingBlockCloneManager _moleculeBuildingBlockCloneManager;
 
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _editTasksForBuildingBlock = A.Fake<IEditTasksForBuildingBlock<MoleculeBuildingBlock>>();
          _task = A.Fake<IInteractionTasksForBuilder<MoleculeBuilder>>();
-         _moleculeBuildingBlockCloneManager = A.Fake<IMoleculeBuildingBlockCloneManager>();
 
-         sut = new InteractionTasksForMoleculeBuildingBlock(_interactionTaskContext, _editTasksForBuildingBlock, _task, _moleculeBuildingBlockCloneManager);
+         sut = new InteractionTasksForMoleculeBuildingBlock(_interactionTaskContext, _editTasksForBuildingBlock, _task);
       }
    }
 

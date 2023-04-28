@@ -50,12 +50,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          IEditTasksForBuildingBlock<MoleculeStartValuesBuildingBlock> editTask,
          IMoleculeStartValuesCreator startValuesCreator,
          IImportedQuantityToMoleculeStartValueMapper dtoMapper,
-         IMoleculeStartValueBuildingBlockMergeManager startValueBuildingBlockMergeManager,
+         IMoleculeStartValueBuildingBlockExtendManager startValueBuildingBlockExtendManager,
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IReactionDimensionRetriever dimensionRetriever,
          IMoBiFormulaTask moBiFormulaTask,
          IMoBiSpatialStructureFactory spatialStructureFactory, IMoleculeStartValuePathTask moleculeStartValuePathTask, IMoleculeResolver moleculeResolver)
-         : base(interactionTaskContext, editTask, startValueBuildingBlockMergeManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, moleculeStartValuePathTask)
+         : base(interactionTaskContext, editTask, startValueBuildingBlockExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, moleculeStartValuePathTask)
       {
          _startValuesCreator = startValuesCreator;
          _dimensionRetriever = dimensionRetriever;
@@ -253,11 +253,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected override IMoBiCommand GenerateAddCommand(MoleculeStartValuesBuildingBlock targetBuildingBlock, MoleculeStartValue startValueToAdd)
       {
          return new AddMoleculeStartValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
-      }
-
-      protected override bool AreEquivalentItems(MoleculeStartValue first, MoleculeStartValue second)
-      {
-         return first.IsEquivalentTo(second);
       }
 
       protected override IMoBiCommand GenerateRemoveCommand(MoleculeStartValuesBuildingBlock targetBuildingBlock, MoleculeStartValue startValueToRemove)

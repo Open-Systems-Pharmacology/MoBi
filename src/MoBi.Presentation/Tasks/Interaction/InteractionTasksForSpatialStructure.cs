@@ -29,12 +29,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Remove(buildingBlockToRemove, project, buildingBlock, silent);
       }
 
-
-      public override IMoBiCommand Merge(MoBiSpatialStructure buildingBlockToMerge, MoBiSpatialStructure targetBuildingBlock)
-      {
-         throw new MoBiException(AppConstants.Exceptions.MergingSpatialStructuresIsNotSupported);
-      }
-
+      
       public override MoBiSpatialStructure CreateNewEntity(MoBiProject moleculeBuildingBlock)
       {
          return _spatialStructureFactory.CreateDefault(spatialStructureName:string.Empty);

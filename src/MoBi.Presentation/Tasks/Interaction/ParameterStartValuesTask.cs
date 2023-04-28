@@ -37,10 +37,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IImportedQuantityToParameterStartValueMapper dtoToQuantityToParameterStartValueMapper,
          IParameterResolver parameterResolver,
-         IParameterStartValueBuildingBlockMergeManager parameterStartValueBuildingBlockMergeManager,
+         IParameterStartValueBuildingBlockExtendManager parameterStartValueBuildingBlockExtendManager,
          IMoBiFormulaTask moBiFormulaTask,
          IMoBiSpatialStructureFactory spatialStructureFactory, IParameterStartValuePathTask parameterStartValuePathTask)
-         : base(interactionTaskContext, editTask, parameterStartValueBuildingBlockMergeManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterStartValueMapper, parameterStartValuePathTask)
+         : base(interactionTaskContext, editTask, parameterStartValueBuildingBlockExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterStartValueMapper, parameterStartValuePathTask)
       {
          _startValuesCreator = startValuesCreator;
          _parameterResolver = parameterResolver;
@@ -182,10 +182,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      protected override bool AreEquivalentItems(ParameterStartValue first, ParameterStartValue second)
-      {
-         return first.IsEquivalentTo(second);
-      }
 
       protected override IMoBiCommand GenerateRemoveCommand(ParameterStartValuesBuildingBlock targetBuildingBlock, ParameterStartValue startValueToRemove)
       {

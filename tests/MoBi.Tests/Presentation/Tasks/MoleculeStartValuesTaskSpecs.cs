@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Tasks
          _moleculeResolver = A.Fake<IMoleculeResolver>();
 
          sut = new MoleculeStartValuesTask(_context, _editTask, _moleculeStartValuesCreator,
-            new ImportedQuantityToMoleculeStartValueMapper(_moleculeStartValuesCreator), A.Fake<IMoleculeStartValueBuildingBlockMergeManager>(), _cloneManagerForBuildingBlock, _reactionDimensionRetriever, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new MoleculeStartValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver);
+            new ImportedQuantityToMoleculeStartValueMapper(_moleculeStartValuesCreator), A.Fake<IMoleculeStartValueBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, _reactionDimensionRetriever, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new MoleculeStartValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver);
       }
    }
 

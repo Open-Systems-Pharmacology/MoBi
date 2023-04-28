@@ -21,16 +21,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       void Edit(MoleculeBuildingBlock moleculeBuildingBlock, MoleculeBuilder moleculeBuilder);
    }
 
-   public class InteractionTasksForMoleculeBuildingBlock : InteractionTaskForCloneMergeBuildingBlock<MoleculeBuildingBlock, MoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
+   public class InteractionTasksForMoleculeBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<MoleculeBuildingBlock, MoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
    {
       private readonly IEditTasksForBuildingBlock<MoleculeBuildingBlock> _editTaskForBuildingBlock;
 
       public InteractionTasksForMoleculeBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<MoleculeBuildingBlock> editTask,
-         IInteractionTasksForBuilder<MoleculeBuilder> builderTask,
-         IMoleculeBuildingBlockCloneManager moleculeBuildingBlockCloneManager)
-         : base(interactionTaskContext, editTask, builderTask, moleculeBuildingBlockCloneManager)
+         IInteractionTasksForBuilder<MoleculeBuilder> builderTask)
+         : base(interactionTaskContext, editTask, builderTask)
       {
          _editTaskForBuildingBlock = editTask;
       }
@@ -78,15 +77,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          _editTaskForBuildingBlock.EditBuildingBlock(moleculeBuildingBlock);
          Context.PublishEvent(new EntitySelectedEvent(moleculeBuilder, this));
-      }
-
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(MoleculeBuilder builder, MoleculeBuildingBlock targetBuildingBlock, string originalBuilderName = null)
-      {
-         var defaultStartFormulaDecoder = new DefaultStartFormulaDecoder();
-         var macroCommand = base.GenerateAddCommandAndUpdateFormulaReferences(builder, targetBuildingBlock);
-         macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, builder, defaultStartFormulaDecoder));
-
-         return macroCommand;
       }
    }
 }
