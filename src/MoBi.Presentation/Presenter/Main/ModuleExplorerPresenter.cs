@@ -125,7 +125,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private int rootNodeTypeComparison(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
       {
-         if (node1.Tag.Equals(MoBiRootNodeTypes.ExtensionModulesFolder))
+         if (node1.Tag.Equals(MoBiRootNodeTypes.ModulesFolder))
             return 1;
 
          return -1;
@@ -146,8 +146,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private static bool nodeTagIsModuleRootNode(ITreeNode<IWithName> node)
       {
-         var rootNodeList = new List<IWithName> { MoBiRootNodeTypes.ExtensionModulesFolder, MoBiRootNodeTypes.PKSimModuleFolder };
-         return rootNodeList.Contains(node?.Tag);
+         return Equals(node?.Tag, MoBiRootNodeTypes.ModulesFolder);
       }
 
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode) => _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
@@ -182,8 +181,7 @@ namespace MoBi.Presentation.Presenter.Main
          {
             _view.DestroyNodes();
 
-            _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.PKSimModuleFolder));
-            _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExtensionModulesFolder));
+            _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.IndividualsFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
@@ -206,7 +204,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void addModule(Module module)
       {
-         _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ExtensionModulesFolder)));
+         _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ModulesFolder)));
       }
 
       public void Handle(AddedEvent eventToHandle)

@@ -235,9 +235,9 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.Individual);
 
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.Module)
-            .WithId(MenuBarItemIds.NewExtensionModule)
+            .WithId(MenuBarItemIds.NewModule)
             .WithCommand<NewModuleWithBuildingBlocksUICommand>(_container)
-            .WithDescription(ToolTips.ModelingRibbon.CreateExtensionModule)
+            .WithDescription(ToolTips.ModelingRibbon.CreateModule)
             .WithIcon(ApplicationIcons.Module);
 
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.ExpressionProfile)
