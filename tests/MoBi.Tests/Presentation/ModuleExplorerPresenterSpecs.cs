@@ -185,17 +185,14 @@ namespace MoBi.Presentation
       private ITreeNode<SpatialStructure> _spatialStructureA;
       private ITreeNode<RootNodeType> _spatialStructureRootNode;
       private ITreeNode<RootNodeType> _moduleNode;
-      private ITreeNode<RootNodeType> _pkSimModuleNode;
-      private ITreeNode<RootNodeType> _extensionModuleNode;
 
       protected override void Context()
       {
          base.Context();
-         _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.PKSimModuleFolder);
+         
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _spatialStructureRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.SpatialStructureFolder);
-         _pkSimModuleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.PKSimModuleFolder);
-         _extensionModuleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExtensionModulesFolder);
+         _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder);
       }
 
       [Observation]
@@ -203,13 +200,6 @@ namespace MoBi.Presentation
       {
          sut.OrderingComparisonFor(_moduleNode, _spatialStructureRootNode).ShouldBeEqualTo(-1);
          sut.OrderingComparisonFor(_moduleNode, _spatialStructureA).ShouldBeEqualTo(-1);
-      }
-
-      [Observation]
-      public void should_order_pksim_module_first()
-      {
-         sut.OrderingComparisonFor(_pkSimModuleNode, _extensionModuleNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor((_extensionModuleNode), _pkSimModuleNode).ShouldBeEqualTo(1);
       }
    }
 
@@ -361,7 +351,7 @@ namespace MoBi.Presentation
          _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.MoleculeStartValuesCollection.ElementAt(0))).ShouldBeEqualTo(1);
 
          // Make sure nodes have not been added for null items
-         _allNodesAdded.Count.ShouldBeEqualTo(11);
+         _allNodesAdded.Count.ShouldBeEqualTo(10);
       }
    }
 
