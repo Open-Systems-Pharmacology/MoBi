@@ -28,10 +28,10 @@
     <PackageReference Include="Northwoods.GoWin" Version="5.2.0" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.1.97" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="11.1.97" />
-    <PackageReference Include="OSPSuite.Core" Version="11.1.97" />  
-   </ItemGroup>
+    <PackageReference Include="OSPSuite.Presentation" Version="11.2.155" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="11.2.155" />
+    <PackageReference Include="OSPSuite.Core" Version="11.2.155" />  
+  </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
