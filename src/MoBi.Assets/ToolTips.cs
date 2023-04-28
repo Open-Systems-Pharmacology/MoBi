@@ -69,7 +69,7 @@ namespace MoBi.Assets
       public static class ModelingRibbon
       {
          public static readonly string CreateIndividual = "Create a new Individual";
-         public static readonly string CreateExtensionModule = "Create a new Extension Module";
+         public static readonly string CreateModule = "Create a new Module";
          public static readonly string CreateExpressionProfile = "Create a new Expression Profile";
       }
 
