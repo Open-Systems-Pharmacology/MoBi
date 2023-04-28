@@ -825,7 +825,7 @@ namespace MoBi.Assets
       {
          public static readonly string ObservedData = "Observed Data";
          public static readonly string Individual = Captions.Individual;
-         public static readonly string NewExtensionModule = "Extension Module";
+         public static readonly string NewModule = "Module";
          public static readonly string Simulation = MenuNames.Simulation;
          public static readonly string Molecules = "Molecules";
          public static readonly string Reactions = "Reactions";
@@ -1643,8 +1643,7 @@ namespace MoBi.Assets
          public static readonly string Individuals = "Individuals";
          public static readonly string OriginData = "Origin Data";
          public static readonly string PKSimVersion = "PK-Sim Version";
-         public static readonly string PKSimModules = "PK-Sim Modules";
-         public static readonly string ExtensionModulesFolder = "Extension Modules";
+         public static readonly string ModulesFolder = "Modules";
          public static readonly string Module = "Module";
          public static readonly string CreateBuildingBlocks = "Create Building Blocks";
          public static readonly string AddSelectedBuildingBlocks = "Add Selected Building Blocks";

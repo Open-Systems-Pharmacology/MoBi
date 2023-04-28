@@ -24,7 +24,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId NewIndividual = createMenuBarItemId("NewIndividual");
       public static MenuBarItemId NewMetabolizingEnzyme = createMenuBarItemId("NewMetabolizingEnzyme");
       public static MenuBarItemId NewExpressionProfile = createMenuBarItemId("NewExpressionProfile");
-      public static MenuBarItemId NewExtensionModule = createMenuBarItemId("NewExtensionModule");
+      public static MenuBarItemId NewModule = createMenuBarItemId("NewModule");
       public static MenuBarItemId NewTransportProtein = createMenuBarItemId("NewTransportProtein");
       public static MenuBarItemId NewSpecificBindingPartner = createMenuBarItemId("NewSpecificBindingPartner");
       public static MenuBarItemId Run = createMenuBarItemId("Run");
