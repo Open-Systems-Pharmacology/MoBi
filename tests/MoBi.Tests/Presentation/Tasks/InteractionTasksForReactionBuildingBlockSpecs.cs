@@ -5,6 +5,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks
@@ -31,12 +32,9 @@ namespace MoBi.Presentation.Tasks
 
    public class When_creating_a_new_building_block : concern_for_InteractionTasksForReactionBuildingBlock
    {
-      private MoBiProject _moBiProject;
-
       protected override void Because()
       {
-         _moBiProject = A.Fake<MoBiProject>();
-         sut.CreateNewEntity(_moBiProject);
+         sut.CreateNewEntity(new Module());
       }
 
       [Observation]

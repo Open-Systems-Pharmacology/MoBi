@@ -102,6 +102,7 @@ namespace MoBi.Presentation.Tasks
    {
       private MoBiProject _project;
       private IMoBiSimulation _simulation;
+      private Module _module;
 
       protected override void Context()
       {
@@ -109,13 +110,15 @@ namespace MoBi.Presentation.Tasks
          _project = DomainHelperForSpecs.NewProject();
          _simulation = A.Fake<IMoBiSimulation>();
          _project.AddSimulation(_simulation);
+         _module = new Module { _moleculeStartValueBuildingBlock };
          A.CallTo(() => _simulation.IsCreatedBy(_moleculeStartValueBuildingBlock)).Returns(true);
+         A.CallTo(() => _context.Context.CurrentProject).Returns(_project);
       }
 
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.Remove(_moleculeStartValueBuildingBlock, _project, null)).ShouldThrowAn<MoBiException>();
+         The.Action(() => sut.Remove(_moleculeStartValueBuildingBlock, _module, null)).ShouldThrowAn<MoBiException>();
       }
    }
 

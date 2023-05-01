@@ -2,6 +2,7 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
@@ -12,13 +13,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForBuildingBlock<ExpressionProfileBuildingBlock>, IInteractionTasksForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>
+   public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForBuildingBlock<MoBiProject, ExpressionProfileBuildingBlock>, IInteractionTasksForPathAndValueEntity<MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter>
    {
       IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML();
       IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock);
    }
 
-   public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTasksForPathAndValueEntity<ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
+   public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTasksForPathAndValueEntity<MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
    {
       private readonly IEditTasksForExpressionProfileBuildingBlock _editTaskForExpressionProfileBuildingBlock;
       private readonly IPKSimStarter _pkSimStarter;
@@ -39,7 +40,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock)
       {
          var expressionProfileUpdate = _pkSimStarter.UpdateExpressionProfileFromDatabase(buildingBlock);
-         
+
          if (expressionProfileUpdate == null)
             return new MoBiEmptyCommand();
 
@@ -70,7 +71,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          var existingObjectsInParent = Context.CurrentProject.All<ExpressionProfileBuildingBlock>();
          var forbiddenValues = _editTask.GetForbiddenNames(buildingBlockToClone, existingObjectsInParent).ToList();
          var suggestedCategory = $"{buildingBlockToClone.Category} - {AppConstants.Clone}";
-            
+
          return _editTaskForExpressionProfileBuildingBlock.NewNameFromSuggestions(buildingBlockToClone.MoleculeName, buildingBlockToClone.Species, suggestedCategory, buildingBlockToClone.Type, forbiddenValues);
       }
    }

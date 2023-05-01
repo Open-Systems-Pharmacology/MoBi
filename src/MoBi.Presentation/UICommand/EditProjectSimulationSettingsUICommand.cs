@@ -7,10 +7,10 @@ namespace MoBi.Presentation.UICommand
 {
    public class EditProjectSimulationSettingsUICommand : IUICommand
    {
-      private readonly IInteractionTasksForBuildingBlock<SimulationSettings> _interactionTask;
+      private readonly IInteractionTasksForBuildingBlock<MoBiProject, SimulationSettings> _interactionTask;
       private readonly IMoBiContext _context;
 
-      public EditProjectSimulationSettingsUICommand(IInteractionTasksForBuildingBlock<SimulationSettings> interactionTask, IMoBiContext context)
+      public EditProjectSimulationSettingsUICommand(IInteractionTasksForBuildingBlock<MoBiProject, SimulationSettings> interactionTask, IMoBiContext context)
       {
          _interactionTask = interactionTask;
          _context = context;

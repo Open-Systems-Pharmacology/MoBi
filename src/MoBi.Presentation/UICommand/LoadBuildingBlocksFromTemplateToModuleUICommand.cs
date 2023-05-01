@@ -7,11 +7,11 @@ namespace MoBi.Presentation.UICommand
 {
    public class LoadBuildingBlocksFromTemplateToModuleUICommand : ObjectUICommand<Module>
    {
-      private readonly IInteractionTasksForModuleBuildingBlocks _interactionTasks;
+      private readonly IInteractionTasksForModule _interactionTasks;
 
-      public LoadBuildingBlocksFromTemplateToModuleUICommand(IInteractionTasksForModuleBuildingBlocks interactionTasksForModuleModule, IMoBiContext context)
+      public LoadBuildingBlocksFromTemplateToModuleUICommand(IInteractionTasksForModule interactionTasksForModule, IMoBiContext context)
       {
-         _interactionTasks = interactionTasksForModuleModule;
+         _interactionTasks = interactionTasksForModule;
       }
 
       protected override void PerformExecute()

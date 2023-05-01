@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -15,6 +13,7 @@ using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -22,11 +21,12 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
    public abstract class StartValuePresenter<TView, TPresenter, TBuildingBlock, TStartValueDTO, TStartValue> :
-      PathWithValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TStartValue, TStartValueDTO>, IStartValuesPresenter<TStartValueDTO>
+      PathWithValueBuildingBlockPresenter<TView, TPresenter, Module, TBuildingBlock, TStartValue, TStartValueDTO>, IStartValuesPresenter<TStartValueDTO>
       where TView : IView<TPresenter>, IStartValuesView<TStartValueDTO>
       where TPresenter : IPresenter
       where TStartValue : PathAndValueEntity, IStartValue, IUsingFormula
@@ -34,7 +34,7 @@ namespace MoBi.Presentation.Presenter
       where TBuildingBlock : class, IBuildingBlock<TStartValue>, IStartValuesBuildingBlock<TStartValue>
    {
       protected readonly IStartValueToStartValueDTOMapper<TStartValue, TStartValueDTO> _startValueMapper;
-      
+
       private readonly IStartValuesTask<TBuildingBlock, TStartValue> _startValuesTask;
       protected BindingList<TStartValueDTO> _startValueDTOs;
       private readonly IEmptyStartValueCreator<TStartValue> _emptyStartValueCreator;
@@ -86,10 +86,10 @@ namespace MoBi.Presentation.Presenter
       {
          _legendPresenter.AddLegendItems(new[]
          {
-           new LegendItemDTO {Description = AppConstants.Captions.CouldNotResolveSource, Color = MoBiColors.CannotResolve},  
-           new LegendItemDTO {Description = AppConstants.Captions.StartValueIsModified, Color = MoBiColors.Modified},  
-           new LegendItemDTO {Description = AppConstants.Captions.NewlyAddedValues, Color = MoBiColors.Extended}
-         } );
+            new LegendItemDTO { Description = AppConstants.Captions.CouldNotResolveSource, Color = MoBiColors.CannotResolve },
+            new LegendItemDTO { Description = AppConstants.Captions.StartValueIsModified, Color = MoBiColors.Modified },
+            new LegendItemDTO { Description = AppConstants.Captions.NewlyAddedValues, Color = MoBiColors.Extended }
+         });
 
          _view.AddLegendView(_legendPresenter.View);
       }
@@ -129,7 +129,7 @@ namespace MoBi.Presentation.Presenter
          _startValueDTOs.Insert(0, _startValueMapper.MapFrom(
             startValue: _emptyStartValueCreator.CreateEmptyStartValue(_startValuesTask.GetDefaultDimension()),
             buildingBlock: _buildingBlock
-            ));
+         ));
          bindToView();
       }
 
@@ -215,7 +215,7 @@ namespace MoBi.Presentation.Presenter
 
       public void RemoveStartValue(TStartValueDTO elementToRemove)
       {
-         bulkRemove(new List<TStartValueDTO> {elementToRemove});
+         bulkRemove(new List<TStartValueDTO> { elementToRemove });
       }
 
       private void deleteUnresolved()
@@ -242,7 +242,7 @@ namespace MoBi.Presentation.Presenter
 
          // Edit null building block happens when creating a simulation
          // and no Start Value Building Block exists
-         if(_buildingBlock != null)
+         if (_buildingBlock != null)
             _originalStartValues.AddRange(_buildingBlock);
 
          reBind(buildingBlock);
@@ -324,7 +324,7 @@ namespace MoBi.Presentation.Presenter
       {
          return (color == MoBiColors.Default);
       }
-      
+
       public bool IsNewFilterOn { get; set; }
 
       public bool IsModifiedFilterOn { get; set; }

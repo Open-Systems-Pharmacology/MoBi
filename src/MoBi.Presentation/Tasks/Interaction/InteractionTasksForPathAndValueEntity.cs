@@ -11,7 +11,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForPathAndValueEntity<in TBuildingBlock, in TBuilder>
+   public interface IInteractionTasksForPathAndValueEntity<TParent, in TBuildingBlock, in TBuilder>
    {
       /// <summary>
       ///    Adds a new formula to the building block formula cache and assigns it to the builder
@@ -50,9 +50,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetValue(TBuildingBlock buildingBlock, double? valueInDisplayUnit, TBuilder builder);
    }
 
-   public abstract class InteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder>
+   public abstract class InteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder>
       where TBuildingBlock : class, IBuildingBlock, IBuildingBlock<TBuilder>
-      where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit
+      where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TParent : class, IObjectBase
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
 

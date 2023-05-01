@@ -1,4 +1,4 @@
-﻿using MoBi.Core.Services;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Presenter
       void LoadExpressionFromPKSimDatabaseQuery();
    }
 
-   public class ExpressionProfileBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
+   public class ExpressionProfileBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
       IExpressionProfileBuildingBlockPresenter, IListener<RenamedEvent>
    {
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;
@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(RenamedEvent eventToHandle)
       {
-         if(Equals(eventToHandle.RenamedObject, _buildingBlock))
+         if (Equals(eventToHandle.RenamedObject, _buildingBlock))
             rebind();
       }
    }

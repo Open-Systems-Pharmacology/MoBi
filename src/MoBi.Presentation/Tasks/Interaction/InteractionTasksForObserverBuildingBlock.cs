@@ -1,12 +1,11 @@
-﻿using MoBi.Core.Commands;
-using MoBi.Core.Domain.Services;
+﻿using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForObserverBuildingBlock : InteractionTasksForEnumerableBuildingBlock<ObserverBuildingBlock, ObserverBuilder>
+   public class InteractionTasksForObserverBuildingBlock : InteractionTasksForEnumerableBuildingBlock<Module, ObserverBuildingBlock, ObserverBuilder>
    {
       private readonly IMoBiFormulaTask _moBiFormulaTask;
 

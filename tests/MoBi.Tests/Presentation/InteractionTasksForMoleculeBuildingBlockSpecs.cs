@@ -6,6 +6,7 @@ using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
@@ -29,21 +30,22 @@ namespace MoBi.Presentation
    public class When_removing_molecule_building_block_that_is_referred_to_in_another_building_block : concern_for_InteractionTasksForMoleculeBuildingBlock
    {
       private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private MoBiProject _project;
+      private Module _module;
 
       protected override void Context()
       {
          base.Context();
          _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
-         _project = DomainHelperForSpecs.NewProject();
-
-         _project.AddBuildingBlock(new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = _moleculeBuildingBlock.Id, SpatialStructureId = ""});
+         _module = new Module
+         {
+            new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = _moleculeBuildingBlock.Id, SpatialStructureId = ""}
+         };
       }
 
       [Observation]
       public void should_throw_mobi_exception()
       {
-         The.Action(() => sut.Remove(_moleculeBuildingBlock, _project, null, false)).ShouldThrowAn<MoBiException>();
+         The.Action(() => sut.Remove(_moleculeBuildingBlock, _module, null, false)).ShouldThrowAn<MoBiException>();
       }
    }
 }

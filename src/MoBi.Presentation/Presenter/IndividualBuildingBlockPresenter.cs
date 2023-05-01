@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation.DTO;
+﻿using MoBi.Core.Domain.Model;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
@@ -14,7 +15,7 @@ namespace MoBi.Presentation.Presenter
       void Edit(IndividualBuildingBlock individualBuildingBlock);
    }
 
-   public class IndividualBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, IIndividualBuildingBlockPresenter
+   public class IndividualBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, MoBiProject, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, IIndividualBuildingBlockPresenter
    {
       private readonly IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper _individualToDTOMapper;
       private IndividualBuildingBlockDTO _individualBuildingBlockDTO;

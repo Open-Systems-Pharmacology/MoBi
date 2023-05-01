@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -10,12 +9,12 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForSimulationSettings : IInteractionTasksForBuildingBlock<SimulationSettings>
+   public interface IInteractionTasksForSimulationSettings : IInteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>
    {
       IMoBiCommand UpdateDefaultSimulationSettingsInProject();
    }
 
-   public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<SimulationSettings>, IInteractionTasksForSimulationSettings
+   public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>, IInteractionTasksForSimulationSettings
    {
       private readonly ISimulationSettingsFactory _simulationSettingsFactory;
 

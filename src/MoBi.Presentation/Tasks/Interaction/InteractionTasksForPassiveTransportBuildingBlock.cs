@@ -1,9 +1,10 @@
 ﻿using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForPassiveTransportBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<PassiveTransportBuildingBlock, TransportBuilder>
+   public class InteractionTasksForPassiveTransportBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, PassiveTransportBuildingBlock, TransportBuilder>
    {
       public InteractionTasksForPassiveTransportBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
@@ -11,7 +12,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInteractionTasksForBuilder<TransportBuilder> builderTask)
          : base(interactionTaskContext, editTask, builderTask)
       {
-
       }
    }
 }

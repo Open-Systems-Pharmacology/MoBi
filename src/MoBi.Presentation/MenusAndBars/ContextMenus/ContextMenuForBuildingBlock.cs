@@ -1,13 +1,9 @@
-using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
 using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
@@ -25,14 +21,5 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(AddToJournal(buildingBlock));
          return this;
       }
-
-      protected override IMenuBarItem CreateDeleteItemFor(T objectBase)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithIcon(ApplicationIcons.Delete)
-            .WithRemoveCommand(_context.CurrentProject, objectBase);
-      }
-
-
    }
 }

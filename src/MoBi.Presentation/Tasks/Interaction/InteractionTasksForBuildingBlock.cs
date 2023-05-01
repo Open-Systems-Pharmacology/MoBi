@@ -1,12 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -16,18 +16,18 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand AddToProject(IBuildingBlock buildingBlockToAdd);
    }
 
-   public interface IInteractionTasksForBuildingBlock<T> : IInteractionTasksForChildren<MoBiProject, T>,
-      IInteractionTasksForBuildingBlock where T : class, IObjectBase
+   public interface IInteractionTasksForBuildingBlock<TParent, T> : IInteractionTasksForChildren<TParent, T>,
+      IInteractionTasksForBuildingBlock where T : class, IObjectBase where TParent : class
    {
       IMoBiCommand AddNew();
       IMoBiCommand Clone(T buildingBlockToClone);
       IMoBiCommand AddToProject(T buildingBlockToAdd);
    }
 
-   public abstract class InteractionTasksForBuildingBlock<TBuildingBlock> :
-      InteractionTasksForChildren<MoBiProject, TBuildingBlock, IEditTasksForBuildingBlock<TBuildingBlock>>,
-      IInteractionTasksForBuildingBlock<TBuildingBlock>
-      where TBuildingBlock : class, IBuildingBlock
+   public abstract class InteractionTasksForBuildingBlock<TParent, TBuildingBlock> :
+      InteractionTasksForChildren<TParent, TBuildingBlock, IEditTasksForBuildingBlock<TBuildingBlock>>,
+      IInteractionTasksForBuildingBlock<TParent, TBuildingBlock>
+      where TBuildingBlock : class, IBuildingBlock where TParent : class, IObjectBase
    {
       protected InteractionTasksForBuildingBlock(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask)
@@ -37,7 +37,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand AddNew()
       {
-         return AddNew(Context.CurrentProject, null);
+         throw new NotImplementedException();
+         // return AddNew(Context.CurrentProject, null);
       }
 
       /// <summary>
@@ -50,7 +51,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          if (string.IsNullOrEmpty(name))
             return new MoBiEmptyCommand();
-         
+
          var clone = InteractionTask.Clone(buildingBlockToClone).WithName(name);
 
          return AddToProject(clone);
@@ -71,13 +72,14 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand AddToProject(TBuildingBlock buildingBlockToAdd)
       {
-         return AddToProject(buildingBlockToAdd, Context.CurrentProject, null);
+         throw new NotImplementedException();
+         // return AddToProject(buildingBlockToAdd, Context.CurrentProject, null);
       }
 
-      public override IMoBiCommand Remove(TBuildingBlock buildingBlockToRemove, MoBiProject project,
+      public override IMoBiCommand Remove(TBuildingBlock buildingBlockToRemove, TParent project,
          IBuildingBlock buildingBlock, bool silent)
       {
-         var referringSimulations = project.SimulationsCreatedUsing(buildingBlockToRemove);
+         var referringSimulations = Context.CurrentProject.SimulationsCreatedUsing(buildingBlockToRemove);
          if (referringSimulations.Any())
             throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name,
                referringSimulations.Select(simulation => simulation.Name)));
@@ -85,13 +87,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Remove(buildingBlockToRemove, project, buildingBlock, silent);
       }
 
-      public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, MoBiProject parent,
+      public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, TParent parent,
          IBuildingBlock buildingBlock)
       {
          return new RemoveBuildingBlockCommand<TBuildingBlock>(objectToRemove);
       }
 
-      public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, MoBiProject parent,
+      public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, TParent parent,
          IBuildingBlock buildingBlock)
       {
          return new AddBuildingBlockCommand<TBuildingBlock>(itemToAdd);
@@ -107,7 +109,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _editTask.DowncastTo<IEditTasksForBuildingBlock<TBuildingBlock>>().EditBuildingBlock(buildingBlock);
       }
 
-      protected override void SetAddCommandDescription(TBuildingBlock newEntity, MoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand, IBuildingBlock buildingBlock)
+      protected override void SetAddCommandDescription(TBuildingBlock newEntity, TParent parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand, IBuildingBlock buildingBlock)
       {
          addCommand.Description = AppConstants.Commands.AddToProjectDescription(addCommand.ObjectType, newEntity.Name);
          macroCommand.Description = addCommand.Description;

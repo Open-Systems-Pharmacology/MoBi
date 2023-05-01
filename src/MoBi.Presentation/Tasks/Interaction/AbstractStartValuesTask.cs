@@ -1,13 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -21,7 +20,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTasksForPathAndValueEntity<TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
+   public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
       where TBuildingBlock : class, IBuildingBlock, IStartValuesBuildingBlock<TStartValue>
       where TStartValue : StartValueBase, IStartValue
    {
@@ -45,32 +44,33 @@ namespace MoBi.Presentation.Tasks.Interaction
          _startValuePathTask = startValuePathTask;
       }
 
-      public override IMoBiCommand AddNew(MoBiProject project, IBuildingBlock buildingBlockToAddTo)
+      public override IMoBiCommand AddNew(Module module, IBuildingBlock buildingBlockToAddTo)
       {
-         if (!project.MoleculeBlockCollection.Any() || !project.SpatialStructureCollection.Any())
-            throw new MoBiException(AppConstants.Exceptions.UnableToCreateStartValues);
-
-         TBuildingBlock newEntity;
-         using (var createPresenter = ApplicationController.Start<ICreateStartValuesPresenter<TBuildingBlock>>())
-         {
-            newEntity = createPresenter.Create();
-         }
-
-         if (newEntity == null)
-            return new MoBiEmptyCommand();
-
-         var macroCommand = new MoBiMacroCommand
-         {
-            ObjectType = ObjectName,
-            CommandType = AppConstants.Commands.AddCommand
-         };
-         macroCommand.Add(GetAddCommand(newEntity, project, buildingBlockToAddTo).Run(Context));
-
-         //Icon may depend on name. 
-         newEntity.Icon = InteractionTask.IconFor(newEntity);
-         macroCommand.Description = AppConstants.Commands.AddToProjectDescription(ObjectName, newEntity.Name);
-         _editTask.EditBuildingBlock(newEntity);
-         return macroCommand;
+         throw new NotImplementedException();
+         // if (!project.MoleculeBlockCollection.Any() || !project.SpatialStructureCollection.Any())
+         //    throw new MoBiException(AppConstants.Exceptions.UnableToCreateStartValues);
+         //
+         // TBuildingBlock newEntity;
+         // using (var createPresenter = ApplicationController.Start<ICreateStartValuesPresenter<TBuildingBlock>>())
+         // {
+         //    newEntity = createPresenter.Create();
+         // }
+         //
+         // if (newEntity == null)
+         //    return new MoBiEmptyCommand();
+         //
+         // var macroCommand = new MoBiMacroCommand
+         // {
+         //    ObjectType = ObjectName,
+         //    CommandType = AppConstants.Commands.AddCommand
+         // };
+         // macroCommand.Add(GetAddCommand(newEntity, project, buildingBlockToAddTo).Run(Context));
+         //
+         // //Icon may depend on name. 
+         // newEntity.Icon = InteractionTask.IconFor(newEntity);
+         // macroCommand.Description = AppConstants.Commands.AddToProjectDescription(ObjectName, newEntity.Name);
+         // _editTask.EditBuildingBlock(newEntity);
+         // return macroCommand;
       }
 
       protected override double? ValueFromBuilder(TStartValue builder)

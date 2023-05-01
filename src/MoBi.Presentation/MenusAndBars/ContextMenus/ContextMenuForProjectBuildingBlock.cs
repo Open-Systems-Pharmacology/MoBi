@@ -28,6 +28,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return this;
       }
 
+      protected override IMenuBarItem CreateDeleteItemFor(TBuildingBlock objectBase)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
+            .WithIcon(ApplicationIcons.Delete)
+            .WithRemoveCommand(_context.CurrentProject, objectBase);
+      }
+
       private IMenuBarItem createCloneMenuItem(TBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())

@@ -1,4 +1,3 @@
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.UICommands;
@@ -7,9 +6,9 @@ namespace MoBi.Presentation.UICommand
 {
    public class RemoveModuleUICommand : ObjectUICommand<Module>
    {
-      private readonly IInteractionTasksForModuleBuildingBlocks _interactionTasks;
+      private readonly IInteractionTasksForModule _interactionTasks;
 
-      public RemoveModuleUICommand(IInteractionTasksForModuleBuildingBlocks interactionTasksForModule)
+      public RemoveModuleUICommand(IInteractionTasksForModule interactionTasksForModule)
       {
          _interactionTasks = interactionTasksForModule;
       }
