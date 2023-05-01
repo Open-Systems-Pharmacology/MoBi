@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Events;
+using MoBi.Core.Exceptions;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
@@ -63,14 +64,15 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand Remove(MoleculeBuildingBlock buildingBlockToRemove, Module module, IBuildingBlock buildingBlock, bool silent)
       {
-         throw new NotImplementedException();
-         // var referringStartValuesBuildingBlocks = project.ReferringStartValuesBuildingBlocks(buildingBlockToRemove);
-         // if (referringStartValuesBuildingBlocks.Any())
-         // {
-         //    throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));
-         // }
-         //
-         // return base.Remove(buildingBlockToRemove, project, buildingBlock, silent);
+         var project = Context.CurrentProject;
+         
+         var referringStartValuesBuildingBlocks = project.ReferringStartValuesBuildingBlocks(buildingBlockToRemove);
+         if (referringStartValuesBuildingBlocks.Any())
+         {
+            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));
+         }
+         
+         return base.Remove(buildingBlockToRemove, module, buildingBlock, silent);
       }
 
       public void Edit(MoleculeBuildingBlock moleculeBuildingBlock, MoleculeBuilder moleculeBuilder)

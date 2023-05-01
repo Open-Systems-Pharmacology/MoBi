@@ -16,13 +16,16 @@ namespace MoBi.Presentation
       private IInteractionTaskContext _interactionTaskContext;
       private IEditTasksForBuildingBlock<MoleculeBuildingBlock> _editTasksForBuildingBlock;
       private IInteractionTasksForBuilder<MoleculeBuilder> _task;
+      protected MoBiProject _project;
 
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _editTasksForBuildingBlock = A.Fake<IEditTasksForBuildingBlock<MoleculeBuildingBlock>>();
          _task = A.Fake<IInteractionTasksForBuilder<MoleculeBuilder>>();
-
+         _project = DomainHelperForSpecs.NewProject();
+         A.CallTo(() => _interactionTaskContext.Context.CurrentProject).Returns(_project);
+         
          sut = new InteractionTasksForMoleculeBuildingBlock(_interactionTaskContext, _editTasksForBuildingBlock, _task);
       }
    }
@@ -36,6 +39,9 @@ namespace MoBi.Presentation
       {
          base.Context();
          _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
+         var moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         moleculeStartValuesBuildingBlock.MoleculeBuildingBlockId = _moleculeBuildingBlock.Id;
+         _project.AddBuildingBlock(moleculeStartValuesBuildingBlock);
          _module = new Module
          {
             new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = _moleculeBuildingBlock.Id, SpatialStructureId = ""}
