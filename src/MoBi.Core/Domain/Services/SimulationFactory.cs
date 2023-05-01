@@ -111,12 +111,8 @@ namespace MoBi.Core.Domain.Services
       public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
          var model = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, AppConstants.Captions.CreatingSimulation);
-         return CreateFrom(cloneOf(configurationReferencingBuildingBlocks), model).WithName(simulationName);
-      }
-
-      private SimulationConfiguration cloneOf(SimulationConfiguration configurationReferencingBuildingBlocks)
-      {
-         return _cloneManager.Clone(configurationReferencingBuildingBlocks);
+         var clonedConfiguration = _cloneManager.Clone(configurationReferencingBuildingBlocks);
+         return CreateFrom(clonedConfiguration, model).WithName(simulationName);
       }
 
       private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name)

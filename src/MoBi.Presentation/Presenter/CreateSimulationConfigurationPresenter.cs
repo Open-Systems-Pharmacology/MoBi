@@ -100,20 +100,12 @@ namespace MoBi.Presentation.Presenter
          var selectedExpressions = individualAndExpressionPresenter.ExpressionProfiles;
          var selectedIndividual = individualAndExpressionPresenter.SelectedIndividual;
 
-         updateFrom(simulationConfiguration, moduleConfigurations, selectedIndividual, selectedExpressions);
-
-         simulationConfiguration.ShouldValidate = true;
-         simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
-      }
-
-      private void updateFrom(SimulationConfiguration simulationConfiguration,
-         IReadOnlyList<ModuleConfiguration> moduleConfigurations,
-         IndividualBuildingBlock selectedIndividual,
-         IReadOnlyList<ExpressionProfileBuildingBlock> selectedExpressions)
-      {
          moduleConfigurations.Each(simulationConfiguration.AddModuleConfiguration);
          simulationConfiguration.Individual = selectedIndividual;
          selectedExpressions.Each(simulationConfiguration.AddExpressionProfile);
+
+         simulationConfiguration.ShouldValidate = true;
+         simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
       }
    }
 }
