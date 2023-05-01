@@ -31,6 +31,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Remove(buildingBlockToRemove, buildingBlockToRemove.Module, buildingBlock, silent);
       }
 
+      public override IMoBiCommand GetRemoveCommand(MoBiSpatialStructure objectToRemove, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new RemoveBuildingBlockFromModuleCommand<MoBiSpatialStructure>(objectToRemove, parent);
+      }
+
+      public override IMoBiCommand GetAddCommand(MoBiSpatialStructure itemToAdd, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<MoBiSpatialStructure>(itemToAdd, parent);
+      }
+
       public override MoBiSpatialStructure CreateNewEntity(Module module)
       {
          return _spatialStructureFactory.CreateDefault(spatialStructureName: string.Empty);

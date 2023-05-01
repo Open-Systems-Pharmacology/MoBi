@@ -26,8 +26,8 @@ namespace MoBi.Engine.Sbml
       protected override void Import(Model model)
       {
          CreateParameterStartValuesBuildingBlock(model);
-         _initialAssignmentImporter.DoImport(model,_sbmlProject,_sbmlInformation, _command);
-         _ruleImporter.DoImport(model, _sbmlProject, _sbmlInformation, _command);
+         _initialAssignmentImporter.DoImport(model,_sbmlModule,_sbmlInformation, _command);
+         _ruleImporter.DoImport(model, _sbmlModule, _sbmlInformation, _command);
       }
 
       /// <summary>
@@ -36,7 +36,7 @@ namespace MoBi.Engine.Sbml
       protected internal void CreateParameterStartValuesBuildingBlock(Model model)
       {
          var psvBb = new ParameterStartValuesBuildingBlock().WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB).WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
-         _command.AddCommand(new AddBuildingBlockCommand<ParameterStartValuesBuildingBlock>(psvBb).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<ParameterStartValuesBuildingBlock>(psvBb, _sbmlModule).Run(_context));
       }
 
       //For Rate Rule only

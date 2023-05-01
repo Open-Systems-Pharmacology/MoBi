@@ -18,7 +18,7 @@ namespace MoBi.Engine.Sbml
       MoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock();
       IEntity GetContainerFromCompartment(string compartment);
       IContainer GetContainerFromCompartment_(string compartment);
-      void DoImport(Model sbmlModel, MoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command);
+      void DoImport(Model sbmlModel, Module sbmlModule, SBMLInformation sbmlInformation, ICommandCollector command);
       void AddToProject();
       IObjectPathFactory ObjectPathFactory { get; set; }
       IObjectBaseFactory ObjectBaseFactory { get; set; }
@@ -27,7 +27,7 @@ namespace MoBi.Engine.Sbml
    public abstract class SBMLImporter : ISBMLImporter
    {
       protected ASTHandler _astHandler;
-      protected MoBiProject _sbmlProject;
+      protected Module _sbmlModule;
       protected SBMLInformation _sbmlInformation;
       protected ICommandCollector _command;
       protected IMoBiContext _context;
@@ -45,7 +45,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public MoBiSpatialStructure GetMainSpatialStructure(Model model)
       {
-         return _sbmlProject.SpatialStructureCollection.FindByName(SBMLConstants.SBML_MODEL + model.getName());
+         return _sbmlModule.SpatialStructure as MoBiSpatialStructure;
       }
 
       /// <summary>
@@ -53,7 +53,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public MoBiReactionBuildingBlock GetMainReactionBuildingBlock()
       {
-         return _sbmlProject.ReactionBlockCollection.FindByName(SBMLConstants.SBML_REACTION_BB);
+         return _sbmlModule.Reactions as MoBiReactionBuildingBlock;
       }
 
       /// <summary>
@@ -62,8 +62,7 @@ namespace MoBi.Engine.Sbml
       public IContainer GetMainTopContainer()
       {
          return
-            _sbmlProject.SpatialStructureCollection.Select(ss => ss.TopContainers.FindById(SBMLConstants.SBML_TOP_CONTAINER))
-               .FirstOrDefault();
+            _sbmlModule.SpatialStructure?.TopContainers.FindById(SBMLConstants.SBML_TOP_CONTAINER);
       }
 
       /// <summary>
@@ -71,11 +70,10 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public IContainer GetEventsTopContainer()
       {
-         if (_sbmlProject == null) return null;
-         if (_sbmlProject.SpatialStructureCollection == null) return null;
+         if (_sbmlModule == null) return null;
+         if (_sbmlModule.SpatialStructure == null) return null;
          return
-            _sbmlProject.SpatialStructureCollection.Select(
-               ss => ss.TopContainers.FindByName(SBMLConstants.SBML_EVENTS_TOP_CONTAINER)).FirstOrDefault();
+            _sbmlModule.SpatialStructure.TopContainers.FindByName(SBMLConstants.SBML_EVENTS_TOP_CONTAINER);
       }
 
       /// <summary>
@@ -83,7 +81,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public MoleculeBuildingBlock GetMainMoleculeBuildingBlock()
       {
-         return _sbmlProject.MoleculeBlockCollection.FirstOrDefault(mb => mb.Name == SBMLConstants.SBML_SPECIES_BB);
+         return _sbmlModule.Molecules;
       }
 
       /// <summary>
@@ -92,7 +90,7 @@ namespace MoBi.Engine.Sbml
       public ParameterStartValuesBuildingBlock GetMainParameterStartValuesBuildingBlock()
       {
          return
-            _sbmlProject.ParametersStartValueBlockCollection.FirstOrDefault(
+            _sbmlModule.ParameterStartValuesCollection.FirstOrDefault(
                mb => mb.Id == SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
       }
 
@@ -102,12 +100,12 @@ namespace MoBi.Engine.Sbml
       public MoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock()
       {
          return
-            _sbmlProject.MoleculeStartValueBlockCollection.FirstOrDefault(
+            _sbmlModule.MoleculeStartValuesCollection.FirstOrDefault(
                mb => mb.Id == SBMLConstants.SBML_MOLECULESTARTVALUES_BB);
       }
 
       /// <summary>
-      ///     Gets the Mobi Container by a given SBML Compartment.
+      ///     Gets the MoBi Container by a given SBML Compartment.
       /// </summary>
       public IEntity GetContainerFromCompartment(string compartment)
       {
@@ -126,18 +124,12 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       protected MoleculeBuilder GetMoleculeByName(string moleculeName)
       {
-         var mbEnumerator = _sbmlProject.MoleculeBlockCollection.GetEnumerator();
-         while (mbEnumerator.MoveNext())
-         {
-            if (mbEnumerator.Current.ExistsByName(moleculeName))
-               return mbEnumerator.Current.FindByName(moleculeName);
-         }
-         return null;
+         return _sbmlModule.Molecules.FindByName(moleculeName);
       }
 
-      public void DoImport(Model sbmlModel, MoBiProject moBiProject, SBMLInformation sbmlInformation, ICommandCollector command)
+      public void DoImport(Model sbmlModel, Module sbmlModule, SBMLInformation sbmlInformation, ICommandCollector command)
       {
-         _sbmlProject = moBiProject;
+         _sbmlModule = sbmlModule;
          _sbmlInformation = sbmlInformation;
          _command = command;
          try
@@ -146,7 +138,7 @@ namespace MoBi.Engine.Sbml
          }
          finally
          {
-            _sbmlProject = null;
+            _sbmlModule = null;
             _sbmlInformation = null;
             _command = null;
          }

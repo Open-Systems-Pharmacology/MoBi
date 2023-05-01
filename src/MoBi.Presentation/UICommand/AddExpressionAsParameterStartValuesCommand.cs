@@ -10,7 +10,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddExpressionAsParameterStartValuesCommand : ObjectUICommand<MoBiProject>
+   public class AddExpressionAsParameterStartValuesCommand : ObjectUICommand<Module>
    {
       private readonly IMoBiContext _context;
       private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTaskForExpressionProfileBuildingBlock;
@@ -44,7 +44,7 @@ namespace MoBi.Presentation.UICommand
          foreach (var expressionProfile in expressionProfiles)
          {
             var psvBuildingBlock = _mapper.MapFrom(expressionProfile);
-            macroCommand.AddCommand(_interactionTasksForPSVBuildingBlock.AddToProject(psvBuildingBlock));
+            macroCommand.AddCommand(_interactionTasksForPSVBuildingBlock.AddToParent(psvBuildingBlock, Subject, null));
          }
 
          _context.AddToHistory(macroCommand);

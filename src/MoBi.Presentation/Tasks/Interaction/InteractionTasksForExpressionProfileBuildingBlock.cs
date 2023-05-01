@@ -13,13 +13,15 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForBuildingBlock<MoBiProject, ExpressionProfileBuildingBlock>, IInteractionTasksForPathAndValueEntity<MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter>
+   public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForProjectBuildingBlock<ExpressionProfileBuildingBlock>, 
+      IInteractionTasksForPathAndValueEntity<MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter>,
+      IInteractionTasksForProjectBuildingBlock
    {
       IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML();
       IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock);
    }
 
-   public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTasksForPathAndValueEntity<MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
+   public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
    {
       private readonly IEditTasksForExpressionProfileBuildingBlock _editTaskForExpressionProfileBuildingBlock;
       private readonly IPKSimStarter _pkSimStarter;

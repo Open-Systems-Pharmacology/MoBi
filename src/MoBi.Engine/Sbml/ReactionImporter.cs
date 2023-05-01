@@ -322,7 +322,7 @@ namespace MoBi.Engine.Sbml
          _astHandler.NeedAbsolutePath = true;
          var formula = sbmlReaction.getKineticLaw() == null
             ? ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(string.Empty)
-            : _astHandler.Parse(sbmlReaction.getKineticLaw().getMath(), sbmlReaction.getId(), _sbmlProject, _sbmlInformation);
+            : _astHandler.Parse(sbmlReaction.getKineticLaw().getMath(), sbmlReaction.getId(), _sbmlModule, _sbmlInformation);
          if (formula == null)
          {
             passiveTransport.Formula = ObjectBaseFactory.Create<ExplicitFormula>()
@@ -428,7 +428,7 @@ namespace MoBi.Engine.Sbml
       private void CreateKineticLaw(KineticLaw kineticLaw, ReactionBuilder reactionBuilder, bool needAbsolutePath)
       {
          if (needAbsolutePath) _astHandler.NeedAbsolutePath = true;
-         var formula = kineticLaw == null ? ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(string.Empty).WithName(SBMLConstants.DEFAULT_FORMULA_NAME) : _astHandler.Parse(kineticLaw.getMath(), reactionBuilder, _sbmlProject, _sbmlInformation);
+         var formula = kineticLaw == null ? ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(string.Empty).WithName(SBMLConstants.DEFAULT_FORMULA_NAME) : _astHandler.Parse(kineticLaw.getMath(), reactionBuilder, _sbmlModule, _sbmlInformation);
          if (formula == null)
          {
             reactionBuilder.Formula = ObjectBaseFactory.Create<ExplicitFormula>()
@@ -569,8 +569,8 @@ namespace MoBi.Engine.Sbml
          foreach (var passiveTransport in _passiveTransportList)
             _passiveTransportBuildingBlock.Add(passiveTransport);
 
-         _context.AddToHistory(new AddBuildingBlockCommand<MoBiReactionBuildingBlock>(_reactionBuildingBlock).Run(_context));
-         _context.AddToHistory(new AddBuildingBlockCommand<PassiveTransportBuildingBlock>(_passiveTransportBuildingBlock).Run(_context));
+         _context.AddToHistory(new AddBuildingBlockToModuleCommand<MoBiReactionBuildingBlock>(_reactionBuildingBlock, _sbmlModule).Run(_context));
+         _context.AddToHistory(new AddBuildingBlockToModuleCommand<PassiveTransportBuildingBlock>(_passiveTransportBuildingBlock, _sbmlModule).Run(_context));
       }
    }
 }

@@ -1089,6 +1089,7 @@ namespace MoBi.Assets
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
+         public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
          public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";

@@ -1,4 +1,5 @@
-﻿using MoBi.Core.Domain.Builder;
+﻿using MoBi.Core.Commands;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
@@ -23,6 +24,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override MoBiReactionBuildingBlock CreateNewEntity(Module parent)
       {
          return _reactionBuildingBlockFactory.Create();
+      }
+
+      public override IMoBiCommand GetRemoveCommand(MoBiReactionBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new RemoveBuildingBlockFromModuleCommand<MoBiReactionBuildingBlock>(objectToRemove, parent);
+      }
+
+      public override IMoBiCommand GetAddCommand(MoBiReactionBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<MoBiReactionBuildingBlock>(itemToAdd, parent);
       }
    }
 }

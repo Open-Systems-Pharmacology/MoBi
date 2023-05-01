@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using libsbmlcs;
 using MoBi.Core;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -14,7 +13,7 @@ namespace MoBi.Engine.Sbml
 {
    public class ASTHandler
    {
-      private MoBiProject _sbmlProject;
+      private Module _sbmlModule;
       public List<FunctionDefinition> FunctionDefinitions { get; set; }
       public bool NeedAbsolutePath { get; set; }
       public bool UseConcentrations { get; set; } = false;
@@ -52,20 +51,18 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Parses a SBML MathML expression from a SBML Reaction into a MoBi Formula. 
+      ///    Parses a SBML MathML expression from a SBML Reaction into a MoBi Formula.
       /// </summary>
       /// <param name="rootNode"> The root of the MathMl expression. </param>
       /// <param name="reactionBuilder"> The MoBi reactionBuilder the SBML reaction should be build with. </param>
-      /// <param name="sbmlProject"></param>
-      /// <param name="sbmlInformation"></param>
-      public IFormula Parse(ASTNode rootNode, ReactionBuilder reactionBuilder, MoBiProject sbmlProject,
+      public IFormula Parse(ASTNode rootNode, ReactionBuilder reactionBuilder, Module sbmlModule,
          SBMLInformation sbmlInformation)
       {
          try
          {
             _objectPaths.Clear();
             _functionDefDictionary.Clear();
-            _sbmlProject = sbmlProject;
+            _sbmlModule = sbmlModule;
             _sbmlInformation = sbmlInformation;
             _reactionBuilder = reactionBuilder;
 
@@ -92,17 +89,17 @@ namespace MoBi.Engine.Sbml
          finally
          {
             _reactionBuilder = null;
-            _sbmlProject = null;
+            _sbmlModule = null;
             _sbmlInformation = null;
          }
       }
 
       /// <summary>
-      ///     Creates a Warning if a formula could not have been parsed.
+      ///    Creates a Warning if a formula could not have been parsed.
       /// </summary>
       private void createErrorMsg(ASTNode rootNode)
       {
-         var msg = new NotificationMessage(_sbmlProject, MessageOrigin.All, null, NotificationType.Warning)
+         var msg = new NotificationMessage(_sbmlModule, MessageOrigin.All, null, NotificationType.Warning)
          {
             Message = "Problem occured parsing Formula: " + rootNode.getName() + libsbml.formulaToL3String(rootNode)
          };
@@ -110,19 +107,23 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Parses a SBML MathML expression from a SBML Event Assignment into a MoBi Formula. 
+      ///    Parses a SBML MathML expression from a SBML Event Assignment into a MoBi Formula.
       /// </summary>
-      /// <param name="rootNode"> The MathMl Expression of the SBML Event Assignment the assignmentVariable should be assigned with.</param>
+      /// <param name="rootNode">
+      ///    The MathMl Expression of the SBML Event Assignment the assignmentVariable should be assigned
+      ///    with.
+      /// </param>
       /// <param name="eventAssignmentBuilder"> The MoBi Event Assignment Builder the SBML Event Assigment should be build with. </param>
-      /// <param name="assignmentVariable"> The Parameter, Molecule, Species or SpeciesReference that should be assigned when the Event is triggered. </param>
-      /// <param name="sbmlProject"></param>
-      /// <param name="sbmlInformation"></param>
+      /// <param name="assignmentVariable">
+      ///    The Parameter, Molecule, Species or SpeciesReference that should be assigned when the
+      ///    Event is triggered.
+      /// </param>
       public IFormula Parse(ASTNode rootNode, EventAssignmentBuilder eventAssignmentBuilder, string assignmentVariable,
-         MoBiProject sbmlProject, SBMLInformation sbmlInformation)
+         Module sbmlModule, SBMLInformation sbmlInformation)
       {
          try
          {
-            _sbmlProject = sbmlProject;
+            _sbmlModule = sbmlModule;
             _sbmlInformation = sbmlInformation;
             _counter++;
             var formulaString = Eval(rootNode);
@@ -149,25 +150,22 @@ namespace MoBi.Engine.Sbml
          }
          finally
          {
-            _sbmlProject = null;
+            _sbmlModule = null;
             _sbmlInformation = null;
          }
       }
 
       /// <summary>
-      ///     Parses a SBML MathML expression into a MoBi Formula. 
+      ///    Parses a SBML MathML expression into a MoBi Formula.
       /// </summary>
       /// <param name="rootNode"></param>
       /// <param name="rootObjectId"> The id of the parent object of the rootNode to set the name of </param>
-      /// <param name="isRateRule"></param>
-      /// <param name="sbmlProject"></param>
-      /// <param name="sbmlInformation"></param>
-      public IFormula Parse(ASTNode rootNode, string rootObjectId, bool isRateRule, MoBiProject sbmlProject,
+      public IFormula Parse(ASTNode rootNode, string rootObjectId, bool isRateRule, Module sbmlModule,
          SBMLInformation sbmlInformation)
       {
          try
          {
-            _sbmlProject = sbmlProject;
+            _sbmlModule = sbmlModule;
             _sbmlInformation = sbmlInformation;
             _objectPaths.Clear();
 
@@ -188,6 +186,7 @@ namespace MoBi.Engine.Sbml
             {
                formula.AddObjectPath(path);
             }
+
             if (string.IsNullOrEmpty(formula?.FormulaString))
             {
                createErrorMsg(rootNode);
@@ -198,17 +197,17 @@ namespace MoBi.Engine.Sbml
          }
          finally
          {
-            _sbmlProject = null;
+            _sbmlModule = null;
             _sbmlInformation = null;
          }
       }
 
-      public IFormula Parse(ASTNode rootNode, string rootObjectId, MoBiProject sbmlProject,
+      public IFormula Parse(ASTNode rootNode, string rootObjectId, Module sbmlModule,
          SBMLInformation sbmlInformation)
       {
          try
          {
-            _sbmlProject = sbmlProject;
+            _sbmlModule = sbmlModule;
             _sbmlInformation = sbmlInformation;
             _objectPaths.Clear();
 
@@ -224,6 +223,7 @@ namespace MoBi.Engine.Sbml
             {
                formula.AddObjectPath(path);
             }
+
             if (string.IsNullOrEmpty(formula?.FormulaString))
             {
                createErrorMsg(rootNode);
@@ -234,7 +234,7 @@ namespace MoBi.Engine.Sbml
          }
          finally
          {
-            _sbmlProject = null;
+            _sbmlModule = null;
             _sbmlInformation = null;
          }
       }
@@ -409,12 +409,13 @@ namespace MoBi.Engine.Sbml
                res = parseTime();
                break;
          }
+
          return res;
       }
 
       private void createFeatureNotSupportedMessage(string functionNotSupported)
       {
-         var msg = new NotificationMessage(_sbmlProject, MessageOrigin.All, null, NotificationType.Warning)
+         var msg = new NotificationMessage(_sbmlModule, MessageOrigin.All, null, NotificationType.Warning)
          {
             Message =
                SBMLConstants.SBML_FEATURE_NOT_SUPPORTED + ": MathML Function '" + functionNotSupported +
@@ -424,7 +425,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Parses an Integer.
+      ///    Parses an Integer.
       /// </summary>
       private string parseInteger(ASTNode rootNode)
       {
@@ -438,7 +439,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Parses a real.
+      ///    Parses a real.
       /// </summary>
       private string parseReal(ASTNode rootNode)
       {
@@ -452,7 +453,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Parses a rational.
+      ///    Parses a rational.
       /// </summary>
       private string parseRational(ASTNode rootNode)
       {
@@ -462,7 +463,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Gets the "Time" attribute of the MoBi simulation.
+      ///    Gets the "Time" attribute of the MoBi simulation.
       /// </summary>
       private string parseTime()
       {
@@ -473,12 +474,12 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Checks the possibilites of a variable:
-      ///         1.) Function Definition 
-      ///         2.) Local Parameter of the reaction
-      ///         3.) Global Parameter (Top Container)
-      ///         4.) Molecule
-      ///         5.) Container size Parameter
+      ///    Checks the possibilites of a variable:
+      ///    1.) Function Definition
+      ///    2.) Local Parameter of the reaction
+      ///    3.) Global Parameter (Top Container)
+      ///    4.) Molecule
+      ///    5.) Container size Parameter
       /// </summary>
       private string parseName(ASTNode rootNode)
       {
@@ -520,17 +521,19 @@ namespace MoBi.Engine.Sbml
             tmpDictionary.Add(argument, replacement);
             _functionDefDictionary[argument] = replacement;
          }
+
          foreach (var entry in tmpDictionary)
          {
             _functionDefDictionary[entry.Key] = entry.Value;
          }
+
          var res = Eval(function.getBody());
          return res;
       }
 
       /// <summary>
-      ///     Parses a user defined function by looking it up in the pre-imported user defined 
-      ///     functions. 
+      ///    Parses a user defined function by looking it up in the pre-imported user defined
+      ///    functions.
       /// </summary>
       private string parseFunction(ASTNode rootNode)
       {
@@ -539,12 +542,13 @@ namespace MoBi.Engine.Sbml
          {
             return parseUserDefinedFunction(rootNode, func.getId());
          }
+
          return string.Empty;
       }
 
       /// <summary>
-      ///     Checks if a given ASTNode is a SBML FunctionDefinition and trys to parse it into a 
-      ///     MoBi Formula. 
+      ///    Checks if a given ASTNode is a SBML FunctionDefinition and trys to parse it into a
+      ///    MoBi Formula.
       /// </summary>
       private string checkFunctionDefinitions(ASTNode rootNode)
       {
@@ -570,6 +574,7 @@ namespace MoBi.Engine.Sbml
             {
             }
          }
+
          return string.Empty;
       }
 
@@ -613,6 +618,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.PLUS + Eval(rootNode.getChild(i));
          }
+
          res += SBMLConstants.RBRACE;
          return res;
       }
@@ -631,6 +637,7 @@ namespace MoBi.Engine.Sbml
                res += SBMLConstants.TIMES + Eval(rootNode.getChild(i));
             }
          }
+
          return res;
       }
 
@@ -644,6 +651,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.AND + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -657,6 +665,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.OR + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -667,6 +676,7 @@ namespace MoBi.Engine.Sbml
          {
             res += SBMLConstants.NOT + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -686,11 +696,13 @@ namespace MoBi.Engine.Sbml
                       SBMLConstants.LBRACE + SBMLConstants.NOT + a + SBMLConstants.NOT + b + SBMLConstants.RBRACE;
                a = res;
             }
+
             b = Eval(rootNode.getChild(i));
             res += SBMLConstants.LBRACE + a + SBMLConstants.OR + b + SBMLConstants.RBRACE + SBMLConstants.AND +
                    SBMLConstants.LBRACE + SBMLConstants.NOT + a + SBMLConstants.NOT + b + SBMLConstants.RBRACE;
             a = res;
          }
+
          return res;
       }
 
@@ -704,6 +716,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.EQUAL + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -717,6 +730,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.GEQ + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -730,6 +744,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.LEQ + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -743,6 +758,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.GT + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -756,6 +772,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.LT + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -769,6 +786,7 @@ namespace MoBi.Engine.Sbml
             else
                res += SBMLConstants.UNEQUAL + Eval(rootNode.getChild(i));
          }
+
          return res;
       }
 
@@ -799,6 +817,7 @@ namespace MoBi.Engine.Sbml
             if (rootNode.getType() == libsbml.AST_FUNCTION_ARCTAN)
                res += SBMLConstants.ATAN + SBMLConstants.LBRACE + Eval(rootNode.getChild(i)) + SBMLConstants.RBRACE;
          }
+
          return res;
       }
 
@@ -809,6 +828,7 @@ namespace MoBi.Engine.Sbml
          {
             res += SBMLConstants.LN + SBMLConstants.LBRACE + Eval(rootNode.getChild(i)) + SBMLConstants.RBRACE;
          }
+
          return res;
       }
 
@@ -820,7 +840,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Checks if a object path for the given objectName is already existant and creates a new one if not.
+      ///    Checks if a object path for the given objectName is already existant and creates a new one if not.
       /// </summary>
       private string getObjectPathName(string parentContainer, string objectName, bool useConcentration = false)
       {
@@ -834,7 +854,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Checks if a object path for the given objectName is already existant and creates a new one if not.
+      ///    Checks if a object path for the given objectName is already existant and creates a new one if not.
       /// </summary>
       private string getObjectPathName(string topContainer, string parentContainer, string objectName)
       {
@@ -856,7 +876,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Checks if the ObjectPath to a given Object is already existant. 
+      ///    Checks if the ObjectPath to a given Object is already existant.
       /// </summary>
       /// <returns> True, if the ObjectPath exists, else false. </returns>
       private bool objectPathExistent(string name)
@@ -866,8 +886,8 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Gets the MoBi Object Path to the given variable
-      ///     or creates a new one if not  existant.
+      ///    Gets the MoBi Object Path to the given variable
+      ///    or creates a new one if not  existant.
       /// </summary>
       private FormulaUsablePath getObjectPathForAssignment(string assignmentVariable)
       {
@@ -889,10 +909,10 @@ namespace MoBi.Engine.Sbml
          //Container size?
          var container = tc.GetAllChildren<IContainer>();
          foreach (var compartment in from compartment in container
-                                     where compartment.Name == assignmentVariable
-                                     from compartmentParameter in compartment.Children
-                                     where compartmentParameter.Name == SBMLConstants.SIZE
-                                     select compartment)
+                  where compartment.Name == assignmentVariable
+                  from compartmentParameter in compartment.Children
+                  where compartmentParameter.Name == SBMLConstants.SIZE
+                  select compartment)
          {
             var pathName = getObjectPathName(tc.Name, compartment.Name, SBMLConstants.SIZE);
             return _objectPaths.Find(x => x.Alias == pathName);
@@ -913,7 +933,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Gets the object path name of a Molecule.
+      ///    Gets the object path name of a Molecule.
       /// </summary>
       private string getObjectPathNameOfMolecule(MoleculeBuilder molecule, Species species)
       {
@@ -936,12 +956,13 @@ namespace MoBi.Engine.Sbml
                   molecule.Name).WithAlias(alias));
             _objectPaths.Add(path);
          }
+
          return alias;
       }
 
       /// <summary>
-      ///     Throws an error Method if the rule should set the stoichiometry of a Species. 
-      ///     Formulas in Stoichiometry are not supported. 
+      ///    Throws an error Method if the rule should set the stoichiometry of a Species.
+      ///    Formulas in Stoichiometry are not supported.
       /// </summary>
       private void isSpeciesReference(string assignmentVariable)
       {
@@ -949,7 +970,7 @@ namespace MoBi.Engine.Sbml
          {
             if (speciesReference.getId() != assignmentVariable) continue;
             var msg =
-               new NotificationMessage(_sbmlProject, MessageOrigin.All, null, NotificationType.Warning).WithName(
+               new NotificationMessage(_sbmlModule, MessageOrigin.All, null, NotificationType.Warning).WithName(
                   SBMLConstants.SBML_FEATURE_NOT_SUPPORTED);
             msg.Description = "Stoichiometry of " + speciesReference.getId() + " was set to default value: " +
                               SBMLConstants.SBML_STOICHIOMETRY_DEFAULT;
@@ -958,11 +979,11 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Checks if the node is a Container size Parameter.
+      ///    Checks if the node is a Container size Parameter.
       /// </summary>
       /// <returns>
-      ///     Id of the Container size Parameter, if existant.
-      ///     String.Empty, if the node is no Container size Parameter.
+      ///    Id of the Container size Parameter, if existant.
+      ///    String.Empty, if the node is no Container size Parameter.
       /// </returns>
       private string getContainerSizeParamIfExistant(ASTNode rootNode)
       {
@@ -975,15 +996,16 @@ namespace MoBi.Engine.Sbml
                   return getObjectPathName(GetMainTopContainer().Name, compartment.Name, SBMLConstants.SIZE);
             }
          }
+
          return string.Empty;
       }
 
       /// <summary>
-      ///     Checks if the node is a global Parameter (in the TopContainer).
+      ///    Checks if the node is a global Parameter (in the TopContainer).
       /// </summary>
-      /// <returns>        
-      ///     Id of the global Parameter, if existant.
-      ///     String.Empty, if the node is no global Parameter.
+      /// <returns>
+      ///    Id of the global Parameter, if existant.
+      ///    String.Empty, if the node is no global Parameter.
       /// </returns>
       private string getGlobalParamIfExistant(ASTNode rootNode)
       {
@@ -993,11 +1015,11 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Checks if the node is a molecule.
+      ///    Checks if the node is a molecule.
       /// </summary>
       /// <returns>
-      ///     Id of the molecule, if existant.
-      ///     String.Empty, if the node is no molecule.
+      ///    Id of the molecule, if existant.
+      ///    String.Empty, if the node is no molecule.
       /// </returns>
       private string getMoleculeIfExistant(ASTNode rootNode)
       {
@@ -1015,9 +1037,8 @@ namespace MoBi.Engine.Sbml
          return string.Empty;
       }
 
-
       /// <summary>
-      ///     Checks if a rootNode is a SpeciesReference.
+      ///    Checks if a rootNode is a SpeciesReference.
       /// </summary>
       private string checkSpeciesReference(ASTNode rootNode)
       {
@@ -1034,11 +1055,11 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Checks if the node is a local reaction parameter.
+      ///    Checks if the node is a local reaction parameter.
       /// </summary>
-      /// <returns> 
-      ///     Id of the parameter, if existant.
-      ///     String.Empty, if the node is no local reaction parameter.
+      /// <returns>
+      ///    Id of the parameter, if existant.
+      ///    String.Empty, if the node is no local reaction parameter.
       /// </returns>
       private string getLocalReactionParamIfExistant(ASTNode rootNode)
       {
@@ -1053,35 +1074,28 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Gets the MoBi Top Container generated for the SBML Import.
+      ///    Gets the MoBi Top Container generated for the SBML Import.
       /// </summary>
       public IContainer GetMainTopContainer()
       {
          return
-            _sbmlProject.SpatialStructureCollection.Select(
-               ss => ss.TopContainers.FindById(SBMLConstants.SBML_TOP_CONTAINER)).FirstOrDefault();
+            _sbmlModule.SpatialStructure?.TopContainers.FindById(SBMLConstants.SBML_TOP_CONTAINER);
       }
 
-
       /// <summary>
-      ///     Gets the Mobi Container by a given SBML Compartment.
+      ///    Gets the MoBi Container by a given SBML Compartment.
       /// </summary>
       public IEntity GetContainerFromCompartment(string compartmentId)
       {
-         var ssCollection = _sbmlProject.SpatialStructureCollection;
-         return
-            (from ss in ssCollection
-             from topContainer in ss.TopContainers
-             from container in topContainer.Children
-             select container).FirstOrDefault(container => container.Name == compartmentId);
+         return _sbmlModule.SpatialStructure?.TopContainers.SelectMany(x => x.Children).FirstOrDefault(container => container.Name == compartmentId);
       }
 
       /// <summary>
-      ///     Gets the MoBi Molecule Building Block generated for the SBML Import.
+      ///    Gets the MoBi Molecule Building Block generated for the SBML Import.
       /// </summary>
       public MoleculeBuildingBlock GetMainMoleculeBuildingBlock()
       {
-         return _sbmlProject.MoleculeBlockCollection.FirstOrDefault(mb => mb.Name == SBMLConstants.SBML_SPECIES_BB);
+         return _sbmlModule.Molecules;
       }
    }
 }

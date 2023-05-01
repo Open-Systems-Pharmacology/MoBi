@@ -5,6 +5,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
@@ -40,8 +41,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(createExistingBuildingBlockFromTemplateItemFor(module));
          _allMenuItems.Add(createRenameItemFor(module));
          _allMenuItems.Add(createRemoveItemFor(module));
+         _allMenuItems.Add(createAddExpressionAsStartValue(module));
 
          return this;
+      }
+
+      private IMenuBarItem createAddExpressionAsStartValue(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingAs(ObjectTypes.ExpressionProfileBuildingBlock, ObjectTypes.ParameterStartValuesBuildingBlock)).AsGroupStarter()
+            .WithIcon(ApplicationIcons.LoadIconFor(nameof(ExpressionProfileBuildingBlock)))
+            .WithCommandFor<AddExpressionAsParameterStartValuesCommand, Module>(module, _container);
       }
 
       private IMenuBarItem createNewBuildingBlocksItemFor(Module module)

@@ -52,7 +52,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void MoleculeBuildingBlockCreationTest()
       {
-         var moleculeBuildingBlock = _moBiProject.MoleculeBlockCollection.FirstOrDefault();
+         var moleculeBuildingBlock = SBMLModule.Molecules;
          moleculeBuildingBlock.ShouldNotBeNull();
          moleculeBuildingBlock.Name.ShouldBeEqualTo(SBMLConstants.SBML_SPECIES_BB);
       }
@@ -60,12 +60,12 @@ namespace MoBi.Core.SBML
       [Observation]
       public void SpeciesCreationTest()
       {
-         var mbb = _moBiProject.MoleculeBlockCollection.FirstOrDefault();
+         var mbb = SBMLModule.Molecules;
          mbb.ShouldNotBeNull();
          mbb.Any(molecule => molecule.Name == "S1").ShouldBeTrue();
          mbb.Any(molecule => molecule.Name == "S2").ShouldBeTrue();
 
-         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
          msvbb.Any(msv => msv.Name == "S1").ShouldBeTrue();
          msvbb.Any(msv => msv.Name == "S2").ShouldBeTrue();
          var msv1 = ObjectBaseExtensions.FindByName(msvbb, "S1");
@@ -88,7 +88,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void SpeciesSameNameDiffCompartmentsTest()
       {
-         var mbb = _moBiProject.MoleculeBlockCollection.FirstOrDefault();
+         var mbb = SBMLModule.Molecules;
          mbb.ShouldNotBeNull();
          mbb.Any(molecule => molecule.Name == "abc").ShouldBeTrue();
       }
@@ -105,14 +105,14 @@ namespace MoBi.Core.SBML
       [Observation]
       public void should_understand_litre_as_unit()
       {
-         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
          msvbb.FirstOrDefault().Dimension.Name.ShouldBeEqualTo("Amount");
       }
 
       [Observation]
       public void should_assign_molecule_start_values_as_concentrations()
       {
-         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
          var glucose = msvbb.First();
          glucose.Formula.ToString().ShouldBeEqualTo("5000 * V");
          var volumePath = glucose.Formula.ObjectPaths.First();

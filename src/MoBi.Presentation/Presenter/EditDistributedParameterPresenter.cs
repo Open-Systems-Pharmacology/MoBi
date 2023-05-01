@@ -223,7 +223,7 @@ namespace MoBi.Presentation.Presenter
             return;
 
          var parameter = createDistributionParameter(parameterName, dimension);
-         AddCommand(_parameterTask.AddToProject(parameter, _distributedParameter, BuildingBlock));
+         AddCommand(_parameterTask.AddToParent(parameter, _distributedParameter, BuildingBlock));
       }
 
       private IParameter createDistributionParameter(string name, IDimension dimension = null)

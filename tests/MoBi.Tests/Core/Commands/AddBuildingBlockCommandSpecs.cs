@@ -9,14 +9,14 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_AddBuildingBlockCommand : ContextSpecification<AddBuildingBlockCommand<IBuildingBlock>>
+   public abstract class concern_for_AddBuildingBlockCommand : ContextSpecification<AddProjectBuildingBlockCommand<IBuildingBlock>>
    {
       protected IBuildingBlock _bb;
 
       protected override void Context()
       {
          _bb = A.Fake<IBuildingBlock>().WithId("ID");
-         sut = new AddBuildingBlockCommand<IBuildingBlock>(_bb);
+         sut = new AddProjectBuildingBlockCommand<IBuildingBlock>(_bb);
       }
    }
 
@@ -77,14 +77,14 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public abstract class concern_for_RemoveBuildingBlockCommand : ContextSpecification<RemoveBuildingBlockCommand<IBuildingBlock>>
+   public abstract class concern_for_RemoveBuildingBlockCommand : ContextSpecification<RemoveProjectBuildingBlockCommand<IBuildingBlock>>
    {
       protected IBuildingBlock _bb;
 
       protected override void Context()
       {
          _bb = A.Fake<IBuildingBlock>();
-         sut = new RemoveBuildingBlockCommand<IBuildingBlock>(_bb);
+         sut = new RemoveProjectBuildingBlockCommand<IBuildingBlock>(_bb);
       }
    }
 

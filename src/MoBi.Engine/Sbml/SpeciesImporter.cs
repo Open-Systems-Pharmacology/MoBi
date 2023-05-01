@@ -333,8 +333,8 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _command.AddCommand(new AddBuildingBlockCommand<MoleculeBuildingBlock>(MoleculeBuildingBlock).Run(_context));
-         _command.AddCommand(new AddBuildingBlockCommand<MoleculeStartValuesBuildingBlock>(_moleculeStartValuesBuildingBlock).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoleculeBuildingBlock>(MoleculeBuildingBlock, _sbmlModule).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoleculeStartValuesBuildingBlock>(_moleculeStartValuesBuildingBlock, _sbmlModule).Run(_context));
       }
 
       /// <summary>

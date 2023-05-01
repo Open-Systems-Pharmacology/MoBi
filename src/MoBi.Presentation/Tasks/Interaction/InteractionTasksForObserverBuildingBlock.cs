@@ -1,4 +1,5 @@
-﻿using MoBi.Core.Domain.Services;
+﻿using MoBi.Core.Commands;
+using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -17,6 +18,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          : base(interactionTaskContext, editTask, builderTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
+      }
+
+      public override IMoBiCommand GetRemoveCommand(ObserverBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new RemoveBuildingBlockFromModuleCommand<ObserverBuildingBlock>(objectToRemove, parent);
+      }
+
+      public override IMoBiCommand GetAddCommand(ObserverBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<ObserverBuildingBlock>(itemToAdd, parent);
       }
    }
 }

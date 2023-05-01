@@ -127,7 +127,7 @@ namespace MoBi.Engine.Sbml
          if (model == null)
             return;
 
-         if (_sbmlProject == null) return;
+         if (_sbmlModule == null) return;
 
          for (long i = 0; i < model.getNumUnitDefinitions(); i++)
          {

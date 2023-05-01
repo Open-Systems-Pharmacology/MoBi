@@ -37,16 +37,16 @@ namespace MoBi.Core.SBML
          var moduleConfiguration = new ModuleConfiguration(new Module
          {
             IoC.Resolve<IMoBiContext>().Create<ObserverBuildingBlock>(),
-            _moBiProject.SpatialStructureCollection.FirstOrDefault(),
-            _moBiProject.ReactionBlockCollection.FirstOrDefault(),
-            _moBiProject.MoleculeBlockCollection.FirstOrDefault(),
-            _moBiProject.PassiveTransportCollection.FirstOrDefault(),
-            _moBiProject.EventBlockCollection.FirstOrDefault()
+            SBMLModule.SpatialStructure,
+            SBMLModule.Reactions,
+            SBMLModule.Molecules,
+            SBMLModule.PassiveTransports,
+            SBMLModule.EventGroups
 
          });
 
-         var parameterStartValuesBuildingBlock = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
-         var moleculeStartValuesBuildingBlock = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         var parameterStartValuesBuildingBlock = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
+         var moleculeStartValuesBuildingBlock = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
          
          moduleConfiguration.Module.Add(parameterStartValuesBuildingBlock);
          moduleConfiguration.Module.Add(moleculeStartValuesBuildingBlock);
@@ -67,7 +67,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void should_translate_new_units_properly()
       {
-         var msv = _moBiProject.MoleculeStartValueBlockCollection.First();
+         var msv = SBMLModule.MoleculeStartValuesCollection.First();
          var glucoseStartValue = msv.First();
          glucoseStartValue.Value.Value.ShouldBeEqualTo(5000);
       }

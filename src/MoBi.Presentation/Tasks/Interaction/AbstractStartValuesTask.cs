@@ -4,9 +4,11 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -46,31 +48,30 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand AddNew(Module module, IBuildingBlock buildingBlockToAddTo)
       {
-         throw new NotImplementedException();
-         // if (!project.MoleculeBlockCollection.Any() || !project.SpatialStructureCollection.Any())
-         //    throw new MoBiException(AppConstants.Exceptions.UnableToCreateStartValues);
-         //
-         // TBuildingBlock newEntity;
-         // using (var createPresenter = ApplicationController.Start<ICreateStartValuesPresenter<TBuildingBlock>>())
-         // {
-         //    newEntity = createPresenter.Create();
-         // }
-         //
-         // if (newEntity == null)
-         //    return new MoBiEmptyCommand();
-         //
-         // var macroCommand = new MoBiMacroCommand
-         // {
-         //    ObjectType = ObjectName,
-         //    CommandType = AppConstants.Commands.AddCommand
-         // };
-         // macroCommand.Add(GetAddCommand(newEntity, project, buildingBlockToAddTo).Run(Context));
-         //
-         // //Icon may depend on name. 
-         // newEntity.Icon = InteractionTask.IconFor(newEntity);
-         // macroCommand.Description = AppConstants.Commands.AddToProjectDescription(ObjectName, newEntity.Name);
-         // _editTask.EditBuildingBlock(newEntity);
-         // return macroCommand;
+         if (module.Molecules == null || module.SpatialStructure == null)
+            throw new MoBiException(AppConstants.Exceptions.UnableToCreateStartValues);
+         
+         TBuildingBlock newEntity;
+         using (var createPresenter = ApplicationController.Start<ICreateStartValuesPresenter<TBuildingBlock>>())
+         {
+            newEntity = createPresenter.Create();
+         }
+         
+         if (newEntity == null)
+            return new MoBiEmptyCommand();
+         
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = ObjectName,
+            CommandType = AppConstants.Commands.AddCommand
+         };
+         macroCommand.Add(GetAddCommand(newEntity, module, buildingBlockToAddTo).Run(Context));
+         
+         //Icon may depend on name. 
+         newEntity.Icon = InteractionTask.IconFor(newEntity);
+         macroCommand.Description = AppConstants.Commands.AddToProjectDescription(ObjectName, newEntity.Name);
+         _editTask.EditBuildingBlock(newEntity);
+         return macroCommand;
       }
 
       protected override double? ValueFromBuilder(TStartValue builder)
@@ -291,6 +292,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand EditStartValueContainerPath(TBuildingBlock buildingBlock, TStartValue startValue, int indexToUpdate, string newValue)
       {
          return _startValuePathTask.UpdateStartValueContainerPath(buildingBlock, startValue, indexToUpdate, newValue);
+      }
+
+      public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new RemoveBuildingBlockFromModuleCommand<TBuildingBlock>(objectToRemove, parent);
+      }
+
+      public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
       }
    }
 }

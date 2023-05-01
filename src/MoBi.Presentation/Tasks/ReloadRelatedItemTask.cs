@@ -93,10 +93,12 @@ namespace MoBi.Presentation.Tasks
 
       public void Visit(IBuildingBlock buildingBlock)
       {
+         // TODO how to load building blocks from journal?
+         
          var task = _taskRetriever.TaskFor(buildingBlock);
-         // Clone to get new ID's
+         // // Clone to get new ID's
          var clone = _cloneManagerForBuildingBlock.Clone(buildingBlock);
-         addCommand(task.AddToProject(clone));
+         // addCommand(task.AddToProject(clone));
       }
 
       public void Visit(IMoBiSimulation simulation)

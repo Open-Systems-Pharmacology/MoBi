@@ -8,7 +8,8 @@ namespace MoBi.Presentation.UICommand
 {
    public class AddExpressionProfileBuildingBlock : AddNewFromPKSimCommand<ExpressionType>
    {
-      public AddExpressionProfileBuildingBlock(IPKSimStarter pkSimStarter, IMoBiContext context, IInteractionTasksForExpressionProfileBuildingBlock interactionTask) : base(pkSimStarter, context, interactionTask)
+      public AddExpressionProfileBuildingBlock(IPKSimStarter pkSimStarter, IMoBiContext context, IInteractionTasksForExpressionProfileBuildingBlock interactionTask) : 
+         base(pkSimStarter, context, interactionTask)
       {
       }
 

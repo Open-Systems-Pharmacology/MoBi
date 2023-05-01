@@ -4,14 +4,16 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForSimulationSettings : IInteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>
+   public interface IInteractionTasksForSimulationSettings
    {
       IMoBiCommand UpdateDefaultSimulationSettingsInProject();
+      void Edit(SimulationSettings simulationSettings);
    }
 
    public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>, IInteractionTasksForSimulationSettings
@@ -29,6 +31,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _simulationSettingsFactory.CreateDefault();
       }
 
+      public override IMoBiCommand GetRemoveCommand(SimulationSettings objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
+      {
+         throw new System.NotImplementedException();
+      }
+
+      public override IMoBiCommand GetAddCommand(SimulationSettings itemToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
+      {
+         throw new System.NotImplementedException();
+      }
+
       public IMoBiCommand UpdateDefaultSimulationSettingsInProject()
       {
          var filename = AskForPKMLFileToOpen();
@@ -42,6 +54,11 @@ namespace MoBi.Presentation.Tasks.Interaction
             return new MoBiEmptyCommand();
 
          return new UpdateDefaultSimulationSettingsInProjectCommand(simulationSettingsBlocks.First()).Run(_interactionTaskContext.Context);
+      }
+
+      public void Edit(SimulationSettings simulationSettings)
+      {
+         EditBuildingBlock(simulationSettings);
       }
    }
 }

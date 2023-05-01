@@ -209,7 +209,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _command.AddCommand(new AddBuildingBlockCommand<MoBiSpatialStructure>(SpatialStructure).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoBiSpatialStructure>(SpatialStructure, _sbmlModule).Run(_context));
       }
    }
 }

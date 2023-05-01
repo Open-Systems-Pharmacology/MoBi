@@ -8,9 +8,9 @@ namespace MoBi.Presentation.UICommand
    internal class CloneProjectBuildingBlockUICommand<T> : ObjectUICommand<T> where T : class, IBuildingBlock
    {
       private readonly IMoBiContext _context;
-      private readonly IInteractionTasksForBuildingBlock<MoBiProject, T> _tasks;
+      private readonly IInteractionTasksForProjectBuildingBlock<T> _tasks;
 
-      public CloneProjectBuildingBlockUICommand(IMoBiContext context, IInteractionTasksForBuildingBlock<MoBiProject, T> tasks)
+      public CloneProjectBuildingBlockUICommand(IMoBiContext context, IInteractionTasksForProjectBuildingBlock<T> tasks)
       {
          _context = context;
          _tasks = tasks;

@@ -75,6 +75,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return base.Remove(buildingBlockToRemove, module, buildingBlock, silent);
       }
 
+      public override IMoBiCommand GetRemoveCommand(MoleculeBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new RemoveBuildingBlockFromModuleCommand<MoleculeBuildingBlock>(objectToRemove, parent);
+      }
+
+      public override IMoBiCommand GetAddCommand(MoleculeBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<MoleculeBuildingBlock>(itemToAdd, parent);
+      }
+
       public void Edit(MoleculeBuildingBlock moleculeBuildingBlock, MoleculeBuilder moleculeBuilder)
       {
          _editTaskForBuildingBlock.EditBuildingBlock(moleculeBuildingBlock);
