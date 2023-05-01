@@ -28,8 +28,8 @@ namespace MoBi.Presentation.Presenter
       private ObjectBaseDTO _simulationDTO;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
       protected readonly IUserSettings _userSettings;
-      private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
+      private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
 
       public CreateSimulationConfigurationPresenter(
          ICreateSimulationConfigurationView view,
@@ -38,14 +38,14 @@ namespace MoBi.Presentation.Presenter
          IForbiddenNamesRetriever forbiddenNamesRetriever,
          IUserSettings userSettings,
          IModuleConfigurationDTOToModuleConfigurationMapper moduleConfigurationMapper,
-         ISimulationConfigurationTask simulationConfigurationFactory)
+         ISimulationConfigurationFactory simulationConfigurationFactory)
          : base(view, subPresenterManager, SimulationItems.All, dialogCreator)
       {
          _forbiddenNamesRetriever = forbiddenNamesRetriever;
          IMoBiMacroCommand commands = new MoBiMacroCommand();
          _moduleConfigurationMapper = moduleConfigurationMapper;
+         _simulationConfigurationFactory = simulationConfigurationFactory;
          _userSettings = userSettings;
-         _simulationConfigurationTask = simulationConfigurationFactory;
          InitializeWith(commands);
          AllowQuickFinish = false;
       }
@@ -60,7 +60,7 @@ namespace MoBi.Presentation.Presenter
             return null;
          }
 
-         var simulationConfiguration = _simulationConfigurationTask.Create();
+         var simulationConfiguration = _simulationConfigurationFactory.Create();
          updateSimulationConfiguration(simulationConfiguration);
          return simulationConfiguration;
       }
@@ -100,7 +100,9 @@ namespace MoBi.Presentation.Presenter
          var selectedExpressions = individualAndExpressionPresenter.ExpressionProfiles;
          var selectedIndividual = individualAndExpressionPresenter.SelectedIndividual;
 
-         _simulationConfigurationTask.UpdateFrom(simulationConfiguration, moduleConfigurations, selectedIndividual, selectedExpressions);
+         moduleConfigurations.Each(simulationConfiguration.AddModuleConfiguration);
+         simulationConfiguration.Individual = selectedIndividual;
+         selectedExpressions.Each(simulationConfiguration.AddExpressionProfile);
 
          simulationConfiguration.ShouldValidate = true;
          simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;

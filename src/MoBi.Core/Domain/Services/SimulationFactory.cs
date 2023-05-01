@@ -25,7 +25,7 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       IMoBiSimulation Create();
 
-      IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string simulationName);
+      IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
 
       IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation);
    }
@@ -41,6 +41,7 @@ namespace MoBi.Core.Domain.Services
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IModelConstructor _modelConstructor;
       private readonly IMoBiContext _context;
+      private readonly ICloneManagerForBuildingBlock _cloneManager;
 
       public SimulationFactory(IIdGenerator idGenerator,
          ICreationMetaDataFactory creationMetaDataFactory,
@@ -50,7 +51,8 @@ namespace MoBi.Core.Domain.Services
          IDimensionValidator dimensionValidator,
          IHeavyWorkManager heavyWorkManager,
          IModelConstructor modelConstructor,
-         IMoBiContext context)
+         IMoBiContext context,
+         ICloneManagerForBuildingBlock cloneManager)
       {
          _idGenerator = idGenerator;
          _creationMetaDataFactory = creationMetaDataFactory;
@@ -61,6 +63,7 @@ namespace MoBi.Core.Domain.Services
          _heavyWorkManager = heavyWorkManager;
          _modelConstructor = modelConstructor;
          _context = context;
+         _cloneManager = cloneManager;
       }
 
       public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model)
@@ -105,10 +108,11 @@ namespace MoBi.Core.Domain.Services
          return results.Model;
       }
 
-      public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configuration, string simulationName)
+      public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
-         var model = CreateModelAndValidate(configuration, simulationName, AppConstants.Captions.CreatingSimulation);
-         return createSimulation(model, configuration, simulationName);
+         var model = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, AppConstants.Captions.CreatingSimulation);
+         var clonedConfiguration = _cloneManager.Clone(configurationReferencingBuildingBlocks);
+         return CreateFrom(clonedConfiguration, model).WithName(simulationName);
       }
 
       private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name)
@@ -125,13 +129,6 @@ namespace MoBi.Core.Domain.Services
       private void showWarnings(ValidationResult validationResult)
       {
          _context.PublishEvent(new ShowValidationResultsEvent(validationResult));
-      }
-
-      private IMoBiSimulation createSimulation(IModel model, SimulationConfiguration configuration, string name)
-      {
-         var simulation = CreateFrom(configuration, model).WithName(name);
-         simulation.HasChanged = true;
-         return simulation;
       }
    }
 }
