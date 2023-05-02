@@ -2,10 +2,12 @@
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
@@ -41,9 +43,17 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(createExistingBuildingBlockFromTemplateItemFor(module));
          _allMenuItems.Add(createRenameItemFor(module));
          _allMenuItems.Add(createRemoveItemFor(module));
+         _allMenuItems.Add(createCloneMenuItem(module));
          _allMenuItems.Add(createAddExpressionAsStartValue(module));
 
          return this;
+      }
+
+      private IMenuBarItem createCloneMenuItem(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
+            .WithIcon(ApplicationIcons.Clone)
+            .WithCommandFor<CloneModuleUICommand, Module>(module, _container);
       }
 
       private IMenuBarItem createAddExpressionAsStartValue(Module module)

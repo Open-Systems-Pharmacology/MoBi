@@ -5,11 +5,11 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation
 {
-   public class concern_for_CreateModuleDTO : ContextSpecification<CreateModuleDTO>
+   public class concern_for_CreateModuleDTO : ContextSpecification<ModuleContentDTO>
    {
       protected override void Context()
       {
-         sut = new CreateModuleDTO();
+         sut = new ModuleContentDTO();
       }
    }
 

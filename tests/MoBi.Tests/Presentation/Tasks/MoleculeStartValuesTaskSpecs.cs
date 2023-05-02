@@ -637,7 +637,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.Clone(_buildingBlockToClone);
+         sut.CloneAndAddToParent(_buildingBlockToClone, _module);
       }
 
       [Observation]

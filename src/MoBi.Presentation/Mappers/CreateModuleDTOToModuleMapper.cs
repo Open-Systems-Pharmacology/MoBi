@@ -10,7 +10,7 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface ICreateModuleDTOToModuleMapper : IMapper<CreateModuleDTO, Module>
+   public interface ICreateModuleDTOToModuleMapper : IMapper<ModuleContentDTO, Module>
    {
    }
 
@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Mappers
          module.Add(buildingBlock);
       }
 
-      public Module MapFrom(CreateModuleDTO createModuleDTO)
+      public Module MapFrom(ModuleContentDTO createModuleDTO)
       {
          var module = _context.Create<Module>().WithIcon(ApplicationIcons.Module.IconName).WithName(createModuleDTO.Name);
 

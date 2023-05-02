@@ -22,6 +22,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       void LoadBuildingBlocksToModule(Module module);
       void LoadBuildingBlocksFromTemplateToModule(Module module);
       void RemoveModule(Module module);
+      void AddCloneToProject(Module moduleToClone);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
@@ -94,6 +95,20 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void RemoveModule(Module module)
       {
          _interactionTaskContext.Context.AddToHistory(new RemoveModuleCommand(module)
+            .Run(_interactionTaskContext.Context));
+      }
+
+      public void AddCloneToProject(Module moduleToClone)
+      {
+         var clonedModule = _interactionTaskContext.Context.Clone(moduleToClone);
+
+         using (var presenter = _interactionTaskContext.ApplicationController.Start<ICloneBuildingBlocksToModulePresenter>())
+         {
+            if (presenter.SelectClonedBuildingBlocks(clonedModule) == false)
+               return;
+         }
+         
+         _interactionTaskContext.Context.AddToHistory(GetAddCommand(clonedModule, _interactionTaskContext.Context.CurrentProject, null)
             .Run(_interactionTaskContext.Context));
       }
 

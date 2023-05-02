@@ -27,26 +27,26 @@ namespace MoBi.Presentation.Mappers
          _spatialStructureFactory = spatialStructureFactory;
       }
 
-      public IReadOnlyList<IBuildingBlock> MapFrom(AddBuildingBlocksToModuleDTO addBuildingBlocksToModuleDTO)
+      public IReadOnlyList<IBuildingBlock> MapFrom(AddBuildingBlocksToModuleDTO dto)
       {
          var listOfBuildingBlocks = new List<IBuildingBlock>
          {
-            ConditionalCreate(addBuildingBlocksToModuleDTO.WithMolecule && !addBuildingBlocksToModuleDTO.AlreadyHasMolecule,
+            ConditionalCreate(dto.CreateMolecule,
                () => CreateDefault<MoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock)),
-            ConditionalCreate(addBuildingBlocksToModuleDTO.WithReaction && !addBuildingBlocksToModuleDTO.AlreadyHasReaction,
+            ConditionalCreate(dto.CreateReaction,
                () => CreateDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create())),
-            ConditionalCreate(addBuildingBlocksToModuleDTO.WithSpatialStructure && !addBuildingBlocksToModuleDTO.AlreadyHasSpatialStructure,
+            ConditionalCreate(dto.CreateSpatialStructure,
                () => CreateDefault(AppConstants.DefaultNames.SpatialStructure,
                   () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure))),
-            ConditionalCreate(addBuildingBlocksToModuleDTO.WithPassiveTransport && !addBuildingBlocksToModuleDTO.AlreadyHasPassiveTransport,
+            ConditionalCreate(dto.CreatePassiveTransport,
                () => CreateDefault<PassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock)),
-            ConditionalCreate(addBuildingBlocksToModuleDTO.WithEventGroup && !addBuildingBlocksToModuleDTO.AlreadyHasEventGroup,
+            ConditionalCreate(dto.CreateEventGroup,
                () => CreateDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)),
-            ConditionalCreate(addBuildingBlocksToModuleDTO.WithObserver && !addBuildingBlocksToModuleDTO.AlreadyHasObserver,
+            ConditionalCreate(dto.CreateObserver,
                () => CreateDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)),
-            ConditionalCreate(addBuildingBlocksToModuleDTO.WithParameterStartValues,
+            ConditionalCreate(dto.WithParameterStartValues,
                () => CreateDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues)),
-            ConditionalCreate(addBuildingBlocksToModuleDTO.WithMoleculeStartValues,
+            ConditionalCreate(dto.WithMoleculeStartValues,
                () => CreateDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues))
          };
 

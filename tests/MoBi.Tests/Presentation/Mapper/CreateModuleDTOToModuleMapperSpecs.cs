@@ -27,13 +27,13 @@ namespace MoBi.Presentation.Mapper
 
    public class When_mapping_dto_to_module_with_no_building_blocks : concern_for_CreateModuleDTOToModuleMapper
    {
-      private CreateModuleDTO _dto;
+      private ModuleContentDTO _dto;
       private Module _result;
 
       protected override void Context()
       {
          base.Context();
-         _dto = new CreateModuleDTO
+         _dto = new ModuleContentDTO
          {
             WithReaction = false,
             WithEventGroup = false,
@@ -67,13 +67,13 @@ namespace MoBi.Presentation.Mapper
 
    public class When_mapping_dto_to_module_with_all_building_blocks : concern_for_CreateModuleDTOToModuleMapper
    {
-      private CreateModuleDTO _dto;
+      private ModuleContentDTO _dto;
       private Module _result;
 
       protected override void Context()
       {
          base.Context();
-         _dto = new CreateModuleDTO
+         _dto = new ModuleContentDTO
          {
             WithReaction = true,
             WithEventGroup = true,

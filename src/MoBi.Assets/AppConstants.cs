@@ -1858,6 +1858,11 @@ namespace MoBi.Assets
          {
             return $"{partnerType} for reaction '{reactionName}'";
          }
+
+         public static string SelectBuildingBlocksToCloneFrom(Module module)
+         {
+            return $"Select building blocks to clone from {module.Name}";
+         }
       }
 
       public static class Validation

@@ -6,6 +6,6 @@ namespace MoBi.Presentation.Views
 {
    public interface ICreateModuleView : IModalView<ICreateModulePresenter>   
    {
-      void BindTo(CreateModuleDTO createModuleDTO);
+      void BindTo(ModuleContentDTO createModuleDTO);
    }
 }

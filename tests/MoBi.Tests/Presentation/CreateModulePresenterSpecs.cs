@@ -41,7 +41,7 @@ namespace MoBi.Presentation
          base.Context();
          _module = new Module();
          A.CallTo(() => _view.Canceled).Returns(false);
-         A.CallTo(() => _mapper.MapFrom(A<CreateModuleDTO>._)).Returns(_module);
+         A.CallTo(() => _mapper.MapFrom(A<ModuleContentDTO>._)).Returns(_module);
       }
 
       protected override void Because()
@@ -52,7 +52,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_module_mapper_should_create_the_module()
       {
-         A.CallTo(() => _mapper.MapFrom(A<CreateModuleDTO>._)).MustHaveHappened();
+         A.CallTo(() => _mapper.MapFrom(A<ModuleContentDTO>._)).MustHaveHappened();
       }
    }
 

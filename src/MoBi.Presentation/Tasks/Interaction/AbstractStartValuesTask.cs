@@ -252,7 +252,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public abstract bool CanResolve(TBuildingBlock buildingBlock, TStartValue startValue);
       
-      public ICommand Clone(TBuildingBlock buildingBlockToClone)
+      public ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule)
       {
          var name = GetNewNameForClone(buildingBlockToClone);
 
@@ -261,7 +261,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          var clone = InteractionTask.Clone(buildingBlockToClone).WithName(name);
 
-         return AddToParent(clone, buildingBlockToClone.Module, null);
+         return AddToParent(clone, parentModule, null);
       }
 
       protected static bool ShouldFormulaBeOverridden(ImportedQuantityDTO quantityDTO, TStartValue startValue)

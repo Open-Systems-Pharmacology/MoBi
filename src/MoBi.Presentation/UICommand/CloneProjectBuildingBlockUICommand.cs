@@ -38,7 +38,7 @@ namespace MoBi.Presentation.UICommand
       
       protected override void PerformExecute()
       {
-         _context.AddToHistory(_interactionTasks.Clone(Subject));
+         _context.AddToHistory(_interactionTasks.CloneAndAddToParent(Subject, Subject.Module));
       }
    }
 }

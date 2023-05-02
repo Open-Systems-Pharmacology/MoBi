@@ -133,8 +133,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       bool CanResolve(TBuildingBlock buildingBlock, TStartValue startValue);
 
       /// <summary>
-      /// Creates a clone of the <paramref name="buildingBlockToClone"/> and adds it to the same module
+      /// Creates a clone of the <paramref name="buildingBlockToClone"/> and adds it to <paramref name="parentModule"/>
       /// </summary>
-      ICommand Clone(TBuildingBlock buildingBlockToClone);
+      ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule);
    }
 }

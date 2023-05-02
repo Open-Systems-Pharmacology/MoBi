@@ -6,7 +6,11 @@ namespace MoBi.Presentation.Views
 {
    public interface IAddBuildingBlocksToModuleView : IModalView<IAddBuildingBlocksToModulePresenter>
    {
-      void BindTo(AddBuildingBlocksToModuleDTO createModuleDTO);
-      void DisableExistingBuildingBlocks(AddBuildingBlocksToModuleDTO addBuildingBlocksToModuleDTO);
+      void BindTo(AddBuildingBlocksToModuleDTO moduleContentDTO);
+   }
+
+   public interface ICloneBuildingBlocksToModuleView : IModalView<ICloneBuildingBlocksToModulePresenter>
+   {
+      void BindTo(CloneBuildingBlocksToModuleDTO cloneBuildingBlocksToModuleDTO);
    }
 }
