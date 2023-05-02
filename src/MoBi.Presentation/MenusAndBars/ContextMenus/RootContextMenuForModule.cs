@@ -13,9 +13,9 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForExtensionModule : RootContextMenuFor<MoBiProject, Module>
+   public class RootContextMenuForModule : RootContextMenuFor<MoBiProject, Module>
    {
-      public RootContextMenuForExtensionModule(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
+      public RootContextMenuForModule(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {
       }
 

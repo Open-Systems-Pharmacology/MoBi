@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Views;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -108,8 +108,16 @@ namespace MoBi.Presentation.Presenter.Main
 
       public int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
       {
+         if (nodeIsStartValueFolderNode(node1) && nodeIsStartValueFolderNode(node2))
+            return nodeIsMoleculeStartValuesNode(node1) ? -1 : 1;
+
+         if (nodeIsStartValueFolderNode(node1))
+            return 1;
+         if (nodeIsStartValueFolderNode(node2))
+            return -1;
+
          if (nodeTagIsModuleRootNode(node1) && nodeTagIsModuleRootNode(node2))
-            return rootNodeTypeComparison(node1, node2);
+            return rootNodeTypeComparison(node1);
 
          if (nodeTagIsModuleRootNode(node1) && !nodeTagIsModuleRootNode(node2))
             return -1;
@@ -123,7 +131,22 @@ namespace MoBi.Presentation.Presenter.Main
          return nameComparison(node1, node2);
       }
 
-      private int rootNodeTypeComparison(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
+      private bool nodeIsStartValueFolderNode(ITreeNode<IWithName> node1)
+      {
+         return nodeIsParameterStartValuesNode(node1) || nodeIsMoleculeStartValuesNode(node1);
+      }
+
+      private static bool nodeIsMoleculeStartValuesNode(ITreeNode<IWithName> node1)
+      {
+         return node1 is MoleculeStartValuesFolderNode;
+      }
+
+      private static bool nodeIsParameterStartValuesNode(ITreeNode<IWithName> node1)
+      {
+         return node1 is ParameterStartValuesFolderNode;
+      }
+
+      private int rootNodeTypeComparison(ITreeNode<IWithName> node1)
       {
          if (node1.Tag.Equals(MoBiRootNodeTypes.ModulesFolder))
             return 1;
@@ -197,9 +220,22 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void addBuildingBlockToModule(IBuildingBlock buildingBlock, Module module)
       {
-         var moduleNode = _view.TreeView.NodeById(module.Id);
+         var moduleNode = folderNodeForBuildingBlock(buildingBlock, module);
 
          addBuildingBlockUnderNode(buildingBlock, moduleNode);
+      }
+
+      private ITreeNode folderNodeForBuildingBlock(IBuildingBlock buildingBlock, Module module)
+      {
+         var moduleNode = _view.TreeView.NodeById(module.Id);
+         
+         if (buildingBlock is ParameterStartValuesBuildingBlock)
+            return moduleNode.Children.OfType<ParameterStartValuesFolderNode>().FirstOrDefault();
+         
+         if (buildingBlock is MoleculeStartValuesBuildingBlock)
+            return moduleNode.Children.OfType<MoleculeStartValuesFolderNode>().FirstOrDefault();
+
+         return moduleNode;
       }
 
       private void addModule(Module module)

@@ -85,13 +85,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForMoleculeBuildingBlock : RootNodeContextMenuFactoryFor<MoleculeBuildingBlock>
-   {
-      public RootContextMenuFactoryForMoleculeBuildingBlock() : base(MoBiRootNodeTypes.MoleculeFolder)
-      {
-      }
-   }
-
    public class RootContextMenuFactoryForSimulation : RootNodeContextMenuFactoryFor<IMoBiSimulation>
    {
       public RootContextMenuFactoryForSimulation() : base(RootNodeTypes.SimulationFolder)
@@ -109,62 +102,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    public class RootContextMenuFactoryForSensitivityAnalysis : RootNodeContextMenuFactoryFor<SensitivityAnalysis>
    {
       public RootContextMenuFactoryForSensitivityAnalysis() : base(RootNodeTypes.SensitivityAnalysisFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForMoBiReactionBuildingBlock : RootNodeContextMenuFactoryFor<MoBiReactionBuildingBlock>
-   {
-      public RootContextMenuFactoryForMoBiReactionBuildingBlock()
-         : base(MoBiRootNodeTypes.ReactionFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForPassiveTransportBuildingBlock : RootNodeContextMenuFactoryFor<PassiveTransportBuildingBlock>
-   {
-      public RootContextMenuFactoryForPassiveTransportBuildingBlock()
-         : base(MoBiRootNodeTypes.PassiveTransportFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForMoBiSpatialStructure : RootNodeContextMenuFactoryFor<MoBiSpatialStructure>
-   {
-      public RootContextMenuFactoryForMoBiSpatialStructure()
-         : base(MoBiRootNodeTypes.SpatialStructureFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForObserverBuildingBlock : RootNodeContextMenuFactoryFor<ObserverBuildingBlock>
-   {
-      public RootContextMenuFactoryForObserverBuildingBlock()
-         : base(MoBiRootNodeTypes.ObserverFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForEventGroupBuildingBlock : RootNodeContextMenuFactoryFor<EventGroupBuildingBlock>
-   {
-      public RootContextMenuFactoryForEventGroupBuildingBlock()
-         : base(MoBiRootNodeTypes.EventFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForMoBiMoleculeStartValuesBuildingBlock : RootNodeContextMenuFactoryFor<MoleculeStartValuesBuildingBlock>
-   {
-      public RootContextMenuFactoryForMoBiMoleculeStartValuesBuildingBlock()
-         : base(MoBiRootNodeTypes.MoleculeStartValuesFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForMoBiParameterStartValuesBuildingBlock : RootNodeContextMenuFactoryFor<ParameterStartValuesBuildingBlock>
-   {
-      public RootContextMenuFactoryForMoBiParameterStartValuesBuildingBlock()
-         : base(MoBiRootNodeTypes.ParameterStartValuesFolder)
       {
       }
    }
