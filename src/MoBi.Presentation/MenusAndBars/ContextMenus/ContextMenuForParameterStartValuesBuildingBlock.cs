@@ -10,6 +10,8 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Container;
+using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -28,6 +30,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<ImportParameterStartValuesUICommand, IBuildingBlock>(buildingBlock, _container));
 
          return this;
+      }
+
+      protected override IMenuBarItem CreateCloneMenuItem(ParameterStartValuesBuildingBlock buildingBlock)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
+            .WithIcon(ApplicationIcons.Clone)
+            .WithCommandFor<CloneStartValueBuildingBlockUICommand<ParameterStartValuesBuildingBlock, ParameterStartValue, IParameterStartValuesTask>, ParameterStartValuesBuildingBlock>(buildingBlock, _container);
       }
    }
 }

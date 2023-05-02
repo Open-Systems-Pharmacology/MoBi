@@ -5,6 +5,7 @@ using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using System.Collections.Generic;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -14,14 +15,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
       }
 
-      protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
-      {
-         var name = DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(AppConstants.CloneName(buildingBlockToClone)),
-            AppConstants.Captions.NewName,
-            AppConstants.CloneName(buildingBlockToClone), _editTask.GetForbiddenNames(buildingBlockToClone, Context.CurrentProject.All<IndividualBuildingBlock>()));
-         return name;
-      }
-      
       public IMoBiCommand Clone(TBuildingBlock buildingBlockToClone)
       {
          var name = GetNewNameForClone(buildingBlockToClone);
@@ -54,6 +47,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          IBuildingBlock buildingBlock)
       {
          return new AddProjectBuildingBlockCommand<TBuildingBlock>(itemToAdd);
+      }
+
+      protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone)
+      {
+         return Context.CurrentProject.All<TBuildingBlock>();
       }
    }
 }

@@ -23,10 +23,11 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Assets;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_MoleculeStartValuesTask : ContextSpecification<IMoleculeStartValuesTask>
+   public abstract class concern_for_MoleculeStartValuesTask : ContextSpecification<MoleculeStartValuesTask>
    {
       protected IMoleculeStartValuesCreator _moleculeStartValuesCreator;
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
@@ -118,7 +119,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.Remove(_moleculeStartValueBuildingBlock, _module, null)).ShouldThrowAn<MoBiException>();
+         The.Action(() => sut.Remove(_moleculeStartValueBuildingBlock, _module, null, false)).ShouldThrowAn<MoBiException>();
       }
    }
 
@@ -141,7 +142,7 @@ namespace MoBi.Presentation.Tasks
    public class When_comparing_start_value_to_original_builder : concern_for_MoleculeStartValuesTask
    {
       private MoleculeStartValue _moleculeStartValue;
-      private const string _name = "Name";
+      private const string NAME = "Name";
       protected bool _result;
       private IDimension _dimension;
       protected MoleculeBuilder _builder;
@@ -150,11 +151,11 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
-         _moleculeStartValue = new MoleculeStartValue {Dimension = _dimension, Name = _name, Formula = null};
+         _moleculeStartValue = new MoleculeStartValue {Dimension = _dimension, Name = NAME, Formula = null};
 
          _builder = new MoleculeBuilder
          {
-            Name = _name,
+            Name = NAME,
             Dimension = _dimension
          };
       }
@@ -295,12 +296,12 @@ namespace MoBi.Presentation.Tasks
       public void should_return_a_macro_command_containing_one_command_for_each_molecule_start_value_for_which_the_flag_value_has_changed()
       {
          _command.ShouldBeAnInstanceOf<IMoBiMacroCommand>();
-         var macrocommand = _command.DowncastTo<IMoBiMacroCommand>();
-         macrocommand.Count.ShouldBeEqualTo(2);
+         var macroCommand = _command.DowncastTo<IMoBiMacroCommand>();
+         macroCommand.Count.ShouldBeEqualTo(2);
       }
    }
 
-   public class When_setting_the_negatiave_start_values_flag_for_a_set_of_molecule_start_values : concern_for_MoleculeStartValuesTask
+   public class When_setting_the_negative_start_values_flag_for_a_set_of_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
       private List<MoleculeStartValue> _startValues;
       private IMoBiCommand _command;
@@ -327,8 +328,8 @@ namespace MoBi.Presentation.Tasks
       public void should_return_a_macro_command_containing_one_command_for_each_molecule_start_value_for_which_the_flag_value_has_changed()
       {
          _command.ShouldBeAnInstanceOf<IMoBiMacroCommand>();
-         var macrocommand = _command.DowncastTo<IMoBiMacroCommand>();
-         macrocommand.Count.ShouldBeEqualTo(2);
+         var macroCommand = _command.DowncastTo<IMoBiMacroCommand>();
+         macroCommand.Count.ShouldBeEqualTo(2);
       }
    }
 
@@ -433,15 +434,15 @@ namespace MoBi.Presentation.Tasks
    {
       private MoleculeStartValue _startValue;
       private IDimension _dim;
-      private const double _targetBaseValue = 1000000;
-      private const double _targetDisplayValue = 1000;
+      private const double TARGET_BASE_VALUE = 1000000;
+      private const double TARGET_DISPLAY_VALUE = 1000;
 
       protected override void Context()
       {
          base.Context();
          _dim = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
-         _startValue = new MoleculeStartValue {Dimension = _dim, StartValue = _targetDisplayValue, DisplayUnit = _dim.Unit("g")};
+         _startValue = new MoleculeStartValue {Dimension = _dim, StartValue = TARGET_DISPLAY_VALUE, DisplayUnit = _dim.Unit("g")};
       }
 
       protected override void Because()
@@ -456,14 +457,14 @@ namespace MoBi.Presentation.Tasks
       public void display_amount_should_not_change()
       {
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
-         _startValue.ConvertToDisplayUnit(_startValue.Value.Value).ShouldBeEqualTo(_targetDisplayValue);
+         _startValue.ConvertToDisplayUnit(_startValue.Value.Value).ShouldBeEqualTo(TARGET_DISPLAY_VALUE);
       }
 
       [Observation]
       public void base_amount_must_change_to_new_amount()
       {
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
-         _startValue.Value.Value.ShouldBeEqualTo(_targetBaseValue);
+         _startValue.Value.Value.ShouldBeEqualTo(TARGET_BASE_VALUE);
       }
    }
 
@@ -553,7 +554,6 @@ namespace MoBi.Presentation.Tasks
 
    public class When_creating_a_molecule_start_value_for_simulation_based_on_a_selected_template : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValuesBuildingBlock _result;
       private SimulationConfiguration _simulationConfiguration;
       private MoleculeStartValuesBuildingBlock _templateStartValuesBuildingBlock;
       private MoleculeStartValuesBuildingBlock _newMoleculeStartValues;
@@ -596,7 +596,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _result = sut.CreateStartValuesForSimulation(_simulationConfiguration);
+         sut.CreateStartValuesForSimulation(_simulationConfiguration);
       }
 
       [Observation]
@@ -615,6 +615,35 @@ namespace MoBi.Presentation.Tasks
       public void should_mark_the_added_molecule_start_values_as_present_in_all_other_organs()
       {
          _otherStartValues.IsPresent.ShouldBeTrue();
+      }
+   }
+
+   public class When_a_clone_of_an_existing_building_block_is_made : concern_for_MoleculeStartValuesTask
+   {
+      private MoleculeStartValuesBuildingBlock _buildingBlockToClone;
+      private Module _module;
+      private IDialogCreator _dialogCreator;
+
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlockToClone = new MoleculeStartValuesBuildingBlock();
+         _module = new Module { _buildingBlockToClone };
+         _dialogCreator = A.Fake<IDialogCreator>();
+         A.CallTo(() => _context.DialogCreator).Returns(_dialogCreator);
+         A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns("name of clone");
+         A.CallTo(() => _context.InteractionTask.CorrectName(A<MoleculeStartValuesBuildingBlock>._, A<IEnumerable<string>>._)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.Clone(_buildingBlockToClone);
+      }
+
+      [Observation]
+      public void the_cloned_building_block_must_belong_to_the_module()
+      {
+         _module.MoleculeStartValuesCollection.Count.ShouldBeEqualTo(2);
       }
    }
 

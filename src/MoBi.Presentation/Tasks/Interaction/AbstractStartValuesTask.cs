@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
@@ -253,6 +251,18 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
       public abstract bool CanResolve(TBuildingBlock buildingBlock, TStartValue startValue);
+      
+      public ICommand Clone(TBuildingBlock buildingBlockToClone)
+      {
+         var name = GetNewNameForClone(buildingBlockToClone);
+
+         if (string.IsNullOrEmpty(name))
+            return new MoBiEmptyCommand();
+
+         var clone = InteractionTask.Clone(buildingBlockToClone).WithName(name);
+
+         return AddToParent(clone, buildingBlockToClone.Module, null);
+      }
 
       protected static bool ShouldFormulaBeOverridden(ImportedQuantityDTO quantityDTO, TStartValue startValue)
       {

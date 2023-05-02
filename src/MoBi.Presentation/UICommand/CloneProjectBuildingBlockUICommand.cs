@@ -21,4 +21,24 @@ namespace MoBi.Presentation.UICommand
          _context.AddToHistory(_tasks.Clone(Subject));
       }
    }
+
+   public class CloneStartValueBuildingBlockUICommand<TBuildingBlock, TStartValue, TTask> : ObjectUICommand<TBuildingBlock> 
+      where TBuildingBlock : StartValueBuildingBlock<TStartValue> 
+      where TStartValue : PathAndValueEntity, IStartValue
+      where TTask : IStartValuesTask<TBuildingBlock, TStartValue>
+   {
+      private readonly IMoBiContext _context;
+      private readonly TTask _interactionTasks;
+
+      public CloneStartValueBuildingBlockUICommand(IMoBiContext context, TTask interactionTasks)
+      {
+         _context = context;
+         _interactionTasks = interactionTasks;
+      }
+      
+      protected override void PerformExecute()
+      {
+         _context.AddToHistory(_interactionTasks.Clone(Subject));
+      }
+   }
 }

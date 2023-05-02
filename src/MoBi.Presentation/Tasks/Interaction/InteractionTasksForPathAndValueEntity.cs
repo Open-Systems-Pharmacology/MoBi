@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System.Collections.Generic;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -60,6 +61,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          _moBiFormulaTask = moBiFormulaTask;
       }
+
+      protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
+      {
+         var name = DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(AppConstants.CloneName(buildingBlockToClone)),
+            AppConstants.Captions.NewName,
+            AppConstants.CloneName(buildingBlockToClone), _editTask.GetForbiddenNames(buildingBlockToClone, GetNamedObjectsInParent(buildingBlockToClone)));
+         return name;
+      }
+
+      protected abstract IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone);
 
       protected IMoBiCommand AddFormulaToFormulaCacheAndSetOnBuilder<TFormula>(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter)
          where TFormula : IFormula

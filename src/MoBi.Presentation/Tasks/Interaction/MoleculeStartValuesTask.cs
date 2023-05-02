@@ -259,5 +259,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return new RemoveMoleculeStartValueFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);
       }
+
+      protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(MoleculeStartValuesBuildingBlock buildingBlockToClone)
+      {
+         return buildingBlockToClone.Module.MoleculeStartValuesCollection;
+      }
    }
 }

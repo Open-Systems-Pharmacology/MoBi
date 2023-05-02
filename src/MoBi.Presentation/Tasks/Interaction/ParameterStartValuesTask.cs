@@ -192,5 +192,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return new AddParameterStartValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
       }
+
+      protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(ParameterStartValuesBuildingBlock buildingBlockToClone)
+      {
+         return buildingBlockToClone.Module.ParameterStartValuesCollection;
+      }
    }
 }

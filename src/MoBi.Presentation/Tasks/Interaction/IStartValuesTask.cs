@@ -131,5 +131,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="startValue">The start value being resolved</param>
       /// <returns>true if the start value can be resolved, otherwise false</returns>
       bool CanResolve(TBuildingBlock buildingBlock, TStartValue startValue);
+
+      /// <summary>
+      /// Creates a clone of the <paramref name="buildingBlockToClone"/> and adds it to the same module
+      /// </summary>
+      ICommand Clone(TBuildingBlock buildingBlockToClone);
    }
 }
