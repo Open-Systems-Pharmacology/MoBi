@@ -45,64 +45,64 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      private void retrieveTask<TParent, TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock where TParent : class
+      private void retrieveTask<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock
       {
-         _task = _container.Resolve<IInteractionTasksForBuildingBlock<TParent, TBuildingBlock>>();
+         _task = _container.Resolve<IInteractionTasksForBuildingBlock<Module, TBuildingBlock>>();
       }
 
-      private void retrieveTask<TParent, TBuildingBlock>() where TBuildingBlock : class, IBuildingBlock where TParent : class
+      private void retrieveTask<TBuildingBlock>() where TBuildingBlock : class, IBuildingBlock
       {
-         _task = _container.Resolve<IInteractionTasksForBuildingBlock<TParent, TBuildingBlock>>();
+         _task = _container.Resolve<IInteractionTasksForBuildingBlock<Module, TBuildingBlock>>();
       }
 
       public void Visit(MoleculeBuildingBlock objToVisit)
       {
-         retrieveTask<Module, MoleculeBuildingBlock>(objToVisit);
+         retrieveTask<MoleculeBuildingBlock>(objToVisit);
       }
 
       public void Visit(ObserverBuildingBlock objToVisit)
       {
-         retrieveTask<Module, ObserverBuildingBlock>(objToVisit);
+         retrieveTask<ObserverBuildingBlock>(objToVisit);
       }
 
       public void Visit(ReactionBuildingBlock objToVisit)
       {
-         retrieveTask<Module, MoBiReactionBuildingBlock>();
+         retrieveTask<MoBiReactionBuildingBlock>();
       }
 
       public void Visit(PassiveTransportBuildingBlock objToVisit)
       {
-         retrieveTask<Module, PassiveTransportBuildingBlock>(objToVisit);
+         retrieveTask<PassiveTransportBuildingBlock>(objToVisit);
       }
 
       public void Visit(MoleculeStartValuesBuildingBlock objToVisit)
       {
-         retrieveTask<Module, MoleculeStartValuesBuildingBlock>(objToVisit);
+         retrieveTask<MoleculeStartValuesBuildingBlock>(objToVisit);
       }
 
       public void Visit(ParameterStartValuesBuildingBlock objToVisit)
       {
-         retrieveTask<Module, ParameterStartValuesBuildingBlock>(objToVisit);
+         retrieveTask<ParameterStartValuesBuildingBlock>(objToVisit);
       }
 
       public void Visit(MoBiReactionBuildingBlock objToVisit)
       {
-         retrieveTask<Module, MoBiReactionBuildingBlock>(objToVisit);
+         retrieveTask<MoBiReactionBuildingBlock>(objToVisit);
       }
 
       public void Visit(EventGroupBuildingBlock objToVisit)
       {
-         retrieveTask<Module, EventGroupBuildingBlock>(objToVisit);
+         retrieveTask<EventGroupBuildingBlock>(objToVisit);
       }
 
       public void Visit(MoBiSpatialStructure objToVisit)
       {
-         retrieveTask<Module, MoBiSpatialStructure>(objToVisit);
+         retrieveTask<MoBiSpatialStructure>(objToVisit);
       }
 
       public void Visit(SimulationSettings objToVisit)
       {
-         retrieveTask<Module, SimulationSettings>(objToVisit);
+         retrieveTask<SimulationSettings>(objToVisit);
       }
    }
 }

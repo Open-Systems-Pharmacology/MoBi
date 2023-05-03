@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Presenter.Main
       int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
 
-   public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter, 
+   public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter,
       IListener<AddedEvent<Module>>,
       IListener<AddedEvent<IndividualBuildingBlock>>,
       IListener<AddedEvent<ExpressionProfileBuildingBlock>>
@@ -113,6 +113,7 @@ namespace MoBi.Presentation.Presenter.Main
 
          if (nodeIsStartValueFolderNode(node1))
             return 1;
+         
          if (nodeIsStartValueFolderNode(node2))
             return -1;
 
@@ -228,10 +229,10 @@ namespace MoBi.Presentation.Presenter.Main
       private ITreeNode folderNodeForBuildingBlock(IBuildingBlock buildingBlock, Module module)
       {
          var moduleNode = _view.TreeView.NodeById(module.Id);
-         
+
          if (buildingBlock is ParameterStartValuesBuildingBlock)
             return moduleNode.Children.OfType<ParameterStartValuesFolderNode>().FirstOrDefault();
-         
+
          if (buildingBlock is MoleculeStartValuesBuildingBlock)
             return moduleNode.Children.OfType<MoleculeStartValuesFolderNode>().FirstOrDefault();
 

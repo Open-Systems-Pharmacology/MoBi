@@ -7,12 +7,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveProjectBuildingBlockCommand<T> : MoBiReversibleCommand where T : class, IBuildingBlock
+   public class RemoveBuildingBlockFromProjectCommand<T> : MoBiReversibleCommand where T : class, IBuildingBlock
    {
       protected T _buildingBlock;
       private byte[] _serializationStream;
 
-      public RemoveProjectBuildingBlockCommand(T buildingBlock)
+      public RemoveBuildingBlockFromProjectCommand(T buildingBlock)
       {
          ObjectType = new ObjectTypeResolver().TypeFor<T>();
          CommandType = AppConstants.Commands.DeleteCommand;
@@ -36,7 +36,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new AddProjectBuildingBlockCommand<T>(_buildingBlock).AsInverseFor(this);
+         return new AddBuildingBlockToProjectCommand<T>(_buildingBlock).AsInverseFor(this);
       }
 
       protected override void ClearReferences()

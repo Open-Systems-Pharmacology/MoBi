@@ -22,8 +22,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         var buildingBlock = _context.Get<TBuildingBlock>(dto.Id);
          base.InitializeWith(dto, presenter);
+         var buildingBlock = _context.Get<TBuildingBlock>(dto.Id);
          _allMenuItems.Add(createCloneMenuItem(buildingBlock));
          return this;
       }

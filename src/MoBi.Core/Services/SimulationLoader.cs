@@ -138,7 +138,7 @@ namespace MoBi.Core.Services
       private T addToProject<T>(ICommandCollector commandCollector, T buildingBlock) where T : class, IBuildingBlock
       {
          if (buildingBlock != null)
-            commandCollector.AddCommand(new AddProjectBuildingBlockCommand<T>(buildingBlock));
+            commandCollector.AddCommand(new AddBuildingBlockToProjectCommand<T>(buildingBlock));
 
          return buildingBlock;
       }

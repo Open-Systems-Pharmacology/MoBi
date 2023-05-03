@@ -27,6 +27,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
    {
+      private IMoBiContext context => _interactionTaskContext.Context;
+
       public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext,
          editTask)
       {
@@ -63,8 +65,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (module == null)
                return;
 
-            _interactionTaskContext.Context.AddToHistory(GetAddCommand(module, _interactionTaskContext.Context.CurrentProject, null)
-               .Run(_interactionTaskContext.Context));
+            context.AddToHistory(GetAddCommand(module, context.CurrentProject, null)
+               .Run(context));
          }
       }
 
@@ -77,30 +79,30 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (!listOfNewBuildingBlocks.Any())
                return;
 
-            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, listOfNewBuildingBlocks)
-               .Run(_interactionTaskContext.Context));
+            context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, listOfNewBuildingBlocks)
+               .Run(context));
          }
       }
 
       public void LoadBuildingBlocksToModule(Module module)
       {
-         loadBuildingBlocksToModuleBase(module, AskForPKMLFileToOpen);
+         loadBuildingBlocksToModule(module, AskForPKMLFileToOpen);
       }
 
       public void LoadBuildingBlocksFromTemplateToModule(Module module)
       {
-         loadBuildingBlocksToModuleBase(module, openTemplateFile);
+         loadBuildingBlocksToModule(module, openTemplateFile);
       }
 
       public void RemoveModule(Module module)
       {
-         _interactionTaskContext.Context.AddToHistory(new RemoveModuleCommand(module)
-            .Run(_interactionTaskContext.Context));
+         context.AddToHistory(new RemoveModuleCommand(module)
+            .Run(context));
       }
 
       public void AddCloneToProject(Module moduleToClone)
       {
-         var clonedModule = _interactionTaskContext.Context.Clone(moduleToClone);
+         var clonedModule = context.Clone(moduleToClone);
 
          using (var presenter = _interactionTaskContext.ApplicationController.Start<ICloneBuildingBlocksToModulePresenter>())
          {
@@ -108,11 +110,11 @@ namespace MoBi.Presentation.Tasks.Interaction
                return;
          }
          
-         _interactionTaskContext.Context.AddToHistory(GetAddCommand(clonedModule, _interactionTaskContext.Context.CurrentProject, null)
-            .Run(_interactionTaskContext.Context));
+         context.AddToHistory(GetAddCommand(clonedModule, context.CurrentProject, null)
+            .Run(context));
       }
 
-      private void loadBuildingBlocksToModuleBase(Module module, Func<string> getFilename)
+      private void loadBuildingBlocksToModule(Module module, Func<string> getFilename)
       {
          using (var presenter = _interactionTaskContext.ApplicationController.Start<ISelectBuildingBlockTypePresenter>())
          {
@@ -128,11 +130,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             var items = loadBuildingBlock(buildingBlockType, filename);
 
-            if (items.Count < 1)
+            if (!items.Any())
                return;
 
-            _interactionTaskContext.Context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, items)
-               .Run(_interactionTaskContext.Context));
+            context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, items)
+               .Run(context));
          }
       }
 

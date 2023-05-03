@@ -40,13 +40,13 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, MoBiProject parent,
          IBuildingBlock buildingBlock)
       {
-         return new RemoveProjectBuildingBlockCommand<TBuildingBlock>(objectToRemove);
+         return new RemoveBuildingBlockFromProjectCommand<TBuildingBlock>(objectToRemove);
       }
 
       public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, MoBiProject parent,
          IBuildingBlock buildingBlock)
       {
-         return new AddProjectBuildingBlockCommand<TBuildingBlock>(itemToAdd);
+         return new AddBuildingBlockToProjectCommand<TBuildingBlock>(itemToAdd);
       }
 
       protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone)
