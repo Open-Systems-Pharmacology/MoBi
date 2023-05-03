@@ -8,9 +8,4 @@ namespace MoBi.Presentation.Views
    {
       void BindTo(AddBuildingBlocksToModuleDTO moduleContentDTO);
    }
-
-   public interface ICloneBuildingBlocksToModuleView : IModalView<ICloneBuildingBlocksToModulePresenter>
-   {
-      void BindTo(CloneBuildingBlocksToModuleDTO cloneBuildingBlocksToModuleDTO);
-   }
 }
