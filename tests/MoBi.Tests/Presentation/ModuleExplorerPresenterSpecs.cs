@@ -183,34 +183,47 @@ namespace MoBi.Presentation
    public class When_the_module_explorer_presenter_compares_nodes_of_the_different_types : concern_for_ModuleExplorerPresenter
    {
       private ITreeNode<SpatialStructure> _spatialStructureA;
-      private ITreeNode<RootNodeType> _spatialStructureRootNode;
       private ITreeNode<RootNodeType> _moduleNode;
-
+      private MoleculeStartValuesFolderNode _moleculeStartValuesFolderNode;
+      private ParameterStartValuesFolderNode _parameterStartValuesFolderNode;
       protected override void Context()
       {
          base.Context();
          
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
-         _spatialStructureRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.SpatialStructureFolder);
          _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder);
+         _parameterStartValuesFolderNode = new ParameterStartValuesFolderNode();
+         _moleculeStartValuesFolderNode = new MoleculeStartValuesFolderNode();
       }
 
       [Observation]
       public void module_nodes_are_superior()
       {
-         sut.OrderingComparisonFor(_moduleNode, _spatialStructureRootNode).ShouldBeEqualTo(-1);
          sut.OrderingComparisonFor(_moduleNode, _spatialStructureA).ShouldBeEqualTo(-1);
+      }
+
+      [Observation]
+      public void the_start_values_folders_are_inferior_to_other_node_types()
+      {
+         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_moduleNode, _parameterStartValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_moduleNode, _moleculeStartValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _parameterStartValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _moleculeStartValuesFolderNode).ShouldBeEqualTo(1);
       }
    }
 
    public class When_the_module_explorer_presenter_compares_nodes_of_the_same_type : concern_for_ModuleExplorerPresenter
    {
       private ITreeNode<SpatialStructure> _spatialStructureA;
-      private ITreeNode<RootNodeType> _spatialStructureRootNode;
-      private ITreeNode<RootNodeType> _eventGroupRootNode;
       private ITreeNode<SpatialStructure> _spatialStructureZ;
       private ITreeNode<Module> _moduleNodeA;
       private ITreeNode<Module> _moduleNodeZ;
+      
+
 
       protected override void Context()
       {
@@ -219,8 +232,7 @@ namespace MoBi.Presentation
          _moduleNodeZ = _treeNodeFactory.CreateFor(new Module().WithName("Z")) as ITreeNode<Module>;
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _spatialStructureZ = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("Z"));
-         _spatialStructureRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.SpatialStructureFolder);
-         _eventGroupRootNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.EventFolder);
+
       }
 
       [Observation]
@@ -233,12 +245,6 @@ namespace MoBi.Presentation
       public void should_compare_names_for_module_nodes()
       {
          sut.OrderingComparisonFor(_moduleNodeA, _moduleNodeZ).ShouldBeEqualTo(-1);
-      }
-
-      [Observation]
-      public void should_compare_names_for_root_nodes()
-      {
-         sut.OrderingComparisonFor(_spatialStructureRootNode, _eventGroupRootNode).ShouldBeEqualTo(1);
       }
    }
 
@@ -334,24 +340,17 @@ namespace MoBi.Presentation
       [Observation]
       public void should_add_a_folder_node_for_all_building_block_types()
       {
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(MoBiRootNodeTypes.ExpressionProfilesFolder)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(MoBiRootNodeTypes.IndividualsFolder)).ShouldBeEqualTo(1);
-
-         // We have a module with two parameter start values building blocks so a root node should be created
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(MoBiRootNodeTypes.ParameterStartValuesFolder)).ShouldBeEqualTo(1);
-
-         // There is only one molecule start values building block so a root node should not be created
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(MoBiRootNodeTypes.MoleculeStartValuesFolder)).ShouldBeEqualTo(0);
-
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(RootNodeTypes.ObservedDataFolder)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.SpatialStructure)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.ParameterStartValuesCollection.ElementAt(0))).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.ParameterStartValuesCollection.ElementAt(1))).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => x.TagAsObject.Equals(_module1.MoleculeStartValuesCollection.ElementAt(0))).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.ExpressionProfilesFolder, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.IndividualsFolder, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(RootNodeTypes.ObservedDataFolder, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.SpatialStructure, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.ParameterStartValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.ParameterStartValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.MoleculeStartValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
 
          // Make sure nodes have not been added for null items
-         _allNodesAdded.Count.ShouldBeEqualTo(10);
+         _allNodesAdded.Count.ShouldBeEqualTo(11);
       }
    }
 

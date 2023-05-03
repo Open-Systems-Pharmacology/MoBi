@@ -1,6 +1,4 @@
 ﻿using MoBi.Presentation.DTO;
-using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -10,11 +8,12 @@ using static MoBi.Assets.AppConstants.Captions;
 
 namespace MoBi.UI.Views
 {
-   public partial class CreateModuleView : BaseModalView, ICreateModuleView
+   public abstract partial class BaseModuleContentView<TDTO> : BaseModalView
+   where TDTO : ModuleContentDTO
    {
-      private readonly ScreenBinder<CreateModuleDTO> _screenBinder = new ScreenBinder<CreateModuleDTO>();
+      protected readonly ScreenBinder<TDTO> _screenBinder = new ScreenBinder<TDTO>();
 
-      public CreateModuleView()
+      protected BaseModuleContentView()
       {
          InitializeComponent();
       }
@@ -59,14 +58,27 @@ namespace MoBi.UI.Views
          RegisterValidationFor(_screenBinder);
       }
 
-      public void AttachPresenter(ICreateModulePresenter presenter)
+      public void BindTo(TDTO moduleContentDTO)
       {
-         
+         _screenBinder.BindToSource(moduleContentDTO);
+         disableExistingBuildingBlocks(moduleContentDTO);
       }
 
-      public void BindTo(CreateModuleDTO createModuleDTO)
+      private void disableExistingBuildingBlocks(TDTO dto)
       {
-         _screenBinder.BindToSource(createModuleDTO);
+         spatialStructureItem.Enabled = dto.CanSelectSpatialStructure;
+         eventGroupItem.Enabled = dto.CanSelectEventGroup;
+         reactionsItem.Enabled = dto.CanSelectReaction;
+         moleculesItem.Enabled = dto.CanSelectMolecule;
+         observersItem.Enabled = dto.CanSelectObserver;
+         passiveTransportsItem.Enabled = dto.CanSelectPassiveTransport;
+         moleculeStartValuesItem.Enabled = dto.CanSelectMoleculeStartValues;
+         parameterStartValuesItem.Enabled = dto.CanSelectParameterStartValues;
+      }
+
+      protected void DisableRename()
+      {
+         tbModuleName.Enabled = false;
       }
    }
 }

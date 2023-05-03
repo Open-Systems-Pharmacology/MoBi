@@ -76,7 +76,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       protected override IEnumerable<string> GetUnallowedNames(T objectBase, IEnumerable<IObjectBase> existingObjectsInParent)
       {
-         return _context.CurrentProject.All<T>().AllNames();
+         return existingObjectsInParent.AllNames();
       }
    }
 }

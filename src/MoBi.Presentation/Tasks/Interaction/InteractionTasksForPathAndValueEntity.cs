@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System.Collections.Generic;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -11,7 +12,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForPathAndValueEntity<in TBuildingBlock, in TBuilder>
+   public interface IInteractionTasksForPathAndValueEntity<TParent, in TBuildingBlock, in TBuilder>
    {
       /// <summary>
       ///    Adds a new formula to the building block formula cache and assigns it to the builder
@@ -50,9 +51,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetValue(TBuildingBlock buildingBlock, double? valueInDisplayUnit, TBuilder builder);
    }
 
-   public abstract class InteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder>
+   public abstract class InteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder>
       where TBuildingBlock : class, IBuildingBlock, IBuildingBlock<TBuilder>
-      where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit
+      where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TParent : class, IObjectBase
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
 
@@ -60,6 +61,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          _moBiFormulaTask = moBiFormulaTask;
       }
+
+      protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
+      {
+         var name = DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(AppConstants.CloneName(buildingBlockToClone)),
+            AppConstants.Captions.NewName,
+            AppConstants.CloneName(buildingBlockToClone), _editTask.GetForbiddenNames(buildingBlockToClone, GetNamedObjectsInParent(buildingBlockToClone)));
+         return name;
+      }
+
+      protected abstract IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone);
 
       protected IMoBiCommand AddFormulaToFormulaCacheAndSetOnBuilder<TFormula>(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter)
          where TFormula : IFormula
@@ -166,18 +177,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected IMoBiCommand SetValueWithUnit(TBuilder builder, double? unitValueToBaseUnitValue, Unit unit, TBuildingBlock buildingBlock)
       {
          return new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(builder, unitValueToBaseUnitValue, unit, buildingBlock).Run(Context);
-      }
-
-      public override IMoBiCommand Merge(TBuildingBlock buildingBlockToMerge, TBuildingBlock targetBuildingBlock)
-      {
-         // TODO
-         return new MoBiEmptyCommand();
-      }
-
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TBuilder builder, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
-      {
-         // You cannot add Individual Parameters to the buildingBlock
-         return new MoBiMacroCommand();
       }
    }
 }

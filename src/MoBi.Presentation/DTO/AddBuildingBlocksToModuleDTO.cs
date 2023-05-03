@@ -1,54 +1,40 @@
-﻿using OSPSuite.Core.Domain;
+﻿using System.Collections.Generic;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 
 namespace MoBi.Presentation.DTO
 {
-   public class AddBuildingBlocksToModuleDTO : CreateModuleDTO
+   public class AddBuildingBlocksToModuleDTO : ModuleContentDTO
    {
       public AddBuildingBlocksToModuleDTO(Module module)
       {
-         if (module.Molecules != null)
-         {
-            AlreadyHasMolecule = true;
-            WithMolecule = false;
-         }
+         Name = module.Name;
 
-         if (module.Reactions != null)
-         {
-            AlreadyHasReaction = true;
-            WithReaction = false;
-         }
+         CanSelectMolecule = module.Molecules == null;
+         WithMolecule = !CanSelectMolecule;
 
+         CanSelectReaction = module.Reactions == null;
+         WithReaction = !CanSelectReaction;
 
-         if (module.SpatialStructure != null)
-         {
-            AlreadyHasSpatialStructure = true;
-            WithSpatialStructure = false;
-         }
+         CanSelectSpatialStructure = module.SpatialStructure == null;
+         WithSpatialStructure = !CanSelectSpatialStructure;
 
-         if (module.PassiveTransports != null)
-         {
-            AlreadyHasPassiveTransport = true;
-            WithPassiveTransport = false;
-         }
+         CanSelectPassiveTransport = module.PassiveTransports == null;
+         WithPassiveTransport = !CanSelectPassiveTransport;
 
-         if (module.EventGroups != null)
-         {
-            AlreadyHasEventGroup = true;
-            WithEventGroup = false;
-         }
+         CanSelectEventGroup = module.EventGroups == null;
+         WithEventGroup = !CanSelectEventGroup;
 
-         if (module.Observers != null)
-         {
-            AlreadyHasObserver = true;
-            WithObserver = false;
-         }
+         CanSelectObserver = module.Observers == null;
+         WithObserver = !CanSelectObserver;
       }
 
-      public bool AlreadyHasReaction { get; set; }
-      public bool AlreadyHasEventGroup { get; set; }
-      public bool AlreadyHasSpatialStructure { get; set; }
-      public bool AlreadyHasPassiveTransport { get; set; }
-      public bool AlreadyHasMolecule { get; set; }
-      public bool AlreadyHasObserver { get; set; }
+      public bool CreateMolecule => WithMolecule && CanSelectMolecule;
+      public bool CreateReaction => WithReaction && CanSelectReaction;
+      public bool CreateSpatialStructure => WithSpatialStructure && CanSelectSpatialStructure;
+      public bool CreatePassiveTransport => WithPassiveTransport && CanSelectPassiveTransport;
+      public bool CreateEventGroup => WithEventGroup && CanSelectEventGroup;
+      public bool CreateObserver => WithObserver && CanSelectObserver;
+      
    }
 }

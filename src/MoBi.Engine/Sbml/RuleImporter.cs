@@ -118,7 +118,7 @@ namespace MoBi.Engine.Sbml
         /// </summary>
         private void doSpeciesAssignment(Rule rule)
         {
-            var formula = _astHandler.Parse(rule.getMath(), rule.getVariable(), true, _sbmlProject,_sbmlInformation);
+            var formula = _astHandler.Parse(rule.getMath(), rule.getVariable(), true, _sbmlModule,_sbmlInformation);
             if (formula == null) return;
             var reactionBuilder = ObjectBaseFactory.Create<ReactionBuilder>()
                 .WithName(SBMLConstants.RATE_RULE + rule.getMetaId())
@@ -132,7 +132,7 @@ namespace MoBi.Engine.Sbml
             {
                 rbb = _reactionBuildingBlockFactory.Create()
                     .WithName(SBMLConstants.SBML_REACTION_BB);
-               _context.AddToHistory(new AddBuildingBlockCommand<MoBiReactionBuildingBlock>(rbb));
+               _context.AddToHistory(new AddBuildingBlockToModuleCommand<MoBiReactionBuildingBlock>(rbb, _sbmlModule));
             }
             rbb.FormulaCache.Add(formula);
             rbb.Add(reactionBuilder);

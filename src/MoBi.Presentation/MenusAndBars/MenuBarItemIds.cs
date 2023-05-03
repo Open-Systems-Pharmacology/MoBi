@@ -71,7 +71,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId FitToPage = createMenuBarItemId("FitToPage");
       public static MenuBarItemId MoleculeStartValuesExtend = createMenuBarItemId("MoleculeStartValuesExtend");
       public static MenuBarItemId ParameterStartValuesExtend = createMenuBarItemId("ParameterStartValuesExtend");
-      public static MenuBarItemId Merge = createMenuBarItemId("Merge");
       public static MenuBarItemId Help = createMenuBarItemId("Help");
       public static MenuBarItemId SearchView = createMenuBarItemId("SearchView");
       public static MenuBarItemId HistoryReportGroup = createMenuBarItemId("HistoryReportGroup");

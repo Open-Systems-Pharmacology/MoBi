@@ -31,7 +31,7 @@ namespace MoBi.Core.SBML
       {
          var sbmlModel = new Model(3, 1);
 
-         sut.DoImport(sbmlModel, DomainHelperForSpecs.NewProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
+         sut.DoImport(sbmlModel, new Module(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
       }
 
       [Observation]
@@ -67,7 +67,7 @@ namespace MoBi.Core.SBML
 
          sbmlModel.addEvent(sbmlEvent);
 
-         sut.DoImport(sbmlModel, DomainHelperForSpecs.NewProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
+         sut.DoImport(sbmlModel, new Module(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
       }
 
       [Observation]

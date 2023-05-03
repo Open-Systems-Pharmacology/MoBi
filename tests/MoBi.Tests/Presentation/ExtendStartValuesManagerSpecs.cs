@@ -11,11 +11,12 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_IgnoreReplaceMergeManager : ContextSpecification<IgnoreReplaceMergeManager<FakeObject>>
+   public abstract class concern_for_ExtendStartValuesManager : ContextSpecification<ExtendStartValuesManager<FakeObject>>
    {
       protected IMergeConflictResolverPresenter _mergeConflictResolverPresenter;
       private IApplicationController _applicationController;
@@ -52,7 +53,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_resolving_conflicts_on_objects : concern_for_IgnoreReplaceMergeManager
+   public class When_resolving_conflicts_on_objects : concern_for_ExtendStartValuesManager
    {
       private ICache<string, FakeObject> _mergeCache;
       private ICache<string, FakeObject> _targetCache;
@@ -73,7 +74,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_canceling_conflict_resolution : concern_for_IgnoreReplaceMergeManager
+   public class When_canceling_conflict_resolution : concern_for_ExtendStartValuesManager
    {
       private Action _cancelAction;
 
@@ -97,7 +98,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_applying_conflict_resolution_to_all : concern_for_IgnoreReplaceMergeManager
+   public class When_applying_conflict_resolution_to_all : concern_for_ExtendStartValuesManager
    {
       private ICache<string, FakeObject> _mergeCache;
       private ICache<string, FakeObject> _targetCache;
@@ -137,12 +138,12 @@ namespace MoBi.Presentation
       }
    }
 
-   public class FakeObject : ObjectBase
+   public class FakeObject : StartValueBase
    {
       
    }
 
-   class FakeObjectMergeManager : IgnoreReplaceMergeManager<FakeObject>
+   class FakeObjectMergeManager : ExtendStartValuesManager<FakeObject>
    {
       public FakeObjectMergeManager(IApplicationController applicationController)
          : base(applicationController, A.Fake<IMapper<FakeObject, ObjectBaseSummaryDTO>>(), A.Fake<IMoBiContext>())

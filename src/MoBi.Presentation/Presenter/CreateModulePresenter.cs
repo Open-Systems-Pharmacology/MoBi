@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Presenter
          var module = _context.Create<Module>();
          _view.Caption = AppConstants.Captions.NewWindow(_context.TypeFor(module));
 
-         var createModuleDTO = new CreateModuleDTO();
+         var createModuleDTO = new ModuleContentDTO();
          createModuleDTO.AddUsedNames(_context.CurrentProject.Modules.AllNames());
          _view.BindTo(createModuleDTO);
          _view.Display();

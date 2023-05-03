@@ -21,7 +21,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Species_AssignmentCreationTest()
       {
-         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
          msvbb.ShouldNotBeNull();
          foreach (var msv in msvbb)
          {
@@ -33,7 +33,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Parameter_AssignmentCreationTest()
       {
-         var psvbb = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
+         var psvbb = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
          psvbb.ShouldNotBeNull();
          foreach (var psv in psvbb)
          {
@@ -45,10 +45,10 @@ namespace MoBi.Core.SBML
       [Observation, Ignore("Test is unstable")]
       public void Compartment_AssignmentCreationTest()
       {
-         _moBiProject.ShouldNotBeNull();
-         _moBiProject.SpatialStructureCollection.ShouldNotBeNull();
-         _moBiProject.ParametersStartValueBlockCollection.ShouldNotBeNull();
-         _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault().ShouldNotBeNull();
+         SBMLModule.ShouldNotBeNull();
+         SBMLModule.SpatialStructure.ShouldNotBeNull();
+         SBMLModule.ParameterStartValuesCollection.ShouldNotBeNull();
+         SBMLModule.ParameterStartValuesCollection.FirstOrDefault().ShouldNotBeNull();
 
          foreach (var psv in _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault())
          {
@@ -72,8 +72,8 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Species_RateRuleCreationTest()
       {
-         _moBiProject.MoleculeStartValueBlockCollection.ShouldNotBeNull();
-         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         SBMLModule.MoleculeStartValuesCollection.ShouldNotBeNull();
+         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
          msvbb.ShouldNotBeNull();
          foreach (var msv in msvbb)
          {
@@ -85,7 +85,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Parameter_RateRuleCreationTest()
       {
-         var psvbb = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
+         var psvbb = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
          psvbb.ShouldNotBeNull();
          foreach (var psv in psvbb)
          {
@@ -97,18 +97,18 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Compartment_RateRuleCreationTest()
       {
-         _moBiProject.ShouldNotBeNull();
-         _moBiProject.SpatialStructureCollection.ShouldNotBeNull();
-         _moBiProject.ParametersStartValueBlockCollection.ShouldNotBeNull();
-         _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault().ShouldNotBeNull();
+         SBMLModule.ShouldNotBeNull();
+         SBMLModule.SpatialStructure.ShouldNotBeNull();
+         SBMLModule.ParameterStartValuesCollection.ShouldNotBeNull();
+         SBMLModule.ParameterStartValuesCollection.FirstOrDefault().ShouldNotBeNull();
 
-         var ss = _moBiProject.SpatialStructureCollection.FirstOrDefault();
+         var ss = SBMLModule.SpatialStructure;
          ss.ShouldNotBeNull();
          var tc = ss.TopContainers.FirstOrDefault();
          tc.ShouldNotBeNull();
          tc.Children.Any(s => s.Name == "compartment").ShouldBeTrue();
 
-         foreach (var psv in _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault())
+         foreach (var psv in SBMLModule.ParameterStartValuesCollection.FirstOrDefault())
          {
             if (psv.Name == SBMLConstants.SIZE)
             {

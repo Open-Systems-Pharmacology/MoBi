@@ -70,7 +70,7 @@ namespace MoBi.Core.SBML
 
       protected override void Because()
       {
-         sut.DoImport(_sbmlModel, DomainHelperForSpecs.NewProject(), _sbmlInformation, new MoBiMacroCommand());
+         sut.DoImport(_sbmlModel, new Module(), _sbmlInformation, new MoBiMacroCommand());
       }
 
       [Observation]
@@ -103,7 +103,7 @@ namespace MoBi.Core.SBML
    {
       private ReactionBuilder _eductGhostReaction;
       private ReactionBuilder _productGhostReaction;
-      private MoBiReactionBuildingBlock _rbb;
+      private ReactionBuildingBlock _rbb;
 
       protected override void Context()
       {
@@ -116,18 +116,12 @@ namespace MoBi.Core.SBML
       protected override void Because()
       {
          base.Because();
-         _rbb = _moBiProject.ReactionBlockCollection.First();
+         _rbb = SBMLModule.Reactions;
          foreach (var reaction in _rbb)
          {
             if (reaction.Name.Contains("default")) _eductGhostReaction = reaction;
             if (reaction.Name.Contains("c1")) _productGhostReaction = reaction;
          }
-      }
-
-      [Observation]
-      public void SimpleReactionCreationTest()
-      {
-         _moBiProject.ReactionBlockCollection.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
@@ -194,45 +188,45 @@ namespace MoBi.Core.SBML
       [Observation]
       public void ShouldParseUserDefinedFunctions()
       {
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * theta * T * Cm");
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * phi * Ct");
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * pi_ * Ct");
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * alpha * T * Ct");
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * epsilon * Ct");
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * mu * Cm");
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * rho * T * ((1) - (beta * T))");
-         (_moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * gamma * Ct * Ct");
+         (SBMLModule.Reactions.ElementAt(0).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * theta * T * Cm");
+         (SBMLModule.Reactions.ElementAt(1).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * phi * Ct");
+         (SBMLModule.Reactions.ElementAt(2).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * pi_ * Ct");
+         (SBMLModule.Reactions.ElementAt(3).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * alpha * T * Ct");
+         (SBMLModule.Reactions.ElementAt(4).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * epsilon * Ct");
+         (SBMLModule.Reactions.ElementAt(5).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * mu * Cm");
+         (SBMLModule.Reactions.ElementAt(6).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * rho * T * ((1) - (beta * T))");
+         (SBMLModule.Reactions.ElementAt(7).Formula as ExplicitFormula).FormulaString.ShouldBeEqualTo("size * gamma * Ct * Ct");
       }
 
       [Observation]
       public void ShouldCreateAliases()
       {
-         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "theta").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "Cm").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "theta").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(0).Formula.ObjectPaths.Where(op => op.Alias == "Cm").ShouldNotBeEmpty();
 
-         _moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula.ObjectPaths.Where(op => op.Alias == "phi").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(1).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(1).Formula.ObjectPaths.Where(op => op.Alias == "phi").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(1).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
 
-         _moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula.ObjectPaths.Where(op => op.Alias == "pi_").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(2).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(2).Formula.ObjectPaths.Where(op => op.Alias == "pi_").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(2).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
 
-         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "alpha").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "alpha").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(3).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
 
-         _moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula.ObjectPaths.Where(op => op.Alias == "epsilon").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(4).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(4).Formula.ObjectPaths.Where(op => op.Alias == "epsilon").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(4).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
 
-         _moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula.ObjectPaths.Where(op => op.Alias == "mu").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(5).Formula.ObjectPaths.Where(op => op.Alias == "Cm").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(5).Formula.ObjectPaths.Where(op => op.Alias == "mu").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(5).Formula.ObjectPaths.Where(op => op.Alias == "Cm").ShouldNotBeEmpty();
 
-         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "rho").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "beta").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "rho").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "beta").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(6).Formula.ObjectPaths.Where(op => op.Alias == "T").ShouldNotBeEmpty();
 
-         _moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "gamma").ShouldNotBeEmpty();
-         _moBiProject.ReactionBlockCollection.First().ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "gamma").ShouldNotBeEmpty();
+         SBMLModule.Reactions.ElementAt(7).Formula.ObjectPaths.Where(op => op.Alias == "Ct").ShouldNotBeEmpty();
       }
    }
 
@@ -252,7 +246,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void should_parse_user_defined_functions()
       {
-         var gkReaction = _moBiProject.ReactionBlockCollection.First().First();
+         var gkReaction = SBMLModule.Reactions.First();
          var glucosePath = gkReaction.Formula.ObjectPaths.ElementAt(1);
          glucosePath.Last().ShouldBeEqualTo(Constants.Parameters.CONCENTRATION);
       }
@@ -260,7 +254,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void should_translate_constants_into_base_units()
       {
-         var atpprodReaction = _moBiProject.ReactionBlockCollection.First().ElementAt(1);
+         var atpprodReaction = SBMLModule.Reactions.ElementAt(1);
          atpprodReaction.Formula.ToString().ShouldBeEqualTo("Vmax_ATPASE * ((ADP) / ((Km_adp + ADP))) * cos(((((Time) / (0.0166666666666667))) / (10)))");
       }
    }

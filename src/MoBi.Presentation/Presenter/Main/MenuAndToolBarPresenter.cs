@@ -79,7 +79,6 @@ namespace MoBi.Presentation.Presenter.Main
       {
          _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.File));
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.BuildingBlocks), AppConstants.RibbonPages.Modeling);
-         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Workflows), AppConstants.RibbonPages.Modeling);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.ProjectSimulationSettings), AppConstants.RibbonPages.Modeling);
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.ParameterIdentification), RibbonPages.ParameterIdentificationAndSensitivity);
@@ -266,7 +265,6 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.LoadObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.MoleculeStartValuesExtend].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ParameterStartValuesExtend].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.Merge].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SearchView].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewParameterStartValue].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewMoleculeStartValue].Enabled = enabled;

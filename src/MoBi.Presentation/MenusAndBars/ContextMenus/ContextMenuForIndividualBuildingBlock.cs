@@ -5,7 +5,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuForIndividualBuildingBlock : ContextMenuForBuildingBlock<IndividualBuildingBlock>
+   public class ContextMenuForIndividualBuildingBlock : ContextMenuForProjectBuildingBlock<IndividualBuildingBlock>
    {
       public ContextMenuForIndividualBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {

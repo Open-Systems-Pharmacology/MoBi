@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand AddNew(TParent parent, IBuildingBlock buildingBlockToAddTo);
       IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
       IMoBiCommand AddExistingTemplate(TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
-      IMoBiCommand AddToProject(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
+      IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
 
       TChild CreateNewEntity(TParent parent);
    }
@@ -178,7 +178,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          };
          foreach (var existingItem in itemsToAdd)
          {
-            var command = AddToProject(existingItem, parent, buildingBlockWithFormulaCache);
+            var command = AddToParent(existingItem, parent, buildingBlockWithFormulaCache);
             if (command.IsEmpty())
                return CancelCommand(macroCommand);
 
@@ -207,7 +207,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public abstract IMoBiCommand GetRemoveCommand(TChild objectToRemove, TParent parent, IBuildingBlock buildingBlock);
 
-      public virtual IMoBiCommand AddToProject(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
+      public virtual IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          var nameIsValid = correctName(childToAdd, parent);
          if (!nameIsValid)

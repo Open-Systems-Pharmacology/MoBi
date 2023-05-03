@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -32,7 +33,6 @@ namespace MoBi.Presentation.Presenter
          var addBuildingBlocksToModuleDTO = new AddBuildingBlocksToModuleDTO(module);
 
          _view.BindTo(addBuildingBlocksToModuleDTO);
-         _view.DisableExistingBuildingBlocks(addBuildingBlocksToModuleDTO);
          _view.Display();
 
          if (_view.Canceled)

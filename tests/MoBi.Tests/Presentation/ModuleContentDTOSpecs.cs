@@ -5,15 +5,15 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation
 {
-   public class concern_for_CreateModuleDTO : ContextSpecification<CreateModuleDTO>
+   public class concern_for_ModuleContentDTO : ContextSpecification<ModuleContentDTO>
    {
       protected override void Context()
       {
-         sut = new CreateModuleDTO();
+         sut = new ModuleContentDTO();
       }
    }
 
-   public class When_validating_dto_with_empty_name : concern_for_CreateModuleDTO
+   public class When_validating_dto_with_empty_name : concern_for_ModuleContentDTO
    {
       protected override void Because()
       {
@@ -27,7 +27,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_validating_the_dto_with_forbidden_name : concern_for_CreateModuleDTO
+   public class When_validating_the_dto_with_forbidden_name : concern_for_ModuleContentDTO
    {
       protected override void Context()
       {

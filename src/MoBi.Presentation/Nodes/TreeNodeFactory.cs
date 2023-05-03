@@ -81,16 +81,11 @@ namespace MoBi.Presentation.Nodes
 
       private void addStartValueCollections(ITreeNode moduleNode, Module module)
       {
-         var psvCollectionNode = collectionNodeFor(module.ParameterStartValuesCollection, MoBiRootNodeTypes.ParameterStartValuesFolder, moduleNode);
+         var psvCollectionNode = new ParameterStartValuesFolderNode().Under(moduleNode);
          module.ParameterStartValuesCollection.Each(psv => { createAndAddNodeUnder(psvCollectionNode, psv); });
 
-         var msvCollectionNode = collectionNodeFor(module.MoleculeStartValuesCollection, MoBiRootNodeTypes.MoleculeStartValuesFolder, moduleNode);
+         var msvCollectionNode = new MoleculeStartValuesFolderNode().Under(moduleNode);
          module.MoleculeStartValuesCollection.Each(msv => createAndAddNodeUnder(msvCollectionNode, msv));
-      }
-
-      private ITreeNode collectionNodeFor<T>(IReadOnlyList<IStartValuesBuildingBlock<T>> startValueBlockCollection, RootNodeType rootNodeType, ITreeNode moduleNode) where T : class, IStartValue
-      {
-         return startValueBlockCollection.Count > 1 ? CreateFor(rootNodeType).Under(moduleNode) : moduleNode;
       }
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)

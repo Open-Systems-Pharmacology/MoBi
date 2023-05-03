@@ -33,7 +33,6 @@ namespace MoBi.Presentation.Repositories
          yield return addEventButtonGroup;
          yield return addMoleculeStartValueButtonGroup;
          yield return addParameterStartValueButtonGroup;
-         yield return workflowButtonGroup;
          yield return displayUnitsButtonGroup;
          yield return journalButtonGroup;
          yield return favoritesButtonGroup;
@@ -213,10 +212,6 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Stop)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CalculateScaleFactors)))
          .WithId(ButtonGroupIds.Simulation);
-
-      private IButtonGroup workflowButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Workflows)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Merge)))
-         .WithId(ButtonGroupIds.Workflows);
 
       private IButtonGroup addParameterStartValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ParameterStartValuesExtend)))

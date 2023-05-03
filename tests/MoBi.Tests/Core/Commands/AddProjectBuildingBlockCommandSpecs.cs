@@ -9,18 +9,18 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_AddBuildingBlockCommand : ContextSpecification<AddBuildingBlockCommand<IBuildingBlock>>
+   public abstract class concern_for_AddProjectBuildingBlockCommand : ContextSpecification<AddBuildingBlockToProjectCommand<IBuildingBlock>>
    {
       protected IBuildingBlock _bb;
 
       protected override void Context()
       {
          _bb = A.Fake<IBuildingBlock>().WithId("ID");
-         sut = new AddBuildingBlockCommand<IBuildingBlock>(_bb);
+         sut = new AddBuildingBlockToProjectCommand<IBuildingBlock>(_bb);
       }
    }
 
-   internal class When_executing_the_adding_command : concern_for_AddBuildingBlockCommand
+   internal class When_executing_the_adding_command : concern_for_AddProjectBuildingBlockCommand
    {
       private IMoBiContext _context;
       private MoBiProject _project;
@@ -55,7 +55,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_RestoreExecutionData_is_called_for_AddCommand : concern_for_AddBuildingBlockCommand
+   public class When_RestoreExecutionData_is_called_for_AddCommand : concern_for_AddProjectBuildingBlockCommand
    {
       private IMoBiContext _context;
 
@@ -77,14 +77,14 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public abstract class concern_for_RemoveBuildingBlockCommand : ContextSpecification<RemoveBuildingBlockCommand<IBuildingBlock>>
+   public abstract class concern_for_RemoveBuildingBlockCommand : ContextSpecification<RemoveBuildingBlockFromProjectCommand<IBuildingBlock>>
    {
       protected IBuildingBlock _bb;
 
       protected override void Context()
       {
          _bb = A.Fake<IBuildingBlock>();
-         sut = new RemoveBuildingBlockCommand<IBuildingBlock>(_bb);
+         sut = new RemoveBuildingBlockFromProjectCommand<IBuildingBlock>(_bb);
       }
    }
 

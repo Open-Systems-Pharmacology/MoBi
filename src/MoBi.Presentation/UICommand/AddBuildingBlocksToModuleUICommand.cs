@@ -5,6 +5,21 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
+   public class CloneModuleUICommand : ObjectUICommand<Module>
+   {
+      private readonly IInteractionTasksForModule _tasks;
+
+      public CloneModuleUICommand(IInteractionTasksForModule tasks)
+      {
+         _tasks = tasks;
+      }
+
+      protected override void PerformExecute()
+      {
+         _tasks.AddCloneToProject(Subject);
+      }
+   }
+   
    public class AddBuildingBlocksToModuleUICommand : ObjectUICommand<Module>
    {
       private readonly IInteractionTasksForModule _interactionTasks;

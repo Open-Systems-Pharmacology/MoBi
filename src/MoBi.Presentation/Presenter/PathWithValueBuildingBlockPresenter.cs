@@ -13,7 +13,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
-   public abstract class PathWithValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TBuilder, TBuilderDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
+   public abstract class PathWithValueBuildingBlockPresenter<TView, TPresenter, TParent, TBuildingBlock, TBuilder, TBuilderDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
       where TBuildingBlock : IBuildingBlock<TBuilder>
       where TPresenter : IPresenter
       where TView : IView<TPresenter>
@@ -21,11 +21,11 @@ namespace MoBi.Presentation.Presenter
       where TBuilderDTO : PathWithValueEntityDTO<TBuilder>, IWithDisplayUnitDTO, IWithFormulaDTO
    {
       protected TBuildingBlock _buildingBlock;
-      private readonly IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder> _interactionTask;
+      private readonly IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> _interactionTask;
       private readonly IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private readonly IDimensionFactory _dimensionFactory;
 
-      protected PathWithValueBuildingBlockPresenter(TView view, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder> interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view)
+      protected PathWithValueBuildingBlockPresenter(TView view, IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view)
       {
          _interactionTask = interactionTask;
          _formulaToValueFormulaDTOMapper = formulaToValueFormulaDTOMapper;

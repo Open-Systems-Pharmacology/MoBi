@@ -1,21 +1,22 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForSimulationSettings : IInteractionTasksForBuildingBlock<SimulationSettings>
+   public interface IInteractionTasksForSimulationSettings
    {
       IMoBiCommand UpdateDefaultSimulationSettingsInProject();
+      void Edit(SimulationSettings simulationSettings);
    }
 
-   public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<SimulationSettings>, IInteractionTasksForSimulationSettings
+   public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>, IInteractionTasksForSimulationSettings
    {
       private readonly ISimulationSettingsFactory _simulationSettingsFactory;
 
@@ -25,14 +26,19 @@ namespace MoBi.Presentation.Tasks.Interaction
          _simulationSettingsFactory = simulationSettingsFactory;
       }
 
-      public override IMoBiCommand Merge(SimulationSettings buildingBlockToMerge, SimulationSettings targetBuildingBlock)
-      {
-         throw new NotSupportedException("Merge is not supported for Simulation Settings");
-      }
-
       public override SimulationSettings CreateNewEntity(MoBiProject moleculeBuildingBlock)
       {
          return _simulationSettingsFactory.CreateDefault();
+      }
+
+      public override IMoBiCommand GetRemoveCommand(SimulationSettings objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
+      {
+         throw new System.NotImplementedException();
+      }
+
+      public override IMoBiCommand GetAddCommand(SimulationSettings itemToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
+      {
+         throw new System.NotImplementedException();
       }
 
       public IMoBiCommand UpdateDefaultSimulationSettingsInProject()
@@ -48,6 +54,11 @@ namespace MoBi.Presentation.Tasks.Interaction
             return new MoBiEmptyCommand();
 
          return new UpdateDefaultSimulationSettingsInProjectCommand(simulationSettingsBlocks.First()).Run(_interactionTaskContext.Context);
+      }
+
+      public void Edit(SimulationSettings simulationSettings)
+      {
+         EditBuildingBlock(simulationSettings);
       }
    }
 }
