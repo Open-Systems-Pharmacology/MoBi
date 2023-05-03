@@ -136,11 +136,6 @@ namespace MoBi.Assets
          public static readonly string Options = "Change general settings and diagram options";
       }
 
-      public class WorkFlowRibbon
-      {
-         public static readonly string Merge = $"Merge an existing Simulation (*{Constants.Filter.PKML_FILE_FILTER}) into Project";
-      }
-
       public static readonly string Description = "Free text for background information on the here defined object";
       public static string TransporterName = "Name used in Simulation";
       public static string MultipleParameterChangesView = "More then on value found for a parameter changed in simulation. Select one to commit to builder in building block";

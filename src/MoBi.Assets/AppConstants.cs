@@ -810,7 +810,6 @@ namespace MoBi.Assets
          public static readonly string Simulation = MenuNames.Simulation;
          public static readonly string NotificationList = "Notifications";
          public static readonly string Comparison = "Comparison";
-         public static readonly string Workflows = "Workflows";
          public static readonly string BuildingBlocks = "Create";
          public static readonly string Views = "Views";
          public static readonly string Add = "Add";
@@ -975,7 +974,6 @@ namespace MoBi.Assets
          public static readonly string SaveAs = "Save As...";
          public static readonly string NewSimulation = "Create";
          public static readonly string NewModule = AddNew("Module");
-         public static readonly string Merge = "Merge";
          public static readonly string CloseProject = "&Close";
          public static readonly string GarbageCollection = "Start Garbage Collection";
          public static readonly string About = "&About...";

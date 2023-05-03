@@ -72,12 +72,6 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.About)
             .WithDescription(ToolTips.FileRibbon.AboutThisApplication);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Merge)
-            .WithId(MenuBarItemIds.Merge)
-            .WithDescription(ToolTips.WorkFlowRibbon.Merge)
-            .WithCommand<MergeBuildingBlocksUICommand>(_container)
-            .WithIcon(ApplicationIcons.Merge);
-
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.CloseProject)
             .WithId(MenuBarItemIds.CloseProject)
             .WithDescription(ToolTips.FileRibbon.CloseProjectDescription)

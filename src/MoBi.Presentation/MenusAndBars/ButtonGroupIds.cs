@@ -7,7 +7,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static ButtonGroupId File = new ButtonGroupId("File");
       public static ButtonGroupId BuildingBlocks = new ButtonGroupId("BuildingBlocks");
       public static ButtonGroupId Simulation = new ButtonGroupId("Simulation");
-      public static ButtonGroupId Workflows = new ButtonGroupId("Workflows");
       public static ButtonGroupId Tools = new ButtonGroupId("Tools");
       public static ButtonGroupId Skins = new ButtonGroupId("Skins");
       public static ButtonGroupId View = new ButtonGroupId("View");
