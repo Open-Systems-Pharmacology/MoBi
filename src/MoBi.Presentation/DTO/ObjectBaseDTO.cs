@@ -149,11 +149,22 @@ namespace MoBi.Presentation.DTO
    public class UserDefinedNodeViewItem : ObjectBaseDTO
    {
    }
+   
    public class ModuleViewItem : ObjectBaseDTO
    {
       public Module Module { get; private set; }
 
       public ModuleViewItem(Module module)
+      {
+         Module = module;
+      }
+   }
+
+   public class ModuleParameterStartValuesCollectionViewItem : ObjectBaseDTO
+   {
+      public Module Module { get; private set; }
+
+      public ModuleParameterStartValuesCollectionViewItem(Module module)
       {
          Module = module;
       }

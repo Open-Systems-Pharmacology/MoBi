@@ -192,7 +192,7 @@ namespace MoBi.Presentation
          
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder);
-         _parameterStartValuesFolderNode = new ParameterStartValuesFolderNode();
+         _parameterStartValuesFolderNode = new ParameterStartValuesFolderNode(new Module());
          _moleculeStartValuesFolderNode = new MoleculeStartValuesFolderNode();
       }
 

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Nodes;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(createRenameItemFor(module));
          _allMenuItems.Add(createRemoveItemFor(module));
          _allMenuItems.Add(createCloneMenuItem(module));
-         _allMenuItems.Add(createAddExpressionAsStartValue(module));
+         
 
          return this;
       }
@@ -52,13 +52,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)
             .WithCommandFor<CloneModuleUICommand, Module>(module, _container);
-      }
-
-      private IMenuBarItem createAddExpressionAsStartValue(Module module)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingAs(ObjectTypes.ExpressionProfileBuildingBlock, ObjectTypes.ParameterStartValuesBuildingBlock)).AsGroupStarter()
-            .WithIcon(ApplicationIcons.LoadIconFor(nameof(ExpressionProfileBuildingBlock)))
-            .WithCommandFor<AddExpressionAsParameterStartValuesCommand, Module>(module, _container);
       }
 
       private IMenuBarItem createNewBuildingBlocksItemFor(Module module)
