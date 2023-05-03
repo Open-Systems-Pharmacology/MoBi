@@ -229,7 +229,6 @@ namespace MoBi.Presentation
       private void registerContextMenus(IContainer container)
       {
          //Generic context menus
-         container.Register<IRootContextMenuFor<Module, MoleculeBuildingBlock>, RootContextMenuForMoleculeBuildingBlock>();
          container.Register<IRootContextMenuFor<MoBiProject, IMoBiSimulation>, RootContextMenuForSimulation>();
          container.Register<IRootContextMenuFor<MoBiProject, ParameterIdentification>, RootContextMenuForParameterIdentification>();
          container.Register<IRootContextMenuFor<MoBiProject, SensitivityAnalysis>, RootContextMenuForSensitivityAnalysis>();

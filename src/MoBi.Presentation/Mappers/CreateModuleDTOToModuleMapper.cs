@@ -59,18 +59,16 @@ namespace MoBi.Presentation.Mappers
       {
          var module = _context.Create<Module>().WithIcon(ApplicationIcons.Module.IconName).WithName(createModuleDTO.Name);
 
-         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithMolecule, 
-            () => CreateDefault<MoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock)));
-         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithReaction,
-            () => CreateDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create())));
-         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithSpatialStructure,
-            () => CreateDefault(AppConstants.DefaultNames.SpatialStructure, () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure))));
-         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithPassiveTransport,
-            () => CreateDefault<PassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock)));
-         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithEventGroup,
-            () => CreateDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)));
-         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithObserver,
-            () => CreateDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)));
+         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithSpatialStructure, () => CreateDefault(AppConstants.DefaultNames.SpatialStructure,
+            () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure))));
+         
+         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithReaction, () => CreateDefault(AppConstants.DefaultNames.ReactionBuildingBlock,
+            () => _reactionBuildingBlockFactory.Create())));
+
+         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithMolecule, () => CreateDefault<MoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock)));
+         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithPassiveTransport, () => CreateDefault<PassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock)));
+         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithEventGroup, () => CreateDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)));
+         conditionalAdd(module, ConditionalCreate(createModuleDTO.WithObserver, () => CreateDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)));
 
          if (createModuleDTO.WithParameterStartValues)
          {

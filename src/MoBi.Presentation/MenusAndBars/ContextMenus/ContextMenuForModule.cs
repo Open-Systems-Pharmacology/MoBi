@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
-using MoBi.Core.Commands;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;

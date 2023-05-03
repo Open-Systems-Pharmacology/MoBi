@@ -54,7 +54,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_RestoreExecutionData_is_called_for_AddBuildingBlockToModuleCommand : concern_for_AddBuildingBlockCommand
+   public class When_RestoreExecutionData_is_called_for_AddBuildingBlockToModuleCommand : concern_for_AddProjectBuildingBlockCommand
    {
       private IMoBiContext _context;
 

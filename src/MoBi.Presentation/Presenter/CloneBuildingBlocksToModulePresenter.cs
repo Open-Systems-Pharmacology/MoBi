@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using MoBi.Assets;
-using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 
@@ -22,18 +20,18 @@ namespace MoBi.Presentation.Presenter
    public class CloneBuildingBlocksToModulePresenter : AbstractDisposablePresenter<ICloneBuildingBlocksToModuleView, ICloneBuildingBlocksToModulePresenter>,
       ICloneBuildingBlocksToModulePresenter
    {
-      private readonly IMoBiContext _context;
+      private readonly IMoBiProjectRetriever _projectRetriever;
 
-      public CloneBuildingBlocksToModulePresenter(ICloneBuildingBlocksToModuleView view, IMoBiContext context) : base(view)
+      public CloneBuildingBlocksToModulePresenter(ICloneBuildingBlocksToModuleView view, IMoBiProjectRetriever projectRetriever) : base(view)
       {
-         _context = context;
+         _projectRetriever = projectRetriever;
       }
 
       public bool SelectClonedBuildingBlocks(Module clonedModule)
       {
          _view.Caption = AppConstants.Captions.SelectBuildingBlocksToCloneFrom(clonedModule);
          var dto = new CloneBuildingBlocksToModuleDTO(clonedModule);
-         dto.AddUsedNames(_context.CurrentProject.Modules.AllNames());
+         dto.AddUsedNames(_projectRetriever.Current.Modules.AllNames());
 
          _view.BindTo(dto);
          _view.Display();
@@ -41,38 +39,11 @@ namespace MoBi.Presentation.Presenter
          if (_view.Canceled)
             return false;
 
-         if (dto.RemoveMolecule)
-            clonedModule.Remove(clonedModule.Molecules);
-
-         if (dto.RemoveEventGroup)
-            clonedModule.Remove(clonedModule.EventGroups);
-
-         if (dto.RemoveObserver)
-            clonedModule.Remove(clonedModule.Observers);
-
-         if (dto.RemovePassiveTransport)
-            clonedModule.Remove(clonedModule.PassiveTransports);
-
-         if (dto.RemoveReaction)
-            clonedModule.Remove(clonedModule.Reactions);
-
-         if (dto.RemoveSpatialStructure)
-            clonedModule.Remove(clonedModule.SpatialStructure);
-
-         if (dto.RemoveMoleculeStartValues)
-            removeAll(clonedModule.MoleculeStartValuesCollection, clonedModule);
-
-         if (dto.RemoveParameterStartValues)
-            removeAll(clonedModule.ParameterStartValuesCollection, clonedModule);
+         dto.BuildingBlocksToRemove.Each(clonedModule.Remove);
 
          clonedModule.Name = dto.Name;
 
          return true;
-      }
-
-      private void removeAll(IReadOnlyList<IBuildingBlock> buildingBlocksToRemove, Module module)
-      {
-         buildingBlocksToRemove.Each(module.Remove);
       }
    }
 }

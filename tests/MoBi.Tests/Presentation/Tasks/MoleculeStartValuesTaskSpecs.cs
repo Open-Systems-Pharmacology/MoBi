@@ -618,11 +618,12 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_a_clone_of_an_existing_building_block_is_made : concern_for_MoleculeStartValuesTask
+   public abstract class When_cloning_a_molecule_start_values_building_block : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValuesBuildingBlock _buildingBlockToClone;
-      private Module _module;
-      private IDialogCreator _dialogCreator;
+      protected MoleculeStartValuesBuildingBlock _buildingBlockToClone;
+      protected Module _module;
+      protected IDialogCreator _dialogCreator;
+      protected ICommand _result;
 
       protected override void Context()
       {
@@ -631,19 +632,49 @@ namespace MoBi.Presentation.Tasks
          _module = new Module { _buildingBlockToClone };
          _dialogCreator = A.Fake<IDialogCreator>();
          A.CallTo(() => _context.DialogCreator).Returns(_dialogCreator);
-         A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns("name of clone");
+         A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns(CloneName());
          A.CallTo(() => _context.InteractionTask.CorrectName(A<MoleculeStartValuesBuildingBlock>._, A<IEnumerable<string>>._)).Returns(true);
       }
-
+      
       protected override void Because()
       {
-         sut.CloneAndAddToParent(_buildingBlockToClone, _module);
+         _result = sut.CloneAndAddToParent(_buildingBlockToClone, _module);
+      }
+      
+      protected abstract string CloneName();
+   }
+
+   public class When_a_clone_of_an_existing_building_block_is_canceled : When_cloning_a_molecule_start_values_building_block
+   {
+      protected override string CloneName()
+      {
+         return string.Empty;
       }
 
+      [Observation]
+      public void the_resulting_command_should_be_empty()
+      {
+         _result.ShouldBeAnInstanceOf<MoBiEmptyCommand>();
+      }
+
+      [Observation]
+      public void the_clone_should_not_be_made()
+      {
+         _module.MoleculeStartValuesCollection.Count.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_a_clone_of_an_existing_building_block_is_made : When_cloning_a_molecule_start_values_building_block
+   {
       [Observation]
       public void the_cloned_building_block_must_belong_to_the_module()
       {
          _module.MoleculeStartValuesCollection.Count.ShouldBeEqualTo(2);
+      }
+
+      protected override string CloneName()
+      {
+         return "name of clone";
       }
    }
 

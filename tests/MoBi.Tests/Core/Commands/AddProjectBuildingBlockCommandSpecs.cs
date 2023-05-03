@@ -9,7 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_AddBuildingBlockCommand : ContextSpecification<AddProjectBuildingBlockCommand<IBuildingBlock>>
+   public abstract class concern_for_AddProjectBuildingBlockCommand : ContextSpecification<AddProjectBuildingBlockCommand<IBuildingBlock>>
    {
       protected IBuildingBlock _bb;
 
@@ -20,7 +20,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   internal class When_executing_the_adding_command : concern_for_AddBuildingBlockCommand
+   internal class When_executing_the_adding_command : concern_for_AddProjectBuildingBlockCommand
    {
       private IMoBiContext _context;
       private MoBiProject _project;
@@ -55,7 +55,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_RestoreExecutionData_is_called_for_AddCommand : concern_for_AddBuildingBlockCommand
+   public class When_RestoreExecutionData_is_called_for_AddCommand : concern_for_AddProjectBuildingBlockCommand
    {
       private IMoBiContext _context;
 
