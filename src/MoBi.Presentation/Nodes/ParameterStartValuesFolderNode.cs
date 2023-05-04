@@ -7,9 +7,9 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Nodes
 {
-   public class ParameterStartValuesFolderNode : AbstractNode<ModuleParameterStartValuesCollectionViewItem>
+   public class ParameterStartValuesFolderNode : AbstractNode<ModuleViewItem>
    {
-      public ParameterStartValuesFolderNode(Module module) : base(new ModuleParameterStartValuesCollectionViewItem(module))
+      public ParameterStartValuesFolderNode(Module module) : base(new ModuleViewItem(module).WithTarget(module.ParameterStartValuesCollection))
       {
          Id = ShortGuid.NewGuid();
          Text = AppConstants.Captions.ParameterStartValues;

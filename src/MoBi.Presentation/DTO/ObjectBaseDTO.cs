@@ -152,21 +152,19 @@ namespace MoBi.Presentation.DTO
    
    public class ModuleViewItem : ObjectBaseDTO
    {
+      public object TargetAsObject;
       public Module Module { get; private set; }
 
       public ModuleViewItem(Module module)
       {
          Module = module;
+         WithTarget(module);
       }
-   }
 
-   public class ModuleParameterStartValuesCollectionViewItem : ObjectBaseDTO
-   {
-      public Module Module { get; private set; }
-
-      public ModuleParameterStartValuesCollectionViewItem(Module module)
+      public ModuleViewItem WithTarget(object targetObject)
       {
-         Module = module;
+         TargetAsObject = targetObject;
+         return this;
       }
    }
 }

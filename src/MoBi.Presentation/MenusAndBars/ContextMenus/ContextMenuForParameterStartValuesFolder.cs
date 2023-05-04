@@ -14,7 +14,7 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   internal class ContextMenuForParameterStartValuesFolder : ContextMenuBase, IContextMenuFor<ModuleParameterStartValuesCollectionViewItem>
+   internal class ContextMenuForParameterStartValuesFolder : ContextMenuBase, IContextMenuFor<ModuleViewItem>
    {
       private readonly IContainer _container;
       private readonly List<IMenuBarItem> _allMenuItems;
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         var psvCollectionViewItem = dto.DowncastTo<ModuleParameterStartValuesCollectionViewItem>();
+         var psvCollectionViewItem = dto.DowncastTo<ModuleViewItem>();
          var module = psvCollectionViewItem.Module;
          _allMenuItems.Add(createAddExpressionAsStartValue(module));
          return this;
@@ -58,12 +58,15 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
          var contextMenu = new ContextMenuForParameterStartValuesFolder(_container);
-         return contextMenu.InitializeWith(viewItem.DowncastTo<ModuleParameterStartValuesCollectionViewItem>(), presenter);
+         return contextMenu.InitializeWith(viewItem.DowncastTo<ModuleViewItem>(), presenter);
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return viewItem.IsAnImplementationOf<ModuleParameterStartValuesCollectionViewItem>();
+         if (!(viewItem is ModuleViewItem moduleViewItem))
+            return false;
+
+         return moduleViewItem.TargetAsObject.IsAnImplementationOf<IEnumerable<ParameterStartValuesBuildingBlock>>();
       }
    }
 }

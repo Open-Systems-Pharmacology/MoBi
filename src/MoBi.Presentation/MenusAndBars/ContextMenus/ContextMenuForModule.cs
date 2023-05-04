@@ -107,7 +107,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return viewItem.IsAnImplementationOf<ModuleViewItem>();
+         if (!(viewItem is ModuleViewItem moduleViewItem)) 
+            return false;
+
+         return moduleViewItem.TargetAsObject.IsAnImplementationOf<Module>();
       }
    }
 }
