@@ -5,9 +5,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeParameterStartValueNameCommand : ChangeStartValueNameCommand<ParameterStartValuesBuildingBlock, ParameterStartValue>
+   public class ChangeParameterStartValueNameCommand : ChangeStartValueNameCommand<ParameterValuesBuildingBlock, ParameterValue>
    {
-      public ChangeParameterStartValueNameCommand(ParameterStartValuesBuildingBlock buildingBlock, ObjectPath path, string newValue) : base(buildingBlock, path, newValue)
+      public ChangeParameterStartValueNameCommand(ParameterValuesBuildingBlock buildingBlock, ObjectPath path, string newValue) : base(buildingBlock, path, newValue)
       {
       }
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

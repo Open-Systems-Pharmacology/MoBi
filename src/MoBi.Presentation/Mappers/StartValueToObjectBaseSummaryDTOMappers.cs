@@ -60,14 +60,14 @@ namespace MoBi.Presentation.Mappers
       }
    }
 
-   public interface IParameterStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<ParameterStartValue>
+   public interface IParameterStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<ParameterValue>
    {
       
    }
 
-   public class ParameterStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<ParameterStartValue>, IParameterStartValueToObjectBaseSummaryDTOMapper
+   public class ParameterStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<ParameterValue>, IParameterStartValueToObjectBaseSummaryDTOMapper
    {
-      public override ObjectBaseSummaryDTO MapFrom(ParameterStartValue startValue)
+      public override ObjectBaseSummaryDTO MapFrom(ParameterValue startValue)
       {
          var dto = BaseMapper(startValue);
          dto.ApplicationIcon = ApplicationIcons.ParameterValues;

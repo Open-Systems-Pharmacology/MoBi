@@ -36,7 +36,7 @@ namespace MoBi.ProjectConversion.v7_3
          {
             if (builder is IContainer container)
                validateIsDefaultFlagInContainerParameters(container);
-            else if (builder is ParameterStartValue psv)
+            else if (builder is ParameterValue psv)
                validateIsDefaultStateIn(psv);
          }
       }

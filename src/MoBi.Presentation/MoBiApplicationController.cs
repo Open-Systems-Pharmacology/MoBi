@@ -105,7 +105,7 @@ namespace MoBi.Presentation
          if (subject.IsAnImplementationOf<InitialConditionsBuildingBlock>())
             return Start<IEditMoleculeStartValuesPresenter>();
 
-         if (subject.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
+         if (subject.IsAnImplementationOf<ParameterValuesBuildingBlock>())
             return Start<IEditParameterStartValuesPresenter>();
 
          if (subject.IsAnImplementationOf<ObserverBuildingBlock>())

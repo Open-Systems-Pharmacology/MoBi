@@ -20,8 +20,8 @@ namespace MoBi.Presentation.Mapper
       protected override void Context()
       {
          _objectFactory = A.Fake<IObjectBaseFactory>();
-         A.CallTo(() => _objectFactory.Create<ParameterStartValue>()).ReturnsLazily(x => new ParameterStartValue());
-         A.CallTo(() => _objectFactory.Create<ParameterStartValuesBuildingBlock>()).ReturnsLazily(x => new ParameterStartValuesBuildingBlock());
+         A.CallTo(() => _objectFactory.Create<ParameterValue>()).ReturnsLazily(x => new ParameterValue());
+         A.CallTo(() => _objectFactory.Create<ParameterValuesBuildingBlock>()).ReturnsLazily(x => new ParameterValuesBuildingBlock());
          A.CallTo(() => _objectFactory.CreateObjectBaseFrom(A<IFormula>._)).ReturnsLazily(x => new ExplicitFormula().WithId(Guid.NewGuid().ToString()));
 
          _cloneManager = new CloneManagerForModel(_objectFactory, new DataRepositoryTask(), A.Fake<IModelFinalizer>());
@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Mapper
    public class When_mapping_expression_parameters_to_parameter_start_values : concern_for_ExpressionParameterToParameterStartValueMapper
    {
       private ExpressionParameter _expressionParameter;
-      private ParameterStartValue _result;
+      private ParameterValue _result;
 
       protected override void Context()
       {

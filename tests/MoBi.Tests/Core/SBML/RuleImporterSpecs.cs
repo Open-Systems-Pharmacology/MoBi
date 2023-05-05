@@ -33,7 +33,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Parameter_AssignmentCreationTest()
       {
-         var psvbb = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
+         var psvbb = SBMLModule.ParameterValuesCollection.FirstOrDefault();
          psvbb.ShouldNotBeNull();
          foreach (var psv in psvbb)
          {
@@ -47,8 +47,8 @@ namespace MoBi.Core.SBML
       {
          SBMLModule.ShouldNotBeNull();
          SBMLModule.SpatialStructure.ShouldNotBeNull();
-         SBMLModule.ParameterStartValuesCollection.ShouldNotBeNull();
-         SBMLModule.ParameterStartValuesCollection.FirstOrDefault().ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.FirstOrDefault().ShouldNotBeNull();
 
          foreach (var psv in _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault())
          {
@@ -85,7 +85,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Parameter_RateRuleCreationTest()
       {
-         var psvbb = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
+         var psvbb = SBMLModule.ParameterValuesCollection.FirstOrDefault();
          psvbb.ShouldNotBeNull();
          foreach (var psv in psvbb)
          {
@@ -99,8 +99,8 @@ namespace MoBi.Core.SBML
       {
          SBMLModule.ShouldNotBeNull();
          SBMLModule.SpatialStructure.ShouldNotBeNull();
-         SBMLModule.ParameterStartValuesCollection.ShouldNotBeNull();
-         SBMLModule.ParameterStartValuesCollection.FirstOrDefault().ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.FirstOrDefault().ShouldNotBeNull();
 
          var ss = SBMLModule.SpatialStructure;
          ss.ShouldNotBeNull();
@@ -108,7 +108,7 @@ namespace MoBi.Core.SBML
          tc.ShouldNotBeNull();
          tc.Children.Any(s => s.Name == "compartment").ShouldBeTrue();
 
-         foreach (var psv in SBMLModule.ParameterStartValuesCollection.FirstOrDefault())
+         foreach (var psv in SBMLModule.ParameterValuesCollection.FirstOrDefault())
          {
             if (psv.Name == SBMLConstants.SIZE)
             {

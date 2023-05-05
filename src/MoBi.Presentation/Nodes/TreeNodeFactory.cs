@@ -82,7 +82,7 @@ namespace MoBi.Presentation.Nodes
       private void addStartValueCollections(ITreeNode moduleNode, Module module)
       {
          var psvCollectionNode = new ParameterStartValuesFolderNode(module).Under(moduleNode);
-         module.ParameterStartValuesCollection.Each(psv => { createAndAddNodeUnder(psvCollectionNode, psv); });
+         module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(psvCollectionNode, psv); });
 
          var msvCollectionNode = new MoleculeStartValuesFolderNode().Under(moduleNode);
          module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(msvCollectionNode, msv));

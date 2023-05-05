@@ -30,7 +30,7 @@ namespace MoBi.Helpers
 
       public static IDimension AmountDimension { get; } = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1 }, Constants.Dimension.MOLAR_AMOUNT, "µmol");
 
-      public static ParameterStartValue ParameterStartValue { get; } = new ParameterStartValue { Name = "_name", Value = 1.0, Formula = null, Dimension = AmountDimension };
+      public static ParameterValue ParameterValue { get; } = new ParameterValue { Name = "_name", Value = 1.0, Formula = null, Dimension = AmountDimension };
 
       public static IDimension ConcentrationDimension { get; } = new Dimension(new BaseDimensionRepresentation { LengthExponent = -3, MassExponent = 1, TimeExponent = -1 }, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
 

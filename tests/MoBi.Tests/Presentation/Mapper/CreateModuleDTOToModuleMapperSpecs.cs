@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Mapper
          _result.Reactions.ShouldBeNull();
          _result.EventGroups.ShouldBeNull();
          _result.InitialConditionsCollection.ShouldBeEmpty();
-         _result.ParameterStartValuesCollection.ShouldBeEmpty();
+         _result.ParameterValuesCollection.ShouldBeEmpty();
          _result.PassiveTransports.ShouldBeNull();
          _result.Observers.ShouldBeNull();
          _result.Molecules.ShouldBeNull();
@@ -98,7 +98,7 @@ namespace MoBi.Presentation.Mapper
          _result.Reactions.ShouldNotBeNull();
          _result.EventGroups.ShouldNotBeNull();
          _result.InitialConditionsCollection.ShouldNotBeEmpty();
-         _result.ParameterStartValuesCollection.ShouldNotBeEmpty();
+         _result.ParameterValuesCollection.ShouldNotBeEmpty();
          _result.PassiveTransports.ShouldNotBeNull();
          _result.Observers.ShouldNotBeNull();
          _result.Molecules.ShouldNotBeNull();

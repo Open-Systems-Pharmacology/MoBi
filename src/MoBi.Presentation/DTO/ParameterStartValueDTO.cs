@@ -2,17 +2,17 @@
 
 namespace MoBi.Presentation.DTO
 {
-   public class ParameterStartValueDTO : StartValueDTO<ParameterStartValue>
+   public class ParameterStartValueDTO : StartValueDTO<ParameterValue>
    {
-      public ParameterStartValue ParameterStartValue => PathWithValueObject;
+      public ParameterValue ParameterValue => PathWithValueObject;
 
-      public ParameterStartValueDTO(ParameterStartValue parameterStartValue, IStartValuesBuildingBlock<ParameterStartValue> buildingBlock) : base(parameterStartValue, buildingBlock)
+      public ParameterStartValueDTO(ParameterValue parameterStartValue, IStartValuesBuildingBlock<ParameterValue> buildingBlock) : base(parameterStartValue, buildingBlock)
       {
       }
 
       public override void UpdateStartValueName(string newName)
       {
-         ParameterStartValue.Name = newName;
+         ParameterValue.Name = newName;
       }
    }
 }

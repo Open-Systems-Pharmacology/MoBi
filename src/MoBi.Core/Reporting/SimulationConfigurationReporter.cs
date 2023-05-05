@@ -32,7 +32,7 @@ namespace MoBi.Core.Reporting
          listToReport.AddRange(_simulationSettingsReporter.Report(simulationConfiguration.SimulationSettings, buildTracker));
          listToReport.AddRange(new EventGroupBuildingBlockReporter().Report(simulationConfiguration.All<EventGroupBuildingBlock>(), buildTracker));
          listToReport.AddRange(new MoleculeStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(simulationConfiguration.All<InitialConditionsBuildingBlock>(), buildTracker));
-         listToReport.AddRange(new ParameterStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(simulationConfiguration.All<ParameterStartValuesBuildingBlock>(), buildTracker));
+         listToReport.AddRange(new ParameterStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(simulationConfiguration.All<ParameterValuesBuildingBlock>(), buildTracker));
 
          return listToReport;
       }

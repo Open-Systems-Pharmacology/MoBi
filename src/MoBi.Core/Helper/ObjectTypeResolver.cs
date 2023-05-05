@@ -37,7 +37,7 @@ namespace MoBi.Core.Helper
          addToCache<ObserverBuildingBlock>(ObjectTypes.ObserverBuildingBlock);
          addToCache<EventGroupBuildingBlock>(ObjectTypes.EventGroupBuildingBlock);
          addToCache<InitialConditionsBuildingBlock>(ObjectTypes.InitialConditionsBuildingBlock);
-         addToCache<ParameterStartValuesBuildingBlock>(ObjectTypes.ParameterValuesBuildingBlock);
+         addToCache<ParameterValuesBuildingBlock>(ObjectTypes.ParameterValuesBuildingBlock);
          addToCache<MoleculeBuilder>(ObjectTypes.Molecule);
          addToCache<TransporterMoleculeContainer>(ObjectTypes.TransporterMoleculeContainer);
          addToCache<TransportBuilder>(ObjectTypes.TransportBuilder);
@@ -62,7 +62,7 @@ namespace MoBi.Core.Helper
          addToCache<SimulationSettings>(ObjectTypes.SimulationSettings);
          addToCache<CurveChartTemplate>(ObjectTypes.ChartTemplate);
          addToCache<InitialCondition>(ObjectTypes.InitialCondition);
-         addToCache<ParameterStartValue>(ObjectTypes.ParameterValue);
+         addToCache<ParameterValue>(ObjectTypes.ParameterValue);
          addToCache<ObserverBuilder>(ObjectTypes.ObserverBuilder);
          addToCache<TimePath>(ObjectTypes.Reference);
          addToCache<ObjectPath>(ObjectTypes.Reference);

@@ -35,7 +35,7 @@ namespace MoBi.Core
          sut.TypeFor<ObserverBuildingBlock>().ShouldBeEqualTo(ObjectTypes.ObserverBuildingBlock);
          sut.TypeFor<EventGroupBuildingBlock>().ShouldBeEqualTo(ObjectTypes.EventGroupBuildingBlock);
          sut.TypeFor<InitialConditionsBuildingBlock>().ShouldBeEqualTo(ObjectTypes.InitialConditionsBuildingBlock);
-         sut.TypeFor<ParameterStartValuesBuildingBlock>().ShouldBeEqualTo(ObjectTypes.ParameterValuesBuildingBlock);
+         sut.TypeFor<ParameterValuesBuildingBlock>().ShouldBeEqualTo(ObjectTypes.ParameterValuesBuildingBlock);
          sut.TypeFor<MoleculeBuilder>().ShouldBeEqualTo(ObjectTypes.Molecule);
          sut.TypeFor<TransporterMoleculeContainer>().ShouldBeEqualTo(ObjectTypes.TransporterMoleculeContainer);
          sut.TypeFor<TransportBuilder>().ShouldBeEqualTo(ObjectTypes.TransportBuilder);
@@ -61,7 +61,7 @@ namespace MoBi.Core
          sut.TypeFor<SimulationSettings>().ShouldBeEqualTo(ObjectTypes.SimulationSettings);
          sut.TypeFor<CurveChartTemplate>().ShouldBeEqualTo(ObjectTypes.ChartTemplate);
          sut.TypeFor<InitialCondition>().ShouldBeEqualTo(ObjectTypes.InitialCondition);
-         sut.TypeFor<ParameterStartValue>().ShouldBeEqualTo(ObjectTypes.ParameterValue);
+         sut.TypeFor<ParameterValue>().ShouldBeEqualTo(ObjectTypes.ParameterValue);
          sut.TypeFor<ObserverBuilder>().ShouldBeEqualTo(ObjectTypes.ObserverBuilder);
          sut.TypeFor<TimePath>().ShouldBeEqualTo(ObjectTypes.Reference);
          sut.TypeFor<ObjectPath>().ShouldBeEqualTo(ObjectTypes.Reference);

@@ -14,13 +14,13 @@ namespace MoBi.Presentation.UICommand
    {
       private readonly IMoBiContext _context;
       private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTaskForExpressionProfileBuildingBlock;
-      private readonly IInteractionTasksForBuildingBlock<Module, ParameterStartValuesBuildingBlock> _interactionTasksForPSVBuildingBlock;
+      private readonly IInteractionTasksForBuildingBlock<Module, ParameterValuesBuildingBlock> _interactionTasksForPSVBuildingBlock;
       private readonly IExpressionProfileToParameterStartValuesMapper _mapper;
       private readonly IEditTasksForBuildingBlock<ExpressionProfileBuildingBlock> _editTask;
 
       public AddExpressionAsParameterStartValuesCommand(IMoBiContext context,
          IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfileBuildingBlock,
-         IInteractionTasksForBuildingBlock<Module, ParameterStartValuesBuildingBlock> interactionTasksForPSVBuildingBlock,
+         IInteractionTasksForBuildingBlock<Module, ParameterValuesBuildingBlock> interactionTasksForPSVBuildingBlock,
          IExpressionProfileToParameterStartValuesMapper mapper, IEditTasksForBuildingBlock<ExpressionProfileBuildingBlock> editTask)
       {
          _context = context;

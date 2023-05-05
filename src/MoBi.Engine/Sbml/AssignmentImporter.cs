@@ -35,8 +35,8 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       protected internal void CreateParameterStartValuesBuildingBlock(Model model)
       {
-         var psvBb = new ParameterStartValuesBuildingBlock().WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB).WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
-         _command.AddCommand(new AddBuildingBlockToModuleCommand<ParameterStartValuesBuildingBlock>(psvBb, _sbmlModule).Run(_context));
+         var psvBb = new ParameterValuesBuildingBlock().WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB).WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<ParameterValuesBuildingBlock>(psvBb, _sbmlModule).Run(_context));
       }
 
       //For Rate Rule only

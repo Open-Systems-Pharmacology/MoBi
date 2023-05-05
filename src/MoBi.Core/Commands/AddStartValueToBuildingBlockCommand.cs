@@ -56,9 +56,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddParameterStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<ParameterStartValue>
+   public class AddParameterStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<ParameterValue>
    {
-      public AddParameterStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<ParameterStartValue> parameterStartValuesBuildingBlock, ParameterStartValue startValue) : base(parameterStartValuesBuildingBlock, startValue)
+      public AddParameterStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<ParameterValue> parameterStartValuesBuildingBlock, ParameterValue startValue) : base(parameterStartValuesBuildingBlock, startValue)
       {
       }
    }

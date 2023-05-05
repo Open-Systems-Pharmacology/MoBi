@@ -10,19 +10,19 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_ChangeParameterStartValueNameCommand : ContextSpecification<ChangeParameterStartValueNameCommand>
    {
       protected IMoBiContext _context;
-      protected ParameterStartValue _parameterStartValue;
-      protected ParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterValue _parameterStartValue;
+      protected ParameterValuesBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
 
-         _parameterStartValue = new ParameterStartValue {Path = new ObjectPath("Path1", "Path2", "Name")};
+         _parameterStartValue = new ParameterValue {Path = new ObjectPath("Path1", "Path2", "Name")};
 
-         _buildingBlock = new ParameterStartValuesBuildingBlock {_parameterStartValue};
+         _buildingBlock = new ParameterValuesBuildingBlock {_parameterStartValue};
          sut = new ChangeParameterStartValueNameCommand(_buildingBlock, _parameterStartValue.Path, "Name2");
 
-         A.CallTo(() => _context.Get<ParameterStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ParameterValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

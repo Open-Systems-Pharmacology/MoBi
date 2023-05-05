@@ -66,7 +66,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          if (!(viewItem is ModuleViewItem moduleViewItem))
             return false;
 
-         return moduleViewItem.TargetAsObject.IsAnImplementationOf<IEnumerable<ParameterStartValuesBuildingBlock>>();
+         return moduleViewItem.TargetAsObject.IsAnImplementationOf<IEnumerable<ParameterValuesBuildingBlock>>();
       }
    }
 }

@@ -10,18 +10,18 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_AddParameterStartValueToBuildingBlockCommand : ContextSpecification<AddParameterStartValueToBuildingBlockCommand>
    {
-      protected ParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
-      protected ParameterStartValue _psv;
+      protected ParameterValue _psv;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
-         _buildingBlock = new ParameterStartValuesBuildingBlock();
+         _buildingBlock = new ParameterValuesBuildingBlock();
 
-         _psv = new ParameterStartValue {Path = new ObjectPath("path1"), StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1)};
+         _psv = new ParameterValue {Path = new ObjectPath("path1"), StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1)};
          sut = new AddParameterStartValueToBuildingBlockCommand(_buildingBlock, _psv);
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterStartValue>>(A<string>._)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterValue>>(A<string>._)).Returns(_buildingBlock);
       }
    }
 

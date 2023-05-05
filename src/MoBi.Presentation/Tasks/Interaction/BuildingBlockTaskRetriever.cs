@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IVisitor<EventGroupBuildingBlock>,
       IVisitor<PassiveTransportBuildingBlock>,
       IVisitor<InitialConditionsBuildingBlock>,
-      IVisitor<ParameterStartValuesBuildingBlock>,
+      IVisitor<ParameterValuesBuildingBlock>,
       IVisitor<SimulationSettings>
    {
       private readonly IContainer _container;
@@ -80,9 +80,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          retrieveTask<InitialConditionsBuildingBlock>(objToVisit);
       }
 
-      public void Visit(ParameterStartValuesBuildingBlock objToVisit)
+      public void Visit(ParameterValuesBuildingBlock objToVisit)
       {
-         retrieveTask<ParameterStartValuesBuildingBlock>(objToVisit);
+         retrieveTask<ParameterValuesBuildingBlock>(objToVisit);
       }
 
       public void Visit(MoBiReactionBuildingBlock objToVisit)

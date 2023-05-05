@@ -25,20 +25,20 @@ namespace MoBi.Presentation.Tasks
 {
    public abstract class concern_for_ParameterStartValuesTask : ContextSpecification<ParameterStartValuesTask>
    {
-      protected IParameterStartValuesCreator _parameterStartValuesCreator;
+      protected IParameterValuesCreator _parameterStartValuesCreator;
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
-      protected ParameterStartValuesBuildingBlock _parameterStartValueBuildingBlock;
+      protected ParameterValuesBuildingBlock _parameterStartValueBuildingBlock;
       protected IInteractionTaskContext _context;
-      private IEditTasksForBuildingBlock<ParameterStartValuesBuildingBlock> _editTasks;
+      private IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> _editTasks;
       protected IParameterResolver _parameterResolver;
 
       protected override void Context()
       {
          _context = A.Fake<IInteractionTaskContext>();
-         _editTasks = A.Fake<IEditTasksForBuildingBlock<ParameterStartValuesBuildingBlock>>();
-         _parameterStartValuesCreator = A.Fake<IParameterStartValuesCreator>();
+         _editTasks = A.Fake<IEditTasksForBuildingBlock<ParameterValuesBuildingBlock>>();
+         _parameterStartValuesCreator = A.Fake<IParameterValuesCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
-         _parameterStartValueBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _parameterStartValueBuildingBlock = new ParameterValuesBuildingBlock();
          _parameterResolver = A.Fake<IParameterResolver>();
 
          sut = new ParameterStartValuesTask(_context, _editTasks,
@@ -51,26 +51,26 @@ namespace MoBi.Presentation.Tasks
 
    public class When_updating_parameter_start_values_from_template : concern_for_ParameterStartValuesTask
    {
-      private ParameterStartValuesBuildingBlock _templateStartValues;
+      private ParameterValuesBuildingBlock _templateStartValues;
       private ObjectPath _containerPath;
-      private ParameterStartValue _parameterStartValue;
-      private ParameterStartValue _clonedStartValue;
+      private ParameterValue _parameterStartValue;
+      private ParameterValue _clonedStartValue;
 
       protected override void Context()
       {
          base.Context();
-         _templateStartValues = new ParameterStartValuesBuildingBlock();
+         _templateStartValues = new ParameterValuesBuildingBlock();
 
          _containerPath = new ObjectPath("the", "container", "path");
 
          _parameterStartValueBuildingBlock.Add(
-            new ParameterStartValue {StartValue = 0.1, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
+            new ParameterValue {StartValue = 0.1, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
 
-         _parameterStartValue = new ParameterStartValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", StartValue = 4};
-         _clonedStartValue = new ParameterStartValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", StartValue = 4};
+         _parameterStartValue = new ParameterValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", StartValue = 4};
+         _clonedStartValue = new ParameterValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", StartValue = 4};
 
          _templateStartValues.Add(_parameterStartValue);
-         _templateStartValues.Add(new ParameterStartValue {StartValue = 0.4, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
+         _templateStartValues.Add(new ParameterValue {StartValue = 0.4, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
 
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_parameterStartValue, A<IFormulaCache>.Ignored)).Returns(_clonedStartValue);
       }
@@ -111,7 +111,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_comparing_start_value_to_original_parameter : concern_for_ParameterStartValuesTask
    {
-      private ParameterStartValue _parameterStartValue;
+      private ParameterValue _parameterStartValue;
       private const string _name = "Name";
       protected bool _result;
       private IDimension _dimension;
@@ -121,7 +121,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
-         _parameterStartValue = DomainHelperForSpecs.ParameterStartValue;
+         _parameterStartValue = DomainHelperForSpecs.ParameterValue;
          _parameterStartValue.Dimension = _dimension;
 
          _parameter = new Parameter {Dimension = _dimension, Name = _name, Value = 1.0};
@@ -176,14 +176,14 @@ namespace MoBi.Presentation.Tasks
    public class When_importing_multiple_parameter_start_values : concern_for_ParameterStartValuesTask
    {
       private IList<ImportedQuantityDTO> _parameterStartValues;
-      private ParameterStartValue _firstStartValueRef;
+      private ParameterValue _firstStartValueRef;
       private IMoBiCommand _result;
 
       protected override void Context()
       {
          base.Context();
          var unit = new Unit("Dimensionless", 1.0, 0.0);
-         _firstStartValueRef = new ParameterStartValue {ContainerPath = new ObjectPath("this", "path"), Name = "Name", StartValue = -1.0, DisplayUnit = unit};
+         _firstStartValueRef = new ParameterValue {ContainerPath = new ObjectPath("this", "path"), Name = "Name", StartValue = -1.0, DisplayUnit = unit};
          _parameterStartValues = new List<ImportedQuantityDTO>
          {
             new ImportedQuantityDTO {Name = "Name", ContainerPath = new ObjectPath(new[] {"this", "path"}), QuantityInBaseUnit = 1.0, DisplayUnit = unit},
@@ -196,8 +196,8 @@ namespace MoBi.Presentation.Tasks
          for (var i = 1; i < 3; i++)
          {
             var dto = _parameterStartValues[i];
-            A.CallTo(() => _parameterStartValuesCreator.CreateParameterStartValue(dto.Path, dto.QuantityInBaseUnit, A<IDimension>._, A<Unit>._, A<ValueOrigin>._, A<bool>._)).Returns(
-               new ParameterStartValue
+            A.CallTo(() => _parameterStartValuesCreator.CreateParameterValue(dto.Path, dto.QuantityInBaseUnit, A<IDimension>._, A<Unit>._, A<ValueOrigin>._, A<bool>._)).Returns(
+               new ParameterValue
                {
                   ContainerPath = dto.ContainerPath,
                   Name = dto.Name,
@@ -244,11 +244,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_removing_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
    {
-      private ParameterStartValue _startValue;
+      private ParameterValue _startValue;
 
       protected override void Because()
       {
-         _startValue = new ParameterStartValue {ContainerPath = new ObjectPath("A", "B"), Name = "C"};
+         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B"), Name = "C"};
          _parameterStartValueBuildingBlock.Add(_startValue);
          sut.EditStartValueContainerPath(_parameterStartValueBuildingBlock, _startValue, 0, "");
       }
@@ -262,11 +262,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_appending_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
    {
-      private ParameterStartValue _startValue;
+      private ParameterValue _startValue;
 
       protected override void Because()
       {
-         _startValue = new ParameterStartValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B")};
          _parameterStartValueBuildingBlock.Add(_startValue);
          sut.EditStartValueContainerPath(_parameterStartValueBuildingBlock, _startValue, 2, "C");
       }
@@ -280,11 +280,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_replacing_an_element_of_parameter_start_value : concern_for_ParameterStartValuesTask
    {
-      private ParameterStartValue _startValue;
+      private ParameterValue _startValue;
 
       protected override void Because()
       {
-         _startValue = new ParameterStartValue {ContainerPath = new ObjectPath("A", "B"), Name = "D"};
+         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B"), Name = "D"};
          _parameterStartValueBuildingBlock.Add(_startValue);
          sut.EditStartValueContainerPath(_parameterStartValueBuildingBlock, _startValue, 0, "C");
       }
@@ -298,11 +298,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_replacing_an_element_outside_parameter_start_value_path_range : concern_for_ParameterStartValuesTask
    {
-      private ParameterStartValue _startValue;
+      private ParameterValue _startValue;
 
       protected override void Because()
       {
-         _startValue = new ParameterStartValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B")};
          _parameterStartValueBuildingBlock.Add(_startValue);
          sut.EditStartValueContainerPath(_parameterStartValueBuildingBlock, _startValue, 5, "C");
       }
@@ -316,12 +316,12 @@ namespace MoBi.Presentation.Tasks
 
    public class When_updating_the_value_description_of_a_start_value : concern_for_ParameterStartValuesTask
    {
-      private ParameterStartValue _startValue;
+      private ParameterValue _startValue;
       private ValueOrigin _valueOrigin;
 
       protected override void Because()
       {
-         _startValue = new ParameterStartValue();
+         _startValue = new ParameterValue();
          _parameterStartValueBuildingBlock.Add(_startValue);
          _valueOrigin = new ValueOrigin
          {

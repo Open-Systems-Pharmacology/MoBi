@@ -143,7 +143,7 @@ namespace MoBi.Assets
          public static readonly string ObserverBuildingBlock = "ObserverBuildingBlock";
          public static readonly string EventGroupBuildingBlock = "EventGroupBuildingBlock";
          public static readonly string MoleculeStartValuesBuildingBlock = "MoleculeStartValuesBuildingBlock";
-         public static readonly string ParameterStartValuesBuildingBlock = "ParameterStartValuesBuildingBlock";
+         public static readonly string ParameterValuesBuildingBlock = "ParameterValuesBuildingBlock";
          public static readonly string PassiveTransportBuildingBlock = "PassiveTransportBuildingBlock";
          public static readonly string MoBiReactionBuildingBlock = "MoBiReactionBuildingBlock";
          public static readonly string ReactionBuildingBlock = "ReactionBuildingBlock";
@@ -2099,7 +2099,7 @@ namespace MoBi.Assets
             return $"Update Parameter Start Values Building Block: '{name}'. Adding Dimension Information";
          }
 
-         public static string UnableToGetDimensionFor(ParameterStartValue psv, string parentName)
+         public static string UnableToGetDimensionFor(ParameterValue psv, string parentName)
          {
             return
                $"Unable to get dimension information for Parameter Start Value: '{psv.Path.PathAsString}' in Parameter Start Values Building Block: '{parentName}'. Dimension is set to No Dimension";

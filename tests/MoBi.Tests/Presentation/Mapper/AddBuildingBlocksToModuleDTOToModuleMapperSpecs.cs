@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Mapper
             new MoleculeBuildingBlock(),
             new PassiveTransportBuildingBlock(),
             new InitialConditionsBuildingBlock(),
-            new ParameterStartValuesBuildingBlock()
+            new ParameterValuesBuildingBlock()
          };
 
          _dto = new AddBuildingBlocksToModuleDTO(_existingModule)

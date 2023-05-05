@@ -10,14 +10,14 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_SynchronizeParameterStartValueCommand : ContextSpecification<SynchronizeParameterStartValueCommand>
    {
-      protected ParameterStartValue _parameterStartValue;
+      protected ParameterValue _parameterStartValue;
       protected IParameter _parameter;
       protected IMoBiContext _context;
 
       protected override void Context()
       {
          _parameter = new Parameter();
-         _parameterStartValue = new ParameterStartValue();
+         _parameterStartValue = new ParameterValue();
          _context = A.Fake<IMoBiContext>();
          sut = new SynchronizeParameterStartValueCommand(_parameter, _parameterStartValue);
       }

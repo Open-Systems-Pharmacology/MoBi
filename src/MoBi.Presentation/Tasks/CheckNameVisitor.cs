@@ -37,7 +37,7 @@ namespace MoBi.Presentation.Tasks
    public class CheckNameVisitor : ICheckNameVisitor,
       IVisitor<IObjectBase>,
       IVisitor<IFormula>,
-      IVisitor<ParameterStartValue>,
+      IVisitor<ParameterValue>,
       IVisitor<InitialCondition>,
       IVisitor<ObserverBuilder>,
       IVisitor<ReactionBuilder>,
@@ -435,7 +435,7 @@ namespace MoBi.Presentation.Tasks
          checkStartValue(moleculeStartValue, _msvPathTask);
       }
 
-      public void Visit(ParameterStartValue parameterStartValue)
+      public void Visit(ParameterValue parameterStartValue)
       {
          checkStartValue(parameterStartValue, _psvPathTask);
       }

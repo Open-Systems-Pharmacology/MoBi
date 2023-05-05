@@ -140,7 +140,7 @@ namespace MoBi.IntegrationTests
          if (!project.MoleculeStartValueBlockCollection.Any())
             project.AddBuildingBlock(new InitialConditionsBuildingBlock().WithName("Empty"));
          if (!project.ParametersStartValueBlockCollection.Any())
-            project.AddBuildingBlock(new ParameterStartValuesBuildingBlock().WithName("Empty"));
+            project.AddBuildingBlock(new ParameterValuesBuildingBlock().WithName("Empty"));
       }
    }
 }

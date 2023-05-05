@@ -130,7 +130,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _parameter = A.Fake<IParameter>();
-         _buidingBlockWithFormulaCache = new ParameterStartValuesBuildingBlock();
+         _buidingBlockWithFormulaCache = new ParameterValuesBuildingBlock();
 
 
          _oldFormula = new ExplicitFormula("1+2").WithId("OLD_FORMULA");

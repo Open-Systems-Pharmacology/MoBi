@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Mappers
 
          if (createModuleDTO.WithParameterStartValues)
          {
-            module.Add(CreateDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
+            module.Add(CreateDefault<ParameterValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
          }
 
          if (createModuleDTO.WithMoleculeStartValues)

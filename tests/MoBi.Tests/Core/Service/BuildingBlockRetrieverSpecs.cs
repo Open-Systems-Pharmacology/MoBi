@@ -58,8 +58,8 @@ namespace MoBi.Core.Service
       private MoBiSpatialStructure _spatialStructure;
       private IObjectBaseFactory _objectBaseFactory;
       private IFormula _formula;
-      private ParameterStartValue _parameterStartValue;
-      private ParameterStartValuesBuildingBlock _parameterStartValueBuildingBlock;
+      private ParameterValue _parameterStartValue;
+      private ParameterValuesBuildingBlock _parameterStartValueBuildingBlock;
       private InitialCondition _moleculeStartValue;
       private InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
       private IParameterFactory _parameterFactory;
@@ -96,8 +96,8 @@ namespace MoBi.Core.Service
          _allBuildingBlocks.Add(_spatialStructure);
          _formula = new ExplicitFormula();
          _moleculeBuildingBlock.AddFormula(_formula);
-         _parameterStartValue = new ParameterStartValue { Path = new ObjectPath { "test" }, StartValue = 1, Dimension = A.Fake<IDimension>() };
-         _parameterStartValueBuildingBlock = new ParameterStartValuesBuildingBlock() { _parameterStartValue };
+         _parameterStartValue = new ParameterValue { Path = new ObjectPath { "test" }, StartValue = 1, Dimension = A.Fake<IDimension>() };
+         _parameterStartValueBuildingBlock = new ParameterValuesBuildingBlock() { _parameterStartValue };
          _allBuildingBlocks.Add(_parameterStartValueBuildingBlock);
          _moleculeStartValue = new InitialCondition { ContainerPath = new ObjectPath { "test" }, Name = "drug" };
          _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock() { _moleculeStartValue };

@@ -17,7 +17,7 @@ namespace MoBi.Presentation
             new EventGroupBuildingBlock()
          }.WithName("module name");
 
-         module.Add(new ParameterStartValuesBuildingBlock());
+         module.Add(new ParameterValuesBuildingBlock());
          module.Add(new InitialConditionsBuildingBlock());
 
          sut = new AddBuildingBlocksToModuleDTO(module);

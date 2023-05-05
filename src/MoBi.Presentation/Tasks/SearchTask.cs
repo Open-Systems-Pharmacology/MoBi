@@ -89,7 +89,7 @@ namespace MoBi.Presentation.Tasks
          if (buildingBlockType.IsAnImplementationOf<InitialConditionsBuildingBlock>())
             return _context.CurrentProject.MoleculeStartValueBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
+         if (buildingBlockType.IsAnImplementationOf<ParameterValuesBuildingBlock>())
             return _context.CurrentProject.ParametersStartValueBlockCollection;
 
          return null;

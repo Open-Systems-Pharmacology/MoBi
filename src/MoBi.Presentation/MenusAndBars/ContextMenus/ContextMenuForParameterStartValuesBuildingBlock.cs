@@ -15,7 +15,7 @@ using OSPSuite.Core.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuForParameterStartValuesBuildingBlock : ContextMenuForStartValuesBuildingBlock<ParameterStartValuesBuildingBlock, ParameterStartValue>
+   public class ContextMenuForParameterStartValuesBuildingBlock : ContextMenuForStartValuesBuildingBlock<ParameterValuesBuildingBlock, ParameterValue>
    {
       public ContextMenuForParameterStartValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         var buildingBlock = _context.Get<ParameterStartValuesBuildingBlock>(dto.Id);
+         var buildingBlock = _context.Get<ParameterValuesBuildingBlock>(dto.Id);
          base.InitializeWith(dto, presenter);
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Import)
             .WithIcon(ApplicationIcons.ParameterValuesImport)
@@ -32,11 +32,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return this;
       }
 
-      protected override IMenuBarItem CreateCloneMenuItem(ParameterStartValuesBuildingBlock buildingBlock)
+      protected override IMenuBarItem CreateCloneMenuItem(ParameterValuesBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)
-            .WithCommandFor<CloneStartValueBuildingBlockUICommand<ParameterStartValuesBuildingBlock, ParameterStartValue, IParameterStartValuesTask>, ParameterStartValuesBuildingBlock>(buildingBlock, _container);
+            .WithCommandFor<CloneStartValueBuildingBlockUICommand<ParameterValuesBuildingBlock, ParameterValue, IParameterStartValuesTask>, ParameterValuesBuildingBlock>(buildingBlock, _container);
       }
    }
 }

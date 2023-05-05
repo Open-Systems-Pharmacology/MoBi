@@ -97,7 +97,7 @@ namespace MoBi.UI.Views
          return _presenter.InitialConditionsCollectionFor(selectedModuleTreeView.SelectedNode);
       }
 
-      private IReadOnlyList<ParameterStartValuesBuildingBlock> getParameterStartValues()
+      private IReadOnlyList<ParameterValuesBuildingBlock> getParameterStartValues()
       {
          return _presenter.ParameterStartValuesCollectionFor(selectedModuleTreeView.SelectedNode);
       }

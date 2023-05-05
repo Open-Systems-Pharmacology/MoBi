@@ -16,14 +16,14 @@ namespace MoBi.Presentation.Mapper
 {
    public abstract class concern_for_DataTableToImportQuantityDTOMapperForParameters : ContextSpecificationForImportStartValues<DataTableToImportQuantityDTOMapperForParameters>
    {
-      protected ParameterStartValuesBuildingBlock _startValuesBuildingBlock;
+      protected ParameterValuesBuildingBlock _startValuesBuildingBlock;
 
       protected override void Context()
       {
          CreateDimensionFactory();
 
          sut = new DataTableToImportQuantityDTOMapperForParameters(_dimensionFactory);
-         _startValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new ParameterValuesBuildingBlock();
       }
    }
 
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
          _tables = new DataTableProvider().ImportTables();
-         _startValuesBuildingBlock.Add(new ParameterStartValue
+         _startValuesBuildingBlock.Add(new ParameterValue
          {
             ContainerPath = ContainerPathFromDataTableRow(_tables, 0),
             Name = "ParameterName",
@@ -70,7 +70,7 @@ namespace MoBi.Presentation.Mapper
          _similarDimension.AddUnit("mol", 10, 0);
 
          _tables = new DataTableProvider(numberOfRowsToImport: 1).ImportTables();
-         _startValuesBuildingBlock.Add(new ParameterStartValue
+         _startValuesBuildingBlock.Add(new ParameterValue
          {
             ContainerPath = ContainerPathFromDataTableRow(_tables, 0),
             Name = "ParameterName",
@@ -107,7 +107,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new ParameterValuesBuildingBlock();
          _tables = new DataTableProvider().ImportTables();
          _tables.Rows[0][2] = string.Empty;
       }
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new ParameterValuesBuildingBlock();
          _tables = new WithDimensionColumnDataTable().ImportTables();
       }
 
@@ -166,7 +166,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new TableNotImplementedExceptionIsThrown().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterStartValue>>());
+         _result = sut.MapFrom(new TableNotImplementedExceptionIsThrown().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -180,7 +180,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new InvalidImportDataTable().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterStartValue>>());
+         _result = sut.MapFrom(new InvalidImportDataTable().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -194,7 +194,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new InvalidUnitsDataTable().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterStartValue>>());
+         _result = sut.MapFrom(new InvalidUnitsDataTable().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -208,7 +208,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new IncorrectFormatDataTableProvider().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterStartValue>>());
+         _result = sut.MapFrom(new IncorrectFormatDataTableProvider().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterValue>>());
       }
 
       [Observation]

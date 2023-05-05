@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Presenter
 
    }
 
-   public class ImportParameterStartValuesPresenter : AbstractQuantitiesImporterPresenterForBuildingBlock<ParameterStartValuesBuildingBlock, ParameterStartValue>, IImportParameterStartValuesPresenter
+   public class ImportParameterStartValuesPresenter : AbstractQuantitiesImporterPresenterForBuildingBlock<ParameterValuesBuildingBlock, ParameterValue>, IImportParameterStartValuesPresenter
    {
       private readonly IDataTableToImportQuantityDTOMapperForParameters _mapper;
 

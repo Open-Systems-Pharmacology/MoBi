@@ -26,7 +26,7 @@ namespace MoBi.Presentation
       protected IDialogCreator _dialogCreator;
       protected IDataTableToImportQuantityDTOMapperForParameters _dataTableToImportParameterQuantityDTOMapperForMolecules;
       protected IParameterStartValuesTask _startValuesTask;
-      protected ParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterValuesBuildingBlock _buildingBlock;
       private IMoBiContext _context;
       protected IImportFromExcelTask _excelTask;
       protected ImportExcelSheetSelectionDTO _importExcelSheetDTO;
@@ -39,7 +39,7 @@ namespace MoBi.Presentation
          _view = A.Fake<IImportQuantityView>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataTableToImportParameterQuantityDTOMapperForMolecules = A.Fake<IDataTableToImportQuantityDTOMapperForParameters>();
-         _buildingBlock = new ParameterStartValuesBuildingBlock();
+         _buildingBlock = new ParameterValuesBuildingBlock();
          _excelTask = A.Fake<IImportFromExcelTask>();
          sut = new ImportParameterStartValuesPresenter(_view, _dialogCreator, _context, _excelTask, _startValuesTask, _dataTableToImportParameterQuantityDTOMapperForMolecules);
          sut.Initialize();
@@ -132,7 +132,7 @@ namespace MoBi.Presentation
             new ImportedQuantityDTO{ContainerPath=new ObjectPath(new[] { "Path3" }),QuantityInBaseUnit = 0.0}
          }.Each(_quantityImporterDTO.QuantityDTOs.Add);
 
-         A.CallTo(() => _dataTableToImportParameterQuantityDTOMapperForMolecules.MapFrom(A<DataTable>._, A<ParameterStartValuesBuildingBlock>.Ignored)).Returns(_quantityImporterDTO);
+         A.CallTo(() => _dataTableToImportParameterQuantityDTOMapperForMolecules.MapFrom(A<DataTable>._, A<ParameterValuesBuildingBlock>.Ignored)).Returns(_quantityImporterDTO);
          A.CallTo(() => _view.Display()).Invokes(() =>
          {
             sut.StartImport();
@@ -166,7 +166,7 @@ namespace MoBi.Presentation
       [Observation]
       public void returns_empty_list_of_imported_start_values()
       {
-         A.CallTo(() => _startValuesTask.AddStartValueToBuildingBlock(_buildingBlock, A<ParameterStartValue>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _startValuesTask.AddStartValueToBuildingBlock(_buildingBlock, A<ParameterValue>.Ignored)).MustNotHaveHappened();
       }
    }
 }

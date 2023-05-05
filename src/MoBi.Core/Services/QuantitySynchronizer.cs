@@ -59,8 +59,8 @@ namespace MoBi.Core.Services
          //    return new MoBiEmptyCommand();
          //
          // var affectedBuildingBlock = affectedBuildingBlockInfo.UntypedBuildingBlock;
-         // if (affectedBuildingBlock.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
-         //    return synchronizeParameterStartValueCommand(quantity as IParameter, affectedBuildingBlock.DowncastTo<ParameterStartValuesBuildingBlock>());
+         // if (affectedBuildingBlock.IsAnImplementationOf<ParameterValuesBuildingBlock>())
+         //    return synchronizeParameterStartValueCommand(quantity as IParameter, affectedBuildingBlock.DowncastTo<ParameterValuesBuildingBlock>());
          //
          // if (affectedBuildingBlock.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())
          //    return synchronizeMoleculeStartValueCommand(quantity, affectedBuildingBlock.DowncastTo<MoleculeStartValuesBuildingBlock>());
@@ -106,7 +106,7 @@ namespace MoBi.Core.Services
             () => new AddMoleculeStartValueFromQuantityInSimulationCommand(moleculeAmount, moleculeStartValuesBuildingBlock));
       }
 
-      private IMoBiCommand synchronizeParameterStartValueCommand(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, bool allowCreation = true)
+      private IMoBiCommand synchronizeParameterStartValueCommand(IParameter parameter, ParameterValuesBuildingBlock parameterStartValuesBuildingBlock, bool allowCreation = true)
       {
          return synchronizeStartValueCommand(parameter, parameterStartValuesBuildingBlock, allowCreation,
             psv => new SynchronizeParameterStartValueCommand(parameter, psv),

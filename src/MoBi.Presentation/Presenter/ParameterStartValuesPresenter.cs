@@ -15,7 +15,7 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IParameterStartValuesPresenter : IStartValuesPresenter<ParameterStartValueDTO>, IEditPresenter<ParameterStartValuesBuildingBlock>
+   public interface IParameterStartValuesPresenter : IStartValuesPresenter<ParameterStartValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>
    {
       void UpdateDimension(ParameterStartValueDTO startValueObject, IDimension newDimension);
    }
@@ -23,8 +23,8 @@ namespace MoBi.Presentation.Presenter
    public class ParameterStartValuesPresenter
       : StartValuePresenter<IParameterStartValuesView,
             IParameterStartValuesPresenter,
-            ParameterStartValuesBuildingBlock,
-            ParameterStartValueDTO, ParameterStartValue>,
+            ParameterValuesBuildingBlock,
+            ParameterStartValueDTO, ParameterValue>,
          IParameterStartValuesPresenter
    {
       private readonly IParameterStartValuesTask _parameterStartValuesTask;
@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Presenter
          IParameterStartValueToParameterStartValueDTOMapper startValueMapper,
          IRefreshStartValueFromOriginalBuildingBlockPresenter refreshStartValuesPresenter,
          IParameterStartValuesTask parameterStartValuesTask,
-         IParameterStartValuesCreator csvCreator,
+         IParameterValuesCreator csvCreator,
          IMoBiContext context,
          IDisplayUnitRetriever displayUnitRetriever,
          ILegendPresenter legendPresenter,
@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Presenter
 
          macroCommand.CommandType = AppConstants.Commands.EditCommand;
          macroCommand.Description = AppConstants.Commands.UpdateDimensionsAndUnits;
-         macroCommand.ObjectType = new ObjectTypeResolver().TypeFor<ParameterStartValue>();
+         macroCommand.ObjectType = new ObjectTypeResolver().TypeFor<ParameterValue>();
 
          var value = startValue.ConvertToDisplayUnit(startValue.Value);
 

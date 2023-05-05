@@ -6,7 +6,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IExpressionProfileToParameterStartValuesMapper : IMapper<ExpressionProfileBuildingBlock, ParameterStartValuesBuildingBlock>
+   public interface IExpressionProfileToParameterStartValuesMapper : IMapper<ExpressionProfileBuildingBlock, ParameterValuesBuildingBlock>
    {
    }
 
@@ -21,9 +21,9 @@ namespace MoBi.Presentation.Mappers
          _objectBaseFactory = objectBaseFactory;
       }
 
-      public ParameterStartValuesBuildingBlock MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
+      public ParameterValuesBuildingBlock MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
-         var buildingBlock = _objectBaseFactory.Create<ParameterStartValuesBuildingBlock>();
+         var buildingBlock = _objectBaseFactory.Create<ParameterValuesBuildingBlock>();
          buildingBlock.Name = expressionProfileBuildingBlock.Name;
          expressionProfileBuildingBlock.MapAllUsing(_expressionParameterToParameterStartValueMapper).Each(x => buildingBlock.Add(x));
          buildingBlock.FormulaCache.AddRange(buildingBlock.UniqueFormulasByName());

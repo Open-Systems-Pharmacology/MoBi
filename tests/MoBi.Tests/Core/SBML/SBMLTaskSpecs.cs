@@ -45,14 +45,14 @@ namespace MoBi.Core.SBML
 
          });
 
-         var parameterStartValuesBuildingBlock = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
+         var parameterStartValuesBuildingBlock = SBMLModule.ParameterValuesCollection.FirstOrDefault();
          var moleculeStartValuesBuildingBlock = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          
          moduleConfiguration.Module.Add(parameterStartValuesBuildingBlock);
          moduleConfiguration.Module.Add(moleculeStartValuesBuildingBlock);
 
          moduleConfiguration.SelectedInitialConditions = moleculeStartValuesBuildingBlock;
-         moduleConfiguration.SelectedParameterStartValues = parameterStartValuesBuildingBlock;
+         moduleConfiguration.SelectedParameterValues = parameterStartValuesBuildingBlock;
 
          simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
 

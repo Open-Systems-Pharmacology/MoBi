@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
          return new ModuleConfiguration(dto.Module, selectedMoleculeStartValues(dto), selectedParameterStartValues(dto));
       }
 
-      private static ParameterStartValuesBuildingBlock selectedParameterStartValues(ModuleConfigurationDTO dto)
+      private static ParameterValuesBuildingBlock selectedParameterStartValues(ModuleConfigurationDTO dto)
       {
          return dto.HasParameterStartValues ? dto.SelectedParameterStartValues : null;
       }

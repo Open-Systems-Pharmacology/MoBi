@@ -10,15 +10,15 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_EditParameterStartValuePathCommand : ContextSpecification<EditParameterStartValuePathCommand>
    {
       protected IMoBiContext _context;
-      protected ParameterStartValuesBuildingBlock _buildingBlock;
-      protected ParameterStartValue _parameterStartValue;
+      protected ParameterValuesBuildingBlock _buildingBlock;
+      protected ParameterValue _parameterStartValue;
       protected ObjectPath _path;
       protected override void Context()
       {
          base.Context();
          _context = A.Fake<IMoBiContext>();
-         _buildingBlock = new ParameterStartValuesBuildingBlock();
-         _parameterStartValue = new ParameterStartValue();
+         _buildingBlock = new ParameterValuesBuildingBlock();
+         _parameterStartValue = new ParameterValue();
          _path = new ObjectPath("A", "B");
          _parameterStartValue.ContainerPath = _path;
          _parameterStartValue.Name = "Name";
@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          base.Context();
          sut = new EditParameterStartValuePathCommand(_buildingBlock, _parameterStartValue, new ObjectPath("X", "Y", "Z"));
 
-         A.CallTo(() => _context.Get<ParameterStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ParameterValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
 
       protected override void Because()

@@ -309,8 +309,8 @@ namespace MoBi.Presentation
          _module1 = new Module
          {
             new MoBiSpatialStructure(),
-            new ParameterStartValuesBuildingBlock().WithId("PSV1"),
-            new ParameterStartValuesBuildingBlock().WithId("PSV2"),
+            new ParameterValuesBuildingBlock().WithId("PSV1"),
+            new ParameterValuesBuildingBlock().WithId("PSV2"),
             new InitialConditionsBuildingBlock().WithId("MSV")
          };
 
@@ -345,8 +345,8 @@ namespace MoBi.Presentation
          _allNodesAdded.Count(x => Equals(RootNodeTypes.ObservedDataFolder, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(_module1, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(_module1.SpatialStructure, x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.ParameterStartValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.ParameterStartValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(_module1.InitialConditionsCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
 
          // Make sure nodes have not been added for null items

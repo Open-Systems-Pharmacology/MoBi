@@ -126,7 +126,7 @@ namespace MoBi.Presentation.Presenter.Main
          _dynamicRibbonPageCache.Add(typeof(PassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
          _dynamicRibbonPageCache.Add(typeof(EventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
          _dynamicRibbonPageCache.Add(typeof(InitialConditionsBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
-         _dynamicRibbonPageCache.Add(typeof(ParameterStartValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
+         _dynamicRibbonPageCache.Add(typeof(ParameterValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
          _dynamicRibbonPageCache.Add(typeof(IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
          _dynamicRibbonPageCache.Add(typeof(ParameterIdentification), RibbonCategories.ParameterIdentification);
          _dynamicRibbonPageCache.Add(typeof(SensitivityAnalysis), RibbonCategories.SensitivityAnalysis);

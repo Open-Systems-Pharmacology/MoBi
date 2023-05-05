@@ -48,9 +48,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveParameterStartValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<ParameterStartValue>
+   public class RemoveParameterStartValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<ParameterValue>
    {
-      public RemoveParameterStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<ParameterStartValue> parent, ObjectPath path) : base(parent, path)
+      public RemoveParameterStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<ParameterValue> parent, ObjectPath path) : base(parent, path)
       {
       }
    }

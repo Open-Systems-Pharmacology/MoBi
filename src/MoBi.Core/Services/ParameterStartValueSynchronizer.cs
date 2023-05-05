@@ -24,13 +24,13 @@ namespace MoBi.Core.Services
          if (parameter == null) 
             return;
          
-         var buildingBlocks = simulation.Configuration.All<ParameterStartValuesBuildingBlock>();
+         var buildingBlocks = simulation.Configuration.All<ParameterValuesBuildingBlock>();
          var objectPath = _entityPathResolver.ObjectPathFor(parameter);
 
          buildingBlocks.Each(parameterStartValues => synchronizeValue(parameter, parameterStartValues, objectPath));
       }
 
-      private static void synchronizeValue(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValues, ObjectPath objectPath)
+      private static void synchronizeValue(IParameter parameter, ParameterValuesBuildingBlock parameterStartValues, ObjectPath objectPath)
       {
          var parameterStartValue = parameterStartValues[objectPath];
 

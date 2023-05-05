@@ -10,27 +10,27 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_AddParameterStartValueFromQuantityInSimulationCommand : ContextSpecification<AddParameterStartValueFromQuantityInSimulationCommand>
    {
-      protected ParameterStartValuesBuildingBlock _parameterStartValueBuildingBlock;
+      protected ParameterValuesBuildingBlock _parameterStartValueBuildingBlock;
       protected ObjectPath _objectPath;
       protected IParameter _parameter;
       protected IMoBiContext _context;
       private IEntityPathResolver _entityPathResolver;
-      protected IParameterStartValuesCreator _parameterStartValuesCreator;
+      protected IParameterValuesCreator _parameterStartValuesCreator;
 
       protected override void Context()
       {
-         _parameterStartValueBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("PSVBB");
+         _parameterStartValueBuildingBlock = new ParameterValuesBuildingBlock().WithId("PSVBB");
          _objectPath = new ObjectPath("A", "B", "P");
          _parameter = A.Fake<IParameter>().WithName("P").WithId("P");
          sut = new AddParameterStartValueFromQuantityInSimulationCommand(_parameter, _parameterStartValueBuildingBlock);
 
          _context = A.Fake<IMoBiContext>();
-         _parameterStartValuesCreator = A.Fake<IParameterStartValuesCreator>();
+         _parameterStartValuesCreator = A.Fake<IParameterValuesCreator>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          A.CallTo(() => _context.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
-         A.CallTo(() => _context.Resolve<IParameterStartValuesCreator>()).Returns(_parameterStartValuesCreator);
+         A.CallTo(() => _context.Resolve<IParameterValuesCreator>()).Returns(_parameterStartValuesCreator);
          A.CallTo(() => _context.Get<IParameter>(_parameter.Id)).Returns(_parameter);
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterStartValue>>(_parameterStartValueBuildingBlock.Id)).Returns(_parameterStartValueBuildingBlock);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterValue>>(_parameterStartValueBuildingBlock.Id)).Returns(_parameterStartValueBuildingBlock);
 
          A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(_objectPath);
       }
@@ -38,13 +38,13 @@ namespace MoBi.Core.Commands
 
    public class When_adding_a_parameter_start_value_based_on_a_simulation_parameter_to_a_building_block_defined_in_a_simulation : concern_for_AddParameterStartValueFromQuantityInSimulationCommand
    {
-      private ParameterStartValue _parameterStartValue;
+      private ParameterValue _parameterStartValue;
 
       protected override void Context()
       {
          base.Context();
-         _parameterStartValue = new ParameterStartValue {Path = _objectPath};
-         A.CallTo(() => _parameterStartValuesCreator.CreateParameterStartValue(_objectPath, _parameter)).Returns(_parameterStartValue);
+         _parameterStartValue = new ParameterValue {Path = _objectPath};
+         A.CallTo(() => _parameterStartValuesCreator.CreateParameterValue(_objectPath, _parameter)).Returns(_parameterStartValue);
       }
 
       protected override void Because()
@@ -61,12 +61,12 @@ namespace MoBi.Core.Commands
 
    public class When_adding_a_parameter_start_value_based_on_a_simulation_parameter_to_a_building_block_defined_in_a_simulation_that_already_exists : concern_for_AddParameterStartValueFromQuantityInSimulationCommand
    {
-      private ParameterStartValue _parameterStartValue;
+      private ParameterValue _parameterStartValue;
 
       protected override void Context()
       {
          base.Context();
-         _parameterStartValue = new ParameterStartValue {Path = _objectPath};
+         _parameterStartValue = new ParameterValue {Path = _objectPath};
          _parameterStartValueBuildingBlock.Add(_parameterStartValue);
       }
 
@@ -78,7 +78,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_not_add_a_new_parameter_start_value()
       {
-         A.CallTo(() => _parameterStartValuesCreator.CreateParameterStartValue(_objectPath, _parameter)).MustNotHaveHappened();
+         A.CallTo(() => _parameterStartValuesCreator.CreateParameterValue(_objectPath, _parameter)).MustNotHaveHappened();
       }
    }
 
@@ -87,7 +87,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterStartValuesCreator.CreateParameterStartValue(_objectPath, _parameter)).Returns(new ParameterStartValue {Path = _objectPath});
+         A.CallTo(() => _parameterStartValuesCreator.CreateParameterValue(_objectPath, _parameter)).Returns(new ParameterValue {Path = _objectPath});
       }
 
       protected override void Because()

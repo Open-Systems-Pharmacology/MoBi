@@ -14,20 +14,20 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_UpdateParameterStartValuesInBuildingBlockCommand : ContextSpecification<UpdateParameterStartValueInBuildingBlockCommand>
    {
-      protected ParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
       protected ObjectPath _path;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
-         _buildingBlock = new ParameterStartValuesBuildingBlock();
+         _buildingBlock = new ParameterValuesBuildingBlock();
 
          _path = new ObjectPath(new[] { string.Format("path{0}", 1) });
-         _buildingBlock.Add(new ParameterStartValue{Path = _path , StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) });
+         _buildingBlock.Add(new ParameterValue{Path = _path , StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) });
 
          sut = new UpdateParameterStartValueInBuildingBlockCommand(_buildingBlock, _path, 1.0);
-         A.CallTo(() => _context.Get<ParameterStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ParameterValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

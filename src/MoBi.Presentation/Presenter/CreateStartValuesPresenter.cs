@@ -83,11 +83,11 @@ namespace MoBi.Presentation.Presenter
       }
    }
 
-   public class CreateParameterStartValuesPresenter : CreateStartValuesPresenter<ParameterStartValuesBuildingBlock>
+   public class CreateParameterStartValuesPresenter : CreateStartValuesPresenter<ParameterValuesBuildingBlock>
    {
-      private readonly IParameterStartValuesCreator _startValuesCreator;
+      private readonly IParameterValuesCreator _startValuesCreator;
 
-      public CreateParameterStartValuesPresenter(ICreateStartValuesView view, IMoBiContext context, IParameterStartValuesCreator startValuesCreator)
+      public CreateParameterStartValuesPresenter(ICreateStartValuesView view, IMoBiContext context, IParameterValuesCreator startValuesCreator)
          : base(view, context)
       {
          _startValuesCreator = startValuesCreator;
@@ -96,10 +96,10 @@ namespace MoBi.Presentation.Presenter
          view.Caption = AppConstants.Captions.NewParameterStartValues;
       }
 
-      protected override ParameterStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
+      protected override ParameterValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
       {
          // return _startValuesCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
-         return new ParameterStartValuesBuildingBlock();
+         return new ParameterValuesBuildingBlock();
       }
    }
 }

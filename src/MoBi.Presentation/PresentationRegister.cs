@@ -110,7 +110,7 @@ namespace MoBi.Presentation
          container.Register<ISelectManyPresenter<EventGroupBuilder>, SelectObjectBasePresenter<EventGroupBuilder>>();
 
          container.Register<ICreateStartValuesPresenter<InitialConditionsBuildingBlock>, CreateMoleculeStartValuesPresenter>();
-         container.Register<ICreateStartValuesPresenter<ParameterStartValuesBuildingBlock>, CreateParameterStartValuesPresenter>();
+         container.Register<ICreateStartValuesPresenter<ParameterValuesBuildingBlock>, CreateParameterStartValuesPresenter>();
 
          container.Register<ISettingsPersistor<IUserSettings>, UserSettingsPersistor>();
          container.Register<ISettingsPersistor<IApplicationSettings>, ApplicationSettingsPersistor>();
@@ -233,7 +233,7 @@ namespace MoBi.Presentation
          container.Register<IRootContextMenuFor<MoBiProject, ParameterIdentification>, RootContextMenuForParameterIdentification>();
          container.Register<IRootContextMenuFor<MoBiProject, SensitivityAnalysis>, RootContextMenuForSensitivityAnalysis>();
          container.Register<IContextMenuFor<IMoBiSimulation>, ContextMenuForSimulation>();
-         container.Register<IContextMenuForBuildingBlock<ParameterStartValuesBuildingBlock>, ContextMenuForParameterStartValuesBuildingBlock>();
+         container.Register<IContextMenuForBuildingBlock<ParameterValuesBuildingBlock>, ContextMenuForParameterStartValuesBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<InitialConditionsBuildingBlock>, ContextMenuForMoleculeStartValuesBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<ExpressionProfileBuildingBlock>, ContextMenuForExpressionProfileBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IndividualBuildingBlock>, ContextMenuForIndividualBuildingBlock>();
@@ -258,7 +258,7 @@ namespace MoBi.Presentation
          registerContextMenuForBuildingBlockFactory<InitialConditionsBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<ExpressionProfileBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<IndividualBuildingBlock>(container);
-         registerContextMenuForBuildingBlockFactory<ParameterStartValuesBuildingBlock>(container);
+         registerContextMenuForBuildingBlockFactory<ParameterValuesBuildingBlock>(container);
          registerContextMenuForBuildingBlockFactory<SimulationSettings>(container);
       }
 

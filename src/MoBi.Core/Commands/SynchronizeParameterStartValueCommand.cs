@@ -8,10 +8,10 @@ namespace MoBi.Core.Commands
    public class SynchronizeParameterStartValueCommand : MoBiReversibleCommand
    {
       private IParameter _parameter;
-      private readonly ParameterStartValue _parameterStartValue;
+      private readonly ParameterValue _parameterStartValue;
       private readonly string _parameterId;
 
-      public SynchronizeParameterStartValueCommand(IParameter parameter, ParameterStartValue parameterStartValue)
+      public SynchronizeParameterStartValueCommand(IParameter parameter, ParameterValue parameterStartValue)
       {
          _parameter = parameter;
          _parameterId = parameter.Id;

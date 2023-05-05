@@ -198,22 +198,22 @@ namespace MoBi.Core
 
    internal class When_visiting_an_ParameterStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
-      private ParameterStartValuesBuildingBlock _parameterStartValuesBuildingBlock;
-      private ParameterStartValue _parameterStartValue;
+      private ParameterValuesBuildingBlock _parameterStartValuesBuildingBlock;
+      private ParameterValue _parameterStartValue;
       private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
-      private ParameterStartValue _parameterStartValue2;
+      private ParameterValue _parameterStartValue2;
 
       protected override void Context()
       {
          base.Context();
-         _parameterStartValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _parameterStartValuesBuildingBlock = new ParameterValuesBuildingBlock();
          _parameterStartValuesBuildingBlock.Name = _changedName;
-         _parameterStartValue = new ParameterStartValue();
+         _parameterStartValue = new ParameterValue();
          _path = new ObjectPath(new[] {"A", "B", _changedName});
          _parameterStartValue.Path = _path;
          _parameterStartValuesBuildingBlock.Add(_parameterStartValue);
-         _parameterStartValue2 = new ParameterStartValue();
+         _parameterStartValue2 = new ParameterValue();
          _path = new ObjectPath(new[] {"A", _changedName, "B"});
          _parameterStartValue2.Path = _path;
          _parameterStartValuesBuildingBlock.Add(_parameterStartValue2);

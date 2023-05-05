@@ -37,7 +37,7 @@ namespace MoBi.Presentation.DTO
          CanSelectMoleculeStartValues = module.InitialConditionsCollection.Any();
          WithMoleculeStartValues = CanSelectMoleculeStartValues;
          
-         CanSelectParameterStartValues = module.ParameterStartValuesCollection.Any();
+         CanSelectParameterStartValues = module.ParameterValuesCollection.Any();
          WithParameterStartValues = CanSelectParameterStartValues;
       }
 
@@ -67,7 +67,7 @@ namespace MoBi.Presentation.DTO
                _module.InitialConditionsCollection.Each(buildingBlocks.Add);
 
             if (removeParameterStartValues)
-               _module.ParameterStartValuesCollection.Each(buildingBlocks.Add);
+               _module.ParameterValuesCollection.Each(buildingBlocks.Add);
 
             return buildingBlocks;
          }
@@ -80,6 +80,6 @@ namespace MoBi.Presentation.DTO
       private bool removeEventGroup => _module.EventGroups != null && !WithEventGroup;
       private bool removeObserver => _module.Observers != null && !WithObserver;
       private bool removeMoleculeStartValues => _module.InitialConditionsCollection.Any() && !WithMoleculeStartValues;
-      private bool removeParameterStartValues => _module.ParameterStartValuesCollection.Any() && !WithParameterStartValues;
+      private bool removeParameterStartValues => _module.ParameterValuesCollection.Any() && !WithParameterStartValues;
    }
 }

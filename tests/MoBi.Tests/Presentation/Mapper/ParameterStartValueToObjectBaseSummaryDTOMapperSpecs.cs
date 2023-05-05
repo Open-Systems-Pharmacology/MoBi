@@ -14,11 +14,11 @@ namespace MoBi.Presentation.Mapper
 {
    public abstract class concern_for_ParameterStartValueToObjectBaseSummaryDTOMapperSpecs : ContextSpecification<ParameterStartValueToObjectBaseSummaryDTOMapper>
    {
-      protected ParameterStartValue _builder;
+      protected ParameterValue _builder;
 
       protected override void Context()
       {
-         _builder = new ParameterStartValue();
+         _builder = new ParameterValue();
          sut = new ParameterStartValueToObjectBaseSummaryDTOMapper();
       }
    }

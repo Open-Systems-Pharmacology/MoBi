@@ -8,19 +8,19 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_UpdateDimensionInParameterStartValueCommand : ContextSpecification<UpdateDimensionInStartValueCommand<ParameterStartValue>>
+   public abstract class concern_for_UpdateDimensionInParameterStartValueCommand : ContextSpecification<UpdateDimensionInStartValueCommand<ParameterValue>>
    {
       protected IDimension _newDimension;
       protected IDimension _oldDimension;
-      protected ParameterStartValue _startValue;
-      protected ParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterValue _startValue;
+      protected ParameterValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
       protected Unit _newDisplayUnit;
       protected Unit _oldDisplayUnit;
 
       protected override void Context()
       {
-         _buildingBlock = new ParameterStartValuesBuildingBlock();
+         _buildingBlock = new ParameterValuesBuildingBlock();
          _context = A.Fake<IMoBiContext>();
          _newDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
          _newDisplayUnit = _newDimension.DefaultUnit;
@@ -28,10 +28,10 @@ namespace MoBi.Core.Commands
          _oldDimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Concentration);
          _oldDisplayUnit = _oldDimension.DefaultUnit;
 
-         _startValue = new ParameterStartValue {Dimension = _oldDimension, StartValue = 1.0, DisplayUnit = _oldDisplayUnit};
+         _startValue = new ParameterValue {Dimension = _oldDimension, StartValue = 1.0, DisplayUnit = _oldDisplayUnit};
 
 
-         sut = new UpdateDimensionInStartValueCommand<ParameterStartValue>(_startValue, _newDimension, _newDisplayUnit, _buildingBlock);
+         sut = new UpdateDimensionInStartValueCommand<ParameterValue>(_startValue, _newDimension, _newDisplayUnit, _buildingBlock);
       }
    }
 

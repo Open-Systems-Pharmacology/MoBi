@@ -174,7 +174,7 @@ namespace MoBi.Presentation.Tasks.Interaction
                items.AddRange(InteractionTask.LoadItems<InitialConditionsBuildingBlock>(filename));
                return items;
             case BuildingBlockType.ParameterStartValues:
-               items.AddRange(InteractionTask.LoadItems<ParameterStartValuesBuildingBlock>(filename));
+               items.AddRange(InteractionTask.LoadItems<ParameterValuesBuildingBlock>(filename));
                return items;
          }
 

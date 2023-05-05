@@ -10,21 +10,21 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_RemoveParameterStartValueFromBuildingBlockCommand : ContextSpecification<RemoveParameterStartValueFromBuildingBlockCommand>
    {
-      protected ParameterStartValuesBuildingBlock _buildingBlock;
+      protected ParameterValuesBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
-      protected ParameterStartValue _psv;
+      protected ParameterValue _psv;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
-         _buildingBlock = new ParameterStartValuesBuildingBlock();
+         _buildingBlock = new ParameterValuesBuildingBlock();
 
-         _psv = new ParameterStartValue{Path=new ObjectPath("path1"), StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) };
+         _psv = new ParameterValue{Path=new ObjectPath("path1"), StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) };
          _buildingBlock.Add(_psv);
          sut = new RemoveParameterStartValueFromBuildingBlockCommand(_buildingBlock, _psv.Path);
 
-         A.CallTo(() => _context.Deserialize<ParameterStartValue>(A<byte[]>._)).Returns(_psv);
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterStartValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Deserialize<ParameterValue>(A<byte[]>._)).Returns(_psv);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<ParameterValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

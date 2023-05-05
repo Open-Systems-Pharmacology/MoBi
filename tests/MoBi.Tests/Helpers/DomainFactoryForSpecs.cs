@@ -83,20 +83,20 @@ namespace MoBi.Helpers
             moduleConfiguration.SelectedInitialConditions = module.InitialConditionsCollection.First();
          }
 
-         if (module.ParameterStartValuesCollection.IsEmpty())
+         if (module.ParameterValuesCollection.IsEmpty())
          {
             module.Add(CreateParameterStartValuesFor(buildConfiguration));
-            moduleConfiguration.SelectedParameterStartValues = module.ParameterStartValuesCollection.First();
+            moduleConfiguration.SelectedParameterValues = module.ParameterValuesCollection.First();
          }
 
          var modelCreator = IoC.Resolve<IModelConstructor>();
          return modelCreator.CreateModelFrom(buildConfiguration, simulationName);
       }
 
-      public static ParameterStartValuesBuildingBlock CreateParameterStartValuesFor(SimulationConfiguration buildConfiguration)
+      public static ParameterValuesBuildingBlock CreateParameterStartValuesFor(SimulationConfiguration buildConfiguration)
       {
-         var startValuesCreator = IoC.Resolve<IParameterStartValuesCreator>();
-         return new ParameterStartValuesBuildingBlock();
+         var startValuesCreator = IoC.Resolve<IParameterValuesCreator>();
+         return new ParameterValuesBuildingBlock();
          // return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);
       }
 

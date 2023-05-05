@@ -24,7 +24,7 @@ namespace MoBi.Core.Mapper
       concern_for_ParameterStartValueToDTOParameterStartValueMapperSpecs
    {
       private ParameterStartValueDTO _resultDTO;
-      private ParameterStartValue _parameterStartValue;
+      private ParameterValue _parameterStartValue;
       private ExplicitFormula _formula;
       private IDimension _dimension;
       private string _formulaString;
@@ -35,7 +35,7 @@ namespace MoBi.Core.Mapper
          base.Context();
          _dimension = A.Fake<IDimension>();
          _parameterPath = new ObjectPath( new[]{"Container","Parameter"});
-         _parameterStartValue = new ParameterStartValue {Path = _parameterPath, StartValue = 0.0, Dimension = _dimension };
+         _parameterStartValue = new ParameterValue {Path = _parameterPath, StartValue = 0.0, Dimension = _dimension };
          _formula = A.Fake<ExplicitFormula>();
          _parameterStartValue.Formula = _formula;
          _formulaString = "Hello Again";
@@ -44,7 +44,7 @@ namespace MoBi.Core.Mapper
 
       protected override void Because()
       {
-         _resultDTO = sut.MapFrom(_parameterStartValue, A.Fake<ParameterStartValuesBuildingBlock>());
+         _resultDTO = sut.MapFrom(_parameterStartValue, A.Fake<ParameterValuesBuildingBlock>());
       }
 
       [Observation]
@@ -53,7 +53,7 @@ namespace MoBi.Core.Mapper
          _resultDTO.Name.ShouldBeEqualTo("Parameter");
          _resultDTO.ContainerPath.ShouldOnlyContain("Container");
          _resultDTO.StartValue.ShouldBeEqualTo(double.NaN);
-         _resultDTO.ParameterStartValue.ShouldBeEqualTo(_parameterStartValue);
+         _resultDTO.ParameterValue.ShouldBeEqualTo(_parameterStartValue);
          _resultDTO.Formula.Formula.ShouldBeEqualTo(_formula);
          _resultDTO.Formula.FormulaString.ShouldBeEqualTo(_formulaString);
          _resultDTO.Dimension.ShouldBeEqualTo(_dimension);
@@ -63,7 +63,7 @@ namespace MoBi.Core.Mapper
    class When_mapping_a_parameterStartValueToADTOParameterStartValue_with_a_startValue : concern_for_ParameterStartValueToDTOParameterStartValueMapperSpecs
    {
       private ParameterStartValueDTO _resultDTO;
-      private ParameterStartValue _parameterStartValue;
+      private ParameterValue _parameterStartValue;
       private IDimension _dimension;
       private double _startValue;
       private ObjectPath _parameterPath;
@@ -74,13 +74,13 @@ namespace MoBi.Core.Mapper
          _dimension = A.Fake<IDimension>();
          _parameterPath = new ObjectPath(new[] { "Container", "Parameter" });
          _startValue = 1.2;
-         _parameterStartValue = new ParameterStartValue { Path = _parameterPath, StartValue = _startValue, Dimension = _dimension, Formula = null };
+         _parameterStartValue = new ParameterValue { Path = _parameterPath, StartValue = _startValue, Dimension = _dimension, Formula = null };
          A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_dimension.DefaultUnit, _startValue)).Returns(_startValue);
       }
 
       protected override void Because()
       {
-         _resultDTO = sut.MapFrom(_parameterStartValue, A.Fake<ParameterStartValuesBuildingBlock>());
+         _resultDTO = sut.MapFrom(_parameterStartValue, A.Fake<ParameterValuesBuildingBlock>());
       }
 
       [Observation]
@@ -89,7 +89,7 @@ namespace MoBi.Core.Mapper
          _resultDTO.Name.ShouldBeEqualTo("Parameter");
          _resultDTO.ContainerPath.ShouldOnlyContain("Container");
          _resultDTO.StartValue.ShouldBeEqualTo(_startValue);
-         _resultDTO.ParameterStartValue.ShouldBeEqualTo(_parameterStartValue);
+         _resultDTO.ParameterValue.ShouldBeEqualTo(_parameterStartValue);
          _resultDTO.Formula.Formula.ShouldBeNull();
          _resultDTO.Formula.FormulaString.ShouldBeEqualTo(AppConstants.Captions.FormulaNotAvailable);
          _resultDTO.Dimension.ShouldBeEqualTo(_dimension);

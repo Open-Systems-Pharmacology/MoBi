@@ -18,7 +18,7 @@ using OSPSuite.UI.Controls;
 
 namespace MoBi.UI.Views
 {
-   public partial class ParameterStartValuesView : BaseStartValuesView<ParameterStartValueDTO, ParameterStartValue>, IParameterStartValuesView
+   public partial class ParameterStartValuesView : BaseStartValuesView<ParameterStartValueDTO, ParameterValue>, IParameterStartValuesView
    {
       private readonly UxComboBoxUnit<ParameterStartValueDTO> _unitControl;
       private readonly IDimensionFactory _dimensionFactory;

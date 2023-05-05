@@ -64,7 +64,7 @@ namespace MoBi.Core.Commands
          _module.Add(new ObserverBuildingBlock().WithId("Observer"));
          _module.Add(new EventGroupBuildingBlock().WithId("EventGroup"));
          _module.Add(new InitialConditionsBuildingBlock().WithId("MoleculeStartValues"));
-         _module.Add(new ParameterStartValuesBuildingBlock().WithId("ParameterStartValues"));
+         _module.Add(new ParameterValuesBuildingBlock().WithId("ParameterStartValues"));
       }
 
       protected override void Because()
@@ -83,7 +83,7 @@ namespace MoBi.Core.Commands
          withIds.ShouldContain(_module.Observers);
          withIds.ShouldContain(_module.EventGroups);
          withIds.ShouldContain(_module.InitialConditionsCollection.First());
-         withIds.ShouldContain(_module.ParameterStartValuesCollection.First());
+         withIds.ShouldContain(_module.ParameterValuesCollection.First());
          withIds.ShouldContain(_module);
       }
 

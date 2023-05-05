@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Mappers
             ConditionalCreate(dto.CreatePassiveTransport, () => CreateDefault<PassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock)),
             ConditionalCreate(dto.CreateEventGroup, () => CreateDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)),
             ConditionalCreate(dto.CreateObserver, () => CreateDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)),
-            ConditionalCreate(dto.WithParameterStartValues, () => CreateDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues)),
+            ConditionalCreate(dto.WithParameterStartValues, () => CreateDefault<ParameterValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues)),
             ConditionalCreate(dto.WithMoleculeStartValues, () => CreateDefault<InitialConditionsBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues))
          };
 

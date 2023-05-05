@@ -87,7 +87,7 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<InitialConditionsBuildingBlock> MoleculeStartValueBlockCollection => get<InitialConditionsBuildingBlock>();
 
-      public IReadOnlyList<ParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection => get<ParameterStartValuesBuildingBlock>();
+      public IReadOnlyList<ParameterValuesBuildingBlock> ParametersStartValueBlockCollection => get<ParameterValuesBuildingBlock>();
 
       public Module ModuleByName(string moduleName)
       {

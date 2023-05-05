@@ -5,7 +5,7 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IExpressionParameterToParameterStartValueMapper : IMapper<ExpressionParameter, ParameterStartValue>
+   public interface IExpressionParameterToParameterStartValueMapper : IMapper<ExpressionParameter, ParameterValue>
    {
    }
 
@@ -20,9 +20,9 @@ namespace MoBi.Presentation.Mappers
          _cloneManager = cloneManager;
       }
 
-      public ParameterStartValue MapFrom(ExpressionParameter expressionParameter)
+      public ParameterValue MapFrom(ExpressionParameter expressionParameter)
       {
-         var parameterStartValue = _objectBaseFactory.Create<ParameterStartValue>();
+         var parameterStartValue = _objectBaseFactory.Create<ParameterValue>();
 
          parameterStartValue.Path = expressionParameter.Path;
          parameterStartValue.Formula = _cloneManager.Clone(expressionParameter.Formula);

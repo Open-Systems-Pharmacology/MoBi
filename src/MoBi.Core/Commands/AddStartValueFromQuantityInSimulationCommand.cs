@@ -55,17 +55,17 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddParameterStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IParameter, ParameterStartValue>
+   public class AddParameterStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IParameter, ParameterValue>
    {
-      public AddParameterStartValueFromQuantityInSimulationCommand(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
+      public AddParameterStartValueFromQuantityInSimulationCommand(IParameter parameter, ParameterValuesBuildingBlock parameterStartValuesBuildingBlock)
          : base(parameter, parameterStartValuesBuildingBlock)
       {
       }
 
-      protected override ParameterStartValue CreateNewStartValue(IMoBiContext context)
+      protected override ParameterValue CreateNewStartValue(IMoBiContext context)
       {
-         var parameterStartValueCreator = context.Resolve<IParameterStartValuesCreator>();
-         return parameterStartValueCreator.CreateParameterStartValue(_objectPath, _quantity);
+         var parameterStartValueCreator = context.Resolve<IParameterValuesCreator>();
+         return parameterStartValueCreator.CreateParameterValue(_objectPath, _quantity);
       }
    }
 

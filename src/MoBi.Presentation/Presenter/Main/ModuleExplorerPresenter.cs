@@ -230,7 +230,7 @@ namespace MoBi.Presentation.Presenter.Main
       {
          var moduleNode = _view.TreeView.NodeById(module.Id);
 
-         if (buildingBlock is ParameterStartValuesBuildingBlock)
+         if (buildingBlock is ParameterValuesBuildingBlock)
             return moduleNode.Children.OfType<ParameterStartValuesFolderNode>().FirstOrDefault();
 
          if (buildingBlock is InitialConditionsBuildingBlock)

@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Nodes
 {
    public class ParameterStartValuesFolderNode : AbstractNode<ModuleViewItem>
    {
-      public ParameterStartValuesFolderNode(Module module) : base(new ModuleViewItem(module).WithTarget(module.ParameterStartValuesCollection))
+      public ParameterStartValuesFolderNode(Module module) : base(new ModuleViewItem(module).WithTarget(module.ParameterValuesCollection))
       {
          Id = ShortGuid.NewGuid();
          Text = AppConstants.Captions.ParameterStartValues;

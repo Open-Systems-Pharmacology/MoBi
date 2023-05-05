@@ -18,7 +18,7 @@ namespace MoBi.Core.Services
 
    public class BuildingBlockRetriever : IBuildingBlockRetriever, IVisitor<MoBiReactionBuildingBlock>, IVisitor<MoleculeBuildingBlock>,
                                          IVisitor<MoBiSpatialStructure>, IVisitor<ObserverBuildingBlock>, IVisitor<EventGroupBuildingBlock>,
-                                         IVisitor<PassiveTransportBuildingBlock>, IVisitor<InitialConditionsBuildingBlock>, IVisitor<ParameterStartValuesBuildingBlock>
+                                         IVisitor<PassiveTransportBuildingBlock>, IVisitor<InitialConditionsBuildingBlock>, IVisitor<ParameterValuesBuildingBlock>
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private IEntity _entity;
@@ -112,7 +112,7 @@ namespace MoBi.Core.Services
          _found = objToVisit.Contains(_entity);
       }
 
-      public void Visit(ParameterStartValuesBuildingBlock objToVisit)
+      public void Visit(ParameterValuesBuildingBlock objToVisit)
       {
          _found = objToVisit.Contains(_entity);
       }

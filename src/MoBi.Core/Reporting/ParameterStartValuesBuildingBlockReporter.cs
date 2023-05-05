@@ -12,7 +12,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Reporting
 {
-   internal class ParameterStartValuesBuildingBlockReporter : BuildingBlockReporter<ParameterStartValuesBuildingBlock, ParameterStartValue>
+   internal class ParameterStartValuesBuildingBlockReporter : BuildingBlockReporter<ParameterValuesBuildingBlock, ParameterValue>
    {
       private readonly ReportingHelper _reportingHelper;
 
@@ -21,7 +21,7 @@ namespace MoBi.Core.Reporting
          _reportingHelper = new ReportingHelper(displayUnitRetriever);
       }
 
-      protected override void AddBuildersReport(ParameterStartValuesBuildingBlock parameterStartValues, List<object> listToReport, OSPSuiteTracker buildTracker)
+      protected override void AddBuildersReport(ParameterValuesBuildingBlock parameterStartValues, List<object> listToReport, OSPSuiteTracker buildTracker)
       {
          var table = tableFor(parameterStartValues, buildTracker.Settings.Verbose);
          var containers = table.DefaultView.ToTable(true, Constants.CONTAINER_PATH, Constants.LEVELS).DefaultView;
@@ -48,7 +48,7 @@ namespace MoBi.Core.Reporting
          listToReport.AddRange(parameterStartValues.FormulaCache.OrderBy(f => f.Name));
       }
 
-      private DataTable tableFor(IEnumerable<ParameterStartValue> parameterStartValues, bool verbose)
+      private DataTable tableFor(IEnumerable<ParameterValue> parameterStartValues, bool verbose)
       {
          var parameterStartValueTable = new DataTable(Constants.PARAMETER_START_VALUES);
 

@@ -47,7 +47,7 @@ namespace MoBi.Presentation
          _module.Add(new PassiveTransportBuildingBlock());
          _module.Add(new EventGroupBuildingBlock());
          _module.Add(new ObserverBuildingBlock());
-         _module.Add(new ParameterStartValuesBuildingBlock());
+         _module.Add(new ParameterValuesBuildingBlock());
          _module.Add(new InitialConditionsBuildingBlock());
          sut = new SelectBuildingBlockTypeDTO(_module);
       }

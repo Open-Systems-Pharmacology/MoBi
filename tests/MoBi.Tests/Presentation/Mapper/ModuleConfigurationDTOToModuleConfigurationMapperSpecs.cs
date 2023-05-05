@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Mapper
          _module = new Module
          {
             new InitialConditionsBuildingBlock(),
-            new ParameterStartValuesBuildingBlock()
+            new ParameterValuesBuildingBlock()
          };
 
          sut = new ModuleConfigurationDTOToModuleConfigurationMapper();
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Mapper
          _dto = new ModuleConfigurationDTO(new ModuleConfiguration(_module))
          {
             SelectedMoleculeStartValues = _module.InitialConditionsCollection.First(),
-            SelectedParameterStartValues = _module.ParameterStartValuesCollection.First()
+            SelectedParameterStartValues = _module.ParameterValuesCollection.First()
          };
       }
 
@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_return_a_module_configuration_with_real_parameter_start_values()
       {
-         _result.SelectedParameterStartValues.ShouldBeEqualTo(_module.ParameterStartValuesCollection.First());
+         _result.SelectedParameterValues.ShouldBeEqualTo(_module.ParameterValuesCollection.First());
       }
    }
 
@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Mapper
          var module = new Module
          {
             new InitialConditionsBuildingBlock(),
-            new ParameterStartValuesBuildingBlock()
+            new ParameterValuesBuildingBlock()
          };
          _dto = new ModuleConfigurationDTO(new ModuleConfiguration(module))
          {
@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_return_a_module_configuration_with_null_parameter_start_values()
       {
-         _result.SelectedParameterStartValues.ShouldBeNull();
+         _result.SelectedParameterValues.ShouldBeNull();
       }
    }
 }

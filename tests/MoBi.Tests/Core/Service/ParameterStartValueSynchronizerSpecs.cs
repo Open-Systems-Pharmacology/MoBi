@@ -27,14 +27,14 @@ namespace MoBi.Core.Service
    {
       private IModelCoreSimulation _simulation;
       private IParameter _parameter;
-      private ParameterStartValue _parameterStartValue;
+      private ParameterValue _parameterStartValue;
 
       protected override void Context()
       {
          base.Context();
          _simulation = new MoBiSimulation();
-         var parameterStartValues = new ParameterStartValuesBuildingBlock();
-         _parameterStartValue = new ParameterStartValue()
+         var parameterStartValues = new ParameterValuesBuildingBlock();
+         _parameterStartValue = new ParameterValue()
          {
             Name = "P1",
             ContainerPath = new ObjectPath("Organism"),
@@ -47,7 +47,7 @@ namespace MoBi.Core.Service
          _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
          var moduleConfiguration = _simulation.Configuration.ModuleConfigurations.First();
          moduleConfiguration.Module.Add(parameterStartValues);
-         moduleConfiguration.SelectedParameterStartValues = parameterStartValues;
+         moduleConfiguration.SelectedParameterValues = parameterStartValues;
          _parameter =
             new Parameter().WithName("P1").WithValue(11).WithDimension(A.Fake<IDimension>()).WithDisplayUnit(A.Fake<Unit>());
          A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(new ObjectPath("Organism", "P1"));
