@@ -69,22 +69,22 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddMoleculeStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<MoleculeAmount, MoleculeStartValue>
+   public class AddMoleculeStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<MoleculeAmount, InitialCondition>
    {
-      public AddMoleculeStartValueFromQuantityInSimulationCommand(MoleculeAmount moleculeAmount, MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
+      public AddMoleculeStartValueFromQuantityInSimulationCommand(MoleculeAmount moleculeAmount, InitialConditionsBuildingBlock moleculeStartValuesBuildingBlock)
          : base(moleculeAmount, moleculeStartValuesBuildingBlock)
       {
       }
 
-      protected override MoleculeStartValue CreateNewStartValue(IMoBiContext context)
+      protected override InitialCondition CreateNewStartValue(IMoBiContext context)
       {
-         var moleculeStartValueCreator = context.Resolve<IMoleculeStartValuesCreator>();
+         var moleculeStartValueCreator = context.Resolve<IInitialConditionsCreator>();
          var containerPath = _objectPath.Clone<ObjectPath>();
          var lastIndex = containerPath.Count - 1;
          var name = containerPath[lastIndex];
          containerPath.RemoveAt(lastIndex);
 
-         return moleculeStartValueCreator.CreateMoleculeStartValue(containerPath, name, _quantity.Dimension, _quantity.DisplayUnit, _quantity.ValueOrigin);
+         return moleculeStartValueCreator.CreateInitialCondition(containerPath, name, _quantity.Dimension, _quantity.DisplayUnit, _quantity.ValueOrigin);
       }
    }
 }

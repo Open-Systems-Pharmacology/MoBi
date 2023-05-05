@@ -12,11 +12,11 @@ namespace MoBi.Presentation.Mapper
 {
    public abstract class concern_for_MoleculeStartValueToObjectBaseSummaryDTOMapper : ContextSpecification<MoleculeStartValueToObjectBaseSummaryDTOMapper>
    {
-      protected MoleculeStartValue _builder;
+      protected InitialCondition _builder;
 
       protected override void Context()
       {
-         _builder = new MoleculeStartValue();
+         _builder = new InitialCondition();
          sut = new MoleculeStartValueToObjectBaseSummaryDTOMapper();
       }
    }
@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void dto_should_contain_correct_fields()
       {
-         _result.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.MoleculeStartValues);
+         _result.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.InitialConditions);
       }
 
       [Observation]

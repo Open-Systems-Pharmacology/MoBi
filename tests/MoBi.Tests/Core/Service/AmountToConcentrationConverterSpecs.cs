@@ -25,7 +25,7 @@ namespace MoBi.Core.Service
       protected MoleculeBuilder _moleculeBuilder;
       private IObjectBaseFactory _objectBaseFactory;
       private IFormulaTask _formulaTask;
-      protected MoleculeStartValue _moleculeStartValue;
+      protected InitialCondition _moleculeStartValue;
       protected FormulaCache _formulaCache;
       protected IDisplayUnitRetriever _displayUnitRetriever;
       private IObjectTypeResolver _objectTypeResolver;
@@ -73,7 +73,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_do_nothing()
       {
-         _moleculeBuilder.GetDefaultMoleculeStartValue().ShouldBeEqualTo(5);
+         _moleculeBuilder.GetDefaultInitialCondition().ShouldBeEqualTo(5);
       }
    }
 
@@ -94,7 +94,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_keep_the_formula_to_zero()
       {
-         _moleculeBuilder.GetDefaultMoleculeStartValue().ShouldBeEqualTo(0);
+         _moleculeBuilder.GetDefaultInitialCondition().ShouldBeEqualTo(0);
       }
 
       [Observation]
@@ -249,7 +249,7 @@ namespace MoBi.Core.Service
       {
          base.Context();
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.ConcentrationBased);
-         _moleculeStartValue = new MoleculeStartValue{ Formula = new ExplicitFormula("10"), Dimension = DomainHelperForSpecs.ConcentrationDimension };
+         _moleculeStartValue = new InitialCondition { Formula = new ExplicitFormula("10"), Dimension = DomainHelperForSpecs.ConcentrationDimension };
       }
 
       protected override void Because()
@@ -273,7 +273,7 @@ namespace MoBi.Core.Service
          base.Context();
          _unit= A.Fake<Unit>();
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.ConcentrationBased);
-         _moleculeStartValue = new MoleculeStartValue { StartValue = 5, Dimension = DomainHelperForSpecs.AmountDimension };
+         _moleculeStartValue = new InitialCondition { StartValue = 5, Dimension = DomainHelperForSpecs.AmountDimension };
          A.CallTo(() => _displayUnitRetriever.PreferredUnitFor(_moleculeStartValue)).Returns(_unit);
       }
 

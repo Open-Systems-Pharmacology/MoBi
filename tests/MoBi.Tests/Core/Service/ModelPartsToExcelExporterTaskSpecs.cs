@@ -31,14 +31,14 @@ namespace MoBi.Core.Service
 
          A.CallTo(() => _reactionBuildingBlockToReactionDataTableMapper.MapFrom(A<IEnumerable<MoBiReactionBuildingBlock>>.Ignored)).Returns(new DataTable {TableName = "reactions"});
          A.CallTo(() => _parameterListToSimulationDataTableMapper.MapFrom(A<IReadOnlyList<IParameter>>.Ignored)).Returns(new DataTable {TableName = "parameters"});
-         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<MoleculeStartValue>>.Ignored, A<IEnumerable<MoleculeBuilder>>.Ignored)).Returns(new DataTable {TableName = "molecules"});
+         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<InitialCondition>>.Ignored, A<IEnumerable<MoleculeBuilder>>.Ignored)).Returns(new DataTable {TableName = "molecules"});
       }
    }
 
    public class When_mapping_model_parts : concern_for_ModelPartsToExcelExporterTask
    {
       private MoBiReactionBuildingBlock _moBiReactionBuildingBlock;
-      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      private InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
       private IMoBiSimulation _moBiSimulation;
       private IReadOnlyList<IParameter> _parameterList;
 
@@ -46,7 +46,7 @@ namespace MoBi.Core.Service
       {
          base.Context();
          _moBiReactionBuildingBlock = new MoBiReactionBuildingBlock();
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _moBiSimulation = new MoBiSimulation();
 
          _moBiSimulation.Configuration = new SimulationConfiguration();
@@ -59,7 +59,7 @@ namespace MoBi.Core.Service
          });
          moduleConfiguration.Module.Add(_moleculeStartValuesBuildingBlock);
          _moBiSimulation.Configuration.AddModuleConfiguration(moduleConfiguration);
-         moduleConfiguration.SelectedMoleculeStartValues = _moleculeStartValuesBuildingBlock;
+         moduleConfiguration.SelectedInitialConditions = _moleculeStartValuesBuildingBlock;
          _parameterList = _moBiSimulation.Model.Root.GetAllChildren<IParameter>();
       }
 
@@ -83,7 +83,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void calls_molecule_building_block_mapper()
       {
-         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<MoleculeStartValue>>._, A<IEnumerable<MoleculeBuilder>>._)).MustHaveHappened();
+         A.CallTo(() => _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(A<IEnumerable<InitialCondition>>._, A<IEnumerable<MoleculeBuilder>>._)).MustHaveHappened();
       }
    }
 }

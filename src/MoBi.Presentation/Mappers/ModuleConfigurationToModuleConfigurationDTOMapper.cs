@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Mappers
 
          // Otherwise create a new module configuration with the same name and the building blocks from the project
          return new ModuleConfiguration(module,
-            module.MoleculeStartValuesCollection.FindByName(moduleConfiguration.SelectedMoleculeStartValues?.Name),
+            module.InitialConditionsCollection.FindByName(moduleConfiguration.SelectedInitialConditions?.Name),
             module.ParameterStartValuesCollection.FindByName(moduleConfiguration.SelectedParameterStartValues?.Name));
       }
    }

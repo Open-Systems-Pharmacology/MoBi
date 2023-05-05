@@ -63,9 +63,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddMoleculeStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<MoleculeStartValue>
+   public class AddMoleculeStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<InitialCondition>
    {
-      public AddMoleculeStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<MoleculeStartValue> moleculeStartValuesBuildingBlock, MoleculeStartValue startValue)
+      public AddMoleculeStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<InitialCondition> moleculeStartValuesBuildingBlock, InitialCondition startValue)
          : base(moleculeStartValuesBuildingBlock, startValue)
       {
       }

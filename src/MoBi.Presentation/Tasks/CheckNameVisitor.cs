@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Tasks
       IVisitor<IObjectBase>,
       IVisitor<IFormula>,
       IVisitor<ParameterStartValue>,
-      IVisitor<MoleculeStartValue>,
+      IVisitor<InitialCondition>,
       IVisitor<ObserverBuilder>,
       IVisitor<ReactionBuilder>,
       IVisitor<ApplicationBuilder>,
@@ -430,7 +430,7 @@ namespace MoBi.Presentation.Tasks
             AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor<TransporterMoleculeContainer>(), _tranportNamePropertyName, _oldName, _newName, transporterMoleculeContainer.Name));
       }
 
-      public void Visit(MoleculeStartValue moleculeStartValue)
+      public void Visit(InitialCondition moleculeStartValue)
       {
          checkStartValue(moleculeStartValue, _msvPathTask);
       }

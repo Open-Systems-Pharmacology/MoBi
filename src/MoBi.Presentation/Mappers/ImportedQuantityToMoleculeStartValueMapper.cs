@@ -6,23 +6,23 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IImportedQuantityToMoleculeStartValueMapper : IMapper<ImportedQuantityDTO, MoleculeStartValue>
+   public interface IImportedQuantityToMoleculeStartValueMapper : IMapper<ImportedQuantityDTO, InitialCondition>
    {
 
    }
 
    public class ImportedQuantityToMoleculeStartValueMapper : IImportedQuantityToMoleculeStartValueMapper
    {
-      private readonly IMoleculeStartValuesCreator _msvCreator;
+      private readonly IInitialConditionsCreator _msvCreator;
 
-      public ImportedQuantityToMoleculeStartValueMapper(IMoleculeStartValuesCreator msvCreator)
+      public ImportedQuantityToMoleculeStartValueMapper(IInitialConditionsCreator msvCreator)
       {
          _msvCreator = msvCreator;
       }
 
-      public MoleculeStartValue MapFrom(ImportedQuantityDTO input)
+      public InitialCondition MapFrom(ImportedQuantityDTO input)
       {
-         var msv = _msvCreator.CreateMoleculeStartValue(input.ContainerPath, input.Name, input.Dimension, input.DisplayUnit);
+         var msv = _msvCreator.CreateInitialCondition(input.ContainerPath, input.Name, input.Dimension, input.DisplayUnit);
          msv.Value = input.QuantityInBaseUnit;
          msv.DisplayUnit = input.DisplayUnit;
          msv.IsPresent = input.IsPresent;

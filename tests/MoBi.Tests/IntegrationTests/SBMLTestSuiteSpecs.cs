@@ -138,7 +138,7 @@ namespace MoBi.IntegrationTests
          if (!project.PassiveTransportCollection.Any())
             project.AddBuildingBlock(new PassiveTransportBuildingBlock().WithName("Empty"));
          if (!project.MoleculeStartValueBlockCollection.Any())
-            project.AddBuildingBlock(new MoleculeStartValuesBuildingBlock().WithName("Empty"));
+            project.AddBuildingBlock(new InitialConditionsBuildingBlock().WithName("Empty"));
          if (!project.ParametersStartValueBlockCollection.Any())
             project.AddBuildingBlock(new ParameterStartValuesBuildingBlock().WithName("Empty"));
       }

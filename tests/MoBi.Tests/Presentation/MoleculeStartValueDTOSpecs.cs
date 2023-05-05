@@ -9,13 +9,13 @@ namespace MoBi.Presentation
 {
    public abstract class concern_for_MoleculeStartValueDTO : ContextSpecification<MoleculeStartValueDTO>
    {
-      protected MoleculeStartValue _moleculeStartValue;
-      protected MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      protected InitialCondition _moleculeStartValue;
+      protected InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
 
       protected override void Context()
       {
-         _moleculeStartValue = new MoleculeStartValue { Name = "MSV" };
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock { _moleculeStartValue };
+         _moleculeStartValue = new InitialCondition { Name = "MSV" };
+         _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock { _moleculeStartValue };
          sut = new MoleculeStartValueDTO(_moleculeStartValue, _moleculeStartValuesBuildingBlock) { ContainerPath = new ObjectPath("") };
       }
    }
@@ -45,7 +45,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _moleculeStartValuesBuildingBlock.Add(new MoleculeStartValue { ContainerPath = new ObjectPath("ContainerPath"), Name = "MSV" });
+         _moleculeStartValuesBuildingBlock.Add(new InitialCondition { ContainerPath = new ObjectPath("ContainerPath"), Name = "MSV" });
          _moleculeStartValue.ContainerPath = new ObjectPath("ContainerPath");
       }
 

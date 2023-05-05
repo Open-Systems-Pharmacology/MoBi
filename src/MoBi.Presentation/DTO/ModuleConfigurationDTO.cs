@@ -7,21 +7,21 @@ namespace MoBi.Presentation.DTO
    public class ModuleConfigurationDTO
    {
       private readonly ModuleConfiguration _moduleConfiguration;
-      private readonly List<MoleculeStartValuesBuildingBlock> _moleculeStartValuesCollection = new List<MoleculeStartValuesBuildingBlock> { NullStartValues.NullMoleculeStartValues };
+      private readonly List<InitialConditionsBuildingBlock> _InitialConditionsCollection = new List<InitialConditionsBuildingBlock> { NullStartValues.NullMoleculeStartValues };
       private readonly List<ParameterStartValuesBuildingBlock> _parameterStartValuesCollection = new List<ParameterStartValuesBuildingBlock> { NullStartValues.NullParameterStartValues };
 
       public ModuleConfigurationDTO(ModuleConfiguration moduleConfiguration)
       {
          _moduleConfiguration = moduleConfiguration;
-         SelectedMoleculeStartValues = moduleConfiguration.SelectedMoleculeStartValues ?? NullStartValues.NullMoleculeStartValues;
+         SelectedMoleculeStartValues = moduleConfiguration.SelectedInitialConditions ?? NullStartValues.NullMoleculeStartValues;
          SelectedParameterStartValues = moduleConfiguration.SelectedParameterStartValues ?? NullStartValues.NullParameterStartValues;
-         _moleculeStartValuesCollection.AddRange(moduleConfiguration.Module.MoleculeStartValuesCollection);
+         _InitialConditionsCollection.AddRange(moduleConfiguration.Module.InitialConditionsCollection);
          _parameterStartValuesCollection.AddRange(moduleConfiguration.Module.ParameterStartValuesCollection);
       }
 
       public ParameterStartValuesBuildingBlock SelectedParameterStartValues { get; set; }
-      public MoleculeStartValuesBuildingBlock SelectedMoleculeStartValues { get; set; }
-      public IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValuesCollection => _moleculeStartValuesCollection;
+      public InitialConditionsBuildingBlock SelectedMoleculeStartValues { get; set; }
+      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionsCollection => _InitialConditionsCollection;
       public IReadOnlyList<ParameterStartValuesBuildingBlock> ParameterStartValuesCollection => _parameterStartValuesCollection;
 
       public ModuleConfiguration ModuleConfiguration => _moduleConfiguration;

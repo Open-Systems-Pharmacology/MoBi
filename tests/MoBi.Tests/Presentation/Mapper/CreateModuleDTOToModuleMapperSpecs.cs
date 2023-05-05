@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Mapper
          _result.SpatialStructure.ShouldBeNull();
          _result.Reactions.ShouldBeNull();
          _result.EventGroups.ShouldBeNull();
-         _result.MoleculeStartValuesCollection.ShouldBeEmpty();
+         _result.InitialConditionsCollection.ShouldBeEmpty();
          _result.ParameterStartValuesCollection.ShouldBeEmpty();
          _result.PassiveTransports.ShouldBeNull();
          _result.Observers.ShouldBeNull();
@@ -97,7 +97,7 @@ namespace MoBi.Presentation.Mapper
          _result.SpatialStructure.ShouldNotBeNull();
          _result.Reactions.ShouldNotBeNull();
          _result.EventGroups.ShouldNotBeNull();
-         _result.MoleculeStartValuesCollection.ShouldNotBeEmpty();
+         _result.InitialConditionsCollection.ShouldNotBeEmpty();
          _result.ParameterStartValuesCollection.ShouldNotBeEmpty();
          _result.PassiveTransports.ShouldNotBeNull();
          _result.Observers.ShouldNotBeNull();

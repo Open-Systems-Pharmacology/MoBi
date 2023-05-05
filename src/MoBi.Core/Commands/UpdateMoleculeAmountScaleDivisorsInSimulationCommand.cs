@@ -36,7 +36,7 @@ namespace MoBi.Core.Commands
          var containerTask = context.Resolve<IContainerTask>();
          var msvBuildingBlockSynchronizer = context.Resolve<IQuantitySynchronizer>();
          var allMoleculeAmounts = containerTask.CacheAllChildren<MoleculeAmount>(_simulation.Model.Root);
-         var startValueBuildingBlocks = _simulation.Configuration.All<MoleculeStartValuesBuildingBlock>();
+         var startValueBuildingBlocks = _simulation.Configuration.All<InitialConditionsBuildingBlock>();
 
          foreach (var scaleDivisor in _scaleFactors)
          {

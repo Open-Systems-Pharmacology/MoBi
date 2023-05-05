@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_SynchronizeMoleculeStartValueCommand : ContextSpecification<SynchronizeMoleculeStartValueCommand>
    {
-      protected MoleculeStartValue _moleculeStartValue;
+      protected InitialCondition _moleculeStartValue;
       protected MoleculeAmount _moleculeAmount;
       protected IDimension _dimension1;
       protected IDimension _dimension2;
@@ -37,7 +37,7 @@ namespace MoBi.Core.Commands
          _moleculeAmount.ValueOrigin.Source = ValueOriginSources.Internet;
          _moleculeAmount.ValueOrigin.Description = "Hello";
 
-         _moleculeStartValue = new MoleculeStartValue();
+         _moleculeStartValue = new InitialCondition();
          sut = new SynchronizeMoleculeStartValueCommand(_moleculeAmount, _moleculeStartValue);
 
          _context = A.Fake<IMoBiContext>();

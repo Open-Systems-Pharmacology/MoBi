@@ -10,15 +10,15 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_EditMoleculeStartValuePathCommand : ContextSpecification<EditMoleculeStartValuePathCommand>
    {
       protected IMoBiContext _context;
-      protected MoleculeStartValuesBuildingBlock _buildingBlock;
-      protected MoleculeStartValue _moleculeStartValue;
+      protected InitialConditionsBuildingBlock _buildingBlock;
+      protected InitialCondition _moleculeStartValue;
       protected ObjectPath _path;
       protected override void Context()
       {
          base.Context();
          _context = A.Fake<IMoBiContext>();
-         _buildingBlock = new MoleculeStartValuesBuildingBlock();
-         _moleculeStartValue = new MoleculeStartValue();
+         _buildingBlock = new InitialConditionsBuildingBlock();
+         _moleculeStartValue = new InitialCondition();
          _path = new ObjectPath("A", "B");
          _moleculeStartValue.ContainerPath = _path;
          _moleculeStartValue.Name = "Name";
@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          base.Context();
          sut = new EditMoleculeStartValuePathCommand(_buildingBlock, _moleculeStartValue, new ObjectPath("X", "Y", "Z"));
 
-         A.CallTo(() => _context.Get<MoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
 
       protected override void Because()

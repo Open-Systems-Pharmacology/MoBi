@@ -6,14 +6,14 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateMoleculeStartValueScaleDivisorCommand : BuildingBlockChangeCommandBase<MoleculeStartValuesBuildingBlock>
+   public class UpdateMoleculeStartValueScaleDivisorCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
    {
       private readonly double _newScaleDivisor;
       private readonly double _oldScaleDivisor;
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
       private readonly string _startValueId;
 
-      public UpdateMoleculeStartValueScaleDivisorCommand(MoleculeStartValuesBuildingBlock buildingBlock, MoleculeStartValue startValue, double newScaleDivisor, double oldScaleDivisor) 
+      public UpdateMoleculeStartValueScaleDivisorCommand(InitialConditionsBuildingBlock buildingBlock, InitialCondition startValue, double newScaleDivisor, double oldScaleDivisor) 
          : base(buildingBlock)
       {
          _newScaleDivisor = newScaleDivisor;
@@ -23,7 +23,7 @@ namespace MoBi.Core.Commands
 
          Description = AppConstants.Commands.UpdateMoleculeStartValueScaleDivisor(_startValue.Path.ToString(), oldScaleDivisor, newScaleDivisor);
          CommandType = AppConstants.Commands.EditCommand;
-         ObjectType = ObjectTypes.MoleculeStartValue;
+         ObjectType = ObjectTypes.InitialCondition;
       }
 
       protected override void ClearReferences()
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _startValue = context.Get<MoleculeStartValue>(_startValueId);
+         _startValue = context.Get<InitialCondition>(_startValueId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

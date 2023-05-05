@@ -6,14 +6,14 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateMoleculeStartValueIsPresentCommand : BuildingBlockChangeCommandBase<MoleculeStartValuesBuildingBlock>
+   public class UpdateMoleculeStartValueIsPresentCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
    {
       private readonly string _startValueId;
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
       private readonly bool _oldIsPresent;
       private readonly bool _newIsPresent;
 
-      public UpdateMoleculeStartValueIsPresentCommand(MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, MoleculeStartValue moleculeStartValue, bool isPresent) : base(moleculeStartValuesBuildingBlock)
+      public UpdateMoleculeStartValueIsPresentCommand(InitialConditionsBuildingBlock moleculeStartValuesBuildingBlock, InitialCondition moleculeStartValue, bool isPresent) : base(moleculeStartValuesBuildingBlock)
       {
          _startValueId = moleculeStartValue.Id;
          _startValue = moleculeStartValue;
@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
 
          Description = AppConstants.Commands.UpdateMoleculeStartValueIsPresent(_startValue.Path.ToString(), _oldIsPresent, _newIsPresent);
          CommandType = AppConstants.Commands.EditCommand;
-         ObjectType = ObjectTypes.MoleculeStartValue;
+         ObjectType = ObjectTypes.InitialCondition;
       }
 
       protected override void ClearReferences()
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _startValue = context.Get<MoleculeStartValue>(_startValueId);
+         _startValue = context.Get<InitialCondition>(_startValueId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Nodes
       {
          Id = ShortGuid.NewGuid();
          Text = AppConstants.Captions.MoleculeStartValues;
-         Icon = ApplicationIcons.MoleculeStartValuesFolder;
+         Icon = ApplicationIcons.InitialConditionsFolder;
       }
       public override string Id { get; }
    }

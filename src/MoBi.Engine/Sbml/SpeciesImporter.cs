@@ -24,16 +24,16 @@ namespace MoBi.Engine.Sbml
 
    public class SpeciesImporter : SBMLImporter, IStartable, ISpeciesImporter
    {
-      private readonly IMoleculeStartValuesCreator _moleculeStartValuesCreator;
+      private readonly IInitialConditionsCreator _moleculeStartValuesCreator;
       internal MoleculeBuildingBlock MoleculeBuildingBlock;
-      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      private InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
       private readonly IMoleculeBuilderFactory _moleculeBuilderFactory;
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly Dictionary<string, Dimension> _dimensionDictionary;
       private IUnitDefinitionImporter _unitDefinitionImporter;
       private int _counter;
 
-      public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IMoleculeStartValuesCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter, IFormulaFactory formulaFactory)
+      public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IInitialConditionsCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter, IFormulaFactory formulaFactory)
           : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _moleculeBuilderFactory = moleculeBuilderFactory;
@@ -334,7 +334,7 @@ namespace MoBi.Engine.Sbml
       public override void AddToProject()
       {
          _command.AddCommand(new AddBuildingBlockToModuleCommand<MoleculeBuildingBlock>(MoleculeBuildingBlock, _sbmlModule).Run(_context));
-         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoleculeStartValuesBuildingBlock>(_moleculeStartValuesBuildingBlock, _sbmlModule).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<InitialConditionsBuildingBlock>(_moleculeStartValuesBuildingBlock, _sbmlModule).Run(_context));
       }
 
       /// <summary>

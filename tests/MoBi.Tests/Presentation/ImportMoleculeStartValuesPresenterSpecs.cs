@@ -24,7 +24,7 @@ namespace MoBi.Presentation
       protected IDialogCreator _dialogCreator;
       protected IDataTableToImportQuantityDTOMapperForMolecules _dataTableToImportQuantityDTOMapperForMolecules;
       protected IMoleculeStartValuesTask _startValuesTask;
-      protected MoleculeStartValuesBuildingBlock _buildingBlock;
+      protected InitialConditionsBuildingBlock _buildingBlock;
       private IMoBiContext _context;
       private IImportFromExcelTask _excelTask;
       protected QuantityImporterDTO _quantityImporterDTO;
@@ -38,7 +38,7 @@ namespace MoBi.Presentation
          _view = A.Fake<IImportQuantityView>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataTableToImportQuantityDTOMapperForMolecules = A.Fake<IDataTableToImportQuantityDTOMapperForMolecules>();
-         _buildingBlock = new MoleculeStartValuesBuildingBlock();
+         _buildingBlock = new InitialConditionsBuildingBlock();
          _excelTask = A.Fake<IImportFromExcelTask>();
          sut = new ImportMoleculeStartValuePresenter(_view, _dialogCreator, _context, _excelTask, _startValuesTask, _dataTableToImportQuantityDTOMapperForMolecules);
          sut.Initialize();
@@ -71,8 +71,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _buildingBlock.Add(new MoleculeStartValue {ContainerPath = new ObjectPath("First"), Name = "drug"});
-         _buildingBlock.Add(new MoleculeStartValue {ContainerPath = new ObjectPath("Second"), Name = "drug"});
+         _buildingBlock.Add(new InitialCondition { ContainerPath = new ObjectPath("First"), Name = "drug"});
+         _buildingBlock.Add(new InitialCondition { ContainerPath = new ObjectPath("Second"), Name = "drug"});
 
          // These are both valid update scenarios. The first scenario without start value specified is only valid for update, not insert
          _quantityImporterDTO.QuantityDTOs[0].QuantityInBaseUnit = double.NaN;

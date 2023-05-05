@@ -102,7 +102,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             CommandType = AppConstants.Commands.ImportCommand,
             Description = AppConstants.Commands.ImportParameterStartValues,
-            ObjectType = ObjectTypes.ParameterStartValue
+            ObjectType = ObjectTypes.ParameterValue
          };
 
          GetImportStartValuesMacroCommand(startValuesBuildingBlock, startValues, macroCommand);
@@ -159,7 +159,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             CommandType = AppConstants.Commands.EditCommand,
             Description = AppConstants.Commands.RefreshStartValuesFromBuildingBlocks,
-            ObjectType = ObjectTypes.ParameterStartValue
+            ObjectType = ObjectTypes.ParameterValue
          };
 
          startValuesToRefresh.Each(startValue =>

@@ -8,14 +8,14 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_UpdateMoleculeStartValueIsPresentCommand : ContextSpecification<UpdateMoleculeStartValueIsPresentCommand>
    {
-      protected MoleculeStartValuesBuildingBlock _startValueBuildingBlock;
-      protected MoleculeStartValue _startValue;
+      protected InitialConditionsBuildingBlock _startValueBuildingBlock;
+      protected InitialCondition _startValue;
       protected IMoBiContext _context;
 
       protected override void Context()
       {
-         _startValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
-         _startValue = new MoleculeStartValue { IsPresent = false };
+         _startValueBuildingBlock = new InitialConditionsBuildingBlock();
+         _startValue = new InitialCondition { IsPresent = false };
          _startValueBuildingBlock.Add(_startValue);
          _context = A.Fake<IMoBiContext>();
 
@@ -42,7 +42,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _context.Get<MoleculeStartValue>(_startValue.Id)).Returns(_startValue);
+         A.CallTo(() => _context.Get<InitialCondition>(_startValue.Id)).Returns(_startValue);
       }
 
       protected override void Because()

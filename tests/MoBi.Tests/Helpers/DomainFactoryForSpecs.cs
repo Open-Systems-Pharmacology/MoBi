@@ -77,10 +77,10 @@ namespace MoBi.Helpers
 
          var moduleConfiguration = buildConfiguration.ModuleConfigurations.First();
          var module = moduleConfiguration.Module;
-         if (module.MoleculeStartValuesCollection.IsEmpty())
+         if (module.InitialConditionsCollection.IsEmpty())
          {
             module.Add(CreateMoleculeStartValuesFor(buildConfiguration));
-            moduleConfiguration.SelectedMoleculeStartValues = module.MoleculeStartValuesCollection.First();
+            moduleConfiguration.SelectedInitialConditions = module.InitialConditionsCollection.First();
          }
 
          if (module.ParameterStartValuesCollection.IsEmpty())
@@ -100,9 +100,9 @@ namespace MoBi.Helpers
          // return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);
       }
 
-      public static MoleculeStartValuesBuildingBlock CreateMoleculeStartValuesFor(SimulationConfiguration buildConfiguration)
+      public static InitialConditionsBuildingBlock CreateMoleculeStartValuesFor(SimulationConfiguration buildConfiguration)
       {
-         var startValuesCreator = IoC.Resolve<IMoleculeStartValuesCreator>();
+         var startValuesCreator = IoC.Resolve<IInitialConditionsCreator>();
          return startValuesCreator.CreateFrom(buildConfiguration.All<SpatialStructure>().First(), buildConfiguration.All<MoleculeBuildingBlock>().First());
       }
 

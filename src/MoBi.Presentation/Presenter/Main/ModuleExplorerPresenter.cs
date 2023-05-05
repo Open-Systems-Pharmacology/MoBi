@@ -233,7 +233,7 @@ namespace MoBi.Presentation.Presenter.Main
          if (buildingBlock is ParameterStartValuesBuildingBlock)
             return moduleNode.Children.OfType<ParameterStartValuesFolderNode>().FirstOrDefault();
 
-         if (buildingBlock is MoleculeStartValuesBuildingBlock)
+         if (buildingBlock is InitialConditionsBuildingBlock)
             return moduleNode.Children.OfType<MoleculeStartValuesFolderNode>().FirstOrDefault();
 
          return moduleNode;

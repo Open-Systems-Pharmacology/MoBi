@@ -42,17 +42,17 @@ namespace MoBi.Presentation.Mappers
       public abstract ObjectBaseSummaryDTO MapFrom(T startValue);
    }
 
-   public interface IMoleculeStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<MoleculeStartValue>
+   public interface IMoleculeStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<InitialCondition>
    {
       
    }
 
-   public class MoleculeStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<MoleculeStartValue>, IMoleculeStartValueToObjectBaseSummaryDTOMapper
+   public class MoleculeStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<InitialCondition>, IMoleculeStartValueToObjectBaseSummaryDTOMapper
    {
-      public override ObjectBaseSummaryDTO MapFrom(MoleculeStartValue startValue)
+      public override ObjectBaseSummaryDTO MapFrom(InitialCondition startValue)
       {
          var dto = BaseMapper(startValue);
-         dto.ApplicationIcon = ApplicationIcons.MoleculeStartValues;
+         dto.ApplicationIcon = ApplicationIcons.InitialConditions;
          dto.AddToDictionary(AppConstants.Captions.IsPresent, startValue.IsPresent.ToString());
          dto.AddToDictionary(AppConstants.Captions.MoleculeName, startValue.MoleculeName);
          dto.AddToDictionary(AppConstants.Captions.ScaleDivisor, startValue.ScaleDivisor.ToString(CultureInfo.InvariantCulture));
@@ -70,7 +70,7 @@ namespace MoBi.Presentation.Mappers
       public override ObjectBaseSummaryDTO MapFrom(ParameterStartValue startValue)
       {
          var dto = BaseMapper(startValue);
-         dto.ApplicationIcon = ApplicationIcons.ParameterStartValues;
+         dto.ApplicationIcon = ApplicationIcons.ParameterValues;
          dto.AddToDictionary(AppConstants.Captions.ParameterName, startValue.ParameterName);
          return dto;
       }

@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
       {
          sut.CommandType.ShouldBeEqualTo(AppConstants.Commands.UpdateCommand);
          sut.Description.ShouldBeEqualTo(AppConstants.Commands.UpdateParameterStartValue(_path, 1.0, _buildingBlock[_path].DisplayUnit));
-         sut.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterStartValue);
+         sut.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterValue);
       }
 
       [Observation]

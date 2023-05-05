@@ -97,9 +97,10 @@ namespace MoBi.Core.Serialization.Xml.Services
       private object deserialize(XElement element, MoBiProject project, int version, Type type = null, SerializationContext parentSerializationContext = null)
       {
          object deserializedObject;
-         bool conversionHappened;
          IXmlSerializer<SerializationContext> serializer;
          Type deserializedType;
+
+         var conversionHappened = convertXml(element, version, project);
 
          if (type == null)
          {
@@ -114,8 +115,6 @@ namespace MoBi.Core.Serialization.Xml.Services
 
          using (var serializationContext = _serializationContextFactory.Create(deserializedType, parentSerializationContext))
          {
-            conversionHappened = convertXml(element, version, project);
-
             var formulaCacheElement = getFormulaCacheElementFor(element, deserializedType);
             conversionHappened = convertXml(formulaCacheElement, version, project) || conversionHappened;
             deserializeFormula(formulaCacheElement, version, project, serializationContext);

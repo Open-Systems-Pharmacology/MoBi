@@ -6,18 +6,19 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
-   /// <summary>
-   ///    Ensures that the value defined in the <see cref="MoleculeStartValue" /> of simulation are synchronized
-   ///    with the values defined in the <see cref="IQuantity" /> 
-   /// </summary>
+
    public class SynchronizeMoleculeStartValueCommand : MoBiReversibleCommand
    {
       private IQuantity _quantity;
       private MoleculeAmount _moleculeAmount;
-      private readonly MoleculeStartValue _moleculeStartValue;
+      private readonly InitialCondition _moleculeStartValue;
       private readonly string _quantityId;
 
-      public SynchronizeMoleculeStartValueCommand(IQuantity quantity, MoleculeStartValue moleculeStartValue)
+      /// <summary>
+      ///    Ensures that the value defined in the <see cref="moleculeStartValue" /> of simulation are synchronized
+      ///    with the values defined in the <see cref="IQuantity" /> 
+      /// </summary>
+      public SynchronizeMoleculeStartValueCommand(IQuantity quantity, InitialCondition moleculeStartValue)
       {
          _quantity = quantity;
          _quantityId = quantity.Id;

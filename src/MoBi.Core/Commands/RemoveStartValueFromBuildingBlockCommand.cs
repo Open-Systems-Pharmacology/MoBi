@@ -40,9 +40,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveMoleculeStartValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<MoleculeStartValue>
+   public class RemoveMoleculeStartValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<InitialCondition>
    {
-      public RemoveMoleculeStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<MoleculeStartValue> parent, ObjectPath path)
+      public RemoveMoleculeStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<InitialCondition> parent, ObjectPath path)
          : base(parent, path)
       {
       }

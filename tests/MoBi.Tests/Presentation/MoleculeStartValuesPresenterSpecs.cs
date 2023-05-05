@@ -29,12 +29,12 @@ namespace MoBi.Presentation
       protected IMoleculeIsPresentSelectionPresenter _isPresentSelectionPresenter;
       protected IMoleculeStartValuesTask _moleculeStartValueTask;
       protected ICommandCollector _commandCollector;
-      protected MoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
+      protected InitialConditionsBuildingBlock _moleculeStartValueBuildingBlock;
       private IRefreshStartValueFromOriginalBuildingBlockPresenter _refreshStartValuesPresenter;
       protected IDeleteStartValuePresenter _deleteStartValuePresenter;
       private IMoleculeNegativeValuesAllowedSelectionPresenter _negativeStartValuesAllowedSelectionPresenter;
       protected ILegendPresenter _legendPresenter;
-      protected IMoleculeStartValuesCreator _moleculeStartValuesCreator;
+      protected IInitialConditionsCreator _moleculeStartValuesCreator;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
 
@@ -51,12 +51,12 @@ namespace MoBi.Presentation
          _deleteStartValuePresenter = A.Fake<IDeleteStartValuePresenter>();
          _legendPresenter = A.Fake<ILegendPresenter>();
          _dimensionFactory = A.Fake<IDimensionFactory>();
-         _moleculeStartValuesCreator = A.Fake<IMoleculeStartValuesCreator>();
+         _moleculeStartValuesCreator = A.Fake<IInitialConditionsCreator>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          sut = new MoleculeStartValuesPresenter(
             _view, _mapper, _isPresentSelectionPresenter, _refreshStartValuesPresenter, _negativeStartValuesAllowedSelectionPresenter, _moleculeStartValueTask,
             _moleculeStartValuesCreator, _context, _legendPresenter, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory);
-         _moleculeStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _moleculeStartValueBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);
       }
@@ -73,10 +73,10 @@ namespace MoBi.Presentation
       {
          base.Context();
 
-         _originalUnchanged = new MoleculeStartValueDTO(new MoleculeStartValue().WithName("originalUnchanged"), _moleculeStartValueBuildingBlock);
-         _originalChanged = new MoleculeStartValueDTO(new MoleculeStartValue().WithName("originalChanged"), _moleculeStartValueBuildingBlock);
-         _newUnchanged = new MoleculeStartValueDTO(new MoleculeStartValue().WithName("newUnchanged"), _moleculeStartValueBuildingBlock);
-         _newChanged = new MoleculeStartValueDTO(new MoleculeStartValue().WithName("newChanged"), _moleculeStartValueBuildingBlock);
+         _originalUnchanged = new MoleculeStartValueDTO(new InitialCondition().WithName("originalUnchanged"), _moleculeStartValueBuildingBlock);
+         _originalChanged = new MoleculeStartValueDTO(new InitialCondition().WithName("originalChanged"), _moleculeStartValueBuildingBlock);
+         _newUnchanged = new MoleculeStartValueDTO(new InitialCondition().WithName("newUnchanged"), _moleculeStartValueBuildingBlock);
+         _newChanged = new MoleculeStartValueDTO(new InitialCondition().WithName("newChanged"), _moleculeStartValueBuildingBlock);
 
          _moleculeStartValueBuildingBlock.Add(_originalUnchanged.MoleculeStartValue);
          _moleculeStartValueBuildingBlock.Add(_originalChanged.MoleculeStartValue);
@@ -198,10 +198,10 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _originalResolvableUnchangedStartValueDTO = new MoleculeStartValueDTO(new MoleculeStartValue().WithName("originalResolvableUnchanged"), _moleculeStartValueBuildingBlock);
-         _originalResolvableChangedStartValueDTO = new MoleculeStartValueDTO(new MoleculeStartValue().WithName("originalResolvableChanged"), _moleculeStartValueBuildingBlock);
-         _originalUnresolvableStartValueDTO = new MoleculeStartValueDTO(new MoleculeStartValue().WithName("originalUnresolvable"), _moleculeStartValueBuildingBlock);
-         _nonOriginalStartValueDTO = new MoleculeStartValueDTO(new MoleculeStartValue().WithName("nonOriginal"), _moleculeStartValueBuildingBlock);
+         _originalResolvableUnchangedStartValueDTO = new MoleculeStartValueDTO(new InitialCondition().WithName("originalResolvableUnchanged"), _moleculeStartValueBuildingBlock);
+         _originalResolvableChangedStartValueDTO = new MoleculeStartValueDTO(new InitialCondition().WithName("originalResolvableChanged"), _moleculeStartValueBuildingBlock);
+         _originalUnresolvableStartValueDTO = new MoleculeStartValueDTO(new InitialCondition().WithName("originalUnresolvable"), _moleculeStartValueBuildingBlock);
+         _nonOriginalStartValueDTO = new MoleculeStartValueDTO(new InitialCondition().WithName("nonOriginal"), _moleculeStartValueBuildingBlock);
          _moleculeStartValueBuildingBlock.Add(_originalResolvableUnchangedStartValueDTO.MoleculeStartValue);
          _moleculeStartValueBuildingBlock.Add(_originalResolvableChangedStartValueDTO.MoleculeStartValue);
          _moleculeStartValueBuildingBlock.Add(_originalUnresolvableStartValueDTO.MoleculeStartValue);
@@ -267,16 +267,16 @@ namespace MoBi.Presentation
 
    internal abstract class When_deleting_start_values_from_building_block : concern_for_MoleculeStartValuesPresenter
    {
-      protected MoleculeStartValue _startValue1;
-      protected MoleculeStartValue _startValue2;
-      protected MoleculeStartValue _startValue3;
+      protected InitialCondition _startValue1;
+      protected InitialCondition _startValue2;
+      protected InitialCondition _startValue3;
 
       protected override void Context()
       {
          base.Context();
-         _startValue1 = new MoleculeStartValue { Name = "startValue1" };
-         _startValue2 = new MoleculeStartValue { Name = "startValue2" };
-         _startValue3 = new MoleculeStartValue { Name = "startValue3" };
+         _startValue1 = new InitialCondition { Name = "startValue1" };
+         _startValue2 = new InitialCondition { Name = "startValue2" };
+         _startValue3 = new InitialCondition { Name = "startValue3" };
          _moleculeStartValueBuildingBlock.Add(_startValue1);
          _moleculeStartValueBuildingBlock.Add(_startValue2);
          _moleculeStartValueBuildingBlock.Add(_startValue3);
@@ -341,27 +341,27 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.UpdateStartValueName(new MoleculeStartValueDTO(new MoleculeStartValue { Path = new ObjectPath("one", "two", "C1") }, new MoleculeStartValuesBuildingBlock()), "C2");
+         sut.UpdateStartValueName(new MoleculeStartValueDTO(new InitialCondition { Path = new ObjectPath("one", "two", "C1") }, new InitialConditionsBuildingBlock()), "C2");
       }
 
       [Observation]
       public void results_in_call_to_task_add_new_start_value_to_building_block()
       {
          A.CallTo(() => _moleculeStartValueTask.AddStartValueToBuildingBlock(
-            _moleculeStartValueBuildingBlock, A<MoleculeStartValue>.That.Matches(x => x.Path.Last().Equals("C2")))).MustHaveHappened();
+            _moleculeStartValueBuildingBlock, A<InitialCondition>.That.Matches(x => x.Path.Last().Equals("C2")))).MustHaveHappened();
       }
    }
 
    internal class When_changing_the_value_description_of_a_start_value : concern_for_MoleculeStartValuesPresenter
    {
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
       private ValueOrigin _valueOrigin;
 
       protected override void Context()
       {
          base.Context();
          _valueOrigin = new ValueOrigin();
-         _startValue = new MoleculeStartValue { Name = "startValue" };
+         _startValue = new InitialCondition { Name = "startValue" };
          _moleculeStartValueBuildingBlock.Add(_startValue);
          sut.Edit(_moleculeStartValueBuildingBlock);
       }
@@ -417,7 +417,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _command = A.Fake<IMoBiCommand>();
-         A.CallTo(() => _moleculeStartValueTask.SetIsPresent(_moleculeStartValueBuildingBlock, A<IEnumerable<MoleculeStartValue>>._, true)).Returns(_command);
+         A.CallTo(() => _moleculeStartValueTask.SetIsPresent(_moleculeStartValueBuildingBlock, A<IEnumerable<InitialCondition>>._, true)).Returns(_command);
          sut.Edit(_moleculeStartValueBuildingBlock);
       }
 
@@ -441,7 +441,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _command = A.Fake<IMoBiCommand>();
-         A.CallTo(() => _moleculeStartValueTask.SetIsPresent(_moleculeStartValueBuildingBlock, A<IEnumerable<MoleculeStartValue>>._, false)).Returns(_command);
+         A.CallTo(() => _moleculeStartValueTask.SetIsPresent(_moleculeStartValueBuildingBlock, A<IEnumerable<InitialCondition>>._, false)).Returns(_command);
          sut.Edit(_moleculeStartValueBuildingBlock);
       }
 
@@ -459,14 +459,14 @@ namespace MoBi.Presentation
 
    public class When_performing_a_bulk_update_of_molecule_start_values : concern_for_MoleculeStartValuesPresenter
    {
-      private MoleculeStartValue _msv1;
+      private InitialCondition _msv1;
       private MoleculeStartValueDTO _msv1DTOFirst;
       private MoleculeStartValueDTO _msv1DTOSecond;
 
       protected override void Context()
       {
          base.Context();
-         _msv1 = new MoleculeStartValue();
+         _msv1 = new InitialCondition();
          _msv1DTOFirst = new MoleculeStartValueDTO(_msv1, _moleculeStartValueBuildingBlock);
          _msv1DTOSecond = new MoleculeStartValueDTO(_msv1, _moleculeStartValueBuildingBlock);
          A.CallTo(() => _mapper.MapFrom(_msv1, _moleculeStartValueBuildingBlock))

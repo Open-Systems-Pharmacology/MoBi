@@ -187,7 +187,7 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      private IEnumerable<MoleculeStartValue> getAllMoleculeStartValuesFromBuildingBlocksFor(MoleculeBuilder builder)
+      private IEnumerable<InitialCondition> getAllMoleculeStartValuesFromBuildingBlocksFor(MoleculeBuilder builder)
       {
          var builderName = builder.Name;
          return _context.CurrentProject.MoleculeStartValueBlockCollection

@@ -97,19 +97,19 @@ namespace MoBi.Presentation.Tasks
 
    class When_Start_search_is_called_for_all_building_blocks_of_one_Type : concern_for_SearchTaskSpecs
    {
-      private MoleculeStartValuesBuildingBlock _buildingBlock;
+      private InitialConditionsBuildingBlock _buildingBlock;
       private SearchOptions _options;
       private MoBiProject _project;
-      private MoleculeStartValuesBuildingBlock _otherBuildingBlock;
+      private InitialConditionsBuildingBlock _otherBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _buildingBlock = new MoleculeStartValuesBuildingBlock();
+         _buildingBlock = new InitialConditionsBuildingBlock();
          _project = DomainHelperForSpecs.NewProject();
          _options = new SearchOptions() { CaseSensitive = false, Expression = "*", Scope = SearchScope.AllOfSameType, RegEx = true, WholeWord = true };
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         _otherBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _otherBuildingBlock = new InitialConditionsBuildingBlock();
          _project.AddBuildingBlock(_buildingBlock);
          _project.AddBuildingBlock(_otherBuildingBlock);
       }

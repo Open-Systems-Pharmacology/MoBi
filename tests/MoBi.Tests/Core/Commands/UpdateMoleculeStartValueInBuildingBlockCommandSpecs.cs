@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_UpdateMoleculeStartValuesInBuildingBlockCommand : ContextSpecification<UpdateMoleculeStartValueInBuildingBlockCommand>
    {
-      protected MoleculeStartValuesBuildingBlock _buildingBlock;
+      protected InitialConditionsBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
       protected ObjectPath _path;
 
@@ -23,15 +23,15 @@ namespace MoBi.Core.Commands
       {
          _fakeDimension = A.Fake<IDimension>();
          _context = A.Fake<IMoBiContext>();
-         _buildingBlock = new MoleculeStartValuesBuildingBlock();
+         _buildingBlock = new InitialConditionsBuildingBlock();
 
-         var msv = new MoleculeStartValue { Path = new ObjectPath("path1"), Dimension = _fakeDimension, StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1),IsPresent = false};
+         var msv = new InitialCondition { Path = new ObjectPath("path1"), Dimension = _fakeDimension, StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1),IsPresent = false};
 
          _buildingBlock.Add(msv);
          _path = msv.Path;
 
          sut = new UpdateMoleculeStartValueInBuildingBlockCommand(_buildingBlock, _path, 1.0, true, 22.0, true);
-         A.CallTo(() => _context.Get<MoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 
@@ -47,7 +47,7 @@ namespace MoBi.Core.Commands
       {
          sut.CommandType.ShouldBeEqualTo(AppConstants.Commands.UpdateCommand);
          sut.Description.ShouldBeEqualTo(AppConstants.Commands.UpdateMoleculeStartValue(_path, 1.0, true, _buildingBlock[_path].DisplayUnit, 22.0, true));
-         sut.ObjectType.ShouldBeEqualTo(ObjectTypes.MoleculeStartValue);
+         sut.ObjectType.ShouldBeEqualTo(ObjectTypes.InitialCondition);
       }
 
       [Observation]

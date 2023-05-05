@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Tasks
          if (buildingBlockType.IsAnImplementationOf<EventGroupBuildingBlock>())
             return _context.CurrentProject.EventBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())
+         if (buildingBlockType.IsAnImplementationOf<InitialConditionsBuildingBlock>())
             return _context.CurrentProject.MoleculeStartValueBlockCollection;
 
          if (buildingBlockType.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())

@@ -64,17 +64,17 @@ namespace MoBi.Presentation.Mapper
       protected IDimension _concentrationDimension;
       protected IDimension _amountDimension;
       private IDimension _timeDimension;
-      private IMoleculeStartValuesCreator _msvCreator;
+      private IInitialConditionsCreator _msvCreator;
 
-      protected MoleculeStartValuesBuildingBlock _startValuesBuildingBlock;
+      protected InitialConditionsBuildingBlock _startValuesBuildingBlock;
       private IReactionDimensionRetriever _reactionDimensionRetriever;
 
       protected override void Context()
       {
-         _msvCreator = A.Fake<IMoleculeStartValuesCreator>();
+         _msvCreator = A.Fake<IInitialConditionsCreator>();
 
-         A.CallTo(() => _msvCreator.CreateMoleculeStartValue(A<ObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._))
-            .ReturnsLazily((ObjectPath path, string moleculeName, IDimension dimension) => new MoleculeStartValue {ContainerPath = path, Name = moleculeName, Dimension = dimension});
+         A.CallTo(() => _msvCreator.CreateInitialCondition(A<ObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._))
+            .ReturnsLazily((ObjectPath path, string moleculeName, IDimension dimension) => new InitialCondition { ContainerPath = path, Name = moleculeName, Dimension = dimension});
 
          _concentrationDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLAR_CONCENTRATION, "mol/l");
 
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Mapper
          _timeDimension.Unit("s").Factor = 1.0 / 60;
 
          _dimensionFactory = A.Fake<IMoBiDimensionFactory>();
-         _startValuesBuildingBlock = A.Fake<MoleculeStartValuesBuildingBlock>();
+         _startValuesBuildingBlock = A.Fake<InitialConditionsBuildingBlock>();
 
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
 
@@ -113,7 +113,7 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
 
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][0] = string.Empty;
       }
@@ -140,7 +140,7 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
 
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][0] = _tables.Rows[1][0];
       }
@@ -166,7 +166,7 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
 
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][1] = string.Empty;
       }
@@ -193,7 +193,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][5] = string.Empty;
       }
@@ -220,7 +220,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][6] = string.Empty;
       }
@@ -247,7 +247,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][3] = string.Empty;
       }
@@ -274,7 +274,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][3] = string.Empty;
       }
@@ -301,11 +301,11 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          
          _tables = new MsvDataTableProvider().ImportTables();
 
-         _startValuesBuildingBlock.Add(new MoleculeStartValue{Name="Drug", ContainerPath = ContainerPathFromDataTableRow(_tables, 0), StartValue = 9.0});
+         _startValuesBuildingBlock.Add(new InitialCondition { Name="Drug", ContainerPath = ContainerPathFromDataTableRow(_tables, 0), StartValue = 9.0});
          _tables.Rows[0][3] = string.Empty;
       }
 
@@ -389,7 +389,7 @@ namespace MoBi.Presentation.Mapper
       protected override void Context()
       {
          base.Context();
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _importTables = new MsvDataTableProvider().ImportTables();
          _importTables.Rows[0][4] = string.Empty;
       }
@@ -414,12 +414,12 @@ namespace MoBi.Presentation.Mapper
       protected override void Context()
       {
          base.Context();
-         _startValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _importTables = new MsvDataTableProvider().ImportTables();
          _importTables.Rows[0][4] = string.Empty;
          _importTables.Rows[0][3] = string.Empty;
          
-         _startValuesBuildingBlock.Add(new MoleculeStartValue{ContainerPath = ContainerPathFromDataTableRow(_importTables, 0), Name = "Drug", StartValue = 9.0});
+         _startValuesBuildingBlock.Add(new InitialCondition { ContainerPath = ContainerPathFromDataTableRow(_importTables, 0), Name = "Drug", StartValue = 9.0});
       }
 
       protected override void Because()

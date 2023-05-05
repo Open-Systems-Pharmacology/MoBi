@@ -10,7 +10,7 @@ namespace MoBi.Core.Service
    {
       private MoleculeBuildingBlock _moleculeBuildingBlock;
       private SpatialStructure _spatialStructure;
-      private MoleculeStartValue _moleculeStartValue;
+      private InitialCondition _moleculeStartValue;
 
       protected ContainerMode _containerMode = ContainerMode.Physical;
       protected string _firstPathEntry = "The";
@@ -29,7 +29,7 @@ namespace MoBi.Core.Service
 
          firstContainer.Add(new Container { Name = "Path", Mode = _containerMode });
          _spatialStructure.Add(firstContainer);
-         _moleculeStartValue = new MoleculeStartValue { Name = _moleculeName, ContainerPath = new ObjectPath("The", "Path") };
+         _moleculeStartValue = new InitialCondition { Name = _moleculeName, ContainerPath = new ObjectPath("The", "Path") };
 
          sut = new MoleculeResolver();
       }

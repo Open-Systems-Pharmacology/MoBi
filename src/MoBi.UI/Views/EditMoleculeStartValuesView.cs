@@ -28,7 +28,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          EditCaption = AppConstants.Captions.MoleculeStartValues;
-         ApplicationIcon = ApplicationIcons.MoleculeStartValues;
+         ApplicationIcon = ApplicationIcons.InitialConditions;
       }
    }
 }

@@ -6,7 +6,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class AddMoleculeStartValuesUICommand : AbstractStartValueSubjectRetrieverUICommand<MoleculeStartValuesBuildingBlock, MoleculeStartValue>
+   internal class AddMoleculeStartValuesUICommand : AbstractStartValueSubjectRetrieverUICommand<InitialConditionsBuildingBlock, InitialCondition>
    {
       private readonly IMoBiApplicationController _applicationController;
       private readonly IMoBiHistoryManager _moBiHistoryManager;
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         var presenter = _applicationController.Open<IEditMoleculeStartValuesPresenter,MoleculeStartValuesBuildingBlock>(Subject, _moBiHistoryManager);
+         var presenter = _applicationController.Open<IEditMoleculeStartValuesPresenter, InitialConditionsBuildingBlock>(Subject, _moBiHistoryManager);
          presenter.AddNewEmptyStartValue();
       }
    }

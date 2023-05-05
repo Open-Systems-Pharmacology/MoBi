@@ -311,7 +311,7 @@ namespace MoBi.Presentation
             new MoBiSpatialStructure(),
             new ParameterStartValuesBuildingBlock().WithId("PSV1"),
             new ParameterStartValuesBuildingBlock().WithId("PSV2"),
-            new MoleculeStartValuesBuildingBlock().WithId("MSV")
+            new InitialConditionsBuildingBlock().WithId("MSV")
          };
 
          _allNodesAdded = new List<ITreeNode>();
@@ -347,7 +347,7 @@ namespace MoBi.Presentation
          _allNodesAdded.Count(x => Equals(_module1.SpatialStructure, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(_module1.ParameterStartValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(_module1.ParameterStartValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.MoleculeStartValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.InitialConditionsCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
 
          // Make sure nodes have not been added for null items
          _allNodesAdded.Count.ShouldBeEqualTo(11);

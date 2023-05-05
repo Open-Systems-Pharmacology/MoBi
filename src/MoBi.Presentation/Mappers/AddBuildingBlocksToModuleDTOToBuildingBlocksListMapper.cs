@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Mappers
             ConditionalCreate(dto.CreateEventGroup, () => CreateDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)),
             ConditionalCreate(dto.CreateObserver, () => CreateDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)),
             ConditionalCreate(dto.WithParameterStartValues, () => CreateDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues)),
-            ConditionalCreate(dto.WithMoleculeStartValues, () => CreateDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues))
+            ConditionalCreate(dto.WithMoleculeStartValues, () => CreateDefault<InitialConditionsBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues))
          };
 
          _newBuildingBlocks = listOfBuildingBlocks.Where(x => x != null).ToList();

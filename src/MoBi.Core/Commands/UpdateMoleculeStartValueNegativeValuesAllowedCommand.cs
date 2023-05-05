@@ -6,14 +6,14 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateMoleculeStartValueNegativeValuesAllowedCommand : BuildingBlockChangeCommandBase<MoleculeStartValuesBuildingBlock>
+   public class UpdateMoleculeStartValueNegativeValuesAllowedCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
    {
       private readonly string _startValueId;
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
       private readonly bool _oldNegativeValuesAllowed;
       private readonly bool _newNegativeValuesAllowed;
 
-      public UpdateMoleculeStartValueNegativeValuesAllowedCommand(MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, MoleculeStartValue moleculeStartValue, bool negativeValuesAllowed)
+      public UpdateMoleculeStartValueNegativeValuesAllowedCommand(InitialConditionsBuildingBlock moleculeStartValuesBuildingBlock, InitialCondition moleculeStartValue, bool negativeValuesAllowed)
          : base(moleculeStartValuesBuildingBlock)
       {
          _startValueId = moleculeStartValue.Id;
@@ -23,7 +23,7 @@ namespace MoBi.Core.Commands
 
          Description = AppConstants.Commands.UpdateMoleculeStartValueNegativeValuesAllowed(_startValue.Path.ToString(), _oldNegativeValuesAllowed, _newNegativeValuesAllowed);
          CommandType = AppConstants.Commands.EditCommand;
-         ObjectType = ObjectTypes.MoleculeStartValue;
+         ObjectType = ObjectTypes.InitialCondition;
       }
 
       protected override void ClearReferences()
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _startValue = context.Get<MoleculeStartValue>(_startValueId);
+         _startValue = context.Get<InitialCondition>(_startValueId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

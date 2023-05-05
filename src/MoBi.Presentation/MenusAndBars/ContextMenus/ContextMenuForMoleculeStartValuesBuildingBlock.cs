@@ -15,7 +15,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuForMoleculeStartValuesBuildingBlock : ContextMenuForStartValuesBuildingBlock<MoleculeStartValuesBuildingBlock, MoleculeStartValue>
+   public class ContextMenuForMoleculeStartValuesBuildingBlock : ContextMenuForStartValuesBuildingBlock<InitialConditionsBuildingBlock, InitialCondition>
    {
       public ContextMenuForMoleculeStartValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
@@ -23,21 +23,21 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         var buildingBlock = _context.Get<MoleculeStartValuesBuildingBlock>(dto.Id);
+         var buildingBlock = _context.Get<InitialConditionsBuildingBlock>(dto.Id);
          base.InitializeWith(dto, presenter);
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Import)
-            .WithIcon(ApplicationIcons.MoleculeStartValuesImport)
+            .WithIcon(ApplicationIcons.InitialConditionsImport)
             .WithCommandFor<ImportMoleculeStartValuesUICommand, IBuildingBlock>(buildingBlock, _container));
 
          return this;
       }
 
-      protected override IMenuBarItem CreateCloneMenuItem(MoleculeStartValuesBuildingBlock buildingBlock)
+      protected override IMenuBarItem CreateCloneMenuItem(InitialConditionsBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)
-            .WithCommandFor<CloneStartValueBuildingBlockUICommand<MoleculeStartValuesBuildingBlock, MoleculeStartValue, IMoleculeStartValuesTask>, MoleculeStartValuesBuildingBlock>(buildingBlock, _container);
+            .WithCommandFor<CloneStartValueBuildingBlockUICommand<InitialConditionsBuildingBlock, InitialCondition, IMoleculeStartValuesTask>, InitialConditionsBuildingBlock>(buildingBlock, _container);
       }
    }
 }

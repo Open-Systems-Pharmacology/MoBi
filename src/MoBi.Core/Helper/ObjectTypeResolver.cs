@@ -36,8 +36,8 @@ namespace MoBi.Core.Helper
          addToCache<PassiveTransportBuildingBlock>(ObjectTypes.PassiveTransportBuildingBlock);
          addToCache<ObserverBuildingBlock>(ObjectTypes.ObserverBuildingBlock);
          addToCache<EventGroupBuildingBlock>(ObjectTypes.EventGroupBuildingBlock);
-         addToCache<MoleculeStartValuesBuildingBlock>(ObjectTypes.MoleculeStartValuesBuildingBlock);
-         addToCache<ParameterStartValuesBuildingBlock>(ObjectTypes.ParameterStartValuesBuildingBlock);
+         addToCache<InitialConditionsBuildingBlock>(ObjectTypes.InitialConditionsBuildingBlock);
+         addToCache<ParameterStartValuesBuildingBlock>(ObjectTypes.ParameterValuesBuildingBlock);
          addToCache<MoleculeBuilder>(ObjectTypes.Molecule);
          addToCache<TransporterMoleculeContainer>(ObjectTypes.TransporterMoleculeContainer);
          addToCache<TransportBuilder>(ObjectTypes.TransportBuilder);
@@ -61,8 +61,8 @@ namespace MoBi.Core.Helper
          addToCache<DataRepository>(ObjectTypes.ObservedData);
          addToCache<SimulationSettings>(ObjectTypes.SimulationSettings);
          addToCache<CurveChartTemplate>(ObjectTypes.ChartTemplate);
-         addToCache<MoleculeStartValue>(ObjectTypes.MoleculeStartValue);
-         addToCache<ParameterStartValue>(ObjectTypes.ParameterStartValue);
+         addToCache<InitialCondition>(ObjectTypes.InitialCondition);
+         addToCache<ParameterStartValue>(ObjectTypes.ParameterValue);
          addToCache<ObserverBuilder>(ObjectTypes.ObserverBuilder);
          addToCache<TimePath>(ObjectTypes.Reference);
          addToCache<ObjectPath>(ObjectTypes.Reference);

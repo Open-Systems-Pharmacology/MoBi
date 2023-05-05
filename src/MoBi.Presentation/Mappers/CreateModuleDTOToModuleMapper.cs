@@ -77,7 +77,7 @@ namespace MoBi.Presentation.Mappers
 
          if (createModuleDTO.WithMoleculeStartValues)
          {
-            module.Add(CreateDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
+            module.Add(CreateDefault<InitialConditionsBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
          }
 
          return module;

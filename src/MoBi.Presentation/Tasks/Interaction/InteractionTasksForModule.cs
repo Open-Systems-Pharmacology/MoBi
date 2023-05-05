@@ -171,7 +171,7 @@ namespace MoBi.Presentation.Tasks.Interaction
                break;
             //for the cases underneath, we could have multiple buildingBlocks being loaded
             case BuildingBlockType.MoleculeStartValues:
-               items.AddRange(InteractionTask.LoadItems<MoleculeStartValuesBuildingBlock>(filename));
+               items.AddRange(InteractionTask.LoadItems<InitialConditionsBuildingBlock>(filename));
                return items;
             case BuildingBlockType.ParameterStartValues:
                items.AddRange(InteractionTask.LoadItems<ParameterStartValuesBuildingBlock>(filename));

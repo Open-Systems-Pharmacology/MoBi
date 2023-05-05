@@ -11,22 +11,22 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_AddMoleculeStartValueToBuildingBlockCommand : ContextSpecification<AddMoleculeStartValueToBuildingBlockCommand>
    {
-      protected MoleculeStartValuesBuildingBlock _buildingBlock;
+      protected InitialConditionsBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
 
       private IDimension _fakeDimension;
-      protected MoleculeStartValue _moleculeStartValue;
+      protected InitialCondition _moleculeStartValue;
 
       protected override void Context()
       {
          _fakeDimension = A.Fake<IDimension>();
          _context = A.Fake<IMoBiContext>();
-         _buildingBlock = new MoleculeStartValuesBuildingBlock();
+         _buildingBlock = new InitialConditionsBuildingBlock();
 
-         _moleculeStartValue = new MoleculeStartValue { Path = new ObjectPath("path1"), Dimension = _fakeDimension, StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) };
+         _moleculeStartValue = new InitialCondition { Path = new ObjectPath("path1"), Dimension = _fakeDimension, StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) };
          sut = new AddMoleculeStartValueToBuildingBlockCommand(_buildingBlock, _moleculeStartValue);
 
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<MoleculeStartValue>>(A<string>._)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<InitialCondition>>(A<string>._)).Returns(_buildingBlock);
       }
    }
 

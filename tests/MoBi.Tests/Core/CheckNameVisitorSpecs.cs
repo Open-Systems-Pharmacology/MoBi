@@ -141,22 +141,22 @@ namespace MoBi.Core
 
    internal class When_visiting_an_MoleculesStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
-      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
-      private MoleculeStartValue _moleculeStartValue;
+      private InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
+      private InitialCondition _moleculeStartValue;
       private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
-      private MoleculeStartValue _moleculeStartValue2;
+      private InitialCondition _moleculeStartValue2;
 
       protected override void Context()
       {
          base.Context();
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock {Name = _changedName};
-         _moleculeStartValue = new MoleculeStartValue();
+         _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock { Name = _changedName};
+         _moleculeStartValue = new InitialCondition();
          _path = new ObjectPath(new[] {"A", "B", _changedName});
          _moleculeStartValue.Path = _path;
          _moleculeStartValuesBuildingBlock.Add(_moleculeStartValue);
          _project.AddBuildingBlock(_moleculeStartValuesBuildingBlock);
-         _moleculeStartValue2 = new MoleculeStartValue();
+         _moleculeStartValue2 = new InitialCondition();
          _path = new ObjectPath(new[] {"A", _changedName, "B"});
          _moleculeStartValue2.Path = _path;
          _moleculeStartValuesBuildingBlock.Add(_moleculeStartValue2);
@@ -180,7 +180,7 @@ namespace MoBi.Core
          change.ShouldNotBeNull();
          change.EntityToEdit.ShouldBeEqualTo(_moleculeStartValuesBuildingBlock);
          change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
-         change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.MoleculeStartValuesBuildingBlock);
+         change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.InitialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -237,7 +237,7 @@ namespace MoBi.Core
          var change = _changes.First() as StringChange<IBuildingBlock>;
          change.EntityToEdit.ShouldBeEqualTo(_parameterStartValuesBuildingBlock);
          change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
-         change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterStartValuesBuildingBlock);
+         change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterValuesBuildingBlock);
       }
 
       [Observation]

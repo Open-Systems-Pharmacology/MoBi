@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Presenter
       void RemoveModuleConfiguration(ITreeNode selectedTreeNode);
       void SelectedModuleConfigurationNodeChanged(ITreeNode selectedTreeNode);
       void SelectedModuleNodeChanged(ITreeNode selectedNode);
-      IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValuesCollectionFor(ITreeNode selectedNode);
+      IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionsCollectionFor(ITreeNode selectedNode);
       IReadOnlyList<ParameterStartValuesBuildingBlock> ParameterStartValuesCollectionFor(ITreeNode selectedNode);
       int CompareSelectedNodes(ITreeNode node1, ITreeNode node2);
       IReadOnlyList<ModuleConfigurationDTO> ModuleConfigurationDTOs { get; }
@@ -139,13 +139,13 @@ namespace MoBi.Presentation.Presenter
 
       private ModuleConfigurationDTO moduleConfigurationDTOFor(ITreeNode treeNode) => treeNode?.TagAsObject as ModuleConfigurationDTO;
 
-      public IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValuesCollectionFor(ITreeNode selectedNode)
+      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionsCollectionFor(ITreeNode selectedNode)
       {
          if (selectedNode == null)
-            return new List<MoleculeStartValuesBuildingBlock>();
+            return new List<InitialConditionsBuildingBlock>();
 
          var dto = moduleConfigurationDTOFor(selectedNode);
-         return dto.MoleculeStartValuesCollection;
+         return dto.InitialConditionsCollection;
       }
 
       public IReadOnlyList<ParameterStartValuesBuildingBlock> ParameterStartValuesCollectionFor(ITreeNode selectedNode)

@@ -26,7 +26,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var buildingBlock = _context.Get<ParameterStartValuesBuildingBlock>(dto.Id);
          base.InitializeWith(dto, presenter);
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Import)
-            .WithIcon(ApplicationIcons.ParameterStartValuesImport)
+            .WithIcon(ApplicationIcons.ParameterValuesImport)
             .WithCommandFor<ImportParameterStartValuesUICommand, IBuildingBlock>(buildingBlock, _container));
 
          return this;

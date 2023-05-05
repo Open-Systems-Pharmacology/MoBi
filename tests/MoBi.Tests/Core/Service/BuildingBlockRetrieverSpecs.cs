@@ -48,10 +48,10 @@ namespace MoBi.Core.Service
       private ReactionBuildingBlock _reactionBuildingBlock;
       private MoleculeBuilder _moleculeBuilder;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private ObserverBuilder _obseverBuilder;
+      private ObserverBuilder _observerBuilder;
       private ObserverBuildingBlock _observerBuildingBlock;
-      private TransportBuilder _passiveTranportBuilder;
-      private PassiveTransportBuildingBlock _passiveTranportBuildingBlock;
+      private TransportBuilder _passiveTransportBuilder;
+      private PassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       private ApplicationBuilder _applicationBuilder;
       private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private IParameter _parameter;
@@ -60,9 +60,9 @@ namespace MoBi.Core.Service
       private IFormula _formula;
       private ParameterStartValue _parameterStartValue;
       private ParameterStartValuesBuildingBlock _parameterStartValueBuildingBlock;
-      private MoleculeStartValue _moleculeStartValue;
-      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
-      private IParameterFactory _parmaeterFactory;
+      private InitialCondition _moleculeStartValue;
+      private InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
+      private IParameterFactory _parameterFactory;
 
       protected override void Context()
       {
@@ -74,12 +74,12 @@ namespace MoBi.Core.Service
          _moleculeBuilder = new MoleculeBuilder();
          _moleculeBuildingBlock = new MoleculeBuildingBlock() { _moleculeBuilder };
          _allBuildingBlocks.Add(_moleculeBuildingBlock);
-         _obseverBuilder = new ObserverBuilder();
-         _observerBuildingBlock = new ObserverBuildingBlock() { _obseverBuilder };
+         _observerBuilder = new ObserverBuilder();
+         _observerBuildingBlock = new ObserverBuildingBlock() { _observerBuilder };
          _allBuildingBlocks.Add(_observerBuildingBlock);
-         _passiveTranportBuilder = new TransportBuilder();
-         _passiveTranportBuildingBlock = new PassiveTransportBuildingBlock() { _passiveTranportBuilder };
-         _allBuildingBlocks.Add(_passiveTranportBuildingBlock);
+         _passiveTransportBuilder = new TransportBuilder();
+         _passiveTransportBuildingBlock = new PassiveTransportBuildingBlock() { _passiveTransportBuilder };
+         _allBuildingBlocks.Add(_passiveTransportBuildingBlock);
          _applicationBuilder = new ApplicationBuilder();
          _eventGroupBuildingBlock = new EventGroupBuildingBlock() { _applicationBuilder };
          _allBuildingBlocks.Add(_eventGroupBuildingBlock);
@@ -87,11 +87,11 @@ namespace MoBi.Core.Service
          var container = new Container().WithName("Cont");
          container.Add(_parameter);
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
-         _parmaeterFactory = A.Fake<IParameterFactory>();
+         _parameterFactory = A.Fake<IParameterFactory>();
          A.CallTo(() => _objectBaseFactory.Create<IContainer>()).Returns(A.Fake<IContainer>());
          A.CallTo(() => _objectBaseFactory.Create<MoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
          var diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
-         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parmaeterFactory, A.Fake<IconRepository>(), diagramManagerFactory).Create().DowncastTo<MoBiSpatialStructure>();
+         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parameterFactory, A.Fake<IconRepository>(), diagramManagerFactory).Create().DowncastTo<MoBiSpatialStructure>();
          _spatialStructure.AddTopContainer(container);
          _allBuildingBlocks.Add(_spatialStructure);
          _formula = new ExplicitFormula();
@@ -99,8 +99,8 @@ namespace MoBi.Core.Service
          _parameterStartValue = new ParameterStartValue { Path = new ObjectPath { "test" }, StartValue = 1, Dimension = A.Fake<IDimension>() };
          _parameterStartValueBuildingBlock = new ParameterStartValuesBuildingBlock() { _parameterStartValue };
          _allBuildingBlocks.Add(_parameterStartValueBuildingBlock);
-         _moleculeStartValue = new MoleculeStartValue { ContainerPath = new ObjectPath { "test" }, Name = "drug" };
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock() { _moleculeStartValue };
+         _moleculeStartValue = new InitialCondition { ContainerPath = new ObjectPath { "test" }, Name = "drug" };
+         _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock() { _moleculeStartValue };
          _allBuildingBlocks.Add(_moleculeStartValuesBuildingBlock);
       }
 
@@ -108,8 +108,8 @@ namespace MoBi.Core.Service
       {
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_childReactionBuilder, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_moleculeBuilder, null));
-         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_obseverBuilder, null));
-         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_passiveTranportBuilder, null));
+         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_observerBuilder, null));
+         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_passiveTransportBuilder, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_applicationBuilder, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_parameter, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_formula, null));
@@ -120,7 +120,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_the_containing_building_block()
       {
-         _returnedBuildingBlocks.ShouldOnlyContainInOrder(_reactionBuildingBlock, _moleculeBuildingBlock, _observerBuildingBlock, _passiveTranportBuildingBlock, _eventGroupBuildingBlock, _spatialStructure, _moleculeBuildingBlock, _parameterStartValueBuildingBlock, _moleculeStartValuesBuildingBlock);
+         _returnedBuildingBlocks.ShouldOnlyContainInOrder(_reactionBuildingBlock, _moleculeBuildingBlock, _observerBuildingBlock, _passiveTransportBuildingBlock, _eventGroupBuildingBlock, _spatialStructure, _moleculeBuildingBlock, _parameterStartValueBuildingBlock, _moleculeStartValuesBuildingBlock);
       }
    }
 
@@ -206,8 +206,8 @@ namespace MoBi.Core.Service
    public class When_retrieving_the_building_block_for_a_formula_defined_in_a_molecule_start_values : concern_for_BuildingBlockRetriever
    {
       private IFormula _formula;
-      private MoleculeStartValuesBuildingBlock _moleculeStartValues;
-      private MoleculeStartValuesBuildingBlock _moleculeStartValuesTemplate;
+      private InitialConditionsBuildingBlock _moleculeStartValues;
+      private InitialConditionsBuildingBlock _moleculeStartValuesTemplate;
       private ExplicitFormula _templateFormula;
 
       protected override void Context()
@@ -215,8 +215,8 @@ namespace MoBi.Core.Service
          base.Context();
          _formula = new ExplicitFormula().WithName("F1").WithId("F11");
          _templateFormula = new ExplicitFormula().WithName("F1").WithId("F12");
-         _moleculeStartValues = new MoleculeStartValuesBuildingBlock().WithName("MSV");
-         _moleculeStartValuesTemplate = new MoleculeStartValuesBuildingBlock().WithName("MSV");
+         _moleculeStartValues = new InitialConditionsBuildingBlock().WithName("MSV");
+         _moleculeStartValuesTemplate = new InitialConditionsBuildingBlock().WithName("MSV");
          _moleculeStartValuesTemplate.AddFormula(_templateFormula);
          _allBuildingBlocks.Add(_moleculeStartValuesTemplate);
       }

@@ -21,7 +21,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Species_AssignmentCreationTest()
       {
-         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          msvbb.ShouldNotBeNull();
          foreach (var msv in msvbb)
          {
@@ -72,8 +72,8 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Species_RateRuleCreationTest()
       {
-         SBMLModule.MoleculeStartValuesCollection.ShouldNotBeNull();
-         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
+         SBMLModule.InitialConditionsCollection.ShouldNotBeNull();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          msvbb.ShouldNotBeNull();
          foreach (var msv in msvbb)
          {

@@ -7,7 +7,7 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateMoleculeStartValueInBuildingBlockCommand : BuildingBlockChangeCommandBase<MoleculeStartValuesBuildingBlock>
+   public class UpdateMoleculeStartValueInBuildingBlockCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
    {
       private readonly ObjectPath _path;
       private readonly double? _value;
@@ -20,12 +20,12 @@ namespace MoBi.Core.Commands
       private readonly bool _originalNegativeValuesAllowed;
 
       public UpdateMoleculeStartValueInBuildingBlockCommand(
-         MoleculeStartValuesBuildingBlock startValuesBuildingBlock, 
+         InitialConditionsBuildingBlock startValuesBuildingBlock, 
          ObjectPath path, 
          double? value, bool present, double scaleDisivor, bool negativeValuesAllowed) : base(startValuesBuildingBlock)
       {
          CommandType = AppConstants.Commands.UpdateCommand;
-         ObjectType = ObjectTypes.MoleculeStartValue;
+         ObjectType = ObjectTypes.InitialCondition;
          _path = path;
          _value = value;
          _present = present;

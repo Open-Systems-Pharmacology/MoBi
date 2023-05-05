@@ -438,25 +438,25 @@ namespace MoBi.Presentation.Repositories
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Extend)
             .WithId(MenuBarItemIds.MoleculeStartValuesExtend)
             .WithDescription(ToolTips.Extend)
-            .WithIcon(ApplicationIcons.ExtendMoleculeStartValues)
+            .WithIcon(ApplicationIcons.ExtendInitialConditions)
             .WithCommand<MoleculeStartValuesExtendUICommand>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Extend)
             .WithId(MenuBarItemIds.ParameterStartValuesExtend)
             .WithDescription(ToolTips.Extend)
-            .WithIcon(ApplicationIcons.ExtendParameterStartValues)
+            .WithIcon(ApplicationIcons.ExtendParameterValues)
             .WithCommand<ParameterStartValuesExtendUICommand>(_container);
 
          yield return CreateMenuButton
             .WithCaption(AppConstants.MenuNames.NewParameterStartValue)
             .WithId(MenuBarItemIds.NewParameterStartValue)
-            .WithIcon(ApplicationIcons.AddParameterStartValues)
+            .WithIcon(ApplicationIcons.AddParameterValues)
             .WithCommand<AddParameterStartValuesUICommand>(_container);
 
          yield return CreateMenuButton
             .WithCaption(AppConstants.MenuNames.NewMoleculeStartValue)
             .WithId(MenuBarItemIds.NewMoleculeStartValue)
-            .WithIcon(ApplicationIcons.AddMoleculeStartValues)
+            .WithIcon(ApplicationIcons.AddInitialConditions)
             .WithCommand<AddMoleculeStartValuesUICommand>(_container);
      
          yield return CreateMenuButton

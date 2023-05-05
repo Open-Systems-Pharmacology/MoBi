@@ -218,7 +218,7 @@ namespace MoBi.Presentation.Tasks
       {
          _result.CommandType.ShouldBeEqualTo(AppConstants.Commands.ImportCommand);
          _result.Description.ShouldBeEqualTo(AppConstants.Commands.ImportParameterStartValues);
-         _result.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterStartValue);
+         _result.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterValue);
       }
 
       [Observation]

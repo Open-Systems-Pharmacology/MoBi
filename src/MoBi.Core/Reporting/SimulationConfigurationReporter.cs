@@ -31,7 +31,7 @@ namespace MoBi.Core.Reporting
          listToReport.AddRange(new ObserverBuildingBlockReporter().Report(simulationConfiguration.All<ObserverBuildingBlock>(), buildTracker));
          listToReport.AddRange(_simulationSettingsReporter.Report(simulationConfiguration.SimulationSettings, buildTracker));
          listToReport.AddRange(new EventGroupBuildingBlockReporter().Report(simulationConfiguration.All<EventGroupBuildingBlock>(), buildTracker));
-         listToReport.AddRange(new MoleculeStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(simulationConfiguration.All<MoleculeStartValuesBuildingBlock>(), buildTracker));
+         listToReport.AddRange(new MoleculeStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(simulationConfiguration.All<InitialConditionsBuildingBlock>(), buildTracker));
          listToReport.AddRange(new ParameterStartValuesBuildingBlockReporter(_displayUnitRetriever).Report(simulationConfiguration.All<ParameterStartValuesBuildingBlock>(), buildTracker));
 
          return listToReport;

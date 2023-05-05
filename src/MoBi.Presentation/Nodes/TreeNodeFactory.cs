@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Nodes
          module.ParameterStartValuesCollection.Each(psv => { createAndAddNodeUnder(psvCollectionNode, psv); });
 
          var msvCollectionNode = new MoleculeStartValuesFolderNode().Under(moduleNode);
-         module.MoleculeStartValuesCollection.Each(msv => createAndAddNodeUnder(msvCollectionNode, msv));
+         module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(msvCollectionNode, msv));
       }
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)

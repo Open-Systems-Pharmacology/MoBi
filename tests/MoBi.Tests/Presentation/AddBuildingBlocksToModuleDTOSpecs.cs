@@ -18,7 +18,7 @@ namespace MoBi.Presentation
          }.WithName("module name");
 
          module.Add(new ParameterStartValuesBuildingBlock());
-         module.Add(new MoleculeStartValuesBuildingBlock());
+         module.Add(new InitialConditionsBuildingBlock());
 
          sut = new AddBuildingBlocksToModuleDTO(module);
       }

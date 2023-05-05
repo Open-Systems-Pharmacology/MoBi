@@ -92,9 +92,9 @@ namespace MoBi.UI.Views
          e.Result = _presenter.CompareSelectedNodes(e.Node1.Tag as ITreeNode, e.Node2.Tag as ITreeNode);
       }
 
-      private IReadOnlyList<MoleculeStartValuesBuildingBlock> getMoleculeStartValues()
+      private IReadOnlyList<InitialConditionsBuildingBlock> getMoleculeStartValues()
       {
-         return _presenter.MoleculeStartValuesCollectionFor(selectedModuleTreeView.SelectedNode);
+         return _presenter.InitialConditionsCollectionFor(selectedModuleTreeView.SelectedNode);
       }
 
       private IReadOnlyList<ParameterStartValuesBuildingBlock> getParameterStartValues()

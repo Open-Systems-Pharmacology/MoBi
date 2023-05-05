@@ -19,7 +19,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Species_InitialAssignmentCreationTest()
       {
-         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          msvbb.ShouldNotBeNull();
          if (msvbb == null) return;
          foreach (var msv in msvbb)

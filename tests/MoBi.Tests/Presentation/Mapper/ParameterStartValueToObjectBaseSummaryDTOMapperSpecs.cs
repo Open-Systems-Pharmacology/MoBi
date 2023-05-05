@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void dictionary_should_contain_appropriate_fields()
       {
-         _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Type) && x.Value.Equals("Parameter Start Value")).ShouldBeEqualTo(1);
+         _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Type) && x.Value.Equals("Parameter Value")).ShouldBeEqualTo(1);
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Path) && x.Value.Equals("A|Name")).ShouldBeEqualTo(1);
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Value)).ShouldBeEqualTo(0);
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Formula) && x.Value.Equals("3")).ShouldBeEqualTo(1);
@@ -76,13 +76,13 @@ namespace MoBi.Presentation.Mapper
       {
          _result.EntityName.ShouldBeEqualTo("Name");
          
-         _result.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.ParameterStartValues);
+         _result.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.ParameterValues);
       }
 
       [Observation]
       public void dictionary_should_contain_appropriate_fields()
       {
-         _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Type) && x.Value.Equals("Parameter Start Value")).ShouldBeEqualTo(1);
+         _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Type) && x.Value.Equals("Parameter Value")).ShouldBeEqualTo(1);
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Path) && x.Value.Equals("A|Name")).ShouldBeEqualTo(1);
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Value) && x.Value.Equals(string.Format("{0} {1}", 9, _builder.DisplayUnit))).ShouldBeEqualTo(1);
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Formula)).ShouldBeEqualTo(0);

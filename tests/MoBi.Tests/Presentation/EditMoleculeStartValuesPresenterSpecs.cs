@@ -23,11 +23,11 @@ namespace MoBi.Presentation
 
    public class When_editing_the_molecule_start_value_building_block : concern_for_EditMoleculeStartValuesPresenter
    {
-      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      private InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
       protected override void Context()
       {
          base.Context();
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock();
       }
 
       protected override void Because()

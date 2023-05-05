@@ -1,6 +1,5 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
@@ -11,23 +10,23 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_RemoveMoleculeStartValueFromBuildingBlockCommand : ContextSpecification<RemoveMoleculeStartValueFromBuildingBlockCommand>
    {
-      protected MoleculeStartValuesBuildingBlock _buildingBlock;
+      protected InitialConditionsBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
 
       private IDimension _fakeDimension;
-      protected MoleculeStartValue _msv;
+      protected InitialCondition _msv;
 
       protected override void Context()
       {
          _fakeDimension = A.Fake<IDimension>();
          _context = A.Fake<IMoBiContext>();
-         _buildingBlock = new MoleculeStartValuesBuildingBlock();
+         _buildingBlock = new InitialConditionsBuildingBlock();
 
-         _msv = new MoleculeStartValue{Path= new ObjectPath("path1"), Dimension = _fakeDimension, StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) };
+         _msv = new InitialCondition { Path= new ObjectPath("path1"), Dimension = _fakeDimension, StartValue = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) };
          _buildingBlock.Add(_msv);
          sut = new RemoveMoleculeStartValueFromBuildingBlockCommand(_buildingBlock, _msv.Path);
 
-         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<MoleculeStartValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<IStartValuesBuildingBlock<InitialCondition>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

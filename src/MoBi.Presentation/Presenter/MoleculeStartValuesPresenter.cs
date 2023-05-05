@@ -14,7 +14,7 @@ using OSPSuite.Presentation.Presenters;
 namespace MoBi.Presentation.Presenter
 {
    public interface IMoleculeStartValuesPresenter : IStartValuesPresenter<MoleculeStartValueDTO>,
-      IEditPresenter<MoleculeStartValuesBuildingBlock>
+      IEditPresenter<InitialConditionsBuildingBlock>
    {
       /// <summary>
       ///    Sets the Scale Divisor of the start value to the new value
@@ -38,9 +38,9 @@ namespace MoBi.Presentation.Presenter
    public class MoleculeStartValuesPresenter : StartValuePresenter<
          IMoleculeStartValuesView,
          IMoleculeStartValuesPresenter,
-         MoleculeStartValuesBuildingBlock,
+         InitialConditionsBuildingBlock,
          MoleculeStartValueDTO,
-         MoleculeStartValue>,
+         InitialCondition>,
       IMoleculeStartValuesPresenter
    {
       private readonly IMoleculeStartValuesTask _moleculeStartValuesTask;
@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Presenter
          IRefreshStartValueFromOriginalBuildingBlockPresenter refreshStartValuesPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
          IMoleculeStartValuesTask moleculeStartValuesTask,
-         IMoleculeStartValuesCreator msvCreator,
+         IInitialConditionsCreator msvCreator,
          IMoBiContext context,
          ILegendPresenter legendPresenter,
          IDeleteStartValuePresenter deleteStartValuePresenter,
@@ -88,13 +88,13 @@ namespace MoBi.Presentation.Presenter
          setNegativeValuesAllowed(new[] { dto.MoleculeStartValue }, negativeValuesAllowed);
       }
 
-      private void setNegativeValuesAllowed(IEnumerable<MoleculeStartValue> startValuesToUpdate, bool negativeValuesAllowed)
+      private void setNegativeValuesAllowed(IEnumerable<InitialCondition> startValuesToUpdate, bool negativeValuesAllowed)
       {
          AddCommand(() => _moleculeStartValuesTask.SetNegativeValuesAllowed(_buildingBlock, startValuesToUpdate, negativeValuesAllowed));
          _view.RefreshData();
       }
 
-      private void setIsPresent(IEnumerable<MoleculeStartValue> startValuesToUpdate, bool isPresent)
+      private void setIsPresent(IEnumerable<InitialCondition> startValuesToUpdate, bool isPresent)
       {
          AddCommand(() => _moleculeStartValuesTask.SetIsPresent(_buildingBlock, startValuesToUpdate, isPresent));
          _view.RefreshData();
@@ -110,7 +110,7 @@ namespace MoBi.Presentation.Presenter
          performSetFlagValueAction(setNegativeValuesAllowed, option);
       }
 
-      private void performSetFlagValueAction(Action<IEnumerable<MoleculeStartValue>, bool> selectionAction, SelectOption option)
+      private void performSetFlagValueAction(Action<IEnumerable<InitialCondition>, bool> selectionAction, SelectOption option)
       {
          if (option.IsOneOf(SelectOption.AllPresent, SelectOption.AllNegativeValuesAllowed))
             selectionAction(VisibleStartValues, true);

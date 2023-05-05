@@ -5,11 +5,11 @@ using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.Tasks
 {
-   public interface IMoleculeStartValueBuildingBlockExtendManager : IExtendStartValuesManager<MoleculeStartValue>
+   public interface IMoleculeStartValueBuildingBlockExtendManager : IExtendStartValuesManager<InitialCondition>
    {
    }
 
-   public class MoleculeStartValueBuildingBlockExtendManager : ExtendStartValuesManager<MoleculeStartValue>, IMoleculeStartValueBuildingBlockExtendManager
+   public class MoleculeStartValueBuildingBlockExtendManager : ExtendStartValuesManager<InitialCondition>, IMoleculeStartValueBuildingBlockExtendManager
    {
       public MoleculeStartValueBuildingBlockExtendManager(
          IApplicationController applicationController,

@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Mappers
          return dto.HasParameterStartValues ? dto.SelectedParameterStartValues : null;
       }
 
-      private static MoleculeStartValuesBuildingBlock selectedMoleculeStartValues(ModuleConfigurationDTO dto)
+      private static InitialConditionsBuildingBlock selectedMoleculeStartValues(ModuleConfigurationDTO dto)
       {
          return dto.HasMoleculeStartValues ? dto.SelectedMoleculeStartValues : null;
       }

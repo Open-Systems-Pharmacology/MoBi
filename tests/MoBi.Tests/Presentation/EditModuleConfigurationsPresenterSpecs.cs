@@ -126,7 +126,7 @@ namespace MoBi.Presentation
          _usedModule = new Module().WithName("usedModule").WithId("3");
 
          _projectModule = new Module().WithName("usedModule").WithId("4");
-         _projectModule.Add(new MoleculeStartValuesBuildingBlock().WithId("1"));
+         _projectModule.Add(new InitialConditionsBuildingBlock().WithId("1"));
          _projectModule.Add(new ParameterStartValuesBuildingBlock().WithId("2"));
          var moduleConfiguration = new ModuleConfiguration(_usedModule);
          _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
@@ -136,7 +136,7 @@ namespace MoBi.Presentation
 
          var moduleConfigurationDTO = sut.ModuleConfigurationDTOs.First();
          _treeNode = _treeNodeFactory.CreateFor(moduleConfigurationDTO);
-         moduleConfigurationDTO.SelectedMoleculeStartValues = moduleConfigurationDTO.ModuleConfiguration.Module.MoleculeStartValuesCollection.First();
+         moduleConfigurationDTO.SelectedMoleculeStartValues = moduleConfigurationDTO.ModuleConfiguration.Module.InitialConditionsCollection.First();
          moduleConfigurationDTO.SelectedParameterStartValues = moduleConfigurationDTO.ModuleConfiguration.Module.ParameterStartValuesCollection.First();
       }
 
@@ -155,7 +155,7 @@ namespace MoBi.Presentation
       [Observation]
       public void selected_start_values_come_from_the_selected_module()
       {
-         _projectModule.MoleculeStartValuesCollection.Each(x => sut.MoleculeStartValuesCollectionFor(_treeNode).ShouldContain(x));
+         _projectModule.InitialConditionsCollection.Each(x => sut.InitialConditionsCollectionFor(_treeNode).ShouldContain(x));
          _projectModule.ParameterStartValuesCollection.Each(x => sut.ParameterStartValuesCollectionFor(_treeNode).ShouldContain(x));
       }
    }

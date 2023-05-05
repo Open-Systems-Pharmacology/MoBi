@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
          double? value) : base(parameterStartValuesBuildingBlock)
       {
          CommandType = AppConstants.Commands.UpdateCommand;
-         ObjectType = ObjectTypes.ParameterStartValue;
+         ObjectType = ObjectTypes.ParameterValue;
          _path = path;
          _value = value;
       }

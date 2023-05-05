@@ -19,7 +19,7 @@ using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Views
 {
-   public partial class MoleculeStartValuesView : BaseStartValuesView<MoleculeStartValueDTO, MoleculeStartValue>, IMoleculeStartValuesView
+   public partial class MoleculeStartValuesView : BaseStartValuesView<MoleculeStartValueDTO, InitialCondition>, IMoleculeStartValuesView
    {
       private readonly UxComboBoxUnit<MoleculeStartValueDTO> _unitControl;
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
@@ -124,7 +124,7 @@ namespace MoBi.UI.Views
 
       public override ApplicationIcon ApplicationIcon
       {
-         get { return ApplicationIcons.MoleculeStartValues; }
+         get { return ApplicationIcons.InitialConditions; }
       }
    }
 }

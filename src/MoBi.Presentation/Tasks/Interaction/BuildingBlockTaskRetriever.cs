@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IVisitor<MoBiSpatialStructure>,
       IVisitor<EventGroupBuildingBlock>,
       IVisitor<PassiveTransportBuildingBlock>,
-      IVisitor<MoleculeStartValuesBuildingBlock>,
+      IVisitor<InitialConditionsBuildingBlock>,
       IVisitor<ParameterStartValuesBuildingBlock>,
       IVisitor<SimulationSettings>
    {
@@ -75,9 +75,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          retrieveTask<PassiveTransportBuildingBlock>(objToVisit);
       }
 
-      public void Visit(MoleculeStartValuesBuildingBlock objToVisit)
+      public void Visit(InitialConditionsBuildingBlock objToVisit)
       {
-         retrieveTask<MoleculeStartValuesBuildingBlock>(objToVisit);
+         retrieveTask<InitialConditionsBuildingBlock>(objToVisit);
       }
 
       public void Visit(ParameterStartValuesBuildingBlock objToVisit)

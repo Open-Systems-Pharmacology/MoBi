@@ -12,21 +12,21 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_ChangeMoleculeStartValueNameCommand : ContextSpecification<ChangeMoleculeStartValueNameCommand>
    {
       protected IMoBiContext _context;
-      protected MoleculeStartValue _moleculeStartValue;
-      protected MoleculeStartValuesBuildingBlock _buildingBlock;
+      protected InitialCondition _moleculeStartValue;
+      protected InitialConditionsBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
 
-         _moleculeStartValue = new MoleculeStartValue {Path = new ObjectPath("Path1", "Path2", "Name")};
-         _buildingBlock = new MoleculeStartValuesBuildingBlock { _moleculeStartValue };
+         _moleculeStartValue = new InitialCondition { Path = new ObjectPath("Path1", "Path2", "Name")};
+         _buildingBlock = new InitialConditionsBuildingBlock { _moleculeStartValue };
          sut = new ChangeMoleculeStartValueNameCommand(
             _buildingBlock,
             _moleculeStartValue.Path,
             "Name2");
 
-         A.CallTo(() => _context.Get<MoleculeStartValuesBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

@@ -85,7 +85,7 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<EventGroupBuildingBlock> EventBlockCollection => get<EventGroupBuildingBlock>();
 
-      public IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection => get<MoleculeStartValuesBuildingBlock>();
+      public IReadOnlyList<InitialConditionsBuildingBlock> MoleculeStartValueBlockCollection => get<InitialConditionsBuildingBlock>();
 
       public IReadOnlyList<ParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection => get<ParameterStartValuesBuildingBlock>();
 
@@ -169,7 +169,7 @@ namespace MoBi.Core.Domain.Model
          return All<IObjectBase>().Union(Simulations);
       }
 
-      private IEnumerable<IBuildingBlock> referringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToRemove, IReadOnlyList<MoleculeStartValuesBuildingBlock> buildingBlockCollection)
+      private IEnumerable<IBuildingBlock> referringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToRemove, IReadOnlyList<InitialConditionsBuildingBlock> buildingBlockCollection)
       {
          return buildingBlockCollection
             .Where(msvBB => msvBB.Uses(buildingBlockToRemove))

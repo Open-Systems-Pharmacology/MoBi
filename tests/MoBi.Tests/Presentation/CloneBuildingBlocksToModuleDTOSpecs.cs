@@ -19,7 +19,7 @@ namespace MoBi.Presentation
             new EventGroupBuildingBlock()
          }.WithName("module name");
          _module.Add(new ParameterStartValuesBuildingBlock());
-         _module.Add(new MoleculeStartValuesBuildingBlock());
+         _module.Add(new InitialConditionsBuildingBlock());
 
          sut = new CloneBuildingBlocksToModuleDTO(_module);
       }

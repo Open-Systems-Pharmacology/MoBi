@@ -29,10 +29,10 @@ namespace MoBi.Presentation.Tasks
 {
    public abstract class concern_for_MoleculeStartValuesTask : ContextSpecification<MoleculeStartValuesTask>
    {
-      protected IMoleculeStartValuesCreator _moleculeStartValuesCreator;
+      protected IInitialConditionsCreator _moleculeStartValuesCreator;
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
-      protected MoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
-      private IEditTasksForBuildingBlock<MoleculeStartValuesBuildingBlock> _editTask;
+      protected InitialConditionsBuildingBlock _moleculeStartValueBuildingBlock;
+      private IEditTasksForBuildingBlock<InitialConditionsBuildingBlock> _editTask;
       protected IInteractionTaskContext _context;
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IMoleculeResolver _moleculeResolver;
@@ -40,10 +40,10 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          _context = A.Fake<IInteractionTaskContext>();
-         _editTask = A.Fake<IEditTasksForBuildingBlock<MoleculeStartValuesBuildingBlock>>();
-         _moleculeStartValuesCreator = A.Fake<IMoleculeStartValuesCreator>();
+         _editTask = A.Fake<IEditTasksForBuildingBlock<InitialConditionsBuildingBlock>>();
+         _moleculeStartValuesCreator = A.Fake<IInitialConditionsCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
-         _moleculeStartValueBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _moleculeStartValueBuildingBlock = new InitialConditionsBuildingBlock();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeResolver = A.Fake<IMoleculeResolver>();
 
@@ -57,12 +57,12 @@ namespace MoBi.Presentation.Tasks
    /// </summary>
    public class When_updating_scale_divisor : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValue _moleculeStartValue;
+      private InitialCondition _moleculeStartValue;
 
       protected override void Context()
       {
          base.Context();
-         _moleculeStartValue = new MoleculeStartValue {ScaleDivisor = 1};
+         _moleculeStartValue = new InitialCondition {ScaleDivisor = 1};
       }
 
       protected override void Because()
@@ -141,7 +141,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_comparing_start_value_to_original_builder : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValue _moleculeStartValue;
+      private InitialCondition _moleculeStartValue;
       private const string NAME = "Name";
       protected bool _result;
       private IDimension _dimension;
@@ -151,7 +151,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
-         _moleculeStartValue = new MoleculeStartValue {Dimension = _dimension, Name = NAME, Formula = null};
+         _moleculeStartValue = new InitialCondition {Dimension = _dimension, Name = NAME, Formula = null};
 
          _builder = new MoleculeBuilder
          {
@@ -193,13 +193,13 @@ namespace MoBi.Presentation.Tasks
    public class When_importing_multiple_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
       private IList<ImportedQuantityDTO> _moleculeStartValues;
-      private MoleculeStartValue _firstStartValueRef;
+      private InitialCondition _firstStartValueRef;
       private IMoBiCommand _result;
 
       protected override void Context()
       {
          base.Context();
-         _firstStartValueRef = new MoleculeStartValue {Path = new ObjectPath("this", "path", "C1"), StartValue = -1.0, IsPresent = true};
+         _firstStartValueRef = new InitialCondition {Path = new ObjectPath("this", "path", "C1"), StartValue = -1.0, IsPresent = true};
          IDimension d = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
          _moleculeStartValues = new List<ImportedQuantityDTO>
@@ -222,8 +222,8 @@ namespace MoBi.Presentation.Tasks
          for (var i = 1; i < 3; i++)
          {
             var dto = _moleculeStartValues[i];
-            A.CallTo(() => _moleculeStartValuesCreator.CreateMoleculeStartValue(dto.ContainerPath, dto.Name, A<IDimension>._, A<Unit>._, A<ValueOrigin>._)).Returns(
-               new MoleculeStartValue
+            A.CallTo(() => _moleculeStartValuesCreator.CreateInitialCondition(dto.ContainerPath, dto.Name, A<IDimension>._, A<Unit>._, A<ValueOrigin>._)).Returns(
+               new InitialCondition
                {
                   ContainerPath = dto.ContainerPath,
                   Name = dto.Name,
@@ -245,7 +245,7 @@ namespace MoBi.Presentation.Tasks
       {
          _result.CommandType.ShouldBeEqualTo(AppConstants.Commands.ImportCommand);
          _result.Description.ShouldBeEqualTo(AppConstants.Commands.ImportMoleculeStartValues);
-         _result.ObjectType.ShouldBeEqualTo(ObjectTypes.MoleculeStartValue);
+         _result.ObjectType.ShouldBeEqualTo(ObjectTypes.InitialCondition);
       }
 
       [Observation]
@@ -271,18 +271,18 @@ namespace MoBi.Presentation.Tasks
 
    public class When_setting_the_is_present_flag_for_a_set_of_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
-      private List<MoleculeStartValue> _startValues;
+      private List<InitialCondition> _startValues;
       private IMoBiCommand _command;
 
       protected override void Context()
       {
          base.Context();
-         _startValues = new List<MoleculeStartValue>
+         _startValues = new List<InitialCondition>
          {
-            new MoleculeStartValue {Name = "M1", IsPresent = true},
-            new MoleculeStartValue {Name = "M2", IsPresent = false},
-            new MoleculeStartValue {Name = "M3", IsPresent = true},
-            new MoleculeStartValue {Name = "M4", IsPresent = false}
+            new InitialCondition {Name = "M1", IsPresent = true},
+            new InitialCondition {Name = "M2", IsPresent = false},
+            new InitialCondition {Name = "M3", IsPresent = true},
+            new InitialCondition {Name = "M4", IsPresent = false}
          };
          _startValues.Each(_moleculeStartValueBuildingBlock.Add);
       }
@@ -303,18 +303,18 @@ namespace MoBi.Presentation.Tasks
 
    public class When_setting_the_negative_start_values_flag_for_a_set_of_molecule_start_values : concern_for_MoleculeStartValuesTask
    {
-      private List<MoleculeStartValue> _startValues;
+      private List<InitialCondition> _startValues;
       private IMoBiCommand _command;
 
       protected override void Context()
       {
          base.Context();
-         _startValues = new List<MoleculeStartValue>
+         _startValues = new List<InitialCondition>
          {
-            new MoleculeStartValue {Name = "M1", NegativeValuesAllowed = true},
-            new MoleculeStartValue {Name = "M2", NegativeValuesAllowed = false},
-            new MoleculeStartValue {Name = "M3", NegativeValuesAllowed = true},
-            new MoleculeStartValue {Name = "M4", NegativeValuesAllowed = false}
+            new InitialCondition {Name = "M1", NegativeValuesAllowed = true},
+            new InitialCondition {Name = "M2", NegativeValuesAllowed = false},
+            new InitialCondition {Name = "M3", NegativeValuesAllowed = true},
+            new InitialCondition {Name = "M4", NegativeValuesAllowed = false}
          };
          _startValues.Each(_moleculeStartValueBuildingBlock.Add);
       }
@@ -335,11 +335,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_removing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
 
       protected override void Because()
       {
-         _startValue = new MoleculeStartValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
          _moleculeStartValueBuildingBlock.Add(_startValue);
          sut.EditStartValueContainerPath(_moleculeStartValueBuildingBlock, _startValue, 0, "");
       }
@@ -353,11 +353,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_appending_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
 
       protected override void Because()
       {
-         _startValue = new MoleculeStartValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
          _moleculeStartValueBuildingBlock.Add(_startValue);
          sut.EditStartValueContainerPath(_moleculeStartValueBuildingBlock, _startValue, 2, "C");
       }
@@ -371,11 +371,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_replacing_an_element_of_start_value : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
 
       protected override void Because()
       {
-         _startValue = new MoleculeStartValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
          _moleculeStartValueBuildingBlock.Add(_startValue);
          sut.EditStartValueContainerPath(_moleculeStartValueBuildingBlock, _startValue, 0, "C");
       }
@@ -389,11 +389,11 @@ namespace MoBi.Presentation.Tasks
 
    public class When_replacing_an_element_outside_start_value_path_range : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
 
       protected override void Because()
       {
-         _startValue = new MoleculeStartValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
          _moleculeStartValueBuildingBlock.Add(_startValue);
          sut.EditStartValueContainerPath(_moleculeStartValueBuildingBlock, _startValue, 5, "C");
       }
@@ -413,7 +413,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ConstantFormula(double.NaN)};
-         var nanStartValue = new MoleculeStartValue {Formula = new ConstantFormula(double.NaN), Name = molecule.Name, StartValue = double.NaN, Dimension = Constants.Dimension.NO_DIMENSION};
+         var nanStartValue = new InitialCondition {Formula = new ConstantFormula(double.NaN), Name = molecule.Name, StartValue = double.NaN, Dimension = Constants.Dimension.NO_DIMENSION};
          _moleculeStartValueBuildingBlock.Add(nanStartValue);
          A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
       }
@@ -432,7 +432,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_updating_a_molecule_start_value_with_new_display_unit : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValue _startValue;
+      private InitialCondition _startValue;
       private IDimension _dim;
       private const double TARGET_BASE_VALUE = 1000000;
       private const double TARGET_DISPLAY_VALUE = 1000;
@@ -442,7 +442,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _dim = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
-         _startValue = new MoleculeStartValue {Dimension = _dim, StartValue = TARGET_DISPLAY_VALUE, DisplayUnit = _dim.Unit("g")};
+         _startValue = new InitialCondition {Dimension = _dim, StartValue = TARGET_DISPLAY_VALUE, DisplayUnit = _dim.Unit("g")};
       }
 
       protected override void Because()
@@ -450,7 +450,7 @@ namespace MoBi.Presentation.Tasks
          var targetUnit = _dim.Unit("kg");
 
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
-         sut.SetDisplayValueWithUnit(_startValue, _startValue.ConvertToDisplayUnit(_startValue.Value.Value), targetUnit, A.Fake<MoleculeStartValuesBuildingBlock>());
+         sut.SetDisplayValueWithUnit(_startValue, _startValue.ConvertToDisplayUnit(_startValue.Value.Value), targetUnit, A.Fake<InitialConditionsBuildingBlock>());
       }
 
       [Observation]
@@ -474,7 +474,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          var builder = new MoleculeBuilder {Name = "molecule", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ExplicitFormula("50")};
-         var startValue = new MoleculeStartValue {Name = builder.Name, StartValue = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null};
+         var startValue = new InitialCondition {Name = builder.Name, StartValue = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null};
          _moleculeStartValueBuildingBlock.Add(startValue);
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _moleculeStartValueBuildingBlock.FormulaCache)).Returns(new ExplicitFormula("M/V"));
          A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(builder);
@@ -500,7 +500,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION};
-         var nanStartValue = new MoleculeStartValue {Name = molecule.Name, StartValue = null, Dimension = Constants.Dimension.NO_DIMENSION};
+         var nanStartValue = new InitialCondition {Name = molecule.Name, StartValue = null, Dimension = Constants.Dimension.NO_DIMENSION};
          _moleculeStartValueBuildingBlock.Add(nanStartValue);
          A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
       }
@@ -520,7 +520,7 @@ namespace MoBi.Presentation.Tasks
    public class When_updating_a_molecule_start_value_building_block_with_original_value_null_and_molecule_start_value_NULL : concern_for_MoleculeStartValuesTask
    {
       private IMoBiCommand _command;
-      private MoleculeStartValue _nullStartValue;
+      private InitialCondition _nullStartValue;
 
       protected override void Context()
       {
@@ -528,7 +528,7 @@ namespace MoBi.Presentation.Tasks
          var moleculeBuildingBlock = new MoleculeBuildingBlock();
          var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION};
          moleculeBuildingBlock.Add(molecule);
-         _nullStartValue = new MoleculeStartValue {Name = molecule.Name, StartValue = 1, Dimension = Constants.Dimension.NO_DIMENSION};
+         _nullStartValue = new InitialCondition {Name = molecule.Name, StartValue = 1, Dimension = Constants.Dimension.NO_DIMENSION};
          _moleculeStartValueBuildingBlock.Add(_nullStartValue);
          A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
          A.CallTo(() => _moleculeResolver.Resolve(_nullStartValue.ContainerPath, _nullStartValue.MoleculeName, A<SpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(molecule);
@@ -555,17 +555,17 @@ namespace MoBi.Presentation.Tasks
    public class When_creating_a_molecule_start_value_for_simulation_based_on_a_selected_template : concern_for_MoleculeStartValuesTask
    {
       private SimulationConfiguration _simulationConfiguration;
-      private MoleculeStartValuesBuildingBlock _templateStartValuesBuildingBlock;
-      private MoleculeStartValuesBuildingBlock _newMoleculeStartValues;
-      private MoleculeStartValue _newEndogenousValue;
-      private MoleculeStartValue _existingEndogenousValue;
-      private MoleculeStartValue _existingTemplateEndogenousValue;
-      private MoleculeStartValue _otherStartValues;
+      private InitialConditionsBuildingBlock _templateStartValuesBuildingBlock;
+      private InitialConditionsBuildingBlock _newMoleculeStartValues;
+      private InitialCondition _newEndogenousValue;
+      private InitialCondition _existingEndogenousValue;
+      private InitialCondition _existingTemplateEndogenousValue;
+      private InitialCondition _otherStartValues;
 
       protected override void Context()
       {
          base.Context();
-         _templateStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _templateStartValuesBuildingBlock = new InitialConditionsBuildingBlock();
          _simulationConfiguration = new SimulationConfiguration();
          var module = new Module
          {
@@ -575,18 +575,18 @@ namespace MoBi.Presentation.Tasks
          var moduleConfiguration = new ModuleConfiguration(module);
          _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
          moduleConfiguration.Module.Add(_templateStartValuesBuildingBlock);
-         moduleConfiguration.SelectedMoleculeStartValues = _templateStartValuesBuildingBlock;
+         moduleConfiguration.SelectedInitialConditions = _templateStartValuesBuildingBlock;
 
-         _newMoleculeStartValues = new MoleculeStartValuesBuildingBlock();
+         _newMoleculeStartValues = new InitialConditionsBuildingBlock();
 
          // _buildConfiguration.MoleculeStartValuesInfo = new MoleculeStartValuesBuildingBlockInfo {BuildingBlock = _templateStartValuesBuildingBlock, TemplateBuildingBlock = _templateStartValuesBuildingBlock};
 
-         A.CallTo(_moleculeStartValuesCreator).WithReturnType<MoleculeStartValuesBuildingBlock>().Returns(_newMoleculeStartValues);
+         A.CallTo(_moleculeStartValuesCreator).WithReturnType<InitialConditionsBuildingBlock>().Returns(_newMoleculeStartValues);
 
-         _newEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};
-         _existingEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
-         _otherStartValues = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", "Liver", "Cell"), Name = "M", IsPresent = true};
-         _existingTemplateEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
+         _newEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};
+         _existingEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
+         _otherStartValues = new InitialCondition {ContainerPath = new ObjectPath("Organism", "Liver", "Cell"), Name = "M", IsPresent = true};
+         _existingTemplateEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
 
          _templateStartValuesBuildingBlock.Add(_existingTemplateEndogenousValue);
          _newMoleculeStartValues.Add(_newEndogenousValue);
@@ -620,7 +620,7 @@ namespace MoBi.Presentation.Tasks
 
    public abstract class When_cloning_a_molecule_start_values_building_block : concern_for_MoleculeStartValuesTask
    {
-      protected MoleculeStartValuesBuildingBlock _buildingBlockToClone;
+      protected InitialConditionsBuildingBlock _buildingBlockToClone;
       protected Module _module;
       protected IDialogCreator _dialogCreator;
       protected ICommand _result;
@@ -628,12 +628,12 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _buildingBlockToClone = new MoleculeStartValuesBuildingBlock();
+         _buildingBlockToClone = new InitialConditionsBuildingBlock();
          _module = new Module { _buildingBlockToClone };
          _dialogCreator = A.Fake<IDialogCreator>();
          A.CallTo(() => _context.DialogCreator).Returns(_dialogCreator);
          A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns(CloneName());
-         A.CallTo(() => _context.InteractionTask.CorrectName(A<MoleculeStartValuesBuildingBlock>._, A<IEnumerable<string>>._)).Returns(true);
+         A.CallTo(() => _context.InteractionTask.CorrectName(A<InitialConditionsBuildingBlock>._, A<IEnumerable<string>>._)).Returns(true);
       }
       
       protected override void Because()
@@ -660,7 +660,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_clone_should_not_be_made()
       {
-         _module.MoleculeStartValuesCollection.Count.ShouldBeEqualTo(1);
+         _module.InitialConditionsCollection.Count.ShouldBeEqualTo(1);
       }
    }
 
@@ -669,7 +669,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_cloned_building_block_must_belong_to_the_module()
       {
-         _module.MoleculeStartValuesCollection.Count.ShouldBeEqualTo(2);
+         _module.InitialConditionsCollection.Count.ShouldBeEqualTo(2);
       }
 
       protected override string CloneName()
@@ -680,15 +680,15 @@ namespace MoBi.Presentation.Tasks
 
    public class When_extending_a_given_molecule_start_value_with_building_block_based_on_used_templates : concern_for_MoleculeStartValuesTask
    {
-      private MoleculeStartValuesBuildingBlock _templateMoleculeStartValues;
-      private MoleculeStartValue _newEndogenousValue;
-      private MoleculeStartValue _existingEndogenousValue;
-      private MoleculeStartValue _existingTemplateEndogenousValue;
+      private InitialConditionsBuildingBlock _templateMoleculeStartValues;
+      private InitialCondition _newEndogenousValue;
+      private InitialCondition _existingEndogenousValue;
+      private InitialCondition _existingTemplateEndogenousValue;
 
       protected override void Context()
       {
          base.Context();
-         _templateMoleculeStartValues = new MoleculeStartValuesBuildingBlock();
+         _templateMoleculeStartValues = new InitialConditionsBuildingBlock();
          A.CallTo(_context.Context.ObjectRepository).WithReturnType<bool>().Returns(true);
          var moleculeBuildingBlock = new MoleculeBuildingBlock();
          A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
@@ -697,9 +697,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(_context.Context).WithReturnType<SpatialStructure>().Returns(spatialStructure);
          A.CallTo(() => _moleculeStartValuesCreator.CreateFrom(spatialStructure, moleculeBuildingBlock)).Returns(_templateMoleculeStartValues);
 
-         _newEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};
-         _existingEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
-         _existingTemplateEndogenousValue = new MoleculeStartValue {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
+         _newEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};
+         _existingEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
+         _existingTemplateEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
 
          _templateMoleculeStartValues.Add(_newEndogenousValue);
          _templateMoleculeStartValues.Add(_existingTemplateEndogenousValue);
@@ -713,13 +713,13 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_set_new_entries_for_moelcule_in_endogenous_container_to_non_present()
+      public void should_set_new_entries_for_molecule_in_endogenous_container_to_non_present()
       {
          _newEndogenousValue.IsPresent.ShouldBeFalse();
       }
 
       [Observation]
-      public void should_not_change_existing_entries_for_moelcule_in_endogenous_container()
+      public void should_not_change_existing_entries_for_molecule_in_endogenous_container()
       {
          _existingTemplateEndogenousValue.IsPresent.ShouldBeTrue();
       }

@@ -3,27 +3,24 @@ using System.Data;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Mappers;
 using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Extensions;
 
 namespace MoBi.Core.Mapper
 {
    public abstract class concern_for_MoleculeStartValuesBuildingBlockToParameterDataTableMapper : ContextSpecification<MoleculeStartValuesBuildingBlockToParameterDataTableMapper>
    {
       protected DataTable _result;
-      protected MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      protected InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
       protected MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock();
+         _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock();
          sut = new MoleculeStartValuesBuildingBlockToParameterDataTableMapper();
          _moleculeBuildingBlock = new MoleculeBuildingBlock();
       }
@@ -78,9 +75,9 @@ namespace MoBi.Core.Mapper
          row.Field<double>(AppConstants.Captions.InitialValue).ShouldBeEqualTo(7.0);
       }
 
-      private static IEnumerable<MoleculeStartValue> getMoleculeStartValues()
+      private static IEnumerable<InitialCondition> getMoleculeStartValues()
       {
-         yield return new MoleculeStartValue
+         yield return new InitialCondition
          {
             ContainerPath = new ObjectPath("path1", "path2"), 
             Name = "name",
@@ -92,7 +89,7 @@ namespace MoBi.Core.Mapper
             StartValue = 5.0
          };
 
-         yield return new MoleculeStartValue
+         yield return new InitialCondition
          {
             ContainerPath = new ObjectPath("path3", "path4"),
             Name = "name1",

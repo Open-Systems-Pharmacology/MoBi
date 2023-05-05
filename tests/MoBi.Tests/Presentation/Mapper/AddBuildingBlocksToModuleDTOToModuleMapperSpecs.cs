@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Mapper
             new EventGroupBuildingBlock(),
             new MoleculeBuildingBlock(),
             new PassiveTransportBuildingBlock(),
-            new MoleculeStartValuesBuildingBlock(),
+            new InitialConditionsBuildingBlock(),
             new ParameterStartValuesBuildingBlock()
          };
 

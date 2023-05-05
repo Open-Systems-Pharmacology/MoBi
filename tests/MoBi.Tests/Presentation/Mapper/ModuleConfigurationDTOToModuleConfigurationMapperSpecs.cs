@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Mapper
       {
          _module = new Module
          {
-            new MoleculeStartValuesBuildingBlock(),
+            new InitialConditionsBuildingBlock(),
             new ParameterStartValuesBuildingBlock()
          };
 
@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Mapper
 
          _dto = new ModuleConfigurationDTO(new ModuleConfiguration(_module))
          {
-            SelectedMoleculeStartValues = _module.MoleculeStartValuesCollection.First(),
+            SelectedMoleculeStartValues = _module.InitialConditionsCollection.First(),
             SelectedParameterStartValues = _module.ParameterStartValuesCollection.First()
          };
       }
@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_return_a_module_configuration_with_real_molecule_start_values()
       {
-         _result.SelectedMoleculeStartValues.ShouldBeEqualTo(_module.MoleculeStartValuesCollection.First());
+         _result.SelectedInitialConditions.ShouldBeEqualTo(_module.InitialConditionsCollection.First());
       }
 
       [Observation]
@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
          var module = new Module
          {
-            new MoleculeStartValuesBuildingBlock(),
+            new InitialConditionsBuildingBlock(),
             new ParameterStartValuesBuildingBlock()
          };
          _dto = new ModuleConfigurationDTO(new ModuleConfiguration(module))
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_return_a_module_configuration_with_null_molecule_start_values()
       {
-         _result.SelectedMoleculeStartValues.ShouldBeNull();
+         _result.SelectedInitialConditions.ShouldBeNull();
       }
 
       [Observation]

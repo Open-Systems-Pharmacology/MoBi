@@ -31,7 +31,7 @@ namespace MoBi.Core.Services
       ///    Synchronizes the value <paramref name="quantity" /> with the corresponding entries defined in
       ///    <paramref name="moleculeStartValues" /> if available
       /// </summary>
-      void SynchronizeMoleculeStartValues(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValues);
+      void SynchronizeMoleculeStartValues(IQuantity quantity, InitialConditionsBuildingBlock moleculeStartValues);
    }
 
    public class QuantitySynchronizer : IQuantitySynchronizer,
@@ -73,7 +73,7 @@ namespace MoBi.Core.Services
          return SynchronizeCommand(quantity, simulation).AsHidden().Run(_context);
       }
 
-      public void SynchronizeMoleculeStartValues(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValues)
+      public void SynchronizeMoleculeStartValues(IQuantity quantity, InitialConditionsBuildingBlock moleculeStartValues)
       {
          synchronizeMoleculeStartValueCommand(quantity, moleculeStartValues, allowCreation: false).Run(_context);
       }
@@ -98,7 +98,7 @@ namespace MoBi.Core.Services
          }
       }
 
-      private IMoBiCommand synchronizeMoleculeStartValueCommand(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, bool allowCreation = true)
+      private IMoBiCommand synchronizeMoleculeStartValueCommand(IQuantity quantity, InitialConditionsBuildingBlock moleculeStartValuesBuildingBlock, bool allowCreation = true)
       {
          var moleculeAmount = quantity as MoleculeAmount ?? quantity.ParentContainer as MoleculeAmount;
          return synchronizeStartValueCommand(moleculeAmount, moleculeStartValuesBuildingBlock, allowCreation,

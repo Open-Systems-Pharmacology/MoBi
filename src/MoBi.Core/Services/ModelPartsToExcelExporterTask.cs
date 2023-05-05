@@ -40,7 +40,7 @@ namespace MoBi.Core.Services
          var reactionDataTable = _reactionBuildingBlockToReactionDataTableMapper.MapFrom(simulation.Configuration.All<ReactionBuildingBlock>());
          var simulationParameterDataTable = _parameterListToSimulationParameterDataTableMapper.MapFrom(simulation.Model.Root.GetAllChildren<IParameter>());
 
-         var moleculeParameterDataTable = _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(simulation.Configuration.All<MoleculeStartValuesBuildingBlock>().SelectMany(x => x).Where(msv => msv.IsPresent), 
+         var moleculeParameterDataTable = _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(simulation.Configuration.All<InitialConditionsBuildingBlock>().SelectMany(x => x).Where(msv => msv.IsPresent), 
             simulation.Configuration.All<MoleculeBuildingBlock>().SelectMany(x => x));
 
          var dataTables = new List<DataTable> {reactionDataTable, simulationParameterDataTable, moleculeParameterDataTable};

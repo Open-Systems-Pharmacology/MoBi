@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Nodes
       {
          Id = ShortGuid.NewGuid();
          Text = AppConstants.Captions.ParameterStartValues;
-         Icon = ApplicationIcons.ParameterStartValuesFolder;
+         Icon = ApplicationIcons.ParameterValuesFolder;
       }
       public override string Id { get; }
    }
