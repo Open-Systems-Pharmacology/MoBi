@@ -62,17 +62,17 @@ namespace MoBi.Presentation.Tasks
       private readonly string _appBuilderMoleculeNamePropertyName;
       private readonly string _reactionPartnerMoleculeNamePropertyName;
       private IBuildingBlock _buildingBlock;
-      private readonly string _tranportNamePropertyName;
+      private readonly string _transportNamePropertyName;
       private string _oldName;
-      private readonly IParameterStartValuePathTask _psvPathTask;
-      private readonly IMoleculeStartValuePathTask _msvPathTask;
+      private readonly IParameterValuePathTask _parameterValuePathTask;
+      private readonly IInitialConditionPathTask _msvPathTask;
       private readonly ICloneManager _cloneManager;
 
-      public CheckNameVisitor(IObjectTypeResolver objectTypeResolver, IAliasCreator aliasCreator, IParameterStartValuePathTask psvPathTask, IMoleculeStartValuePathTask msvPathTask, ICloneManager cloneManager)
+      public CheckNameVisitor(IObjectTypeResolver objectTypeResolver, IAliasCreator aliasCreator, IParameterValuePathTask parameterValuePathTask, IInitialConditionPathTask msvPathTask, ICloneManager cloneManager)
       {
          _objectTypeResolver = objectTypeResolver;
          _aliasCreator = aliasCreator;
-         _psvPathTask = psvPathTask;
+         _parameterValuePathTask = parameterValuePathTask;
          _msvPathTask = msvPathTask;
          _cloneManager = cloneManager;
 
@@ -89,7 +89,7 @@ namespace MoBi.Presentation.Tasks
          _eventObjectPathPropertyName = eventObjectPath.Name();
 
          Expression<Func<TransporterMoleculeContainer, string>> transportName = x => x.TransportName;
-         _tranportNamePropertyName = transportName.Name();
+         _transportNamePropertyName = transportName.Name();
       }
 
       public IReadOnlyList<IStringChange> GetPossibleChangesFrom(IObjectBase objectToRename, string newName, IObjectBase renamingContext, string oldName)
@@ -426,23 +426,23 @@ namespace MoBi.Presentation.Tasks
          if (!string.Equals(_oldName, transporterMoleculeContainer.TransportName)) return;
 
          _changes.Add(transporterMoleculeContainer, _buildingBlock,
-            new EditObjectBasePropertyInBuildingBlockCommand(_tranportNamePropertyName, _newName, _oldName, transporterMoleculeContainer, _buildingBlock),
-            AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor<TransporterMoleculeContainer>(), _tranportNamePropertyName, _oldName, _newName, transporterMoleculeContainer.Name));
+            new EditObjectBasePropertyInBuildingBlockCommand(_transportNamePropertyName, _newName, _oldName, transporterMoleculeContainer, _buildingBlock),
+            AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor<TransporterMoleculeContainer>(), _transportNamePropertyName, _oldName, _newName, transporterMoleculeContainer.Name));
       }
 
-      public void Visit(InitialCondition moleculeStartValue)
+      public void Visit(InitialCondition initialCondition)
       {
-         checkStartValue(moleculeStartValue, _msvPathTask);
+         checkStartValue(initialCondition, _msvPathTask);
       }
 
-      public void Visit(ParameterValue parameterStartValue)
+      public void Visit(ParameterValue parameterValue)
       {
-         checkStartValue(parameterStartValue, _psvPathTask);
+         checkStartValue(parameterValue, _parameterValuePathTask);
       }
 
       private void checkStartValue<TStartValue, TBuildingBlock>(TStartValue startValue, IStartValuePathTask<TBuildingBlock, TStartValue> startValueTask)
-         where TStartValue : class, IStartValue
-         where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
+         where TStartValue : PathAndValueEntity
+         where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>
       {
          if (Equals(_objectToRename, startValue)) return;
 

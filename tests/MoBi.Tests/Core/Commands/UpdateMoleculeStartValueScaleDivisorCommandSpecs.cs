@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   abstract class concern_for_UpdateMoleculeStartValueScaleDivisorCommand : ContextSpecification<UpdateMoleculeStartValueScaleDivisorCommand>
+   abstract class concern_for_UpdateInitialConditionScaleDivisorCommand : ContextSpecification<UpdateInitialConditionScaleDivisorCommand>
    {
       protected double _oldScaleDivisor;
       protected double _newScaleDivisor;
@@ -20,13 +20,13 @@ namespace MoBi.Core.Commands
          _startValue = new InitialCondition { Id = "startValueId"};
          _buildingBlock = new InitialConditionsBuildingBlock { Id = "id"};
          _context = A.Fake<IMoBiContext>();
-         sut = new UpdateMoleculeStartValueScaleDivisorCommand(_buildingBlock, _startValue, _newScaleDivisor, _oldScaleDivisor);
+         sut = new UpdateInitialConditionScaleDivisorCommand(_buildingBlock, _startValue, _newScaleDivisor, _oldScaleDivisor);
 
          A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 
-   class When_executing_command_to_modify_scale_factor : concern_for_UpdateMoleculeStartValueScaleDivisorCommand
+   class When_executing_command_to_modify_scale_factor : concern_for_UpdateInitialConditionScaleDivisorCommand
    {
       protected override void Context()
       {
@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   class When_reverting_command_to_modify_scale_factor : concern_for_UpdateMoleculeStartValueScaleDivisorCommand
+   class When_reverting_command_to_modify_scale_factor : concern_for_UpdateInitialConditionScaleDivisorCommand
    {
       protected override void Because()
       {

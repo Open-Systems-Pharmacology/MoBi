@@ -10,8 +10,8 @@ namespace MoBi.Core.Commands
 {
    public abstract class ChangeStartValueNameCommand<TBuildingBlock, TStartValue> 
       : BuildingBlockChangeCommandBase<TBuildingBlock> 
-      where TBuildingBlock : class, IBuildingBlock<TStartValue>, IStartValuesBuildingBlock<TStartValue> 
-      where TStartValue : class, IObjectBase, IStartValue
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>, IBuildingBlock<TStartValue>
+      where TStartValue : PathAndValueEntity
    {
       protected string _newValue;
       protected string _oldValue;

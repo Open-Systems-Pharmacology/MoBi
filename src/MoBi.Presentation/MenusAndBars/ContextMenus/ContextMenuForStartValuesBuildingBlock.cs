@@ -9,7 +9,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public abstract class ContextMenuForStartValuesBuildingBlock<TBuildingBlock, TStartValue> : ContextMenuForModuleBuildingBlock<TBuildingBlock> where TBuildingBlock : StartValueBuildingBlock<TStartValue> where TStartValue : PathAndValueEntity, IStartValue
+   public abstract class ContextMenuForStartValuesBuildingBlock<TBuildingBlock, TStartValue> : ContextMenuForModuleBuildingBlock<TBuildingBlock> where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue> where TStartValue : PathAndValueEntity
    {
       protected ContextMenuForStartValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {

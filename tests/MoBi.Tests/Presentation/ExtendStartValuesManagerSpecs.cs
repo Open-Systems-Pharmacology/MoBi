@@ -138,7 +138,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class FakeObject : StartValueBase
+   public class FakeObject : PathAndValueEntity
    {
       
    }

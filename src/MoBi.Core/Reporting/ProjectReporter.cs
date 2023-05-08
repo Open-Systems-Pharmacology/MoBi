@@ -35,8 +35,8 @@ namespace MoBi.Core.Reporting
          listToReport.AddRange(new ObserverBuildingBlocksReporter().Report(project.ObserverBlockCollection.ToList(), buildTracker));
          listToReport.AddRange(_simulationSettingsReporter.Report(project.SimulationSettings, buildTracker));
          listToReport.AddRange(new EventGroupBuildingBlocksReporter().Report(project.EventBlockCollection.ToList(), buildTracker));
-         listToReport.AddRange(new MoleculeStartValuesBuildingBlocksReporter(_displayUnitRetriever).Report(project.MoleculeStartValueBlockCollection.ToList(), buildTracker));
-         listToReport.AddRange(new ParameterStartValuesBuildingBlocksReporter(_displayUnitRetriever).Report(project.ParametersStartValueBlockCollection.ToList(), buildTracker));
+         listToReport.AddRange(new InitialConditionsBuildingBlocksReporter(_displayUnitRetriever).Report(project.InitialConditionBlockCollection.ToList(), buildTracker));
+         listToReport.AddRange(new ParameterValuesBuildingBlocksReporter(_displayUnitRetriever).Report(project.ParametersValueBlockCollection.ToList(), buildTracker));
          listToReport.AddRange(new ObservedDataReporter().Report(project.AllObservedData.ToList(), buildTracker));
          listToReport.AddRange(_simulationsReporter.Report(project.Simulations.ToList(), buildTracker));
          listToReport.AddRange(new ChartsReporter().Report(project.Charts.ToList(), buildTracker));       

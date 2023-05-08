@@ -34,8 +34,8 @@ namespace MoBi.Core
       protected IAliasCreator _aliasCreator;
       protected IMoBiContext _context;
       protected MoBiProject _project;
-      protected IParameterStartValuePathTask _psvTask;
-      protected IMoleculeStartValuePathTask _msvTask;
+      protected IParameterValuePathTask _psvTask;
+      protected IInitialConditionPathTask _msvTask;
       protected ICloneManager _cloneManager;
 
       protected override void Context()
@@ -43,8 +43,8 @@ namespace MoBi.Core
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _aliasCreator = A.Fake<IAliasCreator>();
          _changedObject = A.Fake<IObjectBase>();
-         _psvTask = A.Fake<IParameterStartValuePathTask>();
-         _msvTask = A.Fake<IMoleculeStartValuePathTask>();
+         _psvTask = A.Fake<IParameterValuePathTask>();
+         _msvTask = A.Fake<IInitialConditionPathTask>();
          _changedObject.Name = "OLD";
          _changedName = _changedObject.Name;
          _newName = "new";
@@ -141,25 +141,25 @@ namespace MoBi.Core
 
    internal class When_visiting_an_MoleculesStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
-      private InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
-      private InitialCondition _moleculeStartValue;
+      private InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
+      private InitialCondition _initialCondition;
       private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
-      private InitialCondition _moleculeStartValue2;
+      private InitialCondition _initialCondition2;
 
       protected override void Context()
       {
          base.Context();
-         _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock { Name = _changedName};
-         _moleculeStartValue = new InitialCondition();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock { Name = _changedName};
+         _initialCondition = new InitialCondition();
          _path = new ObjectPath(new[] {"A", "B", _changedName});
-         _moleculeStartValue.Path = _path;
-         _moleculeStartValuesBuildingBlock.Add(_moleculeStartValue);
-         _project.AddBuildingBlock(_moleculeStartValuesBuildingBlock);
-         _moleculeStartValue2 = new InitialCondition();
+         _initialCondition.Path = _path;
+         _initialConditionsBuildingBlock.Add(_initialCondition);
+         _project.AddBuildingBlock(_initialConditionsBuildingBlock);
+         _initialCondition2 = new InitialCondition();
          _path = new ObjectPath(new[] {"A", _changedName, "B"});
-         _moleculeStartValue2.Path = _path;
-         _moleculeStartValuesBuildingBlock.Add(_moleculeStartValue2);
+         _initialCondition2.Path = _path;
+         _initialConditionsBuildingBlock.Add(_initialCondition2);
       }
 
       protected override void Because()
@@ -178,7 +178,7 @@ namespace MoBi.Core
       {
          var change = _changes.First() as StringChange<IBuildingBlock>;
          change.ShouldNotBeNull();
-         change.EntityToEdit.ShouldBeEqualTo(_moleculeStartValuesBuildingBlock);
+         change.EntityToEdit.ShouldBeEqualTo(_initialConditionsBuildingBlock);
          change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
          change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.InitialConditionsBuildingBlock);
       }
@@ -186,38 +186,40 @@ namespace MoBi.Core
       [Observation]
       public void should_execute_EditName_for_MSV()
       {
-         A.CallTo(() => _msvTask.UpdateStartValueNameCommand(_moleculeStartValuesBuildingBlock, _moleculeStartValue, _newName)).MustHaveHappened();
+         A.CallTo(() => _msvTask.UpdateStartValueNameCommand(_initialConditionsBuildingBlock, _initialCondition, _newName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_execute_EditContainerPath_for_MSV2()
       {
-         A.CallTo(() => _msvTask.UpdateStartValueContainerPathCommand(_moleculeStartValuesBuildingBlock, _moleculeStartValue2, A<int>._, _newName)).MustHaveHappened();
+         A.CallTo(() => _msvTask.UpdateStartValueContainerPathCommand(_initialConditionsBuildingBlock, _initialCondition2, A<int>._, _newName)).MustHaveHappened();
       }
    }
 
-   internal class When_visiting_an_ParameterStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
+   internal class When_visiting_an_Parameter_ValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
-      private ParameterValuesBuildingBlock _parameterStartValuesBuildingBlock;
-      private ParameterValue _parameterStartValue;
+      private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+      private ParameterValue _parameterValue;
       private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
-      private ParameterValue _parameterStartValue2;
+      private ParameterValue _parameterValue2;
 
       protected override void Context()
       {
          base.Context();
-         _parameterStartValuesBuildingBlock = new ParameterValuesBuildingBlock();
-         _parameterStartValuesBuildingBlock.Name = _changedName;
-         _parameterStartValue = new ParameterValue();
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock
+         {
+            Name = _changedName
+         };
+         _parameterValue = new ParameterValue();
          _path = new ObjectPath(new[] {"A", "B", _changedName});
-         _parameterStartValue.Path = _path;
-         _parameterStartValuesBuildingBlock.Add(_parameterStartValue);
-         _parameterStartValue2 = new ParameterValue();
+         _parameterValue.Path = _path;
+         _parameterValuesBuildingBlock.Add(_parameterValue);
+         _parameterValue2 = new ParameterValue();
          _path = new ObjectPath(new[] {"A", _changedName, "B"});
-         _parameterStartValue2.Path = _path;
-         _parameterStartValuesBuildingBlock.Add(_parameterStartValue2);
-         _project.AddBuildingBlock(_parameterStartValuesBuildingBlock);
+         _parameterValue2.Path = _path;
+         _parameterValuesBuildingBlock.Add(_parameterValue2);
+         _project.AddBuildingBlock(_parameterValuesBuildingBlock);
       }
 
       protected override void Because()
@@ -232,10 +234,10 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_add_String_change_for_ParameterStartValuesBuildingBlock_to_changes()
+      public void should_add_String_change_for_ParameterValuesBuildingBlock_to_changes()
       {
          var change = _changes.First() as StringChange<IBuildingBlock>;
-         change.EntityToEdit.ShouldBeEqualTo(_parameterStartValuesBuildingBlock);
+         change.EntityToEdit.ShouldBeEqualTo(_parameterValuesBuildingBlock);
          change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
          change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterValuesBuildingBlock);
       }
@@ -243,13 +245,13 @@ namespace MoBi.Core
       [Observation]
       public void should_execute_EditName_for_PSV()
       {
-         A.CallTo(() => _psvTask.UpdateStartValueNameCommand(_parameterStartValuesBuildingBlock, _parameterStartValue, _newName)).MustHaveHappened();
+         A.CallTo(() => _psvTask.UpdateStartValueNameCommand(_parameterValuesBuildingBlock, _parameterValue, _newName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_execute_EditContainerpath_for_PSV2()
       {
-         A.CallTo(() => _psvTask.UpdateStartValueContainerPathCommand(_parameterStartValuesBuildingBlock, _parameterStartValue2, A<int>._, _newName)).MustHaveHappened();
+         A.CallTo(() => _psvTask.UpdateStartValueContainerPathCommand(_parameterValuesBuildingBlock, _parameterValue2, A<int>._, _newName)).MustHaveHappened();
       }
    }
 

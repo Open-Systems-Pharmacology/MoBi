@@ -103,10 +103,10 @@ namespace MoBi.Presentation
             return Start<IEditEventGroupBuildingBlockPresenter>();
 
          if (subject.IsAnImplementationOf<InitialConditionsBuildingBlock>())
-            return Start<IEditMoleculeStartValuesPresenter>();
+            return Start<IEditInitialConditionsPresenter>();
 
          if (subject.IsAnImplementationOf<ParameterValuesBuildingBlock>())
-            return Start<IEditParameterStartValuesPresenter>();
+            return Start<IEditParameterValuesPresenter>();
 
          if (subject.IsAnImplementationOf<ObserverBuildingBlock>())
             return Start<IEditObserverBuildingBlockPresenter>();

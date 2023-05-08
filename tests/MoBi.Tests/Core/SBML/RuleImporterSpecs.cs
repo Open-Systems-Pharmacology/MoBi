@@ -50,7 +50,7 @@ namespace MoBi.Core.SBML
          SBMLModule.ParameterValuesCollection.ShouldNotBeNull();
          SBMLModule.ParameterValuesCollection.FirstOrDefault().ShouldNotBeNull();
 
-         foreach (var psv in _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault())
+         foreach (var psv in _moBiProject.ParametersValueBlockCollection.FirstOrDefault())
          {
             if (psv.Name == SBMLConstants.SIZE)
             {

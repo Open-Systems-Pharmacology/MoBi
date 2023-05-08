@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
       protected override void DoExecute(IMoBiContext context)
       {
          var containerTask = context.Resolve<IContainerTask>();
-         var msvBuildingBlockSynchronizer = context.Resolve<IQuantitySynchronizer>();
+         var initialConditionsBuildingBlockSynchronizer = context.Resolve<IQuantitySynchronizer>();
          var allMoleculeAmounts = containerTask.CacheAllChildren<MoleculeAmount>(_simulation.Model.Root);
          var startValueBuildingBlocks = _simulation.Configuration.All<InitialConditionsBuildingBlock>();
 
@@ -48,7 +48,7 @@ namespace MoBi.Core.Commands
 
             _oldScaleFactors.Add(new ScaleDivisor { QuantityPath = scaleDivisor.QuantityPath, Value = moleculeAmount.ScaleDivisor });
             moleculeAmount.ScaleDivisor = scaleDivisor.Value;
-            startValueBuildingBlocks.Each(startValueBuildingBlock => msvBuildingBlockSynchronizer.SynchronizeMoleculeStartValues(moleculeAmount, startValueBuildingBlock));
+            startValueBuildingBlocks.Each(initialConditionsBuildingBlock => initialConditionsBuildingBlockSynchronizer.SynchronizeInitialConditions(moleculeAmount, initialConditionsBuildingBlock));
          }
       }
 

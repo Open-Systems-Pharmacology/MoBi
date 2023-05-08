@@ -166,7 +166,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new TableNotImplementedExceptionIsThrown().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterValue>>());
+         _result = sut.MapFrom(new TableNotImplementedExceptionIsThrown().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -180,7 +180,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new InvalidImportDataTable().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterValue>>());
+         _result = sut.MapFrom(new InvalidImportDataTable().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -194,7 +194,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new InvalidUnitsDataTable().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterValue>>());
+         _result = sut.MapFrom(new InvalidUnitsDataTable().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -208,7 +208,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new IncorrectFormatDataTableProvider().ImportTables(), A.Fake<IStartValuesBuildingBlock<ParameterValue>>());
+         _result = sut.MapFrom(new IncorrectFormatDataTableProvider().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
       }
 
       [Observation]

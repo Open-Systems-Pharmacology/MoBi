@@ -22,8 +22,8 @@ namespace MoBi.Presentation.DTO
       {
          PathWithValueObject = underlyingObject;
          PathWithValueObject.PropertyChanged += underlyingObjectOnPropertyChanged;
-         ContainerPathPropertyName = MoBiReflectionHelper.PropertyName<IStartValue>(x => x.ContainerPath);
-         FormulaPropertyName = MoBiReflectionHelper.PropertyName<IStartValue>(x => x.Formula);
+         ContainerPathPropertyName = MoBiReflectionHelper.PropertyName<PathAndValueEntity>(x => x.ContainerPath);
+         FormulaPropertyName = MoBiReflectionHelper.PropertyName<PathAndValueEntity>(x => x.Formula);
          ContainerPath = underlyingObject.ContainerPath;
       }
 

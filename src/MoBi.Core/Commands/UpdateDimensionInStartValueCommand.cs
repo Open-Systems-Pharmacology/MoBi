@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateDimensionInStartValueCommand<T> : BuildingBlockChangeCommandBase<IStartValuesBuildingBlock<T>> where T : class, IStartValue
+   public class UpdateDimensionInStartValueCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
    {
       private readonly T _startValue;
       private readonly IDimension _oldDimension;
@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
       private readonly Unit _oldDisplayUnit;
       private readonly Unit _newDisplayUnit;
 
-      public UpdateDimensionInStartValueCommand(T startValue, IDimension newDimension, Unit newDisplayUnit, IStartValuesBuildingBlock<T> startValuesBuildingBlock)
+      public UpdateDimensionInStartValueCommand(T startValue, IDimension newDimension, Unit newDisplayUnit, PathAndValueEntityBuildingBlock<T> startValuesBuildingBlock)
          : base(startValuesBuildingBlock)
       {
          _startValue = startValue;
@@ -32,7 +32,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _buildingBlock = context.Get<IStartValuesBuildingBlock<T>>(_buildingBlockId);
+         _buildingBlock = context.Get<PathAndValueEntityBuildingBlock<T>>(_buildingBlockId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

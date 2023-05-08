@@ -9,15 +9,15 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class ResetQuantityValuesToDefaultFromStartValuesInSimulation<TStartValue> : MoBiCommand where TStartValue : class, IStartValue
+   public abstract class ResetQuantityValuesToDefaultFromStartValuesInSimulation<TStartValue> : MoBiCommand where TStartValue : PathAndValueEntity
    {
       protected IMoBiSimulation _simulation;
-      private IStartValuesBuildingBlock<TStartValue> _startValuesBuildingBlock;
+      private PathAndValueEntityBuildingBlock<TStartValue> _startValuesBuildingBlock;
       protected ICloneManagerForModel _cloneManagerForModel;
       protected IMoBiFormulaTask _formulaTask;
       protected IEntityPathResolver _entityPathResolver;
 
-      protected ResetQuantityValuesToDefaultFromStartValuesInSimulation(IMoBiSimulation simulation, IStartValuesBuildingBlock<TStartValue> startValuesBuildingBlock)
+      protected ResetQuantityValuesToDefaultFromStartValuesInSimulation(IMoBiSimulation simulation, PathAndValueEntityBuildingBlock<TStartValue> startValuesBuildingBlock)
       {
          _simulation = simulation;
          _startValuesBuildingBlock = startValuesBuildingBlock;
@@ -52,7 +52,7 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new QuantityChangedEvent(quantityToReset));
       }
 
-      private IFormula defaultFormulaBasedOn(IStartValue startValue)
+      private IFormula defaultFormulaBasedOn(PathAndValueEntity startValue)
       {
          if (startValue.Formula != null)
             return _cloneManagerForModel.Clone(startValue.Formula);

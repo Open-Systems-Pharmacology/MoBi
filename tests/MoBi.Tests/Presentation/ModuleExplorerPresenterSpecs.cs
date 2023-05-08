@@ -184,16 +184,16 @@ namespace MoBi.Presentation
    {
       private ITreeNode<SpatialStructure> _spatialStructureA;
       private ITreeNode<RootNodeType> _moduleNode;
-      private MoleculeStartValuesFolderNode _moleculeStartValuesFolderNode;
-      private ParameterStartValuesFolderNode _parameterStartValuesFolderNode;
+      private InitialConditionsFolderNode _initialConditionsFolderNode;
+      private ParameterValuesFolderNode _parameterValuesFolderNode;
       protected override void Context()
       {
          base.Context();
          
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder);
-         _parameterStartValuesFolderNode = new ParameterStartValuesFolderNode(new Module());
-         _moleculeStartValuesFolderNode = new MoleculeStartValuesFolderNode();
+         _parameterValuesFolderNode = new ParameterValuesFolderNode(new Module());
+         _initialConditionsFolderNode = new InitialConditionsFolderNode();
       }
 
       [Observation]
@@ -205,14 +205,14 @@ namespace MoBi.Presentation
       [Observation]
       public void the_start_values_folders_are_inferior_to_other_node_types()
       {
-         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_moduleNode, _parameterStartValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_moduleNode, _moleculeStartValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _parameterStartValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _moleculeStartValuesFolderNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_parameterValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_initialConditionsFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_parameterValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_initialConditionsFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_moduleNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_moduleNode, _initialConditionsFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_initialConditionsFolderNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_parameterValuesFolderNode, _initialConditionsFolderNode).ShouldBeEqualTo(1);
       }
    }
 

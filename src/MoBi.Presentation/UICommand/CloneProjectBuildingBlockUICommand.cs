@@ -23,8 +23,8 @@ namespace MoBi.Presentation.UICommand
    }
 
    public class CloneStartValueBuildingBlockUICommand<TBuildingBlock, TStartValue, TTask> : ObjectUICommand<TBuildingBlock> 
-      where TBuildingBlock : StartValueBuildingBlock<TStartValue> 
-      where TStartValue : PathAndValueEntity, IStartValue
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>
+      where TStartValue : PathAndValueEntity
       where TTask : IStartValuesTask<TBuildingBlock, TStartValue>
    {
       private readonly IMoBiContext _context;

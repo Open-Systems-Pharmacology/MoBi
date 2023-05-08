@@ -436,28 +436,28 @@ namespace MoBi.Presentation.Repositories
             .WithCommand<FitToPageCommand>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Extend)
-            .WithId(MenuBarItemIds.MoleculeStartValuesExtend)
+            .WithId(MenuBarItemIds.InitialConditionsExtend)
             .WithDescription(ToolTips.Extend)
             .WithIcon(ApplicationIcons.ExtendInitialConditions)
-            .WithCommand<MoleculeStartValuesExtendUICommand>(_container);
+            .WithCommand<InitialConditionsExtendUICommand>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Extend)
-            .WithId(MenuBarItemIds.ParameterStartValuesExtend)
+            .WithId(MenuBarItemIds.ParameterValuesExtend)
             .WithDescription(ToolTips.Extend)
             .WithIcon(ApplicationIcons.ExtendParameterValues)
-            .WithCommand<ParameterStartValuesExtendUICommand>(_container);
+            .WithCommand<ParameterValuesExtendUICommand>(_container);
 
          yield return CreateMenuButton
-            .WithCaption(AppConstants.MenuNames.NewParameterStartValue)
-            .WithId(MenuBarItemIds.NewParameterStartValue)
+            .WithCaption(AppConstants.MenuNames.NewParameterValue)
+            .WithId(MenuBarItemIds.NewParameterValue)
             .WithIcon(ApplicationIcons.AddParameterValues)
-            .WithCommand<AddParameterStartValuesUICommand>(_container);
+            .WithCommand<AddParameterValuesUICommand>(_container);
 
          yield return CreateMenuButton
-            .WithCaption(AppConstants.MenuNames.NewMoleculeStartValue)
-            .WithId(MenuBarItemIds.NewMoleculeStartValue)
+            .WithCaption(AppConstants.MenuNames.NewInitialCondition)
+            .WithId(MenuBarItemIds.NewInitialConditions)
             .WithIcon(ApplicationIcons.AddInitialConditions)
-            .WithCommand<AddMoleculeStartValuesUICommand>(_container);
+            .WithCommand<AddInitialConditionsUICommand>(_container);
      
          yield return CreateMenuButton
               .WithCaption(AppConstants.MenuNames.ImportSBML)

@@ -305,7 +305,7 @@ namespace MoBi.Presentation.Mapper
          
          _tables = new MsvDataTableProvider().ImportTables();
 
-         _startValuesBuildingBlock.Add(new InitialCondition { Name="Drug", ContainerPath = ContainerPathFromDataTableRow(_tables, 0), StartValue = 9.0});
+         _startValuesBuildingBlock.Add(new InitialCondition { Name="Drug", ContainerPath = ContainerPathFromDataTableRow(_tables, 0), Value = 9.0});
          _tables.Rows[0][3] = string.Empty;
       }
 
@@ -419,7 +419,7 @@ namespace MoBi.Presentation.Mapper
          _importTables.Rows[0][4] = string.Empty;
          _importTables.Rows[0][3] = string.Empty;
          
-         _startValuesBuildingBlock.Add(new InitialCondition { ContainerPath = ContainerPathFromDataTableRow(_importTables, 0), Name = "Drug", StartValue = 9.0});
+         _startValuesBuildingBlock.Add(new InitialCondition { ContainerPath = ContainerPathFromDataTableRow(_importTables, 0), Name = "Drug", Value = 9.0});
       }
 
       protected override void Because()

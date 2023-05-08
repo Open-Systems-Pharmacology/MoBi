@@ -8,13 +8,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddStartValueToBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<IStartValuesBuildingBlock<T>> where T : class, IStartValue
+   public class AddStartValueToBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
    {
       private T _startValue;
       private readonly ObjectPath _objectPath;
-      private byte[] _serializedParameterStartValue;
+      private byte[] _serializedStartValue;
 
-      public AddStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<T> startValuesBuildingBlock, T startValue)
+      public AddStartValueToBuildingBlockCommand(PathAndValueEntityBuildingBlock<T> startValuesBuildingBlock, T startValue)
          : base(startValuesBuildingBlock)
       {
          _startValue = startValue;
@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _startValue = context.Deserialize<T>(_serializedParameterStartValue);
+         _startValue = context.Deserialize<T>(_serializedStartValue);
       }
 
       protected override void ClearReferences()
@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         _serializedParameterStartValue = context.Serialize(_startValue);
+         _serializedStartValue = context.Serialize(_startValue);
          _buildingBlock.Add(_startValue);
          if(_startValue.Formula != null)
             _buildingBlock.AddFormula(_startValue.Formula);
@@ -56,17 +56,17 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddParameterStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<ParameterValue>
+   public class AddParameterValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<ParameterValue>
    {
-      public AddParameterStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<ParameterValue> parameterStartValuesBuildingBlock, ParameterValue startValue) : base(parameterStartValuesBuildingBlock, startValue)
+      public AddParameterValueToBuildingBlockCommand(PathAndValueEntityBuildingBlock<ParameterValue> parameterValuesBuildingBlock, ParameterValue startValue) : base(parameterValuesBuildingBlock, startValue)
       {
       }
    }
 
-   public class AddMoleculeStartValueToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<InitialCondition>
+   public class AddInitialConditionToBuildingBlockCommand : AddStartValueToBuildingBlockCommand<InitialCondition>
    {
-      public AddMoleculeStartValueToBuildingBlockCommand(IStartValuesBuildingBlock<InitialCondition> moleculeStartValuesBuildingBlock, InitialCondition startValue)
-         : base(moleculeStartValuesBuildingBlock, startValue)
+      public AddInitialConditionToBuildingBlockCommand(PathAndValueEntityBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition startValue)
+         : base(initialConditionsBuildingBlock, startValue)
       {
       }
    }

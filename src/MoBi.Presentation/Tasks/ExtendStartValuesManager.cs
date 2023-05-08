@@ -9,7 +9,7 @@ using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation.Tasks
 {
-   public interface IExtendStartValuesManager<T> where T : StartValueBase
+   public interface IExtendStartValuesManager<T> where T : PathAndValueEntity
    {
       /// <summary>
       ///    Manages the conflict of the two caches
@@ -40,7 +40,7 @@ namespace MoBi.Presentation.Tasks
       Action CancelAction { set; }
    }
    
-   public abstract class ExtendStartValuesManager<T> : AbstractMergeManager<T>, IExtendStartValuesManager<T> where T : StartValueBase
+   public abstract class ExtendStartValuesManager<T> : AbstractMergeManager<T>, IExtendStartValuesManager<T> where T : PathAndValueEntity
    {
       public Action<T> RemoveAction
       {

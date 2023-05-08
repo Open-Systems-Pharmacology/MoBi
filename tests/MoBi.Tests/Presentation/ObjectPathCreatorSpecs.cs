@@ -985,7 +985,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public abstract class concern_for_ObjectPathCreatorMoleculeStartValue : ContextSpecification<IObjectPathCreator>
+   public abstract class concern_for_ObjectPathCreatorInitialCondition : ContextSpecification<IObjectPathCreator>
    {
       protected IMoBiContext _context;
 
@@ -993,11 +993,11 @@ namespace MoBi.Presentation
       {
          IAliasCreator aliasCreator = new AliasCreator();
          _context = A.Fake<IMoBiContext>();
-         sut = new ObjectPathCreatorAtMoleculeStartValue(new ObjectPathFactory(aliasCreator), aliasCreator, _context);
+         sut = new ObjectPathCreatorAtInitialCondition(new ObjectPathFactory(aliasCreator), aliasCreator, _context);
       }
    }
 
-   public class When_asking_for_objectpath_for_an_global_Molecule_parameter_used_in_A_molecule_StartValue : concern_for_ObjectPathCreatorMoleculeStartValue
+   public class When_asking_for_objectpath_for_an_global_Molecule_parameter_used_in_A_molecule_StartValue : concern_for_ObjectPathCreatorInitialCondition
    {
       private IParameter _parameter;
       private IDimension _rightDimension;
@@ -1033,7 +1033,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_asking_for_realtive_objectpath_for_an_local_Molecule_parameter_used_in_A_molecule_StartValue : concern_for_ObjectPathCreatorMoleculeStartValue
+   public class When_asking_for_realtive_objectpath_for_an_local_Molecule_parameter_used_in_A_molecule_StartValue : concern_for_ObjectPathCreatorInitialCondition
    {
       private IParameter _parameter;
       private IDimension _rightDimension;
@@ -1069,7 +1069,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_asking_for_absolute_objectpath_for_an_local_Molecule_parameter_used_in_A_molecule_StartValue : concern_for_ObjectPathCreatorMoleculeStartValue
+   public class When_asking_for_absolute_objectpath_for_an_local_Molecule_parameter_used_in_A_molecule_StartValue : concern_for_ObjectPathCreatorInitialCondition
    {
       private IParameter _parameter;
       private IDimension _rightDimension;
@@ -1111,7 +1111,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_asking_for_a_relative_path_in_a_container_hierarchy_referenced_by_a_local_molecule_start_value : concern_for_ObjectPathCreatorMoleculeStartValue
+   public class When_asking_for_a_relative_path_in_a_container_hierarchy_referenced_by_a_local_molecule_start_value : concern_for_ObjectPathCreatorInitialCondition
    {
       private ReferenceDTO _result;
       private IParameter _parameter;

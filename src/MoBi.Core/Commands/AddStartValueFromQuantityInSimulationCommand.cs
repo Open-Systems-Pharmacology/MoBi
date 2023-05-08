@@ -7,15 +7,15 @@ using OSPSuite.Core.Domain.Services;
 namespace MoBi.Core.Commands
 {
    public abstract class AddStartValueFromQuantityInSimulationCommand<TQuantity, TStartValue> : MoBiReversibleCommand
-      where TStartValue : class, IStartValue
+      where TStartValue : PathAndValueEntity
       where TQuantity : class, IQuantity
    {
       protected TQuantity _quantity;
-      private IStartValuesBuildingBlock<TStartValue> _startValuesBuildingBlock;
+      private PathAndValueEntityBuildingBlock<TStartValue> _startValuesBuildingBlock;
       private readonly string _startValuesBuildingBlockId;
       protected ObjectPath _objectPath;
 
-      protected AddStartValueFromQuantityInSimulationCommand(TQuantity quantity, IStartValuesBuildingBlock<TStartValue> startValuesBuildingBlock)
+      protected AddStartValueFromQuantityInSimulationCommand(TQuantity quantity, PathAndValueEntityBuildingBlock<TStartValue> startValuesBuildingBlock)
       {
          _quantity = quantity;
          _startValuesBuildingBlock = startValuesBuildingBlock;
@@ -51,40 +51,40 @@ namespace MoBi.Core.Commands
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
-         _startValuesBuildingBlock = context.Get<IStartValuesBuildingBlock<TStartValue>>(_startValuesBuildingBlockId);
+         _startValuesBuildingBlock = context.Get<PathAndValueEntityBuildingBlock<TStartValue>>(_startValuesBuildingBlockId);
       }
    }
 
-   public class AddParameterStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IParameter, ParameterValue>
+   public class AddParameterValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<IParameter, ParameterValue>
    {
-      public AddParameterStartValueFromQuantityInSimulationCommand(IParameter parameter, ParameterValuesBuildingBlock parameterStartValuesBuildingBlock)
-         : base(parameter, parameterStartValuesBuildingBlock)
+      public AddParameterValueFromQuantityInSimulationCommand(IParameter parameter, ParameterValuesBuildingBlock parameterValuesBuildingBlock)
+         : base(parameter, parameterValuesBuildingBlock)
       {
       }
 
       protected override ParameterValue CreateNewStartValue(IMoBiContext context)
       {
-         var parameterStartValueCreator = context.Resolve<IParameterValuesCreator>();
-         return parameterStartValueCreator.CreateParameterValue(_objectPath, _quantity);
+         var parameterValuesCreator = context.Resolve<IParameterValuesCreator>();
+         return parameterValuesCreator.CreateParameterValue(_objectPath, _quantity);
       }
    }
 
-   public class AddMoleculeStartValueFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<MoleculeAmount, InitialCondition>
+   public class AddInitialConditionFromQuantityInSimulationCommand : AddStartValueFromQuantityInSimulationCommand<MoleculeAmount, InitialCondition>
    {
-      public AddMoleculeStartValueFromQuantityInSimulationCommand(MoleculeAmount moleculeAmount, InitialConditionsBuildingBlock moleculeStartValuesBuildingBlock)
-         : base(moleculeAmount, moleculeStartValuesBuildingBlock)
+      public AddInitialConditionFromQuantityInSimulationCommand(MoleculeAmount moleculeAmount, InitialConditionsBuildingBlock initialConditionsBuildingBlock)
+         : base(moleculeAmount, initialConditionsBuildingBlock)
       {
       }
 
       protected override InitialCondition CreateNewStartValue(IMoBiContext context)
       {
-         var moleculeStartValueCreator = context.Resolve<IInitialConditionsCreator>();
+         var initialConditionsCreator = context.Resolve<IInitialConditionsCreator>();
          var containerPath = _objectPath.Clone<ObjectPath>();
          var lastIndex = containerPath.Count - 1;
          var name = containerPath[lastIndex];
          containerPath.RemoveAt(lastIndex);
 
-         return moleculeStartValueCreator.CreateInitialCondition(containerPath, name, _quantity.Dimension, _quantity.DisplayUnit, _quantity.ValueOrigin);
+         return initialConditionsCreator.CreateInitialCondition(containerPath, name, _quantity.Dimension, _quantity.DisplayUnit, _quantity.ValueOrigin);
       }
    }
 }

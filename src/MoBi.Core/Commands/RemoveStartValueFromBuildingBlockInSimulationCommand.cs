@@ -5,12 +5,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveStartValueFromBuildingBlockInSimulationCommand<T> : StartValueBuildingBlockInSimulationCommandBase<T> where T : class, IStartValue
+   public class RemoveStartValueFromBuildingBlockInSimulationCommand<T> : StartValueBuildingBlockInSimulationCommandBase<T> where T : PathAndValueEntity
    {
       private readonly ObjectPath _objectPath;
       private T _startValue;
 
-      public RemoveStartValueFromBuildingBlockInSimulationCommand(ObjectPath objectPath, IStartValuesBuildingBlock<T> startValuesBuildingBlock) : base(startValuesBuildingBlock)
+      public RemoveStartValueFromBuildingBlockInSimulationCommand(ObjectPath objectPath, PathAndValueEntityBuildingBlock<T> startValuesBuildingBlock) : base(startValuesBuildingBlock)
       {
          _objectPath = objectPath;
       }

@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Presenter
       void SelectedModuleConfigurationNodeChanged(ITreeNode selectedTreeNode);
       void SelectedModuleNodeChanged(ITreeNode selectedNode);
       IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionsCollectionFor(ITreeNode selectedNode);
-      IReadOnlyList<ParameterValuesBuildingBlock> ParameterStartValuesCollectionFor(ITreeNode selectedNode);
+      IReadOnlyList<ParameterValuesBuildingBlock> ParameterValuesCollectionFor(ITreeNode selectedNode);
       int CompareSelectedNodes(ITreeNode node1, ITreeNode node2);
       IReadOnlyList<ModuleConfigurationDTO> ModuleConfigurationDTOs { get; }
       void UpdateStartValuesFor(ITreeNode selectedModuleConfigurationNode);
@@ -148,7 +148,7 @@ namespace MoBi.Presentation.Presenter
          return dto.InitialConditionsCollection;
       }
 
-      public IReadOnlyList<ParameterValuesBuildingBlock> ParameterStartValuesCollectionFor(ITreeNode selectedNode)
+      public IReadOnlyList<ParameterValuesBuildingBlock> ParameterValuesCollectionFor(ITreeNode selectedNode)
       {
          if (selectedNode == null)
             return new List<ParameterValuesBuildingBlock>();
@@ -171,8 +171,8 @@ namespace MoBi.Presentation.Presenter
       {
          var dto = moduleConfigurationDTOFor(selectedModuleConfigurationNode);
 
-         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedParameterStartValues, removeOnly: !dto.HasParameterStartValues);
-         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedMoleculeStartValues, removeOnly: !dto.HasMoleculeStartValues);
+         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedParameterValues, removeOnly: !dto.HasParameterValues);
+         updateStartValueIfRequired(selectedModuleConfigurationNode, dto.SelectedInitialConditions, removeOnly: !dto.HasInitialConditions);
       }
 
       private void updateStartValueIfRequired<TBuildingBlock>(ITreeNode selectedModuleConfigurationNode, TBuildingBlock buildingBlock, bool removeOnly) where TBuildingBlock : class, IBuildingBlock

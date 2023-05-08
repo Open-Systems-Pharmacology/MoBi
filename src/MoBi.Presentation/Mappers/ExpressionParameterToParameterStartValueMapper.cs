@@ -5,16 +5,16 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IExpressionParameterToParameterStartValueMapper : IMapper<ExpressionParameter, ParameterValue>
+   public interface IExpressionParameterToParameterValueMapper : IMapper<ExpressionParameter, ParameterValue>
    {
    }
 
-   public class ExpressionParameterToParameterStartValueMapper : IExpressionParameterToParameterStartValueMapper
+   public class ExpressionParameterToParameterValueMapper : IExpressionParameterToParameterValueMapper
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly ICloneManagerForModel _cloneManager;
 
-      public ExpressionParameterToParameterStartValueMapper(IObjectBaseFactory objectBaseFactory, ICloneManagerForModel cloneManager)
+      public ExpressionParameterToParameterValueMapper(IObjectBaseFactory objectBaseFactory, ICloneManagerForModel cloneManager)
       {
          _objectBaseFactory = objectBaseFactory;
          _cloneManager = cloneManager;
@@ -22,16 +22,16 @@ namespace MoBi.Presentation.Mappers
 
       public ParameterValue MapFrom(ExpressionParameter expressionParameter)
       {
-         var parameterStartValue = _objectBaseFactory.Create<ParameterValue>();
+         var parameterValue = _objectBaseFactory.Create<ParameterValue>();
 
-         parameterStartValue.Path = expressionParameter.Path;
-         parameterStartValue.Formula = _cloneManager.Clone(expressionParameter.Formula);
-         parameterStartValue.Dimension = expressionParameter.Dimension;
-         parameterStartValue.Value = expressionParameter.Value;
-         parameterStartValue.Description = expressionParameter.Description;
-         parameterStartValue.UpdateValueOriginFrom(expressionParameter.ValueOrigin);
+         parameterValue.Path = expressionParameter.Path;
+         parameterValue.Formula = _cloneManager.Clone(expressionParameter.Formula);
+         parameterValue.Dimension = expressionParameter.Dimension;
+         parameterValue.Value = expressionParameter.Value;
+         parameterValue.Description = expressionParameter.Description;
+         parameterValue.UpdateValueOriginFrom(expressionParameter.ValueOrigin);
 
-         return parameterStartValue;
+         return parameterValue;
       }
    }
 }

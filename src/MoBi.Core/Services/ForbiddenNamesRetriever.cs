@@ -179,7 +179,7 @@ namespace MoBi.Core.Services
          var nameHash = new HashSet<string>();
          // We need to retrieve Names from here if a removed Molecule is still in MSV
          // to prevent double deffinitions in Startvalues
-         getAllMoleculeStartValuesFromBuildingBlocksFor(moleculeBuilder)
+         getAllInitialConditionsFromBuildingBlocksFor(moleculeBuilder)
             .Select(x => x.MoleculeName).Distinct()
             .Where(x => !x.Equals(moleculeBuilder.Name))
             .Each(x => nameHash.Add(x));
@@ -187,10 +187,10 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      private IEnumerable<InitialCondition> getAllMoleculeStartValuesFromBuildingBlocksFor(MoleculeBuilder builder)
+      private IEnumerable<InitialCondition> getAllInitialConditionsFromBuildingBlocksFor(MoleculeBuilder builder)
       {
          var builderName = builder.Name;
-         return _context.CurrentProject.MoleculeStartValueBlockCollection
+         return _context.CurrentProject.InitialConditionBlockCollection
             .Where(x => x.Any(msv => msv.MoleculeName.Equals(builderName)))
             .SelectMany(x => x.All());
       }

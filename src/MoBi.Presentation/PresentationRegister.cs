@@ -109,8 +109,8 @@ namespace MoBi.Presentation
          container.Register<ISelectManyPresenter<OSPSuite.Core.Domain.IContainer>, SelectObjectBasePresenter<OSPSuite.Core.Domain.IContainer>>();
          container.Register<ISelectManyPresenter<EventGroupBuilder>, SelectObjectBasePresenter<EventGroupBuilder>>();
 
-         container.Register<ICreateStartValuesPresenter<InitialConditionsBuildingBlock>, CreateMoleculeStartValuesPresenter>();
-         container.Register<ICreateStartValuesPresenter<ParameterValuesBuildingBlock>, CreateParameterStartValuesPresenter>();
+         container.Register<ICreateStartValuesPresenter<InitialConditionsBuildingBlock>, CreateInitialConditionsPresenter>();
+         container.Register<ICreateStartValuesPresenter<ParameterValuesBuildingBlock>, CreateParameterValuesPresenter>();
 
          container.Register<ISettingsPersistor<IUserSettings>, UserSettingsPersistor>();
          container.Register<ISettingsPersistor<IApplicationSettings>, ApplicationSettingsPersistor>();
@@ -233,8 +233,8 @@ namespace MoBi.Presentation
          container.Register<IRootContextMenuFor<MoBiProject, ParameterIdentification>, RootContextMenuForParameterIdentification>();
          container.Register<IRootContextMenuFor<MoBiProject, SensitivityAnalysis>, RootContextMenuForSensitivityAnalysis>();
          container.Register<IContextMenuFor<IMoBiSimulation>, ContextMenuForSimulation>();
-         container.Register<IContextMenuForBuildingBlock<ParameterValuesBuildingBlock>, ContextMenuForParameterStartValuesBuildingBlock>();
-         container.Register<IContextMenuForBuildingBlock<InitialConditionsBuildingBlock>, ContextMenuForMoleculeStartValuesBuildingBlock>();
+         container.Register<IContextMenuForBuildingBlock<ParameterValuesBuildingBlock>, ContextMenuForParameterValuesBuildingBlock>();
+         container.Register<IContextMenuForBuildingBlock<InitialConditionsBuildingBlock>, ContextMenuForInitialConditionsBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<ExpressionProfileBuildingBlock>, ContextMenuForExpressionProfileBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<IndividualBuildingBlock>, ContextMenuForIndividualBuildingBlock>();
          container.Register<IContextMenuForBuildingBlock<MoBiReactionBuildingBlock>, ContextMenuForModuleBuildingBlock<MoBiReactionBuildingBlock>>();

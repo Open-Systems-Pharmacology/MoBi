@@ -6,7 +6,7 @@ namespace MoBi.Presentation.DTO
 {
    public static class NullStartValues
    {
-      public static InitialConditionsBuildingBlock NullMoleculeStartValues { get; } = new InitialConditionsBuildingBlock().WithName(AppConstants.Captions.NoMoleculeStartValues);
-      public static ParameterValuesBuildingBlock NullParameterStartValues { get; } = new ParameterValuesBuildingBlock().WithName(AppConstants.Captions.NoParameterStartValues);
+      public static InitialConditionsBuildingBlock NullInitialConditions { get; } = new InitialConditionsBuildingBlock().WithName(AppConstants.Captions.NoInitialConditions);
+      public static ParameterValuesBuildingBlock NullParameterValues { get; } = new ParameterValuesBuildingBlock().WithName(AppConstants.Captions.NoParameterValues);
    }
 }

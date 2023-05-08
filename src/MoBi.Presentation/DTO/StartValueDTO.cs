@@ -22,9 +22,9 @@ namespace MoBi.Presentation.DTO
       ValueFormulaDTO Formula { get; set; }
    }
 
-   public abstract class StartValueDTO<T> : PathWithValueEntityDTO<T>, IStartValueDTO where T : PathAndValueEntity, IStartValue
+   public abstract class StartValueDTO<T> : PathWithValueEntityDTO<T>, IStartValueDTO where T : PathAndValueEntity
    {
-      private readonly IStartValuesBuildingBlock<T> _buildingBlock;
+      private readonly PathAndValueEntityBuildingBlock<T> _buildingBlock;
 
       /// <summary>
       ///    Updates the name of the start value
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.DTO
       /// <param name="newName">The new name for the start value</param>
       public abstract void UpdateStartValueName(string newName);
 
-      protected StartValueDTO(T startValueObject, IStartValuesBuildingBlock<T> buildingBlock)
+      protected StartValueDTO(T startValueObject, PathAndValueEntityBuildingBlock<T> buildingBlock)
          : base(startValueObject)
       {
          _buildingBlock = buildingBlock;

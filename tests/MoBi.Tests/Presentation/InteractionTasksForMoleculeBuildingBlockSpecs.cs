@@ -39,11 +39,11 @@ namespace MoBi.Presentation
       {
          base.Context();
          _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
-         var moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock
+         var initialConditionsBuildingBlock = new InitialConditionsBuildingBlock
          {
             MoleculeBuildingBlockId = _moleculeBuildingBlock.Id
          };
-         _project.AddBuildingBlock(moleculeStartValuesBuildingBlock);
+         _project.AddBuildingBlock(initialConditionsBuildingBlock);
          _module = new Module
          {
             new InitialConditionsBuildingBlock {MoleculeBuildingBlockId = _moleculeBuildingBlock.Id, SpatialStructureId = ""}

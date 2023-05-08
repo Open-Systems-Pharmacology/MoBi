@@ -10,8 +10,8 @@ namespace MoBi.Presentation.DTO
       public bool WithPassiveTransport { get; set; }
       public bool WithMolecule { get; set; }
       public bool WithObserver { get; set; }
-      public bool WithMoleculeStartValues { get; set; }
-      public bool WithParameterStartValues { get; set; }
+      public bool WithInitialConditions { get; set; }
+      public bool WithParameterValues { get; set; }
 
       public bool CanSelectReaction { get; set; } = true;
       public bool CanSelectEventGroup { get; set; } = true;
@@ -19,7 +19,7 @@ namespace MoBi.Presentation.DTO
       public bool CanSelectPassiveTransport { get; set; } = true;
       public bool CanSelectMolecule { get; set; } = true;
       public bool CanSelectObserver { get; set; } = true;
-      public bool CanSelectMoleculeStartValues { get; set; } = true;
-      public bool CanSelectParameterStartValues { get; set; } = true;
+      public bool CanSelectInitialConditions { get; set; } = true;
+      public bool CanSelectParameterValues { get; set; } = true;
    }
 }

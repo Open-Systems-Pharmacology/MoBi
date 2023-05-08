@@ -15,17 +15,17 @@ namespace MoBi.Presentation.Mappers
       /// <param name="table">The table being converted</param>
       /// <param name="buildingBlock">The context building block. This will be the target of the import</param>
       /// <returns>The DTO containing all the quantities to be updated or inserted</returns>
-      QuantityImporterDTO MapFrom(DataTable table, IStartValuesBuildingBlock<ParameterValue> buildingBlock);
+      QuantityImporterDTO MapFrom(DataTable table, PathAndValueEntityBuildingBlock<ParameterValue> buildingBlock);
    }
 
-   public class DataTableToImportQuantityDTOMapperForParameters : DataTableToImportParameterQuantityDTOMapper<IStartValuesBuildingBlock<ParameterValue>>, IDataTableToImportQuantityDTOMapperForParameters
+   public class DataTableToImportQuantityDTOMapperForParameters : DataTableToImportParameterQuantityDTOMapper<PathAndValueEntityBuildingBlock<ParameterValue>>, IDataTableToImportQuantityDTOMapperForParameters
    {
       public DataTableToImportQuantityDTOMapperForParameters(IMoBiDimensionFactory dimensionFactory)
          : base(dimensionFactory)
       {
       }
 
-      protected override void ValidateInContext(ImportedQuantityDTO dto, QuantityImporterDTO quantityImporterDTO, IStartValuesBuildingBlock<ParameterValue> buildingBlock, DataRow row, int rowIndex)
+      protected override void ValidateInContext(ImportedQuantityDTO dto, QuantityImporterDTO quantityImporterDTO, PathAndValueEntityBuildingBlock<ParameterValue> buildingBlock, DataRow row, int rowIndex)
       {
          base.ValidateInContext(dto, quantityImporterDTO, buildingBlock, row, rowIndex);
          var builder = buildingBlock[dto.Path];
@@ -38,12 +38,12 @@ namespace MoBi.Presentation.Mappers
          return !double.IsNaN(dto.QuantityInBaseUnit);
       }
 
-      protected override bool IsUpdate(ImportedQuantityDTO dto, IStartValuesBuildingBlock<ParameterValue> importTarget)
+      protected override bool IsUpdate(ImportedQuantityDTO dto, PathAndValueEntityBuildingBlock<ParameterValue> importTarget)
       {
          return !IsNewInsert(dto, importTarget);
       }
 
-      protected override bool IsNewInsert(ImportedQuantityDTO dto, IStartValuesBuildingBlock<ParameterValue> importTarget)
+      protected override bool IsNewInsert(ImportedQuantityDTO dto, PathAndValueEntityBuildingBlock<ParameterValue> importTarget)
       {
          return importTarget[dto.Path] == null;
       }
@@ -53,11 +53,11 @@ namespace MoBi.Presentation.Mappers
          return !double.IsNaN(dto.QuantityInBaseUnit);
       }
 
-      protected override string LogMessageFor(ImportedQuantityDTO dto, IStartValuesBuildingBlock<ParameterValue> importTarget)
+      protected override string LogMessageFor(ImportedQuantityDTO dto, PathAndValueEntityBuildingBlock<ParameterValue> importTarget)
       {
          return IsNewInsert(dto, importTarget)
-            ? AppConstants.Captions.AddingParameterStartValue(dto.Path, dto.ConvertToDisplayUnit(dto.QuantityInBaseUnit), dto.DisplayUnit)
-            : AppConstants.Captions.UpdatingParameterStartValue(dto.Path, dto.ConvertToDisplayUnit(dto.QuantityInBaseUnit), dto.DisplayUnit);
+            ? AppConstants.Captions.AddingParameterValue(dto.Path, dto.ConvertToDisplayUnit(dto.QuantityInBaseUnit), dto.DisplayUnit)
+            : AppConstants.Captions.UpdatingParameterValue(dto.Path, dto.ConvertToDisplayUnit(dto.QuantityInBaseUnit), dto.DisplayUnit);
       }
    }
 }

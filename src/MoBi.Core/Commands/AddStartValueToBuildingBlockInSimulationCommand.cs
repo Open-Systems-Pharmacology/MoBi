@@ -5,12 +5,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddStartValueToBuildingBlockInSimulationCommand<T> : StartValueBuildingBlockInSimulationCommandBase<T> where T : class, IStartValue
+   public class AddStartValueToBuildingBlockInSimulationCommand<T> : StartValueBuildingBlockInSimulationCommandBase<T> where T : PathAndValueEntity
    {
       private readonly T _startValue;
       private ObjectPath _objectPath;
 
-      public AddStartValueToBuildingBlockInSimulationCommand(T startValue, IStartValuesBuildingBlock<T> startValuesBuildingBlock)
+      public AddStartValueToBuildingBlockInSimulationCommand(T startValue, PathAndValueEntityBuildingBlock<T> startValuesBuildingBlock)
          : base(startValuesBuildingBlock)
       {
          _startValue = startValue;

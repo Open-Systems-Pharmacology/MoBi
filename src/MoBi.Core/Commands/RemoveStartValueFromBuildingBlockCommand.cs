@@ -8,11 +8,11 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveStartValueFromBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<IStartValuesBuildingBlock<T>> where T : class, IStartValue
+   public class RemoveStartValueFromBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
    {
       private readonly T _originalStartValue;
 
-      public RemoveStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<T> parent, ObjectPath path) : base(parent)
+      public RemoveStartValueFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<T> parent, ObjectPath path) : base(parent)
       {
          CommandType = AppConstants.Commands.DeleteCommand;
 
@@ -40,17 +40,17 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveMoleculeStartValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<InitialCondition>
+   public class RemoveInitialConditionFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<InitialCondition>
    {
-      public RemoveMoleculeStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<InitialCondition> parent, ObjectPath path)
+      public RemoveInitialConditionFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<InitialCondition> parent, ObjectPath path)
          : base(parent, path)
       {
       }
    }
 
-   public class RemoveParameterStartValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<ParameterValue>
+   public class RemoveParameterValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<ParameterValue>
    {
-      public RemoveParameterStartValueFromBuildingBlockCommand(IStartValuesBuildingBlock<ParameterValue> parent, ObjectPath path) : base(parent, path)
+      public RemoveParameterValueFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<ParameterValue> parent, ObjectPath path) : base(parent, path)
       {
       }
    }

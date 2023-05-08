@@ -35,8 +35,8 @@ namespace MoBi.Presentation.Mapper
 
          _dto = new ModuleConfigurationDTO(new ModuleConfiguration(_module))
          {
-            SelectedMoleculeStartValues = _module.InitialConditionsCollection.First(),
-            SelectedParameterStartValues = _module.ParameterValuesCollection.First()
+            SelectedInitialConditions = _module.InitialConditionsCollection.First(),
+            SelectedParameterValues = _module.ParameterValuesCollection.First()
          };
       }
 
@@ -73,8 +73,8 @@ namespace MoBi.Presentation.Mapper
          };
          _dto = new ModuleConfigurationDTO(new ModuleConfiguration(module))
          {
-            SelectedMoleculeStartValues = NullStartValues.NullMoleculeStartValues,
-            SelectedParameterStartValues = NullStartValues.NullParameterStartValues
+            SelectedInitialConditions = NullStartValues.NullInitialConditions,
+            SelectedParameterValues = NullStartValues.NullParameterValues
          };
       }
 

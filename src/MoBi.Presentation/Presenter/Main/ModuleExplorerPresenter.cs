@@ -109,7 +109,7 @@ namespace MoBi.Presentation.Presenter.Main
       public int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
       {
          if (nodeIsStartValueFolderNode(node1) && nodeIsStartValueFolderNode(node2))
-            return nodeIsMoleculeStartValuesNode(node1) ? -1 : 1;
+            return nodeIsInitialConditionsNode(node1) ? -1 : 1;
 
          if (nodeIsStartValueFolderNode(node1))
             return 1;
@@ -134,17 +134,17 @@ namespace MoBi.Presentation.Presenter.Main
 
       private bool nodeIsStartValueFolderNode(ITreeNode<IWithName> node1)
       {
-         return nodeIsParameterStartValuesNode(node1) || nodeIsMoleculeStartValuesNode(node1);
+         return nodeIsParameterValuesNode(node1) || nodeIsInitialConditionsNode(node1);
       }
 
-      private static bool nodeIsMoleculeStartValuesNode(ITreeNode<IWithName> node1)
+      private static bool nodeIsInitialConditionsNode(ITreeNode<IWithName> node1)
       {
-         return node1 is MoleculeStartValuesFolderNode;
+         return node1 is InitialConditionsFolderNode;
       }
 
-      private static bool nodeIsParameterStartValuesNode(ITreeNode<IWithName> node1)
+      private static bool nodeIsParameterValuesNode(ITreeNode<IWithName> node1)
       {
-         return node1 is ParameterStartValuesFolderNode;
+         return node1 is ParameterValuesFolderNode;
       }
 
       private int rootNodeTypeComparison(ITreeNode<IWithName> node1)
@@ -231,10 +231,10 @@ namespace MoBi.Presentation.Presenter.Main
          var moduleNode = _view.TreeView.NodeById(module.Id);
 
          if (buildingBlock is ParameterValuesBuildingBlock)
-            return moduleNode.Children.OfType<ParameterStartValuesFolderNode>().FirstOrDefault();
+            return moduleNode.Children.OfType<ParameterValuesFolderNode>().FirstOrDefault();
 
          if (buildingBlock is InitialConditionsBuildingBlock)
-            return moduleNode.Children.OfType<MoleculeStartValuesFolderNode>().FirstOrDefault();
+            return moduleNode.Children.OfType<InitialConditionsFolderNode>().FirstOrDefault();
 
          return moduleNode;
       }

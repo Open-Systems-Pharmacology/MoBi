@@ -21,8 +21,8 @@ namespace MoBi.Presentation.Presenter
    }
 
    public abstract class AbstractQuantitiesImporterPresenterForBuildingBlock<T, TStartValue> : AbstractQuantitiesImporterPresenter
-      where T : class, IStartValuesBuildingBlock<TStartValue>
-      where TStartValue : class, IStartValue
+      where T : PathAndValueEntityBuildingBlock<TStartValue>
+      where TStartValue : PathAndValueEntity
    {
       protected readonly IMoBiContext _context;
       protected T _startValuesBuildingBlock;

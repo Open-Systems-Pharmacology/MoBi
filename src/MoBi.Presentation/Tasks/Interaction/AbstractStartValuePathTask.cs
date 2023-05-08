@@ -9,7 +9,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IStartValuePathTask<TBuildingBlock, TStartValue> where TBuildingBlock : class, IBuildingBlock, IStartValuesBuildingBlock<TStartValue> where TStartValue : class, IStartValue
+   public interface IStartValuePathTask<TBuildingBlock, TStartValue> where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>, IBuildingBlock where TStartValue : PathAndValueEntity
    {
       /// <summary>
       ///    Updates the name of the <paramref name="startValue" /> to <paramref name="newName" /> and returns the executed
@@ -48,10 +48,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="startValue">The start value to check</param>
       /// <param name="targetFormula">The formula being evaluated</param>
       /// <returns>True if the formula is equivalent to the start value formula</returns>
-      bool HasEquivalentFormula(IStartValue startValue, IFormula targetFormula);
+      bool HasEquivalentFormula(PathAndValueEntity startValue, IFormula targetFormula);
    }
 
-   public abstract class AbstractStartValuePathTask<TBuildingBlock, TStartValue> : IStartValuePathTask<TBuildingBlock, TStartValue> where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue> where TStartValue : class, IStartValue
+   public abstract class AbstractStartValuePathTask<TBuildingBlock, TStartValue> : IStartValuePathTask<TBuildingBlock, TStartValue> where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue> where TStartValue : PathAndValueEntity
    {
       private readonly IFormulaTask _formulaTask;
       private readonly IMoBiContext _context;
@@ -93,7 +93,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="startValue">The start value to check</param>
       /// <param name="targetFormula">The formula being evaluated</param>
       /// <returns>True if the formula is equivalent to the start value formula</returns>
-      public bool HasEquivalentFormula(IStartValue startValue, IFormula targetFormula)
+      public bool HasEquivalentFormula(PathAndValueEntity startValue, IFormula targetFormula)
       {
          var startValueFormula = startValue.Formula;
          if (startValueFormula == null && targetFormula == null)
@@ -111,7 +111,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="startValue">The start value to check</param>
       /// <param name="targetFormula">The formula being evaluated</param>
       /// <returns>True if the formula is constant and evaluates to the same value as startValue.StartValue</returns>
-      private static bool isConstantFormulaEqualToStartValue(IStartValue startValue, ConstantFormula targetFormula)
+      private static bool isConstantFormulaEqualToStartValue(PathAndValueEntity startValue, ConstantFormula targetFormula)
       {
          return startValue.Value.HasValue && ValueComparer.AreValuesEqual(startValue.Value.Value, targetFormula.Calculate(null));
       }

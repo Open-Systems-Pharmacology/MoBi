@@ -7,13 +7,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateValueOriginInStartValueCommand<T> : BuildingBlockChangeCommandBase<IStartValuesBuildingBlock<T>> where T : class, IStartValue
+   public class UpdateValueOriginInStartValueCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
    {
       private readonly T _startValue;
       private ValueOrigin _oldValueOrigin;
       private ValueOrigin _newValueOrigin;
 
-      public UpdateValueOriginInStartValueCommand(T startValue, ValueOrigin newValueOrigin, IStartValuesBuildingBlock<T> startValuesBuildingBlock) : base(startValuesBuildingBlock)
+      public UpdateValueOriginInStartValueCommand(T startValue, ValueOrigin newValueOrigin, PathAndValueEntityBuildingBlock<T> startValuesBuildingBlock) : base(startValuesBuildingBlock)
       {
          _startValue = startValue;
          _newValueOrigin = newValueOrigin;
@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _buildingBlock = context.Get<IStartValuesBuildingBlock<T>>(_buildingBlockId);
+         _buildingBlock = context.Get<PathAndValueEntityBuildingBlock<T>>(_buildingBlockId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

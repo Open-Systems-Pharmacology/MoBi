@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IUserSettings userSettings,
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, IObjectPathCreatorAtMoleculeStartValue objectPathCreator)
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, IObjectPathCreatorAtInitialCondition objectPathCreator)
          : base(
             view, objectBaseDTOMapper, context, userSettings,
             objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.PhysicalContainerOnly)

@@ -21,11 +21,11 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Creates a Rule and an Initial Assignment Importer to import SBML Rules and Initital Assignments.
+      ///     Creates a Rule and an Initial Assignment Importer to import SBML Rules and Initial Assignments.
       /// </summary>
       protected override void Import(Model model)
       {
-         CreateParameterStartValuesBuildingBlock(model);
+         CreateParameterValuesBuildingBlock(model);
          _initialAssignmentImporter.DoImport(model,_sbmlModule,_sbmlInformation, _command);
          _ruleImporter.DoImport(model, _sbmlModule, _sbmlInformation, _command);
       }
@@ -33,7 +33,7 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Creates a Parameter Start Values Building Block and adds it to the MoBi Project.
       /// </summary>
-      protected internal void CreateParameterStartValuesBuildingBlock(Model model)
+      protected internal void CreateParameterValuesBuildingBlock(Model model)
       {
          var psvBb = new ParameterValuesBuildingBlock().WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB).WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
          _command.AddCommand(new AddBuildingBlockToModuleCommand<ParameterValuesBuildingBlock>(psvBb, _sbmlModule).Run(_context));

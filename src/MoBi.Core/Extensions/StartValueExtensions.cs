@@ -6,7 +6,7 @@ namespace MoBi.Core.Extensions
 {
    public static class StartValueExtensions
    {
-      public static string GetStartValueAsDisplayString(this IStartValue startValue)
+      public static string GetStartValueAsDisplayString(this PathAndValueEntity startValue)
       {
          return string.Format("{0} {1}",
             startValue.ConvertToDisplayUnit(startValue.Value).ToString(CultureInfo.InvariantCulture),

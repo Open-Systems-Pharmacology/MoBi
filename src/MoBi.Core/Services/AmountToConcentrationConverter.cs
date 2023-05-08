@@ -19,8 +19,8 @@ namespace MoBi.Core.Services
       void Convert(ReactionBuildingBlock reactionBuildingBlock);
       void Convert(MoleculeBuilder moleculeBuilder, IFormulaCache formulaCache);
       void Convert(MoleculeBuildingBlock moleculeBuildingBlock);
-      void Convert(InitialConditionsBuildingBlock moleculeStartValuesBuildingBlock);
-      void Convert(InitialCondition moleculeStartValue, IFormulaCache formulaCache);
+      void Convert(InitialConditionsBuildingBlock initialConditionsBuildingBlock);
+      void Convert(InitialCondition initialCondition, IFormulaCache formulaCache);
       void Convert(object objectToConvert);
    }
 
@@ -69,25 +69,25 @@ namespace MoBi.Core.Services
          convertExplicitFormula(reaction.Formula, _concentrationPerTimeDimension);
       }
 
-      public void Convert(InitialCondition moleculeStartValue, IFormulaCache formulaCache)
+      public void Convert(InitialCondition initialCondition, IFormulaCache formulaCache)
       {
-         if (!conversionRequired(moleculeStartValue))
+         if (!conversionRequired(initialCondition))
             return;
 
-         moleculeStartValue.Dimension = _concentrationDimension;
-         moleculeStartValue.DisplayUnit = _displayUnitRetriever.PreferredUnitFor(moleculeStartValue);
+         initialCondition.Dimension = _concentrationDimension;
+         initialCondition.DisplayUnit = _displayUnitRetriever.PreferredUnitFor(initialCondition);
 
-         if (moleculeStartValue.Formula.IsExplicit())
+         if (initialCondition.Formula.IsExplicit())
          {
-            convertExplicitFormula(moleculeStartValue.Formula, _concentrationDimension);
+            convertExplicitFormula(initialCondition.Formula, _concentrationDimension);
             return;
          }
 
-         var startValue = moleculeStartValue.Value.GetValueOrDefault(0);
+         var startValue = initialCondition.Value.GetValueOrDefault(0);
          if (startValue == 0)
             return;
 
-         moleculeStartValue.Formula = createConcentrationFormulaFromConstantValue(startValue, moleculeStartValue.Path.ToPathString(), formulaCache);
+         initialCondition.Formula = createConcentrationFormulaFromConstantValue(startValue, initialCondition.Path.ToPathString(), formulaCache);
       }
 
       public void Convert(MoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
@@ -160,9 +160,9 @@ namespace MoBi.Core.Services
          moleculeBuildingBlock.Each(m => Convert(m, moleculeBuildingBlock.FormulaCache));
       }
 
-      public void Convert(InitialConditionsBuildingBlock moleculeStartValuesBuildingBlock)
+      public void Convert(InitialConditionsBuildingBlock initialConditionsBuildingBlock)
       {
-         moleculeStartValuesBuildingBlock.Each(msv => Convert(msv, moleculeStartValuesBuildingBlock.FormulaCache));
+         initialConditionsBuildingBlock.Each(msv => Convert(msv, initialConditionsBuildingBlock.FormulaCache));
       }
 
       public void Convert(object objectToConvert)
@@ -180,9 +180,9 @@ namespace MoBi.Core.Services
          }
       }
 
-      private bool conversionRequired(InitialCondition moleculeStartValue)
+      private bool conversionRequired(InitialCondition initialCondition)
       {
-         return conversionRequired(moleculeStartValue, Constants.Dimension.MOLAR_AMOUNT);
+         return conversionRequired(initialCondition, Constants.Dimension.MOLAR_AMOUNT);
       }
 
       private bool conversionRequired(MoleculeBuilder moleculeBuilder)
@@ -231,9 +231,9 @@ namespace MoBi.Core.Services
          simulationConfiguration.All<InitialConditionsBuildingBlock>().Each(Visit);
       }
 
-      public void Visit(InitialConditionsBuildingBlock moleculeStartValuesBuildingBlock)
+      public void Visit(InitialConditionsBuildingBlock initialConditionsBuildingBlock)
       {
-         Convert(moleculeStartValuesBuildingBlock);
+         Convert(initialConditionsBuildingBlock);
       }
 
       public void Visit(MoleculeBuilder moleculeBuilder)

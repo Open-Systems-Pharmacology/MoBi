@@ -19,17 +19,17 @@ namespace MoBi.Presentation.Mappers
       
       public ModuleConfiguration MapFrom(ModuleConfigurationDTO dto)
       {
-         return new ModuleConfiguration(dto.Module, selectedMoleculeStartValues(dto), selectedParameterStartValues(dto));
+         return new ModuleConfiguration(dto.Module, selectedInitialConditions(dto), selectedParameterValues(dto));
       }
 
-      private static ParameterValuesBuildingBlock selectedParameterStartValues(ModuleConfigurationDTO dto)
+      private static ParameterValuesBuildingBlock selectedParameterValues(ModuleConfigurationDTO dto)
       {
-         return dto.HasParameterStartValues ? dto.SelectedParameterStartValues : null;
+         return dto.HasParameterValues ? dto.SelectedParameterValues : null;
       }
 
-      private static InitialConditionsBuildingBlock selectedMoleculeStartValues(ModuleConfigurationDTO dto)
+      private static InitialConditionsBuildingBlock selectedInitialConditions(ModuleConfigurationDTO dto)
       {
-         return dto.HasMoleculeStartValues ? dto.SelectedMoleculeStartValues : null;
+         return dto.HasInitialConditions ? dto.SelectedInitialConditions : null;
       }
    }
 }

@@ -27,7 +27,7 @@ namespace MoBi.ProjectConversion.v7_3
          _project.SpatialStructureCollection.Each(validateIsDefaultFlagInParameters);
          _project.EventBlockCollection.Each(validateIsDefaultFlagInParameters);
          _project.PassiveTransportCollection.Each(validateIsDefaultFlagInParameters);
-         _project.ParametersStartValueBlockCollection.Each(validateIsDefaultFlagInParameters);
+         _project.ParametersValueBlockCollection.Each(validateIsDefaultFlagInParameters);
       }
 
       private void validateIsDefaultFlagInParameters<T>(IEnumerable<T> buildingBlock) where T : class

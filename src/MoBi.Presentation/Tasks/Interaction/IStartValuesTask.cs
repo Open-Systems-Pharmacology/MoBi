@@ -10,8 +10,8 @@ using OSPSuite.Core.Domain.UnitSystem;
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IStartValuesTask<TBuildingBlock, in TStartValue> : IInteractionTasksForBuildingBlock<Module, TBuildingBlock>, IInteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TStartValue>
-      where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
-      where TStartValue : class, IStartValue
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>
+      where TStartValue : PathAndValueEntity
    {
       void ExtendStartValues(TBuildingBlock startValuesBuildingBlock);
       TBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration);
@@ -103,11 +103,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <summary>
       ///    Updates a dimension for a parameter start value
       /// </summary>
-      /// <param name="parameterStartValuesBuildingBlock">The building block containing the start value being updated</param>
+      /// <param name="startValuesBuildingBlock">The building block containing the start value being updated</param>
       /// <param name="startValue">The start value being updated</param>
       /// <param name="newDimension">The new dimension for the start value</param>
       /// <returns>The command used to update the start value dimension</returns>
-      IMoBiCommand UpdateStartValueDimension(TBuildingBlock parameterStartValuesBuildingBlock, TStartValue startValue, IDimension newDimension);
+      IMoBiCommand UpdateStartValueDimension(TBuildingBlock startValuesBuildingBlock, TStartValue startValue, IDimension newDimension);
 
       /// <summary>
       ///    Returns the default dimension for the start value type

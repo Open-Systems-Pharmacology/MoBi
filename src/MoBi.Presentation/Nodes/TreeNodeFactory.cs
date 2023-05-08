@@ -81,11 +81,11 @@ namespace MoBi.Presentation.Nodes
 
       private void addStartValueCollections(ITreeNode moduleNode, Module module)
       {
-         var psvCollectionNode = new ParameterStartValuesFolderNode(module).Under(moduleNode);
-         module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(psvCollectionNode, psv); });
+         var parameterValuesFolderNode = new ParameterValuesFolderNode(module).Under(moduleNode);
+         module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(parameterValuesFolderNode, psv); });
 
-         var msvCollectionNode = new MoleculeStartValuesFolderNode().Under(moduleNode);
-         module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(msvCollectionNode, msv));
+         var initialConditionsFolderNode = new InitialConditionsFolderNode().Under(moduleNode);
+         module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(initialConditionsFolderNode, msv));
       }
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)
@@ -108,10 +108,10 @@ namespace MoBi.Presentation.Nodes
 
          addModuleBuildingBlocks(moduleConfigurationNode, module);
 
-         if (moduleConfiguration.HasMoleculeStartValues)
-            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedMoleculeStartValues);
-         if (moduleConfiguration.HasParameterStartValues)
-            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterStartValues);
+         if (moduleConfiguration.HasInitialConditions)
+            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedInitialConditions);
+         if (moduleConfiguration.HasParameterValues)
+            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterValues);
 
          return moduleConfigurationNode;
       }

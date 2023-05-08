@@ -10,12 +10,12 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IStartValueToObjectBaseSummaryDTOMapper<in T> : IMapper<T, ObjectBaseSummaryDTO> where T : IStartValue
+   public interface IStartValueToObjectBaseSummaryDTOMapper<in T> : IMapper<T, ObjectBaseSummaryDTO> where T : PathAndValueEntity
    {
       
    }
 
-   public abstract class AbstractStartValueToObjectBaseSummaryDTOMapper<T> : IStartValueToObjectBaseSummaryDTOMapper<T> where T : class, IStartValue
+   public abstract class AbstractStartValueToObjectBaseSummaryDTOMapper<T> : IStartValueToObjectBaseSummaryDTOMapper<T> where T : PathAndValueEntity
    {
       protected ObjectBaseSummaryDTO BaseMapper(T startValue)
       {
@@ -34,7 +34,7 @@ namespace MoBi.Presentation.Mappers
          return dto;
       }
 
-      private static bool hasValidFormula(IStartValue startValue)
+      private static bool hasValidFormula(PathAndValueEntity startValue)
       {
          return startValue.Formula != null && (startValue.Formula.IsExplicit()) || startValue.Formula.IsConstant();
       }
@@ -42,30 +42,30 @@ namespace MoBi.Presentation.Mappers
       public abstract ObjectBaseSummaryDTO MapFrom(T startValue);
    }
 
-   public interface IMoleculeStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<InitialCondition>
+   public interface IInitialConditionToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<InitialCondition>
    {
       
    }
 
-   public class MoleculeStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<InitialCondition>, IMoleculeStartValueToObjectBaseSummaryDTOMapper
+   public class InitialConditionToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<InitialCondition>, IInitialConditionToObjectBaseSummaryDTOMapper
    {
-      public override ObjectBaseSummaryDTO MapFrom(InitialCondition startValue)
+      public override ObjectBaseSummaryDTO MapFrom(InitialCondition initialCondition)
       {
-         var dto = BaseMapper(startValue);
+         var dto = BaseMapper(initialCondition);
          dto.ApplicationIcon = ApplicationIcons.InitialConditions;
-         dto.AddToDictionary(AppConstants.Captions.IsPresent, startValue.IsPresent.ToString());
-         dto.AddToDictionary(AppConstants.Captions.MoleculeName, startValue.MoleculeName);
-         dto.AddToDictionary(AppConstants.Captions.ScaleDivisor, startValue.ScaleDivisor.ToString(CultureInfo.InvariantCulture));
+         dto.AddToDictionary(AppConstants.Captions.IsPresent, initialCondition.IsPresent.ToString());
+         dto.AddToDictionary(AppConstants.Captions.MoleculeName, initialCondition.MoleculeName);
+         dto.AddToDictionary(AppConstants.Captions.ScaleDivisor, initialCondition.ScaleDivisor.ToString(CultureInfo.InvariantCulture));
          return dto;
       }
    }
 
-   public interface IParameterStartValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<ParameterValue>
+   public interface IParameterValueToObjectBaseSummaryDTOMapper : IStartValueToObjectBaseSummaryDTOMapper<ParameterValue>
    {
       
    }
 
-   public class ParameterStartValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<ParameterValue>, IParameterStartValueToObjectBaseSummaryDTOMapper
+   public class ParameterValueToObjectBaseSummaryDTOMapper : AbstractStartValueToObjectBaseSummaryDTOMapper<ParameterValue>, IParameterValueToObjectBaseSummaryDTOMapper
    {
       public override ObjectBaseSummaryDTO MapFrom(ParameterValue startValue)
       {

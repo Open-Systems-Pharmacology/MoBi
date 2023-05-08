@@ -57,8 +57,8 @@ namespace MoBi.Presentation.Mapper
             WithMolecule = true,
             WithObserver = true,
             WithPassiveTransport = true,
-            WithParameterStartValues = false,
-            WithMoleculeStartValues = false,
+            WithParameterValues = false,
+            WithInitialConditions = false,
          };
       }
 

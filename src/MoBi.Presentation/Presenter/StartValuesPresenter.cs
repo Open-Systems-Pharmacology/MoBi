@@ -29,11 +29,11 @@ namespace MoBi.Presentation.Presenter
       PathWithValueBuildingBlockPresenter<TView, TPresenter, Module, TBuildingBlock, TStartValue, TStartValueDTO>, IStartValuesPresenter<TStartValueDTO>
       where TView : IView<TPresenter>, IStartValuesView<TStartValueDTO>
       where TPresenter : IPresenter
-      where TStartValue : PathAndValueEntity, IStartValue, IUsingFormula
+      where TStartValue : PathAndValueEntity, IUsingFormula
       where TStartValueDTO : StartValueDTO<TStartValue>
-      where TBuildingBlock : class, IBuildingBlock<TStartValue>, IStartValuesBuildingBlock<TStartValue>
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>, IBuildingBlock<TStartValue>
    {
-      protected readonly IStartValueToStartValueDTOMapper<TStartValue, TStartValueDTO> _startValueMapper;
+      protected readonly IStartValueToStartValueDTOMapper<TStartValue, TStartValueDTO> _valueMapper;
 
       private readonly IStartValuesTask<TBuildingBlock, TStartValue> _startValuesTask;
       protected BindingList<TStartValueDTO> _startValueDTOs;
@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Presenter
 
       protected StartValuePresenter(
          TView view,
-         IStartValueToStartValueDTOMapper<TStartValue, TStartValueDTO> startValueMapper,
+         IStartValueToStartValueDTOMapper<TStartValue, TStartValueDTO> valueMapper,
          IRefreshStartValueFromOriginalBuildingBlockPresenter refreshStartValuesPresenter,
          IStartValuesTask<TBuildingBlock, TStartValue> startValuesTask,
          IEmptyStartValueCreator<TStartValue> emptyStartValueCreator,
@@ -62,7 +62,7 @@ namespace MoBi.Presentation.Presenter
          : base(view, startValuesTask, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _startValuesTask = startValuesTask;
-         _startValueMapper = startValueMapper;
+         _valueMapper = valueMapper;
          BackgroundColorRetriever = retrieveBackgroundColor;
          IsOriginalStartValue = isOriginalStartValue;
          _emptyStartValueCreator = emptyStartValueCreator;
@@ -126,7 +126,7 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewEmptyStartValue()
       {
-         _startValueDTOs.Insert(0, _startValueMapper.MapFrom(
+         _startValueDTOs.Insert(0, _valueMapper.MapFrom(
             startValue: _emptyStartValueCreator.CreateEmptyStartValue(_startValuesTask.GetDefaultDimension()),
             buildingBlock: _buildingBlock
          ));
@@ -251,7 +251,7 @@ namespace MoBi.Presentation.Presenter
       private void reBind(TBuildingBlock buildingBlock)
       {
          if (buildingBlock == null) return;
-         _startValueDTOs = buildingBlock.Select(startValue => _startValueMapper.MapFrom(startValue, buildingBlock)).OrderBy(startValue => IsOriginalStartValue(startValue)).ToBindingList();
+         _startValueDTOs = buildingBlock.Select(startValue => _valueMapper.MapFrom(startValue, buildingBlock)).OrderBy(startValue => IsOriginalStartValue(startValue)).ToBindingList();
          bindToView();
          initializeColumns();
       }

@@ -41,8 +41,8 @@ namespace MoBi.Presentation.Mapper
             WithMolecule = false,
             WithObserver = false,
             WithPassiveTransport = false,
-            WithParameterStartValues = false,
-            WithMoleculeStartValues = false
+            WithParameterValues = false,
+            WithInitialConditions = false
          };
       }
 
@@ -81,8 +81,8 @@ namespace MoBi.Presentation.Mapper
             WithMolecule = true,
             WithObserver = true,
             WithPassiveTransport = true,
-            WithParameterStartValues = true,
-            WithMoleculeStartValues = true
+            WithParameterValues = true,
+            WithInitialConditions = true
          };
       }
 

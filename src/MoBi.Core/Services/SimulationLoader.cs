@@ -119,15 +119,15 @@ namespace MoBi.Core.Services
          //    updateTemplateBuildingBlockIds(psv, copyMolecules.Id, copySpatialStructure.Id, config.ParameterStartValuesInfo.BuildingBlock);
          // }
          //
-         // var msv = addToProject(commandCollector, createForProject(project.MoleculeStartValueBlockCollection, config.MoleculeStartValuesInfo));
+         // var msv = addToProject(commandCollector, createForProject(project.InitialConditionBlockCollection, config.MoleculeStartValuesInfo));
          // if (msv != null)
          // {
          //    updateTemplateBuildingBlockIds(msv, copyMolecules.Id, copySpatialStructure.Id, config.MoleculeStartValuesInfo.BuildingBlock);
          // }
       }
 
-      private static void updateTemplateBuildingBlockIds<T>(IStartValuesBuildingBlock<T> startValues, string moleculeBuildingBlockId,
-         string spatialStructureId, IStartValuesBuildingBlock<T> buildingBlock) where T : class, IStartValue
+      private static void updateTemplateBuildingBlockIds<T>(PathAndValueEntityBuildingBlock<T> startValues, string moleculeBuildingBlockId,
+         string spatialStructureId, PathAndValueEntityBuildingBlock<T> buildingBlock) where T : PathAndValueEntity
       {
          // startValues.MoleculeBuildingBlockId = moleculeBuildingBlockId;
          // startValues.SpatialStructureId = spatialStructureId;

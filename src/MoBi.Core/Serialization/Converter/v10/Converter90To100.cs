@@ -38,10 +38,10 @@ namespace MoBi.Core.Serialization.Converter.v10
          return _coreConverter.ConvertXml(element);
       }
 
-      public void Visit(ParameterValuesBuildingBlock parameterStartValuesBuildingBlock)
+      public void Visit(ParameterValuesBuildingBlock parameterValuesBuildingBlock)
       {
          //we need to update the formula of some predefined expressions parameters from PK-Sim v9 to ensure that a simulation can still be built
-         parameterStartValuesBuildingBlock?.FormulaCache.Each(convertFormula);
+         parameterValuesBuildingBlock?.FormulaCache.Each(convertFormula);
       }
 
       public void Visit(IModelCoreSimulation simulation)

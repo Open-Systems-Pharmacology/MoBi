@@ -112,8 +112,8 @@ namespace MoBi.Presentation.Presenter.Main
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.PassiveTransports, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Observers, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Events, Color.LightGreen);
-         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.MoleculesStartValues, Color.LightGreen);
-         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.ParameterStartValues, Color.LightGreen);
+         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.InitialConditions, Color.LightGreen);
+         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.ParameterValues, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Simulation, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.ParameterIdentification, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.SensitivityAnalysis, Color.LightGreen);
@@ -125,8 +125,8 @@ namespace MoBi.Presentation.Presenter.Main
 
          _dynamicRibbonPageCache.Add(typeof(PassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
          _dynamicRibbonPageCache.Add(typeof(EventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
-         _dynamicRibbonPageCache.Add(typeof(InitialConditionsBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
-         _dynamicRibbonPageCache.Add(typeof(ParameterValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
+         _dynamicRibbonPageCache.Add(typeof(InitialConditionsBuildingBlock), AppConstants.RibbonCategories.InitialConditions);
+         _dynamicRibbonPageCache.Add(typeof(ParameterValuesBuildingBlock), AppConstants.RibbonCategories.ParameterValues);
          _dynamicRibbonPageCache.Add(typeof(IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
          _dynamicRibbonPageCache.Add(typeof(ParameterIdentification), RibbonCategories.ParameterIdentification);
          _dynamicRibbonPageCache.Add(typeof(SensitivityAnalysis), RibbonCategories.SensitivityAnalysis);
@@ -139,8 +139,8 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddPassiveTransport), AppConstants.RibbonPages.DynamicPassiveTransports, AppConstants.RibbonCategories.PassiveTransports);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddObserver), AppConstants.RibbonPages.DynamicObservers, AppConstants.RibbonCategories.Observers);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddEvent), AppConstants.RibbonPages.DynamicEvents, AppConstants.RibbonCategories.Events);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditMoleculeStartValues), AppConstants.RibbonPages.DynamicMoleculeStartValues, AppConstants.RibbonCategories.MoleculesStartValues);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditParameterStartValues), AppConstants.RibbonPages.DynamicParameterStartValues, AppConstants.RibbonCategories.ParameterStartValues);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditInitialConditions), AppConstants.RibbonPages.DynamicInitialConditions, AppConstants.RibbonCategories.InitialConditions);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditParameterValues), AppConstants.RibbonPages.DynamicParameterValues, AppConstants.RibbonCategories.ParameterValues);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.Simulation), AppConstants.RibbonPages.DynamicRunSimulation, AppConstants.RibbonCategories.Simulation);
 
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.RunParameterIdentification), RibbonPages.RunParameterIdentification, RibbonCategories.ParameterIdentification);
@@ -263,11 +263,11 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.NewNeighborhood].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadObservedData].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.MoleculeStartValuesExtend].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.ParameterStartValuesExtend].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.InitialConditionsExtend].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.ParameterValuesExtend].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SearchView].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewParameterStartValue].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewMoleculeStartValue].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewParameterValue].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewInitialConditions].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.CreateJournalPage].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SelectJournal].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadFavorites].Enabled = enabled;

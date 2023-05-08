@@ -171,11 +171,11 @@ namespace MoBi.UI.Views
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Caption = "ImportParameterStartValuesView";
+         this.Caption = "ImportParameterValuesView";
          this.ClientSize = new System.Drawing.Size(684, 562);
          this.Controls.Add(this.layoutControl1);
          this.Name = "ImportQuantityView";
-         this.Text = "ImportParameterStartValuesView";
+         this.Text = "ImportParameterValuesView";
          this.Controls.SetChildIndex(this.layoutControl1, 0);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();

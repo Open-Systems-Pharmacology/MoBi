@@ -3,12 +3,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class StartValueBuildingBlockInSimulationCommandBase<T> : MoBiReversibleCommand where T : class, IStartValue
+   public abstract class StartValueBuildingBlockInSimulationCommandBase<T> : MoBiReversibleCommand where T : PathAndValueEntity
    {
-      protected IStartValuesBuildingBlock<T> _startValuesBuildingBlock;
+      protected PathAndValueEntityBuildingBlock<T> _startValuesBuildingBlock;
       private readonly string _startValuesBuildingBlockId;
 
-      protected StartValueBuildingBlockInSimulationCommandBase(IStartValuesBuildingBlock<T> startValuesBuildingBlock)
+      protected StartValueBuildingBlockInSimulationCommandBase(PathAndValueEntityBuildingBlock<T> startValuesBuildingBlock)
       {
          _startValuesBuildingBlock = startValuesBuildingBlock;
          _startValuesBuildingBlockId = startValuesBuildingBlock.Id;
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
-         _startValuesBuildingBlock = context.Get<IStartValuesBuildingBlock<T>>(_startValuesBuildingBlockId);
+         _startValuesBuildingBlock = context.Get<PathAndValueEntityBuildingBlock<T>>(_startValuesBuildingBlockId);
       }
    }
 }

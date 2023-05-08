@@ -64,8 +64,8 @@ namespace MoBi.Core.Commands
          _module.Add(new PassiveTransportBuildingBlock().WithId("PassiveTransport"));
          _module.Add(new ObserverBuildingBlock().WithId("Observer"));
          _module.Add(new EventGroupBuildingBlock().WithId("EventGroup"));
-         _module.Add(new InitialConditionsBuildingBlock().WithId("MoleculeStartValues"));
-         _module.Add(new ParameterValuesBuildingBlock().WithId("ParameterStartValues"));
+         _module.Add(new InitialConditionsBuildingBlock().WithId("InitialConditions"));
+         _module.Add(new ParameterValuesBuildingBlock().WithId("ParameterValues"));
 
          A.CallTo(() => _context.Register(_module)).Invokes(() => _registrationTask.RegisterAllIn(_module));
          A.CallTo(() => _context.CurrentProject).Returns(_project);

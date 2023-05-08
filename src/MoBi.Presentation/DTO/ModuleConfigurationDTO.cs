@@ -7,22 +7,22 @@ namespace MoBi.Presentation.DTO
    public class ModuleConfigurationDTO
    {
       private readonly ModuleConfiguration _moduleConfiguration;
-      private readonly List<InitialConditionsBuildingBlock> _InitialConditionsCollection = new List<InitialConditionsBuildingBlock> { NullStartValues.NullMoleculeStartValues };
-      private readonly List<ParameterValuesBuildingBlock> _parameterStartValuesCollection = new List<ParameterValuesBuildingBlock> { NullStartValues.NullParameterStartValues };
+      private readonly List<InitialConditionsBuildingBlock> _initialConditionsCollection = new List<InitialConditionsBuildingBlock> { NullStartValues.NullInitialConditions };
+      private readonly List<ParameterValuesBuildingBlock> _parameterValuesCollection = new List<ParameterValuesBuildingBlock> { NullStartValues.NullParameterValues };
 
       public ModuleConfigurationDTO(ModuleConfiguration moduleConfiguration)
       {
          _moduleConfiguration = moduleConfiguration;
-         SelectedMoleculeStartValues = moduleConfiguration.SelectedInitialConditions ?? NullStartValues.NullMoleculeStartValues;
-         SelectedParameterStartValues = moduleConfiguration.SelectedParameterValues ?? NullStartValues.NullParameterStartValues;
-         _InitialConditionsCollection.AddRange(moduleConfiguration.Module.InitialConditionsCollection);
-         _parameterStartValuesCollection.AddRange(moduleConfiguration.Module.ParameterValuesCollection);
+         SelectedInitialConditions = moduleConfiguration.SelectedInitialConditions ?? NullStartValues.NullInitialConditions;
+         SelectedParameterValues = moduleConfiguration.SelectedParameterValues ?? NullStartValues.NullParameterValues;
+         _initialConditionsCollection.AddRange(moduleConfiguration.Module.InitialConditionsCollection);
+         _parameterValuesCollection.AddRange(moduleConfiguration.Module.ParameterValuesCollection);
       }
 
-      public ParameterValuesBuildingBlock SelectedParameterStartValues { get; set; }
-      public InitialConditionsBuildingBlock SelectedMoleculeStartValues { get; set; }
-      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionsCollection => _InitialConditionsCollection;
-      public IReadOnlyList<ParameterValuesBuildingBlock> ParameterValuesCollection => _parameterStartValuesCollection;
+      public ParameterValuesBuildingBlock SelectedParameterValues { get; set; }
+      public InitialConditionsBuildingBlock SelectedInitialConditions { get; set; }
+      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionsCollection => _initialConditionsCollection;
+      public IReadOnlyList<ParameterValuesBuildingBlock> ParameterValuesCollection => _parameterValuesCollection;
 
       public ModuleConfiguration ModuleConfiguration => _moduleConfiguration;
       public Module Module => ModuleConfiguration.Module;
@@ -37,8 +37,8 @@ namespace MoBi.Presentation.DTO
          return Equals(_moduleConfiguration, moduleConfiguration);
       }
 
-      public bool HasMoleculeStartValues => !NullStartValues.NullMoleculeStartValues.Equals(SelectedMoleculeStartValues);
+      public bool HasInitialConditions => !NullStartValues.NullInitialConditions.Equals(SelectedInitialConditions);
 
-      public bool HasParameterStartValues => !NullStartValues.NullParameterStartValues.Equals(SelectedParameterStartValues);
+      public bool HasParameterValues => !NullStartValues.NullParameterValues.Equals(SelectedParameterValues);
    }
 }

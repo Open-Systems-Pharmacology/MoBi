@@ -85,9 +85,9 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<EventGroupBuildingBlock> EventBlockCollection => get<EventGroupBuildingBlock>();
 
-      public IReadOnlyList<InitialConditionsBuildingBlock> MoleculeStartValueBlockCollection => get<InitialConditionsBuildingBlock>();
+      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionBlockCollection => get<InitialConditionsBuildingBlock>();
 
-      public IReadOnlyList<ParameterValuesBuildingBlock> ParametersStartValueBlockCollection => get<ParameterValuesBuildingBlock>();
+      public IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection => get<ParameterValuesBuildingBlock>();
 
       public Module ModuleByName(string moduleName)
       {
@@ -156,7 +156,7 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<IBuildingBlock> ReferringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToRemove)
       {
-         return referringStartValuesBuildingBlocks(buildingBlockToRemove, MoleculeStartValueBlockCollection).ToList();
+         return referringStartValuesBuildingBlocks(buildingBlockToRemove, InitialConditionBlockCollection).ToList();
       }
 
       public IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(IBuildingBlock templateBuildingBlock)

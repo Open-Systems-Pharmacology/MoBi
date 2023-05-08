@@ -58,10 +58,10 @@ namespace MoBi.Core.Service
       private MoBiSpatialStructure _spatialStructure;
       private IObjectBaseFactory _objectBaseFactory;
       private IFormula _formula;
-      private ParameterValue _parameterStartValue;
-      private ParameterValuesBuildingBlock _parameterStartValueBuildingBlock;
-      private InitialCondition _moleculeStartValue;
-      private InitialConditionsBuildingBlock _moleculeStartValuesBuildingBlock;
+      private ParameterValue _parameterValue;
+      private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+      private InitialCondition _initialCondition;
+      private InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
       private IParameterFactory _parameterFactory;
 
       protected override void Context()
@@ -96,12 +96,12 @@ namespace MoBi.Core.Service
          _allBuildingBlocks.Add(_spatialStructure);
          _formula = new ExplicitFormula();
          _moleculeBuildingBlock.AddFormula(_formula);
-         _parameterStartValue = new ParameterValue { Path = new ObjectPath { "test" }, StartValue = 1, Dimension = A.Fake<IDimension>() };
-         _parameterStartValueBuildingBlock = new ParameterValuesBuildingBlock() { _parameterStartValue };
-         _allBuildingBlocks.Add(_parameterStartValueBuildingBlock);
-         _moleculeStartValue = new InitialCondition { ContainerPath = new ObjectPath { "test" }, Name = "drug" };
-         _moleculeStartValuesBuildingBlock = new InitialConditionsBuildingBlock() { _moleculeStartValue };
-         _allBuildingBlocks.Add(_moleculeStartValuesBuildingBlock);
+         _parameterValue = new ParameterValue { Path = new ObjectPath { "test" }, Value = 1, Dimension = A.Fake<IDimension>() };
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock { _parameterValue };
+         _allBuildingBlocks.Add(_parameterValuesBuildingBlock);
+         _initialCondition = new InitialCondition { ContainerPath = new ObjectPath { "test" }, Name = "drug" };
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock() { _initialCondition };
+         _allBuildingBlocks.Add(_initialConditionsBuildingBlock);
       }
 
       protected override void Because()
@@ -113,14 +113,14 @@ namespace MoBi.Core.Service
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_applicationBuilder, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_parameter, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_formula, null));
-         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_parameterStartValue, null));
-         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_moleculeStartValue, null));
+         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_parameterValue, null));
+         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_initialCondition, null));
       }
 
       [Observation]
       public void should_return_the_containing_building_block()
       {
-         _returnedBuildingBlocks.ShouldOnlyContainInOrder(_reactionBuildingBlock, _moleculeBuildingBlock, _observerBuildingBlock, _passiveTransportBuildingBlock, _eventGroupBuildingBlock, _spatialStructure, _moleculeBuildingBlock, _parameterStartValueBuildingBlock, _moleculeStartValuesBuildingBlock);
+         _returnedBuildingBlocks.ShouldOnlyContainInOrder(_reactionBuildingBlock, _moleculeBuildingBlock, _observerBuildingBlock, _passiveTransportBuildingBlock, _eventGroupBuildingBlock, _spatialStructure, _moleculeBuildingBlock, _parameterValuesBuildingBlock, _initialConditionsBuildingBlock);
       }
    }
 
@@ -206,8 +206,8 @@ namespace MoBi.Core.Service
    public class When_retrieving_the_building_block_for_a_formula_defined_in_a_molecule_start_values : concern_for_BuildingBlockRetriever
    {
       private IFormula _formula;
-      private InitialConditionsBuildingBlock _moleculeStartValues;
-      private InitialConditionsBuildingBlock _moleculeStartValuesTemplate;
+      private InitialConditionsBuildingBlock _initialConditions;
+      private InitialConditionsBuildingBlock _initialConditionsTemplate;
       private ExplicitFormula _templateFormula;
 
       protected override void Context()
@@ -215,30 +215,30 @@ namespace MoBi.Core.Service
          base.Context();
          _formula = new ExplicitFormula().WithName("F1").WithId("F11");
          _templateFormula = new ExplicitFormula().WithName("F1").WithId("F12");
-         _moleculeStartValues = new InitialConditionsBuildingBlock().WithName("MSV");
-         _moleculeStartValuesTemplate = new InitialConditionsBuildingBlock().WithName("MSV");
-         _moleculeStartValuesTemplate.AddFormula(_templateFormula);
-         _allBuildingBlocks.Add(_moleculeStartValuesTemplate);
+         _initialConditions = new InitialConditionsBuildingBlock().WithName("MSV");
+         _initialConditionsTemplate = new InitialConditionsBuildingBlock().WithName("MSV");
+         _initialConditionsTemplate.AddFormula(_templateFormula);
+         _allBuildingBlocks.Add(_initialConditionsTemplate);
       }
 
       [Observation]
       public void should_return_the_building_block_with_the_same_name_as_the_given_building_block_in_the_project()
       {
-         sut.GetBuildingBlockFor(_formula, _moleculeStartValues).ShouldBeEqualTo(_moleculeStartValuesTemplate);
+         sut.GetBuildingBlockFor(_formula, _initialConditions).ShouldBeEqualTo(_initialConditionsTemplate);
       }
 
       [Observation]
       public void should_return_null_if_the_building_block_is_not_found_with_the_same_name()
       {
-         _moleculeStartValues.Name = "ANOTHER NAME";
-         sut.GetBuildingBlockFor(_formula, _moleculeStartValues).ShouldBeNull();
+         _initialConditions.Name = "ANOTHER NAME";
+         sut.GetBuildingBlockFor(_formula, _initialConditions).ShouldBeNull();
       }
 
       [Observation]
       public void should_return_null_if_the_building_block_is_found_with_the_same_name_but_the_formula_is_not()
       {
          _formula.Name = "ANOTHER_NAME";
-         sut.GetBuildingBlockFor(_formula, _moleculeStartValues).ShouldBeNull();
+         sut.GetBuildingBlockFor(_formula, _initialConditions).ShouldBeNull();
       }
    }
 }

@@ -120,8 +120,8 @@ namespace MoBi.Assets
             "Whole organ incl. FcRn_Complex"
          };
 
-         public static readonly string ParameterStartValues = "Parameter Start Values";
-         public static readonly string MoleculeStartValues = "Molecule Start Values";
+         public static readonly string ParameterValues = "Parameter Values";
+         public static readonly string InitialConditions = "Initial Conditions";
       }
 
       public static class SpecialFileNames
@@ -142,7 +142,7 @@ namespace MoBi.Assets
          public static readonly string MoleculeBuildingBlock = "MoleculeBuildingBlock";
          public static readonly string ObserverBuildingBlock = "ObserverBuildingBlock";
          public static readonly string EventGroupBuildingBlock = "EventGroupBuildingBlock";
-         public static readonly string MoleculeStartValuesBuildingBlock = "MoleculeStartValuesBuildingBlock";
+         public static readonly string InitialConditionsBuildingBlock = "InitialConditionsBuildingBlock";
          public static readonly string ParameterValuesBuildingBlock = "ParameterValuesBuildingBlock";
          public static readonly string PassiveTransportBuildingBlock = "PassiveTransportBuildingBlock";
          public static readonly string MoBiReactionBuildingBlock = "MoBiReactionBuildingBlock";
@@ -154,8 +154,8 @@ namespace MoBi.Assets
          public static readonly string PassiveTransports = "PassiveTransports";
          public static readonly string Reactions = "Reactions";
          public static readonly string SpatialStructure = "SpatialStructure";
-         public static readonly string ParameterStartValues = "ParameterStartValues";
-         public static readonly string MoleculeStartValues = "MoleculeStartValues";
+         public static readonly string ParameterValues = "ParameterValues";
+         public static readonly string InitialConditions = "InitialConditions";
          public static readonly string Model = "Model";
          public static readonly string MoBiSimulation = "MoBiSimulation";
          public static readonly string NameAttribute = "name";
@@ -181,8 +181,8 @@ namespace MoBi.Assets
          public static readonly string DynamicPassiveTransports = "Edit Passive Transport";
          public static readonly string DynamicObservers = "Edit Observer";
          public static readonly string DynamicEvents = "Edit Event";
-         public static readonly string DynamicMoleculeStartValues = "Edit Molecule Start Values";
-         public static readonly string DynamicParameterStartValues = "Edit Parameter Start Values";
+         public static readonly string DynamicInitialConditions = "Edit Initial Conditions";
+         public static readonly string DynamicParameterValues = "Edit Parameter Values";
          public static readonly string DynamicRunSimulation = "Run & Analyze";
          public static readonly string Views = "Views";
          public static readonly string ParameterIdentification = "Parameter Identification";
@@ -196,8 +196,8 @@ namespace MoBi.Assets
          public static readonly string PassiveTransports = "Passive Transports";
          public static readonly string Observers = "Observers";
          public static readonly string Events = "Events";
-         public static readonly string MoleculesStartValues = "Molecule Start Values";
-         public static readonly string ParameterStartValues = "Parameter Start Values";
+         public static readonly string InitialConditions = "Initial Conditions";
+         public static readonly string ParameterValues = "Parameter Values";
          public static readonly string Simulation = "Simulation";
          public static readonly string Skins = "Skins";
 
@@ -211,8 +211,8 @@ namespace MoBi.Assets
                PassiveTransports,
                Observers,
                Events,
-               MoleculesStartValues,
-               ParameterStartValues,
+               InitialConditions,
+               ParameterValues,
                Simulation,
                OSPSuite.Assets.RibbonCategories.ParameterIdentification,
                OSPSuite.Assets.RibbonCategories.SensitivityAnalysis
@@ -233,13 +233,13 @@ namespace MoBi.Assets
          public static readonly string AddManyMoleculesDescription = "Add some Molecules to Reaction Diagram";
          public static readonly string MergeCommand = "Merge";
          public static readonly string AddParameterIdentificationResults = "Add parameter identification results to start values collection";
-         public static readonly string ImportParameterStartValues = "Parameter Start Values were imported";
-         public static readonly string ImportMoleculeStartValues = "Molecule Start Values were imported";
-         public static readonly string RemoveManyParameterStartValues = "Remove some Parameter Start Values";
-         public static readonly string RemoveManyMoleculeStartValues = "Remove some Molecule Start Values";
+         public static readonly string ImportParameterValues = "Parameter Values were imported";
+         public static readonly string ImportInitialConditions = "Initial Conditions were imported";
+         public static readonly string RemoveManyParameterValues = "Remove some Parameter Values";
+         public static readonly string RemoveManyInitialConditions = "Remove some Initial Conditions";
          public static readonly string CommitCommand = "Commit";
-         public static readonly string UpdateManyParameterStartValues = "Update some Parameter Start Values";
-         public static readonly string UpdateManyMoleculeStartValues = "Update some Molecule Start Values";
+         public static readonly string UpdateManyParameterValues = "Update some Parameter Values";
+         public static readonly string UpdateManyInitialConditions = "Update some Initial Conditions";
          public static readonly string UpdateCommand = "Update";
          public static readonly string ImportCommand = "Import";
          public static readonly string MergeBuildingBlocks = "Merging two building blocks";
@@ -576,17 +576,17 @@ namespace MoBi.Assets
             return $"Chart Templates edited in simulation '{simulationName}'";
          }
 
-         public static string UpdateParameterStartValue(ObjectPath path, double? value, Unit displayUnit)
+         public static string UpdateParameterValue(ObjectPath path, double? value, Unit displayUnit)
          {
-            return $"Updated parameter start value at path {path} with value {value} {displayUnit}";
+            return $"Updated parameter value at path {path} with value {value} {displayUnit}";
          }
 
-         public static string UpdateMoleculeStartValue(ObjectPath path, double? value, bool present, Unit displayUnit, double scaleFactor, bool negativeValuesAllowed)
+         public static string UpdateInitialCondition(ObjectPath path, double? value, bool present, Unit displayUnit, double scaleFactor, bool negativeValuesAllowed)
          {
-            return $"Updated molecule start value at path: {path} with value: {value} {displayUnit},  present: {present},  scale divisor: {scaleFactor}, neg. values allowed: {negativeValuesAllowed}";
+            return $"Updated initial condition at path: {path} with value: {value} {displayUnit},  present: {present},  scale divisor: {scaleFactor}, neg. values allowed: {negativeValuesAllowed}";
          }
 
-         public static string AddedStartValue(IStartValue startValue, string buildingBlockName)
+         public static string AddedStartValue(PathAndValueEntity startValue, string buildingBlockName)
          {
             return $"Added a Start Value to building block '{buildingBlockName}' at path: {startValue.Path}, with value: {startValue.Value} {startValue.DisplayUnit}";
          }
@@ -601,7 +601,7 @@ namespace MoBi.Assets
             return $"Output interval was added to '{objectName}'";
          }
 
-         public static string RemoveStartValue(IStartValue startValue, string buildingBlockName)
+         public static string RemoveStartValue(PathAndValueEntity startValue, string buildingBlockName)
          {
             return string.Format("Removed a Start Value from building block '{3}' at path {0}, with value: {1} {2}", startValue.Path, startValue.ConvertToDisplayUnit(startValue.Value), startValue.DisplayUnit, buildingBlockName);
          }
@@ -652,9 +652,9 @@ namespace MoBi.Assets
          public static string UpdateParentPath(string containerPath, string parentPath) =>
             $"Update parent path for '{containerPath}' to '{parentPath}'";
 
-         public static string UpdateMoleculeStartValueScaleDivisor(string path, double oldScaleDivisor, double newScaleDivisor)
+         public static string UpdateInitialConditionScaleDivisor(string path, double oldScaleDivisor, double newScaleDivisor)
          {
-            return $"Updating Scale Divisor for start value with path {path} from {oldScaleDivisor} to {newScaleDivisor}";
+            return $"Updating Scale Divisor for initial condition with path {path} from {oldScaleDivisor} to {newScaleDivisor}";
          }
 
          public static string UpdateDistributedFormulaCommandDescription(string parameterPath, string formulaType)
@@ -697,14 +697,14 @@ namespace MoBi.Assets
             return $"Adding parameter '{parameterName}' to container '{containerPath}' in building block '{buildingBlockName}'";
          }
 
-         public static string UpdateMoleculeStartValueIsPresent(string startValuePath, bool oldIsPresent, bool newIsPresent)
+         public static string UpdateInitialConditionIsPresent(string startValuePath, bool oldIsPresent, bool newIsPresent)
          {
-            return $"Changed Is Present for molecule start value path '{startValuePath}' from {oldIsPresent} to {newIsPresent}";
+            return $"Changed Is Present for initial condition path '{startValuePath}' from {oldIsPresent} to {newIsPresent}";
          }
 
-         public static string UpdateMoleculeStartValueNegativeValuesAllowed(string startValuePath, bool oldNegativeValuesAllowed, bool newNegativeValuesAllowed)
+         public static string UpdateInitialConditionNegativeValuesAllowed(string startValuePath, bool oldNegativeValuesAllowed, bool newNegativeValuesAllowed)
          {
-            return $"Changed negative values allowed for molecule start value path '{startValuePath}' from {oldNegativeValuesAllowed} to {newNegativeValuesAllowed}";
+            return $"Changed negative values allowed for initial condition path '{startValuePath}' from {oldNegativeValuesAllowed} to {newNegativeValuesAllowed}";
          }
 
          public static string SetTableFormulaYDisplayUnits(string tableFormulaName, string oldUnit, string newUnit, string buildingBlockName)
@@ -1075,8 +1075,8 @@ namespace MoBi.Assets
          public static readonly string UpdateExistingTemplate = "Update Existing";
          public static readonly string ChartTemplate = "Chart Templates";
          public static readonly string ManageTemplates = "Manage Templates...";
-         public static readonly string NewParameterStartValue = "New Parameter Start Value";
-         public static readonly string NewMoleculeStartValue = "New Molecule Start Value";
+         public static readonly string NewParameterValue = "New Parameter Value";
+         public static readonly string NewInitialCondition = "New Initial Condition";
          public static readonly string ModelParts = "Model Parts";
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
@@ -1294,8 +1294,8 @@ namespace MoBi.Assets
          public static readonly string ValidationMessages = "Validation Results";
          public static readonly string SelectReferencesView = "References to add";
          public static readonly string References = "References";
-         public static readonly string NewMoleculeStartValues = "Create New Molecule Start Values";
-         public static readonly string NewParameterStartValues = "Create New Parameter Start values";
+         public static readonly string NewInitialConditions = "Create New Initial Conditions";
+         public static readonly string NewParameterValues = "Create New Parameter values";
          public static readonly string ExportHistory = "Export History";
          public static readonly string MoleculeNames = "Molecule Name";
          public static readonly string StoichiometricCoefficient = "Stoichiometric Coefficient";
@@ -1319,8 +1319,8 @@ namespace MoBi.Assets
          public static readonly string ObservedData = "Observed Data";
          public static readonly string PassiveTransports = "Passive Transports";
          public static readonly string Reactions = "Reactions";
-         public static readonly string MoleculeStartValues = "Molecule Start Values";
-         public static readonly string ParameterStartValues = "Parameter Start Values";
+         public static readonly string InitialConditions = "Initial Conditions";
+         public static readonly string ParameterValues = "Parameter Values";
          public static readonly string ExpressionProfiles = "Expression Profiles";
          public static readonly string ExpressionProfile = "Expression Profile";
          public static readonly string Individual = "Individual";
@@ -1500,15 +1500,15 @@ namespace MoBi.Assets
          public static readonly string ApplicationSettings = "Application";
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string StartImport = "Start Import";
-         public static readonly string ImportParameterStartValues = "Import Parameter Start Values";
+         public static readonly string ImportParameterValues = "Import Parameter Values";
          public static readonly string ImportParameterQuantitiesFileFormatHint = "The file format must have at least 4 columns. Columns should be Container Path, Parameter Name, Value, and Units." + Environment.NewLine + "The first row is ignored for import.";
          public static readonly string Transfer = "Transfer";
          public static readonly string ManageChartTemplates = "Manage Chart Templates";
          public static readonly string AddTemplate = "Add Template";
          public static readonly string CurveAndAxisSettings = "Curve and Axis Settings";
          public static readonly string ChartSettings = "Chart Options";
-         public static readonly string ImportMoleculeStartValues = "Import Molecule Start Values";
-         public static readonly string ImportMoleculeStartValuesFileFormatHint = "The file format must have at least 7 columns. Columns should be Container Path, Molecule Name, Is Present, Value, Units, Scale Divisor and Neg. Values Allowed." + Environment.NewLine + "The first row is ignored for import.";
+         public static readonly string ImportInitialConditions = "Import Initial Conditions";
+         public static readonly string ImportInitialConditionsFileFormatHint = "The file format must have at least 7 columns. Columns should be Container Path, Molecule Name, Is Present, Value, Units, Scale Divisor and Neg. Values Allowed." + Environment.NewLine + "The first row is ignored for import.";
          public static readonly string RunSimulation = "Run Simulation";
          public static readonly string CreateProcessRateParameter = "Create process rate parameter";
          public static readonly string SaveSimulationSettings = "Save Settings into";
@@ -1654,8 +1654,8 @@ namespace MoBi.Assets
          public static readonly string SelectBuildingBlockType = "Select the type of Building Block you want to load to the module";
          public static readonly string AddingBuildingBlockToModuleClarification = "The Building Block Types that are already present in the module and cannot have multiple items are not listed in the list above";
          public static readonly string SelectStartValues = "Select Start Values";
-         public static readonly string NoMoleculeStartValues = "No Molecule Start Values";
-         public static readonly string NoParameterStartValues = "No Parameter Start Values";
+         public static readonly string NoInitialConditions = "No Initial Conditions";
+         public static readonly string NoParameterValues = "No Parameter Values";
          public static readonly string ConfigureModules = "Configure Modules";
          public static readonly string SimulationModules = "Simulation Modules";
          public static readonly string ProjectModules = "Project Modules";
@@ -1677,14 +1677,14 @@ namespace MoBi.Assets
 
          public static string ConvertingExcelSheetToQuantities(string tableName) => $"Converting Excel sheet {tableName}";
 
-         public static string AddingMoleculeStartValue(ObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeValueAllowed)
+         public static string AddingInitialCondition(ObjectPath moleculePath, double initialConditionInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeValueAllowed)
          {
-            return $"Adding Molecule Start Value {moleculePath}={startValueInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeValueAllowed}";
+            return $"Adding Initial Condition {moleculePath}={initialConditionInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeValueAllowed}";
          }
 
-         public static string AddingParameterStartValue(ObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
+         public static string AddingParameterValue(ObjectPath parameterPath, double parameterValueInDisplayUnit, Unit displayUnit)
          {
-            return $"Adding Parameter Start Value {parameterPath}={startValueInDisplayUnit} {displayUnit}";
+            return $"Adding Parameter Value {parameterPath}={parameterValueInDisplayUnit} {displayUnit}";
          }
 
          public static string ListOf(string item)
@@ -1737,14 +1737,14 @@ namespace MoBi.Assets
             return buildingBlockCaption(ExpressionProfile, name);
          }
 
-         public static string MoleculeStartValuesBuildingBlockCaption(string name)
+         public static string InitialConditionsBuildingBlockCaption(string name)
          {
-            return buildingBlockCaption(MoleculeStartValues, name);
+            return buildingBlockCaption(InitialConditions, name);
          }
 
-         public static string ParameterStartValuesBuildingBlockCaption(string name)
+         public static string ParameterValuesBuildingBlockCaption(string name)
          {
-            return buildingBlockCaption(ParameterStartValues, name);
+            return buildingBlockCaption(ParameterValues, name);
          }
 
          public static string SpatialStructureBuildingBlockCaption(string name)
@@ -1825,16 +1825,16 @@ namespace MoBi.Assets
             return $"Select file containing the {buildingBlockType.ToLowerInvariant()} to merge";
          }
 
-         public static string UpdatingMoleculeStartValue(ObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeStartValueAllowed)
+         public static string UpdatingInitialCondition(ObjectPath moleculePath, double initialConditionInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeInitialConditionAllowed)
          {
-            return !double.IsNaN(startValueInDisplayUnit)
-               ? $"Updating Molecule Start Value {moleculePath}={startValueInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeStartValueAllowed}"
-               : $"Updating Molecule Start Value {moleculePath}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeStartValueAllowed}";
+            return !double.IsNaN(initialConditionInDisplayUnit)
+               ? $"Updating Initial Condition {moleculePath}={initialConditionInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeInitialConditionAllowed}"
+               : $"Updating Initial Condition {moleculePath}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeInitialConditionAllowed}";
          }
 
-         public static string UpdatingParameterStartValue(ObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
+         public static string UpdatingParameterValue(ObjectPath parameterPath, double parameterValueInDisplayUnit, Unit displayUnit)
          {
-            return $"Updating Parameter Start Value {parameterPath}={startValueInDisplayUnit} {displayUnit}";
+            return $"Updating Parameter Value {parameterPath}={parameterValueInDisplayUnit} {displayUnit}";
          }
 
          public static string UpdatingParameterValueInSimulation(ObjectPath path, double valueInDisplayUnit, Unit displayUnit)

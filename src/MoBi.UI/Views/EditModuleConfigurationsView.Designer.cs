@@ -33,8 +33,8 @@
          this.components = new System.ComponentModel.Container();
          this.moduleSelectionTreeView = new OSPSuite.UI.Controls.FilterTreeView();
          this.uxLayoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbParameterStartValuesSelection = new OSPSuite.UI.Controls.UxComboBoxEdit();
-         this.cbMoleculeStartValuesSelection = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbParameterValuesSelection = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbInitialConditionsSelection = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.selectedModuleTreeView = new OSPSuite.UI.Controls.UxTreeView();
          this.btnAdd = new DevExpress.XtraEditors.SimpleButton();
          this.btnRemove = new DevExpress.XtraEditors.SimpleButton();
@@ -53,8 +53,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).BeginInit();
          this.uxLayoutControl1.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.cbParameterStartValuesSelection.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeStartValuesSelection.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbParameterValuesSelection.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbInitialConditionsSelection.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.selectedModuleTreeView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBtnRemove)).BeginInit();
@@ -81,8 +81,8 @@
          // uxLayoutControl1
          // 
          this.uxLayoutControl1.AllowCustomization = false;
-         this.uxLayoutControl1.Controls.Add(this.cbParameterStartValuesSelection);
-         this.uxLayoutControl1.Controls.Add(this.cbMoleculeStartValuesSelection);
+         this.uxLayoutControl1.Controls.Add(this.cbParameterValuesSelection);
+         this.uxLayoutControl1.Controls.Add(this.cbInitialConditionsSelection);
          this.uxLayoutControl1.Controls.Add(this.selectedModuleTreeView);
          this.uxLayoutControl1.Controls.Add(this.btnAdd);
          this.uxLayoutControl1.Controls.Add(this.btnRemove);
@@ -96,27 +96,27 @@
          this.uxLayoutControl1.TabIndex = 2;
          this.uxLayoutControl1.Text = "uxLayoutControl1";
          // 
-         // cbParameterStartValuesSelection
+         // cbParameterValuesSelection
          // 
-         this.cbParameterStartValuesSelection.Location = new System.Drawing.Point(660, 700);
-         this.cbParameterStartValuesSelection.Name = "cbParameterStartValuesSelection";
-         this.cbParameterStartValuesSelection.Properties.AllowMouseWheel = false;
-         this.cbParameterStartValuesSelection.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+         this.cbParameterValuesSelection.Location = new System.Drawing.Point(660, 700);
+         this.cbParameterValuesSelection.Name = "cbParameterValuesSelection";
+         this.cbParameterValuesSelection.Properties.AllowMouseWheel = false;
+         this.cbParameterValuesSelection.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbParameterStartValuesSelection.Size = new System.Drawing.Size(482, 20);
-         this.cbParameterStartValuesSelection.StyleController = this.uxLayoutControl1;
-         this.cbParameterStartValuesSelection.TabIndex = 8;
+         this.cbParameterValuesSelection.Size = new System.Drawing.Size(482, 20);
+         this.cbParameterValuesSelection.StyleController = this.uxLayoutControl1;
+         this.cbParameterValuesSelection.TabIndex = 8;
          // 
-         // cbMoleculeStartValuesSelection
+         // cbInitialConditionsSelection
          // 
-         this.cbMoleculeStartValuesSelection.Location = new System.Drawing.Point(660, 724);
-         this.cbMoleculeStartValuesSelection.Name = "cbMoleculeStartValuesSelection";
-         this.cbMoleculeStartValuesSelection.Properties.AllowMouseWheel = false;
-         this.cbMoleculeStartValuesSelection.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+         this.cbInitialConditionsSelection.Location = new System.Drawing.Point(660, 724);
+         this.cbInitialConditionsSelection.Name = "cbInitialConditionsSelection";
+         this.cbInitialConditionsSelection.Properties.AllowMouseWheel = false;
+         this.cbInitialConditionsSelection.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbMoleculeStartValuesSelection.Size = new System.Drawing.Size(482, 20);
-         this.cbMoleculeStartValuesSelection.StyleController = this.uxLayoutControl1;
-         this.cbMoleculeStartValuesSelection.TabIndex = 7;
+         this.cbInitialConditionsSelection.Size = new System.Drawing.Size(482, 20);
+         this.cbInitialConditionsSelection.StyleController = this.uxLayoutControl1;
+         this.cbInitialConditionsSelection.TabIndex = 7;
          // 
          // selectedModuleTreeView
          // 
@@ -216,7 +216,7 @@
          // 
          // layoutItemPSVSelection
          // 
-         this.layoutItemPSVSelection.Control = this.cbParameterStartValuesSelection;
+         this.layoutItemPSVSelection.Control = this.cbParameterValuesSelection;
          this.layoutItemPSVSelection.Location = new System.Drawing.Point(0, 0);
          this.layoutItemPSVSelection.Name = "layoutItemPSVSelection";
          this.layoutItemPSVSelection.Size = new System.Drawing.Size(613, 24);
@@ -224,7 +224,7 @@
          // 
          // layoutItemMSVSelection
          // 
-         this.layoutItemMSVSelection.Control = this.cbMoleculeStartValuesSelection;
+         this.layoutItemMSVSelection.Control = this.cbInitialConditionsSelection;
          this.layoutItemMSVSelection.Location = new System.Drawing.Point(0, 24);
          this.layoutItemMSVSelection.Name = "layoutItemMSVSelection";
          this.layoutItemMSVSelection.Size = new System.Drawing.Size(613, 24);
@@ -276,8 +276,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).EndInit();
          this.uxLayoutControl1.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.cbParameterStartValuesSelection.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeStartValuesSelection.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbParameterValuesSelection.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbInitialConditionsSelection.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.selectedModuleTreeView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBtnRemove)).EndInit();
@@ -299,8 +299,8 @@
 
       private OSPSuite.UI.Controls.FilterTreeView moduleSelectionTreeView;
       private OSPSuite.UI.Controls.UxLayoutControl uxLayoutControl1;
-      private OSPSuite.UI.Controls.UxComboBoxEdit cbParameterStartValuesSelection;
-      private OSPSuite.UI.Controls.UxComboBoxEdit cbMoleculeStartValuesSelection;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbParameterValuesSelection;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbInitialConditionsSelection;
       private OSPSuite.UI.Controls.UxTreeView selectedModuleTreeView;
       private DevExpress.XtraEditors.SimpleButton btnAdd;
       private DevExpress.XtraEditors.SimpleButton btnRemove;

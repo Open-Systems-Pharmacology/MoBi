@@ -21,26 +21,26 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class AbstractStartValuesTask<TBuildingBlock, TStartValue> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TStartValue>, IStartValuesTask<TBuildingBlock, TStartValue>
-      where TBuildingBlock : class, IBuildingBlock, IStartValuesBuildingBlock<TStartValue>
-      where TStartValue : StartValueBase, IStartValue
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>, IBuildingBlock
+      where TStartValue : PathAndValueEntity
    {
-      protected IExtendStartValuesManager<TStartValue> _startValueBuildingBlockExtendManager;
+      protected IExtendStartValuesManager<TStartValue> _extendManager;
       protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
 
       protected readonly ISpatialStructureFactory _spatialStructureFactory;
-      private readonly IMapper<ImportedQuantityDTO, TStartValue> _dtoToQuantityToParameterStartValueMapper;
+      private readonly IMapper<ImportedQuantityDTO, TStartValue> _dtoToQuantityToParameterValueMapper;
       private readonly IStartValuePathTask<TBuildingBlock, TStartValue> _startValuePathTask;
 
       protected AbstractStartValuesTask(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
-         IExtendStartValuesManager<TStartValue> startValueBuildingBlockExtendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
-         IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TStartValue> dtoToQuantityToParameterStartValueMapper,
+         IExtendStartValuesManager<TStartValue> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
+         IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TStartValue> dtoToQuantityToParameterValueMapper,
          IStartValuePathTask<TBuildingBlock, TStartValue> startValuePathTask)
          : base(interactionTaskContext, editTask, moBiFormulaTask)
       {
-         _startValueBuildingBlockExtendManager = startValueBuildingBlockExtendManager;
+         _extendManager = extendManager;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
          _spatialStructureFactory = spatialStructureFactory;
-         _dtoToQuantityToParameterStartValueMapper = dtoToQuantityToParameterStartValueMapper;
+         _dtoToQuantityToParameterValueMapper = dtoToQuantityToParameterValueMapper;
          _startValuePathTask = startValuePathTask;
       }
 
@@ -158,18 +158,18 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="startValue">The start value to check</param>
       /// <param name="targetFormula">The formula being evaluated</param>
       /// <returns>True if the formula is equivalent to the start value formula</returns>
-      protected bool HasEquivalentFormula(IStartValue startValue, IFormula targetFormula)
+      protected bool HasEquivalentFormula(PathAndValueEntity startValue, IFormula targetFormula)
       {
          return _startValuePathTask.HasEquivalentFormula(startValue, targetFormula);
       }
 
-      protected static bool HasEquivalentStartValue(IStartValue startValue, IParameter parameter)
+      protected static bool HasEquivalentStartValue(PathAndValueEntity startValue, IParameter parameter)
       {
          var (value, _) = parameter.TryGetValue();
          return HasEquivalentStartValue(startValue, value);
       }
 
-      protected static bool HasEquivalentStartValue(IStartValue startValue, double? originalStartValue)
+      protected static bool HasEquivalentStartValue(PathAndValueEntity startValue, double? originalStartValue)
       {
          if (!originalStartValue.HasValue)
             return double.IsNaN(startValue.Value.GetValueOrDefault(double.NaN));
@@ -207,7 +207,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          // Use the merge manager to implement the extend. We can take advantage of the equivalency checker to favor the existing 
          // start value if a conflict is found (always prefer the existing start value)
-         _startValueBuildingBlockExtendManager.Merge(cacheToExtend, targetCache, areElementsEquivalent: (s1, s2) => true);
+         _extendManager.Merge(cacheToExtend, targetCache, areElementsEquivalent: (s1, s2) => true);
 
          macro.Run(Context);
 
@@ -216,9 +216,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private void prepareExtendActions(TBuildingBlock targetBuildingBlock, MoBiMacroCommand macro)
       {
-         _startValueBuildingBlockExtendManager.AddAction = startValueToMerge => macro.Add(GenerateAddCommandAndUpdateFormulaReferences(startValueToMerge, targetBuildingBlock));
-         _startValueBuildingBlockExtendManager.RemoveAction = startValueToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, startValueToMerge));
-         _startValueBuildingBlockExtendManager.CancelAction = macro.Clear;
+         _extendManager.AddAction = startValueToMerge => macro.Add(GenerateAddCommandAndUpdateFormulaReferences(startValueToMerge, targetBuildingBlock));
+         _extendManager.RemoveAction = startValueToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, startValueToMerge));
+         _extendManager.CancelAction = macro.Clear;
       }
 
       protected IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TStartValue startValueToMerge, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
@@ -283,7 +283,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             var startValue = startValuesBuildingBlock[startValueDTO.Path];
 
             if (startValue == null)
-               macroCommand.Add(GenerateAddCommand(startValuesBuildingBlock, _dtoToQuantityToParameterStartValueMapper.MapFrom(startValueDTO)));
+               macroCommand.Add(GenerateAddCommand(startValuesBuildingBlock, _dtoToQuantityToParameterValueMapper.MapFrom(startValueDTO)));
             else
             {
                if (ShouldFormulaBeOverridden(startValueDTO, startValue))

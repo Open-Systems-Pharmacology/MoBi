@@ -5,7 +5,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal abstract class AbstractStartValueSubjectRetrieverUICommand<T, TStartValue> : ActiveObjectUICommand<T> where T : class, IStartValuesBuildingBlock<TStartValue> where TStartValue : class, IStartValue
+   internal abstract class AbstractStartValueSubjectRetrieverUICommand<T, TStartValue> : ActiveObjectUICommand<T> where T : PathAndValueEntityBuildingBlock<TStartValue> where TStartValue : PathAndValueEntity
    {
       protected readonly IStartValuesTask<T, TStartValue> _startValueTasks;
       protected readonly IActiveSubjectRetriever _activeSubjectRetriever;

@@ -8,8 +8,8 @@ using OSPSuite.Core.Domain.Builder;
 namespace MoBi.Core.Commands
 {
    public abstract class EditStartValuePathCommand<TBuildingBlock, TStartValue> : BuildingBlockChangeCommandBase<TBuildingBlock>
-      where TBuildingBlock : class, IBuildingBlock<TStartValue>, IStartValuesBuildingBlock<TStartValue>
-      where TStartValue : class, IObjectBase, IStartValue
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>, IBuildingBlock<TStartValue>
+      where TStartValue : PathAndValueEntity
    {
       protected IEnumerable<string> _path;
       private ObjectPath _newContainerPath;
