@@ -29,9 +29,9 @@ namespace MoBi.Core.Services
 
       /// <summary>
       ///    Synchronizes the value <paramref name="quantity" /> with the corresponding entries defined in
-      ///    <paramref name="moleculeStartValues" /> if available
+      ///    <paramref name="initialConditions" /> if available
       /// </summary>
-      void SynchronizeMoleculeStartValues(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValues);
+      void SynchronizeInitialConditions(IQuantity quantity, InitialConditionsBuildingBlock initialConditions);
    }
 
    public class QuantitySynchronizer : IQuantitySynchronizer,
@@ -59,11 +59,11 @@ namespace MoBi.Core.Services
          //    return new MoBiEmptyCommand();
          //
          // var affectedBuildingBlock = affectedBuildingBlockInfo.UntypedBuildingBlock;
-         // if (affectedBuildingBlock.IsAnImplementationOf<ParameterStartValuesBuildingBlock>())
-         //    return synchronizeParameterStartValueCommand(quantity as IParameter, affectedBuildingBlock.DowncastTo<ParameterStartValuesBuildingBlock>());
+         // if (affectedBuildingBlock.IsAnImplementationOf<ParameterValuesBuildingBlock>())
+         //    return synchronizeParameterStartValueCommand(quantity as IParameter, affectedBuildingBlock.DowncastTo<ParameterValuesBuildingBlock>());
          //
-         // if (affectedBuildingBlock.IsAnImplementationOf<MoleculeStartValuesBuildingBlock>())
-         //    return synchronizeMoleculeStartValueCommand(quantity, affectedBuildingBlock.DowncastTo<MoleculeStartValuesBuildingBlock>());
+         // if (affectedBuildingBlock.IsAnImplementationOf<InitialConditionsBuildingBlock>())
+         //    return synchronizeInitialConditionCommand(quantity, affectedBuildingBlock.DowncastTo<InitialConditionsBuildingBlock>());
          //
          // return synchronizeStructuralBuildingBlockCommand(quantity as IParameter, affectedBuildingBlock);
       }
@@ -73,9 +73,9 @@ namespace MoBi.Core.Services
          return SynchronizeCommand(quantity, simulation).AsHidden().Run(_context);
       }
 
-      public void SynchronizeMoleculeStartValues(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValues)
+      public void SynchronizeInitialConditions(IQuantity quantity, InitialConditionsBuildingBlock initialConditions)
       {
-         synchronizeMoleculeStartValueCommand(quantity, moleculeStartValues, allowCreation: false).Run(_context);
+         synchronizeInitialConditionCommand(quantity, initialConditions, allowCreation: false).Run(_context);
       }
 
       private IMoBiCommand synchronizeStructuralBuildingBlockCommand(IParameter parameter, IBuildingBlock buildingBlock)
@@ -98,34 +98,34 @@ namespace MoBi.Core.Services
          }
       }
 
-      private IMoBiCommand synchronizeMoleculeStartValueCommand(IQuantity quantity, MoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock, bool allowCreation = true)
+      private IMoBiCommand synchronizeInitialConditionCommand(IQuantity quantity, InitialConditionsBuildingBlock initialConditionsBuildingBlock, bool allowCreation = true)
       {
          var moleculeAmount = quantity as MoleculeAmount ?? quantity.ParentContainer as MoleculeAmount;
-         return synchronizeStartValueCommand(moleculeAmount, moleculeStartValuesBuildingBlock, allowCreation,
-            msv => new SynchronizeMoleculeStartValueCommand(quantity, msv),
-            () => new AddMoleculeStartValueFromQuantityInSimulationCommand(moleculeAmount, moleculeStartValuesBuildingBlock));
+         return synchronizePathAndValueEntityCommand(moleculeAmount, initialConditionsBuildingBlock, allowCreation,
+            msv => new SynchronizeInitialConditionCommand(quantity, msv),
+            () => new AddInitialConditionFromQuantityInSimulationCommand(moleculeAmount, initialConditionsBuildingBlock));
       }
 
-      private IMoBiCommand synchronizeParameterStartValueCommand(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, bool allowCreation = true)
+      private IMoBiCommand synchronizeParameterValueCommand(IParameter parameter, ParameterValuesBuildingBlock parameterValuesBuildingBlock, bool allowCreation = true)
       {
-         return synchronizeStartValueCommand(parameter, parameterStartValuesBuildingBlock, allowCreation,
-            psv => new SynchronizeParameterStartValueCommand(parameter, psv),
-            () => new AddParameterStartValueFromQuantityInSimulationCommand(parameter, parameterStartValuesBuildingBlock));
+         return synchronizePathAndValueEntityCommand(parameter, parameterValuesBuildingBlock, allowCreation,
+            psv => new SynchronizeParameterValueCommand(parameter, psv),
+            () => new AddParameterValueFromQuantityInSimulationCommand(parameter, parameterValuesBuildingBlock));
       }
 
-      private IMoBiCommand synchronizeStartValueCommand<TStartValue>(IQuantity quantity, IStartValuesBuildingBlock<TStartValue> startValuesBuildingBlock, bool allowCreation,
-         Func<TStartValue, IMoBiCommand> synchronizeStartValueCommandFunc, Func<IMoBiCommand> createStartValueCommandFunc) where TStartValue : class, IStartValue
+      private IMoBiCommand synchronizePathAndValueEntityCommand<TPathAndValueEntity>(IQuantity quantity, PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock, bool allowCreation,
+         Func<TPathAndValueEntity, IMoBiCommand> synchronizePathAndValueEntityCommandFunc, Func<IMoBiCommand> createPathAndValueEntityCommandFunc) where TPathAndValueEntity : PathAndValueEntity
       {
          if (quantity == null)
             return new MoBiEmptyCommand();
 
          var objectPath = _entityPathResolver.ObjectPathFor(quantity);
-         var startValue = startValuesBuildingBlock[objectPath];
-         if (startValue != null)
-            return synchronizeStartValueCommandFunc(startValue);
+         var pathAndValueEntity = buildingBlock[objectPath];
+         if (pathAndValueEntity != null)
+            return synchronizePathAndValueEntityCommandFunc(pathAndValueEntity);
 
          if (allowCreation)
-            return createStartValueCommandFunc();
+            return createPathAndValueEntityCommandFunc();
 
          return new MoBiEmptyCommand();
       }
@@ -178,7 +178,7 @@ namespace MoBi.Core.Services
 
       private ICommand setSynchronizeCommand(IParameter buildingBlockParameter)
       {
-         _command = buildingBlockParameter != null ? new SynchronizeParameterValueCommand(_parameter, buildingBlockParameter) : (IMoBiCommand) new MoBiEmptyCommand();
+         _command = buildingBlockParameter != null ? new SynchronizeParameterValueToParameterValueCommand(_parameter, buildingBlockParameter) : (IMoBiCommand) new MoBiEmptyCommand();
          return _command;
       }
    }

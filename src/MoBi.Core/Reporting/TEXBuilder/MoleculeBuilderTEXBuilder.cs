@@ -27,7 +27,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
 
          if (!string.IsNullOrEmpty(moleculeBuilder.DefaultStartFormula.Name))
          {
-            listToReport.Add(new Paragraph(Constants.MOLECULE_START_VALUES));
+            listToReport.Add(new Paragraph(Constants.INITIAL_CONDITIONS));
             listToReport.Add(moleculeBuilder.DefaultStartFormula);
          }
 

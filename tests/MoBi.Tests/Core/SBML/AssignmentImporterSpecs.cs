@@ -19,7 +19,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Species_InitialAssignmentCreationTest()
       {
-         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          msvbb.ShouldNotBeNull();
          if (msvbb == null) return;
          foreach (var msv in msvbb)
@@ -32,7 +32,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Parameter_InitialAssignmentCreationTest()
       {
-         var psvbb = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
+         var psvbb = SBMLModule.ParameterValuesCollection.FirstOrDefault();
          psvbb.ShouldNotBeNull();
          foreach (var psv in psvbb)
          {
@@ -46,10 +46,10 @@ namespace MoBi.Core.SBML
       {
          SBMLModule.ShouldNotBeNull();
          SBMLModule.SpatialStructure.ShouldNotBeNull();
-         SBMLModule.ParameterStartValuesCollection.ShouldNotBeNull();
-         SBMLModule.ParameterStartValuesCollection.FirstOrDefault().ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.FirstOrDefault().ShouldNotBeNull();
 
-         var psvbb = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
+         var psvbb = SBMLModule.ParameterValuesCollection.FirstOrDefault();
          foreach (var psv in psvbb)
          {
             if (psv.Name == SBMLConstants.SIZE)

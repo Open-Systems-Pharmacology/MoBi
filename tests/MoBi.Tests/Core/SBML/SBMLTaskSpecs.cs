@@ -45,14 +45,14 @@ namespace MoBi.Core.SBML
 
          });
 
-         var parameterStartValuesBuildingBlock = SBMLModule.ParameterStartValuesCollection.FirstOrDefault();
-         var moleculeStartValuesBuildingBlock = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
+         var parameterValuesBuildingBlock = SBMLModule.ParameterValuesCollection.FirstOrDefault();
+         var initialConditionsBuildingBlock = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          
-         moduleConfiguration.Module.Add(parameterStartValuesBuildingBlock);
-         moduleConfiguration.Module.Add(moleculeStartValuesBuildingBlock);
+         moduleConfiguration.Module.Add(parameterValuesBuildingBlock);
+         moduleConfiguration.Module.Add(initialConditionsBuildingBlock);
 
-         moduleConfiguration.SelectedMoleculeStartValues = moleculeStartValuesBuildingBlock;
-         moduleConfiguration.SelectedParameterStartValues = parameterStartValuesBuildingBlock;
+         moduleConfiguration.SelectedInitialConditions = initialConditionsBuildingBlock;
+         moduleConfiguration.SelectedParameterValues = parameterValuesBuildingBlock;
 
          simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
 
@@ -67,7 +67,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void should_translate_new_units_properly()
       {
-         var msv = SBMLModule.MoleculeStartValuesCollection.First();
+         var msv = SBMLModule.InitialConditionsCollection.First();
          var glucoseStartValue = msv.First();
          glucoseStartValue.Value.Value.ShouldBeEqualTo(5000);
       }

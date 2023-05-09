@@ -38,6 +38,7 @@
          // legendItemsLayoutControl
          // 
          this.legendItemsLayoutControl.AllowCustomization = false;
+         this.legendItemsLayoutControl.AutoScroll = false;
          this.legendItemsLayoutControl.Dock = System.Windows.Forms.DockStyle.Left;
          this.legendItemsLayoutControl.Location = new System.Drawing.Point(0, 0);
          this.legendItemsLayoutControl.Name = "legendItemsLayoutControl";
@@ -52,7 +53,6 @@
          this.layoutControlGroup.CustomizationFormText = "layoutControlGroup1";
          this.layoutControlGroup.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup.GroupBordersVisible = false;
-         this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup.Size = new System.Drawing.Size(444, 69);

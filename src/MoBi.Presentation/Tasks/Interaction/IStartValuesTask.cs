@@ -9,81 +9,81 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IStartValuesTask<TBuildingBlock, in TStartValue> : IInteractionTasksForBuildingBlock<Module, TBuildingBlock>, IInteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TStartValue>
-      where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
-      where TStartValue : class, IStartValue
+   public interface IStartValuesTask<TBuildingBlock, in TPathAndValueEntity> : IInteractionTasksForBuildingBlock<Module, TBuildingBlock>, IInteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>
+      where TPathAndValueEntity : PathAndValueEntity
    {
-      void ExtendStartValues(TBuildingBlock startValuesBuildingBlock);
-      TBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration);
+      void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock);
+      TBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration);
 
       /// <summary>
-      ///    Generates a command that will add the startValue to the building block
+      ///    Generates a command that will add the pathAndValueEntity to the building block
       /// </summary>
       /// <param name="buildingBlock">The building block being updated</param>
-      /// <param name="startValue">The start value being added</param>
+      /// <param name="pathAndValueEntity">The start value being added</param>
       /// <returns>A MoBiCommand that can be executed</returns>
-      IMoBiCommand AddStartValueToBuildingBlock(TBuildingBlock buildingBlock, TStartValue startValue);
+      IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
 
       /// <summary>
       ///    Generates a command that will add or update multiple parameter start values in the building block
       /// </summary>
-      /// <param name="startValuesBuildingBlock">The building block being updated</param>
-      /// <param name="startValues">The list of start values to be added or updated</param>
+      /// <param name="buildingBlock">The building block being updated</param>
+      /// <param name="startQuantities">The list of start values to be added or updated</param>
       /// <returns>The command used to update the building block</returns>
-      IMoBiCommand ImportStartValuesToBuildingBlock(TBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues);
+      IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
 
       /// <summary>
       ///    Sets the start value formula to a new value
       /// </summary>
-      /// <param name="startValues">The building block which contains the start value</param>
-      /// <param name="startValue">The start value being updated</param>
+      /// <param name="buildingBlock">The building block which contains the start value</param>
+      /// <param name="pathAndValueEntity">The start value being updated</param>
       /// <param name="formula">The new formula</param>
       /// <returns>The command used to execute the update</returns>
-      IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock startValues, TStartValue startValue, IFormula formula);
+      IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, IFormula formula);
 
       /// <summary>
       ///    Modifies the value of the StartValue
       /// </summary>
-      /// <param name="startValue">The start value being modified</param>
+      /// <param name="pathAndValueEntity">The path and value entity being modified</param>
       /// <param name="newDisplayValue">The new display value of the start value</param>
       /// <param name="unit">The new unit of the start value</param>
-      /// <param name="startValues">The start value building block that the start value is a member of</param>
+      /// <param name="buildingBlock">The building block that the entity is a member of</param>
       /// <returns>The command used to modify the start value</returns>
-      IMoBiCommand SetDisplayValueWithUnit(TStartValue startValue, double? newDisplayValue, Unit unit, TBuildingBlock startValues);
+      IMoBiCommand SetDisplayValueWithUnit(TPathAndValueEntity pathAndValueEntity, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Returns a command that can be used to remove the start values contained in <paramref name="startValue" /> from
+      ///    Returns a command that can be used to remove the start values contained in <paramref name="pathAndValueEntity" /> from
       ///    <paramref name="buildingBlock" />
       /// </summary>
       /// <returns>The command, which has not been run</returns>
-      IMoBiCommand RemoveStartValueFromBuildingBlockCommand(TStartValue startValue, TBuildingBlock buildingBlock);
+      IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Renames a start value inside the list of start values
       /// </summary>
-      /// <param name="startValues">The list of start values</param>
-      /// <param name="startValue">The start value to be renamed</param>
+      /// <param name="buildingBlock">The list of start values</param>
+      /// <param name="pathAndValueEntity">The start value to be renamed</param>
       /// <param name="newValue">The new name to be used</param>
       /// <returns>The command that was run to rename the building block</returns>
-      IMoBiCommand EditStartValueName(TBuildingBlock startValues, TStartValue startValue, string newValue);
+      IMoBiCommand EditPathAndValueEntityName(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, string newValue);
 
       /// <summary>
       ///    Changes one element in the start value container path
       /// </summary>
       /// <param name="buildingBlock">The building block containing the start value</param>
-      /// <param name="startValue">The start value that will be updated</param>
+      /// <param name="pathAndValueEntity">The start value that will be updated</param>
       /// <param name="indexToUpdate">The index of the value being modified</param>
       /// <param name="newValue">The new value for the path</param>
       /// <returns>The command that was run to edit the container path</returns>
-      IMoBiCommand EditStartValueContainerPath(TBuildingBlock buildingBlock, TStartValue startValue, int indexToUpdate, string newValue);
+      IMoBiCommand EditPathAndValueEntityContainerPath(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, int indexToUpdate, string newValue);
 
       /// <summary>
       ///    Refreshes start values from original building blocks
       /// </summary>
       /// <param name="buildingBlock">The StartValueBuildingBlock being updated</param>
-      /// <param name="startValuesToRefresh">The list of values that should be refreshed</param>
+      /// <param name="pathAndValueEntitiesToRefresh">The list of values that should be refreshed</param>
       /// <returns>The command that was run to refresh the values</returns>
-      IMoBiCommand RefreshStartValuesFromBuildingBlocks(TBuildingBlock buildingBlock, IEnumerable<TStartValue> startValuesToRefresh);
+      IMoBiCommand RefreshPathAndValueEntitiesFromBuildingBlocks(TBuildingBlock buildingBlock, IEnumerable<TPathAndValueEntity> pathAndValueEntitiesToRefresh);
 
       /// <summary>
       ///    Retrieves all the parent container path elements from the molecule building block and spatial structure
@@ -95,19 +95,19 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <summary>
       ///    Determines whether the start value contains equivalent information to the original builder that it is based on
       /// </summary>
-      /// <param name="startValue">The start value being evaluated</param>
+      /// <param name="pathAndValueEntity">The start value being evaluated</param>
       /// <param name="buildingBlock"></param>
-      /// <returns>True of the original builder values match the values in the startValue</returns>
-      bool IsEquivalentToOriginal(TStartValue startValue, TBuildingBlock buildingBlock);
+      /// <returns>True of the original builder values match the values in the pathAndValueEntity</returns>
+      bool IsEquivalentToOriginal(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Updates a dimension for a parameter start value
       /// </summary>
-      /// <param name="parameterStartValuesBuildingBlock">The building block containing the start value being updated</param>
-      /// <param name="startValue">The start value being updated</param>
+      /// <param name="pathAndValueEntitiesBuildingBlock">The building block containing the start value being updated</param>
+      /// <param name="pathAndValueEntity">The start value being updated</param>
       /// <param name="newDimension">The new dimension for the start value</param>
       /// <returns>The command used to update the start value dimension</returns>
-      IMoBiCommand UpdateStartValueDimension(TBuildingBlock parameterStartValuesBuildingBlock, TStartValue startValue, IDimension newDimension);
+      IMoBiCommand UpdatePathAndValueEntityDimension(TBuildingBlock pathAndValueEntitiesBuildingBlock, TPathAndValueEntity pathAndValueEntity, IDimension newDimension);
 
       /// <summary>
       ///    Returns the default dimension for the start value type
@@ -120,17 +120,17 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// </summary>
       /// <param name="buildingBlock">The building block that contains the start value</param>
       /// <param name="valueOrigin">The new value origin</param>
-      /// <param name="startValue">The start value being modified</param>
+      /// <param name="pathAndValueEntity">The start value being modified</param>
       /// <returns>The command used to modify the start value</returns>
-      ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TStartValue startValue);
+      ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TPathAndValueEntity pathAndValueEntity);
 
       /// <summary>
       ///    Determines whether the source for the building block can be resolved
       /// </summary>
       /// <param name="buildingBlock">The building block containing the start value</param>
-      /// <param name="startValue">The start value being resolved</param>
+      /// <param name="pathAndValueEntity">The start value being resolved</param>
       /// <returns>true if the start value can be resolved, otherwise false</returns>
-      bool CanResolve(TBuildingBlock buildingBlock, TStartValue startValue);
+      bool CanResolve(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
 
       /// <summary>
       /// Creates a clone of the <paramref name="buildingBlockToClone"/> and adds it to <paramref name="parentModule"/>

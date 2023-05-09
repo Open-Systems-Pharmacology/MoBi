@@ -9,11 +9,11 @@ namespace MoBi.Presentation
 {
    public abstract class concern_for_NotAvailableValueFormatter : ContextSpecification<ValueAllowingNaNFormatter>
    {
-      protected IStartValueDTO _startValueDTO;
+      protected IPathAndValueEntityDTO _startValueDTO;
 
       protected override void Context()
       {
-         _startValueDTO = A.Fake<IStartValueDTO>();
+         _startValueDTO = A.Fake<IPathAndValueEntityDTO>();
          sut = new ValueAllowingNaNFormatter(_startValueDTO);
       }
    }

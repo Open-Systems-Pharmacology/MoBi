@@ -11,10 +11,10 @@ namespace MoBi.Core.Domain.Extensions
 {
    public static class BuildingBlockExtensions
    {
-      public static ICache<string, T> ToCache<T>(this IEnumerable<T> startValues) where T : class, IStartValue
+      public static ICache<string, T> ToCache<T>(this IEnumerable<T> pathAndValueEntities) where T : PathAndValueEntity
       {
          var cache = new Cache<string, T>(x => x.Path.ToString(), x => null);
-         cache.AddRange(startValues);
+         cache.AddRange(pathAndValueEntities);
          return cache;
       }
 

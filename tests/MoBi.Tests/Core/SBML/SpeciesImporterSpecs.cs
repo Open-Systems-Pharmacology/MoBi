@@ -65,7 +65,7 @@ namespace MoBi.Core.SBML
          mbb.Any(molecule => molecule.Name == "S1").ShouldBeTrue();
          mbb.Any(molecule => molecule.Name == "S2").ShouldBeTrue();
 
-         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          msvbb.Any(msv => msv.Name == "S1").ShouldBeTrue();
          msvbb.Any(msv => msv.Name == "S2").ShouldBeTrue();
          var msv1 = ObjectBaseExtensions.FindByName(msvbb, "S1");
@@ -105,14 +105,14 @@ namespace MoBi.Core.SBML
       [Observation]
       public void should_understand_litre_as_unit()
       {
-         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          msvbb.FirstOrDefault().Dimension.Name.ShouldBeEqualTo("Amount");
       }
 
       [Observation]
       public void should_assign_molecule_start_values_as_concentrations()
       {
-         var msvbb = SBMLModule.MoleculeStartValuesCollection.FirstOrDefault();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          var glucose = msvbb.First();
          glucose.Formula.ToString().ShouldBeEqualTo("5000 * V");
          var volumePath = glucose.Formula.ObjectPaths.First();

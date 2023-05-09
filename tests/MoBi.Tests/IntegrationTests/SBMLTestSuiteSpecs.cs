@@ -119,7 +119,7 @@ namespace MoBi.IntegrationTests
          };
 
 
-         var moduleConfiguration = new ModuleConfiguration(module, project.MoleculeStartValueBlockCollection.First(), project.ParametersStartValueBlockCollection.First());
+         var moduleConfiguration = new ModuleConfiguration(module, project.InitialConditionBlockCollection.First(), project.ParametersValueBlockCollection.First());
 
          simulationConfiguration.SimulationSettings = project.SimulationSettings;
 
@@ -137,10 +137,10 @@ namespace MoBi.IntegrationTests
             project.AddBuildingBlock(new MoBiReactionBuildingBlock().WithName("Empty"));
          if (!project.PassiveTransportCollection.Any())
             project.AddBuildingBlock(new PassiveTransportBuildingBlock().WithName("Empty"));
-         if (!project.MoleculeStartValueBlockCollection.Any())
-            project.AddBuildingBlock(new MoleculeStartValuesBuildingBlock().WithName("Empty"));
-         if (!project.ParametersStartValueBlockCollection.Any())
-            project.AddBuildingBlock(new ParameterStartValuesBuildingBlock().WithName("Empty"));
+         if (!project.InitialConditionBlockCollection.Any())
+            project.AddBuildingBlock(new InitialConditionsBuildingBlock().WithName("Empty"));
+         if (!project.ParametersValueBlockCollection.Any())
+            project.AddBuildingBlock(new ParameterValuesBuildingBlock().WithName("Empty"));
       }
    }
 }

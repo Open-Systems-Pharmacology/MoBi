@@ -14,8 +14,8 @@ namespace MoBi.Engine.Sbml
       IContainer GetMainTopContainer();
       IContainer GetEventsTopContainer();
       MoleculeBuildingBlock GetMainMoleculeBuildingBlock();
-      ParameterStartValuesBuildingBlock GetMainParameterStartValuesBuildingBlock();
-      MoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock();
+      ParameterValuesBuildingBlock GetMainParameterValuesBuildingBlock();
+      InitialConditionsBuildingBlock GetMainMSVBuildingBlock();
       IEntity GetContainerFromCompartment(string compartment);
       IContainer GetContainerFromCompartment_(string compartment);
       void DoImport(Model sbmlModel, Module sbmlModule, SBMLInformation sbmlInformation, ICommandCollector command);
@@ -87,21 +87,21 @@ namespace MoBi.Engine.Sbml
       /// <summary>
       ///     Gets the MoBi Parameter Start Values Building Block generated for the SBML Import.
       /// </summary>
-      public ParameterStartValuesBuildingBlock GetMainParameterStartValuesBuildingBlock()
+      public ParameterValuesBuildingBlock GetMainParameterValuesBuildingBlock()
       {
          return
-            _sbmlModule.ParameterStartValuesCollection.FirstOrDefault(
-               mb => mb.Id == SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
+            _sbmlModule.ParameterValuesCollection.FirstOrDefault(
+               mb => mb.Id == SBMLConstants.SBML_PARAMETER_VALUES_BB);
       }
 
       /// <summary>
       ///     Gets the MoBi Molecule Start Values Building Block generated for the SBML Import.
       /// </summary>
-      public MoleculeStartValuesBuildingBlock GetMainMSVBuildingBlock()
+      public InitialConditionsBuildingBlock GetMainMSVBuildingBlock()
       {
          return
-            _sbmlModule.MoleculeStartValuesCollection.FirstOrDefault(
-               mb => mb.Id == SBMLConstants.SBML_MOLECULESTARTVALUES_BB);
+            _sbmlModule.InitialConditionsCollection.FirstOrDefault(
+               mb => mb.Id == SBMLConstants.SBML_INITIAL_CONDITIONS_BB);
       }
 
       /// <summary>

@@ -70,14 +70,14 @@ namespace MoBi.Presentation.Mappers
          conditionalAdd(module, ConditionalCreate(createModuleDTO.WithEventGroup, () => CreateDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)));
          conditionalAdd(module, ConditionalCreate(createModuleDTO.WithObserver, () => CreateDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)));
 
-         if (createModuleDTO.WithParameterStartValues)
+         if (createModuleDTO.WithParameterValues)
          {
-            module.Add(CreateDefault<ParameterStartValuesBuildingBlock>(AppConstants.DefaultNames.ParameterStartValues));
+            module.Add(CreateDefault<ParameterValuesBuildingBlock>(AppConstants.DefaultNames.ParameterValues));
          }
 
-         if (createModuleDTO.WithMoleculeStartValues)
+         if (createModuleDTO.WithInitialConditions)
          {
-            module.Add(CreateDefault<MoleculeStartValuesBuildingBlock>(AppConstants.DefaultNames.MoleculeStartValues));
+            module.Add(CreateDefault<InitialConditionsBuildingBlock>(AppConstants.DefaultNames.InitialConditions));
          }
 
          return module;

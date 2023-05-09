@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
             newValue: 4.0, 
             displayUnit: DomainHelperForSpecs.AmountDimension.DefaultUnit, 
             oldUnit: DomainHelperForSpecs.ConcentrationDimension.DefaultUnit, 
-            buildingBlock: new ParameterStartValuesBuildingBlock(), 
+            buildingBlock: new ParameterValuesBuildingBlock(), 
             formulaOwner: _owner);
          A.CallTo(() => _context.Get<IEntity>("id")).Returns(_owner);
       }

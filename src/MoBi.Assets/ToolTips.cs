@@ -10,7 +10,7 @@ namespace MoBi.Assets
       public static readonly string ZoomOut = "Reduces the view of the Flow Chart";
       public static readonly string FitToPage = "Zoom to fit all elements in the current Flow Chart window ";
       public static readonly string SetToDefault = "Sets Values to Defaults defined in Molecules and Spatial Structure";
-      public static readonly string Extend = "Adds new start values from Molecules and Spatial Structure";
+      public static readonly string Extend = "Adds new values from Molecules and Spatial Structure";
       public static readonly string AddMoleculeNameToList = "Add molecule name to selectable list";
       public static readonly string AddToProject = "Save as a new building block in project.";
       public static readonly string ResetParameterToolTip = "Reset parameter to default";
@@ -145,7 +145,7 @@ namespace MoBi.Assets
          public static readonly string ParameterName = "Define a name for the Parameter";
 
          public static readonly string ParameterType =
-            "Specify the parameters area of validity \n \n Local: should only be used locally, i.e., within the corresponding reaction or for a molecule where a local parameter is defined \n \n Global:can also be used in other formulas  \n \n Property: are identical to Global parameters except that they will not be listed and set in the parameter start values";
+            "Specify the parameters area of validity \n \n Local: should only be used locally, i.e., within the corresponding reaction or for a molecule where a local parameter is defined \n \n Global:can also be used in other formulas  \n \n Property: are identical to Global parameters except that they will not be listed and set in the parameter values";
 
          public static readonly string ParameterDimension = "";
          public static readonly string IsStateVariable = "Parameter (P) is defined and calculated by solving a differential equation as: \n \n P: “dP/dt = Right Hand Side”; \n \n The selected formula defines the Right Hand Side. The Value defined above will be used as initial condition";

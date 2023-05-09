@@ -65,41 +65,41 @@ namespace MoBi.Presentation.Presenter
       }
    }
 
-   public class CreateMoleculeStartValuesPresenter : CreateStartValuesPresenter<MoleculeStartValuesBuildingBlock>
+   public class CreateInitialConditionsPresenter : CreateStartValuesPresenter<InitialConditionsBuildingBlock>
    {
-      private readonly IMoleculeStartValuesCreator _startValuesCreator;
+      private readonly IInitialConditionsCreator _initialConditionsCreator;
 
-      public CreateMoleculeStartValuesPresenter(ICreateStartValuesView view, IMoBiContext context, IMoleculeStartValuesCreator startValuesCreator) : base(view, context)
+      public CreateInitialConditionsPresenter(ICreateStartValuesView view, IMoBiContext context, IInitialConditionsCreator initialConditionsCreator) : base(view, context)
       {
-         _startValuesCreator = startValuesCreator;
-         _unallowedNames.AddRange(_context.CurrentProject.MoleculeStartValueBlockCollection.Select(x => x.Name));
-         view.ApplicationIcon = ApplicationIcons.MoleculeStartValues;
-         view.Caption = AppConstants.Captions.NewMoleculeStartValues;
+         _initialConditionsCreator = initialConditionsCreator;
+         _unallowedNames.AddRange(_context.CurrentProject.InitialConditionBlockCollection.Select(x => x.Name));
+         view.ApplicationIcon = ApplicationIcons.InitialConditions;
+         view.Caption = AppConstants.Captions.NewInitialConditions;
       }
 
-      protected override MoleculeStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
+      protected override InitialConditionsBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
       {
-         return _startValuesCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
+         return _initialConditionsCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
       }
    }
 
-   public class CreateParameterStartValuesPresenter : CreateStartValuesPresenter<ParameterStartValuesBuildingBlock>
+   public class CreateParameterValuesPresenter : CreateStartValuesPresenter<ParameterValuesBuildingBlock>
    {
-      private readonly IParameterStartValuesCreator _startValuesCreator;
+      private readonly IParameterValuesCreator _parameterValuesCreator;
 
-      public CreateParameterStartValuesPresenter(ICreateStartValuesView view, IMoBiContext context, IParameterStartValuesCreator startValuesCreator)
+      public CreateParameterValuesPresenter(ICreateStartValuesView view, IMoBiContext context, IParameterValuesCreator parameterValuesCreator)
          : base(view, context)
       {
-         _startValuesCreator = startValuesCreator;
-         _unallowedNames.AddRange(_context.CurrentProject.ParametersStartValueBlockCollection.Select(x => x.Name));
-         view.ApplicationIcon = ApplicationIcons.ParameterStartValues;
-         view.Caption = AppConstants.Captions.NewParameterStartValues;
+         _parameterValuesCreator = parameterValuesCreator;
+         _unallowedNames.AddRange(_context.CurrentProject.ParametersValueBlockCollection.Select(x => x.Name));
+         view.ApplicationIcon = ApplicationIcons.ParameterValues;
+         view.Caption = AppConstants.Captions.NewParameterValues;
       }
 
-      protected override ParameterStartValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
+      protected override ParameterValuesBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
       {
          // return _startValuesCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
-         return new ParameterStartValuesBuildingBlock();
+         return new ParameterValuesBuildingBlock();
       }
    }
 }

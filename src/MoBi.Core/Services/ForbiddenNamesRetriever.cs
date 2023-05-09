@@ -58,7 +58,7 @@ namespace MoBi.Core.Services
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
          addNamesToHash(nameHash, allParametersFromMoleculesInProject());
-         addNamesToHash(nameHash, allMoleculeNamesFromStartValues(moleculeBuilder));
+         addNamesToHash(nameHash, allMoleculeNamesFromInitialConditions(moleculeBuilder));
          addNamesToHash(nameHash, allReactionNamesFromProject());
          return nameHash;
       }
@@ -172,14 +172,14 @@ namespace MoBi.Core.Services
       /// <returns>molecule names that are forbidden for the moleculebuilder</returns>
       /// <remarks>
       ///    This is necessary when a molecule was removed and another molecule should be renamed. It
-      ///    should not be possible to rename to the removed named to prevent double definitions of StartValues
+      ///    should not be possible to rename to the removed named to prevent double definitions of InitialConditions
       /// </remarks>
-      private IEnumerable<string> allMoleculeNamesFromStartValues(MoleculeBuilder moleculeBuilder)
+      private IEnumerable<string> allMoleculeNamesFromInitialConditions(MoleculeBuilder moleculeBuilder)
       {
          var nameHash = new HashSet<string>();
          // We need to retrieve Names from here if a removed Molecule is still in MSV
-         // to prevent double deffinitions in Startvalues
-         getAllMoleculeStartValuesFromBuildingBlocksFor(moleculeBuilder)
+         // to prevent double definitions in InitialConditions
+         getAllInitialConditionsFromBuildingBlocksFor(moleculeBuilder)
             .Select(x => x.MoleculeName).Distinct()
             .Where(x => !x.Equals(moleculeBuilder.Name))
             .Each(x => nameHash.Add(x));
@@ -187,10 +187,10 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      private IEnumerable<MoleculeStartValue> getAllMoleculeStartValuesFromBuildingBlocksFor(MoleculeBuilder builder)
+      private IEnumerable<InitialCondition> getAllInitialConditionsFromBuildingBlocksFor(MoleculeBuilder builder)
       {
          var builderName = builder.Name;
-         return _context.CurrentProject.MoleculeStartValueBlockCollection
+         return _context.CurrentProject.InitialConditionBlockCollection
             .Where(x => x.Any(msv => msv.MoleculeName.Equals(builderName)))
             .SelectMany(x => x.All());
       }

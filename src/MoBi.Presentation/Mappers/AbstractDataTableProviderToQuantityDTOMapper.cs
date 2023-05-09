@@ -126,14 +126,14 @@ namespace MoBi.Presentation.Mappers
                AppConstants.Validation.ValueNotValidForInsert(dto.Path.ToString()));
 
          if (string.IsNullOrEmpty(dto.Name))
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.ImportedStartValueMustHaveName);
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.ImportedValueMustHaveName);
 
          if (string.IsNullOrEmpty(dto.ContainerPath.PathAsString))
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.ImportedStartValueMustHaveContainerPath);
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.ImportedValueMustHaveContainerPath);
 
          if (quantityImporterDTO.QuantityDTOs.Any(x => Equals(x.Path, dto.Path)))
             throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
-               AppConstants.Exceptions.DuplicatedImportedStartValue(dto.Path.PathAsString));
+               AppConstants.Exceptions.DuplicatedImportedValue(dto.Path.PathAsString));
       }
 
       public QuantityImporterDTO MapFrom(DataTable table, TImportTarget target)

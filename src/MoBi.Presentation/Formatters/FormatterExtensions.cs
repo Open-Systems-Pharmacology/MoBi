@@ -5,14 +5,14 @@ namespace MoBi.Presentation.Formatters
 {
    public static class FormatterExtensions
    {
-      public static IFormatter<double?> MoleculeStartValueFormatter(this MoleculeStartValueDTO moleculeStartValueDTO)
+      public static IFormatter<double?> InitialConditionFormatter(this InitialConditionDTO initialConditionDTO)
       {
-         return new ValueAllowingNaNFormatter(moleculeStartValueDTO);
+         return new ValueAllowingNaNFormatter(initialConditionDTO);
       }
 
-      public static IFormatter<double?> ParameterStartValueFormatter(this ParameterStartValueDTO parameterStartValueDTO)
+      public static IFormatter<double?> ParameterValueFormatter(this ParameterValueDTO parameterValueDTO)
       {
-         return new ValueAllowingNaNFormatter(parameterStartValueDTO);
+         return new ValueAllowingNaNFormatter(parameterValueDTO);
       }
 
       public static IFormatter<double?> IndividualParameterFormatter(this IndividualParameterDTO individualParameterDTO)

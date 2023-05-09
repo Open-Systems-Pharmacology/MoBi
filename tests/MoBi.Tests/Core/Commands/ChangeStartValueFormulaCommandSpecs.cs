@@ -38,11 +38,11 @@ namespace MoBi.Core.Commands
       }
    }
 
-   class When_inverting_a_psv_change_command : When_inverting_a_formula_change_command<ChangeValueFormulaCommand<MoleculeStartValue>, MoleculeStartValuesBuildingBlock, MoleculeStartValue>
+   class When_inverting_a_psv_change_command : When_inverting_a_formula_change_command<ChangeValueFormulaCommand<InitialCondition>, InitialConditionsBuildingBlock, InitialCondition>
    {
-      protected override ChangeValueFormulaCommand<MoleculeStartValue> GetCommand()
+      protected override ChangeValueFormulaCommand<InitialCondition> GetCommand()
       {
-         return new ChangeValueFormulaCommand<MoleculeStartValue>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+         return new ChangeValueFormulaCommand<InitialCondition>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
    }
 
@@ -78,11 +78,11 @@ namespace MoBi.Core.Commands
       }
    }
 
-   class executing_change_start_value_formula_command : executing_change_formula_command<ChangeValueFormulaCommand<MoleculeStartValue>, MoleculeStartValuesBuildingBlock, MoleculeStartValue>
+   class executing_change_start_value_formula_command : executing_change_formula_command<ChangeValueFormulaCommand<InitialCondition>, InitialConditionsBuildingBlock, InitialCondition>
    {
-      protected override ChangeValueFormulaCommand<MoleculeStartValue> GetCommand()
+      protected override ChangeValueFormulaCommand<InitialCondition> GetCommand()
       {
-         return new ChangeValueFormulaCommand<MoleculeStartValue>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
+         return new ChangeValueFormulaCommand<InitialCondition>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
    }
 

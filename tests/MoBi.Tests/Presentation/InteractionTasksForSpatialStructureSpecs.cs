@@ -31,7 +31,7 @@ namespace MoBi.Presentation
       private MoBiSpatialStructure _spatialStructure;
       private Module _module;
       private MoBiProject _moBiProject;
-      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      private InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
 
       protected override void Context()
       {
@@ -39,15 +39,15 @@ namespace MoBi.Presentation
          _moBiProject = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _interactionTaskContext.Context.CurrentProject).Returns(_moBiProject);
          _spatialStructure = new MoBiSpatialStructure() { Id = "1" };
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock { SpatialStructureId = _spatialStructure.Id, MoleculeBuildingBlockId = "" };
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock { SpatialStructureId = _spatialStructure.Id, MoleculeBuildingBlockId = "" };
          _module = new Module
          {
-            _moleculeStartValuesBuildingBlock,
+            _initialConditionsBuildingBlock,
             _spatialStructure
          };
          _moBiProject.AddModule(_module);
          _moBiProject.AddBuildingBlock(_spatialStructure);
-         _moBiProject.AddBuildingBlock(_moleculeStartValuesBuildingBlock);
+         _moBiProject.AddBuildingBlock(_initialConditionsBuildingBlock);
       }
 
       [Observation]

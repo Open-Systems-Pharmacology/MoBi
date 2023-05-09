@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public abstract class PathWithValueToDTOMapper<TInput, TDTO> : ObjectBaseToObjectBaseDTOMapperBase where TDTO : PathWithValueEntityDTO<TInput> where TInput : PathAndValueEntity
+   public abstract class PathWithValueToDTOMapper<TInput, TDTO> : ObjectBaseToObjectBaseDTOMapperBase where TDTO : PathAndValueEntityDTO<TInput> where TInput : PathAndValueEntity
    {
       protected readonly IFormulaToValueFormulaDTOMapper _formulaMapper;
 

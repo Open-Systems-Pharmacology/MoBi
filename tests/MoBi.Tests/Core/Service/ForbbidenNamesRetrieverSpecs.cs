@@ -181,10 +181,10 @@ namespace MoBi.Core.Service
          var reactionBuilder = new ReactionBuilder().WithName(_reactionName);
          var reactions = new MoBiReactionBuildingBlock() {reactionBuilder};
          _project.AddBuildingBlock(reactions);
-         var msv = new MoleculeStartValue{Path=new ObjectPath("A",_msvName)};
-         var msv2 = new MoleculeStartValue { Path = new ObjectPath("A", _moleculeName) };
-         var moleculeStartValues = new MoleculeStartValuesBuildingBlock() {msv,msv2};
-         _project.AddBuildingBlock(moleculeStartValues);
+         var msv = new InitialCondition { Path=new ObjectPath("A",_msvName)};
+         var msv2 = new InitialCondition { Path = new ObjectPath("A", _moleculeName) };
+         var initialConditions = new InitialConditionsBuildingBlock() {msv,msv2};
+         _project.AddBuildingBlock(initialConditions);
          
          A.CallTo(() => _context.CurrentProject).Returns(_project);
 

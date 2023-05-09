@@ -436,28 +436,28 @@ namespace MoBi.Presentation.Repositories
             .WithCommand<FitToPageCommand>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Extend)
-            .WithId(MenuBarItemIds.MoleculeStartValuesExtend)
+            .WithId(MenuBarItemIds.InitialConditionsExtend)
             .WithDescription(ToolTips.Extend)
-            .WithIcon(ApplicationIcons.ExtendMoleculeStartValues)
-            .WithCommand<MoleculeStartValuesExtendUICommand>(_container);
+            .WithIcon(ApplicationIcons.ExtendInitialConditions)
+            .WithCommand<InitialConditionsExtendUICommand>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Extend)
-            .WithId(MenuBarItemIds.ParameterStartValuesExtend)
+            .WithId(MenuBarItemIds.ParameterValuesExtend)
             .WithDescription(ToolTips.Extend)
-            .WithIcon(ApplicationIcons.ExtendParameterStartValues)
-            .WithCommand<ParameterStartValuesExtendUICommand>(_container);
+            .WithIcon(ApplicationIcons.ExtendParameterValues)
+            .WithCommand<ParameterValuesExtendUICommand>(_container);
 
          yield return CreateMenuButton
-            .WithCaption(AppConstants.MenuNames.NewParameterStartValue)
-            .WithId(MenuBarItemIds.NewParameterStartValue)
-            .WithIcon(ApplicationIcons.AddParameterStartValues)
-            .WithCommand<AddParameterStartValuesUICommand>(_container);
+            .WithCaption(AppConstants.MenuNames.NewParameterValue)
+            .WithId(MenuBarItemIds.NewParameterValue)
+            .WithIcon(ApplicationIcons.AddParameterValues)
+            .WithCommand<AddParameterValuesUICommand>(_container);
 
          yield return CreateMenuButton
-            .WithCaption(AppConstants.MenuNames.NewMoleculeStartValue)
-            .WithId(MenuBarItemIds.NewMoleculeStartValue)
-            .WithIcon(ApplicationIcons.AddMoleculeStartValues)
-            .WithCommand<AddMoleculeStartValuesUICommand>(_container);
+            .WithCaption(AppConstants.MenuNames.NewInitialCondition)
+            .WithId(MenuBarItemIds.NewInitialConditions)
+            .WithIcon(ApplicationIcons.AddInitialConditions)
+            .WithCommand<AddInitialConditionsUICommand>(_container);
      
          yield return CreateMenuButton
               .WithCaption(AppConstants.MenuNames.ImportSBML)

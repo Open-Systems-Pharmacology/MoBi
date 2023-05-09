@@ -39,9 +39,9 @@ namespace MoBi.UI.Views
          ApplicationIcon = ApplicationIcons.Module;
          layoutItemBtnAdd.AsAddButton();
          layoutItemBtnRemove.AsRemoveButton();
-         startValuesSelectionGroup.Text = AppConstants.Captions.SelectStartValues;
-         layoutItemMSVSelection.Text = AppConstants.Captions.MoleculeStartValues;
-         layoutItemPSVSelection.Text = AppConstants.Captions.ParameterStartValues;
+         startValuesSelectionGroup.Text = AppConstants.Captions.SelectValues;
+         layoutItemMSVSelection.Text = AppConstants.Captions.InitialConditions;
+         layoutItemPSVSelection.Text = AppConstants.Captions.ParameterValues;
          moduleSelectionTreeView.TreeView.StateImageList = _imageListRetriever.AllImages16x16;
          selectedModuleTreeView.StateImageList = _imageListRetriever.AllImages16x16;
          layoutGroupSelectedModules.Text = AppConstants.Captions.SimulationModules;
@@ -69,8 +69,8 @@ namespace MoBi.UI.Views
          selectedModuleTreeView.SelectedNodeChanged += selectedNode => OnEvent(() => _presenter.SelectedModuleConfigurationNodeChanged(selectedNode));
          moduleSelectionTreeView.TreeView.SelectedNodeChanged += selectedNode => OnEvent(() => _presenter.SelectedModuleNodeChanged(selectedNode));
 
-         _screenBinder.Bind(x => x.SelectedParameterStartValues).To(cbParameterStartValuesSelection).WithValues(x => getParameterStartValues()).Changed += () => OnEvent(refreshStartValues);
-         _screenBinder.Bind(x => x.SelectedMoleculeStartValues).To(cbMoleculeStartValuesSelection).WithValues(x => getMoleculeStartValues()).Changed += () => OnEvent(refreshStartValues);
+         _screenBinder.Bind(x => x.SelectedParameterValues).To(cbParameterValuesSelection).WithValues(x => getParameterValues()).Changed += () => OnEvent(refreshStartValues);
+         _screenBinder.Bind(x => x.SelectedInitialConditions).To(cbInitialConditionsSelection).WithValues(x => getInitialConditions()).Changed += () => OnEvent(refreshStartValues);
 
          moduleSelectionTreeView.TreeView.Columns[0].SortOrder = SortOrder.Ascending;
          clearStartValueSelectors();
@@ -92,14 +92,14 @@ namespace MoBi.UI.Views
          e.Result = _presenter.CompareSelectedNodes(e.Node1.Tag as ITreeNode, e.Node2.Tag as ITreeNode);
       }
 
-      private IReadOnlyList<MoleculeStartValuesBuildingBlock> getMoleculeStartValues()
+      private IReadOnlyList<InitialConditionsBuildingBlock> getInitialConditions()
       {
-         return _presenter.MoleculeStartValuesCollectionFor(selectedModuleTreeView.SelectedNode);
+         return _presenter.InitialConditionsCollectionFor(selectedModuleTreeView.SelectedNode);
       }
 
-      private IReadOnlyList<ParameterStartValuesBuildingBlock> getParameterStartValues()
+      private IReadOnlyList<ParameterValuesBuildingBlock> getParameterValues()
       {
-         return _presenter.ParameterStartValuesCollectionFor(selectedModuleTreeView.SelectedNode);
+         return _presenter.ParameterValuesCollectionFor(selectedModuleTreeView.SelectedNode);
       }
 
       public void AttachPresenter(IEditModuleConfigurationsPresenter presenter)
@@ -157,8 +157,8 @@ namespace MoBi.UI.Views
 
       private void clearStartValueSelectors()
       {
-         clearComboBox(cbParameterStartValuesSelection);
-         clearComboBox(cbMoleculeStartValuesSelection);
+         clearComboBox(cbParameterValuesSelection);
+         clearComboBox(cbInitialConditionsSelection);
          startValuesSelectionGroup.Enabled = false;
       }
 

@@ -24,15 +24,15 @@ namespace MoBi.Core.Services
    {
       private readonly IReactionBuildingBlockToReactionDataTableMapper _reactionBuildingBlockToReactionDataTableMapper;
       private readonly IParameterListToSimulationParameterDataTableMapper _parameterListToSimulationParameterDataTableMapper;
-      private readonly IMoleculeStartValuesBuildingBlockToParameterDataTableMapper _moleculeStartValuesBuildingBlockToParameterDataTableMapper;
+      private readonly IInitialConditionsBuildingBlockToParameterDataTableMapper _initialConditionsBuildingBlockToParameterDataTableMapper;
 
       public ModelPartsToExcelExporterTask(IReactionBuildingBlockToReactionDataTableMapper reactionBuildingBlockToReactionDataTableMapper,
          IParameterListToSimulationParameterDataTableMapper parameterListToSimulationParameterDataTableMapper,
-         IMoleculeStartValuesBuildingBlockToParameterDataTableMapper moleculeStartValuesBuildingBlockToParameterDataTableMapper)
+         IInitialConditionsBuildingBlockToParameterDataTableMapper initialConditionsBuildingBlockToParameterDataTableMapper)
       {
          _reactionBuildingBlockToReactionDataTableMapper = reactionBuildingBlockToReactionDataTableMapper;
          _parameterListToSimulationParameterDataTableMapper = parameterListToSimulationParameterDataTableMapper;
-         _moleculeStartValuesBuildingBlockToParameterDataTableMapper = moleculeStartValuesBuildingBlockToParameterDataTableMapper;
+         _initialConditionsBuildingBlockToParameterDataTableMapper = initialConditionsBuildingBlockToParameterDataTableMapper;
       }
 
       public void ExportModelPartsToExcelFile(string excelFileName, IMoBiSimulation simulation, bool openExcel)
@@ -40,7 +40,7 @@ namespace MoBi.Core.Services
          var reactionDataTable = _reactionBuildingBlockToReactionDataTableMapper.MapFrom(simulation.Configuration.All<ReactionBuildingBlock>());
          var simulationParameterDataTable = _parameterListToSimulationParameterDataTableMapper.MapFrom(simulation.Model.Root.GetAllChildren<IParameter>());
 
-         var moleculeParameterDataTable = _moleculeStartValuesBuildingBlockToParameterDataTableMapper.MapFrom(simulation.Configuration.All<MoleculeStartValuesBuildingBlock>().SelectMany(x => x).Where(msv => msv.IsPresent), 
+         var moleculeParameterDataTable = _initialConditionsBuildingBlockToParameterDataTableMapper.MapFrom(simulation.Configuration.All<InitialConditionsBuildingBlock>().SelectMany(x => x).Where(msv => msv.IsPresent), 
             simulation.Configuration.All<MoleculeBuildingBlock>().SelectMany(x => x));
 
          var dataTables = new List<DataTable> {reactionDataTable, simulationParameterDataTable, moleculeParameterDataTable};

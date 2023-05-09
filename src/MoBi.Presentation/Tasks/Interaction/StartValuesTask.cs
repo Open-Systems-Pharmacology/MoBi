@@ -1,0 +1,318 @@
+using System.Collections.Generic;
+using System.Linq;
+using MoBi.Assets;
+using MoBi.Core.Commands;
+using MoBi.Core.Domain.Extensions;
+using MoBi.Core.Domain.Services;
+using MoBi.Core.Exceptions;
+using MoBi.Core.Helper;
+using MoBi.Presentation.DTO;
+using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+
+namespace MoBi.Presentation.Tasks.Interaction
+{
+   public abstract class StartValuesTask<TBuildingBlock, TPathAndValueEntity> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>, IStartValuesTask<TBuildingBlock, TPathAndValueEntity>
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock
+      where TPathAndValueEntity : PathAndValueEntity
+   {
+      protected IExtendPathAndValuesManager<TPathAndValueEntity> _extendManager;
+      protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
+
+      protected readonly ISpatialStructureFactory _spatialStructureFactory;
+      private readonly IMapper<ImportedQuantityDTO, TPathAndValueEntity> _dtoToQuantityToParameterValueMapper;
+      private readonly IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> _entityPathTask;
+
+      protected StartValuesTask(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
+         IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
+         IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
+         IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> entityPathTask)
+         : base(interactionTaskContext, editTask, moBiFormulaTask)
+      {
+         _extendManager = extendManager;
+         _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
+         _spatialStructureFactory = spatialStructureFactory;
+         _dtoToQuantityToParameterValueMapper = dtoToQuantityToParameterValueMapper;
+         _entityPathTask = entityPathTask;
+      }
+
+      public override IMoBiCommand AddNew(Module module, IBuildingBlock buildingBlockToAddTo)
+      {
+         if (module.Molecules == null || module.SpatialStructure == null)
+            throw new MoBiException(AppConstants.Exceptions.BuildingBlock);
+         
+         TBuildingBlock newEntity;
+         using (var createPresenter = ApplicationController.Start<ICreateStartValuesPresenter<TBuildingBlock>>())
+         {
+            newEntity = createPresenter.Create();
+         }
+         
+         if (newEntity == null)
+            return new MoBiEmptyCommand();
+         
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = ObjectName,
+            CommandType = AppConstants.Commands.AddCommand
+         };
+         macroCommand.Add(GetAddCommand(newEntity, module, buildingBlockToAddTo).Run(Context));
+         
+         //Icon may depend on name. 
+         newEntity.Icon = InteractionTask.IconFor(newEntity);
+         macroCommand.Description = AppConstants.Commands.AddToProjectDescription(ObjectName, newEntity.Name);
+         _editTask.EditBuildingBlock(newEntity);
+         return macroCommand;
+      }
+
+      protected override double? ValueFromBuilder(TPathAndValueEntity builder)
+      {
+         return builder.Value;
+      }
+
+      /// <summary>
+      ///    Updates the start values defined in <paramref name="buildingBlockToUpdate" /> with the values defined in
+      ///    <paramref name="buildingBlock" />. Returns a template cache containing all values defined in the template
+      /// </summary>
+      public ICache<string, TPathAndValueEntity> UpdateValuesFromTemplate(TBuildingBlock buildingBlockToUpdate, TBuildingBlock buildingBlock)
+      {
+         var templateBuildingBlock = buildingBlock;
+         // if (startValueInfo.BuildingBlockIsTemplate)
+         //    templateStartValues = startValueInfo.TemplateBuildingBlock;
+
+         var entityCache = buildingBlockToUpdate.ToCache();
+         var templateCache = templateBuildingBlock.ToCache();
+
+         _cloneManagerForBuildingBlock.FormulaCache = buildingBlockToUpdate.FormulaCache;
+
+         try
+         {
+            foreach (var templateKeyValue in templateCache.KeyValues)
+            {
+               var pathAndValueEntity = entityCache[templateKeyValue.Key];
+
+               if (pathAndValueEntity == null)
+                  addEntityToCache(buildingBlockToUpdate, templateKeyValue.Value);
+               else
+                  pathAndValueEntity.UpdatePropertiesFrom(templateKeyValue.Value, _cloneManagerForBuildingBlock);
+            }
+
+            buildingBlockToUpdate.Version = templateBuildingBlock.Version;
+         }
+         finally
+         {
+            _cloneManagerForBuildingBlock.FormulaCache = null;
+         }
+
+         return templateCache;
+      }
+
+      private void addEntityToCache(TBuildingBlock addEntityToCache, TPathAndValueEntity pathAndValueEntity)
+      {
+         var clonedEntity = _cloneManagerForBuildingBlock.Clone(pathAndValueEntity, addEntityToCache.FormulaCache);
+         addEntityToCache.Add(clonedEntity);
+      }
+
+      /// <summary>
+      ///    Returns the default dimension for the start value type
+      /// </summary>
+      /// <returns>The default dimension</returns>
+      public abstract IDimension GetDefaultDimension();
+
+      protected T BuildingBlockById<T>(string buildingBlockId) where T : class, IBuildingBlock
+      {
+         if (!Context.ObjectRepository.ContainsObjectWithId(buildingBlockId))
+            throw new MoBiException(AppConstants.Exceptions.SourceBuildingBlockNotInProject(new ObjectTypeResolver().TypeFor<T>()));
+
+         return Context.Get<T>(buildingBlockId);
+      }
+
+      public IEnumerable<string> GetContainerPathItemsForBuildingBlock(TBuildingBlock buildingBlock)
+      {
+         var spatialStructure = SpatialStructureReferencedBy(buildingBlock);
+         var moleculeBuildingBlock = MoleculeBuildingBlockReferencedBy(buildingBlock);
+         var nameList = new List<string>();
+
+         spatialStructure.Each(container => container.GetAllContainersAndSelf<IContainer>().Each(x => nameList.Add(x.Name)));
+         moleculeBuildingBlock.Each(builder => nameList.Add(builder.Name));
+
+         return nameList.Distinct();
+      }
+
+      protected abstract MoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(TBuildingBlock buildingBlock);
+
+      protected abstract SpatialStructure SpatialStructureReferencedBy(TBuildingBlock buildingBlock);
+
+      public abstract bool IsEquivalentToOriginal(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
+
+      /// <summary>
+      ///    Checks that the formula is equivalent for the start value. This includes evaluation of constant formula to a double
+      /// </summary>
+      /// <param name="pathAndValueEntity">The start value to check</param>
+      /// <param name="targetFormula">The formula being evaluated</param>
+      /// <returns>True if the formula is equivalent to the start value formula</returns>
+      protected bool HasEquivalentFormula(PathAndValueEntity pathAndValueEntity, IFormula targetFormula)
+      {
+         return _entityPathTask.HasEquivalentFormula(pathAndValueEntity, targetFormula);
+      }
+
+      protected static bool HasEquivalentPathAndValueEntity(PathAndValueEntity pathAndValueEntity, IParameter parameter)
+      {
+         var (value, _) = parameter.TryGetValue();
+         return HasEquivalentPathAndValueEntity(pathAndValueEntity, value);
+      }
+
+      protected static bool HasEquivalentPathAndValueEntity(PathAndValueEntity pathAndValueEntity, double? originalValue)
+      {
+         if (!originalValue.HasValue)
+            return double.IsNaN(pathAndValueEntity.Value.GetValueOrDefault(double.NaN));
+
+         if (!pathAndValueEntity.Value.HasValue)
+            return false;
+
+         return (ValueComparer.AreValuesEqual(originalValue.Value, pathAndValueEntity.Value.Value));
+      }
+
+      protected static bool HasEquivalentDimension(IWithDimension subject, IWithDimension target)
+      {
+         return target.Dimension == subject.Dimension;
+      }
+
+      private MoBiMacroCommand createExtendMacroCommand(TBuildingBlock buildingBlockToExtend)
+      {
+         var moBiMacroCommand = new BulkUpdateMacroCommand
+         {
+            CommandType = AppConstants.Commands.ExtendCommand,
+            Description = AppConstants.Commands.ExtendDescription,
+            ObjectType = _interactionTaskContext.GetTypeFor(buildingBlockToExtend)
+         };
+         return moBiMacroCommand;
+      }
+
+      protected IMoBiCommand Extend(TBuildingBlock buildingBlock, TBuildingBlock buildingBlockToExtend)
+      {
+         var macro = createExtendMacroCommand(buildingBlockToExtend);
+
+         prepareExtendActions(buildingBlockToExtend, macro);
+
+         var cacheToExtend = buildingBlock.ToCache();
+         var targetCache = buildingBlockToExtend.ToCache();
+
+         // Use the merge manager to implement the extend. We can take advantage of the equivalency checker to favor the existing 
+         // start value if a conflict is found (always prefer the existing start value)
+         _extendManager.Merge(cacheToExtend, targetCache, areElementsEquivalent: (s1, s2) => true);
+
+         macro.Run(Context);
+
+         return macro;
+      }
+
+      private void prepareExtendActions(TBuildingBlock targetBuildingBlock, MoBiMacroCommand macro)
+      {
+         _extendManager.AddAction = entityToMerge => macro.Add(GenerateAddCommandAndUpdateFormulaReferences(entityToMerge, targetBuildingBlock));
+         _extendManager.RemoveAction = entityToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, entityToMerge));
+         _extendManager.CancelAction = macro.Clear;
+      }
+
+      protected IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TPathAndValueEntity entityToMerge, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      {
+         var macroCommand = CreateAddBuilderMacroCommand(entityToMerge, targetBuildingBlock);
+
+         macroCommand.Add(GenerateAddCommand(targetBuildingBlock, entityToMerge));
+         macroCommand.Add(_moBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, entityToMerge));
+
+         return macroCommand;
+      }
+
+      protected abstract IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, TPathAndValueEntity entityToRemove);
+      protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TPathAndValueEntity entityToAdd);
+      public abstract void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock);
+      public abstract TBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration);
+      public abstract IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
+      public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
+      public abstract IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
+      public abstract IMoBiCommand RefreshPathAndValueEntitiesFromBuildingBlocks(TBuildingBlock buildingBlock, IEnumerable<TPathAndValueEntity> pathAndValueEntitiesToRefresh);
+
+      public IMoBiCommand UpdatePathAndValueEntityDimension(TBuildingBlock pathAndValueEntitiesBuildingBlock, TPathAndValueEntity pathAndValueEntity, IDimension newDimension)
+      {
+         return new UpdateDimensionInPathAndValueEntityCommand<TPathAndValueEntity>(pathAndValueEntity, newDimension, _interactionTaskContext.DisplayUnitFor(newDimension), pathAndValueEntitiesBuildingBlock).Run(Context);
+      }
+
+      public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TPathAndValueEntity pathAndValueEntity)
+      {
+         return new UpdateValueOriginInPathAndValueEntityCommand<TPathAndValueEntity>(pathAndValueEntity, valueOrigin, buildingBlock).Run(Context);
+      }
+
+      public abstract bool CanResolve(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
+      
+      public ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule)
+      {
+         var name = GetNewNameForClone(buildingBlockToClone);
+
+         if (string.IsNullOrEmpty(name))
+            return new MoBiEmptyCommand();
+
+         var clone = InteractionTask.Clone(buildingBlockToClone).WithName(name);
+
+         return AddToParent(clone, parentModule, null);
+      }
+
+      protected static bool ShouldFormulaBeOverridden(ImportedQuantityDTO quantityDTO, TPathAndValueEntity pathAndValueEntity)
+      {
+         return quantityDTO.IsQuantitySpecified && pathAndValueEntity.Formula != null;
+      }
+
+      protected IMoBiCommand GetChangePathAndValueEntityFormulaCommand(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, IFormula newFormula, IFormula oldFormula)
+      {
+         return new ChangeValueFormulaCommand<TPathAndValueEntity>(buildingBlock, pathAndValueEntity, newFormula, oldFormula);
+      }
+
+      protected abstract IMoBiCommand GetUpdatePathAndValueEntityInBuildingBlockCommand(TBuildingBlock buildingBlock, ImportedQuantityDTO dto);
+
+      protected void GetImportPathAndValueEntityMacroCommand(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities, BulkUpdateMacroCommand macroCommand)
+      {
+         startQuantities.Each(quantityDTO =>
+         {
+            var pathAndValueEntity = buildingBlock[quantityDTO.Path];
+
+            if (pathAndValueEntity == null)
+               macroCommand.Add(GenerateAddCommand(buildingBlock, _dtoToQuantityToParameterValueMapper.MapFrom(quantityDTO)));
+            else
+            {
+               if (ShouldFormulaBeOverridden(quantityDTO, pathAndValueEntity))
+                  macroCommand.Add(GetChangePathAndValueEntityFormulaCommand(buildingBlock, pathAndValueEntity: pathAndValueEntity, newFormula: null, oldFormula: pathAndValueEntity.Formula));
+
+               macroCommand.Add(GetUpdatePathAndValueEntityInBuildingBlockCommand(buildingBlock, quantityDTO));
+            }
+         });
+      }
+
+      public IMoBiCommand EditPathAndValueEntityName(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, string newValue)
+      {
+         return _entityPathTask.UpdateName(buildingBlock, pathAndValueEntity, newValue);
+      }
+
+      public IMoBiCommand EditPathAndValueEntityContainerPath(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, int indexToUpdate, string newValue)
+      {
+         return _entityPathTask.UpdateContainerPath(buildingBlock, pathAndValueEntity, indexToUpdate, newValue);
+      }
+
+      public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new RemoveBuildingBlockFromModuleCommand<TBuildingBlock>(objectToRemove, parent);
+      }
+
+      public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
+      }
+   }
+}

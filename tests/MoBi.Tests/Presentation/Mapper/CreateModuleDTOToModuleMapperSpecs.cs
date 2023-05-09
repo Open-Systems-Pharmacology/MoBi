@@ -41,8 +41,8 @@ namespace MoBi.Presentation.Mapper
             WithMolecule = false,
             WithObserver = false,
             WithPassiveTransport = false,
-            WithParameterStartValues = false,
-            WithMoleculeStartValues = false
+            WithParameterValues = false,
+            WithInitialConditions = false
          };
       }
 
@@ -57,8 +57,8 @@ namespace MoBi.Presentation.Mapper
          _result.SpatialStructure.ShouldBeNull();
          _result.Reactions.ShouldBeNull();
          _result.EventGroups.ShouldBeNull();
-         _result.MoleculeStartValuesCollection.ShouldBeEmpty();
-         _result.ParameterStartValuesCollection.ShouldBeEmpty();
+         _result.InitialConditionsCollection.ShouldBeEmpty();
+         _result.ParameterValuesCollection.ShouldBeEmpty();
          _result.PassiveTransports.ShouldBeNull();
          _result.Observers.ShouldBeNull();
          _result.Molecules.ShouldBeNull();
@@ -81,8 +81,8 @@ namespace MoBi.Presentation.Mapper
             WithMolecule = true,
             WithObserver = true,
             WithPassiveTransport = true,
-            WithParameterStartValues = true,
-            WithMoleculeStartValues = true
+            WithParameterValues = true,
+            WithInitialConditions = true
          };
       }
 
@@ -97,8 +97,8 @@ namespace MoBi.Presentation.Mapper
          _result.SpatialStructure.ShouldNotBeNull();
          _result.Reactions.ShouldNotBeNull();
          _result.EventGroups.ShouldNotBeNull();
-         _result.MoleculeStartValuesCollection.ShouldNotBeEmpty();
-         _result.ParameterStartValuesCollection.ShouldNotBeEmpty();
+         _result.InitialConditionsCollection.ShouldNotBeEmpty();
+         _result.ParameterValuesCollection.ShouldNotBeEmpty();
          _result.PassiveTransports.ShouldNotBeNull();
          _result.Observers.ShouldNotBeNull();
          _result.Molecules.ShouldNotBeNull();

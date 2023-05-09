@@ -85,9 +85,9 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<EventGroupBuildingBlock> EventBlockCollection => get<EventGroupBuildingBlock>();
 
-      public IReadOnlyList<MoleculeStartValuesBuildingBlock> MoleculeStartValueBlockCollection => get<MoleculeStartValuesBuildingBlock>();
+      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionBlockCollection => get<InitialConditionsBuildingBlock>();
 
-      public IReadOnlyList<ParameterStartValuesBuildingBlock> ParametersStartValueBlockCollection => get<ParameterStartValuesBuildingBlock>();
+      public IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection => get<ParameterValuesBuildingBlock>();
 
       public Module ModuleByName(string moduleName)
       {
@@ -154,9 +154,9 @@ namespace MoBi.Core.Domain.Model
          _charts.Each(x => x.AcceptVisitor(visitor));
       }
 
-      public IReadOnlyList<IBuildingBlock> ReferringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToRemove)
+      public IReadOnlyList<IBuildingBlock> ReferringStartValueBuildingBlocks(IBuildingBlock buildingBlockToRemove)
       {
-         return referringStartValuesBuildingBlocks(buildingBlockToRemove, MoleculeStartValueBlockCollection).ToList();
+         return referringStartValueBuildingBlocks(buildingBlockToRemove, InitialConditionBlockCollection).ToList();
       }
 
       public IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(IBuildingBlock templateBuildingBlock)
@@ -169,10 +169,10 @@ namespace MoBi.Core.Domain.Model
          return All<IObjectBase>().Union(Simulations);
       }
 
-      private IEnumerable<IBuildingBlock> referringStartValuesBuildingBlocks(IBuildingBlock buildingBlockToRemove, IReadOnlyList<MoleculeStartValuesBuildingBlock> buildingBlockCollection)
+      private IEnumerable<IBuildingBlock> referringStartValueBuildingBlocks(IBuildingBlock buildingBlockToRemove, IReadOnlyList<InitialConditionsBuildingBlock> buildingBlockCollection)
       {
          return buildingBlockCollection
-            .Where(msvBB => msvBB.Uses(buildingBlockToRemove))
+            .Where(bb => bb.Uses(buildingBlockToRemove))
             .OfType<IBuildingBlock>()
             .ToList();
       }

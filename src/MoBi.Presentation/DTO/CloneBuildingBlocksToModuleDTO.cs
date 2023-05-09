@@ -34,42 +34,42 @@ namespace MoBi.Presentation.DTO
          CanSelectObserver = module.Observers != null;
          WithObserver = CanSelectObserver;
 
-         CanSelectMoleculeStartValues = module.MoleculeStartValuesCollection.Any();
-         WithMoleculeStartValues = CanSelectMoleculeStartValues;
+         CanSelectInitialConditions = module.InitialConditionsCollection.Any();
+         WithInitialConditions = CanSelectInitialConditions;
          
-         CanSelectParameterStartValues = module.ParameterStartValuesCollection.Any();
-         WithParameterStartValues = CanSelectParameterStartValues;
+         CanSelectParameterValues = module.ParameterValuesCollection.Any();
+         WithParameterValues = CanSelectParameterValues;
       }
 
       public IReadOnlyCollection<IBuildingBlock> BuildingBlocksToRemove {
          get
          {
-            var buildingBlocks = new List<IBuildingBlock>();
+            var buildingBlocksToRemove = new List<IBuildingBlock>();
             if (removeMolecule)
-               buildingBlocks.Add(_module.Molecules);
+               buildingBlocksToRemove.Add(_module.Molecules);
 
             if (removeEventGroup)
-               buildingBlocks.Add(_module.EventGroups);
+               buildingBlocksToRemove.Add(_module.EventGroups);
 
             if (removeObserver)
-               buildingBlocks.Add(_module.Observers);
+               buildingBlocksToRemove.Add(_module.Observers);
 
             if (removePassiveTransport)
-               buildingBlocks.Add(_module.PassiveTransports);
+               buildingBlocksToRemove.Add(_module.PassiveTransports);
 
             if (removeReaction)
-               buildingBlocks.Add(_module.Reactions);
+               buildingBlocksToRemove.Add(_module.Reactions);
 
             if (removeSpatialStructure)
-               buildingBlocks.Add(_module.SpatialStructure);
+               buildingBlocksToRemove.Add(_module.SpatialStructure);
 
-            if (removeMoleculeStartValues)
-               _module.MoleculeStartValuesCollection.Each(buildingBlocks.Add);
+            if (removeInitialConditions)
+               _module.InitialConditionsCollection.Each(buildingBlocksToRemove.Add);
 
-            if (removeParameterStartValues)
-               _module.ParameterStartValuesCollection.Each(buildingBlocks.Add);
+            if (removeParameterValues)
+               _module.ParameterValuesCollection.Each(buildingBlocksToRemove.Add);
 
-            return buildingBlocks;
+            return buildingBlocksToRemove;
          }
       }
 
@@ -79,7 +79,7 @@ namespace MoBi.Presentation.DTO
       private bool removePassiveTransport => _module.PassiveTransports != null && !WithPassiveTransport;
       private bool removeEventGroup => _module.EventGroups != null && !WithEventGroup;
       private bool removeObserver => _module.Observers != null && !WithObserver;
-      private bool removeMoleculeStartValues => _module.MoleculeStartValuesCollection.Any() && !WithMoleculeStartValues;
-      private bool removeParameterStartValues => _module.ParameterStartValuesCollection.Any() && !WithParameterStartValues;
+      private bool removeInitialConditions => _module.InitialConditionsCollection.Any() && !WithInitialConditions;
+      private bool removeParameterValues => _module.ParameterValuesCollection.Any() && !WithParameterValues;
    }
 }

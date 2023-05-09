@@ -64,8 +64,8 @@ namespace MoBi.Core.Commands
          _module.Add(new PassiveTransportBuildingBlock().WithId("PassiveTransport"));
          _module.Add(new ObserverBuildingBlock().WithId("Observer"));
          _module.Add(new EventGroupBuildingBlock().WithId("EventGroup"));
-         _module.Add(new MoleculeStartValuesBuildingBlock().WithId("MoleculeStartValues"));
-         _module.Add(new ParameterStartValuesBuildingBlock().WithId("ParameterStartValues"));
+         _module.Add(new InitialConditionsBuildingBlock().WithId("InitialConditions"));
+         _module.Add(new ParameterValuesBuildingBlock().WithId("ParameterValues"));
 
          A.CallTo(() => _context.Register(_module)).Invokes(() => _registrationTask.RegisterAllIn(_module));
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -88,8 +88,8 @@ namespace MoBi.Core.Commands
          withIds.ShouldNotContain(_module.PassiveTransports);
          withIds.ShouldNotContain(_module.Observers);
          withIds.ShouldNotContain(_module.EventGroups);
-         withIds.ShouldNotContain(_module.MoleculeStartValuesCollection.First());
-         withIds.ShouldNotContain(_module.ParameterStartValuesCollection.First());
+         withIds.ShouldNotContain(_module.InitialConditionsCollection.First());
+         withIds.ShouldNotContain(_module.ParameterValuesCollection.First());
          withIds.ShouldNotContain(_module);
       }
 

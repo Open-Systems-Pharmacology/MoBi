@@ -17,8 +17,8 @@ namespace MoBi.Presentation
             new EventGroupBuildingBlock()
          }.WithName("module name");
 
-         module.Add(new ParameterStartValuesBuildingBlock());
-         module.Add(new MoleculeStartValuesBuildingBlock());
+         module.Add(new ParameterValuesBuildingBlock());
+         module.Add(new InitialConditionsBuildingBlock());
 
          sut = new AddBuildingBlocksToModuleDTO(module);
       }
@@ -36,9 +36,9 @@ namespace MoBi.Presentation
       {
          sut.CanSelectEventGroup.ShouldBeFalse();
          sut.CanSelectMolecule.ShouldBeTrue();
-         sut.CanSelectMoleculeStartValues.ShouldBeTrue();
+         sut.CanSelectInitialConditions.ShouldBeTrue();
          sut.CanSelectObserver.ShouldBeTrue();
-         sut.CanSelectParameterStartValues.ShouldBeTrue();
+         sut.CanSelectParameterValues.ShouldBeTrue();
          sut.CanSelectPassiveTransport.ShouldBeTrue();
          sut.CanSelectSpatialStructure.ShouldBeFalse();
          sut.CanSelectReaction.ShouldBeTrue();
@@ -49,9 +49,9 @@ namespace MoBi.Presentation
       {
          sut.WithEventGroup.ShouldBeTrue();
          sut.WithMolecule.ShouldBeFalse();
-         sut.WithMoleculeStartValues.ShouldBeFalse();
+         sut.WithInitialConditions.ShouldBeFalse();
          sut.WithObserver.ShouldBeTrue();
-         sut.WithParameterStartValues.ShouldBeFalse();
+         sut.WithParameterValues.ShouldBeFalse();
          sut.WithPassiveTransport.ShouldBeFalse();
          sut.WithSpatialStructure.ShouldBeTrue();
          sut.WithReaction.ShouldBeFalse();

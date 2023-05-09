@@ -75,7 +75,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createImportReactionParameters(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.Captions.ImportSimulationParameters.WithEllipsis())
-            .WithIcon(ApplicationIcons.ParameterStartValuesImport)
+            .WithIcon(ApplicationIcons.ParameterValuesImport)
             .WithCommandFor<ImportSimulationParameterValuesUICommand, IMoBiSimulation>(simulation, _container)
             .AsGroupStarter();
       }

@@ -18,18 +18,18 @@ namespace MoBi.Core.Commands
       private readonly string _oldFormulaId;
       protected IFormula _newFormula;
       protected IFormula _oldFormula;
-      protected T _changedStartValue;
+      protected T _changedPathAndValueEntity;
       protected ObjectPath Path { get; set; }
 
-      public ChangeValueFormulaCommand(IBuildingBlock<T> buildingBlock, T startValue, IFormula newFormula, IFormula oldFormula): base(buildingBlock)
+      public ChangeValueFormulaCommand(IBuildingBlock<T> buildingBlock, T pathAndValueEntity, IFormula newFormula, IFormula oldFormula): base(buildingBlock)
       {
          _newFormula = newFormula;
          _oldFormula = oldFormula;
          _objectBaseId = _buildingBlock.Id;
-         _changedStartValue = startValue;
-         ObjectType = new ObjectTypeResolver().TypeFor(startValue);
+         _changedPathAndValueEntity = pathAndValueEntity;
+         ObjectType = new ObjectTypeResolver().TypeFor(pathAndValueEntity);
 
-         Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.FormulaName, _oldFormula?.ToString() ?? AppConstants.NullString, _newFormula?.ToString() ?? AppConstants.NullString, _changedStartValue.Path.PathAsString);
+         Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.FormulaName, _oldFormula?.ToString() ?? AppConstants.NullString, _newFormula?.ToString() ?? AppConstants.NullString, _changedPathAndValueEntity.Path.PathAsString);
 
          CommandType = AppConstants.Commands.EditCommand;
 
@@ -50,13 +50,13 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new ChangeValueFormulaCommand<T>(_buildingBlock, _changedStartValue, _oldFormula, _newFormula).AsInverseFor(this);
+         return new ChangeValueFormulaCommand<T>(_buildingBlock, _changedPathAndValueEntity, _oldFormula, _newFormula).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
       {
          base.ClearReferences();
-         _changedStartValue = null;
+         _changedPathAndValueEntity = null;
          _buildingBlock = null;
          _newFormula = null;
          _oldFormula = null;
@@ -65,18 +65,15 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         _changedStartValue.Formula = _newFormula;
-         Path = _changedStartValue.Path;
+         _changedPathAndValueEntity.Formula = _newFormula;
+         Path = _changedPathAndValueEntity.Path;
       }
-
-      // protected abstract ObjectPath PathFrom(T changedStartValue);
-
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
          _buildingBlock = context.Get<IBuildingBlock<T>>(_objectBaseId);
-         _changedStartValue = _buildingBlock.Single(startValue => startValue.Path.Equals(Path));
+         _changedPathAndValueEntity = _buildingBlock.Single(pathAndValueEntity => pathAndValueEntity.Path.Equals(Path));
          _oldFormula = GetFormula(_oldFormulaId, context);
          _newFormula = GetFormula(_newFormulaId, context);
       }

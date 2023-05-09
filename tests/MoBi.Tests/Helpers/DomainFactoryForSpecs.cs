@@ -77,32 +77,32 @@ namespace MoBi.Helpers
 
          var moduleConfiguration = buildConfiguration.ModuleConfigurations.First();
          var module = moduleConfiguration.Module;
-         if (module.MoleculeStartValuesCollection.IsEmpty())
+         if (module.InitialConditionsCollection.IsEmpty())
          {
-            module.Add(CreateMoleculeStartValuesFor(buildConfiguration));
-            moduleConfiguration.SelectedMoleculeStartValues = module.MoleculeStartValuesCollection.First();
+            module.Add(CreateInitialConditionsFor(buildConfiguration));
+            moduleConfiguration.SelectedInitialConditions = module.InitialConditionsCollection.First();
          }
 
-         if (module.ParameterStartValuesCollection.IsEmpty())
+         if (module.ParameterValuesCollection.IsEmpty())
          {
-            module.Add(CreateParameterStartValuesFor(buildConfiguration));
-            moduleConfiguration.SelectedParameterStartValues = module.ParameterStartValuesCollection.First();
+            module.Add(CreateParameterValuesFor(buildConfiguration));
+            moduleConfiguration.SelectedParameterValues = module.ParameterValuesCollection.First();
          }
 
          var modelCreator = IoC.Resolve<IModelConstructor>();
          return modelCreator.CreateModelFrom(buildConfiguration, simulationName);
       }
 
-      public static ParameterStartValuesBuildingBlock CreateParameterStartValuesFor(SimulationConfiguration buildConfiguration)
+      public static ParameterValuesBuildingBlock CreateParameterValuesFor(SimulationConfiguration buildConfiguration)
       {
-         var startValuesCreator = IoC.Resolve<IParameterStartValuesCreator>();
-         return new ParameterStartValuesBuildingBlock();
+         var startValuesCreator = IoC.Resolve<IParameterValuesCreator>();
+         return new ParameterValuesBuildingBlock();
          // return startValuesCreator.CreateFrom(buildConfiguration.MoBiSpatialStructure, buildConfiguration.Molecules);
       }
 
-      public static MoleculeStartValuesBuildingBlock CreateMoleculeStartValuesFor(SimulationConfiguration buildConfiguration)
+      public static InitialConditionsBuildingBlock CreateInitialConditionsFor(SimulationConfiguration buildConfiguration)
       {
-         var startValuesCreator = IoC.Resolve<IMoleculeStartValuesCreator>();
+         var startValuesCreator = IoC.Resolve<IInitialConditionsCreator>();
          return startValuesCreator.CreateFrom(buildConfiguration.All<SpatialStructure>().First(), buildConfiguration.All<MoleculeBuildingBlock>().First());
       }
 

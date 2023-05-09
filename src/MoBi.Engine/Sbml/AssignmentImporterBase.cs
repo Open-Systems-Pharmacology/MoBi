@@ -55,7 +55,7 @@ namespace MoBi.Engine.Sbml
 
       protected void CreateErrorMsg()
       {
-         var msg = new NotificationMessage(GetMainParameterStartValuesBuildingBlock(), MessageOrigin.All, null,
+         var msg = new NotificationMessage(GetMainParameterValuesBuildingBlock(), MessageOrigin.All, null,
             NotificationType.Warning)
          {
             Message = "Something with SBML Assignments or SBML Rules went wrong."
@@ -77,11 +77,11 @@ namespace MoBi.Engine.Sbml
          var formula = _astHandler.Parse(math, parameter.Name, false, _sbmlModule, _sbmlInformation);
          if (formula == null) return;
 
-         var psvbb = GetMainParameterStartValuesBuildingBlock();
-         if (psvbb == null) return;
-         psvbb.AddFormula(formula);
+         var parameterValuesBuildingBlock = GetMainParameterValuesBuildingBlock();
+         if (parameterValuesBuildingBlock == null) return;
+         parameterValuesBuildingBlock.AddFormula(formula);
 
-         foreach (var declaredPSV in psvbb.Where(declaredPSV => declaredPSV.Name == parameter.Name))
+         foreach (var declaredPSV in parameterValuesBuildingBlock.Where(declaredPSV => declaredPSV.Name == parameter.Name))
          {
             if (string.IsNullOrEmpty(containerName))
             {
@@ -94,12 +94,12 @@ namespace MoBi.Engine.Sbml
             return;
          }
 
-         var psv = ObjectBaseFactory.Create<ParameterStartValue>()
+         var psv = ObjectBaseFactory.Create<ParameterValue>()
             .WithName(parameter.Name)
             .WithFormula(formula)
             .WithDimension(parameter.Dimension);
 
-         psvbb.Add(psv);
+         parameterValuesBuildingBlock.Add(psv);
       }
 
       /// <summary>

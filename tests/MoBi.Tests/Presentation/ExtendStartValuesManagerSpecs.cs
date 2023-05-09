@@ -16,7 +16,7 @@ using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_ExtendStartValuesManager : ContextSpecification<ExtendStartValuesManager<FakeObject>>
+   public abstract class concern_for_ExtendStartValuesManager : ContextSpecification<ExtendPathAndValuesManager<FakeObject>>
    {
       protected IMergeConflictResolverPresenter _mergeConflictResolverPresenter;
       private IApplicationController _applicationController;
@@ -138,12 +138,12 @@ namespace MoBi.Presentation
       }
    }
 
-   public class FakeObject : StartValueBase
+   public class FakeObject : PathAndValueEntity
    {
       
    }
 
-   class FakeObjectMergeManager : ExtendStartValuesManager<FakeObject>
+   class FakeObjectMergeManager : ExtendPathAndValuesManager<FakeObject>
    {
       public FakeObjectMergeManager(IApplicationController applicationController)
          : base(applicationController, A.Fake<IMapper<FakeObject, ObjectBaseSummaryDTO>>(), A.Fake<IMoBiContext>())

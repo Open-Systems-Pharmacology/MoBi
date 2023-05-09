@@ -45,8 +45,8 @@ namespace MoBi.Presentation.Mapper
             new EventGroupBuildingBlock(),
             new MoleculeBuildingBlock(),
             new PassiveTransportBuildingBlock(),
-            new MoleculeStartValuesBuildingBlock(),
-            new ParameterStartValuesBuildingBlock()
+            new InitialConditionsBuildingBlock(),
+            new ParameterValuesBuildingBlock()
          };
 
          _dto = new AddBuildingBlocksToModuleDTO(_existingModule)
@@ -57,8 +57,8 @@ namespace MoBi.Presentation.Mapper
             WithMolecule = true,
             WithObserver = true,
             WithPassiveTransport = true,
-            WithParameterStartValues = false,
-            WithMoleculeStartValues = false,
+            WithParameterValues = false,
+            WithInitialConditions = false,
          };
       }
 

@@ -32,8 +32,8 @@ namespace MoBi.Presentation
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Observer);
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.EventGroup);
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.SpatialStructure);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.ParameterStartValues);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.MoleculeStartValues);
+         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.ParameterValues);
+         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.InitialConditions);
       }
    }
 
@@ -47,8 +47,8 @@ namespace MoBi.Presentation
          _module.Add(new PassiveTransportBuildingBlock());
          _module.Add(new EventGroupBuildingBlock());
          _module.Add(new ObserverBuildingBlock());
-         _module.Add(new ParameterStartValuesBuildingBlock());
-         _module.Add(new MoleculeStartValuesBuildingBlock());
+         _module.Add(new ParameterValuesBuildingBlock());
+         _module.Add(new InitialConditionsBuildingBlock());
          sut = new SelectBuildingBlockTypeDTO(_module);
       }
 
@@ -56,8 +56,8 @@ namespace MoBi.Presentation
       public void all_building_block_types_should_be_allowed()
       {
          sut.AllowedBuildingBlockTypes.Count.ShouldBeEqualTo(2);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.ParameterStartValues);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.MoleculeStartValues);
+         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.ParameterValues);
+         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.InitialConditions);
       }
    }
 }

@@ -14,7 +14,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IStartValuesPresenter : ISubjectPresenter,
       ILatchable,
-      IListener<StartValuesBuildingBlockChangedEvent>,
+      IListener<PathAndValueEntitiesBuildingBlockChangedEvent>,
       IListener<BulkUpdateFinishedEvent>,
       IListener<BulkUpdateStartedEvent>
 
@@ -62,59 +62,59 @@ namespace MoBi.Presentation.Presenter
       void ExtendStartValues();
    }
 
-   public interface IStartValuesPresenter<TStartValueDTO> : IStartValuesPresenter, IBreadCrumbsPresenter where TStartValueDTO : IStartValueDTO
+   public interface IStartValuesPresenter<TDTO> : IStartValuesPresenter, IBreadCrumbsPresenter where TDTO : IPathAndValueEntityDTO
    {
-      void SetFormula(TStartValueDTO startValueDTO, IFormula formula);
-      void AddNewFormula(TStartValueDTO startValueDTO);
+      void SetFormula(TDTO startValueDTO, IFormula formula);
+      void AddNewFormula(TDTO startValueDTO);
 
-      void SetUnit(TStartValueDTO startValueDTO, Unit newUnit);
-      void SetValue(TStartValueDTO startValueDTO, double? valueInDisplayUnit);
+      void SetUnit(TDTO startValueDTO, Unit newUnit);
+      void SetValue(TDTO startValueDTO, double? valueInDisplayUnit);
 
-      Color BackgroundColorFor(TStartValueDTO startValueDTO);
+      Color BackgroundColorFor(TDTO startValueDTO);
 
       /// <summary>
       ///    Removes a Start Value from a start value building block
       /// </summary>
       /// <param name="elementToRemove">The element to remove</param>
-      void RemoveStartValue(TStartValueDTO elementToRemove);
+      void RemoveStartValue(TDTO elementToRemove);
 
       /// <summary>
       ///    Updates an element in the container path of the start value
       /// </summary>
-      /// <param name="startValue">The start value dto being updated</param>
+      /// <param name="pathAndValueEntity">The start value dto being updated</param>
       /// <param name="indexToUpdate">The index of the element that should be updated</param>
       /// <param name="newValue">The new value for the path element</param>
-      void UpdateStartValueContainerPath(TStartValueDTO startValue, int indexToUpdate, string newValue);
+      void UpdateStartValueContainerPath(TDTO pathAndValueEntity, int indexToUpdate, string newValue);
 
       /// <summary>
       ///    Sets a new name for a start value.
       /// </summary>
       /// <param name="startValueDTO">The start value dto being updated</param>
       /// <param name="newValue">The new value of name for the dto</param>
-      void UpdateStartValueName(TStartValueDTO startValueDTO, string newValue);
+      void UpdateStartValueName(TDTO startValueDTO, string newValue);
 
       /// <summary>
       ///    Determines if the start value should be shown in the view based on filter settings and whether it's been modified
       /// </summary>
-      /// <param name="startValue">The start value to be hidden or shown</param>
+      /// <param name="pathAndValueEntity">The start value to be hidden or shown</param>
       /// <returns>True if the value should be shown, otherwise false</returns>
-      bool ShouldShow(TStartValueDTO startValue);
+      bool ShouldShow(TDTO pathAndValueEntity);
 
       /// <summary>
       ///    Sets a new value origin for a start value.
       /// </summary>
-      void SetValueOrigin(TStartValueDTO startValueDTO, ValueOrigin newValueOrigin);
+      void SetValueOrigin(TDTO startValueDTO, ValueOrigin newValueOrigin);
 
       /// <summary>
       ///    Function returns the background color used to display the  start value.
       ///    Per default, the defined functions returns the default color for grid view back ground
       /// </summary>
-      Func<TStartValueDTO, Color> BackgroundColorRetriever { get; set; }
+      Func<TDTO, Color> BackgroundColorRetriever { get; set; }
 
       /// <summary>
       ///    Function returns true if the start value was part of the original building block
       ///    If it's been added since edit, returns false
       /// </summary>
-      Func<TStartValueDTO, bool> IsOriginalStartValue { get; set; }
+      Func<TDTO, bool> IsOriginalStartValue { get; set; }
    }
 }

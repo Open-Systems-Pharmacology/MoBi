@@ -69,8 +69,8 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId ZoomIn = createMenuBarItemId("ZoomIn");
       public static MenuBarItemId ZoomOut = createMenuBarItemId("ZoomOut");
       public static MenuBarItemId FitToPage = createMenuBarItemId("FitToPage");
-      public static MenuBarItemId MoleculeStartValuesExtend = createMenuBarItemId("MoleculeStartValuesExtend");
-      public static MenuBarItemId ParameterStartValuesExtend = createMenuBarItemId("ParameterStartValuesExtend");
+      public static MenuBarItemId InitialConditionsExtend = createMenuBarItemId("InitialConditionsExtend");
+      public static MenuBarItemId ParameterValuesExtend = createMenuBarItemId("ParameterValuesExtend");
       public static MenuBarItemId Help = createMenuBarItemId("Help");
       public static MenuBarItemId SearchView = createMenuBarItemId("SearchView");
       public static MenuBarItemId HistoryReportGroup = createMenuBarItemId("HistoryReportGroup");
@@ -82,8 +82,8 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId ManageUserDisplayUnits = createMenuBarItemId("ManageUserDisplayUnits");
       public static MenuBarItemId UpdateAllToDisplayUnits = createMenuBarItemId("UpdateAllToDisplayUnits");
       public static MenuBarItemId CalculateScaleFactors = createMenuBarItemId("CalculateScaleFactors");
-      public static MenuBarItemId NewParameterStartValue = createMenuBarItemId("NewParameterStartValue");
-      public static MenuBarItemId NewMoleculeStartValue = createMenuBarItemId("NewMoleculeStartValue");
+      public static MenuBarItemId NewParameterValue = createMenuBarItemId("NewParameterValue");
+      public static MenuBarItemId NewInitialConditions = createMenuBarItemId("NewInitialConditions");
       public static MenuBarItemId CreateJournalPage = createMenuBarItemId("CreateJournalPage");
       public static MenuBarItemId JournalEditorView = createMenuBarItemId("JournalEditorView");
       public static MenuBarItemId JournalView = createMenuBarItemId("JournalView");

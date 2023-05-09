@@ -32,8 +32,8 @@ namespace MoBi.UI.Views
          cbMolecules.Text = Molecules;
          cbObservers.Text = Observer;
          cbPassiveTransports.Text = PassiveTransports;
-         cbMoleculeStartValues.Text = MoleculeStartValues;
-         cbParameterStartValues.Text = ParameterStartValues;
+         cbInitialConditions.Text = InitialConditions;
+         cbParameterValues.Text = ParameterValues;
          createBuildingBlocksGroup.Text = CreateBuildingBlocks;
       }
 
@@ -52,8 +52,8 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.WithObserver).To(cbObservers);
          _screenBinder.Bind(dto => dto.WithPassiveTransport).To(cbPassiveTransports);
          _screenBinder.Bind(dto => dto.WithReaction).To(cbReactions);
-         _screenBinder.Bind(dto => dto.WithMoleculeStartValues).To(cbMoleculeStartValues);
-         _screenBinder.Bind(dto => dto.WithParameterStartValues).To(cbParameterStartValues);
+         _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions);
+         _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues);
 
          RegisterValidationFor(_screenBinder);
       }
@@ -72,8 +72,8 @@ namespace MoBi.UI.Views
          moleculesItem.Enabled = dto.CanSelectMolecule;
          observersItem.Enabled = dto.CanSelectObserver;
          passiveTransportsItem.Enabled = dto.CanSelectPassiveTransport;
-         moleculeStartValuesItem.Enabled = dto.CanSelectMoleculeStartValues;
-         parameterStartValuesItem.Enabled = dto.CanSelectParameterStartValues;
+         initialConditionsItem.Enabled = dto.CanSelectInitialConditions;
+         parameterValuesItem.Enabled = dto.CanSelectParameterValues;
       }
 
       protected void DisableRename()

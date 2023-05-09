@@ -12,8 +12,8 @@ namespace MoBi.Presentation.DTO
       PassiveTransport,
       Molecule,
       Observer,
-      MoleculeStartValues,
-      ParameterStartValues,
+      InitialConditions,
+      ParameterValues,
       None
    }
 
@@ -47,8 +47,8 @@ namespace MoBi.Presentation.DTO
          if (module.Observers == null)
             _allowedBuildingBlocks.Add(BuildingBlockType.Observer);
 
-         _allowedBuildingBlocks.Add(BuildingBlockType.MoleculeStartValues);
-         _allowedBuildingBlocks.Add(BuildingBlockType.ParameterStartValues);
+         _allowedBuildingBlocks.Add(BuildingBlockType.InitialConditions);
+         _allowedBuildingBlocks.Add(BuildingBlockType.ParameterValues);
       }
    }
 }

@@ -184,16 +184,16 @@ namespace MoBi.Presentation
    {
       private ITreeNode<SpatialStructure> _spatialStructureA;
       private ITreeNode<RootNodeType> _moduleNode;
-      private MoleculeStartValuesFolderNode _moleculeStartValuesFolderNode;
-      private ParameterStartValuesFolderNode _parameterStartValuesFolderNode;
+      private InitialConditionsFolderNode _initialConditionsFolderNode;
+      private ParameterValuesFolderNode _parameterValuesFolderNode;
       protected override void Context()
       {
          base.Context();
          
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder);
-         _parameterStartValuesFolderNode = new ParameterStartValuesFolderNode(new Module());
-         _moleculeStartValuesFolderNode = new MoleculeStartValuesFolderNode();
+         _parameterValuesFolderNode = new ParameterValuesFolderNode(new Module());
+         _initialConditionsFolderNode = new InitialConditionsFolderNode();
       }
 
       [Observation]
@@ -205,14 +205,14 @@ namespace MoBi.Presentation
       [Observation]
       public void the_start_values_folders_are_inferior_to_other_node_types()
       {
-         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_moduleNode, _parameterStartValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_moduleNode, _moleculeStartValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_moleculeStartValuesFolderNode, _parameterStartValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_parameterStartValuesFolderNode, _moleculeStartValuesFolderNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_parameterValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_initialConditionsFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_parameterValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_initialConditionsFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonFor(_moduleNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_moduleNode, _initialConditionsFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_initialConditionsFolderNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonFor(_parameterValuesFolderNode, _initialConditionsFolderNode).ShouldBeEqualTo(1);
       }
    }
 
@@ -309,9 +309,9 @@ namespace MoBi.Presentation
          _module1 = new Module
          {
             new MoBiSpatialStructure(),
-            new ParameterStartValuesBuildingBlock().WithId("PSV1"),
-            new ParameterStartValuesBuildingBlock().WithId("PSV2"),
-            new MoleculeStartValuesBuildingBlock().WithId("MSV")
+            new ParameterValuesBuildingBlock().WithId("PSV1"),
+            new ParameterValuesBuildingBlock().WithId("PSV2"),
+            new InitialConditionsBuildingBlock().WithId("MSV")
          };
 
          _allNodesAdded = new List<ITreeNode>();
@@ -345,9 +345,9 @@ namespace MoBi.Presentation
          _allNodesAdded.Count(x => Equals(RootNodeTypes.ObservedDataFolder, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(_module1, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(_module1.SpatialStructure, x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.ParameterStartValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.ParameterStartValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.MoleculeStartValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.InitialConditionsCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
 
          // Make sure nodes have not been added for null items
          _allNodesAdded.Count.ShouldBeEqualTo(11);

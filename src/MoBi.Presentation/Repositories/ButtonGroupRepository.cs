@@ -31,8 +31,8 @@ namespace MoBi.Presentation.Repositories
          yield return addPassiveTransportButtonGroup;
          yield return addObserverButtonGroup;
          yield return addEventButtonGroup;
-         yield return addMoleculeStartValueButtonGroup;
-         yield return addParameterStartValueButtonGroup;
+         yield return addInitialConditionButtonGroup;
+         yield return addParameterValueButtonGroup;
          yield return displayUnitsButtonGroup;
          yield return journalButtonGroup;
          yield return favoritesButtonGroup;
@@ -158,10 +158,10 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.FitToPage)))
          .WithId(ButtonGroupIds.EditDiagram);
 
-      private IButtonGroup addMoleculeStartValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.MoleculeStartValuesExtend)))
-         .WithId(ButtonGroupIds.EditMoleculeStartValues)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewMoleculeStartValue)));
+      private IButtonGroup addInitialConditionButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.InitialConditionsExtend)))
+         .WithId(ButtonGroupIds.EditInitialConditions)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewInitialConditions)));
 
       private IButtonGroup importButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Import)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadSimulationIntoProject)).WithCaption(AppConstants.MenuNames.LoadIntoProject))
@@ -213,10 +213,10 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CalculateScaleFactors)))
          .WithId(ButtonGroupIds.Simulation);
 
-      private IButtonGroup addParameterStartValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ParameterStartValuesExtend)))
-         .WithId(ButtonGroupIds.EditParameterStartValues)
-         .WithButton((CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewParameterStartValue))));
+      private IButtonGroup addParameterValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ParameterValuesExtend)))
+         .WithId(ButtonGroupIds.EditParameterValues)
+         .WithButton((CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewParameterValue))));
 
       private IButtonGroup journalButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Journal)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CreateJournalPage)))
