@@ -28,7 +28,7 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         updateStartValue();
+         updateInitialCondition();
 
          if (_initialCondition.Dimension == _quantity.Dimension)
             _initialCondition.DisplayUnit = _quantity.DisplayUnit;
@@ -37,7 +37,7 @@ namespace MoBi.Core.Commands
             _initialCondition.ScaleDivisor = _moleculeAmount.ScaleDivisor;
       }
 
-      private void updateStartValue()
+      private void updateInitialCondition()
       {
          _initialCondition.UpdateValueOriginFrom(_quantity.ValueOrigin);
 

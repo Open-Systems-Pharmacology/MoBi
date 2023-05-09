@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override QuantityImporterDTO ConvertTableToImportedQuantities(DataTable table)
       {
-         return _mapper.MapFrom(table, _startValuesBuildingBlock);
+         return _mapper.MapFrom(table, _buildingBlock);
       }
 
       public override void Initialize()

@@ -39,7 +39,7 @@ namespace MoBi.UI.Views
          ApplicationIcon = ApplicationIcons.Module;
          layoutItemBtnAdd.AsAddButton();
          layoutItemBtnRemove.AsRemoveButton();
-         startValuesSelectionGroup.Text = AppConstants.Captions.SelectStartValues;
+         startValuesSelectionGroup.Text = AppConstants.Captions.SelectValues;
          layoutItemMSVSelection.Text = AppConstants.Captions.InitialConditions;
          layoutItemPSVSelection.Text = AppConstants.Captions.ParameterValues;
          moduleSelectionTreeView.TreeView.StateImageList = _imageListRetriever.AllImages16x16;

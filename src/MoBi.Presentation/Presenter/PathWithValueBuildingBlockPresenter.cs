@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Presenter
       where TPresenter : IPresenter
       where TView : IView<TPresenter>
       where TBuilder : PathAndValueEntity
-      where TBuilderDTO : PathWithValueEntityDTO<TBuilder>, IWithDisplayUnitDTO, IWithFormulaDTO
+      where TBuilderDTO : PathAndValueEntityDTO<TBuilder>, IWithDisplayUnitDTO, IWithFormulaDTO
    {
       protected TBuildingBlock _buildingBlock;
       private readonly IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> _interactionTask;

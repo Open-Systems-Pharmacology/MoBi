@@ -52,7 +52,7 @@ namespace MoBi.Presentation.DTO
 
          public override string ToString()
          {
-            return AppConstants.Warnings.FormatAsStartValueImportWarning(RowIndex, Row.ToNiceString(), Suggestion);
+            return AppConstants.Warnings.FormatAsPathAndValueEntityImportWarning(RowIndex, Row.ToNiceString(), Suggestion);
          }
       }
    }

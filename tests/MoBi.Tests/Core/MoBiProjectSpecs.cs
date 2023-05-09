@@ -54,7 +54,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _result = sut.ReferringStartValuesBuildingBlocks(_moleculeBuildingBlock);
+         _result = sut.ReferringStartValueBuildingBlocks(_moleculeBuildingBlock);
       }
 
       [Observation]

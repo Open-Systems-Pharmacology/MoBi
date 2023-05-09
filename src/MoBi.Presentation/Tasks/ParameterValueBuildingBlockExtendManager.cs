@@ -5,11 +5,11 @@ using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.Tasks
 {
-   public interface IParameterValueBuildingBlockExtendManager : IExtendStartValuesManager<ParameterValue>
+   public interface IParameterValueBuildingBlockExtendManager : IExtendPathAndValuesManager<ParameterValue>
    {
    }
 
-   public class ParameterValueBuildingBlockExtendManager : ExtendStartValuesManager<ParameterValue>, IParameterValueBuildingBlockExtendManager
+   public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManager<ParameterValue>, IParameterValueBuildingBlockExtendManager
    {
       public ParameterValueBuildingBlockExtendManager(
          IApplicationController applicationController,

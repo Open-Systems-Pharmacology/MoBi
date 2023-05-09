@@ -19,7 +19,7 @@ using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Views
 {
-   public partial class InitialConditionsView : BaseStartValuesView<InitialConditionDTO, InitialCondition>, IInitialConditionsView
+   public partial class InitialConditionsView : BasePathAndValueEntityView<InitialConditionDTO, InitialCondition>, IInitialConditionsView
    {
       private readonly UxComboBoxUnit<InitialConditionDTO> _unitControl;
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
@@ -42,8 +42,8 @@ namespace MoBi.UI.Views
          //to put the name in the first column
          colName.XtraColumn.VisibleIndex = 0;
 
-         _gridViewBinder.AutoBind(dto => dto.StartValue)
-            .WithCaption(AppConstants.Captions.StartValue)
+         _gridViewBinder.AutoBind(dto => dto.Value)
+            .WithCaption(AppConstants.Captions.InitialCondition)
             .WithFormat(dto => dto.InitialConditionFormatter())
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)

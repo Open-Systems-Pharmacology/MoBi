@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class EditParameterValuePathCommand : EditStartValuePathCommand<ParameterValuesBuildingBlock, ParameterValue>
+   public class EditParameterValuePathCommand : EditPathAndValueEntityPathCommand<ParameterValuesBuildingBlock, ParameterValue>
    {
       /// <summary>
       /// Changes a path for a Parameter value
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new EditParameterValuePathCommand(_buildingBlock, _buildingBlock[_newStartValuePath], _originalContainerPath).AsInverseFor(this);
+         return new EditParameterValuePathCommand(_buildingBlock, _buildingBlock[_newPath], _originalContainerPath).AsInverseFor(this);
       }
    }
 }

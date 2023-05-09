@@ -89,8 +89,8 @@ namespace MoBi.Core.Commands
 
          if (msv.Value == null) return;
          
-         var startValue = (double)msv.Value;
-         startValue.ShouldBeSmallerThan(0.0 + double.Epsilon);
+         var pathAndValueEntity = (double)msv.Value;
+         pathAndValueEntity.ShouldBeSmallerThan(0.0 + double.Epsilon);
       }
    }
 

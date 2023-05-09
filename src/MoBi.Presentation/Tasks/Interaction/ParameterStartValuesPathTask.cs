@@ -11,27 +11,27 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
    }
 
-   public class ParameterValuePathTask : AbstractStartValuePathTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuePathTask
+   public class ParameterValueStartValuePathTask : AbstractStartValuePathTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuePathTask
    {
 
-      public ParameterValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
+      public ParameterValueStartValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
       {
       }
 
-      public override IMoBiCommand UpdateStartValueNameCommand(ParameterValuesBuildingBlock startValues, ParameterValue startValue, string newValue)
+      public override IMoBiCommand UpdateNameCommand(ParameterValuesBuildingBlock startValues, ParameterValue pathAndValueEntity, string newValue)
       {
-         return new ChangeParameterValueNameCommand(startValues, startValue.Path, newValue);
+         return new ChangeParameterValueNameCommand(startValues, pathAndValueEntity.Path, newValue);
       }
 
-      public override IMoBiCommand UpdateStartValueContainerPathCommand(ParameterValuesBuildingBlock buildingBlock, ParameterValue startValue, int indexToUpdate, string newValue)
+      public override IMoBiCommand UpdateContainerPathCommand(ParameterValuesBuildingBlock buildingBlock, ParameterValue pathAndValueEntity, int indexToUpdate, string newValue)
       {
-         var targetPath = startValue.ContainerPath.Clone<ObjectPath>();
+         var targetPath = pathAndValueEntity.ContainerPath.Clone<ObjectPath>();
          if (indexToUpdate > targetPath.Count)
             return new MoBiEmptyCommand();
 
          ConfigureTargetPath(indexToUpdate, newValue, targetPath);
 
-         return new EditParameterValuePathCommand(buildingBlock, startValue, targetPath);
+         return new EditParameterValuePathCommand(buildingBlock, pathAndValueEntity, targetPath);
       }
    }
 }

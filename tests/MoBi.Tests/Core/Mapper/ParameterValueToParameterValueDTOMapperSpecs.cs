@@ -52,7 +52,7 @@ namespace MoBi.Core.Mapper
       {
          _resultDTO.Name.ShouldBeEqualTo("Parameter");
          _resultDTO.ContainerPath.ShouldOnlyContain("Container");
-         _resultDTO.StartValue.ShouldBeEqualTo(double.NaN);
+         _resultDTO.Value.ShouldBeEqualTo(double.NaN);
          _resultDTO.ParameterValue.ShouldBeEqualTo(_parameterValue);
          _resultDTO.Formula.Formula.ShouldBeEqualTo(_formula);
          _resultDTO.Formula.FormulaString.ShouldBeEqualTo(_formulaString);
@@ -88,7 +88,7 @@ namespace MoBi.Core.Mapper
       {
          _resultDTO.Name.ShouldBeEqualTo("Parameter");
          _resultDTO.ContainerPath.ShouldOnlyContain("Container");
-         _resultDTO.StartValue.ShouldBeEqualTo(_startValue);
+         _resultDTO.Value.ShouldBeEqualTo(_startValue);
          _resultDTO.ParameterValue.ShouldBeEqualTo(_parameterValue);
          _resultDTO.Formula.Formula.ShouldBeNull();
          _resultDTO.Formula.FormulaString.ShouldBeEqualTo(AppConstants.Captions.FormulaNotAvailable);

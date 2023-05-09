@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Tasks
          _moleculeResolver = A.Fake<IMoleculeResolver>();
 
          sut = new InitialConditionsTask(_context, _editTask, _initialConditionsCreator,
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, _reactionDimensionRetriever, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver);
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, _reactionDimensionRetriever, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new InitialConditionStartValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver);
       }
    }
 
@@ -67,7 +67,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.UpdateStartValueScaleDivisor(_initialConditionsBuildingBlock, _initialCondition, 65, _initialCondition.ScaleDivisor);
+         sut.UpdateInitialConditionScaleDivisor(_initialConditionsBuildingBlock, _initialCondition, 65, _initialCondition.ScaleDivisor);
       }
 
       [Observation]
@@ -237,7 +237,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _result = sut.ImportStartValuesToBuildingBlock(_initialConditionsBuildingBlock, _initialConditions);
+         _result = sut.ImportPathAndValueEntitiesToBuildingBlock(_initialConditionsBuildingBlock, _initialConditions);
       }
 
       [Observation]
@@ -341,7 +341,7 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
          _initialConditionsBuildingBlock.Add(_startValue);
-         sut.EditStartValueContainerPath(_initialConditionsBuildingBlock, _startValue, 0, "");
+         sut.EditPathAndValueEntityContainerPath(_initialConditionsBuildingBlock, _startValue, 0, "");
       }
 
       [Observation]
@@ -359,7 +359,7 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
          _initialConditionsBuildingBlock.Add(_startValue);
-         sut.EditStartValueContainerPath(_initialConditionsBuildingBlock, _startValue, 2, "C");
+         sut.EditPathAndValueEntityContainerPath(_initialConditionsBuildingBlock, _startValue, 2, "C");
       }
 
       [Observation]
@@ -377,7 +377,7 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
          _initialConditionsBuildingBlock.Add(_startValue);
-         sut.EditStartValueContainerPath(_initialConditionsBuildingBlock, _startValue, 0, "C");
+         sut.EditPathAndValueEntityContainerPath(_initialConditionsBuildingBlock, _startValue, 0, "C");
       }
 
       [Observation]
@@ -395,7 +395,7 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
          _initialConditionsBuildingBlock.Add(_startValue);
-         sut.EditStartValueContainerPath(_initialConditionsBuildingBlock, _startValue, 5, "C");
+         sut.EditPathAndValueEntityContainerPath(_initialConditionsBuildingBlock, _startValue, 5, "C");
       }
 
       [Observation]
@@ -420,7 +420,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.RefreshStartValuesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
+         _command = sut.RefreshPathAndValueEntitiesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -474,21 +474,21 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          var builder = new MoleculeBuilder {Name = "molecule", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ExplicitFormula("50")};
-         var startValue = new InitialCondition {Name = builder.Name, Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null};
-         _initialConditionsBuildingBlock.Add(startValue);
+         var pathAndValueEntity = new InitialCondition {Name = builder.Name, Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null};
+         _initialConditionsBuildingBlock.Add(pathAndValueEntity);
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Returns(new ExplicitFormula("M/V"));
          A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(builder);
       }
 
       protected override void Because()
       {
-         sut.RefreshStartValuesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
+         sut.RefreshPathAndValueEntitiesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
       }
 
       [Observation]
       public void formula_must_be_set()
       {
-         _initialConditionsBuildingBlock.Each(startValue => startValue.Formula.IsExplicit().ShouldBeTrue());
+         _initialConditionsBuildingBlock.Each(pathAndValueEntity => pathAndValueEntity.Formula.IsExplicit().ShouldBeTrue());
       }
    }
 
@@ -507,7 +507,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.RefreshStartValuesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
+         _command = sut.RefreshPathAndValueEntitiesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -536,7 +536,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.RefreshStartValuesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
+         _command = sut.RefreshPathAndValueEntitiesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -594,7 +594,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.CreateStartValuesForSimulation(_simulationConfiguration);
+         sut.CreatePathAndValueEntitiesForSimulation(_simulationConfiguration);
       }
 
       [Observation]
@@ -707,7 +707,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.ExtendStartValues(_initialConditionsBuildingBlock);
+         sut.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock);
       }
 
       [Observation]

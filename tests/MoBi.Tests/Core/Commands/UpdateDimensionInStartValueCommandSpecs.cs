@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_UpdateDimensionInStartValueCommand : ContextSpecification<UpdateDimensionInStartValueCommand<ParameterValue>>
+   public abstract class concern_for_UpdateDimensionInStartValueCommand : ContextSpecification<UpdateDimensionInPathAndValueEntityCommand<ParameterValue>>
    {
       protected IDimension _newDimension;
       protected IDimension _oldDimension;
@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
          _startValue = new ParameterValue {Dimension = _oldDimension, Value = 1.0, DisplayUnit = _oldDisplayUnit};
 
 
-         sut = new UpdateDimensionInStartValueCommand<ParameterValue>(_startValue, _newDimension, _newDisplayUnit, _buildingBlock);
+         sut = new UpdateDimensionInPathAndValueEntityCommand<ParameterValue>(_startValue, _newDimension, _newDisplayUnit, _buildingBlock);
       }
    }
 

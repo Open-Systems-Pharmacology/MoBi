@@ -12,9 +12,9 @@ namespace MoBi.Core.Events
       }
    }
 
-   public class StartValuesBuildingBlockChangedEvent : BuildingBlockEvent
+   public class PathAndValueEntitiesBuildingBlockChangedEvent : BuildingBlockEvent
    {
-      public StartValuesBuildingBlockChangedEvent(IBuildingBlock buildingBlock)
+      public PathAndValueEntitiesBuildingBlockChangedEvent(IBuildingBlock buildingBlock)
          : base(buildingBlock)
       {
       }

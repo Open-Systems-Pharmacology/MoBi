@@ -13,7 +13,7 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IStartValueDTO : IWithDisplayUnitDTO, IWithValueOrigin, IWithFormulaDTO
+   public interface IPathAndValueEntityDTO : IWithDisplayUnitDTO, IWithValueOrigin, IWithFormulaDTO
    {
    }
 
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.DTO
       ValueFormulaDTO Formula { get; set; }
    }
 
-   public abstract class StartValueDTO<T> : PathWithValueEntityDTO<T>, IStartValueDTO where T : PathAndValueEntity
+   public abstract class StartValueDTO<T> : PathAndValueEntityDTO<T> where T : PathAndValueEntity
    {
       private readonly PathAndValueEntityBuildingBlock<T> _buildingBlock;
 
@@ -30,7 +30,7 @@ namespace MoBi.Presentation.DTO
       ///    Updates the name of the start value
       /// </summary>
       /// <param name="newName">The new name for the start value</param>
-      public abstract void UpdateStartValueName(string newName);
+      public abstract void UpdateName(string newName);
 
       protected StartValueDTO(T startValueObject, PathAndValueEntityBuildingBlock<T> buildingBlock)
          : base(startValueObject)
@@ -43,31 +43,6 @@ namespace MoBi.Presentation.DTO
       protected override ObjectPath GetContainerPath()
       {
          return PathWithValueObject.ContainerPath;
-      }
-
-      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
-      {
-         PathWithValueObject.UpdateValueOriginFrom(ValueOrigin);
-      }
-
-      public virtual ValueOrigin ValueOrigin
-      {
-         get => PathWithValueObject.ValueOrigin;
-         set => UpdateValueOriginFrom(value);
-      }
-
-      public double? StartValue
-      {
-         get
-         {
-            if (Formula == null || Formula.Formula == null)
-               return PathWithValueObject.ConvertToDisplayUnit(PathWithValueObject.Value);
-            return double.NaN;
-         }
-         set
-         {
-            // We don't want the binding to set the value in the underlying object, only the command should do that
-         }
       }
 
       private static class AllRules

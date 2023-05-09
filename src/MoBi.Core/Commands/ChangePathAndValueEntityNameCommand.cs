@@ -8,22 +8,22 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class ChangeStartValueNameCommand<TBuildingBlock, TStartValue> 
+   public abstract class ChangePathAndValueEntityNameCommand<TBuildingBlock, TPathAndValueEntity> 
       : BuildingBlockChangeCommandBase<TBuildingBlock> 
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>, IBuildingBlock<TStartValue>
-      where TStartValue : PathAndValueEntity
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock<TPathAndValueEntity>
+      where TPathAndValueEntity : PathAndValueEntity
    {
       protected string _newValue;
       protected string _oldValue;
-      protected TStartValue _originalStartValue;
+      protected TPathAndValueEntity _originalEntity;
       protected IEnumerable<string> _path;
 
-      protected ChangeStartValueNameCommand(TBuildingBlock buildingBlock, ObjectPath path, string newValue)
+      protected ChangePathAndValueEntityNameCommand(TBuildingBlock buildingBlock, ObjectPath path, string newValue)
          : base(buildingBlock)
       {
          _newValue = newValue;
-         _originalStartValue = buildingBlock[path];
-         _oldValue = _originalStartValue.Name;
+         _originalEntity = buildingBlock[path];
+         _oldValue = _originalEntity.Name;
 
          SetCommandParameters(newValue, _oldValue);
       }
@@ -31,29 +31,29 @@ namespace MoBi.Core.Commands
       protected void SetCommandParameters(string newValue, string oldValue)
       {
          CommandType = AppConstants.Commands.EditCommand;
-         ObjectType = new ObjectTypeResolver().TypeFor<TStartValue>();
+         ObjectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
          Description = AppConstants.Commands.SetDescription(ObjectType, AppConstants.Commands.Name, newValue, oldValue);
       }
 
       protected override void ClearReferences()
       {
          base.ClearReferences();
-         _originalStartValue = default(TStartValue);
+         _originalEntity = default(TPathAndValueEntity);
       }
 
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
 
-         _buildingBlock.Remove(_originalStartValue);
+         _buildingBlock.Remove(_originalEntity);
 
-         _originalStartValue.Name = _newValue;
+         _originalEntity.Name = _newValue;
 
-         _buildingBlock.Add(_originalStartValue);
-         if (_originalStartValue.Formula != null)
-            _buildingBlock.AddFormula(_originalStartValue.Formula);
+         _buildingBlock.Add(_originalEntity);
+         if (_originalEntity.Formula != null)
+            _buildingBlock.AddFormula(_originalEntity.Formula);
 
-         _path = _originalStartValue.Path.All();
+         _path = _originalEntity.Path.All();
       }
    }
 }

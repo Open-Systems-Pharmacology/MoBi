@@ -7,14 +7,14 @@ namespace MoBi.Presentation.DTO
    public class ModuleConfigurationDTO
    {
       private readonly ModuleConfiguration _moduleConfiguration;
-      private readonly List<InitialConditionsBuildingBlock> _initialConditionsCollection = new List<InitialConditionsBuildingBlock> { NullStartValues.NullInitialConditions };
-      private readonly List<ParameterValuesBuildingBlock> _parameterValuesCollection = new List<ParameterValuesBuildingBlock> { NullStartValues.NullParameterValues };
+      private readonly List<InitialConditionsBuildingBlock> _initialConditionsCollection = new List<InitialConditionsBuildingBlock> { NullPathAndValueEntityBuildingBlocks.NullInitialConditions };
+      private readonly List<ParameterValuesBuildingBlock> _parameterValuesCollection = new List<ParameterValuesBuildingBlock> { NullPathAndValueEntityBuildingBlocks.NullParameterValues };
 
       public ModuleConfigurationDTO(ModuleConfiguration moduleConfiguration)
       {
          _moduleConfiguration = moduleConfiguration;
-         SelectedInitialConditions = moduleConfiguration.SelectedInitialConditions ?? NullStartValues.NullInitialConditions;
-         SelectedParameterValues = moduleConfiguration.SelectedParameterValues ?? NullStartValues.NullParameterValues;
+         SelectedInitialConditions = moduleConfiguration.SelectedInitialConditions ?? NullPathAndValueEntityBuildingBlocks.NullInitialConditions;
+         SelectedParameterValues = moduleConfiguration.SelectedParameterValues ?? NullPathAndValueEntityBuildingBlocks.NullParameterValues;
          _initialConditionsCollection.AddRange(moduleConfiguration.Module.InitialConditionsCollection);
          _parameterValuesCollection.AddRange(moduleConfiguration.Module.ParameterValuesCollection);
       }
@@ -37,8 +37,8 @@ namespace MoBi.Presentation.DTO
          return Equals(_moduleConfiguration, moduleConfiguration);
       }
 
-      public bool HasInitialConditions => !NullStartValues.NullInitialConditions.Equals(SelectedInitialConditions);
+      public bool HasInitialConditions => !NullPathAndValueEntityBuildingBlocks.NullInitialConditions.Equals(SelectedInitialConditions);
 
-      public bool HasParameterValues => !NullStartValues.NullParameterValues.Equals(SelectedParameterValues);
+      public bool HasParameterValues => !NullPathAndValueEntityBuildingBlocks.NullParameterValues.Equals(SelectedParameterValues);
    }
 }

@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class ParameterValuesPresenter
-      : StartValuePresenter<IParameterValuesView,
+      : PathAndValueBuildingBlockPresenter<IParameterValuesView,
             IParameterValuesPresenter,
             ParameterValuesBuildingBlock,
             ParameterValueDTO, ParameterValue>,
@@ -50,6 +50,11 @@ namespace MoBi.Presentation.Presenter
          view.HideNegativeValuesAllowedView();
       }
 
+      protected override string RemoveCommandDescription()
+      {
+         return AppConstants.Commands.RemoveMultipleParameterValues;
+      }
+
       public override void AddNewFormula(ParameterValueDTO parameterValueDTO)
       {
          var parameterValue = StartValueFrom(parameterValueDTO);
@@ -59,16 +64,16 @@ namespace MoBi.Presentation.Presenter
       public void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension)
       {
          var macroCommand = new MoBiMacroCommand();
-         var startValue = StartValueFrom(valueObject);
+         var pathAndValueEntity = StartValueFrom(valueObject);
 
          macroCommand.CommandType = AppConstants.Commands.EditCommand;
          macroCommand.Description = AppConstants.Commands.UpdateDimensionsAndUnits;
          macroCommand.ObjectType = new ObjectTypeResolver().TypeFor<ParameterValue>();
 
-         var value = startValue.ConvertToDisplayUnit(startValue.Value);
+         var value = pathAndValueEntity.ConvertToDisplayUnit(pathAndValueEntity.Value);
 
-         macroCommand.AddCommand(_parameterValuesTask.UpdateStartValueDimension(_buildingBlock, startValue, newDimension));
-         macroCommand.AddCommand(_parameterValuesTask.SetDisplayValueWithUnit(startValue, value, _displayUnitRetriever.PreferredUnitFor(startValue), _buildingBlock));
+         macroCommand.AddCommand(_parameterValuesTask.UpdatePathAndValueEntityDimension(_buildingBlock, pathAndValueEntity, newDimension));
+         macroCommand.AddCommand(_parameterValuesTask.SetDisplayValueWithUnit(pathAndValueEntity, value, _displayUnitRetriever.PreferredUnitFor(pathAndValueEntity), _buildingBlock));
 
          AddCommand(macroCommand);
       }

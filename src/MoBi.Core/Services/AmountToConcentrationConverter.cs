@@ -83,11 +83,11 @@ namespace MoBi.Core.Services
             return;
          }
 
-         var startValue = initialCondition.Value.GetValueOrDefault(0);
-         if (startValue == 0)
+         var initialConditionValue = initialCondition.Value.GetValueOrDefault(0);
+         if (initialConditionValue == 0)
             return;
 
-         initialCondition.Formula = createConcentrationFormulaFromConstantValue(startValue, initialCondition.Path.ToPathString(), formulaCache);
+         initialCondition.Formula = createConcentrationFormulaFromConstantValue(initialConditionValue, initialCondition.Path.ToPathString(), formulaCache);
       }
 
       public void Convert(MoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)

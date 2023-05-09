@@ -5,7 +5,7 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.UI.Views
 {
-   partial class BaseStartValuesView<TStartValue,T> 
+   partial class BasePathAndValueEntityView<TPathAndValueEntity,T> 
    {
       /// <summary> 
       /// Required designer variable.
@@ -329,7 +329,7 @@ namespace MoBi.UI.Views
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
-         this.Name = "BaseStartValuesView";
+         this.Name = "BasePathAndValueEntityView";
          this.Size = new System.Drawing.Size(1627, 558);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();

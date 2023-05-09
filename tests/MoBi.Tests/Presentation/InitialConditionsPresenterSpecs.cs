@@ -261,7 +261,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_molecule_start_values_task_should_be_used_to_extend_the_building_block()
       {
-         A.CallTo(() => _initialConditionTask.ExtendStartValues(_initialConditionsBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _initialConditionTask.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock)).MustHaveHappened();
       }
    }
 
@@ -291,9 +291,9 @@ namespace MoBi.Presentation
       [Observation]
       public void should_remove_the_selected_start_values_from_the_building_block()
       {
-         A.CallTo(() => _initialConditionTask.RemoveStartValueFromBuildingBlockCommand(_startValue1, _initialConditionsBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _initialConditionTask.RemoveStartValueFromBuildingBlockCommand(_startValue2, _initialConditionsBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _initialConditionTask.RemoveStartValueFromBuildingBlockCommand(_startValue3, _initialConditionsBuildingBlock)).MustNotHaveHappened();
+         A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue1, _initialConditionsBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue2, _initialConditionsBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue3, _initialConditionsBuildingBlock)).MustNotHaveHappened();
       }
    }
 
@@ -347,7 +347,7 @@ namespace MoBi.Presentation
       [Observation]
       public void results_in_call_to_task_add_new_start_value_to_building_block()
       {
-         A.CallTo(() => _initialConditionTask.AddStartValueToBuildingBlock(
+         A.CallTo(() => _initialConditionTask.AddPathAndValueEntityToBuildingBlock(
             _initialConditionsBuildingBlock, A<InitialCondition>.That.Matches(x => x.Path.Last().Equals("C2")))).MustHaveHappened();
       }
    }
@@ -361,7 +361,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _valueOrigin = new ValueOrigin();
-         _startValue = new InitialCondition { Name = "startValue" };
+         _startValue = new InitialCondition { Name = "pathAndValueEntity" };
          _initialConditionsBuildingBlock.Add(_startValue);
          sut.Edit(_initialConditionsBuildingBlock);
       }

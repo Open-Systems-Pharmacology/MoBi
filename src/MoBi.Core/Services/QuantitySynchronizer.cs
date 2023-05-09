@@ -101,31 +101,31 @@ namespace MoBi.Core.Services
       private IMoBiCommand synchronizeInitialConditionCommand(IQuantity quantity, InitialConditionsBuildingBlock initialConditionsBuildingBlock, bool allowCreation = true)
       {
          var moleculeAmount = quantity as MoleculeAmount ?? quantity.ParentContainer as MoleculeAmount;
-         return synchronizeStartValueCommand(moleculeAmount, initialConditionsBuildingBlock, allowCreation,
+         return synchronizePathAndValueEntityCommand(moleculeAmount, initialConditionsBuildingBlock, allowCreation,
             msv => new SynchronizeInitialConditionCommand(quantity, msv),
             () => new AddInitialConditionFromQuantityInSimulationCommand(moleculeAmount, initialConditionsBuildingBlock));
       }
 
       private IMoBiCommand synchronizeParameterValueCommand(IParameter parameter, ParameterValuesBuildingBlock parameterValuesBuildingBlock, bool allowCreation = true)
       {
-         return synchronizeStartValueCommand(parameter, parameterValuesBuildingBlock, allowCreation,
+         return synchronizePathAndValueEntityCommand(parameter, parameterValuesBuildingBlock, allowCreation,
             psv => new SynchronizeParameterValueCommand(parameter, psv),
             () => new AddParameterValueFromQuantityInSimulationCommand(parameter, parameterValuesBuildingBlock));
       }
 
-      private IMoBiCommand synchronizeStartValueCommand<TStartValue>(IQuantity quantity, PathAndValueEntityBuildingBlock<TStartValue> startValuesBuildingBlock, bool allowCreation,
-         Func<TStartValue, IMoBiCommand> synchronizeStartValueCommandFunc, Func<IMoBiCommand> createStartValueCommandFunc) where TStartValue : PathAndValueEntity
+      private IMoBiCommand synchronizePathAndValueEntityCommand<TPathAndValueEntity>(IQuantity quantity, PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock, bool allowCreation,
+         Func<TPathAndValueEntity, IMoBiCommand> synchronizePathAndValueEntityCommandFunc, Func<IMoBiCommand> createPathAndValueEntityCommandFunc) where TPathAndValueEntity : PathAndValueEntity
       {
          if (quantity == null)
             return new MoBiEmptyCommand();
 
          var objectPath = _entityPathResolver.ObjectPathFor(quantity);
-         var startValue = startValuesBuildingBlock[objectPath];
-         if (startValue != null)
-            return synchronizeStartValueCommandFunc(startValue);
+         var pathAndValueEntity = buildingBlock[objectPath];
+         if (pathAndValueEntity != null)
+            return synchronizePathAndValueEntityCommandFunc(pathAndValueEntity);
 
          if (allowCreation)
-            return createStartValueCommandFunc();
+            return createPathAndValueEntityCommandFunc();
 
          return new MoBiEmptyCommand();
       }

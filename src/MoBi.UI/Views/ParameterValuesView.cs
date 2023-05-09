@@ -18,7 +18,7 @@ using OSPSuite.UI.Controls;
 
 namespace MoBi.UI.Views
 {
-   public partial class ParameterValuesView : BaseStartValuesView<ParameterValueDTO, ParameterValue>, IParameterValuesView
+   public partial class ParameterValuesView : BasePathAndValueEntityView<ParameterValueDTO, ParameterValue>, IParameterValuesView
    {
       private readonly UxComboBoxUnit<ParameterValueDTO> _unitControl;
       private readonly IDimensionFactory _dimensionFactory;
@@ -49,8 +49,8 @@ namespace MoBi.UI.Views
          //to put the name in the first column
          colName.XtraColumn.VisibleIndex = 0;
 
-         _gridViewBinder.AutoBind(dto => dto.StartValue)
-            .WithCaption(AppConstants.Captions.StartValue)
+         _gridViewBinder.AutoBind(dto => dto.Value)
+            .WithCaption(AppConstants.Captions.ParameterValue)
             .WithFormat(dto => dto.ParameterValueFormatter())
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)

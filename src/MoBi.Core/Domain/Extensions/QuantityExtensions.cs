@@ -18,8 +18,8 @@ namespace MoBi.Core.Domain.Extensions
          if (moleculeAmount == null)
             return quantity;
 
-         var startValue = moleculeAmount.GetSingleChildByName<IQuantity>(Constants.Parameters.START_VALUE);
-         return startValue ?? moleculeAmount;
+         var pathAndValueEntity = moleculeAmount.GetSingleChildByName<IQuantity>(Constants.Parameters.START_VALUE);
+         return pathAndValueEntity ?? moleculeAmount;
       }
 
       public static void UpdateQuantityValue(this IQuantity quantity, double valueToSet)

@@ -65,9 +65,9 @@ namespace MoBi.Engine.Sbml
       {
          _initialConditionsBuildingBlock = _initialConditionsCreator.CreateFrom(GetMainSpatialStructure(model),
             MoleculeBuildingBlock)
-            .WithId(SBMLConstants.SBML_MOLECULESTARTVALUES_BB)
-            .WithName(SBMLConstants.SBML_MOLECULESTARTVALUES_BB)
-            .WithDescription(SBMLConstants.SBML_MOLECULESTARTVALUES_DESCRIPTION);
+            .WithId(SBMLConstants.SBML_INITIAL_CONDITIONS_BB)
+            .WithName(SBMLConstants.SBML_INITIAL_CONDITIONS_BB)
+            .WithDescription(SBMLConstants.SBML_INITIAL_CONDITIONS_DESCRIPTION);
       }
 
       /// <summary>

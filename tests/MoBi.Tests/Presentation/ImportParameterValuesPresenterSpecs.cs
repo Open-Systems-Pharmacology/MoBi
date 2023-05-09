@@ -145,7 +145,7 @@ namespace MoBi.Presentation
       [Observation]
       public void imported_values_added_via_start_values_task()
       {
-         A.CallTo(() => _parameterValuesTask.ImportStartValuesToBuildingBlock(_buildingBlock, _quantityImporterDTO.QuantityDTOs)).MustHaveHappened();
+         A.CallTo(() => _parameterValuesTask.ImportPathAndValueEntitiesToBuildingBlock(_buildingBlock, _quantityImporterDTO.QuantityDTOs)).MustHaveHappened();
       }
    }
 
@@ -166,7 +166,7 @@ namespace MoBi.Presentation
       [Observation]
       public void returns_empty_list_of_imported_start_values()
       {
-         A.CallTo(() => _parameterValuesTask.AddStartValueToBuildingBlock(_buildingBlock, A<ParameterValue>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddPathAndValueEntityToBuildingBlock(_buildingBlock, A<ParameterValue>.Ignored)).MustNotHaveHappened();
       }
    }
 }

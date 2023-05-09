@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IParameterValueToParameterValueDTOMapper : IStartValueToStartValueDTOMapper<ParameterValue, ParameterValueDTO>
+   public interface IParameterValueToParameterValueDTOMapper : IPathAndValueEntityToPathAndValueEntityDTOMapper<ParameterValue, ParameterValueDTO>
    {
    }
 

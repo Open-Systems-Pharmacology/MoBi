@@ -73,8 +73,8 @@ namespace MoBi.Presentation.Mapper
          };
          _dto = new ModuleConfigurationDTO(new ModuleConfiguration(module))
          {
-            SelectedInitialConditions = NullStartValues.NullInitialConditions,
-            SelectedParameterValues = NullStartValues.NullParameterValues
+            SelectedInitialConditions = NullPathAndValueEntityBuildingBlocks.NullInitialConditions,
+            SelectedParameterValues = NullPathAndValueEntityBuildingBlocks.NullParameterValues
          };
       }
 

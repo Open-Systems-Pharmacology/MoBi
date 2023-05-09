@@ -25,35 +25,35 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public abstract class StartValuePresenter<TView, TPresenter, TBuildingBlock, TStartValueDTO, TStartValue> :
-      PathWithValueBuildingBlockPresenter<TView, TPresenter, Module, TBuildingBlock, TStartValue, TStartValueDTO>, IStartValuesPresenter<TStartValueDTO>
-      where TView : IView<TPresenter>, IStartValuesView<TStartValueDTO>
+   public abstract class PathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TStartValueDTO, TPathAndValueEntity> :
+      PathWithValueBuildingBlockPresenter<TView, TPresenter, Module, TBuildingBlock, TPathAndValueEntity, TStartValueDTO>, IStartValuesPresenter<TStartValueDTO>
+      where TView : IView<TPresenter>, IPathAndValueEntitiesView<TStartValueDTO>
       where TPresenter : IPresenter
-      where TStartValue : PathAndValueEntity, IUsingFormula
-      where TStartValueDTO : StartValueDTO<TStartValue>
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>, IBuildingBlock<TStartValue>
+      where TPathAndValueEntity : PathAndValueEntity, IUsingFormula
+      where TStartValueDTO : StartValueDTO<TPathAndValueEntity>
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock<TPathAndValueEntity>
    {
-      protected readonly IStartValueToStartValueDTOMapper<TStartValue, TStartValueDTO> _valueMapper;
+      protected readonly IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> _valueMapper;
 
-      private readonly IStartValuesTask<TBuildingBlock, TStartValue> _startValuesTask;
+      private readonly IStartValuesTask<TBuildingBlock, TPathAndValueEntity> _startValuesTask;
       protected BindingList<TStartValueDTO> _startValueDTOs;
-      private readonly IEmptyStartValueCreator<TStartValue> _emptyStartValueCreator;
+      private readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
       protected readonly IMoBiContext _context;
       private bool _handleChangedEvents;
       protected ILegendPresenter _legendPresenter;
-      private TStartValue _focusedStartValue;
+      private TPathAndValueEntity _focusedStartValue;
       public Func<TStartValueDTO, Color> BackgroundColorRetriever { get; set; }
       public Func<TStartValueDTO, bool> IsOriginalStartValue { get; set; }
-      private readonly List<TStartValue> _originalStartValues;
+      private readonly List<TPathAndValueEntity> _originalStartValues;
 
       public bool IsLatched { get; set; }
 
-      protected StartValuePresenter(
+      protected PathAndValueBuildingBlockPresenter(
          TView view,
-         IStartValueToStartValueDTOMapper<TStartValue, TStartValueDTO> valueMapper,
+         IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> valueMapper,
          IRefreshStartValueFromOriginalBuildingBlockPresenter refreshStartValuesPresenter,
-         IStartValuesTask<TBuildingBlock, TStartValue> startValuesTask,
-         IEmptyStartValueCreator<TStartValue> emptyStartValueCreator,
+         IStartValuesTask<TBuildingBlock, TPathAndValueEntity> startValuesTask,
+         IEmptyStartValueCreator<TPathAndValueEntity> emptyStartValueCreator,
          IMoBiContext context,
          ILegendPresenter legendPresenter,
          IDeleteStartValuePresenter deleteStartValuePresenter,
@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Presenter
          _emptyStartValueCreator = emptyStartValueCreator;
          _context = context;
          _legendPresenter = legendPresenter;
-         _originalStartValues = new List<TStartValue>();
+         _originalStartValues = new List<TPathAndValueEntity>();
 
          refreshStartValuesPresenter.ApplySelectionAction = performRefreshAction;
          deleteStartValuePresenter.ApplySelectionAction = performDeleteAction;
@@ -87,7 +87,7 @@ namespace MoBi.Presentation.Presenter
          _legendPresenter.AddLegendItems(new[]
          {
             new LegendItemDTO { Description = AppConstants.Captions.CouldNotResolveSource, Color = MoBiColors.CannotResolve },
-            new LegendItemDTO { Description = AppConstants.Captions.StartValueIsModified, Color = MoBiColors.Modified },
+            new LegendItemDTO { Description = AppConstants.Captions.ValueIsModified, Color = MoBiColors.Modified },
             new LegendItemDTO { Description = AppConstants.Captions.NewlyAddedValues, Color = MoBiColors.Extended }
          });
 
@@ -100,21 +100,21 @@ namespace MoBi.Presentation.Presenter
             return MoBiColors.Extended;
 
 
-         var startValue = startValueDTO.PathWithValueObject;
-         if (!_startValuesTask.CanResolve(_buildingBlock, startValue))
+         var pathAndValueEntity = startValueDTO.PathWithValueObject;
+         if (!_startValuesTask.CanResolve(_buildingBlock, pathAndValueEntity))
             return MoBiColors.CannotResolve;
 
-         return _startValuesTask.IsEquivalentToOriginal(startValue, _buildingBlock) ? MoBiColors.Default : MoBiColors.Modified;
+         return _startValuesTask.IsEquivalentToOriginal(pathAndValueEntity, _buildingBlock) ? MoBiColors.Default : MoBiColors.Modified;
       }
 
-      private bool isOriginalStartValue(TStartValueDTO startValue)
+      private bool isOriginalStartValue(TStartValueDTO pathAndValueEntity)
       {
-         return _originalStartValues.Contains(startValue.PathWithValueObject);
+         return _originalStartValues.Contains(pathAndValueEntity.PathWithValueObject);
       }
 
       public void ExtendStartValues()
       {
-         _startValuesTask.ExtendStartValues(_buildingBlock);
+         _startValuesTask.ExtendStartValueBuildingBlock(_buildingBlock);
       }
 
       private void initializeColumns()
@@ -127,7 +127,7 @@ namespace MoBi.Presentation.Presenter
       public void AddNewEmptyStartValue()
       {
          _startValueDTOs.Insert(0, _valueMapper.MapFrom(
-            startValue: _emptyStartValueCreator.CreateEmptyStartValue(_startValuesTask.GetDefaultDimension()),
+            pathAndValueEntity: _emptyStartValueCreator.CreateEmptyStartValue(_startValuesTask.GetDefaultDimension()),
             buildingBlock: _buildingBlock
          ));
          bindToView();
@@ -166,21 +166,21 @@ namespace MoBi.Presentation.Presenter
 
       protected IReadOnlyList<TStartValueDTO> SelectedStartValueDTOs => _view.SelectedStartValues;
 
-      protected IEnumerable<TStartValue> SelectedStartValues => StartValuesFrom(SelectedStartValueDTOs);
+      protected IEnumerable<TPathAndValueEntity> SelectedStartValues => StartValuesFrom(SelectedStartValueDTOs);
 
       protected IReadOnlyList<TStartValueDTO> VisibleStartValueDTOs => _view.VisibleStartValues;
 
-      protected IEnumerable<TStartValue> VisibleStartValues => StartValuesFrom(VisibleStartValueDTOs);
+      protected IEnumerable<TPathAndValueEntity> VisibleStartValues => StartValuesFrom(VisibleStartValueDTOs);
 
-      protected IEnumerable<TStartValue> StartValuesFrom(IEnumerable<TStartValueDTO> selectedStartValueDTOs)
+      protected IEnumerable<TPathAndValueEntity> StartValuesFrom(IEnumerable<TStartValueDTO> selectedStartValueDTOs)
       {
          return selectedStartValueDTOs.Select(x => x.PathWithValueObject);
       }
 
-      private void refreshStartValues(IEnumerable<TStartValue> startValues)
+      private void refreshStartValues(IEnumerable<TPathAndValueEntity> startValues)
       {
          AddCommand(
-            _startValuesTask.RefreshStartValuesFromBuildingBlocks(
+            _startValuesTask.RefreshPathAndValueEntitiesFromBuildingBlocks(
                _buildingBlock,
                startValues.ToList()));
       }
@@ -205,13 +205,15 @@ namespace MoBi.Presentation.Presenter
          startValuesToRemove.Each(value => collectRemoveCommands(value, macroCommand));
 
          macroCommand.CommandType = AppConstants.Commands.DeleteCommand;
-         macroCommand.ObjectType = new ObjectTypeResolver().TypeFor<TStartValue>();
-         macroCommand.Description = AppConstants.Commands.RemoveMultipleStartValues;
+         macroCommand.ObjectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
+         macroCommand.Description = RemoveCommandDescription();
 
          AddCommand(macroCommand.Run(_context));
 
          _startValueDTOs.RemoveRange(startValuesToRemove);
       }
+
+      protected abstract string RemoveCommandDescription();
 
       public void RemoveStartValue(TStartValueDTO elementToRemove)
       {
@@ -251,7 +253,7 @@ namespace MoBi.Presentation.Presenter
       private void reBind(TBuildingBlock buildingBlock)
       {
          if (buildingBlock == null) return;
-         _startValueDTOs = buildingBlock.Select(startValue => _valueMapper.MapFrom(startValue, buildingBlock)).OrderBy(startValue => IsOriginalStartValue(startValue)).ToBindingList();
+         _startValueDTOs = buildingBlock.Select(pathAndValueEntity => _valueMapper.MapFrom(pathAndValueEntity, buildingBlock)).OrderBy(pathAndValueEntity => IsOriginalStartValue(pathAndValueEntity)).ToBindingList();
          bindToView();
          initializeColumns();
       }
@@ -278,46 +280,46 @@ namespace MoBi.Presentation.Presenter
 
       private void collectRemoveCommands(TStartValueDTO elementToRemove, BulkUpdateMacroCommand collector)
       {
-         var startValue = StartValueFrom(elementToRemove);
-         if (_buildingBlock.Contains(startValue))
+         var pathAndValueEntity = StartValueFrom(elementToRemove);
+         if (_buildingBlock.Contains(pathAndValueEntity))
          {
-            collector.AddCommand(_startValuesTask.RemoveStartValueFromBuildingBlockCommand(startValue, _buildingBlock));
+            collector.AddCommand(_startValuesTask.RemovePathAndValueEntityFromBuildingBlockCommand(pathAndValueEntity, _buildingBlock));
          }
       }
 
       public void UpdateStartValueContainerPath(TStartValueDTO startValueDTO, int indexToUpdate, string newValue)
       {
-         AddCommand(_startValuesTask.EditStartValueContainerPath(_buildingBlock, StartValueFrom(startValueDTO), indexToUpdate, newValue));
+         AddCommand(_startValuesTask.EditPathAndValueEntityContainerPath(_buildingBlock, StartValueFrom(startValueDTO), indexToUpdate, newValue));
       }
 
       public void UpdateStartValueName(TStartValueDTO startValueDTO, string newValue)
       {
-         var startValue = StartValueFrom(startValueDTO);
+         var pathAndValueEntity = StartValueFrom(startValueDTO);
 
-         if (!_buildingBlock.Contains(startValue))
+         if (!_buildingBlock.Contains(pathAndValueEntity))
          {
-            startValueDTO.UpdateStartValueName(newValue);
-            AddCommand(_startValuesTask.AddStartValueToBuildingBlock(_buildingBlock, startValue));
+            startValueDTO.UpdateName(newValue);
+            AddCommand(_startValuesTask.AddPathAndValueEntityToBuildingBlock(_buildingBlock, pathAndValueEntity));
          }
          else
          {
-            AddCommand(_startValuesTask.EditStartValueName(_buildingBlock, startValue, newValue));
+            AddCommand(_startValuesTask.EditPathAndValueEntityName(_buildingBlock, pathAndValueEntity, newValue));
          }
       }
 
-      public bool ShouldShow(TStartValueDTO startValue)
+      public bool ShouldShow(TStartValueDTO pathAndValueEntity)
       {
-         return shouldShowForIsNew(startValue) && shouldShowForIsModified(startValue);
+         return shouldShowForIsNew(pathAndValueEntity) && shouldShowForIsModified(pathAndValueEntity);
       }
 
-      private bool shouldShowForIsModified(TStartValueDTO startValue)
+      private bool shouldShowForIsModified(TStartValueDTO pathAndValueEntity)
       {
-         return !IsModifiedFilterOn || !_startValuesTask.IsEquivalentToOriginal(StartValueFrom(startValue), _buildingBlock);
+         return !IsModifiedFilterOn || !_startValuesTask.IsEquivalentToOriginal(StartValueFrom(pathAndValueEntity), _buildingBlock);
       }
 
-      private bool shouldShowForIsNew(TStartValueDTO startValue)
+      private bool shouldShowForIsNew(TStartValueDTO pathAndValueEntity)
       {
-         return !IsNewFilterOn || !IsOriginalStartValue(startValue);
+         return !IsNewFilterOn || !IsOriginalStartValue(pathAndValueEntity);
       }
 
       public bool IsColorDefault(Color color)
@@ -329,14 +331,14 @@ namespace MoBi.Presentation.Presenter
 
       public bool IsModifiedFilterOn { get; set; }
 
-      protected TStartValue StartValueFrom(TStartValueDTO startValueDTO)
+      protected TPathAndValueEntity StartValueFrom(TStartValueDTO startValueDTO)
       {
          return startValueDTO?.PathWithValueObject;
       }
 
-      protected TStartValueDTO StartValueDTOFrom(TStartValue startValue)
+      protected TStartValueDTO StartValueDTOFrom(TPathAndValueEntity pathAndValueEntity)
       {
-         return startValue == null ? null : _startValueDTOs.FirstOrDefault(dto => Equals(StartValueFrom(dto), startValue));
+         return pathAndValueEntity == null ? null : _startValueDTOs.FirstOrDefault(dto => Equals(StartValueFrom(dto), pathAndValueEntity));
       }
 
       public override object Subject => _buildingBlock;
@@ -348,8 +350,8 @@ namespace MoBi.Presentation.Presenter
 
       public override void SetFormula(TStartValueDTO startValueDTO, IFormula formula)
       {
-         var startValue = StartValueFrom(startValueDTO);
-         SetFormulaInBuilder(startValueDTO, formula, startValue);
+         var pathAndValueEntity = StartValueFrom(startValueDTO);
+         SetFormulaInBuilder(startValueDTO, formula, pathAndValueEntity);
       }
 
       public override void SetUnit(TStartValueDTO startValueDTO, Unit newUnit)
@@ -373,7 +375,7 @@ namespace MoBi.Presentation.Presenter
          reBind(_buildingBlock);
       }
 
-      public void Handle(StartValuesBuildingBlockChangedEvent eventToHandle)
+      public void Handle(PathAndValueEntitiesBuildingBlockChangedEvent eventToHandle)
       {
          if (_handleChangedEvents)
             HandleBuildingBlockEvent(eventToHandle);

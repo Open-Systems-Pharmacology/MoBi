@@ -9,18 +9,18 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class ResetQuantityValuesToDefaultFromStartValuesInSimulation<TStartValue> : MoBiCommand where TStartValue : PathAndValueEntity
+   public abstract class ResetQuantityValuesToDefaultFromPathAndValueEntitiesInSimulation<TPathAndValueEntity> : MoBiCommand where TPathAndValueEntity : PathAndValueEntity
    {
       protected IMoBiSimulation _simulation;
-      private PathAndValueEntityBuildingBlock<TStartValue> _startValuesBuildingBlock;
+      private PathAndValueEntityBuildingBlock<TPathAndValueEntity> _buildingBlock;
       protected ICloneManagerForModel _cloneManagerForModel;
       protected IMoBiFormulaTask _formulaTask;
       protected IEntityPathResolver _entityPathResolver;
 
-      protected ResetQuantityValuesToDefaultFromStartValuesInSimulation(IMoBiSimulation simulation, PathAndValueEntityBuildingBlock<TStartValue> startValuesBuildingBlock)
+      protected ResetQuantityValuesToDefaultFromPathAndValueEntitiesInSimulation(IMoBiSimulation simulation, PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock)
       {
          _simulation = simulation;
-         _startValuesBuildingBlock = startValuesBuildingBlock;
+         _buildingBlock = buildingBlock;
       }
 
       protected override void ExecuteWith(IMoBiContext context)
@@ -41,23 +41,23 @@ namespace MoBi.Core.Commands
             return;
 
          var objectPath = _entityPathResolver.ObjectPathFor(quantityUsedToFindPath);
-         var startValue = _startValuesBuildingBlock[objectPath];
+         var pathAndValueEntity = _buildingBlock[objectPath];
 
-         if (startValue == null)
+         if (pathAndValueEntity == null)
             return;
 
-         quantityToReset.Formula = defaultFormulaBasedOn(startValue);
+         quantityToReset.Formula = defaultFormulaBasedOn(pathAndValueEntity);
          quantityToReset.IsFixedValue = false;
 
          context.PublishEvent(new QuantityChangedEvent(quantityToReset));
       }
 
-      private IFormula defaultFormulaBasedOn(PathAndValueEntity startValue)
+      private IFormula defaultFormulaBasedOn(PathAndValueEntity pathAndValueEntity)
       {
-         if (startValue.Formula != null)
-            return _cloneManagerForModel.Clone(startValue.Formula);
+         if (pathAndValueEntity.Formula != null)
+            return _cloneManagerForModel.Clone(pathAndValueEntity.Formula);
 
-         return _formulaTask.CreateNewFormula<ConstantFormula>(startValue.Dimension).WithValue(startValue.Value.GetValueOrDefault(double.NaN));
+         return _formulaTask.CreateNewFormula<ConstantFormula>(pathAndValueEntity.Dimension).WithValue(pathAndValueEntity.Value.GetValueOrDefault(double.NaN));
       }
 
       protected abstract IQuantity QuantityUsedToFindPathFor(IQuantity quantity);
@@ -70,7 +70,7 @@ namespace MoBi.Core.Commands
          _cloneManagerForModel = null;
          _formulaTask = null;
          _entityPathResolver = null;
-         _startValuesBuildingBlock = null;
+         _buildingBlock = null;
       }
    }
 }

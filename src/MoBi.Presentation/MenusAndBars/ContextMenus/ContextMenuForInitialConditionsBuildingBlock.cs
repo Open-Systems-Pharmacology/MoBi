@@ -15,7 +15,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuForInitialConditionsBuildingBlock : ContextMenuForStartValuesBuildingBlock<InitialConditionsBuildingBlock, InitialCondition>
+   public class ContextMenuForInitialConditionsBuildingBlock : ContextMenuForPathAndValueEntityBuildingBlock<InitialConditionsBuildingBlock, InitialCondition>
    {
       public ContextMenuForInitialConditionsBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
@@ -37,7 +37,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)
-            .WithCommandFor<CloneStartValueBuildingBlockUICommand<InitialConditionsBuildingBlock, InitialCondition, IInitialConditionsTask>, InitialConditionsBuildingBlock>(buildingBlock, _container);
+            .WithCommandFor<ClonePathAndValueEntityBuildingBlockUICommand<InitialConditionsBuildingBlock, InitialCondition, IInitialConditionsTask>, InitialConditionsBuildingBlock>(buildingBlock, _container);
       }
    }
 }

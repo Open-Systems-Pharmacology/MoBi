@@ -66,7 +66,7 @@ namespace MoBi.Presentation
    {
       protected override void Because()
       {
-         sut.ExtendStartValues();
+         sut.ExtendInitialConditions();
       }
 
       [Observation]

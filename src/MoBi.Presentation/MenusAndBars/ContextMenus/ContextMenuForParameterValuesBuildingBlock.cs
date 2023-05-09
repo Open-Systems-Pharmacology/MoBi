@@ -15,7 +15,7 @@ using OSPSuite.Core.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuForParameterValuesBuildingBlock : ContextMenuForStartValuesBuildingBlock<ParameterValuesBuildingBlock, ParameterValue>
+   public class ContextMenuForParameterValuesBuildingBlock : ContextMenuForPathAndValueEntityBuildingBlock<ParameterValuesBuildingBlock, ParameterValue>
    {
       public ContextMenuForParameterValuesBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)
-            .WithCommandFor<CloneStartValueBuildingBlockUICommand<ParameterValuesBuildingBlock, ParameterValue, IParameterValuesTask>, ParameterValuesBuildingBlock>(buildingBlock, _container);
+            .WithCommandFor<ClonePathAndValueEntityBuildingBlockUICommand<ParameterValuesBuildingBlock, ParameterValue, IParameterValuesTask>, ParameterValuesBuildingBlock>(buildingBlock, _container);
       }
    }
 }

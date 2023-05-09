@@ -5,20 +5,19 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public class PathWithValueEntityDTO<T> : BreadCrumbsDTO<T>, IWithDisplayUnitDTO where T : PathAndValueEntity, IValidatable, INotifier, IWithDimension, IWithDisplayUnit, IUsingFormula
+   public class PathAndValueEntityDTO<T> : BreadCrumbsDTO<T>, IPathAndValueEntityDTO where T : PathAndValueEntity, IValidatable, INotifier, IWithDimension, IWithDisplayUnit, IUsingFormula
    {
       public string ContainerPathPropertyName;
       public string FormulaPropertyName;
       private ValueFormulaDTO _formula;
       public T PathWithValueObject { get; }
 
-      protected PathWithValueEntityDTO(T underlyingObject) : base(underlyingObject)
+      protected PathAndValueEntityDTO(T underlyingObject) : base(underlyingObject)
       {
          PathWithValueObject = underlyingObject;
          PathWithValueObject.PropertyChanged += underlyingObjectOnPropertyChanged;
@@ -83,6 +82,12 @@ namespace MoBi.Presentation.DTO
          }
       }
 
+      public virtual ValueOrigin ValueOrigin
+      {
+         get => PathWithValueObject.ValueOrigin;
+         set => UpdateValueOriginFrom(value);
+      }
+
       private void underlyingObjectOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
       {
          var changedProperty = propertyChangedEventArgs.PropertyName;
@@ -99,6 +104,11 @@ namespace MoBi.Presentation.DTO
       protected virtual ObjectPath GetContainerPath()
       {
          return ContainerPath;
+      }
+
+      public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
+      {
+         PathWithValueObject.UpdateValueOriginFrom(ValueOrigin);
       }
    }
 }

@@ -3,7 +3,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IStartValuesView<TStartValueDTO> : IView
+   public interface IPathAndValueEntitiesView<TStartValueDTO> : IView
    {
       void BindTo(IEnumerable<TStartValueDTO> startValueDTOs);
 

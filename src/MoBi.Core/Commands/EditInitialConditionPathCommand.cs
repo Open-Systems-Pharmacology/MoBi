@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class EditInitialConditionPathCommand : EditStartValuePathCommand<InitialConditionsBuildingBlock, InitialCondition>
+   public class EditInitialConditionPathCommand : EditPathAndValueEntityPathCommand<InitialConditionsBuildingBlock, InitialCondition>
    {
       /// <summary>
       /// Changes a path for an initial condition
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new EditInitialConditionPathCommand(_buildingBlock, _buildingBlock[_newStartValuePath], _originalContainerPath).AsInverseFor(this);
+         return new EditInitialConditionPathCommand(_buildingBlock, _buildingBlock[_newPath], _originalContainerPath).AsInverseFor(this);
       }
    }
 }

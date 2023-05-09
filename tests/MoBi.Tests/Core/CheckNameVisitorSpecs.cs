@@ -186,13 +186,13 @@ namespace MoBi.Core
       [Observation]
       public void should_execute_EditName_for_MSV()
       {
-         A.CallTo(() => _msvTask.UpdateStartValueNameCommand(_initialConditionsBuildingBlock, _initialCondition, _newName)).MustHaveHappened();
+         A.CallTo(() => _msvTask.UpdateNameCommand(_initialConditionsBuildingBlock, _initialCondition, _newName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_execute_EditContainerPath_for_MSV2()
       {
-         A.CallTo(() => _msvTask.UpdateStartValueContainerPathCommand(_initialConditionsBuildingBlock, _initialCondition2, A<int>._, _newName)).MustHaveHappened();
+         A.CallTo(() => _msvTask.UpdateContainerPathCommand(_initialConditionsBuildingBlock, _initialCondition2, A<int>._, _newName)).MustHaveHappened();
       }
    }
 
@@ -245,13 +245,13 @@ namespace MoBi.Core
       [Observation]
       public void should_execute_EditName_for_PSV()
       {
-         A.CallTo(() => _psvTask.UpdateStartValueNameCommand(_parameterValuesBuildingBlock, _parameterValue, _newName)).MustHaveHappened();
+         A.CallTo(() => _psvTask.UpdateNameCommand(_parameterValuesBuildingBlock, _parameterValue, _newName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_execute_EditContainerpath_for_PSV2()
       {
-         A.CallTo(() => _psvTask.UpdateStartValueContainerPathCommand(_parameterValuesBuildingBlock, _parameterValue2, A<int>._, _newName)).MustHaveHappened();
+         A.CallTo(() => _psvTask.UpdateContainerPathCommand(_parameterValuesBuildingBlock, _parameterValue2, A<int>._, _newName)).MustHaveHappened();
       }
    }
 

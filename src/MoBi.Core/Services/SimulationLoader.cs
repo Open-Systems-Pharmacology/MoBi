@@ -126,7 +126,7 @@ namespace MoBi.Core.Services
          // }
       }
 
-      private static void updateTemplateBuildingBlockIds<T>(PathAndValueEntityBuildingBlock<T> startValues, string moleculeBuildingBlockId,
+      private static void updateTemplateBuildingBlockIds<T>(PathAndValueEntityBuildingBlock<T> pathAndValueEntities, string moleculeBuildingBlockId,
          string spatialStructureId, PathAndValueEntityBuildingBlock<T> buildingBlock) where T : PathAndValueEntity
       {
          // startValues.MoleculeBuildingBlockId = moleculeBuildingBlockId;

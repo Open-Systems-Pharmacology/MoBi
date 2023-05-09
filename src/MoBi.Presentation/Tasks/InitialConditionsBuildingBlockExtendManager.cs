@@ -5,11 +5,11 @@ using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.Tasks
 {
-   public interface IInitialConditionsBuildingBlockExtendManager : IExtendStartValuesManager<InitialCondition>
+   public interface IInitialConditionsBuildingBlockExtendManager : IExtendPathAndValuesManager<InitialCondition>
    {
    }
 
-   public class InitialConditionsBuildingBlockExtendManager : ExtendStartValuesManager<InitialCondition>, IInitialConditionsBuildingBlockExtendManager
+   public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesManager<InitialCondition>, IInitialConditionsBuildingBlockExtendManager
    {
       public InitialConditionsBuildingBlockExtendManager(
          IApplicationController applicationController,

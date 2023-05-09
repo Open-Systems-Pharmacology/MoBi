@@ -36,10 +36,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="newScaleDivisor">The new value of the scale divisor</param>
       /// <param name="oldScaleDivisor">The old value of the scale divisor</param>
       /// <returns>The command used to modify the initial condition</returns>
-      IMoBiCommand UpdateStartValueScaleDivisor(InitialConditionsBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor);
+      IMoBiCommand UpdateInitialConditionScaleDivisor(InitialConditionsBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor);
    }
 
-   public class InitialConditionsTask : AbstractStartValuesTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsTask
+   public class InitialConditionsTask : StartValuesTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsTask
    {
       private readonly IInitialConditionsCreator _initialConditionsCreator;
       private readonly IReactionDimensionRetriever _dimensionRetriever;
@@ -62,11 +62,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          _moleculeResolver = moleculeResolver;
       }
 
-      public override void ExtendStartValues(InitialConditionsBuildingBlock initialConditionsBuildingBlock)
+      public override void ExtendStartValueBuildingBlock(InitialConditionsBuildingBlock buildingBlock)
       {
-         var newStartValues = createStartValuesBasedOnUsedTemplates(initialConditionsBuildingBlock);
-         updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues, initialConditionsBuildingBlock.ToCache());
-         AddCommand(Extend(newStartValues, initialConditionsBuildingBlock));
+         var newStartValues = createStartValuesBasedOnUsedTemplates(buildingBlock);
+         updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues, buildingBlock.ToCache());
+         AddCommand(Extend(newStartValues, buildingBlock));
       }
 
       private InitialConditionsBuildingBlock createStartValuesBasedOnUsedTemplates(InitialConditionsBuildingBlock initialConditions)
@@ -76,7 +76,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _initialConditionsCreator.CreateFrom(spatialStructure, molecules);
       }
 
-      public override InitialConditionsBuildingBlock CreateStartValuesForSimulation(SimulationConfiguration simulationConfiguration)
+      public override InitialConditionsBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration)
       {
          //TODO OSMOSES combining multiple spatial structures and molecule building blocks is not supported yet
          var simulationInitialConditions = _initialConditionsCreator.CreateFrom(simulationConfiguration.All<SpatialStructure>().First(), simulationConfiguration.All<MoleculeBuildingBlock>().First())
@@ -139,12 +139,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return AddNewFormulaAtBuildingBlock(buildingBlock, initialCondition, referenceParameter: null);
       }
 
-      public override IMoBiCommand AddStartValueToBuildingBlock(InitialConditionsBuildingBlock buildingBlock, InitialCondition initialCondition)
+      public override IMoBiCommand AddPathAndValueEntityToBuildingBlock(InitialConditionsBuildingBlock buildingBlock, InitialCondition initialCondition)
       {
          return GenerateAddCommand(buildingBlock, initialCondition).Run(Context);
       }
 
-      public override IMoBiCommand ImportStartValuesToBuildingBlock(InitialConditionsBuildingBlock startValuesBuildingBlock, IEnumerable<ImportedQuantityDTO> startValues)
+      public override IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(InitialConditionsBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities)
       {
          var macroCommand = new BulkUpdateMacroCommand
          {
@@ -153,51 +153,51 @@ namespace MoBi.Presentation.Tasks.Interaction
             ObjectType = ObjectTypes.InitialCondition
          };
 
-         GetImportStartValuesMacroCommand(startValuesBuildingBlock, startValues, macroCommand);
+         GetImportPathAndValueEntityMacroCommand(buildingBlock, startQuantities, macroCommand);
 
          return macroCommand.Run(Context);
       }
 
-      public override IMoBiCommand RemoveStartValueFromBuildingBlockCommand(InitialCondition startValue, InitialConditionsBuildingBlock buildingBlock)
+      public override IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(InitialCondition pathAndValueEntity, InitialConditionsBuildingBlock buildingBlock)
       {
-         return new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, startValue.Path);
+         return new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, pathAndValueEntity.Path);
       }
 
-      public override IMoBiCommand RefreshStartValuesFromBuildingBlocks(InitialConditionsBuildingBlock buildingBlock, IEnumerable<InitialCondition> startValuesToRefresh)
+      public override IMoBiCommand RefreshPathAndValueEntitiesFromBuildingBlocks(InitialConditionsBuildingBlock buildingBlock, IEnumerable<InitialCondition> initialConditionsToRefresh)
       {
          var macroCommand = new MoBiMacroCommand
          {
             CommandType = AppConstants.Commands.EditCommand,
-            Description = AppConstants.Commands.RefreshStartValuesFromBuildingBlocks,
+            Description = AppConstants.Commands.RefreshInitialConditionsFromBuildingBlocks,
             ObjectType = ObjectTypes.InitialCondition
          };
 
-         startValuesToRefresh.Each(startValue =>
+         initialConditionsToRefresh.Each(pathAndValueEntity =>
          {
-            var moleculeBuilder = _moleculeResolver.Resolve(startValue.ContainerPath, startValue.MoleculeName, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock));
+            var moleculeBuilder = _moleculeResolver.Resolve(pathAndValueEntity.ContainerPath, pathAndValueEntity.MoleculeName, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock));
             if (moleculeBuilder == null) return;
 
-            var originalStartValue = moleculeBuilder.GetDefaultInitialCondition();
+            var originalInitialCondition = moleculeBuilder.GetDefaultInitialCondition();
             var originalUnit = moleculeBuilder.DisplayUnit;
 
-            if (!ValueComparer.AreValuesEqual(Constants.DEFAULT_SCALE_DIVISOR, startValue.ScaleDivisor))
+            if (!ValueComparer.AreValuesEqual(Constants.DEFAULT_SCALE_DIVISOR, pathAndValueEntity.ScaleDivisor))
             {
-               macroCommand.Add(UpdateStartValueScaleDivisor(buildingBlock, startValue, Constants.DEFAULT_SCALE_DIVISOR, startValue.ScaleDivisor));
+               macroCommand.Add(UpdateInitialConditionScaleDivisor(buildingBlock, pathAndValueEntity, Constants.DEFAULT_SCALE_DIVISOR, pathAndValueEntity.ScaleDivisor));
             }
 
-            if (!HasEquivalentDimension(startValue, moleculeBuilder))
+            if (!HasEquivalentDimension(pathAndValueEntity, moleculeBuilder))
             {
-               macroCommand.Add(UpdateStartValueDimension(buildingBlock, startValue, moleculeBuilder.Dimension));
+               macroCommand.Add(UpdatePathAndValueEntityDimension(buildingBlock, pathAndValueEntity, moleculeBuilder.Dimension));
             }
 
-            if (!HasEquivalentStartValue(startValue, originalStartValue))
+            if (!HasEquivalentPathAndValueEntity(pathAndValueEntity, originalInitialCondition))
             {
-               macroCommand.Add(SetValueWithUnit(startValue, originalStartValue, originalUnit, buildingBlock));
+               macroCommand.Add(SetValueWithUnit(pathAndValueEntity, originalInitialCondition, originalUnit, buildingBlock));
             }
 
-            if (!HasEquivalentFormula(startValue, moleculeBuilder.DefaultStartFormula))
+            if (!HasEquivalentFormula(pathAndValueEntity, moleculeBuilder.DefaultStartFormula))
             {
-               macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, startValue,
+               macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, pathAndValueEntity,
                   moleculeBuilder.DefaultStartFormula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(moleculeBuilder.DefaultStartFormula, buildingBlock.FormulaCache)));
             }
          });
@@ -205,7 +205,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      public IMoBiCommand UpdateStartValueScaleDivisor(InitialConditionsBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor)
+      public IMoBiCommand UpdateInitialConditionScaleDivisor(InitialConditionsBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor)
       {
          return new UpdateInitialConditionScaleDivisorCommand(buildingBlock, initialCondition, newScaleDivisor, oldScaleDivisor).Run(Context);
       }
@@ -220,16 +220,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return Context.Get<MoleculeBuildingBlock>(buildingBlock.MoleculeBuildingBlockId) ?? Context.Create<MoleculeBuildingBlock>(buildingBlock.MoleculeBuildingBlockId);
       }
 
-      public override bool IsEquivalentToOriginal(InitialCondition startValue, InitialConditionsBuildingBlock buildingBlock)
+      public override bool IsEquivalentToOriginal(InitialCondition pathAndValueEntity, InitialConditionsBuildingBlock buildingBlock)
       {
-         var moleculeBuilder = _moleculeResolver.Resolve(startValue.ContainerPath, startValue.MoleculeName, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock));
+         var moleculeBuilder = _moleculeResolver.Resolve(pathAndValueEntity.ContainerPath, pathAndValueEntity.MoleculeName, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock));
 
          if (moleculeBuilder == null)
             return false;
 
-         return HasEquivalentDimension(startValue, moleculeBuilder) &&
-                HasEquivalentFormula(startValue, moleculeBuilder.DefaultStartFormula) &&
-                HasEquivalentStartValue(startValue, moleculeBuilder.GetDefaultInitialCondition());
+         return HasEquivalentDimension(pathAndValueEntity, moleculeBuilder) &&
+                HasEquivalentFormula(pathAndValueEntity, moleculeBuilder.DefaultStartFormula) &&
+                HasEquivalentPathAndValueEntity(pathAndValueEntity, moleculeBuilder.GetDefaultInitialCondition());
       }
 
       public override IDimension GetDefaultDimension()
@@ -237,27 +237,27 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _dimensionRetriever.MoleculeDimension;
       }
 
-      public override bool CanResolve(InitialConditionsBuildingBlock buildingBlock, InitialCondition startValue)
+      public override bool CanResolve(InitialConditionsBuildingBlock buildingBlock, InitialCondition pathAndValueEntity)
       {
-         return _moleculeResolver.Resolve(startValue.ContainerPath, startValue.MoleculeName, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock)) != null;
+         return _moleculeResolver.Resolve(pathAndValueEntity.ContainerPath, pathAndValueEntity.MoleculeName, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock)) != null;
       }
 
-      protected override IMoBiCommand GetUpdateStartValueInBuildingBlockCommand(InitialConditionsBuildingBlock startValuesBuildingBlock, ImportedQuantityDTO dto)
+      protected override IMoBiCommand GetUpdatePathAndValueEntityInBuildingBlockCommand(InitialConditionsBuildingBlock buildingBlock, ImportedQuantityDTO dto)
       {
-         var scaleDisivor = dto.IsScaleDivisorSpecified ? dto.ScaleDivisor : startValuesBuildingBlock[dto.Path].ScaleDivisor;
-         var startValue = dto.IsQuantitySpecified ? dto.QuantityInBaseUnit : startValuesBuildingBlock[dto.Path].Value;
+         var scaleDivisor = dto.IsScaleDivisorSpecified ? dto.ScaleDivisor : buildingBlock[dto.Path].ScaleDivisor;
+         var pathAndValueEntity = dto.IsQuantitySpecified ? dto.QuantityInBaseUnit : buildingBlock[dto.Path].Value;
 
-         return new UpdateInitialConditionInBuildingBlockCommand(startValuesBuildingBlock, dto.Path, startValue, dto.IsPresent, scaleDisivor, dto.NegativeValuesAllowed);
+         return new UpdateInitialConditionInBuildingBlockCommand(buildingBlock, dto.Path, pathAndValueEntity, dto.IsPresent, scaleDivisor, dto.NegativeValuesAllowed);
       }
 
-      protected override IMoBiCommand GenerateAddCommand(InitialConditionsBuildingBlock targetBuildingBlock, InitialCondition startValueToAdd)
+      protected override IMoBiCommand GenerateAddCommand(InitialConditionsBuildingBlock targetBuildingBlock, InitialCondition initialCondition)
       {
-         return new AddInitialConditionToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
+         return new AddInitialConditionToBuildingBlockCommand(targetBuildingBlock, initialCondition);
       }
 
-      protected override IMoBiCommand GenerateRemoveCommand(InitialConditionsBuildingBlock targetBuildingBlock, InitialCondition startValueToRemove)
+      protected override IMoBiCommand GenerateRemoveCommand(InitialConditionsBuildingBlock targetBuildingBlock, InitialCondition initialCondition)
       {
-         return new RemoveInitialConditionFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);
+         return new RemoveInitialConditionFromBuildingBlockCommand(targetBuildingBlock, initialCondition.Path);
       }
 
       protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(InitialConditionsBuildingBlock buildingBlockToClone)

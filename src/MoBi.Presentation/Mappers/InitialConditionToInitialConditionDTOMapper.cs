@@ -4,12 +4,12 @@ using OSPSuite.Core.Domain.Builder;
 namespace MoBi.Presentation.Mappers
 {
 
-   public interface IStartValueToStartValueDTOMapper<TStartValue, out TStartValueDTO> where TStartValue : PathAndValueEntity
+   public interface IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, out TPathAndValueEntityDTO> where TPathAndValueEntity : PathAndValueEntity
    {
-      TStartValueDTO MapFrom(TStartValue startValue, PathAndValueEntityBuildingBlock<TStartValue> buildingBlock);
+      TPathAndValueEntityDTO MapFrom(TPathAndValueEntity pathAndValueEntity, PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock);
    }
 
-   public interface IInitialConditionToInitialConditionDTOMapper : IStartValueToStartValueDTOMapper<InitialCondition, InitialConditionDTO>
+   public interface IInitialConditionToInitialConditionDTOMapper : IPathAndValueEntityToPathAndValueEntityDTOMapper<InitialCondition, InitialConditionDTO>
    {
       
    }

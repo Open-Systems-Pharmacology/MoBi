@@ -9,7 +9,7 @@ using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation.Tasks
 {
-   public interface IExtendStartValuesManager<T> where T : PathAndValueEntity
+   public interface IExtendPathAndValuesManager<T> where T : PathAndValueEntity
    {
       /// <summary>
       ///    Manages the conflict of the two caches
@@ -40,7 +40,7 @@ namespace MoBi.Presentation.Tasks
       Action CancelAction { set; }
    }
    
-   public abstract class ExtendStartValuesManager<T> : AbstractMergeManager<T>, IExtendStartValuesManager<T> where T : PathAndValueEntity
+   public abstract class ExtendPathAndValuesManager<T> : AbstractMergeManager<T>, IExtendPathAndValuesManager<T> where T : PathAndValueEntity
    {
       public Action<T> RemoveAction
       {
@@ -57,14 +57,14 @@ namespace MoBi.Presentation.Tasks
          set => _cancelAction = value;
       }
 
-      protected ExtendStartValuesManager(IApplicationController applicationController, INameCorrector nameCorrector, IMapper<T, ObjectBaseSummaryDTO> dtoMapper,
+      protected ExtendPathAndValuesManager(IApplicationController applicationController, INameCorrector nameCorrector, IMapper<T, ObjectBaseSummaryDTO> dtoMapper,
          IMoBiContext context)
          : base(applicationController, nameCorrector, dtoMapper, context)
       {
 
       }
 
-      protected ExtendStartValuesManager(IApplicationController applicationController, IMapper<T, ObjectBaseSummaryDTO> dtoMapper, IMoBiContext context)
+      protected ExtendPathAndValuesManager(IApplicationController applicationController, IMapper<T, ObjectBaseSummaryDTO> dtoMapper, IMoBiContext context)
          : base(applicationController, null, dtoMapper, context)
       {
       }

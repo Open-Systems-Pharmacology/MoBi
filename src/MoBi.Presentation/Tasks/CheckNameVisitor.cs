@@ -432,28 +432,28 @@ namespace MoBi.Presentation.Tasks
 
       public void Visit(InitialCondition initialCondition)
       {
-         checkStartValue(initialCondition, _msvPathTask);
+         checkPathAndValueEntity(initialCondition, _msvPathTask);
       }
 
       public void Visit(ParameterValue parameterValue)
       {
-         checkStartValue(parameterValue, _parameterValuePathTask);
+         checkPathAndValueEntity(parameterValue, _parameterValuePathTask);
       }
 
-      private void checkStartValue<TStartValue, TBuildingBlock>(TStartValue startValue, IStartValuePathTask<TBuildingBlock, TStartValue> startValueTask)
-         where TStartValue : PathAndValueEntity
-         where TBuildingBlock : PathAndValueEntityBuildingBlock<TStartValue>
+      private void checkPathAndValueEntity<TPathAndValueEntity, TBuildingBlock>(TPathAndValueEntity pathAndValueEntity, IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> startValueTask)
+         where TPathAndValueEntity : PathAndValueEntity
+         where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>
       {
-         if (Equals(_objectToRename, startValue)) return;
+         if (Equals(_objectToRename, pathAndValueEntity)) return;
 
-         var startValues = _buildingBlock as TBuildingBlock;
-         if (string.Equals(startValue.Name, _oldName))
-            _changes.Add(startValue, _buildingBlock, startValueTask.UpdateStartValueNameCommand(startValues, startValue, _newName));
+         var entities = _buildingBlock as TBuildingBlock;
+         if (string.Equals(pathAndValueEntity.Name, _oldName))
+            _changes.Add(pathAndValueEntity, _buildingBlock, startValueTask.UpdateNameCommand(entities, pathAndValueEntity, _newName));
 
-         for (int i = 0; i < startValue.ContainerPath.Count; i++)
+         for (int i = 0; i < pathAndValueEntity.ContainerPath.Count; i++)
          {
-            if (string.Equals(startValue.ContainerPath[i], _oldName))
-               _changes.Add(startValue, _buildingBlock, startValueTask.UpdateStartValueContainerPathCommand(startValues, startValue, i, _newName));
+            if (string.Equals(pathAndValueEntity.ContainerPath[i], _oldName))
+               _changes.Add(pathAndValueEntity, _buildingBlock, startValueTask.UpdateContainerPathCommand(entities, pathAndValueEntity, i, _newName));
          }
       }
 

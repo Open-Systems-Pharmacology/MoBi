@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -35,7 +36,7 @@ namespace MoBi.Presentation.Presenter
       void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed);
    }
 
-   public class InitialConditionsPresenter : StartValuePresenter<
+   public class InitialConditionsPresenter : PathAndValueBuildingBlockPresenter<
          IInitialConditionsView,
          IInitialConditionsPresenter,
          InitialConditionsBuildingBlock,
@@ -67,15 +68,20 @@ namespace MoBi.Presentation.Presenter
          _view.AddNegativeValuesAllowedSelectionView(negativeStartValuesAllowedSelectionPresenter.BaseView);
       }
 
+      protected override string RemoveCommandDescription()
+      {
+         return AppConstants.Commands.RemoveMultipleInitialConditions;
+      }
+
       public override void AddNewFormula(InitialConditionDTO initialConditionDTO)
       {
-         var startValue = StartValueFrom(initialConditionDTO);
-         AddNewFormula(initialConditionDTO, startValue);
+         var pathAndValueEntity = StartValueFrom(initialConditionDTO);
+         AddNewFormula(initialConditionDTO, pathAndValueEntity);
       }
 
       public void SetScaleDivisor(InitialConditionDTO dto, double newScaleDivisor)
       {
-         AddCommand(() => _initialConditionsTask.UpdateStartValueScaleDivisor(_buildingBlock, dto.InitialCondition, newScaleDivisor, dto.InitialCondition.ScaleDivisor));
+         AddCommand(() => _initialConditionsTask.UpdateInitialConditionScaleDivisor(_buildingBlock, dto.InitialCondition, newScaleDivisor, dto.InitialCondition.ScaleDivisor));
       }
 
       public void SetIsPresent(InitialConditionDTO dto, bool isPresent)

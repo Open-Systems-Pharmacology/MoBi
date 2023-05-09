@@ -8,39 +8,39 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveStartValueFromBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
+   public class RemovePathAndValueEntityFromBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
    {
-      private readonly T _originalStartValue;
+      private readonly T _originalEntity;
 
-      public RemoveStartValueFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<T> parent, ObjectPath path) : base(parent)
+      public RemovePathAndValueEntityFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<T> parent, ObjectPath path) : base(parent)
       {
          CommandType = AppConstants.Commands.DeleteCommand;
 
          ObjectType = new ObjectTypeResolver().TypeFor<T>();
-         _originalStartValue = _buildingBlock[path];
-         Description = AppConstants.Commands.RemoveStartValue(_originalStartValue, parent.Name);
+         _originalEntity = _buildingBlock[path];
+         Description = AppConstants.Commands.RemovePathAndValueEntity(_originalEntity, parent.Name);
       }
 
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
 
-         if (_originalStartValue == null) return;
+         if (_originalEntity == null) return;
 
-         _buildingBlock.Remove(_originalStartValue);
-         context.PublishEvent(new StartValuesBuildingBlockChangedEvent(_buildingBlock));
+         _buildingBlock.Remove(_originalEntity);
+         context.PublishEvent(new PathAndValueEntitiesBuildingBlockChangedEvent(_buildingBlock));
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new AddStartValueToBuildingBlockCommand<T>(_buildingBlock, _originalStartValue)
+         return new AddPathAndValueEntityToBuildingBlockCommand<T>(_buildingBlock, _originalEntity)
          {
             Visible = Visible
          }.AsInverseFor(this);
       }
    }
 
-   public class RemoveInitialConditionFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<InitialCondition>
+   public class RemoveInitialConditionFromBuildingBlockCommand : RemovePathAndValueEntityFromBuildingBlockCommand<InitialCondition>
    {
       public RemoveInitialConditionFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<InitialCondition> parent, ObjectPath path)
          : base(parent, path)
@@ -48,7 +48,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveParameterValueFromBuildingBlockCommand : RemoveStartValueFromBuildingBlockCommand<ParameterValue>
+   public class RemoveParameterValueFromBuildingBlockCommand : RemovePathAndValueEntityFromBuildingBlockCommand<ParameterValue>
    {
       public RemoveParameterValueFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<ParameterValue> parent, ObjectPath path) : base(parent, path)
       {

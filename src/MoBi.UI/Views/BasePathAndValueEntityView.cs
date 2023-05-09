@@ -29,41 +29,41 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.UI.Views
 {
-   public abstract partial class BaseStartValuesView<TStartValue, T> : BaseUserControl, IStartValuesView<TStartValue> where TStartValue : BreadCrumbsDTO<T>, IStartValueDTO where T : IValidatable, INotifier
+   public abstract partial class BasePathAndValueEntityView<TPathAndValueEntity, T> : BaseUserControl, IPathAndValueEntitiesView<TPathAndValueEntity> where TPathAndValueEntity : BreadCrumbsDTO<T>, IPathAndValueEntityDTO where T : IValidatable, INotifier
    {
-      private readonly ValueOriginBinder<TStartValue> _valueOriginBinder;
-      protected readonly GridViewBinder<TStartValue> _gridViewBinder;
+      private readonly ValueOriginBinder<TPathAndValueEntity> _valueOriginBinder;
+      protected readonly GridViewBinder<TPathAndValueEntity> _gridViewBinder;
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
-      protected IStartValuesPresenter<TStartValue> _presenter;
+      protected IStartValuesPresenter<TPathAndValueEntity> _presenter;
 
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private readonly IList<string> _pathValues;
       private readonly RepositoryItemComboBox _pathRepositoryItemComboBox;
 
-      private readonly ScreenBinder<IStartValuesPresenter<TStartValue>> _screenBinder;
-      private IGridViewColumn<TStartValue> _deleteColumn;
+      private readonly ScreenBinder<IStartValuesPresenter<TPathAndValueEntity>> _screenBinder;
+      private IGridViewColumn<TPathAndValueEntity> _deleteColumn;
       public bool CanCreateNewFormula { get; set; }
 
-      protected BaseStartValuesView(ValueOriginBinder<TStartValue> valueOriginBinder)
+      protected BasePathAndValueEntityView(ValueOriginBinder<TPathAndValueEntity> valueOriginBinder)
       {
          _valueOriginBinder = valueOriginBinder;
          InitializeComponent();
          configureGridView();
-         _gridViewBinder = new GridViewBinder<TStartValue>(gridView);
+         _gridViewBinder = new GridViewBinder<TPathAndValueEntity>(gridView);
          _pathValues = new List<string>();
 
          _pathRepositoryItemComboBox = new RepositoryItemComboBox {TextEditStyle = TextEditStyles.Standard};
          _pathRepositoryItemComboBox.SelectedValueChanged += (o, e) => gridView.PostEditor();
 
-         checkFilterModified.Text = AppConstants.Captions.ShowOnlyChangedStartValues;
+         checkFilterModified.Text = AppConstants.Captions.ShowOnlyChangedValues;
          checkFilterModified.CheckStateChanged += (o, e) => OnEvent(filterChanged);
 
-         checkFilterNew.Text = AppConstants.Captions.ShowOnlyNewStartValues;
+         checkFilterNew.Text = AppConstants.Captions.ShowOnlyNewValues;
          checkFilterNew.CheckStateChanged += (o, e) => OnEvent(filterChanged);
 
          gridView.CustomRowFilter += gridViewOnCustomRowFilter;
 
-         _screenBinder = new ScreenBinder<IStartValuesPresenter<TStartValue>>();
+         _screenBinder = new ScreenBinder<IStartValuesPresenter<TPathAndValueEntity>>();
       }
 
       public void HideIsPresentView()
@@ -78,11 +78,11 @@ namespace MoBi.UI.Views
 
       private void gridViewOnCustomRowFilter(object sender, RowFilterEventArgs e)
       {
-         var startValue = _gridViewBinder.SourceElementAt(e.ListSourceRow);
-         if (startValue == null)
+         var pathAndValueEntity = _gridViewBinder.SourceElementAt(e.ListSourceRow);
+         if (pathAndValueEntity == null)
             return;
 
-         e.Visible = _presenter.ShouldShow(startValue);
+         e.Visible = _presenter.ShouldShow(pathAndValueEntity);
 
          if (!e.Visible)
             e.Handled = true;
@@ -93,12 +93,12 @@ namespace MoBi.UI.Views
          gridView.RefreshData();
       }
 
-      public IReadOnlyList<TStartValue> SelectedStartValues
+      public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {
          get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
       }
 
-      public IReadOnlyList<TStartValue> VisibleStartValues => gridView.DataController.GetAllFilteredAndSortedRows().Cast<TStartValue>().ToList();
+      public IReadOnlyList<TPathAndValueEntity> VisibleStartValues => gridView.DataController.GetAllFilteredAndSortedRows().Cast<TPathAndValueEntity>().ToList();
 
       public void AddDeleteStartValuesView(IView view)
       {
@@ -141,7 +141,7 @@ namespace MoBi.UI.Views
          gridView.RefreshData();
       }
 
-      public TStartValue FocusedStartValue
+      public TPathAndValueEntity FocusedStartValue
       {
          get => _gridViewBinder.FocusedElement;
          set
@@ -197,7 +197,7 @@ namespace MoBi.UI.Views
          _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));
       }
 
-      private void removeStartValue(TStartValue elementToRemove)
+      private void removeStartValue(TPathAndValueEntity elementToRemove)
       {
          _presenter.RemoveStartValue(elementToRemove);
       }
@@ -206,16 +206,16 @@ namespace MoBi.UI.Views
 
       public GridView GridView => gridView;
 
-      public GridViewBinder<TStartValue> Binder => _gridViewBinder;
+      public GridViewBinder<TPathAndValueEntity> Binder => _gridViewBinder;
 
-      public void OnPathElementSet(TStartValue startValue, PropertyValueSetEventArgs<string> eventArgs, int index)
+      public void OnPathElementSet(TPathAndValueEntity pathAndValueEntity, PropertyValueSetEventArgs<string> eventArgs, int index)
       {
          if (index == AppConstants.NotFoundIndex)
             return;
-         _presenter.UpdateStartValueContainerPath(startValue, index, eventArgs.NewValue);
+         _presenter.UpdateStartValueContainerPath(pathAndValueEntity, index, eventArgs.NewValue);
       }
 
-      private void initPathElementColumn(Expression<Func<TStartValue, string>> expression, string caption)
+      private void initPathElementColumn(Expression<Func<TPathAndValueEntity, string>> expression, string caption)
       {
          var index = _pathElementsColumns.Count;
 
@@ -226,7 +226,7 @@ namespace MoBi.UI.Views
                .WithOnValueUpdating((o, e) => OnEvent(() => OnPathElementSet(o, e, index))));
       }
 
-      public void BindTo(IEnumerable<TStartValue> startValues)
+      public void BindTo(IEnumerable<TPathAndValueEntity> startValues)
       {
          _gridViewBinder.BindToSource(startValues);
       }
@@ -259,7 +259,7 @@ namespace MoBi.UI.Views
          }
       }
 
-      protected void OnNameSet(TStartValue startValueDTO, PropertyValueSetEventArgs<string> eventArgs)
+      protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs)
       {
          _presenter.UpdateStartValueName(startValueDTO, eventArgs.NewValue);
       }
@@ -275,9 +275,9 @@ namespace MoBi.UI.Views
 
       private void updateRowStyle(object sender, RowStyleEventArgs e)
       {
-         var startValue = _gridViewBinder.ElementAt(e.RowHandle);
-         if (startValue == null) return;
-         var color = _presenter.BackgroundColorFor(startValue);
+         var pathAndValueEntity = _gridViewBinder.ElementAt(e.RowHandle);
+         if (pathAndValueEntity == null) return;
+         var color = _presenter.BackgroundColorFor(pathAndValueEntity);
          if (!_presenter.IsColorDefault(color))
             gridView.AdjustAppearance(e, color);
       }

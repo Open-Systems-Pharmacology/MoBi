@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Tasks
             _parameterValuesCreator,
             _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), _parameterResolver, A.Fake<IParameterValueBuildingBlockExtendManager>(),
-            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context));
+            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValueStartValuePathTask(A.Fake<IFormulaTask>(), _context.Context));
       }
    }
 
@@ -209,7 +209,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _result = sut.ImportStartValuesToBuildingBlock(_parameterValueBuildingBlock, _parameterValue);
+         _result = sut.ImportPathAndValueEntitiesToBuildingBlock(_parameterValueBuildingBlock, _parameterValue);
       }
 
       [Observation]
@@ -249,7 +249,7 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B"), Name = "C"};
          _parameterValueBuildingBlock.Add(_startValue);
-         sut.EditStartValueContainerPath(_parameterValueBuildingBlock, _startValue, 0, "");
+         sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 0, "");
       }
 
       [Observation]
@@ -267,7 +267,7 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B")};
          _parameterValueBuildingBlock.Add(_startValue);
-         sut.EditStartValueContainerPath(_parameterValueBuildingBlock, _startValue, 2, "C");
+         sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 2, "C");
       }
 
       [Observation]
@@ -285,7 +285,7 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B"), Name = "D"};
          _parameterValueBuildingBlock.Add(_startValue);
-         sut.EditStartValueContainerPath(_parameterValueBuildingBlock, _startValue, 0, "C");
+         sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 0, "C");
       }
 
       [Observation]
@@ -303,7 +303,7 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B")};
          _parameterValueBuildingBlock.Add(_startValue);
-         sut.EditStartValueContainerPath(_parameterValueBuildingBlock, _startValue, 5, "C");
+         sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 5, "C");
       }
 
       [Observation]

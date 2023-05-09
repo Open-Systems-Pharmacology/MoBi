@@ -90,7 +90,7 @@ namespace MoBi.Presentation
       [Observation]
       public void results_in_imported_values_returned()
       {
-         A.CallTo(() => _startValuesTask.ImportStartValuesToBuildingBlock(_buildingBlock, _quantityImporterDTO.QuantityDTOs)).MustHaveHappened();
+         A.CallTo(() => _startValuesTask.ImportPathAndValueEntitiesToBuildingBlock(_buildingBlock, _quantityImporterDTO.QuantityDTOs)).MustHaveHappened();
       }
 
       [Observation]

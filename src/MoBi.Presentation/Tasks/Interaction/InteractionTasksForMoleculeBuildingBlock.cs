@@ -66,7 +66,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          var project = Context.CurrentProject;
          
-         var referringStartValuesBuildingBlocks = project.ReferringStartValuesBuildingBlocks(buildingBlockToRemove);
+         var referringStartValuesBuildingBlocks = project.ReferringStartValueBuildingBlocks(buildingBlockToRemove);
          if (referringStartValuesBuildingBlocks.Any())
          {
             throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));

@@ -37,7 +37,7 @@ namespace MoBi.Presentation.DTO
       {
       }
 
-      public override void UpdateStartValueName(string newName)
+      public override void UpdateName(string newName)
       {
          InitialCondition.Name = newName;
       }

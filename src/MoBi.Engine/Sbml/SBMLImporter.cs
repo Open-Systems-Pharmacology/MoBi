@@ -91,7 +91,7 @@ namespace MoBi.Engine.Sbml
       {
          return
             _sbmlModule.ParameterValuesCollection.FirstOrDefault(
-               mb => mb.Id == SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
+               mb => mb.Id == SBMLConstants.SBML_PARAMETER_VALUES_BB);
       }
 
       /// <summary>
@@ -101,7 +101,7 @@ namespace MoBi.Engine.Sbml
       {
          return
             _sbmlModule.InitialConditionsCollection.FirstOrDefault(
-               mb => mb.Id == SBMLConstants.SBML_MOLECULESTARTVALUES_BB);
+               mb => mb.Id == SBMLConstants.SBML_INITIAL_CONDITIONS_BB);
       }
 
       /// <summary>

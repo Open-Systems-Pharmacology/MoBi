@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditInitialConditionsPresenter : ISingleStartPresenter<InitialConditionsBuildingBlock>, IListener<EntitySelectedEvent>
    {
-      void ExtendStartValues();
+      void ExtendInitialConditions();
       void AddNewEmptyInitialCondition();
    }
 
@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
       }
 
-      public void ExtendStartValues()
+      public void ExtendInitialConditions()
       {
          _initialConditionsPresenter.ExtendStartValues();
       }
