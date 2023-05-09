@@ -18,7 +18,7 @@ namespace MoBi.Core.Commands
 
          ObjectType = new ObjectTypeResolver().TypeFor<T>();
          _originalEntity = _buildingBlock[path];
-         Description = AppConstants.Commands.RemovePathAndValueEntity(_originalEntity, parent.Name);
+         Description = AppConstants.Commands.RemovePathAndValueEntity(_originalEntity, parent.Name, ObjectType);
       }
 
       protected override void ExecuteWith(IMoBiContext context)

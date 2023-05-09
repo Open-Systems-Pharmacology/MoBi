@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Tasks
          _moleculeResolver = A.Fake<IMoleculeResolver>();
 
          sut = new InitialConditionsTask(_context, _editTask, _initialConditionsCreator,
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, _reactionDimensionRetriever, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new InitialConditionStartValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver);
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, _reactionDimensionRetriever, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver);
       }
    }
 

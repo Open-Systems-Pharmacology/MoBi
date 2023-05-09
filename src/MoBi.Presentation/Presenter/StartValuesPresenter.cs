@@ -45,6 +45,7 @@ namespace MoBi.Presentation.Presenter
       public Func<TStartValueDTO, Color> BackgroundColorRetriever { get; set; }
       public Func<TStartValueDTO, bool> IsOriginalStartValue { get; set; }
       private readonly List<TPathAndValueEntity> _originalStartValues;
+      private readonly string _objectType;
 
       public bool IsLatched { get; set; }
 
@@ -61,6 +62,7 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory)
          : base(view, startValuesTask, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
+         _objectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
          _startValuesTask = startValuesTask;
          _valueMapper = valueMapper;
          BackgroundColorRetriever = retrieveBackgroundColor;
@@ -86,7 +88,7 @@ namespace MoBi.Presentation.Presenter
       {
          _legendPresenter.AddLegendItems(new[]
          {
-            new LegendItemDTO { Description = AppConstants.Captions.CouldNotResolveSource, Color = MoBiColors.CannotResolve },
+            new LegendItemDTO { Description = AppConstants.Captions.CouldNotResolveSource(_objectType), Color = MoBiColors.CannotResolve },
             new LegendItemDTO { Description = AppConstants.Captions.ValueIsModified, Color = MoBiColors.Modified },
             new LegendItemDTO { Description = AppConstants.Captions.NewlyAddedValues, Color = MoBiColors.Extended }
          });
@@ -205,7 +207,7 @@ namespace MoBi.Presentation.Presenter
          startValuesToRemove.Each(value => collectRemoveCommands(value, macroCommand));
 
          macroCommand.CommandType = AppConstants.Commands.DeleteCommand;
-         macroCommand.ObjectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
+         macroCommand.ObjectType = _objectType;
          macroCommand.Description = RemoveCommandDescription();
 
          AddCommand(macroCommand.Run(_context));

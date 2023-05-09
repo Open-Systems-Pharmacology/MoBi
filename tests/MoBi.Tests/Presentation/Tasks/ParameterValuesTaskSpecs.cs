@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Tasks
             _parameterValuesCreator,
             _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), _parameterResolver, A.Fake<IParameterValueBuildingBlockExtendManager>(),
-            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValueStartValuePathTask(A.Fake<IFormulaTask>(), _context.Context));
+            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context));
       }
    }
 

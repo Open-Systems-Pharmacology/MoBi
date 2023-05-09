@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -129,7 +130,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected T BuildingBlockById<T>(string buildingBlockId) where T : class, IBuildingBlock
       {
          if (!Context.ObjectRepository.ContainsObjectWithId(buildingBlockId))
-            throw new MoBiException(AppConstants.Exceptions.SourceBuildingBlockNotInProject);
+            throw new MoBiException(AppConstants.Exceptions.SourceBuildingBlockNotInProject(new ObjectTypeResolver().TypeFor<T>()));
 
          return Context.Get<T>(buildingBlockId);
       }

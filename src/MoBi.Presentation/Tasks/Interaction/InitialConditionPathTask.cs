@@ -11,9 +11,9 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
    }
 
-   public class InitialConditionStartValuePathTask : AbstractStartValuePathTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionPathTask
+   public class InitialConditionPathTask : AbstractStartValuePathTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionPathTask
    {
-      public InitialConditionStartValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
+      public InitialConditionPathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
       {
       }
 

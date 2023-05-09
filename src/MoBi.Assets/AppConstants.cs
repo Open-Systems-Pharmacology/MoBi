@@ -229,7 +229,7 @@ namespace MoBi.Assets
          public static readonly string RenameCommand = Command.CommandTypeRename;
          public static readonly string SetToDefaultDefaultDescription = "Sets Values to Defaults defined in Molecules and Spatial Structure";
          public static readonly string SetToDefaultDefaultType = "Set To Default";
-         public static readonly string ExtendDescription = "Adding new start values from Molecules and Spatial Structure";
+         public static readonly string ExtendDescription = "Adding new values from Molecules and Spatial Structure";
          public static readonly string AddManyMoleculesDescription = "Add some Molecules to Reaction Diagram";
          public static readonly string MergeCommand = "Merge";
          public static readonly string AddParameterIdentificationResults = "Add parameter identification results to start values collection";
@@ -588,9 +588,9 @@ namespace MoBi.Assets
             return $"Updated initial condition at path: {path} with value: {value} {displayUnit},  present: {present},  scale divisor: {scaleFactor}, neg. values allowed: {negativeValuesAllowed}";
          }
 
-         public static string AddedPathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName)
+         public static string AddedPathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName, string entityType)
          {
-            return $"Added a Start Value to building block '{buildingBlockName}' at path: {pathAndValueEntity.Path}, with value: {pathAndValueEntity.Value} {pathAndValueEntity.DisplayUnit}";
+            return $"Added a {entityType} to building block '{buildingBlockName}' at path: {pathAndValueEntity.Path}, with value: {pathAndValueEntity.Value} {pathAndValueEntity.DisplayUnit}";
          }
 
          public static string RemoveOutputIntervalFrom(string objectName)
@@ -603,9 +603,9 @@ namespace MoBi.Assets
             return $"Output interval was added to '{objectName}'";
          }
 
-         public static string RemovePathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName)
+         public static string RemovePathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName, string entityType)
          {
-            return string.Format("Removed a Start Value from building block '{3}' at path {0}, with value: {1} {2}", pathAndValueEntity.Path, pathAndValueEntity.ConvertToDisplayUnit(pathAndValueEntity.Value), pathAndValueEntity.DisplayUnit, buildingBlockName);
+            return $"Removed a {entityType} from building block '{buildingBlockName}' at path {pathAndValueEntity.Path}, with value: {pathAndValueEntity.ConvertToDisplayUnit(pathAndValueEntity.Value)} {pathAndValueEntity.DisplayUnit}";
          }
 
          public static string UpdateScaleDivisorValue(string name, double oldScaleDivisor, double newScaleDivisor)
@@ -1153,7 +1153,7 @@ namespace MoBi.Assets
          public static readonly string MergeBuildingBlocksCountError = "Building blocks to merge and target building blocks do not have the same length";
          public static readonly string MissingName = "Name missing";
          public static readonly string DeserializationFailed = "Deserialization failed";
-         public static readonly string SourceBuildingBlockNotInProject = "Building Block used to create start values is not present in project";
+         public static string SourceBuildingBlockNotInProject(string entityType) => $"Building Block used to create {entityType} is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";
          public static readonly string ErrorInFormula = "Error in Formula";
          public static readonly string AppliedMoleculeNotInProject = "Applied Molecule is not in Project";
@@ -1523,7 +1523,7 @@ namespace MoBi.Assets
          public static readonly string Calculate = "Calculate";
          public static readonly string CalculateScaleDivisor = "Calculate Scale Divisor";
          public static readonly string CreatePKSimMoleculeFromTemplate = "Create PK-Sim Molecule From Template";
-         public static readonly string RefreshValues = "Start Values";
+         public static readonly string RefreshValues = "Refresh Values";
          public static readonly string RefreshAll = "Refresh all from source";
          public static readonly string RefreshSelected = "Refresh selected from source";
          public static readonly string SaveUnitsToFile = "Save Units";
@@ -1571,7 +1571,7 @@ namespace MoBi.Assets
          public static readonly string PlotProcessRateParameter = "Plot process rate parameter";
          public static readonly string Source = "Source";
          public static readonly string Target = "Target";
-         public static readonly string CouldNotResolveSource = "Source of start value not defined";
+         public static string CouldNotResolveSource(string sourceType) => $"{sourceType} source not defined";
          public static readonly string CurveName = "Curve Name";
          public static readonly string XDataPath = "X-Path";
          public static readonly string YDataPath = "Y-Path";
@@ -1956,17 +1956,17 @@ namespace MoBi.Assets
 
          public static string ValueNotValidForInsert(string path)
          {
-            return $"The value with path {path} does not contain a start value and an existing start value with the same path cannot be found";
+            return $"The value with path {path} does not contain a value and an existing value with the same path cannot be found";
          }
 
          public static string ValueNotValidForUpdate(string path)
          {
-            return $"The value with path {path} does not contain either a start value or scale divisor. It must contain one for updating the existing start value";
+            return $"The value with path {path} does not contain either a value or scale divisor. It must contain one for updating the existing value";
          }
 
          public static string NameIsAlreadyUsedInThisContainer(string containerPath, string name)
          {
-            return $"A start value with the name '{name}' already exists for the container {containerPath}";
+            return $"A value with the name '{name}' already exists for the container {containerPath}";
          }
       }
 
@@ -2090,15 +2090,15 @@ namespace MoBi.Assets
 
       public static class ProjectUpdateMessages
       {
-         public static string UpdatePSV(string name)
+         public static string UpdateParameterValues(string name)
          {
-            return $"Update Parameter Start Values Building Block: '{name}'. Adding Dimension Information";
+            return $"Update Parameter Values Building Block: '{name}'. Adding Dimension Information";
          }
 
-         public static string UnableToGetDimensionFor(ParameterValue psv, string parentName)
+         public static string UnableToGetDimensionFor(ParameterValue parameterValue, string parentName)
          {
             return
-               $"Unable to get dimension information for Parameter Start Value: '{psv.Path.PathAsString}' in Parameter Start Values Building Block: '{parentName}'. Dimension is set to No Dimension";
+               $"Unable to get dimension information for Parameter Value: '{parameterValue.Path.PathAsString}' in Parameter Values Building Block: '{parentName}'. Dimension is set to No Dimension";
          }
 
          public static string UpdateErrors(string projectName, IEnumerable<string> messages)

@@ -11,10 +11,10 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
    }
 
-   public class ParameterValueStartValuePathTask : AbstractStartValuePathTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuePathTask
+   public class ParameterValuePathTask : AbstractStartValuePathTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuePathTask
    {
 
-      public ParameterValueStartValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
+      public ParameterValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
       {
       }
 
