@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          var referringSimulations = Context.CurrentProject.SimulationsCreatedUsing(buildingBlockToRemove);
          if (referringSimulations.Any())
-            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name,
+            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromModule(buildingBlockToRemove.Name,
                referringSimulations.Select(simulation => simulation.Name)));
 
          return base.Remove(buildingBlockToRemove, parent, buildingBlock, silent);

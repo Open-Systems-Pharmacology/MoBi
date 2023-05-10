@@ -9,18 +9,18 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_AddProjectBuildingBlockCommand : ContextSpecification<AddBuildingBlockToProjectCommand<IBuildingBlock>>
+   public abstract class concern_for_AddIndividualBuildingBlockToProjectCommand : ContextSpecification<AddIndividualBuildingBlockToProjectCommand>
    {
-      protected IBuildingBlock _bb;
+      protected IndividualBuildingBlock _bb;
 
       protected override void Context()
       {
-         _bb = A.Fake<IBuildingBlock>().WithId("ID");
-         sut = new AddBuildingBlockToProjectCommand<IBuildingBlock>(_bb);
+         _bb = new IndividualBuildingBlock().WithId("ID");
+         sut = new AddIndividualBuildingBlockToProjectCommand(_bb);
       }
    }
 
-   internal class When_executing_the_adding_command : concern_for_AddProjectBuildingBlockCommand
+   internal class When_executing_the_adding_command : concern_for_AddIndividualBuildingBlockToProjectCommand
    {
       private IMoBiContext _context;
       private MoBiProject _project;
@@ -55,7 +55,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_RestoreExecutionData_is_called_for_AddCommand : concern_for_AddProjectBuildingBlockCommand
+   public class When_RestoreExecutionData_is_called_for_AddCommand : concern_for_AddIndividualBuildingBlockToProjectCommand
    {
       private IMoBiContext _context;
 
@@ -77,18 +77,18 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public abstract class concern_for_RemoveBuildingBlockCommand : ContextSpecification<RemoveBuildingBlockFromProjectCommand<IBuildingBlock>>
+   public abstract class concern_for_RemoveIndividualBuildingBlockFromProjectCommand : ContextSpecification<RemoveIndividualBuildingBlockFromProjectCommand>
    {
-      protected IBuildingBlock _bb;
+      protected IndividualBuildingBlock _bb;
 
       protected override void Context()
       {
-         _bb = A.Fake<IBuildingBlock>();
-         sut = new RemoveBuildingBlockFromProjectCommand<IBuildingBlock>(_bb);
+         _bb = new IndividualBuildingBlock();
+         sut = new RemoveIndividualBuildingBlockFromProjectCommand(_bb);
       }
    }
 
-   internal class When_executing_the_remove_BuildingBlockCommand_command : concern_for_RemoveBuildingBlockCommand
+   internal class executing_the_remove_individual_building_block_from_project_command : concern_for_RemoveIndividualBuildingBlockFromProjectCommand
    {
       private IMoBiContext _context;
       private MoBiProject _project;
@@ -103,7 +103,7 @@ namespace MoBi.Core.Commands
          A.CallTo(() => _context.PublishEvent(A<RemovedEvent>._))
             .Invokes(x => _event = x.GetArgument<RemovedEvent>(0));
          
-         _project.AddBuildingBlock(_bb);
+         _project.AddIndividualBuildingBlock(_bb);
       }
 
       protected override void Because()
@@ -120,7 +120,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_publish_removed_event()
       {
-         _event.RemovedObjects.ShouldOnlyContain(_bb);
+         _event.RemovedObjects.ShouldOnlyContain(_bb as IObjectBase);
       }
    }
 }

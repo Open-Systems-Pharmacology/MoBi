@@ -54,28 +54,6 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_RestoreExecutionData_is_called_for_AddBuildingBlockToModuleCommand : concern_for_AddProjectBuildingBlockCommand
-   {
-      private IMoBiContext _context;
-
-      protected override void Context()
-      {
-         base.Context();
-         _context = A.Fake<IMoBiContext>();
-      }
-
-      protected override void Because()
-      {
-         sut.RestoreExecutionData(_context);
-      }
-
-      [Observation]
-      public void should_get_building_block_from_context()
-      {
-         A.CallTo(() => _context.Get<IBuildingBlock>(_bb.Id)).MustHaveHappened();
-      }
-   }
-
    public abstract class concern_for_RemoveBuildingBlockFromModuleCommand : ContextSpecification<RemoveBuildingBlockFromModuleCommand<IBuildingBlock>>
    {
       protected IBuildingBlock _bb;

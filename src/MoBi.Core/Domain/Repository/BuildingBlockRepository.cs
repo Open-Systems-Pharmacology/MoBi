@@ -9,7 +9,6 @@ namespace MoBi.Core.Domain.Repository
 {
    public interface IBuildingBlockRepository : IRepository<IBuildingBlock>
    {
-      IEnumerable<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : IBuildingBlock;
    }
 
    public class BuildingBlockRepository : IBuildingBlockRepository
@@ -23,21 +22,7 @@ namespace MoBi.Core.Domain.Repository
 
       public IEnumerable<IBuildingBlock> All()
       {
-         return All<IBuildingBlock>();
-      }
-
-      public IEnumerable<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : IBuildingBlock
-      {
-         var currentProject = _projectRetriever.Current;
-         if (currentProject == null)
-            return new List<TBuildingBlock>();
-
-         return currentProject.AllBuildingBlocks().OfType<TBuildingBlock>().Concat(moduleBuildingBlocks<TBuildingBlock>(currentProject));
-      }
-
-      private static IEnumerable<TBuildingBlock> moduleBuildingBlocks<TBuildingBlock>(MoBiProject currentProject) where TBuildingBlock : IBuildingBlock
-      {
-         return currentProject.Modules.SelectMany(x => x.BuildingBlocks.OfType<TBuildingBlock>());
+         return _projectRetriever.Current.AllBuildingBlocks();
       }
    }
 }

@@ -139,23 +139,27 @@ namespace MoBi.Core
       }
    }
 
-   internal class When_visiting_an_MoleculesStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
+   internal class When_visiting_an_initial_conditions_building_block_with_changed_Name : concern_for_CheckNameVisitor
    {
       private InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
       private InitialCondition _initialCondition;
       private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
       private InitialCondition _initialCondition2;
+      private Module _module;
 
       protected override void Context()
       {
          base.Context();
+         _module = new Module();
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock { Name = _changedName};
          _initialCondition = new InitialCondition();
          _path = new ObjectPath(new[] {"A", "B", _changedName});
          _initialCondition.Path = _path;
          _initialConditionsBuildingBlock.Add(_initialCondition);
-         _project.AddBuildingBlock(_initialConditionsBuildingBlock);
+
+         _module.Add(_initialConditionsBuildingBlock);
+         
          _initialCondition2 = new InitialCondition();
          _path = new ObjectPath(new[] {"A", _changedName, "B"});
          _initialCondition2.Path = _path;
@@ -164,7 +168,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _project, _changedName);
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module, _changedName);
       }
 
       [Observation]
@@ -203,10 +207,12 @@ namespace MoBi.Core
       private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
       private ParameterValue _parameterValue2;
+      private Module _module;
 
       protected override void Context()
       {
          base.Context();
+         _module = new Module();
          _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock
          {
             Name = _changedName
@@ -219,12 +225,12 @@ namespace MoBi.Core
          _path = new ObjectPath(new[] {"A", _changedName, "B"});
          _parameterValue2.Path = _path;
          _parameterValuesBuildingBlock.Add(_parameterValue2);
-         _project.AddBuildingBlock(_parameterValuesBuildingBlock);
+         _module.Add(_parameterValuesBuildingBlock);
       }
 
       protected override void Because()
       {
-         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _project, _changedName);
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module, _changedName);
       }
 
       [Observation]

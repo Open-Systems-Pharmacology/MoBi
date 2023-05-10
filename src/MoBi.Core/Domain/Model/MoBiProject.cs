@@ -127,20 +127,42 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<IBuildingBlock> AllBuildingBlocks()
       {
-         return _buildingBlocks;
+         return InitialConditionBlockCollection
+            .Concat<IBuildingBlock>(ParametersValueBlockCollection)
+            .Concat(moduleBuildingBlocks()).ToList();
       }
 
-      public IBuildingBlock TemplateById(string templateBuildingBlockId)
+      private IEnumerable<IBuildingBlock> moduleBuildingBlocks()
       {
-         return AllBuildingBlocks().FindById(templateBuildingBlockId);
+         return Modules.SelectMany(x => x.BuildingBlocks);
       }
 
-      public void AddBuildingBlock(IBuildingBlock buildingBlock)
+      public void AddIndividualBuildingBlock(IndividualBuildingBlock individualBuildingBlock)
+      {
+         addBuildingBlock(individualBuildingBlock);
+      }
+
+      public void AddExpressionProfileBuildingBlock(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
+      {
+         addBuildingBlock(expressionProfileBuildingBlock);
+      }
+
+      private void addBuildingBlock(IBuildingBlock buildingBlock)
       {
          _buildingBlocks.Add(buildingBlock);
       }
 
-      public void RemoveBuildingBlock(IBuildingBlock buildingBlockToRemove)
+      public void RemoveIndividualBuildingBlock(IndividualBuildingBlock buildingBlockToRemove)
+      {
+         removeBuildingBlock(buildingBlockToRemove);
+      }
+
+      public void RemoveExpressionProfileBuildingBlock(ExpressionProfileBuildingBlock buildingBlockToRemove)
+      {
+         removeBuildingBlock(buildingBlockToRemove);
+      }
+
+      private void removeBuildingBlock(IBuildingBlock buildingBlockToRemove)
       {
          _buildingBlocks.Remove(buildingBlockToRemove);
          RemoveClassifiableForWrappedObject(buildingBlockToRemove);
@@ -154,11 +176,6 @@ namespace MoBi.Core.Domain.Model
          _charts.Each(x => x.AcceptVisitor(visitor));
       }
 
-      public IReadOnlyList<IBuildingBlock> ReferringStartValueBuildingBlocks(IBuildingBlock buildingBlockToRemove)
-      {
-         return referringStartValueBuildingBlocks(buildingBlockToRemove, InitialConditionBlockCollection).ToList();
-      }
-
       public IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(IBuildingBlock templateBuildingBlock)
       {
          return Simulations.Where(simulation => simulation.IsCreatedBy(templateBuildingBlock)).ToList();
@@ -169,12 +186,6 @@ namespace MoBi.Core.Domain.Model
          return All<IObjectBase>().Union(Simulations);
       }
 
-      private IEnumerable<IBuildingBlock> referringStartValueBuildingBlocks(IBuildingBlock buildingBlockToRemove, IReadOnlyList<InitialConditionsBuildingBlock> buildingBlockCollection)
-      {
-         return buildingBlockCollection
-            .Where(bb => bb.Uses(buildingBlockToRemove))
-            .OfType<IBuildingBlock>()
-            .ToList();
-      }
+
    }
 }

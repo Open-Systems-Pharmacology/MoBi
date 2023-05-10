@@ -67,7 +67,6 @@ namespace MoBi.UI.Diagram
    {
       private IMultipleStringSelectionPresenter _multipleStringSelectionPresenter;
       private IEnumerable<string> _possibleMoleculeNames;
-      private IReadOnlyList<MoleculeBuildingBlock> _moleculeBuildingBlocks;
       private MoBiProject _moBiProject;
 
       protected override void Context()
@@ -78,13 +77,10 @@ namespace MoBi.UI.Diagram
 
          A.CallTo(() => _multipleStringSelectionPresenter.Show(A<string>._, A<string>._, A<IEnumerable<string>>._, A<string>._, true)).Invokes(x => _possibleMoleculeNames = x.GetArgument<IEnumerable<string>>(2)).Returns(Enumerable.Empty<string>());
 
-         _moleculeBuildingBlocks = new List<MoleculeBuildingBlock>
-         {
-            new MoleculeBuildingBlock {new MoleculeBuilder {Name = "b"}, new MoleculeBuilder {Name = "a"}},
-            new MoleculeBuildingBlock {new MoleculeBuilder {Name = "a"}, new MoleculeBuilder {Name = "b"}}
-         };
          _moBiProject = new MoBiProject();
-         _moleculeBuildingBlocks.Each(_moBiProject.AddBuildingBlock);
+         _moBiProject.AddModule(new Module { new MoleculeBuildingBlock { new MoleculeBuilder { Name = "b" }, new MoleculeBuilder { Name = "a" } } });
+         _moBiProject.AddModule(new Module { new MoleculeBuildingBlock { new MoleculeBuilder { Name = "a" }, new MoleculeBuilder { Name = "b" } } });
+         
          A.CallTo(() => _moBiContext.CurrentProject).Returns(_moBiProject);
       }
 
@@ -155,7 +151,7 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _objectsToRemove = new List<GoObject> {_moleculeNode as MoleculeNode};
+         _objectsToRemove = new List<GoObject> { _moleculeNode as MoleculeNode };
       }
 
       protected override void Because()
@@ -181,7 +177,7 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _objectsToRemove = new List<GoObject> {_reactionNode, _moleculeNode as MoleculeNode};
+         _objectsToRemove = new List<GoObject> { _reactionNode, _moleculeNode as MoleculeNode };
       }
 
       protected override void Because()

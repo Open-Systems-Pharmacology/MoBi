@@ -103,8 +103,6 @@ namespace MoBi.Presentation
          //selection presenter
          container.Register<ISelectionPresenter<XElement>, SelectXmlElementPresenter>();
          container.Register(typeof(IDescriptorConditionListPresenter<>), typeof(DescriptorConditionListPresenter<>));
-         container.Register(typeof(IBuildingBlockMergePresenter<>), typeof(BuildingBlockMergePresenter<>));
-         container.Register(typeof(ICreateBuildingBlockMergePresenter<>), typeof(CreateBuildingBlockMergePresenter<>));
          container.Register<ISelectManyPresenter<XElement>, SelectXmlElementPresenter>();
          container.Register<ISelectManyPresenter<OSPSuite.Core.Domain.IContainer>, SelectObjectBasePresenter<OSPSuite.Core.Domain.IContainer>>();
          container.Register<ISelectManyPresenter<EventGroupBuilder>, SelectObjectBasePresenter<EventGroupBuilder>>();

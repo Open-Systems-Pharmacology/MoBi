@@ -17,5 +17,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<IndividualBuildingBlock> editTask, IMoBiFormulaTask moBiFormulaTask) : base(interactionTaskContext, editTask, moBiFormulaTask)
       {
       }
+
+      public override IMoBiCommand GetRemoveCommand(IndividualBuildingBlock individualBuildingBlockToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
+      {
+         return new RemoveIndividualBuildingBlockFromProjectCommand(individualBuildingBlockToRemove);
+      }
+
+      public override IMoBiCommand GetAddCommand(IndividualBuildingBlock individualBuildingBlockToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
+      {
+         return new AddIndividualBuildingBlockToProjectCommand(individualBuildingBlockToAdd);
+      }
    }
 }

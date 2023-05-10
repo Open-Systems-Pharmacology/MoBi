@@ -71,7 +71,6 @@ namespace MoBi.IntegrationTests
                continue;
             }
 
-            addEmptyBBIfNeeded(project);
             addSettings(project, Path.Combine(directory.FullName, $"{caseName}-settings.txt"));
             var buildConfigurtion = generateBuildConfiguration(project);
             var result = _modelConstructor.CreateModelFrom(buildConfigurtion, caseName);
@@ -126,21 +125,6 @@ namespace MoBi.IntegrationTests
 
          simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
          return simulationConfiguration;
-      }
-
-      private void addEmptyBBIfNeeded(MoBiProject project)
-      {
-         project.AddBuildingBlock(new ObserverBuildingBlock().WithName("Empty"));
-         if (!project.EventBlockCollection.Any())
-            project.AddBuildingBlock(new EventGroupBuildingBlock().WithName("Empty"));
-         if (!project.ReactionBlockCollection.Any())
-            project.AddBuildingBlock(new MoBiReactionBuildingBlock().WithName("Empty"));
-         if (!project.PassiveTransportCollection.Any())
-            project.AddBuildingBlock(new PassiveTransportBuildingBlock().WithName("Empty"));
-         if (!project.InitialConditionBlockCollection.Any())
-            project.AddBuildingBlock(new InitialConditionsBuildingBlock().WithName("Empty"));
-         if (!project.ParametersValueBlockCollection.Any())
-            project.AddBuildingBlock(new ParameterValuesBuildingBlock().WithName("Empty"));
       }
    }
 }

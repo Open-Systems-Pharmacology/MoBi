@@ -22,10 +22,10 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand Remove(MoBiSpatialStructure buildingBlockToRemove, Module module, IBuildingBlock buildingBlock, bool silent)
       {
-         var referringStartValuesBuildingBlocks = Context.CurrentProject.ReferringStartValueBuildingBlocks(buildingBlockToRemove);
+         var referringStartValuesBuildingBlocks = module.ReferringStartValueBuildingBlocks(buildingBlockToRemove);
          if (referringStartValuesBuildingBlocks.Any())
          {
-            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));
+            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromModule(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));
          }
 
          return base.Remove(buildingBlockToRemove, buildingBlockToRemove.Module, buildingBlock, silent);

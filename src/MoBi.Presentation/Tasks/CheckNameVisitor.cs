@@ -115,7 +115,7 @@ namespace MoBi.Presentation.Tasks
       public void Visit(IFormula formula)
       {
          checkObjectBase(formula);
-         // create aliases from name to change them acordingly
+         // create aliases from name to change them accordingly
          var oldAlias = _aliasCreator.CreateAliasFrom(_oldName);
          var newAlias = _aliasCreator.CreateAliasFrom(_newName);
          foreach (var path in formula.ObjectPaths)
@@ -321,7 +321,7 @@ namespace MoBi.Presentation.Tasks
       public void Visit(MoleculeBuilder moleculeBuilder)
       {
          checkObjectBase(moleculeBuilder);
-         // Formula is not checked here, only checked in Chache cause double will cause errors in undo
+         // Formula is not checked here, only checked in cache cause double will cause errors in undo
       }
 
       public void Visit(EventAssignmentBuilder eventAssignmentBuilder)

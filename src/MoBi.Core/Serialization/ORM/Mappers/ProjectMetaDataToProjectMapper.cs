@@ -119,8 +119,11 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          else if (deserializedEntity.IsAnImplementationOf<Module>())
             _project.AddModule(deserializedEntity as Module);
 
-         else if (deserializedEntity.IsAnImplementationOf<IWithId>())
-            _project.AddBuildingBlock(deserializedEntity as IBuildingBlock);
+         else if (deserializedEntity.IsAnImplementationOf<IndividualBuildingBlock>())
+            _project.AddIndividualBuildingBlock(deserializedEntity as IndividualBuildingBlock);
+
+         else if (deserializedEntity.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
+            _project.AddExpressionProfileBuildingBlock(deserializedEntity as ExpressionProfileBuildingBlock);
 
          else
 

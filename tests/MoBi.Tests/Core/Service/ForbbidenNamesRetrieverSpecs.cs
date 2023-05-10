@@ -12,7 +12,7 @@ using MoBi.Helpers;
 
 namespace MoBi.Core.Service
 {
-   public abstract class concern_for_ForbbidenNamesRetrieverSpecs : ContextSpecification<IForbiddenNamesRetriever>
+   public abstract class concern_for_ForbiddenNamesRetrieverSpecs : ContextSpecification<IForbiddenNamesRetriever>
    {
       protected IMoBiContext _context;
 
@@ -23,7 +23,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   class When_retrieving_forbidden_names_for_a_container : concern_for_ForbbidenNamesRetrieverSpecs
+   class When_retrieving_forbidden_names_for_a_container : concern_for_ForbiddenNamesRetrieverSpecs
    {
       private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
@@ -65,7 +65,7 @@ namespace MoBi.Core.Service
 
    }
 
-   class When_retrieving_forbidden_names_for_a_distributed_parameter : concern_for_ForbbidenNamesRetrieverSpecs
+   class When_retrieving_forbidden_names_for_a_distributed_parameter : concern_for_ForbiddenNamesRetrieverSpecs
    {
       private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
@@ -114,7 +114,7 @@ namespace MoBi.Core.Service
 
    }
 
-   class When_retrieving_forbidden_names_for_an_reaction : concern_for_ForbbidenNamesRetrieverSpecs
+   class When_retrieving_forbidden_names_for_an_reaction : concern_for_ForbiddenNamesRetrieverSpecs
    {
       private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
@@ -154,7 +154,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   class When_retrieving_forbidden_names_for_an_molecule : concern_for_ForbbidenNamesRetrieverSpecs
+   class When_retrieving_forbidden_names_for_an_molecule : concern_for_ForbiddenNamesRetrieverSpecs
    {
       private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
@@ -222,7 +222,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   class When_retrieving_forbidden_names_for_an_simulation : concern_for_ForbbidenNamesRetrieverSpecs
+   class When_retrieving_forbidden_names_for_an_simulation : concern_for_ForbiddenNamesRetrieverSpecs
    {
       private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
@@ -291,7 +291,7 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_loog_for_old_simualtion_name()
+      public void should_look_for_old_simulation_name()
       {
          _forbiddenNames.ShouldContain(_simulationName);
       }

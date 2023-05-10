@@ -76,5 +76,15 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          return _editTaskForExpressionProfileBuildingBlock.NewNameFromSuggestions(buildingBlockToClone.MoleculeName, buildingBlockToClone.Species, suggestedCategory, buildingBlockToClone.Type, forbiddenValues);
       }
+
+      public override IMoBiCommand GetRemoveCommand(ExpressionProfileBuildingBlock expressionProfileToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
+      {
+         return new RemoveExpressionProfileBuildingBlockFromProjectCommand(expressionProfileToRemove);
+      }
+
+      public override IMoBiCommand GetAddCommand(ExpressionProfileBuildingBlock expressionProfileToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
+      {
+         return new AddExpressionProfileBuildingBlockToProjectCommand(expressionProfileToAdd);
+      }
    }
 }
