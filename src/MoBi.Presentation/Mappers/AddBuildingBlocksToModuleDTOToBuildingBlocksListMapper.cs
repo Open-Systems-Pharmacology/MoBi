@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 
@@ -41,8 +42,8 @@ namespace MoBi.Presentation.Mappers
             ConditionalCreate(dto.CreatePassiveTransport, () => CreateDefault<PassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock)),
             ConditionalCreate(dto.CreateEventGroup, () => CreateDefault<EventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock)),
             ConditionalCreate(dto.CreateObserver, () => CreateDefault<ObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock)),
-            ConditionalCreate(dto.WithParameterValues, () => CreateDefault<ParameterValuesBuildingBlock>(AppConstants.DefaultNames.ParameterValues)),
-            ConditionalCreate(dto.WithInitialConditions, () => CreateDefault<InitialConditionsBuildingBlock>(AppConstants.DefaultNames.InitialConditions))
+            ConditionalCreate(dto.WithParameterValues, () => CreateDefault<ParameterValuesBuildingBlock>(AppConstants.DefaultNames.ParameterValues).WithName(dto.ParameterValuesName)),
+            ConditionalCreate(dto.WithInitialConditions, () => CreateDefault<InitialConditionsBuildingBlock>(AppConstants.DefaultNames.InitialConditions).WithName(dto.InitialConditionsName))
          };
 
          _newBuildingBlocks = listOfBuildingBlocks.Where(x => x != null).ToList();

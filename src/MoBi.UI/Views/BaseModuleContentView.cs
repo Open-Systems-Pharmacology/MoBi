@@ -1,4 +1,7 @@
-﻿using MoBi.Presentation.DTO;
+﻿using DevExpress.XtraLayout;
+using DevExpress.XtraLayout.Utils;
+using MoBi.Assets;
+using MoBi.Presentation.DTO;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -9,7 +12,7 @@ using static MoBi.Assets.AppConstants.Captions;
 namespace MoBi.UI.Views
 {
    public abstract partial class BaseModuleContentView<TDTO> : BaseModalView
-   where TDTO : ModuleContentDTO
+      where TDTO : ModuleContentDTO
    {
       protected readonly ScreenBinder<TDTO> _screenBinder = new ScreenBinder<TDTO>();
 
@@ -23,9 +26,11 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
+         initialConditionsNameItem.Visibility = LayoutVisibility.Never;
+         parameterValuesNameItem.Visibility = LayoutVisibility.Never;
          ApplicationIcon = ApplicationIcons.Module;
          moduleNameItem.Text = $"{Module} {Captions.Name}".FormatForLabel();
-         
+
          cbSpatialStructure.Text = SpatialStructure;
          cbEventGroup.Text = Event;
          cbReactions.Text = Reactions;
@@ -35,6 +40,18 @@ namespace MoBi.UI.Views
          cbInitialConditions.Text = InitialConditions;
          cbParameterValues.Text = ParameterValues;
          createBuildingBlocksGroup.Text = CreateBuildingBlocks;
+
+         initialConditionsNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
+         parameterValuesNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
+
+         checkChanged(cbInitialConditions.Checked, initialConditionsNameItem);
+         checkChanged(cbParameterValues.Checked, parameterValuesNameItem);
+      }
+
+      protected void ShowStartValueNameControls()
+      {
+         initialConditionsNameItem.Visibility = LayoutVisibility.Always;
+         parameterValuesNameItem.Visibility = LayoutVisibility.Always;
       }
 
       protected override void SetActiveControl()
@@ -52,13 +69,18 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.WithObserver).To(cbObservers);
          _screenBinder.Bind(dto => dto.WithPassiveTransport).To(cbPassiveTransports);
          _screenBinder.Bind(dto => dto.WithReaction).To(cbReactions);
-         _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions);
-         _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues);
+         _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues).OnValueUpdated += (o, e) => OnEvent(() => checkChanged(e, parameterValuesNameItem));
+         _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions).OnValueUpdated += (o, e) => OnEvent(() => checkChanged(e, initialConditionsNameItem));
 
          RegisterValidationFor(_screenBinder);
       }
 
-      public void BindTo(TDTO moduleContentDTO)
+      private void checkChanged(bool enabled, LayoutControlItem layoutControlItem)
+      {
+         layoutControlItem.Enabled = enabled;
+      }
+
+      public virtual void BindTo(TDTO moduleContentDTO)
       {
          _screenBinder.BindToSource(moduleContentDTO);
          disableExistingBuildingBlocks(moduleContentDTO);
@@ -79,6 +101,11 @@ namespace MoBi.UI.Views
       protected void DisableRename()
       {
          tbModuleName.Enabled = false;
+      }
+
+      protected virtual void DisposeBinders()
+      {
+         _screenBinder.Dispose();
       }
    }
 }
