@@ -17,6 +17,8 @@
          {
             components.Dispose();
          }
+
+         DisposeBinders();
          base.Dispose(disposing);
       }
 
@@ -33,7 +35,11 @@
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem9 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.tbInitialConditionsName = new DevExpress.XtraEditors.TextEdit();
+         this.tbParameterValuesName = new DevExpress.XtraEditors.TextEdit();
          this.cbMolecules = new DevExpress.XtraEditors.CheckEdit();
+         this.cbParameterValues = new DevExpress.XtraEditors.CheckEdit();
+         this.cbInitialConditions = new DevExpress.XtraEditors.CheckEdit();
          this.cbEventGroup = new DevExpress.XtraEditors.CheckEdit();
          this.cbObservers = new DevExpress.XtraEditors.CheckEdit();
          this.cbPassiveTransports = new DevExpress.XtraEditors.CheckEdit();
@@ -49,11 +55,11 @@
          this.reactionsItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.observersItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.eventGroupItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.moleculesItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.initialConditionsItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.cbInitialConditions = new DevExpress.XtraEditors.CheckEdit();
          this.parameterValuesItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.cbParameterValues = new DevExpress.XtraEditors.CheckEdit();
+         this.moleculesItem = new DevExpress.XtraLayout.LayoutControlItem();
+         this.parameterValuesNameItem = new DevExpress.XtraLayout.LayoutControlItem();
+         this.initialConditionsNameItem = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.checkEdit1.Properties)).BeginInit();
@@ -62,7 +68,11 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem9)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.tbInitialConditionsName.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbParameterValuesName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbMolecules.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbParameterValues.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbInitialConditions.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbEventGroup.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbObservers.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbPassiveTransports.Properties)).BeginInit();
@@ -78,11 +88,11 @@
          ((System.ComponentModel.ISupportInitialize)(this.reactionsItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.observersItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.eventGroupItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.moleculesItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.initialConditionsItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbInitialConditions.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.parameterValuesItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbParameterValues.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.moleculesItem)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.parameterValuesNameItem)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.initialConditionsNameItem)).BeginInit();
          this.SuspendLayout();
          // 
          // tablePanel
@@ -128,6 +138,8 @@
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.tbInitialConditionsName);
+         this.layoutControl.Controls.Add(this.tbParameterValuesName);
          this.layoutControl.Controls.Add(this.cbMolecules);
          this.layoutControl.Controls.Add(this.cbParameterValues);
          this.layoutControl.Controls.Add(this.cbInitialConditions);
@@ -146,6 +158,22 @@
          this.layoutControl.TabIndex = 39;
          this.layoutControl.Text = "uxLayoutControl1";
          // 
+         // tbInitialConditionsName
+         // 
+         this.tbInitialConditionsName.Location = new System.Drawing.Point(334, 213);
+         this.tbInitialConditionsName.Name = "tbInitialConditionsName";
+         this.tbInitialConditionsName.Size = new System.Drawing.Size(222, 20);
+         this.tbInitialConditionsName.StyleController = this.layoutControl;
+         this.tbInitialConditionsName.TabIndex = 15;
+         // 
+         // tbParameterValuesName
+         // 
+         this.tbParameterValuesName.Location = new System.Drawing.Point(334, 237);
+         this.tbParameterValuesName.Name = "tbParameterValuesName";
+         this.tbParameterValuesName.Size = new System.Drawing.Size(222, 20);
+         this.tbParameterValuesName.StyleController = this.layoutControl;
+         this.tbParameterValuesName.TabIndex = 14;
+         // 
          // cbMolecules
          // 
          this.cbMolecules.Location = new System.Drawing.Point(24, 117);
@@ -154,6 +182,24 @@
          this.cbMolecules.Size = new System.Drawing.Size(532, 20);
          this.cbMolecules.StyleController = this.layoutControl;
          this.cbMolecules.TabIndex = 13;
+         // 
+         // cbParameterValues
+         // 
+         this.cbParameterValues.Location = new System.Drawing.Point(24, 237);
+         this.cbParameterValues.Name = "cbParameterValues";
+         this.cbParameterValues.Properties.Caption = "cbParameterValues";
+         this.cbParameterValues.Size = new System.Drawing.Size(164, 20);
+         this.cbParameterValues.StyleController = this.layoutControl;
+         this.cbParameterValues.TabIndex = 12;
+         // 
+         // cbInitialConditions
+         // 
+         this.cbInitialConditions.Location = new System.Drawing.Point(24, 213);
+         this.cbInitialConditions.Name = "cbInitialConditions";
+         this.cbInitialConditions.Properties.Caption = "cbInitialConditions";
+         this.cbInitialConditions.Size = new System.Drawing.Size(164, 20);
+         this.cbInitialConditions.StyleController = this.layoutControl;
+         this.cbInitialConditions.TabIndex = 11;
          // 
          // cbEventGroup
          // 
@@ -202,9 +248,9 @@
          // 
          // tbModuleName
          // 
-         this.tbModuleName.Location = new System.Drawing.Point(107, 12);
+         this.tbModuleName.Location = new System.Drawing.Point(154, 12);
          this.tbModuleName.Name = "tbModuleName";
-         this.tbModuleName.Size = new System.Drawing.Size(461, 20);
+         this.tbModuleName.Size = new System.Drawing.Size(414, 20);
          this.tbModuleName.StyleController = this.layoutControl;
          this.tbModuleName.TabIndex = 4;
          // 
@@ -234,7 +280,7 @@
          this.moduleNameItem.Location = new System.Drawing.Point(0, 0);
          this.moduleNameItem.Name = "moduleNameItem";
          this.moduleNameItem.Size = new System.Drawing.Size(560, 24);
-         this.moduleNameItem.TextSize = new System.Drawing.Size(83, 13);
+         this.moduleNameItem.TextSize = new System.Drawing.Size(130, 13);
          // 
          // createBuildingBlocksGroup
          // 
@@ -246,7 +292,9 @@
             this.eventGroupItem,
             this.initialConditionsItem,
             this.parameterValuesItem,
-            this.moleculesItem});
+            this.moleculesItem,
+            this.parameterValuesNameItem,
+            this.initialConditionsNameItem});
          this.createBuildingBlocksGroup.Location = new System.Drawing.Point(0, 24);
          this.createBuildingBlocksGroup.Name = "createBuildingBlocksGroup";
          this.createBuildingBlocksGroup.Size = new System.Drawing.Size(560, 237);
@@ -296,6 +344,24 @@
          this.eventGroupItem.TextSize = new System.Drawing.Size(0, 0);
          this.eventGroupItem.TextVisible = false;
          // 
+         // initialConditionsItem
+         // 
+         this.initialConditionsItem.Control = this.cbInitialConditions;
+         this.initialConditionsItem.Location = new System.Drawing.Point(0, 144);
+         this.initialConditionsItem.Name = "initialConditionsItem";
+         this.initialConditionsItem.Size = new System.Drawing.Size(168, 24);
+         this.initialConditionsItem.TextSize = new System.Drawing.Size(0, 0);
+         this.initialConditionsItem.TextVisible = false;
+         // 
+         // parameterValuesItem
+         // 
+         this.parameterValuesItem.Control = this.cbParameterValues;
+         this.parameterValuesItem.Location = new System.Drawing.Point(0, 168);
+         this.parameterValuesItem.Name = "parameterValuesItem";
+         this.parameterValuesItem.Size = new System.Drawing.Size(168, 24);
+         this.parameterValuesItem.TextSize = new System.Drawing.Size(0, 0);
+         this.parameterValuesItem.TextVisible = false;
+         // 
          // moleculesItem
          // 
          this.moleculesItem.Control = this.cbMolecules;
@@ -305,49 +371,31 @@
          this.moleculesItem.TextSize = new System.Drawing.Size(0, 0);
          this.moleculesItem.TextVisible = false;
          // 
-         // initialConditionsItem
+         // parameterValuesNameItem
          // 
-         this.initialConditionsItem.Control = this.cbInitialConditions;
-         this.initialConditionsItem.Location = new System.Drawing.Point(0, 144);
-         this.initialConditionsItem.Name = "initialConditionsItem";
-         this.initialConditionsItem.Size = new System.Drawing.Size(536, 24);
-         this.initialConditionsItem.TextSize = new System.Drawing.Size(0, 0);
-         this.initialConditionsItem.TextVisible = false;
+         this.parameterValuesNameItem.Control = this.tbParameterValuesName;
+         this.parameterValuesNameItem.Location = new System.Drawing.Point(168, 168);
+         this.parameterValuesNameItem.Name = "parameterValuesNameItem";
+         this.parameterValuesNameItem.Size = new System.Drawing.Size(368, 24);
+         this.parameterValuesNameItem.Text = "parameterValuesNameItem";
+         this.parameterValuesNameItem.TextSize = new System.Drawing.Size(130, 13);
          // 
-         // cbInitialConditions
+         // initialConditionsNameItem
          // 
-         this.cbInitialConditions.Location = new System.Drawing.Point(24, 213);
-         this.cbInitialConditions.Name = "cbInitialConditions";
-         this.cbInitialConditions.Properties.Caption = "cbInitialConditions";
-         this.cbInitialConditions.Size = new System.Drawing.Size(532, 20);
-         this.cbInitialConditions.StyleController = this.layoutControl;
-         this.cbInitialConditions.TabIndex = 11;
+         this.initialConditionsNameItem.Control = this.tbInitialConditionsName;
+         this.initialConditionsNameItem.Location = new System.Drawing.Point(168, 144);
+         this.initialConditionsNameItem.Name = "initialConditionsNameItem";
+         this.initialConditionsNameItem.Size = new System.Drawing.Size(368, 24);
+         this.initialConditionsNameItem.Text = "initialConditionsNameItem";
+         this.initialConditionsNameItem.TextSize = new System.Drawing.Size(130, 13);
          // 
-         // parameterValuesItem
-         // 
-         this.parameterValuesItem.Control = this.cbParameterValues;
-         this.parameterValuesItem.Location = new System.Drawing.Point(0, 168);
-         this.parameterValuesItem.Name = "parameterValuesItem";
-         this.parameterValuesItem.Size = new System.Drawing.Size(536, 24);
-         this.parameterValuesItem.TextSize = new System.Drawing.Size(0, 0);
-         this.parameterValuesItem.TextVisible = false;
-         // 
-         // cbParameterValues
-         // 
-         this.cbParameterValues.Location = new System.Drawing.Point(24, 237);
-         this.cbParameterValues.Name = "cbParameterValues";
-         this.cbParameterValues.Properties.Caption = "cbParameterValues";
-         this.cbParameterValues.Size = new System.Drawing.Size(532, 20);
-         this.cbParameterValues.StyleController = this.layoutControl;
-         this.cbParameterValues.TabIndex = 12;
-         // 
-         // CreateModuleView
+         // BaseModuleContentView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(580, 316);
          this.Controls.Add(this.layoutControl);
-         this.Name = "CreateModuleView";
+         this.Name = "BaseModuleContentView";
          this.Controls.SetChildIndex(this.layoutControl, 0);
          this.Controls.SetChildIndex(this.tablePanel, 0);
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
@@ -358,7 +406,11 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem9)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.tbInitialConditionsName.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbParameterValuesName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbMolecules.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbParameterValues.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbInitialConditions.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbEventGroup.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbObservers.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbPassiveTransports.Properties)).EndInit();
@@ -374,11 +426,11 @@
          ((System.ComponentModel.ISupportInitialize)(this.reactionsItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.observersItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.eventGroupItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.moleculesItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.initialConditionsItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbInitialConditions.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.parameterValuesItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbParameterValues.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.moleculesItem)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.parameterValuesNameItem)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.initialConditionsNameItem)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -411,5 +463,9 @@
       private DevExpress.XtraEditors.CheckEdit cbInitialConditions;
       private DevExpress.XtraLayout.LayoutControlItem initialConditionsItem;
       private DevExpress.XtraLayout.LayoutControlItem parameterValuesItem;
+      protected DevExpress.XtraEditors.TextEdit tbInitialConditionsName;
+      protected DevExpress.XtraEditors.TextEdit tbParameterValuesName;
+      private DevExpress.XtraLayout.LayoutControlItem parameterValuesNameItem;
+      protected DevExpress.XtraLayout.LayoutControlItem initialConditionsNameItem;
    }
 }

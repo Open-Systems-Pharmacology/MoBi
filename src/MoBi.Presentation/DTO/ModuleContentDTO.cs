@@ -10,8 +10,8 @@ namespace MoBi.Presentation.DTO
       public bool WithPassiveTransport { get; set; }
       public bool WithMolecule { get; set; }
       public bool WithObserver { get; set; }
-      public bool WithInitialConditions { get; set; }
-      public bool WithParameterValues { get; set; }
+      public virtual bool WithInitialConditions { get; set; }
+      public virtual bool WithParameterValues { get; set; }
 
       public bool CanSelectReaction { get; set; } = true;
       public bool CanSelectEventGroup { get; set; } = true;
