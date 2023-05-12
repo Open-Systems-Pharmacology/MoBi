@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using MoBi.Assets;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -12,8 +10,8 @@ namespace MoBi.Presentation.DTO
 {
    public class AddBuildingBlocksToModuleDTO : ModuleContentDTO
    {
-      private readonly List<string> _parameterValuesNames;
-      private readonly List<string> _initialConditionsNames;
+      private readonly List<string> _existingParameterValuesNames;
+      private readonly List<string> _existingInitialConditionsNames;
 
       public AddBuildingBlocksToModuleDTO(Module module)
       {
@@ -37,8 +35,8 @@ namespace MoBi.Presentation.DTO
          CanSelectObserver = module.Observers == null;
          WithObserver = !CanSelectObserver;
 
-         _parameterValuesNames = new List<string>();
-         _initialConditionsNames = new List<string>();
+         _existingParameterValuesNames = new List<string>();
+         _existingInitialConditionsNames = new List<string>();
 
          Rules.AddRange(AllRules.All);
       }
@@ -75,41 +73,68 @@ namespace MoBi.Presentation.DTO
 
       public void AddUsedInitialConditionsNames(IReadOnlyList<string> allNames)
       {
-         _initialConditionsNames.AddRange(allNames.Select(x => x.ToLower().Trim()));
+         _existingInitialConditionsNames.AddRange(lowerCaseAndTrim(allNames));
+      }
+
+      private static IEnumerable<string> lowerCaseAndTrim(IReadOnlyList<string> stringsToConvert)
+      {
+         return stringsToConvert.Select(lowerCaseAndTrim);
+      }
+
+      private static string lowerCaseAndTrim(string stringToConvert)
+      {
+         return stringToConvert.ToLower().Trim();
       }
 
       public void AddUsedParameterValuesNames(IReadOnlyList<string> allNames)
       {
-         _parameterValuesNames.AddRange(allNames.Select(x => x.ToLower().Trim()));
+         _existingParameterValuesNames.AddRange(lowerCaseAndTrim(allNames));
       }
 
       private static class AllRules
       {
-         private static IBusinessRule createUniqueNameRule(Expression<Func<AddBuildingBlocksToModuleDTO, string>> propertyToCheck,
-            Func<AddBuildingBlocksToModuleDTO, bool> skipValidation,
-            Func<AddBuildingBlocksToModuleDTO, List<string>> prohibitedNamesRetriever)
-         {
-            return CreateRule.For<AddBuildingBlocksToModuleDTO>()
-               .Property(propertyToCheck)
-               .WithRule((dto, name) => skipValidation(dto) || dto.nameIsNotInProhibitedNames(name, prohibitedNamesRetriever(dto)))
-               .WithError(AppConstants.Validation.NameAlreadyUsed);
-         }
-
-         private static IBusinessRule createNonEmptyRule(Expression<Func<AddBuildingBlocksToModuleDTO, string>> propertyToCheck, Func<AddBuildingBlocksToModuleDTO, bool> skipValidation)
-         {
-            return CreateRule.For<AddBuildingBlocksToModuleDTO>()
-               .Property(propertyToCheck)
-               .WithRule((dto, name) => skipValidation(dto) || name.StringIsNotEmpty())
-               .WithError(Validation.ValueIsRequired);
-         }
-
          public static IReadOnlyList<IBusinessRule> All { get; } = new[]
          {
-            createNonEmptyRule(x => x.InitialConditionsName, dto => !dto.WithInitialConditions),
-            createNonEmptyRule(x => x.ParameterValuesName, dto => !dto.WithParameterValues),
-            createUniqueNameRule(x => x.ParameterValuesName, dto => !dto.WithParameterValues, dto => dto._parameterValuesNames),
-            createUniqueNameRule(x => x.InitialConditionsName, dto => !dto.WithInitialConditions, dto => dto._initialConditionsNames),
+            CreateRule.For<AddBuildingBlocksToModuleDTO>()
+               .Property(x => x.InitialConditionsName)
+               .WithRule((dto, name) => dto.isInitialConditionsCreatedAndNotEmptyName(name))
+               .WithError(Validation.ValueIsRequired),
+
+            CreateRule.For<AddBuildingBlocksToModuleDTO>()
+               .Property(x => x.ParameterValuesName)
+               .WithRule((dto, name) => dto.isParameterValuesCreatedAndNotEmptyName(name))
+               .WithError(Validation.ValueIsRequired),
+
+            CreateRule.For<AddBuildingBlocksToModuleDTO>()
+               .Property(x => x.InitialConditionsName)
+               .WithRule((dto, name) => dto.isInitialConditionsCreatedAndNameIsNotInProhibitedNames(name))
+               .WithError(AppConstants.Validation.NameAlreadyUsed),
+
+            CreateRule.For<AddBuildingBlocksToModuleDTO>()
+               .Property(x => x.ParameterValuesName)
+               .WithRule((dto, name) => dto.isParameterValuesCreatedAndNameIsNotInProhibitedNames(name))
+               .WithError(AppConstants.Validation.NameAlreadyUsed)
          };
+      }
+
+      private bool isParameterValuesCreatedAndNameIsNotInProhibitedNames(string name)
+      {
+         return !WithParameterValues || nameIsNotInProhibitedNames(name, _existingParameterValuesNames);
+      }
+
+      private bool isInitialConditionsCreatedAndNameIsNotInProhibitedNames(string name)
+      {
+         return !WithInitialConditions || nameIsNotInProhibitedNames(name, _existingInitialConditionsNames);
+      }
+
+      private bool isParameterValuesCreatedAndNotEmptyName(string name)
+      {
+         return !WithParameterValues || name.StringIsNotEmpty();
+      }
+
+      private bool isInitialConditionsCreatedAndNotEmptyName(string name)
+      {
+         return !WithInitialConditions || name.StringIsNotEmpty();
       }
 
       private bool nameIsNotInProhibitedNames(string name, List<string> prohibitedNames)
@@ -117,7 +142,7 @@ namespace MoBi.Presentation.DTO
          if (string.IsNullOrEmpty(name))
             return true;
 
-         return !prohibitedNames.Contains(name.ToLower().Trim());
+         return !prohibitedNames.Contains(lowerCaseAndTrim(name));
       }
    }
 }

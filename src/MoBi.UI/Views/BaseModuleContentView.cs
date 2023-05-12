@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraLayout;
+﻿using System.Threading.Tasks;
+using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -44,8 +45,8 @@ namespace MoBi.UI.Views
          initialConditionsNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
          parameterValuesNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
 
-         checkChanged(cbInitialConditions.Checked, initialConditionsNameItem);
-         checkChanged(cbParameterValues.Checked, parameterValuesNameItem);
+         StartValueCheckChanged(cbInitialConditions.Checked, initialConditionsNameItem);
+         StartValueCheckChanged(cbParameterValues.Checked, parameterValuesNameItem);
       }
 
       protected void ShowStartValueNameControls()
@@ -69,15 +70,15 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.WithObserver).To(cbObservers);
          _screenBinder.Bind(dto => dto.WithPassiveTransport).To(cbPassiveTransports);
          _screenBinder.Bind(dto => dto.WithReaction).To(cbReactions);
-         _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues).OnValueUpdated += (o, e) => OnEvent(() => checkChanged(e, parameterValuesNameItem));
-         _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions).OnValueUpdated += (o, e) => OnEvent(() => checkChanged(e, initialConditionsNameItem));
+         _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues).OnValueUpdated += (o, e) => OnEvent(() => StartValueCheckChanged(e, parameterValuesNameItem));
+         _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions).OnValueUpdated += (o, e) => OnEvent(() => StartValueCheckChanged(e, initialConditionsNameItem));
 
          RegisterValidationFor(_screenBinder);
       }
 
-      private void checkChanged(bool enabled, LayoutControlItem layoutControlItem)
+      protected virtual void StartValueCheckChanged(bool enabled, LayoutControlItem namingLayoutControlItem)
       {
-         layoutControlItem.Enabled = enabled;
+         namingLayoutControlItem.Visibility = LayoutVisibility.Never;
       }
 
       public virtual void BindTo(TDTO moduleContentDTO)

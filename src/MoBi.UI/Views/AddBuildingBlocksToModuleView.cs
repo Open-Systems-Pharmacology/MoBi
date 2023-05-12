@@ -1,4 +1,6 @@
-﻿using MoBi.Presentation.DTO;
+﻿using DevExpress.XtraLayout;
+using DevExpress.XtraLayout.Utils;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.DataBinding;
@@ -9,16 +11,10 @@ namespace MoBi.UI.Views
    public class AddBuildingBlocksToModuleView : BaseModuleContentView<AddBuildingBlocksToModuleDTO>,
       IAddBuildingBlocksToModuleView
    {
-      public AddBuildingBlocksToModuleView()
-      {
-         
-      }
-
       public override void InitializeResources()
       {
          base.InitializeResources();
          DisableRename();
-         ShowStartValueNameControls();
       }
 
       public override void InitializeBinding()
@@ -28,9 +24,9 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.InitialConditionsName).To(tbInitialConditionsName);
       }
 
-      public override void BindTo(AddBuildingBlocksToModuleDTO addBuildingBlocksToModuleDTO)
+      protected override void StartValueCheckChanged(bool enabled, LayoutControlItem namingLayoutControlItem)
       {
-         base.BindTo(addBuildingBlocksToModuleDTO);
+         namingLayoutControlItem.Visibility = LayoutVisibilityConvertor.FromBoolean(enabled);
       }
 
       public void AttachPresenter(IAddBuildingBlocksToModulePresenter presenter)
