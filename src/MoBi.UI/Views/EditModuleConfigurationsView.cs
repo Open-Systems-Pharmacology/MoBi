@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using DevExpress.XtraGrid;
+using DevExpress.XtraEditors;
 using DevExpress.XtraTreeList;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -15,6 +16,7 @@ using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
@@ -49,6 +51,17 @@ namespace MoBi.UI.Views
          EnableRemove = false;
          EnableAdd = false;
          selectedModuleTreeView.ShouldExpandAddedNode = false;
+
+         buttonMoveUp.InitWithImage(ApplicationIcons.Up, imageLocation: ImageLocation.MiddleCenter, toolTip: ToolTips.ParameterList.MoveUp);
+         buttonMoveDown.InitWithImage(ApplicationIcons.Down, imageLocation: ImageLocation.MiddleCenter, toolTip: ToolTips.ParameterList.MoveDown);
+         layoutControl.DoInBatch(() =>
+         {
+            layoutItemButtonMoveUp.AdjustButtonSizeWithImageOnly();
+            layoutItemButtonMoveDown.AdjustButtonSizeWithImageOnly();
+         });
+
+         EnableDown = false;
+         EnableUp = false;
       }
 
       protected virtual void TreeMouseMove(MouseEventArgs e)
@@ -80,6 +93,9 @@ namespace MoBi.UI.Views
          selectedModuleTreeView.CompareNodeValues += compareNodeValues;
          selectedModuleTreeView.DataColumn.SortMode = ColumnSortMode.Custom;
          selectedModuleTreeView.DataColumn.SortOrder = SortOrder.Ascending;
+
+         buttonMoveUp.Click += (o, e) => OnEvent(() => _presenter.MoveUp(selectedModuleTreeView.SelectedNode));
+         buttonMoveDown.Click += (o, e) => OnEvent(() => _presenter.MoveDown(selectedModuleTreeView.SelectedNode));
       }
 
       private void refreshStartValues()
@@ -136,6 +152,18 @@ namespace MoBi.UI.Views
       {
          get => btnAdd.Enabled;
          set => btnAdd.Enabled = value;
+      }
+
+      public bool EnableUp
+      {
+         get => buttonMoveUp.Enabled;
+         set => buttonMoveUp.Enabled = value;
+      }
+
+      public bool EnableDown
+      {
+         get => buttonMoveDown.Enabled;
+         set => buttonMoveDown.Enabled = value;
       }
 
       public void SortSelectedModules()

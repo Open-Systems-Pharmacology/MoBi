@@ -32,7 +32,7 @@
       {
          this.components = new System.ComponentModel.Container();
          this.moduleSelectionTreeView = new OSPSuite.UI.Controls.FilterTreeView();
-         this.uxLayoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.cbParameterValuesSelection = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.cbInitialConditionsSelection = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.selectedModuleTreeView = new OSPSuite.UI.Controls.UxTreeView();
@@ -50,9 +50,14 @@
          this.layoutItemModuleSelection = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupSelectedModules = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemSelectedModules = new DevExpress.XtraLayout.LayoutControlItem();
+         this.buttonMoveUp = new OSPSuite.UI.Controls.UxSimpleButton();
+         this.layoutItemButtonMoveUp = new DevExpress.XtraLayout.LayoutControlItem();
+         this.emptySpaceItem3 = new DevExpress.XtraLayout.EmptySpaceItem();
+         this.buttonMoveDown = new OSPSuite.UI.Controls.UxSimpleButton();
+         this.layoutItemButtonMoveDown = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).BeginInit();
-         this.uxLayoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.cbParameterValuesSelection.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbInitialConditionsSelection.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.selectedModuleTreeView)).BeginInit();
@@ -68,6 +73,9 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemModuleSelection)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupSelectedModules)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemSelectedModules)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemButtonMoveUp)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem3)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemButtonMoveDown)).BeginInit();
          this.SuspendLayout();
          // 
          // moduleSelectionTreeView
@@ -78,23 +86,25 @@
          this.moduleSelectionTreeView.Size = new System.Drawing.Size(474, 699);
          this.moduleSelectionTreeView.TabIndex = 0;
          // 
-         // uxLayoutControl1
+         // layoutControl
          // 
-         this.uxLayoutControl1.AllowCustomization = false;
-         this.uxLayoutControl1.Controls.Add(this.cbParameterValuesSelection);
-         this.uxLayoutControl1.Controls.Add(this.cbInitialConditionsSelection);
-         this.uxLayoutControl1.Controls.Add(this.selectedModuleTreeView);
-         this.uxLayoutControl1.Controls.Add(this.btnAdd);
-         this.uxLayoutControl1.Controls.Add(this.btnRemove);
-         this.uxLayoutControl1.Controls.Add(this.moduleSelectionTreeView);
-         this.uxLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.uxLayoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.uxLayoutControl1.Name = "uxLayoutControl1";
-         this.uxLayoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(666, 549, 650, 400);
-         this.uxLayoutControl1.Root = this.Root;
-         this.uxLayoutControl1.Size = new System.Drawing.Size(1166, 768);
-         this.uxLayoutControl1.TabIndex = 2;
-         this.uxLayoutControl1.Text = "uxLayoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.buttonMoveDown);
+         this.layoutControl.Controls.Add(this.buttonMoveUp);
+         this.layoutControl.Controls.Add(this.cbParameterValuesSelection);
+         this.layoutControl.Controls.Add(this.cbInitialConditionsSelection);
+         this.layoutControl.Controls.Add(this.selectedModuleTreeView);
+         this.layoutControl.Controls.Add(this.btnAdd);
+         this.layoutControl.Controls.Add(this.btnRemove);
+         this.layoutControl.Controls.Add(this.moduleSelectionTreeView);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1683, 425, 1007, 790);
+         this.layoutControl.Root = this.Root;
+         this.layoutControl.Size = new System.Drawing.Size(1166, 768);
+         this.layoutControl.TabIndex = 2;
+         this.layoutControl.Text = "uxLayoutControl1";
          // 
          // cbParameterValuesSelection
          // 
@@ -104,7 +114,7 @@
          this.cbParameterValuesSelection.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.cbParameterValuesSelection.Size = new System.Drawing.Size(482, 20);
-         this.cbParameterValuesSelection.StyleController = this.uxLayoutControl1;
+         this.cbParameterValuesSelection.StyleController = this.layoutControl;
          this.cbParameterValuesSelection.TabIndex = 8;
          // 
          // cbInitialConditionsSelection
@@ -115,7 +125,7 @@
          this.cbInitialConditionsSelection.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.cbInitialConditionsSelection.Size = new System.Drawing.Size(482, 20);
-         this.cbInitialConditionsSelection.StyleController = this.uxLayoutControl1;
+         this.cbInitialConditionsSelection.StyleController = this.layoutControl;
          this.cbInitialConditionsSelection.TabIndex = 7;
          // 
          // selectedModuleTreeView
@@ -129,26 +139,26 @@
          this.selectedModuleTreeView.OptionsView.ShowHorzLines = false;
          this.selectedModuleTreeView.OptionsView.ShowIndicator = false;
          this.selectedModuleTreeView.OptionsView.ShowVertLines = false;
-         this.selectedModuleTreeView.Size = new System.Drawing.Size(488, 606);
+         this.selectedModuleTreeView.Size = new System.Drawing.Size(392, 606);
          this.selectedModuleTreeView.TabIndex = 6;
          this.selectedModuleTreeView.ToolTipForNode = null;
          this.selectedModuleTreeView.UseLazyLoading = false;
          // 
          // btnAdd
          // 
-         this.btnAdd.Location = new System.Drawing.Point(523, 176);
+         this.btnAdd.Location = new System.Drawing.Point(523, 103);
          this.btnAdd.Name = "btnAdd";
          this.btnAdd.Size = new System.Drawing.Size(106, 22);
-         this.btnAdd.StyleController = this.uxLayoutControl1;
+         this.btnAdd.StyleController = this.layoutControl;
          this.btnAdd.TabIndex = 5;
          this.btnAdd.Text = "btnAdd";
          // 
          // btnRemove
          // 
-         this.btnRemove.Location = new System.Drawing.Point(523, 202);
+         this.btnRemove.Location = new System.Drawing.Point(523, 129);
          this.btnRemove.Name = "btnRemove";
          this.btnRemove.Size = new System.Drawing.Size(106, 22);
-         this.btnRemove.StyleController = this.uxLayoutControl1;
+         this.btnRemove.StyleController = this.layoutControl;
          this.btnRemove.TabIndex = 4;
          this.btnRemove.Text = "btnRemove";
          // 
@@ -171,7 +181,7 @@
          // layoutItemBtnRemove
          // 
          this.layoutItemBtnRemove.Control = this.btnRemove;
-         this.layoutItemBtnRemove.Location = new System.Drawing.Point(502, 190);
+         this.layoutItemBtnRemove.Location = new System.Drawing.Point(502, 117);
          this.layoutItemBtnRemove.Name = "layoutItemBtnRemove";
          this.layoutItemBtnRemove.Size = new System.Drawing.Size(128, 26);
          this.layoutItemBtnRemove.Spacing = new DevExpress.XtraLayout.Utils.Padding(9, 9, 0, 0);
@@ -181,7 +191,7 @@
          // layoutItemBtnAdd
          // 
          this.layoutItemBtnAdd.Control = this.btnAdd;
-         this.layoutItemBtnAdd.Location = new System.Drawing.Point(502, 164);
+         this.layoutItemBtnAdd.Location = new System.Drawing.Point(502, 91);
          this.layoutItemBtnAdd.Name = "layoutItemBtnAdd";
          this.layoutItemBtnAdd.Size = new System.Drawing.Size(128, 26);
          this.layoutItemBtnAdd.Spacing = new DevExpress.XtraLayout.Utils.Padding(9, 9, 0, 0);
@@ -193,15 +203,15 @@
          this.emptySpaceItem1.AllowHotTrack = false;
          this.emptySpaceItem1.Location = new System.Drawing.Point(502, 0);
          this.emptySpaceItem1.Name = "emptySpaceItem1";
-         this.emptySpaceItem1.Size = new System.Drawing.Size(128, 164);
+         this.emptySpaceItem1.Size = new System.Drawing.Size(128, 91);
          this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
          // 
          // emptySpaceItem2
          // 
          this.emptySpaceItem2.AllowHotTrack = false;
-         this.emptySpaceItem2.Location = new System.Drawing.Point(502, 216);
+         this.emptySpaceItem2.Location = new System.Drawing.Point(502, 143);
          this.emptySpaceItem2.Name = "emptySpaceItem2";
-         this.emptySpaceItem2.Size = new System.Drawing.Size(128, 439);
+         this.emptySpaceItem2.Size = new System.Drawing.Size(128, 512);
          this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
          // 
          // startValuesSelectionGroup
@@ -251,7 +261,10 @@
          // layoutGroupSelectedModules
          // 
          this.layoutGroupSelectedModules.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemSelectedModules});
+            this.layoutItemSelectedModules,
+            this.layoutItemButtonMoveUp,
+            this.emptySpaceItem3,
+            this.layoutItemButtonMoveDown});
          this.layoutGroupSelectedModules.Location = new System.Drawing.Point(630, 0);
          this.layoutGroupSelectedModules.Name = "layoutGroupSelectedModules";
          this.layoutGroupSelectedModules.Size = new System.Drawing.Size(516, 655);
@@ -261,21 +274,69 @@
          this.layoutItemSelectedModules.Control = this.selectedModuleTreeView;
          this.layoutItemSelectedModules.Location = new System.Drawing.Point(0, 0);
          this.layoutItemSelectedModules.Name = "layoutItemSelectedModules";
-         this.layoutItemSelectedModules.Size = new System.Drawing.Size(492, 610);
+         this.layoutItemSelectedModules.Size = new System.Drawing.Size(396, 610);
          this.layoutItemSelectedModules.TextLocation = DevExpress.Utils.Locations.Top;
          this.layoutItemSelectedModules.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemSelectedModules.TextVisible = false;
+         // 
+         // buttonMoveUp
+         // 
+         this.buttonMoveUp.Location = new System.Drawing.Point(1050, 45);
+         this.buttonMoveUp.Manager = null;
+         this.buttonMoveUp.Name = "buttonMoveUp";
+         this.buttonMoveUp.Shortcut = System.Windows.Forms.Keys.None;
+         this.buttonMoveUp.Size = new System.Drawing.Size(92, 22);
+         this.buttonMoveUp.StyleController = this.layoutControl;
+         this.buttonMoveUp.TabIndex = 9;
+         this.buttonMoveUp.Text = "buttonMoveUp";
+         // 
+         // layoutItemButtonMoveUp
+         // 
+         this.layoutItemButtonMoveUp.Control = this.buttonMoveUp;
+         this.layoutItemButtonMoveUp.Location = new System.Drawing.Point(396, 0);
+         this.layoutItemButtonMoveUp.Name = "layoutItemButtonMoveUp";
+         this.layoutItemButtonMoveUp.Size = new System.Drawing.Size(96, 26);
+         this.layoutItemButtonMoveUp.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemButtonMoveUp.TextVisible = false;
+         // 
+         // emptySpaceItem3
+         // 
+         this.emptySpaceItem3.AllowHotTrack = false;
+         this.emptySpaceItem3.Location = new System.Drawing.Point(396, 52);
+         this.emptySpaceItem3.Name = "emptySpaceItem3";
+         this.emptySpaceItem3.Size = new System.Drawing.Size(96, 558);
+         this.emptySpaceItem3.TextSize = new System.Drawing.Size(0, 0);
+         // 
+         // buttonMoveDown
+         // 
+         this.buttonMoveDown.Location = new System.Drawing.Point(1050, 71);
+         this.buttonMoveDown.Manager = null;
+         this.buttonMoveDown.Name = "buttonMoveDown";
+         this.buttonMoveDown.Shortcut = System.Windows.Forms.Keys.None;
+         this.buttonMoveDown.Size = new System.Drawing.Size(92, 22);
+         this.buttonMoveDown.StyleController = this.layoutControl;
+         this.buttonMoveDown.TabIndex = 10;
+         this.buttonMoveDown.Text = "buttonMoveDown";
+         // 
+         // layoutItemButtonMoveDown
+         // 
+         this.layoutItemButtonMoveDown.Control = this.buttonMoveDown;
+         this.layoutItemButtonMoveDown.Location = new System.Drawing.Point(396, 26);
+         this.layoutItemButtonMoveDown.Name = "layoutItemButtonMoveDown";
+         this.layoutItemButtonMoveDown.Size = new System.Drawing.Size(96, 26);
+         this.layoutItemButtonMoveDown.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemButtonMoveDown.TextVisible = false;
          // 
          // EditModuleConfigurationsView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.uxLayoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "EditModuleConfigurationsView";
          this.Size = new System.Drawing.Size(1166, 768);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).EndInit();
-         this.uxLayoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.cbParameterValuesSelection.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbInitialConditionsSelection.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.selectedModuleTreeView)).EndInit();
@@ -291,6 +352,9 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemModuleSelection)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupSelectedModules)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemSelectedModules)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemButtonMoveUp)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem3)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemButtonMoveDown)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -298,7 +362,7 @@
       #endregion
 
       private OSPSuite.UI.Controls.FilterTreeView moduleSelectionTreeView;
-      private OSPSuite.UI.Controls.UxLayoutControl uxLayoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private OSPSuite.UI.Controls.UxComboBoxEdit cbParameterValuesSelection;
       private OSPSuite.UI.Controls.UxComboBoxEdit cbInitialConditionsSelection;
       private OSPSuite.UI.Controls.UxTreeView selectedModuleTreeView;
@@ -316,5 +380,10 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutItemMSVSelection;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupModuleSelection;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupSelectedModules;
+      private OSPSuite.UI.Controls.UxSimpleButton buttonMoveDown;
+      private OSPSuite.UI.Controls.UxSimpleButton buttonMoveUp;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemButtonMoveUp;
+      private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem3;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemButtonMoveDown;
    }
 }
