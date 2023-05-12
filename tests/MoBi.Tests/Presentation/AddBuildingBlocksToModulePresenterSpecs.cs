@@ -14,24 +14,27 @@ namespace MoBi.Presentation
 {
    public class concern_for_AddBuildingBlocksToModulePresenter : ContextSpecification<AddBuildingBlocksToModulePresenter>
    {
-      protected IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper _mapper;
+      protected IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper _dtoToBuildingBlocksMapper;
       protected IAddBuildingBlocksToModuleView _view;
       protected MoBiProject _project;
       protected Module _existingModule;
       protected IReadOnlyList<IBuildingBlock> _listOfNewBuildingBlocks;
+      private IModuleToAddBuildingBlocksToModuleDTOMapper _moduleToDTOMapper;
 
       protected override void Context()
       {
          _project = new MoBiProject();
          _existingModule = new Module();
          _view = A.Fake<IAddBuildingBlocksToModuleView>();
-         _mapper = A.Fake<IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper>();
+         _dtoToBuildingBlocksMapper = A.Fake<IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper>();
+         _moduleToDTOMapper = A.Fake<IModuleToAddBuildingBlocksToModuleDTOMapper>();
+         
          _listOfNewBuildingBlocks = new List<IBuildingBlock>()
          {
             new EventGroupBuildingBlock(),
             new ReactionBuildingBlock()
          };
-         sut = new AddBuildingBlocksToModulePresenter(_view, _mapper);
+         sut = new AddBuildingBlocksToModulePresenter(_view, _dtoToBuildingBlocksMapper, _moduleToDTOMapper);
       }
    }
 
@@ -44,7 +47,7 @@ namespace MoBi.Presentation
          base.Context();
          _listOfNewBuildingBlocks = new List<IBuildingBlock>();
          A.CallTo(() => _view.Canceled).Returns(false);
-         A.CallTo(() => _mapper.MapFrom(A<AddBuildingBlocksToModuleDTO>._)).Returns(_listOfNewBuildingBlocks);
+         A.CallTo(() => _dtoToBuildingBlocksMapper.MapFrom(A<AddBuildingBlocksToModuleDTO>._)).Returns(_listOfNewBuildingBlocks);
       }
 
       protected override void Because()

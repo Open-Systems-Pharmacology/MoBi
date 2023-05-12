@@ -1,9 +1,11 @@
 ﻿using MoBi.Core.Domain.Model;
+using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation
 {
@@ -21,6 +23,126 @@ namespace MoBi.Presentation
          module.Add(new InitialConditionsBuildingBlock());
 
          sut = new AddBuildingBlocksToModuleDTO(module);
+      }
+   }
+
+   public class When_changing_parameter_values_add : concern_for_AddBuildingBlocksToModuleDTO
+   {
+      private bool _eventFired;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.PropertyChanged += (sender, args) =>
+         {
+            if (args.PropertyName.Equals(MoBiReflectionHelper.PropertyName<AddBuildingBlocksToModuleDTO>(x => x.ParameterValuesName)))
+               _eventFired = true;
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.WithParameterValues = !sut.WithParameterValues;
+      }
+
+      [Observation]
+      public void the_name_property_change_event_should_be_raised()
+      {
+         _eventFired.ShouldBeTrue();
+      }
+   }
+
+   public class When_changing_initial_condition_add : concern_for_AddBuildingBlocksToModuleDTO
+   {
+      private bool _eventFired;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.PropertyChanged += (sender, args) =>
+         {
+            if (args.PropertyName.Equals(MoBiReflectionHelper.PropertyName<AddBuildingBlocksToModuleDTO>(x => x.InitialConditionsName)))
+               _eventFired = true;
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.WithInitialConditions = !sut.WithInitialConditions;
+      }
+
+      [Observation]
+      public void the_name_property_change_event_should_be_raised()
+      {
+         _eventFired.ShouldBeTrue();
+      }
+   }
+
+   public class When_not_adding_a_initial_conditions_when_name_already_exists : concern_for_AddBuildingBlocksToModuleDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.InitialConditionsName = "Unoriginal Name";
+         sut.AddUsedInitialConditionsNames(new[] { "Unoriginal Name" });
+         sut.WithInitialConditions = false;
+      }
+
+      [Observation]
+      public void the_dto_should_be_valid()
+      {
+         sut.IsValid().ShouldBeTrue();
+      }
+   }
+
+   public class When_adding_a_initial_conditions_when_name_already_exists : concern_for_AddBuildingBlocksToModuleDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.InitialConditionsName = "Unoriginal Name";
+         sut.AddUsedInitialConditionsNames(new[] { "Unoriginal Name" });
+         sut.WithInitialConditions = true;
+      }
+
+      [Observation]
+      public void the_dto_should_be_invalid()
+      {
+         sut.IsValid().ShouldBeFalse();
+      }
+   }
+
+   public class When_not_adding_a_parameter_values_when_name_already_exists : concern_for_AddBuildingBlocksToModuleDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.ParameterValuesName = "Unoriginal Name";
+         sut.AddUsedParameterValuesNames(new[] { "Unoriginal Name" });
+         sut.WithParameterValues = false;
+      }
+
+      [Observation]
+      public void the_dto_should_be_valid()
+      {
+         sut.IsValid().ShouldBeTrue();
+      }
+   }
+
+   public class When_adding_a_parameter_values_when_name_already_exists : concern_for_AddBuildingBlocksToModuleDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.ParameterValuesName = "Unoriginal Name";
+         sut.AddUsedParameterValuesNames(new[] { "Unoriginal Name" });
+         sut.WithParameterValues = true;
+      }
+
+      [Observation]
+      public void the_dto_should_be_invalid()
+      {
+         sut.IsValid().ShouldBeFalse();
       }
    }
 
