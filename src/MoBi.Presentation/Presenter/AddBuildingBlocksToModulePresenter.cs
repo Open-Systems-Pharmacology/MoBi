@@ -19,18 +19,21 @@ namespace MoBi.Presentation.Presenter
       IAddBuildingBlocksToModulePresenter
    {
       private readonly IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper _addBuildingBlocksToModuleDTOToBuildingBlocksListMapper;
+      private readonly IModuleToAddBuildingBlocksToModuleDTOMapper _moduleToAddBuildingBlocksToModuleDTOMapper;
 
       public AddBuildingBlocksToModulePresenter(IAddBuildingBlocksToModuleView view,
-         IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper addBuildingBlocksToModuleDTOToBuildingBlocksListMapper) : base(view)
+         IAddBuildingBlocksToModuleDTOToBuildingBlocksListMapper addBuildingBlocksToModuleDTOToBuildingBlocksListMapper, 
+         IModuleToAddBuildingBlocksToModuleDTOMapper moduleToAddBuildingBlocksToModuleDTOMapper) : base(view)
       {
          _addBuildingBlocksToModuleDTOToBuildingBlocksListMapper = addBuildingBlocksToModuleDTOToBuildingBlocksListMapper;
+         _moduleToAddBuildingBlocksToModuleDTOMapper = moduleToAddBuildingBlocksToModuleDTOMapper;
       }
 
       public IReadOnlyList<IBuildingBlock> AddBuildingBlocksToModule(Module module)
       {
          _view.Caption = AppConstants.Captions.AddBuildingBlocksToModule(module.Name);
 
-         var addBuildingBlocksToModuleDTO = new AddBuildingBlocksToModuleDTO(module);
+         var addBuildingBlocksToModuleDTO = _moduleToAddBuildingBlocksToModuleDTOMapper.MapFrom(module);
 
          _view.BindTo(addBuildingBlocksToModuleDTO);
          _view.Display();
