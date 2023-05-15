@@ -1,5 +1,4 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
@@ -7,40 +6,6 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddExpressionProfileBuildingBlockToProjectCommand : AddBuildingBlockToProjectCommand<ExpressionProfileBuildingBlock>
-   {
-      public AddExpressionProfileBuildingBlockToProjectCommand(ExpressionProfileBuildingBlock buildingBlock) : base(buildingBlock)
-      {
-      }
-
-      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
-      {
-         return new RemoveExpressionProfileBuildingBlockFromProjectCommand(_buildingBlock).AsInverseFor(this);
-      }
-
-      protected override void AddToProject(MoBiProject project)
-      {
-         project.AddExpressionProfileBuildingBlock(_buildingBlock);
-      }
-   }
-
-   public class AddIndividualBuildingBlockToProjectCommand : AddBuildingBlockToProjectCommand<IndividualBuildingBlock>
-   {
-      public AddIndividualBuildingBlockToProjectCommand(IndividualBuildingBlock buildingBlock) : base(buildingBlock)
-      {
-      }
-
-      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
-      {
-         return new RemoveIndividualBuildingBlockFromProjectCommand(_buildingBlock).AsInverseFor(this);
-      }
-
-      protected override void AddToProject(MoBiProject project)
-      {
-         project.AddIndividualBuildingBlock(_buildingBlock);
-      }
-   }
-
    public abstract class AddBuildingBlockToProjectCommand<T> : MoBiReversibleCommand, ISilentCommand where T : class, IBuildingBlock
    {
       protected T _buildingBlock;

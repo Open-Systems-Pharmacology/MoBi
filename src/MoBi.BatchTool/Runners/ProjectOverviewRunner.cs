@@ -54,7 +54,7 @@ namespace MoBi.BatchTool.Runners
 
             var begin = DateTime.UtcNow;
 
-            var allProjects = new AllProjects {InputFolder = inputFolder};
+            var allProjects = new AllProjects { InputFolder = inputFolder };
             foreach (var projectFile in allProjectFiles)
             {
                allProjects.Projects.Add(addProjectInfo(projectFile));
@@ -70,7 +70,7 @@ namespace MoBi.BatchTool.Runners
 
       private ProjectInfo addProjectInfo(FileInfo projectFile)
       {
-         var projectInfo = new ProjectInfo {FullPath = projectFile.FullName, Name = projectFile.Name};
+         var projectInfo = new ProjectInfo { FullPath = projectFile.FullName, Name = projectFile.Name };
          _logger.AddInfo($"Loading project file '{projectFile.FullName}'");
 
          try
@@ -110,7 +110,7 @@ namespace MoBi.BatchTool.Runners
 
       private ObservedDataInfo observedDataInfoFrom(DataRepository observedData)
       {
-         var observedDataInfo = new ObservedDataInfo {Name = observedData.Name};
+         var observedDataInfo = new ObservedDataInfo { Name = observedData.Name };
          observedData.ExtendedProperties.Each(prop => { observedDataInfo.MetaData.Add($"{prop.DisplayName}={prop.ValueAsObject}"); });
          return observedDataInfo;
       }

@@ -1,7 +1,7 @@
-﻿using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Services
 {

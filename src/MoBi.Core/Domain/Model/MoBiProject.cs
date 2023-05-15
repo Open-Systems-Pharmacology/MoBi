@@ -77,7 +77,7 @@ namespace MoBi.Core.Domain.Model
       {
          return Modules.FindByName(moduleName);
       }
-      
+
       public IndividualBuildingBlock IndividualByName(string buildingBlockName)
       {
          return IndividualsCollection.FindByName(buildingBlockName);
@@ -87,7 +87,7 @@ namespace MoBi.Core.Domain.Model
       {
          return ExpressionProfileCollection.FindByName(buildingBlockName);
       }
-      
+
       public void AddSimulation(IMoBiSimulation newSimulation)
       {
          _allSimulations.Add(newSimulation);
@@ -107,11 +107,6 @@ namespace MoBi.Core.Domain.Model
       public void RemoveChart(CurveChart chartToRemove)
       {
          _charts.Remove(chartToRemove);
-      }
-
-      private IEnumerable<IBuildingBlock> moduleBuildingBlocks()
-      {
-         return Modules.SelectMany(x => x.BuildingBlocks);
       }
 
       public void AddIndividualBuildingBlock(IndividualBuildingBlock individualBuildingBlock)
@@ -162,7 +157,5 @@ namespace MoBi.Core.Domain.Model
       {
          return All<IObjectBase>().Union(Simulations);
       }
-
-
    }
 }

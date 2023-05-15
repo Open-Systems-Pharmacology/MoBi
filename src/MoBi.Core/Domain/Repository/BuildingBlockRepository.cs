@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Core.Domain.Repository
 {
@@ -27,7 +27,7 @@ namespace MoBi.Core.Domain.Repository
    public class BuildingBlockRepository : IBuildingBlockRepository
    {
       private readonly IMoBiProjectRetriever _projectRetriever;
-      
+
       public BuildingBlockRepository(IMoBiProjectRetriever projectRetriever)
       {
          _projectRetriever = projectRetriever;

@@ -68,6 +68,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
                {
                   addEntityToProject(entityMetaData, serializationContext, nonProjectBuildingBlocks);
                }
+
                // convert and add the entities that are not direct children of project
                addNonProjectBuildingBlocks(nonProjectBuildingBlocks);
 
@@ -92,9 +93,9 @@ namespace MoBi.Core.Serialization.ORM.Mappers
 
       private void addSimulationSettingsBuildingBlocks(List<SimulationSettings> simulationSettingsBlocks)
       {
-         if(simulationSettingsBlocks.Count == 1)
+         if (simulationSettingsBlocks.Count == 1)
             _project.SimulationSettings = simulationSettingsBlocks.First();
-         
+
          // TODO what if there is more than 1 simulation settings in the project being converted
          // else
          //    throw new MoBiException($"Project contains multiple simulation settings");
@@ -110,10 +111,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
 
       private void addModulesByName(List<IBuildingBlock> moduleBuildingBlocks)
       {
-         moduleBuildingBlocks.GroupBy(x => x.Name).Each(nameGroup =>
-         {
-            addAllAsModule(nameGroup.ToList());
-         });
+         moduleBuildingBlocks.GroupBy(x => x.Name).Each(nameGroup => { addAllAsModule(nameGroup.ToList()); });
       }
 
       private bool fitsExactlyOneModule(List<IBuildingBlock> moduleBuildingBlocks)
@@ -127,9 +125,9 @@ namespace MoBi.Core.Serialization.ORM.Mappers
             typeof(MoBiSpatialStructure),
             typeof(ObserverBuildingBlock),
          };
-         
-         return listOfTypes.All(x => moduleBuildingBlocks.Count(bb => bb.GetType() == x) < 2);
 
+         // If, for all types, there is 1 or 0 building blocks of that type, then it fits exactly one module
+         return listOfTypes.All(x => moduleBuildingBlocks.Count(bb => bb.GetType() == x) < 2);
       }
 
       private void addAllAsModule(List<IBuildingBlock> moduleBuildingBlocks)
