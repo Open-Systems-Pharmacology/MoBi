@@ -63,17 +63,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          AddCommand(command);
       }
 
-      public override IMoBiCommand Remove(MoleculeBuildingBlock buildingBlockToRemove, Module module, IBuildingBlock buildingBlock, bool silent)
-      {
-         var referringStartValuesBuildingBlocks = module.ReferringStartValueBuildingBlocks(buildingBlockToRemove);
-         if (referringStartValuesBuildingBlocks.Any())
-         {
-            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromModule(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));
-         }
-         
-         return base.Remove(buildingBlockToRemove, module, buildingBlock, silent);
-      }
-
       public override IMoBiCommand GetRemoveCommand(MoleculeBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
       {
          return new RemoveBuildingBlockFromModuleCommand<MoleculeBuildingBlock>(objectToRemove, parent);

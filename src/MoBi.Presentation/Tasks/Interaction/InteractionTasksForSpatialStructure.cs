@@ -20,17 +20,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          _spatialStructureFactory = spatialStructureFactory;
       }
 
-      public override IMoBiCommand Remove(MoBiSpatialStructure buildingBlockToRemove, Module module, IBuildingBlock buildingBlock, bool silent)
-      {
-         var referringStartValuesBuildingBlocks = module.ReferringStartValueBuildingBlocks(buildingBlockToRemove);
-         if (referringStartValuesBuildingBlocks.Any())
-         {
-            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromModule(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));
-         }
-
-         return base.Remove(buildingBlockToRemove, buildingBlockToRemove.Module, buildingBlock, silent);
-      }
-
       public override IMoBiCommand GetRemoveCommand(MoBiSpatialStructure objectToRemove, Module parent, IBuildingBlock buildingBlock)
       {
          return new RemoveBuildingBlockFromModuleCommand<MoBiSpatialStructure>(objectToRemove, parent);
