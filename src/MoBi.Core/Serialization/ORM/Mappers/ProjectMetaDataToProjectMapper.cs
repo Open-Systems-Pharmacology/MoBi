@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -61,10 +63,13 @@ namespace MoBi.Core.Serialization.ORM.Mappers
                }
 
                //then load the rest of the entities
+               var nonProjectBuildingBlocks = new List<IBuildingBlock>();
                foreach (var entityMetaData in projectMetaData.Children)
                {
-                  addEntityToProject(entityMetaData, serializationContext);
+                  addEntityToProject(entityMetaData, serializationContext, nonProjectBuildingBlocks);
                }
+               // convert and add the entities that are not direct children of project
+               addNonProjectBuildingBlocks(nonProjectBuildingBlocks);
 
                _deserializedReferenceResolver.ResolveFormulaAndTemplateReferences(_project, _project);
                return _project;
@@ -74,6 +79,64 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          {
             _project = null;
          }
+      }
+
+      private void addNonProjectBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         var simulationSettingsBlocks = moduleBuildingBlocks.OfType<SimulationSettings>().ToList();
+         simulationSettingsBlocks.Each(x => moduleBuildingBlocks.Remove(x));
+
+         addModuleBuildingBlocks(moduleBuildingBlocks);
+         addSimulationSettingsBuildingBlocks(simulationSettingsBlocks);
+      }
+
+      private void addSimulationSettingsBuildingBlocks(List<SimulationSettings> simulationSettingsBlocks)
+      {
+         if(simulationSettingsBlocks.Count == 1)
+            _project.SimulationSettings = simulationSettingsBlocks.First();
+         
+         // TODO what if there is more than 1 simulation settings in the project being converted
+         // else
+         //    throw new MoBiException($"Project contains multiple simulation settings");
+      }
+
+      private void addModuleBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         if (fitsExactlyOneModule(moduleBuildingBlocks))
+            addAllAsModule(moduleBuildingBlocks);
+         else
+            addModulesByName(moduleBuildingBlocks);
+      }
+
+      private void addModulesByName(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         moduleBuildingBlocks.GroupBy(x => x.Name).Each(nameGroup =>
+         {
+            addAllAsModule(nameGroup.ToList());
+         });
+      }
+
+      private bool fitsExactlyOneModule(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         var listOfTypes = new List<Type>
+         {
+            typeof(MoleculeBuildingBlock),
+            typeof(PassiveTransportBuildingBlock),
+            typeof(EventGroupBuildingBlock),
+            typeof(MoBiReactionBuildingBlock),
+            typeof(MoBiSpatialStructure),
+            typeof(ObserverBuildingBlock),
+         };
+         
+         return listOfTypes.All(x => moduleBuildingBlocks.Count(bb => bb.GetType() == x) < 2);
+
+      }
+
+      private void addAllAsModule(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         var module = new Module();
+         moduleBuildingBlocks.Each(module.Add);
+         _project.AddModule(module);
       }
 
       private void addObservedDataToSerializationContext(SerializationContext serializationContext)
@@ -101,7 +164,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          return _serializationService.Deserialize<T>(content.Data, _project, serializationContext);
       }
 
-      private void addEntityToProject(EntityMetaData entity, SerializationContext serializationContext)
+      private void addEntityToProject(EntityMetaData entity, SerializationContext serializationContext, List<IBuildingBlock> moduleBuildingBlocks)
       {
          if (entity.IsAnImplementationOf<SimulationMetaData>())
             return;
@@ -126,31 +189,31 @@ namespace MoBi.Core.Serialization.ORM.Mappers
             _project.AddExpressionProfileBuildingBlock(deserializedEntity as ExpressionProfileBuildingBlock);
 
          else if (deserializedEntity.IsAnImplementationOf<MoleculeBuildingBlock>())
-            _project.AddModule(new Module { deserializedEntity as MoleculeBuildingBlock });
+            moduleBuildingBlocks.Add(deserializedEntity as MoleculeBuildingBlock);
 
          else if (deserializedEntity.IsAnImplementationOf<PassiveTransportBuildingBlock>())
-            _project.AddModule(new Module { deserializedEntity as PassiveTransportBuildingBlock });
+            moduleBuildingBlocks.Add(deserializedEntity as PassiveTransportBuildingBlock);
 
          else if (deserializedEntity.IsAnImplementationOf<EventGroupBuildingBlock>())
-            _project.AddModule(new Module { deserializedEntity as EventGroupBuildingBlock });
+            moduleBuildingBlocks.Add(deserializedEntity as EventGroupBuildingBlock);
 
          else if (deserializedEntity.IsAnImplementationOf<InitialConditionsBuildingBlock>())
-            _project.AddModule(new Module { deserializedEntity as InitialConditionsBuildingBlock });
+            moduleBuildingBlocks.Add(deserializedEntity as InitialConditionsBuildingBlock);
 
          else if (deserializedEntity.IsAnImplementationOf<ParameterValuesBuildingBlock>())
-            _project.AddModule(new Module { deserializedEntity as ParameterValuesBuildingBlock });
+            moduleBuildingBlocks.Add(deserializedEntity as ParameterValuesBuildingBlock);
 
          else if (deserializedEntity.IsAnImplementationOf<MoBiReactionBuildingBlock>())
-            _project.AddModule(new Module { deserializedEntity as MoBiReactionBuildingBlock });
+            moduleBuildingBlocks.Add(deserializedEntity as MoBiReactionBuildingBlock);
 
          else if (deserializedEntity.IsAnImplementationOf<MoBiSpatialStructure>())
-            _project.AddModule(new Module { deserializedEntity as MoBiSpatialStructure});
+            moduleBuildingBlocks.Add(deserializedEntity as MoBiSpatialStructure);
 
          else if (deserializedEntity.IsAnImplementationOf<ObserverBuildingBlock>())
-            _project.AddModule(new Module { deserializedEntity as ObserverBuildingBlock });
+            moduleBuildingBlocks.Add(deserializedEntity as ObserverBuildingBlock);
 
          else if (deserializedEntity.IsAnImplementationOf<SimulationSettings>())
-            _project.SimulationSettings = deserializedEntity as SimulationSettings;
+            moduleBuildingBlocks.Add(deserializedEntity as SimulationSettings);
 
          else
             throw new MoBiException($"Don't know what to do with {deserializedEntity.GetType()}");
