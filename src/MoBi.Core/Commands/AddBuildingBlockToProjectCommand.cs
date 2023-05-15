@@ -74,8 +74,6 @@ namespace MoBi.Core.Commands
          _buildingBlock = context.Get<T>(BuildingBlockId);
       }
 
-
-
       protected override void ClearReferences()
       {
          _buildingBlock = null;

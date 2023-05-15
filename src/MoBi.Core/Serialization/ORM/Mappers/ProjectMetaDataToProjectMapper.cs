@@ -125,6 +125,33 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          else if (deserializedEntity.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
             _project.AddExpressionProfileBuildingBlock(deserializedEntity as ExpressionProfileBuildingBlock);
 
+         else if (deserializedEntity.IsAnImplementationOf<MoleculeBuildingBlock>())
+            _project.AddModule(new Module { deserializedEntity as MoleculeBuildingBlock });
+
+         else if (deserializedEntity.IsAnImplementationOf<PassiveTransportBuildingBlock>())
+            _project.AddModule(new Module { deserializedEntity as PassiveTransportBuildingBlock });
+
+         else if (deserializedEntity.IsAnImplementationOf<EventGroupBuildingBlock>())
+            _project.AddModule(new Module { deserializedEntity as EventGroupBuildingBlock });
+
+         else if (deserializedEntity.IsAnImplementationOf<InitialConditionsBuildingBlock>())
+            _project.AddModule(new Module { deserializedEntity as InitialConditionsBuildingBlock });
+
+         else if (deserializedEntity.IsAnImplementationOf<ParameterValuesBuildingBlock>())
+            _project.AddModule(new Module { deserializedEntity as ParameterValuesBuildingBlock });
+
+         else if (deserializedEntity.IsAnImplementationOf<MoBiReactionBuildingBlock>())
+            _project.AddModule(new Module { deserializedEntity as MoBiReactionBuildingBlock });
+
+         else if (deserializedEntity.IsAnImplementationOf<MoBiSpatialStructure>())
+            _project.AddModule(new Module { deserializedEntity as MoBiSpatialStructure});
+
+         else if (deserializedEntity.IsAnImplementationOf<ObserverBuildingBlock>())
+            _project.AddModule(new Module { deserializedEntity as ObserverBuildingBlock });
+
+         else if (deserializedEntity.IsAnImplementationOf<SimulationSettings>())
+            _project.SimulationSettings = deserializedEntity as SimulationSettings;
+
          else
             throw new MoBiException($"Don't know what to do with {deserializedEntity.GetType()}");
       }
