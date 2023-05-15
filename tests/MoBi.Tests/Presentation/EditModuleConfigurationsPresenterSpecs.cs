@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
@@ -87,16 +89,202 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_changing_the_selected_module_configuration : concern_for_EditModuleConfigurationsPresenter
+   public abstract class When_selecting_different_nodes_in_the_configuration_tree : concern_for_EditModuleConfigurationsPresenter
    {
-      private ITreeNode _treeNode;
-      private ModuleConfigurationDTO _moduleConfigurationDTO;
+      protected SimulationConfiguration _simulationConfiguration;
+      protected List<ITreeNode> _moduleConfigurationNodes;
+      protected Module _projectModule;
+      protected Module _projectModule2;
+      protected Module _projectModule3;
 
       protected override void Context()
       {
          base.Context();
+         _simulationConfiguration = new SimulationConfiguration();
+         _projectModule = new Module().WithName("module1");
+         _projectModule2 = new Module().WithName("module2");
+         _projectModule3 = new Module().WithName("module3");
+         _moBiProject.AddModule(_projectModule);
+         _moBiProject.AddModule(_projectModule2);
+         _moBiProject.AddModule(_projectModule3);
+         sut.Edit(_simulationConfiguration);
+         _view.EnableRemove = true;
+         _view.EnableUp = true;
+         _view.EnableDown = true;
+         _moduleConfigurationNodes = new List<ITreeNode>();
+         A.CallTo(() => _view.AddModuleConfigurationNode(A<ITreeNode>._)).Invokes(x => _moduleConfigurationNodes.Add(x.GetArgument<ITreeNode>(0)));
+         sut.AddModuleConfiguration(new ModuleNode(_projectModule));
+         sut.AddModuleConfiguration(new ModuleNode(_projectModule2));
+         sut.AddModuleConfiguration(new ModuleNode(_projectModule3));
+      }
+   }
+
+   public class When_moving_a_top_node_up : When_selecting_different_nodes_in_the_configuration_tree
+   {
+      protected override void Because()
+      {
+         sut.MoveUp(_moduleConfigurationNodes.First());
+      }
+
+      [Observation]
+      public void the_view_should_resort_the_nodes()
+      {
+         A.CallTo(() => _view.SortSelectedModules()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_moving_a_bottom_node_down : When_selecting_different_nodes_in_the_configuration_tree
+   {
+      protected override void Because()
+      {
+         sut.MoveDown(_moduleConfigurationNodes.Last());
+      }
+
+      [Observation]
+      public void the_view_should_resort_the_nodes()
+      {
+         A.CallTo(() => _view.SortSelectedModules()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_moving_a_middle_node_down : When_selecting_different_nodes_in_the_configuration_tree
+   {
+      protected override void Because()
+      {
+         sut.MoveDown(_moduleConfigurationNodes[1]);
+      }
+
+      [Observation]
+      public void the_view_should_resort_the_nodes()
+      {
+         A.CallTo(() => _view.SortSelectedModules()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void appropriate_buttons_should_be_disabled_in_the_view()
+      {
+         // the moved node is now in the first position
+         _view.EnableUp.ShouldBeTrue();
+         _view.EnableDown.ShouldBeFalse();
+      }
+   }
+
+   public class When_moving_a_middle_node_up : When_selecting_different_nodes_in_the_configuration_tree
+   {
+      protected override void Because()
+      {
+         sut.MoveUp(_moduleConfigurationNodes[1]);
+      }
+
+      [Observation]
+      public void the_view_should_resort_the_nodes()
+      {
+         A.CallTo(() => _view.SortSelectedModules()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void appropriate_buttons_should_be_disabled_in_the_view()
+      {
+         // the moved node is now in the first position
+         _view.EnableUp.ShouldBeFalse();
+         _view.EnableDown.ShouldBeTrue();
+      }
+   }
+
+
+   public class When_selecting_a_non_terminal_node : When_selecting_different_nodes_in_the_configuration_tree
+   {
+      protected override void Because()
+      {
+         sut.SelectedModuleConfigurationNodeChanged(_moduleConfigurationNodes[1]);
+      }
+
+      [Observation]
+      public void appropriate_buttons_should_be_disabled_in_the_view()
+      {
+         _view.EnableRemove.ShouldBeTrue();
+         _view.EnableUp.ShouldBeTrue();
+         _view.EnableDown.ShouldBeTrue();
+      }
+   }
+
+   public class When_selecting_the_last_configuration_node : When_selecting_different_nodes_in_the_configuration_tree
+   {
+      protected override void Because()
+      {
+         sut.SelectedModuleConfigurationNodeChanged(_moduleConfigurationNodes.Last());
+      }
+
+      [Observation]
+      public void appropriate_buttons_should_be_disabled_in_the_view()
+      {
+         _view.EnableRemove.ShouldBeTrue();
+         _view.EnableUp.ShouldBeTrue();
+         _view.EnableDown.ShouldBeFalse();
+      }
+   }
+
+   public class When_selecting_the_first_configuration_node : When_selecting_different_nodes_in_the_configuration_tree
+   {
+      protected override void Because()
+      {
+         sut.SelectedModuleConfigurationNodeChanged(_moduleConfigurationNodes.First());
+      }
+
+      [Observation]
+      public void appropriate_buttons_should_be_disabled_in_the_view()
+      {
+         _view.EnableRemove.ShouldBeTrue();
+         _view.EnableUp.ShouldBeFalse();
+         _view.EnableDown.ShouldBeTrue();
+      }
+   }
+
+   public class When_selecting_a_non_configuration_node : concern_for_EditModuleConfigurationsPresenter
+   {
+      private ITreeNode _treeNode;
+      private ModuleConfigurationDTO _moduleConfigurationDTO;
+      private SimulationConfiguration _simulationConfiguration;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationConfiguration = new SimulationConfiguration();
+         _moduleConfigurationDTO = new ModuleConfigurationDTO(new ModuleConfiguration(new Module { new SpatialStructure() }));
+         _treeNode = _treeNodeFactory.CreateFor(_moduleConfigurationDTO);
+         sut.Edit(_simulationConfiguration);
+         _view.EnableRemove = true;
+         _view.EnableUp = true;
+         _view.EnableDown = true;
+      }
+
+      protected override void Because()
+      {
+         sut.SelectedModuleConfigurationNodeChanged(_treeNode.Children.First());
+      }
+
+      [Observation]
+      public void appropriate_buttons_should_be_disabled_in_the_view()
+      {
+         _view.EnableRemove.ShouldBeFalse();
+         _view.EnableUp.ShouldBeFalse();
+         _view.EnableDown.ShouldBeFalse();
+      }
+   }
+
+   public class When_changing_the_selected_module_configuration : concern_for_EditModuleConfigurationsPresenter
+   {
+      private ITreeNode _treeNode;
+      private ModuleConfigurationDTO _moduleConfigurationDTO;
+      private SimulationConfiguration _simulationConfiguration;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationConfiguration = new SimulationConfiguration();
          _moduleConfigurationDTO = new ModuleConfigurationDTO(new ModuleConfiguration(new Module()));
          _treeNode = _treeNodeFactory.CreateFor(_moduleConfigurationDTO);
+         sut.Edit(_simulationConfiguration);
       }
 
       protected override void Because()

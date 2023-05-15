@@ -25,6 +25,8 @@ namespace MoBi.Presentation.Presenter
       int CompareSelectedNodes(ITreeNode node1, ITreeNode node2);
       IReadOnlyList<ModuleConfigurationDTO> ModuleConfigurationDTOs { get; }
       void UpdateStartValuesFor(ITreeNode selectedModuleConfigurationNode);
+      void MoveUp(ITreeNode selectedNode);
+      void MoveDown(ITreeNode selectedNode);
    }
 
    public class EditModuleConfigurationsPresenter : AbstractSubPresenter<IEditModuleConfigurationsView, IEditModuleConfigurationsPresenter>, IEditModuleConfigurationsPresenter
@@ -106,7 +108,7 @@ namespace MoBi.Presentation.Presenter
          _view.RemoveNodeFromSelectedView(selectedTreeNode);
 
          addModuleToSelectionView(moduleConfigurationDTOFor(selectedTreeNode).Module);
-         
+
          // We are informing the parent presenter that something has changed in the view
          // In this case, the addition/removal of configuration means we could/or could not advance
          // to the next step
@@ -122,11 +124,21 @@ namespace MoBi.Presentation.Presenter
          if (dto == null)
          {
             _view.EnableRemove = false;
+            _view.EnableUp = false;
+            _view.EnableDown = false;
             return;
          }
 
+         enableUpDownArrows(selectedTreeNode);
+
          _view.EnableRemove = true;
          _view.BindModuleConfiguration(dto);
+      }
+
+      private void enableUpDownArrows(ITreeNode selectedTreeNode)
+      {
+         _view.EnableUp = canMoveConfigurationUpByOne(selectedTreeNode);
+         _view.EnableDown = canMoveConfigurationDownByOne(selectedTreeNode);
       }
 
       public void SelectedModuleNodeChanged(ITreeNode selectedNode)
@@ -199,6 +211,43 @@ namespace MoBi.Presentation.Presenter
 
       public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
 
+      public void MoveUp(ITreeNode selectedNode)
+      {
+         if (!canMoveConfigurationUpByOne(selectedNode))
+            return;
+
+         var selectedConfiguration = moduleConfigurationDTOFor(selectedNode);
+         // -1 because we want to change the index by that amount
+         var targetIndex = _moduleConfigurationDTOs.IndexOf(selectedConfiguration) - 1;
+         _moduleConfigurationDTOs.Remove(selectedConfiguration);
+         _moduleConfigurationDTOs.Insert(targetIndex, selectedConfiguration);
+         refreshSelectedModulesView(selectedNode);
+      }
+
+      private bool canMoveConfigurationDownByOne(ITreeNode selectedNode)
+      {
+         return _moduleConfigurationDTOs.IndexOf(moduleConfigurationDTOFor(selectedNode)) < _moduleConfigurationDTOs.Count - 1;
+      }
+
+      private bool canMoveConfigurationUpByOne(ITreeNode selectedNode)
+      {
+         return _moduleConfigurationDTOs.IndexOf(moduleConfigurationDTOFor(selectedNode)) > 0;
+      }
+
+      public void MoveDown(ITreeNode selectedNode)
+      {
+         if (!canMoveConfigurationDownByOne(selectedNode))
+            return;
+
+         var selectedConfiguration = moduleConfigurationDTOFor(selectedNode);
+
+         // +1 because we want to change the index by that amount
+         var targetIndex = _moduleConfigurationDTOs.IndexOf(selectedConfiguration) + 1;
+         _moduleConfigurationDTOs.Remove(selectedConfiguration);
+         _moduleConfigurationDTOs.Insert(targetIndex, selectedConfiguration);
+         refreshSelectedModulesView(selectedNode);
+      }
+
       public void MoveNode(ITreeNode dragNode, ITreeNode targetNode)
       {
          var movingConfiguration = moduleConfigurationDTOFor(dragNode);
@@ -206,11 +255,22 @@ namespace MoBi.Presentation.Presenter
          if (movingConfiguration == null || targetConfiguration == null)
             return;
 
+         moveConfiguration(movingConfiguration, targetConfiguration);
+         refreshSelectedModulesView(dragNode);
+      }
+
+      private void refreshSelectedModulesView(ITreeNode selectedNode)
+      {
+         _view.SortSelectedModules();
+         enableUpDownArrows(selectedNode);
+      }
+
+      private void moveConfiguration(ModuleConfigurationDTO movingConfiguration, ModuleConfigurationDTO targetConfiguration)
+      {
          _moduleConfigurationDTOs.Remove(movingConfiguration);
 
          var targetNodeIndex = _moduleConfigurationDTOs.IndexOf(targetConfiguration);
          _moduleConfigurationDTOs.Insert(targetNodeIndex, movingConfiguration);
-         _view.SortSelectedModules();
       }
    }
 }
