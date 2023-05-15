@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.BatchTool.Services;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Serialization.ORM;
 using Newtonsoft.Json;
 using OSPSuite.Core.Domain;
@@ -21,12 +22,14 @@ namespace MoBi.BatchTool.Runners
       private readonly IBatchLogger _logger;
       private readonly IContextPersistor _contextPersistor;
       private readonly IMoBiContext _context;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public ProjectOverviewRunner(IBatchLogger logger, IContextPersistor contextPersistor, IMoBiContext context)
+      public ProjectOverviewRunner(IBatchLogger logger, IContextPersistor contextPersistor, IMoBiContext context, IBuildingBlockRepository buildingBlockRepository)
       {
          _logger = logger;
          _contextPersistor = contextPersistor;
          _context = context;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
       public Task RunBatch(dynamic parameters)
@@ -74,7 +77,7 @@ namespace MoBi.BatchTool.Runners
          {
             _contextPersistor.Load(_context, projectFile.FullName);
             var project = _context.CurrentProject;
-            projectInfo.CompoundNames = project.MoleculeBlockCollection.SelectMany(x => x).AllNames().ToList();
+            projectInfo.CompoundNames = _buildingBlockRepository.MoleculeBlockCollection.SelectMany(x => x).AllNames().ToList();
 
             foreach (var observedData in project.AllObservedData)
             {

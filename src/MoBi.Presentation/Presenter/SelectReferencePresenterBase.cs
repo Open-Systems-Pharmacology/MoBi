@@ -18,6 +18,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Assets;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -51,6 +52,7 @@ namespace MoBi.Presentation.Presenter
       protected IEntity _refObject;
       private readonly IObjectPathCreator _objectPathCreator;
       private readonly Localisations _localisation;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private IUsingFormula _editedObject;
       public Func<IObjectBase, bool> SelectionPredicate { get; set; }
       public event Action SelectionChangedEvent = delegate { };
@@ -63,11 +65,13 @@ namespace MoBi.Presentation.Presenter
          IParameterToDummyParameterDTOMapper dummyParameterDTOMapper,
          IObjectBaseDTOToReferenceNodeMapper referenceMapper,
          IObjectPathCreator objectPathCreator,
-         Localisations localisation)
+         Localisations localisation,
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view)
       {
          _objectPathCreator = objectPathCreator;
          _localisation = localisation;
+         _buildingBlockRepository = buildingBlockRepository;
          _dummyParameterDTOMapper = dummyParameterDTOMapper;
          _referenceMapper = referenceMapper;
          _dummyMoleculeDTOMapper = objectBaseToDummyMoleculeDTOMapper;
@@ -233,7 +237,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddSpatialStructures()
       {
-         var spatialStructures = _context.CurrentProject.SpatialStructureCollection;
+         var spatialStructures = _buildingBlockRepository.SpatialStructureCollection;
          _view.AddNodes(spatialStructures.MapAllUsing(_referenceMapper));
       }
 
@@ -250,10 +254,10 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_referenceMapper.MapFrom(timeDTO));
       }
 
-      private IEnumerable<T> getAllMoleculeChildren<T>(MoBiProject currentProject, DummyMoleculeContainerDTO dummyMolecule) where T : class, IEntity
+      private IEnumerable<T> getAllMoleculeChildren<T>(DummyMoleculeContainerDTO dummyMolecule) where T : class, IEntity
       {
          IEnumerable<T> children = new List<T>();
-         foreach (var moleculeBuildingBlock in currentProject.MoleculeBlockCollection)
+         foreach (var moleculeBuildingBlock in _buildingBlockRepository.MoleculeBlockCollection)
          {
             var moleculeBuilder = moleculeBuildingBlock.FindByName(dummyMolecule.Name);
             if (moleculeBuilder == null)
@@ -278,14 +282,14 @@ namespace MoBi.Presentation.Presenter
          if (isGlobalMoleculePropertiesContainer(moleculePropertiesContainer))
          {
             //add Child Container
-            children.AddRange(getAllMoleculeChildren<TransporterMoleculeContainer>(_context.CurrentProject, dummyMolecule)
+            children.AddRange(getAllMoleculeChildren<TransporterMoleculeContainer>(dummyMolecule)
                .MapAllUsing(_objectBaseDTOMapper));
 
-            children.AddRange(getAllMoleculeChildren<InteractionContainer>(_context.CurrentProject, dummyMolecule)
+            children.AddRange(getAllMoleculeChildren<InteractionContainer>(dummyMolecule)
                .MapAllUsing(_objectBaseDTOMapper));
 
             //add global Molecule Properties defined in Molecules BB because the molecule represents a global molecule container
-            parameterDTOs.AddRange(getAllMoleculeChildren<IParameter>(_context.CurrentProject, dummyMolecule)
+            parameterDTOs.AddRange(getAllMoleculeChildren<IParameter>(dummyMolecule)
                .Where(para => para.BuildMode != ParameterBuildMode.Local)
                .Select(x => _dummyParameterDTOMapper.MapFrom(x, moleculePropertiesContainer, dummyMolecule)));
          }
@@ -294,7 +298,7 @@ namespace MoBi.Presentation.Presenter
             //This is a local molecule container . We add local Molecules Properties defined in Molecule BB only if container is defined in a physical cotnainer
             if (moleculePropertiesContainer.ParentContainer.Mode == ContainerMode.Physical)
             {
-               parameterDTOs.AddRange(getAllMoleculeChildren<IParameter>(_context.CurrentProject, dummyMolecule)
+               parameterDTOs.AddRange(getAllMoleculeChildren<IParameter>(dummyMolecule)
                   .Where(para => para.BuildMode == ParameterBuildMode.Local)
                   .Select(x => _dummyParameterDTOMapper.MapFrom(x, moleculePropertiesContainer, dummyMolecule)));
             }
@@ -408,7 +412,7 @@ namespace MoBi.Presentation.Presenter
       {
          get
          {
-            var moleculeBuildingBlocks = _context.CurrentProject.MoleculeBlockCollection;
+            var moleculeBuildingBlocks = _buildingBlockRepository.MoleculeBlockCollection;
             return moleculeBuildingBlocks.SelectMany(x => x).OrderBy(x => x.Name);
          }
       }
@@ -420,7 +424,7 @@ namespace MoBi.Presentation.Presenter
 
       private IEnumerable<ReactionBuilder> getReactions
       {
-         get { return _context.CurrentProject.ReactionBlockCollection.SelectMany(x => x).OrderBy(x => x.Name); }
+         get { return _buildingBlockRepository.ReactionBlockCollection.SelectMany(x => x).OrderBy(x => x.Name); }
       }
 
       protected void AddMolecule()

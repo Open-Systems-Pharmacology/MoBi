@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
@@ -48,6 +49,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          _interactionTaskContext = interactionTaskContext;
          _editTask = editTask;
       }
+
+      protected IBuildingBlockRepository BuildingBlockRepository => _interactionTaskContext.BuildingBlockRepository;
 
       protected IMoBiContext Context => _interactionTaskContext.Context;
 

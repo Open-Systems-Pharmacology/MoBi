@@ -69,25 +69,9 @@ namespace MoBi.Core.Domain.Model
          return _buildingBlocks.OfType<T>().ToList();
       }
 
-      public IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection => get<MoleculeBuildingBlock>();
-
-      public IReadOnlyList<MoBiReactionBuildingBlock> ReactionBlockCollection => get<MoBiReactionBuildingBlock>();
-
       public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection => get<ExpressionProfileBuildingBlock>();
 
       public IReadOnlyList<IndividualBuildingBlock> IndividualsCollection => get<IndividualBuildingBlock>();
-
-      public IReadOnlyList<PassiveTransportBuildingBlock> PassiveTransportCollection => get<PassiveTransportBuildingBlock>();
-
-      public IReadOnlyList<MoBiSpatialStructure> SpatialStructureCollection => get<MoBiSpatialStructure>();
-
-      public IReadOnlyList<ObserverBuildingBlock> ObserverBlockCollection => get<ObserverBuildingBlock>();
-
-      public IReadOnlyList<EventGroupBuildingBlock> EventBlockCollection => get<EventGroupBuildingBlock>();
-
-      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionBlockCollection => get<InitialConditionsBuildingBlock>();
-
-      public IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection => get<ParameterValuesBuildingBlock>();
 
       public Module ModuleByName(string moduleName)
       {
@@ -123,13 +107,6 @@ namespace MoBi.Core.Domain.Model
       public void RemoveChart(CurveChart chartToRemove)
       {
          _charts.Remove(chartToRemove);
-      }
-
-      public IReadOnlyList<IBuildingBlock> AllBuildingBlocks()
-      {
-         return InitialConditionBlockCollection
-            .Concat<IBuildingBlock>(ParametersValueBlockCollection)
-            .Concat(moduleBuildingBlocks()).ToList();
       }
 
       private IEnumerable<IBuildingBlock> moduleBuildingBlocks()

@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Presentation;
@@ -36,6 +37,7 @@ namespace MoBi.UI.Presenters
       private readonly IDiagramPopupMenuBase _moleculePopupMenu;
       private readonly IDiagramPopupMenuBase _reactionPopupMenu;
       private readonly IDiagramLayoutTask _diagramLayoutTask;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public ReactionDiagramPresenter(
          IReactionDiagramView view, 
@@ -47,7 +49,8 @@ namespace MoBi.UI.Presenters
          IDiagramTask diagramTask, 
          IDiagramLayoutTask diagramLayoutTask,
          IStartOptions runOptions, 
-         IDiagramModelFactory diagramModelFactory) :
+         IDiagramModelFactory diagramModelFactory,
+         IBuildingBlockRepository buildingBlockRepository) :
          base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
          _applicationController = applicationController;
@@ -55,6 +58,7 @@ namespace MoBi.UI.Presenters
          _moleculePopupMenu = _diagramPopupMenu;
          _reactionPopupMenu = new PopupMenuReactionBuilder(this, context, runOptions);
          _diagramLayoutTask = diagramLayoutTask;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
       public bool DisplayEductsRight(IBaseNode node)
@@ -119,13 +123,13 @@ namespace MoBi.UI.Presenters
 
       private IEnumerable<string> getMoleculeNames()
       {
-         var moleculeBB = _context.CurrentProject.MoleculeBlockCollection;
+         var moleculeBB = _buildingBlockRepository.MoleculeBlockCollection;
          return moleculeBB.SelectMany(bb => bb.Select(molecule => molecule.Name)).Distinct().OrderBy(moleculeName => moleculeName);
       }
 
       private void addMoleculeNode(string moleculeName, MoBiMacroCommand command)
       {
-         if (moleculeName.Equals(String.Empty)) return;
+         if (moleculeName.Equals(string.Empty)) return;
 
          var moleculeNodes = reactionDiagramManager.GetMoleculeNodes(moleculeName);
 

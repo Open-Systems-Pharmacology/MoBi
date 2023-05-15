@@ -2,6 +2,7 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Presenter;
@@ -35,7 +36,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void CreateNewFromSelection()
       {
-         var allMolecules = Context.CurrentProject.MoleculeBlockCollection;
+         var allMolecules = BuildingBlockRepository.MoleculeBlockCollection;
          NewMoleculeBuildingBlockDescription newMoleculeBuildingBlockDescription = null;
          using (var selectMoleculesPresenter = ApplicationController.Start<ISelectMoleculesForBuildingBlockPresenter>())
          {

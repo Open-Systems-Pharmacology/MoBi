@@ -2,6 +2,8 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -25,6 +27,7 @@ namespace MoBi.Presentation
       protected IUserSettings _userSettings;
       private IObjectPathCreatorAtParameter _objectPathCreator;
       private IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
+      private IBuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
@@ -36,9 +39,11 @@ namespace MoBi.Presentation
          _userSettings = A.Fake<IUserSettings>();
          _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
          _referenceMapper = A.Fake<ObjectBaseDTOToReferenceNodeMapper>();
+         _buildingBlockRepository = new BuildingBlockRepository(new MoBiProjectRetriever(_context));
+
          sut = new SelectReferenceAtParameterPresenter(_view, _objectBaseDTOMapper, _context, _userSettings,
             _moleculeMapper, _parameterMapper, _referenceMapper,
-            _objectPathCreator);
+            _objectPathCreator, _buildingBlockRepository);
       }
    }
 
@@ -47,9 +52,9 @@ namespace MoBi.Presentation
    {
       private ObjectBaseDTO _moleculePropertiesDTO;
       private IEnumerable<ObjectBaseDTO> _result;
-      private  DummyParameterDTO _dtoP1;
-      private  DummyParameterDTO _dtoPlocal;
-      private  DummyParameterDTO _dtoPglobal;
+      private DummyParameterDTO _dtoP1;
+      private DummyParameterDTO _dtoPlocal;
+      private DummyParameterDTO _dtoPglobal;
 
       protected override void Context()
       {
@@ -65,9 +70,9 @@ namespace MoBi.Presentation
          moleculeProperties.Add(p1);
          var moleculeName = "Drug";
          _moleculePropertiesDTO = new DummyMoleculeContainerDTO(new MoleculeAmount())
-            {
-               MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)
-            }.WithId("ANY").WithName(moleculeName);
+         {
+            MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)
+         }.WithId("ANY").WithName(moleculeName);
 
          A.CallTo(() => _context.Get<IContainer>(id)).Returns(moleculeProperties);
          var objectBaseRepository = A.Fake<IWithIdRepository>();
@@ -85,7 +90,9 @@ namespace MoBi.Presentation
          _dtoPglobal = new DummyParameterDTO(localP).WithName("global");
 
          moleculeBuildingBlock.Add(molecule);
-         project.AddBuildingBlock(moleculeBuildingBlock);
+
+         project.AddModule(new Module { moleculeBuildingBlock });
+
          A.CallTo(() => _parameterMapper.MapFrom(localP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPlocal);
          A.CallTo(() => _parameterMapper.MapFrom(globalP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPglobal);
          A.CallTo(() => _context.CurrentProject).Returns(project);
@@ -138,10 +145,10 @@ namespace MoBi.Presentation
          moleculeProperties.Add(p1);
          var moleculeName = "Drug";
          _moleculePropertiesDTO =
-            new DummyMoleculeContainerDTO(new MoleculeAmount {Name = moleculeName})
-               {
-                  MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)
-               }.WithId("ANY")
+            new DummyMoleculeContainerDTO(new MoleculeAmount { Name = moleculeName })
+            {
+               MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)
+            }.WithId("ANY")
                .WithName(moleculeName);
 
          A.CallTo(() => _context.Get<IContainer>(id)).Returns(moleculeProperties);
@@ -162,7 +169,7 @@ namespace MoBi.Presentation
          _dtoPglobal = new DummyParameterDTO(localP).WithName("global");
 
          moleculeBuildingBlock.Add(molecule);
-         project.AddBuildingBlock(moleculeBuildingBlock);
+
          A.CallTo(() => _parameterMapper.MapFrom(localP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPlocal);
          A.CallTo(() => _parameterMapper.MapFrom(globalP, A<IContainer>._, A<ObjectBaseDTO>._)).Returns(_dtoPglobal);
          A.CallTo(() => _context.CurrentProject).Returns(project);
@@ -204,7 +211,7 @@ namespace MoBi.Presentation
          var id = "DIST";
          _dtoDistributedParameter = A.Fake<ObjectBaseDTO>().WithId(id);
          var distributeParameter = A.Fake<IDistributedParameter>();
-         A.CallTo(() => distributeParameter.Children).Returns(new[] {A.Fake<IParameter>().WithName("Mean")});
+         A.CallTo(() => distributeParameter.Children).Returns(new[] { A.Fake<IParameter>().WithName("Mean") });
          A.CallTo(() => _context.Get<IObjectBase>(id)).Returns(distributeParameter);
          var objectBaseRepository = A.Fake<IWithIdRepository>();
          A.CallTo(() => _context.ObjectRepository).Returns(objectBaseRepository);

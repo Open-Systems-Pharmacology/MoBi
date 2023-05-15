@@ -162,9 +162,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected override IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder)
       {
-         var buildingblock = _context.CurrentProject.PassiveTransportCollection.FirstOrDefault(x => x.Contains(transportBuilder));
+         var buildingBlock = transportBuilder.BuildingBlock;
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithRemoveCommand(buildingblock, transportBuilder)
+            .WithRemoveCommand(buildingBlock, transportBuilder)
             .WithIcon(ApplicationIcons.Delete);
       }
    }

@@ -39,19 +39,15 @@ namespace MoBi.Presentation
       {
          base.Context();
          _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
-         var initialConditionsBuildingBlock = new InitialConditionsBuildingBlock
-         {
-            MoleculeBuildingBlockId = _moleculeBuildingBlock.Id
-         };
-         _project.AddBuildingBlock(initialConditionsBuildingBlock);
          _module = new Module
          {
-            new InitialConditionsBuildingBlock {MoleculeBuildingBlockId = _moleculeBuildingBlock.Id, SpatialStructureId = ""}
+            new InitialConditionsBuildingBlock { MoleculeBuildingBlockId = _moleculeBuildingBlock.Id, SpatialStructureId = "" },
+            new InitialConditionsBuildingBlock { MoleculeBuildingBlockId = _moleculeBuildingBlock.Id }
          };
       }
 
       [Observation]
-      public void should_throw_mobi_exception()
+      public void should_throw_MoBi_exception()
       {
          The.Action(() => sut.Remove(_moleculeBuildingBlock, _module, null, false)).ShouldThrowAn<MoBiException>();
       }

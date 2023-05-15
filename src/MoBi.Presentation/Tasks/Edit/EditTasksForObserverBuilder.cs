@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -8,6 +9,7 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public class EditTasksForObserverBuilder<TBuilder> : EditTaskFor<TBuilder> where TBuilder : ObserverBuilder
    {
+
       public EditTasksForObserverBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
@@ -21,9 +23,9 @@ namespace MoBi.Presentation.Tasks.Edit
          return activeObservers == null ? Enumerable.Empty<string>() : activeObservers.Select(x => x.Name);
       }
 
-      private ObserverBuildingBlock getObserverBuildingBlockFor(TBuilder objectBase)
+      private ObserverBuildingBlock getObserverBuildingBlockFor(TBuilder observerBuilder)
       {
-         var observerBuildingBlock = _context.CurrentProject.ObserverBlockCollection.FirstOrDefault(x => x.Contains(objectBase));
+         var observerBuildingBlock = _interactionTaskContext.BuildingBlockRepository.ObserverBlockCollection.FirstOrDefault(x => x.Contains(observerBuilder));
          return observerBuildingBlock ?? _interactionTaskContext.Active<ObserverBuildingBlock>();
       }
    }

@@ -1,5 +1,6 @@
 ﻿using System;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Serialization.Xml.Services;

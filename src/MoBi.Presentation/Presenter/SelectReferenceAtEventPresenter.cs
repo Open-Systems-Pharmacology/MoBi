@@ -5,6 +5,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -22,9 +23,10 @@ namespace MoBi.Presentation.Presenter
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyDTOMapper,
          IParameterToDummyParameterDTOMapper dummyParameterDTOMapper,
          IObjectBaseDTOToReferenceNodeMapper referenceMapper,
-         IObjectPathCreatorAtEvent objectPathCreator)
+         IObjectPathCreatorAtEvent objectPathCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyDTOMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly)
+            objectBaseToMoleculeDummyDTOMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
       }
 

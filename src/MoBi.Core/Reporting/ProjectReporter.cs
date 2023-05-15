@@ -28,15 +28,10 @@ namespace MoBi.Core.Reporting
       {
          var listToReport = new List<object>();
          listToReport.Add(new Part(Constants.BUILDING_BLOCKS));
-         listToReport.AddRange(_spatialStructuresReporter.Report(project.SpatialStructureCollection.ToList(), buildTracker));
-         listToReport.AddRange(new MoleculeBuildingBlocksReporter().Report(project.MoleculeBlockCollection.ToList(), buildTracker));
-         listToReport.AddRange(_reactionBuildingBlocksReporter.Report(project.ReactionBlockCollection.ToList(), buildTracker));
-         listToReport.AddRange(new PassiveTransportBuildingBlocksReporter().Report(project.PassiveTransportCollection.ToList(), buildTracker));
-         listToReport.AddRange(new ObserverBuildingBlocksReporter().Report(project.ObserverBlockCollection.ToList(), buildTracker));
+         listToReport.AddRange(_spatialStructuresReporter.Report(project.Modules.ToList(), buildTracker));
+         listToReport.AddRange(new MoleculeBuildingBlocksReporter().Report(project.IndividualsCollection.ToList(), buildTracker));
+         listToReport.AddRange(_reactionBuildingBlocksReporter.Report(project.ExpressionProfileCollection.ToList(), buildTracker));
          listToReport.AddRange(_simulationSettingsReporter.Report(project.SimulationSettings, buildTracker));
-         listToReport.AddRange(new EventGroupBuildingBlocksReporter().Report(project.EventBlockCollection.ToList(), buildTracker));
-         listToReport.AddRange(new InitialConditionsBuildingBlocksReporter(_displayUnitRetriever).Report(project.InitialConditionBlockCollection.ToList(), buildTracker));
-         listToReport.AddRange(new ParameterValuesBuildingBlocksReporter(_displayUnitRetriever).Report(project.ParametersValueBlockCollection.ToList(), buildTracker));
          listToReport.AddRange(new ObservedDataReporter().Report(project.AllObservedData.ToList(), buildTracker));
          listToReport.AddRange(_simulationsReporter.Report(project.Simulations.ToList(), buildTracker));
          listToReport.AddRange(new ChartsReporter().Report(project.Charts.ToList(), buildTracker));       

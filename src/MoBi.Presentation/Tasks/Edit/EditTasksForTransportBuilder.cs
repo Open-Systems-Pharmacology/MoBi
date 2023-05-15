@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -23,7 +24,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       private PassiveTransportBuildingBlock getPassiveTransportBuildingBlockFor(TransportBuilder objectBase)
       {
-         var passiveTransportBuildingBlock = _context.CurrentProject.PassiveTransportCollection.FirstOrDefault(x => x.Contains(objectBase));
+         var passiveTransportBuildingBlock = _interactionTaskContext.BuildingBlockRepository.PassiveTransportCollection.FirstOrDefault(x => x.Contains(objectBase));
          return passiveTransportBuildingBlock ?? _interactionTaskContext.Active<PassiveTransportBuildingBlock>();
       }
    }

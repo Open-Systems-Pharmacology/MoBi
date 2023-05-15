@@ -57,7 +57,8 @@ namespace MoBi.Core.Domain.Services
       public void Register(MoBiProject project)
       {
          register(project);
-         project.AllBuildingBlocks().Each(RegisterAllIn);
+         project.IndividualsCollection.Each(RegisterAllIn);
+         project.ExpressionProfileCollection.Each(RegisterAllIn);
          project.AllObservedData.Each(RegisterAllIn);
          project.Modules.Each(RegisterAllIn);
       }

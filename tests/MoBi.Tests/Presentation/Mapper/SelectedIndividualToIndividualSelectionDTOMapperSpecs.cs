@@ -38,8 +38,8 @@ namespace MoBi.Presentation.Mapper
          _projectIndividual1 = new IndividualBuildingBlock().WithName("common name");
          _projectIndividual2 = new IndividualBuildingBlock().WithName("uncommon name");
          _configurationIndividual = new IndividualBuildingBlock().WithName("common name");
-         _moBiProject.AddBuildingBlock(_projectIndividual1);
-         _moBiProject.AddBuildingBlock(_projectIndividual2);
+         _moBiProject.AddIndividualBuildingBlock(_projectIndividual1);
+         _moBiProject.AddIndividualBuildingBlock(_projectIndividual2);
       }
 
       protected override void Because()

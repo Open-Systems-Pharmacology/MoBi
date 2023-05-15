@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
 using MoBi.IntegrationTests;
@@ -22,12 +23,12 @@ namespace MoBi.ProjectConversion.v7_3
       [Observation]
       public void should_have_set_all_parameters_of_all_building_blocks_to_default()
       {
-         _project.MoleculeBlockCollection.Each(validateIsDefaultFlagInParameters);
-         _project.ReactionBlockCollection.Each(validateIsDefaultFlagInParameters);
-         _project.SpatialStructureCollection.Each(validateIsDefaultFlagInParameters);
-         _project.EventBlockCollection.Each(validateIsDefaultFlagInParameters);
-         _project.PassiveTransportCollection.Each(validateIsDefaultFlagInParameters);
-         _project.ParametersValueBlockCollection.Each(validateIsDefaultFlagInParameters);
+         _project.Modules.SelectMany(x => x.Molecules).Each(validateIsDefaultFlagInParameters);
+         _project.Modules.SelectMany(x => x.Reactions ).Each(validateIsDefaultFlagInParameters);
+         _project.Modules.SelectMany(x => x.SpatialStructure).Each(validateIsDefaultFlagInParameters);
+         _project.Modules.SelectMany(x => x.EventGroups).Each(validateIsDefaultFlagInParameters);
+         _project.Modules.SelectMany(x => x.PassiveTransports).Each(validateIsDefaultFlagInParameters);
+         _project.Modules.SelectMany(x => x.ParameterValuesCollection).Each(validateIsDefaultFlagInParameters);
       }
 
       private void validateIsDefaultFlagInParameters<T>(IEnumerable<T> buildingBlock) where T : class

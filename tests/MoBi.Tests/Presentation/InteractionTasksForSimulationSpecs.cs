@@ -45,7 +45,7 @@ namespace MoBi.Presentation
          _moBiContext = A.Fake<IMoBiContext>();
          var moBiProject = new MoBiProject();
          _individualBuildingBlock = new IndividualBuildingBlock().WithName("common individual");
-         moBiProject.AddBuildingBlock(_individualBuildingBlock);
+         moBiProject.AddIndividualBuildingBlock(_individualBuildingBlock);
          A.CallTo(() => _moBiContext.CurrentProject).Returns(moBiProject);
          A.CallTo(() => _context.Context).Returns(_moBiContext);
          sut = new InteractionTasksForSimulation(_context, _editTask, _simulationReferenceUpdater, _simulationFactory);

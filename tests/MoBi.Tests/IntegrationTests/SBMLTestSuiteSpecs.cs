@@ -72,15 +72,15 @@ namespace MoBi.IntegrationTests
             }
 
             addSettings(project, Path.Combine(directory.FullName, $"{caseName}-settings.txt"));
-            var buildConfigurtion = generateBuildConfiguration(project);
-            var result = _modelConstructor.CreateModelFrom(buildConfigurtion, caseName);
+            var buildConfiguration = generateBuildConfiguration(project);
+            var result = _modelConstructor.CreateModelFrom(buildConfiguration, caseName);
             if (result.IsInvalid)
             {
                messages.Add(caseName);
                continue;
             }
 
-            var simulation = new MoBiSimulation {Configuration = buildConfigurtion, Model = result.Model};
+            var simulation = new MoBiSimulation {Configuration = buildConfiguration, Model = result.Model};
             var simModelManager = new SimModelManager(_simModelExporter, new SimModelSimulationFactory(),
                new DataFactory(IoC.Resolve<IMoBiDimensionFactory>(), IoC.Resolve<IDisplayUnitRetriever>(), IoC.Resolve<IDataRepositoryTask>()));
             var runResults = simModelManager.RunSimulation(simulation);
@@ -109,16 +109,16 @@ namespace MoBi.IntegrationTests
 
          var module = new Module
          {
-            project.SpatialStructureCollection.First(),
-            project.MoleculeBlockCollection.First(),
-            project.ReactionBlockCollection.First(),
-            project.PassiveTransportCollection.First(),
-            project.EventBlockCollection.First(),
-            project.ObserverBlockCollection.First()
+            project.Modules.First().SpatialStructure,
+            project.Modules.First().Molecules,
+            project.Modules.First().Reactions,
+            project.Modules.First().PassiveTransports,
+            project.Modules.First().EventGroups,
+            project.Modules.First().Observers
          };
 
 
-         var moduleConfiguration = new ModuleConfiguration(module, project.InitialConditionBlockCollection.First(), project.ParametersValueBlockCollection.First());
+         var moduleConfiguration = new ModuleConfiguration(module, project.Modules.First().InitialConditionsCollection.First(), project.Modules.First().ParameterValuesCollection.First());
 
          simulationConfiguration.SimulationSettings = project.SimulationSettings;
 

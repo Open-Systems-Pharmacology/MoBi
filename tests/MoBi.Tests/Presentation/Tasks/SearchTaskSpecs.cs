@@ -1,32 +1,38 @@
 ﻿using System.Collections.Generic;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
 using FakeItEasy;
-using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-
+using OSPSuite.Core.Domain.Repositories;
 
 namespace MoBi.Presentation.Tasks
 {
    public abstract class concern_for_SearchTaskSpecs : ContextSpecification<ISearchTask>
    {
       protected ISearchVisitor _searchVisitor;
+      private ISimulationRepository _simulationRepository;
+      private IBuildingBlockRepository _buildingBlockRepository;
+      private IMoBiProjectRetriever _moBiProjectRetriever;
       protected IMoBiContext _context;
 
       protected override void Context()
       {
          _searchVisitor = A.Fake<ISearchVisitor>();
          _context = A.Fake<IMoBiContext>();
-         sut = new SearchTask(_searchVisitor,_context);
+         _moBiProjectRetriever = new MoBiProjectRetriever(_context);
+         _buildingBlockRepository = new BuildingBlockRepository(_moBiProjectRetriever);
+         _simulationRepository = new SimulationRepository(_moBiProjectRetriever);
+         sut = new SearchTask(_searchVisitor, _moBiProjectRetriever, _buildingBlockRepository, _simulationRepository);
       }
    }
 
-   class When_Start_search_is_called_for_a_building_block: concern_for_SearchTaskSpecs
+   class When_Start_search_is_called_for_a_building_block : concern_for_SearchTaskSpecs
    {
       private IObjectBase _buildingBlock;
       private SearchOptions _options;
@@ -35,7 +41,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _buildingBlock = A.Fake<IBuildingBlock>();
-         _options = new SearchOptions(){CaseSensitive = false,Expression = "*",Scope = SearchScope.Local,RegEx = true, WholeWord = true};
+         _options = new SearchOptions() { CaseSensitive = false, Expression = "*", Scope = SearchScope.Local, RegEx = true, WholeWord = true };
       }
 
       protected override void Because()
@@ -55,11 +61,11 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_search_in_the_buildingBlock()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock,A<MoBiProject>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
       }
    }
 
-   class When_Start_search_is_called_for_whole_Project: concern_for_SearchTaskSpecs
+   class When_Start_search_is_called_for_whole_Project : concern_for_SearchTaskSpecs
    {
       private IObjectBase _buildingBlock;
       private SearchOptions _options;
@@ -70,7 +76,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _buildingBlock = A.Fake<IBuildingBlock>();
          _project = A.Fake<MoBiProject>();
-         _options = new SearchOptions() { CaseSensitive = false, Expression = "*", Scope = SearchScope.Project, RegEx = true, WholeWord = true };
+         _options = new SearchOptions { CaseSensitive = false, Expression = "*", Scope = SearchScope.Project, RegEx = true, WholeWord = true };
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
 
@@ -91,7 +97,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_search_in_the_buildingBlock()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_project,_project)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_project, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
       }
    }
 
@@ -110,8 +116,14 @@ namespace MoBi.Presentation.Tasks
          _options = new SearchOptions() { CaseSensitive = false, Expression = "*", Scope = SearchScope.AllOfSameType, RegEx = true, WholeWord = true };
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          _otherBuildingBlock = new InitialConditionsBuildingBlock();
-         _project.AddBuildingBlock(_buildingBlock);
-         _project.AddBuildingBlock(_otherBuildingBlock);
+
+         var module = new Module()
+         {
+            _buildingBlock,
+            _otherBuildingBlock
+         };
+         
+         _project.AddModule(module);
       }
 
       protected override void Because()
@@ -122,8 +134,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_retrieve_all_building_blocks_of_same_type()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock, _project)).MustHaveHappened();
-         A.CallTo(() => _searchVisitor.SearchIn(_otherBuildingBlock, _project)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_otherBuildingBlock, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
       }
 
       [Observation]
@@ -138,9 +150,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_search_in_the_buildingBlock()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock,_project)).MustHaveHappened();
-         A.CallTo(() => _searchVisitor.SearchIn(_otherBuildingBlock,_project)).MustHaveHappened();
-
+         A.CallTo(() => _searchVisitor.SearchIn(_buildingBlock, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_otherBuildingBlock, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
       }
    }
 
@@ -158,8 +169,8 @@ namespace MoBi.Presentation.Tasks
          _project = DomainHelperForSpecs.NewProject();
          _options = new SearchOptions { CaseSensitive = false, Expression = "*", Scope = SearchScope.AllOfSameType, RegEx = true, WholeWord = true };
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         _otherSimulation = A.Fake<IMoBiSimulation>(); 
-         
+         _otherSimulation = A.Fake<IMoBiSimulation>();
+
          _project.AddSimulation(_simulation);
          _project.AddSimulation(_otherSimulation);
       }
@@ -172,7 +183,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_retrieve_all_building_blocks_of_same_type()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_simulation, _project)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_simulation, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
       }
 
       [Observation]
@@ -187,9 +198,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_search_in_the_buildingBlock()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_simulation,A<MoBiProject>._)).MustHaveHappened();
-         A.CallTo(() => _searchVisitor.SearchIn(_otherSimulation, A<MoBiProject>._)).MustHaveHappened();
-
+         A.CallTo(() => _searchVisitor.SearchIn(_simulation, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_otherSimulation, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
       }
    }
 
@@ -222,7 +232,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_search_in_the_buildingBlock()
       {
-         A.CallTo(() => _searchVisitor.SearchIn(_simulation, A<MoBiProject>._)).MustHaveHappened();
+         A.CallTo(() => _searchVisitor.SearchIn(_simulation, A<IReadOnlyList<IBuildingBlock>>._)).MustHaveHappened();
       }
    }
-}	
+}

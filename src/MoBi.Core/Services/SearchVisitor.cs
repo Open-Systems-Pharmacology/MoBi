@@ -15,7 +15,7 @@ namespace MoBi.Core.Services
       bool RegExSearch { get; set; }
       IEnumerable<SearchResult> Result { get; }
       bool CaseSensitive { get; set; }
-      IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, MoBiProject project);
+      IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, IReadOnlyList<IBuildingBlock> buildingBlocks);
    }
 
    class SearchVisitor : ISearchVisitor
@@ -71,12 +71,12 @@ namespace MoBi.Core.Services
 
       public IEnumerable<SearchResult> Result => _result;
 
-      public IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, MoBiProject project)
+      public IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, IReadOnlyList<IBuildingBlock> buildingBlocks)
       {
          try
          {
             _result = new List<SearchResult>();
-            _allBuildingBlocks = project.AllBuildingBlocks();
+            _allBuildingBlocks = buildingBlocks;
             _searchExpressionCreated = false;
             _localVisitor = new LocalSearchVisitor(getSearchExpression()) {CaseSensitive = CaseSensitive};
             searchTarget.AcceptVisitor(this);

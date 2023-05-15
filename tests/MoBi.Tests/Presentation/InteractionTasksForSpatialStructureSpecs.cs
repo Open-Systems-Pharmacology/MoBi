@@ -46,12 +46,10 @@ namespace MoBi.Presentation
             _spatialStructure
          };
          _moBiProject.AddModule(_module);
-         _moBiProject.AddBuildingBlock(_spatialStructure);
-         _moBiProject.AddBuildingBlock(_initialConditionsBuildingBlock);
       }
 
       [Observation]
-      public void should_throw_mobi_exception()
+      public void should_throw_MoBi_exception()
       {
          The.Action(() => sut.Remove(_spatialStructure, _module, null, false)).ShouldThrowAn<MoBiException>();
       }

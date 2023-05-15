@@ -54,8 +54,8 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
-         moBiProject.AddBuildingBlock(_expressionProfile1);
-         moBiProject.AddBuildingBlock(_expressionProfile2);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile1);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile2);
 
          _simulationConfiguration.AddExpressionProfile(_expressionProfile1);
          _simulationConfiguration.AddExpressionProfile(_expressionProfile2);
@@ -95,7 +95,7 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
-         moBiProject.AddBuildingBlock(_expressionProfile);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile);
          sut.Edit(_simulationConfiguration);
          _simulationConfiguration.AddExpressionProfile(_expressionProfile);
 
@@ -143,7 +143,7 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
-         moBiProject.AddBuildingBlock(_expressionProfile);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile);
          sut.Edit(_simulationConfiguration);
 
          _treeNode = new ObjectWithIdAndNameNode<ExpressionProfileBuildingBlock>(_expressionProfile);
@@ -193,9 +193,9 @@ namespace MoBi.Presentation
          _simulationConfiguration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("molecule2|species|category"));
 
          _expressionProfile1 = new ExpressionProfileBuildingBlock().WithName("molecule1|species|category");
-         moBiProject.AddBuildingBlock(_expressionProfile1);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile1);
          _expressionProfile2 = new ExpressionProfileBuildingBlock().WithName("molecule2|species|category");
-         moBiProject.AddBuildingBlock(_expressionProfile2);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile2);
       }
 
       protected override void Because()

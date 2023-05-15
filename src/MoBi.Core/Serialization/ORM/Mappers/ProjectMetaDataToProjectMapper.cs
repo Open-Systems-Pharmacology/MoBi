@@ -126,7 +126,6 @@ namespace MoBi.Core.Serialization.ORM.Mappers
             _project.AddExpressionProfileBuildingBlock(deserializedEntity as ExpressionProfileBuildingBlock);
 
          else
-
             throw new MoBiException($"Don't know what to do with {deserializedEntity.GetType()}");
       }
 

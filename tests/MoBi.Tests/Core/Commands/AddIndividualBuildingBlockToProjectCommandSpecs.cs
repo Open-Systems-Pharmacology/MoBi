@@ -32,7 +32,7 @@ namespace MoBi.Core.Commands
          _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _context.PublishEvent(A<AddedEvent<IBuildingBlock>>._))
+         A.CallTo(() => _context.PublishEvent(A<AddedEvent<IndividualBuildingBlock>>._))
             .Invokes(x => _event = x.GetArgument<AddedEvent>(0));
       }
 
@@ -44,7 +44,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_add_building_block_to_project()
       {
-         _project.AllBuildingBlocks().ShouldContain(_bb);
+         _project.IndividualsCollection.ShouldContain(_bb);
       }
 
       [Observation]
@@ -73,7 +73,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_get_building_block_from_context()
       {
-         A.CallTo(() => _context.Get<IBuildingBlock>(_bb.Id)).MustHaveHappened();
+         A.CallTo(() => _context.Get<IndividualBuildingBlock>(_bb.Id)).MustHaveHappened();
       }
    }
 
@@ -114,7 +114,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_remove_building_block_from_project()
       {
-         _project.AllBuildingBlocks().ShouldNotContain(_bb);
+         _project.IndividualsCollection.ShouldNotContain(_bb);
       }
 
       [Observation]
