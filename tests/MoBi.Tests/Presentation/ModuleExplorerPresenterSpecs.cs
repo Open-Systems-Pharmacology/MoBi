@@ -296,16 +296,12 @@ namespace MoBi.Presentation
    {
       private List<ITreeNode> _allNodesAdded;
       private MoBiProject _project;
-      private ObserverBuildingBlock _observerBuildingBlock;
-      private SimulationSettings _simulationSettingsBuildingBlock;
       private Module _module1;
 
       protected override void Context()
       {
          base.Context();
          _project = DomainHelperForSpecs.NewProject();
-         _observerBuildingBlock = new ObserverBuildingBlock().WithName("OBSERVERS");
-         _simulationSettingsBuildingBlock = new SimulationSettings().WithName("SIMULATION_SETTINGS");
          _module1 = new Module
          {
             new MoBiSpatialStructure(),
@@ -321,8 +317,6 @@ namespace MoBi.Presentation
             flattenAndAdd(treeNode);
          });
 
-         _project.AddBuildingBlock(_observerBuildingBlock);
-         _project.AddBuildingBlock(_simulationSettingsBuildingBlock);
          _project.AddModule(_module1);
       }
 

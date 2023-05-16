@@ -9,6 +9,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -21,22 +22,30 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IObjectPathCreatorAtTransport _objectPathCreatorAtTransport;
       private readonly ITransportMoleculeContainerToObjectBaseDTOMapper _transporterMoleculeContainerMapper;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public SelectReferenceAtTransportPresenter(ISelectReferenceView view, IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
-         IMoBiContext context,IUserSettings userSettings, IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
-         IObjectPathCreatorAtTransport objectPathCreatorAtTransport, ITransportMoleculeContainerToObjectBaseDTOMapper transporterMoleculeContainerMapper)
+      public SelectReferenceAtTransportPresenter(ISelectReferenceView view, 
+         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
+         IMoBiContext context,
+         IUserSettings userSettings, 
+         IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
+         IObjectPathCreatorAtTransport objectPathCreatorAtTransport, 
+         ITransportMoleculeContainerToObjectBaseDTOMapper transporterMoleculeContainerMapper,
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreatorAtTransport, Localisations.NeighborhoodsOnly)
+            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreatorAtTransport, Localisations.NeighborhoodsOnly, buildingBlockRepository)
       {
          _objectPathCreatorAtTransport = objectPathCreatorAtTransport;
          _transporterMoleculeContainerMapper = transporterMoleculeContainerMapper;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
 
       public void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, TransportBuilder transportBuilder)
       {
-         //Nessecary to create correct paths
+         //Necessary to create correct paths
          _objectPathCreatorAtTransport.Transport = transportBuilder; 
          base.Init(refObjectBase, entities, transportBuilder);
       }
@@ -51,7 +60,7 @@ namespace MoBi.Presentation.Presenter
       {
          IEnumerable<TransporterMoleculeContainer> allTransporterMoleculeContainers = new List<TransporterMoleculeContainer>();
          MoleculeBuildingBlock editedMoleculeBuildingBlock = null;
-         var allMoleculeBuildingBlocks = editedMoleculeBuildingBlock!=null ? new[] {editedMoleculeBuildingBlock} : _context.CurrentProject.MoleculeBlockCollection;
+         var allMoleculeBuildingBlocks = editedMoleculeBuildingBlock!=null ? new[] {editedMoleculeBuildingBlock} : _buildingBlockRepository.MoleculeBlockCollection;
 
          foreach (var moleculeBuildingBlock in allMoleculeBuildingBlocks)
          {

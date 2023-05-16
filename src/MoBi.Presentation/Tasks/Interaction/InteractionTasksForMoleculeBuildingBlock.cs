@@ -2,6 +2,7 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Presenter;
@@ -35,7 +36,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void CreateNewFromSelection()
       {
-         var allMolecules = Context.CurrentProject.MoleculeBlockCollection;
+         var allMolecules = BuildingBlockRepository.MoleculeBlockCollection;
          NewMoleculeBuildingBlockDescription newMoleculeBuildingBlockDescription = null;
          using (var selectMoleculesPresenter = ApplicationController.Start<ISelectMoleculesForBuildingBlockPresenter>())
          {
@@ -60,19 +61,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          };
          command.AddCommand(GetAddCommand(moleculeBuildingBlock, null, null).Run(Context));
          AddCommand(command);
-      }
-
-      public override IMoBiCommand Remove(MoleculeBuildingBlock buildingBlockToRemove, Module module, IBuildingBlock buildingBlock, bool silent)
-      {
-         var project = Context.CurrentProject;
-         
-         var referringStartValuesBuildingBlocks = project.ReferringStartValueBuildingBlocks(buildingBlockToRemove);
-         if (referringStartValuesBuildingBlocks.Any())
-         {
-            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));
-         }
-         
-         return base.Remove(buildingBlockToRemove, module, buildingBlock, silent);
       }
 
       public override IMoBiCommand GetRemoveCommand(MoleculeBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)

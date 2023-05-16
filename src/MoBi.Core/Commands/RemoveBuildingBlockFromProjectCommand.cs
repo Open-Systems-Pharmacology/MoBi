@@ -1,5 +1,4 @@
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
@@ -7,12 +6,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveBuildingBlockFromProjectCommand<T> : MoBiReversibleCommand where T : class, IBuildingBlock
+   public abstract class RemoveBuildingBlockFromProjectCommand<T> : MoBiReversibleCommand where T : class, IBuildingBlock
    {
       protected T _buildingBlock;
       private byte[] _serializationStream;
 
-      public RemoveBuildingBlockFromProjectCommand(T buildingBlock)
+      protected RemoveBuildingBlockFromProjectCommand(T buildingBlock)
       {
          ObjectType = new ObjectTypeResolver().TypeFor<T>();
          CommandType = AppConstants.Commands.DeleteCommand;
@@ -23,30 +22,22 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          var project = context.CurrentProject;
-         removeFromProject(project);
+         RemoveFromProject(project);
          context.Unregister(_buildingBlock);
          _serializationStream = context.Serialize(_buildingBlock);
-         context.PublishEvent(new RemovedEvent(_buildingBlock,project));
+         context.PublishEvent(new RemovedEvent(_buildingBlock, project));
       }
+
+      protected abstract void RemoveFromProject(MoBiProject project);
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
          _buildingBlock = context.Deserialize<T>(_serializationStream);
       }
 
-      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
-      {
-         return new AddBuildingBlockToProjectCommand<T>(_buildingBlock).AsInverseFor(this);
-      }
-
       protected override void ClearReferences()
       {
          _buildingBlock = null;
-      }
-
-      private void removeFromProject(MoBiProject project)
-      {
-         project.RemoveBuildingBlock(_buildingBlock);
       }
    }
 }

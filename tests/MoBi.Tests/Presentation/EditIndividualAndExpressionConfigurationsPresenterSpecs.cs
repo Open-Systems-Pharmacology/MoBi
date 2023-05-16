@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -18,6 +19,7 @@ namespace MoBi.Presentation
    public class concern_for_EditIndividualAndExpressionConfigurationsPresenter : ContextSpecification<EditIndividualAndExpressionConfigurationsPresenter>
    {
       protected IMoBiProjectRetriever _projectRetriever;
+      protected IBuildingBlockRepository _buildingBlockRepository;
       protected ITreeNodeFactory _treeNodeFactory;
       protected ISelectedIndividualToIndividualSelectionDTOMapper _selectedIndividualDTOMapper;
       protected IEditIndividualAndExpressionConfigurationsView _view;
@@ -25,10 +27,11 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _buildingBlockRepository = new BuildingBlockRepository(_projectRetriever);
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
          _selectedIndividualDTOMapper = A.Fake<ISelectedIndividualToIndividualSelectionDTOMapper>();
          _view = A.Fake<IEditIndividualAndExpressionConfigurationsView>();
-         sut = new EditIndividualAndExpressionConfigurationsPresenter(_view, _selectedIndividualDTOMapper, _treeNodeFactory, _projectRetriever);
+         sut = new EditIndividualAndExpressionConfigurationsPresenter(_view, _selectedIndividualDTOMapper, _treeNodeFactory, _buildingBlockRepository);
       }
    }
 
@@ -54,8 +57,8 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
-         moBiProject.AddBuildingBlock(_expressionProfile1);
-         moBiProject.AddBuildingBlock(_expressionProfile2);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile1);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile2);
 
          _simulationConfiguration.AddExpressionProfile(_expressionProfile1);
          _simulationConfiguration.AddExpressionProfile(_expressionProfile2);
@@ -95,7 +98,7 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
-         moBiProject.AddBuildingBlock(_expressionProfile);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile);
          sut.Edit(_simulationConfiguration);
          _simulationConfiguration.AddExpressionProfile(_expressionProfile);
 
@@ -143,7 +146,7 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
-         moBiProject.AddBuildingBlock(_expressionProfile);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile);
          sut.Edit(_simulationConfiguration);
 
          _treeNode = new ObjectWithIdAndNameNode<ExpressionProfileBuildingBlock>(_expressionProfile);
@@ -193,9 +196,9 @@ namespace MoBi.Presentation
          _simulationConfiguration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("molecule2|species|category"));
 
          _expressionProfile1 = new ExpressionProfileBuildingBlock().WithName("molecule1|species|category");
-         moBiProject.AddBuildingBlock(_expressionProfile1);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile1);
          _expressionProfile2 = new ExpressionProfileBuildingBlock().WithName("molecule2|species|category");
-         moBiProject.AddBuildingBlock(_expressionProfile2);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile2);
       }
 
       protected override void Because()

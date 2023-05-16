@@ -19,6 +19,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Import;
 using OSPSuite.Infrastructure.Import.Services;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -35,6 +36,7 @@ namespace MoBi.Presentation.Tasks
       private IDataRepositoryExportTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
       private IObjectTypeResolver _objectTypeResolver;
+      private IBuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
@@ -47,7 +49,8 @@ namespace MoBi.Presentation.Tasks
          _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _containerTask = A.Fake<IContainerTask>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         sut = new ObservedDataTask(_dataImporter, _dimensionFactory, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver);
+         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         sut = new ObservedDataTask(_dataImporter, _dimensionFactory, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository);
 
          _project = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.Project).Returns(_project);

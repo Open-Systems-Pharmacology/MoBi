@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
@@ -33,6 +34,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       private readonly ISelectEntityInTreePresenter _selectEntityInTreePresenter;
       private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private IReadOnlyList<MoleculeBuilder> _molecules;
       private IReadOnlyList<ReactionBuilder> _reactions;
 
@@ -46,7 +48,8 @@ namespace MoBi.Presentation.Presenter
          IParameterToDummyParameterDTOMapper dummyParameterDTOMapper,
          IReactionDimensionRetriever dimensionRetriever,
          ISelectEntityInTreePresenter selectEntityInTreePresenter,
-         ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper
+         ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper,
+         IBuildingBlockRepository buildingBlockRepository
       )
          : base(view)
       {
@@ -54,6 +57,7 @@ namespace MoBi.Presentation.Presenter
          _dimensionRetriever = dimensionRetriever;
          _selectEntityInTreePresenter = selectEntityInTreePresenter;
          _spatialStructureDTOMapper = spatialStructureDTOMapper;
+         _buildingBlockRepository = buildingBlockRepository;
          _objectPathFactory = objectPathFactory;
          _dummyMoleculeDTOMapper = dummyMoleculeDTOMapper;
          _dummyReactionDTOMapper = dummyReactionDTOMapper;
@@ -151,11 +155,10 @@ namespace MoBi.Presentation.Presenter
 
       public void Init(IContainer container)
       {
-         var project = _context.CurrentProject;
-         _molecules = project.MoleculeBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<MoleculeBuilder>()).OrderBy(x => x.Name).ToList();
-         _reactions = project.ReactionBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<ReactionBuilder>()).OrderBy(x => x.Name).ToList();
+         _molecules = _buildingBlockRepository.MoleculeBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<MoleculeBuilder>()).OrderBy(x => x.Name).ToList();
+         _reactions = _buildingBlockRepository.ReactionBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<ReactionBuilder>()).OrderBy(x => x.Name).ToList();
          var list = new List<ObjectBaseDTO>();
-         list.AddRange(project.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper));
+         list.AddRange(_buildingBlockRepository.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper));
          list.Add(_objectBaseDTOMapper.MapFrom(container));
          list.AddRange(globalReactionParameters());
          _selectEntityInTreePresenter.InitTreeStructure(list);

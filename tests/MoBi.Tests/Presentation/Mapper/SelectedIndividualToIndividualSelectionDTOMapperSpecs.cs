@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -13,15 +14,17 @@ namespace MoBi.Presentation.Mapper
    public class concern_for_SelectedIndividualToIndividualSelectionDTOMapper : ContextSpecification<SelectedIndividualToIndividualSelectionDTOMapper>
    {
       private IMoBiProjectRetriever _projectRetriever;
+      private IBuildingBlockRepository _buildingBlockRepository;
       protected MoBiProject _moBiProject;
 
       protected override void Context()
       {
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _buildingBlockRepository = new BuildingBlockRepository(_projectRetriever);
          _moBiProject = new MoBiProject();
          A.CallTo(() => _projectRetriever.Current).Returns(_moBiProject);
          
-         sut = new SelectedIndividualToIndividualSelectionDTOMapper(_projectRetriever);
+         sut = new SelectedIndividualToIndividualSelectionDTOMapper(_buildingBlockRepository);
       }
    }
 
@@ -38,8 +41,8 @@ namespace MoBi.Presentation.Mapper
          _projectIndividual1 = new IndividualBuildingBlock().WithName("common name");
          _projectIndividual2 = new IndividualBuildingBlock().WithName("uncommon name");
          _configurationIndividual = new IndividualBuildingBlock().WithName("common name");
-         _moBiProject.AddBuildingBlock(_projectIndividual1);
-         _moBiProject.AddBuildingBlock(_projectIndividual2);
+         _moBiProject.AddIndividualBuildingBlock(_projectIndividual1);
+         _moBiProject.AddIndividualBuildingBlock(_projectIndividual2);
       }
 
       protected override void Because()

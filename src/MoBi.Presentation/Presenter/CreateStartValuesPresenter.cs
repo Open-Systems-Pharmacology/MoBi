@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -26,12 +27,12 @@ namespace MoBi.Presentation.Presenter
 
    public abstract class CreateStartValuesPresenter<T> : AbstractDisposablePresenter<ICreateStartValuesView, ICreateStartValuesPresenter>, ICreateStartValuesPresenter<T> where T : class
    {
-      protected readonly IMoBiContext _context;
+      protected readonly IBuildingBlockRepository _buildingBlockRepository;
       protected readonly List<string> _unallowedNames;
 
-      protected CreateStartValuesPresenter(ICreateStartValuesView view, IMoBiContext context) : base(view)
+      protected CreateStartValuesPresenter(ICreateStartValuesView view, IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
-         _context = context;
+         _buildingBlockRepository = buildingBlockRepository;
          _unallowedNames = new List<string>();
       }
 
@@ -56,12 +57,12 @@ namespace MoBi.Presentation.Presenter
 
       public IEnumerable<MoleculeBuildingBlock> GetMolecules()
       {
-         return _context.CurrentProject.MoleculeBlockCollection;
+         return _buildingBlockRepository.MoleculeBlockCollection;
       }
 
       public IEnumerable<MoBiSpatialStructure> GetSpatialStructures()
       {
-         return _context.CurrentProject.SpatialStructureCollection;
+         return _buildingBlockRepository.SpatialStructureCollection;
       }
    }
 
@@ -69,10 +70,10 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IInitialConditionsCreator _initialConditionsCreator;
 
-      public CreateInitialConditionsPresenter(ICreateStartValuesView view, IMoBiContext context, IInitialConditionsCreator initialConditionsCreator) : base(view, context)
+      public CreateInitialConditionsPresenter(ICreateStartValuesView view, IBuildingBlockRepository buildingBlockRepository, IInitialConditionsCreator initialConditionsCreator) : base(view, buildingBlockRepository)
       {
          _initialConditionsCreator = initialConditionsCreator;
-         _unallowedNames.AddRange(_context.CurrentProject.InitialConditionBlockCollection.Select(x => x.Name));
+         _unallowedNames.AddRange(_buildingBlockRepository.InitialConditionBlockCollection.Select(x => x.Name));
          view.ApplicationIcon = ApplicationIcons.InitialConditions;
          view.Caption = AppConstants.Captions.NewInitialConditions;
       }
@@ -87,11 +88,11 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IParameterValuesCreator _parameterValuesCreator;
 
-      public CreateParameterValuesPresenter(ICreateStartValuesView view, IMoBiContext context, IParameterValuesCreator parameterValuesCreator)
-         : base(view, context)
+      public CreateParameterValuesPresenter(ICreateStartValuesView view, IBuildingBlockRepository buildingBlockRepository, IParameterValuesCreator parameterValuesCreator)
+         : base(view, buildingBlockRepository)
       {
          _parameterValuesCreator = parameterValuesCreator;
-         _unallowedNames.AddRange(_context.CurrentProject.ParametersValueBlockCollection.Select(x => x.Name));
+         _unallowedNames.AddRange(_buildingBlockRepository.ParametersValueBlockCollection.Select(x => x.Name));
          view.ApplicationIcon = ApplicationIcons.ParameterValues;
          view.Caption = AppConstants.Captions.NewParameterValues;
       }

@@ -3,6 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
@@ -42,6 +43,8 @@ namespace MoBi.UI.Diagram
       private ICommandCollector _commandCollector;
       private IStartOptions _runOptions;
       private IDiagramModelFactory _diagramModelFactory;
+      private IMoBiProjectRetriever _moBiProjectRetriever;
+      private BuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
@@ -56,8 +59,11 @@ namespace MoBi.UI.Diagram
          _commandCollector = A.Fake<ICommandCollector>();
          _runOptions = A.Fake<IStartOptions>();
          _diagramModelFactory = A.Fake<IDiagramModelFactory>();
+         _moBiProjectRetriever = new MoBiProjectRetriever(_moBiContext);
+         _buildingBlockRepository = new BuildingBlockRepository(_moBiProjectRetriever);
+         
          sut = new ReactionDiagramPresenter(_reactionDiagramView, _containerBaseLayouter, _moBiContext, _userSettings,
-            _dialogCreator, _moBiApplicationController, _diagramTask, _diagramLayoutTask, _runOptions, _diagramModelFactory);
+            _dialogCreator, _moBiApplicationController, _diagramTask, _diagramLayoutTask, _runOptions, _diagramModelFactory, _buildingBlockRepository);
 
          sut.InitializeWith(_commandCollector);
       }
@@ -67,7 +73,6 @@ namespace MoBi.UI.Diagram
    {
       private IMultipleStringSelectionPresenter _multipleStringSelectionPresenter;
       private IEnumerable<string> _possibleMoleculeNames;
-      private IReadOnlyList<MoleculeBuildingBlock> _moleculeBuildingBlocks;
       private MoBiProject _moBiProject;
 
       protected override void Context()
@@ -78,13 +83,10 @@ namespace MoBi.UI.Diagram
 
          A.CallTo(() => _multipleStringSelectionPresenter.Show(A<string>._, A<string>._, A<IEnumerable<string>>._, A<string>._, true)).Invokes(x => _possibleMoleculeNames = x.GetArgument<IEnumerable<string>>(2)).Returns(Enumerable.Empty<string>());
 
-         _moleculeBuildingBlocks = new List<MoleculeBuildingBlock>
-         {
-            new MoleculeBuildingBlock {new MoleculeBuilder {Name = "b"}, new MoleculeBuilder {Name = "a"}},
-            new MoleculeBuildingBlock {new MoleculeBuilder {Name = "a"}, new MoleculeBuilder {Name = "b"}}
-         };
          _moBiProject = new MoBiProject();
-         _moleculeBuildingBlocks.Each(_moBiProject.AddBuildingBlock);
+         _moBiProject.AddModule(new Module { new MoleculeBuildingBlock { new MoleculeBuilder { Name = "b" }, new MoleculeBuilder { Name = "a" } } });
+         _moBiProject.AddModule(new Module { new MoleculeBuildingBlock { new MoleculeBuilder { Name = "a" }, new MoleculeBuilder { Name = "b" } } });
+         
          A.CallTo(() => _moBiContext.CurrentProject).Returns(_moBiProject);
       }
 
@@ -155,7 +157,7 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _objectsToRemove = new List<GoObject> {_moleculeNode as MoleculeNode};
+         _objectsToRemove = new List<GoObject> { _moleculeNode as MoleculeNode };
       }
 
       protected override void Because()
@@ -181,7 +183,7 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _objectsToRemove = new List<GoObject> {_reactionNode, _moleculeNode as MoleculeNode};
+         _objectsToRemove = new List<GoObject> { _reactionNode, _moleculeNode as MoleculeNode };
       }
 
       protected override void Because()

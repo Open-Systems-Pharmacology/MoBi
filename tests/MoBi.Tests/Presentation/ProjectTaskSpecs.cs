@@ -62,7 +62,6 @@ namespace MoBi.Presentation
       private SimulationTransfer _simulationTransfer;
       private IMoBiSimulation _simulation;
       private PassiveTransportBuildingBlock _newBuildingBlock;
-      private MoBiReactionBuildingBlock _existingBuildingBlock;
 
       protected override void Context()
       {
@@ -73,8 +72,6 @@ namespace MoBi.Presentation
          _simulation = A.Fake<IMoBiSimulation>();
          _simulationTransfer.Simulation = _simulation;
          _newBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();
-         _existingBuildingBlock = A.Fake<MoBiReactionBuildingBlock>().WithId("Existing");
-         _project.AddBuildingBlock(_existingBuildingBlock);
 
          var simulationConfiguration = new SimulationConfiguration();
          A.CallTo(() => _simulation.Configuration).Returns(simulationConfiguration);

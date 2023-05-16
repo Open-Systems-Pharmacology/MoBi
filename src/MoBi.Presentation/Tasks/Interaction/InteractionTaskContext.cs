@@ -2,6 +2,7 @@
 using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Settings;
 using OSPSuite.Core.Domain;
@@ -16,6 +17,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiContext Context { get; }
       IInteractionTask InteractionTask { get; }
       IMoBiApplicationController ApplicationController { get; }
+      IBuildingBlockRepository BuildingBlockRepository { get; }
       T Active<T>() where T : class;
       IUserSettings UserSettings { get; }
       IDialogCreator DialogCreator { get; }
@@ -55,6 +57,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly DirectoryMapSettings _directoryMapSettings;
       public IMoBiContext Context { get; }
       public IMoBiApplicationController ApplicationController { get; }
+      public IBuildingBlockRepository BuildingBlockRepository { get; }
       public IInteractionTask InteractionTask { get; }
       public IActiveSubjectRetriever ActiveSubjectRetriever { get; }
       public IUserSettings UserSettings { get; }
@@ -67,7 +70,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInteractionTask interactionTask, IActiveSubjectRetriever activeSubjectRetriever, IUserSettings userSettings,
          IDisplayUnitRetriever displayUnitRetriever, IDialogCreator dialogCreator,
          ICommandTask commandTask, IObjectTypeResolver objectTypeResolver, IMoBiFormulaTask moBiFormulaTask,
-         IMoBiConfiguration configuration, DirectoryMapSettings directoryMapSettings, ICheckNameVisitor checkNamesVisitor)
+         IMoBiConfiguration configuration, DirectoryMapSettings directoryMapSettings, ICheckNameVisitor checkNamesVisitor, IBuildingBlockRepository buildingBlockRepository)
       {
          DialogCreator = dialogCreator;
          Context = context;
@@ -82,6 +85,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _directoryMapSettings = directoryMapSettings;
          MoBiFormulaTask = moBiFormulaTask;
          CheckNamesVisitor = checkNamesVisitor;
+         BuildingBlockRepository = buildingBlockRepository;
       }
 
       public Unit DisplayUnitFor(IWithDimension withDimension)

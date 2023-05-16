@@ -2,6 +2,8 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -28,14 +30,15 @@ namespace MoBi.Presentation
       protected IReactionDimensionRetriever _dimensionRetriever;
       private MoBiProject _mobiProject;
       private Container _rootContainer;
-      private MoBiReactionBuildingBlock _reactionBB;
-      private MoleculeBuildingBlock _moleculeBB;
       protected ReactionBuilder _reaction;
       protected MoleculeBuilder _moleculeBuilder;
       private IParameter _localParameter;
       private IParameter _globalParameter;
       private ISelectEntityInTreePresenter _selectEntityInTreePresenter;
       private ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
+      private IBuildingBlockRepository _buildingBlockRepository;
+      private MoBiReactionBuildingBlock _reactionBB;
+      private MoleculeBuildingBlock _moleculeBB;
 
       protected override void Context()
       {
@@ -50,8 +53,10 @@ namespace MoBi.Presentation
          _dimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _selectEntityInTreePresenter = A.Fake<ISelectEntityInTreePresenter>();
          _spatialStructureDTOMapper = A.Fake<ISpatialStructureToSpatialStructureDTOMapper>();
+         _buildingBlockRepository = new BuildingBlockRepository(new MoBiProjectRetriever(_context));
+
          sut = new SelectEventAssignmentTargetPresenter(_view, _context, _objectBaseDTOMapper, _containerDTOMapper, _reactionMapper,
-            _moleculeMapper, _objectPathFactory, _parameterMapper, _dimensionRetriever, _selectEntityInTreePresenter, _spatialStructureDTOMapper);
+            _moleculeMapper, _objectPathFactory, _parameterMapper, _dimensionRetriever, _selectEntityInTreePresenter, _spatialStructureDTOMapper, _buildingBlockRepository);
 
          _mobiProject = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.CurrentProject).Returns(_mobiProject);
@@ -62,12 +67,11 @@ namespace MoBi.Presentation
          _globalParameter = new Parameter().WithMode(ParameterBuildMode.Global).WithName("GlobalParam");
          _reaction.Add(_localParameter);
          _reaction.Add(_globalParameter);
-         _reactionBB = new MoBiReactionBuildingBlock() {_reaction};
-         _moleculeBB = new MoleculeBuildingBlock {_moleculeBuilder};
+         _reactionBB = new MoBiReactionBuildingBlock() { _reaction };
+         _moleculeBB = new MoleculeBuildingBlock { _moleculeBuilder };
 
-         _mobiProject.AddBuildingBlock(_reactionBB);
-         _mobiProject.AddBuildingBlock(_moleculeBB);
-         
+         _mobiProject.AddModule(new Module {_reactionBB,  _moleculeBB});
+
          sut.Init(_rootContainer);
       }
    }
@@ -99,7 +103,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_geting_children_for_a_container : concern_for_SelectEventAssignmentTargetPresenter
+   internal class When_getting_children_for_a_container : concern_for_SelectEventAssignmentTargetPresenter
    {
       private ObjectBaseDTO _containerDTO;
       private Container _container;

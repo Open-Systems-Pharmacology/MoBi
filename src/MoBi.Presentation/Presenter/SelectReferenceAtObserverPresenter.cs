@@ -2,6 +2,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -16,11 +17,13 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IUserSettings userSettings,
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
-         IObjectPathCreatorAtObserver objectPathCreator)
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
+         IObjectPathCreatorAtObserver objectPathCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
          : base(
             view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly)
+            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
       }
    }
@@ -32,14 +35,17 @@ namespace MoBi.Presentation.Presenter
    internal class SelectReferenceAtContainerObserverPresenter : SelectReferenceAtObserverPresenter,ISelectReferenceAtContainerObserverPresenter
    {
       public SelectReferenceAtContainerObserverPresenter(ISelectReferenceView view,
-         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper, IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper, 
+         IMoBiContext context,
          IUserSettings userSettings,
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
-          IObjectPathCreatorAtObserver objectPathCreator)
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
+          IObjectPathCreatorAtObserver objectPathCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
          : base(
             view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator)
+            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, buildingBlockRepository)
       {
       }
 
@@ -56,13 +62,17 @@ namespace MoBi.Presentation.Presenter
    internal class SelectReferenceAtAmountObserverPresenter : SelectReferenceAtObserverPresenter,ISelectReferenceAtAmountObserverPresenter
    {
       public SelectReferenceAtAmountObserverPresenter(ISelectReferenceView view,
-         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper, IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper, 
+         IMoBiContext context,
          IUserSettings userSettings,
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, IObjectPathCreatorAtAmountObserver objectPathCreator)
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
+         IObjectPathCreatorAtAmountObserver objectPathCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
          : base(
             view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper,referenceMapper, objectPathCreator)
+            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper,referenceMapper, objectPathCreator, buildingBlockRepository)
       {
       }
 

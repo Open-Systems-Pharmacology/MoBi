@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
@@ -28,14 +29,16 @@ namespace MoBi.Presentation.Presenter
       private readonly IModalPresenter _modalPresenter;
       private readonly IObjectBaseToObjectBaseDTOMapper _mapper;
       private readonly IContainerToContainerDTOMapper _dtoContainerMapper;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public SelectLocalisationPresenter(ISelectLocalisationView view, IMoBiContext context, IModalPresenter modalPresenter,
-                                         IObjectBaseToObjectBaseDTOMapper mapper, IContainerToContainerDTOMapper dtoContainerMapper)
+                                         IObjectBaseToObjectBaseDTOMapper mapper, IContainerToContainerDTOMapper dtoContainerMapper, IBuildingBlockRepository buildingBlockRepository)
          : base(view)
       {
          _context = context;
          _modalPresenter = modalPresenter;
          _dtoContainerMapper = dtoContainerMapper;
+         _buildingBlockRepository = buildingBlockRepository;
          _mapper = mapper;
          _modalPresenter.Encapsulate(this);
          _modalPresenter.Text = AppConstants.Captions.SelectLocalReferencePoint;
@@ -68,7 +71,7 @@ namespace MoBi.Presentation.Presenter
       public virtual IEntity Select(Localisations localisation)
       {
          _localisation = localisation;
-         var spatialStructures = _context.CurrentProject.SpatialStructureCollection;
+         var spatialStructures = _buildingBlockRepository.SpatialStructureCollection;
          _view.Show(spatialStructures.Select(createSpatialStructureDTOFrom).ToList());
 
          if (!_modalPresenter.Show())

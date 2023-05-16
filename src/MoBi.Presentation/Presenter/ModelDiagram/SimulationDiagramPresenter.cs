@@ -2,6 +2,7 @@ using System.Linq;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Settings;
@@ -28,6 +29,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
    {
       private readonly IMoBiConfiguration _configuration;
       private readonly ILayerLayouter _layerLayouter;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IDiagramPopupMenuBase _moleculeAmountPopupMenu;
 
       public SimulationDiagramPresenter(ISimulationDiagramView view,
@@ -39,11 +41,13 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
          IDiagramTask diagramTask,
          IStartOptions runOptions,
          IMoBiConfiguration configuration,
-         ILayerLayouter layerLayouter)
+         ILayerLayouter layerLayouter,
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
          _configuration = configuration;
          _layerLayouter = layerLayouter;
+         _buildingBlockRepository = buildingBlockRepository;
          _diagramPopupMenu = new PopupMenuModelDiagram(this, context, runOptions, dialogCreator);
          _containerPopupMenu = _diagramPopupMenu;
          _moleculeAmountPopupMenu = new DiagramPopupMenuBaseWithContext(this, _context, runOptions);
@@ -101,8 +105,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
       {
          //TODO OSMOSES
          var spaceBlockName = DiagramManager.PkModel.Configuration.All<SpatialStructure>().First().Name;
-         var project = _context.CurrentProject;
-         var spatialStructure = project.SpatialStructureCollection.FindByName(spaceBlockName);
+         var spatialStructure = _buildingBlockRepository.SpatialStructureCollection.FindByName(spaceBlockName);
          if (spatialStructure == null)
             return null;
 
@@ -129,10 +132,10 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       private IDiagramModel getReactionBlockDiagramModel()
       {
-         // TODO OSMOSES
+         // TODO OSMOSES naming is no longer unique among all reaction blocks so we will need a new way
+         // to find specific reaction in the repository
          var reactionBlockName = DiagramManager.PkModel.Configuration.All<ReactionBuildingBlock>().First().Name;
-         var project = _context.CurrentProject;
-         var reactionBlock = project.ReactionBlockCollection.FindByName(reactionBlockName);
+         var reactionBlock = _buildingBlockRepository.ReactionBlockCollection.FindByName(reactionBlockName);
 
          if (reactionBlock == null)
             return null;

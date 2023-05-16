@@ -23,7 +23,7 @@ namespace MoBi.Core
    public class When_checking_if_a_project_is_empty : concern_for_MoBiProject
    {
       [Observation]
-      public void should_return_true_if_there_are_no_simulation_and_bulding_block()
+      public void should_return_true_if_there_are_no_simulation_and_building_block()
       {
          sut.IsEmpty.ShouldBeTrue();
       }
@@ -31,36 +31,12 @@ namespace MoBi.Core
       [Observation]
       public void should_return_false_otherwise()
       {
-         sut.AddBuildingBlock(A.Fake<IBuildingBlock>());
+         sut.AddIndividualBuildingBlock(A.Fake<IndividualBuildingBlock>());
          sut.IsEmpty.ShouldBeFalse();
 
          sut = DomainHelperForSpecs.NewProject();
          sut.AddSimulation(A.Fake<IMoBiSimulation>());
          sut.IsEmpty.ShouldBeFalse();
-      }
-   }
-
-   public class When_resolving_referred_molecule_building_blocks : concern_for_MoBiProject
-   {
-      private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private IReadOnlyList<IBuildingBlock> _result;
-
-      protected override void Context()
-      {
-         base.Context();
-         _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
-         sut.AddBuildingBlock(new InitialConditionsBuildingBlock { MoleculeBuildingBlockId = "1", SpatialStructureId = "2"});
-      }
-
-      protected override void Because()
-      {
-         _result = sut.ReferringStartValueBuildingBlocks(_moleculeBuildingBlock);
-      }
-
-      [Observation]
-      public void should_find_only_building_block_with_reference()
-      {
-         _result.Count.ShouldBeEqualTo(1);
       }
    }
 

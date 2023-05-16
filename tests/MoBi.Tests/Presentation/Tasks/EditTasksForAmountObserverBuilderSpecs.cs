@@ -10,6 +10,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Core.Domain;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -25,6 +27,8 @@ namespace MoBi.Presentation.Tasks
 
       protected IMoBiApplicationController _applicationController;
       protected IRenameObjectPresenter _renameObjectPresenter;
+      private BuildingBlockRepository _buildingBlockRepository;
+      private MoBiProjectRetriever _moBiProjectRetriever;
 
       protected override void Context()
       {
@@ -37,13 +41,20 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = A.Fake<IInteractionTask>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
+         _moBiProjectRetriever = new MoBiProjectRetriever(_context);
+         _buildingBlockRepository = new BuildingBlockRepository(_moBiProjectRetriever);
 
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
-         _project.AddBuildingBlock(_buildingBlock);
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
          A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_applicationController);
+         A.CallTo(() => _interactionTaskContext.BuildingBlockRepository).Returns(_buildingBlockRepository);
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
+
+         _project.AddModule(new Module()
+         {
+            _buildingBlock
+         });
          
          sut = new EditTasksForAmountObserverBuilder(_interactionTaskContext);
       }

@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation.Tasks.Interaction;
+﻿using MoBi.Core.Domain.Repository;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Edit

@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -39,7 +40,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          IParameterResolver parameterResolver,
          IParameterValueBuildingBlockExtendManager parameterValuesExtendManager,
          IMoBiFormulaTask moBiFormulaTask,
-         IMoBiSpatialStructureFactory spatialStructureFactory, IParameterValuePathTask parameterValuePathTask)
+         IMoBiSpatialStructureFactory spatialStructureFactory, 
+         IParameterValuePathTask parameterValuePathTask)
          : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask)
       {
          _startValuesCreator = startValuesCreator;
@@ -79,7 +81,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IParameter GetPossibleParameterFromProject(ObjectPath parameterPath)
       {
-         foreach (var topContainer in Context.CurrentProject.SpatialStructureCollection.SelectMany(spatialStructure => spatialStructure.TopContainers))
+         foreach (var topContainer in BuildingBlockRepository.SpatialStructureCollection.SelectMany(spatialStructure => spatialStructure.TopContainers))
          {
             var parameter = parameterPath.TryResolve<IParameter>(topContainer, out _);
             if (parameter != null)

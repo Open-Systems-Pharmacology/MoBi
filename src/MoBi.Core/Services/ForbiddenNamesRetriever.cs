@@ -4,8 +4,10 @@ using System.Linq;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Repositories;
 
 namespace MoBi.Core.Services
 {
@@ -45,12 +47,14 @@ namespace MoBi.Core.Services
       IVisitor<IModelCoreSimulation>
 
    {
-      private readonly IMoBiContext _context;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly ISimulationRepository _simulationRepository;
       private HashSet<string> _nameHashForVisitor;
 
-      public ForbiddenNamesRetriever(IMoBiContext context)
+      public ForbiddenNamesRetriever(IBuildingBlockRepository buildingBlockRepository, ISimulationRepository simulationRepository)
       {
-         _context = context;
+         _buildingBlockRepository = buildingBlockRepository;
+         _simulationRepository = simulationRepository;
       }
 
       public IEnumerable<string> For(MoleculeBuilder moleculeBuilder)
@@ -106,11 +110,11 @@ namespace MoBi.Core.Services
       public IEnumerable<string> For(IModelCoreSimulation simulation)
       {
          var nameHash = new HashSet<string>();
-         addNamesToHash(nameHash, _context.CurrentProject.MoleculeBlockCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
-         addNamesToHash(nameHash, _context.CurrentProject.SpatialStructureCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
-         addNamesToHash(nameHash, _context.CurrentProject.EventBlockCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
-         addNamesToHash(nameHash, _context.CurrentProject.ReactionBlockCollection.SelectMany(rbb => rbb.Select(x => x.Name)));
-         addNamesToHash(nameHash, _context.CurrentProject.Simulations.Select(bb => bb.Name));
+         addNamesToHash(nameHash, _buildingBlockRepository.MoleculeBlockCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
+         addNamesToHash(nameHash, _buildingBlockRepository.SpatialStructureCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
+         addNamesToHash(nameHash, _buildingBlockRepository.EventBlockCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
+         addNamesToHash(nameHash, _buildingBlockRepository.ReactionBlockCollection.SelectMany(rbb => rbb.Select(x => x.Name)));
+         addNamesToHash(nameHash, _simulationRepository.All().Select(bb => bb.Name));
          return nameHash;
       }
 
@@ -123,17 +127,17 @@ namespace MoBi.Core.Services
 
       private IEnumerable<string> allObserverNamesFromProject()
       {
-         return allNamesFrom<ObserverBuildingBlock, ObserverBuilder>(_context.CurrentProject.ObserverBlockCollection);
+         return allNamesFrom<ObserverBuildingBlock, ObserverBuilder>(_buildingBlockRepository.ObserverBlockCollection);
       }
 
       private IEnumerable<string> allMoleculeNamesFromProject()
       {
-         return allNamesFrom<MoleculeBuildingBlock, MoleculeBuilder>(_context.CurrentProject.MoleculeBlockCollection);
+         return allNamesFrom<MoleculeBuildingBlock, MoleculeBuilder>(_buildingBlockRepository.MoleculeBlockCollection);
       }
 
       private IEnumerable<string> allReactionNamesFromProject()
       {
-         return allNamesFrom<MoBiReactionBuildingBlock, ReactionBuilder>(_context.CurrentProject.ReactionBlockCollection);
+         return allNamesFrom<MoBiReactionBuildingBlock, ReactionBuilder>(_buildingBlockRepository.ReactionBlockCollection);
       }
 
       private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder
@@ -158,7 +162,7 @@ namespace MoBi.Core.Services
       private IEnumerable<string> allParametersFromMoleculesInProject(ParameterBuildMode buildMode)
       {
          var nameHash = new HashSet<string>();
-         _context.CurrentProject.MoleculeBlockCollection
+         _buildingBlockRepository.MoleculeBlockCollection
             .SelectMany(x => x.All()).Each(m => addNamesToHash(nameHash, allParameterNamesFrom(m, x => x.BuildMode == buildMode)));
 
          return nameHash;
@@ -190,7 +194,7 @@ namespace MoBi.Core.Services
       private IEnumerable<InitialCondition> getAllInitialConditionsFromBuildingBlocksFor(MoleculeBuilder builder)
       {
          var builderName = builder.Name;
-         return _context.CurrentProject.InitialConditionBlockCollection
+         return _buildingBlockRepository.InitialConditionBlockCollection
             .Where(x => x.Any(msv => msv.MoleculeName.Equals(builderName)))
             .SelectMany(x => x.All());
       }
@@ -199,7 +203,7 @@ namespace MoBi.Core.Services
       {
          var nameHash = new HashSet<string>();
 
-         _context.CurrentProject.SpatialStructureCollection
+         _buildingBlockRepository.SpatialStructureCollection
             .SelectMany(x => x.TopContainers).Each(c => addNamesToHash(nameHash, allParameterNamesFrom(c)));
 
          return nameHash;

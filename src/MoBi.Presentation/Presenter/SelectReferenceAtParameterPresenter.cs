@@ -1,4 +1,5 @@
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
@@ -17,10 +18,12 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IUserSettings userSettings,
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, IObjectPathCreatorAtParameter objectPathCreator)
-         : base(
-            view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly)
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
+         IObjectPathCreatorAtParameter objectPathCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
+         : base(view, objectBaseDTOMapper, context, userSettings,
+            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
          ChangeLocalisationAllowed = true;
       }

@@ -37,18 +37,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return AddToProject(buildingBlock as TBuildingBlock);
       }
 
-      public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, MoBiProject parent,
-         IBuildingBlock buildingBlock)
-      {
-         return new RemoveBuildingBlockFromProjectCommand<TBuildingBlock>(objectToRemove);
-      }
-
-      public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, MoBiProject parent,
-         IBuildingBlock buildingBlock)
-      {
-         return new AddBuildingBlockToProjectCommand<TBuildingBlock>(itemToAdd);
-      }
-
       protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone)
       {
          return Context.CurrentProject.All<TBuildingBlock>();

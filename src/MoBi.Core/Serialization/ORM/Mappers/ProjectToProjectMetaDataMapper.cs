@@ -32,7 +32,8 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          var projectMetaData = new ProjectMetaData {Name = project.Name, Description = project.Description};
          serializeContent(projectMetaData, project);
 
-         project.AllBuildingBlocks().Each(x => projectMetaData.AddChild(mapFrom(x)));
+         project.IndividualsCollection.Each(x => projectMetaData.AddChild(mapFrom(x)));
+         project.ExpressionProfileCollection.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.Modules.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.Simulations.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.Charts.Each(x => projectMetaData.AddChild(mapFrom(x)));

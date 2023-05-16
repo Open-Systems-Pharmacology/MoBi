@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
@@ -121,7 +122,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       private bool checkUsagesInBuildingBlocks(string newName, IObjectBase renamedObject, ICommandCollector commandCollector, string oldName)
       {
-         var buildingBlocks = _context.CurrentProject.AllBuildingBlocks();
+         var buildingBlocks = _interactionTaskContext.BuildingBlockRepository.All();
          var possibleChanges = new List<IStringChange>();
 
          foreach (var buildingBlock in buildingBlocks)

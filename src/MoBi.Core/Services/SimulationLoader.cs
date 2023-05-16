@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
@@ -111,8 +112,8 @@ namespace MoBi.Core.Services
          var config = simulation.Configuration;
          config.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(moduleConfiguration.Module)));
          
-         addToProject(commandCollector, config.Individual);
-         config.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile));
+         addToProject(commandCollector, config.Individual, individual => new AddIndividualBuildingBlockToProjectCommand(individual));
+         config.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile, ep => new AddExpressionProfileBuildingBlockToProjectCommand(ep)));
 
          // if (psv != null)
          // {
@@ -135,10 +136,10 @@ namespace MoBi.Core.Services
          // buildingBlock.SpatialStructureId = startValues.SpatialStructureId;
       }
 
-      private T addToProject<T>(ICommandCollector commandCollector, T buildingBlock) where T : class, IBuildingBlock
+      private T addToProject<T>(ICommandCollector commandCollector, T buildingBlock, Func<T, ICommand> commandCreatorFunc) where T : class, IBuildingBlock
       {
          if (buildingBlock != null)
-            commandCollector.AddCommand(new AddBuildingBlockToProjectCommand<T>(buildingBlock));
+            commandCollector.AddCommand(commandCreatorFunc(buildingBlock));
 
          return buildingBlock;
       }

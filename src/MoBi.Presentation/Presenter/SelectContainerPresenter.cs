@@ -1,5 +1,6 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -18,16 +19,19 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiContext _context;
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
       private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public SelectContainerPresenter(
          ISelectObjectPathView view,
          IMoBiContext context,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
-         ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper) : base(view)
+         ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper,
+         IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
          _context = context;
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
          _spatialStructureDTOMapper = spatialStructureDTOMapper;
+         _buildingBlockRepository = buildingBlockRepository;
          AddSubPresenters(_selectContainerInTreePresenter);
          _view.Caption = AppConstants.Captions.SelectContainer;
          _view.AddSelectionView(_selectContainerInTreePresenter.View);
@@ -43,8 +47,7 @@ namespace MoBi.Presentation.Presenter
 
       private void init()
       {
-         var project = _context.CurrentProject;
-         var list = project.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper);
+         var list = _buildingBlockRepository.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper);
          _selectContainerInTreePresenter.InitTreeStructure(list);
       }
    }

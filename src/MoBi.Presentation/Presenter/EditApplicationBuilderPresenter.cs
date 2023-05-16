@@ -8,6 +8,7 @@ using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
@@ -52,6 +53,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiContext _context;
       private readonly IDescriptorConditionListPresenter<ApplicationBuilder> _descriptorConditionListPresenter;
       private readonly IApplicationController _applicationController;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly string _formulaPropertyName;
 
       public EditApplicationBuilderPresenter(IEditApplicationBuilderView view, IEditTaskFor<ApplicationBuilder> editTasks, 
@@ -60,11 +62,13 @@ namespace MoBi.Presentation.Presenter
          IInteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder> interactionTasksForApplicationMoleculeBuilder,
          IViewItemContextMenuFactory viewItemContextMenuFactory, 
          IEditParametersInContainerPresenter editParametersInContainerPresenter, IMoBiContext context,
-         IDescriptorConditionListPresenter<ApplicationBuilder> descriptorConditionListPresenter, IApplicationController applicationController)
+         IDescriptorConditionListPresenter<ApplicationBuilder> descriptorConditionListPresenter, IApplicationController applicationController,
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view)
       {
          _descriptorConditionListPresenter = descriptorConditionListPresenter;
          _applicationController = applicationController;
+         _buildingBlockRepository = buildingBlockRepository;
          _context = context;
          _editParametersInContainerPresenter = editParametersInContainerPresenter;
          _view.SetParametersView(_editParametersInContainerPresenter.BaseView);
@@ -179,7 +183,7 @@ namespace MoBi.Presentation.Presenter
       public IEnumerable<string> GetMoleculeNames()
       {
          IEnumerable<string> names = new HashSet<string>();
-         return _context.CurrentProject.MoleculeBlockCollection
+         return _buildingBlockRepository.MoleculeBlockCollection
             .Aggregate(names, (current, moleculeBlock) => current.Union(moleculeBlock.AllNames()))
             .OrderBy(x => x);
       }

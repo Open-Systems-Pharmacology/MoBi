@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
@@ -30,12 +31,14 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiContext _context;
       private IMoleculeDependentBuilder _moleculeDependentBuilder;
       private readonly IDialogCreator _dialogCreator;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public MoleculeDependentBuilderPresenter(IMoleculeDependentBuilderView view, IMoBiContext context, IDialogCreator dialogCreator) : base(view)
+      public MoleculeDependentBuilderPresenter(IMoleculeDependentBuilderView view, IMoBiContext context, IDialogCreator dialogCreator, IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
          _context = context;
          _dialogCreator = dialogCreator;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
       public override void Edit(IMoleculeDependentBuilder objectToEdit)
@@ -106,7 +109,7 @@ namespace MoBi.Presentation.Presenter
 
       private IEnumerable<string> getMoleculeNames()
       {
-         var moleculeBB = _context.CurrentProject.MoleculeBlockCollection;
+         var moleculeBB = _buildingBlockRepository.MoleculeBlockCollection;
          var moleculeNames = new HashSet<string>();
          moleculeBB.SelectMany(x => x).Each(molecule => moleculeNames.Add(molecule.Name));
          return moleculeNames.OrderBy(x => x);
