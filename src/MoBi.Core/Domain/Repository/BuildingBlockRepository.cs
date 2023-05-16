@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
@@ -8,7 +9,7 @@ using OSPSuite.Utility.Collections;
 
 namespace MoBi.Core.Domain.Repository
 {
-   public interface IBuildingBlockRepository : IRepository<IBuildingBlock>
+   public interface IBuildingBlockRepository
    {
       IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection { get; }
       IReadOnlyList<MoBiReactionBuildingBlock> ReactionBlockCollection { get; }
@@ -22,6 +23,7 @@ namespace MoBi.Core.Domain.Repository
       IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection { get; }
       IndividualBuildingBlock IndividualByName(string buildingBlockName);
       ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName);
+      IReadOnlyList<IBuildingBlock> All();
    }
 
    public class BuildingBlockRepository : IBuildingBlockRepository
@@ -33,7 +35,7 @@ namespace MoBi.Core.Domain.Repository
          _projectRetriever = projectRetriever;
       }
 
-      public IEnumerable<IBuildingBlock> All()
+      public IReadOnlyList<IBuildingBlock> All()
       {
          return IndividualsCollection
             .Concat<IBuildingBlock>(ExpressionProfileCollection)
@@ -45,30 +47,35 @@ namespace MoBi.Core.Domain.Repository
          return _projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks);
       }
 
-      private IReadOnlyList<T> get<T>()
+      private IReadOnlyList<T> get<T>(Func<Module, T> getter)
       {
-         return All().OfType<T>().ToList();
+         return _projectRetriever.Current.Modules.Select(getter).Where(x => x!= null).ToList();
       }
 
-      public IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection => get<MoleculeBuildingBlock>();
+      private IReadOnlyList<T> getMany<T>(Func<Module, IEnumerable<T>> getter)
+      {
+         return _projectRetriever.Current.Modules.SelectMany(getter).Where(x => x != null).ToList();
+      }
 
-      public IReadOnlyList<MoBiReactionBuildingBlock> ReactionBlockCollection => get<MoBiReactionBuildingBlock>();
+      public IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection => get(x => x.Molecules);
+
+      public IReadOnlyList<MoBiReactionBuildingBlock> ReactionBlockCollection => get(x => x.Reactions as MoBiReactionBuildingBlock);
 
       public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection => _projectRetriever.Current.ExpressionProfileCollection;
 
       public IReadOnlyList<IndividualBuildingBlock> IndividualsCollection => _projectRetriever.Current.IndividualsCollection;
 
-      public IReadOnlyList<PassiveTransportBuildingBlock> PassiveTransportCollection => get<PassiveTransportBuildingBlock>();
+      public IReadOnlyList<PassiveTransportBuildingBlock> PassiveTransportCollection => get(x => x.PassiveTransports);
 
-      public IReadOnlyList<MoBiSpatialStructure> SpatialStructureCollection => get<MoBiSpatialStructure>();
+      public IReadOnlyList<MoBiSpatialStructure> SpatialStructureCollection => get(x => x.SpatialStructure as MoBiSpatialStructure);
 
-      public IReadOnlyList<ObserverBuildingBlock> ObserverBlockCollection => get<ObserverBuildingBlock>();
+      public IReadOnlyList<ObserverBuildingBlock> ObserverBlockCollection => get(x => x.Observers);
 
-      public IReadOnlyList<EventGroupBuildingBlock> EventBlockCollection => get<EventGroupBuildingBlock>();
+      public IReadOnlyList<EventGroupBuildingBlock> EventBlockCollection => get(x => x.EventGroups);
 
-      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionBlockCollection => get<InitialConditionsBuildingBlock>();
+      public IReadOnlyList<InitialConditionsBuildingBlock> InitialConditionBlockCollection => getMany(x => x.InitialConditionsCollection);
 
-      public IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection => get<ParameterValuesBuildingBlock>();
+      public IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection => getMany(x => x.ParameterValuesCollection);
 
       public IndividualBuildingBlock IndividualByName(string buildingBlockName)
       {

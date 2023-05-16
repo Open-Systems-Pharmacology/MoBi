@@ -44,18 +44,18 @@ namespace MoBi.Presentation.Tasks
          switch (options.Scope)
          {
             case SearchScope.Project:
-               return _searchVisitor.SearchIn(_projectRetriever.Current, _buildingBlockRepository.All().ToList());
+               return _searchVisitor.SearchIn(_projectRetriever.Current, _buildingBlockRepository.All());
 
             case SearchScope.AllOfSameType:
                if (localSearchTarget == null)
                   return Enumerable.Empty<SearchResult>();
 
-               return searchInAllOfSameType(localSearchTarget.GetType(), _buildingBlockRepository.All().ToList());
+               return searchInAllOfSameType(localSearchTarget.GetType(), _buildingBlockRepository.All());
             case SearchScope.Local:
                if (localSearchTarget == null)
                   return Enumerable.Empty<SearchResult>();
 
-               return _searchVisitor.SearchIn(localSearchTarget, _buildingBlockRepository.All().ToList());
+               return _searchVisitor.SearchIn(localSearchTarget, _buildingBlockRepository.All());
             default:
                throw new ArgumentOutOfRangeException(nameof(options.Scope));
          }

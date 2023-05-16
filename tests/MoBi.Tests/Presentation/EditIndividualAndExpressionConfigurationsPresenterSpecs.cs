@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -18,6 +19,7 @@ namespace MoBi.Presentation
    public class concern_for_EditIndividualAndExpressionConfigurationsPresenter : ContextSpecification<EditIndividualAndExpressionConfigurationsPresenter>
    {
       protected IMoBiProjectRetriever _projectRetriever;
+      protected IBuildingBlockRepository _buildingBlockRepository;
       protected ITreeNodeFactory _treeNodeFactory;
       protected ISelectedIndividualToIndividualSelectionDTOMapper _selectedIndividualDTOMapper;
       protected IEditIndividualAndExpressionConfigurationsView _view;
@@ -25,10 +27,11 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _buildingBlockRepository = new BuildingBlockRepository(_projectRetriever);
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
          _selectedIndividualDTOMapper = A.Fake<ISelectedIndividualToIndividualSelectionDTOMapper>();
          _view = A.Fake<IEditIndividualAndExpressionConfigurationsView>();
-         sut = new EditIndividualAndExpressionConfigurationsPresenter(_view, _selectedIndividualDTOMapper, _treeNodeFactory, _projectRetriever);
+         sut = new EditIndividualAndExpressionConfigurationsPresenter(_view, _selectedIndividualDTOMapper, _treeNodeFactory, _buildingBlockRepository);
       }
    }
 

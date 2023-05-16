@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Services;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
@@ -30,16 +30,16 @@ namespace MoBi.Presentation.Presenter
       private readonly ISelectedIndividualToIndividualSelectionDTOMapper _selectedIndividualDTOMapper;
       private readonly ITreeNodeFactory _treeNodeFactory;
       private IndividualSelectionDTO _individualSelectionDTO;
-      private readonly IMoBiProjectRetriever _projectRetriever;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly List<ExpressionProfileBuildingBlock> _selectedExpressions;
 
       public EditIndividualAndExpressionConfigurationsPresenter(IEditIndividualAndExpressionConfigurationsView view, ISelectedIndividualToIndividualSelectionDTOMapper selectedIndividualDTOMapper,
-         ITreeNodeFactory treeNodeFactory, IMoBiProjectRetriever projectRetriever) : base(view)
+         ITreeNodeFactory treeNodeFactory, IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
          _selectedExpressions = new List<ExpressionProfileBuildingBlock>();
          _selectedIndividualDTOMapper = selectedIndividualDTOMapper;
          _treeNodeFactory = treeNodeFactory;
-         _projectRetriever = projectRetriever;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
       public void Edit(SimulationConfiguration simulationConfiguration)
@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Presenter
       {
          simulationConfiguration.ExpressionProfiles.Each(profile =>
          {
-            var projectProfile = _projectRetriever.Current.ExpressionProfileByName(profile.Name);
+            var projectProfile = _buildingBlockRepository.ExpressionProfileByName(profile.Name);
             addUsedExpressionToSelectedView(projectProfile);
             _selectedExpressions.Add(projectProfile);
          });
@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addUnusedExpressionsToSelectionView()
       {
-         _projectRetriever.Current.ExpressionProfileCollection.Where(x => !_selectedExpressions.ExistsByName(x.Name)).Each(addUnusedExpressionToSelectionView);
+         _buildingBlockRepository.ExpressionProfileCollection.Where(x => !_selectedExpressions.ExistsByName(x.Name)).Each(addUnusedExpressionToSelectionView);
       }
 
       private void addUnusedExpressionToSelectionView(ExpressionProfileBuildingBlock expression)

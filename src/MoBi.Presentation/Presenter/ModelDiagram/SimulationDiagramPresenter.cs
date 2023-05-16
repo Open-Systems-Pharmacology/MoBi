@@ -132,6 +132,8 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       private IDiagramModel getReactionBlockDiagramModel()
       {
+         // TODO OSMOSES naming is no longer unique among all reaction blocks so we will need a new way
+         // to find specific reaction in the repository
          var reactionBlockName = DiagramManager.PkModel.Configuration.All<ReactionBuildingBlock>().First().Name;
          var reactionBlock = _buildingBlockRepository.ReactionBlockCollection.FindByName(reactionBlockName);
 

@@ -78,16 +78,6 @@ namespace MoBi.Core.Domain.Model
          return Modules.FindByName(moduleName);
       }
 
-      public IndividualBuildingBlock IndividualByName(string buildingBlockName)
-      {
-         return IndividualsCollection.FindByName(buildingBlockName);
-      }
-
-      public ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName)
-      {
-         return ExpressionProfileCollection.FindByName(buildingBlockName);
-      }
-
       public void AddSimulation(IMoBiSimulation newSimulation)
       {
          _allSimulations.Add(newSimulation);

@@ -171,47 +171,47 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          if (deserializedEntity.IsAnImplementationOf<CurveChart>())
             addChartToProject(deserializedEntity);
 
-         else if (deserializedEntity.IsAnImplementationOf<ParameterIdentification>())
-            _project.AddParameterIdentification(deserializedEntity as ParameterIdentification);
+         else if (deserializedEntity is ParameterIdentification parameterIdentification)
+            _project.AddParameterIdentification(parameterIdentification);
 
-         else if (deserializedEntity.IsAnImplementationOf<SensitivityAnalysis>())
-            _project.AddSensitivityAnalysis(deserializedEntity as SensitivityAnalysis);
+         else if (deserializedEntity is SensitivityAnalysis sensitivityAnalysis)
+            _project.AddSensitivityAnalysis(sensitivityAnalysis);
 
-         else if (deserializedEntity.IsAnImplementationOf<Module>())
-            _project.AddModule(deserializedEntity as Module);
+         else if (deserializedEntity is Module module)
+            _project.AddModule(module);
 
-         else if (deserializedEntity.IsAnImplementationOf<IndividualBuildingBlock>())
-            _project.AddIndividualBuildingBlock(deserializedEntity as IndividualBuildingBlock);
+         else if (deserializedEntity is IndividualBuildingBlock individualBuildingBlock)
+            _project.AddIndividualBuildingBlock(individualBuildingBlock);
 
-         else if (deserializedEntity.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
-            _project.AddExpressionProfileBuildingBlock(deserializedEntity as ExpressionProfileBuildingBlock);
+         else if (deserializedEntity is ExpressionProfileBuildingBlock expressionProfile)
+            _project.AddExpressionProfileBuildingBlock(expressionProfile);
 
-         else if (deserializedEntity.IsAnImplementationOf<MoleculeBuildingBlock>())
-            moduleBuildingBlocks.Add(deserializedEntity as MoleculeBuildingBlock);
+         else if (deserializedEntity is MoleculeBuildingBlock moleculeBuildingBlock)
+            moduleBuildingBlocks.Add(moleculeBuildingBlock);
 
-         else if (deserializedEntity.IsAnImplementationOf<PassiveTransportBuildingBlock>())
-            moduleBuildingBlocks.Add(deserializedEntity as PassiveTransportBuildingBlock);
+         else if (deserializedEntity is PassiveTransportBuildingBlock passiveTransport)
+            moduleBuildingBlocks.Add(passiveTransport);
 
-         else if (deserializedEntity.IsAnImplementationOf<EventGroupBuildingBlock>())
-            moduleBuildingBlocks.Add(deserializedEntity as EventGroupBuildingBlock);
+         else if (deserializedEntity is EventGroupBuildingBlock eventGroupBuildingBlock)
+            moduleBuildingBlocks.Add(eventGroupBuildingBlock);
 
-         else if (deserializedEntity.IsAnImplementationOf<InitialConditionsBuildingBlock>())
-            moduleBuildingBlocks.Add(deserializedEntity as InitialConditionsBuildingBlock);
+         else if (deserializedEntity is InitialConditionsBuildingBlock initialConditionsBuildingBlock)
+            moduleBuildingBlocks.Add(initialConditionsBuildingBlock);
 
-         else if (deserializedEntity.IsAnImplementationOf<ParameterValuesBuildingBlock>())
-            moduleBuildingBlocks.Add(deserializedEntity as ParameterValuesBuildingBlock);
+         else if (deserializedEntity is ParameterValuesBuildingBlock parameterValuesBuildingBlock)
+            moduleBuildingBlocks.Add(parameterValuesBuildingBlock);
 
-         else if (deserializedEntity.IsAnImplementationOf<MoBiReactionBuildingBlock>())
-            moduleBuildingBlocks.Add(deserializedEntity as MoBiReactionBuildingBlock);
+         else if (deserializedEntity is MoBiReactionBuildingBlock moBiReactionBuildingBlock)
+            moduleBuildingBlocks.Add(moBiReactionBuildingBlock);
 
-         else if (deserializedEntity.IsAnImplementationOf<MoBiSpatialStructure>())
-            moduleBuildingBlocks.Add(deserializedEntity as MoBiSpatialStructure);
+         else if (deserializedEntity is MoBiSpatialStructure moBiSpatialStructure)
+            moduleBuildingBlocks.Add(moBiSpatialStructure);
 
-         else if (deserializedEntity.IsAnImplementationOf<ObserverBuildingBlock>())
-            moduleBuildingBlocks.Add(deserializedEntity as ObserverBuildingBlock);
+         else if (deserializedEntity is ObserverBuildingBlock observerBuildingBlock)
+            moduleBuildingBlocks.Add(observerBuildingBlock);
 
-         else if (deserializedEntity.IsAnImplementationOf<SimulationSettings>())
-            moduleBuildingBlocks.Add(deserializedEntity as SimulationSettings);
+         else if (deserializedEntity is SimulationSettings simulationSettings)
+            moduleBuildingBlocks.Add(simulationSettings);
 
          else
             throw new MoBiException($"Don't know what to do with {deserializedEntity.GetType()}");
