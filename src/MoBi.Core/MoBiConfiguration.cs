@@ -5,6 +5,7 @@ using MoBi.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Assets;
+using static System.Reflection.Assembly;
 
 namespace MoBi.Core
 {
@@ -39,7 +40,7 @@ namespace MoBi.Core
       public override string ApplicationFolderPathName { get; } = AppConstants.SpecialFileNames.APPLICATION_FOLDER_PATH;
       public override int InternalVersion { get; } = ProjectVersions.Current;
 
-      public MoBiConfiguration()
+      public MoBiConfiguration() : base(GetExecutingAssembly())
       {
          CalculationMethodRepositoryFile = LocalOrAllUsersPathForFile(AppConstants.SpecialFileNames.CALCULATION_METHOD_REPOSITORY_FILE_NAME);
          GroupRepositoryFile = LocalOrAllUsersPathForFile(AppConstants.SpecialFileNames.GROUP_REPOSITORY_FILE_NAME);
