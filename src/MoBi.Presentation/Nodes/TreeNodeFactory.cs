@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Nodes
 
       public ITreeNode CreateFor(Module module)
       {
-         var moduleNode = createFor(module);
+         var moduleNode = new ModuleNode(module);
          addModuleBuildingBlocks(moduleNode, module);
          addStartValueCollections(moduleNode, module);
 
