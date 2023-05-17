@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public override void NodeDoubleClicked(ITreeNode node)
       {
-         if (IsFolderNode(node))
+         if (IsFolderNode(node) || IsModuleNode(node))
          {
             base.NodeDoubleClicked(node);
             return;

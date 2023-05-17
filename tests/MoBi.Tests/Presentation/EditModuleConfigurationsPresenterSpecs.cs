@@ -15,6 +15,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Services;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 using TreeNodeFactory = MoBi.Presentation.Nodes.TreeNodeFactory;
