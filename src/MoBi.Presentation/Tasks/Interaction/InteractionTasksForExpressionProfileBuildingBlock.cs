@@ -104,7 +104,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          (_, _, string suggestedCategory) = Constants.ContainerName.NamesFromExpressionProfileName(_containerTask.CreateUniqueName(forbiddenNames, expressionProfile.Name, canUseBaseName: true));
          
          var newName = newNameFromSuggestion(expressionProfile, suggestedCategory);
-         if (newName.Equals(expressionProfile.Name) || string.IsNullOrEmpty(newName))
+         if (string.IsNullOrEmpty(newName))
             return false;
 
          expressionProfile.Name = newName;
