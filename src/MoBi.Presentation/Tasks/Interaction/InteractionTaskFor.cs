@@ -212,7 +212,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public virtual IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
-         var nameIsValid = correctName(childToAdd, parent);
+         var nameIsValid = CorrectName(childToAdd, parent);
          if (!nameIsValid)
             return new MoBiEmptyCommand();
 
@@ -253,7 +253,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          Context.PublishEvent(new AddedEvent<TChild>(newObjectBase, parent));
       }
 
-      private bool correctName(TChild child, TParent parent)
+      protected virtual bool CorrectName(TChild child, TParent parent)
       {
          var parentContainer = parent as IEnumerable<IObjectBase> ?? Enumerable.Empty<IObjectBase>();
          var forbiddenNames = _editTask.GetForbiddenNames(child, parentContainer);
