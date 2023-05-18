@@ -2,6 +2,7 @@
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -38,8 +39,8 @@ namespace MoBi.Presentation.Mapper
          base.Context();
          _module = new Module
          {
-            new ParameterValuesBuildingBlock().WithName(AppConstants.DefaultNames.ParameterValues),
-            new InitialConditionsBuildingBlock().WithName(AppConstants.DefaultNames.InitialConditions)
+            new ParameterValuesBuildingBlock().WithName(DefaultNames.ParameterValues),
+            new InitialConditionsBuildingBlock().WithName(DefaultNames.InitialConditions)
          };
       }
 
@@ -58,8 +59,8 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void the_suggested_name_should_not_be_the_default()
       {
-         _dto.InitialConditionsName.ShouldNotBeEqualTo(AppConstants.DefaultNames.InitialConditions);
-         _dto.ParameterValuesName.ShouldNotBeEqualTo(AppConstants.DefaultNames.ParameterValues);
+         _dto.InitialConditionsName.ShouldNotBeEqualTo(DefaultNames.InitialConditions);
+         _dto.ParameterValuesName.ShouldNotBeEqualTo(DefaultNames.ParameterValues);
       }
    }
 }

@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
@@ -14,8 +15,7 @@ namespace MoBi.Core.Domain.Builder
       /// <summary>
       ///    Creates the strict minimum default spatial structure
       /// </summary>
-      /// <returns></returns>
-      MoBiSpatialStructure CreateDefault(string spatialStructureName);
+      MoBiSpatialStructure CreateDefault(string spatialStructureName = null);
    }
 
    public class MoBiSpatialStructureFactory : SpatialStructureFactory, IMoBiSpatialStructureFactory
@@ -40,8 +40,10 @@ namespace MoBi.Core.Domain.Builder
          return spatialStructure;
       }
 
-      public MoBiSpatialStructure CreateDefault(string spatialStructureName)
+      public MoBiSpatialStructure CreateDefault(string spatialStructureName = null)
       {
+         spatialStructureName = spatialStructureName ?? DefaultNames.SpatialStructure;
+         
          var topContainer = _objectBaseFactory.Create<IContainer>()
             .WithName(spatialStructureName)
             .WithMode(ContainerMode.Physical)

@@ -8,11 +8,13 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_MoBiSpatialStructureFactory : ContextSpecification<IMoBiSpatialStructureFactory>
+   public abstract class concern_for_MoBiSpatialStructureFactory : ContextSpecification<MoBiSpatialStructureFactory>
    {
       private IObjectBaseFactory _objectBaseFactory;
       private MoBiSpatialStructure _spatialStructure;
@@ -42,7 +44,14 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _result = sut.CreateDefault(AppConstants.DefaultNames.SpatialStructure);
+         _result = sut.CreateDefault();
+      }
+
+      [Observation]
+      public void the_name_and_top_container_name_should_be_default()
+      {
+         _result.Name.ShouldBeEqualTo(DefaultNames.SpatialStructure);
+         _result.TopContainers.Each(x => x.Name.ShouldBeEqualTo(DefaultNames.SpatialStructure));
       }
 
       [Observation]

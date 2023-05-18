@@ -88,14 +88,6 @@ namespace MoBi.Assets
 
       public static class DefaultNames
       {
-         public static readonly string MoleculeBuildingBlock = "Molecules";
-         public static readonly string Module = "Module";
-         public static readonly string ReactionBuildingBlock = "Reaction";
-         public static readonly string SpatialStructure = "Organism";
-         public static readonly string PassiveTransportBuildingBlock = "Passive Transports";
-         public static readonly string EventBuildingBlock = "Events";
-         public static readonly string ObserverBuildingBlock = "Observer";
-         public static readonly string SimulationSettings = "Simulation Settings";
          public static readonly string EmptyCalculationMethod = "No Calculation Method";
          public static readonly string EmptyCalculationMethodDescription = "";
 
@@ -119,9 +111,6 @@ namespace MoBi.Assets
             "Fraction of dose",
             "Whole organ incl. FcRn_Complex"
          };
-
-         public static readonly string ParameterValues = "Parameter Values";
-         public static readonly string InitialConditions = "Initial Conditions";
       }
 
       public static class SpecialFileNames
