@@ -220,6 +220,7 @@ namespace MoBi.Presentation
          container.Register<IEditTaskFor<IMoBiSimulation>, EditTasksForSimulation>();
          container.Register<IEditTaskFor<MoBiSpatialStructure>, EditTasksForSpatialStructure>();
          container.Register<IEditTaskFor<ExpressionProfileBuildingBlock>, EditTasksForExpressionProfileBuildingBlock>();
+         container.Register<IEditTaskFor<IndividualBuildingBlock>, EditTasksForIndividualBuildingBlock>();
          container.Register(typeof(IEditTasksForBuildingBlock<>), typeof(EditTasksForBuildingBlock<>));
          container.Register(typeof(IEditTaskFor<>), typeof(EditTasksForBuildingBlock<>));
       }

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Edit
@@ -28,6 +30,11 @@ namespace MoBi.Presentation.Tasks.Edit
          {
             return renameExpressionProfilePresenter.NewNameFrom(moleculeName, species, category, type, prohibitedNames);
          }
+      }
+
+      protected override IEnumerable<string> GetUnallowedNames(ExpressionProfileBuildingBlock objectBase, IEnumerable<IObjectBase> existingObjectsInParent)
+      {
+         return base.GetUnallowedNames(objectBase, existingObjectsInParent).Concat(_interactionTaskContext.BuildingBlockRepository.ExpressionProfileCollection.AllNames());
       }
 
       protected override IMoBiCommand GetRenameCommandFor(ExpressionProfileBuildingBlock expressionProfileBuildingBlock, IBuildingBlock buildingBlock, string newName, string objectType)

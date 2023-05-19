@@ -10,6 +10,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -25,12 +26,18 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       private readonly IEditTasksForExpressionProfileBuildingBlock _editTaskForExpressionProfileBuildingBlock;
       private readonly IPKSimStarter _pkSimStarter;
+      private readonly IContainerTask _containerTask;
 
-      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForExpressionProfileBuildingBlock editTask, IMoBiFormulaTask formulaTask, IPKSimStarter pkSimStarter) :
+      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, 
+         IEditTasksForExpressionProfileBuildingBlock editTask, 
+         IMoBiFormulaTask formulaTask, 
+         IPKSimStarter pkSimStarter, 
+         IContainerTask containerTask) :
          base(interactionTaskContext, editTask, formulaTask)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;
+         _containerTask = containerTask;
       }
 
       public IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML()
@@ -70,9 +77,15 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override string GetNewNameForClone(ExpressionProfileBuildingBlock buildingBlockToClone)
       {
-         var existingObjectsInParent = Context.CurrentProject.All<ExpressionProfileBuildingBlock>();
-         var forbiddenValues = _editTask.GetForbiddenNames(buildingBlockToClone, existingObjectsInParent).ToList();
          var suggestedCategory = $"{buildingBlockToClone.Category} - {AppConstants.Clone}";
+
+         return newNameFromSuggestion(buildingBlockToClone, suggestedCategory);
+      }
+
+      private string newNameFromSuggestion(ExpressionProfileBuildingBlock buildingBlockToClone, string suggestedCategory)
+      {
+         var existingObjectsInParent = Context.CurrentProject.ExpressionProfileCollection;
+         var forbiddenValues = _editTask.GetForbiddenNames(buildingBlockToClone, existingObjectsInParent).ToList();
 
          return _editTaskForExpressionProfileBuildingBlock.NewNameFromSuggestions(buildingBlockToClone.MoleculeName, buildingBlockToClone.Species, suggestedCategory, buildingBlockToClone.Type, forbiddenValues);
       }
@@ -80,6 +93,22 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IMoBiCommand GetRemoveCommand(ExpressionProfileBuildingBlock expressionProfileToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
       {
          return new RemoveExpressionProfileBuildingBlockFromProjectCommand(expressionProfileToRemove);
+      }
+
+      protected override bool CorrectName(ExpressionProfileBuildingBlock expressionProfile, MoBiProject project)
+      {
+         var forbiddenNames = project.ExpressionProfileCollection.AllNames();
+         if (!forbiddenNames.Contains(expressionProfile.Name))
+            return true;
+
+         (_, _, string suggestedCategory) = Constants.ContainerName.NamesFromExpressionProfileName(_containerTask.CreateUniqueName(forbiddenNames, expressionProfile.Name, canUseBaseName: true));
+         
+         var newName = newNameFromSuggestion(expressionProfile, suggestedCategory);
+         if (string.IsNullOrEmpty(newName))
+            return false;
+
+         expressionProfile.Name = newName;
+         return true;
       }
 
       public override IMoBiCommand GetAddCommand(ExpressionProfileBuildingBlock expressionProfileToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
