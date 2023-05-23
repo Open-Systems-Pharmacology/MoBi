@@ -10,6 +10,7 @@ using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -333,7 +334,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.Create<MoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
          A.CallTo(() => _reactionBuildingBlockFactory.Create()).Returns(_moBiReactionBuildingBlock);
-         A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).Returns(_spatialStructure);
+         A.CallTo(() => _spatialStructureFactory.CreateDefault(DefaultNames.SpatialStructure)).Returns(_spatialStructure);
          _topContainer = A.Fake<IContainer>();
          A.CallTo(() => _context.Create<IContainer>()).Returns(_topContainer);
          _passiveTransportBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();

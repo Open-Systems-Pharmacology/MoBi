@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -113,7 +114,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_create_a_new_spatial_structure()
       {
-         A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).MustHaveHappened();
+         A.CallTo(() => _spatialStructureFactory.CreateDefault(null)).MustHaveHappened();
       }
 
    }
