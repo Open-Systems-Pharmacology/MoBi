@@ -6,11 +6,11 @@ using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
-   internal interface ISelectReferenceAtMoleculePresenter : ISelectReferencePresenter
+   public interface ISelectReferenceAtMoleculePresenter : ISelectReferencePresenter
    {
    }
 
-   internal class SelectReferenceAtMoleculePresenter : SelectReferencePresenterBase, ISelectReferenceAtMoleculePresenter
+   public class SelectReferenceAtMoleculePresenter : SelectReferencePresenterBase, ISelectReferenceAtMoleculePresenter
    {
       public SelectReferenceAtMoleculePresenter(ISelectReferenceView view,
          IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,

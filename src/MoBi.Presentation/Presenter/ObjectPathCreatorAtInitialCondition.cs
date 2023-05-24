@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Presenter
 {
-   internal interface IObjectPathCreatorAtInitialCondition:IObjectPathCreator
+   public interface IObjectPathCreatorAtInitialCondition:IObjectPathCreator
    {
    }
 
