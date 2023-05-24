@@ -29,52 +29,83 @@
       /// </summary>
       private void InitializeComponent()
       {
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.btnLoadFromDatabase = new OSPSuite.UI.Controls.UxSimpleButton();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new OSPSuite.UI.Controls.UxGridView();
-         this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
-         this.lblPKSimVersion = new DevExpress.XtraEditors.LabelControl();
          this.tbPKSimVersion = new DevExpress.XtraEditors.TextEdit();
-         this.btnLoadFromDatabase = new OSPSuite.UI.Controls.UxSimpleButton();
-         this.lblCategory = new DevExpress.XtraEditors.LabelControl();
-         this.lblMoleculeName = new DevExpress.XtraEditors.LabelControl();
-         this.lblSpecies = new DevExpress.XtraEditors.LabelControl();
-         this.tbSpecies = new DevExpress.XtraEditors.TextEdit();
-         this.tbMoleculeName = new DevExpress.XtraEditors.TextEdit();
          this.tbCategory = new DevExpress.XtraEditors.TextEdit();
+         this.tbMoleculeName = new DevExpress.XtraEditors.TextEdit();
+         this.tbSpecies = new DevExpress.XtraEditors.TextEdit();
+         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.speciesControlItem = new DevExpress.XtraLayout.LayoutControlItem();
+         this.moleculeControlItem = new DevExpress.XtraLayout.LayoutControlItem();
+         this.categoryControlItem = new DevExpress.XtraLayout.LayoutControlItem();
+         this.pkSimVersionControlItem = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItem6 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
-         this.tablePanel.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.tbPKSimVersion.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbSpecies.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbMoleculeName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbCategory.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbMoleculeName.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbSpecies.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.speciesControlItem)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.moleculeControlItem)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.categoryControlItem)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.pkSimVersionControlItem)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).BeginInit();
          this.SuspendLayout();
+         // 
+         // layoutControl
+         // 
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.btnLoadFromDatabase);
+         this.layoutControl.Controls.Add(this.gridControl);
+         this.layoutControl.Controls.Add(this.tbPKSimVersion);
+         this.layoutControl.Controls.Add(this.tbCategory);
+         this.layoutControl.Controls.Add(this.tbMoleculeName);
+         this.layoutControl.Controls.Add(this.tbSpecies);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.Root;
+         this.layoutControl.Size = new System.Drawing.Size(1324, 588);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "uxLayoutControl1";
+         // 
+         // btnLoadFromDatabase
+         // 
+         this.btnLoadFromDatabase.Location = new System.Drawing.Point(1164, 36);
+         this.btnLoadFromDatabase.Manager = null;
+         this.btnLoadFromDatabase.MaximumSize = new System.Drawing.Size(150, 0);
+         this.btnLoadFromDatabase.Name = "btnLoadFromDatabase";
+         this.btnLoadFromDatabase.Shortcut = System.Windows.Forms.Keys.None;
+         this.btnLoadFromDatabase.Size = new System.Drawing.Size(148, 22);
+         this.btnLoadFromDatabase.StyleController = this.layoutControl;
+         this.btnLoadFromDatabase.TabIndex = 9;
+         this.btnLoadFromDatabase.Text = "btnLoadFromDatabase";
          // 
          // gridControl
          // 
-         this.tablePanel.SetColumn(this.gridControl, 0);
-         this.tablePanel.SetColumnSpan(this.gridControl, 3);
-         this.gridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.gridControl.Location = new System.Drawing.Point(3, 107);
+         this.gridControl.Location = new System.Drawing.Point(12, 110);
          this.gridControl.MainView = this.gridView;
          this.gridControl.Name = "gridControl";
-         this.tablePanel.SetRow(this.gridControl, 4);
-         this.gridControl.Size = new System.Drawing.Size(831, 478);
-         this.gridControl.TabIndex = 0;
+         this.gridControl.Size = new System.Drawing.Size(1300, 466);
+         this.gridControl.TabIndex = 8;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView});
          // 
          // gridView
          // 
          this.gridView.AllowsFiltering = true;
-         this.gridView.ColumnPanelRowHeight = 0;
          this.gridView.EnableColumnContextMenu = true;
-         this.gridView.FooterPanelHeight = 0;
          this.gridView.GridControl = this.gridControl;
-         this.gridView.GroupRowHeight = 0;
-         this.gridView.LevelIndent = 0;
          this.gridView.MultiSelect = true;
          this.gridView.Name = "gridView";
          this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
@@ -83,178 +114,147 @@
          this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
          this.gridView.OptionsSelection.MultiSelect = true;
          this.gridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
-         this.gridView.PreviewIndent = 0;
-         this.gridView.RowHeight = 0;
-         this.gridView.ViewCaptionHeight = 0;
-         // 
-         // tablePanel
-         // 
-         this.tablePanel.Columns.AddRange(new DevExpress.Utils.Layout.TablePanelColumn[] {
-            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 55F),
-            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 50F),
-            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 50F)});
-         this.tablePanel.Controls.Add(this.lblPKSimVersion);
-         this.tablePanel.Controls.Add(this.tbPKSimVersion);
-         this.tablePanel.Controls.Add(this.btnLoadFromDatabase);
-         this.tablePanel.Controls.Add(this.lblCategory);
-         this.tablePanel.Controls.Add(this.lblMoleculeName);
-         this.tablePanel.Controls.Add(this.lblSpecies);
-         this.tablePanel.Controls.Add(this.tbSpecies);
-         this.tablePanel.Controls.Add(this.tbMoleculeName);
-         this.tablePanel.Controls.Add(this.tbCategory);
-         this.tablePanel.Controls.Add(this.gridControl);
-         this.tablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tablePanel.Location = new System.Drawing.Point(0, 0);
-         this.tablePanel.Name = "tablePanel";
-         this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
-         this.tablePanel.Size = new System.Drawing.Size(837, 588);
-         this.tablePanel.TabIndex = 1;
-         // 
-         // lblPKSimVersion
-         // 
-         this.tablePanel.SetColumn(this.lblPKSimVersion, 0);
-         this.lblPKSimVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.lblPKSimVersion.Location = new System.Drawing.Point(3, 81);
-         this.lblPKSimVersion.Name = "lblPKSimVersion";
-         this.tablePanel.SetRow(this.lblPKSimVersion, 3);
-         this.lblPKSimVersion.Size = new System.Drawing.Size(78, 20);
-         this.lblPKSimVersion.TabIndex = 11;
-         this.lblPKSimVersion.Text = "lblPKSimVersion";
          // 
          // tbPKSimVersion
          // 
-         this.tablePanel.SetColumn(this.tbPKSimVersion, 1);
-         this.tablePanel.SetColumnSpan(this.tbPKSimVersion, 2);
-         this.tbPKSimVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tbPKSimVersion.Location = new System.Drawing.Point(87, 81);
-         this.tbPKSimVersion.MaximumSize = new System.Drawing.Size(747, 0);
+         this.tbPKSimVersion.Location = new System.Drawing.Point(143, 86);
          this.tbPKSimVersion.Name = "tbPKSimVersion";
-         this.tablePanel.SetRow(this.tbPKSimVersion, 3);
-         this.tbPKSimVersion.Size = new System.Drawing.Size(747, 20);
-         this.tbPKSimVersion.TabIndex = 10;
-         // 
-         // btnLoadFromDatabase
-         // 
-         this.tablePanel.SetColumn(this.btnLoadFromDatabase, 2);
-         this.btnLoadFromDatabase.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.btnLoadFromDatabase.Location = new System.Drawing.Point(693, 29);
-         this.btnLoadFromDatabase.Manager = null;
-         this.btnLoadFromDatabase.MaximumSize = new System.Drawing.Size(141, 0);
-         this.btnLoadFromDatabase.MinimumSize = new System.Drawing.Size(141, 0);
-         this.btnLoadFromDatabase.Name = "btnLoadFromDatabase";
-         this.tablePanel.SetRow(this.btnLoadFromDatabase, 1);
-         this.btnLoadFromDatabase.Shortcut = System.Windows.Forms.Keys.None;
-         this.btnLoadFromDatabase.Size = new System.Drawing.Size(141, 20);
-         this.btnLoadFromDatabase.TabIndex = 9;
-         this.btnLoadFromDatabase.Text = "Query Database";
-         // 
-         // lblCategory
-         // 
-         this.tablePanel.SetColumn(this.lblCategory, 0);
-         this.lblCategory.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.lblCategory.Location = new System.Drawing.Point(3, 55);
-         this.lblCategory.Name = "lblCategory";
-         this.tablePanel.SetRow(this.lblCategory, 2);
-         this.lblCategory.Size = new System.Drawing.Size(78, 20);
-         this.lblCategory.TabIndex = 6;
-         this.lblCategory.Text = "lblCategory";
-         // 
-         // lblMoleculeName
-         // 
-         this.tablePanel.SetColumn(this.lblMoleculeName, 0);
-         this.lblMoleculeName.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.lblMoleculeName.Location = new System.Drawing.Point(3, 29);
-         this.lblMoleculeName.Name = "lblMoleculeName";
-         this.tablePanel.SetRow(this.lblMoleculeName, 1);
-         this.lblMoleculeName.Size = new System.Drawing.Size(78, 20);
-         this.lblMoleculeName.TabIndex = 5;
-         this.lblMoleculeName.Text = "lblMoleculeName";
-         // 
-         // lblSpecies
-         // 
-         this.tablePanel.SetColumn(this.lblSpecies, 0);
-         this.lblSpecies.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.lblSpecies.Location = new System.Drawing.Point(3, 3);
-         this.lblSpecies.Name = "lblSpecies";
-         this.tablePanel.SetRow(this.lblSpecies, 0);
-         this.lblSpecies.Size = new System.Drawing.Size(78, 20);
-         this.lblSpecies.TabIndex = 4;
-         this.lblSpecies.Text = "lblSpecies";
-         // 
-         // tbSpecies
-         // 
-         this.tablePanel.SetColumn(this.tbSpecies, 1);
-         this.tablePanel.SetColumnSpan(this.tbSpecies, 2);
-         this.tbSpecies.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tbSpecies.Location = new System.Drawing.Point(87, 3);
-         this.tbSpecies.MaximumSize = new System.Drawing.Size(747, 0);
-         this.tbSpecies.Name = "tbSpecies";
-         this.tablePanel.SetRow(this.tbSpecies, 0);
-         this.tbSpecies.Size = new System.Drawing.Size(747, 20);
-         this.tbSpecies.TabIndex = 3;
-         // 
-         // tbMoleculeName
-         // 
-         this.tablePanel.SetColumn(this.tbMoleculeName, 1);
-         this.tbMoleculeName.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tbMoleculeName.Location = new System.Drawing.Point(87, 29);
-         this.tbMoleculeName.MaximumSize = new System.Drawing.Size(600, 0);
-         this.tbMoleculeName.Name = "tbMoleculeName";
-         this.tablePanel.SetRow(this.tbMoleculeName, 1);
-         this.tbMoleculeName.Size = new System.Drawing.Size(600, 20);
-         this.tbMoleculeName.TabIndex = 2;
+         this.tbPKSimVersion.Size = new System.Drawing.Size(1169, 20);
+         this.tbPKSimVersion.StyleController = this.layoutControl;
+         this.tbPKSimVersion.TabIndex = 7;
          // 
          // tbCategory
          // 
-         this.tablePanel.SetColumn(this.tbCategory, 1);
-         this.tablePanel.SetColumnSpan(this.tbCategory, 2);
-         this.tbCategory.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tbCategory.Location = new System.Drawing.Point(87, 55);
-         this.tbCategory.MaximumSize = new System.Drawing.Size(747, 0);
+         this.tbCategory.Location = new System.Drawing.Point(143, 62);
          this.tbCategory.Name = "tbCategory";
-         this.tablePanel.SetRow(this.tbCategory, 2);
-         this.tbCategory.Size = new System.Drawing.Size(747, 20);
-         this.tbCategory.TabIndex = 1;
+         this.tbCategory.Size = new System.Drawing.Size(1169, 20);
+         this.tbCategory.StyleController = this.layoutControl;
+         this.tbCategory.TabIndex = 6;
+         // 
+         // tbMoleculeName
+         // 
+         this.tbMoleculeName.Location = new System.Drawing.Point(143, 36);
+         this.tbMoleculeName.Name = "tbMoleculeName";
+         this.tbMoleculeName.Size = new System.Drawing.Size(1017, 20);
+         this.tbMoleculeName.StyleController = this.layoutControl;
+         this.tbMoleculeName.TabIndex = 5;
+         // 
+         // tbSpecies
+         // 
+         this.tbSpecies.Location = new System.Drawing.Point(143, 12);
+         this.tbSpecies.Name = "tbSpecies";
+         this.tbSpecies.Size = new System.Drawing.Size(1169, 20);
+         this.tbSpecies.StyleController = this.layoutControl;
+         this.tbSpecies.TabIndex = 4;
+         // 
+         // Root
+         // 
+         this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+         this.Root.GroupBordersVisible = false;
+         this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.speciesControlItem,
+            this.moleculeControlItem,
+            this.categoryControlItem,
+            this.pkSimVersionControlItem,
+            this.layoutControlItem5,
+            this.layoutControlItem6});
+         this.Root.Name = "Root";
+         this.Root.Size = new System.Drawing.Size(1324, 588);
+         this.Root.TextVisible = false;
+         // 
+         // speciesControlItem
+         // 
+         this.speciesControlItem.Control = this.tbSpecies;
+         this.speciesControlItem.Location = new System.Drawing.Point(0, 0);
+         this.speciesControlItem.Name = "speciesControlItem";
+         this.speciesControlItem.Size = new System.Drawing.Size(1304, 24);
+         this.speciesControlItem.TextSize = new System.Drawing.Size(119, 13);
+         // 
+         // moleculeControlItem
+         // 
+         this.moleculeControlItem.Control = this.tbMoleculeName;
+         this.moleculeControlItem.Location = new System.Drawing.Point(0, 24);
+         this.moleculeControlItem.Name = "moleculeControlItem";
+         this.moleculeControlItem.Size = new System.Drawing.Size(1152, 26);
+         this.moleculeControlItem.TextSize = new System.Drawing.Size(119, 13);
+         // 
+         // categoryControlItem
+         // 
+         this.categoryControlItem.Control = this.tbCategory;
+         this.categoryControlItem.Location = new System.Drawing.Point(0, 50);
+         this.categoryControlItem.Name = "categoryControlItem";
+         this.categoryControlItem.Size = new System.Drawing.Size(1304, 24);
+         this.categoryControlItem.TextSize = new System.Drawing.Size(119, 13);
+         // 
+         // pkSimVersionControlItem
+         // 
+         this.pkSimVersionControlItem.Control = this.tbPKSimVersion;
+         this.pkSimVersionControlItem.Location = new System.Drawing.Point(0, 74);
+         this.pkSimVersionControlItem.Name = "pkSimVersionControlItem";
+         this.pkSimVersionControlItem.Size = new System.Drawing.Size(1304, 24);
+         this.pkSimVersionControlItem.TextSize = new System.Drawing.Size(119, 13);
+         // 
+         // layoutControlItem5
+         // 
+         this.layoutControlItem5.Control = this.gridControl;
+         this.layoutControlItem5.Location = new System.Drawing.Point(0, 98);
+         this.layoutControlItem5.Name = "layoutControlItem5";
+         this.layoutControlItem5.Size = new System.Drawing.Size(1304, 470);
+         this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem5.TextVisible = false;
+         // 
+         // layoutControlItem6
+         // 
+         this.layoutControlItem6.Control = this.btnLoadFromDatabase;
+         this.layoutControlItem6.Location = new System.Drawing.Point(1152, 24);
+         this.layoutControlItem6.Name = "layoutControlItem6";
+         this.layoutControlItem6.Size = new System.Drawing.Size(152, 26);
+         this.layoutControlItem6.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem6.TextVisible = false;
          // 
          // ExpressionProfileBuildingBlockView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.tablePanel);
-         this.Margin = new System.Windows.Forms.Padding(8);
+         this.Controls.Add(this.layoutControl);
          this.Name = "ExpressionProfileBuildingBlockView";
-         this.Size = new System.Drawing.Size(837, 588);
+         this.Size = new System.Drawing.Size(1324, 588);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
-         this.tablePanel.ResumeLayout(false);
-         this.tablePanel.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.tbPKSimVersion.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbSpecies.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbMoleculeName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbCategory.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbMoleculeName.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbSpecies.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.speciesControlItem)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.moleculeControlItem)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.categoryControlItem)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.pkSimVersionControlItem)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).EndInit();
          this.ResumeLayout(false);
 
       }
 
-        #endregion
-        private OSPSuite.UI.Controls.UxGridControl gridControl;
-        private DevExpress.Utils.Layout.TablePanel tablePanel;
-        private DevExpress.XtraEditors.TextEdit tbSpecies;
-        private DevExpress.XtraEditors.TextEdit tbMoleculeName;
-        private DevExpress.XtraEditors.TextEdit tbCategory;
-        private OSPSuite.UI.Controls.UxGridView gridView;
-        private DevExpress.XtraEditors.LabelControl lblCategory;
-        private DevExpress.XtraEditors.LabelControl lblMoleculeName;
-        private DevExpress.XtraEditors.LabelControl lblSpecies;
-        private OSPSuite.UI.Controls.UxSimpleButton btnLoadFromDatabase;
+      #endregion
+
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
+      private OSPSuite.UI.Controls.UxSimpleButton btnLoadFromDatabase;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
+      private OSPSuite.UI.Controls.UxGridView gridView;
       private DevExpress.XtraEditors.TextEdit tbPKSimVersion;
-      private DevExpress.XtraEditors.LabelControl lblPKSimVersion;
+      private DevExpress.XtraEditors.TextEdit tbCategory;
+      private DevExpress.XtraEditors.TextEdit tbMoleculeName;
+      private DevExpress.XtraEditors.TextEdit tbSpecies;
+      private DevExpress.XtraLayout.LayoutControlGroup Root;
+      private DevExpress.XtraLayout.LayoutControlItem speciesControlItem;
+      private DevExpress.XtraLayout.LayoutControlItem moleculeControlItem;
+      private DevExpress.XtraLayout.LayoutControlItem categoryControlItem;
+      private DevExpress.XtraLayout.LayoutControlItem pkSimVersionControlItem;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem6;
    }
 }

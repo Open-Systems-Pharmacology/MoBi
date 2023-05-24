@@ -6,6 +6,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Grid;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
@@ -54,12 +55,11 @@ namespace MoBi.UI.Views
          tbCategory.Enabled = false;
          tbPKSimVersion.Enabled = false;
 
-         lblSpecies.Text = Captions.Species.FormatForLabel();
-         lblCategory.Text = Captions.Category.FormatForLabel();
-         lblPKSimVersion.Text = PKSimVersion.FormatForLabel(checkCase: false);
+         speciesControlItem.Text = Captions.Species.FormatForLabel();
+         categoryControlItem.Text = Captions.Phenotype.FormatForLabel();
+         pkSimVersionControlItem.Text = PKSimVersion.FormatForLabel(checkCase: false);
 
-         btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, "Query Database");
-         tablePanel.AdjustLongButtonWidth(btnLoadFromDatabase);
+         btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, AppConstants.Captions.DatabaseQuery);
       }
 
       private void hideEditor()
@@ -167,7 +167,7 @@ namespace MoBi.UI.Views
       {
          _screenBinder.BindToSource(buildingBlockDTO);
 
-         lblMoleculeName.Text = buildingBlockDTO.NameType.FormatForLabel();
+         moleculeControlItem.Text = buildingBlockDTO.NameType.FormatForLabel();
          _gridViewBinder.BindToSource(buildingBlockDTO.ParameterDTOs);
          initColumnVisibility();
       }

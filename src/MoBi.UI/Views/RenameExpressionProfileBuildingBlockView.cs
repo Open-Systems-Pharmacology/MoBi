@@ -50,7 +50,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          lblSpecies.Text = Captions.Species;
-         lblCategory.Text = Captions.Category;
+         lblCategory.Text = Captions.Phenotype;
          lblName.Text = Captions.Name;
          ApplicationIcon = ApplicationIcons.Rename;
       }
