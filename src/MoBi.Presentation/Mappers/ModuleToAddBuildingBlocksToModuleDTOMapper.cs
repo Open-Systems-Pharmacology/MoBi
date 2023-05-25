@@ -1,5 +1,6 @@
 ﻿using MoBi.Assets;
 using MoBi.Presentation.DTO;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
@@ -24,8 +25,8 @@ namespace MoBi.Presentation.Mappers
       {
          var addBuildingBlocksToModuleDTO = new AddBuildingBlocksToModuleDTO(module)
          {
-            InitialConditionsName = _containerTask.CreateUniqueName(module.InitialConditionsCollection.AllNames(), AppConstants.DefaultNames.InitialConditions, canUseBaseName: true),
-            ParameterValuesName = _containerTask.CreateUniqueName(module.ParameterValuesCollection.AllNames(), AppConstants.DefaultNames.ParameterValues, canUseBaseName: true)
+            InitialConditionsName = _containerTask.CreateUniqueName(module.InitialConditionsCollection.AllNames(), DefaultNames.InitialConditions, canUseBaseName: true),
+            ParameterValuesName = _containerTask.CreateUniqueName(module.ParameterValuesCollection.AllNames(), DefaultNames.ParameterValues, canUseBaseName: true)
          };
 
          addBuildingBlocksToModuleDTO.AddUsedInitialConditionsNames(module.InitialConditionsCollection.AllNames());
