@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       void SetStationaryProperty(bool isStationaryNewValue, bool oldValue);
    }
 
-   internal class EditMoleculeBuilderPresenter : AbstractSubPresenterWithFormula<IEditMoleculeBuilderView, IEditMoleculeBuilderPresenter>, IEditMoleculeBuilderPresenter, IListener<ChangedCalculationMethodEvent>
+   public class EditMoleculeBuilderPresenter : AbstractSubPresenterWithFormula<IEditMoleculeBuilderView, IEditMoleculeBuilderPresenter>, IEditMoleculeBuilderPresenter, IListener<ChangedCalculationMethodEvent>
    {
       private MoleculeBuilder _moleculeBuilder;
       private readonly IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderDTOMapper;
@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(MoleculeBuilder moleculeBuilder)
       {
-         Edit(moleculeBuilder, moleculeBuilder.ParentContainer.Children);
+         Edit(moleculeBuilder, moleculeBuilder.ParentContainer?.Children);
       }
 
       public object Subject => _moleculeBuilder;
