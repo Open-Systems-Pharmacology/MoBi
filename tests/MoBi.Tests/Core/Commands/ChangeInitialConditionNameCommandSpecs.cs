@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
             _initialCondition.Path,
             "Name2");
 
-         A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<IBuildingBlock<InitialCondition>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

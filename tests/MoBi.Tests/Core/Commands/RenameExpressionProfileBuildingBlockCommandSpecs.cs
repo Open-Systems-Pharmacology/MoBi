@@ -47,8 +47,8 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_parameters_should_have_renamed_molecule()
       {
-         _buildingBlock.Any(x => x.Path.Contains("NewMolecule")).ShouldBeFalse();
-         _buildingBlock.All(x => x.Path.Contains("OldMolecule")).ShouldBeTrue();
+         _buildingBlock.Any<ExpressionParameter>(x => x.Path.Contains("NewMolecule")).ShouldBeFalse();
+         _buildingBlock.All<ExpressionParameter>(x => x.Path.Contains("OldMolecule")).ShouldBeTrue();
       }
    }
    
@@ -68,8 +68,8 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_parameters_should_have_renamed_molecule()
       {
-         _buildingBlock.Any(x => x.Path.Contains("OldMolecule")).ShouldBeFalse();
-         _buildingBlock.All(x => x.Path.Contains("NewMolecule")).ShouldBeTrue();
+         _buildingBlock.Any<ExpressionParameter>(x => x.Path.Contains("OldMolecule")).ShouldBeFalse();
+         _buildingBlock.All<ExpressionParameter>(x => x.Path.Contains("NewMolecule")).ShouldBeTrue();
       }
    }
 }

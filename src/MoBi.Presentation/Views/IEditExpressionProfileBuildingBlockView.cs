@@ -6,5 +6,6 @@ namespace MoBi.Presentation.Views
    public interface IEditExpressionProfileBuildingBlockView : IView<IEditExpressionProfileBuildingBlockPresenter>, IEditBuildingBlockBaseView
    {
       void AddExpressionProfileView(IView baseView);
+      void AddInitialConditionsView(IView baseView);
    }
 }

@@ -103,7 +103,7 @@ namespace MoBi.Helpers
       public static InitialConditionsBuildingBlock CreateInitialConditionsFor(SimulationConfiguration buildConfiguration)
       {
          var startValuesCreator = IoC.Resolve<IInitialConditionsCreator>();
-         return startValuesCreator.CreateFrom(buildConfiguration.All<SpatialStructure>().First(), buildConfiguration.All<MoleculeBuildingBlock>().First());
+         return startValuesCreator.CreateFrom(buildConfiguration.All<SpatialStructure>().First(), buildConfiguration.All<MoleculeBuildingBlock>().First().ToList());
       }
 
       public static IDimension AmountDimension => DimensionByName(Constants.Dimension.MOLAR_AMOUNT);

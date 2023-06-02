@@ -1,23 +1,24 @@
-﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
+﻿using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemovePathAndValueEntityFromBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
+   public class RemovePathAndValueEntityFromBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : PathAndValueEntity
    {
       private readonly T _originalEntity;
 
-      public RemovePathAndValueEntityFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<T> parent, ObjectPath path) : base(parent)
+      public RemovePathAndValueEntityFromBuildingBlockCommand(IBuildingBlock<T> parent, ObjectPath path) : base(parent)
       {
          CommandType = AppConstants.Commands.DeleteCommand;
 
          ObjectType = new ObjectTypeResolver().TypeFor<T>();
-         _originalEntity = _buildingBlock[path];
+         _originalEntity = _buildingBlock.Single(x => Equals(x.Path, path));
          Description = AppConstants.Commands.RemovePathAndValueEntity(_originalEntity, parent.Name, ObjectType);
       }
 
@@ -42,7 +43,7 @@ namespace MoBi.Core.Commands
 
    public class RemoveInitialConditionFromBuildingBlockCommand : RemovePathAndValueEntityFromBuildingBlockCommand<InitialCondition>
    {
-      public RemoveInitialConditionFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<InitialCondition> parent, ObjectPath path)
+      public RemoveInitialConditionFromBuildingBlockCommand(IBuildingBlock<InitialCondition> parent, ObjectPath path)
          : base(parent, path)
       {
       }

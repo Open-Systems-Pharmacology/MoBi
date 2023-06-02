@@ -1,20 +1,20 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddPathAndValueEntityToBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
+   public class AddPathAndValueEntityToBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : PathAndValueEntity
    {
       private T _pathAndValueEntity;
       private readonly ObjectPath _objectPath;
       private byte[] _serializedPathAndValueEntity;
 
-      public AddPathAndValueEntityToBuildingBlockCommand(PathAndValueEntityBuildingBlock<T> buildingBlock, T pathAndValueEntity)
+      public AddPathAndValueEntityToBuildingBlockCommand(IBuildingBlock<T> buildingBlock, T pathAndValueEntity)
          : base(buildingBlock)
       {
          _pathAndValueEntity = pathAndValueEntity;
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          _serializedPathAndValueEntity = context.Serialize(_pathAndValueEntity);
          _buildingBlock.Add(_pathAndValueEntity);
-         if(_pathAndValueEntity.Formula != null)
+         if (_pathAndValueEntity.Formula != null)
             _buildingBlock.AddFormula(_pathAndValueEntity.Formula);
 
          context.PublishEvent(new PathAndValueEntitiesBuildingBlockChangedEvent(_buildingBlock));
@@ -65,7 +65,7 @@ namespace MoBi.Core.Commands
 
    public class AddInitialConditionToBuildingBlockCommand : AddPathAndValueEntityToBuildingBlockCommand<InitialCondition>
    {
-      public AddInitialConditionToBuildingBlockCommand(PathAndValueEntityBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition pathAndValueEntity)
+      public AddInitialConditionToBuildingBlockCommand(IBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition pathAndValueEntity)
          : base(initialConditionsBuildingBlock, pathAndValueEntity)
       {
       }

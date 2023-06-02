@@ -28,8 +28,35 @@
       /// </summary>
       private void InitializeComponent()
       {
+         this.tabEditInitialConditions = new DevExpress.XtraTab.XtraTabPage();
+         ((System.ComponentModel.ISupportInitialize)(this.tabPagesControl)).BeginInit();
+         this.tabPagesControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          this.SuspendLayout();
+         // 
+         // tabPagesControl
+         // 
+         this.tabPagesControl.SelectedTabPage = this.tabEditBuildingBlock;
+         this.tabPagesControl.Size = new System.Drawing.Size(750, 521);
+         this.tabPagesControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.tabEditInitialConditions});
+         this.tabPagesControl.Controls.SetChildIndex(this.tabFormulaCache, 0);
+         this.tabPagesControl.Controls.SetChildIndex(this.tabEditInitialConditions, 0);
+         this.tabPagesControl.Controls.SetChildIndex(this.tabEditBuildingBlock, 0);
+         // 
+         // tabEditBuildingBlock
+         // 
+         this.tabEditBuildingBlock.Size = new System.Drawing.Size(748, 496);
+         // 
+         // tabFormulaCache
+         // 
+         this.tabFormulaCache.Size = new System.Drawing.Size(748, 496);
+         // 
+         // tabEditInitialConditions
+         // 
+         this.tabEditInitialConditions.Name = "tabEditInitialConditions";
+         this.tabEditInitialConditions.Size = new System.Drawing.Size(748, 496);
+         this.tabEditInitialConditions.Text = "tabEditInitialConditions";
          // 
          // EditExpressionProfileBuildingBlockView
          // 
@@ -37,11 +64,15 @@
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(750, 521);
          this.Name = "EditExpressionProfileBuildingBlockView";
+         ((System.ComponentModel.ISupportInitialize)(this.tabPagesControl)).EndInit();
+         this.tabPagesControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          this.ResumeLayout(false);
 
       }
 
-        #endregion
-    }
+      #endregion
+
+      private DevExpress.XtraTab.XtraTabPage tabEditInitialConditions;
+   }
 }

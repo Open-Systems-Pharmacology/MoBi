@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Presenter
 
       public override IEnumerable<SelectOption> AvailableSelectOptions
       {
-         get { return new[] {SelectOption.DeleteSelected, SelectOption.DeleteSourceNotDefined}; }
+         get { return new[] { SelectOption.DeleteSelected }; }
       }
    }
 }

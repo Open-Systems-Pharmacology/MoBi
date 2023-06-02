@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
          _path = msv.Path;
 
          sut = new UpdateInitialConditionInBuildingBlockCommand(_buildingBlock, _path, 1.0, true, 22.0, true);
-         A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<IBuildingBlock<InitialCondition>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

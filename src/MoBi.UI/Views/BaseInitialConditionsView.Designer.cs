@@ -1,6 +1,6 @@
 ﻿namespace MoBi.UI.Views
 {
-   partial class InitialConditionsView
+   partial class BaseInitialConditionsView<TPresenter>
    {
       /// <summary> 
       /// Required designer variable.
@@ -34,7 +34,7 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Name = "InitialConditionsView";
+         this.Name = "BaseInitialConditionsView";
          this.Size = new System.Drawing.Size(358, 453);
          this.ResumeLayout(false);
 

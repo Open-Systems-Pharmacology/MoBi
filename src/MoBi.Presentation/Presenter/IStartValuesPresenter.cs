@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
@@ -19,40 +17,12 @@ namespace MoBi.Presentation.Presenter
       IListener<BulkUpdateStartedEvent>
 
    {
-      void HideRefreshStartValuesView();
-      void HideIsPresentView();
-      void HideNegativeValuesAllowedView();
-      void HideLegend();
-      void HideDeleteColumn();
-
       IEnumerable<ValueFormulaDTO> AllFormulas();
-
-      /// <summary>
-      ///    Checks if the color corresponds to Modified or Extended colors
-      /// </summary>
-      /// <param name="color">The color being checked</param>
-      /// <returns>true if the color is one of the two identified</returns>
-      bool IsColorDefault(Color color);
-
-      /// <summary>
-      ///    Turns on or off the IsModified filter
-      /// </summary>
-      bool IsModifiedFilterOn { get; set; }
-
-      /// <summary>
-      ///    Turns on or off the IsNew filter
-      /// </summary>
-      bool IsNewFilterOn { get; set; }
 
       /// <summary>
       ///    Adds a new empty start value to the view
       /// </summary>
       void AddNewEmptyStartValue();
-
-      /// <summary>
-      ///    Hides all sub presenters except the show filter selection
-      /// </summary>
-      void OnlyShowFilterSelection();
 
       /// <summary>
       ///    Sets if new formula can be created. Default is true
@@ -69,8 +39,6 @@ namespace MoBi.Presentation.Presenter
 
       void SetUnit(TDTO startValueDTO, Unit newUnit);
       void SetValue(TDTO startValueDTO, double? valueInDisplayUnit);
-
-      Color BackgroundColorFor(TDTO startValueDTO);
 
       /// <summary>
       ///    Removes a Start Value from a start value building block
@@ -94,27 +62,8 @@ namespace MoBi.Presentation.Presenter
       void UpdateStartValueName(TDTO startValueDTO, string newValue);
 
       /// <summary>
-      ///    Determines if the start value should be shown in the view based on filter settings and whether it's been modified
-      /// </summary>
-      /// <param name="pathAndValueEntity">The start value to be hidden or shown</param>
-      /// <returns>True if the value should be shown, otherwise false</returns>
-      bool ShouldShow(TDTO pathAndValueEntity);
-
-      /// <summary>
       ///    Sets a new value origin for a start value.
       /// </summary>
       void SetValueOrigin(TDTO startValueDTO, ValueOrigin newValueOrigin);
-
-      /// <summary>
-      ///    Function returns the background color used to display the  start value.
-      ///    Per default, the defined functions returns the default color for grid view back ground
-      /// </summary>
-      Func<TDTO, Color> BackgroundColorRetriever { get; set; }
-
-      /// <summary>
-      ///    Function returns true if the start value was part of the original building block
-      ///    If it's been added since edit, returns false
-      /// </summary>
-      Func<TDTO, bool> IsOriginalStartValue { get; set; }
    }
 }

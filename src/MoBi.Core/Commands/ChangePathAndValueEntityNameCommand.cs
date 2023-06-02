@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class ChangePathAndValueEntityNameCommand<TBuildingBlock, TPathAndValueEntity> 
-      : BuildingBlockChangeCommandBase<TBuildingBlock> 
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock<TPathAndValueEntity>
+   public abstract class ChangePathAndValueEntityNameCommand<TBuildingBlock, TPathAndValueEntity>
+      : BuildingBlockChangeCommandBase<TBuildingBlock>
+      where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
       where TPathAndValueEntity : PathAndValueEntity
    {
       protected string _newValue;
@@ -22,7 +23,7 @@ namespace MoBi.Core.Commands
          : base(buildingBlock)
       {
          _newValue = newValue;
-         _originalEntity = buildingBlock[path];
+         _originalEntity = buildingBlock.Single(x => Equals(x.Path, path));
          _oldValue = _originalEntity.Name;
 
          SetCommandParameters(newValue, _oldValue);

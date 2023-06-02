@@ -20,16 +20,11 @@ namespace MoBi.Presentation.Views
       void ClearPathItems();
       IReadOnlyList<TStartValueDTO> SelectedStartValues { get; }
       IReadOnlyList<TStartValueDTO> VisibleStartValues { get; }
-      void AddRefreshStartValuesView(IView view);
       void AddDeleteStartValuesView(IView view);
-      void HideRefreshStartValuesView();
       void HideDeleteView();
-      void HideLegend();
       void HideDeleteColumn();
-      void AddLegendView(IView view);
       void HideIsPresentView();
       void HideNegativeValuesAllowedView();
-      void HideSubPresenterGrouping();
 
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }

@@ -33,7 +33,7 @@ namespace MoBi.Presentation.DTO
 
       public InitialCondition InitialCondition => PathWithValueObject;
 
-      public InitialConditionDTO(InitialCondition initialCondition, PathAndValueEntityBuildingBlock<InitialCondition> buildingBlock) : base(initialCondition, buildingBlock)
+      public InitialConditionDTO(InitialCondition initialCondition, IBuildingBlock<InitialCondition> buildingBlock) : base(initialCondition, buildingBlock)
       {
       }
 

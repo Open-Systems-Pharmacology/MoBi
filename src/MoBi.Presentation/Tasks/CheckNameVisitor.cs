@@ -186,7 +186,7 @@ namespace MoBi.Presentation.Tasks
       private void checkObjectBase<T>(T objectBase) where T : IObjectBase
       {
          if (objectBase.IsAnImplementationOf<IContainer>())
-            checkTagsInContainer((IContainer) objectBase);
+            checkTagsInContainer((IContainer)objectBase);
 
          if (_objectToRename.Equals(objectBase))
             return;
@@ -241,13 +241,13 @@ namespace MoBi.Presentation.Tasks
          if (transportBuilder.MoleculeNames().Contains(_oldName))
          {
             _changes.Add(transportBuilder, _buildingBlock,
-               new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) {ObjectType = objectType});
+               new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) { ObjectType = objectType });
          }
 
          if (transportBuilder.MoleculeNamesToExclude().Contains(_oldName))
          {
             _changes.Add(transportBuilder, _buildingBlock,
-               new ChangeExcludeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) {ObjectType = objectType});
+               new ChangeExcludeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) { ObjectType = objectType });
          }
       }
 
@@ -264,7 +264,7 @@ namespace MoBi.Presentation.Tasks
             if (!string.Equals(tagCondition.Tag, _oldName))
                continue;
 
-            var commandParameters = new TagConditionCommandParameters<T> {TaggedObject = taggedObject, BuildingBlock = _buildingBlock, DescriptorCriteriaRetriever = descriptorCriteriaRetriever};
+            var commandParameters = new TagConditionCommandParameters<T> { TaggedObject = taggedObject, BuildingBlock = _buildingBlock, DescriptorCriteriaRetriever = descriptorCriteriaRetriever };
             _changes.Add(taggedObject, _buildingBlock, new EditTagCommand<T>(_newName, _oldName, commandParameters));
          }
       }
@@ -442,11 +442,11 @@ namespace MoBi.Presentation.Tasks
 
       private void checkPathAndValueEntity<TPathAndValueEntity, TBuildingBlock>(TPathAndValueEntity pathAndValueEntity, IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> startValueTask)
          where TPathAndValueEntity : PathAndValueEntity
-         where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>
+         where TBuildingBlock : IBuildingBlock<TPathAndValueEntity>
       {
          if (Equals(_objectToRename, pathAndValueEntity)) return;
 
-         var entities = _buildingBlock as TBuildingBlock;
+         var entities = _buildingBlock as IBuildingBlock<TPathAndValueEntity>;
          if (string.Equals(pathAndValueEntity.Name, _oldName))
             _changes.Add(pathAndValueEntity, _buildingBlock, startValueTask.UpdateNameCommand(entities, pathAndValueEntity, _newName));
 

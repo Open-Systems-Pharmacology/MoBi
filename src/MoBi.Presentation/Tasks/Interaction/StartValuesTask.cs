@@ -22,7 +22,7 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class StartValuesTask<TBuildingBlock, TPathAndValueEntity> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>, IStartValuesTask<TBuildingBlock, TPathAndValueEntity>
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock
+      where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>, IBuildingBlock
       where TPathAndValueEntity : PathAndValueEntity
    {
       protected IExtendPathAndValuesManager<TPathAndValueEntity> _extendManager;
@@ -30,12 +30,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected readonly ISpatialStructureFactory _spatialStructureFactory;
       private readonly IMapper<ImportedQuantityDTO, TPathAndValueEntity> _dtoToQuantityToParameterValueMapper;
-      private readonly IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> _entityPathTask;
+      private readonly IStartValuePathTask<IBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
 
       protected StartValuesTask(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
-         IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> entityPathTask)
+         IStartValuePathTask<IBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask)
          : base(interactionTaskContext, editTask, moBiFormulaTask)
       {
          _extendManager = extendManager;
@@ -49,23 +49,23 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          if (module.Molecules == null || module.SpatialStructure == null)
             throw new MoBiException(AppConstants.Exceptions.BuildingBlock);
-         
+
          TBuildingBlock newEntity;
          using (var createPresenter = ApplicationController.Start<ICreateStartValuesPresenter<TBuildingBlock>>())
          {
             newEntity = createPresenter.Create();
          }
-         
+
          if (newEntity == null)
             return new MoBiEmptyCommand();
-         
+
          var macroCommand = new MoBiMacroCommand
          {
             ObjectType = ObjectName,
             CommandType = AppConstants.Commands.AddCommand
          };
          macroCommand.Add(GetAddCommand(newEntity, module, buildingBlockToAddTo).Run(Context));
-         
+
          //Icon may depend on name. 
          newEntity.Icon = InteractionTask.IconFor(newEntity);
          macroCommand.Description = AppConstants.Commands.AddToProjectDescription(ObjectName, newEntity.Name);
@@ -137,21 +137,15 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IEnumerable<string> GetContainerPathItemsForBuildingBlock(TBuildingBlock buildingBlock)
       {
-         var spatialStructure = SpatialStructureReferencedBy(buildingBlock);
-         var moleculeBuildingBlock = MoleculeBuildingBlockReferencedBy(buildingBlock);
-         var nameList = new List<string>();
-
-         spatialStructure.Each(container => container.GetAllContainersAndSelf<IContainer>().Each(x => nameList.Add(x.Name)));
-         moleculeBuildingBlock.Each(builder => nameList.Add(builder.Name));
-
-         return nameList.Distinct();
+         return buildingBlock.SelectMany(x => x.Path.Select(y => y)).Distinct();
+         // TODO 
+         // var nameList = new List<string>();
+         //
+         // spatialStructure.Each(container => container.GetAllContainersAndSelf<IContainer>().Each(x => nameList.Add(x.Name)));
+         // moleculeBuildingBlock.Each(builder => nameList.Add(builder.Name));
+         //
+         // return nameList.Distinct();
       }
-
-      protected abstract MoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(TBuildingBlock buildingBlock);
-
-      protected abstract SpatialStructure SpatialStructureReferencedBy(TBuildingBlock buildingBlock);
-
-      public abstract bool IsEquivalentToOriginal(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Checks that the formula is equivalent for the start value. This includes evaluation of constant formula to a double
@@ -197,7 +191,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moBiMacroCommand;
       }
 
-      protected IMoBiCommand Extend(TBuildingBlock buildingBlock, TBuildingBlock buildingBlockToExtend)
+      protected IMoBiCommand Extend(IBuildingBlock<TPathAndValueEntity> buildingBlock, TBuildingBlock buildingBlockToExtend)
       {
          var macro = createExtendMacroCommand(buildingBlockToExtend);
 
@@ -234,7 +228,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, TPathAndValueEntity entityToRemove);
       protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TPathAndValueEntity entityToAdd);
-      public abstract void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock);
+      public abstract void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
       public abstract TBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration);
       public abstract IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
       public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
@@ -251,8 +245,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateValueOriginInPathAndValueEntityCommand<TPathAndValueEntity>(pathAndValueEntity, valueOrigin, buildingBlock).Run(Context);
       }
 
-      public abstract bool CanResolve(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
-      
       public ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule)
       {
          var name = GetNewNameForClone(buildingBlockToClone);
@@ -281,7 +273,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          startQuantities.Each(quantityDTO =>
          {
-            var pathAndValueEntity = buildingBlock[quantityDTO.Path];
+            var pathAndValueEntity = buildingBlock.SingleOrDefault(x => Equals(x.Path, quantityDTO.Path));
 
             if (pathAndValueEntity == null)
                macroCommand.Add(GenerateAddCommand(buildingBlock, _dtoToQuantityToParameterValueMapper.MapFrom(quantityDTO)));

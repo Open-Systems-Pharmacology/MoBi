@@ -13,14 +13,16 @@ namespace MoBi.Presentation
       protected IEditExpressionProfileBuildingBlockView _view;
       protected ExpressionProfileBuildingBlock _expressionProfile;
       private IFormulaCachePresenter _formulaCachePresenter;
+      private IExpressionProfileInitialConditionsPresenter _expressionProfileInitialConditionsPresenter;
 
       protected override void Context()
       {
          _view = A.Fake<IEditExpressionProfileBuildingBlockView>();
          _expressionProfileBuildingBlockPresenter = A.Fake<IExpressionProfileBuildingBlockPresenter>();
+         _expressionProfileInitialConditionsPresenter = A.Fake<IExpressionProfileInitialConditionsPresenter>();
          _expressionProfile = new ExpressionProfileBuildingBlock();
          _formulaCachePresenter = A.Fake<IFormulaCachePresenter>();
-         sut = new EditExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockPresenter, _formulaCachePresenter);
+         sut = new EditExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockPresenter, _expressionProfileInitialConditionsPresenter, _formulaCachePresenter);
       }
    }
 

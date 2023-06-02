@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Tasks
             A.CallTo(() => _editTask.NewNameFromSuggestions(_expressionProfileToAdd.MoleculeName, _expressionProfileToAdd.Species, A<string>._, _expressionProfileToAdd.Type, A<IReadOnlyList<string>>._)).Returns("Molecule|Species|Category 1");
             A.CallTo(() => _context.PublishEvent(A<AddedEvent<ExpressionProfileBuildingBlock>>._))
                .Invokes(x => _addEvent = x.GetArgument<AddedEvent<ExpressionProfileBuildingBlock>>(0));
-            
+
             _project.AddExpressionProfileBuildingBlock(new ExpressionProfileBuildingBlock().WithName("Molecule|Species|Category"));
          }
 
@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Tasks
          {
             base.Context();
             _expressionProfileUpdate = new List<ExpressionParameterValueUpdate>();
-            _expressionProfileUpdate.AddRange(_buildingBlock.Select(x => new ExpressionParameterValueUpdate(x.Path)));
+            _expressionProfileUpdate.AddRange(_buildingBlock.Select<ExpressionParameter, ExpressionParameterValueUpdate>(x => new ExpressionParameterValueUpdate(x.Path)));
             _expressionProfileUpdate.Each(x => { x.UpdatedValue = 99.0; });
             A.CallTo(() => _pkSimStarter.UpdateExpressionProfileFromDatabase(_buildingBlock)).Returns(_expressionProfileUpdate);
          }
@@ -132,7 +132,7 @@ namespace MoBi.Presentation.Tasks
          [Observation]
          public void the_value_should_be_updated()
          {
-            _buildingBlock.First().Value.Value.ShouldBeEqualTo(99.0);
+            _buildingBlock.First<ExpressionParameter>().Value.Value.ShouldBeEqualTo(99.0);
          }
 
          [Observation]

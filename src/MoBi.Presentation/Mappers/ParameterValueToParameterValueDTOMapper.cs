@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Mappers
          _formulaMapper = formulaMapper;
       }
 
-      public ParameterValueDTO MapFrom(ParameterValue initialCondition, PathAndValueEntityBuildingBlock<ParameterValue> buildingBlock)
+      public ParameterValueDTO MapFrom(ParameterValue initialCondition, IBuildingBlock<ParameterValue> buildingBlock)
       {
          var dto = new ParameterValueDTO(initialCondition, buildingBlock)
          {

@@ -7,13 +7,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateValueOriginInPathAndValueEntityCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
+   public class UpdateValueOriginInPathAndValueEntityCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : PathAndValueEntity
    {
       private readonly T _pathAndValueEntity;
       private ValueOrigin _oldValueOrigin;
       private ValueOrigin _newValueOrigin;
 
-      public UpdateValueOriginInPathAndValueEntityCommand(T pathAndValueEntity, ValueOrigin newValueOrigin, PathAndValueEntityBuildingBlock<T> buildingBlock) : base(buildingBlock)
+      public UpdateValueOriginInPathAndValueEntityCommand(T pathAndValueEntity, ValueOrigin newValueOrigin, IBuildingBlock<T> buildingBlock) : base(buildingBlock)
       {
          _pathAndValueEntity = pathAndValueEntity;
          _newValueOrigin = newValueOrigin;

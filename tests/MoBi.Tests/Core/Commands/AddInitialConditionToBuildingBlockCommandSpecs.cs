@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
          _initialCondition = new InitialCondition { Path = new ObjectPath("path1"), Dimension = _fakeDimension, Value = -1, DisplayUnit = new Unit("Dimensionless", 1.0, 1) };
          sut = new AddInitialConditionToBuildingBlockCommand(_buildingBlock, _initialCondition);
 
-         A.CallTo(() => _context.Get<PathAndValueEntityBuildingBlock<InitialCondition>>(A<string>._)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<IBuildingBlock<InitialCondition>>(A<string>._)).Returns(_buildingBlock);
       }
    }
 

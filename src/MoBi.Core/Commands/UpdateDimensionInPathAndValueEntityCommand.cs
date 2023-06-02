@@ -1,13 +1,13 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateDimensionInPathAndValueEntityCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
+   public class UpdateDimensionInPathAndValueEntityCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : PathAndValueEntity
    {
       private readonly T _pathAndValueEntity;
       private readonly IDimension _oldDimension;
@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
       private readonly Unit _oldDisplayUnit;
       private readonly Unit _newDisplayUnit;
 
-      public UpdateDimensionInPathAndValueEntityCommand(T pathAndValueEntity, IDimension newDimension, Unit newDisplayUnit, PathAndValueEntityBuildingBlock<T> buildingBlock)
+      public UpdateDimensionInPathAndValueEntityCommand(T pathAndValueEntity, IDimension newDimension, Unit newDisplayUnit, IBuildingBlock<T> buildingBlock)
          : base(buildingBlock)
       {
          _pathAndValueEntity = pathAndValueEntity;

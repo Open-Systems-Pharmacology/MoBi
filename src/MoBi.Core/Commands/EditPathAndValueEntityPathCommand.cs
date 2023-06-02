@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 namespace MoBi.Core.Commands
 {
    public abstract class EditPathAndValueEntityPathCommand<TBuildingBlock, TPathAndValueEntity> : BuildingBlockChangeCommandBase<TBuildingBlock>
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock<TPathAndValueEntity>
+      where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
       where TPathAndValueEntity : PathAndValueEntity
    {
       protected IEnumerable<string> _path;

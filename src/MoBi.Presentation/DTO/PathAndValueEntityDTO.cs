@@ -28,7 +28,7 @@ namespace MoBi.Presentation.DTO
 
       public string Name
       {
-         get => PathWithValueObject.Name;
+         get => ((IWithName)PathWithValueObject).Name;
          set
          {
             // We don't want the binding to set the value in the underlying object, only the command should do that
@@ -79,6 +79,10 @@ namespace MoBi.Presentation.DTO
             if (Formula == null || Formula.Formula == null)
                return PathWithValueObject.ConvertToDisplayUnit(PathWithValueObject.Value);
             return double.NaN;
+         }
+         set
+         {
+            // We don't want the binding to set the value in the underlying object, only the command should do that
          }
       }
 

@@ -4,7 +4,6 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -14,10 +13,8 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -40,7 +37,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          IParameterResolver parameterResolver,
          IParameterValueBuildingBlockExtendManager parameterValuesExtendManager,
          IMoBiFormulaTask moBiFormulaTask,
-         IMoBiSpatialStructureFactory spatialStructureFactory, 
+         IMoBiSpatialStructureFactory spatialStructureFactory,
          IParameterValuePathTask parameterValuePathTask)
          : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask)
       {
@@ -56,7 +53,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          // return _startValuesCreator.CreateFrom(spatialStructure, molecules);
       }
 
-      public override void ExtendStartValueBuildingBlock(ParameterValuesBuildingBlock buildingBlock)
+      public override void ExtendStartValueBuildingBlock(ParameterValuesBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock)
       {
          var newStartValues = createTempStartValues(buildingBlock);
          AddCommand(Extend(newStartValues, buildingBlock));
@@ -117,45 +114,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new RemoveParameterValueFromBuildingBlockCommand(buildingBlock, pathAndValueEntity.Path);
       }
 
-      protected override MoleculeBuildingBlock MoleculeBuildingBlockReferencedBy(ParameterValuesBuildingBlock buildingBlock)
-      {
-         return new MoleculeBuildingBlock();
-      }
-
-      protected override SpatialStructure SpatialStructureReferencedBy(ParameterValuesBuildingBlock buildingBlock)
-      {
-         return new MoBiSpatialStructure();
-      }
-
-      public override bool IsEquivalentToOriginal(ParameterValue pathAndValueEntity, ParameterValuesBuildingBlock buildingBlock)
-      {
-         var spatialStructure = SpatialStructureReferencedBy(buildingBlock);
-         var moleculeBuildingBlock = MoleculeBuildingBlockReferencedBy(buildingBlock);
-
-         var parameter = _parameterResolver.Resolve(pathAndValueEntity.ContainerPath, pathAndValueEntity.Name, spatialStructure, moleculeBuildingBlock);
-
-         if (parameter == null)
-            return false;
-
-         return HasEquivalentDimension(pathAndValueEntity, parameter) &&
-                HasEquivalentFormula(pathAndValueEntity, parameter.Formula) &&
-                HasEquivalentPathAndValueEntity(pathAndValueEntity, parameter);
-      }
-
       public override IDimension GetDefaultDimension()
       {
          return Constants.Dimension.NO_DIMENSION;
       }
 
-      public override bool CanResolve(ParameterValuesBuildingBlock buildingBlock, ParameterValue pathAndValueEntity)
-      {
-         return _parameterResolver.Resolve(pathAndValueEntity.ContainerPath, pathAndValueEntity.Name, SpatialStructureReferencedBy(buildingBlock), MoleculeBuildingBlockReferencedBy(buildingBlock)) != null;
-      }
-
       public override IMoBiCommand RefreshPathAndValueEntitiesFromBuildingBlocks(ParameterValuesBuildingBlock buildingBlock, IEnumerable<ParameterValue> pathAndValueEntitiesToRefresh)
       {
-         var spatialStructure = SpatialStructureReferencedBy(buildingBlock);
-         var moleculeBuildingBlock = MoleculeBuildingBlockReferencedBy(buildingBlock);
+         // TODO OSMOSES
+         // var spatialStructure = SpatialStructureReferencedBy(buildingBlock);
+         // var moleculeBuildingBlock = MoleculeBuildingBlockReferencedBy(buildingBlock);
 
          var macroCommand = new MoBiMacroCommand
          {
@@ -164,26 +132,25 @@ namespace MoBi.Presentation.Tasks.Interaction
             ObjectType = ObjectTypes.ParameterValue
          };
 
-         pathAndValueEntitiesToRefresh.Each(pathAndValueEntity =>
-         {
-            var parameter = _parameterResolver.Resolve(pathAndValueEntity.ContainerPath, pathAndValueEntity.Name, spatialStructure, moleculeBuildingBlock);
-            if (parameter == null)
-               return;
-
-            if (!HasEquivalentDimension(pathAndValueEntity, parameter))
-               macroCommand.Add(UpdatePathAndValueEntityDimension(buildingBlock, pathAndValueEntity, parameter.Dimension));
-
-            if (!HasEquivalentPathAndValueEntity(pathAndValueEntity, parameter))
-               macroCommand.Add(SetDisplayValueWithUnit(pathAndValueEntity, parameter.ConvertToDisplayUnit(parameter.Value), parameter.DisplayUnit, buildingBlock));
-
-            // Evaluating the pathAndValueEntity before the formula is important if the pathAndValueEntity is a constant and the original building block uses a constant formula
-            if (!HasEquivalentFormula(pathAndValueEntity, parameter.Formula))
-               macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, pathAndValueEntity, parameter.Formula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(parameter.Formula, buildingBlock.FormulaCache)));
-         });
+         // pathAndValueEntitiesToRefresh.Each(pathAndValueEntity =>
+         // {
+         //    var parameter = _parameterResolver.Resolve(pathAndValueEntity.ContainerPath, pathAndValueEntity.Name, spatialStructure, moleculeBuildingBlock);
+         //    if (parameter == null)
+         //       return;
+         //
+         //    if (!HasEquivalentDimension(pathAndValueEntity, parameter))
+         //       macroCommand.Add(UpdatePathAndValueEntityDimension(buildingBlock, pathAndValueEntity, parameter.Dimension));
+         //
+         //    if (!HasEquivalentPathAndValueEntity(pathAndValueEntity, parameter))
+         //       macroCommand.Add(SetDisplayValueWithUnit(pathAndValueEntity, parameter.ConvertToDisplayUnit(parameter.Value), parameter.DisplayUnit, buildingBlock));
+         //
+         //    // Evaluating the pathAndValueEntity before the formula is important if the pathAndValueEntity is a constant and the original building block uses a constant formula
+         //    if (!HasEquivalentFormula(pathAndValueEntity, parameter.Formula))
+         //       macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, pathAndValueEntity, parameter.Formula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(parameter.Formula, buildingBlock.FormulaCache)));
+         // });
 
          return macroCommand;
       }
-
 
       protected override IMoBiCommand GenerateRemoveCommand(ParameterValuesBuildingBlock targetBuildingBlock, ParameterValue startValueToRemove)
       {

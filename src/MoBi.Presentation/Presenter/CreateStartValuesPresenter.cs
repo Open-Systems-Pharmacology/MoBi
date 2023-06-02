@@ -6,11 +6,11 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Presenter
 
       private StartValuesDTO createDto(string name, MoleculeBuildingBlock moleculeBuildingBlock, MoBiSpatialStructure spatialStructure)
       {
-         var dto = new StartValuesDTO {Name = name, Molecules = moleculeBuildingBlock, SpatialStructure = spatialStructure};
+         var dto = new StartValuesDTO { Name = name, Molecules = moleculeBuildingBlock, SpatialStructure = spatialStructure };
          dto.AddUsedNames(AppConstants.UnallowedNames);
          dto.AddUsedNames(_unallowedNames);
          return dto;
@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override InitialConditionsBuildingBlock CreateStartValuesFromDTO(StartValuesDTO dto)
       {
-         return _initialConditionsCreator.CreateFrom(dto.SpatialStructure, dto.Molecules).WithName(dto.Name);
+         return _initialConditionsCreator.CreateFrom(dto.SpatialStructure, dto.Molecules.ToList()).WithName(dto.Name);
       }
    }
 
