@@ -229,7 +229,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected abstract IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, TPathAndValueEntity entityToRemove);
       protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TPathAndValueEntity entityToAdd);
       public abstract void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
-      public abstract TBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration);
       public abstract IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
       public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
       public abstract IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);

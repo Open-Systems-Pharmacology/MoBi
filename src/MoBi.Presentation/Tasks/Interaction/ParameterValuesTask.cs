@@ -58,14 +58,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          var newStartValues = createTempStartValues(buildingBlock);
          AddCommand(Extend(newStartValues, buildingBlock));
       }
-
-      public override ParameterValuesBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration)
-      {
-         //TODO OSMOSES 
-         return new ParameterValuesBuildingBlock();
-         // return _cloneManagerForBuildingBlock.Clone(simulationConfiguration.ParameterStartValues);
-      }
-
+      
       public override IMoBiCommand AddPathAndValueEntityToBuildingBlock(ParameterValuesBuildingBlock buildingBlock, ParameterValue pathAndValueEntity)
       {
          return GenerateAddCommand(buildingBlock, pathAndValueEntity).Run(Context);

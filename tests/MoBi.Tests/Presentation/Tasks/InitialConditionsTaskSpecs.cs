@@ -484,71 +484,7 @@ namespace MoBi.Presentation.Tasks
          _nullStartValue.Value.ShouldBeNull();
       }
    }
-
-   public class When_creating_a_molecule_start_value_for_simulation_based_on_a_selected_template : concern_for_InitialConditionsTask
-   {
-      private SimulationConfiguration _simulationConfiguration;
-      private InitialConditionsBuildingBlock _templateStartValuesBuildingBlock;
-      private InitialConditionsBuildingBlock _newInitialConditions;
-      private InitialCondition _newEndogenousValue;
-      private InitialCondition _existingEndogenousValue;
-      private InitialCondition _existingTemplateEndogenousValue;
-      private InitialCondition _otherStartValues;
-
-      protected override void Context()
-      {
-         base.Context();
-         _templateStartValuesBuildingBlock = new InitialConditionsBuildingBlock();
-         _simulationConfiguration = new SimulationConfiguration();
-         var module = new Module
-         {
-            new SpatialStructure(),
-            new MoleculeBuildingBlock()
-         };
-         var moduleConfiguration = new ModuleConfiguration(module);
-         _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
-         moduleConfiguration.Module.Add(_templateStartValuesBuildingBlock);
-         moduleConfiguration.SelectedInitialConditions = _templateStartValuesBuildingBlock;
-
-         _newInitialConditions = new InitialConditionsBuildingBlock();
-
-         A.CallTo(_initialConditionsCreator).WithReturnType<InitialConditionsBuildingBlock>().Returns(_newInitialConditions);
-
-         _newEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};
-         _existingEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
-         _otherStartValues = new InitialCondition {ContainerPath = new ObjectPath("Organism", "Liver", "Cell"), Name = "M", IsPresent = true};
-         _existingTemplateEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
-
-         _templateStartValuesBuildingBlock.Add(_existingTemplateEndogenousValue);
-         _newInitialConditions.Add(_newEndogenousValue);
-         _newInitialConditions.Add(_existingEndogenousValue);
-         _newInitialConditions.Add(_otherStartValues);
-      }
-
-      protected override void Because()
-      {
-         sut.CreatePathAndValueEntitiesForSimulation(_simulationConfiguration);
-      }
-
-      [Observation]
-      public void should_ensure_that_molecule_defined_in_endogenous_igg_compartments_are_not_present_by_default()
-      {
-         _newEndogenousValue.IsPresent.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_let_previous_molecule_present_in_endogenous_igg_compartment_to_present()
-      {
-         _existingEndogenousValue.IsPresent.ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_mark_the_added_molecule_start_values_as_present_in_all_other_organs()
-      {
-         _otherStartValues.IsPresent.ShouldBeTrue();
-      }
-   }
-
+   
    public abstract class When_cloning_a_molecule_start_values_building_block : concern_for_InitialConditionsTask
    {
       protected InitialConditionsBuildingBlock _buildingBlockToClone;

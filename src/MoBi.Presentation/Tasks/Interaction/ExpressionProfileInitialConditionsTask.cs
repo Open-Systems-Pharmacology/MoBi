@@ -28,10 +28,5 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInitialConditionsCreator initialConditionsCreator) : base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, moleculeResolver, dimensionRetriever, initialConditionsCreator)
       {
       }
-
-      public override ExpressionProfileBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration)
-      {
-         throw new NotImplementedException();
-      }
    }
 }

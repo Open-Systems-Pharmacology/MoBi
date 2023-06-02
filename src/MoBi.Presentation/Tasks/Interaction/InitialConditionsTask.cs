@@ -53,22 +53,5 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
       }
 
-      public override InitialConditionsBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration)
-      {
-         //TODO OSMOSES combining multiple spatial structures and molecule building blocks is not supported yet
-         var simulationInitialConditions = _initialConditionsCreator.CreateFrom(simulationConfiguration.All<SpatialStructure>().First(), simulationConfiguration.All<MoleculeBuildingBlock>().First().ToList())
-            .WithName(simulationConfiguration.All<InitialConditionsBuildingBlock>().First().Name);
-
-         var templateValues = UpdateValuesFromTemplate(simulationInitialConditions, simulationConfiguration.All<InitialConditionsBuildingBlock>().First());
-         updateDefaultIsPresentToFalseForSpecificExtendedValues(simulationInitialConditions, templateValues);
-         return simulationInitialConditions;
-      }
-
-      private void updateDefaultIsPresentToFalseForSpecificExtendedValues(InitialConditionsBuildingBlock startValues, ICache<string, InitialCondition> templateValues)
-      {
-         var startValuesThatShouldPotentiallyNotBePresent = startValues.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ => x.Key.Contains(organ)));
-         var extendedStartValuesThatShouldNotBePresent = startValuesThatShouldPotentiallyNotBePresent.Where(x => !templateValues.Contains(x.Key));
-         extendedStartValuesThatShouldNotBePresent.Each(x => x.Value.IsPresent = false);
-      }
    }
 }

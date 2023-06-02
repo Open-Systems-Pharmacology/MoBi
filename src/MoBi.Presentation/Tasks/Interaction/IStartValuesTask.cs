@@ -14,7 +14,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       where TPathAndValueEntity : PathAndValueEntity
    {
       void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
-      TBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration);
 
       /// <summary>
       ///    Generates a command that will add the pathAndValueEntity to the building block
