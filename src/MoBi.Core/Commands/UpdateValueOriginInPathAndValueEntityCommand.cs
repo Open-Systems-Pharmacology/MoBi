@@ -22,12 +22,6 @@ namespace MoBi.Core.Commands
          CommandType = AppConstants.Commands.EditCommand;
       }
 
-      public override void RestoreExecutionData(IMoBiContext context)
-      {
-         base.RestoreExecutionData(context);
-         _buildingBlock = context.Get<PathAndValueEntityBuildingBlock<T>>(_buildingBlockId);
-      }
-
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new UpdateValueOriginInPathAndValueEntityCommand<T>(_pathAndValueEntity, _oldValueOrigin, _buildingBlock).AsInverseFor(this);

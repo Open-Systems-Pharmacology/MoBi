@@ -27,7 +27,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_InitialConditionsTask : ContextSpecification<InitialConditionsTask>
+   public abstract class concern_for_InitialConditionsTask : ContextSpecification<InitialConditionsTask<InitialConditionsBuildingBlock>>
    {
       protected IInitialConditionsCreator _initialConditionsCreator;
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
@@ -47,8 +47,8 @@ namespace MoBi.Presentation.Tasks
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeResolver = A.Fake<IMoleculeResolver>();
 
-         sut = new InitialConditionsTask(_context, _editTask, _initialConditionsCreator,
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, _reactionDimensionRetriever, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver);
+         sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
+            new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver, _reactionDimensionRetriever, _initialConditionsCreator);
       }
    }
 

@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateInitialConditionInBuildingBlockCommand : BuildingBlockChangeCommandBase<IBuildingBlock<InitialCondition>>
+   public class UpdateInitialConditionInBuildingBlockCommand : BuildingBlockChangeCommandBase<ILookupBuildingBlock<InitialCondition>>
    {
       private readonly ObjectPath _path;
       private readonly double? _value;
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
       private readonly bool _originalNegativeValuesAllowed;
 
       public UpdateInitialConditionInBuildingBlockCommand(
-         IBuildingBlock<InitialCondition> initialConditionsBuildingBlock,
+         ILookupBuildingBlock<InitialCondition> initialConditionsBuildingBlock,
          ObjectPath path,
          double? value, bool present, double scaleDivisor, bool negativeValuesAllowed) : base(initialConditionsBuildingBlock)
       {
@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          _scaleDivisor = scaleDivisor;
          _negativeValuesAllowed = negativeValuesAllowed;
 
-         var initialCondition = _buildingBlock.SingleOrDefault(x => Equals(x.Path, _path));
+         var initialCondition = _buildingBlock.ByPath(_path);
          if (initialCondition == null)
             return;
 
@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         var initialCondition = _buildingBlock.SingleOrDefault(x => Equals(x.Path, _path));
+         var initialCondition = _buildingBlock.ByPath(_path);
          if (initialCondition == null)
             return;
 

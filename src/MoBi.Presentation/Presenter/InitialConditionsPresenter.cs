@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Presenter
 
    public class InitialConditionsPresenter : BuildingBlockWithInitialConditionsPresenter<
          IInitialConditionsView,
-         IInitialConditionsPresenter,
+         IBuildingBlockWithInitialConditionsPresenter,
          InitialConditionsBuildingBlock>,
       IInitialConditionsPresenter
    {
@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
          IInitialConditionToInitialConditionDTOMapper startValueMapper,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
-         IInitialConditionsTask initialConditionsTask,
+         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
          IDeleteStartValuePresenter deleteStartValuePresenter,

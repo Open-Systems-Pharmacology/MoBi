@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
          // We need to modify the path of all builders when the building block name changes
          // The building block name reflects the molecule name so when that changes, the path of all builders needs to be updated
          // to the new molecule name
-         _expressionProfileBuildingBlock.Each<ExpressionParameter>(x =>
+         _expressionProfileBuildingBlock.ExpressionParameters.Each(x =>
          {
             var objectPath = x.Path;
             objectPath.Replace(_oldMoleculeName, _expressionProfileBuildingBlock.MoleculeName);

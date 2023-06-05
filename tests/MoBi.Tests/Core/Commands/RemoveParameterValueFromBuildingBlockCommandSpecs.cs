@@ -24,7 +24,7 @@ namespace MoBi.Core.Commands
          sut = new RemoveParameterValueFromBuildingBlockCommand(_buildingBlock, _psv.Path);
 
          A.CallTo(() => _context.Deserialize<ParameterValue>(A<byte[]>._)).Returns(_psv);
-         A.CallTo(() => _context.Get<IBuildingBlock<ParameterValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ILookupBuildingBlock<ParameterValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

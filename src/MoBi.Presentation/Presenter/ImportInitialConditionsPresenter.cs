@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Presenter
          IDialogCreator dialogCreator,
          IMoBiContext context,
          IImportFromExcelTask excelTask,
-         IInitialConditionsTask initialConditionsTask,
+         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask,
          IDataTableToImportQuantityDTOMapperForMolecules mapper)
          : base(view, dialogCreator, context, excelTask, initialConditionsTask)
       {

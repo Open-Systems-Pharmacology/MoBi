@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
@@ -11,7 +10,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class ChangePathAndValueEntityNameCommand<TBuildingBlock, TPathAndValueEntity>
       : BuildingBlockChangeCommandBase<TBuildingBlock>
-      where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
+      where TBuildingBlock : class, ILookupBuildingBlock<TPathAndValueEntity>
       where TPathAndValueEntity : PathAndValueEntity
    {
       protected string _newValue;
@@ -23,7 +22,7 @@ namespace MoBi.Core.Commands
          : base(buildingBlock)
       {
          _newValue = newValue;
-         _originalEntity = buildingBlock.Single(x => Equals(x.Path, path));
+         _originalEntity = buildingBlock.ByPath(path);
          _oldValue = _originalEntity.Name;
 
          SetCommandParameters(newValue, _oldValue);
@@ -39,7 +38,7 @@ namespace MoBi.Core.Commands
       protected override void ClearReferences()
       {
          base.ClearReferences();
-         _originalEntity = default(TPathAndValueEntity);
+         _originalEntity = default;
       }
 
       protected override void ExecuteWith(IMoBiContext context)

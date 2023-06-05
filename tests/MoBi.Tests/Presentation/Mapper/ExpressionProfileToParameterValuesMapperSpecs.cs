@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void there_should_be_corresponding_parameter_start_values_for_each_expression_parameter()
       {
-         _expressionProfile.Each<ExpressionParameter>(x => _result.Count(y => x.Name.Equals(y.Name)).ShouldBeEqualTo(1));
+         _expressionProfile.ExpressionParameters.Each(x => _result.Count(y => x.Name.Equals(y.Name)).ShouldBeEqualTo(1));
       }
 
       [Observation]

@@ -27,7 +27,7 @@ namespace MoBi.Presentation
       protected IInitialConditionToInitialConditionDTOMapper _mapper;
       private IMoBiContext _context;
       protected IMoleculeIsPresentSelectionPresenter _isPresentSelectionPresenter;
-      protected IInitialConditionsTask _initialConditionTask;
+      protected IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionTask;
       protected ICommandCollector _commandCollector;
       protected InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
       protected IDeleteStartValuePresenter _deleteStartValuePresenter;
@@ -43,7 +43,7 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _isPresentSelectionPresenter = A.Fake<IMoleculeIsPresentSelectionPresenter>();
          _negativeStartValuesAllowedSelectionPresenter = A.Fake<IMoleculeNegativeValuesAllowedSelectionPresenter>();
-         _initialConditionTask = A.Fake<IInitialConditionsTask>();
+         _initialConditionTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _commandCollector = A.Fake<ICommandCollector>();
          _deleteStartValuePresenter = A.Fake<IDeleteStartValuePresenter>();
          _dimensionFactory = A.Fake<IDimensionFactory>();

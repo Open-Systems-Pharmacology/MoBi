@@ -22,7 +22,7 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class StartValuesTask<TBuildingBlock, TPathAndValueEntity> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>, IStartValuesTask<TBuildingBlock, TPathAndValueEntity>
-      where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>, IBuildingBlock
+      where TBuildingBlock : class, ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock
       where TPathAndValueEntity : PathAndValueEntity
    {
       protected IExtendPathAndValuesManager<TPathAndValueEntity> _extendManager;
@@ -30,12 +30,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected readonly ISpatialStructureFactory _spatialStructureFactory;
       private readonly IMapper<ImportedQuantityDTO, TPathAndValueEntity> _dtoToQuantityToParameterValueMapper;
-      private readonly IStartValuePathTask<IBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
+      private readonly IStartValuePathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
 
       protected StartValuesTask(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
-         IStartValuePathTask<IBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask)
+         IStartValuePathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask)
          : base(interactionTaskContext, editTask, moBiFormulaTask)
       {
          _extendManager = extendManager;

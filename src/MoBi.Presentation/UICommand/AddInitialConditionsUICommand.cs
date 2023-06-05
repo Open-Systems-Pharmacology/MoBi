@@ -12,7 +12,7 @@ namespace MoBi.Presentation.UICommand
       private readonly IMoBiHistoryManager _moBiHistoryManager;
 
       public AddInitialConditionsUICommand(
-         IInitialConditionsTask initialConditionsTask,
+         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask,
          IActiveSubjectRetriever activeSubjectRetriever,
          IMoBiApplicationController applicationController, IMoBiHistoryManager moBiHistoryManager)
          : base(initialConditionsTask, activeSubjectRetriever)

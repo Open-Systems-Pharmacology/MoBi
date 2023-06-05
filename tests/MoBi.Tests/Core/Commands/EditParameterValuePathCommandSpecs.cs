@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          base.Context();
          sut = new EditParameterValuePathCommand(_buildingBlock, _parameterValue, new ObjectPath("X", "Y", "Z"));
 
-         A.CallTo(() => _context.Get<IBuildingBlock<ParameterValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ILookupBuildingBlock<ParameterValue>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
 
       protected override void Because()

@@ -8,13 +8,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddPathAndValueEntityToBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<IBuildingBlock<T>> where T : PathAndValueEntity
+   public class AddPathAndValueEntityToBuildingBlockCommand<T> : BuildingBlockChangeCommandBase<ILookupBuildingBlock<T>> where T : PathAndValueEntity
    {
       private T _pathAndValueEntity;
       private readonly ObjectPath _objectPath;
       private byte[] _serializedPathAndValueEntity;
 
-      public AddPathAndValueEntityToBuildingBlockCommand(IBuildingBlock<T> buildingBlock, T pathAndValueEntity)
+      public AddPathAndValueEntityToBuildingBlockCommand(ILookupBuildingBlock<T> buildingBlock, T pathAndValueEntity)
          : base(buildingBlock)
       {
          _pathAndValueEntity = pathAndValueEntity;
@@ -65,7 +65,7 @@ namespace MoBi.Core.Commands
 
    public class AddInitialConditionToBuildingBlockCommand : AddPathAndValueEntityToBuildingBlockCommand<InitialCondition>
    {
-      public AddInitialConditionToBuildingBlockCommand(IBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition pathAndValueEntity)
+      public AddInitialConditionToBuildingBlockCommand(ILookupBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition pathAndValueEntity)
          : base(initialConditionsBuildingBlock, pathAndValueEntity)
       {
       }

@@ -5,9 +5,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeParameterValueNameCommand : ChangePathAndValueEntityNameCommand<IBuildingBlock<ParameterValue>, ParameterValue>
+   public class ChangeParameterValueNameCommand : ChangePathAndValueEntityNameCommand<ILookupBuildingBlock<ParameterValue>, ParameterValue>
    {
-      public ChangeParameterValueNameCommand(IBuildingBlock<ParameterValue> buildingBlock, ObjectPath path, string newValue) : base(buildingBlock, path, newValue)
+      public ChangeParameterValueNameCommand(ILookupBuildingBlock<ParameterValue> buildingBlock, ObjectPath path, string newValue) : base(buildingBlock, path, newValue)
       {
       }
 

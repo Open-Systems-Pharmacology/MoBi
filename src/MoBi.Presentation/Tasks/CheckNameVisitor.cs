@@ -442,11 +442,11 @@ namespace MoBi.Presentation.Tasks
 
       private void checkPathAndValueEntity<TPathAndValueEntity, TBuildingBlock>(TPathAndValueEntity pathAndValueEntity, IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> startValueTask)
          where TPathAndValueEntity : PathAndValueEntity
-         where TBuildingBlock : IBuildingBlock<TPathAndValueEntity>
+         where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity>
       {
          if (Equals(_objectToRename, pathAndValueEntity)) return;
 
-         var entities = _buildingBlock as IBuildingBlock<TPathAndValueEntity>;
+         var entities = _buildingBlock as ILookupBuildingBlock<TPathAndValueEntity>;
          if (string.Equals(pathAndValueEntity.Name, _oldName))
             _changes.Add(pathAndValueEntity, _buildingBlock, startValueTask.UpdateNameCommand(entities, pathAndValueEntity, _newName));
 

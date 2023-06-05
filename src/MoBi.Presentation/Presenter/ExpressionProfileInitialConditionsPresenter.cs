@@ -12,14 +12,14 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   public class ExpressionProfileInitialConditionsPresenter : BuildingBlockWithInitialConditionsPresenter<IExpressionProfileInitialConditionsView, IExpressionProfileInitialConditionsPresenter, ExpressionProfileBuildingBlock>, IExpressionProfileInitialConditionsPresenter
+   public class ExpressionProfileInitialConditionsPresenter : BuildingBlockWithInitialConditionsPresenter<IInitialConditionsView, IBuildingBlockWithInitialConditionsPresenter, ExpressionProfileBuildingBlock>, IExpressionProfileInitialConditionsPresenter
    {
       public ExpressionProfileInitialConditionsPresenter(
-         IExpressionProfileInitialConditionsView view,
+         IInitialConditionsView view,
          IInitialConditionToInitialConditionDTOMapper startValueMapper,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
-         IExpressionProfileInitialConditionsTask initialConditionsTask,
+         IInitialConditionsTask<ExpressionProfileBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
          IDeleteStartValuePresenter deleteStartValuePresenter,

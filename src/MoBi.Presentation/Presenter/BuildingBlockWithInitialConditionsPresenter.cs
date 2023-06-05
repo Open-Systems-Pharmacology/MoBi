@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -39,13 +40,13 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   public abstract class BuildingBlockWithInitialConditionsPresenter<TView, TPresenter, TBuildingBlock> : PathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, InitialConditionDTO, InitialCondition> where TView : IBuildingBlockWithInitialConditionsView<TPresenter>, IPathAndValueEntitiesView<InitialConditionDTO> where TPresenter : IPresenter where TBuildingBlock : class, IBuildingBlock<InitialCondition>
+   public abstract class BuildingBlockWithInitialConditionsPresenter<TView, TPresenter, TBuildingBlock> : PathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, InitialConditionDTO, InitialCondition> where TView : IInitialConditionsView, IPathAndValueEntitiesView<InitialConditionDTO>, IView<TPresenter> where TPresenter : IPresenter where TBuildingBlock : class, IBuildingBlock<InitialCondition>
    {
-      private readonly IBuildingBlockWithInitialConditionsTask<TBuildingBlock> _initialConditionsTask;
+      private readonly IInitialConditionsTask<TBuildingBlock> _initialConditionsTask;
 
       protected BuildingBlockWithInitialConditionsPresenter(TView view,
          IInitialConditionToInitialConditionDTOMapper startValueMapper,
-         IBuildingBlockWithInitialConditionsTask<TBuildingBlock> initialConditionsTask,
+         IInitialConditionsTask<TBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
          IDeleteStartValuePresenter deleteStartValuePresenter,

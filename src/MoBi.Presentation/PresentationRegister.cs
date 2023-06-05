@@ -199,6 +199,7 @@ namespace MoBi.Presentation
             scan.AssemblyContainingType<InteractionTaskConvention>();
             scan.IncludeNamespaceContainingType<InteractionTaskConvention>();
             scan.WithConvention<InteractionTaskConvention>();
+            scan.ExcludeType(typeof(InitialConditionsTask<>));
          });
 
          container.Register<IEditTaskFor<InteractionContainer>, EditTaskForInteractionContainer>();
@@ -223,6 +224,7 @@ namespace MoBi.Presentation
          container.Register<IEditTaskFor<IndividualBuildingBlock>, EditTasksForIndividualBuildingBlock>();
          container.Register(typeof(IEditTasksForBuildingBlock<>), typeof(EditTasksForBuildingBlock<>));
          container.Register(typeof(IEditTaskFor<>), typeof(EditTasksForBuildingBlock<>));
+         container.Register(typeof(IInitialConditionsTask<>), typeof(InitialConditionsTask<>));
       }
 
       private void registerContextMenus(IContainer container)
