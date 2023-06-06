@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -31,7 +30,7 @@ namespace MoBi.Presentation.Presenter
       where TPresenter : IPresenter
       where TPathAndValueEntity : PathAndValueEntity, IUsingFormula
       where TStartValueDTO : StartValueDTO<TPathAndValueEntity>
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock<TPathAndValueEntity>
+      where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
    {
       protected readonly IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> _valueMapper;
 
@@ -40,9 +39,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
       protected readonly IMoBiContext _context;
       private bool _handleChangedEvents;
-      protected ILegendPresenter _legendPresenter;
       private TPathAndValueEntity _focusedStartValue;
-      public Func<TStartValueDTO, Color> BackgroundColorRetriever { get; set; }
       public Func<TStartValueDTO, bool> IsOriginalStartValue { get; set; }
       private readonly List<TPathAndValueEntity> _originalStartValues;
       private readonly string _objectType;
@@ -52,11 +49,9 @@ namespace MoBi.Presentation.Presenter
       protected PathAndValueBuildingBlockPresenter(
          TView view,
          IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> valueMapper,
-         IRefreshStartValueFromOriginalBuildingBlockPresenter refreshStartValuesPresenter,
          IStartValuesTask<TBuildingBlock, TPathAndValueEntity> startValuesTask,
          IEmptyStartValueCreator<TPathAndValueEntity> emptyStartValueCreator,
          IMoBiContext context,
-         ILegendPresenter legendPresenter,
          IDeleteStartValuePresenter deleteStartValuePresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory)
@@ -65,48 +60,17 @@ namespace MoBi.Presentation.Presenter
          _objectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
          _startValuesTask = startValuesTask;
          _valueMapper = valueMapper;
-         BackgroundColorRetriever = retrieveBackgroundColor;
          IsOriginalStartValue = isOriginalStartValue;
          _emptyStartValueCreator = emptyStartValueCreator;
          _context = context;
-         _legendPresenter = legendPresenter;
          _originalStartValues = new List<TPathAndValueEntity>();
 
-         refreshStartValuesPresenter.ApplySelectionAction = performRefreshAction;
          deleteStartValuePresenter.ApplySelectionAction = performDeleteAction;
-         _view.AddRefreshStartValuesView(refreshStartValuesPresenter.BaseView);
          _view.AddDeleteStartValuesView(deleteStartValuePresenter.BaseView);
 
-         AddSubPresenters(legendPresenter, deleteStartValuePresenter, refreshStartValuesPresenter);
+         AddSubPresenters(deleteStartValuePresenter);
          _handleChangedEvents = true;
          CanCreateNewFormula = true;
-
-         initializeLegend();
-      }
-
-      private void initializeLegend()
-      {
-         _legendPresenter.AddLegendItems(new[]
-         {
-            new LegendItemDTO { Description = AppConstants.Captions.CouldNotResolveSource(_objectType), Color = MoBiColors.CannotResolve },
-            new LegendItemDTO { Description = AppConstants.Captions.ValueIsModified, Color = MoBiColors.Modified },
-            new LegendItemDTO { Description = AppConstants.Captions.NewlyAddedValues, Color = MoBiColors.Extended }
-         });
-
-         _view.AddLegendView(_legendPresenter.View);
-      }
-
-      private Color retrieveBackgroundColor(TStartValueDTO startValueDTO)
-      {
-         if (!IsOriginalStartValue(startValueDTO))
-            return MoBiColors.Extended;
-
-
-         var pathAndValueEntity = startValueDTO.PathWithValueObject;
-         if (!_startValuesTask.CanResolve(_buildingBlock, pathAndValueEntity))
-            return MoBiColors.CannotResolve;
-
-         return _startValuesTask.IsEquivalentToOriginal(pathAndValueEntity, _buildingBlock) ? MoBiColors.Default : MoBiColors.Modified;
       }
 
       private bool isOriginalStartValue(TStartValueDTO pathAndValueEntity)
@@ -116,7 +80,8 @@ namespace MoBi.Presentation.Presenter
 
       public void ExtendStartValues()
       {
-         _startValuesTask.ExtendStartValueBuildingBlock(_buildingBlock);
+         // TODO OSMOSES
+         // _startValuesTask.ExtendStartValueBuildingBlock(_buildingBlock);
       }
 
       private void initializeColumns()
@@ -135,35 +100,9 @@ namespace MoBi.Presentation.Presenter
          bindToView();
       }
 
-      public void OnlyShowFilterSelection()
-      {
-         HideIsPresentView();
-         HideNegativeValuesAllowedView();
-         hideDeleteView();
-         HideLegend();
-         HideDeleteColumn();
-         HideRefreshStartValuesView();
-         _view.HideSubPresenterGrouping();
-      }
-
       public bool CanCreateNewFormula
       {
          set { _view.CanCreateNewFormula = value; }
-      }
-
-      private void hideDeleteView()
-      {
-         _view.HideDeleteView();
-      }
-
-      public void HideRefreshStartValuesView()
-      {
-         _view.HideRefreshStartValuesView();
-      }
-
-      public void HideLegend()
-      {
-         _view.HideLegend();
       }
 
       protected IReadOnlyList<TStartValueDTO> SelectedStartValueDTOs => _view.SelectedStartValues;
@@ -191,8 +130,6 @@ namespace MoBi.Presentation.Presenter
       {
          if (selectOption == SelectOption.DeleteSelected)
             deleteSelected();
-         else if (selectOption == SelectOption.DeleteSourceNotDefined)
-            deleteUnresolved();
       }
 
       private void deleteSelected()
@@ -220,11 +157,6 @@ namespace MoBi.Presentation.Presenter
       public void RemoveStartValue(TStartValueDTO elementToRemove)
       {
          bulkRemove(new List<TStartValueDTO> { elementToRemove });
-      }
-
-      private void deleteUnresolved()
-      {
-         bulkRemove(_startValueDTOs.Where(dto => !_startValuesTask.CanResolve(_buildingBlock, dto.PathWithValueObject)).ToList());
       }
 
       private void performRefreshAction(SelectOption option)
@@ -275,11 +207,6 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_startValuesTask.SetValue(_buildingBlock, valueInDisplayUnit, StartValueFrom(startValueDTO)));
       }
 
-      public Color BackgroundColorFor(TStartValueDTO startValueDTO)
-      {
-         return BackgroundColorRetriever(startValueDTO);
-      }
-
       private void collectRemoveCommands(TStartValueDTO elementToRemove, BulkUpdateMacroCommand collector)
       {
          var pathAndValueEntity = StartValueFrom(elementToRemove);
@@ -308,30 +235,6 @@ namespace MoBi.Presentation.Presenter
             AddCommand(_startValuesTask.EditPathAndValueEntityName(_buildingBlock, pathAndValueEntity, newValue));
          }
       }
-
-      public bool ShouldShow(TStartValueDTO pathAndValueEntity)
-      {
-         return shouldShowForIsNew(pathAndValueEntity) && shouldShowForIsModified(pathAndValueEntity);
-      }
-
-      private bool shouldShowForIsModified(TStartValueDTO pathAndValueEntity)
-      {
-         return !IsModifiedFilterOn || !_startValuesTask.IsEquivalentToOriginal(StartValueFrom(pathAndValueEntity), _buildingBlock);
-      }
-
-      private bool shouldShowForIsNew(TStartValueDTO pathAndValueEntity)
-      {
-         return !IsNewFilterOn || !IsOriginalStartValue(pathAndValueEntity);
-      }
-
-      public bool IsColorDefault(Color color)
-      {
-         return (color == MoBiColors.Default);
-      }
-
-      public bool IsNewFilterOn { get; set; }
-
-      public bool IsModifiedFilterOn { get; set; }
 
       protected TPathAndValueEntity StartValueFrom(TStartValueDTO startValueDTO)
       {

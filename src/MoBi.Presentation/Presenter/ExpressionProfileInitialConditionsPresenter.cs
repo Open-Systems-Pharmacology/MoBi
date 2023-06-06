@@ -8,32 +8,24 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IInitialConditionsPresenter : IBuildingBlockWithInitialConditionsPresenter<InitialConditionsBuildingBlock>
+   public interface IExpressionProfileInitialConditionsPresenter : IBuildingBlockWithInitialConditionsPresenter<ExpressionProfileBuildingBlock>
    {
-
    }
 
-   public class InitialConditionsPresenter : BuildingBlockWithInitialConditionsPresenter<
-         IInitialConditionsView,
-         IBuildingBlockWithInitialConditionsPresenter,
-         InitialConditionsBuildingBlock>,
-      IInitialConditionsPresenter
+   public class ExpressionProfileInitialConditionsPresenter : BuildingBlockWithInitialConditionsPresenter<IInitialConditionsView, IBuildingBlockWithInitialConditionsPresenter, ExpressionProfileBuildingBlock>, IExpressionProfileInitialConditionsPresenter
    {
-
-      public InitialConditionsPresenter(
+      public ExpressionProfileInitialConditionsPresenter(
          IInitialConditionsView view,
          IInitialConditionToInitialConditionDTOMapper startValueMapper,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
-         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask,
+         IInitialConditionsTask<ExpressionProfileBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
          IDeleteStartValuePresenter deleteStartValuePresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
-         IDimensionFactory dimensionFactory)
-         : base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter)
+         IDimensionFactory dimensionFactory) : base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter)
       {
-
       }
    }
 }

@@ -30,8 +30,8 @@ namespace MoBi.UI.Services
 
       protected override void OnCreateSplashScreen()
       {
-         var splahPresenter = IoC.Resolve<ISplashScreenPresenter>();
-         SplashScreen = splahPresenter.View.DowncastTo<Form>();
+         var splashPresenter = IoC.Resolve<ISplashScreenPresenter>();
+         SplashScreen = splashPresenter.View.DowncastTo<Form>();
       }
 
       protected override void OnCreateMainForm()

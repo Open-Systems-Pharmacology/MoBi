@@ -9,13 +9,13 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using MoBi.Presentation.Views;
 
 namespace MoBi.UI.Views
 {
@@ -24,7 +24,7 @@ namespace MoBi.UI.Views
       private readonly UxComboBoxUnit<InitialConditionDTO> _unitControl;
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
 
-      public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder):base(valueOriginBinder)
+      public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder) : base(valueOriginBinder)
       {
          InitializeComponent();
          _unitControl = new UxComboBoxUnit<InitialConditionDTO>(gridControl);
@@ -47,13 +47,13 @@ namespace MoBi.UI.Views
             .WithFormat(dto => dto.InitialConditionFormatter())
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueUpdating((o, e) => OnEvent(() => initialConditionPresenter.SetValue(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => InitialConditionPresenter.SetValue(o, e.NewValue)));
 
          InitializeValueOriginBinding();
 
          _gridViewBinder.AutoBind(dto => dto.ScaleDivisor)
             .WithCaption(AppConstants.Captions.ScaleDivisor)
-            .WithOnValueUpdating((o, e) => OnEvent(() => initialConditionPresenter.SetScaleDivisor(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => InitialConditionPresenter.SetScaleDivisor(o, e.NewValue)));
 
          _gridViewBinder.Bind(dto => dto.IsPresent)
             .WithCaption(AppConstants.Captions.IsPresent)
@@ -68,19 +68,19 @@ namespace MoBi.UI.Views
 
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())
-            .WithOnValueUpdating((o, e) => initialConditionPresenter.SetFormula(o, e.NewValue.Formula));
+            .WithOnValueUpdating((o, e) => InitialConditionPresenter.SetFormula(o, e.NewValue.Formula));
 
          gridView.HiddenEditor += (o, e) => hideEditor();
       }
 
       private void onSetIsPresent(InitialConditionDTO dto, bool isPresent)
       {
-         initialConditionPresenter.SetIsPresent(dto, isPresent);
+         InitialConditionPresenter.SetIsPresent(dto, isPresent);
       }
 
       private void onSetNegativeValueAllowed(InitialConditionDTO dto, bool negativeValuesAllowed)
       {
-         initialConditionPresenter.SetNegativeValuesAllowed(dto, negativeValuesAllowed);
+         InitialConditionPresenter.SetNegativeValuesAllowed(dto, negativeValuesAllowed);
       }
 
       private void setParameterUnit(InitialConditionDTO initialCondition, Unit unit)
@@ -88,9 +88,11 @@ namespace MoBi.UI.Views
          this.DoWithinExceptionHandler(() =>
          {
             gridView.CloseEditor();
-            initialConditionPresenter.SetUnit(initialCondition, unit);
+            InitialConditionPresenter.SetUnit(initialCondition, unit);
          });
       }
+
+      public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();
 
       private void hideEditor()
       {
@@ -100,16 +102,6 @@ namespace MoBi.UI.Views
       private void configureRepository(BaseEdit activeEditor, InitialConditionDTO initialCondition)
       {
          _unitControl.UpdateUnitsFor(activeEditor, initialCondition);
-      }
-
-      public void AttachPresenter(IInitialConditionsPresenter presenter)
-      {
-         _presenter = presenter;
-      }
-
-      private IInitialConditionsPresenter initialConditionPresenter
-      {
-         get { return _presenter.DowncastTo<IInitialConditionsPresenter>(); }
       }
 
       public void AddIsPresentSelectionView(IView view)
@@ -122,9 +114,11 @@ namespace MoBi.UI.Views
          panelNegativeValuesAllowed.FillWith(view);
       }
 
-      public override ApplicationIcon ApplicationIcon
+      public void AttachPresenter(IBuildingBlockWithInitialConditionsPresenter presenter)
       {
-         get { return ApplicationIcons.InitialConditions; }
+         _presenter = presenter;
       }
+
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.InitialConditions;
    }
 }

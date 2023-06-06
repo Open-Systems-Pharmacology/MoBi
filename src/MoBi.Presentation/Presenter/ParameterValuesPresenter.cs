@@ -33,16 +33,14 @@ namespace MoBi.Presentation.Presenter
       public ParameterValuesPresenter(
          IParameterValuesView view,
          IParameterValueToParameterValueDTOMapper valueMapper,
-         IRefreshStartValueFromOriginalBuildingBlockPresenter refreshStartValuesPresenter,
          IParameterValuesTask parameterValuesTask,
          IParameterValuesCreator csvCreator,
          IMoBiContext context,
          IDisplayUnitRetriever displayUnitRetriever,
-         ILegendPresenter legendPresenter,
          IDeleteStartValuePresenter deleteStartValuePresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory)
-         : base(view, valueMapper, refreshStartValuesPresenter, parameterValuesTask, csvCreator, context, legendPresenter, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory)
+         : base(view, valueMapper, parameterValuesTask, csvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;

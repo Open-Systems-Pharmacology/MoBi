@@ -6,7 +6,7 @@ namespace MoBi.Presentation.DTO
    {
       public ParameterValue ParameterValue => PathWithValueObject;
 
-      public ParameterValueDTO(ParameterValue parameterValues, PathAndValueEntityBuildingBlock<ParameterValue> buildingBlock) : base(parameterValues, buildingBlock)
+      public ParameterValueDTO(ParameterValue parameterValues, IBuildingBlock<ParameterValue> buildingBlock) : base(parameterValues, buildingBlock)
       {
       }
 

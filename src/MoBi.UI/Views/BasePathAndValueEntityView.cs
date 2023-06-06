@@ -40,7 +40,6 @@ namespace MoBi.UI.Views
       private readonly IList<string> _pathValues;
       private readonly RepositoryItemComboBox _pathRepositoryItemComboBox;
 
-      private readonly ScreenBinder<IStartValuesPresenter<TPathAndValueEntity>> _screenBinder;
       private IGridViewColumn<TPathAndValueEntity> _deleteColumn;
       public bool CanCreateNewFormula { get; set; }
 
@@ -54,16 +53,6 @@ namespace MoBi.UI.Views
 
          _pathRepositoryItemComboBox = new RepositoryItemComboBox {TextEditStyle = TextEditStyles.Standard};
          _pathRepositoryItemComboBox.SelectedValueChanged += (o, e) => gridView.PostEditor();
-
-         checkFilterModified.Text = AppConstants.Captions.ShowOnlyChangedValues;
-         checkFilterModified.CheckStateChanged += (o, e) => OnEvent(filterChanged);
-
-         checkFilterNew.Text = AppConstants.Captions.ShowOnlyNewValues;
-         checkFilterNew.CheckStateChanged += (o, e) => OnEvent(filterChanged);
-
-         gridView.CustomRowFilter += gridViewOnCustomRowFilter;
-
-         _screenBinder = new ScreenBinder<IStartValuesPresenter<TPathAndValueEntity>>();
       }
 
       public void HideIsPresentView()
@@ -74,23 +63,6 @@ namespace MoBi.UI.Views
       public void HideNegativeValuesAllowedView()
       {
          layoutItemNegativeValuesAllowed.Visibility = LayoutVisibility.Never;
-      }
-
-      private void gridViewOnCustomRowFilter(object sender, RowFilterEventArgs e)
-      {
-         var pathAndValueEntity = _gridViewBinder.SourceElementAt(e.ListSourceRow);
-         if (pathAndValueEntity == null)
-            return;
-
-         e.Visible = _presenter.ShouldShow(pathAndValueEntity);
-
-         if (!e.Visible)
-            e.Handled = true;
-      }
-
-      private void filterChanged()
-      {
-         gridView.RefreshData();
       }
 
       public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
@@ -105,29 +77,14 @@ namespace MoBi.UI.Views
          panelDeleteStartValues.FillWith(view);
       }
 
-      public void HideRefreshStartValuesView()
-      {
-         layoutItemRefreshStartValues.Visibility = LayoutVisibility.Never;
-      }
-
       public void HideDeleteView()
       {
          layoutItemDelete.Visibility = LayoutVisibility.Never;
       }
 
-      public void HideLegend()
-      {
-         layoutItemLegend.Visibility = LayoutVisibility.Never;
-      }
-
       public void HideDeleteColumn()
       {
          _deleteColumn.AsHidden();
-      }
-
-      public void AddLegendView(IView view)
-      {
-         legendPanel.FillWith(view);
       }
 
       public void HideSubPresenterGrouping()
@@ -185,11 +142,6 @@ namespace MoBi.UI.Views
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => removeStartValue(_gridViewBinder.FocusedElement));
-
-
-         _screenBinder.Bind(x => x.IsModifiedFilterOn).To(checkFilterModified);
-         _screenBinder.Bind(x => x.IsNewFilterOn).To(checkFilterNew);
-         _screenBinder.BindToSource(_presenter);
       }
 
       protected void InitializeValueOriginBinding()
@@ -266,20 +218,10 @@ namespace MoBi.UI.Views
 
       private void configureGridView()
       {
-         gridView.RowStyle += (o, e) => OnEvent(updateRowStyle, o, e);
          gridView.ShouldUseColorForDisabledCell = false;
          gridView.OptionsSelection.MultiSelect = true;
          gridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
          gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
-      }
-
-      private void updateRowStyle(object sender, RowStyleEventArgs e)
-      {
-         var pathAndValueEntity = _gridViewBinder.ElementAt(e.RowHandle);
-         if (pathAndValueEntity == null) return;
-         var color = _presenter.BackgroundColorFor(pathAndValueEntity);
-         if (!_presenter.IsColorDefault(color))
-            gridView.AdjustAppearance(e, color);
       }
 
       protected void OnFormulaButtonClick(object sender, ButtonPressedEventArgs e)
@@ -304,11 +246,6 @@ namespace MoBi.UI.Views
          }
 
          return repository;
-      }
-
-      public virtual void AddRefreshStartValuesView(IView view)
-      {
-         panelRefreshStartValues.FillWith(view);
       }
    }
 }

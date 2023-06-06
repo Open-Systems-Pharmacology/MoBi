@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
          base.Context();
          sut = new EditInitialConditionPathCommand(_buildingBlock, _initialCondition, new ObjectPath("X", "Y", "Z"));
 
-         A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ILookupBuildingBlock<InitialCondition>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
 
       protected override void Because()

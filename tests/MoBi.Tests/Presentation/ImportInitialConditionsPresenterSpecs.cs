@@ -6,7 +6,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
@@ -23,7 +22,7 @@ namespace MoBi.Presentation
       protected IImportQuantityView _view;
       protected IDialogCreator _dialogCreator;
       protected IDataTableToImportQuantityDTOMapperForMolecules _dataTableToImportQuantityDTOMapperForMolecules;
-      protected IInitialConditionsTask _startValuesTask;
+      protected IInitialConditionsTask<InitialConditionsBuildingBlock> _startValuesTask;
       protected InitialConditionsBuildingBlock _buildingBlock;
       private IMoBiContext _context;
       private IImportFromExcelTask _excelTask;
@@ -34,7 +33,7 @@ namespace MoBi.Presentation
          base.Context();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.HistoryManager).Returns(A.Fake<IMoBiHistoryManager>());
-         _startValuesTask = A.Fake<IInitialConditionsTask>();
+         _startValuesTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _view = A.Fake<IImportQuantityView>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataTableToImportQuantityDTOMapperForMolecules = A.Fake<IDataTableToImportQuantityDTOMapperForMolecules>();

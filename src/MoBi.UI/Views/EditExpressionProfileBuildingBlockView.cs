@@ -12,6 +12,8 @@ namespace MoBi.UI.Views
       public EditExpressionProfileBuildingBlockView(IMainView mainView) : base(mainView)
       {
          InitializeComponent();
+         tabPagesControl.TabPages.Remove(tabFormulaCache);
+         tabPagesControl.TabPages.Add(tabFormulaCache);
       }
 
       public void AttachPresenter(IEditExpressionProfileBuildingBlockPresenter presenter)
@@ -23,6 +25,13 @@ namespace MoBi.UI.Views
       {
          tabEditBuildingBlock.FillWith(baseView);
          EditCaption = AppConstants.Captions.Parameters;
+      }
+
+      public void AddInitialConditionsView(IView baseView)
+      {
+         tabEditInitialConditions.FillWith(baseView);
+         tabEditInitialConditions.Text = AppConstants.Captions.InitialConditions;
+         tabEditInitialConditions.Image = ApplicationIcons.InitialConditions;
       }
 
       public override void InitializeResources()

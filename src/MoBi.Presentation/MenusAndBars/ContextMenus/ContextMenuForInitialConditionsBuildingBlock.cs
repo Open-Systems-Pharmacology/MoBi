@@ -37,7 +37,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)
-            .WithCommandFor<ClonePathAndValueEntityBuildingBlockUICommand<InitialConditionsBuildingBlock, InitialCondition, IInitialConditionsTask>, InitialConditionsBuildingBlock>(buildingBlock, _container);
+            .WithCommandFor<ClonePathAndValueEntityBuildingBlockUICommand<InitialConditionsBuildingBlock, InitialCondition, IInitialConditionsTask<InitialConditionsBuildingBlock>>, InitialConditionsBuildingBlock>(buildingBlock, _container);
       }
    }
 }

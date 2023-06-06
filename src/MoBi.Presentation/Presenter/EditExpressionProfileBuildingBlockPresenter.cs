@@ -13,12 +13,19 @@ namespace MoBi.Presentation.Presenter
    {
       private ExpressionProfileBuildingBlock _expressionProfileBuildingBlock;
       private readonly IExpressionProfileBuildingBlockPresenter _expressionProfileBuildingBlockPresenter;
+      private readonly IExpressionProfileInitialConditionsPresenter _expressionProfileInitialConditionsPresenter;
 
-      public EditExpressionProfileBuildingBlockPresenter(IEditExpressionProfileBuildingBlockView view, IExpressionProfileBuildingBlockPresenter expressionProfileBuildingBlockPresenter, IFormulaCachePresenter formulaCachePresenter) : base(view, formulaCachePresenter)
+      public EditExpressionProfileBuildingBlockPresenter(IEditExpressionProfileBuildingBlockView view,
+         IExpressionProfileBuildingBlockPresenter expressionProfileBuildingBlockPresenter,
+         IExpressionProfileInitialConditionsPresenter expressionProfileInitialConditionsPresenter,
+         IFormulaCachePresenter formulaCachePresenter)
+         : base(view, formulaCachePresenter)
       {
-         AddSubPresenters(expressionProfileBuildingBlockPresenter);
+         AddSubPresenters(expressionProfileBuildingBlockPresenter, expressionProfileInitialConditionsPresenter);
          view.AddExpressionProfileView(expressionProfileBuildingBlockPresenter.BaseView);
+         view.AddInitialConditionsView(expressionProfileInitialConditionsPresenter.BaseView);
          _expressionProfileBuildingBlockPresenter = expressionProfileBuildingBlockPresenter;
+         _expressionProfileInitialConditionsPresenter = expressionProfileInitialConditionsPresenter;
       }
 
       public override void Edit(object subject)
@@ -37,6 +44,7 @@ namespace MoBi.Presentation.Presenter
       {
          _expressionProfileBuildingBlock = expressionProfileBuildingBlock;
          _expressionProfileBuildingBlockPresenter.Edit(_expressionProfileBuildingBlock);
+         _expressionProfileInitialConditionsPresenter.Edit(_expressionProfileBuildingBlock);
          UpdateCaption();
          EditFormulas(_expressionProfileBuildingBlock);
          _view.Display();

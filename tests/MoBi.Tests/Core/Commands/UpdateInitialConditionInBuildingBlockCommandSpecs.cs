@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
          _path = msv.Path;
 
          sut = new UpdateInitialConditionInBuildingBlockCommand(_buildingBlock, _path, 1.0, true, 22.0, true);
-         A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ILookupBuildingBlock<InitialCondition>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 
@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void command_fieds_updated()
+      public void command_fields_updated()
       {
          sut.CommandType.ShouldBeEqualTo(AppConstants.Commands.UpdateCommand);
          sut.Description.ShouldBeEqualTo(AppConstants.Commands.UpdateInitialCondition(_path, 1.0, true, _buildingBlock[_path].DisplayUnit, 22.0, true));

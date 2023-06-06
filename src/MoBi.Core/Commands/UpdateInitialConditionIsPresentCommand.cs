@@ -1,19 +1,19 @@
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateInitialConditionIsPresentCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
+   public class UpdateInitialConditionIsPresentCommand : BuildingBlockChangeCommandBase<IBuildingBlock<InitialCondition>>
    {
       private readonly string _initialConditionId;
       private InitialCondition _initialCondition;
       private readonly bool _oldIsPresent;
       private readonly bool _newIsPresent;
 
-      public UpdateInitialConditionIsPresentCommand(InitialConditionsBuildingBlock initialConditionsBuildingBlock, InitialCondition initialCondition, bool isPresent) : base(initialConditionsBuildingBlock)
+      public UpdateInitialConditionIsPresentCommand(IBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition initialCondition, bool isPresent) : base(initialConditionsBuildingBlock)
       {
          _initialConditionId = initialCondition.Id;
          _initialCondition = initialCondition;
@@ -35,7 +35,6 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _initialCondition.IsPresent = _newIsPresent;
-
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

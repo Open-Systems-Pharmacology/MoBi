@@ -10,11 +10,10 @@ using OSPSuite.Core.Domain.UnitSystem;
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IStartValuesTask<TBuildingBlock, in TPathAndValueEntity> : IInteractionTasksForBuildingBlock<Module, TBuildingBlock>, IInteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>
+      where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
       where TPathAndValueEntity : PathAndValueEntity
    {
-      void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock);
-      TBuildingBlock CreatePathAndValueEntitiesForSimulation(SimulationConfiguration simulationConfiguration);
+      void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
 
       /// <summary>
       ///    Generates a command that will add the pathAndValueEntity to the building block
@@ -52,7 +51,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetDisplayValueWithUnit(TPathAndValueEntity pathAndValueEntity, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Returns a command that can be used to remove the start values contained in <paramref name="pathAndValueEntity" /> from
+      ///    Returns a command that can be used to remove the start values contained in <paramref name="pathAndValueEntity" />
+      ///    from
       ///    <paramref name="buildingBlock" />
       /// </summary>
       /// <returns>The command, which has not been run</returns>
@@ -93,14 +93,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       IEnumerable<string> GetContainerPathItemsForBuildingBlock(TBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Determines whether the start value contains equivalent information to the original builder that it is based on
-      /// </summary>
-      /// <param name="pathAndValueEntity">The start value being evaluated</param>
-      /// <param name="buildingBlock"></param>
-      /// <returns>True of the original builder values match the values in the pathAndValueEntity</returns>
-      bool IsEquivalentToOriginal(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
-
-      /// <summary>
       ///    Updates a dimension for a parameter start value
       /// </summary>
       /// <param name="pathAndValueEntitiesBuildingBlock">The building block containing the start value being updated</param>
@@ -125,15 +117,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TPathAndValueEntity pathAndValueEntity);
 
       /// <summary>
-      ///    Determines whether the source for the building block can be resolved
-      /// </summary>
-      /// <param name="buildingBlock">The building block containing the start value</param>
-      /// <param name="pathAndValueEntity">The start value being resolved</param>
-      /// <returns>true if the start value can be resolved, otherwise false</returns>
-      bool CanResolve(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
-
-      /// <summary>
-      /// Creates a clone of the <paramref name="buildingBlockToClone"/> and adds it to <paramref name="parentModule"/>
+      ///    Creates a clone of the <paramref name="buildingBlockToClone" /> and adds it to <paramref name="parentModule" />
       /// </summary>
       ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule);
    }

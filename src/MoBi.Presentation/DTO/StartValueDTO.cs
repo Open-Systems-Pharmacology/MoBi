@@ -24,7 +24,7 @@ namespace MoBi.Presentation.DTO
 
    public abstract class StartValueDTO<T> : PathAndValueEntityDTO<T> where T : PathAndValueEntity
    {
-      private readonly PathAndValueEntityBuildingBlock<T> _buildingBlock;
+      private readonly IBuildingBlock<T> _buildingBlock;
 
       /// <summary>
       ///    Updates the name of the start value
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.DTO
       /// <param name="newName">The new name for the start value</param>
       public abstract void UpdateName(string newName);
 
-      protected StartValueDTO(T startValueObject, PathAndValueEntityBuildingBlock<T> buildingBlock)
+      protected StartValueDTO(T startValueObject, IBuildingBlock<T> buildingBlock)
          : base(startValueObject)
       {
          _buildingBlock = buildingBlock;

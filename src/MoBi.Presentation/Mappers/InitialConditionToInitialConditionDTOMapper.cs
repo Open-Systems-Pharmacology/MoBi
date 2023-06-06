@@ -3,15 +3,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Mappers
 {
-
    public interface IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, out TPathAndValueEntityDTO> where TPathAndValueEntity : PathAndValueEntity
    {
-      TPathAndValueEntityDTO MapFrom(TPathAndValueEntity pathAndValueEntity, PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock);
+      TPathAndValueEntityDTO MapFrom(TPathAndValueEntity pathAndValueEntity, IBuildingBlock<TPathAndValueEntity> buildingBlock);
    }
 
    public interface IInitialConditionToInitialConditionDTOMapper : IPathAndValueEntityToPathAndValueEntityDTOMapper<InitialCondition, InitialConditionDTO>
    {
-      
    }
 
    public class InitialConditionToInitialConditionDTOMapper : IInitialConditionToInitialConditionDTOMapper
@@ -22,7 +20,8 @@ namespace MoBi.Presentation.Mappers
       {
          _formulaMapper = formulaMapper;
       }
-      public InitialConditionDTO MapFrom(InitialCondition initialCondition, PathAndValueEntityBuildingBlock<InitialCondition> buildingBlock)
+
+      public InitialConditionDTO MapFrom(InitialCondition initialCondition, IBuildingBlock<InitialCondition> buildingBlock)
       {
          var dto = new InitialConditionDTO(initialCondition, buildingBlock)
          {

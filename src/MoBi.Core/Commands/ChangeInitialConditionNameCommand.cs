@@ -5,9 +5,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeInitialConditionNameCommand : ChangePathAndValueEntityNameCommand<InitialConditionsBuildingBlock, InitialCondition>
+   public class ChangeInitialConditionNameCommand : ChangePathAndValueEntityNameCommand<ILookupBuildingBlock<InitialCondition>, InitialCondition>
    {
-      public ChangeInitialConditionNameCommand(InitialConditionsBuildingBlock buildingBlock, ObjectPath path, string newValue): base(buildingBlock, path, newValue)
+      public ChangeInitialConditionNameCommand(ILookupBuildingBlock<InitialCondition> buildingBlock, ObjectPath path, string newValue): base(buildingBlock, path, newValue)
       {
       }
 

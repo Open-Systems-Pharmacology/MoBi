@@ -80,6 +80,10 @@ namespace MoBi.Presentation.DTO
                return PathWithValueObject.ConvertToDisplayUnit(PathWithValueObject.Value);
             return double.NaN;
          }
+         set
+         {
+            // We don't want the binding to set the value in the underlying object, only the command should do that
+         }
       }
 
       public virtual ValueOrigin ValueOrigin

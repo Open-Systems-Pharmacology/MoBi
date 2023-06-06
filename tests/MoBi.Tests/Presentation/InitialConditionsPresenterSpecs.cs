@@ -27,13 +27,11 @@ namespace MoBi.Presentation
       protected IInitialConditionToInitialConditionDTOMapper _mapper;
       private IMoBiContext _context;
       protected IMoleculeIsPresentSelectionPresenter _isPresentSelectionPresenter;
-      protected IInitialConditionsTask _initialConditionTask;
+      protected IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionTask;
       protected ICommandCollector _commandCollector;
       protected InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
-      private IRefreshStartValueFromOriginalBuildingBlockPresenter _refreshStartValuesPresenter;
       protected IDeleteStartValuePresenter _deleteStartValuePresenter;
       private IMoleculeNegativeValuesAllowedSelectionPresenter _negativeStartValuesAllowedSelectionPresenter;
-      protected ILegendPresenter _legendPresenter;
       protected IInitialConditionsCreator _initialConditionsCreator;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
@@ -44,125 +42,22 @@ namespace MoBi.Presentation
          _mapper = A.Fake<IInitialConditionToInitialConditionDTOMapper>();
          _context = A.Fake<IMoBiContext>();
          _isPresentSelectionPresenter = A.Fake<IMoleculeIsPresentSelectionPresenter>();
-         _refreshStartValuesPresenter = A.Fake<IRefreshStartValueFromOriginalBuildingBlockPresenter>();
          _negativeStartValuesAllowedSelectionPresenter = A.Fake<IMoleculeNegativeValuesAllowedSelectionPresenter>();
-         _initialConditionTask = A.Fake<IInitialConditionsTask>();
+         _initialConditionTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _commandCollector = A.Fake<ICommandCollector>();
          _deleteStartValuePresenter = A.Fake<IDeleteStartValuePresenter>();
-         _legendPresenter = A.Fake<ILegendPresenter>();
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          sut = new InitialConditionsPresenter(
-            _view, _mapper, _isPresentSelectionPresenter, _refreshStartValuesPresenter, _negativeStartValuesAllowedSelectionPresenter, _initialConditionTask,
-            _initialConditionsCreator, _context, _legendPresenter, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory);
+            _view, _mapper, _isPresentSelectionPresenter, _negativeStartValuesAllowedSelectionPresenter, _initialConditionTask,
+            _initialConditionsCreator, _context, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);
       }
    }
 
-   public abstract class When_filtering : concern_for_InitialConditionsPresenter
-   {
-      protected InitialConditionDTO _originalUnchanged;
-      protected InitialConditionDTO _originalChanged;
-      protected InitialConditionDTO _newUnchanged;
-      protected InitialConditionDTO _newChanged;
-
-      protected override void Context()
-      {
-         base.Context();
-
-         _originalUnchanged = new InitialConditionDTO(new InitialCondition().WithName("originalUnchanged"), _initialConditionsBuildingBlock);
-         _originalChanged = new InitialConditionDTO(new InitialCondition().WithName("originalChanged"), _initialConditionsBuildingBlock);
-         _newUnchanged = new InitialConditionDTO(new InitialCondition().WithName("newUnchanged"), _initialConditionsBuildingBlock);
-         _newChanged = new InitialConditionDTO(new InitialCondition().WithName("newChanged"), _initialConditionsBuildingBlock);
-
-         _initialConditionsBuildingBlock.Add(_originalUnchanged.InitialCondition);
-         _initialConditionsBuildingBlock.Add(_originalChanged.InitialCondition);
-
-         A.CallTo(() => _initialConditionTask.IsEquivalentToOriginal(_originalUnchanged.PathWithValueObject, _initialConditionsBuildingBlock)).Returns(true);
-         A.CallTo(() => _initialConditionTask.IsEquivalentToOriginal(_originalChanged.PathWithValueObject, _initialConditionsBuildingBlock)).Returns(false);
-
-         A.CallTo(() => _initialConditionTask.IsEquivalentToOriginal(_newUnchanged.PathWithValueObject, _initialConditionsBuildingBlock)).Returns(true);
-         A.CallTo(() => _initialConditionTask.IsEquivalentToOriginal(_newChanged.PathWithValueObject, _initialConditionsBuildingBlock)).Returns(false);
-
-         sut.Edit(_initialConditionsBuildingBlock);
-      }
-   }
-
-   public class When_filtering_for_changed_and_modified_values : When_filtering
-   {
-      protected override void Because()
-      {
-         sut.IsModifiedFilterOn = true;
-         sut.IsNewFilterOn = true;
-      }
-
-      [Observation]
-      public void only_changed_values_should_be_shown()
-      {
-         sut.ShouldShow(_originalChanged).ShouldBeFalse();
-         sut.ShouldShow(_originalUnchanged).ShouldBeFalse();
-
-         sut.ShouldShow(_newChanged).ShouldBeTrue();
-         sut.ShouldShow(_newUnchanged).ShouldBeFalse();
-      }
-   }
-
-   public class When_filtering_for_only_modified_values : When_filtering
-   {
-      protected override void Because()
-      {
-         sut.IsModifiedFilterOn = true;
-      }
-
-      [Observation]
-      public void only_changed_values_should_be_shown()
-      {
-         sut.ShouldShow(_originalChanged).ShouldBeTrue();
-         sut.ShouldShow(_originalUnchanged).ShouldBeFalse();
-
-         sut.ShouldShow(_newChanged).ShouldBeTrue();
-         sut.ShouldShow(_newUnchanged).ShouldBeFalse();
-      }
-   }
-
-   public class When_filtering_for_only_changed_values : When_filtering
-   {
-      protected override void Because()
-      {
-         sut.IsNewFilterOn = true;
-      }
-
-      [Observation]
-      public void only_new_values_should_be_shown()
-      {
-         sut.ShouldShow(_originalChanged).ShouldBeFalse();
-         sut.ShouldShow(_originalUnchanged).ShouldBeFalse();
-
-         sut.ShouldShow(_newChanged).ShouldBeTrue();
-         sut.ShouldShow(_newUnchanged).ShouldBeTrue();
-      }
-   }
-
-   public class When_filtering_for_only_new_values : When_filtering
-   {
-      protected override void Because()
-      {
-         sut.IsNewFilterOn = true;
-      }
-
-      [Observation]
-      public void only_new_values_should_be_shown()
-      {
-         sut.ShouldShow(_originalChanged).ShouldBeFalse();
-         sut.ShouldShow(_originalUnchanged).ShouldBeFalse();
-
-         sut.ShouldShow(_newChanged).ShouldBeTrue();
-         sut.ShouldShow(_newUnchanged).ShouldBeTrue();
-      }
-   }
 
    public class When_adding_a_new_empty_start_value : concern_for_InitialConditionsPresenter
    {
@@ -185,83 +80,6 @@ namespace MoBi.Presentation
       public void the_start_value_creator_should_create_the_empty_start_value()
       {
          A.CallTo(() => _initialConditionsCreator.CreateEmptyStartValue(_initialConditionTask.GetDefaultDimension())).MustHaveHappened();
-      }
-   }
-
-   public class When_determining_the_background_color_of_a_start_value : concern_for_InitialConditionsPresenter
-   {
-      private InitialConditionDTO _originalResolvableUnchangedStartValueDTO;
-      private InitialConditionDTO _originalResolvableChangedStartValueDTO;
-      private InitialConditionDTO _originalUnresolvableStartValueDTO;
-      private InitialConditionDTO _nonOriginalStartValueDTO;
-
-      protected override void Context()
-      {
-         base.Context();
-         _originalResolvableUnchangedStartValueDTO = new InitialConditionDTO(new InitialCondition().WithName("originalResolvableUnchanged"), _initialConditionsBuildingBlock);
-         _originalResolvableChangedStartValueDTO = new InitialConditionDTO(new InitialCondition().WithName("originalResolvableChanged"), _initialConditionsBuildingBlock);
-         _originalUnresolvableStartValueDTO = new InitialConditionDTO(new InitialCondition().WithName("originalUnresolvable"), _initialConditionsBuildingBlock);
-         _nonOriginalStartValueDTO = new InitialConditionDTO(new InitialCondition().WithName("nonOriginal"), _initialConditionsBuildingBlock);
-         _initialConditionsBuildingBlock.Add(_originalResolvableUnchangedStartValueDTO.InitialCondition);
-         _initialConditionsBuildingBlock.Add(_originalResolvableChangedStartValueDTO.InitialCondition);
-         _initialConditionsBuildingBlock.Add(_originalUnresolvableStartValueDTO.InitialCondition);
-
-         A.CallTo(() => _initialConditionTask.CanResolve(_initialConditionsBuildingBlock, _originalResolvableUnchangedStartValueDTO.InitialCondition)).Returns(true);
-         A.CallTo(() => _initialConditionTask.IsEquivalentToOriginal(_originalResolvableUnchangedStartValueDTO.InitialCondition, _initialConditionsBuildingBlock)).Returns(true);
-
-         A.CallTo(() => _initialConditionTask.CanResolve(_initialConditionsBuildingBlock, _originalResolvableChangedStartValueDTO.InitialCondition)).Returns(true);
-         A.CallTo(() => _initialConditionTask.IsEquivalentToOriginal(_originalResolvableChangedStartValueDTO.InitialCondition, _initialConditionsBuildingBlock)).Returns(false);
-
-         A.CallTo(() => _initialConditionTask.CanResolve(_initialConditionsBuildingBlock, _originalUnresolvableStartValueDTO.InitialCondition)).Returns(false);
-      }
-
-      protected override void Because()
-      {
-         sut.Edit(_initialConditionsBuildingBlock);
-      }
-
-      [Observation]
-      public void the_background_colors_should_be_correct()
-      {
-         sut.BackgroundColorRetriever(_originalResolvableUnchangedStartValueDTO).ShouldBeEqualTo(MoBiColors.Default);
-         sut.BackgroundColorRetriever(_originalResolvableChangedStartValueDTO).ShouldBeEqualTo(MoBiColors.Modified);
-         sut.BackgroundColorRetriever(_originalUnresolvableStartValueDTO).ShouldBeEqualTo(MoBiColors.CannotResolve);
-         sut.BackgroundColorRetriever(_nonOriginalStartValueDTO).ShouldBeEqualTo(MoBiColors.Extended);
-      }
-   }
-
-   public class When_the_molecule_start_values_presenter_is_constructed : concern_for_InitialConditionsPresenter
-   {
-      [Observation]
-      public void the_legend_view_is_added_to_the_view()
-      {
-         A.CallTo(() => _view.AddLegendView(_legendPresenter.View)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_legend_presenter_adds_three_legend_items_to_the_view()
-      {
-         A.CallTo(() => _legendPresenter.AddLegendItems(A<IReadOnlyList<LegendItemDTO>>.That.Matches(x => x.Count == 3))).MustHaveHappened();
-      }
-   }
-
-   public class When_molecule_start_values_presenter_is_used_to_extend_molecule_start_values : concern_for_InitialConditionsPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.Edit(_initialConditionsBuildingBlock);
-      }
-
-      protected override void Because()
-      {
-         sut.ExtendStartValues();
-      }
-
-      [Observation]
-      public void the_molecule_start_values_task_should_be_used_to_extend_the_building_block()
-      {
-         A.CallTo(() => _initialConditionTask.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock)).MustHaveHappened();
       }
    }
 
@@ -294,22 +112,6 @@ namespace MoBi.Presentation
          A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue1, _initialConditionsBuildingBlock)).MustHaveHappened();
          A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue2, _initialConditionsBuildingBlock)).MustHaveHappened();
          A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue3, _initialConditionsBuildingBlock)).MustNotHaveHappened();
-      }
-   }
-
-   internal class When_deleting_unresolved_start_values_from_building_block : When_deleting_start_values_from_building_block
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _initialConditionTask.CanResolve(_initialConditionsBuildingBlock, _startValue1)).Returns(false);
-         A.CallTo(() => _initialConditionTask.CanResolve(_initialConditionsBuildingBlock, _startValue2)).Returns(false);
-         A.CallTo(() => _initialConditionTask.CanResolve(_initialConditionsBuildingBlock, _startValue3)).Returns(true);
-      }
-
-      protected override void Because()
-      {
-         _deleteStartValuePresenter.ApplySelectionAction(SelectOption.DeleteSourceNotDefined);
       }
    }
 

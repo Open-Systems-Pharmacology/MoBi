@@ -1,19 +1,19 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateInitialConditionNegativeValuesAllowedCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
+   public class UpdateInitialConditionNegativeValuesAllowedCommand : BuildingBlockChangeCommandBase<IBuildingBlock<InitialCondition>>
    {
       private readonly string _initialConditionId;
       private InitialCondition _initialCondition;
       private readonly bool _oldNegativeValuesAllowed;
       private readonly bool _newNegativeValuesAllowed;
 
-      public UpdateInitialConditionNegativeValuesAllowedCommand(InitialConditionsBuildingBlock initialConditionsBuildingBlock, InitialCondition initialCondition, bool negativeValuesAllowed)
+      public UpdateInitialConditionNegativeValuesAllowedCommand(IBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition initialCondition, bool negativeValuesAllowed)
          : base(initialConditionsBuildingBlock)
       {
          _initialConditionId = initialCondition.Id;

@@ -1,19 +1,19 @@
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateInitialConditionScaleDivisorCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
+   public class UpdateInitialConditionScaleDivisorCommand : BuildingBlockChangeCommandBase<IBuildingBlock<InitialCondition>>
    {
       private readonly double _newScaleDivisor;
       private readonly double _oldScaleDivisor;
       private InitialCondition _initialCondition;
       private readonly string _initialConditionId;
 
-      public UpdateInitialConditionScaleDivisorCommand(InitialConditionsBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor) 
+      public UpdateInitialConditionScaleDivisorCommand(IBuildingBlock<InitialCondition> buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor)
          : base(buildingBlock)
       {
          _newScaleDivisor = newScaleDivisor;

@@ -6,14 +6,15 @@ namespace MoBi.Presentation.UICommand
 {
    internal class InitialConditionsExtendUICommand : AbstractStartValueSubjectRetrieverUICommand<InitialConditionsBuildingBlock, InitialCondition>
    {
-      public InitialConditionsExtendUICommand(IInitialConditionsTask startValueTasks, IActiveSubjectRetriever activeSubjectRetriever)
+      public InitialConditionsExtendUICommand(IInitialConditionsTask<InitialConditionsBuildingBlock> startValueTasks, IActiveSubjectRetriever activeSubjectRetriever)
          : base(startValueTasks, activeSubjectRetriever)
       {
       }
 
       protected override void PerformExecute()
       {
-         _startValueTasks.ExtendStartValueBuildingBlock(Subject);
+         //TODO OSMOSES
+         // _startValueTasks.ExtendStartValueBuildingBlock(Subject);
       }
    }
 }

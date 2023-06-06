@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
          _buildingBlock.Add(_msv);
          sut = new RemoveInitialConditionFromBuildingBlockCommand(_buildingBlock, _msv.Path);
 
-         A.CallTo(() => _context.Get<PathAndValueEntityBuildingBlock<InitialCondition>>(_buildingBlock.Id)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<ILookupBuildingBlock<InitialCondition>>(_buildingBlock.Id)).Returns(_buildingBlock);
       }
    }
 

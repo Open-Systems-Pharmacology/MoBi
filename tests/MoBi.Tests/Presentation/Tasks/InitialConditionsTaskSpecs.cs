@@ -27,7 +27,7 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_InitialConditionsTask : ContextSpecification<InitialConditionsTask>
+   public abstract class concern_for_InitialConditionsTask : ContextSpecification<InitialConditionsTask<InitialConditionsBuildingBlock>>
    {
       protected IInitialConditionsCreator _initialConditionsCreator;
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
@@ -47,8 +47,8 @@ namespace MoBi.Presentation.Tasks
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeResolver = A.Fake<IMoleculeResolver>();
 
-         sut = new InitialConditionsTask(_context, _editTask, _initialConditionsCreator,
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, _reactionDimensionRetriever, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver);
+         sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
+            new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver, _reactionDimensionRetriever, _initialConditionsCreator);
       }
    }
 
@@ -120,73 +120,6 @@ namespace MoBi.Presentation.Tasks
       public void should_throw_an_exception()
       {
          The.Action(() => sut.Remove(_initialConditionsBuildingBlock, _module, null, false)).ShouldThrowAn<MoBiException>();
-      }
-   }
-
-   public class When_returning_the_list_of_predefined_container_in_the_spatial_structure_referenced_by_a_molecule_start_value : concern_for_InitialConditionsTask
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _context.Context.Get<SpatialStructure>(_initialConditionsBuildingBlock.SpatialStructureId)).Returns(null);
-         A.CallTo(() => _context.Context.Create<SpatialStructure>(_initialConditionsBuildingBlock.SpatialStructureId)).Returns(new SpatialStructure());
-      }
-
-      [Observation]
-      public void should_return_an_empty_list_of_the_spatial_structure_was_not_defined()
-      {
-         sut.GetContainerPathItemsForBuildingBlock(_initialConditionsBuildingBlock).ShouldBeEmpty();
-      }
-   }
-
-   public class When_comparing_start_value_to_original_builder : concern_for_InitialConditionsTask
-   {
-      private InitialCondition _initialCondition;
-      private const string NAME = "Name";
-      protected bool _result;
-      private IDimension _dimension;
-      protected MoleculeBuilder _builder;
-
-      protected override void Context()
-      {
-         base.Context();
-         _dimension = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
-         _initialCondition = new InitialCondition {Dimension = _dimension, Name = NAME, Formula = null};
-
-         _builder = new MoleculeBuilder
-         {
-            Name = NAME,
-            Dimension = _dimension
-         };
-      }
-
-      protected override void Because()
-      {
-         _result = sut.IsEquivalentToOriginal(_initialCondition, _initialConditionsBuildingBlock);
-      }
-   }
-
-   public class When_original_builder_cannot_be_found : When_comparing_start_value_to_original_builder
-   {
-      [Observation]
-      public void should_test_as_not_equivalent()
-      {
-         _result.ShouldBeFalse();
-      }
-   }
-
-   public class When_original_builder_can_be_found : When_comparing_start_value_to_original_builder
-   {
-      protected override void Context()
-      {
-         base.Context();
-         if (_builder != null) A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(_builder);
-      }
-
-      [Observation]
-      public void initial_condition_and_builder_are_equivalent()
-      {
-         _result.ShouldBeTrue();
       }
    }
 
@@ -551,71 +484,7 @@ namespace MoBi.Presentation.Tasks
          _nullStartValue.Value.ShouldBeNull();
       }
    }
-
-   public class When_creating_a_molecule_start_value_for_simulation_based_on_a_selected_template : concern_for_InitialConditionsTask
-   {
-      private SimulationConfiguration _simulationConfiguration;
-      private InitialConditionsBuildingBlock _templateStartValuesBuildingBlock;
-      private InitialConditionsBuildingBlock _newInitialConditions;
-      private InitialCondition _newEndogenousValue;
-      private InitialCondition _existingEndogenousValue;
-      private InitialCondition _existingTemplateEndogenousValue;
-      private InitialCondition _otherStartValues;
-
-      protected override void Context()
-      {
-         base.Context();
-         _templateStartValuesBuildingBlock = new InitialConditionsBuildingBlock();
-         _simulationConfiguration = new SimulationConfiguration();
-         var module = new Module
-         {
-            new SpatialStructure(),
-            new MoleculeBuildingBlock()
-         };
-         var moduleConfiguration = new ModuleConfiguration(module);
-         _simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
-         moduleConfiguration.Module.Add(_templateStartValuesBuildingBlock);
-         moduleConfiguration.SelectedInitialConditions = _templateStartValuesBuildingBlock;
-
-         _newInitialConditions = new InitialConditionsBuildingBlock();
-
-         A.CallTo(_initialConditionsCreator).WithReturnType<InitialConditionsBuildingBlock>().Returns(_newInitialConditions);
-
-         _newEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};
-         _existingEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
-         _otherStartValues = new InitialCondition {ContainerPath = new ObjectPath("Organism", "Liver", "Cell"), Name = "M", IsPresent = true};
-         _existingTemplateEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
-
-         _templateStartValuesBuildingBlock.Add(_existingTemplateEndogenousValue);
-         _newInitialConditions.Add(_newEndogenousValue);
-         _newInitialConditions.Add(_existingEndogenousValue);
-         _newInitialConditions.Add(_otherStartValues);
-      }
-
-      protected override void Because()
-      {
-         sut.CreatePathAndValueEntitiesForSimulation(_simulationConfiguration);
-      }
-
-      [Observation]
-      public void should_ensure_that_molecule_defined_in_endogenous_igg_compartments_are_not_present_by_default()
-      {
-         _newEndogenousValue.IsPresent.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_let_previous_molecule_present_in_endogenous_igg_compartment_to_present()
-      {
-         _existingEndogenousValue.IsPresent.ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_mark_the_added_molecule_start_values_as_present_in_all_other_organs()
-      {
-         _otherStartValues.IsPresent.ShouldBeTrue();
-      }
-   }
-
+   
    public abstract class When_cloning_a_molecule_start_values_building_block : concern_for_InitialConditionsTask
    {
       protected InitialConditionsBuildingBlock _buildingBlockToClone;
@@ -673,53 +542,6 @@ namespace MoBi.Presentation.Tasks
       protected override string CloneName()
       {
          return "name of clone";
-      }
-   }
-
-   public class When_extending_a_given_molecule_start_value_with_building_block_based_on_used_templates : concern_for_InitialConditionsTask
-   {
-      private InitialConditionsBuildingBlock _templateInitialConditions;
-      private InitialCondition _newEndogenousValue;
-      private InitialCondition _existingEndogenousValue;
-      private InitialCondition _existingTemplateEndogenousValue;
-
-      protected override void Context()
-      {
-         base.Context();
-         _templateInitialConditions = new InitialConditionsBuildingBlock();
-         A.CallTo(_context.Context.ObjectRepository).WithReturnType<bool>().Returns(true);
-         var moleculeBuildingBlock = new MoleculeBuildingBlock();
-         A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
-
-         var spatialStructure = new SpatialStructure();
-         A.CallTo(_context.Context).WithReturnType<SpatialStructure>().Returns(spatialStructure);
-         A.CallTo(() => _initialConditionsCreator.CreateFrom(spatialStructure, moleculeBuildingBlock)).Returns(_templateInitialConditions);
-
-         _newEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Plasma"), Name = "M", IsPresent = true};
-         _existingEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
-         _existingTemplateEndogenousValue = new InitialCondition {ContainerPath = new ObjectPath("Organism", AppConstants.Organs.ENDOGENOUS_IGG, "Cell"), Name = "M", IsPresent = true};
-
-         _templateInitialConditions.Add(_newEndogenousValue);
-         _templateInitialConditions.Add(_existingTemplateEndogenousValue);
-
-         _initialConditionsBuildingBlock.Add(_existingEndogenousValue);
-      }
-
-      protected override void Because()
-      {
-         sut.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock);
-      }
-
-      [Observation]
-      public void should_set_new_entries_for_molecule_in_endogenous_container_to_non_present()
-      {
-         _newEndogenousValue.IsPresent.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_not_change_existing_entries_for_molecule_in_endogenous_container()
-      {
-         _existingTemplateEndogenousValue.IsPresent.ShouldBeTrue();
       }
    }
 }
