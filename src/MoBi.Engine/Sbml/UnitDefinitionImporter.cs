@@ -141,7 +141,7 @@ namespace MoBi.Engine.Sbml
       public IDimension ConvertUnit(UnitDefinition unitDefinition)
       {
          var sbmlUnit = unitDefinition.getId();
-         var dimension = _moBiDimensionFactory.TryGetDimensionCaseInsensitive(sbmlUnit);
+         var dimension = _moBiDimensionFactory.TryGetDimensionFromUnitNameCaseInsensitive(sbmlUnit);
 
          if (dimension != Constants.Dimension.NO_DIMENSION)
          {

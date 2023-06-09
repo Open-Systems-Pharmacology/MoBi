@@ -305,7 +305,7 @@ namespace MoBi.Engine.Sbml
       {
          var compartmentSizeUnit = _unitDefinitionImporter.TranslateUnit(model.getCompartment(species.getCompartment()).getUnits());
 
-         var sizeDimension = _moBiDimensionFactory.TryGetDimensionCaseInsensitive(compartmentSizeUnit);
+         var sizeDimension = _moBiDimensionFactory.TryGetDimensionFromUnitNameCaseInsensitive(compartmentSizeUnit);
          if (sizeDimension == Constants.Dimension.NO_DIMENSION) return sizeDimension;
 
          if (_sbmlInformation.MobiDimension.ContainsKey(compartmentSizeUnit))
