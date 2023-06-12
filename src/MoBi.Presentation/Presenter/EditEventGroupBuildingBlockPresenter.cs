@@ -185,7 +185,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool eventGroupContainsTransportBuilder(IObjectBase objectBase)
       {
-         var transportBuilder = (TransportBuilder) objectBase;
+         var transportBuilder = (TransportBuilder)objectBase;
          foreach (var eventGroup in _eventGroupBuildingBlock)
          {
             var applicationBuilder = eventGroup as ApplicationBuilder;

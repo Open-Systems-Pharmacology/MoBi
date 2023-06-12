@@ -1,10 +1,10 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
-using OSPSuite.Utility.Events;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Presenter
       private InitialConditionsBuildingBlock _initialConditions;
 
       public EditInitialConditionsPresenter(IEditInitialConditionsView view, IInitialConditionsPresenter initialConditionsPresenter, IFormulaCachePresenter formulaCachePresenter) :
-            base(view, formulaCachePresenter)
+         base(view, formulaCachePresenter)
       {
          _initialConditionsPresenter = initialConditionsPresenter;
          AddSubPresenters(initialConditionsPresenter);

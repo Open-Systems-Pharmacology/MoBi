@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -11,6 +8,8 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -35,7 +34,7 @@ namespace MoBi.Presentation.Presenter
          IFormulaCachePresenter formulaCachePresenter, IMoBiContext context,
          IEditAmountObserverBuilderPresenter editAmountObserverPresenter,
          IEditContainerObserverBuilderPresenter editContainerObserverPresenter) :
-            base(view, formulaCachePresenter)
+         base(view, formulaCachePresenter)
       {
          _context = context;
          _editContainerObserverPresenter = editContainerObserverPresenter;
@@ -120,7 +119,7 @@ namespace MoBi.Presentation.Presenter
       {
          if (_editObserverPresenter != null)
          {
-            if (eventToHandle.RemovedObjects.Select(objects => objects.Id).Contains(((ObserverBuilder) _editObserverPresenter.Subject).Id))
+            if (eventToHandle.RemovedObjects.Select(objects => objects.Id).Contains(((ObserverBuilder)_editObserverPresenter.Subject).Id))
             {
                Edit(_subject);
             }

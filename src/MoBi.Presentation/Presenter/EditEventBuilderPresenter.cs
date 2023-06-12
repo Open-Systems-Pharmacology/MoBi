@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -13,13 +10,16 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Assets;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Presenter
          _editParametersPresenter = editParametersPresenter;
 
          _view.SetParametersView(editParametersPresenter.BaseView);
-    
+
          AddSubPresenters(_editFormulaPresenter, _editParametersPresenter, _selectReferencePresenter);
       }
 
@@ -103,7 +103,7 @@ namespace MoBi.Presentation.Presenter
             _view.SetSelectReferenceView(_selectReferencePresenter.View);
          }
 
-         ((ISelectReferencePresenter) _selectReferencePresenter).Init(_eventBuilder, new[] {_eventBuilder.RootContainer}, _eventBuilder);
+         ((ISelectReferencePresenter)_selectReferencePresenter).Init(_eventBuilder, new[] { _eventBuilder.RootContainer }, _eventBuilder);
          var dto = _eventToEventBuilderMapper.MapFrom(eventBuilder);
          dto.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(eventBuilder, existingObjectsInParent));
          _view.Show(dto);
@@ -178,7 +178,7 @@ namespace MoBi.Presentation.Presenter
             objectPath = selectEventAssignmentTargetPresenter.Select();
          }
 
-         if (objectPath == null) 
+         if (objectPath == null)
             return;
 
          setChantedEntityPath(objectPath, eventAssignmentBuilderDTO);
@@ -240,7 +240,6 @@ namespace MoBi.Presentation.Presenter
             new EditObjectBasePropertyInBuildingBlockCommand(eventAssignmentBuilder.PropertyName(b => b.Formula), newFormula, eventAssignmentBuilder.Formula, eventAssignmentBuilder, BuildingBlock).Run(_context));
       }
 
-     
       public void Handle(AddedEvent eventToHandle)
       {
          if (shouldShow(eventToHandle.AddedObject))
@@ -253,7 +252,7 @@ namespace MoBi.Presentation.Presenter
       {
          if (_eventBuilder == null) return false;
          if (addedObject.IsAnImplementationOf<IParameter>())
-            return _eventBuilder.Parameters.Contains((IParameter) addedObject);
+            return _eventBuilder.Parameters.Contains((IParameter)addedObject);
 
          return addedObject.IsAnImplementationOf<EventAssignmentBuilder>();
       }

@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -16,6 +13,8 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {

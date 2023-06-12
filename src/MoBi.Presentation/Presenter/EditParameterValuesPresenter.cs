@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class EditParameterValuesPresenter : EditBuildingBlockPresenterBase<IEditParameterValuesView, IEditParameterValuesPresenter, ParameterValuesBuildingBlock, ParameterValue>,
-                                                    IEditParameterValuesPresenter
+      IEditParameterValuesPresenter
    {
       private readonly IParameterValuesPresenter _parameterValuesPresenter;
       private ParameterValuesBuildingBlock _parameterValues;
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiProjectRetriever _projectRetriever;
 
       public EditParameterValuesPresenter(IEditParameterValuesView view, IParameterValuesPresenter parameterValuesPresenter,
-                                               IFormulaCachePresenter formulaCachePresenter, IEditTaskFor<ParameterValuesBuildingBlock> editTasks, IMoBiProjectRetriever projectRetriever)
+         IFormulaCachePresenter formulaCachePresenter, IEditTaskFor<ParameterValuesBuildingBlock> editTasks, IMoBiProjectRetriever projectRetriever)
          : base(view, formulaCachePresenter)
       {
          _parameterValuesPresenter = parameterValuesPresenter;
