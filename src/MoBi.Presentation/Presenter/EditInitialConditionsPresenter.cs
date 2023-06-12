@@ -1,4 +1,5 @@
 ﻿using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using OSPSuite.Utility.Events;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
@@ -50,7 +51,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.InitialConditionsBuildingBlockCaption(_initialConditions.Name);
+         _view.Caption = AppConstants.Captions.InitialConditionsBuildingBlockCaption(_initialConditions.Caption());
       }
 
       public override object Subject => _initialConditions;

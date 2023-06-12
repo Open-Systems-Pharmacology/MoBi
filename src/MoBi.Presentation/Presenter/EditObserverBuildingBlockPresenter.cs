@@ -4,6 +4,7 @@ using MoBi.Assets;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
@@ -51,7 +52,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.ObserverBuildingBlockCaption(_subject.Name);
+         _view.Caption = AppConstants.Captions.ObserverBuildingBlockCaption(_subject.Caption());
       }
 
       public override void Edit(ObserverBuildingBlock objectToEdit)

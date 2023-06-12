@@ -85,7 +85,6 @@ namespace MoBi.Presentation.Presenter
          _view.AddTargetCriteriaView(_targetCriteriaPresenter.View);
       }
 
-
       public void Edit(object objectToEdit)
       {
          Edit(objectToEdit.DowncastTo<TransportBuilder>());
@@ -98,7 +97,7 @@ namespace MoBi.Presentation.Presenter
 
       public virtual void Edit(TransportBuilder transportBuilder)
       {
-         Edit(transportBuilder, transportBuilder.ParentContainer.Children);
+         Edit(transportBuilder, transportBuilder.ParentContainer?.Children);
       }
 
       public void Edit(TransportBuilder transportBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)

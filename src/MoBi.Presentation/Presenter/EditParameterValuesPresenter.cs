@@ -1,4 +1,5 @@
 ﻿using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
@@ -43,7 +44,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.ParameterValuesBuildingBlockCaption(_parameterValues.Name);
+         _view.Caption = AppConstants.Captions.ParameterValuesBuildingBlockCaption(_parameterValues.Caption());
       }
 
       public override object Subject => _parameterValues;

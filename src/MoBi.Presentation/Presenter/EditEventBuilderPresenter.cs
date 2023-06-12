@@ -112,7 +112,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(EventBuilder eventBuilder)
       {
-         Edit(eventBuilder, eventBuilder.ParentContainer.Children);
+         Edit(eventBuilder, eventBuilder.ParentContainer?.Children);
       }
 
       public object Subject => _eventBuilder;

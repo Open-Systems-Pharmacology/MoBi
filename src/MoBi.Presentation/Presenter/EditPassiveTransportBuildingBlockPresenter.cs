@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Events;
@@ -80,7 +81,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.PassiveTransportCaption(_passiveTransports.Name);
+         _view.Caption = AppConstants.Captions.PassiveTransportCaption(_passiveTransports.Caption());
       }
 
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
