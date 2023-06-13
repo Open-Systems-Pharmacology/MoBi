@@ -103,6 +103,9 @@ namespace MoBi.Core.Serialization.ORM.Mappers
 
       private void addModuleBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
       {
+         if (!moduleBuildingBlocks.Any())
+            return;
+         
          if (fitsExactlyOneModule(moduleBuildingBlocks))
             addAllAsModule(moduleBuildingBlocks);
          else
