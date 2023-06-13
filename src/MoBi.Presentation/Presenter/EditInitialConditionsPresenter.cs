@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.InitialConditionsBuildingBlockCaption(_initialConditions.Caption());
+         _view.Caption = AppConstants.Captions.InitialConditionsBuildingBlockCaption(_initialConditions.DisplayName);
       }
 
       public override object Subject => _initialConditions;

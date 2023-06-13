@@ -142,7 +142,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.SpatialStructureBuildingBlockCaption(_spatialStructure.Caption());
+         _view.Caption = AppConstants.Captions.SpatialStructureBuildingBlockCaption(_spatialStructure.DisplayName);
       }
 
       public void ZoomIn()

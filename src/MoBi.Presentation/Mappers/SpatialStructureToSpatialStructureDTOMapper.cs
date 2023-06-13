@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Mappers
          dto.TopContainer = spatialStructure.TopContainers.MapAllUsing(_containerToDTOContainerMapper);
          dto.Neighborhoods = _containerToDTOContainerMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
          dto.MoleculeProperties = _containerToDTOContainerMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties);
-         dto.Name = spatialStructure.Caption();
+         dto.Name = spatialStructure.DisplayName;
          return dto;
       }
    }

@@ -78,7 +78,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.ReactionsBuildingBlockCaption(_reactionBuildingBlock.Caption());
+         _view.Caption = AppConstants.Captions.ReactionsBuildingBlockCaption(_reactionBuildingBlock.DisplayName);
       }
 
       public void ZoomIn()

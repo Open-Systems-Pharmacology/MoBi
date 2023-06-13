@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.MoleculesBuildingBlockCaption(_moleculeBuildingBlock.Caption());
+         _view.Caption = AppConstants.Captions.MoleculesBuildingBlockCaption(_moleculeBuildingBlock.DisplayName);
       }
 
       public override object Subject => _moleculeBuildingBlock;

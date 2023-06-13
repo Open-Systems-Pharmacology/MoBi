@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.IndividualBuildingBlockCaption(_individualBuildingBlock.Caption());
+         _view.Caption = AppConstants.Captions.IndividualBuildingBlockCaption(_individualBuildingBlock.DisplayName);
       }
 
       public override object Subject => _individualBuildingBlock;

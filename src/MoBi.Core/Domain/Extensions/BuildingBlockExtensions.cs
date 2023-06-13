@@ -32,13 +32,6 @@ namespace MoBi.Core.Domain.Extensions
 
          return formulaCache.ToList();
       }
-
-      public static string Caption(this BuildingBlock buildingBlock)
-      {
-         if (buildingBlock.Module != null)
-            return $"{buildingBlock.Module.Name} - {buildingBlock.Name}";
-         return buildingBlock.Name;
-      }
    }
 
    public static class MoleculeBuildingBlockExtensions

@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.ObserverBuildingBlockCaption(_subject.Caption());
+         _view.Caption = AppConstants.Captions.ObserverBuildingBlockCaption(_subject.DisplayName);
       }
 
       public override void Edit(ObserverBuildingBlock objectToEdit)

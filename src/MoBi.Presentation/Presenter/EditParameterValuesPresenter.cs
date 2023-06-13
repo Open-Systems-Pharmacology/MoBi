@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.ParameterValuesBuildingBlockCaption(_parameterValues.Caption());
+         _view.Caption = AppConstants.Captions.ParameterValuesBuildingBlockCaption(_parameterValues.DisplayName);
       }
 
       public override object Subject => _parameterValues;

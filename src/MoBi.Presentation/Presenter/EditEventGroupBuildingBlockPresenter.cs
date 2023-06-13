@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.EventsBuildingBlockCaption(_eventGroupBuildingBlock.Caption());
+         _view.Caption = AppConstants.Captions.EventsBuildingBlockCaption(_eventGroupBuildingBlock.DisplayName);
       }
 
       private void setupEditPresenterFor(IObjectBase objectToEdit, IParameter parameter = null)

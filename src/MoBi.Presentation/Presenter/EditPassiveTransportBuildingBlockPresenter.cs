@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.PassiveTransportCaption(_passiveTransports.Caption());
+         _view.Caption = AppConstants.Captions.PassiveTransportCaption(_passiveTransports.DisplayName);
       }
 
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)

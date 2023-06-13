@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.ExpressionProfileBuildingBlockCaption(_expressionProfileBuildingBlock.Caption());
+         _view.Caption = AppConstants.Captions.ExpressionProfileBuildingBlockCaption(_expressionProfileBuildingBlock.DisplayName);
       }
 
       public override object Subject => _expressionProfileBuildingBlock;
