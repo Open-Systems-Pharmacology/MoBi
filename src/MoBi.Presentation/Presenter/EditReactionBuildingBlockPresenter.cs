@@ -1,5 +1,6 @@
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter.ReactionDiagram;
@@ -77,7 +78,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.ReactionsBuildingBlockCaption(_reactionBuildingBlock.Name);
+         _view.Caption = AppConstants.Captions.ReactionsBuildingBlockCaption(_reactionBuildingBlock.DisplayName);
       }
 
       public void ZoomIn()

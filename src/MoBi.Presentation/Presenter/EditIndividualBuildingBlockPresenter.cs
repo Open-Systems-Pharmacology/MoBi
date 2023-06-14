@@ -1,4 +1,5 @@
 ﻿using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
@@ -28,7 +29,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.IndividualBuildingBlockCaption(_individualBuildingBlock.Name);
+         _view.Caption = AppConstants.Captions.IndividualBuildingBlockCaption(_individualBuildingBlock.DisplayName);
       }
 
       public override object Subject => _individualBuildingBlock;

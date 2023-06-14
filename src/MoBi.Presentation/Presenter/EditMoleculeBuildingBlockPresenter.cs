@@ -14,7 +14,6 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditMoleculeBuildingBlockPresenter :
-
       ISingleStartPresenter<MoleculeBuildingBlock>,
       IListener<EntitySelectedEvent>,
       IListener<RemovedEvent>,
@@ -59,7 +58,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.MoleculesBuildingBlockCaption(_moleculeBuildingBlock.Name);
+         _view.Caption = AppConstants.Captions.MoleculesBuildingBlockCaption(_moleculeBuildingBlock.DisplayName);
       }
 
       public override object Subject => _moleculeBuildingBlock;

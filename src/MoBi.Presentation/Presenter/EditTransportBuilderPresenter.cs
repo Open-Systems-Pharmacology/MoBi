@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -10,12 +8,14 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -85,7 +85,6 @@ namespace MoBi.Presentation.Presenter
          _view.AddTargetCriteriaView(_targetCriteriaPresenter.View);
       }
 
-
       public void Edit(object objectToEdit)
       {
          Edit(objectToEdit.DowncastTo<TransportBuilder>());
@@ -98,7 +97,7 @@ namespace MoBi.Presentation.Presenter
 
       public virtual void Edit(TransportBuilder transportBuilder)
       {
-         Edit(transportBuilder, transportBuilder.ParentContainer.Children);
+         Edit(transportBuilder, transportBuilder.ParentContainer?.Children);
       }
 
       public void Edit(TransportBuilder transportBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
@@ -114,7 +113,7 @@ namespace MoBi.Presentation.Presenter
          FormulaChanged();
          _view.ShowMoleculeList = transportIsInPassiveTransportBuildingBlock(transportBuilder);
          _moleculeListPresenter.Edit(transportBuilder);
-         _sourceCriteriaPresenter.Edit(_transportBuilder,  x => x.SourceCriteria, _buildingBlock);
+         _sourceCriteriaPresenter.Edit(_transportBuilder, x => x.SourceCriteria, _buildingBlock);
          _targetCriteriaPresenter.Edit(_transportBuilder, x => x.TargetCriteria, _buildingBlock);
       }
 
@@ -125,7 +124,7 @@ namespace MoBi.Presentation.Presenter
 
       private void setUpReferenceView()
       {
-         _selectReferencePresenter.Init(null, new[] {_transportBuilder}, _transportBuilder);
+         _selectReferencePresenter.Init(null, new[] { _transportBuilder }, _transportBuilder);
       }
 
       public object Subject => _transportBuilder;

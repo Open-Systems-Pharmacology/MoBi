@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Views;
@@ -78,7 +79,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.EventsBuildingBlockCaption(_eventGroupBuildingBlock.Name);
+         _view.Caption = AppConstants.Captions.EventsBuildingBlockCaption(_eventGroupBuildingBlock.DisplayName);
       }
 
       private void setupEditPresenterFor(IObjectBase objectToEdit, IParameter parameter = null)
@@ -184,7 +185,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool eventGroupContainsTransportBuilder(IObjectBase objectBase)
       {
-         var transportBuilder = (TransportBuilder) objectBase;
+         var transportBuilder = (TransportBuilder)objectBase;
          foreach (var eventGroup in _eventGroupBuildingBlock)
          {
             var applicationBuilder = eventGroup as ApplicationBuilder;

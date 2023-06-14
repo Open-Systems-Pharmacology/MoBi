@@ -1,9 +1,10 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Utility.Events;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -20,7 +21,7 @@ namespace MoBi.Presentation.Presenter
       private InitialConditionsBuildingBlock _initialConditions;
 
       public EditInitialConditionsPresenter(IEditInitialConditionsView view, IInitialConditionsPresenter initialConditionsPresenter, IFormulaCachePresenter formulaCachePresenter) :
-            base(view, formulaCachePresenter)
+         base(view, formulaCachePresenter)
       {
          _initialConditionsPresenter = initialConditionsPresenter;
          AddSubPresenters(initialConditionsPresenter);
@@ -50,7 +51,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.InitialConditionsBuildingBlockCaption(_initialConditions.Name);
+         _view.Caption = AppConstants.Captions.InitialConditionsBuildingBlockCaption(_initialConditions.DisplayName);
       }
 
       public override object Subject => _initialConditions;

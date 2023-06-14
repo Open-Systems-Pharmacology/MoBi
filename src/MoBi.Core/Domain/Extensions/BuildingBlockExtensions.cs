@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Extensions
 {
@@ -18,7 +18,7 @@ namespace MoBi.Core.Domain.Extensions
          return cache;
       }
 
-      public static ICache<string, T> ToCache<T>(this IEnumerable<T> elements, Func<T,string> getKey) where T : class
+      public static ICache<string, T> ToCache<T>(this IEnumerable<T> elements, Func<T, string> getKey) where T : class
       {
          var cache = new Cache<string, T>(getKey, x => null);
          cache.AddRange(elements);
@@ -42,8 +42,8 @@ namespace MoBi.Core.Domain.Extensions
             return false;
 
          if (entity.IsAnImplementationOf<MoleculeBuilder>())
-            return buildingBlock.Contains((MoleculeBuilder) entity);
-         
+            return buildingBlock.Contains((MoleculeBuilder)entity);
+
          if (entity.IsAnImplementationOf<TransportBuilder>())
          {
             var transporterMoleculeContainers = buildingBlock.SelectMany(mb => mb.TransporterMoleculeContainerCollection);
