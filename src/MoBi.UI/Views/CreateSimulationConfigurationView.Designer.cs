@@ -47,40 +47,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnPrevious
-         // 
-         this.btnPrevious.Location = new System.Drawing.Point(567, 12);
-         this.btnPrevious.Size = new System.Drawing.Size(163, 22);
-         // 
-         // btnNext
-         // 
-         this.btnNext.Location = new System.Drawing.Point(734, 12);
-         this.btnNext.Size = new System.Drawing.Size(123, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(861, 12);
-         this.btnOk.Size = new System.Drawing.Size(98, 22);
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(963, 12);
-         this.btnCancel.Size = new System.Drawing.Size(223, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 722);
-         this.layoutControlBase.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(574, 236, 650, 400);
-         this.layoutControlBase.Size = new System.Drawing.Size(1198, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnPrevious, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnNext, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(555, 26);
+        
          // 
          // layoutControl
          // 
