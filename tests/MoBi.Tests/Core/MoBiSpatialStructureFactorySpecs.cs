@@ -1,16 +1,12 @@
-﻿using System.Linq;
-using FakeItEasy;
-using MoBi.Assets;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core
 {
@@ -25,16 +21,16 @@ namespace MoBi.Core
 
       protected override void Context()
       {
-         _objectBaseFactory= A.Fake<IObjectBaseFactory>();
-         _parameterFactory= A.Fake<IParameterFactory>();
-         _iconRepository= A.Fake<IIconRepository>();
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         _parameterFactory = A.Fake<IParameterFactory>();
+         _iconRepository = A.Fake<IIconRepository>();
          _volumeParameter = A.Fake<IParameter>().WithName(Constants.Parameters.VOLUME);
          A.CallTo(() => _parameterFactory.CreateVolumeParameter()).Returns(_volumeParameter);
          _spatialStructure = new MoBiSpatialStructure();
          A.CallTo(() => _objectBaseFactory.Create<MoBiSpatialStructure>()).Returns(_spatialStructure);
          A.CallTo(() => _objectBaseFactory.Create<IContainer>()).ReturnsLazily(x => new Container());
          _diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
-         sut = new MoBiSpatialStructureFactory(_objectBaseFactory,_parameterFactory,_iconRepository, _diagramManagerFactory);
+         sut = new MoBiSpatialStructureFactory(_objectBaseFactory, _parameterFactory, _iconRepository, _diagramManagerFactory);
       }
    }
 
@@ -48,28 +44,15 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void the_name_and_top_container_name_should_be_default()
+      public void the_name_should_be_default()
       {
          _result.Name.ShouldBeEqualTo(DefaultNames.SpatialStructure);
-         _result.TopContainers.Each(x => x.Name.ShouldBeEqualTo(DefaultNames.SpatialStructure));
       }
 
       [Observation]
-      public void should_have_added_a_default_top_container_of_type_organism()
+      public void should_not_include_any_top_containers()
       {
-         var topContainer = _result.TopContainers.Find(x => x.ContainerType == ContainerType.Organism);
-         topContainer.ShouldNotBeNull();
-         topContainer.Mode.ShouldBeEqualTo(ContainerMode.Physical);
-         topContainer.Children.Contains(_volumeParameter).ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_have_added_a_molecule_container_under_the_organism_container()
-      {
-         var topContainer = _result.TopContainers.Find(x => x.ContainerType == ContainerType.Organism);
-         var moleculeContainer = topContainer.EntityAt<IContainer>(Constants.MOLECULE_PROPERTIES);
-         moleculeContainer.ShouldNotBeNull();
-         moleculeContainer.Mode.ShouldBeEqualTo(ContainerMode.Logical);
+         _result.TopContainers.ShouldBeEmpty();
       }
    }
-}	
+}

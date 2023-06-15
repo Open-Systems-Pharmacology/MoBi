@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FluentNHibernate.Conventions;
 using MoBi.Core.Domain.Builder;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using OSPSuite.Core.Domain;
@@ -8,6 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Container;
+using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Helpers
 {
@@ -19,7 +21,7 @@ namespace MoBi.Helpers
 
          var module = new Module
          {
-            CreateDefaultSpatialStructure(),
+            CreateDefaultSpatialStructureWithTopContainer(),
             CreateDefaultReactions(),
             CreateDefaultSimulationSettings(),
             CreateDefaultMolecules(),
@@ -35,10 +37,31 @@ namespace MoBi.Helpers
          return buildConfiguration;
       }
 
-      public static MoBiSpatialStructure CreateDefaultSpatialStructure(string buildingBlockName = "Spatial Structure")
+      public static MoBiSpatialStructure CreateDefaultSpatialStructureWithTopContainer(string buildingBlockName = "Spatial Structure")
       {
          var spatialStructureFactory = IoC.Resolve<IMoBiSpatialStructureFactory>();
-         return spatialStructureFactory.CreateDefault(buildingBlockName);
+         var objectBaseFactory = IoC.Resolve<IObjectBaseFactory>();
+         var parameterFactory = IoC.Resolve<IParameterFactory>();
+
+         var topContainer = objectBaseFactory.Create<IContainer>()
+            .WithName(buildingBlockName)
+            .WithMode(ContainerMode.Physical)
+            .WithContainerType(ContainerType.Organism);
+         
+         topContainer.AddChildren(parameterFactory.CreateVolumeParameter());
+         
+         var moleculeProperties = objectBaseFactory.Create<IContainer>()
+            .WithName(Constants.MOLECULE_PROPERTIES)
+            .WithMode(ContainerMode.Logical)
+            .WithContainerType(ContainerType.Other)
+            .WithParentContainer(topContainer);
+
+
+         var moBiSpatialStructure = spatialStructureFactory.CreateDefault(buildingBlockName);
+         moBiSpatialStructure.DiagramManager.AddObjectBase(topContainer);
+         moBiSpatialStructure.DiagramManager.AddObjectBase(moleculeProperties);
+
+         return moBiSpatialStructure.WithTopContainer(topContainer);
       }
 
       public static MoBiReactionBuildingBlock CreateDefaultReactions(string buildingBlockName = "Reactions")
