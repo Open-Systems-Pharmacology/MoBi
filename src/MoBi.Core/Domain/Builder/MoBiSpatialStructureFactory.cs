@@ -44,36 +44,10 @@ namespace MoBi.Core.Domain.Builder
       {
          spatialStructureName = spatialStructureName ?? DefaultNames.SpatialStructure;
          
-         var topContainer = _objectBaseFactory.Create<IContainer>()
-            .WithName(spatialStructureName)
-            .WithMode(ContainerMode.Physical)
-            .WithContainerType(ContainerType.Organism);
-         updateIcon(topContainer);
-
-         topContainer.AddChildren(_parameterFactory.CreateVolumeParameter());
-
-         var moleculeProperties = _objectBaseFactory.Create<IContainer>()
-            .WithName(Constants.MOLECULE_PROPERTIES)
-            .WithMode(ContainerMode.Logical)
-            .WithContainerType(ContainerType.Other)
-            .WithParentContainer(topContainer);
-         updateIcon(moleculeProperties);
-
-
-         var spatialStructure = Create()
-            .WithName(spatialStructureName)
-            .WithTopContainer(topContainer).DowncastTo<MoBiSpatialStructure>();
-
+         var spatialStructure = Create().WithName(spatialStructureName).DowncastTo<MoBiSpatialStructure>();
          spatialStructure.DiagramManager = _diagramManagerFactory.Create<ISpatialStructureDiagramManager>();
-         spatialStructure.DiagramManager.AddObjectBase(topContainer);
-         spatialStructure.DiagramManager.AddObjectBase(moleculeProperties);
 
          return spatialStructure;
-      }
-
-      private void updateIcon(IObjectBase objectWithIcon)
-      {
-         objectWithIcon.Icon = _iconRepository.IconNameFor(objectWithIcon);
       }
    }
 }
