@@ -29,7 +29,7 @@ namespace MoBi.Engine.Sbml
       private IUnitDefinitionImporter _unitDefinitionImporter;
 
       private readonly Dictionary<string, string> _functionDefDictionary;
-      private readonly string[] _forbiddenNames = new[] { "E", "PI" };
+      private readonly string[] _forbiddenNames = new[] {"E", "PI"};
 
       public ASTHandler(IObjectBaseFactory obf, IObjectPathFactory objectPathFactory, IAliasCreator aliasCreator,
          IMoBiDimensionFactory moBiDimensionFactory)
@@ -55,8 +55,9 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       /// <param name="rootNode"> The root of the MathMl expression. </param>
       /// <param name="reactionBuilder"> The MoBi reactionBuilder the SBML reaction should be build with. </param>
-      public IFormula Parse(ASTNode rootNode, ReactionBuilder reactionBuilder, Module sbmlModule,
-         SBMLInformation sbmlInformation)
+      /// <param name="sbmlModule">Module</param>
+      /// <param name="sbmlInformation">Information</param>
+      public IFormula Parse(ASTNode rootNode, ReactionBuilder reactionBuilder, Module sbmlModule, SBMLInformation sbmlInformation)
       {
          try
          {
@@ -113,11 +114,13 @@ namespace MoBi.Engine.Sbml
       ///    The MathMl Expression of the SBML Event Assignment the assignmentVariable should be assigned
       ///    with.
       /// </param>
-      /// <param name="eventAssignmentBuilder"> The MoBi Event Assignment Builder the SBML Event Assigment should be build with. </param>
+      /// <param name="eventAssignmentBuilder"> The MoBi Event Assignment Builder the SBML Event Assignment should be build with. </param>
       /// <param name="assignmentVariable">
       ///    The Parameter, Molecule, Species or SpeciesReference that should be assigned when the
       ///    Event is triggered.
       /// </param>
+      /// <param name="sbmlModule">Module</param>
+      /// <param name="sbmlInformation">Information</param>
       public IFormula Parse(ASTNode rootNode, EventAssignmentBuilder eventAssignmentBuilder, string assignmentVariable,
          Module sbmlModule, SBMLInformation sbmlInformation)
       {
@@ -160,8 +163,10 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       /// <param name="rootNode"></param>
       /// <param name="rootObjectId"> The id of the parent object of the rootNode to set the name of </param>
-      public IFormula Parse(ASTNode rootNode, string rootObjectId, bool isRateRule, Module sbmlModule,
-         SBMLInformation sbmlInformation)
+      /// <param name="isRateRule">is rate?</param>
+      /// <param name="sbmlModule">Module</param>
+      /// <param name="sbmlInformation">Information</param>
+      public IFormula Parse(ASTNode rootNode, string rootObjectId, bool isRateRule, Module sbmlModule, SBMLInformation sbmlInformation)
       {
          try
          {
