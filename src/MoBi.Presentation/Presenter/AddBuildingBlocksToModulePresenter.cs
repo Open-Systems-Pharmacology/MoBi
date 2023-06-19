@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -13,6 +13,8 @@ namespace MoBi.Presentation.Presenter
    public interface IAddBuildingBlocksToModulePresenter : IDisposablePresenter
    {
       IReadOnlyList<IBuildingBlock> AddBuildingBlocksToModule(Module module);
+      IReadOnlyList<IBuildingBlock> AddInitialConditionsToModule(Module module);
+      IReadOnlyList<IBuildingBlock> AddParameterValuesToModule(Module module);
    }
 
    public class AddBuildingBlocksToModulePresenter : AbstractDisposablePresenter<IAddBuildingBlocksToModuleView, IAddBuildingBlocksToModulePresenter>,
@@ -31,9 +33,15 @@ namespace MoBi.Presentation.Presenter
 
       public IReadOnlyList<IBuildingBlock> AddBuildingBlocksToModule(Module module)
       {
+         return addBuildingBlocksToModule(module);
+      }
+
+      private IReadOnlyList<IBuildingBlock> addBuildingBlocksToModule(Module module, Action<AddBuildingBlocksToModuleDTO> configureDTOAction = null)
+      {
          _view.Caption = AppConstants.Captions.AddBuildingBlocksToModule(module.Name);
 
          var addBuildingBlocksToModuleDTO = _moduleToAddBuildingBlocksToModuleDTOMapper.MapFrom(module);
+         configureDTOAction?.Invoke(addBuildingBlocksToModuleDTO);
 
          _view.BindTo(addBuildingBlocksToModuleDTO);
          _view.Display();
@@ -42,6 +50,16 @@ namespace MoBi.Presentation.Presenter
             return new List<IBuildingBlock>();
 
          return _addBuildingBlocksToModuleDTOToBuildingBlocksListMapper.MapFrom(addBuildingBlocksToModuleDTO);
+      }
+
+      public IReadOnlyList<IBuildingBlock> AddParameterValuesToModule(Module module)
+      {
+         return addBuildingBlocksToModule(module, dto => dto.AllowOnlyParameterValues = true);
+      }
+
+      public IReadOnlyList<IBuildingBlock> AddInitialConditionsToModule(Module module)
+      {
+         return addBuildingBlocksToModule(module, dto => dto.AllowOnlyInitialConditions = true);
       }
    }
 }

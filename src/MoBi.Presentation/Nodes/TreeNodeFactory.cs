@@ -84,7 +84,7 @@ namespace MoBi.Presentation.Nodes
          var parameterValuesFolderNode = new ParameterValuesFolderNode(module).Under(moduleNode);
          module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(parameterValuesFolderNode, psv); });
 
-         var initialConditionsFolderNode = new InitialConditionsFolderNode().Under(moduleNode);
+         var initialConditionsFolderNode = new InitialConditionsFolderNode(module).Under(moduleNode);
          module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(initialConditionsFolderNode, msv));
       }
 

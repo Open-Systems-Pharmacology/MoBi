@@ -67,6 +67,11 @@ namespace MoBi.Presentation.Presenter.Main
          return base.ContextMenuFor(treeNode);
       }
 
+      protected override bool IsExpandable(ITreeNode node)
+      {
+         return base.IsExpandable(node) || node.IsAnImplementationOf<ParameterValuesFolderNode>() || node.IsAnImplementationOf<InitialConditionsFolderNode>();
+      }
+
       public override void NodeDoubleClicked(ITreeNode node)
       {
          var moleculeBuilder = node.TagAsObject as MoleculeBuilder;

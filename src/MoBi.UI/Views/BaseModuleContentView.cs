@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using DevExpress.XtraLayout;
+﻿using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;

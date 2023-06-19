@@ -158,6 +158,90 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
+   public class When_adding_new_building_blocks : concern_for_InteractionTasksForModule
+   {
+      private Module _module;
+      private IAddBuildingBlocksToModulePresenter _addBuildingBlocksToModulePresenter;
+      private IReadOnlyList<IBuildingBlock> _newBuildingBlocks;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         _newBuildingBlocks = new List<IBuildingBlock> { new InitialConditionsBuildingBlock() };
+         _addBuildingBlocksToModulePresenter = A.Fake<IAddBuildingBlocksToModulePresenter>();
+         A.CallTo(() => _context.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>()).Returns(_addBuildingBlocksToModulePresenter);
+         A.CallTo(() => _addBuildingBlocksToModulePresenter.AddBuildingBlocksToModule(_module)).Returns(_newBuildingBlocks);
+      }
+
+      protected override void Because()
+      {
+         sut.AddBuildingBlocksToModule(_module);
+      }
+
+      [Observation]
+      public void the_task_adds_building_blocks_with_commands()
+      {
+         A.CallTo(() => _context.Context.AddToHistory(A<AddMultipleBuildingBlocksToModuleCommand>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_adding_initial_conditions_building_blocks : concern_for_InteractionTasksForModule
+   {
+      private Module _module;
+      private IAddBuildingBlocksToModulePresenter _addBuildingBlocksToModulePresenter;
+      private IReadOnlyList<IBuildingBlock> _newBuildingBlocks;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         _newBuildingBlocks = new List<IBuildingBlock> { new InitialConditionsBuildingBlock() };
+         _addBuildingBlocksToModulePresenter = A.Fake<IAddBuildingBlocksToModulePresenter>();
+         A.CallTo(() => _context.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>()).Returns(_addBuildingBlocksToModulePresenter);
+         A.CallTo(() => _addBuildingBlocksToModulePresenter.AddInitialConditionsToModule(_module)).Returns(_newBuildingBlocks);
+      }
+
+      protected override void Because()
+      {
+         sut.AddNewInitialConditionsBuildingBlock(_module);
+      }
+
+      [Observation]
+      public void the_task_adds_building_blocks_with_commands()
+      {
+         A.CallTo(() => _context.Context.AddToHistory(A<AddMultipleBuildingBlocksToModuleCommand>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_adding_parameter_values_building_blocks : concern_for_InteractionTasksForModule
+   {
+      private Module _module;
+      private IAddBuildingBlocksToModulePresenter _addBuildingBlocksToModulePresenter;
+      private IReadOnlyList<IBuildingBlock> _newBuildingBlocks;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         _newBuildingBlocks = new List<IBuildingBlock> { new ParameterValuesBuildingBlock() };
+         _addBuildingBlocksToModulePresenter = A.Fake<IAddBuildingBlocksToModulePresenter>();
+         A.CallTo(() => _context.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>()).Returns(_addBuildingBlocksToModulePresenter);
+         A.CallTo(() => _addBuildingBlocksToModulePresenter.AddParameterValuesToModule(_module)).Returns(_newBuildingBlocks);
+      }
+
+      protected override void Because()
+      {
+         sut.AddNewParameterValuesBuildingBlock(_module);
+      }
+
+      [Observation]
+      public void the_task_adds_building_blocks_with_commands()
+      {
+         A.CallTo(() => _context.Context.AddToHistory(A<AddMultipleBuildingBlocksToModuleCommand>._)).MustHaveHappened();
+      }
+   }
+
    public class When_loading_from_PKML_an_observer_BB : concern_for_InteractionTasksForModule
    {
       private Module _module;

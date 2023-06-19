@@ -12,6 +12,8 @@ namespace MoBi.Presentation.DTO
    {
       private readonly List<string> _existingParameterValuesNames;
       private readonly List<string> _existingInitialConditionsNames;
+      private bool _allowOnlyInitialConditions;
+      private bool _allowOnlyParameterValues;
 
       public AddBuildingBlocksToModuleDTO(Module module)
       {
@@ -70,6 +72,28 @@ namespace MoBi.Presentation.DTO
       public bool CreatePassiveTransport => WithPassiveTransport && CanSelectPassiveTransport;
       public bool CreateEventGroup => WithEventGroup && CanSelectEventGroup;
       public bool CreateObserver => WithObserver && CanSelectObserver;
+
+      public bool AllowOnlyParameterValues
+      {
+         get => _allowOnlyParameterValues;
+         set
+         {
+            _allowOnlyParameterValues = value;
+            if (value)
+               WithParameterValues = true;
+         }
+      }
+      
+      public bool AllowOnlyInitialConditions
+      {
+         get => _allowOnlyInitialConditions;
+         set
+         {
+            _allowOnlyInitialConditions = value;
+            if (value)
+               WithInitialConditions = true;
+         }
+      }
 
       public void AddUsedInitialConditionsNames(IReadOnlyList<string> allNames)
       {

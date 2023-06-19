@@ -455,17 +455,17 @@
       protected DevExpress.XtraLayout.LayoutControlItem passiveTransportsItem;
       protected DevExpress.XtraLayout.LayoutControlItem observersItem;
       protected DevExpress.XtraLayout.LayoutControlItem eventGroupItem;
-      private DevExpress.XtraLayout.LayoutControlGroup createBuildingBlocksGroup;
+      protected DevExpress.XtraLayout.LayoutControlGroup createBuildingBlocksGroup;
       protected DevExpress.XtraLayout.LayoutControlItem spatialStructureItem;
       protected DevExpress.XtraEditors.CheckEdit cbMolecules;
       protected DevExpress.XtraLayout.LayoutControlItem moleculesItem;
-      private DevExpress.XtraEditors.CheckEdit cbParameterValues;
-      private DevExpress.XtraEditors.CheckEdit cbInitialConditions;
-      private DevExpress.XtraLayout.LayoutControlItem initialConditionsItem;
-      private DevExpress.XtraLayout.LayoutControlItem parameterValuesItem;
+      protected DevExpress.XtraEditors.CheckEdit cbParameterValues;
+      protected DevExpress.XtraEditors.CheckEdit cbInitialConditions;
+      protected DevExpress.XtraLayout.LayoutControlItem initialConditionsItem;
+      protected DevExpress.XtraLayout.LayoutControlItem parameterValuesItem;
       protected DevExpress.XtraEditors.TextEdit tbInitialConditionsName;
       protected DevExpress.XtraEditors.TextEdit tbParameterValuesName;
-      private DevExpress.XtraLayout.LayoutControlItem parameterValuesNameItem;
+      protected DevExpress.XtraLayout.LayoutControlItem parameterValuesNameItem;
       protected DevExpress.XtraLayout.LayoutControlItem initialConditionsNameItem;
    }
 }

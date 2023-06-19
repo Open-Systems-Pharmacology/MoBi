@@ -14,10 +14,9 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   internal class ContextMenuForParameterValuesFolder : ContextMenuBase, IContextMenuFor<ModuleViewItem>
+   internal class ContextMenuForParameterValuesFolder : ContextMenuForModuleBuildingBlockCollection
    {
       private readonly IContainer _container;
-      private readonly List<IMenuBarItem> _allMenuItems;
 
       public ContextMenuForParameterValuesFolder(IContainer container)
       {
@@ -25,22 +24,23 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems = new List<IMenuBarItem>();
       }
 
-      public override IEnumerable<IMenuBarItem> AllMenuItems()
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         return _allMenuItems;
+         base.InitializeWith(dto, presenter);
+         _allMenuItems.Add(createAddExpressionAsParameterValueBuildingBlock(ModuleFor(dto)));
+         return this;
       }
 
-      public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
+      protected override IMenuBarItem AddNewBuildingBlock(Module module)
       {
-         var psvCollectionViewItem = dto.DowncastTo<ModuleViewItem>();
-         var module = psvCollectionViewItem.Module;
-         _allMenuItems.Add(createAddExpressionAsParameterValueBuildingBlock(module));
-         return this;
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.ParameterValuesBuildingBlock))
+            .WithIcon(ApplicationIcons.LoadIconFor(nameof(ParameterValuesBuildingBlock)))
+            .WithCommandFor<AddNewParameterValuesBuildingBlockUICommand, Module>(module, _container);
       }
 
       private IMenuBarItem createAddExpressionAsParameterValueBuildingBlock(Module module)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.ExpressionProfileBuildingBlock)).AsGroupStarter()
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.ExpressionProfileBuildingBlock))
             .WithIcon(ApplicationIcons.LoadIconFor(nameof(ExpressionProfileBuildingBlock)))
             .WithCommandFor<AddExpressionAsParameterValuesCommand, Module>(module, _container);
       }

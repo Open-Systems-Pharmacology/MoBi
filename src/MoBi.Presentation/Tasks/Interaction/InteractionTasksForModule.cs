@@ -23,6 +23,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       void LoadBuildingBlocksFromTemplateToModule(Module module);
       void RemoveModule(Module module);
       void AddCloneToProject(Module moduleToClone);
+      void AddNewInitialConditionsBuildingBlock(Module module);
+      void AddNewParameterValuesBuildingBlock(Module module);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
@@ -72,9 +74,14 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void AddBuildingBlocksToModule(Module module)
       {
+         addBuildingBlocksToModule(module, presenter => presenter.AddBuildingBlocksToModule(module));
+      }
+
+      private void addBuildingBlocksToModule(Module module, Func<IAddBuildingBlocksToModulePresenter, IReadOnlyList<IBuildingBlock>> buildingBlockCreator)
+      {
          using (var presenter = _interactionTaskContext.ApplicationController.Start<IAddBuildingBlocksToModulePresenter>())
          {
-            var listOfNewBuildingBlocks = presenter.AddBuildingBlocksToModule(module);
+            var listOfNewBuildingBlocks = buildingBlockCreator(presenter);
 
             if (!listOfNewBuildingBlocks.Any())
                return;
@@ -82,6 +89,16 @@ namespace MoBi.Presentation.Tasks.Interaction
             context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, listOfNewBuildingBlocks)
                .Run(context));
          }
+      }
+
+      public void AddNewParameterValuesBuildingBlock(Module module)
+      {
+         addBuildingBlocksToModule(module, presenter => presenter.AddParameterValuesToModule(module));
+      }
+
+      public void AddNewInitialConditionsBuildingBlock(Module module)
+      {
+         addBuildingBlocksToModule(module, presenter => presenter.AddInitialConditionsToModule(module));
       }
 
       public void LoadBuildingBlocksToModule(Module module)
