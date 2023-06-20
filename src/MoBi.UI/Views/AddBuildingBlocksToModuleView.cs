@@ -76,6 +76,9 @@ namespace MoBi.UI.Views
             if (!itemsToShow.Contains(item))
                item.Visibility = LayoutVisibility.Never;
          });
+
+         // Adjust the height of the dialog box by the amount of height lost by hiding
+         // all the items except the ones we want to show.
          adjustHeight(createBuildingBlocksGroup.Size.Height - initialGroupHeight);
       }
    }
