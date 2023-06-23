@@ -23,11 +23,6 @@ namespace MoBi.Core.Commands
          return objectToClone;
       }
 
-      public T CloneBuildingBlock<T>(T buildingBlock) where T : class, IBuildingBlock
-      {
-         return buildingBlock;
-      }
-
       public IFormulaCache FormulaCache { get; set; }
    }
 }

@@ -4,8 +4,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Presentation.Serialization;
 using OSPSuite.Presentation.Serialization.Extensions;
-//using OSPSuite.Presentation.Serialization;
-//using OSPSuite.Presentation.Serialization.Extensions;
 using OSPSuite.Serializer;
 using OSPSuite.Serializer.Attributes;
 
@@ -21,7 +19,6 @@ namespace MoBi.Presentation.Serialization.Xml.Serializer
          //Remove serializer that will be overwritten in MoBi
          RemoveSerializer("ReactionBuildingBlock");
          RemoveSerializer("SpatialStructure");
-         RemoveSerializer("BuildConfiguration");
          RemoveSerializer("ModelCoreSimulation");
 
          //To add IOSPSuiteXmlSerializer classes defined in MoBi

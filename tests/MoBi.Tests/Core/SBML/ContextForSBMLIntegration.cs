@@ -1,9 +1,11 @@
+using System.Linq;
 using OSPSuite.Utility.Container;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Engine.Sbml;
 using MoBi.IntegrationTests;
 using NUnit.Framework;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.SBML
@@ -13,7 +15,7 @@ namespace MoBi.Core.SBML
    public abstract class ContextForSBMLIntegration<T> : ContextForIntegration<T>
    {  
       protected SbmlTask _sbmlTask;
-      protected IMoBiProject _moBiProject;
+      protected MoBiProject _moBiProject;
       protected string _fileName;
 
       protected override void Context()
@@ -30,5 +32,7 @@ namespace MoBi.Core.SBML
       {
          _sbmlTask.ImportModelFromSbml(_fileName, _moBiProject);
       }
+
+      protected Module SBMLModule  => _moBiProject.Modules.First();
    }
 }

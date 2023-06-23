@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_RemoveChartTemplateFromBuildingBlockCommand : ContextSpecification<RemoveChartTemplateFromBuildingBlockCommand>
    {
-      protected ISimulationSettings _buildingBlock;
+      protected SimulationSettings _buildingBlock;
       protected CurveChartTemplate _chartTemplate;
 
       protected override void Context()
@@ -55,7 +55,7 @@ namespace MoBi.Core.Commands
       {
          base.Context();
          _context = A.Fake<IMoBiContext>();
-         A.CallTo(() => _context.Get<ISimulationSettings>(A<string>._)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<SimulationSettings>(A<string>._)).Returns(_buildingBlock);
 
          var serialStream = new byte[0];
          A.CallTo(() => _context.Serialize(_chartTemplate)).Returns(serialStream);

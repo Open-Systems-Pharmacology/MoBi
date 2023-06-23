@@ -33,10 +33,10 @@ namespace MoBi.Core.Domain.Services
             return id;
 
          var entityName = objectBase.Name;
-         if (!objectBase.IsAnImplementationOf<IObserver>())
+         if (!objectBase.IsAnImplementationOf<Observer>())
             return entityName;
 
-         var observer = objectBase.DowncastTo<IObserver>();
+         var observer = objectBase.DowncastTo<Observer>();
          var moleculeName = observer.ParentContainer.Name;
          return $"{moleculeName} {entityName}";
       }

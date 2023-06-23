@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -21,7 +22,7 @@ namespace MoBi.Core
          _renameObject = A.Fake<IObjectBase>();
          _messagePresenter = A.Fake<IDialogCreator>();
 
-         sut = new NameCorrector(_messagePresenter, new ObjectTypeResolver(), new ContainerTask(A.Fake<IObjectBaseFactory>(), A.Fake<IEntityPathResolver>()));
+         sut = new NameCorrector(_messagePresenter, new ObjectTypeResolver(), new ContainerTask(A.Fake<IObjectBaseFactory>(), A.Fake<IEntityPathResolver>(), new ObjectPathFactoryForSpecs()));
       }
    }
 

@@ -379,7 +379,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_return_the_expected_caption_for_a_transport_builder()
       {
-         sut.GetFormulaCaption(A.Fake<ITransportBuilder>(), ReactionDimensionMode.ConcentrationBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
+         sut.GetFormulaCaption(A.Fake<TransportBuilder>(), ReactionDimensionMode.ConcentrationBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
       }
 
       [Observation]
@@ -392,13 +392,13 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_return_an_amount_based_caption_for_a_reaction_in_amount_base_mode()
       {
-         sut.GetFormulaCaption(A.Fake<IReactionBuilder>(), ReactionDimensionMode.AmountBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
+         sut.GetFormulaCaption(A.Fake<ReactionBuilder>(), ReactionDimensionMode.AmountBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
       }
 
       [Observation]
       public void should_return_a_concentration_based_caption_for_a_reaction_in_amount_base_mode()
       {
-         sut.GetFormulaCaption(A.Fake<IReactionBuilder>(), ReactionDimensionMode.ConcentrationBased, false).ShouldBeEqualTo(AppConstants.Captions.ConcentrationRightHandSide);
+         sut.GetFormulaCaption(A.Fake<ReactionBuilder>(), ReactionDimensionMode.ConcentrationBased, false).ShouldBeEqualTo(AppConstants.Captions.ConcentrationRightHandSide);
       }
    }
 

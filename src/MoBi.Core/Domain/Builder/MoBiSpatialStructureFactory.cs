@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
@@ -14,8 +15,7 @@ namespace MoBi.Core.Domain.Builder
       /// <summary>
       ///    Creates the strict minimum default spatial structure
       /// </summary>
-      /// <returns></returns>
-      IMoBiSpatialStructure CreateDefault(string spatialStructureName);
+      MoBiSpatialStructure CreateDefault(string spatialStructureName = null);
    }
 
    public class MoBiSpatialStructureFactory : SpatialStructureFactory, IMoBiSpatialStructureFactory
@@ -33,45 +33,21 @@ namespace MoBi.Core.Domain.Builder
          _diagramManagerFactory = diagramManagerFactory;
       }
 
-      protected override ISpatialStructure CreateSpatialStructure()
+      protected override SpatialStructure CreateSpatialStructure()
       {
-         var spatialStructure = _objectBaseFactory.Create<IMoBiSpatialStructure>();
+         var spatialStructure = _objectBaseFactory.Create<MoBiSpatialStructure>();
          spatialStructure.DiagramManager = _diagramManagerFactory.Create<ISpatialStructureDiagramManager>();
          return spatialStructure;
       }
 
-      public IMoBiSpatialStructure CreateDefault(string spatialStructureName)
+      public MoBiSpatialStructure CreateDefault(string spatialStructureName = null)
       {
-         var topContainer = _objectBaseFactory.Create<IContainer>()
-            .WithName(spatialStructureName)
-            .WithMode(ContainerMode.Physical)
-            .WithContainerType(ContainerType.Organism);
-         updateIcon(topContainer);
-
-         topContainer.AddChildren(_parameterFactory.CreateVolumeParameter());
-
-         var moleculeProperties = _objectBaseFactory.Create<IContainer>()
-            .WithName(Constants.MOLECULE_PROPERTIES)
-            .WithMode(ContainerMode.Logical)
-            .WithContainerType(ContainerType.Other)
-            .WithParentContainer(topContainer);
-         updateIcon(moleculeProperties);
-
-
-         var spatialStructure = Create()
-            .WithName(spatialStructureName)
-            .WithTopContainer(topContainer).DowncastTo<IMoBiSpatialStructure>();
-
+         spatialStructureName = spatialStructureName ?? DefaultNames.SpatialStructure;
+         
+         var spatialStructure = Create().WithName(spatialStructureName).DowncastTo<MoBiSpatialStructure>();
          spatialStructure.DiagramManager = _diagramManagerFactory.Create<ISpatialStructureDiagramManager>();
-         spatialStructure.DiagramManager.AddObjectBase(topContainer);
-         spatialStructure.DiagramManager.AddObjectBase(moleculeProperties);
 
          return spatialStructure;
-      }
-
-      private void updateIcon(IObjectBase objectWithIcon)
-      {
-         objectWithIcon.Icon = _iconRepository.IconFor(objectWithIcon);
       }
    }
 }

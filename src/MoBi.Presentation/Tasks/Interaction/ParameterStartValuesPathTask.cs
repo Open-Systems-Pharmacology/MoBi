@@ -1,4 +1,3 @@
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
@@ -7,31 +6,30 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IParameterStartValuePathTask : IStartValuePathTask<IParameterStartValuesBuildingBlock, IParameterStartValue>
+   public interface IParameterValuePathTask : IStartValuePathTask<ILookupBuildingBlock<ParameterValue>, ParameterValue>
    {
    }
 
-   public class ParameterStartValuePathTask : AbstractStartValuePathTask<IParameterStartValuesBuildingBlock, IParameterStartValue>, IParameterStartValuePathTask
+   public class ParameterValuePathTask : AbstractStartValuePathTask<ILookupBuildingBlock<ParameterValue>, ParameterValue>, IParameterValuePathTask
    {
-
-      public ParameterStartValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask,context)
+      public ParameterValuePathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask, context)
       {
       }
 
-      public override IMoBiCommand UpdateStartValueNameCommand(IParameterStartValuesBuildingBlock startValues, IParameterStartValue startValue, string newValue)
+      public override IMoBiCommand UpdateNameCommand(ILookupBuildingBlock<ParameterValue> startValues, ParameterValue pathAndValueEntity, string newValue)
       {
-         return new ChangeParameterStartValueNameCommand(startValues, startValue.Path, newValue);
+         return new ChangeParameterValueNameCommand(startValues, pathAndValueEntity.Path, newValue);
       }
 
-      public override IMoBiCommand UpdateStartValueContainerPathCommand(IParameterStartValuesBuildingBlock buildingBlock, IParameterStartValue startValue, int indexToUpdate, string newValue)
+      public override IMoBiCommand UpdateContainerPathCommand(ILookupBuildingBlock<ParameterValue> buildingBlock, ParameterValue pathAndValueEntity, int indexToUpdate, string newValue)
       {
-         var targetPath = startValue.ContainerPath.Clone<IObjectPath>();
+         var targetPath = pathAndValueEntity.ContainerPath.Clone<ObjectPath>();
          if (indexToUpdate > targetPath.Count)
             return new MoBiEmptyCommand();
 
          ConfigureTargetPath(indexToUpdate, newValue, targetPath);
 
-         return new EditParameterStartValuePathCommand(buildingBlock, startValue, targetPath);
+         return new EditParameterValuePathCommand(buildingBlock, pathAndValueEntity, targetPath);
       }
    }
 }

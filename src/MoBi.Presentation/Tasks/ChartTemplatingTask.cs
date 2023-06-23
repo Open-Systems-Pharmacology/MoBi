@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Tasks
       /// <summary>
       ///    Returns the command that was used when replacing all the templates from a simulation settings
       /// </summary>
-      ICommand ReplaceTemplatesInBuildingBlockCommand(ISimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates);
+      ICommand ReplaceTemplatesInBuildingBlockCommand(SimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates);
 
       void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually, bool propogateChartChangeEvent = true);
    }
@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Tasks
          return new AddChartTemplateToSimulationSettingsCommand(template, withSimulationSettings as IMoBiSimulation).Run(_context);
       }
 
-      public ICommand ReplaceTemplatesInBuildingBlockCommand(ISimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates)
+      public ICommand ReplaceTemplatesInBuildingBlockCommand(SimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates)
       {
          return new ReplaceBuildingBlockTemplatesCommand(simulationSettings, curveChartTemplates).Run(_context);
       }

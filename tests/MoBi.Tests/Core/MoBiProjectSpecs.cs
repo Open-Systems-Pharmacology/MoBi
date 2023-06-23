@@ -5,14 +5,15 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_MoBiProject : ContextSpecification<IMoBiProject>
+   public abstract class concern_for_MoBiProject : ContextSpecification<MoBiProject>
    {
       protected override void Context()
       {
-         sut = new MoBiProject();
+         sut = DomainHelperForSpecs.NewProject();
       }
    }
 
@@ -22,7 +23,7 @@ namespace MoBi.Core
    public class When_checking_if_a_project_is_empty : concern_for_MoBiProject
    {
       [Observation]
-      public void should_return_true_if_there_are_no_simulation_and_bulding_block()
+      public void should_return_true_if_there_are_no_simulation_and_building_block()
       {
          sut.IsEmpty.ShouldBeTrue();
       }
@@ -30,62 +31,12 @@ namespace MoBi.Core
       [Observation]
       public void should_return_false_otherwise()
       {
-         sut.AddBuildingBlock(A.Fake<IBuildingBlock>());
+         sut.AddIndividualBuildingBlock(A.Fake<IndividualBuildingBlock>());
          sut.IsEmpty.ShouldBeFalse();
 
-         sut = new MoBiProject();
+         sut = DomainHelperForSpecs.NewProject();
          sut.AddSimulation(A.Fake<IMoBiSimulation>());
          sut.IsEmpty.ShouldBeFalse();
-      }
-   }
-
-   public class When_resolving_referred_spatial_structure_blocks : concern_for_MoBiProject
-   {
-      private IReadOnlyList<IBuildingBlock> _result;
-      private SpatialStructure _spatialStructureBuildingBlock;
-
-      protected override void Context()
-      {
-         base.Context();
-         _spatialStructureBuildingBlock = new SpatialStructure {Id = "2"};
-         sut.AddBuildingBlock(new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "1"});
-         sut.AddBuildingBlock(new ParameterStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "2"});
-      }
-
-      protected override void Because()
-      {
-         _result = sut.ReferringStartValuesBuildingBlocks(_spatialStructureBuildingBlock);
-      }
-
-      [Observation]
-      public void should_find_only_building_block_with_reference()
-      {
-         _result.Count.ShouldBeEqualTo(1);
-      }
-   }
-
-   public class When_resolving_referred_molecule_building_blocks : concern_for_MoBiProject
-   {
-      private MoleculeBuildingBlock _moleculeBuildingBlock;
-      private IReadOnlyList<IBuildingBlock> _result;
-
-      protected override void Context()
-      {
-         base.Context();
-         _moleculeBuildingBlock = new MoleculeBuildingBlock {Id = "1"};
-         sut.AddBuildingBlock(new MoleculeStartValuesBuildingBlock {MoleculeBuildingBlockId = "1", SpatialStructureId = "2"});
-         sut.AddBuildingBlock(new ParameterStartValuesBuildingBlock {MoleculeBuildingBlockId = "2", SpatialStructureId = "2"});
-      }
-
-      protected override void Because()
-      {
-         _result = sut.ReferringStartValuesBuildingBlocks(_moleculeBuildingBlock);
-      }
-
-      [Observation]
-      public void should_find_only_building_block_with_reference()
-      {
-         _result.Count.ShouldBeEqualTo(1);
       }
    }
 

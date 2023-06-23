@@ -11,12 +11,9 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
    public class DiagramPopupMenuBaseWithContext : DiagramPopupMenuBase, IDiagramPopupMenuBaseWithContext
    {
-      private readonly IMoBiContext _context;
-
       public DiagramPopupMenuBaseWithContext(IMoBiBaseDiagramPresenter presenter, IMoBiContext context, IStartOptions runOptions)
-         : base(presenter, runOptions)
+         : base(presenter, context, runOptions)
       {
-         _context = context;
       }
 
       public T Get<T>(string id) where T : class, IObjectBase

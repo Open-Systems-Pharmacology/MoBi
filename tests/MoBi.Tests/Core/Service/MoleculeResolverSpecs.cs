@@ -8,16 +8,16 @@ namespace MoBi.Core.Service
 {
    public abstract class concern_for_MoleculeResolver : ContextSpecification<MoleculeResolver>
    {
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
-      private ISpatialStructure _spatialStructure;
-      private IMoleculeStartValue _moleculeStartValue;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private SpatialStructure _spatialStructure;
+      private InitialCondition _initialCondition;
 
       protected ContainerMode _containerMode = ContainerMode.Physical;
       protected string _firstPathEntry = "The";
       protected string _moleculeName = "name";
       protected MoleculeBuilder _builder;
-      protected IObjectPath _containerPath;
-      protected IMoleculeBuilder _result;
+      protected ObjectPath _containerPath;
+      protected MoleculeBuilder _result;
 
       protected override void Context()
       {
@@ -29,14 +29,14 @@ namespace MoBi.Core.Service
 
          firstContainer.Add(new Container { Name = "Path", Mode = _containerMode });
          _spatialStructure.Add(firstContainer);
-         _moleculeStartValue = new MoleculeStartValue { Name = _moleculeName, ContainerPath = new ObjectPath("The", "Path") };
+         _initialCondition = new InitialCondition { Name = _moleculeName, ContainerPath = new ObjectPath("The", "Path") };
 
          sut = new MoleculeResolver();
       }
 
       protected override void Because()
       {
-         _result = sut.Resolve(_moleculeStartValue.ContainerPath, _moleculeStartValue.MoleculeName, _spatialStructure, _moleculeBuildingBlock);
+         _result = sut.Resolve(_initialCondition.ContainerPath, _initialCondition.MoleculeName, _spatialStructure, _moleculeBuildingBlock);
       }
    }
 

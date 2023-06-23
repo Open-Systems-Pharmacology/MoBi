@@ -9,6 +9,7 @@ using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -56,7 +57,7 @@ namespace MoBi.Presentation.Tasks
    internal class When_asking_for_forbidden_names : concern_for_EditTaskForInteractionContainerSpecs
    {
       private InteractionContainer _interactionContainer;
-      private IMoleculeBuilder _parent;
+      private MoleculeBuilder _parent;
       private Parameter _parameter;
       private TransporterMoleculeContainer _transporterMolecule;
       private IEnumerable<string> _forbiidenNames;

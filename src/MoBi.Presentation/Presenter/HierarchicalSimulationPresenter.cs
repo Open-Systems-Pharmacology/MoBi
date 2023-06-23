@@ -73,14 +73,14 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_favoritesNode);
          _view.AddNode(_userDefinedNode);
 
-         var roots = new List<IObjectBaseDTO> {_simulationSettingsMapper.MapFrom(simulation.SimulationSettings) };
+         var roots = new List<ObjectBaseDTO> {_simulationSettingsMapper.MapFrom(simulation.Settings) };
          roots.AddRange(rootContainers());
          _view.Show(roots);
 
          ShowOutputSchema();
       }
 
-      private IEnumerable<IObjectBaseDTO> rootContainers()
+      private IEnumerable<ObjectBaseDTO> rootContainers()
       {
          return GetChildrenSorted(_simulation.Model.Root, x => true);
       }
@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Presenter
          Edit(objectToEdit.DowncastTo<IMoBiSimulation>());
       }
 
-      public override IReadOnlyList<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto, Func<IEntity, bool> predicate)
+      public override IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate)
       {
          if (string.Equals(dto.Id, AppConstants.SimulationSettingsId))
             return new[]
@@ -102,12 +102,12 @@ namespace MoBi.Presentation.Presenter
             };
 
          if (dto.Id.IsOneOf(AppConstants.OutputIntervalId, AppConstants.SolverSettingsId))
-            return new List<IObjectBaseDTO>();
+            return new List<ObjectBaseDTO>();
 
          return base.GetChildObjects(dto, predicate);
       }
 
-      public override void Select(IObjectBaseDTO objectBaseDTO)
+      public override void Select(ObjectBaseDTO objectBaseDTO)
       {
          if (string.Equals(objectBaseDTO.Id, AppConstants.OutputIntervalId))
             ShowOutputSchema();

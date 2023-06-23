@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Extensions;
 
 namespace MoBi.Core.Mappers
 {
-   public interface IReactionBuildingBlockToReactionDataTableMapper : IMapper<IMoBiReactionBuildingBlock, DataTable>
+   public interface IReactionBuildingBlockToReactionDataTableMapper : IMapper<IEnumerable<ReactionBuildingBlock>, DataTable>
    {
       
    }
@@ -39,12 +38,12 @@ namespace MoBi.Core.Mappers
          return dt;
       }
 
-      private void exportReactionBuildingBlock(IEnumerable<IReactionBuilder> reactionBuildingBlock, DataTable dt)
+      private void exportReactionBuildingBlock(IEnumerable<ReactionBuilder> reactionBuilders, DataTable dt)
       {
-         reactionBuildingBlock.Each(reactionBuilder => exportReactionBuilder(reactionBuilder, dt));
+         reactionBuilders.Each(reactionBuilder => exportReactionBuilder(reactionBuilder, dt));
       }
 
-      private void exportReactionBuilder(IReactionBuilder reactionBuilder, DataTable dt)
+      private void exportReactionBuilder(ReactionBuilder reactionBuilder, DataTable dt)
       {
          var stoichiometricString = getStoichiometricStringFromReactionBuilder(reactionBuilder);
          var kinetic = reactionBuilder.Formula.ToString();
@@ -55,16 +54,17 @@ namespace MoBi.Core.Mappers
          row[_description] = reactionBuilder.Description;
       }
 
-      private string getStoichiometricStringFromReactionBuilder(IReactionBuilder reactionBuilder)
+      private string getStoichiometricStringFromReactionBuilder(ReactionBuilder reactionBuilder)
       {
          return _stoichiometricStringCreator.CreateFrom(reactionBuilder.Educts, reactionBuilder.Products);
       }
 
-      public DataTable MapFrom(IMoBiReactionBuildingBlock input)
+      public DataTable MapFrom(IEnumerable<ReactionBuildingBlock> reactionBuildingBlocks)
       {
+         var reactionBuilders = reactionBuildingBlocks.SelectMany(x => x);
          var reactionDataTable = generateEmptyReactionDataTable();
 
-         exportReactionBuildingBlock(input, reactionDataTable);
+         exportReactionBuildingBlock(reactionBuilders, reactionDataTable);
          return reactionDataTable;
       }
    }

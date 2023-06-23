@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditObserverBuildingBlockPresenter : ISingleStartPresenter<IObserverBuildingBlock>, IListener<RemovedEvent>
+   public interface IEditObserverBuildingBlockPresenter : ISingleStartPresenter<ObserverBuildingBlock>, IListener<RemovedEvent>
    {
       void Select(ObserverBuilderDTO dto);
       void Select(ObserverType observerType);
    }
 
-   public class EditObserverBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditObserverBuildingBlockView, IEditObserverBuildingBlockPresenter, IObserverBuildingBlock, IObserverBuilder>, IEditObserverBuildingBlockPresenter, IListener<EntitySelectedEvent>
+   public class EditObserverBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditObserverBuildingBlockView, IEditObserverBuildingBlockPresenter, ObserverBuildingBlock, ObserverBuilder>, IEditObserverBuildingBlockPresenter, IListener<EntitySelectedEvent>
    {
-      private IObserverBuildingBlock _subject;
+      private ObserverBuildingBlock _subject;
       private readonly IAmountObserverBuilderListPresenter _amountObserverBuilderListPresenter;
       private readonly IContainerObserverBuilderListPresenter _containerObserverBuilderListPresenter;
       private IEditObserverBuilderPresenter _editObserverPresenter;
@@ -34,7 +34,7 @@ namespace MoBi.Presentation.Presenter
          IFormulaCachePresenter formulaCachePresenter, IMoBiContext context,
          IEditAmountObserverBuilderPresenter editAmountObserverPresenter,
          IEditContainerObserverBuilderPresenter editContainerObserverPresenter) :
-            base(view, formulaCachePresenter)
+         base(view, formulaCachePresenter)
       {
          _context = context;
          _editContainerObserverPresenter = editContainerObserverPresenter;
@@ -51,10 +51,10 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.ObserverBuildingBlockCaption(_subject.Name);
+         _view.Caption = AppConstants.Captions.ObserverBuildingBlockCaption(_subject.DisplayName);
       }
 
-      public override void Edit(IObserverBuildingBlock objectToEdit)
+      public override void Edit(ObserverBuildingBlock objectToEdit)
       {
          _subject = objectToEdit;
          _amountObserverBuilderListPresenter.Edit(objectToEdit);
@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Select(ObserverBuilderDTO dto)
       {
-         var selectedObserver = _context.Get<IObserverBuilder>(dto.Id);
+         var selectedObserver = _context.Get<ObserverBuilder>(dto.Id);
          _editObserverPresenter = setUpEditObserverPresenter(selectedObserver);
          _view.SetEditObserverBuilderView(_editObserverPresenter.View);
          _editObserverPresenter.BuildingBlock = _subject;
@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Presenter
          _editObserverPresenter.Edit(observer);
       }
 
-      private IObserverBuilder observerBuilderFrom(ObserverType observerType)
+      private ObserverBuilder observerBuilderFrom(ObserverType observerType)
       {
          switch (observerType)
          {
@@ -107,9 +107,9 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private IEditObserverBuilderPresenter setUpEditObserverPresenter(IObserverBuilder selectedObserver)
+      private IEditObserverBuilderPresenter setUpEditObserverPresenter(ObserverBuilder selectedObserver)
       {
-         if (selectedObserver.IsAnImplementationOf<IAmountObserverBuilder>())
+         if (selectedObserver.IsAnImplementationOf<AmountObserverBuilder>())
             return _editAmountObserverPresenter;
 
          return _editContainerObserverPresenter;
@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Presenter
       {
          if (_editObserverPresenter != null)
          {
-            if (eventToHandle.RemovedObjects.Select(objects => objects.Id).Contains(((IObserverBuilder) _editObserverPresenter.Subject).Id))
+            if (eventToHandle.RemovedObjects.Select(objects => objects.Id).Contains(((ObserverBuilder)_editObserverPresenter.Subject).Id))
             {
                Edit(_subject);
             }

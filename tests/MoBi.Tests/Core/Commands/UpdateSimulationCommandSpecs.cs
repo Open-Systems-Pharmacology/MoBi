@@ -16,18 +16,18 @@ namespace MoBi.Core.Commands
    {
       protected IMoBiSimulation _simulation;
       protected IModel _model;
-      protected IMoBiBuildConfiguration _buildConfiguration;
+      protected SimulationConfiguration _simulationConfiguration;
       private IBuildingBlock _buildingBlock;
-      protected IMoBiBuildConfiguration _oldBuildConfiguration;
+      protected SimulationConfiguration _oldBuildConfiguration;
 
       protected override void Context()
       {
          _simulation = A.Fake<IMoBiSimulation>();
          _model = A.Fake<IModel>();
-         _buildConfiguration = A.Fake<IMoBiBuildConfiguration>();
+         _simulationConfiguration = new SimulationConfiguration();
          _buildingBlock = A.Fake<IBuildingBlock>().WithName("toto");
-         _oldBuildConfiguration = _simulation.MoBiBuildConfiguration;
-         sut = new UpdateSimulationCommand(_simulation, _model, _buildConfiguration, _buildingBlock);
+         _oldBuildConfiguration = _simulation.Configuration;
+         sut = new UpdateSimulationCommand(_simulation, _model, _simulationConfiguration, _buildingBlock);
       }
    }
 
@@ -85,13 +85,13 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_call_update_for_simulation()
       {
-         A.CallTo(() => _simulation.Update(_buildConfiguration, _model)).MustHaveHappened();
+         A.CallTo(() => _simulation.Update(_simulationConfiguration, _model)).MustHaveHappened();
       }
 
       [Observation]
       public void should_serialize_old_values()
       {
-         A.CallTo(() => _context.Serialize(_simulation.MoBiBuildConfiguration)).MustHaveHappened();
+         A.CallTo(() => _context.Serialize(_simulation.Configuration)).MustHaveHappened();
          A.CallTo(() => _context.Serialize(_simulation.Model)).MustHaveHappened();
       }
 
@@ -111,7 +111,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_notify_the_simulation_unloaded_event_before_updating_the_simulation()
       {
-         _event.Simulation.MoBiBuildConfiguration.ShouldBeEqualTo(_oldBuildConfiguration);
+         _event.Simulation.Configuration.ShouldBeEqualTo(_oldBuildConfiguration);
       }
    }
 }

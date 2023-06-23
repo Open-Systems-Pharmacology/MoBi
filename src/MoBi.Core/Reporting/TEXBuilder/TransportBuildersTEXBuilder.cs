@@ -5,7 +5,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting.TEXBuilder
 {
-   class TransportBuildersTEXBuilder : OSPSuiteTeXBuilder<IEnumerable<ITransportBuilder>>
+   class TransportBuildersTEXBuilder : OSPSuiteTeXBuilder<IEnumerable<TransportBuilder>>
    {
       private readonly ITeXBuilderRepository _builderRepository;
 
@@ -14,7 +14,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          _builderRepository = builderRepository;
       }
 
-      public override void Build(IEnumerable<ITransportBuilder> transportBuilders, OSPSuiteTracker buildTracker)
+      public override void Build(IEnumerable<TransportBuilder> transportBuilders, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
          foreach (var transport in transportBuilders)

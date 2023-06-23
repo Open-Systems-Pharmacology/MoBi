@@ -38,8 +38,8 @@ namespace MoBi.Presentation
 
    public class When_editing_a_reaction_building_block_presenter : concern_for_EditReactionBuildingBlockPresenter
    {
-      private IMoBiReactionBuildingBlock _reactionBuildingBlock;
-      private IReactionBuilder _reaction;
+      private MoBiReactionBuildingBlock _reactionBuildingBlock;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {
@@ -86,7 +86,7 @@ namespace MoBi.Presentation
 
    public class When_the_edit_reaction_building_block_presenter_is_updating_the_list_of_user_defined_parameters : concern_for_EditReactionBuildingBlockPresenter
    {
-      private IMoBiReactionBuildingBlock _reactionBuildingBlock;
+      private MoBiReactionBuildingBlock _reactionBuildingBlock;
 
       protected override void Context()
       {
@@ -110,13 +110,13 @@ namespace MoBi.Presentation
    public class When_handling_the_removed_event_and_the_parent_building_block_is_the_one_edited : concern_for_EditReactionBuildingBlockPresenter
    {
       private IObjectBase _removedObject;
-      private IMoBiReactionBuildingBlock _parent;
+      private MoBiReactionBuildingBlock _parent;
 
       protected override void Context()
       {
          base.Context();
          _removedObject = new ReactionBuilder();
-         _parent = A.Fake<IMoBiReactionBuildingBlock>();
+         _parent = A.Fake<MoBiReactionBuildingBlock>();
          sut.Edit(_parent);
       }
 
@@ -136,14 +136,14 @@ namespace MoBi.Presentation
    public class When_handling_the_removed_event_and_the_parent_building_block_is_not_the_one_edited : concern_for_EditReactionBuildingBlockPresenter
    {
       private IObjectBase _removedObject;
-      private IMoBiReactionBuildingBlock _parent;
+      private MoBiReactionBuildingBlock _parent;
 
       protected override void Context()
       {
          base.Context();
          _removedObject = new ReactionBuilder();
-         _parent = A.Fake<IMoBiReactionBuildingBlock>();
-         sut.Edit(A.Fake<IMoBiReactionBuildingBlock>());
+         _parent = A.Fake<MoBiReactionBuildingBlock>();
+         sut.Edit(A.Fake<MoBiReactionBuildingBlock>());
       }
 
       protected override void Because()
@@ -161,8 +161,8 @@ namespace MoBi.Presentation
 
    public class When_the_edit_reaction_building_presenter_is_being_notifed_that_a_reaction_was_selected : concern_for_EditReactionBuildingBlockPresenter
    {
-      private IReactionBuilder _reaction;
-      private IMoBiReactionBuildingBlock _reactionBuildingBlock;
+      private ReactionBuilder _reaction;
+      private MoBiReactionBuildingBlock _reactionBuildingBlock;
 
       protected override void Context()
       {

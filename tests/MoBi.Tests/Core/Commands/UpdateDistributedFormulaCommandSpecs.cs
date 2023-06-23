@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
    {
       private IBuildingBlock _buildingBlock;
       protected IDistributedParameter _parameter;
-      protected IDistributionFormula _newFormula;
+      protected DistributionFormula _newFormula;
       private string _formulaType;
       protected IMoBiContext _context;
 

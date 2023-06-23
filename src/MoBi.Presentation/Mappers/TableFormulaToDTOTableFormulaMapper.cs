@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
 
       public TableFormulaBuilderDTO MapFrom(TableFormula tableFormula)
       {
-         var dto = Map<TableFormulaBuilderDTO>(tableFormula);
+         var dto = Map(new TableFormulaBuilderDTO(tableFormula));
          dto.Dimension = tableFormula.Dimension;
          dto.UseDerivedValues = tableFormula.UseDerivedValues;
          dto.XDisplayName = Constants.NameWithUnitFor(tableFormula.XName, tableFormula.XDisplayUnit);

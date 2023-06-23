@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Services;
+using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Serialization;
@@ -20,7 +21,7 @@ namespace MoBi.Core
 
    public class When_updating_a_project_afer_deserialization : concern_for_ProjectClassifiableUpdaterAfterDeserialization
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IClassifiableWrapper _classifiable1;
       private IClassifiableWrapper _classifiable2;
       private IMoBiSimulation _simulation;
@@ -30,7 +31,7 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _simulation = A.Fake<IMoBiSimulation>().WithId("1");
          _dataRepository = new DataRepository("2");
          _classifiable1 = A.Fake<IClassifiableWrapper>().WithId(_simulation.Id);

@@ -8,24 +8,24 @@ namespace MoBi.Core.Commands
 {
    public class EditReactionPartnerEvent
    {
-      public IReactionBuilder Reaction { get; set; }
-      public IReactionPartnerBuilder ReactionPartner { get; set; }
+      public ReactionBuilder Reaction { get; set; }
+      public ReactionPartnerBuilder ReactionPartner { get; set; }
 
-      public EditReactionPartnerEvent(IReactionBuilder reaction, IReactionPartnerBuilder partner)
+      public EditReactionPartnerEvent(ReactionBuilder reaction, ReactionPartnerBuilder partner)
       {
          Reaction = reaction;
          ReactionPartner = partner;
       }
    }
 
-   public abstract class EditReactionPartnerCommand : BuildingBlockChangeCommandBase<IMoBiReactionBuildingBlock>
+   public abstract class EditReactionPartnerCommand : BuildingBlockChangeCommandBase<MoBiReactionBuildingBlock>
    {
-      protected IReactionBuilder _reaction;
-      protected IReactionPartnerBuilder _reactionPartner;
+      protected ReactionBuilder _reaction;
+      protected ReactionPartnerBuilder _reactionPartner;
       protected readonly string _reactionId;
       protected readonly bool _isEduct;
 
-      protected EditReactionPartnerCommand(IReactionBuilder reaction, IReactionPartnerBuilder reactionPartner, IMoBiReactionBuildingBlock buildingBlock) : base(buildingBlock)
+      protected EditReactionPartnerCommand(ReactionBuilder reaction, ReactionPartnerBuilder reactionPartner, MoBiReactionBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _reaction = reaction;
          _reactionId = reaction.Id;
@@ -38,10 +38,10 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _reaction = context.Get<IReactionBuilder>(_reactionId);
+         _reaction = context.Get<ReactionBuilder>(_reactionId);
       }
 
-      protected IReactionPartnerBuilder RetrievePartner(string moleculeName)
+      protected ReactionPartnerBuilder RetrievePartner(string moleculeName)
       {
          return _isEduct ? _reaction.EductBy(moleculeName) : _reaction.ProductBy(moleculeName);
       }

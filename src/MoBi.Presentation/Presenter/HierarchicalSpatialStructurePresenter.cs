@@ -18,7 +18,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<ISpatialStructure>,
+   public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<SpatialStructure>,
       IHierarchicalStructurePresenter,
       IListener<AddedEvent>, 
       IListener<RemovedEvent>, 
@@ -27,27 +27,30 @@ namespace MoBi.Presentation.Presenter
       void Select(IEntity entity);
    }
 
-   public class HierarchicalSpatialStructurePresenter : HierarchicalStructurePresenter,
-      IHierarchicalSpatialStructurePresenter
+   public class HierarchicalSpatialStructurePresenter : HierarchicalStructurePresenter, IHierarchicalSpatialStructurePresenter
    {
-      private ISpatialStructure _spatialStructure;
+      private SpatialStructure _spatialStructure;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
 
-      public HierarchicalSpatialStructurePresenter(IHierarchicalStructureView view, IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, IViewItemContextMenuFactory contextMenuFactory, ITreeNodeFactory treeNodeFactory)
+      public HierarchicalSpatialStructurePresenter(
+         IHierarchicalStructureView view, 
+         IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, 
+         IViewItemContextMenuFactory contextMenuFactory, 
+         ITreeNodeFactory treeNodeFactory)
          : base(view, context, objectBaseMapper, treeNodeFactory)
       {
          _contextMenuFactory = contextMenuFactory;
       }
 
-      public void InitializeWith(ISpatialStructure spatialStructure)
+      public void InitializeWith(SpatialStructure spatialStructure)
       {
          _spatialStructure = spatialStructure;
 
          _view.AddNode(_favoritesNode);
          _view.AddNode(_userDefinedNode);
 
-         var roots = new List<IObjectBaseDTO> {_objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties)};
+         var roots = new List<ObjectBaseDTO> {_objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties)};
          spatialStructure.TopContainers.Each(x => roots.Add(_objectBaseMapper.MapFrom(x)));
 
          var neighborhood = _objectBaseMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
@@ -58,16 +61,16 @@ namespace MoBi.Presentation.Presenter
          _view.Show(roots);
       }
 
-      public void Edit(ISpatialStructure objectToEdit)
+      public void Edit(SpatialStructure spatialStructure)
       {
-         InitializeWith(objectToEdit);
+         InitializeWith(spatialStructure);
       }
 
       public object Subject => _spatialStructure;
 
       public void Edit(object objectToEdit)
       {
-         Edit(objectToEdit.DowncastTo<ISpatialStructure>());
+         Edit(objectToEdit.DowncastTo<SpatialStructure>());
       }
 
       protected override void RaiseFavoritesSelectedEvent()
@@ -109,11 +112,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(RemovedEvent eventToHandle)
       {
          if (_spatialStructure == null) return;
-
-         foreach (var objectBase in eventToHandle.RemovedObjects.OfType<IEntity>())
-         {
-            _view.Remove(_objectBaseMapper.MapFrom(objectBase));
-         }
+         eventToHandle.RemovedObjects.OfType<IEntity>().Each(_view.Remove);
       }
 
       public void Select(IEntity entity)
@@ -123,10 +122,15 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         if (eventToHandle.Sender == this) return;
+         if (eventToHandle.Sender == this) 
+            return;
+
          var entity = eventToHandle.ObjectBase as IEntity;
-         if (entity == null || _spatialStructure == null) return;
-         if (!_spatialStructure.TopContainers.Contains(entity.RootContainer)) return;
+         if (entity == null || _spatialStructure == null) 
+            return;
+
+         if (!_spatialStructure.TopContainers.Contains(entity.RootContainer)) 
+            return;
 
          var entityToSelect = entity.IsAnImplementationOf<IParameter>() ? entity.ParentContainer : entity;
          _view.Select(entityToSelect.Id);

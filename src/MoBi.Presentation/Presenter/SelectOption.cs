@@ -27,7 +27,6 @@ namespace MoBi.Presentation.Presenter
       public static SelectOption RefreshAll = new SelectOption(AppConstants.Captions.RefreshAll, ApplicationIcons.RefreshAll);
       public static SelectOption RefreshSelected = new SelectOption(AppConstants.Captions.RefreshSelected, ApplicationIcons.RefreshSelected);
 
-      public static SelectOption DeleteSourceNotDefined = new SelectOption(AppConstants.Captions.DeleteSourceNotDefined, ApplicationIcons.DeleteSourceNotDefined);
       public static SelectOption DeleteSelected = new SelectOption(AppConstants.Captions.DeleteSelected, ApplicationIcons.DeleteSelected);
    }
 }

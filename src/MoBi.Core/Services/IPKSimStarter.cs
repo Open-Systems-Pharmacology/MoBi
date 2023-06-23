@@ -1,8 +1,15 @@
-﻿namespace MoBi.Core.Services
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using System.Collections.Generic;
+
+namespace MoBi.Core.Services
 {
    public interface IPKSimStarter
    {
       void StartPopulationSimulationWithSimulationFile(string simulationFilePath);
       void StartWithWorkingJournalFile(string journalFilePath);
+      IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
+      IBuildingBlock CreateIndividual();
+      IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
    }
 }

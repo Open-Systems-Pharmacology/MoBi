@@ -12,11 +12,11 @@ namespace MoBi.Core.Commands
    public class UpdateDistributedFormulaCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
       private IDistributedParameter _parameter;
-      private IDistributionFormula _newFormula;
-      private readonly IDistributionFormula _oldFormula;
+      private DistributionFormula _newFormula;
+      private readonly DistributionFormula _oldFormula;
       private readonly string _parameterId;
 
-      public UpdateDistributedFormulaCommand(IDistributedParameter parameter, IDistributionFormula newFormula, string formulaType, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public UpdateDistributedFormulaCommand(IDistributedParameter parameter, DistributionFormula newFormula, string formulaType, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _parameter = parameter;
          _parameterId = parameter.Id;

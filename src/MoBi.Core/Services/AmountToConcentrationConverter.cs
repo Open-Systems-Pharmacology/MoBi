@@ -15,27 +15,27 @@ namespace MoBi.Core.Services
 {
    public interface IAmountToConcentrationConverter
    {
-      void Convert(IReactionBuilder reaction, IFormulaCache formulaCache);
-      void Convert(IReactionBuildingBlock reactionBuildingBlock);
-      void Convert(IMoleculeBuilder moleculeBuilder, IFormulaCache formulaCache);
-      void Convert(IMoleculeBuildingBlock moleculeBuildingBlock);
-      void Convert(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock);
-      void Convert(IMoleculeStartValue moleculeStartValue, IFormulaCache formulaCache);
+      void Convert(ReactionBuilder reaction, IFormulaCache formulaCache);
+      void Convert(ReactionBuildingBlock reactionBuildingBlock);
+      void Convert(MoleculeBuilder moleculeBuilder, IFormulaCache formulaCache);
+      void Convert(MoleculeBuildingBlock moleculeBuildingBlock);
+      void Convert(InitialConditionsBuildingBlock initialConditionsBuildingBlock);
+      void Convert(InitialCondition initialCondition, IFormulaCache formulaCache);
       void Convert(object objectToConvert);
    }
 
    public class AmountToConcentrationConverter : IAmountToConcentrationConverter,
-      IVisitor<IMoleculeBuildingBlock>,
-      IVisitor<IReactionBuildingBlock>,
+      IVisitor<MoleculeBuildingBlock>,
+      IVisitor<ReactionBuildingBlock>,
       IVisitor<SimulationTransfer>,
       IVisitor<IModelCoreSimulation>,
-      IVisitor<IBuildConfiguration>,
-      IVisitor<IMoleculeStartValuesBuildingBlock>,
-      IVisitor<IMoleculeBuilder>,
-      IVisitor<IReactionBuilder>
+      IVisitor<SimulationConfiguration>,
+      IVisitor<InitialConditionsBuildingBlock>,
+      IVisitor<MoleculeBuilder>,
+      IVisitor<ReactionBuilder>
    {
       private readonly IReactionDimensionRetriever _reactionDimensionRetriever;
-      private readonly IAmoutToConcentrationFormulaMapper _amoutToConcentrationFormulaMapper;
+      private readonly IAmoutToConcentrationFormulaMapper _amountToConcentrationFormulaMapper;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IFormulaTask _formulaTask;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
@@ -45,12 +45,12 @@ namespace MoBi.Core.Services
       private readonly IDimension _concentrationPerTimeDimension;
 
       public AmountToConcentrationConverter(IReactionDimensionRetriever reactionDimensionRetriever,
-         IDimensionFactory dimensionFactory, IAmoutToConcentrationFormulaMapper amoutToConcentrationFormulaMapper,
+         IDimensionFactory dimensionFactory, IAmoutToConcentrationFormulaMapper amountToConcentrationFormulaMapper,
          IObjectBaseFactory objectBaseFactory, IFormulaTask formulaTask, IDisplayUnitRetriever displayUnitRetriever, 
          IObjectTypeResolver objectTypeResolver, IFormulaFactory formulaFactory)
       {
          _reactionDimensionRetriever = reactionDimensionRetriever;
-         _amoutToConcentrationFormulaMapper = amoutToConcentrationFormulaMapper;
+         _amountToConcentrationFormulaMapper = amountToConcentrationFormulaMapper;
          _objectBaseFactory = objectBaseFactory;
          _formulaTask = formulaTask;
          _displayUnitRetriever = displayUnitRetriever;
@@ -60,7 +60,7 @@ namespace MoBi.Core.Services
          _concentrationPerTimeDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME);
       }
 
-      public void Convert(IReactionBuilder reaction, IFormulaCache formulaCache)
+      public void Convert(ReactionBuilder reaction, IFormulaCache formulaCache)
       {
          if (!conversionRequired(reaction))
             return;
@@ -69,28 +69,28 @@ namespace MoBi.Core.Services
          convertExplicitFormula(reaction.Formula, _concentrationPerTimeDimension);
       }
 
-      public void Convert(IMoleculeStartValue moleculeStartValue, IFormulaCache formulaCache)
+      public void Convert(InitialCondition initialCondition, IFormulaCache formulaCache)
       {
-         if (!conversionRequired(moleculeStartValue))
+         if (!conversionRequired(initialCondition))
             return;
 
-         moleculeStartValue.Dimension = _concentrationDimension;
-         moleculeStartValue.DisplayUnit = _displayUnitRetriever.PreferredUnitFor(moleculeStartValue);
+         initialCondition.Dimension = _concentrationDimension;
+         initialCondition.DisplayUnit = _displayUnitRetriever.PreferredUnitFor(initialCondition);
 
-         if (moleculeStartValue.Formula.IsExplicit())
+         if (initialCondition.Formula.IsExplicit())
          {
-            convertExplicitFormula(moleculeStartValue.Formula, _concentrationDimension);
+            convertExplicitFormula(initialCondition.Formula, _concentrationDimension);
             return;
          }
 
-         var startValue = moleculeStartValue.StartValue.GetValueOrDefault(0);
-         if (startValue == 0)
+         var initialConditionValue = initialCondition.Value.GetValueOrDefault(0);
+         if (initialConditionValue == 0)
             return;
 
-         moleculeStartValue.Formula = createConcentrationFormulaFromConstantValue(startValue, moleculeStartValue.Path.ToPathString(), formulaCache);
+         initialCondition.Formula = createConcentrationFormulaFromConstantValue(initialConditionValue, initialCondition.Path.ToPathString(), formulaCache);
       }
 
-      public void Convert(IMoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
+      public void Convert(MoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
       {
          if (!conversionRequired(moleculeBuilder))
             return;
@@ -98,7 +98,7 @@ namespace MoBi.Core.Services
          moleculeBuilder.Dimension = _concentrationDimension;
          moleculeBuilder.DisplayUnit = _displayUnitRetriever.PreferredUnitFor(moleculeBuilder);
 
-         var defaultStartValue = moleculeBuilder.GetDefaultMoleculeStartValue();
+         var defaultStartValue = moleculeBuilder.GetDefaultInitialCondition();
 
          if (!defaultStartValue.HasValue)
          {
@@ -140,9 +140,9 @@ namespace MoBi.Core.Services
             return;
 
          explicitFormula.Dimension = targetDimension;
-         if (_amoutToConcentrationFormulaMapper.HasMappingFor(explicitFormula))
+         if (_amountToConcentrationFormulaMapper.HasMappingFor(explicitFormula))
          {
-            explicitFormula.FormulaString = _amoutToConcentrationFormulaMapper.MappedFormulaFor(explicitFormula);
+            explicitFormula.FormulaString = _amountToConcentrationFormulaMapper.MappedFormulaFor(explicitFormula);
             return;
          }
 
@@ -150,19 +150,19 @@ namespace MoBi.Core.Services
          explicitFormula.FormulaString = string.Format("({0})/{1}", explicitFormula.FormulaString, volumeAlias);
       }
 
-      public void Convert(IReactionBuildingBlock reactionBuildingBlock)
+      public void Convert(ReactionBuildingBlock reactionBuildingBlock)
       {
          reactionBuildingBlock.Each(r => Convert(r, reactionBuildingBlock.FormulaCache));
       }
 
-      public void Convert(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void Convert(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          moleculeBuildingBlock.Each(m => Convert(m, moleculeBuildingBlock.FormulaCache));
       }
 
-      public void Convert(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
+      public void Convert(InitialConditionsBuildingBlock initialConditionsBuildingBlock)
       {
-         moleculeStartValuesBuildingBlock.Each(msv => Convert(msv, moleculeStartValuesBuildingBlock.FormulaCache));
+         initialConditionsBuildingBlock.Each(msv => Convert(msv, initialConditionsBuildingBlock.FormulaCache));
       }
 
       public void Convert(object objectToConvert)
@@ -180,17 +180,17 @@ namespace MoBi.Core.Services
          }
       }
 
-      private bool conversionRequired(IMoleculeStartValue moleculeStartValue)
+      private bool conversionRequired(InitialCondition initialCondition)
       {
-         return conversionRequired(moleculeStartValue, Constants.Dimension.MOLAR_AMOUNT);
+         return conversionRequired(initialCondition, Constants.Dimension.MOLAR_AMOUNT);
       }
 
-      private bool conversionRequired(IMoleculeBuilder moleculeBuilder)
+      private bool conversionRequired(MoleculeBuilder moleculeBuilder)
       {
          return conversionRequired(moleculeBuilder, Constants.Dimension.MOLAR_AMOUNT);
       }
 
-      private bool conversionRequired(IReactionBuilder reaction)
+      private bool conversionRequired(ReactionBuilder reaction)
       {
          return conversionRequired(reaction, Constants.Dimension.AMOUNT_PER_TIME);
       }
@@ -204,12 +204,12 @@ namespace MoBi.Core.Services
                 && string.Equals(withDimension.Dimension.Name, amountDimension);
       }
 
-      public void Visit(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void Visit(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          Convert(moleculeBuildingBlock);
       }
 
-      public void Visit(IReactionBuildingBlock reactionBuildingBlock)
+      public void Visit(ReactionBuildingBlock reactionBuildingBlock)
       {
          Convert(reactionBuildingBlock);
       }
@@ -221,27 +221,27 @@ namespace MoBi.Core.Services
 
       public void Visit(IModelCoreSimulation simulation)
       {
-         Visit(simulation.BuildConfiguration);
+         Visit(simulation.Configuration);
       }
 
-      public void Visit(IBuildConfiguration buildConfiguration)
+      public void Visit(SimulationConfiguration simulationConfiguration)
       {
-         Visit(buildConfiguration.Molecules);
-         Visit(buildConfiguration.Reactions);
-         Visit(buildConfiguration.MoleculeStartValues);
+         simulationConfiguration.All<MoleculeBuildingBlock>().Each(Visit);
+         simulationConfiguration.All<ReactionBuildingBlock>().Each(Visit);
+         simulationConfiguration.All<InitialConditionsBuildingBlock>().Each(Visit);
       }
 
-      public void Visit(IMoleculeStartValuesBuildingBlock moleculeStartValuesBuildingBlock)
+      public void Visit(InitialConditionsBuildingBlock initialConditionsBuildingBlock)
       {
-         Convert(moleculeStartValuesBuildingBlock);
+         Convert(initialConditionsBuildingBlock);
       }
 
-      public void Visit(IMoleculeBuilder moleculeBuilder)
+      public void Visit(MoleculeBuilder moleculeBuilder)
       {
          Convert(moleculeBuilder, new FormulaCache());
       }
 
-      public void Visit(IReactionBuilder reactionBuilder)
+      public void Visit(ReactionBuilder reactionBuilder)
       {
          Convert(reactionBuilder, new FormulaCache());
       }

@@ -14,28 +14,28 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditEventGroupPresenter : IEditPresenterWithParameters<IEventGroupBuilder>, ICanEditPropertiesPresenter, IPresenterWithFormulaCache
+   public interface IEditEventGroupPresenter : IEditPresenterWithParameters<EventGroupBuilder>, ICanEditPropertiesPresenter, IPresenterWithFormulaCache
    {
    }
 
-   internal class EditEventGroupPresenter : AbstractEntityEditPresenter<IEditEventGroupView, IEditEventGroupPresenter, IEventGroupBuilder>, IEditEventGroupPresenter
+   internal class EditEventGroupPresenter : AbstractEntityEditPresenter<IEditEventGroupView, IEditEventGroupPresenter, EventGroupBuilder>, IEditEventGroupPresenter
    {
-      private IEventGroupBuilder _eventGroupBuilder;
-      private readonly IEditTaskFor<IEventGroupBuilder> _editTask;
+      private EventGroupBuilder _eventGroupBuilder;
+      private readonly IEditTaskFor<EventGroupBuilder> _editTask;
       private readonly IEventGroupBuilderToEventGroupBuilderDTOMapper _eventGroupBuilderDTOMapper;
       private readonly IMoBiContext _context;
-      private readonly IDescriptorConditionListPresenter<IEventGroupBuilder> _descriptorConditionListPresenter;
+      private readonly IDescriptorConditionListPresenter<EventGroupBuilder> _descriptorConditionListPresenter;
       private readonly ITagsPresenter _tagsPresenter;
       private readonly IEditParametersInContainerPresenter _parametersInContainerPresenter;
       private IBuildingBlock _buildingBlock;
 
       public EditEventGroupPresenter(
          IEditEventGroupView view, 
-         IEditTaskFor<IEventGroupBuilder> editTask, 
+         IEditTaskFor<EventGroupBuilder> editTask, 
          IEditParametersInContainerPresenter parametersInContainerPresenter,
          IEventGroupBuilderToEventGroupBuilderDTOMapper eventGroupBuilderDTOMapper, 
          IMoBiContext context,
-         IDescriptorConditionListPresenter<IEventGroupBuilder> descriptorConditionListPresenter,
+         IDescriptorConditionListPresenter<EventGroupBuilder> descriptorConditionListPresenter,
          ITagsPresenter tagsPresenter)
          : base(view)
       {
@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_parametersInContainerPresenter, _descriptorConditionListPresenter, _tagsPresenter);
       }
 
-      public override void Edit(IEventGroupBuilder eventGroupBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(EventGroupBuilder eventGroupBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventGroupBuilder = eventGroupBuilder;
          _parametersInContainerPresenter.Edit(eventGroupBuilder);

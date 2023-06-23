@@ -9,34 +9,43 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface ISelectReferenceAtTransportPresenter : ISelectReferencePresenter
    {
-      void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, ITransportBuilder transportBuilder);
+      void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, TransportBuilder transportBuilder);
    }
 
    internal class SelectReferenceAtTransportPresenter : SelectReferencePresenterBase, ISelectReferenceAtTransportPresenter
    {
       private readonly IObjectPathCreatorAtTransport _objectPathCreatorAtTransport;
       private readonly ITransportMoleculeContainerToObjectBaseDTOMapper _transporterMoleculeContainerMapper;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public SelectReferenceAtTransportPresenter(ISelectReferenceView view, IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
-         IMoBiContext context,IUserSettings userSettings, IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
-         IObjectPathCreatorAtTransport objectPathCreatorAtTransport, ITransportMoleculeContainerToObjectBaseDTOMapper transporterMoleculeContainerMapper)
+      public SelectReferenceAtTransportPresenter(ISelectReferenceView view, 
+         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
+         IMoBiContext context,
+         IUserSettings userSettings, 
+         IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
+         IObjectPathCreatorAtTransport objectPathCreatorAtTransport, 
+         ITransportMoleculeContainerToObjectBaseDTOMapper transporterMoleculeContainerMapper,
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreatorAtTransport, Localisations.NeighborhoodsOnly)
+            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreatorAtTransport, Localisations.NeighborhoodsOnly, buildingBlockRepository)
       {
          _objectPathCreatorAtTransport = objectPathCreatorAtTransport;
          _transporterMoleculeContainerMapper = transporterMoleculeContainerMapper;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
 
-      public void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, ITransportBuilder transportBuilder)
+      public void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, TransportBuilder transportBuilder)
       {
-         //Nessecary to create correct paths
+         //Necessary to create correct paths
          _objectPathCreatorAtTransport.Transport = transportBuilder; 
          base.Init(refObjectBase, entities, transportBuilder);
       }
@@ -47,11 +56,11 @@ namespace MoBi.Presentation.Presenter
          AddSpatialStructures();
       }
 
-      protected override void AddChildrenFromDummyMolecule(List<IObjectBaseDTO> children, DummyMoleculeContainerDTO dummyMolecule)
+      protected override void AddChildrenFromDummyMolecule(List<ObjectBaseDTO> children, DummyMoleculeContainerDTO dummyMolecule)
       {
          IEnumerable<TransporterMoleculeContainer> allTransporterMoleculeContainers = new List<TransporterMoleculeContainer>();
-         IMoleculeBuildingBlock editedMoleculeBuildingBlock = null;
-         var allMoleculeBuildingBlocks = editedMoleculeBuildingBlock!=null ? new[] {editedMoleculeBuildingBlock} : _context.CurrentProject.MoleculeBlockCollection;
+         MoleculeBuildingBlock editedMoleculeBuildingBlock = null;
+         var allMoleculeBuildingBlocks = editedMoleculeBuildingBlock!=null ? new[] {editedMoleculeBuildingBlock} : _buildingBlockRepository.MoleculeBlockCollection;
 
          foreach (var moleculeBuildingBlock in allMoleculeBuildingBlocks)
          {

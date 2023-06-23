@@ -16,10 +16,10 @@ namespace MoBi.Presentation.Mapper
 {
    public abstract class concern_for_EventGroupBuilderToObjectBaseSummaryDTOMapper : ContextSpecification<EventGroupBuilderToObjectBaseSummaryDTOMapper>
    {
-      protected IEventGroupBuilder _builder;
+      protected EventGroupBuilder _builder;
       protected override void Context()
       {
-         _builder = A.Fake<IEventGroupBuilder>();
+         _builder = A.Fake<EventGroupBuilder>();
          sut = new EventGroupBuilderToObjectBaseSummaryDTOMapper(new ObjectTypeResolver());
       }
    }

@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IChartTemplateManagerPresenter _chartTemplateManagerPresenter;
       private readonly ICloneManager _cloneManager;
       private readonly IChartTemplatingTask _chartTemplatingTask;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
 
       public bool IsLatched { get; set; }
 
@@ -48,14 +48,14 @@ namespace MoBi.Presentation.Presenter
          _view.Caption = _chartTemplateManagerPresenter.BaseView.Caption;
       }
 
-      public void Edit(ISimulationSettings simulationSettings)
+      public void Edit(SimulationSettings simulationSettings)
       {
          rebind(simulationSettings);
          _view.SetSubView(_chartTemplateManagerPresenter.BaseView);
          _simulationSettings = simulationSettings;
       }
 
-      private void rebind(ISimulationSettings simulationSettings)
+      private void rebind(SimulationSettings simulationSettings)
       {
          var chartTemplatesToEdit = simulationSettings.ChartTemplates.Select(x =>
          {

@@ -40,9 +40,9 @@ namespace MoBi.Presentation.Mappers
          return nodes;
       }
 
-      private ITreeNode mapFrom(ObjectBaseDTO input)
+      private ITreeNode mapFrom(ObjectBaseDTO objectBaseDTO)
       {
-         return new EventNode(input).WithIcon(ApplicationIcons.IconByName(input.Icon));
+         return new EventNode(objectBaseDTO).WithIcon(objectBaseDTO.Icon);
       }
    }
 }

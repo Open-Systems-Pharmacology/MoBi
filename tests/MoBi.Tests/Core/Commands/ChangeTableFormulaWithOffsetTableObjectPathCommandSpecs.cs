@@ -13,12 +13,12 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_ChangeTableFormulaWithOffsetTableObjectPathCommand : ContextSpecification<ChangeTableFormulaWithOffsetTableObjectPathCommand>
    {
       protected TableFormulaWithOffset _tableFormulaWithOffset;
-      private IFormulaUsablePath _oldPath;
+      private FormulaUsablePath _oldPath;
       protected IMoBiContext _context;
 
       protected override void Context()
       {
-         _oldPath = A.Fake<IFormulaUsablePath>();
+         _oldPath = A.Fake<FormulaUsablePath>();
          _oldPath.Alias = AppConstants.TABLE_ALIAS;
          _tableFormulaWithOffset = new TableFormulaWithOffset();
          _tableFormulaWithOffset.AddTableObjectPath(_oldPath);

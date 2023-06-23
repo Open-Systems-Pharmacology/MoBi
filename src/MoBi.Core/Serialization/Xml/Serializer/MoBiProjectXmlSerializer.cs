@@ -11,12 +11,13 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       {
          base.PerformMapping();
          Map(x => x.ReactionDimensionMode);
+         Map(x => x.SimulationSettings);
          MapEnumerable(x => x.AllObservedData, x => x.AddObservedData);
       }
 
       public override MoBiProject CreateObject(XElement element, SerializationContext serializationContext)
       {
-         return IoC.Resolve<IMoBiProject>() as MoBiProject;
+         return serializationContext.Resolve<MoBiProject>();
       }
    }
 }

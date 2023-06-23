@@ -1,21 +1,26 @@
 using System;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Events;
+using System.Collections.Generic;
 using FakeItEasy;
+using FluentNHibernate.Utils;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.SBML;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
+using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Events;
 using IProjectTask = MoBi.Presentation.Tasks.IProjectTask;
 
 namespace MoBi.Presentation
@@ -26,12 +31,11 @@ namespace MoBi.Presentation
       protected ISerializationTask _serializationTask;
       protected IMoBiContext _context;
       protected IDialogCreator _dialogCreator;
-      private ICloneManagerForSimulation _cloneManager;
-      private INameCorrector _nameCorrector;
+      protected ICloneManagerForSimulation _cloneManager;
+      protected INameCorrector _nameCorrector;
       protected IMRUProvider _mruProvider;
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       private IHeavyWorkManager _heavyWorkManager;
-      protected ISimulationSettingsFactory _simulationSettingsFactory;
       private ISbmlTask _sbmlTask;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
 
@@ -46,24 +50,131 @@ namespace MoBi.Presentation
          _cloneManager = A.Fake<ICloneManagerForSimulation>();
          _mruProvider = A.Fake<IMRUProvider>();
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
-         _simulationSettingsFactory = A.Fake<ISimulationSettingsFactory>();
          _sbmlTask = A.Fake<ISbmlTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
-         sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _spatialStructureFactory, _heavyWorkManager, _simulationSettingsFactory, 
-            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _reactionBuildingBlockFactory);
+         sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _heavyWorkManager,
+            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask);
+      }
+   }
+
+   internal class When_loading_a_simulation : concern_for_ProjectTask
+   {
+      private MoBiProject _project;
+      private SimulationTransfer _simulationTransfer;
+      private IMoBiSimulation _simulation;
+      private PassiveTransportBuildingBlock _newBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project = DomainHelperForSpecs.NewProject();
+         _simulationTransfer = A.Fake<SimulationTransfer>();
+         _simulationTransfer.Favorites = new Favorites {"Fav1", "Fav2"};
+         _simulation = A.Fake<IMoBiSimulation>();
+         _simulationTransfer.Simulation = _simulation;
+         _newBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();
+
+         var simulationConfiguration = new SimulationConfiguration();
+         A.CallTo(() => _simulation.Configuration).Returns(simulationConfiguration);
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSimulation, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, null, null)).Returns("File");
+         A.CallTo(() => _serializationTask.Load<SimulationTransfer>(A<string>._, A<bool>._)).Returns(_simulationTransfer);
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
+         A.CallTo(() => _nameCorrector.CorrectName(A<IEnumerable<PassiveTransportBuildingBlock>>._, _newBuildingBlock)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.LoadSimulationIntoProject();
+      }
+
+      [Observation]
+      public void should_publish_load_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<ProjectLoadedEvent>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_publish_new_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<ProjectCreatedEvent>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_deserialize_the_file()
+      {
+         A.CallTo(() => _serializationTask.Load<SimulationTransfer>("File", A<bool>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_favorites_in_projects()
+      {
+         _simulationTransfer.Favorites.Each(favorite => _project.Favorites.ShouldContain(favorite));
+      }
+   }
+
+   public class When_loading_a_simulation_defined_in_concentration : concern_for_ProjectTask
+   {
+      private SimulationTransfer _simulationTransfer;
+      private string _fileName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = "filename";
+         _simulationTransfer = A.Fake<SimulationTransfer>();
+         _simulationTransfer.Simulation = A.Fake<IMoBiSimulation>().WithName("Sim");
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
+         A.CallTo(() => _serializationTask.Load<SimulationTransfer>(_fileName, false))
+            .Throws(() => new CannotConvertConcentrationToAmountException("object"))
+            .Once()
+            .Then.Returns(_simulationTransfer);
+      }
+
+      protected override void Because()
+      {
+         sut.LoadSimulationIntoProject();
+      }
+
+      [Observation]
+      public void should_be_able_to_load_the_simulation()
+      {
+         _context.CurrentProject.ReactionDimensionMode.ShouldBeEqualTo(ReactionDimensionMode.ConcentrationBased);
+      }
+   }
+
+   public class When_starting_the_application_with_an_existing_working_journal : concern_for_ProjectTask
+   {
+      private string _journalFilePath;
+
+      protected override void Context()
+      {
+         base.Context();
+         _journalFilePath = "XX.sbj";
+      }
+
+      protected override void Because()
+      {
+         sut.StartWithJournal(_journalFilePath);
+      }
+
+      [Observation]
+      public void should_create_a_new_amount_base_reaction_project_and_load_the_journal()
+      {
+         A.CallTo(() => _serializationTask.NewProject()).MustHaveHappened();
+         A.CallTo(() => _serializationTask.LoadJournal(_journalFilePath, null, true)).MustHaveHappened();
       }
    }
 
    public class When_told_to_save_and_no_filename_is_given : concern_for_ProjectTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          A.CallTo(
-            () => _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, _project.Name, null))
+               () => _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, _project.Name, null))
             .Returns("Name");
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
@@ -77,21 +188,21 @@ namespace MoBi.Presentation
       public void should_ask_for_filename()
       {
          A.CallTo(
-            () =>
-               _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, string.Empty, null))
+               () =>
+                  _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
+                     AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, string.Empty, null))
             .MustHaveHappened();
       }
    }
 
    public class When_told_to_save : concern_for_ProjectTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.FilePath = "FilePath";
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
@@ -102,7 +213,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_tell_serialisation_tasks_to_save_project()
+      public void should_tell_serialization_tasks_to_save_project()
       {
          A.CallTo(() => _serializationTask.SaveProject()).MustHaveHappened();
       }
@@ -122,15 +233,15 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         var project = A.Fake<IMoBiProject>();
+         var project = A.Fake<MoBiProject>();
          _fileName = "file";
          A.CallTo(() => project.Name).Returns(_fileName);
          A.CallTo(() => _context.CurrentProject).Returns(project);
          A.CallTo(
-            () =>
-               _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER,
-                  Constants.DirectoryKey.PROJECT, _fileName, null))
+               () =>
+                  _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
+                     AppConstants.Filter.MOBI_PROJECT_FILE_FILTER,
+                     Constants.DirectoryKey.PROJECT, _fileName, null))
             .Returns(_fileName);
       }
 
@@ -138,7 +249,6 @@ namespace MoBi.Presentation
       {
          _result = sut.SaveAs();
       }
-
 
       [Observation]
       public void should_return_true()
@@ -153,7 +263,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_told_to_save_as_but_was_canceld : concern_for_ProjectTask
+   public class When_told_to_save_as_but_was_canceled : concern_for_ProjectTask
    {
       private bool _result;
       private string _fileName;
@@ -161,15 +271,15 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         var project = A.Fake<IMoBiProject>();
+         var project = A.Fake<MoBiProject>();
          _fileName = "file";
          A.CallTo(() => project.Name).Returns(_fileName);
          A.CallTo(() => _context.CurrentProject).Returns(project);
          A.CallTo(
-            () =>
-               _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER,
-                  Constants.DirectoryKey.PROJECT, _fileName, null))
+               () =>
+                  _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
+                     AppConstants.Filter.MOBI_PROJECT_FILE_FILTER,
+                     Constants.DirectoryKey.PROJECT, _fileName, null))
             .Returns(String.Empty);
       }
 
@@ -203,39 +313,36 @@ namespace MoBi.Presentation
 
    public class When_told_to_create_new_project : concern_for_ProjectTask
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private IWithIdRepository _objectBaseRepository;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
-      private IMoBiReactionBuildingBlock _moBiReactionBuildingBlock;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoBiReactionBuildingBlock _moBiReactionBuildingBlock;
+      private MoBiSpatialStructure _spatialStructure;
       private IContainer _topContainer;
-      private IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
-      private IObserverBuildingBlock _observerBuildingBlock;
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
-      private ISimulationSettings _simulationSettings;
+      private PassiveTransportBuildingBlock _passiveTransportBuildingBlock;
+      private ObserverBuildingBlock _observerBuildingBlock;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
-         _spatialStructure = A.Fake<IMoBiSpatialStructure>();
-         _simulationSettings = A.Fake<ISimulationSettings>();
-         _moBiReactionBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _spatialStructure = A.Fake<MoBiSpatialStructure>();
+         _moBiReactionBuildingBlock = A.Fake<MoBiReactionBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         A.CallTo(() => _context.Create<IMoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
-         A.CallTo(() => _context.Create<IMoBiReactionBuildingBlock>()).Returns(_moBiReactionBuildingBlock);
-         A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).Returns(_spatialStructure);
-         A.CallTo(() => _simulationSettingsFactory.CreateDefault()).Returns(_simulationSettings);
+         A.CallTo(() => _context.Create<MoleculeBuildingBlock>()).Returns(_moleculeBuildingBlock);
+         A.CallTo(() => _reactionBuildingBlockFactory.Create()).Returns(_moBiReactionBuildingBlock);
+         A.CallTo(() => _spatialStructureFactory.CreateDefault(DefaultNames.SpatialStructure)).Returns(_spatialStructure);
          _topContainer = A.Fake<IContainer>();
          A.CallTo(() => _context.Create<IContainer>()).Returns(_topContainer);
-         _passiveTransportBuildingBlock = A.Fake<IPassiveTransportBuildingBlock>();
-         A.CallTo(() => _context.Create<IPassiveTransportBuildingBlock>()).Returns(_passiveTransportBuildingBlock);
-         _observerBuildingBlock = A.Fake<IObserverBuildingBlock>();
-         A.CallTo(() => _context.Create<IObserverBuildingBlock>()).Returns(_observerBuildingBlock);
-         _eventGroupBuildingBlock = A.Fake<IEventGroupBuildingBlock>();
-         A.CallTo(() => _context.Create<IEventGroupBuildingBlock>()).Returns(_eventGroupBuildingBlock);
+         _passiveTransportBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();
+         A.CallTo(() => _context.Create<PassiveTransportBuildingBlock>()).Returns(_passiveTransportBuildingBlock);
+         _observerBuildingBlock = A.Fake<ObserverBuildingBlock>();
+         A.CallTo(() => _context.Create<ObserverBuildingBlock>()).Returns(_observerBuildingBlock);
+         _eventGroupBuildingBlock = A.Fake<EventGroupBuildingBlock>();
+         A.CallTo(() => _context.Create<EventGroupBuildingBlock>()).Returns(_eventGroupBuildingBlock);
          A.CallTo(() => _context.ObjectRepository).Returns(_objectBaseRepository);
       }
 
@@ -251,30 +358,6 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_have_created_default_project_entries()
-      {
-         A.CallTo(() => _context.Create<IMoleculeBuildingBlock>()).MustHaveHappened();
-         A.CallTo(() => _reactionBuildingBlockFactory.Create()).MustHaveHappened();
-         A.CallTo(() => _context.Create<IPassiveTransportBuildingBlock>()).MustHaveHappened();
-         A.CallTo(() => _context.Create<IObserverBuildingBlock>()).MustHaveHappened();
-         A.CallTo(() => _context.Create<IEventGroupBuildingBlock>()).MustHaveHappened();
-         A.CallTo(() => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure)).MustHaveHappened();
-         A.CallTo(() => _simulationSettingsFactory.CreateDefault()).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_have_registered_default_project_entries()
-      {
-         A.CallTo(() => _context.Register(_moleculeBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _reactionBuildingBlockFactory.Create()).MustHaveHappened();
-         A.CallTo(() => _context.Register(_spatialStructure)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_passiveTransportBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_observerBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_eventGroupBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _context.Register(_simulationSettings)).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_publish_project_load_event()
       {
          A.CallTo(() => _context.PublishEvent(A<ProjectLoadedEvent>._)).MustHaveHappened();
@@ -284,12 +367,12 @@ namespace MoBi.Presentation
    public class When_told_to_close_project_which_should_be_saved_but_save_was_canceled : concern_for_ProjectTask
    {
       private bool _result;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.HasChanged = true;
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -325,12 +408,12 @@ namespace MoBi.Presentation
    public class When_told_to_close_project_which_should_be_saved : concern_for_ProjectTask
    {
       private bool _result;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.HasChanged = true;
          _project.FilePath = "AA";
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -346,8 +429,7 @@ namespace MoBi.Presentation
       [Observation]
       public void closing_and_closed_events_should_be_raised_in_order()
       {
-         A.CallTo(() => _context.PublishEvent(A<ProjectClosingEvent>._)).MustHaveHappened().
-            Then(A.CallTo(() => _context.PublishEvent(A<ProjectClosedEvent>._)).MustHaveHappened());
+         A.CallTo(() => _context.PublishEvent(A<ProjectClosingEvent>._)).MustHaveHappened().Then(A.CallTo(() => _context.PublishEvent(A<ProjectClosedEvent>._)).MustHaveHappened());
       }
 
       [Observation]
@@ -385,12 +467,12 @@ namespace MoBi.Presentation
    public class When_told_to_close_project_which_should_not_be_saved : concern_for_ProjectTask
    {
       private bool _result;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          _project.HasChanged = true;
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
@@ -438,7 +520,7 @@ namespace MoBi.Presentation
    public class When_told_to_open : concern_for_ProjectTask
    {
       private string _fileName;
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private bool _result;
 
       protected override void Context()
@@ -446,11 +528,11 @@ namespace MoBi.Presentation
          base.Context();
          _fileName = "Filename.mbp3";
          A.CallTo(
-            () =>
-               _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
-                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
+               () =>
+                  _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
+                     AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .Returns(_fileName);
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
 
@@ -463,14 +545,14 @@ namespace MoBi.Presentation
       public void should_ask_for_file_name_to_open()
       {
          A.CallTo(
-            () =>
-               _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
-                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
+               () =>
+                  _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
+                     AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .MustHaveHappened();
       }
 
       [Observation]
-      public void should_tell_serialisation_tasks_to_load_project()
+      public void should_tell_serialization_tasks_to_load_project()
       {
          A.CallTo(() => _serializationTask.LoadProject(_fileName)).MustHaveHappened();
       }
@@ -498,27 +580,27 @@ namespace MoBi.Presentation
    {
       private string _fileName;
       private bool _result;
-      private IMoBiProject _oldProject;
+      private MoBiProject _oldProject;
 
       protected override void Context()
       {
          base.Context();
          _fileName = "Filename.xml";
-         _oldProject = A.Fake<IMoBiProject>();
+         _oldProject = A.Fake<MoBiProject>();
          _oldProject.HasChanged = true;
          _oldProject.FilePath = String.Empty;
          A.CallTo(() => _context.CurrentProject).Returns(_oldProject);
          A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(AppConstants.Dialog.DoYouWantToSaveTheCurrentProject, ViewResult.Yes))
             .Returns(ViewResult.Yes);
          A.CallTo(
-            () =>
-               _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
-                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
+               () =>
+                  _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
+                     AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .Returns(String.Empty);
          A.CallTo(
-            () =>
-               _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
-                  AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
+               () =>
+                  _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject,
+                     AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT, null, null))
             .Returns(_fileName);
       }
 
@@ -537,7 +619,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_not_tell_serialisation_tasks_to_load_project()
+      public void should_not_tell_serialization_tasks_to_load_project()
       {
          A.CallTo(() => _serializationTask.LoadProject(_fileName)).MustNotHaveHappened();
       }
@@ -552,13 +634,13 @@ namespace MoBi.Presentation
    public class When_told_to_open_from_filename : concern_for_ProjectTask
    {
       private string _fileName;
-      private IMoBiProject _project;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
          _fileName = "Filename.mbp3";
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
 
@@ -568,7 +650,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_tell_serialisation_tasks_to_load_project()
+      public void should_tell_serialization_tasks_to_load_project()
       {
          A.CallTo(() => _serializationTask.LoadProject(_fileName)).MustHaveHappened();
       }

@@ -147,7 +147,7 @@ namespace MoBi.Core
          _curve.SetyData(_dataColumn, new MoBiDimensionFactory());
          _chart.AddCurve(_curve);
 
-         sut.Update(A.Fake<IMoBiBuildConfiguration>(), A.Fake<IModel>());
+         sut.Update(A.Fake<SimulationConfiguration>(), A.Fake<IModel>());
          sut.Chart = _chart;
          sut.HasChanged = false;
          //make sure we do have curves initially

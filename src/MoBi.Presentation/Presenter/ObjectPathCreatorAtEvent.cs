@@ -34,7 +34,7 @@ namespace MoBi.Presentation.Presenter
          return dtoReference;
       }
 
-      public override ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
          var dtoMoleculeParameter = objectBaseDTO as DummyParameterDTO;
@@ -58,12 +58,12 @@ namespace MoBi.Presentation.Presenter
          _dimensionRetriever = dimensionRetriever;
       }
 
-      protected override IFormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject, IUsingFormula editedObject)
+      protected override FormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject, IUsingFormula editedObject)
       {
          // relative paths are only used for parameter in the same event group
          if (refObject != null && formulaUsable.RootContainer.Equals(refObject.RootContainer))
          {
-            IFormulaUsablePath path;
+            FormulaUsablePath path;
             if (formulaUsable.IsAtMolecule())
             {
                if (formulaUsable.IsAnImplementationOf<IParameter>())
@@ -101,7 +101,7 @@ namespace MoBi.Presentation.Presenter
          return path;
       }
 
-      private void correctPath(IFormulaUsablePath path, IContainer container)
+      private void correctPath(FormulaUsablePath path, IContainer container)
       {
          while (container != null && container.Mode.Equals(ContainerMode.Physical))
          {

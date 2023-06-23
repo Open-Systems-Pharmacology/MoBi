@@ -5,7 +5,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddNewApplicationsEventGroup:ObjectUICommand<IEventGroupBuildingBlock>
+   public class AddNewApplicationsEventGroup:ObjectUICommand<EventGroupBuildingBlock>
    {
       private readonly IInteractionTasksForRootEventGroup _interactionTasksForRootEventGroup;
 

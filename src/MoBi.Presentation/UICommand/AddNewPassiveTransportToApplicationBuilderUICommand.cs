@@ -6,13 +6,13 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class AddNewPassiveTransportToApplicationBuilderUICommand : ObjectUICommand<IApplicationBuilder>
+   internal class AddNewPassiveTransportToApplicationBuilderUICommand : ObjectUICommand<ApplicationBuilder>
    {
-      private readonly IInteractionTasksForChildren<IApplicationBuilder, ITransportBuilder> _interactionTasks;
+      private readonly IInteractionTasksForChildren<ApplicationBuilder, TransportBuilder> _interactionTasks;
       private readonly IMoBiContext _context;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      public AddNewPassiveTransportToApplicationBuilderUICommand(IInteractionTasksForChildren<IApplicationBuilder, ITransportBuilder> interactionTasks,
+      public AddNewPassiveTransportToApplicationBuilderUICommand(IInteractionTasksForChildren<ApplicationBuilder, TransportBuilder> interactionTasks,
          IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
       {
          _interactionTasks = interactionTasks;
@@ -26,13 +26,13 @@ namespace MoBi.Presentation.UICommand
       }
    }
 
-   internal class AddExistingPassiveTransportToApplicationBuilderUICommand : ObjectUICommand<IApplicationBuilder>
+   internal class AddExistingPassiveTransportToApplicationBuilderUICommand : ObjectUICommand<ApplicationBuilder>
    {
-      private readonly IInteractionTasksForChildren<IApplicationBuilder, ITransportBuilder> _interactionTasks;
+      private readonly IInteractionTasksForChildren<ApplicationBuilder, TransportBuilder> _interactionTasks;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
       private readonly IMoBiContext _context;
 
-      public AddExistingPassiveTransportToApplicationBuilderUICommand(IInteractionTasksForChildren<IApplicationBuilder, ITransportBuilder> interactionTasks, IActiveSubjectRetriever activeSubjectRetriever, IMoBiContext context)
+      public AddExistingPassiveTransportToApplicationBuilderUICommand(IInteractionTasksForChildren<ApplicationBuilder, TransportBuilder> interactionTasks, IActiveSubjectRetriever activeSubjectRetriever, IMoBiContext context)
       {
          _interactionTasks = interactionTasks;
          _activeSubjectRetriever = activeSubjectRetriever;

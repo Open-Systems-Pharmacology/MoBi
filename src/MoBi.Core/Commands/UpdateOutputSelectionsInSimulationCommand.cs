@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
       protected override void DoExecute(IMoBiContext context)
       {
          _oldOutputSelections = _simulation.OutputSelections;
-         _simulation.SimulationSettings.OutputSelections = _outputSelections;
+         _simulation.Settings.OutputSelections = _outputSelections;
          Description = AppConstants.Commands.UpdateOutputSelectionInSimulationDescription(_simulation.Name);
 
          context.PublishEvent(new SimulationOutputSelectionsChangedEvent(_simulation));

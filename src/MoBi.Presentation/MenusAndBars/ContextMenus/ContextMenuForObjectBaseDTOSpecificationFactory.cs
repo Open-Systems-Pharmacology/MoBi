@@ -10,7 +10,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public abstract class ContextMenuForObjectBaseDTOSpecificationFactory<TEntityType> : IContextMenuSpecificationFactory<IViewItem> where TEntityType : IObjectBase
    {
-      private readonly IMoBiContext _context;
+      protected readonly IMoBiContext _context;
 
       protected ContextMenuForObjectBaseDTOSpecificationFactory(IMoBiContext context)
       {
@@ -19,14 +19,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public virtual IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return CreateFor(objectRequestingContextMenu.DowncastTo<IObjectBaseDTO>(), presenter);
+         return CreateFor(objectRequestingContextMenu.DowncastTo<ObjectBaseDTO>(), presenter);
       }
 
-      public abstract IContextMenu CreateFor(IObjectBaseDTO objectBaseDTO, IPresenterWithContextMenu<IViewItem> presenter);
+      public abstract IContextMenu CreateFor(ObjectBaseDTO objectBaseDTO, IPresenterWithContextMenu<IViewItem> presenter);
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var objectBaseDTO = objectRequestingContextMenu as IObjectBaseDTO;
+         var objectBaseDTO = objectRequestingContextMenu as ObjectBaseDTO;
          if (objectBaseDTO == null) 
             return false;
 

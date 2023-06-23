@@ -10,7 +10,7 @@ using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IEventGroupBuilderToEventGroupBuilderDTOMapper : IMapper<IEventGroupBuilder, EventGroupBuilderDTO>
+   public interface IEventGroupBuilderToEventGroupBuilderDTOMapper : IMapper<EventGroupBuilder, EventGroupBuilderDTO>
    {
    }
 
@@ -34,29 +34,29 @@ namespace MoBi.Presentation.Mappers
          _eventBuilderDTOMapper = eventBuilderDTOMapper;
       }
 
-      public EventGroupBuilderDTO MapFrom(IEventGroupBuilder input)
+      public EventGroupBuilderDTO MapFrom(EventGroupBuilder eventGroupBuilder)
       {
          //TODO -This should be refactor to avoid usage of IoC
          _applicationBuilderToDTOApplicationBuilderMapper = IoC.Resolve<IApplicationBuilderToApplicationBuilderDTOMapper>();
-         return MapEventGroupProperties(input, new EventGroupBuilderDTO());
+         return MapEventGroupProperties(eventGroupBuilder, new EventGroupBuilderDTO(eventGroupBuilder));
       }
 
-      protected T MapEventGroupProperties<T>(IEventGroupBuilder input, T dto) where T : EventGroupBuilderDTO
+      protected T MapEventGroupProperties<T>(EventGroupBuilder input, T dto) where T : EventGroupBuilderDTO
       {
          MapProperties(input, dto);
          dto.Parameters = input.GetChildrenSortedByName<IParameter>().MapAllUsing(_parameterDTOMapper).Cast<ParameterDTO>();
          dto.Events = input.Events.OrderBy(x => x.Name).MapAllUsing(_eventBuilderDTOMapper);
-         dto.EventGroups = input.GetChildrenSortedByName<IEventGroupBuilder>(child => !child.IsAnImplementationOf<IApplicationBuilder>()).MapAllUsing(this);
-         dto.Applications = input.GetChildrenSortedByName<IApplicationBuilder>().MapAllUsing(_applicationBuilderToDTOApplicationBuilderMapper);
+         dto.EventGroups = input.GetChildrenSortedByName<EventGroupBuilder>(child => !child.IsAnImplementationOf<ApplicationBuilder>()).MapAllUsing(this);
+         dto.Applications = input.GetChildrenSortedByName<ApplicationBuilder>().MapAllUsing(_applicationBuilderToDTOApplicationBuilderMapper);
          dto.ChildContainer = input.GetChildrenSortedByName<IContainer>(isPureContainer).MapAllUsing(_containerDTOMapper);
          return dto;
       }
 
       private bool isPureContainer(IContainer container)
       {
-         return !container.IsAnImplementationOf<IEventGroupBuilder>() &&
-                !container.IsAnImplementationOf<IEventBuilder>() &&
-                !container.IsAnImplementationOf<ITransportBuilder>();
+         return !container.IsAnImplementationOf<EventGroupBuilder>() &&
+                !container.IsAnImplementationOf<EventBuilder>() &&
+                !container.IsAnImplementationOf<TransportBuilder>();
       }
    }
 }

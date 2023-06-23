@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Helpers;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
@@ -27,7 +28,7 @@ namespace MoBi.Core.Commands
          _quantity.DisplayUnit = _oldUnit;
          _simulation = new MoBiSimulation
          {
-            BuildConfiguration = new MoBiBuildConfiguration()
+            Configuration = new SimulationConfiguration()
          };
 
          sut = new SetQuantityUnitInSimulationCommand(_quantity, _newUnit, _simulation);

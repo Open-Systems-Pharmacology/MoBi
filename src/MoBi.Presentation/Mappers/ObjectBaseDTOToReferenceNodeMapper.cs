@@ -12,31 +12,31 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IObjectBaseDTOToReferenceNodeMapper :IMapper<IObjectBase, ITreeNode>
    {
-      ITreeNode MapFrom(IObjectBaseDTO objectBaseDTO);
+      ITreeNode MapFrom(ObjectBaseDTO objectBaseDTO);
   
-      void Initialize(Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> getChildren);
+      void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren);
    }
 
    public class ObjectBaseDTOToReferenceNodeMapper : IObjectBaseDTOToReferenceNodeMapper
    {
       private readonly IObjectBaseToObjectBaseDTOMapper _mapper;
-      private Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> _getChildren;
+      private Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> _getChildren;
 
       public ObjectBaseDTOToReferenceNodeMapper(IObjectBaseToObjectBaseDTOMapper mapper)
       {
          _mapper = mapper;
       }
 
-      public void Initialize(Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> getChildren)
+      public void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren)
       {
          _getChildren = getChildren;
       }
 
-      public ITreeNode MapFrom(IObjectBaseDTO objectBaseDTO)
+      public ITreeNode MapFrom(ObjectBaseDTO objectBaseDTO)
       {
          return new ReferenceNode(objectBaseDTO)
          {
-            Icon = ApplicationIcons.IconByName(objectBaseDTO.Icon),
+            Icon = objectBaseDTO.Icon,
             GetChildren = x => _getChildren(x).Select(MapFrom).ToList()
          };
       }

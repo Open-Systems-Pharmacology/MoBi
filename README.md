@@ -12,7 +12,7 @@ and whole-body architecture on the other hand.
 
 De novo model establishment and simulation is supported by graphical tools and building blocks to support expert users. 
 MoBi® uses building blocks that are grouped into Molecules, Reactions, Spatial Structures, Passive Transports, 
-Observers, Events, Molecule Start Values, Parameter Start Values, and Observed Data. 
+Observers, Events, Initial Conditions, Parameter Values, and Observed Data. 
 The different building blocks are described in detail in Part IV, “Working with MoBi®”. 
 Building blocks out of the above-mentioned groups can be combined to generate models. 
 The advantage of building blocks is that they can be reused. For example, a different set of starting values 

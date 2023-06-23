@@ -1,5 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
 using DevExpress.XtraBars;
+using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -25,12 +27,16 @@ namespace MoBi.UI.Views
       public BarManager PopupBarManager { get; }
       private readonly UxRemoveButtonRepository _removeButtonRepository = new UxRemoveButtonRepository();
       private readonly ScreenBinder<DescriptorCriteriaDTO> _screenBinder = new ScreenBinder<DescriptorCriteriaDTO>();
+      private readonly RepositoryItemTextEdit _disabledRepository = new RepositoryItemTextEdit {Enabled = false, ReadOnly = true};
+      private readonly RepositoryItemTextEdit _standardTextRepository = new RepositoryItemTextEdit();
+      private IGridViewColumn _columnTag;
 
       public DescriptorConditionListView(IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
          _gridViewBinder = new GridViewBinder<DescriptorConditionDTO>(gridView);
          gridView.AllowsFiltering = false;
+         gridView.ShowingEditor += onShowingEditor;
          PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImages16x16};
       }
 
@@ -56,8 +62,9 @@ namespace MoBi.UI.Views
             .WithCaption(AppConstants.Captions.IsMatching)
             .AsReadOnly();
 
-         _gridViewBinder.Bind(dto => dto.Tag)
-            .OnValueUpdating += (o, e) => OnEvent(() => onCriteriaTagChanged(o, e));
+         _columnTag = _gridViewBinder.Bind(dto => dto.Tag)
+            .WithRepository(repoForCondition)
+            .WithOnValueUpdating((o, e) => OnEvent(() => onCriteriaTagChanged(o, e)));
 
          _gridViewBinder.AddUnboundColumn()
             .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
@@ -72,6 +79,21 @@ namespace MoBi.UI.Views
             .To(cbOperator)
             .WithValues(EnumHelper.AllValuesFor<CriteriaOperator>())
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.ChangeOperator(e.NewValue));
+      }
+
+      private RepositoryItem repoForCondition(DescriptorConditionDTO descriptorCondition)
+      {
+         return descriptorCondition.IsReadOnly ? _disabledRepository : _standardTextRepository;
+      }
+
+      private void onShowingEditor(object sender, CancelEventArgs e)
+      {
+         var dto = _gridViewBinder.FocusedElement;
+         var column = gridView.FocusedColumn;
+         if (dto == null || column == null) return;
+         if (column != _columnTag.XtraColumn) return;
+         //Make sure we cannot select cells for readonly tags only
+         e.Cancel = dto.IsReadOnly;
       }
 
       private void onCriteriaTagChanged(DescriptorConditionDTO descriptorCondition, PropertyValueSetEventArgs<string> e)

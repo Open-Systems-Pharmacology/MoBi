@@ -25,9 +25,9 @@ namespace MoBi.Presentation.UICommand
 
       public void Execute()
       {
-         var buildingBlockInfo = _simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(_templateBuildingBlock);
-         var simulationBuildingBlock = buildingBlockInfo.UntypedBuildingBlock;
-         _simulationComparisonTask.ShowDifferencesBetween(_templateBuildingBlock, simulationBuildingBlock);
+         // var buildingBlockInfo = _simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(_templateBuildingBlock);
+         // var simulationBuildingBlock = buildingBlockInfo.UntypedBuildingBlock;
+         // _simulationComparisonTask.ShowDifferencesBetween(_templateBuildingBlock, simulationBuildingBlock);
       }
    }
 }

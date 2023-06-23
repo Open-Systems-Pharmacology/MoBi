@@ -2,7 +2,7 @@
 
 namespace MoBi.Core.Reporting
 {
-   internal class SpatialStructuresReporter : BuildingBlocksReporter<IMoBiSpatialStructure>
+   internal class SpatialStructuresReporter : BuildingBlocksReporter<MoBiSpatialStructure>
    {
       public SpatialStructuresReporter(SpatialStructureReporter spatialStructureReporter)
          : base(spatialStructureReporter, Constants.SPATIAL_STRUCTURES)

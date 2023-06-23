@@ -4,9 +4,9 @@ namespace MoBi.Core.Events
 {
    public class ChangedCalculationMethodEvent
    {
-      public IMoleculeBuilder MoleculeBuilder { get; set; }
+      public MoleculeBuilder MoleculeBuilder { get; set; }
 
-      public ChangedCalculationMethodEvent(IMoleculeBuilder moleculeBuilder)
+      public ChangedCalculationMethodEvent(MoleculeBuilder moleculeBuilder)
       {
          MoleculeBuilder = moleculeBuilder;
       }

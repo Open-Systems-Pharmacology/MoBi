@@ -12,7 +12,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public abstract class AddReactionBuilderUICommand : ObjectUICommand<IReactionBuilder>
+   public abstract class AddReactionBuilderUICommand : ObjectUICommand<ReactionBuilder>
    {
       protected readonly IMoBiContext _context;
       protected readonly IActiveSubjectRetriever _activeSubjectRetriever;
@@ -25,20 +25,20 @@ namespace MoBi.Presentation.UICommand
          _reactionTask = reactionTask;
       }
 
-      protected IMoBiReactionBuildingBlock RetrieveActiveSubject()
+      protected MoBiReactionBuildingBlock RetrieveActiveSubject()
       {
-         var buildingBlock = _activeSubjectRetriever.Active<IMoBiReactionBuildingBlock>();
+         var buildingBlock = _activeSubjectRetriever.Active<MoBiReactionBuildingBlock>();
          return buildingBlock;
       }
 
-      protected IEnumerable<string> ValidMoleculeNamesForPartner(IMoBiReactionBuildingBlock buildingBlock)
+      protected IEnumerable<string> ValidMoleculeNamesForPartner(MoBiReactionBuildingBlock buildingBlock)
       {
          return _reactionTask.SelectMoleculeNames(buildingBlock, UnallowedNames(Subject), Subject.Name, PartnerType);
       }
 
       public abstract string PartnerType { get; }
 
-      protected abstract IEnumerable<string> UnallowedNames(IReactionBuilder reactionBuilder);
+      protected abstract IEnumerable<string> UnallowedNames(ReactionBuilder reactionBuilder);
 
       protected override void PerformExecute()
       {
@@ -46,7 +46,7 @@ namespace MoBi.Presentation.UICommand
          ValidMoleculeNamesForPartner(buildingBlock).Each(molecule => _context.AddToHistory(AddCommandFor(buildingBlock, molecule).Run(_context)));
       }
 
-      protected abstract IMoBiCommand AddCommandFor(IMoBiReactionBuildingBlock buildingBlock, string molecule);
+      protected abstract IMoBiCommand AddCommandFor(MoBiReactionBuildingBlock buildingBlock, string molecule);
    }
 
    public class AddModifierUICommand : AddReactionBuilderUICommand
@@ -57,12 +57,12 @@ namespace MoBi.Presentation.UICommand
 
       public override string PartnerType => AppConstants.Captions.Modifiers;
 
-      protected override IEnumerable<string> UnallowedNames(IReactionBuilder reactionBuilder)
+      protected override IEnumerable<string> UnallowedNames(ReactionBuilder reactionBuilder)
       {
          return reactionBuilder.ModifierNames;
       }
 
-      protected override IMoBiCommand AddCommandFor(IMoBiReactionBuildingBlock buildingBlock, string molecule)
+      protected override IMoBiCommand AddCommandFor(MoBiReactionBuildingBlock buildingBlock, string molecule)
       {
          return new AddItemToModifierCollectionCommand(buildingBlock, molecule, Subject);
       }
@@ -76,12 +76,12 @@ namespace MoBi.Presentation.UICommand
 
       public override string PartnerType => AppConstants.Captions.Products;
 
-      protected override IEnumerable<string> UnallowedNames(IReactionBuilder reactionBuilder)
+      protected override IEnumerable<string> UnallowedNames(ReactionBuilder reactionBuilder)
       {
          return reactionBuilder.Products.Select(x => x.MoleculeName);
       }
 
-      protected override IMoBiCommand AddCommandFor(IMoBiReactionBuildingBlock buildingBlock, string molecule)
+      protected override IMoBiCommand AddCommandFor(MoBiReactionBuildingBlock buildingBlock, string molecule)
       {
          return new AddReactionPartnerToProductCollection(buildingBlock, new ReactionPartnerBuilder(molecule, 1.0), Subject);
       }
@@ -95,12 +95,12 @@ namespace MoBi.Presentation.UICommand
 
       public override string PartnerType => AppConstants.Captions.Educts;
 
-      protected override IEnumerable<string> UnallowedNames(IReactionBuilder reactionBuilder)
+      protected override IEnumerable<string> UnallowedNames(ReactionBuilder reactionBuilder)
       {
          return reactionBuilder.Educts.Select(x => x.MoleculeName);
       }
 
-      protected override IMoBiCommand AddCommandFor(IMoBiReactionBuildingBlock buildingBlock, string molecule)
+      protected override IMoBiCommand AddCommandFor(MoBiReactionBuildingBlock buildingBlock, string molecule)
       {
          return new AddReactionPartnerToEductCollection(buildingBlock, new ReactionPartnerBuilder(molecule, 1.0), Subject);
       }

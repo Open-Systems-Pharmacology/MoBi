@@ -20,7 +20,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       void Save<T>(T entityToSerialize, string fileName) where T : IObjectBase;
       string IconFor<T>(T entity) where T : IObjectBase;
       bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase;
-      IMoBiCommand Rename<T>(T objectBase, IEnumerable<string> forbiddenNames, IBuildingBlock buildingBlock) where T : IObjectBase;
       T Clone<T>(T objectToClone) where T : class, IObjectBase;
       bool AdjustFormula<T>(T objectBase, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand) where T : IObjectBase;
       string TypeFor<T>(T objectRequestingType) where T : class;
@@ -36,21 +35,19 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IDialogCreator _dialogCreator;
       private readonly IIconRepository _iconRepository;
       private readonly INameCorrector _nameCorrector;
-      private readonly IObjectBaseTask _objectBaseTask;
       private readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       private readonly IAdjustFormulasVisitor _adjustFormulasVisitor;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
 
       public InteractionTask(ISerializationTask serializationTask, IDialogCreator dialogCreator, IIconRepository iconRepository,
-         INameCorrector nameCorrector, IObjectBaseTask objectBaseTask, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
+         INameCorrector nameCorrector, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IAdjustFormulasVisitor adjustFormulasVisitor, IObjectTypeResolver objectTypeResolver, IForbiddenNamesRetriever forbiddenNamesRetriever)
       {
          _serializationTask = serializationTask;
          _dialogCreator = dialogCreator;
          _iconRepository = iconRepository;
          _nameCorrector = nameCorrector;
-         _objectBaseTask = objectBaseTask;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
          _adjustFormulasVisitor = adjustFormulasVisitor;
          _objectTypeResolver = objectTypeResolver;
@@ -74,11 +71,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void Save<T>(T entityToSerialize, string fileName) where T : IObjectBase
       {
          _serializationTask.SaveModelPart(entityToSerialize, fileName);
-      }
-
-      public IMoBiCommand Rename<T>(T objectBase, IEnumerable<string> forbiddenNames, IBuildingBlock buildingBlock) where T : IObjectBase
-      {
-         return _objectBaseTask.Rename(objectBase, forbiddenNames, buildingBlock);
       }
 
       public virtual T Clone<T>(T objectToClone) where T : class, IObjectBase
@@ -144,7 +136,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public string IconFor<T>(T entity) where T : IObjectBase
       {
-         return _iconRepository.IconFor(entity);
+         return _iconRepository.IconNameFor(entity);
       }
 
       public bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase

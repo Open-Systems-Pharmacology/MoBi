@@ -33,8 +33,9 @@ namespace MoBi.Core.Commands
          WasChanged = _simulation.HasChanged;
          _simulation.HasChanged = _changed;
          _simulation.MarkResultsOutOfDate();
-         var buildConfigurationUpdater = context.Resolve<IBuildConfigurationUpdater>();
-         buildConfigurationUpdater.UpdateBuildingConfiguration(_changedObject, _simulation, Increment);
+         //TODO SIMULATION_CONFIGURATION
+         // var buildConfigurationUpdater = context.Resolve<IBuildConfigurationUpdater>();
+         // buildConfigurationUpdater.UpdateBuildingConfiguration(_changedObject, _simulation, Increment);
       }
 
       protected abstract void DoExecute(IMoBiContext context);

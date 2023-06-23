@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
    {
       protected bool _newValue;
       protected bool _oldValue;
-      protected IReactionBuilder _reaactionBuilder;
+      protected ReactionBuilder _reaactionBuilder;
 
       protected override void Context()
       {

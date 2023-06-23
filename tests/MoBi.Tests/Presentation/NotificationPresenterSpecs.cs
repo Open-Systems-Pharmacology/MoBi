@@ -201,8 +201,8 @@ namespace MoBi.Presentation
          _userSettings.ShowPKSimObserverMessages = false;
          _validationResult = new ValidationResult();
 
-         var staticObserver = A.Fake<IObserverBuilder>().WithId("1").WithName(AppConstants.DefaultNames.PKSimStaticObservers[0]);
-         var dynamicObserver = A.Fake<IObserverBuilder>().WithId("2").WithName($"{AppConstants.DefaultNames.PKSimDynamicObservers[0]}-HELLO");
+         var staticObserver = A.Fake<ObserverBuilder>().WithId("1").WithName(AppConstants.DefaultNames.PKSimStaticObservers[0]);
+         var dynamicObserver = A.Fake<ObserverBuilder>().WithId("2").WithName($"{AppConstants.DefaultNames.PKSimDynamicObservers[0]}-HELLO");
 
          _validationResult.AddMessage(NotificationType.Error, staticObserver, string.Empty);
          _validationResult.AddMessage(NotificationType.Error, dynamicObserver, string.Empty);
@@ -399,7 +399,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new RemovedEvent(_buildingBlock, A.Fake<IMoBiProject>()));
+         sut.Handle(new RemovedEvent(_buildingBlock, A.Fake<MoBiProject>()));
       }
 
       [Observation]

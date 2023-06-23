@@ -64,7 +64,7 @@ namespace MoBi.UI.Views
       protected override void RegisterRegions()
       {
          base.RegisterRegions();
-         RegisterRegion(_panelBuildingBlockExplorer, RegionNames.BuildingBlockExplorer);
+         RegisterRegion(_panelModuleExplorer, RegionNames.ModuleExplorer);
          RegisterRegion(_panelSimulationExplorer, RegionNames.SimulationExplorer);
          RegisterRegion(_panelHistoryBrowser, RegionNames.History);
          RegisterRegion(_panelSearch, RegionNames.Search);

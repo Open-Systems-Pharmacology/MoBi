@@ -9,9 +9,9 @@ namespace MoBi.Core.Commands
    public class ChangeCalculationMethodForCategoryCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
       private UsedCalculationMethod _changedUsedCalculationMethod;
-      private IMoleculeBuilder _moleculeBuilder;
+      private MoleculeBuilder _moleculeBuilder;
 
-      public ChangeCalculationMethodForCategoryCommand(IMoleculeBuilder moleculeBuilder, string category, string newValue, string oldValue,IBuildingBlock buildingBlock) : base(buildingBlock)
+      public ChangeCalculationMethodForCategoryCommand(MoleculeBuilder moleculeBuilder, string category, string newValue, string oldValue,IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          MoleculeBuilderId = moleculeBuilder.Id;
          _moleculeBuilder = moleculeBuilder;
@@ -49,11 +49,11 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _moleculeBuilder = context.Get<IMoleculeBuilder>(MoleculeBuilderId);
+         _moleculeBuilder = context.Get<MoleculeBuilder>(MoleculeBuilderId);
          _changedUsedCalculationMethod = getUsedCalulationMethod(_moleculeBuilder, Category, NewCalculationMethod);
       }
 
-      private UsedCalculationMethod getUsedCalulationMethod(IMoleculeBuilder moleculeBuilder, string category, string calulationMethod)
+      private UsedCalculationMethod getUsedCalulationMethod(MoleculeBuilder moleculeBuilder, string category, string calulationMethod)
       {
          return moleculeBuilder.UsedCalculationMethods
             .Where(ucm => calulationMethod.Equals(calulationMethod)).FirstOrDefault(ucm => ucm.Category.Equals(category));

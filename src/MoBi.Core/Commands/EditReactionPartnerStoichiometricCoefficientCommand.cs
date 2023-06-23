@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
       private double _oldCoefficient;
       private readonly string _moleculeName;
 
-      public EditReactionPartnerStoichiometricCoefficientCommand(double newCoefficient, IReactionBuilder reaction, IReactionPartnerBuilder reactionPartner, IMoBiReactionBuildingBlock buildingBlock) : base(reaction, reactionPartner, buildingBlock)
+      public EditReactionPartnerStoichiometricCoefficientCommand(double newCoefficient, ReactionBuilder reaction, ReactionPartnerBuilder reactionPartner, MoBiReactionBuildingBlock buildingBlock) : base(reaction, reactionPartner, buildingBlock)
       {
          _newCoefficient = newCoefficient;
          _oldCoefficient = reactionPartner.StoichiometricCoefficient;

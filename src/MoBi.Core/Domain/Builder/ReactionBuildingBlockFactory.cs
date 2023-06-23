@@ -7,7 +7,7 @@ namespace MoBi.Core.Domain.Builder
 {
    public interface IReactionBuildingBlockFactory
    {
-      IMoBiReactionBuildingBlock Create();
+      MoBiReactionBuildingBlock Create();
    }
 
    public class ReactionBuildingBlockFactory : IReactionBuildingBlockFactory
@@ -21,9 +21,9 @@ namespace MoBi.Core.Domain.Builder
          _diagramManagerFactory = diagramManagerFactory;
       }
 
-      public IMoBiReactionBuildingBlock Create()
+      public MoBiReactionBuildingBlock Create()
       {
-         var buildingBlock = _objectBaseFactory.Create<IMoBiReactionBuildingBlock>();
+         var buildingBlock = _objectBaseFactory.Create<MoBiReactionBuildingBlock>();
          buildingBlock.DiagramManager = _diagramManagerFactory.Create<IMoBiReactionDiagramManager>();
          return buildingBlock;
       }

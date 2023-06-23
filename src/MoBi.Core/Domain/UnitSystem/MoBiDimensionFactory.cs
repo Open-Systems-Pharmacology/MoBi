@@ -8,14 +8,14 @@ namespace MoBi.Core.Domain.UnitSystem
 {
    public interface IMoBiDimensionFactory : IDimensionFactory
    {
-      IDimension TryGetDimensionCaseInsensitive(string dimensionName);
+      IDimension TryGetDimensionFromUnitNameCaseInsensitive(string unitName);
    }
 
    public class MoBiDimensionFactory : DimensionFactory, IMoBiDimensionFactory
    {
       private IEnumerable<IMoBiDimensionMergingInformation> mobiDimensionMergingInformationList => AllMergingInformation.Cast<IMoBiDimensionMergingInformation>();
 
-      public IDimension TryGetDimensionCaseInsensitive(string unitName)
+      public IDimension TryGetDimensionFromUnitNameCaseInsensitive(string unitName)
       {
          return DimensionForUnit(unitName) ?? NoDimension;
       }

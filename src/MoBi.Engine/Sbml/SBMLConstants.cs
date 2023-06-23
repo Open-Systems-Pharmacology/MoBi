@@ -18,8 +18,8 @@ namespace MoBi.Engine.Sbml
       public const string SBML_REACTION_BB = "SBML Reactions";
       public const string SBML_SPECIES_BB = "SBML Species";
       public const string SBML_EVENT_BB = "SBML Events";
-      public const string SBML_PARAMETERSTARTVALUES_BB = "SBML Parameter Start Values";
-      public const string SBML_MOLECULESTARTVALUES_BB = "SBML Molecule Start Values";
+      public const string SBML_PARAMETER_VALUES_BB = "SBML Parameter Values";
+      public const string SBML_INITIAL_CONDITIONS_BB = "SBML Initial Conditions";
       public const string SBML_PASSIVETRANSPORTS_BB = "SBML Passive Transports";
 
       public const string SBML_SPECIES = "Species: ";
@@ -62,7 +62,7 @@ namespace MoBi.Engine.Sbml
       public const string SBML_FEATURE_NOT_SUPPORTED = "SBML Feature not supported.";
 
       //Descriptions
-      public const string SBML_MOLECULESTARTVALUES_DESCRIPTION = "The initial amount of the species in the SBML Model.";
+      public const string SBML_INITIAL_CONDITIONS_DESCRIPTION = "The initial amount of the species in the SBML Model.";
       public const string SBML_SIZE_DESCRIPTION = "This Parameter represents the size of the SBML compartment.";
 
       //Formula/Math

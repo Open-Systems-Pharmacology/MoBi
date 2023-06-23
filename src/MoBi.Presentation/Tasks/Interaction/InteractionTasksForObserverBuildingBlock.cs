@@ -1,37 +1,33 @@
 ﻿using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForObserverBuildingBlock : InteractionTasksForMergableBuildingBlock<IObserverBuildingBlock, IObserverBuilder>
+   public class InteractionTasksForObserverBuildingBlock : InteractionTasksForEnumerableBuildingBlock<Module, ObserverBuildingBlock, ObserverBuilder>
    {
       private readonly IMoBiFormulaTask _moBiFormulaTask;
 
       public InteractionTasksForObserverBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
-         IEditTasksForBuildingBlock<IObserverBuildingBlock> editTask,
-         IInteractionTasksForBuilder<IObserverBuilder> builderTask,
-         IMoleculeListTasks moleculeListTasks,
-         IObserverBuildingBlockMergeManager mergeIgnoreReplaceMergeManager,
-         IFormulaTask formulaTask,
+         IEditTasksForBuildingBlock<ObserverBuildingBlock> editTask,
+         IInteractionTasksForBuilder<ObserverBuilder> builderTask,
          IMoBiFormulaTask moBiFormulaTask)
-         : base(interactionTaskContext, editTask, builderTask, mergeIgnoreReplaceMergeManager, formulaTask, moleculeListTasks)
+         : base(interactionTaskContext, editTask, builderTask)
       {
-         _formulaTask = formulaTask;
          _moBiFormulaTask = moBiFormulaTask;
       }
 
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(IObserverBuilder builder, IObserverBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      public override IMoBiCommand GetRemoveCommand(ObserverBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
       {
-         var macroCommand = CreateAddBuilderMacroCommand(builder, targetBuildingBlock);
+         return new RemoveBuildingBlockFromModuleCommand<ObserverBuildingBlock>(objectToRemove, parent);
+      }
 
-         macroCommand.Add(_builderTask.GetAddCommand(builder, targetBuildingBlock));
-         macroCommand.Add(_moBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, builder));
-
-         return macroCommand;
+      public override IMoBiCommand GetAddCommand(ObserverBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<ObserverBuildingBlock>(itemToAdd, parent);
       }
    }
 }

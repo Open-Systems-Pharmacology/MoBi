@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -45,6 +46,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IDimensionFactory _dimensionFactory;
       private readonly IMoBiContext _context;
       private readonly IInteractionTask _interactionTask;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IDialogCreator _mobiDialogCreator;
 
       public ObservedDataTask(
@@ -55,11 +57,13 @@ namespace MoBi.Presentation.Tasks
          IInteractionTask interactionTask,
          IDataRepositoryExportTask dataRepositoryTask,
          IContainerTask containerTask,
-         IObjectTypeResolver objectTypeResolver) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver, 
+         IBuildingBlockRepository buildingBlockRepository) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _dataImporter = dataImporter;
          _mobiDialogCreator = dialogCreator;
          _interactionTask = interactionTask;
+         _buildingBlockRepository = buildingBlockRepository;
          _dimensionFactory = dimensionFactory;
          _context = context;
       }
@@ -337,7 +341,7 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allMolecules()
       {
-         return _context.CurrentProject.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
+         return _buildingBlockRepository.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
       }
 
       private static void addUndefinedValueTo(MetaDataCategory metaDataCategory)
@@ -410,7 +414,7 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allTopContainers()
       {
-         return _context.CurrentProject.SpatialStructureCollection.SelectMany(spatialStructure => spatialStructure.TopContainers);
+         return _buildingBlockRepository.SpatialStructureCollection.SelectMany(spatialStructure => spatialStructure.TopContainers);
       }
 
       private IEnumerable<IContainer> allSubContainers(IContainer container)

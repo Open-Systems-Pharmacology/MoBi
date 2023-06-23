@@ -11,7 +11,7 @@ namespace MoBi.Core.Commands
    {
       private byte[] _serializationStream;
 
-      public RemoveChartTemplateFromBuildingBlockCommand(CurveChartTemplate chartTemplate, ISimulationSettings buildingBlock) : base(chartTemplate, buildingBlock)
+      public RemoveChartTemplateFromBuildingBlockCommand(CurveChartTemplate chartTemplate, SimulationSettings buildingBlock) : base(chartTemplate, buildingBlock)
       {
          CommandType = AppConstants.Commands.DeleteCommand;
       }

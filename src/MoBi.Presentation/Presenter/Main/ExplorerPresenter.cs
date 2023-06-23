@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Presenter.Main
          _multipleTreeNodeContextMenuFactory = multipleTreeNodeContextMenuFactory;
       }
 
-      protected abstract void AddProjectToTree(IMoBiProject project);
+      protected abstract void AddProjectToTree(MoBiProject project);
 
       protected void ReloadProject()
       {
@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       protected override void AddProjectToTree(IProject project)
       {
-         AddProjectToTree(project.DowncastTo<IMoBiProject>());
+         AddProjectToTree(project.DowncastTo<MoBiProject>());
       }
 
       public void ShowContextMenu(IViewItem viewItem, Point popupLocation)
@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public override void NodeDoubleClicked(ITreeNode node)
       {
-         if (IsFolderNode(node))
+         if (IsExpandable(node))
          {
             base.NodeDoubleClicked(node);
             return;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -26,17 +28,19 @@ namespace MoBi.Helpers
          return Path.Combine(dataFolder, fileName);
       }
 
-      public static IDimension AmountDimension { get; } = new Dimension(new BaseDimensionRepresentation {AmountExponent = 1}, Constants.Dimension.MOLAR_AMOUNT, "µmol");
+      public static IDimension AmountDimension { get; } = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1 }, Constants.Dimension.MOLAR_AMOUNT, "µmol");
 
-      public static IDimension ConcentrationDimension { get; } = new Dimension(new BaseDimensionRepresentation {LengthExponent = -3, MassExponent = 1, TimeExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
+      public static ParameterValue ParameterValue { get; } = new ParameterValue { Name = "_name", Value = 1.0, Formula = null, Dimension = AmountDimension };
 
-      public static IDimension FractionDimension { get; } = new Dimension(new BaseDimensionRepresentation() , Constants.Dimension.FRACTION, "");
+      public static IDimension ConcentrationDimension { get; } = new Dimension(new BaseDimensionRepresentation { LengthExponent = -3, MassExponent = 1, TimeExponent = -1 }, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
 
-      public static IDimension ConcentrationPerTimeDimension { get; } = new Dimension(new BaseDimensionRepresentation {LengthExponent = -3, AmountExponent = 1, TimeExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME, "µmol/l/min");
+      public static IDimension FractionDimension { get; } = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.FRACTION, "");
 
-      public static IDimension AmountPerTimeDimension { get; } = new Dimension(new BaseDimensionRepresentation {AmountExponent = 1, TimeExponent = -1}, Constants.Dimension.AMOUNT_PER_TIME, "µmol/min");
+      public static IDimension ConcentrationPerTimeDimension { get; } = new Dimension(new BaseDimensionRepresentation { LengthExponent = -3, AmountExponent = 1, TimeExponent = -1 }, Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME, "µmol/l/min");
 
-      public static IDimension TimeDimension { get; } = new Dimension(new BaseDimensionRepresentation {TimeExponent = 1}, Constants.Dimension.TIME, "min");
+      public static IDimension AmountPerTimeDimension { get; } = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1, TimeExponent = -1 }, Constants.Dimension.AMOUNT_PER_TIME, "µmol/min");
+
+      public static IDimension TimeDimension { get; } = new Dimension(new BaseDimensionRepresentation { TimeExponent = 1 }, Constants.Dimension.TIME, "min");
 
       public static DataRepository ObservedData(string id = "TestData", IDimension timeDimension = null, IDimension concentrationDimension = null, string obsDataColumnName = null)
       {
@@ -61,6 +65,11 @@ namespace MoBi.Helpers
             DataInfo = { Origin = ColumnOrigins.Observation }
          };
          return data;
+      }
+
+      public static MoBiProject NewProject()
+      {
+         return new MoBiProject { SimulationSettings = new SimulationSettings() };
       }
    }
 

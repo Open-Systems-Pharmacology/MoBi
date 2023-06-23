@@ -1,6 +1,6 @@
 ﻿namespace MoBi.Presentation.Presenter
 {
-   public interface IBreadCrumbsPresenter
+   public interface IBreadCrumbsPresenter 
    {
       bool HasAtLeastTwoDistinctValues(int pathElementIndex);
    }

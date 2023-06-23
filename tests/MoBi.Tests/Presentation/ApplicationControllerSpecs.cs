@@ -31,7 +31,7 @@ namespace MoBi.Presentation
 
    internal class When_Opening_a_project_item : concern_for_ApplicationControllerSpecs
    {
-      private IMoleculeBuildingBlock _projectItem;
+      private MoleculeBuildingBlock _projectItem;
       private IEditMoleculeBuildingBlockPresenter _editPresenter;
       private ISingleStartPresenter _result;
       private ICommandCollector _commandCollector;
@@ -86,7 +86,7 @@ namespace MoBi.Presentation
          _editPresenter = A.Fake<IEditMoleculeBuildingBlockPresenter>();
          _commandCollector = A.Fake<ICommandCollector>();
          A.CallTo(() => _container.Resolve<IEditMoleculeBuildingBlockPresenter>()).Returns(_editPresenter);
-         _selectedObject = A.Fake<IMoleculeBuilder>();
+         _selectedObject = A.Fake<MoleculeBuilder>();
       }
 
       protected override void Because()
@@ -123,7 +123,7 @@ namespace MoBi.Presentation
    internal class When_selecting_null : concern_for_ApplicationControllerSpecs
    {
       private IObjectBase _selectedObject;
-      private IMoleculeBuildingBlock _projectItem;
+      private MoleculeBuildingBlock _projectItem;
       private IEditMoleculeBuildingBlockPresenter _editPresenter;
 
       private ICommandCollector _commandCollector;
@@ -165,7 +165,7 @@ namespace MoBi.Presentation
    internal class When_no_project_item_is_provided_for_selection : concern_for_ApplicationControllerSpecs
    {
       private IObjectBase _selectedObject;
-      private IMoleculeBuildingBlock _projectItem;
+      private MoleculeBuildingBlock _projectItem;
       private IEditMoleculeBuildingBlockPresenter _editPresenter;
 
       private ICommandCollector _commandCollector;

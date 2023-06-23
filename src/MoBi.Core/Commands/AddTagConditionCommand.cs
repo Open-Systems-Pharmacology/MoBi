@@ -49,6 +49,25 @@ namespace MoBi.Core.Commands
       }
    }
 
+   public class AddInParentConditionCommand<T> : AddTagConditionCommandBase<T> where T : class, IObjectBase
+   {
+      public AddInParentConditionCommand(TagConditionCommandParameters<T> tagConditionCommandParameters)
+         : base(string.Empty, tagConditionCommandParameters)
+      {
+         ObjectType = AppConstants.Commands.InParentCondition;
+      }
+
+      protected override ITagCondition CreateNewTagCondition()
+      {
+         return new InParentCondition();
+      }
+
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new RemoveInParentConditionCommand<T>(CreateCommandParameters()).AsInverseFor(this);
+      }
+   }
+
    public class AddMatchTagConditionCommand<T> : AddTagConditionCommandBase<T> where T : class, IObjectBase
    {
       public AddMatchTagConditionCommand(string tag, TagConditionCommandParameters<T> tagConditionCommandParameters)

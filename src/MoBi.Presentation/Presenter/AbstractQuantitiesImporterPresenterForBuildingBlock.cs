@@ -15,20 +15,20 @@ namespace MoBi.Presentation.Presenter
       /// <summary>
       /// Displays a user interface to aid a user in importing parameter start values
       /// </summary>
-      /// <param name="startValuesBuildingBlock"></param>
+      /// <param name="buildingBlock"></param>
       /// <returns>The imported parameter start values</returns>
-      void ImportStartValuesForBuildingBlock(IBuildingBlock startValuesBuildingBlock);
+      void ImportStartValuesForBuildingBlock(IBuildingBlock buildingBlock);
    }
 
-   public abstract class AbstractQuantitiesImporterPresenterForBuildingBlock<T, TStartValue> : AbstractQuantitiesImporterPresenter
-      where T : class, IStartValuesBuildingBlock<TStartValue>
-      where TStartValue : class, IStartValue
+   public abstract class AbstractQuantitiesImporterPresenterForBuildingBlock<T, TPathAndValueEntity> : AbstractQuantitiesImporterPresenter
+      where T : PathAndValueEntityBuildingBlock<TPathAndValueEntity>
+      where TPathAndValueEntity : PathAndValueEntity
    {
       protected readonly IMoBiContext _context;
-      protected T _startValuesBuildingBlock;
-      private readonly IStartValuesTask<T, TStartValue> _startValuesTask;
+      protected T _buildingBlock;
+      private readonly IStartValuesTask<T, TPathAndValueEntity> _startValuesTask;
 
-      protected AbstractQuantitiesImporterPresenterForBuildingBlock(IImportQuantityView view, IDialogCreator dialogCreator, IMoBiContext context, IImportFromExcelTask excelTask, IStartValuesTask<T, TStartValue> startValuesTask)
+      protected AbstractQuantitiesImporterPresenterForBuildingBlock(IImportQuantityView view, IDialogCreator dialogCreator, IMoBiContext context, IImportFromExcelTask excelTask, IStartValuesTask<T, TPathAndValueEntity> startValuesTask)
          : base(view, dialogCreator, excelTask)
       {
          _context = context;
@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Presenter
       {
          _importExcelSheetSelectionDTO = new ImportExcelSheetSelectionDTO();
 
-         _startValuesBuildingBlock = startValuesBuildingBlock;
+         _buildingBlock = startValuesBuildingBlock;
          _view.BindTo(_importExcelSheetSelectionDTO);
 
          _view.Display();
@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Presenter
 
       public override void TransferImportedQuantities()
       {
-         AddCommand(_startValuesTask.ImportStartValuesToBuildingBlock(_startValuesBuildingBlock, _quantityDTOs));
+         AddCommand(_startValuesTask.ImportPathAndValueEntitiesToBuildingBlock(_buildingBlock, _quantityDTOs));
       }
    }
 }

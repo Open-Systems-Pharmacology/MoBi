@@ -13,11 +13,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    public class ContextMenuForModifierBuilder : ContextMenuBase
    {
       private readonly string _reactionModifier;
-      private readonly IReactionBuilder _reactionBuilder;
+      private readonly IContainer _container;
+      private readonly ReactionBuilder _reactionBuilder;
 
-      public ContextMenuForModifierBuilder(IReactionBuilder reactionBuilder, string reactionModifier)
+      public ContextMenuForModifierBuilder(ReactionBuilder reactionBuilder, string reactionModifier, IContainer container)
       {
          _reactionModifier = reactionModifier;
+         _container = container;
          _reactionBuilder = reactionBuilder;
       }
 
@@ -29,18 +31,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          yield return createAddItem(_reactionBuilder);
       }
 
-      private IMenuBarItem createAddItem(IReactionBuilder reactionBuilder)
+      private IMenuBarItem createAddItem(ReactionBuilder reactionBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.New.WithEllipsis())
             .WithIcon(ApplicationIcons.Add)
-            .WithCommandFor<AddModifierUICommand, IReactionBuilder>(reactionBuilder);
+            .WithCommandFor<AddModifierUICommand, ReactionBuilder>(reactionBuilder, _container);
       }
 
-      private IMenuBarItem createRemoveItem(IReactionBuilder reactionBuilder, string reactionPartnerBuilder)
+      private IMenuBarItem createRemoveItem(ReactionBuilder reactionBuilder, string reactionPartnerBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
-            .WithCommand(IoC.Resolve<RemoveModifierUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
+            .WithCommand(_container.Resolve<RemoveModifierUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
       }
    }
 }

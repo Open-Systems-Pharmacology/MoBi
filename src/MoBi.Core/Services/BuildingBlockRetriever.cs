@@ -16,9 +16,9 @@ namespace MoBi.Core.Services
       IBuildingBlock GetBuildingBlockFor(IObjectBase objectBase, IBuildingBlock buildingBlock);
    }
 
-   public class BuildingBlockRetriever : IBuildingBlockRetriever, IVisitor<IMoBiReactionBuildingBlock>, IVisitor<IMoleculeBuildingBlock>,
-                                         IVisitor<IMoBiSpatialStructure>, IVisitor<IObserverBuildingBlock>, IVisitor<IEventGroupBuildingBlock>,
-                                         IVisitor<IPassiveTransportBuildingBlock>, IVisitor<IMoleculeStartValuesBuildingBlock>, IVisitor<IParameterStartValuesBuildingBlock>
+   public class BuildingBlockRetriever : IBuildingBlockRetriever, IVisitor<MoBiReactionBuildingBlock>, IVisitor<MoleculeBuildingBlock>,
+                                         IVisitor<MoBiSpatialStructure>, IVisitor<ObserverBuildingBlock>, IVisitor<EventGroupBuildingBlock>,
+                                         IVisitor<PassiveTransportBuildingBlock>, IVisitor<InitialConditionsBuildingBlock>, IVisitor<ParameterValuesBuildingBlock>
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private IEntity _entity;
@@ -82,42 +82,42 @@ namespace MoBi.Core.Services
          return _found;
       }
 
-      public void Visit(IMoBiReactionBuildingBlock reactionBuildingBlock)
+      public void Visit(MoBiReactionBuildingBlock reactionBuildingBlock)
       {
          _found = reactionBuildingBlock.Contains(_entity);
       }
 
-      public void Visit(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void Visit(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          _found = moleculeBuildingBlock.Contains(_entity);
       }
 
-      public void Visit(IMoBiSpatialStructure spatialStructure)
+      public void Visit(MoBiSpatialStructure spatialStructure)
       {
          _found = spatialStructure.Contains(_entity);
       }
 
-      public void Visit(IObserverBuildingBlock observerBuildingBlock)
+      public void Visit(ObserverBuildingBlock observerBuildingBlock)
       {
          _found = observerBuildingBlock.Contains(_entity);
       }
 
-      public void Visit(IEventGroupBuildingBlock eventGroupBuildingBlock)
+      public void Visit(EventGroupBuildingBlock eventGroupBuildingBlock)
       {
          _found = eventGroupBuildingBlock.Contains(_entity);
       }
 
-      public void Visit(IMoleculeStartValuesBuildingBlock objToVisit)
+      public void Visit(InitialConditionsBuildingBlock objToVisit)
       {
          _found = objToVisit.Contains(_entity);
       }
 
-      public void Visit(IParameterStartValuesBuildingBlock objToVisit)
+      public void Visit(ParameterValuesBuildingBlock objToVisit)
       {
          _found = objToVisit.Contains(_entity);
       }
 
-      public void Visit(IPassiveTransportBuildingBlock passiveTransportBuildingBlock)
+      public void Visit(PassiveTransportBuildingBlock passiveTransportBuildingBlock)
       {
          _found = passiveTransportBuildingBlock.Contains(_entity);
       }

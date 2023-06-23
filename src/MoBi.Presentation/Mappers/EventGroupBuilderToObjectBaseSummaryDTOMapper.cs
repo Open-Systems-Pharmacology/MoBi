@@ -10,7 +10,7 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IEventGroupBuilderToObjectBaseSummaryDTOMapper : IMapper<IEventGroupBuilder, ObjectBaseSummaryDTO>
+   public interface IEventGroupBuilderToObjectBaseSummaryDTOMapper : IMapper<EventGroupBuilder, ObjectBaseSummaryDTO>
    {
    }
 
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Mappers
          _objectTypeResolver = objectTypeResolver;
       }
 
-      public ObjectBaseSummaryDTO MapFrom(IEventGroupBuilder eventGroup)
+      public ObjectBaseSummaryDTO MapFrom(EventGroupBuilder eventGroup)
       {
          var dto = new ObjectBaseSummaryDTO
          {

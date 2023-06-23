@@ -41,7 +41,7 @@ namespace MoBi.UI.Views
       private void selectedNodeChanged(ITreeNode selectedNode)
       {
          if (selectedNode == null) return;
-         OnEvent(() => _presenter.Select(selectedNode.TagAsObject.DowncastTo<IObjectBaseDTO>()));
+         OnEvent(() => _presenter.Select(selectedNode.TagAsObject.DowncastTo<ObjectBaseDTO>()));
       }
 
       private void onClick(object sender, MouseEventArgs e)

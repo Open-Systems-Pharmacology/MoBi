@@ -19,6 +19,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Presenter.BaseDiagram
 {
@@ -80,7 +81,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          _diagramTask = diagramTask;
          _userSettings = userSettings;
          LayoutConfiguration = userSettings.ForceLayoutConfigutation;
-         _diagramPopupMenu = new DiagramPopupMenuBase(this, runOptions);
+         _diagramPopupMenu = new DiagramPopupMenuBase(this, context, runOptions);
          _containerPopupMenu = _diagramPopupMenu;
          _neighborhoodPopupMenu = _diagramPopupMenu;
       }
@@ -92,8 +93,8 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       public PointF CurrentInsertLocation
       {
-         get { return DiagramManager.CurrentInsertLocation; }
-         set { DiagramManager.CurrentInsertLocation = value; }
+         get => DiagramManager.CurrentInsertLocation;
+         set => DiagramManager.CurrentInsertLocation = value;
       }
 
       /// <summary>

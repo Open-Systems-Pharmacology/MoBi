@@ -48,7 +48,7 @@ namespace MoBi.Core.Service
    {
       private IEntity _result;
       private IParameter _parameter;
-      private IReactionBuilder _reactionBuilder;
+      private ReactionBuilder _reactionBuilder;
 
       protected override void Context()
       {
@@ -125,10 +125,10 @@ namespace MoBi.Core.Service
    class When_getting_local_referencies_for_a_parameter_at_reaction : concern_for_ContetxSpecificeferenciesRetrieverSpecs
    {
       private IParameter _parameter;
-      private IReactionBuilder _reaction1;
+      private ReactionBuilder _reaction1;
       private IParameter _otherParameter;
       private IEnumerable<IObjectBase> _result;
-      private IReactionBuildingBlock _reactionBuilidingBlock;
+      private ReactionBuildingBlock _reactionBuilidingBlock;
       private ReactionBuilder _reaction2;
       private IParameter _otherParameter2;
       private ReactionBuilder _reaction3;
@@ -193,7 +193,7 @@ namespace MoBi.Core.Service
 
    class When_getting_local_referencies_for_a_event_assingment : concern_for_ContetxSpecificeferenciesRetrieverSpecs
    {
-      private IEventAssignmentBuilder _eventAssignment;
+      private EventAssignmentBuilder _eventAssignment;
       private IEnumerable<IObjectBase> _result;
       private IContainer _root;
 

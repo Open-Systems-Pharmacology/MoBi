@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Repository;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using MoBi.Core.Services;
@@ -10,7 +11,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ITagVisitor : IVisitor
    {
-      IEnumerable<string> AllTagsFrom(ISpatialStructure spatialStructure);
+      IEnumerable<string> AllTagsFrom(SpatialStructure spatialStructure);
 
       /// <summary>
       /// Returns all tags defined in the current project
@@ -24,15 +25,15 @@ namespace MoBi.Presentation.Presenter
       IVisitor<IParameter>,
       IVisitor<IDistributedParameter>
    {
-      private readonly IMoBiProjectRetriever _projectRetriever;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private HashSet<string> _tags = new HashSet<string>();
 
-      public TagVisitor(IMoBiProjectRetriever projectRetriever)
+      public TagVisitor(IBuildingBlockRepository buildingBlockRepository)
       {
-         _projectRetriever = projectRetriever;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
-      public IEnumerable<string> AllTagsFrom(ISpatialStructure spatialStructure)
+      public IEnumerable<string> AllTagsFrom(SpatialStructure spatialStructure)
       {
          _tags = new HashSet<string>();
          spatialStructure.AcceptVisitor(this);
@@ -42,7 +43,7 @@ namespace MoBi.Presentation.Presenter
       public IEnumerable<string> AllTags()
       {
          IEnumerable<string> tags = new HashSet<string>();
-         return _projectRetriever.Current.SpatialStructureCollection
+         return _buildingBlockRepository.SpatialStructureCollection
             .Aggregate(tags, (current, spatialStructure) => current.Union(AllTagsFrom(spatialStructure)))
             .OrderBy(x => x);
       }

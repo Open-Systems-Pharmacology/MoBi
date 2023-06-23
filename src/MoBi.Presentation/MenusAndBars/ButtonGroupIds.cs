@@ -7,7 +7,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static ButtonGroupId File = new ButtonGroupId("File");
       public static ButtonGroupId BuildingBlocks = new ButtonGroupId("BuildingBlocks");
       public static ButtonGroupId Simulation = new ButtonGroupId("Simulation");
-      public static ButtonGroupId Workflows = new ButtonGroupId("Workflows");
       public static ButtonGroupId Tools = new ButtonGroupId("Tools");
       public static ButtonGroupId Skins = new ButtonGroupId("Skins");
       public static ButtonGroupId View = new ButtonGroupId("View");
@@ -21,8 +20,8 @@ namespace MoBi.Presentation.MenusAndBars
       public static ButtonGroupId AddEvent = new ButtonGroupId("AddEvent");
       public static ButtonGroupId EditDiagram = new ButtonGroupId("EditDiagram");
       public static ButtonGroupId EditOrganism = new ButtonGroupId("EditOrganism");
-      public static ButtonGroupId EditMoleculeStartValues = new ButtonGroupId("EditMoleculeStartValues");
-      public static ButtonGroupId EditParameterStartValues = new ButtonGroupId("EditParameterStartValues");
+      public static ButtonGroupId EditInitialConditions = new ButtonGroupId("EditInitialConditions");
+      public static ButtonGroupId EditParameterValues = new ButtonGroupId("EditParameterValues");
       public static ButtonGroupId DisplayUnits = new ButtonGroupId("DisplayUnits");
       public static ButtonGroupId Journal = new ButtonGroupId("Journal");
       public static ButtonGroupId Favorites = new ButtonGroupId("Favorites");
@@ -34,5 +33,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static ButtonGroupId RunSensitivityAnalysis = new ButtonGroupId("RunSensitivityAnalysis");
       public static ButtonGroupId SensitivityAnalysisPKParameterAnalyses = new ButtonGroupId("SensitivityAnalysisPKParameterAnalysis");
       public static ButtonGroupId History = new ButtonGroupId("History");
+      public static ButtonGroupId ProjectSimulationSettings = new ButtonGroupId("ProjectSimulationSettings");
    }
 }

@@ -7,7 +7,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting.TEXBuilder 
 {
-   class MoleculeBuilderTEXBuilder : OSPSuiteTeXBuilder<IMoleculeBuilder>
+   class MoleculeBuilderTEXBuilder : OSPSuiteTeXBuilder<MoleculeBuilder>
    {
       private readonly ITeXBuilderRepository _builderRepository;
 
@@ -16,7 +16,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          _builderRepository = builderRepository;
       }
 
-      public override void Build(IMoleculeBuilder moleculeBuilder, OSPSuiteTracker buildTracker)
+      public override void Build(MoleculeBuilder moleculeBuilder, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
          listToReport.AddRange(this.ReportDescription(moleculeBuilder, buildTracker));
@@ -27,7 +27,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
 
          if (!string.IsNullOrEmpty(moleculeBuilder.DefaultStartFormula.Name))
          {
-            listToReport.Add(new Paragraph(Constants.MOLECULE_START_VALUES));
+            listToReport.Add(new Paragraph(Constants.INITIAL_CONDITIONS));
             listToReport.Add(moleculeBuilder.DefaultStartFormula);
          }
 

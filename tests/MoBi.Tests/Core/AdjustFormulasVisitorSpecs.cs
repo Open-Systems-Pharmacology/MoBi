@@ -1,3 +1,4 @@
+using System;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
@@ -205,7 +206,7 @@ namespace MoBi.Core
          A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
          _totalyNewObject = new Parameter().WithName("New");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(A.Fake<IDimension>()).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = new FormulaUsablePath[0];
          _totalyNewObject.Formula = _newFormula;
          A.CallTo(() => _objectBaseRepository.ContainsObjectWithId(A<string>._)).Returns(false);
       }
@@ -224,7 +225,7 @@ namespace MoBi.Core
 
    public class When_adjusting_Formulas_at_a_totaly_new_moleculeBuilder : concern_for_AdjustFormulaVisitor
    {
-      private IMoleculeBuilder _totalyNewObject;
+      private MoleculeBuilder _totalyNewObject;
       private IBuildingBlock _buildingBlockToAddTo;
       private IFormulaCache _formulaCache;
       private ExplicitFormula _newFormula;
@@ -237,7 +238,7 @@ namespace MoBi.Core
          A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
          _totalyNewObject = new MoleculeBuilder().WithName("New");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(A.Fake<IDimension>()).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = new FormulaUsablePath[0];
          _totalyNewObject.DefaultStartFormula = _newFormula;
       }
 
@@ -273,8 +274,8 @@ namespace MoBi.Core
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _oldFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = new FormulaUsablePath[0];
+         _oldFormula.ObjectPaths = new FormulaUsablePath[0];
          _formulaCache.Add(_oldFormula);
          _totalyNewObject.Formula = _newFormula;
       }
@@ -312,8 +313,8 @@ namespace MoBi.Core
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _oldFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _oldFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _formulaCache.Add(_oldFormula);
          _newRHSFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+5").WithId("RHS");
          _totalyNewObject.Formula = _newFormula;
@@ -359,8 +360,8 @@ namespace MoBi.Core
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+5").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _oldFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _oldFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _formulaCache.Add(_oldFormula);
          _totalyNewObject.Formula = _newFormula;
          A.CallTo(() => _nameCorrector.CorrectName(_formulaCache, _newFormula)).Returns(true);
@@ -385,7 +386,7 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_have_changed_the_new_formuals_id()
+      public void should_have_changed_the_new_formulas_id()
       {
          _newFormula.Id.ShouldNotBeEqualTo(_oldFormula.Id);
       }
@@ -411,8 +412,8 @@ namespace MoBi.Core
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula_2").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _oldFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _oldFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _formulaCache.Add(_oldFormula);
          _totalyNewObject.Formula = _newFormula;
       }

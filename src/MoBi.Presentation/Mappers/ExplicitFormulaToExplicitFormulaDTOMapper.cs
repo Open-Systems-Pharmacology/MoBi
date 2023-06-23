@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Mappers
 
       public ExplicitFormulaBuilderDTO MapFrom(ExplicitFormula explicitFormula, IUsingFormula usingFormula)
       {
-         var dto = Map<ExplicitFormulaBuilderDTO>(explicitFormula);
+         var dto = Map(new ExplicitFormulaBuilderDTO(explicitFormula));
          dto.FormulaString = explicitFormula.FormulaString;
          dto.Dimension = explicitFormula.Dimension;
          dto.ObjectPaths = _formulaUsablePathDTOMapper.MapFrom(explicitFormula, usingFormula);

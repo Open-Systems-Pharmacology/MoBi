@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.BatchTool.Services;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Serialization.ORM;
 using Newtonsoft.Json;
 using OSPSuite.Core.Domain;
@@ -21,12 +22,14 @@ namespace MoBi.BatchTool.Runners
       private readonly IBatchLogger _logger;
       private readonly IContextPersistor _contextPersistor;
       private readonly IMoBiContext _context;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public ProjectOverviewRunner(IBatchLogger logger, IContextPersistor contextPersistor, IMoBiContext context)
+      public ProjectOverviewRunner(IBatchLogger logger, IContextPersistor contextPersistor, IMoBiContext context, IBuildingBlockRepository buildingBlockRepository)
       {
          _logger = logger;
          _contextPersistor = contextPersistor;
          _context = context;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
       public Task RunBatch(dynamic parameters)
@@ -51,7 +54,7 @@ namespace MoBi.BatchTool.Runners
 
             var begin = DateTime.UtcNow;
 
-            var allProjects = new AllProjects {InputFolder = inputFolder};
+            var allProjects = new AllProjects { InputFolder = inputFolder };
             foreach (var projectFile in allProjectFiles)
             {
                allProjects.Projects.Add(addProjectInfo(projectFile));
@@ -67,14 +70,14 @@ namespace MoBi.BatchTool.Runners
 
       private ProjectInfo addProjectInfo(FileInfo projectFile)
       {
-         var projectInfo = new ProjectInfo {FullPath = projectFile.FullName, Name = projectFile.Name};
+         var projectInfo = new ProjectInfo { FullPath = projectFile.FullName, Name = projectFile.Name };
          _logger.AddInfo($"Loading project file '{projectFile.FullName}'");
 
          try
          {
             _contextPersistor.Load(_context, projectFile.FullName);
             var project = _context.CurrentProject;
-            projectInfo.CompoundNames = project.MoleculeBlockCollection.SelectMany(x => x).AllNames().ToList();
+            projectInfo.CompoundNames = _buildingBlockRepository.MoleculeBlockCollection.SelectMany(x => x).AllNames().ToList();
 
             foreach (var observedData in project.AllObservedData)
             {
@@ -107,7 +110,7 @@ namespace MoBi.BatchTool.Runners
 
       private ObservedDataInfo observedDataInfoFrom(DataRepository observedData)
       {
-         var observedDataInfo = new ObservedDataInfo {Name = observedData.Name};
+         var observedDataInfo = new ObservedDataInfo { Name = observedData.Name };
          observedData.ExtendedProperties.Each(prop => { observedDataInfo.MetaData.Add($"{prop.DisplayName}={prop.ValueAsObject}"); });
          return observedDataInfo;
       }

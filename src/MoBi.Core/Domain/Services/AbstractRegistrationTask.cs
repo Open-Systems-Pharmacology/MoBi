@@ -8,7 +8,7 @@ namespace MoBi.Core.Domain.Services
 {
    public abstract class AbstractRegistrationTask : 
       IVisitor<IUsingFormula>,
-      IVisitor<IMoleculeBuilder>,
+      IVisitor<MoleculeBuilder>,
       IVisitor<IWithId>
    {
       protected IWithIdRepository _withIdRepository;
@@ -27,7 +27,7 @@ namespace MoBi.Core.Domain.Services
          Visit(usingFormula.Formula);
       }
 
-      public void Visit(IMoleculeBuilder moleculeBuilder)
+      public void Visit(MoleculeBuilder moleculeBuilder)
       {
          Visit(moleculeBuilder.DowncastTo<IWithId>());
          Visit(moleculeBuilder.DefaultStartFormula);

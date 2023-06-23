@@ -7,12 +7,13 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class MdiChildViewContextMenu : ContextMenu<IMdiChildView>
    {
-      public MdiChildViewContextMenu(IMdiChildView view) : base(view)
+      public MdiChildViewContextMenu(IMdiChildView view, IContainer container) : base(view, container)
       {
       }
 
@@ -20,21 +21,28 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.CloseView)
             .WithIcon(ApplicationIcons.Close)
-            .WithCommandFor<CloseMdiViewCommand, IMdiChildView>(view);
+            .WithCommandFor<CloseMdiViewCommand, IMdiChildView>(view, _container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.CloseAll)
-            .WithCommand<CloseAllMdiViewCommand>();
+            .WithCommand<CloseAllMdiViewCommand>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.Captions.CloseAllButThis)
-            .WithCommandFor<CloseAllButMdiViewCommand, IMdiChildView>(view);
+            .WithCommandFor<CloseAllButMdiViewCommand, IMdiChildView>(view, _container);
       }
    }
 
    public class MdiChildViewContextMenuFactory : IContextMenuSpecificationFactory<IMdiChildView>
    {
+      private readonly IContainer _container;
+
+      public MdiChildViewContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public IContextMenu CreateFor(IMdiChildView view, IPresenterWithContextMenu<IMdiChildView> presenter)
       {
-         return new MdiChildViewContextMenu(view);
+         return new MdiChildViewContextMenu(view, _container);
       }
 
       public bool IsSatisfiedBy(IMdiChildView view, IPresenterWithContextMenu<IMdiChildView> presenter)

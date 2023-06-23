@@ -45,14 +45,14 @@ namespace MoBi.Presentation
 
    public class When_creatign_export_where_project_has_path : ExportModelPartsToExcelUICommandSpecs
    {
-      private IMoBiProject _project;
+      private MoBiProject _project;
       private string _defaultFileName;
 
       protected override void Context()
       {
          base.Context();
          _defaultFileName = "project_Subject_Model_Parts";
-         _project = A.Fake<IMoBiProject>();
+         _project = A.Fake<MoBiProject>();
          A.CallTo(() => _project.Name).Returns("project");
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_defaultFileName);

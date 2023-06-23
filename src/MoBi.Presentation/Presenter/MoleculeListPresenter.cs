@@ -20,7 +20,7 @@ using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IMoleculeListPresenter : IEditPresenter<IMoleculeBuildingBlock>,
+   public interface IMoleculeListPresenter : IEditPresenter<MoleculeBuildingBlock>,
       IPresenterWithContextMenu<IViewItem>,
       IListener<EntitySelectedEvent>,
       IListener<AddedEvent>,
@@ -33,12 +33,12 @@ namespace MoBi.Presentation.Presenter
       ///    Called by the view when item is selected
       /// </summary>
       /// <param name="dto"></param>
-      void Select(IObjectBaseDTO dto);
+      void Select(ObjectBaseDTO dto);
 
-      IMoleculeBuildingBlock MoleculeBuildingBlock { get; }
+      MoleculeBuildingBlock MoleculeBuildingBlock { get; }
    }
 
-   internal class MoleculeListPresenter : AbstractEditPresenter<IMoleculeListView, IMoleculeListPresenter, IMoleculeBuildingBlock>,
+   internal class MoleculeListPresenter : AbstractEditPresenter<IMoleculeListView, IMoleculeListPresenter, MoleculeBuildingBlock>,
       IMoleculeListPresenter
    {
       private readonly IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderToDTOMoleculeBuilderMapper;
@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Presenter
       private bool _disableEventsForHeavyWork;
       private readonly ITreeNode _favoritesNode;
       private readonly ITreeNode _userDefinedParametersNode;
-      public IMoleculeBuildingBlock MoleculeBuildingBlock { get; private set; }
+      public MoleculeBuildingBlock MoleculeBuildingBlock { get; private set; }
 
       public MoleculeListPresenter(IMoleculeListView view,
          IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderToDTOMoleculeBuilderMapper,
@@ -61,7 +61,7 @@ namespace MoBi.Presentation.Presenter
          _userDefinedParametersNode = treeNodeFactory.CreateForUserDefined();
       }
 
-      public override void Edit(IMoleculeBuildingBlock objectToEdit)
+      public override void Edit(MoleculeBuildingBlock objectToEdit)
       {
          MoleculeBuildingBlock = objectToEdit;
          _view.Clear();
@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Presenter
          contextMenu.Show(_view, popupLocation);
       }
 
-      public virtual void Select(IObjectBaseDTO dtoObjectBase)
+      public virtual void Select(ObjectBaseDTO dtoObjectBase)
       {
          if (Equals(dtoObjectBase, _favoritesNode.TagAsObject))
             raiseFavoritesSelectedEvent();
@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new FavoritesSelectedEvent(MoleculeBuildingBlock));
       }
 
-      private void raiseEntitySelectedEvent(IObjectBaseDTO objectBaseDTO)
+      private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
          var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
          _context.PublishEvent(new EntitySelectedEvent(objectBase, this));

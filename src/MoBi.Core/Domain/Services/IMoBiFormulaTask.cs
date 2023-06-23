@@ -70,17 +70,17 @@ namespace MoBi.Core.Domain.Services
       ///    Changes the <paramref name="formulaUsablePath" /> in the <paramref name="formula" /> to <paramref name="newPath" />
       /// </summary>
       /// <returns>The command that was run to change the path</returns>
-      IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
 
-      IMoBiCommand AddFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand AddFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock);
       IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName,  IBuildingBlock buildingBlock);
       IMoBiCommand AddValuePoint(TableFormula formula, ValuePoint newValuePoint, IBuildingBlock buildingBlock);
       IMoBiCommand EditUseDerivedValues(TableFormula formula, bool newValue, bool oldValue, IBuildingBlock buildingBlock);
       IMoBiCommand RemoveValuePointFromTableFormula(TableFormula formula, ValuePoint valuePoint, IBuildingBlock buildingBlock);
-      IMoBiCommand ChangeOffsetObject(TableFormulaWithOffset formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
-      IMoBiCommand ChangeTableObject(TableFormulaWithOffset formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
-      IMoBiCommand ChangeXArgumentObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
-      IMoBiCommand ChangeTableObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangeOffsetObject(TableFormulaWithOffset formula, FormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangeTableObject(TableFormulaWithOffset formula, FormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangeXArgumentObject(TableFormulaWithXArgument formula, FormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand ChangeTableObject(TableFormulaWithXArgument formula, FormulaUsablePath path, IBuildingBlock buildingBlock);
       IMoBiCommand SetConstantFormulaValue(ConstantFormula formula, double kernelValue, Unit newDisplayUnit, Unit oldDisplayUnit, IBuildingBlock buildingBlock, IEntity formulaOwner);
 
       IMoBiCommand UpdateFormula(IEntity usingFormula, IFormula oldFormula, IFormula newFormula, FormulaDecoder decoder, IBuildingBlock buildingBlock);
@@ -90,7 +90,7 @@ namespace MoBi.Core.Domain.Services
       IFormula CreateNewFormula(Type formulaType, IDimension formulaDimension);
       TFormula CreateNewFormula<TFormula>(IDimension formulaDimension) where TFormula : IFormula;
 
-      IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, IDistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock);
+      IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, DistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Changes the <paramref name="oldAlias" /> to <paramref name="newAlias" /> in the <paramref name="formula" />. The
@@ -98,7 +98,7 @@ namespace MoBi.Core.Domain.Services
       ///    is used to identify the location of the formula.
       /// </summary>
       /// <returns>The command that was run to change the alias</returns>
-      IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
+      IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Sets the dimension for the formula usable path with <paramref name="alias" /> to <paramref name="newDimension" /> on
@@ -111,7 +111,7 @@ namespace MoBi.Core.Domain.Services
       ///    Removes <paramref name="path" /> from the <paramref name="formula" />
       /// </summary>
       /// <returns>The command that was run to remove the path from the formula</returns>
-      IMoBiCommand RemoveFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock);
+      IMoBiCommand RemoveFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock);
 
       (bool valid, string validationMessage) Validate(string formulaString, FormulaWithFormulaString formula, IBuildingBlock buildingBlock);
    }

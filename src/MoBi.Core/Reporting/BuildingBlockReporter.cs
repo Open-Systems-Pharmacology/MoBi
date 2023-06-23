@@ -8,7 +8,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting
 {
-   public abstract class BuildingBlockReporter<TBuildingBlock, TBuilder> : OSPSuiteTeXReporter<TBuildingBlock> where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IObjectBase
+   public abstract class BuildingBlockReporter<TBuildingBlock, TBuilder> : OSPSuiteTeXReporter<TBuildingBlock> where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder
    {
       private readonly string _caption;
       private readonly string _chapterCaption;

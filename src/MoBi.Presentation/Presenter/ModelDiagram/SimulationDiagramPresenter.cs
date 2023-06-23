@@ -2,6 +2,7 @@ using System.Linq;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Settings;
@@ -10,6 +11,7 @@ using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Diagram.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters;
@@ -27,23 +29,26 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
    {
       private readonly IMoBiConfiguration _configuration;
       private readonly ILayerLayouter _layerLayouter;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IDiagramPopupMenuBase _moleculeAmountPopupMenu;
 
-      public SimulationDiagramPresenter(ISimulationDiagramView view, 
-         IContainerBaseLayouter layouter, 
+      public SimulationDiagramPresenter(ISimulationDiagramView view,
+         IContainerBaseLayouter layouter,
          IDialogCreator dialogCreator,
          IDiagramModelFactory diagramModelFactory,
-         IUserSettings userSettings, 
-         IMoBiContext context, 
-         IDiagramTask diagramTask, 
+         IUserSettings userSettings,
+         IMoBiContext context,
+         IDiagramTask diagramTask,
          IStartOptions runOptions,
-         IMoBiConfiguration configuration, 
-         ILayerLayouter layerLayouter)
+         IMoBiConfiguration configuration,
+         ILayerLayouter layerLayouter,
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
          _configuration = configuration;
          _layerLayouter = layerLayouter;
-         _diagramPopupMenu = new PopupMenuModelDiagram(this, dialogCreator, runOptions);
+         _buildingBlockRepository = buildingBlockRepository;
+         _diagramPopupMenu = new PopupMenuModelDiagram(this, context, runOptions, dialogCreator);
          _containerPopupMenu = _diagramPopupMenu;
          _moleculeAmountPopupMenu = new DiagramPopupMenuBaseWithContext(this, _context, runOptions);
       }
@@ -98,9 +103,9 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       private IDiagramModel getSpaceBlockDiagramModel()
       {
-         var spaceBlockName = DiagramManager.PkModel.BuildConfiguration.SpatialStructure.Name;
-         var project = _context.CurrentProject;
-         var spatialStructure = project.SpatialStructureCollection.FindByName(spaceBlockName);
+         //TODO OSMOSES
+         var spaceBlockName = DiagramManager.PkModel.Configuration.All<SpatialStructure>().First().Name;
+         var spatialStructure = _buildingBlockRepository.SpatialStructureCollection.FindByName(spaceBlockName);
          if (spatialStructure == null)
             return null;
 
@@ -127,9 +132,10 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       private IDiagramModel getReactionBlockDiagramModel()
       {
-         var reactionBlockName = DiagramManager.PkModel.BuildConfiguration.Reactions.Name;
-         var project = _context.CurrentProject;
-         var reactionBlock = project.ReactionBlockCollection.FindByName(reactionBlockName);
+         // TODO OSMOSES naming is no longer unique among all reaction blocks so we will need a new way
+         // to find specific reaction in the repository
+         var reactionBlockName = DiagramManager.PkModel.Configuration.All<ReactionBuildingBlock>().First().Name;
+         var reactionBlock = _buildingBlockRepository.ReactionBlockCollection.FindByName(reactionBlockName);
 
          if (reactionBlock == null)
             return null;

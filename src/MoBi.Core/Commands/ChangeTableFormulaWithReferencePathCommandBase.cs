@@ -10,14 +10,14 @@ namespace MoBi.Core.Commands
    public abstract class ChangeTableFormulaWithReferencePathCommandBase<TFormula> : BuildingBlockChangeCommandBase<IBuildingBlock> where TFormula: Formula
    {
       protected TFormula _tableFormulaWithReference;
-      protected IFormulaUsablePath _newFormulaUsablePath;
-      protected IFormulaUsablePath _oldFormulaUsablePath;
+      protected FormulaUsablePath _newFormulaUsablePath;
+      protected FormulaUsablePath _oldFormulaUsablePath;
       private readonly Func<TFormula, string> _aliasFunc;
-      private readonly Action<IFormulaUsablePath> _addAction;
+      private readonly Action<FormulaUsablePath> _addAction;
       private readonly string _tableFormulaWithReferenceId;
 
       protected ChangeTableFormulaWithReferencePathCommandBase(TFormula tableFormulaWithReference,
-         IFormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock, Func<TFormula, string> aliasFunc, Action<IFormulaUsablePath> addAction)
+         FormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock, Func<TFormula, string> aliasFunc, Action<FormulaUsablePath> addAction)
          : base(buildingBlock)
       {
          _tableFormulaWithReference = tableFormulaWithReference;

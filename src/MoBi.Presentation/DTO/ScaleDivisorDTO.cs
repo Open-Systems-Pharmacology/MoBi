@@ -2,12 +2,12 @@
 
 namespace MoBi.Presentation.DTO
 {
-   public class ScaleDivisorDTO : BreadCrumbsDTO<IMoleculeAmount>
+   public class ScaleDivisorDTO : BreadCrumbsDTO<MoleculeAmount>
    {
-      public IMoleculeAmount MoleculeAmount { get; private set; }
+      public MoleculeAmount MoleculeAmount { get; private set; }
 
 
-      public ScaleDivisorDTO(IMoleculeAmount moleculeAmount) : base(moleculeAmount)
+      public ScaleDivisorDTO(MoleculeAmount moleculeAmount) : base(moleculeAmount)
       {
          MoleculeAmount = moleculeAmount;
       }
@@ -20,7 +20,7 @@ namespace MoBi.Presentation.DTO
 
       public string PathAsString
       {
-         get { return  ContainerPath.Clone<IObjectPath>().AndAdd(Name).ToString(); }
+         get { return  ContainerPath.Clone<ObjectPath>().AndAdd(Name).ToString(); }
       }
 
       public string Name
