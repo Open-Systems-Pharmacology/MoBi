@@ -1,14 +1,17 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
+﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Core.Services;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -17,14 +20,16 @@ namespace MoBi.Presentation.Tasks
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       protected IInteractionTaskContext _interactionTaskContext;
       protected IInteractionTask _interactionTask;
+      private IObjectPathFactory _objectPathFactory;
 
       protected override void Context()
       {
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _interactionTask = A.Fake<IInteractionTask>();
+         _objectPathFactory = new ObjectPathFactoryForSpecs();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory);
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory);
       }
    }
 
@@ -55,7 +60,6 @@ namespace MoBi.Presentation.Tasks
    {
       private IContainer _entityToSave;
       private Container _parentContainer;
-      
 
       protected override void Context()
       {
@@ -75,6 +79,73 @@ namespace MoBi.Presentation.Tasks
       public void the_entity_must_have_the_parent_container_restored_after_saving()
       {
          _entityToSave.ParentContainer.ShouldBeEqualTo(_parentContainer);
+      }
+   }
+
+   public class When_renaming_a_container_that_is_not_in_a_spatial_structure : concern_for_EditTaskForContainer
+   {
+      private IContainer _container;
+      private EventGroupBuildingBlock _eventBuildingBlock;
+      private IRenameObjectPresenter _renameObjectPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container().WithName("OLD");
+         _eventBuildingBlock = new EventGroupBuildingBlock();
+         _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
+         A.CallTo(_renameObjectPresenter).WithReturnType<string>().Returns("NEW");
+         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
+      }
+
+      protected override void Because()
+      {
+         sut.Rename(_container, _eventBuildingBlock);
+      }
+
+      [Observation]
+      public void should_be_able_to_rename_the_container()
+      {
+         _container.Name.ShouldBeEqualTo("NEW");
+      }
+   }
+
+   public class When_renaming_a_container_that_is_in_a_spatial_structure : concern_for_EditTaskForContainer
+   {
+      private IContainer _container;
+      private SpatialStructure _spatialStructure;
+      private IRenameObjectPresenter _renameObjectPresenter;
+      private IMoBiCommand _renameCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container().WithName("OLD");
+         _spatialStructure = new SpatialStructure();
+         _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
+         A.CallTo(_renameObjectPresenter).WithReturnType<string>().Returns("NEW");
+         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
+
+         A.CallTo(() => _interactionTaskContext.Context.AddToHistory(A<IMoBiCommand>._))
+            .Invokes(x => _renameCommand = x.GetArgument<IMoBiCommand>(0));
+      }
+
+      protected override void Because()
+      {
+         sut.Rename(_container, _spatialStructure);
+      }
+
+      [Observation]
+      public void should_be_able_to_rename_the_container()
+      {
+         _container.Name.ShouldBeEqualTo("NEW");
+      }
+
+      [Observation]
+      public void should_have_used_a_rename_container_command_specifically()
+      {
+         //at least one command with the special case command
+         _renameCommand.DowncastTo<MoBiMacroCommand>().All().Any(x => x.IsAnImplementationOf<RenameContainerCommand>()).ShouldBeTrue();
       }
    }
 }

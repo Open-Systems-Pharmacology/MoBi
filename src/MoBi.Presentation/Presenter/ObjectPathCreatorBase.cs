@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Presenter
       /// </param>
       /// <param name="editedObject"></param>
       /// <returns> The path that could be used in the model to reference the object</returns>
-      ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject);
+      ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject);
 
       ReferenceDTO CreateMoleculePath(DummyMoleculeContainerDTO dtoObjectBase, bool shouldCreateAbsolutePaths, IEntity refObject);
    }
@@ -102,18 +102,18 @@ namespace MoBi.Presentation.Presenter
       /// </param>
       /// <param name="editedObject"></param>
       /// <returns> The path that could be uses in the model to reference the object</returns>
-      public virtual ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      public virtual ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          if (IsMoleculeReference(objectBaseDTO))
             return createMoleculeReference();
 
          var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
-         var parameterToUse = _context.Get<IParameter>(dtoDummyParameter.ParameterToUse.Id);
+         var parameterToUse = dtoDummyParameter.Parameter;
          ReferenceDTO dtoReference;
          if (parameterToUse.IsAtMolecule())
          {
             dtoReference = new ReferenceDTO();
-            IObjectPath tmpPath;
+            ObjectPath tmpPath;
             //global molecule parameters we always reference absolute
             if (shouldCreateAbsolutePaths || !parameterToUse.BuildMode.Equals(ParameterBuildMode.Local))
             {
@@ -135,6 +135,7 @@ namespace MoBi.Presentation.Presenter
             dtoReference.Path = _objectPathFactory.CreateFormulaUsablePathFrom(tmpPath)
                .WithAlias(_aliasCreator.CreateAliasFrom(parameterToUse.Name))
                .WithDimension(parameterToUse.Dimension);
+
             dtoReference.Path.Add(parameterToUse.Name);
          }
          else
@@ -151,8 +152,8 @@ namespace MoBi.Presentation.Presenter
          var moleculeProperties = _context.Get<IContainer>(dtoObjectBase.MoleculePropertiesContainer.Id);
          var parentContainer = moleculeProperties.ParentContainer;
          if (parentContainer == null) return null;
-         IEnumerable<string> elements;
-         IFormulaUsablePath path;
+         ObjectPath elements;
+         FormulaUsablePath path;
          if (shouldCreateAbsolutePaths)
          {
             elements = _objectPathFactory.CreateAbsoluteObjectPath(parentContainer);
@@ -187,24 +188,24 @@ namespace MoBi.Presentation.Presenter
          };
       }
 
-      protected IFormulaUsablePath CreateFormulaUsablePathFrom(IEnumerable<string> paths, IFormulaUsable formulaUsable)
+      protected FormulaUsablePath CreateFormulaUsablePathFrom(IReadOnlyCollection<string> paths, IFormulaUsable formulaUsable)
       {
          return CreateFormulaUsablePathFrom(paths, formulaUsable.Name, formulaUsable.Dimension);
       }
 
-      protected IFormulaUsablePath CreateFormulaUsablePathFrom(IEnumerable<string> paths , string alias, string dimensionName)
+      protected FormulaUsablePath CreateFormulaUsablePathFrom(IReadOnlyCollection<string> paths , string alias, string dimensionName)
       {
          return CreateFormulaUsablePathFrom(paths, alias, _context.DimensionFactory.Dimension(dimensionName));
       }
 
-      protected IFormulaUsablePath CreateFormulaUsablePathFrom(IEnumerable<string> paths, string alias, IDimension dimension)
+      protected FormulaUsablePath CreateFormulaUsablePathFrom(IReadOnlyCollection<string> paths, string alias, IDimension dimension)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(paths)
             .WithAlias(_aliasCreator.CreateAliasFrom(alias))
             .WithDimension(dimension);
       }
 
-      protected virtual IFormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject, IUsingFormula editedObject)
+      protected virtual FormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject, IUsingFormula editedObject)
       {
          var path = createRelativePathBase(formulaUsable, refObject);
          if (path == null)
@@ -214,7 +215,7 @@ namespace MoBi.Presentation.Presenter
          return AdjustReferences(formulaUsable, path);
       }
 
-      protected abstract T AdjustReferences<T>(IEntity entity, T path) where T : IObjectPath;
+      protected abstract T AdjustReferences<T>(IEntity entity, T path) where T : ObjectPath;
 
       private bool isGlobal(IObjectBase objectBase)
       {
@@ -222,7 +223,7 @@ namespace MoBi.Presentation.Presenter
          return parameter != null && parameter.BuildMode != ParameterBuildMode.Local;
       }
 
-      protected IFormulaUsablePath CreateAlwaysAbsolutePaths(IObjectBase objectBase, IFormulaUsable formulaUsable)
+      protected FormulaUsablePath CreateAlwaysAbsolutePaths(IObjectBase objectBase, IFormulaUsable formulaUsable)
       {
          if (formulaUsable.IsAtMolecule())
             return _objectPathFactory.CreateAbsoluteFormulaUsablePath(formulaUsable);
@@ -230,7 +231,7 @@ namespace MoBi.Presentation.Presenter
          return CreateFormulaUsablePathFrom(new[] {getReactionNameFor(formulaUsable), objectBase.Name}, formulaUsable);
       }
 
-      private IFormulaUsablePath createRelativePathBase(IFormulaUsable formulaUsable, IEntity refObject)
+      private FormulaUsablePath createRelativePathBase(IFormulaUsable formulaUsable, IEntity refObject)
       {
          if (refObject == null)
             return null;
@@ -241,7 +242,7 @@ namespace MoBi.Presentation.Presenter
          return _objectPathFactory.CreateRelativeFormulaUsablePath(refObject, formulaUsable);
       }
 
-      protected IFormulaUsablePath CreateAbsolutePath(IFormulaUsable formulaUsable)
+      protected FormulaUsablePath CreateAbsolutePath(IFormulaUsable formulaUsable)
       {
          return _objectPathFactory.CreateAbsoluteFormulaUsablePath(formulaUsable);
       }
@@ -251,16 +252,16 @@ namespace MoBi.Presentation.Presenter
          return GetReactionBuilderFor(formulaUsable).Name;
       }
 
-      protected IReactionBuilder GetReactionBuilderFor(IFormulaUsable formulaUsable)
+      protected ReactionBuilder GetReactionBuilderFor(IFormulaUsable formulaUsable)
       {
          var parameter = formulaUsable as IParameter;
          if (parameter != null && parameter.IsAtReaction())
-            return parameter.RootContainer as IReactionBuilder;
+            return parameter.RootContainer as ReactionBuilder;
          
          throw new MoBiException($"cant find reaction for parameter{formulaUsable.Name}");
       }
 
-      protected static bool IsMoleculeReference(IObjectBaseDTO dtoObjectBase)
+      protected static bool IsMoleculeReference(ObjectBaseDTO dtoObjectBase)
       {
          return dtoObjectBase.Id.Equals(ObjectPathKeywords.MOLECULE);
       }

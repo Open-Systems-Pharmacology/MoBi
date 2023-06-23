@@ -5,6 +5,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
@@ -16,14 +17,16 @@ namespace MoBi.Presentation
       protected IMoBiConfiguration _configuration;
       protected IStartableProcessFactory _startableProcessFactory;
       protected IApplicationSettings _applicationSettings;
-      protected string _simuationFile = "SimFile.pkml";
+      protected string _simulationFile = "SimFile.pkml";
+      private ICloneManagerForBuildingBlock _cloneManager;
 
       protected override void Context()
       {
          _configuration = A.Fake<IMoBiConfiguration>();
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
          _applicationSettings = A.Fake<IApplicationSettings>();
-         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory);
+         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager);
       }
    }
 
@@ -47,7 +50,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.StartPopulationSimulationWithSimulationFile(_simuationFile);
+         sut.StartPopulationSimulationWithSimulationFile(_simulationFile);
       }
 
       [Observation]
@@ -83,7 +86,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.StartPopulationSimulationWithSimulationFile(_simuationFile);
+         sut.StartPopulationSimulationWithSimulationFile(_simulationFile);
       }
 
       [Observation]
@@ -113,7 +116,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_thrown_an_exception()
       {
-         The.Action(() => sut.StartPopulationSimulationWithSimulationFile(_simuationFile)).ShouldThrowAn<OSPSuiteException>();
+         The.Action(() => sut.StartPopulationSimulationWithSimulationFile(_simulationFile)).ShouldThrowAn<OSPSuiteException>();
       }
 
       public override void GlobalCleanup()

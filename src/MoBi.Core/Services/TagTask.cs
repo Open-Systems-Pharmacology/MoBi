@@ -15,6 +15,7 @@ namespace MoBi.Core.Services
       MatchAll,
       InContainer,
       NotInContainer,
+      InParent
    }
 
   
@@ -85,6 +86,8 @@ namespace MoBi.Core.Services
                return new AddInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
             case TagType.NotInContainer:
                return new AddNotInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
+            case TagType.InParent:
+               return new AddInParentConditionCommand<T>(tagConditionCommandParameters);
             default:
                throw new ArgumentOutOfRangeException(nameof(tagType));
          }
@@ -104,6 +107,8 @@ namespace MoBi.Core.Services
                return new RemoveInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
             case TagType.NotInContainer:
                return new RemoveNotInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
+            case TagType.InParent:
+               return new RemoveInParentConditionCommand<T>(tagConditionCommandParameters);
             default:
                throw new ArgumentOutOfRangeException(nameof(tagType));
          }

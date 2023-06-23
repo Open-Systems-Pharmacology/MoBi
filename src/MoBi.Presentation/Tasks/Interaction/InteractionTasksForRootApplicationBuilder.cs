@@ -9,39 +9,39 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForRootApplicationBuilder : InteractionTasksForBuilder<IApplicationBuilder, IEventGroupBuildingBlock>
+   public class InteractionTasksForRootApplicationBuilder : InteractionTasksForBuilder<ApplicationBuilder, EventGroupBuildingBlock>
    {
-      public InteractionTasksForRootApplicationBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IApplicationBuilder> editTask)
+      public InteractionTasksForRootApplicationBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<ApplicationBuilder> editTask)
          : base(interactionTaskContext, editTask)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(IApplicationBuilder applicationBuilderToRemove, IEventGroupBuildingBlock parent, IBuildingBlock buildingBlock1)
+      public override IMoBiCommand GetRemoveCommand(ApplicationBuilder applicationBuilderToRemove, EventGroupBuildingBlock parent, IBuildingBlock buildingBlock1)
       {
          return new RemoveRootApplicationBuilderCommand(parent, applicationBuilderToRemove);
       }
 
-      public override IMoBiCommand GetRemoveCommand(IApplicationBuilder builder, IEventGroupBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(ApplicationBuilder builder, EventGroupBuildingBlock buildingBlock)
       {
          return GetRemoveCommand(builder, buildingBlock, null);
       }
 
-      public override IMoBiCommand GetAddCommand(IApplicationBuilder applicationBuilder, IEventGroupBuildingBlock parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(ApplicationBuilder applicationBuilder, EventGroupBuildingBlock parent, IBuildingBlock buildingBlock)
       {
          return GetAddCommand(applicationBuilder, parent);
       }
 
-      public override IMoBiCommand GetAddCommand(IApplicationBuilder builder, IEventGroupBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(ApplicationBuilder builder, EventGroupBuildingBlock buildingBlock)
       {
          return new AddRootApplicationBuilderCommand(buildingBlock, builder);
       }
 
-      public override IReadOnlyCollection<IApplicationBuilder> LoadItems(string filename)
+      public override IReadOnlyCollection<ApplicationBuilder> LoadItems(string filename)
       {
          try
          {
-            var sourceEventGroup = InteractionTask.LoadItems<IEventGroupBuildingBlock>(filename).First();
-            return selectTopEventGroupBuilder(sourceEventGroup.OfType<IApplicationBuilder>().ToList()).ToList();
+            var sourceEventGroup = InteractionTask.LoadItems<EventGroupBuildingBlock>(filename).First();
+            return selectTopEventGroupBuilder(sourceEventGroup.OfType<ApplicationBuilder>().ToList()).ToList();
          }
          catch (NotMatchingSerializationFileException)
          {
@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      private IEnumerable<IApplicationBuilder> selectTopEventGroupBuilder(IReadOnlyCollection<IApplicationBuilder> sourceEventGroupBuilders)
+      private IEnumerable<ApplicationBuilder> selectTopEventGroupBuilder(IReadOnlyCollection<ApplicationBuilder> sourceEventGroupBuilders)
       {
          //TODO: Code is identical to the one in InteractionTasksForRootEventGroup and should be refactored
          if (!sourceEventGroupBuilders.Any())
@@ -61,7 +61,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          using (var modal = ApplicationController.Start<IModalPresenter>())
          {
-            var presenter = ApplicationController.Start<ISelectManyPresenter<IApplicationBuilder>>();
+            var presenter = ApplicationController.Start<ISelectManyPresenter<ApplicationBuilder>>();
             presenter.InitializeWith(sourceEventGroupBuilders);
             modal.Encapsulate(presenter);
             return modal.Show() ? presenter.Selections : null;

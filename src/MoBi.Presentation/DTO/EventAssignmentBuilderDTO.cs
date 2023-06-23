@@ -1,4 +1,5 @@
 using MoBi.Assets;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 
@@ -9,29 +10,22 @@ namespace MoBi.Presentation.DTO
       public FormulaBuilderDTO NewFormula { get; set; }
       public bool UseAsValue { get; set; }
 
-      public EventAssignmentBuilderDTO()
+      public EventAssignmentBuilderDTO(EventAssignmentBuilder eventAssignmentBuilder) : base(eventAssignmentBuilder)
       {
-         Rules.Add(createTargetHasToBeSetRule());
+         Rules.Add(createTargetHasToBeSetRule);
       }
 
-      private IBusinessRule createTargetHasToBeSetRule()
-      {
-         return CreateRule.For<EventAssignmentBuilderDTO>()
-            .Property(x => x.ChangedEntityPath)
-            .WithRule((dto, path) => !path.IsNullOrEmpty())
-            .WithError(AppConstants.Validation.ChangedEntityNotSet);
-      }
+      private IBusinessRule createTargetHasToBeSetRule { get; } = CreateRule.For<EventAssignmentBuilderDTO>()
+         .Property(x => x.ChangedEntityPath)
+         .WithRule((dto, path) => !path.IsNullOrEmpty())
+         .WithError(AppConstants.Validation.ChangedEntityNotSet);
 
       private string _changedEntityPath;
 
-      public string ChangedEntityPath
+      public virtual string ChangedEntityPath
       {
          get => _changedEntityPath;
-         set
-         {
-            _changedEntityPath = value;
-            OnPropertyChanged(() => ChangedEntityPath);
-         }
+         set => SetProperty(ref _changedEntityPath, value);
       }
    }
 }

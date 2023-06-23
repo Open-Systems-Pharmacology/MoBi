@@ -14,9 +14,9 @@ namespace MoBi.Presentation.Nodes
       }
    }
 
-   public class EventNode : ObjectWithIdAndNameNode<IObjectBaseDTO>
+   public class EventNode : ObjectWithIdAndNameNode<ObjectBaseDTO>
    {
-      public EventNode(IObjectBaseDTO tag) : base(tag)
+      public EventNode(ObjectBaseDTO tag) : base(tag)
       {
       }
    }

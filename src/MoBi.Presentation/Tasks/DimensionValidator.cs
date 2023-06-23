@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IUserSettings _userSettings;
       private bool _checkDimensions;
-      private IBuildConfiguration _buildConfiguration;
+      private SimulationBuilder _simulationBuilder;
       private ValidationResult _result;
       private readonly IDictionary<string, string> _hiddenNotifications;
       private bool _checkRules;
@@ -33,21 +33,21 @@ namespace MoBi.Presentation.Tasks
          _userSettings = userSettings;
          _hiddenNotifications = new Dictionary<string, string>
          {
-            {AppConstants.Parameters.SURFACE_AREA_INTERSTITIAL_INTRACELLULAR, dimensionAreaMessage},
-            {AppConstants.Parameters.BSA, dimensionAreaMessage},
-            {AppConstants.Parameters.PERMEABILITY, dimensionVelocityMessage},
-            {AppConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
-            {AppConstants.Parameters.RADIUS_SOLUTE, dimensionValidationMessage(AppConstants.DimensionNames.LENGTH)},
-            {AppConstants.Parameters.SECRETION_OF_LIQUID, dimensionFlowMessage},
-            {Constants.Parameters.VOLUME, $"Organism|Saliva|Volume' {dimensionValidationMessage(Constants.Dimension.VOLUME)}"},
-            {AppConstants.Parameters.RELEASE_RATE_OF_TABLET, dimensionValidationMessage(Constants.Dimension.AMOUNT_PER_TIME)},
-            {AppConstants.Parameters.V_MAX, dimensionValidationMessage(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME)},
-            {AppConstants.Parameters.LYMPH_FLOW_RATE, dimensionFlowMessage},
-            {AppConstants.Parameters.LYMPH_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
-            {AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE, dimensionFlowMessage},
-            {AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage},
-            {AppConstants.Parameters.CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage},
-            {AppConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT, "Arguments of MINUS-function must have the same dimension (Formula: MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098)"}
+            { AppConstants.Parameters.SURFACE_AREA_INTERSTITIAL_INTRACELLULAR, dimensionAreaMessage },
+            { AppConstants.Parameters.BSA, dimensionAreaMessage },
+            { AppConstants.Parameters.PERMEABILITY, dimensionVelocityMessage },
+            { AppConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage },
+            { AppConstants.Parameters.RADIUS_SOLUTE, dimensionValidationMessage(AppConstants.DimensionNames.LENGTH) },
+            { AppConstants.Parameters.SECRETION_OF_LIQUID, dimensionFlowMessage },
+            { Constants.Parameters.VOLUME, $"Organism|Saliva|Volume' {dimensionValidationMessage(Constants.Dimension.VOLUME)}" },
+            { AppConstants.Parameters.RELEASE_RATE_OF_TABLET, dimensionValidationMessage(Constants.Dimension.AMOUNT_PER_TIME) },
+            { AppConstants.Parameters.V_MAX, dimensionValidationMessage(Constants.Dimension.MOLAR_CONCENTRATION_PER_TIME) },
+            { AppConstants.Parameters.LYMPH_FLOW_RATE, dimensionFlowMessage },
+            { AppConstants.Parameters.LYMPH_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage },
+            { AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE, dimensionFlowMessage },
+            { AppConstants.Parameters.FLUID_RECIRCULATION_FLOW_RATE_INCL_MUCOSA, dimensionFlowMessage },
+            { AppConstants.Parameters.CALCULATED_SPECIFIC_INTESTINAL_PERMEABILITY_TRANSCELLULAR, dimensionVelocityMessage },
+            { AppConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT, "Arguments of MINUS-function must have the same dimension (Formula: MW - F * 0.000000017 - Cl * 0.000000022 - Br * 0.000000062 - I * 0.000000098)" }
          };
       }
 
@@ -56,11 +56,11 @@ namespace MoBi.Presentation.Tasks
       private static string dimensionVelocityMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.VELOCITY);
       private static string dimensionAreaMessage { get; } = AppConstants.Validation.DoesNotEvaluateTo(AppConstants.DimensionNames.AREA);
 
-      public Task<ValidationResult> Validate(IContainer container, IBuildConfiguration buildConfiguration) => Validate(new[] {container}, buildConfiguration);
+      public Task<ValidationResult> Validate(IContainer container, SimulationBuilder simulationBuilder) => Validate(new[] { container }, simulationBuilder);
 
-      public Task<ValidationResult> Validate(IModel model, IBuildConfiguration buildConfiguration) => Validate(new[] {model.Root, model.Neighborhoods}, buildConfiguration);
+      public Task<ValidationResult> Validate(IModel model, SimulationBuilder simulationBuilder) => Validate(new[] { model.Root, model.Neighborhoods }, simulationBuilder);
 
-      public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, IBuildConfiguration buildConfiguration)
+      public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, SimulationBuilder simulationBuilder)
       {
          return Task.Run(() =>
          {
@@ -69,13 +69,13 @@ namespace MoBi.Presentation.Tasks
                _result = new ValidationResult();
                _checkDimensions = _userSettings.CheckDimensions;
                _checkRules = _userSettings.CheckRules;
-               _buildConfiguration = buildConfiguration;
+               _simulationBuilder = simulationBuilder;
                containers.Each(c => c.AcceptVisitor(this));
                return _result;
             }
             finally
             {
-               _buildConfiguration = null;
+               _simulationBuilder = null;
                _result = null;
             }
          });
@@ -133,7 +133,7 @@ namespace MoBi.Presentation.Tasks
 
       private void addNotification(NotificationType notificationType, IObjectBase entityToValidate, string notification)
       {
-         var builder = _buildConfiguration.BuilderFor(entityToValidate);
+         var builder = _simulationBuilder.BuilderFor(entityToValidate);
          if (!shouldShowNotification(entityToValidate, notification))
             return;
 
@@ -180,7 +180,7 @@ namespace MoBi.Presentation.Tasks
             dimensionInfos.Add(new QuantityDimensionInformation(objectReference.Alias, createDimensionInfoFromBaseRepresentation(objectReference.Object.Dimension.BaseRepresentation)));
          }
 
-         var (dimInfo, parseSuccess, calculateDimensionSuccess, errorMessage ) = _dimensionParser.GetDimensionInformationFor(explicitFormula.FormulaString, dimensionInfos);
+         var (dimInfo, parseSuccess, calculateDimensionSuccess, errorMessage) = _dimensionParser.GetDimensionInformationFor(explicitFormula.FormulaString, dimensionInfos);
 
          if (!parseSuccess)
          {

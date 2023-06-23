@@ -24,13 +24,13 @@ namespace MoBi.Presentation.Presenter
       private TransporterMoleculeContainer _transporterMoleculeContainer;
       private readonly IEditTasksForTransporterMoleculeContainer _editTasks;
       private readonly IEditParametersInContainerPresenter _parameterBuilderPresenter;
-      private readonly ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
+      private readonly ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
       private readonly IMoBiContext _context;
 
       public EditTransporterMoleculeContainerPresenter(IEditActiveTransportBuilderContainerView view,
          IEditTasksForTransporterMoleculeContainer editTasks,
          IEditParametersInContainerPresenter parameterBuilderPresenter, 
-         ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper transporterMoleculeContainerMapper, IMoBiContext context)
+         ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper transporterMoleculeContainerMapper, IMoBiContext context)
          : base(view)
       {
          _editTasks = editTasks;
@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter
          _transporterMoleculeContainerMapper = transporterMoleculeContainerMapper;
       }
 
-      public override void Edit(TransporterMoleculeContainer transporterMoleculeContainer, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(TransporterMoleculeContainer transporterMoleculeContainer, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _transporterMoleculeContainer = transporterMoleculeContainer;
          _parameterBuilderPresenter.Edit(transporterMoleculeContainer);
@@ -51,10 +51,7 @@ namespace MoBi.Presentation.Presenter
          _view.Show(dto);
       }
 
-      public override object Subject
-      {
-         get { return _transporterMoleculeContainer; }
-      }
+      public override object Subject => _transporterMoleculeContainer;
 
       public void SelectParameter(IParameter parameter)
       {
@@ -90,7 +87,7 @@ namespace MoBi.Presentation.Presenter
 
       public void ChangeTransportName()
       {
-         _editTasks.ChangeTranportName(_transporterMoleculeContainer, BuildingBlock);
+         _editTasks.ChangeTransportName(_transporterMoleculeContainer, BuildingBlock);
          Edit(_transporterMoleculeContainer);
       }
 

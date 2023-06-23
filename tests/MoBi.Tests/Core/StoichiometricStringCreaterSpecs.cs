@@ -22,22 +22,22 @@ namespace MoBi.Core
    public class When_told_to_create_the_string_form_educt_and_product_list : concern_for_StoichiometricStringCreater
    {
       private string _result;
-      private IEnumerable<IReactionPartnerBuilder> _educts;
-      private IEnumerable<IReactionPartnerBuilder> _products;
+      private IEnumerable<ReactionPartnerBuilder> _educts;
+      private IEnumerable<ReactionPartnerBuilder> _products;
 
       protected override void Context()
       {
          base.Context();
-         var educt1 = A.Fake<IReactionPartnerBuilder>();
+         var educt1 = A.Fake<ReactionPartnerBuilder>();
          educt1.MoleculeName = "E1";
          educt1.StoichiometricCoefficient = 1;
-         var educt2 = A.Fake<IReactionPartnerBuilder>();
+         var educt2 = A.Fake<ReactionPartnerBuilder>();
          educt2.MoleculeName = "E2";
          educt2.StoichiometricCoefficient = 3;
-         var product1 = A.Fake<IReactionPartnerBuilder>();
+         var product1 = A.Fake<ReactionPartnerBuilder>();
          product1.MoleculeName = "P1";
          product1.StoichiometricCoefficient = 2;
-         var product2 = A.Fake<IReactionPartnerBuilder>();
+         var product2 = A.Fake<ReactionPartnerBuilder>();
          product2.MoleculeName = "P2";
          product2.StoichiometricCoefficient = 2;
          _educts = new[] {educt1, educt2};

@@ -5,12 +5,13 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface ISelectReferenceAtEventPresenter : ISelectReferencePresenter
    {
-      void Init(IEntity refObject, IEnumerable<IObjectBase> entities, IEventBuilder assingment);
+      void Init(IEntity refObject, IEnumerable<IObjectBase> entities, EventBuilder assingment);
    }
 
    internal class SelectReferenceAtEventPresenter : SelectReferencePresenterBase, ISelectReferenceAtEventPresenter
@@ -22,9 +23,10 @@ namespace MoBi.Presentation.Presenter
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyDTOMapper,
          IParameterToDummyParameterDTOMapper dummyParameterDTOMapper,
          IObjectBaseDTOToReferenceNodeMapper referenceMapper,
-         IObjectPathCreatorAtEvent objectPathCreator)
+         IObjectPathCreatorAtEvent objectPathCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyDTOMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly)
+            objectBaseToMoleculeDummyDTOMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
       }
 
@@ -39,7 +41,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_referenceMapper.MapFrom(rootContainer));
       }
 
-      public void Init(IEntity refObject, IEnumerable<IObjectBase> entities, IEventBuilder eventBuilder)
+      public void Init(IEntity refObject, IEnumerable<IObjectBase> entities, EventBuilder eventBuilder)
       {
          addEventGroupParameter(eventBuilder.RootContainer);
       }

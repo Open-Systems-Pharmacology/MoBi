@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
-using NUnit.Framework;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -62,7 +56,7 @@ namespace MoBi.Presentation
       private ReferenceDTO _result;
       private IParameter _reacPara2;
       private IParameter _reacPara1;
-      private IReactionBuilder _reaction2;
+      private ReactionBuilder _reaction2;
 
       protected override void Context()
       {
@@ -164,17 +158,13 @@ namespace MoBi.Presentation
          A.CallTo(() => dimensionFactory.Dimension(Constants.Dimension.MOLAR_AMOUNT)).Returns(_rightDimension);
          A.CallTo(() => _context.DimensionFactory).Returns(dimensionFactory);
          _parameterName = "Para";
-         var paramterId = _parameterName;
-         _dtoMoleculeParameter = new DummyParameterDTO().WithId(_parameterName).WithName(_parameterName);
+         var parameter = new Parameter().WithName(_parameterName).WithId(_parameterName).WithDimension(_rightDimension);
+         _dtoMoleculeParameter = new DummyParameterDTO(parameter).WithName(_parameterName);
          var organ = new Container().WithName("Organ");
          _container = new Container().WithName("Container");
          organ.Add(_container);
 
-         var parameterToUse = new ObjectBaseDTO().WithName(_parameterName).WithId(paramterId);
-
-         _dtoMoleculeParameter.ParameterToUse = parameterToUse;
-
-         IParameter parameter = new Parameter().WithName(_parameterName).WithId(paramterId).WithDimension(_rightDimension);
+       
 
          _moleculeName = "Drug";
          var moleculeProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES);
@@ -183,7 +173,6 @@ namespace MoBi.Presentation
 
          _dtoMoleculeParameter.Parent = moleculeProperties;
          _container.Add(moleculeProperties);
-         A.CallTo(() => _context.Get<IParameter>(paramterId)).Returns(parameter);
       }
 
       protected override void Because()

@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ICreatePresenter<T> : ICommandCollectorPresenter
    {
-      void Edit(T objectToEdit, IEnumerable<IObjectBase> existingObjectsInParent);
+      void Edit(T objectToEdit, IReadOnlyList<IObjectBase> existingObjectsInParent);
    }
 
    public interface ICanEditPropertiesPresenter : IPresenter
@@ -27,10 +27,14 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   public interface IPresenterWithFormulaCache : IPresenter
+   public interface IPresenterWithBuildingBlock : IPresenter
+   {
+      IBuildingBlock BuildingBlock { get; set; }
+   }
+
+   public interface IPresenterWithFormulaCache : IPresenterWithBuildingBlock
    {
       IEnumerable<FormulaBuilderDTO> GetFormulas();
-      IBuildingBlock BuildingBlock { get; set; }
       IFormulaCache FormulaCache { get; }
    }
 }

@@ -5,12 +5,13 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForParameterIdentification : RootContextMenuFor<IMoBiProject, ParameterIdentification>
+   public class RootContextMenuForParameterIdentification : RootContextMenuFor<MoBiProject, ParameterIdentification>
    {
-      public RootContextMenuForParameterIdentification(IObjectTypeResolver objectTypeResolver, IMoBiContext context) : base(objectTypeResolver, context)
+      public RootContextMenuForParameterIdentification(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {
       }
 
@@ -18,7 +19,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          var parameterIdentificationRootNode = presenter.NodeByType(rootNodeType);
 
-         _allMenuItems.Add(ParameterIdentificationContextMenuItems.CreateParameterIdentification());
+         _allMenuItems.Add(ParameterIdentificationContextMenuItems.CreateParameterIdentification(_container));
          _allMenuItems.Add(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(parameterIdentificationRootNode, presenter).AsGroupStarter());
          _allMenuItems.Add(ClassificationCommonContextMenuItems.RemoveClassificationFolderMainMenu(parameterIdentificationRootNode, presenter));
          return this;

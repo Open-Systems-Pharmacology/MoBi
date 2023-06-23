@@ -1,43 +1,42 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
-using MoBi.Core.Helper;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForMoleculeBuildingBlock : IInteractionTasksForBuildingBlock<IMoleculeBuildingBlock>
+   public interface IInteractionTasksForMoleculeBuildingBlock : IInteractionTasksForBuildingBlock<Module, MoleculeBuildingBlock>
    {
       void CreateNewFromSelection();
-      void Edit(IMoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder);
+      void Edit(MoleculeBuildingBlock moleculeBuildingBlock, MoleculeBuilder moleculeBuilder);
    }
 
-   public class InteractionTasksForMoleculeBuildingBlock : InteractionTaskForCloneMergeBuildingBlock<IMoleculeBuildingBlock, IMoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
+   public class InteractionTasksForMoleculeBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, MoleculeBuildingBlock, MoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
    {
-      private readonly IEditTasksForBuildingBlock<IMoleculeBuildingBlock> _editTaskForBuildingBlock;
+      private readonly IEditTasksForBuildingBlock<MoleculeBuildingBlock> _editTaskForBuildingBlock;
 
       public InteractionTasksForMoleculeBuildingBlock(
          IInteractionTaskContext interactionTaskContext,
-         IEditTasksForBuildingBlock<IMoleculeBuildingBlock> editTask,
-         IInteractionTasksForBuilder<IMoleculeBuilder> builderTask,
-         IMoleculeBuildingBlockCloneManager moleculeBuildingBlockCloneManager)
-         : base(interactionTaskContext, editTask, builderTask, moleculeBuildingBlockCloneManager)
+         IEditTasksForBuildingBlock<MoleculeBuildingBlock> editTask,
+         IInteractionTasksForBuilder<MoleculeBuilder> builderTask)
+         : base(interactionTaskContext, editTask, builderTask)
       {
          _editTaskForBuildingBlock = editTask;
       }
 
       public void CreateNewFromSelection()
       {
-         var allMolecules = Context.CurrentProject.MoleculeBlockCollection;
+         var allMolecules = BuildingBlockRepository.MoleculeBlockCollection;
          NewMoleculeBuildingBlockDescription newMoleculeBuildingBlockDescription = null;
          using (var selectMoleculesPresenter = ApplicationController.Start<ISelectMoleculesForBuildingBlockPresenter>())
          {
@@ -47,11 +46,12 @@ namespace MoBi.Presentation.Tasks.Interaction
                newMoleculeBuildingBlockDescription = selectMoleculesPresenter.Selected;
             }
          }
+
          if (newMoleculeBuildingBlockDescription == null)
             return;
 
-         var moleculeBuildingBlock = Context.Create<IMoleculeBuildingBlock>().WithName(newMoleculeBuildingBlockDescription.Name);
-         var cloneManagerForBuildingBlocks = new CloneManagerForBuildingBlock(Context.ObjectBaseFactory, new DataRepositoryTask()) {FormulaCache = moleculeBuildingBlock.FormulaCache};
+         var moleculeBuildingBlock = Context.Create<MoleculeBuildingBlock>().WithName(newMoleculeBuildingBlockDescription.Name);
+         var cloneManagerForBuildingBlocks = new CloneManagerForBuildingBlock(Context.ObjectBaseFactory, new DataRepositoryTask()) { FormulaCache = moleculeBuildingBlock.FormulaCache };
          newMoleculeBuildingBlockDescription.Molecules.Each(x => moleculeBuildingBlock.Add(cloneManagerForBuildingBlocks.Clone(x)));
          var command = new MoBiMacroCommand
          {
@@ -63,30 +63,20 @@ namespace MoBi.Presentation.Tasks.Interaction
          AddCommand(command);
       }
 
-      public override IMoBiCommand Remove(IMoleculeBuildingBlock buildingBlockToRemove, IMoBiProject project, IBuildingBlock buildingBlock, bool silent)
+      public override IMoBiCommand GetRemoveCommand(MoleculeBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
       {
-         var referringStartValuesBuildingBlocks = project.ReferringStartValuesBuildingBlocks(buildingBlockToRemove);
-         if (referringStartValuesBuildingBlocks.Any())
-         {
-            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name, referringStartValuesBuildingBlocks.Select(bb => bb.Name)));
-         }
-
-         return base.Remove(buildingBlockToRemove, project, buildingBlock, silent);
+         return new RemoveBuildingBlockFromModuleCommand<MoleculeBuildingBlock>(objectToRemove, parent);
       }
 
-      public void Edit(IMoleculeBuildingBlock moleculeBuildingBlock, IMoleculeBuilder moleculeBuilder)
+      public override IMoBiCommand GetAddCommand(MoleculeBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
+      {
+         return new AddBuildingBlockToModuleCommand<MoleculeBuildingBlock>(itemToAdd, parent);
+      }
+
+      public void Edit(MoleculeBuildingBlock moleculeBuildingBlock, MoleculeBuilder moleculeBuilder)
       {
          _editTaskForBuildingBlock.EditBuildingBlock(moleculeBuildingBlock);
          Context.PublishEvent(new EntitySelectedEvent(moleculeBuilder, this));
-      }
-
-      protected override IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(IMoleculeBuilder builder, IMoleculeBuildingBlock targetBuildingBlock, string originalBuilderName = null)
-      {
-         var defaultStartFormulaDecoder = new DefaultStartFormulaDecoder();
-         var macroCommand = base.GenerateAddCommandAndUpdateFormulaReferences(builder, targetBuildingBlock);
-         macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, builder, defaultStartFormulaDecoder));
-
-         return macroCommand;
       }
    }
 }

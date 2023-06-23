@@ -8,8 +8,8 @@ namespace MoBi.Core.Domain.Services
 {
    public interface IDimensionValidator : IVisitor<IEntity>, IVisitor<IUsingFormula>
    {
-      Task<ValidationResult> Validate(IContainer container, IBuildConfiguration buildConfiguration);
-      Task<ValidationResult> Validate(IModel model, IBuildConfiguration buildConfiguration);
-      Task<ValidationResult> Validate(IEnumerable<IContainer> containers, IBuildConfiguration buildConfiguration);
+      Task<ValidationResult> Validate(IContainer container, SimulationBuilder simulationBuilder);
+      Task<ValidationResult> Validate(IModel model, SimulationBuilder simulationBuilder);
+      Task<ValidationResult> Validate(IEnumerable<IContainer> containers, SimulationBuilder simulationBuilder);
    }
 }

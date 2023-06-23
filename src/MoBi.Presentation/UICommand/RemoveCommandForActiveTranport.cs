@@ -1,26 +1,29 @@
 ﻿using System.Linq;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.UICommand
 {
    internal interface IActiveTransporterMoelculeRetriever
    {
-      TransporterMoleculeContainer GetTransporterMoleculeFrom(ITransportBuilder transportBuilder);
+      TransporterMoleculeContainer GetTransporterMoleculeFrom(TransportBuilder transportBuilder);
    }
 
    internal class ActiveTransporterMoelculeRetriever : IActiveTransporterMoelculeRetriever
    {
       private readonly IMoBiContext _context;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public ActiveTransporterMoelculeRetriever(IMoBiContext context)
+      public ActiveTransporterMoelculeRetriever(IMoBiContext context, IBuildingBlockRepository buildingBlockRepository)
       {
          _context = context;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
-      public TransporterMoleculeContainer GetTransporterMoleculeFrom(ITransportBuilder transportBuilder)
+      public TransporterMoleculeContainer GetTransporterMoleculeFrom(TransportBuilder transportBuilder)
       {
-         foreach (var moleculeBuildingBlock in _context.CurrentProject.MoleculeBlockCollection)
+         foreach (var moleculeBuildingBlock in _buildingBlockRepository.MoleculeBlockCollection)
          {
             foreach (var moleculeBuider in moleculeBuildingBlock)
             {

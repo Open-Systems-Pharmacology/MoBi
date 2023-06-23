@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Mappers
 
       public QuantityDTO MapFrom(IQuantity quantity)
       {
-         var dto = Map<QuantityDTO>(quantity);
+         var dto = Map(new QuantityDTO(quantity));
          setQuantityValueAndFormula(dto, quantity.QuantityToEdit());
          return dto;
       }

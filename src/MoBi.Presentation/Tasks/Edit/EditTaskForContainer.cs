@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -20,21 +20,23 @@ namespace MoBi.Presentation.Tasks.Edit
    public class EditTaskForContainer : EditTaskFor<IContainer>, IEditTaskForContainer
    {
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
-      public EditTaskForContainer(IInteractionTaskContext interactionTaskContext, IMoBiSpatialStructureFactory spatialStructureFactory) : base(interactionTaskContext)
+      private readonly IObjectPathFactory _objectPathFactory;
+
+      public EditTaskForContainer(IInteractionTaskContext interactionTaskContext, IMoBiSpatialStructureFactory spatialStructureFactory, IObjectPathFactory objectPathFactory) : base(interactionTaskContext)
       {
          _spatialStructureFactory = spatialStructureFactory;
+         _objectPathFactory = objectPathFactory;
       }
-
 
       protected override IEnumerable<string> GetUnallowedNames(IContainer container, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          if (existingObjectsInParent != null)
             return existingObjectsInParent.AllNames();
-         
-         var spatialStructure = _interactionTaskContext.Active<ISpatialStructure>();
+
+         var spatialStructure = _interactionTaskContext.Active<SpatialStructure>();
          if (spatialStructure == null)
             return Enumerable.Empty<string>();
-         
+
          return spatialStructure.TopContainers.Select(x => x.Name).Union(AppConstants.UnallowedNames);
       }
 
@@ -43,17 +45,17 @@ namespace MoBi.Presentation.Tasks.Edit
          var fileName = _interactionTask.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, entityToSerialize.Name);
          if (fileName.IsNullOrEmpty()) return;
 
-         var tmpSpatialStructure = (IMoBiSpatialStructure)_spatialStructureFactory.Create();
+         var tmpSpatialStructure = (MoBiSpatialStructure) _spatialStructureFactory.Create();
 
          // make a backup of the parent and reset that after as there is a side effect
          // of removing the reference to parent container.
          var parent = entityToSerialize.ParentContainer;
          tmpSpatialStructure.AddTopContainer(entityToSerialize);
          entityToSerialize.ParentContainer = parent;
-         var existingSpatialStructure = _interactionTaskContext.Active<IMoBiSpatialStructure>();
+         var existingSpatialStructure = _interactionTaskContext.Active<MoBiSpatialStructure>();
          if (existingSpatialStructure != null)
          {
-            var neighborhoods = getConnectingNeighborhoods(new[] { entityToSerialize }, existingSpatialStructure);
+            var neighborhoods = existingSpatialStructure.GetConnectingNeighborhoods(new[] {entityToSerialize}, _objectPathFactory);
             neighborhoods.Each(tmpSpatialStructure.AddNeighborhood);
             if (existingSpatialStructure.DiagramModel != null)
                tmpSpatialStructure.DiagramModel = existingSpatialStructure.DiagramModel.CreateCopy(entityToSerialize.Id);
@@ -67,33 +69,20 @@ namespace MoBi.Presentation.Tasks.Edit
          return new SetContainerModeCommand(buildingBlock, container, containerMode).Run(_context);
       }
 
-      private IEnumerable<INeighborhoodBuilder> getConnectingNeighborhoods(IEnumerable<IContainer> existingItems, ISpatialStructure tmpSpatialStructure)
+      protected override IMoBiCommand GetRenameCommandFor(IContainer container, IBuildingBlock buildingBlock, string newName, string objectType)
       {
-         var allImportedContainers = existingItems.SelectMany(
-            cont => cont.GetAllContainersAndSelf<IContainer>().Where(x => !x.IsAnImplementationOf<IParameter>())).ToList();
+         //when renaming a container in a spatial structure, we need to ensure that we are also renaming the path in the neighborhood
+         if (buildingBlock.IsAnImplementationOf<SpatialStructure>() && containerCanBePartOfNeighborhoodPath(container))
+            return new RenameContainerCommand(container, newName, buildingBlock.DowncastTo<SpatialStructure>());
 
-         var neighborhoods = new List<INeighborhoodBuilder>();
-         foreach (var neighborhood in tmpSpatialStructure.Neighborhoods)
-         {
-            bool firstFound = false;
-            bool secondFound = false;
-            foreach (var cont in allImportedContainers)
-            {
-               if (neighborhood.FirstNeighbor.Equals(cont))
-               {
-                  firstFound = true;
-               }
-               if (neighborhood.SecondNeighbor.Equals(cont))
-               {
-                  secondFound = true;
-               }
-            }
-            if (firstFound && secondFound)
-            {
-               neighborhoods.Add(neighborhood);
-            }
-         }
-         return neighborhoods;
+         return base.GetRenameCommandFor(container, buildingBlock, newName, objectType);
+      }
+
+      private bool containerCanBePartOfNeighborhoodPath(IContainer container)
+      {
+         return !(container.IsAnImplementationOf<NeighborhoodBuilder>() ||
+                  container.IsAnImplementationOf<IParameter>() ||
+                  container.IsNamed(Constants.MOLECULE_PROPERTIES));
       }
    }
 }

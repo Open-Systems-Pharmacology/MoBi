@@ -17,7 +17,7 @@ namespace MoBi.Presentation
       protected IEditActiveTransportBuilderContainerView _view;
       protected IEditTasksForTransporterMoleculeContainer _interactionTasks;
       protected IEditParametersInContainerPresenter _editParameterPresenter;
-      protected ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
+      protected ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper _transporterMoleculeContainerMapper;
       protected IMoBiContext _context;
 
       protected override void Context()
@@ -25,7 +25,7 @@ namespace MoBi.Presentation
          _view = A.Fake<IEditActiveTransportBuilderContainerView>();
          _interactionTasks = A.Fake<IEditTasksForTransporterMoleculeContainer>();
          _editParameterPresenter = A.Fake<IEditParametersInContainerPresenter>();
-         _transporterMoleculeContainerMapper = A.Fake<ITransporterMoleculeContainerToTranpsorterMoleculeContainerDTOMapper>();
+         _transporterMoleculeContainerMapper = A.Fake<ITransporterMoleculeContainerToTransporterMoleculeContainerDTOMapper>();
          _context = A.Fake<IMoBiContext>();
          sut = new EditTransporterMoleculeContainerPresenter(_view, _interactionTasks, _editParameterPresenter, _transporterMoleculeContainerMapper, _context);
       }
@@ -41,8 +41,8 @@ namespace MoBi.Presentation
       {
          base.Context();
          _activeTransportBuilderContainer = new TransporterMoleculeContainer();
-         _buildingBlock = A.Fake<IMoleculeBuildingBlock>();
-         _dto = new TransporterMoleculeContainerDTO();
+         _buildingBlock = A.Fake<MoleculeBuildingBlock>();
+         _dto = new TransporterMoleculeContainerDTO(_activeTransportBuilderContainer);
          A.CallTo(() => _transporterMoleculeContainerMapper.MapFrom(_activeTransportBuilderContainer)).Returns(_dto);
          sut.BuildingBlock = _buildingBlock;
          sut.Edit(_activeTransportBuilderContainer);
@@ -56,7 +56,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_start_task_for_rename()
       {
-         A.CallTo(() => _interactionTasks.ChangeTranportName(_activeTransportBuilderContainer, _buildingBlock)).MustHaveHappened();
+         A.CallTo(() => _interactionTasks.ChangeTransportName(_activeTransportBuilderContainer, _buildingBlock)).MustHaveHappened();
       }
 
       [Observation]

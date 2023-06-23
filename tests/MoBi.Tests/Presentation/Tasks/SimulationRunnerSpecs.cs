@@ -197,7 +197,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_updated_the_simulation_output_selection()
       {
-         _simulation.SimulationSettings.OutputSelections.ShouldBeEqualTo(_newOutputSelection);
+         _simulation.Settings.OutputSelections.ShouldBeEqualTo(_newOutputSelection);
       }
 
       [Observation]
@@ -215,7 +215,7 @@ namespace MoBi.Presentation.Tasks
       private SimulationRunResults _simulationResults;
       private DataRepository _newResults;
       private DataRepository _oldResults;
-      private IMoleculeBuilder _drug;
+      private MoleculeBuilder _drug;
       private DataColumn _concentrationColumn;
       private DataColumn _fractionColumn;
 
@@ -228,17 +228,21 @@ namespace MoBi.Presentation.Tasks
          _drug = new MoleculeBuilder().WithName("DRUG");
          _drug.AddParameter(new Parameter().WithName(AppConstants.Parameters.MOLECULAR_WEIGHT).WithFormula(new ConstantFormula(400)));
          _outputSelections.AddOutput(new QuantitySelection("A", QuantityType.Drug));
-         _simulation.BuildConfiguration = new MoBiBuildConfiguration
+         _simulation.Configuration = new SimulationConfiguration
          {
+
             SimulationSettings = new SimulationSettings
             {
                OutputSelections = _outputSelections
-            },
-            Molecules = new MoleculeBuildingBlock
+            }
+         };
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module
+         {
+            new MoleculeBuildingBlock
             {
                _drug
             }
-         };
+         }));
 
          A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
          _oldResults = new DataRepository("OLD");

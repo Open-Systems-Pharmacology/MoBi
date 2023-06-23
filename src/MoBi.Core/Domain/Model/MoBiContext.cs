@@ -8,7 +8,6 @@ using OSPSuite.Core;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -22,18 +21,20 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Core.Domain.Model
 {
-   public interface IMoBiContext : IOSPSuiteExecutionContext<IMoBiProject>, IWorkspace
+   public interface IMoBiContext : IOSPSuiteExecutionContext<MoBiProject>, IWorkspace
    {
       IMoBiDimensionFactory DimensionFactory { get; }
       IObjectBaseFactory ObjectBaseFactory { get; }
       IWithIdRepository ObjectRepository { get; }
+      IContainer Container { get; }
+
       T Create<T>(string id) where T : class, IObjectBase;
       T Create<T>() where T : class, IObjectBase;
 
       IMoBiHistoryManager HistoryManager { get; set; }
       IObjectPathFactory ObjectPathFactory { get; }
       void NewProject();
-      void LoadFrom(IMoBiProject project);
+      void LoadFrom(MoBiProject project);
 
       /// <summary>
       ///    Converts the given <paramref name="value" /> to a representation that should be saved in commands. The returned
@@ -52,24 +53,23 @@ namespace MoBi.Core.Domain.Model
       void UnregisterSimulation(IMoBiSimulation simulation);
    }
 
-   public class MoBiContext : Workspace<IMoBiProject>, IMoBiContext
+   public class MoBiContext : Workspace<MoBiProject>, IMoBiContext
    {
       private readonly IXmlSerializationService _serializationService;
       private readonly IHistoryManagerFactory _historyManagerFactory;
       private readonly IRegisterTask _registerTask;
       private readonly IUnregisterTask _unregisterTask;
       private readonly IClipboardManager _clipboardManager;
-      private readonly IContainer _container;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IJournalSession _journalSession;
 
+      public IContainer Container { get; }
       public IMoBiHistoryManager HistoryManager { get; set; }
       public IMoBiDimensionFactory DimensionFactory { get; }
       public IObjectBaseFactory ObjectBaseFactory { get; }
       public IObjectPathFactory ObjectPathFactory { get; }
-      public ICoreCalculationMethodRepository CalculationMethodRepository { get; set; }
       public IEventPublisher EventPublisher { get; }
       public IWithIdRepository ObjectRepository { get; }
 
@@ -85,7 +85,7 @@ namespace MoBi.Core.Domain.Model
          DimensionFactory = dimensionFactory;
          ObjectPathFactory = objectPathFactory;
          _serializationService = serializationService;
-         _container = container;
+         Container = container;
          _objectTypeResolver = objectTypeResolver;
          _cloneManager = cloneManager;
          _lazyLoadTask = lazyLoadTask;
@@ -96,7 +96,7 @@ namespace MoBi.Core.Domain.Model
          _journalSession = journalSession;
       }
 
-      public IMoBiProject CurrentProject
+      public MoBiProject CurrentProject
       {
          get => _project;
          set => _project = value;
@@ -148,8 +148,7 @@ namespace MoBi.Core.Domain.Model
       public void NewProject()
       {
          Clear();
-         CurrentProject = ObjectBaseFactory.Create<IMoBiProject>();
-
+         CurrentProject = ObjectBaseFactory.Create<MoBiProject>();
          HistoryManager = _historyManagerFactory.Create() as IMoBiHistoryManager;
          LoadFrom(CurrentProject);
          AddToHistory(new CreateProjectCommand().Run(this));
@@ -191,10 +190,10 @@ namespace MoBi.Core.Domain.Model
 
       public T Resolve<T>()
       {
-         return _container.Resolve<T>();
+         return Container.Resolve<T>();
       }
 
-      public void LoadFrom(IMoBiProject project)
+      public void LoadFrom(MoBiProject project)
       {
          CurrentProject = project;
          _registerTask.Register(project);
@@ -211,8 +210,8 @@ namespace MoBi.Core.Domain.Model
          if (value.IsAnImplementationOf<IDimension>())
             return value.DowncastTo<IDimension>().Name;
 
-         if (value.IsAnImplementationOf<IObjectPath>())
-            return value.DowncastTo<IObjectPath>().PathAsString;
+         if (value.IsAnImplementationOf<ObjectPath>())
+            return value.DowncastTo<ObjectPath>().PathAsString;
 
          if (value.IsAnImplementationOf<Unit>())
             return value.DowncastTo<Unit>().Name;
@@ -237,7 +236,7 @@ namespace MoBi.Core.Domain.Model
          if (propertyType.IsAnImplementationOf<IDimension>())
             return DimensionFactory.Dimension(valueAsString);
 
-         if (propertyType.IsAnImplementationOf<IObjectPath>())
+         if (propertyType.IsAnImplementationOf<ObjectPath>())
             return ObjectPathFactory.CreateObjectPathFrom(valueAsString.ToPathArray());
 
          if (propertyType.IsAnImplementationOf<Unit>())

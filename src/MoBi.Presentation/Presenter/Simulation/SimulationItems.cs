@@ -8,30 +8,20 @@ namespace MoBi.Presentation.Presenter.Simulation
    {
       private static readonly List<ISubPresenterItem> _allSimulationItems = new List<ISubPresenterItem>();
 
-      public static SimulationItem<IEditBuildConfigurationPresenter> BuildConfiguration = createFor<IEditBuildConfigurationPresenter>();
-      public static SimulationItem<ISelectAndEditMoleculesStartValuesPresenter> MoleculeStartValues = createFor<ISelectAndEditMoleculesStartValuesPresenter>();
-      public static SimulationItem<ISelectAndEditParameterStartValuesPresenter> ParameterStartValues = createFor<ISelectAndEditParameterStartValuesPresenter>();
-      public static SimulationItem<IFinalOptionsPresenter> FinalOptions = createFor<IFinalOptionsPresenter>();
+      public static SimulationItem<IEditModuleConfigurationsPresenter> ModuleConfiguration = createFor<IEditModuleConfigurationsPresenter>();
+      public static SimulationItem<IEditIndividualAndExpressionConfigurationsPresenter> IndividualAndExpressionConfiguration = createFor<IEditIndividualAndExpressionConfigurationsPresenter>();
 
-      private static SimulationItem<T> createFor<T>() where T : ISimulationItemPresenter
+      private static SimulationItem<T> createFor<T>() where T : ISimulationConfigurationItemPresenter
       {
-         var simulationItem = new SimulationItem<T> {Index = _allSimulationItems.Count()};
+         var simulationItem = new SimulationItem<T> { Index = _allSimulationItems.Count };
          _allSimulationItems.Add(simulationItem);
          return simulationItem;
       }
 
-      public static IReadOnlyList<ISubPresenterItem> All
-      {
-         get { return _allSimulationItems; }
-      }
-
-      public static IReadOnlyList<ISubPresenterItem> AllConfigure
-      {
-         get { return new List<ISubPresenterItem> {BuildConfiguration, MoleculeStartValues, ParameterStartValues}; }
-      }
+      public static IReadOnlyList<ISubPresenterItem> All => _allSimulationItems;
    }
 
-   public class SimulationItem<TSimulationItemPresenter> : SubPresenterItem<TSimulationItemPresenter> where TSimulationItemPresenter : ISimulationItemPresenter
+   public class SimulationItem<TSimulationItemPresenter> : SubPresenterItem<TSimulationItemPresenter> where TSimulationItemPresenter : ISimulationConfigurationItemPresenter
    {
    }
 }

@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Presenter
          else
             _view.HideParametersView();
 
-         _view.AllowValueChange = !objectToEdit.IsAnImplementationOf<IObserver>();
+         _view.AllowValueChange = !objectToEdit.IsAnImplementationOf<Observer>();
       }
 
       private void rebind()

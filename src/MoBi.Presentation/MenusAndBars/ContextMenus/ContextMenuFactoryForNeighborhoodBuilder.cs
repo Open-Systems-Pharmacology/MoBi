@@ -9,13 +9,13 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuFactoryForNeighborhoodBuilder : ContextMenuForObjectBaseDTOSpecificationFactory<INeighborhoodBuilder>
+   public class ContextMenuFactoryForNeighborhoodBuilder : ContextMenuForObjectBaseDTOSpecificationFactory<NeighborhoodBuilder>
    {
       public ContextMenuFactoryForNeighborhoodBuilder(IMoBiContext context) : base(context)
       {
       }
 
-      public override IContextMenu CreateFor(IObjectBaseDTO objectBaseDTO, IPresenterWithContextMenu<IViewItem> presenter)
+      public override IContextMenu CreateFor(ObjectBaseDTO objectBaseDTO, IPresenterWithContextMenu<IViewItem> presenter)
       {
          var contextMenu = IoC.Resolve<ContextMenuForNeighborhoodBuilder>();
          return contextMenu.InitializeWith(objectBaseDTO, presenter);

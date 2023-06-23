@@ -6,10 +6,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
-   public class EditTasksForEventGroupBuilder<TEventGroupBuilder> : EditTasksForBuilder<TEventGroupBuilder, IEventGroupBuildingBlock> where TEventGroupBuilder: class, IEventGroupBuilder
+   public class EditTasksForEventGroupBuilder<TEventGroupBuilder> : EditTasksForBuilder<TEventGroupBuilder, EventGroupBuildingBlock> where TEventGroupBuilder : EventGroupBuilder
    {
-      public EditTasksForEventGroupBuilder(IInteractionTaskContext interactionTaskContext)
-         : base(interactionTaskContext)
+      public EditTasksForEventGroupBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
 
@@ -19,23 +18,21 @@ namespace MoBi.Presentation.Tasks.Edit
             return existingObjectsInParent.AllNames();
 
          //TopEventGroup
-         var eventGroupBuildingBlock = _interactionTaskContext.Active<IEventGroupBuildingBlock>();
+         var eventGroupBuildingBlock = _interactionTaskContext.Active<EventGroupBuildingBlock>();
          if (eventGroupBuildingBlock == null)
             return Enumerable.Empty<string>();
          return eventGroupBuildingBlock.Select(x => x.Name);
       }
-
    }
 
-   public class EditTasksForApplicationBuilder : EditTasksForEventGroupBuilder<IApplicationBuilder> 
+   public class EditTasksForApplicationBuilder : EditTasksForEventGroupBuilder<ApplicationBuilder>
    {
       public EditTasksForApplicationBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {
       }
    }
 
-
-   public class EditTasksForEventGroupBuilder: EditTasksForEventGroupBuilder<IEventGroupBuilder> 
+   public class EditTasksForEventGroupBuilder : EditTasksForEventGroupBuilder<EventGroupBuilder>
    {
       public EditTasksForEventGroupBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {

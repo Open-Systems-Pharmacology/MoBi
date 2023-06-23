@@ -35,27 +35,26 @@ namespace MoBi.Presentation.Presenter
       {
       }
       
-      public override ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          var dtoReference = base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
          if (!shouldCreateAbsolutePaths && !IsMoleculeReference(objectBaseDTO))
          {
             var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
-            var parameterToUse = _context.Get<IParameter>(dtoDummyParameter.ParameterToUse.Id);
-            correctMoleculeReferences(dtoDummyParameter.ModelParentName, parameterToUse, dtoReference.Path);
+            correctMoleculeReferences(dtoDummyParameter.ModelParentName, dtoDummyParameter.Parameter, dtoReference.Path);
          }
          return dtoReference;
       }
 
-      private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : IObjectPath
+      private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : ObjectPath
       {
-         if (entity.IsAtMolecule())
-         {
-            if (path.Contains(moleculeName))
-            {
-               path.Replace(moleculeName, ObjectPathKeywords.MOLECULE);
-            }
-         }
+         if (!entity.IsAtMolecule()) 
+            return;
+
+         if (!path.Contains(moleculeName)) 
+            return;
+
+         path.Replace(moleculeName, ObjectPathKeywords.MOLECULE);
       }
    }
 }

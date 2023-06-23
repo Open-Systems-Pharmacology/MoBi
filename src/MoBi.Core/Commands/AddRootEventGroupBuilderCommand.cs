@@ -4,9 +4,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddRootEventGroupBuilderCommand : AddObjectBaseCommand<IEventGroupBuilder, IEventGroupBuildingBlock>
+   public class AddRootEventGroupBuilderCommand : AddObjectBaseCommand<EventGroupBuilder, EventGroupBuildingBlock>
    {
-      public AddRootEventGroupBuilderCommand(IEventGroupBuildingBlock parent, IEventGroupBuilder itemToAdd) : base(parent, itemToAdd, parent)
+      public AddRootEventGroupBuilderCommand(EventGroupBuildingBlock parent, EventGroupBuilder itemToAdd) : base(parent, itemToAdd, parent)
       {
       }
 
@@ -15,15 +15,15 @@ namespace MoBi.Core.Commands
          return new RemoveRootEventGroupBuilderCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
 
-      protected override void AddTo(IEventGroupBuilder child, IEventGroupBuildingBlock parent, IMoBiContext context)
+      protected override void AddTo(EventGroupBuilder child, EventGroupBuildingBlock parent, IMoBiContext context)
       {
          parent.Add(child);
       }
    }
 
-   public class RemoveRootEventGroupBuilderCommand : RemoveObjectBaseCommand<IEventGroupBuilder, IEventGroupBuildingBlock>
+   public class RemoveRootEventGroupBuilderCommand : RemoveObjectBaseCommand<EventGroupBuilder, EventGroupBuildingBlock>
    {
-      public RemoveRootEventGroupBuilderCommand(IEventGroupBuildingBlock parent, IEventGroupBuilder itemToRemove) : base(parent, itemToRemove, parent)
+      public RemoveRootEventGroupBuilderCommand(EventGroupBuildingBlock parent, EventGroupBuilder itemToRemove) : base(parent, itemToRemove, parent)
       {
       }
 
@@ -32,15 +32,15 @@ namespace MoBi.Core.Commands
          return new AddRootEventGroupBuilderCommand(_parent, _itemToRemove).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(IEventGroupBuilder childToRemove, IEventGroupBuildingBlock parent, IMoBiContext context)
+      protected override void RemoveFrom(EventGroupBuilder childToRemove, EventGroupBuildingBlock parent, IMoBiContext context)
       {
          parent.Remove(childToRemove);
       }
    }
 
-   public class AddRootApplicationBuilderCommand : AddObjectBaseCommand<IApplicationBuilder, IEventGroupBuildingBlock>
+   public class AddRootApplicationBuilderCommand : AddObjectBaseCommand<ApplicationBuilder, EventGroupBuildingBlock>
    {
-      public AddRootApplicationBuilderCommand(IEventGroupBuildingBlock parent, IApplicationBuilder itemToAdd) : base(parent, itemToAdd, parent)
+      public AddRootApplicationBuilderCommand(EventGroupBuildingBlock parent, ApplicationBuilder itemToAdd) : base(parent, itemToAdd, parent)
       {
       }
 
@@ -49,15 +49,15 @@ namespace MoBi.Core.Commands
          return new RemoveRootApplicationBuilderCommand(_parent, _itemToAdd).AsInverseFor(this);
       }
 
-      protected override void AddTo(IApplicationBuilder child, IEventGroupBuildingBlock parent, IMoBiContext context)
+      protected override void AddTo(ApplicationBuilder child, EventGroupBuildingBlock parent, IMoBiContext context)
       {
          parent.Add(child);
       }
    }
 
-   public class RemoveRootApplicationBuilderCommand : RemoveObjectBaseCommand<IApplicationBuilder, IEventGroupBuildingBlock>
+   public class RemoveRootApplicationBuilderCommand : RemoveObjectBaseCommand<ApplicationBuilder, EventGroupBuildingBlock>
    {
-      public RemoveRootApplicationBuilderCommand(IEventGroupBuildingBlock parent, IApplicationBuilder itemToRemove) : base(parent, itemToRemove, parent)
+      public RemoveRootApplicationBuilderCommand(EventGroupBuildingBlock parent, ApplicationBuilder itemToRemove) : base(parent, itemToRemove, parent)
       {
       }
 
@@ -66,15 +66,15 @@ namespace MoBi.Core.Commands
          return new AddRootApplicationBuilderCommand(_parent, _itemToRemove).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(IApplicationBuilder childToRemove, IEventGroupBuildingBlock parent, IMoBiContext context)
+      protected override void RemoveFrom(ApplicationBuilder childToRemove, EventGroupBuildingBlock parent, IMoBiContext context)
       {
          parent.Remove(childToRemove);
       }
    }
 
-   public class AddEventGroupBuilderCommand : AddObjectBaseCommand<IEventGroupBuilder, IEventGroupBuilder>
+   public class AddEventGroupBuilderCommand : AddObjectBaseCommand<EventGroupBuilder, EventGroupBuilder>
    {
-      public AddEventGroupBuilderCommand(IEventGroupBuilder parent, IEventGroupBuilder itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
+      public AddEventGroupBuilderCommand(EventGroupBuilder parent, EventGroupBuilder itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
       {
       }
 
@@ -83,15 +83,15 @@ namespace MoBi.Core.Commands
          return new RemoveEventGroupBuilderCommand(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }
 
-      protected override void AddTo(IEventGroupBuilder child, IEventGroupBuilder parent, IMoBiContext context)
+      protected override void AddTo(EventGroupBuilder child, EventGroupBuilder parent, IMoBiContext context)
       {
          parent.Add(child);
       }
    }
 
-   public class RemoveEventGroupBuilderCommand : RemoveObjectBaseCommand<IEventGroupBuilder, IEventGroupBuilder>
+   public class RemoveEventGroupBuilderCommand : RemoveObjectBaseCommand<EventGroupBuilder, EventGroupBuilder>
    {
-      public RemoveEventGroupBuilderCommand(IEventGroupBuilder parent, IEventGroupBuilder itemToRemove, IBuildingBlock buildingBlock) : base(parent, itemToRemove, buildingBlock)
+      public RemoveEventGroupBuilderCommand(EventGroupBuilder parent, EventGroupBuilder itemToRemove, IBuildingBlock buildingBlock) : base(parent, itemToRemove, buildingBlock)
       {
       }
 
@@ -100,15 +100,15 @@ namespace MoBi.Core.Commands
          return new AddEventGroupBuilderCommand(_parent, _itemToRemove, _buildingBlock).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(IEventGroupBuilder childToRemove, IEventGroupBuilder parent, IMoBiContext context)
+      protected override void RemoveFrom(EventGroupBuilder childToRemove, EventGroupBuilder parent, IMoBiContext context)
       {
          parent.RemoveChild(childToRemove);
       }
    }
 
-   public class AddApplicationBuilderCommand : AddObjectBaseCommand<IApplicationBuilder, IEventGroupBuilder>
+   public class AddApplicationBuilderCommand : AddObjectBaseCommand<ApplicationBuilder, EventGroupBuilder>
    {
-      public AddApplicationBuilderCommand(IEventGroupBuilder parent, IApplicationBuilder itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
+      public AddApplicationBuilderCommand(EventGroupBuilder parent, ApplicationBuilder itemToAdd, IBuildingBlock buildingBlock) : base(parent, itemToAdd, buildingBlock)
       {
       }
 
@@ -117,15 +117,15 @@ namespace MoBi.Core.Commands
          return new RemoveApplicationBuilderCommand(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }
 
-      protected override void AddTo(IApplicationBuilder child, IEventGroupBuilder parent, IMoBiContext context)
+      protected override void AddTo(ApplicationBuilder child, EventGroupBuilder parent, IMoBiContext context)
       {
          parent.Add(child);
       }
    }
 
-   public class RemoveApplicationBuilderCommand : RemoveObjectBaseCommand<IApplicationBuilder, IEventGroupBuilder>
+   public class RemoveApplicationBuilderCommand : RemoveObjectBaseCommand<ApplicationBuilder, EventGroupBuilder>
    {
-      public RemoveApplicationBuilderCommand(IEventGroupBuilder parent, IApplicationBuilder itemToRemove, IBuildingBlock buildingBlock) : base(parent, itemToRemove, buildingBlock)
+      public RemoveApplicationBuilderCommand(EventGroupBuilder parent, ApplicationBuilder itemToRemove, IBuildingBlock buildingBlock) : base(parent, itemToRemove, buildingBlock)
       {
       }
 
@@ -134,7 +134,7 @@ namespace MoBi.Core.Commands
          return new AddApplicationBuilderCommand(_parent, _itemToRemove, _buildingBlock).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(IApplicationBuilder childToRemove, IEventGroupBuilder parent, IMoBiContext context)
+      protected override void RemoveFrom(ApplicationBuilder childToRemove, EventGroupBuilder parent, IMoBiContext context)
       {
          parent.RemoveChild(childToRemove);
       }

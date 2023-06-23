@@ -2,25 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IHierarchicalStructurePresenter : IPresenterWithContextMenu<IViewItem>
    {
-      IReadOnlyList<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto, Func<IEntity, bool> predicate);
-      void Select(IObjectBaseDTO objectBaseDTO);
+      IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate);
+      void Select(ObjectBaseDTO objectBaseDTO);
       void Clear();
    }
 
@@ -31,8 +33,11 @@ namespace MoBi.Presentation.Presenter
       protected ITreeNode _favoritesNode;
       protected ITreeNode _userDefinedNode;
 
-      protected HierarchicalStructurePresenter(IHierarchicalStructureView view, IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, ITreeNodeFactory treeNodeFactory)
+      protected HierarchicalStructurePresenter(
+         IHierarchicalStructureView view, 
+         IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, 
+         ITreeNodeFactory treeNodeFactory)
          : base(view)
       {
          _context = context;
@@ -41,19 +46,38 @@ namespace MoBi.Presentation.Presenter
          _userDefinedNode = treeNodeFactory.CreateForUserDefined();
       }
 
-      public virtual IReadOnlyList<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto, Func<IEntity, bool> predicate)
+      public virtual IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate)
       {
-         var container = _context.Get<IContainer>(dto.Id);
-         return container == null ? new List<IObjectBaseDTO>() : GetChildrenSorted(container, predicate);
+         return (dto.ObjectBase is IContainer container) ? GetChildrenSorted(container, predicate) : Array.Empty<ObjectBaseDTO>();
       }
 
-      protected virtual IReadOnlyList<IObjectBaseDTO> GetChildrenSorted(IContainer container,
-         Func<IEntity, bool> predicate)
+      protected virtual IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
       {
-         return container.GetChildren(predicate)
-            .OrderBy(groupingTypeFor)
-            .ThenBy(x => x.Name)
-            .MapAllUsing(_objectBaseMapper);
+         IReadOnlyList<ObjectBaseDTO> allChildrenDTO()
+         {
+            return container.GetChildren(predicate)
+               .OrderBy(groupingTypeFor)
+               .ThenBy(x => x.Name)
+               .MapAllUsing(_objectBaseMapper);
+         }
+
+         switch (container)
+         {
+            case NeighborhoodBuilder neighborhood:
+               return neighborsOf(neighborhood).Union(allChildrenDTO()).ToList();
+            default:
+               return allChildrenDTO();
+
+         }
+      }
+
+      private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
+      {
+         if(neighborhoodBuilder.FirstNeighborPath!=null)
+            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor };
+
+         if (neighborhoodBuilder.SecondNeighborPath != null)
+            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor };
       }
 
       private ContainerType groupingTypeFor(IEntity entity)
@@ -62,22 +86,21 @@ namespace MoBi.Presentation.Presenter
          return container?.ContainerType ?? ContainerType.Other;
       }
 
-      public virtual void Select(IObjectBaseDTO objectBaseDTO)
+      public virtual void Select(ObjectBaseDTO objectBaseDTO)
       {
-         if (objectBaseDTO ==_favoritesNode.TagAsObject)
+         if (objectBaseDTO == _favoritesNode.TagAsObject)
             RaiseFavoritesSelectedEvent();
 
-         else if(objectBaseDTO == _userDefinedNode.TagAsObject)
+         else if (objectBaseDTO == _userDefinedNode.TagAsObject)
             RaiseUserDefinedSelectedEvent();
-    
+
          else
             raiseEntitySelectedEvent(objectBaseDTO);
       }
 
-      private void raiseEntitySelectedEvent(IObjectBaseDTO dtoObjectBase)
+      private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
-         var objectBase = _context.Get<IObjectBase>(dtoObjectBase.Id);
-         _context.PublishEvent(new EntitySelectedEvent(objectBase, this));
+         _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)

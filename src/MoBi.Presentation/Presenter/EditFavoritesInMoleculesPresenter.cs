@@ -10,11 +10,11 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditFavoritesInMoleculesPresenter : IEditFavoritesPresenter<IBuildingBlock<IMoleculeBuilder>>
+   public interface IEditFavoritesInMoleculesPresenter : IEditFavoritesPresenter<MoleculeBuildingBlock>
    {
    }
 
-   internal class EditFavoritesInMoleculesPresenter : EditFavoritesInBuildindBlockPresenter<IMoleculeBuilder>, IEditFavoritesInMoleculesPresenter
+   internal class EditFavoritesInMoleculesPresenter : EditFavoritesInBuildingBlockPresenter<MoleculeBuildingBlock, MoleculeBuilder>, IEditFavoritesInMoleculesPresenter
    {
       public EditFavoritesInMoleculesPresenter(IEditFavoritesView view, IFavoriteRepository favoriteRepository, IEntityPathResolver entityPathResolver, IEditParameterListPresenter editParameterListPresenter, IFavoriteTask favoriteTask)
          : base(view, favoriteRepository,entityPathResolver,editParameterListPresenter, favoriteTask)

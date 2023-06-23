@@ -4,22 +4,25 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Helpers;
 
 namespace MoBi.Presentation
 {
    public abstract class concern_for_TagVisitor : ContextSpecification<ITagVisitor>
    {
-      private IMoBiProjectRetriever _projectRetriever;
-      protected ISpatialStructure _spatialStructure;
+      private IBuildingBlockRepository _projectRetriever;
+      protected SpatialStructure _spatialStructure;
+      private IMoBiProjectRetriever _moBiProjectRetriever;
 
       protected override void Context()
       {
-         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _moBiProjectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _projectRetriever = new BuildingBlockRepository(_moBiProjectRetriever);
          sut = new TagVisitor(_projectRetriever);
 
          _spatialStructure = new MoBiSpatialStructure();
@@ -43,10 +46,10 @@ namespace MoBi.Presentation
          molecules.AddTag(Constants.MOLECULE_PROPERTIES);
          _spatialStructure.GlobalMoleculeDependentProperties = molecules;
 
-         var mobiProject = new MoBiProject();
-         mobiProject.AddBuildingBlock(_spatialStructure);
+         var mobiProject = DomainHelperForSpecs.NewProject();
+         mobiProject.AddModule(new Module { _spatialStructure });
 
-         A.CallTo(() => _projectRetriever.Current).Returns(mobiProject);
+         A.CallTo(() => _moBiProjectRetriever.Current).Returns(mobiProject);
       }
    }
 
@@ -78,7 +81,7 @@ namespace MoBi.Presentation
       }
    }
 
-     internal class When_getting_all_tags_defined_in_the_project : concern_for_TagVisitor
+   internal class When_getting_all_tags_defined_in_the_project : concern_for_TagVisitor
    {
       private IEnumerable<string> _result;
 

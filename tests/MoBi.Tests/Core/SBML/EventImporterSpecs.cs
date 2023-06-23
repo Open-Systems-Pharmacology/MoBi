@@ -6,6 +6,7 @@ using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Engine.Sbml;
+using MoBi.Helpers;
 using MoBi.IntegrationTests;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -30,7 +31,7 @@ namespace MoBi.Core.SBML
       {
          var sbmlModel = new Model(3, 1);
 
-         sut.DoImport(sbmlModel, new MoBiProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
+         sut.DoImport(sbmlModel, new Module(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
       }
 
       [Observation]
@@ -66,7 +67,7 @@ namespace MoBi.Core.SBML
 
          sbmlModel.addEvent(sbmlEvent);
 
-         sut.DoImport(sbmlModel, new MoBiProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
+         sut.DoImport(sbmlModel, new Module(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
       }
 
       [Observation]

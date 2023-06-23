@@ -6,7 +6,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface ITransportBuilderToTransportBuilderDTOMapper : IMapper<ITransportBuilder, TransportBuilderDTO>
+   public interface ITransportBuilderToTransportBuilderDTOMapper : IMapper<TransportBuilder, TransportBuilderDTO>
    {
    }
 
@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Mappers
          _parameterDTOMapper = parameterDTOMapper;
       }
 
-      private T mapTransport<T>(ITransportBuilder transportBuilder, T dto) where T : TransportBuilderDTO
+      private T mapTransport<T>(TransportBuilder transportBuilder, T dto) where T : TransportBuilderDTO
       {
          MapProperties(transportBuilder, dto);
          dto.Formula = _formulaDTOMapper.MapFrom(transportBuilder.Formula);
@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Mappers
          return dto;
       }
 
-      public TransportBuilderDTO MapFrom(ITransportBuilder transportBuilder)
+      public TransportBuilderDTO MapFrom(TransportBuilder transportBuilder)
       {
          return mapTransport(transportBuilder, new TransportBuilderDTO(transportBuilder));
       }

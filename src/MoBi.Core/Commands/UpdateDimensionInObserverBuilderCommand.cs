@@ -9,12 +9,12 @@ namespace MoBi.Core.Commands
 {
    public class UpdateDimensionInObserverBuilderCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
-      private IObserverBuilder _observerBuilder;
+      private ObserverBuilder _observerBuilder;
       private readonly IDimension _newDimension;
       private readonly IDimension _oldDimension;
       private readonly string _observerBuilderId;
 
-      public UpdateDimensionInObserverBuilderCommand(IObserverBuilder observerBuilder, IDimension newDimension, IBuildingBlock observerBuildingBlock)
+      public UpdateDimensionInObserverBuilderCommand(ObserverBuilder observerBuilder, IDimension newDimension, IBuildingBlock observerBuildingBlock)
          : base(observerBuildingBlock)
       {
          _newDimension = newDimension;
@@ -43,7 +43,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _observerBuilder = context.Get<IObserverBuilder>(_observerBuilderId);
+         _observerBuilder = context.Get<ObserverBuilder>(_observerBuilderId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

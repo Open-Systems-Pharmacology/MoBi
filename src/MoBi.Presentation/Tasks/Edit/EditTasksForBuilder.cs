@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Tasks.Edit
       IEnumerable<string> GetForbiddenNames(IBuildingBlock buildingBlock);
    }
 
-   public abstract class EditTasksForBuilder<TBuilder, TBuildingBlock> : EditTaskFor<TBuilder>, IEditTasksForBuilder where TBuilder : class, IObjectBase where TBuildingBlock : class
+   public abstract class EditTasksForBuilder<TBuilder, TBuildingBlock> : EditTaskFor<TBuilder>, IEditTasksForBuilder where TBuilder : class, IBuilder where TBuildingBlock : class
    {
       protected EditTasksForBuilder(IInteractionTaskContext interactionTaskContext) : base(interactionTaskContext)
       {

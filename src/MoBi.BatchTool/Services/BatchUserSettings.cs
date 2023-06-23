@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using OSPSuite.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Settings;
+using OSPSuite.Assets;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -64,7 +64,7 @@ namespace MoBi.BatchTool.Services
       public uint DecimalPlace { get; set; }
       public DirectoryMapSettings DirectoryMapSettings { get; private set; }
       public IEnumerable<DirectoryMap> UsedDirectories { get; private set; }
-      public ISimulationSettings LastSimulationSettings { get; set; }
+      public SimulationSettings LastSimulationSettings { get; set; }
       public bool ShowAdvancedParameters { get; set; }
       public NotificationType VisibleNotification { get; set; }
       public bool ShowPKSimDimensionProblemWarnings { get; set; }
@@ -83,7 +83,7 @@ namespace MoBi.BatchTool.Services
          ForceLayoutConfigutation = new ForceLayoutConfiguration();
          ChartOptions = new ChartOptions();
          DisplayUnits = new DisplayUnitsManager();
-         ComparerSettings = new ComparerSettings {CompareHiddenEntities = true};
+         ComparerSettings = new ComparerSettings { CompareHiddenEntities = true };
          JournalPageEditorSettings = new JournalPageEditorSettings();
          ParameterIdentificationFeedbackEditorSettings = new ParameterIdentificationFeedbackEditorSettings();
          MergeConflictViewSettings = new MergeConflictViewSettings();

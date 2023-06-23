@@ -11,26 +11,26 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForMoleculeBuilder : IInteractionTasksForBuilder<IMoleculeBuilder>
+   public interface IInteractionTasksForMoleculeBuilder : IInteractionTasksForBuilder<MoleculeBuilder>
    {
-      void AddPKSimMoleculeTo(IMoleculeBuildingBlock moleculeBuildingBlock);
+      void AddPKSimMoleculeTo(MoleculeBuildingBlock moleculeBuildingBlock);
 
       /// <summary>
       ///    Adds the concentration parameter M/V referencing the volume of the container referencing the
       ///    <paramref name="moleculeBuilder" />.
       ///    The parameter is added only if it was not defined already
       /// </summary>
-      void AddConcentrationParameterTo(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock moleculeBuildingBlock);
+      void AddConcentrationParameterTo(MoleculeBuilder moleculeBuilder, MoleculeBuildingBlock moleculeBuildingBlock);
    }
 
-   public class InteractionTasksForMoleculeBuilder : InteractionTasksForBuilder<IMoleculeBuilder, IMoleculeBuildingBlock>, IInteractionTasksForMoleculeBuilder
+   public class InteractionTasksForMoleculeBuilder : InteractionTasksForBuilder<MoleculeBuilder, MoleculeBuildingBlock>, IInteractionTasksForMoleculeBuilder
    {
       private readonly ICoreCalculationMethodRepository _calculationMethodRepository;
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       private readonly IParameterFactory _parameterFactory;
       private readonly IMoBiFormulaTask _formulaTask;
 
-      public InteractionTasksForMoleculeBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IMoleculeBuilder> editTask,
+      public InteractionTasksForMoleculeBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<MoleculeBuilder> editTask,
          IReactionDimensionRetriever dimensionRetriever, IParameterFactory parameterFactory, ICoreCalculationMethodRepository calculationMethodRepository, IMoBiFormulaTask formulaTask)
          : base(interactionTaskContext, editTask)
       {
@@ -40,22 +40,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          _formulaTask = formulaTask;
       }
 
-      public override IMoBiCommand GetRemoveCommand(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock parent, IBuildingBlock buildingBlock1)
+      public override IMoBiCommand GetRemoveCommand(MoleculeBuilder moleculeBuilder, MoleculeBuildingBlock parent, IBuildingBlock buildingBlock1)
       {
          return new RemoveMoleculeBuilderCommand(parent, moleculeBuilder);
       }
 
-      public override IMoBiCommand GetRemoveCommand(IMoleculeBuilder builder, IMoleculeBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(MoleculeBuilder builder, MoleculeBuildingBlock buildingBlock)
       {
          return GetRemoveCommand(builder, buildingBlock, null);
       }
 
-      public override IMoBiCommand GetAddCommand(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(MoleculeBuilder moleculeBuilder, MoleculeBuildingBlock parent, IBuildingBlock buildingBlock)
       {
          return GetAddCommand(moleculeBuilder, parent);
       }
 
-      public void AddPKSimMoleculeTo(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void AddPKSimMoleculeTo(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          using (var presenter = ApplicationController.Start<ICreatePKSimMoleculePresenter>())
          {
@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      public void AddConcentrationParameterTo(IMoleculeBuilder moleculeBuilder, IMoleculeBuildingBlock moleculeBuildingBlock)
+      public void AddConcentrationParameterTo(MoleculeBuilder moleculeBuilder, MoleculeBuildingBlock moleculeBuildingBlock)
       {
          if (moleculeBuilder.Parameters.ExistsByName(AppConstants.Parameters.CONCENTRATION))
             return;
@@ -81,12 +81,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          moleculeBuilder.AddParameter(concentrationParameter);
       }
 
-      public override IMoBiCommand GetAddCommand(IMoleculeBuilder builder, IMoleculeBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(MoleculeBuilder builder, MoleculeBuildingBlock buildingBlock)
       {
          return new AddMoleculeBuilderCommand(buildingBlock, builder);
       }
 
-      public override IMoleculeBuilder CreateNewEntity(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public override MoleculeBuilder CreateNewEntity(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          var moleculeBuilder = base.CreateNewEntity(moleculeBuildingBlock);
          AddConcentrationParameterTo(moleculeBuilder, moleculeBuildingBlock);
@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moleculeBuilder;
       }
 
-      private void setDefaults(IMoleculeBuilder moleculeBuilder)
+      private void setDefaults(MoleculeBuilder moleculeBuilder)
       {
          setDefaultStartFormula(moleculeBuilder);
          setDefaultDimensionIn(moleculeBuilder);
@@ -103,12 +103,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          moleculeBuilder.QuantityType = QuantityType.Drug;
       }
 
-      private void setDefaultStartFormula(IMoleculeBuilder moleculeBuilder)
+      private void setDefaultStartFormula(MoleculeBuilder moleculeBuilder)
       {
          moleculeBuilder.DefaultStartFormula = _formulaTask.CreateNewFormula<ConstantFormula>(_dimensionRetriever.MoleculeDimension);
       }
 
-      private void setDefaultDimensionIn(IMoleculeBuilder moleculeBuilder)
+      private void setDefaultDimensionIn(MoleculeBuilder moleculeBuilder)
       {
          moleculeBuilder.Dimension = _dimensionRetriever.MoleculeDimension;
          moleculeBuilder.DisplayUnit = _interactionTaskContext.DisplayUnitFor(moleculeBuilder);

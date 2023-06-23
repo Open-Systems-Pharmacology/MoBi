@@ -1,30 +1,32 @@
 ﻿using MoBi.Core.Repositories;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 
 {
-   public interface INeighborhoodToDTONeighborhoodMapper : IContainerToContainerDTOMapper
+   public interface INeighborhoodToDTONeighborhoodMapper : IMapper<Neighborhood, NeighborhoodDTO>
    {
    }
 
-   class NeighborhoodToDTONeighborhoodMapper : ContainerToContainerDTOMapper, INeighborhoodToDTONeighborhoodMapper
+   internal class NeighborhoodToDTONeighborhoodMapper : ContainerToContainerDTOMapper, INeighborhoodToDTONeighborhoodMapper
    {
       private readonly ITransportToTransportDTOMapper _transportToTransportDTOMapper;
 
-      public NeighborhoodToDTONeighborhoodMapper(ITransportToTransportDTOMapper transportToTransportDTOMapper, IIconRepository iconRepository)
-         : base(iconRepository)
+      public NeighborhoodToDTONeighborhoodMapper(
+         ITransportToTransportDTOMapper transportToTransportDTOMapper,
+         IObjectPathFactory objectPathFactory,
+         IIconRepository iconRepository) : base(objectPathFactory, iconRepository)
       {
          _transportToTransportDTOMapper = transportToTransportDTOMapper;
       }
 
-      public override ContainerDTO MapFrom(IContainer input)
+      public NeighborhoodDTO MapFrom(Neighborhood neighborhood)
       {
-         var dto = MapContainer(input, new NeighborhoodDTO());
-         var neighborhood = input as INeighborhood;
-         var transports = neighborhood.GetAllChildren<ITransport>();
+         var dto = MapContainer(neighborhood, new NeighborhoodDTO(neighborhood));
+         var transports = neighborhood.GetAllChildren<Transport>();
          dto.Transports = transports.MapAllUsing(_transportToTransportDTOMapper);
          return dto;
       }

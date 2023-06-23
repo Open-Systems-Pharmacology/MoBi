@@ -5,7 +5,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public class NewMoleculeBuildingBlockDescription
    {
-      public IEnumerable<IMoleculeBuilder> Molecules { set; get; }
+      public IEnumerable<MoleculeBuilder> Molecules { set; get; }
       public string Name { set; get; }
    }
 }

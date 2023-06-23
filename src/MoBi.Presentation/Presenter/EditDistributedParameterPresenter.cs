@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Presenter
          _context = context;
       }
 
-      public override void Edit(IDistributedParameter distributedParameter, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(IDistributedParameter distributedParameter, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _distributedParameter = distributedParameter;
          _distributedParameterDTO = _distributedParameterMapper.MapFrom(_distributedParameter);
@@ -112,7 +112,7 @@ namespace MoBi.Presentation.Presenter
 
       public void UpdateDistributionFormula()
       {
-         IDistributionFormula newFormula;
+         DistributionFormula newFormula;
          switch (_distributedParameterDTO.FormulaType)
          {
             case DistributionFormulaType.DiscreteDistribution:
@@ -146,7 +146,7 @@ namespace MoBi.Presentation.Presenter
          rebind();
       }
 
-      private void updateDistributedFormula(IDistributionFormula newFormula)
+      private void updateDistributedFormula(DistributionFormula newFormula)
       {
          AddCommand(_formulaTask.UpdateDistributedFormula(_distributedParameter, newFormula, DisplayFormulaTypeFor(_distributedParameterDTO.FormulaType), BuildingBlock));
       }
@@ -223,7 +223,7 @@ namespace MoBi.Presentation.Presenter
             return;
 
          var parameter = createDistributionParameter(parameterName, dimension);
-         AddCommand(_parameterTask.AddToProject(parameter, _distributedParameter, BuildingBlock));
+         AddCommand(_parameterTask.AddToParent(parameter, _distributedParameter, BuildingBlock));
       }
 
       private IParameter createDistributionParameter(string name, IDimension dimension = null)

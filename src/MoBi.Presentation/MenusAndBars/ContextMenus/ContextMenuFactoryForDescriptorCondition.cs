@@ -33,8 +33,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var subject = presenter.Subject;
 
          var doNotAddAllCondition = (subject.IsAnImplementationOf<SumFormula>() ||
-                                     subject.IsAnImplementationOf<ITransportBuilder>() ||
-                                     subject.IsAnImplementationOf<IContainerObserverBuilder>());
+                                     subject.IsAnImplementationOf<TransportBuilder>() ||
+                                     subject.IsAnImplementationOf<ContainerObserverBuilder>());
 
          return new ContextMenuForDescriptorCondition(presenter, viewItem, allowAddAllCondition: !doNotAddAllCondition);
       }

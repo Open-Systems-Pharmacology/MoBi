@@ -108,7 +108,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return diagramTemplateModel;
       }
 
-      public ICommand<IMoBiContext> MoveDiagramNodes(IMoBiReactionBuildingBlock sourceBuildingBlock, IMoBiReactionBuildingBlock targetBuildingBlock, IReactionBuilder builder, string builderOriginalName)
+      public ICommand<IMoBiContext> MoveDiagramNodes(MoBiReactionBuildingBlock sourceBuildingBlock, MoBiReactionBuildingBlock targetBuildingBlock, ReactionBuilder builder, string builderOriginalName)
       {
          if (sourceBuildingBlock.DiagramModel == null || targetBuildingBlock.DiagramModel == null)
             return new MoBiEmptyCommand();
@@ -116,7 +116,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return getMoveCommands(sourceBuildingBlock, targetBuildingBlock, builder, builderOriginalName);
       }
 
-      private MoBiMacroCommand getMoveCommands(IMoBiReactionBuildingBlock sourceBuildingBlock, IMoBiReactionBuildingBlock targetBuildingBlock, IReactionBuilder builder, string builderOriginalName)
+      private MoBiMacroCommand getMoveCommands(MoBiReactionBuildingBlock sourceBuildingBlock, MoBiReactionBuildingBlock targetBuildingBlock, ReactionBuilder builder, string builderOriginalName)
       {
          var macroCommand = new MoBiMacroCommand();
 
@@ -129,12 +129,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      private ICommand<IMoBiContext> movePartnersCommand(IMoBiReactionBuildingBlock sourceBuildingBlock, IMoBiReactionBuildingBlock targetBuildingBlock, IReactionPartnerBuilder partner)
+      private ICommand<IMoBiContext> movePartnersCommand(MoBiReactionBuildingBlock sourceBuildingBlock, MoBiReactionBuildingBlock targetBuildingBlock, ReactionPartnerBuilder partner)
       {
          return movePartnerNamed(sourceBuildingBlock, targetBuildingBlock, partner.MoleculeName);
       }
 
-      private ICommand<IMoBiContext> movePartnerNamed(IMoBiReactionBuildingBlock sourceBuildingBlock, IMoBiReactionBuildingBlock targetBuildingBlock, string partnerName)
+      private ICommand<IMoBiContext> movePartnerNamed(MoBiReactionBuildingBlock sourceBuildingBlock, MoBiReactionBuildingBlock targetBuildingBlock, string partnerName)
       {
          if(targetBuildingBlock.DiagramManager.PkModel == null)
             return new MoBiEmptyCommand();
@@ -142,7 +142,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return targetBuildingBlock.AllMolecules.Any(x => string.Equals(x, partnerName)) ? new MoBiEmptyCommand() : getMoveCommand(sourceBuildingBlock, targetBuildingBlock, partnerName, partnerName);
       }
 
-      private ICommand<IMoBiContext> getMoveCommand(IMoBiReactionBuildingBlock sourceBuildingBlock, IMoBiReactionBuildingBlock targetBuildingBlock, string builderName, string builderOriginalName)
+      private ICommand<IMoBiContext> getMoveCommand(MoBiReactionBuildingBlock sourceBuildingBlock, MoBiReactionBuildingBlock targetBuildingBlock, string builderName, string builderOriginalName)
       {
          var sourceBuilderNode = sourceBuildingBlock.DiagramModel.FindByName(builderOriginalName);
 

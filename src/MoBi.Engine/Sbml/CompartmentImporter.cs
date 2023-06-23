@@ -15,7 +15,7 @@ namespace MoBi.Engine.Sbml
 {
    public class CompartmentImporter : SBMLImporter
    {
-      internal IMoBiSpatialStructure SpatialStructure;
+      internal MoBiSpatialStructure SpatialStructure;
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
       private readonly IObjectBaseFactory _objectBaseFactory;
       internal IContainer _topContainer;
@@ -78,7 +78,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       internal void CreateSpatialStructureFromModel(IContainer topContainer, Model model)
       {
-         SpatialStructure = _spatialStructureFactory.Create().DowncastTo<IMoBiSpatialStructure>()
+         SpatialStructure = _spatialStructureFactory.Create().DowncastTo<MoBiSpatialStructure>()
             .WithName(SBMLConstants.SBML_MODEL + model.getName())
             .WithTopContainer(topContainer)
             .WithDescription(SBMLConstants.SBML_NOTES + model.getNotesString() + SBMLConstants.SPACE +
@@ -209,7 +209,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _command.AddCommand(new AddBuildingBlockCommand<IMoBiSpatialStructure>(SpatialStructure).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoBiSpatialStructure>(SpatialStructure, _sbmlModule).Run(_context));
       }
    }
 }

@@ -1,7 +1,7 @@
 using System.ComponentModel;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.DTO
 {
@@ -10,9 +10,13 @@ namespace MoBi.Presentation.DTO
       private string _stoichiometricFormula;
       public string Kinetic { get; set; }
 
+      public ReactionInfoDTO(ReactionBuilder reactionBuilder) : base(reactionBuilder)
+      {
+      }
+
       public string StoichiometricFormula
       {
-         get { return _stoichiometricFormula; }
+         get => _stoichiometricFormula;
          set
          {
             _stoichiometricFormula = value;
@@ -20,13 +24,14 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
+      protected override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
       {
-         var reactionBuilder = sender.DowncastTo<IReactionBuilder>();
+         var reactionBuilder = sender.DowncastTo<ReactionBuilder>();
          if (e.PropertyName == "Formula")
          {
             Kinetic = reactionBuilder.Formula == null ? string.Empty : reactionBuilder.Formula.ToString();
          }
+
          base.HandlePropertyChanged(sender, e);
       }
 

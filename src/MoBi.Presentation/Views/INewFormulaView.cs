@@ -6,7 +6,7 @@ namespace MoBi.Presentation.Views
 {
    public interface INewFormulaView : IModalView<INewFormulaPresenter>
    {
-      void BindTo(IObjectBaseDTO dto);
+      void BindTo(ObjectBaseDTO dto);
       void AddReferenceView(IView view);
       void AddFormulaView(IView view);
    }

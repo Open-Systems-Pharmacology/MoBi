@@ -43,7 +43,7 @@ namespace MoBi.UI
          container.Register<IMoBiMainView, IShell, IMainView, MoBiMainView>(LifeStyle.Singleton);
 
          container.Register<IContainerModalView, ModalForm>(LifeStyle.Transient);
-         container.Register<IReactionDiagramPresenter, IBaseDiagramPresenter<IMoBiReactionBuildingBlock>, ReactionDiagramPresenter>(LifeStyle.Transient);
+         container.Register<IReactionDiagramPresenter, IBaseDiagramPresenter<MoBiReactionBuildingBlock>, ReactionDiagramPresenter>(LifeStyle.Transient);
 
          container.Register(typeof(ISelectManyView<>), typeof(SelectManyView<>));
 

@@ -16,20 +16,20 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditAssignmentBuilderPresenter : IEditPresenter<IEventAssignmentBuilder>,
+   public interface IEditAssignmentBuilderPresenter : IEditPresenter<EventAssignmentBuilder>,
       IPresenter<IEditEventAssignmentBuilderView>,
       IPresenterWithFormulaCache,
       ICanEditPropertiesPresenter,
-      ICreatePresenter<IEventAssignmentBuilder>
+      ICreatePresenter<EventAssignmentBuilder>
    {
       void SelectPath();
    }
 
-   public class EditAssignmentBuilderPresenter : AbstractEntityEditPresenter<IEditEventAssignmentBuilderView, IEditAssignmentBuilderPresenter, IEventAssignmentBuilder>, IEditAssignmentBuilderPresenter
+   public class EditAssignmentBuilderPresenter : AbstractEntityEditPresenter<IEditEventAssignmentBuilderView, IEditAssignmentBuilderPresenter, EventAssignmentBuilder>, IEditAssignmentBuilderPresenter
    {
-      private IEventAssignmentBuilder _eventAssignmentBuilder;
-      private readonly IEventAssignmentBuilderToEventAssignmentDTOMapper _eventAssingnmentToDTOAssignmentMapper;
-      private readonly IEditTaskFor<IEventAssignmentBuilder> _editTasksForAssignment;
+      private EventAssignmentBuilder _eventAssignmentBuilder;
+      private readonly IEventAssignmentBuilderToEventAssignmentDTOMapper _eventAssignmentToDTOAssignmentMapper;
+      private readonly IEditTaskFor<EventAssignmentBuilder> _editTasksForAssignment;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IEditFormulaPresenter _editFormulaPresenter;
       private readonly IMoBiContext _context;
@@ -38,8 +38,8 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiApplicationController _applicationController;
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public EditAssignmentBuilderPresenter(IEditEventAssignmentBuilderView view, IEventAssignmentBuilderToEventAssignmentDTOMapper eventAssingnmentToDTOAssignmentMapper,
-         IEditTaskFor<IEventAssignmentBuilder> editTasksForAssignment, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
+      public EditAssignmentBuilderPresenter(IEditEventAssignmentBuilderView view, IEventAssignmentBuilderToEventAssignmentDTOMapper eventAssignmentToDTOAssignmentMapper,
+         IEditTaskFor<EventAssignmentBuilder> editTasksForAssignment, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
          IEditFormulaPresenter editFormulaPresenter, IMoBiContext context,
          ISelectReferenceAtEventAssignmentPresenter selectReferencePresenter,
          IContextSpecificReferencesRetriever contextSpecificReferencesRetriever, IMoBiApplicationController applicationController) : base(view)
@@ -53,16 +53,16 @@ namespace MoBi.Presentation.Presenter
          _formulaToDTOFormulaMapper = formulaToDTOFormulaMapper;
          _editTasksForAssignment = editTasksForAssignment;
          _view.SetFormulaView(_editFormulaPresenter.BaseView);
-         _eventAssingnmentToDTOAssignmentMapper = eventAssingnmentToDTOAssignmentMapper;
+         _eventAssignmentToDTOAssignmentMapper = eventAssignmentToDTOAssignmentMapper;
          AddSubPresenters(_editFormulaPresenter, selectReferencePresenter);
       }
 
-      public override void Edit(IEventAssignmentBuilder eventAssignmentBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(EventAssignmentBuilder eventAssignmentBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventAssignmentBuilder = eventAssignmentBuilder;
          bindToFormula();
          _selectReferencePresenter.Init(eventAssignmentBuilder, _contextSpecificReferencesRetriever.RetrieveFor(_eventAssignmentBuilder), eventAssignmentBuilder);
-         var dto = _eventAssingnmentToDTOAssignmentMapper.MapFrom(_eventAssignmentBuilder);
+         var dto = _eventAssignmentToDTOAssignmentMapper.MapFrom(_eventAssignmentBuilder);
          dto.AddUsedNames(_editTasksForAssignment.GetForbiddenNamesWithoutSelf(eventAssignmentBuilder, existingObjectsInParent));
          _view.Show(dto);
       }
@@ -93,11 +93,11 @@ namespace MoBi.Presentation.Presenter
 
       public void SelectPath()
       {
-         IFormulaUsablePath objectPath;
-         using (var selectEventAssingmentTargetPresenter = _applicationController.Start<ISelectEventAssingmentTargetPresenter>())
+         FormulaUsablePath objectPath;
+         using (var presenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
-            selectEventAssingmentTargetPresenter.Init(_context.CurrentProject, _eventAssignmentBuilder.RootContainer);
-            objectPath = selectEventAssingmentTargetPresenter.Select();
+            presenter.Init(_eventAssignmentBuilder.RootContainer);
+            objectPath = presenter.Select();
          }
 
          if (objectPath == null) return;

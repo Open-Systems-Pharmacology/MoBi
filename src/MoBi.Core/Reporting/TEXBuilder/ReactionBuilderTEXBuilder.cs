@@ -9,7 +9,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting.TEXBuilder
 {
-   class ReactionBuilderTEXBuilder : OSPSuiteTeXBuilder<IReactionBuilder>
+   class ReactionBuilderTEXBuilder : OSPSuiteTeXBuilder<ReactionBuilder>
    {
       private readonly ITeXBuilderRepository _builderRepository;
       private readonly IStoichiometricStringCreator _stoichiometricStringCreator;
@@ -20,7 +20,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          _stoichiometricStringCreator = stoichiometricStringCreator;
       }
 
-      public override void Build(IReactionBuilder reactionBuilder, OSPSuiteTracker buildTracker)
+      public override void Build(ReactionBuilder reactionBuilder, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
          listToReport.AddRange(this.ReportDescription(reactionBuilder, buildTracker));

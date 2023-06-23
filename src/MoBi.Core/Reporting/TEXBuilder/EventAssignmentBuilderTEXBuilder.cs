@@ -8,7 +8,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting.TEXBuilder
 {
-   class EventAssignmentBuilderTEXBuilder : OSPSuiteTeXBuilder<IEventAssignmentBuilder>
+   class EventAssignmentBuilderTEXBuilder : OSPSuiteTeXBuilder<EventAssignmentBuilder>
    {
       private readonly ITeXBuilderRepository _builderRepository;
 
@@ -17,7 +17,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          _builderRepository = builderRepository;
       }
 
-      public override void Build(IEventAssignmentBuilder eventAssignmentBuilder, OSPSuiteTracker tracker)
+      public override void Build(EventAssignmentBuilder eventAssignmentBuilder, OSPSuiteTracker tracker)
       {
          var listToReport = new List<object>();
 

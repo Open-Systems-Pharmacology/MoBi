@@ -11,20 +11,20 @@ namespace MoBi.Presentation.Tasks
 {
    public abstract class concern_for_InteractionTasksForActiveTransportBuilder : ContextSpecification<IInteractionTasksForActiveTransportBuilder>
    {
-      protected IEditTaskFor<ITransportBuilder> _editTask;
+      protected IEditTaskFor<TransportBuilder> _editTask;
       protected IInteractionTaskContext _interactionTaskContext;
 
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _editTask = A.Fake<IEditTaskFor<ITransportBuilder>>();
+         _editTask = A.Fake<IEditTaskFor<TransportBuilder>>();
          sut = new InteractionTasksForActiveTransportBuilder(_interactionTaskContext, _editTask);
       }
    }
 
    public class When_creating_a_new_active_transport_builder : concern_for_InteractionTasksForActiveTransportBuilder
    {
-      private ITransportBuilder _result;
+      private TransportBuilder _result;
       private TransporterMoleculeContainer _transporterMoleculeContainer;
       private IDimension _amountPerTimeDimension;
 

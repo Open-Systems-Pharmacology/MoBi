@@ -6,27 +6,27 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForApplicationMoleculeBuilder : InteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder>
+   public class InteractionTasksForApplicationMoleculeBuilder : InteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder>
    {
       private readonly IIdGenerator _idGenerator;
 
-      public InteractionTasksForApplicationMoleculeBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IApplicationMoleculeBuilder> editTask, IIdGenerator idGenerator)
+      public InteractionTasksForApplicationMoleculeBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<ApplicationMoleculeBuilder> editTask, IIdGenerator idGenerator)
          : base(interactionTaskContext, editTask)
       {
          _idGenerator = idGenerator;
       }
 
-      public override IApplicationMoleculeBuilder CreateNewEntity(IApplicationBuilder applicationBuilder)
+      public override ApplicationMoleculeBuilder CreateNewEntity(ApplicationBuilder applicationBuilder)
       {
          return base.CreateNewEntity(applicationBuilder).WithName(_idGenerator.NewId());
       }
 
-      public override IMoBiCommand GetRemoveCommand(IApplicationMoleculeBuilder transportBuilderToRemove, IApplicationBuilder applicationBuilder, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(ApplicationMoleculeBuilder transportBuilderToRemove, ApplicationBuilder applicationBuilder, IBuildingBlock buildingBlock)
       {
          return new RemoveApplicationMoleculeBuilderFromApplicationBuilderCommand(applicationBuilder, transportBuilderToRemove, buildingBlock);
       }
 
-      public override IMoBiCommand GetAddCommand(IApplicationMoleculeBuilder applicationMoleculeBuilder, IApplicationBuilder applicationBuilder, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(ApplicationMoleculeBuilder applicationMoleculeBuilder, ApplicationBuilder applicationBuilder, IBuildingBlock buildingBlock)
       {
          return new AddApplicationMoleculBuilderToApplicationBuilderCommand(applicationBuilder, applicationMoleculeBuilder, buildingBlock);
       }

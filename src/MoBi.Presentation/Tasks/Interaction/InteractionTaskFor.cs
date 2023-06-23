@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
@@ -21,7 +22,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand AddNew(TParent parent, IBuildingBlock buildingBlockToAddTo);
       IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
       IMoBiCommand AddExistingTemplate(TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
-      IMoBiCommand AddToProject(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
+      IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
 
       TChild CreateNewEntity(TParent parent);
    }
@@ -49,6 +50,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          _editTask = editTask;
       }
 
+      protected IBuildingBlockRepository BuildingBlockRepository => _interactionTaskContext.BuildingBlockRepository;
+
       protected IMoBiContext Context => _interactionTaskContext.Context;
 
       protected IMoBiApplicationController ApplicationController => _interactionTaskContext.ApplicationController;
@@ -75,6 +78,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (!_editTask.EditEntityModal(newEntity, parentContainer, macroCommand, buildingBlockToAddTo))
             return CancelCommand(macroCommand);
 
+         //allow specific methods to do something with the new entity before it is returned to the caller
+         PerformPostAddActions(newEntity, parent, buildingBlockToAddTo);
+
          //Once the entity was created, select or edit the entity if required
          _editTask.Edit(newEntity);
 
@@ -86,6 +92,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          SetAddCommandDescription(newEntity, parent, addCommand, macroCommand, buildingBlockToAddTo);
 
          return macroCommand;
+      }
+
+      protected virtual void PerformPostAddActions(TChild newEntity, TParent parent, IBuildingBlock buildingBlockToAddTo)
+      {
+         //by default nothing to do
       }
 
       /// <summary>
@@ -128,18 +139,23 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public virtual IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
-         var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
-         return adddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+         var filename = AskForPKMLFileToOpen();
+         return addItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+      }
+
+      protected string AskForPKMLFileToOpen()
+      {
+         return InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
       }
 
       public IMoBiCommand AddExistingTemplate(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          _interactionTaskContext.UpdateTemplateDirectories();
          var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.LoadFromTemplate(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
-         return adddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+         return addItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
       }
 
-      private IMoBiCommand adddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
+      private IMoBiCommand addItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();
@@ -165,7 +181,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          };
          foreach (var existingItem in itemsToAdd)
          {
-            var command = AddToProject(existingItem, parent, buildingBlockWithFormulaCache);
+            var command = AddToParent(existingItem, parent, buildingBlockWithFormulaCache);
             if (command.IsEmpty())
                return CancelCommand(macroCommand);
 
@@ -194,9 +210,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public abstract IMoBiCommand GetRemoveCommand(TChild objectToRemove, TParent parent, IBuildingBlock buildingBlock);
 
-      public virtual IMoBiCommand AddToProject(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
+      public virtual IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
-         var nameIsValid = correctName(childToAdd, parent);
+         var nameIsValid = CorrectName(childToAdd, parent);
          if (!nameIsValid)
             return new MoBiEmptyCommand();
 
@@ -237,7 +253,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          Context.PublishEvent(new AddedEvent<TChild>(newObjectBase, parent));
       }
 
-      private bool correctName(TChild child, TParent parent)
+      protected virtual bool CorrectName(TChild child, TParent parent)
       {
          var parentContainer = parent as IEnumerable<IObjectBase> ?? Enumerable.Empty<IObjectBase>();
          var forbiddenNames = _editTask.GetForbiddenNames(child, parentContainer);

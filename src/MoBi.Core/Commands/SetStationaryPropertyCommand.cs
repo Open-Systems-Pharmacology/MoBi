@@ -8,12 +8,12 @@ namespace MoBi.Core.Commands
 {
    public class SetStationaryPropertyCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
-      private IMoleculeBuilder _moleculeBuilder;
+      private MoleculeBuilder _moleculeBuilder;
       private readonly bool _newValue;
       private readonly bool _oldValue;
       private readonly string _moleculeBuilderId;
 
-      public SetStationaryPropertyCommand(IMoleculeBuilder moleculeBuilder, bool newValue, bool oldValue, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public SetStationaryPropertyCommand(MoleculeBuilder moleculeBuilder, bool newValue, bool oldValue, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _moleculeBuilder = moleculeBuilder;
          _moleculeBuilderId = _moleculeBuilder.Id;
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _moleculeBuilder = context.Get<IMoleculeBuilder>(_moleculeBuilderId);
+         _moleculeBuilder = context.Get<MoleculeBuilder>(_moleculeBuilderId);
       }
 
 

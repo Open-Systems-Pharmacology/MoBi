@@ -24,13 +24,13 @@ namespace MoBi.Core
 
    public class When_mapping_from_input_reaction : concern_for_ReactionToDTOReactionMapper
    {
-      private IReaction _inputReaction;
+      private Reaction _inputReaction;
       private IDimension _dim;
       private IFormula _formula;
-      private IReactionPartner _educt;
-      private IMoleculeAmount _eductAmount;
-      private IMoleculeAmount _productAmount;
-      private IReactionPartner _product;
+      private ReactionPartner _educt;
+      private MoleculeAmount _eductAmount;
+      private MoleculeAmount _productAmount;
+      private ReactionPartner _product;
       private ReactionDTO _result;
       private string _kinetic;
 
@@ -38,30 +38,29 @@ namespace MoBi.Core
       {
          base.Context();
          _dim = A.Fake<IDimension>();
-         _inputReaction = A.Fake<IReaction>();
+         _inputReaction = new Reaction();
          _formula = A.Fake<Formula>();
          _kinetic = "Kinetic";
          A.CallTo(() => _formula.ToString()).Returns(_kinetic);
          _inputReaction.Dimension = _dim;
          _inputReaction.Formula = _formula;
-         _eductAmount = A.Fake<IMoleculeAmount>().WithName("Educt");
-         _productAmount = A.Fake<IMoleculeAmount>().WithName("Product");
-         _educt = A.Fake<IReactionPartner>();
-         A.CallTo(() => _educt.Partner).Returns(_eductAmount);
-         A.CallTo(() => _educt.StoichiometricCoefficient).Returns(1);
-         _product = A.Fake<IReactionPartner>();
-         A.CallTo(() => _product.Partner).Returns(_productAmount);
-         A.CallTo(() => _product.StoichiometricCoefficient).Returns(1);
-         A.CallTo(() => _inputReaction.Educts).Returns(new[] { _educt });
-         A.CallTo(() => _inputReaction.Products).Returns(new[] { _product });
-         A.CallTo(() => _stoichiometricStringCreate.CreateFrom(A<IEnumerable<IReactionPartner>>._, A<IEnumerable<IReactionPartner>>._))
-            .Returns(string.Format("1 {0} => 1 {1}", _eductAmount.Name, _productAmount.Name));
-   }
+         _eductAmount = A.Fake<MoleculeAmount>().WithName("Educt");
+         _productAmount = A.Fake<MoleculeAmount>().WithName("Product");
+         _educt = new ReactionPartner(1.0, _eductAmount);
+
+         _product = new ReactionPartner(1.0, _productAmount);
+
+         _inputReaction.AddEduct(_educt);
+         _inputReaction.AddProduct(_product);
+
+         A.CallTo(() => _stoichiometricStringCreate.CreateFrom(A<IEnumerable<ReactionPartner>>._, A<IEnumerable<ReactionPartner>>._))
+            .Returns($"1 {_eductAmount.Name} => 1 {_productAmount.Name}");
+      }
 
       protected override void Because()
       {
-         
-         _result= sut.MapFrom(_inputReaction);
+
+         _result = sut.MapFrom(_inputReaction);
       }
       [Observation]
       public void should_map_the_properties()
@@ -69,10 +68,10 @@ namespace MoBi.Core
          _result.Kinetic.ShouldBeEqualTo(_kinetic);
       }
 
-      [Observation] 
+      [Observation]
       public void should_generate_stoichiometric_string()
       {
-         _result.Stoichiometric.ShouldBeEqualTo(string.Format("1 {0} => 1 {1}", _eductAmount.Name, _productAmount.Name));
+         _result.Stoichiometric.ShouldBeEqualTo($"1 {_eductAmount.Name} => 1 {_productAmount.Name}");
       }
    }
-}	
+}

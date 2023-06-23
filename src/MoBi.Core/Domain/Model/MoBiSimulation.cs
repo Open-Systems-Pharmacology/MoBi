@@ -20,9 +20,8 @@ namespace MoBi.Core.Domain.Model
       SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
       SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
 
-      IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
       string ParameterIdentificationWorkingDirectory { get; set; }
-      void Update(IMoBiBuildConfiguration buildConfiguration, IModel model);
+      void Update(SimulationConfiguration simulationConfiguration, IModel model);
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
@@ -38,7 +37,6 @@ namespace MoBi.Core.Domain.Model
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    {
-      private bool _hasChanged;
       private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       private DataRepository _results;
       public IDiagramModel DiagramModel { get; set; }
@@ -56,28 +54,31 @@ namespace MoBi.Core.Domain.Model
 
       public bool HasChanged
       {
-         get => _hasChanged || MoBiBuildConfiguration.HasChangedBuildingBlocks();
-         set => _hasChanged = value;
+         //TODO SIMULATION_CONFIGURATION
+         get;
+         set;
       }
 
-      public OutputSchema OutputSchema => SimulationSettings.OutputSchema;
+      public OutputSchema OutputSchema => Settings.OutputSchema;
 
       public CurveChartTemplate ChartTemplateByName(string chartTemplate)
       {
-         return SimulationSettings.ChartTemplateByName(chartTemplate);
+         return Settings.ChartTemplateByName(chartTemplate);
       }
 
       public void RemoveAllChartTemplates()
       {
-         SimulationSettings.RemoveAllChartTemplates();
+         Settings.RemoveAllChartTemplates();
       }
 
       public bool IsCreatedBy(IBuildingBlock templateBuildingBlock)
       {
-         return MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock) != null;
+         //TODO SIMULATION_CONFIGURATION
+         return false;
+         // return MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock) != null;
       }
 
-      public SolverSettings Solver => SimulationSettings.Solver;
+      public SolverSettings Solver => Settings.Solver;
 
       public bool UsesObservedData(DataRepository dataRepository)
       {
@@ -95,15 +96,15 @@ namespace MoBi.Core.Domain.Model
          Chart?.AcceptVisitor(visitor);
       }
 
-      public void Update(IMoBiBuildConfiguration buildConfiguration, IModel model)
+      public void Update(SimulationConfiguration simulationConfiguration, IModel model)
       {
-         BuildConfiguration = buildConfiguration;
+         Configuration = simulationConfiguration;
          Model = model;
       }
 
       public ICache<string, DataRepository> HistoricResults { get; }
 
-      public IMoBiBuildConfiguration MoBiBuildConfiguration => BuildConfiguration as IMoBiBuildConfiguration;
+      // public IMoBiBuildConfiguration MoBiBuildConfiguration => BuildConfiguration as IMoBiBuildConfiguration;
 
       public void AddHistoricResults(DataRepository results)
       {
@@ -154,25 +155,19 @@ namespace MoBi.Core.Domain.Model
          get { yield return Chart; }
       }
 
-      public new IReactionBuildingBlock Reactions
-      {
-         get => BuildConfiguration.Reactions;
-         set => BuildConfiguration.Reactions = value;
-      }
-
       public void AddChartTemplate(CurveChartTemplate chartTemplate)
       {
-         SimulationSettings.AddChartTemplate(chartTemplate);
+         Settings.AddChartTemplate(chartTemplate);
       }
 
       public void RemoveChartTemplate(string chartTemplateName)
       {
-         SimulationSettings.RemoveChartTemplate(chartTemplateName);
+         Settings.RemoveChartTemplate(chartTemplateName);
       }
 
-      public IEnumerable<CurveChartTemplate> ChartTemplates => SimulationSettings.ChartTemplates;
+      public IEnumerable<CurveChartTemplate> ChartTemplates => Settings.ChartTemplates;
 
-      public CurveChartTemplate DefaultChartTemplate => SimulationSettings.DefaultChartTemplate;
+      public CurveChartTemplate DefaultChartTemplate => Settings.DefaultChartTemplate;
 
       public bool IsLoaded { get; set; }
 

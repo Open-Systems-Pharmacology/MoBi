@@ -6,6 +6,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core
 {
@@ -89,7 +90,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         sut.SearchIn(_testObject, A.Fake<MoBiProject>());
       }
 
       [Observation]
@@ -139,7 +140,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<IReadOnlyList<IBuildingBlock>>());
       }
 
       [Observation]
@@ -161,7 +162,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<IReadOnlyList<IBuildingBlock>>());
       }
 
       [Observation]
@@ -184,7 +185,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<IReadOnlyList<IBuildingBlock>>());
       }
 
       [Observation]
@@ -206,7 +207,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<IReadOnlyList<IBuildingBlock>>());
       }
 
       [Observation]
@@ -229,7 +230,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<IReadOnlyList<IBuildingBlock>>());
       }
 
       [Observation]
@@ -253,7 +254,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<IReadOnlyList<IBuildingBlock>>());
       }
 
       [Observation]
@@ -276,11 +277,11 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _results = sut.SearchIn(_testObject, A.Fake<IMoBiProject>());
+         _results = sut.SearchIn(_testObject, A.Fake<IReadOnlyList<IBuildingBlock>>());
       }
 
       [Observation]
-      public void should_find_the_allobjects_objects()
+      public void should_find_the_all_objects_objects()
       {
          _results.Select(x => x.FoundObject).ShouldOnlyContain(_p1, _p2);
       }

@@ -2,6 +2,7 @@
 using OSPSuite.Utility.Events;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Presenters.Comparisons;
@@ -41,7 +42,17 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(SimulationUnloadEvent eventToHandle)
       {
          ClearComparisonIfComparing(eventToHandle.Simulation);
-         eventToHandle.Simulation.MoBiBuildConfiguration.AllBuildingBlocks.Each(ClearComparisonIfComparing);
+         clearAllBuildingBlockComparisons(eventToHandle.Simulation);
+      }
+
+      private void clearAllBuildingBlockComparisons(IMoBiSimulation simulation)
+      {
+         simulation.Configuration.ModuleConfigurations.Each(clearAllBuildingBlockComparisons);
+      }
+
+      private void clearAllBuildingBlockComparisons(ModuleConfiguration moduleConfiguration)
+      {
+         moduleConfiguration.Module.BuildingBlocks.Each(ClearComparisonIfComparing);
       }
    }
 }

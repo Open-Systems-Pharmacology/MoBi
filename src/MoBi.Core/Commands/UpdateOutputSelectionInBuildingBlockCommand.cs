@@ -7,13 +7,13 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateOutputSelectionInBuildingBlockCommand : BuildingBlockChangeCommandBase<ISimulationSettings>
+   public class UpdateOutputSelectionInBuildingBlockCommand : BuildingBlockChangeCommandBase<SimulationSettings>
    {
       private OutputSelections _outputSelections;
       private OutputSelections _oldOutputSelections;
 
 
-      public UpdateOutputSelectionInBuildingBlockCommand(OutputSelections outputSelections, ISimulationSettings buildingBlock)
+      public UpdateOutputSelectionInBuildingBlockCommand(OutputSelections outputSelections, SimulationSettings buildingBlock)
          : base(buildingBlock)
       {
          _outputSelections = outputSelections;

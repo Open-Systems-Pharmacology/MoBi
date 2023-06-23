@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -15,6 +16,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    internal class ReactionEductPartnerContextMenuSpecificationFactory : IReactionEductPartnerContextMenuSpecificationFactory
    {
+      private readonly IContainer _container;
+
+      public ReactionEductPartnerContextMenuSpecificationFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
          return (viewItem == null || viewItem.IsAnImplementationOf<ReactionPartnerBuilderDTO>()) &&
@@ -28,12 +36,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IContextMenu createFor(ReactionPartnerBuilderDTO reactionPartnerDTO, IReactionEductsPresenter presenter)
       {
-         var reactionBuilder = presenter.Subject.DowncastTo<IReactionBuilder>();
+         var reactionBuilder = presenter.Subject.DowncastTo<ReactionBuilder>();
 
-         IReactionPartnerBuilder reactionPartnerBuilder = null;
+         ReactionPartnerBuilder reactionPartnerBuilder = null;
          if(reactionPartnerDTO != null)
             reactionPartnerBuilder = reactionBuilder.Educts.FirstOrDefault(educt => educt.MoleculeName.Equals(reactionPartnerDTO.MoleculeName));
-         return new ContextMenuForEductBuilder(reactionBuilder, reactionPartnerBuilder);
+         return new ContextMenuForEductBuilder(reactionBuilder, reactionPartnerBuilder, _container);
       }
    }
 }

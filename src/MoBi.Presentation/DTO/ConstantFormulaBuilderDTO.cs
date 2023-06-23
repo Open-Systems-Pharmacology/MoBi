@@ -1,6 +1,6 @@
-﻿using OSPSuite.Core.Domain;
+﻿using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.DTO
 {
@@ -8,9 +8,9 @@ namespace MoBi.Presentation.DTO
    {
       public ValueEditDTO Value { get; set; }
 
-      public ConstantFormulaBuilderDTO()
+      public ConstantFormulaBuilderDTO(ConstantFormula constantFormula) : base(constantFormula)
       {
-         FormulaType =ObjectTypes.ConstantFormula;
+         FormulaType = ObjectTypes.ConstantFormula;
       }
 
       public override IDimension Dimension

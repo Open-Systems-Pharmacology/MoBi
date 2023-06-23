@@ -21,7 +21,7 @@ namespace MoBi.Presentation
    public class concern_for_EditObserverBuilderPresenter : ContextSpecification<EditAmountObserverBuilderPresenter>
    {
       protected IEditObserverBuilderView _editObserverBuilderView;
-      protected IAmountObserverBuilder _observerBuilder;
+      protected AmountObserverBuilder _observerBuilder;
       protected ObserverBuildingBlock _buildingBlock;
       protected IEditFormulaPresenter _editFormulaPresenter;
       private ICommandCollector _commandCollector;
@@ -29,7 +29,7 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _observerBuilder = A.Fake<IAmountObserverBuilder>();
+         _observerBuilder = A.Fake<AmountObserverBuilder>();
          _editObserverBuilderView = A.Fake<IEditObserverBuilderView>();
          _buildingBlock= new ObserverBuildingBlock();
          _editFormulaPresenter= A.Fake<IEditFormulaPresenter>();
@@ -39,13 +39,13 @@ namespace MoBi.Presentation
          sut = new EditAmountObserverBuilderPresenter(
             _editObserverBuilderView,
             A.Fake<IMoBiContext>(),
-            A.Fake<IEditTaskFor<IAmountObserverBuilder>>(),
+            A.Fake<IEditTaskFor<AmountObserverBuilder>>(),
             _observerMapper,
             A.Fake<IViewItemContextMenuFactory>(),
             _editFormulaPresenter,
             A.Fake<ISelectReferenceAtAmountObserverPresenter>(),
             A.Fake<IMoleculeDependentBuilderPresenter>(),
-            A.Fake<IDescriptorConditionListPresenter<IObserverBuilder>>()
+            A.Fake<IDescriptorConditionListPresenter<ObserverBuilder>>()
             );
 
 

@@ -12,7 +12,7 @@ namespace MoBi.Engine.Sbml
     {
         private List<Species> _allSpecies;
         internal List<string> SpeciesIds ;
-        private IMoleculeBuilder _moleculeBuilder;
+        private MoleculeBuilder _moleculeBuilder;
         private List<IContainer> _container; 
         private IDimension _dimension;
 
@@ -31,14 +31,14 @@ namespace MoBi.Engine.Sbml
             SpeciesIds = new List<string> {species.getId()};
         }
 
-        public MoleculeInformation(IMoleculeBuilder moleculeBuilder)
+        public MoleculeInformation(MoleculeBuilder moleculeBuilder)
         {
             _moleculeBuilder = moleculeBuilder;
             _container = new List<IContainer>();
             SpeciesIds = new List<string>();
         }
 
-        public MoleculeInformation(Species species, IMoleculeBuilder moleculeBuilder)
+        public MoleculeInformation(Species species, MoleculeBuilder moleculeBuilder)
         {
             _allSpecies = new List<Species> { species };
             SpeciesIds = new List<string> { species.getId() };
@@ -95,12 +95,12 @@ namespace MoBi.Engine.Sbml
             return _allSpecies.Count == 1 ? _allSpecies.First().getName() : String.Empty;
         }
 
-        public IMoleculeBuilder GetMoleculeBuilder()
+        public MoleculeBuilder GetMoleculeBuilder()
         {
             return _moleculeBuilder;
         }
 
-        public void SetMoleculeBuilder(IMoleculeBuilder mol)
+        public void SetMoleculeBuilder(MoleculeBuilder mol)
         {
             _moleculeBuilder = mol;
         }

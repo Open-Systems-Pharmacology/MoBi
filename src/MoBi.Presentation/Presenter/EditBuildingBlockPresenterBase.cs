@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
@@ -17,8 +18,8 @@ namespace MoBi.Presentation.Presenter
       IListener<EntitySelectedEvent>
       where TView : IView<TPresenter>, IEditBuildingBlockBaseView
       where TPresenter : IPresenter, ISingleStartPresenter
-      where TBuildingBlock : IBuildingBlock<TBuilder>
-      where TBuilder : class, IObjectBase
+      where TBuildingBlock : IBuildingBlock, IEnumerable<TBuilder>
+      where TBuilder : class
    {
       private readonly IFormulaCachePresenter _formulaCachePresenter;
 
@@ -43,12 +44,12 @@ namespace MoBi.Presentation.Presenter
 
       protected TBuildingBlock BuildingBlock => Subject.DowncastTo<TBuildingBlock>();
 
-      protected virtual Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected virtual (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
       {
-         return new Tuple<bool, IObjectBase>(false, selectedObject);
+         return (false, null);
       }
 
-      protected virtual void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected virtual void EnsureItemsVisibility(IContainer container, IParameter parameter = null)
       {
          /*nothing to do here*/
       }
@@ -58,7 +59,7 @@ namespace MoBi.Presentation.Presenter
          _view.ShowDefault();
       }
 
-      private void selectObjectAndParent(IObjectBase parentObject, IObjectBase selectedObject)
+      private void selectObjectAndParent(IContainer parentObject, IObjectBase selectedObject)
       {
          _view.Display();
          var formula = selectedObject as IFormula;
@@ -70,7 +71,7 @@ namespace MoBi.Presentation.Presenter
          }
 
          _view.ShowDefault();
-         if (selectedObject.IsAnImplementationOf<IApplicationMoleculeBuilder>())
+         if (selectedObject.IsAnImplementationOf<ApplicationMoleculeBuilder>())
          {
             return;
          }
@@ -87,25 +88,26 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         var handled = CanHandle(eventToHandle.ObjectBase);
-         if (!handled.Item1) return;
+         var selectedObject = eventToHandle.ObjectBase;
+         var (canHandle, parentContainer) = CanHandle(selectedObject);
+         if (!canHandle) return;
 
-         selectObjectAndParent(handled.Item2, eventToHandle.ObjectBase);
+         selectObjectAndParent(parentContainer, selectedObject);
       }
 
-      internal virtual Tuple<bool, IObjectBase> CanHandle(IObjectBase selectedObject)
+      internal virtual (bool canHandle, IContainer parentObject) CanHandle(IObjectBase selectedObject)
       {
          var formula = selectedObject as IFormula;
          if (formula != null)
-            return new Tuple<bool, IObjectBase>(BuildingBlock.FormulaCache.Contains(formula), formula);
+            return (BuildingBlock.FormulaCache.Contains(formula), null);
 
          var parameter = selectedObject as IParameter;
          if (parameter != null)
-            return new Tuple<bool, IObjectBase>(buildingBlockContains(parameter.RootContainer as TBuilder), parameter.ParentContainer);
+            return (buildingBlockContains(parameter.RootContainer as TBuilder), parameter.ParentContainer);
 
          var builder = selectedObject as TBuilder;
          if (builder != null)
-            return new Tuple<bool, IObjectBase>(BuildingBlock.Contains(builder), builder);
+            return (BuildingBlock.Contains(builder), null);
 
          return SpecificCanHandle(selectedObject);
       }

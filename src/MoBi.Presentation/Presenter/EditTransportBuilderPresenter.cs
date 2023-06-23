@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -10,16 +8,18 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditTransportBuilderPresenter : IEditPresenterWithParameters<ITransportBuilder>,
+   public interface IEditTransportBuilderPresenter : IEditPresenterWithParameters<TransportBuilder>,
       ICanEditPropertiesPresenter, IPresenterWithContextMenu<IViewItem>,
       IPresenterWithFormulaCache
    {
@@ -30,8 +30,8 @@ namespace MoBi.Presentation.Presenter
    public class EditTransportBuilderPresenter : AbstractSubPresenterWithFormula<IEditTransportBuilderView, IEditTransportBuilderPresenter>, IEditTransportBuilderPresenter
    {
       protected readonly ITransportBuilderToTransportBuilderDTOMapper _transportBuilderToDTOTransportBuilderMapper;
-      private ITransportBuilder _transportBuilder;
-      protected readonly IEditTaskFor<ITransportBuilder> _editTasks;
+      private TransportBuilder _transportBuilder;
+      protected readonly IEditTaskFor<TransportBuilder> _editTasks;
       protected readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuilderMapper;
       private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
@@ -40,8 +40,8 @@ namespace MoBi.Presentation.Presenter
       private TransportBuilderDTO _transportBuilderDTO;
       private IBuildingBlock _buildingBlock;
       private readonly IMoleculeDependentBuilderPresenter _moleculeListPresenter;
-      private readonly IDescriptorConditionListPresenter<ITransportBuilder> _sourceCriteriaPresenter;
-      private readonly IDescriptorConditionListPresenter<ITransportBuilder> _targetCriteriaPresenter;
+      private readonly IDescriptorConditionListPresenter<TransportBuilder> _sourceCriteriaPresenter;
+      private readonly IDescriptorConditionListPresenter<TransportBuilder> _targetCriteriaPresenter;
 
       public virtual IBuildingBlock BuildingBlock
       {
@@ -54,11 +54,11 @@ namespace MoBi.Presentation.Presenter
       }
 
       public EditTransportBuilderPresenter(IEditTransportBuilderView view, ITransportBuilderToTransportBuilderDTOMapper transportBuilderToDTOTransportBuilderMapper,
-         IEditTaskFor<ITransportBuilder> editTasks, IViewItemContextMenuFactory viewItemContextMenuFactory,
+         IEditTaskFor<TransportBuilder> editTasks, IViewItemContextMenuFactory viewItemContextMenuFactory,
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuilderMapper, IEditParametersInContainerPresenter editParametersInContainerPresenter,
          IEditFormulaPresenter editFormulaPresenter, ISelectReferenceAtTransportPresenter selectReferencePresenter, IMoBiContext context,
-         IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<ITransportBuilder> sourceCriteriaPresenter,
-         IDescriptorConditionListPresenter<ITransportBuilder> targetCriteriaPresenter)
+         IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<TransportBuilder> sourceCriteriaPresenter,
+         IDescriptorConditionListPresenter<TransportBuilder> targetCriteriaPresenter)
          : base(view, editFormulaPresenter, selectReferencePresenter)
       {
          _transportBuilderToDTOTransportBuilderMapper = transportBuilderToDTOTransportBuilderMapper;
@@ -85,10 +85,9 @@ namespace MoBi.Presentation.Presenter
          _view.AddTargetCriteriaView(_targetCriteriaPresenter.View);
       }
 
-
       public void Edit(object objectToEdit)
       {
-         Edit(objectToEdit.DowncastTo<ITransportBuilder>());
+         Edit(objectToEdit.DowncastTo<TransportBuilder>());
       }
 
       protected override void FormulaChanged()
@@ -96,12 +95,12 @@ namespace MoBi.Presentation.Presenter
          _view.FormulaHasError = !_editFormulaPresenter.CanClose;
       }
 
-      public virtual void Edit(ITransportBuilder transportBuilder)
+      public virtual void Edit(TransportBuilder transportBuilder)
       {
-         Edit(transportBuilder, transportBuilder.ParentContainer);
+         Edit(transportBuilder, transportBuilder.ParentContainer?.Children);
       }
 
-      public void Edit(ITransportBuilder transportBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(TransportBuilder transportBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _transportBuilder = transportBuilder;
          _transportBuilderDTO = _transportBuilderToDTOTransportBuilderMapper.MapFrom(transportBuilder);
@@ -114,18 +113,18 @@ namespace MoBi.Presentation.Presenter
          FormulaChanged();
          _view.ShowMoleculeList = transportIsInPassiveTransportBuildingBlock(transportBuilder);
          _moleculeListPresenter.Edit(transportBuilder);
-         _sourceCriteriaPresenter.Edit(_transportBuilder,  x => x.SourceCriteria, _buildingBlock);
+         _sourceCriteriaPresenter.Edit(_transportBuilder, x => x.SourceCriteria, _buildingBlock);
          _targetCriteriaPresenter.Edit(_transportBuilder, x => x.TargetCriteria, _buildingBlock);
       }
 
-      private static bool transportIsInPassiveTransportBuildingBlock(ITransportBuilder transportBuilder)
+      private static bool transportIsInPassiveTransportBuildingBlock(TransportBuilder transportBuilder)
       {
          return transportBuilder.ParentContainer == null;
       }
 
       private void setUpReferenceView()
       {
-         _selectReferencePresenter.Init(null, new[] {_transportBuilder}, _transportBuilder);
+         _selectReferencePresenter.Init(null, new[] { _transportBuilder }, _transportBuilder);
       }
 
       public object Subject => _transportBuilder;

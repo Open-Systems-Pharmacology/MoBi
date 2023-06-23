@@ -70,10 +70,10 @@ namespace MoBi.Core.Services
 
       public bool QuantityIsSelectable(IQuantity quantity, bool forceAmountToBeSelectable)
       {
-         if (quantity.IsAnImplementationOf<IObserver>())
+         if (quantity.IsAnImplementationOf<Observer>())
             return true;
 
-         if (quantity.IsAnImplementationOf<IMoleculeAmount>() && forceAmountToBeSelectable)
+         if (quantity.IsAnImplementationOf<MoleculeAmount>() && forceAmountToBeSelectable)
             return true;
 
          if (isMoleculeAmountInAmountBasedProject(quantity))
@@ -98,12 +98,12 @@ namespace MoBi.Core.Services
          return quantity.IsAnImplementationOf<IParameter>()
             && _reactionDimensionRetriever.SelectedDimensionMode == ReactionDimensionMode.ConcentrationBased
             && quantity.IsNamed(Constants.Parameters.CONCENTRATION)
-            && quantity.ParentContainer.IsAnImplementationOf<IMoleculeAmount>();
+            && quantity.ParentContainer.IsAnImplementationOf<MoleculeAmount>();
       }
 
       private bool isMoleculeAmountInAmountBasedProject(IQuantity quantity)
       {
-         return quantity.IsAnImplementationOf<IMoleculeAmount>()
+         return quantity.IsAnImplementationOf<MoleculeAmount>()
             && _reactionDimensionRetriever.SelectedDimensionMode == ReactionDimensionMode.AmountBased;
       }
 

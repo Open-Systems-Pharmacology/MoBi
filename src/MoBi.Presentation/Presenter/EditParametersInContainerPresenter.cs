@@ -252,7 +252,7 @@ namespace MoBi.Presentation.Presenter
          try
          {
             _clipboardManager.PasteFromClipBoard<IParameter>(
-               para => AddCommand(_parameterTask.AddToProject(para, _container, BuildingBlock)));
+               para => AddCommand(_parameterTask.AddToParent(para, _container, BuildingBlock)));
          }
          finally
          {

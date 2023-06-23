@@ -4,23 +4,23 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForTransporterMoleculeContainer : IInteractionTasksForChildren<IMoleculeBuilder, TransporterMoleculeContainer>
+   public interface IInteractionTasksForTransporterMoleculeContainer : IInteractionTasksForChildren<MoleculeBuilder, TransporterMoleculeContainer>
    {
    }
 
-   public class InteractionTasksForTransporterMoleculeContainer : InteractionTasksForChildren<IMoleculeBuilder, TransporterMoleculeContainer>, IInteractionTasksForTransporterMoleculeContainer
+   public class InteractionTasksForTransporterMoleculeContainer : InteractionTasksForChildren<MoleculeBuilder, TransporterMoleculeContainer>, IInteractionTasksForTransporterMoleculeContainer
    {
       public InteractionTasksForTransporterMoleculeContainer(IInteractionTaskContext interactionTaskContext, IEditTaskFor<TransporterMoleculeContainer> editTask)
          : base(interactionTaskContext, editTask)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(TransporterMoleculeContainer transportBuilderToRemove, IMoleculeBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(TransporterMoleculeContainer transportBuilderToRemove, MoleculeBuilder parent, IBuildingBlock buildingBlock)
       {
-         return new RemoveActiveTransportBuilderContainerCommand((IMoleculeBuilder) transportBuilderToRemove.ParentContainer, transportBuilderToRemove, buildingBlock);
+         return new RemoveActiveTransportBuilderContainerCommand((MoleculeBuilder) transportBuilderToRemove.ParentContainer, transportBuilderToRemove, buildingBlock);
       }
 
-      public override IMoBiCommand GetAddCommand(TransporterMoleculeContainer transporterMoleculeContainer, IMoleculeBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(TransporterMoleculeContainer transporterMoleculeContainer, MoleculeBuilder parent, IBuildingBlock buildingBlock)
       {
          return new AddActiveTransportBuilderContainerCommand(parent, transporterMoleculeContainer, buildingBlock);
       }

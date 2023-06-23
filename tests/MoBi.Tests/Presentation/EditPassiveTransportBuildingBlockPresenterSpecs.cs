@@ -34,7 +34,7 @@ namespace MoBi.Presentation
    public class When_handling_the_selecting_event_for_a_formula_that_is_in_the_formula_cache : concern_for_EditPassiveTransportBuildingBlockPresenter
    {
       private IFormula _formula;
-      private IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
+      private PassiveTransportBuildingBlock _passiveTransportBuildingBlock;
 
       protected override void Context()
       {

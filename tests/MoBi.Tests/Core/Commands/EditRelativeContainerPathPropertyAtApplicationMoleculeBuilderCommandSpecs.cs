@@ -9,16 +9,16 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommandSpecs : ContextSpecification<EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand>
    {
-      public IApplicationMoleculeBuilder _applicationMoleculeBuilder;
-      public IObjectPath _newPath;
-      public IObjectPath _oldPath;
+      public ApplicationMoleculeBuilder _applicationMoleculeBuilder;
+      public ObjectPath _newPath;
+      public ObjectPath _oldPath;
 
       protected override void Context()
       {
-         _applicationMoleculeBuilder = A.Fake<IApplicationMoleculeBuilder>();
+         _applicationMoleculeBuilder = A.Fake<ApplicationMoleculeBuilder>();
          _applicationMoleculeBuilder.Id = "ID";
-         _newPath = A.Fake<IObjectPath>();
-         _oldPath = A.Fake<IObjectPath>();
+         _newPath = A.Fake<ObjectPath>();
+         _oldPath = A.Fake<ObjectPath>();
          _applicationMoleculeBuilder.RelativeContainerPath = _oldPath;
          sut = new EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(_applicationMoleculeBuilder, _newPath, A.Fake<IBuildingBlock>());
       }
@@ -56,7 +56,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_set_applicationMoleculeBuilders_realtive_container_path_to_new_path()
       {
-         A.CallTo(() => _context.Get<IApplicationMoleculeBuilder>(_applicationMoleculeBuilder.Id)).MustHaveHappened();
+         A.CallTo(() => _context.Get<ApplicationMoleculeBuilder>(_applicationMoleculeBuilder.Id)).MustHaveHappened();
       }
    }
 }

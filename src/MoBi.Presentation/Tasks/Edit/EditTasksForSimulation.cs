@@ -160,7 +160,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       private IEnumerable<string> allUsedResultsNameIn(IMoBiSimulation simulation)
       {
-         return simulation.HistoricResults.Select(x => x.Name).Union(new[] {simulation.ResultsDataRepository.Name});
+         return simulation.HistoricResults.Select(x => x.Name).Union(new[] { simulation.ResultsDataRepository.Name });
       }
 
       private void addCommand(IMoBiCommand command)
@@ -177,7 +177,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, simulation.Name);
          if (fileName.IsNullOrEmpty()) return;
-         _simulationPersistor.Save(new SimulationTransfer {Simulation = simulation}, fileName);
+         _simulationPersistor.Save(new SimulationTransfer { Simulation = simulation }, fileName);
       }
 
       public void ExportSimModelXml(IMoBiSimulation simulation)

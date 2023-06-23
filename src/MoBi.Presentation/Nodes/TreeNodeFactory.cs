@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
@@ -18,17 +19,17 @@ namespace MoBi.Presentation.Nodes
    public interface ITreeNodeFactory : OSPSuite.Presentation.Nodes.ITreeNodeFactory
    {
       ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode);
-      ITreeNode CreateFor(IObjectBaseDTO objectBase);
+      ITreeNode CreateFor(ObjectBaseDTO objectBase);
       ITreeNode CreateFor(DataRepository dataRepository);
       ITreeNode CreateFor(ClassifiableSimulation classifiableSimulation);
       ITreeNode CreateFor(CurveChart chart);
-      ITreeNode CreateFor(IMoBiBuildConfiguration buildConfiguration);
       ITreeNode CreateFor(IBuildingBlock buildingBlock);
-      ITreeNode CreateFor(IMoleculeBuildingBlock moleculeBuildingBlock);
-      ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder);
-      ITreeNode CreateFor(IBuildingBlockInfo buildingBlockInfo);
+      ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock);
+      ITreeNode CreateFor(MoleculeBuilder moleculeBuilder);
       ITreeNode CreateForFavorites();
       ITreeNode CreateForUserDefined();
+      ITreeNode CreateFor(Module module);
+      ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration);
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -39,9 +40,9 @@ namespace MoBi.Presentation.Nodes
 
       public ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode) => new RootNode(rootNode);
 
-      public ITreeNode CreateFor(IObjectBaseDTO objectBase)
+      public ITreeNode CreateFor(ObjectBaseDTO objectBase)
       {
-         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(objectBase);
+         return new ObjectWithIdAndNameNode<ObjectBaseDTO>(objectBase);
       }
 
       public ITreeNode CreateFor(DataRepository dataRepository)
@@ -54,12 +55,13 @@ namespace MoBi.Presentation.Nodes
          var simNode = new SimulationNode(classifiableSimulation);
          var simulation = classifiableSimulation.Simulation;
 
-         if (simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks())
-            simNode.Icon = ApplicationIcons.SimulationRed;
 
-         var buildConfigNode = CreateFor(simulation.MoBiBuildConfiguration);
+         //TODO SIMULATION_CONFIGURATION
+         // if (simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks())
+         //    simNode.Icon = ApplicationIcons.SimulationRed;
 
-         simNode.AddChild(buildConfigNode);
+         createFor(simulation.Configuration).Each(x => simNode.AddChild(x));
+
          if (simulation.ResultsDataRepository != null)
             simNode.AddChild(CreateFor(simulation.ResultsDataRepository));
 
@@ -68,32 +70,76 @@ namespace MoBi.Presentation.Nodes
          return simNode;
       }
 
-      public ITreeNode CreateFor(IMoBiBuildConfiguration buildConfiguration)
+      public ITreeNode CreateFor(Module module)
       {
-         var buildConfigNode = new BuildConfigurationNode(buildConfiguration);
-         //add one node for each Building Block
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.SpatialStructureInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.MoleculesInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.ReactionsInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.PassiveTransportsInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.ObserversInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.EventGroupsInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.SimulationSettingsInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.MoleculeStartValuesInfo);
-         addConfigurationNodeUnder(buildConfigNode, buildConfiguration.ParameterStartValuesInfo);
-         return buildConfigNode;
+         var moduleNode = new ModuleNode(module);
+         addModuleBuildingBlocks(moduleNode, module);
+         addStartValueCollections(moduleNode, module);
+
+         return moduleNode;
+      }
+
+      private void addStartValueCollections(ITreeNode moduleNode, Module module)
+      {
+         var parameterValuesFolderNode = new ParameterValuesFolderNode(module).Under(moduleNode);
+         module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(parameterValuesFolderNode, psv); });
+
+         var initialConditionsFolderNode = new InitialConditionsFolderNode(module).Under(moduleNode);
+         module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(initialConditionsFolderNode, msv));
+      }
+
+      private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)
+      {
+         var expressionProfileFolderNode = new ExpressionProfileFolderNode();
+         var nodes = simulationConfiguration.ModuleConfigurations.Select(moduleConfiguration => CreateFor(new ModuleConfigurationDTO(moduleConfiguration))).ToList();
+         if (simulationConfiguration.Individual != null)
+            nodes.Add(createWithIcon(simulationConfiguration.Individual));
+
+         simulationConfiguration.ExpressionProfiles.Each(x => createAndAddNodeUnder(expressionProfileFolderNode, x));
+         nodes.Add(expressionProfileFolderNode);
+
+         return nodes;
+      }
+      
+      public ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration)
+      {
+         var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).WithIcon(ApplicationIcons.Module);
+         var module = moduleConfiguration.Module;
+
+         addModuleBuildingBlocks(moduleConfigurationNode, module);
+
+         if (moduleConfiguration.HasInitialConditions)
+            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedInitialConditions);
+         if (moduleConfiguration.HasParameterValues)
+            createAndAddNodeUnder(moduleConfigurationNode, moduleConfiguration.SelectedParameterValues);
+
+         return moduleConfigurationNode;
+      }
+
+      private void addModuleBuildingBlocks(ITreeNode rootTreeNode, Module module)
+      {
+         addBuildingBlockNodeUnder(rootTreeNode, module.SpatialStructure);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Molecules);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Reactions);
+         addBuildingBlockNodeUnder(rootTreeNode, module.PassiveTransports);
+         addBuildingBlockNodeUnder(rootTreeNode, module.Observers);
+         addBuildingBlockNodeUnder(rootTreeNode, module.EventGroups);
+      }
+
+      private void addBuildingBlockNodeUnder(ITreeNode rootTreeNode, IBuildingBlock buildingBlock)
+      {
+         createAndAddNodeUnder(rootTreeNode, buildingBlock);
       }
 
       public ITreeNode CreateFor(IBuildingBlock buildingBlock)
       {
-         var moleculeBuildingBlock = buildingBlock as IMoleculeBuildingBlock;
-         if (moleculeBuildingBlock != null)
+         if (buildingBlock is MoleculeBuildingBlock moleculeBuildingBlock)
             return CreateFor(moleculeBuildingBlock);
 
          return createFor(buildingBlock);
       }
 
-      public ITreeNode CreateFor(IMoleculeBuildingBlock moleculeBuildingBlock)
+      public ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock)
       {
          var moleculeBuildingBlockNode = createFor(moleculeBuildingBlock);
          foreach (var molecule in moleculeBuildingBlock)
@@ -101,17 +147,13 @@ namespace MoBi.Presentation.Nodes
             var moleculeNode = CreateFor(molecule);
             moleculeBuildingBlockNode.AddChild(moleculeNode);
          }
+
          return moleculeBuildingBlockNode;
       }
 
-      public ITreeNode CreateFor(IMoleculeBuilder moleculeBuilder)
+      public ITreeNode CreateFor(MoleculeBuilder moleculeBuilder)
       {
          return createFor(moleculeBuilder);
-      }
-
-      public ITreeNode CreateFor(IBuildingBlockInfo buildingBlockInfo)
-      {
-         return new BuildingBlockInfoNode(buildingBlockInfo);
       }
 
       private ITreeNode createFor<T>(T objectBase) where T : class, IObjectBase
@@ -120,17 +162,25 @@ namespace MoBi.Presentation.Nodes
             .WithIcon(ApplicationIcons.IconByName(objectBase.Icon));
       }
 
-      private void addConfigurationNodeUnder(ITreeNode buildConfigNode, IBuildingBlockInfo buildingBlockInfo)
+      private void createAndAddNodeUnder(ITreeNode rootNode, IBuildingBlock buildingBlock)
       {
-         var buildingBlock = buildingBlockInfo.UntypedBuildingBlock;
+         if (buildingBlock == null)
+            return;
 
-         var statusIcon = buildingBlockInfo.BuildingBlockChanged
-            ? ApplicationIcons.RedOverlayFor(buildingBlock.Icon)
-            : ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
+         // TODO this used to use buildingBlockInfo to create the tree SIMULATION_CONFIGURATION
+         createWithIcon(buildingBlock)
+            .Under(rootNode);
+      }
 
-         CreateFor(buildingBlockInfo)
-            .WithIcon(statusIcon)
-            .Under(buildConfigNode);
+      private ITreeNode createWithIcon(IBuildingBlock buildingBlock)
+      {
+         var statusIcon = ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
+         // var statusIcon = buildingBlockInfo.BuildingBlockChanged
+         //    ? ApplicationIcons.RedOverlayFor(buildingBlock.Icon)
+         //    : ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
+
+         return CreateFor(buildingBlock)
+            .WithIcon(statusIcon);
       }
 
       public ITreeNode CreateFor(CurveChart chart)
@@ -140,22 +190,24 @@ namespace MoBi.Presentation.Nodes
 
       public ITreeNode CreateForFavorites()
       {
-         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(new FavoritesNodeViewItem
-         {
-            Name = Captions.Favorites,
-            Icon = ApplicationIcons.Favorites.IconName,
-            Id = Captions.Favorites
-         }) {Icon = ApplicationIcons.Favorites};
+         return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new FavoritesNodeViewItem
+            {
+               Name = Captions.Favorites,
+               Icon = ApplicationIcons.Favorites,
+               Id = Captions.Favorites
+            })
+            { Icon = ApplicationIcons.Favorites };
       }
 
       public ITreeNode CreateForUserDefined()
       {
-         return new ObjectWithIdAndNameNode<IObjectBaseDTO>(new UserDefinedNodeViewItem
+         return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new UserDefinedNodeViewItem
             {
                Name = AppConstants.Captions.UserDefined,
-               Icon = ApplicationIcons.UserDefinedVariability.IconName,
+               Icon = ApplicationIcons.UserDefinedVariability,
                Id = AppConstants.Captions.UserDefined
-         }){ Icon = ApplicationIcons.UserDefinedVariability };
+            })
+            { Icon = ApplicationIcons.UserDefinedVariability };
       }
    }
 }

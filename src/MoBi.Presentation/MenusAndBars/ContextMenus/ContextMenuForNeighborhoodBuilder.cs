@@ -4,23 +4,25 @@ using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   internal class ContextMenuForNeighborhoodBuilder : ContextMenuBase, IContextMenuFor<INeighborhoodBuilder>
+   internal class ContextMenuForNeighborhoodBuilder : ContextMenuBase, IContextMenuFor<NeighborhoodBuilder>
    {
       private readonly IList<IMenuBarItem> _allMenuItems;
       private readonly IMoBiContext _context;
+      private readonly IContainer _container;
 
-      public ContextMenuForNeighborhoodBuilder(IMoBiContext context)
+      public ContextMenuForNeighborhoodBuilder(IMoBiContext context, IContainer container)
       {
          _context = context;
+         _container = container;
          _allMenuItems = new List<IMenuBarItem>();
       }
 
@@ -29,16 +31,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      public IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
-         var neighborhoodBuilder = _context.Get<INeighborhoodBuilder>(dto.Id);
+         var neighborhoodBuilder = _context.Get<NeighborhoodBuilder>(dto.Id);
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
             .WithIcon(ApplicationIcons.Edit)
-            .WithCommandFor<EditCommandFor<INeighborhoodBuilder>, INeighborhoodBuilder>(neighborhoodBuilder));
+            .WithCommandFor<EditCommandFor<NeighborhoodBuilder>, NeighborhoodBuilder>(neighborhoodBuilder, _container));
          
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
             .WithIcon(ApplicationIcons.Rename)
-            .WithCommandFor<RenameObjectCommand<INeighborhoodBuilder>, INeighborhoodBuilder>(neighborhoodBuilder));
+            .WithCommandFor<RenameObjectCommand<NeighborhoodBuilder>, NeighborhoodBuilder>(neighborhoodBuilder, _container));
          
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)

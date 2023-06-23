@@ -14,8 +14,8 @@ namespace MoBi.Core.Commands
    {
       protected IDimension _newDimension;
       protected IDimension _oldDimension;
-      protected IObserverBuilder _observedBuilder;
-      protected IObserverBuildingBlock _buildingBlock;
+      protected ObserverBuilder _observedBuilder;
+      protected ObserverBuildingBlock _buildingBlock;
       protected IMoBiContext _context;
 
       protected override void Context()
@@ -55,7 +55,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _context.Get<IObserverBuilder>(_observedBuilder.Id)).Returns(_observedBuilder);
+         A.CallTo(() => _context.Get<ObserverBuilder>(_observedBuilder.Id)).Returns(_observedBuilder);
       }
 
       protected override void Because()

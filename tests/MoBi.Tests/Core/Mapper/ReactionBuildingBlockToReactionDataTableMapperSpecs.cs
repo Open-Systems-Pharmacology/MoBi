@@ -8,6 +8,7 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 
@@ -15,7 +16,7 @@ namespace MoBi.Core.Mapper
 {
    public abstract class concern_for_ReactionBuildingBlockToReactionDataTableMapper : ContextSpecification<ReactionBuildingBlockToReactionDataTableMapper>
    {
-      protected IMoBiReactionBuildingBlock _mobiReactionBuildingBlock;
+      protected MoBiReactionBuildingBlock _moBiReactionBuildingBlock;
       protected DataTable _result;
 
       protected override void Context()
@@ -24,12 +25,12 @@ namespace MoBi.Core.Mapper
             new StoichiometricStringCreator(
                new ReactionPartnerToReactionPartnerBuilderMapper()));
 
-         _mobiReactionBuildingBlock = new MoBiReactionBuildingBlock();
+         _moBiReactionBuildingBlock = new MoBiReactionBuildingBlock();
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_mobiReactionBuildingBlock);
+         _result = sut.MapFrom(new []{_moBiReactionBuildingBlock});
       }
    }
 
@@ -38,7 +39,7 @@ namespace MoBi.Core.Mapper
       protected override void Context()
       {
          base.Context();
-         getReactions().Each(_mobiReactionBuildingBlock.Add);
+         getReactions().Each(_moBiReactionBuildingBlock.Add);
       }
 
       [Observation]
@@ -48,7 +49,7 @@ namespace MoBi.Core.Mapper
       }
 
       [Observation]
-      public void maps_values_to_columns_correclty()
+      public void maps_values_to_columns_correctly()
       {
          var row = _result.Rows[0];
 
@@ -58,7 +59,7 @@ namespace MoBi.Core.Mapper
          row.Field<string>(AppConstants.Captions.Description).ShouldBeEqualTo("description");
       }
 
-      private IEnumerable<IReactionBuilder> getReactions()
+      private IEnumerable<ReactionBuilder> getReactions()
       {
          var r1 = new ReactionBuilder();
          r1.AddEduct(new ReactionPartnerBuilder("C", 2.0));
@@ -68,8 +69,8 @@ namespace MoBi.Core.Mapper
          r1.Description = "description";
          
          yield return r1;
-
-         yield return A.Fake<IReactionBuilder>();
+         
+         yield return new ReactionBuilder().WithFormula(new ConstantFormula(1.0));
       }
    }
 }

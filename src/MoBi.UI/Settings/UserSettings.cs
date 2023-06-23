@@ -82,7 +82,7 @@ namespace MoBi.UI.Settings
       public ObjectPathType ObjectPathType { get; set; }
       public string ParameterDefaultDimension { get; set; }
       public string RibbonLayout { get; set; }
-      public ISimulationSettings LastSimulationSettings { get; set; }
+      public SimulationSettings LastSimulationSettings { get; set; }
       public NotificationType VisibleNotification { get; set; }
       public OutputSelections OutputSelections { get; set; }
       public DisplayUnitsManager DisplayUnits { get; set; }

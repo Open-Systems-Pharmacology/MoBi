@@ -6,15 +6,15 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public abstract class InteractionTasksForEnumerableBuildingBlock<TBuildingBlock, TBuilder> : InteractionTasksForBuildingBlock<TBuildingBlock>
+   public abstract class InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder> : InteractionTasksForBuildingBlock<TParent, TBuildingBlock>
       where TBuildingBlock : class, IBuildingBlock, IBuildingBlock<TBuilder>
-      where TBuilder : class, IObjectBase
+      where TBuilder : class, IBuilder where TParent : class, IObjectBase
    {
       protected readonly IInteractionTasksForBuilder<TBuilder> _builderTask;
 
       protected InteractionTasksForEnumerableBuildingBlock(
-         IInteractionTaskContext interactionTaskContext, 
-         IEditTasksForBuildingBlock<TBuildingBlock> editTask, 
+         IInteractionTaskContext interactionTaskContext,
+         IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IInteractionTasksForBuilder<TBuilder> builderTask)
          : base(interactionTaskContext, editTask)
       {
@@ -23,10 +23,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected InteractionTasksForEnumerableBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask) : this(interactionTaskContext, editTask, null)
       {
-         
       }
-
-      protected abstract IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TBuilder builder, TBuildingBlock targetBuildingBlock, string originalBuilderName = null);
 
       protected MoBiMacroCommand CreateAddBuilderMacroCommand(TBuilder builder, TBuildingBlock targetBuildingBlock)
       {

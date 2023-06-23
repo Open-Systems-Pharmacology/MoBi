@@ -2,7 +2,7 @@
 
 namespace MoBi.Core.Domain.Model.Diagram
 {
-   public interface IMoBiReactionDiagramManager : IReactionDiagramManager<IMoBiReactionBuildingBlock>
+   public interface IMoBiReactionDiagramManager : IReactionDiagramManager<MoBiReactionBuildingBlock>
    {
       
    }

@@ -1,33 +1,15 @@
 using System;
-using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class AddNewBuildingBlockCommand<TBuildingBlock> : IUICommand
-      where TBuildingBlock : class, IBuildingBlock
-   {
-      private readonly IInteractionTasksForBuildingBlock<TBuildingBlock> _interactionTask;
-      private readonly IMoBiContext _context;
-
-      public AddNewBuildingBlockCommand(IInteractionTasksForBuildingBlock<TBuildingBlock> interactionTask, IMoBiContext context)
-      {
-         _interactionTask = interactionTask;
-         _context = context;
-      }
-
-      public void Execute()
-      {
-         _context.AddToHistory(_interactionTask.AddNew());
-      }
-   }
-
    public class AddNewCommandFor<TParent, TChild> : ObjectUICommand<TParent> where TParent : class where TChild : class
    {
       protected readonly IInteractionTasksForChildren<TParent, TChild> _interactionTasks;
@@ -90,7 +72,7 @@ namespace MoBi.Presentation.UICommand
       }
    }
 
-   public class AddNewTopContainerCommand : AddNewCommandFor<IMoBiSpatialStructure, IContainer>
+   public class AddNewTopContainerCommand : AddNewCommandFor<MoBiSpatialStructure, IContainer>
    {
       public AddNewTopContainerCommand(IInteractionTasksForTopContainer interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
          : base(interactionTasks, context, activeSubjectRetriever)
@@ -99,34 +81,48 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         Subject = _activeSubjectRetriever.Active<IMoBiSpatialStructure>();
+         Subject = _activeSubjectRetriever.Active<MoBiSpatialStructure>();
          base.PerformExecute();
       }
    }
 
-   public class AddExistingTopContainerCommand : AddExistingCommandFor<IMoBiSpatialStructure, IContainer>
+   public class AddNewNeighborhoodCommand : AddNewCommandFor<IContainer, NeighborhoodBuilder>
    {
-      public AddExistingTopContainerCommand(IInteractionTasksForChildren<IMoBiSpatialStructure, IContainer> interactionTasks, IActiveSubjectRetriever activeSubjectRetriever, IMoBiContext context) : base(interactionTasks, activeSubjectRetriever, context)
+      public AddNewNeighborhoodCommand(IInteractionTasksForNeighborhood interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
+         : base(interactionTasks, context, activeSubjectRetriever)
       {
       }
 
       protected override void PerformExecute()
       {
-         Subject = _activeSubjectRetriever.Active<IMoBiSpatialStructure>();
+         Subject = _activeSubjectRetriever.Active<MoBiSpatialStructure>().NeighborhoodsContainer;
          base.PerformExecute();
       }
    }
 
-   public class AddExistingFromTemplateTopContainerCommand : AddExistingFromTemplateCommandFor<IMoBiSpatialStructure, IContainer>
+   public class AddExistingTopContainerCommand : AddExistingCommandFor<MoBiSpatialStructure, IContainer>
    {
-      public AddExistingFromTemplateTopContainerCommand(IInteractionTasksForChildren<IMoBiSpatialStructure, IContainer> interactionTasks, IActiveSubjectRetriever activeSubjectRetriever, IMoBiContext context)
+      public AddExistingTopContainerCommand(IInteractionTasksForChildren<MoBiSpatialStructure, IContainer> interactionTasks, IActiveSubjectRetriever activeSubjectRetriever, IMoBiContext context) : base(interactionTasks, activeSubjectRetriever, context)
+      {
+      }
+
+      protected override void PerformExecute()
+      {
+         Subject = _activeSubjectRetriever.Active<MoBiSpatialStructure>();
+         base.PerformExecute();
+      }
+   }
+
+   public class AddExistingFromTemplateTopContainerCommand : AddExistingFromTemplateCommandFor<MoBiSpatialStructure, IContainer>
+   {
+      public AddExistingFromTemplateTopContainerCommand(IInteractionTasksForChildren<MoBiSpatialStructure, IContainer> interactionTasks, IActiveSubjectRetriever activeSubjectRetriever, IMoBiContext context)
          : base(interactionTasks, activeSubjectRetriever, context)
       {
       }
 
       protected override void PerformExecute()
       {
-         Subject = _activeSubjectRetriever.Active<IMoBiSpatialStructure>();
+         Subject = _activeSubjectRetriever.Active<MoBiSpatialStructure>();
          base.PerformExecute();
       }
    }

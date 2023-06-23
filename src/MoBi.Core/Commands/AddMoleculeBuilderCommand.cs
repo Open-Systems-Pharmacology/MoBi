@@ -4,13 +4,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddMoleculeBuilderCommand : AddObjectBaseCommand<IMoleculeBuilder, IMoleculeBuildingBlock>
+   public class AddMoleculeBuilderCommand : AddObjectBaseCommand<MoleculeBuilder, MoleculeBuildingBlock>
    {
-      public AddMoleculeBuilderCommand(IMoleculeBuildingBlock parent, IMoleculeBuilder itemToAdd) : base(parent, itemToAdd, parent)
+      public AddMoleculeBuilderCommand(MoleculeBuildingBlock parent, MoleculeBuilder itemToAdd) : base(parent, itemToAdd, parent)
       {
       }
 
-      protected override void AddTo(IMoleculeBuilder child, IMoleculeBuildingBlock parent, IMoBiContext context)
+      protected override void AddTo(MoleculeBuilder child, MoleculeBuildingBlock parent, IMoBiContext context)
       {
          parent.Add(child);
       }
@@ -21,9 +21,9 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class RemoveMoleculeBuilderCommand : RemoveObjectBaseCommand<IMoleculeBuilder, IMoleculeBuildingBlock>
+   public class RemoveMoleculeBuilderCommand : RemoveObjectBaseCommand<MoleculeBuilder, MoleculeBuildingBlock>
    {
-      public RemoveMoleculeBuilderCommand(IMoleculeBuildingBlock parent, IMoleculeBuilder itemToRemove) : base(parent, itemToRemove, parent)
+      public RemoveMoleculeBuilderCommand(MoleculeBuildingBlock parent, MoleculeBuilder itemToRemove) : base(parent, itemToRemove, parent)
       {
       }
 
@@ -32,7 +32,7 @@ namespace MoBi.Core.Commands
          return new AddMoleculeBuilderCommand(_parent, _itemToRemove).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(IMoleculeBuilder childToRemove, IMoleculeBuildingBlock parent, IMoBiContext context)
+      protected override void RemoveFrom(MoleculeBuilder childToRemove, MoleculeBuildingBlock parent, IMoBiContext context)
       {
          parent.Remove(childToRemove);
       }

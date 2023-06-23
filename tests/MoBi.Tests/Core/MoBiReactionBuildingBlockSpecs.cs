@@ -18,9 +18,9 @@ namespace MoBi.Core
    public class When_updating_properties_from_source_building_block : concern_for_MoBiReactionBuildingBlock
    {
       private ICloneManager _cloneManager;
-      private IReactionDiagramManager<IMoBiReactionBuildingBlock> _sourceDiagramManager;
-      private IMoBiReactionBuildingBlock _sourceReactionBuildingBlock;
-      private IReactionDiagramManager<IMoBiReactionBuildingBlock> _newDiagramManagerFromSource;
+      private IReactionDiagramManager<MoBiReactionBuildingBlock> _sourceDiagramManager;
+      private MoBiReactionBuildingBlock _sourceReactionBuildingBlock;
+      private IReactionDiagramManager<MoBiReactionBuildingBlock> _newDiagramManagerFromSource;
       private IDiagramModel _newDiagramModelFromSource;
       private IDiagramModel _sourceDiagramModel;
 
@@ -28,9 +28,9 @@ namespace MoBi.Core
       {
          base.Context();
          _cloneManager = A.Fake<ICloneManager>();
-         _sourceDiagramManager = A.Fake<IReactionDiagramManager<IMoBiReactionBuildingBlock>>();
+         _sourceDiagramManager = A.Fake<IReactionDiagramManager<MoBiReactionBuildingBlock>>();
          _sourceDiagramModel = A.Fake<IDiagramModel>();
-         _newDiagramManagerFromSource = A.Fake<IReactionDiagramManager<IMoBiReactionBuildingBlock>>();
+         _newDiagramManagerFromSource = A.Fake<IReactionDiagramManager<MoBiReactionBuildingBlock>>();
          _newDiagramModelFromSource = A.Fake<IDiagramModel>();
          A.CallTo(() => _sourceDiagramManager.Create()).Returns(_newDiagramManagerFromSource);
          A.CallTo(() => _sourceDiagramModel.Create()).Returns(_newDiagramModelFromSource);

@@ -12,11 +12,11 @@ namespace MoBi.UI.UICommands
    {
       private readonly ReactionLinkType _linkType;
       private readonly IMoBiContext _context;
-      private readonly IMoBiReactionBuildingBlock _reactionBuildingBlock;
-      private readonly IReactionBuilder _reactionBuilder;
+      private readonly MoBiReactionBuildingBlock _reactionBuildingBlock;
+      private readonly ReactionBuilder _reactionBuilder;
       private readonly string _moleculeName;
 
-      public AddNamedPartnerUICommand(IMoBiContext context, IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionBuilder reactionBuilder, string moleculeName, ReactionLinkType linkType)
+      public AddNamedPartnerUICommand(IMoBiContext context, MoBiReactionBuildingBlock reactionBuildingBlock, ReactionBuilder reactionBuilder, string moleculeName, ReactionLinkType linkType)
       {
          _context = context;
          _reactionBuildingBlock = reactionBuildingBlock;
@@ -55,11 +55,11 @@ namespace MoBi.UI.UICommands
    {
       private readonly ReactionLinkType _linkType;
       private readonly IMoBiContext _context;
-      private readonly IMoBiReactionBuildingBlock _reactionBuildingBlock;
-      private readonly IReactionBuilder _reactionBuilder;
+      private readonly MoBiReactionBuildingBlock _reactionBuildingBlock;
+      private readonly ReactionBuilder _reactionBuilder;
       private readonly string _moleculeName;
 
-      public RemoveNamedPartnerUICommand(IMoBiContext context, IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionBuilder reactionBuilder, string moleculeName, ReactionLinkType linkType)
+      public RemoveNamedPartnerUICommand(IMoBiContext context, MoBiReactionBuildingBlock reactionBuildingBlock, ReactionBuilder reactionBuilder, string moleculeName, ReactionLinkType linkType)
       {
          _context = context;
          _reactionBuildingBlock = reactionBuildingBlock;
@@ -70,7 +70,7 @@ namespace MoBi.UI.UICommands
 
       public void Execute()
       {
-         IReactionPartnerBuilder reactionPartnerBuilder;
+         ReactionPartnerBuilder reactionPartnerBuilder;
          IMoBiCommand command = null;
          switch (_linkType)
          {

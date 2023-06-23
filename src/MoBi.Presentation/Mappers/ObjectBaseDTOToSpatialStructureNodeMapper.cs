@@ -1,31 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IObjectBaseDTOToSpatialStructureNodeMapper : IMapper<IObjectBaseDTO, HierarchicalStructureNode>
+   public interface IObjectBaseDTOToSpatialStructureNodeMapper : IMapper<ObjectBaseDTO, HierarchicalStructureNode>
    {
-      void Initialize(Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> getChildren);
+      void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren);
    }
 
    public class ObjectBaseDTOToSpatialStructureNodeMapper : IObjectBaseDTOToSpatialStructureNodeMapper
    {
-      private Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> _getChildren;
+      private Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> _getChildren;
 
- 
-      public HierarchicalStructureNode MapFrom(IObjectBaseDTO objectBase)
+      public HierarchicalStructureNode MapFrom(ObjectBaseDTO objectBase)
       {
          var node = new HierarchicalStructureNode(objectBase)
          {
-            Icon = ApplicationIcons.IconByName(objectBase.Icon),
+            Icon = objectBase.Icon,
             Text = objectBase.Name,
             GetChildren = x => _getChildren(x).MapAllUsing(this),
          };
@@ -34,12 +31,12 @@ namespace MoBi.Presentation.Mappers
          return node;
       }
 
-      public void Initialize(Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> getChildren)
+      public void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren)
       {
          _getChildren = getChildren;
       }
 
-      private ToolTipPart descriptionFor(IObjectBaseDTO objectBase)
+      private ToolTipPart descriptionFor(ObjectBaseDTO objectBase)
       {
          return new ToolTipPart {Title = objectBase.Name, Content = objectBase.Description};
       }

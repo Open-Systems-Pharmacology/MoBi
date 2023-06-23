@@ -8,7 +8,7 @@ namespace MoBi.Core.Commands
 {
    public class ChangeTableFormulaWithXArgumentTableObjectPathCommand : ChangeTableFormulaWithReferencePathCommandBase<TableFormulaWithXArgument>
    {
-      public ChangeTableFormulaWithXArgumentTableObjectPathCommand(TableFormulaWithXArgument tableFormulaWithXArgument, IFormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock)
+      public ChangeTableFormulaWithXArgumentTableObjectPathCommand(TableFormulaWithXArgument tableFormulaWithXArgument, FormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock)
          : base(tableFormulaWithXArgument, newFormulaUsablePath, buildingBlock, x => x.TableObjectAlias, tableFormulaWithXArgument.AddTableObjectPath)
       {
       }
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
 
    public class ChangeTableFormulaWithXArgumentXArgumentObjectPathCommand : ChangeTableFormulaWithReferencePathCommandBase<TableFormulaWithXArgument>
    {
-      public ChangeTableFormulaWithXArgumentXArgumentObjectPathCommand(TableFormulaWithXArgument tableFormulaWithXArgument, IFormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock)
+      public ChangeTableFormulaWithXArgumentXArgumentObjectPathCommand(TableFormulaWithXArgument tableFormulaWithXArgument, FormulaUsablePath newFormulaUsablePath, IBuildingBlock buildingBlock)
          : base(tableFormulaWithXArgument, newFormulaUsablePath, buildingBlock, x => x.XArgumentAlias, tableFormulaWithXArgument.AddXArgumentObjectPath)
       {
       }

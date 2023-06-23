@@ -8,18 +8,18 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IObjectPathCreatorAtReaction : IObjectPathCreator
    {
-      IReactionBuilder Reaction { set; }
+      ReactionBuilder Reaction { set; }
    }
 
    class ObjectPathCreatorAtReaction : ObjectPathCreatorBase, IObjectPathCreatorAtReaction
    {
-      public IReactionBuilder Reaction { private get; set; }
+      public ReactionBuilder Reaction { private get; set; }
 
       public ObjectPathCreatorAtReaction(IObjectPathFactory objectPathFactory, IAliasCreator aliasCreator, IMoBiContext context) : base(objectPathFactory, aliasCreator, context)
       {
       }
 
-      public override ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          var dummyParameterDTO = objectBaseDTO as DummyParameterDTO;
          var dto = base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Presenter
          return base.CreatePathsFromEntity(objectBase, shouldCreateAbsolutePaths, refObject, editedObject);
       }
 
-      private IFormulaUsablePath cratePathToReacionProperty(IParameter parameter)
+      private FormulaUsablePath cratePathToReacionProperty(IParameter parameter)
       {
          var parentReaction = GetReactionBuilderFor(parameter);
 

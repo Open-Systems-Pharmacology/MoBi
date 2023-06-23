@@ -13,7 +13,7 @@ using DataRepositoryMetaData = MoBi.Core.Serialization.ORM.MetaData.DataReposito
 
 namespace MoBi.Core.Serialization.ORM.Mappers
 {
-   public interface IProjectToProjectMetaDataMapper : IMapper<IMoBiProject, ProjectMetaData>
+   public interface IProjectToProjectMetaDataMapper : IMapper<MoBiProject, ProjectMetaData>
 
    {
    }
@@ -27,12 +27,14 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          _serializationService = serializationService;
       }
 
-      public ProjectMetaData MapFrom(IMoBiProject project)
+      public ProjectMetaData MapFrom(MoBiProject project)
       {
          var projectMetaData = new ProjectMetaData {Name = project.Name, Description = project.Description};
          serializeContent(projectMetaData, project);
 
-         project.AllBuildingBlocks().Each(x => projectMetaData.AddChild(mapFrom(x)));
+         project.IndividualsCollection.Each(x => projectMetaData.AddChild(mapFrom(x)));
+         project.ExpressionProfileCollection.Each(x => projectMetaData.AddChild(mapFrom(x)));
+         project.Modules.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.Simulations.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.Charts.Each(x => projectMetaData.AddChild(mapFrom(x)));
          project.AllParameterAnalysables.Each(x => projectMetaData.AddChild(mapFrom(x)));

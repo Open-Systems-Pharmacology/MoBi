@@ -14,7 +14,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting
 {
-   internal class ReactionBuildingBlockReporter : BuildingBlockReporter<IMoBiReactionBuildingBlock, IReactionBuilder>
+   internal class ReactionBuildingBlockReporter : BuildingBlockReporter<MoBiReactionBuildingBlock, ReactionBuilder>
    {
       private readonly IDiagramModelToImageTask _diagramModelToImageTask;
       private readonly IStoichiometricStringCreator _stoichiometricStringCreator;
@@ -28,7 +28,7 @@ namespace MoBi.Core.Reporting
          _reactionDimensionRetriever = reactionDimensionRetriever;
       }
 
-      protected override void AddBuildersReport(IMoBiReactionBuildingBlock buildingBlock, List<object> listToReport, OSPSuiteTracker buildTracker)
+      protected override void AddBuildersReport(MoBiReactionBuildingBlock buildingBlock, List<object> listToReport, OSPSuiteTracker buildTracker)
       {
          listToReport.Add(string.Format("All reactions are {0} based.", getSelectedDimensionString()));
 
@@ -48,7 +48,7 @@ namespace MoBi.Core.Reporting
          base.AddBuildersReport(buildingBlock, listToReport, buildTracker);
       }
 
-      private Table tableFor(IMoBiReactionBuildingBlock buildingBlock)
+      private Table tableFor(MoBiReactionBuildingBlock buildingBlock)
       {
          var table = new DataTable(getTableCaption());
          table.Columns.Add(Constants.NAME, typeof(string));

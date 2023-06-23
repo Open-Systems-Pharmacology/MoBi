@@ -13,8 +13,8 @@ namespace MoBi.Core.Service
    {
       private IMoBiContext _context;
       protected IBuildingBlock _buildingBlock;
-      protected IObserverBuilder _observerBuilder;
-      protected TagConditionCommandParameters<IObserverBuilder> _commandParameters;
+      protected ObserverBuilder _observerBuilder;
+      protected TagConditionCommandParameters<ObserverBuilder> _commandParameters;
 
       protected override void Context()
       {
@@ -22,7 +22,7 @@ namespace MoBi.Core.Service
          _buildingBlock = A.Fake<IBuildingBlock>();
          _observerBuilder = new ContainerObserverBuilder();
          sut = new TagTask(_context);
-         _commandParameters = new TagConditionCommandParameters<IObserverBuilder>
+         _commandParameters = new TagConditionCommandParameters<ObserverBuilder>
          {
             BuildingBlock = _buildingBlock,
             DescriptorCriteriaRetriever = x => x.ContainerCriteria,
@@ -43,7 +43,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_add_the_tag_to_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<AddMatchTagConditionCommand<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<AddMatchTagConditionCommand<ObserverBuilder>>();
       }
    }
 
@@ -59,7 +59,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_add_the_tag_to_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<AddNotMatchTagConditionCommand<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<AddNotMatchTagConditionCommand<ObserverBuilder>>();
       }
    }
 
@@ -75,7 +75,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_add_the_tag_to_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<AddMatchAllConditionCommand<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<AddMatchAllConditionCommand<ObserverBuilder>>();
       }
    }
 
@@ -97,7 +97,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_remove_the_tag_from_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<RemoveNotMatchTagConditionCommand<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<RemoveNotMatchTagConditionCommand<ObserverBuilder>>();
       }
    }
 
@@ -119,7 +119,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_remove_the_tag_from_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<RemoveMatchTagConditionCommand<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<RemoveMatchTagConditionCommand<ObserverBuilder>>();
       }
    }
 
@@ -141,7 +141,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_remove_the_tag_from_the_object_and_return_the_expected_command()
       {
-         _command.ShouldBeAnInstanceOf<EditTagCommand<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<EditTagCommand<ObserverBuilder>>();
       }
    }
 
@@ -163,7 +163,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_update_the_criteria_operator()
       {
-         _command.ShouldBeAnInstanceOf<EditOperatorCommand<IObserverBuilder>>();
+         _command.ShouldBeAnInstanceOf<EditOperatorCommand<ObserverBuilder>>();
          _observerBuilder.ContainerCriteria.Operator.ShouldBeEqualTo(CriteriaOperator.Or);
       }
    }

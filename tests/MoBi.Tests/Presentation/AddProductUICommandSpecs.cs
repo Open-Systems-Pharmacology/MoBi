@@ -15,8 +15,8 @@ namespace MoBi.Presentation
       protected IInteractionTasksForReactionBuilder _interactionTasksForReactionBuilder;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
       protected IMoBiContext _moBiContext;
-      protected IMoBiReactionBuildingBlock _moBiReactionBuildingBlock;
-      private IReactionBuilder _reactionBuilder;
+      protected MoBiReactionBuildingBlock _moBiReactionBuildingBlock;
+      private ReactionBuilder _reactionBuilder;
 
       protected override void Context()
       {
@@ -28,8 +28,8 @@ namespace MoBi.Presentation
          sut = new AddProductUICommand(_moBiContext, _activeSubjectRetriever, _interactionTasksForReactionBuilder);
          sut.For(_reactionBuilder);
 
-         _moBiReactionBuildingBlock = A.Fake<IMoBiReactionBuildingBlock>();
-         A.CallTo(() => _activeSubjectRetriever.Active<IMoBiReactionBuildingBlock>()).Returns(_moBiReactionBuildingBlock);
+         _moBiReactionBuildingBlock = A.Fake<MoBiReactionBuildingBlock>();
+         A.CallTo(() => _activeSubjectRetriever.Active<MoBiReactionBuildingBlock>()).Returns(_moBiReactionBuildingBlock);
       }
    }
 

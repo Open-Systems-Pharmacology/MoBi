@@ -17,7 +17,7 @@ namespace MoBi.Core
       protected IReferencesResolver _referenceResolver;
       protected ISimulationParameterOriginIdUpdater _simulationParameterOriginUpdater;
 
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       protected IMoBiSimulation _simulation;
 
       protected override void Context()
@@ -27,7 +27,7 @@ namespace MoBi.Core
          _simulationParameterOriginUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
          sut = new DeserializedReferenceResolver(_buildingBlockReferenceUpdater,_referenceResolver,_simulationParameterOriginUpdater);
 
-         _project= A.Fake<IMoBiProject>();
+         _project= A.Fake<MoBiProject>();
          _simulation= A.Fake<IMoBiSimulation>();
       }
    }

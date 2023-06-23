@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IObjectBaseToSpatialStructureNodeMapper : IMapper<IObjectBase, ITreeNode>
    {
-      void Initialize(Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> getChildren);
+      void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren);
    }
 
    public class ObjectBaseToSpatialStructureNodeMapper : IObjectBaseToSpatialStructureNodeMapper
@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Mappers
          return _nodeMapper.MapFrom(_objectBaseMapper.MapFrom(objectBase));
       }
 
-      public void Initialize(Func<IObjectBaseDTO, IEnumerable<IObjectBaseDTO>> getChildren)
+      public void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren)
       {
          _nodeMapper.Initialize(getChildren);
       }

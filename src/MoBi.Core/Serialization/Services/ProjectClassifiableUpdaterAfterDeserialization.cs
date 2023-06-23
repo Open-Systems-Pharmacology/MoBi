@@ -26,7 +26,7 @@ namespace MoBi.Core.Serialization.Services
 
       private IWithId simulationFor(IClassifiableWrapper classifiableWrapper, IProject project)
       {
-         var mobiProject = project.DowncastTo<IMoBiProject>();
+         var mobiProject = project.DowncastTo<MoBiProject>();
          return mobiProject.Simulations.FindById(classifiableWrapper.Id);
       }
    }

@@ -1,30 +1,29 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   //TODO REVIEW very special case-
-   public interface IInteractionTasksForNeighborhood : IInteractionTasksForChildren<IContainer, INeighborhoodBuilder>
+   public interface IInteractionTasksForNeighborhood : IInteractionTasksForChildren<IContainer, NeighborhoodBuilder>
    {
       IMoBiCommand Add(IContainer firstNeighbor, IContainer secondNeighbor);
-      IMoBiCommand CreateRemoveCommand(INeighborhoodBuilder neighborhoodBuilder, IBuildingBlock buildingBlock);
+      IMoBiCommand CreateRemoveCommand(NeighborhoodBuilder neighborhoodBuilder, IBuildingBlock buildingBlock);
    }
 
-   public class InteractionTasksForNeighborhood : InteractionTasksForChildren<IContainer, INeighborhoodBuilder>, IInteractionTasksForNeighborhood
+   public class InteractionTasksForNeighborhood : InteractionTasksForChildren<IContainer, NeighborhoodBuilder>, IInteractionTasksForNeighborhood
    {
-      public InteractionTasksForNeighborhood(IInteractionTaskContext interactionTaskContext, IEditTaskFor<INeighborhoodBuilder> editTask) : base(interactionTaskContext, editTask)
+      public InteractionTasksForNeighborhood(IInteractionTaskContext interactionTaskContext, IEditTaskFor<NeighborhoodBuilder> editTask) : base(interactionTaskContext, editTask)
       {
       }
 
-      private IMoBiSpatialStructure getSpatialStructure()
+      private MoBiSpatialStructure getSpatialStructure()
       {
-         return _interactionTaskContext.Active<IMoBiSpatialStructure>();
+         return _interactionTaskContext.Active<MoBiSpatialStructure>();
       }
 
       public IMoBiCommand Add(IContainer firstNeighbor, IContainer secondNeighbor)
@@ -38,41 +37,53 @@ namespace MoBi.Presentation.Tasks.Interaction
          var spatialStructure = getSpatialStructure();
 
          var neighborhoodBuilder = CreateNewEntity(spatialStructure.NeighborhoodsContainer);
-         neighborhoodBuilder.FirstNeighbor = firstNeighbor;
-         neighborhoodBuilder.SecondNeighbor = secondNeighbor;
+         neighborhoodBuilder.FirstNeighborPath = Context.ObjectPathFactory.CreateAbsoluteObjectPath(firstNeighbor);
+         neighborhoodBuilder.SecondNeighborPath = Context.ObjectPathFactory.CreateAbsoluteObjectPath(secondNeighbor);
 
-         if (_editTask.EditEntityModal(neighborhoodBuilder,spatialStructure, macroCommand, spatialStructure))
-         {
-            macroCommand.AddCommand(GetAddCommand(neighborhoodBuilder, spatialStructure.NeighborhoodsContainer, spatialStructure).Run(Context));
-            macroCommand.Description = AppConstants.Commands.AddToDescription(ObjectName, neighborhoodBuilder.Name,
-               spatialStructure.Name);
-            _editTask.Edit(neighborhoodBuilder);
-            return macroCommand;
-         }
-         return new MoBiEmptyCommand();
+         if (!_editTask.EditEntityModal(neighborhoodBuilder, spatialStructure, macroCommand, spatialStructure))
+            return new MoBiEmptyCommand();
+
+         //this needs to happen BEFORE we add the run the add command so that the diagram will refresh as expected
+         neighborhoodBuilder.ResolveReference(spatialStructure);
+         macroCommand.AddCommand(GetAddCommand(neighborhoodBuilder, spatialStructure.NeighborhoodsContainer, spatialStructure).Run(Context));
+         macroCommand.Description = AppConstants.Commands.AddToDescription(ObjectName, neighborhoodBuilder.Name, spatialStructure.Name);
+         _editTask.Edit(neighborhoodBuilder);
+         return macroCommand;
       }
 
-      public IMoBiCommand CreateRemoveCommand(INeighborhoodBuilder entityToRemove, IBuildingBlock buildingBlock)
+      protected override void PerformPostAddActions(NeighborhoodBuilder newNeighborhood, IContainer parent, IBuildingBlock buildingBlockToAddTo)
+      {
+         base.PerformPostAddActions(newNeighborhood, parent, buildingBlockToAddTo);
+         //this should be a spatial structure by construction but better be safe
+         var spatialStructure = buildingBlockToAddTo as SpatialStructure;
+         if (spatialStructure == null) return;
+
+         //let's update the references for the neighbors 
+         newNeighborhood.ResolveReference(spatialStructure);
+      }
+
+      public IMoBiCommand CreateRemoveCommand(NeighborhoodBuilder entityToRemove, IBuildingBlock buildingBlock)
       {
          return GetRemoveCommand(entityToRemove, null, buildingBlock);
       }
 
-      public override IMoBiCommand GetRemoveCommand(INeighborhoodBuilder entityToRemove, IContainer parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(NeighborhoodBuilder entityToRemove, IContainer parent, IBuildingBlock buildingBlock)
       {
          var spatialStructure = getSpatialStructure();
          return new RemoveContainerFromSpatialStructureCommand(spatialStructure.NeighborhoodsContainer, entityToRemove, spatialStructure);
       }
 
-      public override IMoBiCommand GetAddCommand(INeighborhoodBuilder neighborhood, IContainer parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(NeighborhoodBuilder neighborhood, IContainer parent, IBuildingBlock buildingBlock)
       {
          var spatialStructure = getSpatialStructure();
          return new AddContainerToSpatialStructureCommand(parent, neighborhood, spatialStructure);
       }
 
-      public override INeighborhoodBuilder CreateNewEntity(IContainer parentContainer)
+      public override NeighborhoodBuilder CreateNewEntity(IContainer parentContainer)
       {
          var neighborhoodBuilder = base.CreateNewEntity(parentContainer);
-         var moleculeProperties = Context.Create<IContainer>().WithContainerType(ContainerType.Neighborhood)
+         var moleculeProperties = Context.Create<IContainer>()
+            .WithContainerType(ContainerType.Neighborhood)
             .WithMode(ContainerMode.Logical)
             .WithName(Constants.MOLECULE_PROPERTIES)
             .WithTag(AppConstants.NeighborhoodTag);

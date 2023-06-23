@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Mappers
       {
          if (!dto.SkipImport)
          {
-            quantityImporterDTO.QuantitDTOs.Add(dto);
+            quantityImporterDTO.QuantityDTOs.Add(dto);
             quantityImporterDTO.AddToLog(LogMessageFor(dto, importTarget));
          }
 
