@@ -11,13 +11,10 @@ namespace MoBi.Presentation
    {
       protected override void Context()
       {
-         sut = new SelectSpatialStructureAndMoleculesDTO(IsMoleculeRequired());
+         sut = new SelectSpatialStructureAndMoleculesDTO(IsMoleculeRequired);
       }
 
-      protected virtual bool IsMoleculeRequired()
-      {
-         return true;
-      }
+      protected virtual bool IsMoleculeRequired => true;
    }
 
    public class When_validating_the_dto_when_building_blocks_are_selected : concern_for_SelectSpatialStructureAndMoleculesDTO
@@ -30,10 +27,7 @@ namespace MoBi.Presentation
          sut.SpatialStructure = new MoBiSpatialStructure();
       }
 
-      protected override bool IsMoleculeRequired()
-      {
-         return false;
-      }
+      protected override bool IsMoleculeRequired => false;
 
       [Observation]
       public void the_dto_is_valid()

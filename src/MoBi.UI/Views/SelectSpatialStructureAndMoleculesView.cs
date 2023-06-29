@@ -26,7 +26,7 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      private void adjustForNoMoleculeRequired()
+      public void AdjustForNoMoleculeRequired()
       {
          layoutControlItemMolecules.Visibility = LayoutVisibility.Never;
       }
@@ -35,8 +35,8 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<SelectSpatialStructureAndMoleculesDTO>();
-         _screenBinder.Bind(dto => dto.Molecules).To(cmbMolecules).WithValues(dto => _presenter.GetMolecules());
-         _screenBinder.Bind(dto => dto.SpatialStructure).To(cmbSpatialStructure).WithValues(dto => _presenter.GetSpatialStructures());
+         _screenBinder.Bind(dto => dto.Molecules).To(cmbMolecules).WithValues(dto => _presenter.AllMolecules);
+         _screenBinder.Bind(dto => dto.SpatialStructure).To(cmbSpatialStructure).WithValues(dto => _presenter.AllSpatialStructures);
 
          RegisterValidationFor(_screenBinder);
       }
@@ -50,8 +50,6 @@ namespace MoBi.UI.Views
 
       public void Show(SelectSpatialStructureAndMoleculesDTO dto)
       {
-         if(!dto.MoleculeRequired)
-            adjustForNoMoleculeRequired();
          _screenBinder.BindToSource(dto);
       }
 

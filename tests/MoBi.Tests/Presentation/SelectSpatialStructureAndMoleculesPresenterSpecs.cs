@@ -28,8 +28,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { new MoleculeBuildingBlock() });
-         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { new MoBiSpatialStructure() });
+         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(new [] { new MoleculeBuildingBlock() });
+         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new [] { new MoBiSpatialStructure() });
          A.CallTo(() => _view.Canceled).Returns(true);
       }
 

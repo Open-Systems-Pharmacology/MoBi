@@ -13,19 +13,17 @@ namespace MoBi.Presentation.DTO
 
       public SelectSpatialStructureAndMoleculesDTO(bool moleculeRequired = true)
       {
-         MoleculeRequired = moleculeRequired;
-         Rules.Add(AllRules.MoleculeSelected);
+         if(moleculeRequired)
+            Rules.Add(AllRules.MoleculeSelected);
          Rules.Add(AllRules.SpatialStructureSelected);
       }
-
-      public bool MoleculeRequired { get; }
-
+      
       private static class AllRules
       {
          public static IBusinessRule MoleculeSelected { get; } =
             CreateRule.For<SelectSpatialStructureAndMoleculesDTO>()
                .Property(x => x.Molecules)
-               .WithRule((dto, moleculeBuildingBlock) => !dto.MoleculeRequired || dto.Molecules != null)
+               .WithRule((dto, moleculeBuildingBlock) => dto.Molecules != null)
                .WithError(AppConstants.Validation.ExtendingRequiresMoleculeBuildingBlock);
 
          public static IBusinessRule SpatialStructureSelected { get; } =

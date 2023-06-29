@@ -12,8 +12,8 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectBuildingBlocksForExtendPresenter : IDisposablePresenter
    {
-      IEnumerable<MoleculeBuildingBlock> GetMolecules();
-      IEnumerable<MoBiSpatialStructure> GetSpatialStructures();
+      IReadOnlyList<MoleculeBuildingBlock> AllMolecules { get; }
+      IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures { get; }
 
       void SelectBuildingBlocksForExtend(bool moleculeRequired = true);
       MoBiSpatialStructure SelectedSpatialStructure { get; }
@@ -33,7 +33,10 @@ namespace MoBi.Presentation.Presenter
       public void SelectBuildingBlocksForExtend(bool moleculeRequired = true)
       {
          setViewCaption(moleculeRequired);
-         _dto = createDTO(GetMolecules().FirstOrDefault(), GetSpatialStructures().FirstOrDefault(), moleculeRequired);
+         _dto = createDTO(AllMolecules.FirstOrDefault(), AllSpatialStructures.FirstOrDefault(), moleculeRequired);
+         if (!moleculeRequired)
+            _view.AdjustForNoMoleculeRequired();
+
          _view.Show(_dto);
          _view.Display();
          if (!_view.Canceled)
@@ -50,25 +53,19 @@ namespace MoBi.Presentation.Presenter
 
       private SelectSpatialStructureAndMoleculesDTO createDTO(MoleculeBuildingBlock moleculeBuildingBlock, MoBiSpatialStructure spatialStructure, bool moleculeRequired)
       {
-         var dto = new SelectSpatialStructureAndMoleculesDTO(moleculeRequired)
+         return new SelectSpatialStructureAndMoleculesDTO(moleculeRequired)
          {
             Molecules = moleculeBuildingBlock,
             SpatialStructure = spatialStructure
          };
-         return dto;
       }
 
       public MoBiSpatialStructure SelectedSpatialStructure => _dto.SpatialStructure;
+      
       public MoleculeBuildingBlock SelectedMoleculeBuildingBlock => _dto.Molecules;
 
-      public IEnumerable<MoleculeBuildingBlock> GetMolecules()
-      {
-         return _buildingBlockRepository.MoleculeBlockCollection;
-      }
+      public IReadOnlyList<MoleculeBuildingBlock> AllMolecules => _buildingBlockRepository.MoleculeBlockCollection;
 
-      public IEnumerable<MoBiSpatialStructure> GetSpatialStructures()
-      {
-         return _buildingBlockRepository.SpatialStructureCollection;
-      }
+      public IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures => _buildingBlockRepository.SpatialStructureCollection;
    }
 }

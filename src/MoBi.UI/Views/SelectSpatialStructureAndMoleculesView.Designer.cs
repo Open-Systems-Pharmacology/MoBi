@@ -48,7 +48,7 @@
          // 
          // tablePanel
          // 
-         this.tablePanel.Location = new System.Drawing.Point(0, 280);
+         this.tablePanel.Location = new System.Drawing.Point(0, 70);
          this.tablePanel.Size = new System.Drawing.Size(457, 43);
          // 
          // layoutControl1
@@ -60,7 +60,7 @@
          this.layoutControl1.Location = new System.Drawing.Point(0, 0);
          this.layoutControl1.Name = "layoutControl1";
          this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(457, 280);
+         this.layoutControl1.Size = new System.Drawing.Size(457, 70);
          this.layoutControl1.TabIndex = 1;
          this.layoutControl1.Text = "layoutControl1";
          // 
@@ -93,7 +93,7 @@
             this.layoutControlItemSpatialStructure,
             this.layoutControlItemMolecules});
          this.layoutControlGroup1.Name = "layoutControlGroup1";
-         this.layoutControlGroup1.Size = new System.Drawing.Size(457, 280);
+         this.layoutControlGroup1.Size = new System.Drawing.Size(457, 70);
          this.layoutControlGroup1.TextVisible = false;
          // 
          // layoutControlItemSpatialStructure
@@ -102,7 +102,7 @@
          this.layoutControlItemSpatialStructure.CustomizationFormText = "layoutControlItemSpatialStructure";
          this.layoutControlItemSpatialStructure.Location = new System.Drawing.Point(0, 24);
          this.layoutControlItemSpatialStructure.Name = "layoutControlItemSpatialStructure";
-         this.layoutControlItemSpatialStructure.Size = new System.Drawing.Size(437, 236);
+         this.layoutControlItemSpatialStructure.Size = new System.Drawing.Size(437, 26);
          this.layoutControlItemSpatialStructure.TextSize = new System.Drawing.Size(164, 13);
          // 
          // layoutControlItemMolecules
@@ -119,7 +119,7 @@
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "CreateStartValueView";
-         this.ClientSize = new System.Drawing.Size(457, 323);
+         this.ClientSize = new System.Drawing.Size(457, 113);
          this.Controls.Add(this.layoutControl1);
          this.Name = "SelectSpatialStructureAndMoleculesView";
          this.Text = "CreateStartValueView";

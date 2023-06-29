@@ -8,5 +8,6 @@ namespace MoBi.Presentation.Views
    public interface ISelectSpatialStructureAndMoleculesView : IModalView<ISelectBuildingBlocksForExtendPresenter>
    {
       void Show(SelectSpatialStructureAndMoleculesDTO dto);
+      void AdjustForNoMoleculeRequired();
    }
 }
