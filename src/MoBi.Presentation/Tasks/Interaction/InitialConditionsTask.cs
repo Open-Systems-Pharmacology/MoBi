@@ -17,7 +17,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -37,13 +36,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="oldScaleDivisor">The old value of the scale divisor</param>
       /// <returns>The command used to modify the initial condition</returns>
       IMoBiCommand UpdateInitialConditionScaleDivisor(TBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor);
+
+      void ExtendExpressionProfileInitialConditions(ExpressionProfileBuildingBlock buildingBlock);
    }
-   
+
    public class InitialConditionsTask<TBuildingBlock> : StartValuesTask<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>
    {
       private readonly IMoleculeResolver _moleculeResolver;
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       protected readonly IInitialConditionsCreator _initialConditionsCreator;
+      private readonly IInteractionTasksForMoleculeBuilder _moleculeBuilderTask;
 
       public InitialConditionsTask(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
@@ -54,11 +56,14 @@ namespace MoBi.Presentation.Tasks.Interaction
          IImportedQuantityToInitialConditionMapper dtoMapper,
          IInitialConditionPathTask initialConditionPathTask,
          IMoleculeResolver moleculeResolver,
-         IReactionDimensionRetriever dimensionRetriever, IInitialConditionsCreator initialConditionsCreator) : base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask)
+         IReactionDimensionRetriever dimensionRetriever,
+         IInitialConditionsCreator initialConditionsCreator,
+         IInteractionTasksForMoleculeBuilder moleculeBuilderTask) : base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask)
       {
          _moleculeResolver = moleculeResolver;
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;
+         _moleculeBuilderTask = moleculeBuilderTask;
       }
 
       public IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> startValues, bool isPresent)
@@ -130,6 +135,31 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateInitialConditionScaleDivisorCommand(buildingBlock, initialCondition, newScaleDivisor, oldScaleDivisor).Run(Context);
       }
 
+      public void ExtendExpressionProfileInitialConditions(ExpressionProfileBuildingBlock buildingBlock)
+      {
+         var (spatialStructure, _) = SelectBuildingBlocksForExtend(moleculeRequired: false);
+         if (spatialStructure == null)
+            return;
+
+         var moleculeBuilder = _moleculeBuilderTask.CreateDefault(buildingBlock.MoleculeName);
+         var startFormula = defaultStartFormulaFrom(moleculeBuilder, buildingBlock);
+
+         var newStartValues = spatialStructure.PhysicalContainers.Select(container => _initialConditionsCreator.CreateInitialCondition(container, moleculeBuilder, startFormula)).ToList();
+
+         updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues, buildingBlock.InitialConditions.ToList());
+         AddCommand(Extend(newStartValues, buildingBlock));
+      }
+
+      private IFormula defaultStartFormulaFrom(MoleculeBuilder moleculeBuilder, ExpressionProfileBuildingBlock buildingBlock)
+      {
+         return buildingBlock.InitialConditions.Any() ? mostUsedFormula(buildingBlock.InitialConditions) : moleculeBuilder.DefaultStartFormula;
+      }
+
+      private IFormula mostUsedFormula(IReadOnlyCollection<InitialCondition> initialConditions)
+      {
+         return initialConditions.GroupBy(x => x.Formula).OrderBy(x => x.Count()).First().Key;
+      }
+
       public override IMoBiCommand RefreshPathAndValueEntitiesFromBuildingBlocks(TBuildingBlock buildingBlock, IEnumerable<InitialCondition> initialConditionsToRefresh)
       {
          var macroCommand = new MoBiMacroCommand
@@ -188,12 +218,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, pathAndValueEntity.Path);
       }
 
-      protected override IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, InitialCondition initialCondition)
+      protected override IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<InitialCondition> targetBuildingBlock, InitialCondition initialCondition)
       {
          return new AddInitialConditionToBuildingBlockCommand(targetBuildingBlock, initialCondition);
       }
 
-      protected override IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, InitialCondition initialCondition)
+      protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<InitialCondition> targetBuildingBlock, InitialCondition initialCondition)
       {
          return new RemoveInitialConditionFromBuildingBlockCommand(targetBuildingBlock, initialCondition.Path);
       }
@@ -216,30 +246,28 @@ namespace MoBi.Presentation.Tasks.Interaction
          return buildingBlockToClone.Module.InitialConditionsCollection;
       }
 
-      private void updateDefaultIsPresentToFalseForSpecificExtendedValues(InitialConditionsBuildingBlock startValues, ICache<string, InitialCondition> templateValues)
+      private void updateDefaultIsPresentToFalseForSpecificExtendedValues(IReadOnlyList<InitialCondition> allInitialConditions, IReadOnlyList<InitialCondition> templateValues)
       {
-         var startValuesThatShouldPotentiallyNotBePresent = startValues.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ => x.Key.Contains(organ)));
-         var extendedStartValuesThatShouldNotBePresent = startValuesThatShouldPotentiallyNotBePresent.Where(x => !templateValues.Contains(x.Key));
-         extendedStartValuesThatShouldNotBePresent.Each(x => x.Value.IsPresent = false);
+         var templateInitialConditions = templateValues.ToCache();
+         var startValuesThatShouldPotentiallyNotBePresent = allInitialConditions.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ => x.Key.Contains(organ)));
+         var newInitialConditionsToUpdate = startValuesThatShouldPotentiallyNotBePresent.Where(x => !templateInitialConditions.Contains(x.Key));
+         newInitialConditionsToUpdate.Each(x => x.Value.IsPresent = false);
       }
 
-      public override void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock)
+      public override void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock)
       {
-         var newStartValues = createStartValuesBasedOnUsedTemplates(spatialStructure, moleculeBuildingBlock);
-         updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues, initialConditionsBuildingBlock.ToCache());
-         AddCommand(Extend(newStartValues, initialConditionsBuildingBlock));
+         var (spatialStructure, moleculeBuildingBlock) = SelectBuildingBlocksForExtend();
+         if (spatialStructure == null || moleculeBuildingBlock == null)
+            return;
+
+         var newStartValues = createStartValuesBasedOnUsedTemplates(spatialStructure, moleculeBuildingBlock.Where(x => !x.QuantityType.Is(QuantityType.Protein)).ToList());
+         updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues.ToList(), initialConditionsBuildingBlock.ToList());
+         AddCommand(Extend(newStartValues.ToList(), initialConditionsBuildingBlock));
       }
 
-      private void updateDefaultIsPresentToFalseForSpecificExtendedValues(IBuildingBlock<InitialCondition> startValues, ICache<string, InitialCondition> templateValues)
+      private InitialConditionsBuildingBlock createStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules)
       {
-         var startValuesThatShouldPotentiallyNotBePresent = startValues.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ => x.Key.Contains(organ)));
-         var extendedStartValuesThatShouldNotBePresent = startValuesThatShouldPotentiallyNotBePresent.Where(x => !templateValues.Contains(x.Key));
-         extendedStartValuesThatShouldNotBePresent.Each(x => x.Value.IsPresent = false);
-      }
-
-      private InitialConditionsBuildingBlock createStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock)
-      {
-         return _initialConditionsCreator.CreateFrom(spatialStructure, moleculeBuildingBlock.ToList());
+         return _initialConditionsCreator.CreateFrom(spatialStructure, molecules);
       }
    }
 }

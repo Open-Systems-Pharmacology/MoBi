@@ -45,20 +45,20 @@ namespace MoBi.Presentation.Tasks.Interaction
          _parameterResolver = parameterResolver;
       }
 
-      private ParameterValuesBuildingBlock createTempStartValues(ParameterValuesBuildingBlock parameterValues)
+      private IReadOnlyList<ParameterValue> createTempStartValues(ParameterValuesBuildingBlock parameterValues)
       {
-         return new ParameterValuesBuildingBlock();
+         return new List<ParameterValue>();
          // var molecules = BuildingBlockById<MoleculeBuildingBlock>(parameterStartValues.MoleculeBuildingBlockId);
          // var spatialStructure = BuildingBlockById<SpatialStructure>(parameterStartValues.SpatialStructureId);
          // return _startValuesCreator.CreateFrom(spatialStructure, molecules);
       }
 
-      public override void ExtendStartValueBuildingBlock(ParameterValuesBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock)
+      public override void ExtendStartValueBuildingBlock(ParameterValuesBuildingBlock buildingBlock)
       {
          var newStartValues = createTempStartValues(buildingBlock);
          AddCommand(Extend(newStartValues, buildingBlock));
       }
-      
+
       public override IMoBiCommand AddPathAndValueEntityToBuildingBlock(ParameterValuesBuildingBlock buildingBlock, ParameterValue pathAndValueEntity)
       {
          return GenerateAddCommand(buildingBlock, pathAndValueEntity).Run(Context);
@@ -145,12 +145,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      protected override IMoBiCommand GenerateRemoveCommand(ParameterValuesBuildingBlock targetBuildingBlock, ParameterValue startValueToRemove)
+      protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToRemove)
       {
          return new RemoveParameterValueFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);
       }
 
-      protected override IMoBiCommand GenerateAddCommand(ParameterValuesBuildingBlock targetBuildingBlock, ParameterValue startValueToAdd)
+      protected override IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToAdd)
       {
          return new AddParameterValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
       }

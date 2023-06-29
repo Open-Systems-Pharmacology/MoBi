@@ -50,6 +50,43 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
+   public class When_creating_a_new_default_molecule_builder : concern_for_InteractionTasksForMoleculeBuilder
+   {
+      private MoleculeBuilder _builder;
+      private ConstantFormula _constantFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _constantFormula = new ConstantFormula(1.0);
+         A.CallTo(() => _formulaTask.CreateNewFormula<ConstantFormula>(_dimensionRetriever.MoleculeDimension)).Returns(_constantFormula);
+      }
+
+      protected override void Because()
+      {
+         _builder = sut.CreateDefault("moleculeName");
+      }
+
+      [Observation]
+      public void the_default_dimension_should_be_set()
+      {
+         _builder.Dimension.ShouldBeEqualTo(_dimensionRetriever.MoleculeDimension);
+      }
+
+      [Observation]
+      public void the_default_start_formula_should_be_set()
+      {
+         _builder.DefaultStartFormula.ShouldBeEqualTo(_constantFormula);
+      }
+
+      [Observation]
+      public void the_builder_name_should_be_set()
+      {
+         _builder.Name.ShouldBeEqualTo("moleculeName");
+      }
+   }
+
+
    public class When_creating_a_new_molecule_builder : concern_for_InteractionTasksForMoleculeBuilder
    {
       private MoleculeBuildingBlock _moleculeBuilderBuildingBlock;

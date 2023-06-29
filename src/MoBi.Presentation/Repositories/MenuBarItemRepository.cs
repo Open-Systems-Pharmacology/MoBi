@@ -442,6 +442,13 @@ namespace MoBi.Presentation.Repositories
             .WithCommand<InitialConditionsExtendUICommand>(_container);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Extend)
+            .WithId(MenuBarItemIds.ExpressionProfileExtend)
+            .WithDescription(ToolTips.Extend)
+            .WithIcon(ApplicationIcons.ExtendInitialConditions)
+            .WithCommand<ExpressionProfileExtendUICommand>(_container);
+         
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Extend)
             .WithId(MenuBarItemIds.ParameterValuesExtend)
             .WithDescription(ToolTips.Extend)
             .WithIcon(ApplicationIcons.ExtendParameterValues)

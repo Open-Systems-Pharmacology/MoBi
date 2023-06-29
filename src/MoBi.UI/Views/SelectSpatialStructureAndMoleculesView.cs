@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using DevExpress.XtraLayout.Utils;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -10,31 +11,30 @@ using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views
 {
-   public partial class CreateStartValuesView : BaseModalView, ICreateStartValuesView
+   public partial class SelectSpatialStructureAndMoleculesView : BaseModalView, ISelectSpatialStructureAndMoleculesView
    {
-      private ICreateStartValuesPresenter _presenter;
-      private ScreenBinder<StartValuesDTO> _screenBinder;
+      private ISelectBuildingBlocksForExtendPresenter _presenter;
+      private ScreenBinder<SelectSpatialStructureAndMoleculesDTO> _screenBinder;
 
-      public CreateStartValuesView()
+      public SelectSpatialStructureAndMoleculesView()
       {
          InitializeComponent();
       }
 
-      public void AttachPresenter(ICreateStartValuesPresenter presenter)
+      public void AttachPresenter(ISelectBuildingBlocksForExtendPresenter presenter)
       {
          _presenter = presenter;
       }
 
-      protected override void SetActiveControl()
+      private void adjustForNoMoleculeRequired()
       {
-         ActiveControl = txtName;
+         layoutControlItemMolecules.Visibility = LayoutVisibility.Never;
       }
 
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         _screenBinder = new ScreenBinder<StartValuesDTO>();
-         _screenBinder.Bind(dto => dto.Name).To(txtName);
+         _screenBinder = new ScreenBinder<SelectSpatialStructureAndMoleculesDTO>();
          _screenBinder.Bind(dto => dto.Molecules).To(cmbMolecules).WithValues(dto => _presenter.GetMolecules());
          _screenBinder.Bind(dto => dto.SpatialStructure).To(cmbSpatialStructure).WithValues(dto => _presenter.GetSpatialStructures());
 
@@ -46,11 +46,12 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          layoutControlItemMolecules.Text = ObjectTypes.MoleculeBuildingBlock.FormatForLabel();
          layoutControlItemSpatialStructure.Text = ObjectTypes.SpatialStructure.FormatForLabel();
-         layoutControlItemName.Text = AppConstants.Captions.Name.FormatForLabel();
       }
 
-      public void Show(StartValuesDTO dto)
+      public void Show(SelectSpatialStructureAndMoleculesDTO dto)
       {
+         if(!dto.MoleculeRequired)
+            adjustForNoMoleculeRequired();
          _screenBinder.BindToSource(dto);
       }
 

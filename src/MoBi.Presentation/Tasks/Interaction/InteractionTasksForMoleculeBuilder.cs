@@ -1,5 +1,4 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Presenter;
@@ -8,6 +7,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -21,6 +21,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       ///    The parameter is added only if it was not defined already
       /// </summary>
       void AddConcentrationParameterTo(MoleculeBuilder moleculeBuilder, MoleculeBuildingBlock moleculeBuildingBlock);
+
+      /// <summary>
+      ///    Creates a default MoleculeBuilder with the <paramref name="moleculeName" />, default dimensions and default start
+      ///    formula
+      /// </summary>
+      MoleculeBuilder CreateDefault(string moleculeName);
    }
 
    public class InteractionTasksForMoleculeBuilder : InteractionTasksForBuilder<MoleculeBuilder, MoleculeBuildingBlock>, IInteractionTasksForMoleculeBuilder
@@ -68,7 +74,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             AddConcentrationParameterTo(moleculeBuilder, moleculeBuildingBlock);
             setDefaultStartFormula(moleculeBuilder);
             setDefaultDimensionIn(moleculeBuilder);
-            _interactionTaskContext.Context.AddToHistory(AddItemsToProject(new[] {moleculeBuilder}, moleculeBuildingBlock, moleculeBuildingBlock));
+            _interactionTaskContext.Context.AddToHistory(AddItemsToProject(new[] { moleculeBuilder }, moleculeBuildingBlock, moleculeBuildingBlock));
          }
       }
 
@@ -84,6 +90,13 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IMoBiCommand GetAddCommand(MoleculeBuilder builder, MoleculeBuildingBlock buildingBlock)
       {
          return new AddMoleculeBuilderCommand(buildingBlock, builder);
+      }
+
+      public MoleculeBuilder CreateDefault(string moleculeName)
+      {
+         var builder = base.CreateNewEntity(null).WithName(moleculeName);
+         setDefaults(builder);
+         return builder;
       }
 
       public override MoleculeBuilder CreateNewEntity(MoleculeBuildingBlock moleculeBuildingBlock)

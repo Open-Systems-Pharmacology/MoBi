@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
@@ -51,7 +50,7 @@ namespace MoBi.Core.Commands
 
    public class RemoveParameterValueFromBuildingBlockCommand : RemovePathAndValueEntityFromBuildingBlockCommand<ParameterValue>
    {
-      public RemoveParameterValueFromBuildingBlockCommand(PathAndValueEntityBuildingBlock<ParameterValue> parent, ObjectPath path) : base(parent, path)
+      public RemoveParameterValueFromBuildingBlockCommand(ILookupBuildingBlock<ParameterValue> parent, ObjectPath path) : base(parent, path)
       {
       }
    }
