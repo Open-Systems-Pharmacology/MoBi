@@ -171,6 +171,7 @@ namespace MoBi.Assets
          public static readonly string DynamicObservers = "Edit Observer";
          public static readonly string DynamicEvents = "Edit Event";
          public static readonly string DynamicInitialConditions = "Edit Initial Conditions";
+         public static readonly string DynamicExpressionProfile = "Edit Expression Profile";
          public static readonly string DynamicParameterValues = "Edit Parameter Values";
          public static readonly string DynamicRunSimulation = "Run & Analyze";
          public static readonly string Views = "Views";
@@ -186,6 +187,7 @@ namespace MoBi.Assets
          public static readonly string Observers = "Observers";
          public static readonly string Events = "Events";
          public static readonly string InitialConditions = "Initial Conditions";
+         public static readonly string ExpressionProfile = "Expression Profile";
          public static readonly string ParameterValues = "Parameter Values";
          public static readonly string Simulation = "Simulation";
          public static readonly string Skins = "Skins";
@@ -201,6 +203,7 @@ namespace MoBi.Assets
                Observers,
                Events,
                InitialConditions,
+               ExpressionProfile,
                ParameterValues,
                Simulation,
                OSPSuite.Assets.RibbonCategories.ParameterIdentification,
@@ -1561,6 +1564,9 @@ namespace MoBi.Assets
          public static readonly string Source = "Source";
          public static readonly string Target = "Target";
          public static readonly string DatabaseQuery = "Database Query";
+         public static readonly string SelectSpatialStructureAndMolecules = "Select a spatial structure and molecules building block";
+         public static readonly string SelectSpatialStructure = "Select a spatial structure";
+         public static readonly string ExtendDescription = "<b><i>Initial conditions</i> will be created for molecules in all physical containers in the selected <i>spatial structure</i></b>";
          public static string CouldNotResolveSource(string sourceType) => $"{sourceType} source not defined";
          public static readonly string CurveName = "Curve Name";
          public static readonly string XDataPath = "X-Path";
@@ -1871,6 +1877,8 @@ namespace MoBi.Assets
          public static readonly string MoleculeNameCannotBeEmpty = "Molecule name cannot be empty";
          public static readonly string CategoryCannotBeEmpty = "Category cannot be empty";
          public static readonly string ModuleNameCannotBeEmpty = "Module name cannot be empty";
+         public static readonly string ExtendingRequiresMoleculeBuildingBlock = "Extending requires a molecule building block";
+         public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
          {

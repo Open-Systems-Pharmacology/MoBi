@@ -58,7 +58,7 @@ namespace MoBi.Core.Commands
 
    public class AddParameterValueToBuildingBlockCommand : AddPathAndValueEntityToBuildingBlockCommand<ParameterValue>
    {
-      public AddParameterValueToBuildingBlockCommand(PathAndValueEntityBuildingBlock<ParameterValue> parameterValuesBuildingBlock, ParameterValue pathAndValueEntity) : base(parameterValuesBuildingBlock, pathAndValueEntity)
+      public AddParameterValueToBuildingBlockCommand(ILookupBuildingBlock<ParameterValue> parameterValuesBuildingBlock, ParameterValue pathAndValueEntity) : base(parameterValuesBuildingBlock, pathAndValueEntity)
       {
       }
    }

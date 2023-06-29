@@ -15,6 +15,7 @@ using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
@@ -24,6 +25,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Assets;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -36,6 +38,7 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTaskContext _context;
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IMoleculeResolver _moleculeResolver;
+      protected IInteractionTasksForMoleculeBuilder _moleculeBuilderTask;
 
       protected override void Context()
       {
@@ -46,9 +49,10 @@ namespace MoBi.Presentation.Tasks
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeResolver = A.Fake<IMoleculeResolver>();
+         _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
 
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
-            new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver, _reactionDimensionRetriever, _initialConditionsCreator);
+            new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver, _reactionDimensionRetriever, _initialConditionsCreator, _moleculeBuilderTask);
       }
    }
 
@@ -542,6 +546,178 @@ namespace MoBi.Presentation.Tasks
       protected override string CloneName()
       {
          return "name of clone";
+      }
+   }
+
+   public class When_extending_initial_conditions_and_not_exactly_one_of_each_type_is_available : concern_for_InitialConditionsTask
+   {
+      private ISelectBuildingBlocksForExtendPresenter _presenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _presenter = A.Fake<ISelectBuildingBlocksForExtendPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).Returns(_presenter);
+      }
+
+      protected override void Because()
+      {
+         sut.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock);
+      }
+
+      [Observation]
+      public void the_spatial_structure_and_molecule_selection_presenter_is_used_to_select_the_building_blocks()
+      {
+         A.CallTo(() => _presenter.SelectBuildingBlocksForExtend(true)).MustHaveHappened();
+      }
+   }
+
+   public class When_extending_initial_conditions_and_exactly_one_of_each_type_is_available : concern_for_InitialConditionsTask
+   {
+      private MoBiSpatialStructure _moBiSpatialStructure;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moBiSpatialStructure = new MoBiSpatialStructure();
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _moBiSpatialStructure });
+         _moleculeBuildingBlock = new MoleculeBuildingBlock();
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { _moleculeBuildingBlock });
+         
+      }
+
+      protected override void Because()
+      {
+         sut.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock);
+      }
+
+      [Observation]
+      public void the_spatial_structure_and_molecule_selection_presenter_is_not_used_to_select_the_building_blocks()
+      {
+         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_only_valid_values_should_be_used_to_create_new_initial_conditions()
+      {
+         A.CallTo(() => _initialConditionsCreator.CreateFrom(_moBiSpatialStructure, A<IReadOnlyList<MoleculeBuilder>>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_extending_initial_conditions_and_the_building_blocks_are_not_selected : concern_for_InitialConditionsTask
+   {
+      private ISelectBuildingBlocksForExtendPresenter _presenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _presenter = A.Fake<ISelectBuildingBlocksForExtendPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).Returns(_presenter);
+         A.CallTo(() => _presenter.SelectedMoleculeBuildingBlock).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         sut.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock);
+      }
+
+      [Observation]
+      public void the_initial_conditions_creator_is_not_used_to_create_initial_conditions()
+      {
+         A.CallTo(() => _initialConditionsCreator.CreateFrom(A<MoBiSpatialStructure>._, A<IReadOnlyList<MoleculeBuilder>>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_extending_initial_conditions_of_expression_profile_and_only_one_spatial_structure_is_available : concern_for_InitialConditionsTask
+   {
+      private ExpressionProfileBuildingBlock _expressionProfileBuildingBlock;
+      private MoBiSpatialStructure _moBiSpatialStructure;
+      private Container _container;
+      private MoleculeBuilder _moleculeBuilder;
+      private ExplicitFormula _explicitFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container
+         {
+            Mode = ContainerMode.Physical
+         };
+         _moBiSpatialStructure = new MoBiSpatialStructure
+         {
+            _container
+         };
+
+         _expressionProfileBuildingBlock = new ExpressionProfileBuildingBlock
+         {
+            Name = "moleculeName|human|healthy"
+         };
+
+         _explicitFormula = new ExplicitFormula("y=mx+b");
+         _expressionProfileBuildingBlock.AddInitialCondition(new InitialCondition
+         {
+            Formula = _explicitFormula
+         });
+
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _moBiSpatialStructure });
+         _moleculeBuilder = new MoleculeBuilder().WithName("moleculeName");
+         A.CallTo(() => _moleculeBuilderTask.CreateDefault("moleculeName", _explicitFormula)).Returns(_moleculeBuilder);
+      }
+
+      protected override void Because()
+      {
+         sut.ExtendExpressionProfileInitialConditions(_expressionProfileBuildingBlock);
+      }
+
+      [Observation]
+      public void the_selection_presenter_is_used_to_select_the_building_blocks()
+      {
+         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_initial_conditions_creator_is_used_to_create_initial_conditions()
+      {
+         A.CallTo(_initialConditionsCreator).WithReturnType<InitialCondition>().MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_initial_condition_creator_should_create_with_the_most_used_formula()
+      {
+         A.CallTo(() => _moleculeBuilderTask.CreateDefault("moleculeName", _explicitFormula)).MustHaveHappened();
+         A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(_container, _moleculeBuilder, null)).MustHaveHappened();
+      }
+   }
+
+   public class When_extending_expression_profile_and_the_building_blocks_are_not_selected : concern_for_InitialConditionsTask
+   {
+      private ISelectBuildingBlocksForExtendPresenter _presenter;
+      private ExpressionProfileBuildingBlock _expressionProfile;
+
+      protected override void Context()
+      {
+         base.Context();
+         
+         _expressionProfile = new ExpressionProfileBuildingBlock
+         {
+            Name = "moleculeName|human|healthy"
+         };
+
+         _presenter = A.Fake<ISelectBuildingBlocksForExtendPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).Returns(_presenter);
+         A.CallTo(() => _presenter.SelectedSpatialStructure).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         sut.ExtendExpressionProfileInitialConditions(_expressionProfile);
+      }
+
+      [Observation]
+      public void the_initial_conditions_creator_is_not_used_to_create_initial_conditions()
+      {
+         A.CallTo(_initialConditionsCreator).WithReturnType<InitialCondition>().MustNotHaveHappened();
       }
    }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Helper;
@@ -43,34 +44,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          _spatialStructureFactory = spatialStructureFactory;
          _dtoToQuantityToParameterValueMapper = dtoToQuantityToParameterValueMapper;
          _entityPathTask = entityPathTask;
-      }
-
-      public override IMoBiCommand AddNew(Module module, IBuildingBlock buildingBlockToAddTo)
-      {
-         if (module.Molecules == null || module.SpatialStructure == null)
-            throw new MoBiException(AppConstants.Exceptions.BuildingBlock);
-
-         TBuildingBlock newEntity;
-         using (var createPresenter = ApplicationController.Start<ICreateStartValuesPresenter<TBuildingBlock>>())
-         {
-            newEntity = createPresenter.Create();
-         }
-
-         if (newEntity == null)
-            return new MoBiEmptyCommand();
-
-         var macroCommand = new MoBiMacroCommand
-         {
-            ObjectType = ObjectName,
-            CommandType = AppConstants.Commands.AddCommand
-         };
-         macroCommand.Add(GetAddCommand(newEntity, module, buildingBlockToAddTo).Run(Context));
-
-         //Icon may depend on name. 
-         newEntity.Icon = InteractionTask.IconFor(newEntity);
-         macroCommand.Description = AppConstants.Commands.AddToProjectDescription(ObjectName, newEntity.Name);
-         _editTask.EditBuildingBlock(newEntity);
-         return macroCommand;
       }
 
       protected override double? ValueFromBuilder(TPathAndValueEntity builder)
@@ -180,24 +153,24 @@ namespace MoBi.Presentation.Tasks.Interaction
          return target.Dimension == subject.Dimension;
       }
 
-      private MoBiMacroCommand createExtendMacroCommand(TBuildingBlock buildingBlockToExtend)
+      protected MoBiMacroCommand CreateExtendMacroCommand(string buildingBlockType)
       {
          var moBiMacroCommand = new BulkUpdateMacroCommand
          {
             CommandType = AppConstants.Commands.ExtendCommand,
             Description = AppConstants.Commands.ExtendDescription,
-            ObjectType = _interactionTaskContext.GetTypeFor(buildingBlockToExtend)
+            ObjectType = buildingBlockType
          };
          return moBiMacroCommand;
       }
 
-      protected IMoBiCommand Extend(IBuildingBlock<TPathAndValueEntity> buildingBlock, TBuildingBlock buildingBlockToExtend)
+      protected IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> startValues, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend)
       {
-         var macro = createExtendMacroCommand(buildingBlockToExtend);
+         var macro = CreateExtendMacroCommand(_interactionTaskContext.GetTypeFor(buildingBlockToExtend));
 
          prepareExtendActions(buildingBlockToExtend, macro);
 
-         var cacheToExtend = buildingBlock.ToCache();
+         var cacheToExtend = startValues.ToCache();
          var targetCache = buildingBlockToExtend.ToCache();
 
          // Use the merge manager to implement the extend. We can take advantage of the equivalency checker to favor the existing 
@@ -209,14 +182,14 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macro;
       }
 
-      private void prepareExtendActions(TBuildingBlock targetBuildingBlock, MoBiMacroCommand macro)
+      private void prepareExtendActions(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, MoBiMacroCommand macro)
       {
          _extendManager.AddAction = entityToMerge => macro.Add(GenerateAddCommandAndUpdateFormulaReferences(entityToMerge, targetBuildingBlock));
          _extendManager.RemoveAction = entityToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, entityToMerge));
          _extendManager.CancelAction = macro.Clear;
       }
 
-      protected IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TPathAndValueEntity entityToMerge, TBuildingBlock targetBuildingBlock, string originalBuilderName = null)
+      protected IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TPathAndValueEntity entityToMerge, ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, string originalBuilderName = null)
       {
          var macroCommand = CreateAddBuilderMacroCommand(entityToMerge, targetBuildingBlock);
 
@@ -226,9 +199,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      protected abstract IMoBiCommand GenerateRemoveCommand(TBuildingBlock targetBuildingBlock, TPathAndValueEntity entityToRemove);
-      protected abstract IMoBiCommand GenerateAddCommand(TBuildingBlock targetBuildingBlock, TPathAndValueEntity entityToAdd);
-      public abstract void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
+      protected abstract IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToRemove);
+      protected abstract IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToAdd);
+      public abstract void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock);
       public abstract IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
       public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
       public abstract IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
@@ -304,6 +277,25 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IMoBiCommand GetAddCommand(TBuildingBlock itemToAdd, Module parent, IBuildingBlock buildingBlock)
       {
          return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
+      }
+
+      protected (MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock) SelectBuildingBlocksForExtend(bool moleculeRequired = true)
+      {
+         var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
+         var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;
+         
+         // If there is only one option that could be selected for each required building block, then we just use those options and don't
+         // need to ask the user to make a selection
+         if ((!moleculeRequired || moleculeBlockCollection.Count == 1) && spatialStructureCollection.Count == 1)
+         {
+            return (spatialStructureCollection.Single(), moleculeRequired ? moleculeBlockCollection.Single() : null);
+         }
+
+         using (var selectorPresenter = Context.Resolve<ISelectBuildingBlocksForExtendPresenter>())
+         {
+            selectorPresenter.SelectBuildingBlocksForExtend(moleculeRequired);
+            return (selectorPresenter.SelectedSpatialStructure, selectorPresenter.SelectedMoleculeBuildingBlock);
+         }
       }
    }
 }

@@ -70,6 +70,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId ZoomOut = createMenuBarItemId("ZoomOut");
       public static MenuBarItemId FitToPage = createMenuBarItemId("FitToPage");
       public static MenuBarItemId InitialConditionsExtend = createMenuBarItemId("InitialConditionsExtend");
+      public static MenuBarItemId ExpressionProfileExtend = createMenuBarItemId("ExpressionProfileExtend");
       public static MenuBarItemId ParameterValuesExtend = createMenuBarItemId("ParameterValuesExtend");
       public static MenuBarItemId Help = createMenuBarItemId("Help");
       public static MenuBarItemId SearchView = createMenuBarItemId("SearchView");
