@@ -142,23 +142,18 @@ namespace MoBi.Presentation.Tasks.Interaction
             return;
 
          // Create a temporary molecule builder with the correct name, dimensions and formula to use when constructing Initial Conditions
-         var moleculeBuilder = _moleculeBuilderTask.CreateDefault(buildingBlock.MoleculeName);
-         var startFormula = defaultStartFormulaFrom(moleculeBuilder, buildingBlock);
-
-         var newInitialConditions = spatialStructure.PhysicalContainers.Select(container => _initialConditionsCreator.CreateInitialCondition(container, moleculeBuilder, startFormula)).ToList();
+         var moleculeBuilder = _moleculeBuilderTask.CreateDefault(buildingBlock.MoleculeName, mostUsedFormula(buildingBlock.InitialConditions));
+         var newInitialConditions = spatialStructure.PhysicalContainers.Select(container => _initialConditionsCreator.CreateInitialCondition(container, moleculeBuilder)).ToList();
 
          updateDefaultIsPresentToFalseForSpecificExtendedValues(newInitialConditions, buildingBlock.InitialConditions.ToList());
          AddCommand(Extend(newInitialConditions, buildingBlock));
       }
 
-      private IFormula defaultStartFormulaFrom(MoleculeBuilder moleculeBuilder, ExpressionProfileBuildingBlock buildingBlock)
-      {
-         return buildingBlock.InitialConditions.Any() ? mostUsedFormula(buildingBlock.InitialConditions) : moleculeBuilder.DefaultStartFormula;
-      }
-
       private IFormula mostUsedFormula(IReadOnlyCollection<InitialCondition> initialConditions)
       {
-         // only use in the context where there is at least one initial condition
+         if (!initialConditions.Any())
+            return null;
+         
          return initialConditions.GroupBy(x => x.Formula).OrderBy(x => x.Count()).First().Key;
       }
 

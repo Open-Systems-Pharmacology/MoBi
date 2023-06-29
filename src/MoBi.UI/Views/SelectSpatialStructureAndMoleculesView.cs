@@ -7,6 +7,7 @@ using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views
@@ -19,6 +20,8 @@ namespace MoBi.UI.Views
       public SelectSpatialStructureAndMoleculesView()
       {
          InitializeComponent();
+         descriptionLabel.AsDescription();
+         descriptionLabel.Text = AppConstants.Captions.ExtendDescription;
       }
 
       public void AttachPresenter(ISelectBuildingBlocksForExtendPresenter presenter)

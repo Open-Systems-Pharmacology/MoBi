@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       ///    Creates a default MoleculeBuilder with the <paramref name="moleculeName" />, default dimensions and default start
       ///    formula
       /// </summary>
-      MoleculeBuilder CreateDefault(string moleculeName);
+      MoleculeBuilder CreateDefault(string moleculeName, IFormula startFormula = null);
    }
 
    public class InteractionTasksForMoleculeBuilder : InteractionTasksForBuilder<MoleculeBuilder, MoleculeBuildingBlock>, IInteractionTasksForMoleculeBuilder
@@ -92,10 +92,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddMoleculeBuilderCommand(buildingBlock, builder);
       }
 
-      public MoleculeBuilder CreateDefault(string moleculeName)
+      public MoleculeBuilder CreateDefault(string moleculeName, IFormula startFormula = null)
       {
          var builder = base.CreateNewEntity(null).WithName(moleculeName);
          setDefaults(builder);
+         if(startFormula != null)
+            builder.DefaultStartFormula = startFormula;
          return builder;
       }
 

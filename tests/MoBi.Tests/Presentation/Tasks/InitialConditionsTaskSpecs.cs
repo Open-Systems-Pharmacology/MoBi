@@ -662,7 +662,7 @@ namespace MoBi.Presentation.Tasks
 
          A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _moBiSpatialStructure });
          _moleculeBuilder = new MoleculeBuilder().WithName("moleculeName");
-         A.CallTo(() => _moleculeBuilderTask.CreateDefault("moleculeName")).Returns(_moleculeBuilder);
+         A.CallTo(() => _moleculeBuilderTask.CreateDefault("moleculeName", _explicitFormula)).Returns(_moleculeBuilder);
       }
 
       protected override void Because()
@@ -685,7 +685,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_initial_condition_creator_should_create_with_the_most_used_formula()
       {
-         A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(_container, _moleculeBuilder, _explicitFormula)).MustHaveHappened();
+         A.CallTo(() => _moleculeBuilderTask.CreateDefault("moleculeName", _explicitFormula)).MustHaveHappened();
+         A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(_container, _moleculeBuilder, null)).MustHaveHappened();
       }
    }
 
