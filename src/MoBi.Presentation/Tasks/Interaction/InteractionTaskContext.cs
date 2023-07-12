@@ -28,6 +28,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       Unit DisplayUnitFor(IWithDimension withDimension);
       Unit DisplayUnitFor(IDimension dimension);
       IDimension DimensionByName(string dimensionName);
+      IObjectBaseNamingTask NamingTask { get; }
 
       /// <summary>
       ///    Cancels the commands and returns an empty command
@@ -49,16 +50,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       string GetTypeFor<T>();
 
       void UpdateTemplateDirectories();
-
-      string RenameFor(IObjectBase objectToRename, IReadOnlyList<string> forbiddenNames);
-      
-      string NewName(
-         string caption,
-         string text,
-         string defaultValue = null,
-         IEnumerable<string> forbiddenValues = null,
-         IEnumerable<string> predefinedValues = null,
-         string iconName = null);
    }
 
    public class InteractionTaskContext : IInteractionTaskContext
@@ -67,7 +58,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IMoBiConfiguration _configuration;
       private readonly DirectoryMapSettings _directoryMapSettings;
-      private readonly IObjectBaseNamingTask _namingTask;
       public IMoBiContext Context { get; }
       public IMoBiApplicationController ApplicationController { get; }
       public IBuildingBlockRepository BuildingBlockRepository { get; }
@@ -78,6 +68,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiFormulaTask MoBiFormulaTask { get; }
       public ICheckNameVisitor CheckNamesVisitor { get; }
       public IDisplayUnitRetriever DisplayUnitRetriever { get; }
+      public IObjectBaseNamingTask NamingTask { get; }
 
       public InteractionTaskContext(IMoBiContext context, IMoBiApplicationController applicationController,
          IInteractionTask interactionTask, IActiveSubjectRetriever activeSubjectRetriever, IUserSettings userSettings,
@@ -97,26 +88,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          _objectTypeResolver = objectTypeResolver;
          _configuration = configuration;
          _directoryMapSettings = directoryMapSettings;
-         _namingTask = namingTask;
+         NamingTask = namingTask;
          MoBiFormulaTask = moBiFormulaTask;
          CheckNamesVisitor = checkNamesVisitor;
          BuildingBlockRepository = buildingBlockRepository;
-      }
-
-      public string RenameFor(IObjectBase objectToRename, IReadOnlyList<string> forbiddenNames)
-      {
-         return _namingTask.RenameFor(objectToRename, forbiddenNames);
-      }
-
-      public string NewName(
-         string caption,
-         string text,
-         string defaultValue = null,
-         IEnumerable<string> forbiddenValues = null,
-         IEnumerable<string> predefinedValues = null,
-         string iconName = null)
-      {
-         return _namingTask.NewName(caption, text, defaultValue, forbiddenValues, predefinedValues, iconName);
       }
 
       public Unit DisplayUnitFor(IWithDimension withDimension)
@@ -158,7 +133,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return Context.DimensionFactory.Dimension(dimensionName);
       }
-
+      
       public T Active<T>() where T : class
       {
          return ActiveSubjectRetriever.Active<T>();

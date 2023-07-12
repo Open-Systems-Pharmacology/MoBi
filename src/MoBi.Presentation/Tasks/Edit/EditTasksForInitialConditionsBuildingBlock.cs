@@ -14,6 +14,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       protected override IEnumerable<string> GetUnallowedNames(InitialConditionsBuildingBlock buildingBlock, IEnumerable<IObjectBase> existingObjectsInParent)
       {
+         // Add all the initial conditions building blocks from the parent module.
          return base.GetUnallowedNames(buildingBlock, existingObjectsInParent).Concat(buildingBlock.Module.InitialConditionsCollection.AllNames());
       }
    }

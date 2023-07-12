@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Tasks.Edit
       private bool editConnectedNeighborhood(NeighborhoodBuilder neighborhood, IEnumerable<IObjectBase> existingObjectsInParent)
       {
          var title = AskForNewNeighborhoodBuilderName(neighborhood.FirstNeighborPath, neighborhood.SecondNeighborPath);
-         var name = _interactionTaskContext.NewName(title, NewWindow(ObjectName), forbiddenValues: GetForbiddenNamesWithoutSelf(neighborhood, existingObjectsInParent));
+         var name = _interactionTaskContext.NamingTask.NewName(title, NewWindow(ObjectName), forbiddenValues: GetForbiddenNamesWithoutSelf(neighborhood, existingObjectsInParent));
          if (name.IsNullOrEmpty())
             return false;
 

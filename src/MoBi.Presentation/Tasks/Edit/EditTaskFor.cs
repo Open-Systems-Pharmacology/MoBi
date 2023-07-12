@@ -78,7 +78,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       protected virtual string NewNameFor(T objectBase, IReadOnlyList<string> prohibitedNames)
       {
-         return _interactionTaskContext.RenameFor(objectBase, prohibitedNames);
+         return _interactionTaskContext.NamingTask.RenameFor(objectBase, prohibitedNames);
       }
 
       private IMoBiCommand rename(T objectBase, IEnumerable<string> forbiddenNames, IBuildingBlock buildingBlock)

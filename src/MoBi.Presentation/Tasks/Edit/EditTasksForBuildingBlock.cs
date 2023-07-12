@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Tasks.Edit
       public override bool EditEntityModal(T entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
          var forbiddenNames = GetForbiddenNamesWithoutSelf(entity, existingObjectsInParent);
-         var name = _interactionTaskContext.NewName(AppConstants.Dialog.AskForNewName(ObjectName),
+         var name = _interactionTaskContext.NamingTask.NewName(AppConstants.Dialog.AskForNewName(ObjectName),
             AppConstants.Captions.NewWindow(ObjectName), string.Empty, forbiddenNames);
 
          if (name.IsNullOrEmpty())

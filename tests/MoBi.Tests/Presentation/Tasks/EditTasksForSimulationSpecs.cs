@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Tasks
          _simulation = new MoBiSimulation().WithName("Root");
          _simulation.HasChanged = false;
          
-         A.CallTo(() => _context.RenameFor(_simulation, A<IReadOnlyList<string>>._))
+         A.CallTo(() => _context.NamingTask.RenameFor(_simulation, A<IReadOnlyList<string>>._))
             .Invokes(x => _simulation.Name = "NEW_NAME");
       }
 

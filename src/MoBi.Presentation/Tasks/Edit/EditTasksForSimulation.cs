@@ -116,7 +116,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public void RenameResults(IMoBiSimulation simulation, DataRepository dataRepository)
       {
-         var newName = _interactionTaskContext.RenameFor(dataRepository, allUsedResultsNameIn(simulation));
+         var newName = _interactionTaskContext.NamingTask.RenameFor(dataRepository, allUsedResultsNameIn(simulation));
 
          if (string.IsNullOrEmpty(newName))
             return;

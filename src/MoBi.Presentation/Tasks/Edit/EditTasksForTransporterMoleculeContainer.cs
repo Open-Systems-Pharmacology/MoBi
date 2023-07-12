@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public override bool EditEntityModal(TransporterMoleculeContainer entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
-         var name = _interactionTaskContext.NewName(AppConstants.Dialog.AskForNewName(ObjectName), AppConstants.Captions.NewWindow(ObjectName),
+         var name = _interactionTaskContext.NamingTask.NewName(AppConstants.Dialog.AskForNewName(ObjectName), AppConstants.Captions.NewWindow(ObjectName),
             string.Empty, GetForbiddenNamesWithoutSelf(entity, existingObjectsInParent));
          if (name.IsNullOrEmpty())
             return false;

@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _container = new Container().WithName("OLD");
          _eventBuildingBlock = new EventGroupBuildingBlock();
-         A.CallTo(_interactionTaskContext).WithReturnType<string>().Returns("NEW");
+         A.CallTo(_interactionTaskContext.NamingTask).WithReturnType<string>().Returns("NEW");
       }
 
       protected override void Because()
@@ -118,7 +118,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _container = new Container().WithName("OLD");
          _spatialStructure = new SpatialStructure();
-         A.CallTo(_interactionTaskContext).WithReturnType<string>().Returns("NEW");
+         A.CallTo(_interactionTaskContext.NamingTask).WithReturnType<string>().Returns("NEW");
 
          A.CallTo(() => _interactionTaskContext.Context.AddToHistory(A<IMoBiCommand>._))
             .Invokes(x => _renameCommand = x.GetArgument<IMoBiCommand>(0));

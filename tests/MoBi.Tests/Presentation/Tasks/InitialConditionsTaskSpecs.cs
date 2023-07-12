@@ -499,7 +499,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _buildingBlockToClone = new InitialConditionsBuildingBlock();
          _module = new Module { _buildingBlockToClone };
-         A.CallTo(() => _context.NewName(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns(CloneName());
+         A.CallTo(() => _context.NamingTask.NewName(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns(CloneName());
          A.CallTo(() => _context.InteractionTask.CorrectName(A<InitialConditionsBuildingBlock>._, A<IEnumerable<string>>._)).Returns(true);
       }
       

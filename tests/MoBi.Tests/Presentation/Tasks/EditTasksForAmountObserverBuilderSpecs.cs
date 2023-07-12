@@ -75,7 +75,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void must_use_the_context_start_the_dedicated_new_name_presenter()
       {
-         A.CallTo(() => _interactionTaskContext.RenameFor(_amountObserverBuilder, A<IReadOnlyList<string>>._)).MustHaveHappened();
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_amountObserverBuilder, A<IReadOnlyList<string>>._)).MustHaveHappened();
       }
    }
 
@@ -89,7 +89,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_list_of_forbidden_names_should_be_the_list_of_children_from_the_active_building_block()
       {
-         A.CallTo(() => _interactionTaskContext.RenameFor(_amountObserver, A<IReadOnlyList<string>>.That.Contains(_amountObserverBuilderWithForbiddenName.Name))).MustHaveHappened();
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_amountObserver, A<IReadOnlyList<string>>.That.Contains(_amountObserverBuilderWithForbiddenName.Name))).MustHaveHappened();
       }
    }
 }

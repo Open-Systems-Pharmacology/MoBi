@@ -64,7 +64,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
       {
-         var name = _interactionTaskContext.NewName(
+         var name = _interactionTaskContext.NamingTask.NewName(
             AppConstants.Dialog.AskForNewName(AppConstants.CloneName(buildingBlockToClone)),
             AppConstants.Captions.NewName,
             AppConstants.CloneName(buildingBlockToClone),

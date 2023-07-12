@@ -101,7 +101,7 @@ namespace MoBi.Presentation.DTO
       /// </summary>
       private bool differByCaseOnly(string newName, string originalName)
       {
-         return string.Equals(newName, originalName, StringComparison.CurrentCultureIgnoreCase) && !string.Equals(newName, originalName, StringComparison.CurrentCulture);
+         return string.Equals(newName, originalName, StringComparison.OrdinalIgnoreCase) && !string.Equals(newName, originalName, StringComparison.Ordinal);
       }
 
       private bool allowCaseOnlyRename => !string.IsNullOrEmpty(_originalName);
