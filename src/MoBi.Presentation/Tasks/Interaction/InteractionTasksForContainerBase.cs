@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          var forbiddenNames = spatialStructure.NeighborhoodsContainer.Children.Select(x => x.Name).Union(AppConstants.UnallowedNames).ToList();
          if (forbiddenNames.Contains(neighborhoodBuilder.Name))
          {
-            var newName = _interactionTaskContext.DialogCreator.AskForInput(AppConstants.Dialog.AskForChangedName(neighborhoodBuilder.Name, ObjectTypes.Neighborhood), AppConstants.Captions.NewName, neighborhoodBuilder.Name, forbiddenNames);
+            var newName = _interactionTaskContext.NewName(AppConstants.Dialog.AskForChangedName(neighborhoodBuilder.Name, ObjectTypes.Neighborhood), AppConstants.Captions.NewName, neighborhoodBuilder.Name, forbiddenNames);
 
             if (string.IsNullOrEmpty(newName))
                return false;

@@ -5,6 +5,7 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -23,10 +24,11 @@ namespace MoBi.Core
       protected IFormulaToFormulaBuilderDTOMapper _formulaMapper;
       protected IFormulaPresenterCache _formulaPresenterCache;
       protected IMoBiContext _context;
-      protected IViewItemContextMenuFactory _contexteMenuFactory;
+      protected IViewItemContextMenuFactory _contextMenuFactory;
       protected IDialogCreator _messagePresenter;
       protected ICloneManagerForBuildingBlock _cloneManager;
       protected IFormulaUsageChecker _formulaChecker;
+      private IObjectBaseNamingTask _namingTask;
 
       protected override void Context()
       {
@@ -35,11 +37,12 @@ namespace MoBi.Core
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _formulaPresenterCache = A.Fake<IFormulaPresenterCache>();
          _context = A.Fake<IMoBiContext>();
-         _contexteMenuFactory = A.Fake<IViewItemContextMenuFactory>();
+         _contextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _messagePresenter = A.Fake<IDialogCreator>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _formulaChecker = A.Fake<IFormulaUsageChecker>();
-          sut = new FormulaCachePresenter(_view, _formulaMapper, _formulaPresenterCache, _context, _contexteMenuFactory, _messagePresenter, _cloneManager, _formulaChecker);
+         _namingTask = A.Fake<IObjectBaseNamingTask>();
+         sut = new FormulaCachePresenter(_view, _formulaMapper, _formulaPresenterCache, _context, _contextMenuFactory, _messagePresenter, _cloneManager, _formulaChecker, _namingTask);
       }
    }
 
@@ -72,7 +75,7 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_publish_a_formula_validat_event_for_removed_formula()
+      public void should_publish_a_formula_validate_event_for_removed_formula()
       {
          A.CallTo(() => _context.PublishEvent(A<FormulaValidEvent>._)).MustHaveHappened();
       }

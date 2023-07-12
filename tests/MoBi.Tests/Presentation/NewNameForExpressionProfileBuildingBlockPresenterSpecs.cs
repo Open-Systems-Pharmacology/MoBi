@@ -47,7 +47,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _newName = sut.NewNameFrom(_expressionProfile.MoleculeName, _expressionProfile.Species, _expressionProfile.Category, _expressionProfile.Type, new[] { _expressionProfile.Name });
+         _newName = sut.NewNameFrom(_expressionProfile.MoleculeName, _expressionProfile.Species, _expressionProfile.Category, _expressionProfile.Type, new[] { _expressionProfile.Name }, allowRename: false);
       }
 
       [Observation]
@@ -69,7 +69,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _newName = sut.NewNameFrom(_expressionProfile.MoleculeName, _expressionProfile.Species, _expressionProfile.Category, _expressionProfile.Type, new[] { _expressionProfile.Name });
+         _newName = sut.NewNameFrom(_expressionProfile.MoleculeName, _expressionProfile.Species, _expressionProfile.Category, _expressionProfile.Type, new[] { _expressionProfile.Name }, allowRename: false);
       }
 
       [Observation]

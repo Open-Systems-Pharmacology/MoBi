@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -28,7 +29,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       private ISelectReferenceAtEventPresenter _selectReferencePresenter;
       private IMoBiApplicationController _applicationController;
-      private IDialogCreator _dialogCreator;
+      private IObjectBaseNamingTask _namingTask;
 
       protected override void Context()
       {
@@ -42,8 +43,8 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _selectReferencePresenter = A.Fake<ISelectReferenceAtEventPresenter>();
          _applicationController = A.Fake<IMoBiApplicationController>();
-         _dialogCreator = A.Fake<IDialogCreator>();
-         sut = new EditEventBuilderPresenter(_view,_eventBuilderMapper,_formulaMapper,_eventBuilderTasks,_parameterPresenter,_assingmentBuilderTasks,_formulaPresenter,_context,_selectReferencePresenter, _applicationController, _dialogCreator);
+         _namingTask = A.Fake<IObjectBaseNamingTask>();
+         sut = new EditEventBuilderPresenter(_view,_eventBuilderMapper,_formulaMapper,_eventBuilderTasks,_parameterPresenter,_assingmentBuilderTasks,_formulaPresenter,_context,_selectReferencePresenter, _applicationController, _namingTask);
       }
    }
 

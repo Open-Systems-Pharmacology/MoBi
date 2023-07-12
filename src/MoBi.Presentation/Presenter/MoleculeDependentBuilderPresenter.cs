@@ -6,11 +6,11 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 
@@ -30,14 +30,14 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IMoBiContext _context;
       private IMoleculeDependentBuilder _moleculeDependentBuilder;
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectBaseNamingTask _namingTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public MoleculeDependentBuilderPresenter(IMoleculeDependentBuilderView view, IMoBiContext context, IDialogCreator dialogCreator, IBuildingBlockRepository buildingBlockRepository) : base(view)
+      public MoleculeDependentBuilderPresenter(IMoleculeDependentBuilderView view, IMoBiContext context, IObjectBaseNamingTask namingTask, IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
          _context = context;
-         _dialogCreator = dialogCreator;
+         _namingTask = namingTask;
          _buildingBlockRepository = buildingBlockRepository;
       }
 
@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Presenter
 
       private string newMoleculeName()
       {
-         return _dialogCreator.AskForInput(AppConstants.Dialog.GetReactionMoleculeName,
+         return _namingTask.NewName(AppConstants.Dialog.GetReactionMoleculeName,
             AppConstants.Captions.AddReactionMolecule,
             string.Empty, Enumerable.Empty<string>(), getMoleculeNames());
       }

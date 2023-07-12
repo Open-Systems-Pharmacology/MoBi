@@ -77,7 +77,7 @@ namespace MoBi.Presentation.Tasks
             _project = new MoBiProject();
             _expressionProfileToAdd = new ExpressionProfileBuildingBlock().WithName("Molecule|Species|Category");
             A.CallTo(() => _interactionTask.CorrectName(_expressionProfileToAdd, A<IEnumerable<string>>._)).Returns(true);
-            A.CallTo(() => _editTask.NewNameFromSuggestions(_expressionProfileToAdd.MoleculeName, _expressionProfileToAdd.Species, A<string>._, _expressionProfileToAdd.Type, A<IReadOnlyList<string>>._)).Returns("Molecule|Species|Category 1");
+            A.CallTo(() => _editTask.NewNameFromSuggestions(_expressionProfileToAdd.MoleculeName, _expressionProfileToAdd.Species, A<string>._, _expressionProfileToAdd.Type, A<IReadOnlyList<string>>._, A<bool>._)).Returns("Molecule|Species|Category 1");
             A.CallTo(() => _context.PublishEvent(A<AddedEvent<ExpressionProfileBuildingBlock>>._))
                .Invokes(x => _addEvent = x.GetArgument<AddedEvent<ExpressionProfileBuildingBlock>>(0));
 
@@ -160,7 +160,7 @@ namespace MoBi.Presentation.Tasks
          public void the_new_name_should_be_collected_using_the_expression_profile_namer()
          {
             // Ignore the Category because it will contain a suggested name change due to cloning
-            A.CallTo(() => _editTask.NewNameFromSuggestions(_buildingBlock.MoleculeName, _buildingBlock.Species, A<string>._, _buildingBlock.Type, A<IReadOnlyList<string>>._)).MustHaveHappened();
+            A.CallTo(() => _editTask.NewNameFromSuggestions(_buildingBlock.MoleculeName, _buildingBlock.Species, A<string>._, _buildingBlock.Type, A<IReadOnlyList<string>>._, A<bool>._)).MustHaveHappened();
          }
       }
 

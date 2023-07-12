@@ -62,9 +62,9 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       /// <param name="formula">The formula being modified</param>
       /// <param name="newFormulaString">The new formula string</param>
-     /// <param name="buildingBlock">The building block containing the formula</param>
+      /// <param name="buildingBlock">The building block containing the formula</param>
       /// <returns></returns>
-      IMoBiCommand SetFormulaString(FormulaWithFormulaString formula, string newFormulaString,  IBuildingBlock buildingBlock);
+      IMoBiCommand SetFormulaString(FormulaWithFormulaString formula, string newFormulaString, IBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Changes the <paramref name="formulaUsablePath" /> in the <paramref name="formula" /> to <paramref name="newPath" />
@@ -73,7 +73,7 @@ namespace MoBi.Core.Domain.Services
       IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock);
 
       IMoBiCommand AddFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock);
-      IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName,  IBuildingBlock buildingBlock);
+      IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName, IBuildingBlock buildingBlock);
       IMoBiCommand AddValuePoint(TableFormula formula, ValuePoint newValuePoint, IBuildingBlock buildingBlock);
       IMoBiCommand EditUseDerivedValues(TableFormula formula, bool newValue, bool oldValue, IBuildingBlock buildingBlock);
       IMoBiCommand RemoveValuePointFromTableFormula(TableFormula formula, ValuePoint valuePoint, IBuildingBlock buildingBlock);

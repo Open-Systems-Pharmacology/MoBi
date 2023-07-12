@@ -1,11 +1,10 @@
-﻿using MoBi.Assets;
+﻿using System.Collections.Generic;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using System.Collections.Generic;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {

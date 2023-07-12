@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -140,8 +139,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
       {
-         var transportBuilder = selectedObject as TransportBuilder;
-         if (transportBuilder != null)
+         if (selectedObject is TransportBuilder transportBuilder)
             return (_passiveTransports.Contains(transportBuilder), transportBuilder);
 
          return (false, null);

@@ -8,7 +8,7 @@ namespace MoBi.Presentation
 {
    public class concern_for_RenameExpressionProfileDTO : ContextSpecification<RenameExpressionProfileDTO>
    {
-      private ExpressionProfileBuildingBlock _expressionProfile;
+      protected ExpressionProfileBuildingBlock _expressionProfile;
       protected string _originalBuildingBlockName;
 
       protected override void Context()
@@ -36,6 +36,71 @@ namespace MoBi.Presentation
       public void the_dto_is_not_valid_if_the_name_is_in_the_forbidden_list()
       {
          sut.IsValid().ShouldBeTrue();
+      }
+   }
+
+   public class When_a_forbidden_name_has_no_differences_for_rename : concern_for_RenameExpressionProfileDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.AllowCaseOnlyChangesFor(_originalBuildingBlockName);
+      }
+
+      protected override void Because()
+      {
+         sut.AddForbiddenNames(new[] { _originalBuildingBlockName });
+      }
+
+      [Observation]
+      public void the_dto_is_not_valid_if_the_name_is_in_the_forbidden_list()
+      {
+         sut.IsValid().ShouldBeFalse();
+      }
+   }
+
+   public class When_a_forbidden_name_differs_only_by_case_for_rename : concern_for_RenameExpressionProfileDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.AllowCaseOnlyChangesFor(_originalBuildingBlockName);
+         sut.Species = _expressionProfile.Species.ToUpper();
+         sut.MoleculeName = _expressionProfile.MoleculeName.ToLower();
+         sut.Category = _expressionProfile.Category.ToLower();
+      }
+
+      protected override void Because()
+      {
+         sut.AddForbiddenNames(new[] { _originalBuildingBlockName });
+      }
+
+      [Observation]
+      public void the_dto_is_not_valid_if_the_name_is_in_the_forbidden_list()
+      {
+         sut.IsValid().ShouldBeTrue();
+      }
+   }
+
+   public class When_a_forbidden_name_differs_only_by_case : concern_for_RenameExpressionProfileDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Species = _expressionProfile.Species.ToUpper();
+         sut.MoleculeName = _expressionProfile.MoleculeName.ToLower();
+         sut.Category = _expressionProfile.Category.ToLower();
+      }
+
+      protected override void Because()
+      {
+         sut.AddForbiddenNames(new[] { _originalBuildingBlockName });
+      }
+
+      [Observation]
+      public void the_dto_is_not_valid_if_the_name_is_in_the_forbidden_list()
+      {
+         sut.IsValid().ShouldBeFalse();
       }
    }
 

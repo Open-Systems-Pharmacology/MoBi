@@ -2,24 +2,25 @@
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -51,17 +52,19 @@ namespace MoBi.Presentation.Presenter
       private readonly IDialogCreator _dialogCreator;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IFormulaUsageChecker _formulaUsageChecker;
+      private readonly IObjectBaseNamingTask _namingTask;
       private IEnumerable<FormulaBuilderDTO> _dtoFormulaBuilders;
       private bool _disableEventsForHeavyWork;
 
       public FormulaCachePresenter(IFormulaCacheView view, IFormulaToFormulaBuilderDTOMapper formulaBuilderToDTOFormulaBuilderMapper,
          IFormulaPresenterCache formulaPresenterCache, IMoBiContext context, IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IDialogCreator dialogCreator, ICloneManagerForBuildingBlock cloneManager, IFormulaUsageChecker formulaUsageChecker)
+         IDialogCreator dialogCreator, ICloneManagerForBuildingBlock cloneManager, IFormulaUsageChecker formulaUsageChecker, IObjectBaseNamingTask namingTask)
          : base(view)
       {
          _formulaBuilderToDTOFormulaBuilderMapper = formulaBuilderToDTOFormulaBuilderMapper;
          _cloneManager = cloneManager;
          _formulaUsageChecker = formulaUsageChecker;
+         _namingTask = namingTask;
          _context = context;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _dialogCreator = dialogCreator;
@@ -124,10 +127,14 @@ namespace MoBi.Presentation.Presenter
       public void Rename(FormulaBuilderDTO formulaDTO)
       {
          var formula = getFormulaForDTO(formulaDTO);
-         if (formula == null) return;
 
-         var newName = _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, formula.Name, _buildingBlock.FormulaCache.Select(x => x.Name));
-         if (string.IsNullOrEmpty(newName)) return;
+         if (formula == null)
+            return;
+
+         var newName = _namingTask.RenameFor(formula, _buildingBlock.FormulaCache.Select(x => x.Name).ToList());
+
+         if (string.IsNullOrEmpty(newName))
+            return;
 
          AddCommand(new RenameObjectBaseCommand(formula, newName, _buildingBlock).Run(_context));
          Edit(_buildingBlock);
@@ -138,8 +145,9 @@ namespace MoBi.Presentation.Presenter
          var formula = getFormulaForDTO(formulaDTO);
          if (formula == null) return;
 
-         var newName = _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.CloneFormulaTitle, formula.Name, _buildingBlock.FormulaCache.Select(x => x.Name));
-         if (string.IsNullOrEmpty(newName)) return;
+         var newName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.CloneFormulaTitle, formula.Name, _buildingBlock.FormulaCache.Select(x => x.Name));
+         if (string.IsNullOrEmpty(newName)) 
+            return;
 
          var cloneFormula = _cloneManager.Clone(formula, new FormulaCache());
          cloneFormula.Name = newName;

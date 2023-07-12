@@ -23,19 +23,17 @@ namespace MoBi.Presentation.Tasks.Edit
    {
       private readonly ICoreCalculationMethodRepository _calculationMethodRepository;
       private readonly IReactionDimensionRetriever _dimensionRetriever;
-      private readonly IDialogCreator _dialogCreator;
 
       public EditTasksForTransporterMoleculeContainer(IInteractionTaskContext interactionTaskContext, ICoreCalculationMethodRepository calculationMethodRepository,
-         IReactionDimensionRetriever dimensionRetriever, IDialogCreator dialogCreator) : base(interactionTaskContext)
+         IReactionDimensionRetriever dimensionRetriever) : base(interactionTaskContext)
       {
          _calculationMethodRepository = calculationMethodRepository;
          _dimensionRetriever = dimensionRetriever;
-         _dialogCreator = dialogCreator;
       }
 
       public override bool EditEntityModal(TransporterMoleculeContainer entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
-         var name = _interactionTaskContext.DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(ObjectName), AppConstants.Captions.NewWindow(ObjectName),
+         var name = _interactionTaskContext.NewName(AppConstants.Dialog.AskForNewName(ObjectName), AppConstants.Captions.NewWindow(ObjectName),
             string.Empty, GetForbiddenNamesWithoutSelf(entity, existingObjectsInParent));
          if (name.IsNullOrEmpty())
             return false;
@@ -61,7 +59,8 @@ namespace MoBi.Presentation.Tasks.Edit
          var unallowedNames = new List<string>(AppConstants.UnallowedNames);
          unallowedNames.AddRange(GetForbiddenNamesWithoutSelf(transporterMoleculeContainer, transporterMoleculeContainer.ParentContainer));
          var oldTransportName = transporterMoleculeContainer.TransportName;
-         var newName = _dialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(oldTransportName), AppConstants.Captions.NewName, oldTransportName, unallowedNames);
+
+         var newName = NewNameFor(transporterMoleculeContainer, unallowedNames);
 
          if (string.IsNullOrEmpty(newName))
             return;

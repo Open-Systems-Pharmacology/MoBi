@@ -1,13 +1,15 @@
-﻿using OSPSuite.Core.Services;
+﻿using System.Collections.Generic;
 using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.Settings;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -47,6 +49,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       string GetTypeFor<T>();
 
       void UpdateTemplateDirectories();
+
+      string RenameFor(IObjectBase objectToRename, IReadOnlyList<string> forbiddenNames);
+      
+      string NewName(
+         string caption,
+         string text,
+         string defaultValue = null,
+         IEnumerable<string> forbiddenValues = null,
+         IEnumerable<string> predefinedValues = null,
+         string iconName = null);
    }
 
    public class InteractionTaskContext : IInteractionTaskContext
@@ -55,6 +67,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IMoBiConfiguration _configuration;
       private readonly DirectoryMapSettings _directoryMapSettings;
+      private readonly IObjectBaseNamingTask _namingTask;
       public IMoBiContext Context { get; }
       public IMoBiApplicationController ApplicationController { get; }
       public IBuildingBlockRepository BuildingBlockRepository { get; }
@@ -70,7 +83,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInteractionTask interactionTask, IActiveSubjectRetriever activeSubjectRetriever, IUserSettings userSettings,
          IDisplayUnitRetriever displayUnitRetriever, IDialogCreator dialogCreator,
          ICommandTask commandTask, IObjectTypeResolver objectTypeResolver, IMoBiFormulaTask moBiFormulaTask,
-         IMoBiConfiguration configuration, DirectoryMapSettings directoryMapSettings, ICheckNameVisitor checkNamesVisitor, IBuildingBlockRepository buildingBlockRepository)
+         IMoBiConfiguration configuration, DirectoryMapSettings directoryMapSettings, ICheckNameVisitor checkNamesVisitor, IBuildingBlockRepository buildingBlockRepository,
+         IObjectBaseNamingTask namingTask)
       {
          DialogCreator = dialogCreator;
          Context = context;
@@ -83,9 +97,26 @@ namespace MoBi.Presentation.Tasks.Interaction
          _objectTypeResolver = objectTypeResolver;
          _configuration = configuration;
          _directoryMapSettings = directoryMapSettings;
+         _namingTask = namingTask;
          MoBiFormulaTask = moBiFormulaTask;
          CheckNamesVisitor = checkNamesVisitor;
          BuildingBlockRepository = buildingBlockRepository;
+      }
+
+      public string RenameFor(IObjectBase objectToRename, IReadOnlyList<string> forbiddenNames)
+      {
+         return _namingTask.RenameFor(objectToRename, forbiddenNames);
+      }
+
+      public string NewName(
+         string caption,
+         string text,
+         string defaultValue = null,
+         IEnumerable<string> forbiddenValues = null,
+         IEnumerable<string> predefinedValues = null,
+         string iconName = null)
+      {
+         return _namingTask.NewName(caption, text, defaultValue, forbiddenValues, predefinedValues, iconName);
       }
 
       public Unit DisplayUnitFor(IWithDimension withDimension)

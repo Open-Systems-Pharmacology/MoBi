@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public interface IEditTasksForExpressionProfileBuildingBlock : IEditTasksForBuildingBlock<ExpressionProfileBuildingBlock>
    {
-      string NewNameFromSuggestions(string moleculeName, string species, string category, ExpressionType type, IReadOnlyList<string> prohibitedNames);
+      string NewNameFromSuggestions(string moleculeName, string species, string category, ExpressionType type, IReadOnlyList<string> prohibitedNames, bool isRename = false);
    }
 
    public class EditTasksForExpressionProfileBuildingBlock : EditTasksForBuildingBlock<ExpressionProfileBuildingBlock>, IEditTasksForExpressionProfileBuildingBlock
@@ -21,14 +21,14 @@ namespace MoBi.Presentation.Tasks.Edit
 
       protected override string NewNameFor(ExpressionProfileBuildingBlock expressionProfile, IReadOnlyList<string> prohibitedNames)
       {
-         return NewNameFromSuggestions(expressionProfile.MoleculeName, expressionProfile.Species, expressionProfile.Category, expressionProfile.Type, prohibitedNames);
+         return NewNameFromSuggestions(expressionProfile.MoleculeName, expressionProfile.Species, expressionProfile.Category, expressionProfile.Type, prohibitedNames, isRename: true);
       }
 
-      public string NewNameFromSuggestions(string moleculeName, string species, string category, ExpressionType type, IReadOnlyList<string> prohibitedNames)
+      public string NewNameFromSuggestions(string moleculeName, string species, string category, ExpressionType type, IReadOnlyList<string> prohibitedNames, bool isRename)
       {
          using (var renameExpressionProfilePresenter = _applicationController.Start<INewNameForExpressionProfileBuildingBlockPresenter>())
          {
-            return renameExpressionProfilePresenter.NewNameFrom(moleculeName, species, category, type, prohibitedNames);
+            return renameExpressionProfilePresenter.NewNameFrom(moleculeName, species, category, type, prohibitedNames, isRename);
          }
       }
 
@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       protected override IMoBiCommand GetRenameCommandFor(ExpressionProfileBuildingBlock expressionProfileBuildingBlock, IBuildingBlock buildingBlock, string newName, string objectType)
       {
-         return new RenameExpressionProfileBuildingBlockCommand(expressionProfileBuildingBlock, newName, buildingBlock) {ObjectType = objectType};
+         return new RenameExpressionProfileBuildingBlockCommand(expressionProfileBuildingBlock, newName, buildingBlock) { ObjectType = objectType };
       }
    }
 }

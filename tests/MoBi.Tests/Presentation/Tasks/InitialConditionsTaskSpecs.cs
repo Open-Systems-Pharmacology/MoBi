@@ -25,7 +25,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Assets;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -493,7 +492,6 @@ namespace MoBi.Presentation.Tasks
    {
       protected InitialConditionsBuildingBlock _buildingBlockToClone;
       protected Module _module;
-      protected IDialogCreator _dialogCreator;
       protected ICommand _result;
 
       protected override void Context()
@@ -501,9 +499,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _buildingBlockToClone = new InitialConditionsBuildingBlock();
          _module = new Module { _buildingBlockToClone };
-         _dialogCreator = A.Fake<IDialogCreator>();
-         A.CallTo(() => _context.DialogCreator).Returns(_dialogCreator);
-         A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns(CloneName());
+         A.CallTo(() => _context.NewName(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns(CloneName());
          A.CallTo(() => _context.InteractionTask.CorrectName(A<InitialConditionsBuildingBlock>._, A<IEnumerable<string>>._)).Returns(true);
       }
       
