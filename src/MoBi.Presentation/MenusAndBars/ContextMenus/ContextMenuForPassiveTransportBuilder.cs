@@ -162,6 +162,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected override IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder)
       {
+         // In order to resolve the remove command properly, the cast as PassiveTransportBuildingBlock is required.
          var buildingBlock = transportBuilder.BuildingBlock as PassiveTransportBuildingBlock;
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithRemoveCommand(buildingBlock, transportBuilder)
