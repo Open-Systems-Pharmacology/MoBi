@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
@@ -16,7 +17,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiContext _context;
       private readonly IMoBiApplicationController _applicationController;
       private string _formulaPropertyName;
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectBaseNamingTask _namingTask;
 
       public EditEventBuilderPresenter(IEditEventBuilderView view, IEventBuilderToEventBuilderDTOMapper eventToEventBuilderMapper,
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
@@ -59,12 +59,12 @@ namespace MoBi.Presentation.Presenter
          IInteractionTasksForChildren<EventBuilder, EventAssignmentBuilder> interactionTasksForEventAssignmentBuilder,
          IEditExplicitFormulaPresenter editFormulaPresenter, IMoBiContext context,
          ISelectReferenceAtEventPresenter selectReferencePresenter,
-         IMoBiApplicationController applicationController, IDialogCreator dialogCreator)
+         IMoBiApplicationController applicationController, IObjectBaseNamingTask namingTask)
          : base(view)
       {
          _selectReferencePresenter = selectReferencePresenter;
          _applicationController = applicationController;
-         _dialogCreator = dialogCreator;
+         _namingTask = namingTask;
          _context = context;
          _editFormulaPresenter = editFormulaPresenter;
          _interactionTasksForEventAssignmentBuilder = interactionTasksForEventAssignmentBuilder;
@@ -215,7 +215,7 @@ namespace MoBi.Presentation.Presenter
 
       public void AddConditionFormula()
       {
-         string newName = _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, AllFormulaNames());
+         string newName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, AllFormulaNames());
          checkFormulaName(newName);
          if (string.IsNullOrEmpty(newName)) return;
 

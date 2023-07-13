@@ -115,10 +115,11 @@ namespace MoBi.Presentation.Presenter
 
       protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
       {
+         var container = selectedObject as IContainer;
          if (shouldHandleType(selectedObject))
-            return (_moleculeBuildingBlock.ContainsBuilder(selectedObject), null);
+            return (_moleculeBuildingBlock.ContainsBuilder(selectedObject), container);
 
-         return (false, null);
+         return (false, container);
       }
 
       protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)

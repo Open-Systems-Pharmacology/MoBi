@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="buildingBlock">The building block that has the formula added and contains the builder</param>
       /// <param name="builder">the builder being updated with a new formula</param>
       /// <param name="referenceParameter"></param>
-      /// <returns>The command used to modify the building block and buildere</returns>
+      /// <returns>The command used to modify the building block and builders</returns>
       ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter);
 
       /// <summary>
@@ -64,9 +64,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
       {
-         var name = DialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(AppConstants.CloneName(buildingBlockToClone)),
+         var name = _interactionTaskContext.NamingTask.NewName(
+            AppConstants.Dialog.AskForNewName(AppConstants.CloneName(buildingBlockToClone)),
             AppConstants.Captions.NewName,
-            AppConstants.CloneName(buildingBlockToClone), _editTask.GetForbiddenNames(buildingBlockToClone, GetNamedObjectsInParent(buildingBlockToClone)));
+            AppConstants.CloneName(buildingBlockToClone),
+            _editTask.GetForbiddenNames(buildingBlockToClone, GetNamedObjectsInParent(buildingBlockToClone)));
          return name;
       }
 

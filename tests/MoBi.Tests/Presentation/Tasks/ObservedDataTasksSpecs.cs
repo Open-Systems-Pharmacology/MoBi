@@ -3,14 +3,11 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Events;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Interaction;
-using NUnit.Framework;
-using OSPSuite.Assets;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -20,6 +17,7 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Import;
 using OSPSuite.Infrastructure.Import.Services;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -28,7 +26,6 @@ namespace MoBi.Presentation.Tasks
       protected IDataImporter _dataImporter;
       protected IDimensionFactory _dimensionFactory;
       protected IMoBiContext _context;
-      protected IEventPublisher _eventPublisher;
       protected IDialogCreator _dialogCreator;
       protected DataRepository _dataRepository;
       protected MoBiProject _project;
@@ -37,6 +34,7 @@ namespace MoBi.Presentation.Tasks
       protected IContainerTask _containerTask;
       private IObjectTypeResolver _objectTypeResolver;
       private IBuildingBlockRepository _buildingBlockRepository;
+      protected IObjectBaseNamingTask _namingTask;
 
       protected override void Context()
       {
@@ -50,7 +48,8 @@ namespace MoBi.Presentation.Tasks
          _containerTask = A.Fake<IContainerTask>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
-         sut = new ObservedDataTask(_dataImporter, _dimensionFactory, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository);
+         _namingTask = A.Fake<IObjectBaseNamingTask>();
+         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask);
 
          _project = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.Project).Returns(_project);
@@ -102,7 +101,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _dataRepository.Name = "OLD";
          _newName = "New";
-         A.CallTo(() => _dialogCreator.AskForInput(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, ApplicationIcons.Rename.IconName)).Returns(_newName);
+         A.CallTo(() => _namingTask.RenameFor(_dataRepository, A<IReadOnlyList<string>>._)).Returns(_newName);
          _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
          A.CallTo(() => _context.Resolve<IDataRepositoryNamer>()).Returns(_dataRepositoryNamer);
       }

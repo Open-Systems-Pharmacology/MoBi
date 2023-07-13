@@ -86,16 +86,13 @@ namespace MoBi.Presentation.Tasks
    {
       private IContainer _container;
       private EventGroupBuildingBlock _eventBuildingBlock;
-      private IRenameObjectPresenter _renameObjectPresenter;
 
       protected override void Context()
       {
          base.Context();
          _container = new Container().WithName("OLD");
          _eventBuildingBlock = new EventGroupBuildingBlock();
-         _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
-         A.CallTo(_renameObjectPresenter).WithReturnType<string>().Returns("NEW");
-         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
+         A.CallTo(_interactionTaskContext.NamingTask).WithReturnType<string>().Returns("NEW");
       }
 
       protected override void Because()
@@ -114,7 +111,6 @@ namespace MoBi.Presentation.Tasks
    {
       private IContainer _container;
       private SpatialStructure _spatialStructure;
-      private IRenameObjectPresenter _renameObjectPresenter;
       private IMoBiCommand _renameCommand;
 
       protected override void Context()
@@ -122,9 +118,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _container = new Container().WithName("OLD");
          _spatialStructure = new SpatialStructure();
-         _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
-         A.CallTo(_renameObjectPresenter).WithReturnType<string>().Returns("NEW");
-         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
+         A.CallTo(_interactionTaskContext.NamingTask).WithReturnType<string>().Returns("NEW");
 
          A.CallTo(() => _interactionTaskContext.Context.AddToHistory(A<IMoBiCommand>._))
             .Invokes(x => _renameCommand = x.GetArgument<IMoBiCommand>(0));

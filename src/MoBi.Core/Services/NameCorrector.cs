@@ -17,7 +17,7 @@ namespace MoBi.Core.Services
       ///    A dialog will be used to ask the user for confirmation of the new name
       /// </summary>
       /// <param name="alreadyExistingNamedObjects">
-      ///    The list of objects whose names are exlcuded from consideration for a name
+      ///    The list of objects whose names are excluded from consideration for a name
       ///    correction
       /// </param>
       /// <param name="objectForRename">The object whose name is being corrected</param>
@@ -52,13 +52,13 @@ namespace MoBi.Core.Services
 
    internal class NameCorrector : INameCorrector
    {
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectBaseNamingTask _namingTask;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IContainerTask _containerTask;
 
-      public NameCorrector(IDialogCreator dialogCreator, IObjectTypeResolver objectTypeResolver, IContainerTask containerTask)
+      public NameCorrector(IObjectBaseNamingTask namingTask, IObjectTypeResolver objectTypeResolver, IContainerTask containerTask)
       {
-         _dialogCreator = dialogCreator;
+         _namingTask = namingTask;
          _objectTypeResolver = objectTypeResolver;
          _containerTask = containerTask;
       }
@@ -79,7 +79,7 @@ namespace MoBi.Core.Services
 
          if (usedNames.Contains(oldName))
          {
-            newName = _dialogCreator.AskForInput(
+            newName = _namingTask.NewName(
                AppConstants.Dialog.AskForChangedName(oldName, typeName),
                Captions.Rename,
                getNextSuggestedName(usedNames, oldName),

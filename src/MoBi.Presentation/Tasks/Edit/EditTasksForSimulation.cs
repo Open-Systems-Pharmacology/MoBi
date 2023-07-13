@@ -116,8 +116,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public void RenameResults(IMoBiSimulation simulation, DataRepository dataRepository)
       {
-         string newName = _dialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(dataRepository.Name), AppConstants.Captions.NewName,
-            dataRepository.Name, allUsedResultsNameIn(simulation));
+         var newName = _interactionTaskContext.NamingTask.RenameFor(dataRepository, allUsedResultsNameIn(simulation));
 
          if (string.IsNullOrEmpty(newName))
             return;
@@ -158,9 +157,9 @@ namespace MoBi.Presentation.Tasks.Edit
          }
       }
 
-      private IEnumerable<string> allUsedResultsNameIn(IMoBiSimulation simulation)
+      private IReadOnlyList<string> allUsedResultsNameIn(IMoBiSimulation simulation)
       {
-         return simulation.HistoricResults.Select(x => x.Name).Union(new[] { simulation.ResultsDataRepository.Name });
+         return simulation.HistoricResults.Select(x => x.Name).Union(new[] { simulation.ResultsDataRepository.Name }).ToList();
       }
 
       private void addCommand(IMoBiCommand command)

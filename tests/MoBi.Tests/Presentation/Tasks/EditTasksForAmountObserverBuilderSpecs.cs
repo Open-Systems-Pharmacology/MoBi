@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Tasks
 {
    public class concern_for_EditTasksForAmountObserverBuilder : ContextSpecification<EditTasksForAmountObserverBuilder>
    {
-      private IInteractionTaskContext _interactionTaskContext;
+      protected IInteractionTaskContext _interactionTaskContext;
       private IMoBiContext _context;
       private MoBiProject _project;
       protected ObserverBuildingBlock _buildingBlock;
@@ -26,7 +26,6 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTask _interactionTask;
 
       protected IMoBiApplicationController _applicationController;
-      protected IRenameObjectPresenter _renameObjectPresenter;
       private BuildingBlockRepository _buildingBlockRepository;
       private MoBiProjectRetriever _moBiProjectRetriever;
 
@@ -40,7 +39,6 @@ namespace MoBi.Presentation.Tasks
          _buildingBlock = new ObserverBuildingBlock {_amountObserverBuilderWithForbiddenName, _amountObserver};
          _interactionTask = A.Fake<IInteractionTask>();
          _applicationController = A.Fake<IMoBiApplicationController>();
-         _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
          _moBiProjectRetriever = new MoBiProjectRetriever(_context);
          _buildingBlockRepository = new BuildingBlockRepository(_moBiProjectRetriever);
 
@@ -49,7 +47,6 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
          A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_applicationController);
          A.CallTo(() => _interactionTaskContext.BuildingBlockRepository).Returns(_buildingBlockRepository);
-         A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
 
          _project.AddModule(new Module()
          {
@@ -76,9 +73,9 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void must_use_the_application_controller_to_start_the_dedicated_new_name_presenter()
+      public void must_use_the_context_start_the_dedicated_new_name_presenter()
       {
-         A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).MustHaveHappened();
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_amountObserverBuilder, A<IReadOnlyList<string>>._)).MustHaveHappened();
       }
    }
 
@@ -92,7 +89,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_list_of_forbidden_names_should_be_the_list_of_children_from_the_active_building_block()
       {
-         A.CallTo(() => _renameObjectPresenter.NewNameFrom(_amountObserver, A<IEnumerable<string>>.That.Contains(_amountObserverBuilderWithForbiddenName.Name), A<string>._)).MustHaveHappened();
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_amountObserver, A<IReadOnlyList<string>>.That.Contains(_amountObserverBuilderWithForbiddenName.Name))).MustHaveHappened();
       }
    }
 }

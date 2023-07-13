@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Views;
@@ -162,8 +161,7 @@ namespace MoBi.Presentation.Presenter
          if (_eventGroupBuildingBlock.Equals(objectBase))
             return true;
 
-         var testEntity = objectBase as IEntity;
-         if (testEntity != null)
+         if (objectBase is IEntity testEntity)
             return eventGroupContainsEntity(testEntity);
 
          if (!objectBase.IsAnImplementationOf<TransportBuilder>())
@@ -188,8 +186,7 @@ namespace MoBi.Presentation.Presenter
          var transportBuilder = (TransportBuilder)objectBase;
          foreach (var eventGroup in _eventGroupBuildingBlock)
          {
-            var applicationBuilder = eventGroup as ApplicationBuilder;
-            if (applicationBuilder != null && applicationBuilder.Transports.Contains(transportBuilder))
+            if (eventGroup is ApplicationBuilder applicationBuilder && applicationBuilder.Transports.Contains(transportBuilder))
                return true;
 
             if (eventGroup.GetAllChildren<ApplicationBuilder>().Any(ab => ab.Transports.Contains(transportBuilder)))

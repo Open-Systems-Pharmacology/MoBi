@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
@@ -62,8 +61,7 @@ namespace MoBi.Presentation.Presenter
       private void selectObjectAndParent(IContainer parentObject, IObjectBase selectedObject)
       {
          _view.Display();
-         var formula = selectedObject as IFormula;
-         if (formula != null)
+         if (selectedObject is IFormula formula)
          {
             _view.ShowFormulas();
             _formulaCachePresenter.Select(formula);
@@ -76,8 +74,7 @@ namespace MoBi.Presentation.Presenter
             return;
          }
 
-         var builder = selectedObject as TBuilder;
-         if (builder != null)
+         if (selectedObject is TBuilder builder)
          {
             SelectBuilder(builder);
             return;
@@ -97,16 +94,13 @@ namespace MoBi.Presentation.Presenter
 
       internal virtual (bool canHandle, IContainer parentObject) CanHandle(IObjectBase selectedObject)
       {
-         var formula = selectedObject as IFormula;
-         if (formula != null)
+         if (selectedObject is IFormula formula)
             return (BuildingBlock.FormulaCache.Contains(formula), null);
 
-         var parameter = selectedObject as IParameter;
-         if (parameter != null)
+         if (selectedObject is IParameter parameter)
             return (buildingBlockContains(parameter.RootContainer as TBuilder), parameter.ParentContainer);
 
-         var builder = selectedObject as TBuilder;
-         if (builder != null)
+         if (selectedObject is TBuilder builder)
             return (BuildingBlock.Contains(builder), null);
 
          return SpecificCanHandle(selectedObject);

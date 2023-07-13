@@ -156,7 +156,7 @@ namespace MoBi.Presentation
       {
          if (_registerMainViewPresenter)
             container.Register<IMainViewPresenter, IChangePropagator, MoBiMainViewPresenter>(LifeStyle.Singleton);
-         
+
          container.Register<IModuleExplorerPresenter, IMainViewItemPresenter, ModuleExplorerPresenter>(LifeStyle.Singleton);
          container.Register<IHistoryPresenter, IMainViewItemPresenter, HistoryPresenter>(LifeStyle.Singleton);
          container.Register<IJournalDiagramMainPresenter, IMainViewItemPresenter, JournalDiagramMainPresenter>(LifeStyle.Singleton);
@@ -219,6 +219,9 @@ namespace MoBi.Presentation
          container.Register<IEditTaskFor<MoBiSpatialStructure>, EditTasksForSpatialStructure>();
          container.Register<IEditTaskFor<ExpressionProfileBuildingBlock>, EditTasksForExpressionProfileBuildingBlock>();
          container.Register<IEditTaskFor<IndividualBuildingBlock>, EditTasksForIndividualBuildingBlock>();
+         container.Register<IEditTaskFor<ParameterValuesBuildingBlock>, EditTasksForParameterValuesBuildingBlock>();
+         container.Register<IEditTaskFor<InitialConditionsBuildingBlock>, EditTasksForInitialConditionsBuildingBlock>();
+         container.Register<IEditTaskFor<Module>, EditTaskForModule>();
          container.Register(typeof(IEditTasksForBuildingBlock<>), typeof(EditTasksForBuildingBlock<>));
          container.Register(typeof(IEditTaskFor<>), typeof(EditTasksForBuildingBlock<>));
          container.Register(typeof(IInitialConditionsTask<>), typeof(InitialConditionsTask<>));

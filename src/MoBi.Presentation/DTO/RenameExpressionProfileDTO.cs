@@ -16,6 +16,7 @@ namespace MoBi.Presentation.DTO
       private string _category;
       private string _species;
       private IReadOnlyList<string> _prohibitedNames;
+      private string _originalName = string.Empty;
 
       public RenameExpressionProfileDTO()
       {
@@ -88,12 +89,31 @@ namespace MoBi.Presentation.DTO
          if (_prohibitedNames == null)
             return true;
 
-         return !_prohibitedNames.Contains(newName);
+         if (allowCaseOnlyRename && differByCaseOnly(newName, _originalName))
+            return true;
+
+         return !_prohibitedNames.Contains(newName.ToLower());
       }
+
+      /// <summary>
+      ///    Checks that <paramref name="newName" /> differs from <paramref name="originalName" /> only in case.
+      ///    That means that if the string is identical, this check will return false.
+      /// </summary>
+      private bool differByCaseOnly(string newName, string originalName)
+      {
+         return string.Equals(newName, originalName, StringComparison.OrdinalIgnoreCase) && !string.Equals(newName, originalName, StringComparison.Ordinal);
+      }
+
+      private bool allowCaseOnlyRename => !string.IsNullOrEmpty(_originalName);
 
       public void AddForbiddenNames(IReadOnlyList<string> prohibitedNames)
       {
-         _prohibitedNames = prohibitedNames;
+         _prohibitedNames = prohibitedNames.Select(x => x.ToLower()).ToList();
+      }
+
+      public void AllowCaseOnlyChangesFor(string originalName)
+      {
+         _originalName = originalName;
       }
    }
 }

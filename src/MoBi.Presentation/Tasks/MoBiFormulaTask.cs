@@ -16,7 +16,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -27,26 +26,26 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiApplicationController _applicationController;
       private readonly IFormulaTask _formulaTask;
       private readonly INameCorrector _nameCorrector;
-      private readonly IDialogCreator _dialogCreator;
       private readonly IQuantityTask _quantityTask;
       private readonly IEntitiesInBuildingBlockRetriever<IParameter> _parameterInBuildingBlockRetriever;
+      private readonly IObjectBaseNamingTask _namingTask;
 
       public MoBiFormulaTask(
          IMoBiContext context,
          IMoBiApplicationController applicationController,
          IFormulaTask formulaTask,
          INameCorrector nameCorrector,
-         IDialogCreator dialogCreator,
          IQuantityTask quantityTask,
-         IEntitiesInBuildingBlockRetriever<IParameter> parameterInBuildingBlockRetriever)
+         IEntitiesInBuildingBlockRetriever<IParameter> parameterInBuildingBlockRetriever,
+         IObjectBaseNamingTask namingTask)
       {
          _context = context;
          _applicationController = applicationController;
          _formulaTask = formulaTask;
          _nameCorrector = nameCorrector;
-         _dialogCreator = dialogCreator;
          _quantityTask = quantityTask;
          _parameterInBuildingBlockRetriever = parameterInBuildingBlockRetriever;
+         _namingTask = namingTask;
       }
 
       public bool EditNewFormula(IFormula formula, ICommandCollector command, IBuildingBlock buildingBlock, IParameter parameter)
@@ -241,7 +240,7 @@ namespace MoBi.Presentation.Tasks
 
       public (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock)
       {
-         var newName = _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, existingFormulaNames);
+         var newName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, existingFormulaNames);
          if (string.IsNullOrEmpty(newName))
             return (new MoBiEmptyCommand(), null);
 

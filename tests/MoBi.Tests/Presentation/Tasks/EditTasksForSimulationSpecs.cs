@@ -29,7 +29,6 @@ namespace MoBi.Presentation.Tasks
       private IDimensionFactory _dimensionFactory;
       protected IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
       protected IMoBiApplicationController _applicationController;
-      protected IRenameObjectPresenter _renameObjectPresenter;
 
       protected override void Context()
       {
@@ -42,10 +41,8 @@ namespace MoBi.Presentation.Tasks
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
          _applicationController = A.Fake<IMoBiApplicationController>();
-         _renameObjectPresenter = A.Fake<IRenameObjectPresenter>();
-         
+
          A.CallTo(() => _context.ApplicationController).Returns(_applicationController);
-         A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renameObjectPresenter);
          
          sut = new EditTasksForSimulation(_context, _simulationPersistor, _dialogCreator, _dataRepositoryTask, _reportCreator, _simulationModelExporter, _dimensionFactory, _parameterIdentificationSimulationPathUpdater);
       }
@@ -83,7 +80,7 @@ namespace MoBi.Presentation.Tasks
          _simulation = new MoBiSimulation().WithName("Root");
          _simulation.HasChanged = false;
          
-         A.CallTo(() => _renameObjectPresenter.NewNameFrom(_simulation, A<IEnumerable<string>>._, A<string>._))
+         A.CallTo(() => _context.NamingTask.RenameFor(_simulation, A<IReadOnlyList<string>>._))
             .Invokes(x => _simulation.Name = "NEW_NAME");
       }
 

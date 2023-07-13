@@ -6,6 +6,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
@@ -13,7 +14,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
@@ -43,28 +43,26 @@ namespace MoBi.Presentation.Tasks
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
    {
       private readonly IDataImporter _dataImporter;
-      private readonly IDimensionFactory _dimensionFactory;
       private readonly IMoBiContext _context;
       private readonly IInteractionTask _interactionTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private readonly IDialogCreator _mobiDialogCreator;
+      private readonly IObjectBaseNamingTask _namingTask;
 
       public ObservedDataTask(
          IDataImporter dataImporter,
-         IDimensionFactory dimensionFactory,
          IMoBiContext context,
          IDialogCreator dialogCreator,
          IInteractionTask interactionTask,
          IDataRepositoryExportTask dataRepositoryTask,
          IContainerTask containerTask,
-         IObjectTypeResolver objectTypeResolver, 
-         IBuildingBlockRepository buildingBlockRepository) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         IBuildingBlockRepository buildingBlockRepository,
+         IObjectBaseNamingTask namingTask) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _dataImporter = dataImporter;
-         _mobiDialogCreator = dialogCreator;
          _interactionTask = interactionTask;
          _buildingBlockRepository = buildingBlockRepository;
-         _dimensionFactory = dimensionFactory;
+         _namingTask = namingTask;
          _context = context;
       }
 
@@ -73,8 +71,8 @@ namespace MoBi.Presentation.Tasks
          var (metaDataCategories, settings) = initializeSettings();
 
          var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
-            metaDataCategories,  
-            _dataImporter.ColumnInfosForObservedData(), 
+            metaDataCategories,
+            _dataImporter.ColumnInfosForObservedData(),
             settings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
@@ -95,12 +93,12 @@ namespace MoBi.Presentation.Tasks
       {
          var baseGrid = repository.BaseGrid;
          var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-         baseGrid.QuantityInfo = new QuantityInfo(new[] {repository.Name, baseGridName}, QuantityType.Time);
+         baseGrid.QuantityInfo = new QuantityInfo(new[] { repository.Name, baseGridName }, QuantityType.Time);
 
          foreach (var col in repository.AllButBaseGrid())
          {
             var colName = col.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-            var quantityInfo = new QuantityInfo(new[] {repository.Name, colName}, QuantityType.Undefined);
+            var quantityInfo = new QuantityInfo(new[] { repository.Name, colName }, QuantityType.Undefined);
             col.QuantityInfo = quantityInfo;
          }
       }
@@ -189,11 +187,7 @@ namespace MoBi.Presentation.Tasks
 
       public override void Rename(DataRepository dataRepository)
       {
-         var newName = _mobiDialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(dataRepository.Name),
-            AppConstants.Captions.NewName,
-            dataRepository.Name,
-            _context.CurrentProject.AllObservedData.Select(x => x.Name),
-            iconName: ApplicationIcons.Rename.IconName);
+         var newName = _namingTask.RenameFor(dataRepository, _context.CurrentProject.AllObservedData.Select(x => x.Name).ToList());
 
          if (string.IsNullOrEmpty(newName))
             return;
@@ -299,7 +293,7 @@ namespace MoBi.Presentation.Tasks
          var importedObservedData = _dataImporter.ImportFromConfiguration(
             configuration,
             metaDataCategories,
-            _dataImporter.ColumnInfosForObservedData(), 
+            _dataImporter.ColumnInfosForObservedData(),
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
