@@ -29,23 +29,26 @@ namespace MoBi.Core.Domain.Model
       /// <summary>
       /// Returns true if the simulation uses <paramref name="templateBuildingBlock"/>.
       /// For module building blocks, the test checks if the <paramref name="templateBuildingBlock"/> is a member of
-      /// a module that's in use <see cref="Uses"/>. If the <paramref name="templateBuildingBlock"/> is not a module building block
+      /// a module that's in use <see cref="Uses(Module)"/>. If the <paramref name="templateBuildingBlock"/> is not a module building block
       /// the test is based on building block name and type.
       /// </summary>
       /// <returns>True if the simulation uses the <paramref name="templateBuildingBlock"/>, otherwise false</returns>
-      bool IsCreatedBy(IBuildingBlock templateBuildingBlock);
-
-      void MarkResultsOutOfDate();
-
-      bool HasResults { get; }
-      IReadOnlyList<IBuildingBlock> BuildingBlocks { get; }
-
+      bool Uses(IBuildingBlock templateBuildingBlock);
+      
       /// <summary>
       /// Checks if the simulation has a module that shares a name with <paramref name="module"/>
       /// This indicates that the <paramref name="module"/> was used as a template
       /// </summary>
       /// <returns>True if the simulation has a matching module, otherwise false</returns>
       bool Uses(Module module);
+
+      void MarkResultsOutOfDate();
+
+      bool HasResults { get; }
+      IReadOnlyList<Module> Modules { get; }
+      IReadOnlyList<IBuildingBlock> BuildingBlocks();
+
+
    }
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
@@ -84,7 +87,7 @@ namespace MoBi.Core.Domain.Model
          Settings.RemoveAllChartTemplates();
       }
 
-      public bool IsCreatedBy(IBuildingBlock templateBuildingBlock)
+      public bool Uses(IBuildingBlock templateBuildingBlock)
       {
          // We can consider the building block in-use if it belongs to a module that is in use.
          if (templateBuildingBlock.Module != null)
@@ -94,9 +97,9 @@ namespace MoBi.Core.Domain.Model
          switch (templateBuildingBlock)
          {
             case IndividualBuildingBlock individualBuildingBlock:
-               return Equals(Configuration.Individual?.Name, individualBuildingBlock.Name);
+               return string.Equals(Configuration.Individual?.Name, individualBuildingBlock.Name);
             case ExpressionProfileBuildingBlock expressionProfileBuildingBlock:
-               return Configuration.ExpressionProfiles.Any(x => Equals(x.Name, expressionProfileBuildingBlock.Name));
+               return Configuration.ExpressionProfiles.ExistsByName(expressionProfileBuildingBlock.Name);
          }
 
          return false;
@@ -104,20 +107,19 @@ namespace MoBi.Core.Domain.Model
 
       private bool usesModuleBuildingBlock(IBuildingBlock templateBuildingBlock)
       {
-         return BuildingBlocks.Any(buildingBlock => buildingBlock.Module.IsNamed(templateBuildingBlock.Module.Name) && buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
+         return BuildingBlocks().Any(buildingBlock => buildingBlock.Module.IsNamed(templateBuildingBlock.Module.Name) && buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
       }
 
-      public IReadOnlyList<IBuildingBlock> BuildingBlocks
+      public IReadOnlyList<Module> Modules => Configuration.ModuleConfigurations.Select(x => x.Module).ToList();
+
+      public IReadOnlyList<IBuildingBlock> BuildingBlocks()
       {
-         get
-         {
-            var buildingBlocks = Configuration.ModuleConfigurations.SelectMany(moduleConfiguration => moduleConfiguration.Module.BuildingBlocks).Concat(Configuration.ExpressionProfiles).ToList();
+         var buildingBlocks = Modules.SelectMany(module => module.BuildingBlocks).Concat(Configuration.ExpressionProfiles).ToList();
 
-            if (Configuration.Individual != null)
-               buildingBlocks.Add(Configuration.Individual);
+         if (Configuration.Individual != null)
+            buildingBlocks.Add(Configuration.Individual);
 
-            return buildingBlocks;
-         }
+         return buildingBlocks;
       }
 
       public SolverSettings Solver => Settings.Solver;

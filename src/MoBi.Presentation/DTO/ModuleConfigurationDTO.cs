@@ -2,10 +2,11 @@
 using System.ComponentModel;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Reflection;
 
 namespace MoBi.Presentation.DTO
 {
-   public class ModuleConfigurationDTO : INotifyPropertyChanged
+   public class ModuleConfigurationDTO : Notifier
    {
       private readonly List<InitialConditionsBuildingBlock> _initialConditionsCollection = new List<InitialConditionsBuildingBlock> { NullPathAndValueEntityBuildingBlocks.NullInitialConditions };
       private readonly List<ParameterValuesBuildingBlock> _parameterValuesCollection = new List<ParameterValuesBuildingBlock> { NullPathAndValueEntityBuildingBlocks.NullParameterValues };
@@ -17,13 +18,7 @@ namespace MoBi.Presentation.DTO
          SelectedParameterValues = moduleConfiguration.SelectedParameterValues ?? NullPathAndValueEntityBuildingBlocks.NullParameterValues;
          _initialConditionsCollection.AddRange(moduleConfiguration.Module.InitialConditionsCollection);
          _parameterValuesCollection.AddRange(moduleConfiguration.Module.ParameterValuesCollection);
-         moduleConfiguration.Module.PropertyChanged += OnPropertyChanged;
-      }
-
-      private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-      {
-         // Propagating property change events from the module
-         PropertyChanged?.Invoke(sender, e);
+         moduleConfiguration.Module.PropertyChanged += (o,e) => OnPropertyChanged(e.PropertyName);
       }
 
       public ParameterValuesBuildingBlock SelectedParameterValues { get; set; }
@@ -48,7 +43,5 @@ namespace MoBi.Presentation.DTO
       public bool HasInitialConditions => !NullPathAndValueEntityBuildingBlocks.NullInitialConditions.Equals(SelectedInitialConditions);
 
       public bool HasParameterValues => !NullPathAndValueEntityBuildingBlocks.NullParameterValues.Equals(SelectedParameterValues);
-
-      public event PropertyChangedEventHandler PropertyChanged;
    }
 }

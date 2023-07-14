@@ -115,7 +115,7 @@ namespace MoBi.Presentation.Tasks
          _simulation = A.Fake<IMoBiSimulation>();
          _project.AddSimulation(_simulation);
          _module = new Module { _initialConditionsBuildingBlock };
-         A.CallTo(() => _simulation.IsCreatedBy(_initialConditionsBuildingBlock)).Returns(true);
+         A.CallTo(() => _simulation.Uses(_initialConditionsBuildingBlock)).Returns(true);
          A.CallTo(() => _context.Context.CurrentProject).Returns(_project);
       }
 

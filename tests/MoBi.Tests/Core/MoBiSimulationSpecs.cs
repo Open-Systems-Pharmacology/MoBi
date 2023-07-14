@@ -67,7 +67,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _result = sut.IsCreatedBy(_templateBuildingBlock);
+         _result = sut.Uses(_templateBuildingBlock);
       }
 
       [Observation]
@@ -95,7 +95,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _result = sut.IsCreatedBy(_templateBuildingBlock);
+         _result = sut.Uses(_templateBuildingBlock);
       }
 
       [Observation]

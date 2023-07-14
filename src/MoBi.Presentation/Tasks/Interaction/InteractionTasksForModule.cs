@@ -112,7 +112,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand Remove(Module module, MoBiProject parent, IBuildingBlock buildingBlock, bool silent = false)
       {
-         var referringSimulations = Context.CurrentProject.SimulationsCreatedUsing(module);
+         var referringSimulations = Context.CurrentProject.SimulationsUsing(module);
          if (referringSimulations.Any())
             throw new MoBiException(AppConstants.CannotRemoveModuleFromProject(module.Name, referringSimulations.AllNames()));
 

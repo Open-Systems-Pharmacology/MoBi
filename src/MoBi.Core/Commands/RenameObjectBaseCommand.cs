@@ -54,18 +54,14 @@ namespace MoBi.Core.Commands
 
          if (_objectBase.IsAnImplementationOf<IBuildingBlock>())
          {
-            doWithRenameInSimulationTask(task => task.RenameInSimulationUsingTemplateBuildingBlock(OldName, _objectBase.DowncastTo<IBuildingBlock>()), context);
+            var task = context.Resolve<IRenameInSimulationTask>();
+            task.RenameInSimulationUsingTemplateBuildingBlock(OldName, _objectBase.DowncastTo<IBuildingBlock>());
          }
          else if (_objectBase.IsAnImplementationOf<Module>())
          {
-            doWithRenameInSimulationTask(task => task.RenameInSimulationUsingTemplateModule(OldName, _objectBase.DowncastTo<Module>()), context);
+            var task = context.Resolve<IRenameInSimulationTask>();
+            task.RenameInSimulationUsingTemplateModule(OldName, _objectBase.DowncastTo<Module>());
          }
-      }
-
-      private void doWithRenameInSimulationTask(Action<IRenameInSimulationTask> action, IMoBiContext context)
-      {
-         var renameInSimulationTask = context.Resolve<IRenameInSimulationTask>();
-         action(renameInSimulationTask);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

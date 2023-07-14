@@ -67,7 +67,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _result = sut.SimulationsCreatedUsing(new Module().WithName("module1"));
+         _result = sut.SimulationsUsing(new Module().WithName("module1"));
       }
 
       [Observation]
@@ -90,9 +90,9 @@ namespace MoBi.Core
          base.Context();
          _templateBuildingBlock = A.Fake<IBuildingBlock>();
          _sim1 = A.Fake<IMoBiSimulation>();
-         A.CallTo(() => _sim1.IsCreatedBy(_templateBuildingBlock)).Returns(true);
+         A.CallTo(() => _sim1.Uses(_templateBuildingBlock)).Returns(true);
          _sim2 = A.Fake<IMoBiSimulation>();
-         A.CallTo(() => _sim2.IsCreatedBy(_templateBuildingBlock)).Returns(false);
+         A.CallTo(() => _sim2.Uses(_templateBuildingBlock)).Returns(false);
          sut.AddSimulation(_sim1);
          sut.AddSimulation(_sim2);
       }
@@ -100,7 +100,7 @@ namespace MoBi.Core
       [Observation]
       public void should_return_only_the_simulation_created_with_this_reference()
       {
-         sut.SimulationsCreatedUsing(_templateBuildingBlock).ShouldOnlyContain(_sim1);
+         sut.SimulationsUsing(_templateBuildingBlock).ShouldOnlyContain(_sim1);
       }
    }
 

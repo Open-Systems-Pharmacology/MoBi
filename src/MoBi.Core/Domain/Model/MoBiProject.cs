@@ -136,9 +136,9 @@ namespace MoBi.Core.Domain.Model
          _charts.Each(x => x.AcceptVisitor(visitor));
       }
 
-      public IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(IBuildingBlock templateBuildingBlock)
+      public IReadOnlyList<IMoBiSimulation> SimulationsUsing(IBuildingBlock templateBuildingBlock)
       {
-         return Simulations.Where(simulation => simulation.IsCreatedBy(templateBuildingBlock)).ToList();
+         return Simulations.Where(simulation => simulation.Uses(templateBuildingBlock)).ToList();
       }
 
       public IEnumerable<IObjectBase> All()
@@ -150,7 +150,7 @@ namespace MoBi.Core.Domain.Model
       /// Returns a list of simulations that have a module where the name matches <paramref name="module"/>
       /// This indicates that the <paramref name="module"/> was used as a template for the simulation
       /// </summary>
-      public IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(Module module)
+      public IReadOnlyList<IMoBiSimulation> SimulationsUsing(Module module)
       {
          return Simulations.Where(simulation => simulation.Uses(module)).ToList();
       }
