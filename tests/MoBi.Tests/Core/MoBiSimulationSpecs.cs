@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
@@ -13,9 +11,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
-using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 
 namespace MoBi.Core
 {
@@ -24,6 +19,57 @@ namespace MoBi.Core
       protected override void Context()
       {
          sut = new MoBiSimulation();
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_a_module : concern_for_MoBiSimulation
+   {
+      private bool _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Configuration = new SimulationConfiguration();
+         sut.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("a Module")));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.Uses(new Module().WithName("a Module"));
+      }
+
+      [Observation]
+      public void the_simulation_should_indicate_it_uses_the_module()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_a_building_block : concern_for_MoBiSimulation
+   {
+      private bool _result;
+      private SpatialStructure _templateBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Configuration = new SimulationConfiguration();
+         sut.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("a Module")));
+         _templateBuildingBlock = new SpatialStructure
+         {
+            Module = new Module().WithName("a Module")
+         };
+      }
+
+      protected override void Because()
+      {
+         _result = sut.IsCreatedBy(_templateBuildingBlock);
+      }
+
+      [Observation]
+      public void the_simulation_should_indicate_it_uses_the_building_block_because_the_module_is_used()
+      {
+         _result.ShouldBeTrue();
       }
    }
 
@@ -60,7 +106,7 @@ namespace MoBi.Core
          base.Context();
          _cloneManager = A.Fake<ICloneManager>();
          _simulationDiagramManager = A.Fake<ISimulationDiagramManager>();
-         _moBiSimulation = new MoBiSimulation {DiagramManager = _simulationDiagramManager};
+         _moBiSimulation = new MoBiSimulation { DiagramManager = _simulationDiagramManager };
          sut.Model = new Model();
          sut.Model.Root = new Container();
 

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using MoBi.Helpers;
 
 namespace MoBi.Core
 {
@@ -16,9 +16,6 @@ namespace MoBi.Core
          sut = DomainHelperForSpecs.NewProject();
       }
    }
-
-  
-
 
    public class When_checking_if_a_project_is_empty : concern_for_MoBiProject
    {
@@ -37,6 +34,48 @@ namespace MoBi.Core
          sut = DomainHelperForSpecs.NewProject();
          sut.AddSimulation(A.Fake<IMoBiSimulation>());
          sut.IsEmpty.ShouldBeFalse();
+      }
+   }
+
+   public class When_finding_simulations_that_use_a_module : concern_for_MoBiProject
+   {
+      private IReadOnlyList<IMoBiSimulation> _result;
+      private IMoBiSimulation _moBiSimulation1;
+      private IMoBiSimulation _moBiSimulation2;
+      private IMoBiSimulation _moBiSimulation3;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moBiSimulation1 = createSimulationWithModuleNamed("module1").WithName("simulation1");
+         sut.AddSimulation(_moBiSimulation1);
+         _moBiSimulation2 = createSimulationWithModuleNamed("module1").WithName("simulation2");
+         sut.AddSimulation(_moBiSimulation2);
+         _moBiSimulation3 = createSimulationWithModuleNamed("module2").WithName("simulation2");
+         sut.AddSimulation(_moBiSimulation3);
+      }
+
+      private IMoBiSimulation createSimulationWithModuleNamed(string moduleName)
+      {
+         var simulation = new MoBiSimulation
+         {
+            Configuration = new SimulationConfiguration()
+         };
+         simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName(moduleName).WithId("id")));
+         return simulation;
+      }
+
+      protected override void Because()
+      {
+         _result = sut.SimulationsCreatedUsing(new Module().WithName("module1"));
+      }
+
+      [Observation]
+      public void the_simulation_list_includes_all_simulations_using_a_module_with_the_same_name()
+      {
+         _result.ShouldContain(_moBiSimulation1);
+         _result.ShouldContain(_moBiSimulation2);
+         _result.ShouldNotContain(_moBiSimulation3);
       }
    }
 

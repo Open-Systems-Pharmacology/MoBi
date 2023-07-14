@@ -4,7 +4,6 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
-using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Helpers;
@@ -19,9 +18,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Core
 {
@@ -97,7 +94,7 @@ namespace MoBi.Core
          base.Context();
          _formula = new ExplicitFormula();
          _formula.Name = _changedName;
-         _path = new FormulaUsablePath(new[] {"A", "B", _changedName}) {Alias = _changedName};
+         _path = new FormulaUsablePath(new[] { "A", "B", _changedName }) { Alias = _changedName };
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_changedName)).Returns(_changedName);
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_newName)).Returns(_newName);
          _formula.AddObjectPath(_path);
@@ -117,7 +114,7 @@ namespace MoBi.Core
          var change = _changes.First() as StringChange<IFormula>;
          change.ShouldNotBeNull();
          change.EntityToEdit.ShouldBeEqualTo(_formula);
-         change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
+         change.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>().ShouldBeTrue();
       }
 
       [Observation]
@@ -152,16 +149,16 @@ namespace MoBi.Core
       {
          base.Context();
          _module = new Module();
-         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock { Name = _changedName};
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock { Name = _changedName };
          _initialCondition = new InitialCondition();
-         _path = new ObjectPath(new[] {"A", "B", _changedName});
+         _path = new ObjectPath(new[] { "A", "B", _changedName });
          _initialCondition.Path = _path;
          _initialConditionsBuildingBlock.Add(_initialCondition);
 
          _module.Add(_initialConditionsBuildingBlock);
-         
+
          _initialCondition2 = new InitialCondition();
-         _path = new ObjectPath(new[] {"A", _changedName, "B"});
+         _path = new ObjectPath(new[] { "A", _changedName, "B" });
          _initialCondition2.Path = _path;
          _initialConditionsBuildingBlock.Add(_initialCondition2);
       }
@@ -183,7 +180,7 @@ namespace MoBi.Core
          var change = _changes.First() as StringChange<IBuildingBlock>;
          change.ShouldNotBeNull();
          change.EntityToEdit.ShouldBeEqualTo(_initialConditionsBuildingBlock);
-         change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
+         change.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>().ShouldBeTrue();
          change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.InitialConditionsBuildingBlock);
       }
 
@@ -218,11 +215,11 @@ namespace MoBi.Core
             Name = _changedName
          };
          _parameterValue = new ParameterValue();
-         _path = new ObjectPath(new[] {"A", "B", _changedName});
+         _path = new ObjectPath(new[] { "A", "B", _changedName });
          _parameterValue.Path = _path;
          _parameterValuesBuildingBlock.Add(_parameterValue);
          _parameterValue2 = new ParameterValue();
-         _path = new ObjectPath(new[] {"A", _changedName, "B"});
+         _path = new ObjectPath(new[] { "A", _changedName, "B" });
          _parameterValue2.Path = _path;
          _parameterValuesBuildingBlock.Add(_parameterValue2);
          _module.Add(_parameterValuesBuildingBlock);
@@ -244,7 +241,7 @@ namespace MoBi.Core
       {
          var change = _changes.First() as StringChange<IBuildingBlock>;
          change.EntityToEdit.ShouldBeEqualTo(_parameterValuesBuildingBlock);
-         change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
+         change.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>().ShouldBeTrue();
          change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterValuesBuildingBlock);
       }
 
@@ -270,7 +267,7 @@ namespace MoBi.Core
       private string _newAlias;
       private IEnumerable<IStringChange> _changes;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
-      
+
       protected override void Context()
       {
          base.Context();
@@ -279,9 +276,9 @@ namespace MoBi.Core
          _changedName = _changedObject.Name;
          _oldAlias = "Name_really_old";
          _theFormula = new ExplicitFormula(String.Format("k_{0}*{0}", _oldAlias));
-         _formulaUsablePathNotToChange = new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, "BLA", String.Format("k_{0}", _oldAlias)}) {Alias = String.Format("k_{0}", _oldAlias)};
+         _formulaUsablePathNotToChange = new FormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "BLA", String.Format("k_{0}", _oldAlias) }) { Alias = String.Format("k_{0}", _oldAlias) };
          _theFormula.AddObjectPath(_formulaUsablePathNotToChange);
-         _formulaUsablePathToChange = new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, _changedName}) {Alias = _oldAlias};
+         _formulaUsablePathToChange = new FormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, _changedName }) { Alias = _oldAlias };
          _theFormula.AddObjectPath(_formulaUsablePathToChange);
          _theFormula.Name = "F1";
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_changedName)).Returns(_oldAlias);
@@ -444,8 +441,8 @@ namespace MoBi.Core
          _simulationSettings.AddChartTemplate(_curveChartTemplate);
          _curveTemplate = new CurveTemplate
          {
-            xData = {Path = $"A|B|{_oldName}"},
-            yData = {Path = $"C|D|{_oldName}"},
+            xData = { Path = $"A|B|{_oldName}" },
+            yData = { Path = $"C|D|{_oldName}" },
          };
          _curveChartTemplate.Curves.Add(_curveTemplate);
 
@@ -486,8 +483,8 @@ namespace MoBi.Core
          _simulationSettings.AddChartTemplate(_curveChartTemplate);
          _curveChartTemplate.Curves.Add(new CurveTemplate
          {
-            xData = {Path = "A|B|D"},
-            yData = {Path = "C|D|E"}
+            xData = { Path = "A|B|D" },
+            yData = { Path = "C|D|E" }
          });
       }
 

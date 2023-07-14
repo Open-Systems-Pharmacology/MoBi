@@ -1,6 +1,8 @@
+using System;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -14,13 +16,14 @@ namespace MoBi.Core.Commands
       private IObjectBase _objectBase;
       protected readonly string _newName;
       public string OldName { get; private set; }
-      public string ObjectId { get; private set; }
+      public string ObjectId { get; }
 
       public RenameObjectBaseCommand(IObjectBase objectBase, string newName, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _objectBase = objectBase;
          _newName = newName;
          ObjectId = objectBase.Id;
+         ObjectType = new ObjectTypeResolver().TypeFor(objectBase);
          CommandType = AppConstants.Commands.RenameCommand;
          Description = AppConstants.Commands.RenameDescription(objectBase, newName);
       }
@@ -48,11 +51,21 @@ namespace MoBi.Core.Commands
       {
          OldName = _objectBase.Name;
          _objectBase.Name = _newName;
+
          if (_objectBase.IsAnImplementationOf<IBuildingBlock>())
          {
-            var renameBuildingBlockTask = context.Resolve<IRenameBuildingBlockTask>();
-            renameBuildingBlockTask.RenameInSimulationUsingTemplateBuildingBlock(_objectBase.DowncastTo<IBuildingBlock>());
+            doWithRenameInSimulationTask(task => task.RenameInSimulationUsingTemplateBuildingBlock(OldName, _objectBase.DowncastTo<IBuildingBlock>()), context);
          }
+         else if (_objectBase.IsAnImplementationOf<Module>())
+         {
+            doWithRenameInSimulationTask(task => task.RenameInSimulationUsingTemplateModule(OldName, _objectBase.DowncastTo<Module>()), context);
+         }
+      }
+
+      private void doWithRenameInSimulationTask(Action<IRenameInSimulationTask> action, IMoBiContext context)
+      {
+         var renameInSimulationTask = context.Resolve<IRenameInSimulationTask>();
+         action(renameInSimulationTask);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

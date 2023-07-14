@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MoBi.Core.Services;
+﻿using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;

@@ -113,8 +113,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void RemoveModule(Module module)
       {
-         context.AddToHistory(new RemoveModuleCommand(module)
-            .Run(context));
+         var referringSimulations = Context.CurrentProject.SimulationsCreatedUsing(module);
+         if (referringSimulations.Any())
+            throw new MoBiException(AppConstants.CannotRemoveModuleFromProject(module.Name, referringSimulations.AllNames()));
+
+         context.AddToHistory(new RemoveModuleCommand(module).Run(context));
       }
 
       public void AddCloneToProject(Module moduleToClone)
@@ -126,7 +129,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (presenter.SelectClonedBuildingBlocks(clonedModule) == false)
                return;
          }
-         
+
          context.AddToHistory(GetAddCommand(clonedModule, context.CurrentProject, null)
             .Run(context));
       }
