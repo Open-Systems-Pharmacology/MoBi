@@ -47,6 +47,8 @@ namespace MoBi.Core.Domain.Services
       {
          return simulations.SelectMany(simulation =>
          {
+            // We cannot test for in use using the members of simulation. The standard in-use or created-by tests match based on names.
+            // Here, the names do not match because the building block has already been renamed
             return simulationBuildingBlocks(simulation).Where(buildingBlock => buildingBlock.IsNamed(nameToMatch) && buildingBlock.GetType() == typeToMatch)
                .Select(b => (simulation, b));
          }).ToList();
@@ -66,6 +68,8 @@ namespace MoBi.Core.Domain.Services
       {
          _projectRetriever.Current.Simulations.Each(simulation =>
          {
+            // We cannot test for in use using the members of simulation. The standard in-use or created-by tests match based on names.
+            // Here, the names do not match because the module has already been renamed
             simulation.Configuration.ModuleConfigurations.Select(x => x.Module).Where(module => module.IsNamed(oldName))
                .Each(module => renameModules(simulation, module, templateModule.Name));
          });
