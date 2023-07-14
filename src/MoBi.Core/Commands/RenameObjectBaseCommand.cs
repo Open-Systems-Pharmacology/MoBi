@@ -51,16 +51,16 @@ namespace MoBi.Core.Commands
       {
          OldName = _objectBase.Name;
          _objectBase.Name = _newName;
-
-         if (_objectBase.IsAnImplementationOf<IBuildingBlock>())
+         var task = context.Resolve<IRenameInSimulationTask>();
+         
+         switch (_objectBase)
          {
-            var task = context.Resolve<IRenameInSimulationTask>();
-            task.RenameInSimulationUsingTemplateBuildingBlock(OldName, _objectBase.DowncastTo<IBuildingBlock>());
-         }
-         else if (_objectBase.IsAnImplementationOf<Module>())
-         {
-            var task = context.Resolve<IRenameInSimulationTask>();
-            task.RenameInSimulationUsingTemplateModule(OldName, _objectBase.DowncastTo<Module>());
+            case IBuildingBlock buildingBlock:
+               task.RenameInSimulationUsingTemplateBuildingBlock(OldName, buildingBlock);
+               break;
+            case Module module:
+               task.RenameInSimulationUsingTemplateModule(OldName, module);
+               break;
          }
       }
 
