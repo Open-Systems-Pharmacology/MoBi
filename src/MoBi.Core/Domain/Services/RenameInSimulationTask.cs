@@ -60,13 +60,12 @@ namespace MoBi.Core.Domain.Services
          {
             // We cannot test for in use using the members of simulation. The standard in-use or created-by tests match based on names.
             // Here, the names do not match because the module has already been renamed
-            var module = simulation.Modules.FindByName(oldModuleName);
-            if (module != null)
-               renameModule(simulation, module, templateModule.Name);
+            simulation.Modules.Where(module => module.IsNamed(oldModuleName))
+               .Each(module => renameModules(simulation, module, templateModule.Name));
          });
       }
 
-      private void renameModule(IMoBiSimulation moBiSimulation, Module module, string newModuleName)
+      private void renameModules(IMoBiSimulation moBiSimulation, Module module, string newModuleName)
       {
          module.Name = newModuleName;
          moBiSimulation.HasChanged = true;
