@@ -45,7 +45,39 @@ namespace MoBi.Core
       }
    }
 
-   public class When_checking_if_a_simulation_uses_a_building_block : concern_for_MoBiSimulation
+   public class When_checking_if_a_simulation_uses_a_building_block_but_the_building_block_is_used_when_the_module_is_used : concern_for_MoBiSimulation
+   {
+      private bool _result;
+      private SpatialStructure _templateBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Configuration = new SimulationConfiguration();
+         var simulationModule = new Module().WithName("a Module");
+         simulationModule.Add(new SpatialStructure().WithName("a Building Block"));
+
+         sut.Configuration.AddModuleConfiguration(new ModuleConfiguration(simulationModule));
+         
+         _templateBuildingBlock = new SpatialStructure
+         {
+            Module = new Module().WithName("a Module")
+         }.WithName("a Building Block");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.IsCreatedBy(_templateBuildingBlock);
+      }
+
+      [Observation]
+      public void the_simulation_should_indicate_it_uses_the_building_block_because_the_module_is_used()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_a_building_block_but_the_building_block_is_not_used_when_the_module_is_used : concern_for_MoBiSimulation
    {
       private bool _result;
       private SpatialStructure _templateBuildingBlock;
@@ -69,7 +101,7 @@ namespace MoBi.Core
       [Observation]
       public void the_simulation_should_indicate_it_uses_the_building_block_because_the_module_is_used()
       {
-         _result.ShouldBeTrue();
+         _result.ShouldBeFalse();
       }
    }
 

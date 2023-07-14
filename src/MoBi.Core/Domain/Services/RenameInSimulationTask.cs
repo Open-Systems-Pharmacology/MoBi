@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
@@ -35,33 +36,22 @@ namespace MoBi.Core.Domain.Services
 
       public void RenameInSimulationUsingTemplateBuildingBlock(string oldName, IBuildingBlock templateBuildingBlock)
       {
-         var buildingBlockType = templateBuildingBlock.GetType();
-         getBuildingBlocksWithMatchingNameAndType(_projectRetriever.Current.Simulations, oldName, buildingBlockType).Each(simulationAndBuildingBlock =>
+         getBuildingBlocksWithMatchingNameAndType(_projectRetriever.Current.Simulations, oldName, templateBuildingBlock).Each(simulationAndBuildingBlock =>
          {
             simulationAndBuildingBlock.Simulation.HasChanged = true;
             simulationAndBuildingBlock.BuildingBlock.Name = templateBuildingBlock.Name;
          });
       }
 
-      private static IReadOnlyList<(IMoBiSimulation Simulation, IBuildingBlock BuildingBlock)> getBuildingBlocksWithMatchingNameAndType(IReadOnlyList<IMoBiSimulation> simulations, string nameToMatch, Type typeToMatch)
+      private static IReadOnlyList<(IMoBiSimulation Simulation, IBuildingBlock BuildingBlock)> getBuildingBlocksWithMatchingNameAndType(IReadOnlyList<IMoBiSimulation> simulations, string nameToMatch, IBuildingBlock templBuildingBlock)
       {
          return simulations.SelectMany(simulation =>
          {
             // We cannot test for in use using the members of simulation. The standard in-use or created-by tests match based on names.
             // Here, the names do not match because the building block has already been renamed
-            return simulationBuildingBlocks(simulation).Where(buildingBlock => buildingBlock.IsNamed(nameToMatch) && buildingBlock.GetType() == typeToMatch)
+            return simulation.BuildingBlocks.Where(buildingBlock => buildingBlock.IsTemplateMatchFor(templBuildingBlock, nameToMatch))
                .Select(b => (simulation, b));
          }).ToList();
-      }
-
-      private static IReadOnlyList<IBuildingBlock> simulationBuildingBlocks(IMoBiSimulation simulation)
-      {
-         var buildingBlocks = simulation.Configuration.ModuleConfigurations.SelectMany(moduleConfiguration => moduleConfiguration.Module.BuildingBlocks).Concat(simulation.Configuration.ExpressionProfiles).ToList();
-
-         if (simulation.Configuration.Individual != null)
-            buildingBlocks.Add(simulation.Configuration.Individual);
-
-         return buildingBlocks;
       }
 
       public void RenameInSimulationUsingTemplateModule(string oldName, Module templateModule)

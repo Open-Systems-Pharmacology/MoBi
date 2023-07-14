@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
@@ -37,6 +38,7 @@ namespace MoBi.Core.Domain.Model
       void MarkResultsOutOfDate();
 
       bool HasResults { get; }
+      IReadOnlyList<IBuildingBlock> BuildingBlocks { get; }
 
       /// <summary>
       /// Checks if the simulation has a module that shares a name with <paramref name="module"/>
@@ -86,7 +88,7 @@ namespace MoBi.Core.Domain.Model
       {
          // We can consider the building block in-use if it belongs to a module that is in use.
          if (templateBuildingBlock.Module != null)
-            return Uses(templateBuildingBlock.Module);
+            return usesModuleBuildingBlock(templateBuildingBlock);
 
          // Simple name match for building blocks that do not belong to a module
          switch (templateBuildingBlock)
@@ -98,6 +100,24 @@ namespace MoBi.Core.Domain.Model
          }
 
          return false;
+      }
+
+      private bool usesModuleBuildingBlock(IBuildingBlock templateBuildingBlock)
+      {
+         return BuildingBlocks.Any(buildingBlock => buildingBlock.Module.IsNamed(templateBuildingBlock.Module.Name) && buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
+      }
+
+      public IReadOnlyList<IBuildingBlock> BuildingBlocks
+      {
+         get
+         {
+            var buildingBlocks = Configuration.ModuleConfigurations.SelectMany(moduleConfiguration => moduleConfiguration.Module.BuildingBlocks).Concat(Configuration.ExpressionProfiles).ToList();
+
+            if (Configuration.Individual != null)
+               buildingBlocks.Add(Configuration.Individual);
+
+            return buildingBlocks;
+         }
       }
 
       public SolverSettings Solver => Settings.Solver;

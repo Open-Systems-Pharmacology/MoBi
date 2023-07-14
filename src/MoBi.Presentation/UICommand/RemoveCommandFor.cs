@@ -1,6 +1,5 @@
 using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;

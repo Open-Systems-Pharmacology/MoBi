@@ -11,6 +11,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -108,7 +109,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_module_should_be_unregistered_from_the_context()
       {
-         The.Action(() => sut.RemoveModule(_module)).ShouldThrowAn<MoBiException>();
+         The.Action(() => sut.Remove(_module, null, null, false)).ShouldThrowAn<MoBiException>();
       }
    }
 
@@ -120,11 +121,12 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _module = new Module();
+         A.CallTo(() => _context.DialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
       }
 
       protected override void Because()
       {
-         sut.RemoveModule(_module);
+         sut.Remove(_module, null, null, false);
       }
 
       [Observation]
