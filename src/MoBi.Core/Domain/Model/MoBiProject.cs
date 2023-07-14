@@ -19,8 +19,6 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<Module> Modules => _modules;
 
-      public string ChartSettings { get; set; }
-
       public override bool HasChanged { get; set; }
 
       public override IEnumerable<IUsesObservedData> AllUsersOfObservedData => AllParameterIdentifications.Cast<IUsesObservedData>().Union(Simulations);
@@ -138,14 +136,23 @@ namespace MoBi.Core.Domain.Model
          _charts.Each(x => x.AcceptVisitor(visitor));
       }
 
-      public IReadOnlyList<IMoBiSimulation> SimulationsCreatedUsing(IBuildingBlock templateBuildingBlock)
+      public IReadOnlyList<IMoBiSimulation> SimulationsUsing(IBuildingBlock templateBuildingBlock)
       {
-         return Simulations.Where(simulation => simulation.IsCreatedBy(templateBuildingBlock)).ToList();
+         return Simulations.Where(simulation => simulation.Uses(templateBuildingBlock)).ToList();
       }
 
       public IEnumerable<IObjectBase> All()
       {
          return All<IObjectBase>().Union(Simulations);
+      }
+
+      /// <summary>
+      /// Returns a list of simulations that have a module where the name matches <paramref name="module"/>
+      /// This indicates that the <paramref name="module"/> was used as a template for the simulation
+      /// </summary>
+      public IReadOnlyList<IMoBiSimulation> SimulationsUsing(Module module)
+      {
+         return Simulations.Where(simulation => simulation.Uses(module)).ToList();
       }
    }
 }

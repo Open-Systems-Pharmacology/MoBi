@@ -97,7 +97,7 @@ namespace MoBi.Core.Helper
          if (item.IsAnImplementationOf<IEnumerable<DataRepository>>())
             return AppConstants.Captions.ListOf(ObjectTypes.ObservedData);
 
-         if (item.IsAnImplementationOf<IEnumerable<IBuildingBlock>>())
+         if (!item.IsAnImplementationOf<Module>() && item.IsAnImplementationOf<IEnumerable<IBuildingBlock>>())
          {
             var col = item.DowncastTo<IEnumerable<IBuildingBlock>>().ToList();
             if (col.Any())

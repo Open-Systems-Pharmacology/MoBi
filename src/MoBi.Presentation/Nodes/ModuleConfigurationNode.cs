@@ -1,7 +1,5 @@
 ﻿using MoBi.Presentation.DTO;
-using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Nodes
 {
@@ -12,6 +10,11 @@ namespace MoBi.Presentation.Nodes
       {
          Id = moduleConfiguration.Module.Id;
          Text = moduleConfiguration.Module.Name;
+      }
+
+      protected override void UpdateText()
+      {
+         Text = Tag.Module.Name;
       }
 
       public override string Id { get; }

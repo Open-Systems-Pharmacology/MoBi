@@ -32,6 +32,16 @@ namespace MoBi.Core.Domain.Extensions
 
          return formulaCache.ToList();
       }
+
+      public static bool IsTemplateMatchFor(this IBuildingBlock buildingBlock, IBuildingBlock templateBuildingBlock, string name)
+      {
+         return buildingBlock.IsNamed(name) && buildingBlock.GetType() == templateBuildingBlock.GetType();
+      }
+
+      public static bool IsTemplateMatchFor(this IBuildingBlock buildingBlock, IBuildingBlock templateBuildingBlock)
+      {
+         return IsTemplateMatchFor(buildingBlock, templateBuildingBlock, templateBuildingBlock.Name);
+      }
    }
 
    public static class MoleculeBuildingBlockExtensions

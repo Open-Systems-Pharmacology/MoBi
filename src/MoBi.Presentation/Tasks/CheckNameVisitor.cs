@@ -60,7 +60,6 @@ namespace MoBi.Presentation.Tasks
       private readonly string _namePropertyName;
       private readonly string _eventObjectPathPropertyName;
       private readonly string _appBuilderMoleculeNamePropertyName;
-      private readonly string _reactionPartnerMoleculeNamePropertyName;
       private IBuildingBlock _buildingBlock;
       private readonly string _transportNamePropertyName;
       private string _oldName;
@@ -81,9 +80,6 @@ namespace MoBi.Presentation.Tasks
 
          Expression<Func<ApplicationBuilder, string>> appBuilderMoleculeName = x => x.MoleculeName;
          _appBuilderMoleculeNamePropertyName = appBuilderMoleculeName.Name();
-
-         Expression<Func<ReactionPartnerBuilder, string>> reactionPartnerMoleculeName = x => x.MoleculeName;
-         _reactionPartnerMoleculeNamePropertyName = reactionPartnerMoleculeName.Name();
 
          Expression<Func<EventAssignmentBuilder, ObjectPath>> eventObjectPath = x => x.ObjectPath;
          _eventObjectPathPropertyName = eventObjectPath.Name();
@@ -193,7 +189,7 @@ namespace MoBi.Presentation.Tasks
 
          if (string.Equals(_oldName, objectBase.Name))
          {
-            _changes.Add(objectBase, _buildingBlock, new EditObjectBasePropertyInBuildingBlockCommand(_namePropertyName, _newName, _oldName, objectBase, _buildingBlock),
+            _changes.Add(objectBase, _buildingBlock, new RenameObjectBaseCommand(objectBase, _newName, _buildingBlock),
                AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor<T>(), _namePropertyName, _oldName, _newName, objectBase.Name));
          }
       }

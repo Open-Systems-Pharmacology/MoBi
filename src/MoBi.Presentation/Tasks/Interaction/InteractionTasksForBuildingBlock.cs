@@ -47,10 +47,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IMoBiCommand Remove(TBuildingBlock buildingBlockToRemove, TParent parent,
          IBuildingBlock buildingBlock, bool silent = false)
       {
-         var referringSimulations = Context.CurrentProject.SimulationsCreatedUsing(buildingBlockToRemove);
+         var referringSimulations = Context.CurrentProject.SimulationsUsing(buildingBlockToRemove);
          if (referringSimulations.Any())
-            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name,
-               referringSimulations.Select(simulation => simulation.Name)));
+            throw new MoBiException(AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlockToRemove.Name, referringSimulations.AllNames()));
 
          return base.Remove(buildingBlockToRemove, parent, buildingBlock, silent);
       }

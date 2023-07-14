@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
@@ -20,19 +21,34 @@ namespace MoBi.Core.Domain.Model
       SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
       SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
 
-      string ParameterIdentificationWorkingDirectory { get; set; }
       void Update(SimulationConfiguration simulationConfiguration, IModel model);
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
+
       /// <summary>
-      ///    Returns true if the simulation as created using the <paramref name="templateBuildingBlock" /> otherwise false.
+      /// Returns true if the simulation uses <paramref name="templateBuildingBlock"/>.
+      /// For module building blocks, the test checks if the <paramref name="templateBuildingBlock"/> is a member of
+      /// a module that's in use <see cref="Uses(Module)"/>. If the <paramref name="templateBuildingBlock"/> is not a module building block
+      /// the test is based on building block name and type.
       /// </summary>
-      bool IsCreatedBy(IBuildingBlock templateBuildingBlock);
+      /// <returns>True if the simulation uses the <paramref name="templateBuildingBlock"/>, otherwise false</returns>
+      bool Uses(IBuildingBlock templateBuildingBlock);
+      
+      /// <summary>
+      /// Checks if the simulation has a module that shares a name with <paramref name="module"/>
+      /// This indicates that the <paramref name="module"/> was used as a template
+      /// </summary>
+      /// <returns>True if the simulation has a matching module, otherwise false</returns>
+      bool Uses(Module module);
 
       void MarkResultsOutOfDate();
 
       bool HasResults { get; }
+      IReadOnlyList<Module> Modules { get; }
+      IReadOnlyList<IBuildingBlock> BuildingBlocks();
+
+
    }
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
@@ -71,11 +87,39 @@ namespace MoBi.Core.Domain.Model
          Settings.RemoveAllChartTemplates();
       }
 
-      public bool IsCreatedBy(IBuildingBlock templateBuildingBlock)
+      public bool Uses(IBuildingBlock templateBuildingBlock)
       {
-         //TODO SIMULATION_CONFIGURATION
+         // We can consider the building block in-use if it belongs to a module that is in use.
+         if (templateBuildingBlock.Module != null)
+            return usesModuleBuildingBlock(templateBuildingBlock);
+
+         // Simple name match for building blocks that do not belong to a module
+         switch (templateBuildingBlock)
+         {
+            case IndividualBuildingBlock individualBuildingBlock:
+               return string.Equals(Configuration.Individual?.Name, individualBuildingBlock.Name);
+            case ExpressionProfileBuildingBlock expressionProfileBuildingBlock:
+               return Configuration.ExpressionProfiles.ExistsByName(expressionProfileBuildingBlock.Name);
+         }
+
          return false;
-         // return MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock) != null;
+      }
+
+      private bool usesModuleBuildingBlock(IBuildingBlock templateBuildingBlock)
+      {
+         return BuildingBlocks().Any(buildingBlock => buildingBlock.Module.IsNamed(templateBuildingBlock.Module.Name) && buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
+      }
+
+      public IReadOnlyList<Module> Modules => Configuration.ModuleConfigurations.Select(x => x.Module).ToList();
+
+      public IReadOnlyList<IBuildingBlock> BuildingBlocks()
+      {
+         var buildingBlocks = Modules.SelectMany(module => module.BuildingBlocks).Concat(Configuration.ExpressionProfiles).ToList();
+
+         if (Configuration.Individual != null)
+            buildingBlocks.Add(Configuration.Individual);
+
+         return buildingBlocks;
       }
 
       public SolverSettings Solver => Settings.Solver;
@@ -139,7 +183,7 @@ namespace MoBi.Core.Domain.Model
          if (!curveToRemove.Any())
             return;
 
-         curveToRemove.Each(curve => Chart.RemoveCurve(curve.Id) );
+         curveToRemove.Each(curve => Chart.RemoveCurve(curve.Id));
 
          HasChanged = true;
       }
@@ -194,6 +238,11 @@ namespace MoBi.Core.Domain.Model
       }
 
       public bool HasResults => ResultsDataRepository != null;
+
+      public bool Uses(Module module)
+      {
+         return Configuration.ModuleConfigurations.Any(x => Equals(x.Module.Name, module.Name));
+      }
 
       public DataRepository ResultsDataRepository
       {

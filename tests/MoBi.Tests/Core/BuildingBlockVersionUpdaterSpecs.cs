@@ -40,7 +40,7 @@ namespace MoBi.Core
          _changeBuildingBlock.Id = "TRALLLLA";
          _affectedSimulations = new List<IModelCoreSimulation>();
          _affectedSimulation = A.Fake<IMoBiSimulation>();
-         A.CallTo(() => _affectedSimulation.IsCreatedBy(_changeBuildingBlock)).Returns(true);
+         A.CallTo(() => _affectedSimulation.Uses(_changeBuildingBlock)).Returns(true);
          
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>._)).Invokes((call =>
          {

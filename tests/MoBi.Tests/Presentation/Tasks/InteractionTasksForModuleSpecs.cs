@@ -1,5 +1,7 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -9,7 +11,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using System.Collections.Generic;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -38,7 +40,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_the_presenter_doesnt_return_a_module : concern_for_InteractionTasksForModule
+   public class When_the_presenter_does_not_return_a_module : concern_for_InteractionTasksForModule
    {
       private ICreateModulePresenter _presenter;
 
@@ -86,14 +88,45 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_deleting_a_module : concern_for_InteractionTasksForModule
+   public class When_removing_a_module_that_is_used_in_simulations : concern_for_InteractionTasksForModule
+   {
+      private Module _module;
+      private IMoBiSimulation _simulation;
+      private MoBiProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module().WithName("moduleName");
+         _project = new MoBiProject();
+         _simulation = new MoBiSimulation().WithName("simulation");
+         _simulation.Configuration = new SimulationConfiguration();
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("moduleName")));
+         _project.AddSimulation(_simulation);
+         A.CallTo(() => _context.Context.CurrentProject).Returns(_project);
+      }
+
+      [Observation]
+      public void the_module_should_be_unregistered_from_the_context()
+      {
+         The.Action(() => sut.Remove(_module, null, null, false)).ShouldThrowAn<MoBiException>();
+      }
+   }
+
+   public class When_removing_a_module : concern_for_InteractionTasksForModule
    {
       private Module _module;
 
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         A.CallTo(() => _context.DialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+      }
+
       protected override void Because()
       {
-         _module = new Module();
-         sut.RemoveModule(_module);
+         sut.Remove(_module, null, null, false);
       }
 
       [Observation]

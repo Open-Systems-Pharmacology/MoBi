@@ -45,7 +45,7 @@ namespace MoBi.Core.Services
 
       private void publishSimulationStatusChangedEvents(IBuildingBlock changedBuildingBlock)
       {
-         var affectedSimulations = _projectRetriever.Current.SimulationsCreatedUsing(changedBuildingBlock);
+         var affectedSimulations = _projectRetriever.Current.SimulationsUsing(changedBuildingBlock);
          affectedSimulations.Each(refreshSimulation);
       }
 

@@ -2130,9 +2130,18 @@ namespace MoBi.Assets
          return $"{projectName}_{simulationName}_Model_Parts";
       }
 
+      public static string CannotRemoveModuleFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
+      {
+         return cannotRemoveTypeFromProject("module", buildingBlockName, referringBuildingBlockNames);
+      }
       public static string CannotRemoveBuildingBlockFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
       {
-         return $"Cannot remove building block {buildingBlockName} from the project. It is being used as a template by {referringBuildingBlockNames.ToString(", ")}";
+         return cannotRemoveTypeFromProject("building block", buildingBlockName, referringBuildingBlockNames);
+      }
+
+      private static string cannotRemoveTypeFromProject(string typeName, string objectName, IEnumerable<string> referringBuildingBlockNames)
+      {
+         return $"Cannot remove {typeName} {objectName} from the project. It is being used as a template by {referringBuildingBlockNames.ToString(", ")}";
       }
 
       public class UIConstants

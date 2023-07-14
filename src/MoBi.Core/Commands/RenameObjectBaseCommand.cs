@@ -1,6 +1,8 @@
+using System;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -14,13 +16,14 @@ namespace MoBi.Core.Commands
       private IObjectBase _objectBase;
       protected readonly string _newName;
       public string OldName { get; private set; }
-      public string ObjectId { get; private set; }
+      public string ObjectId { get; }
 
       public RenameObjectBaseCommand(IObjectBase objectBase, string newName, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _objectBase = objectBase;
          _newName = newName;
          ObjectId = objectBase.Id;
+         ObjectType = new ObjectTypeResolver().TypeFor(objectBase);
          CommandType = AppConstants.Commands.RenameCommand;
          Description = AppConstants.Commands.RenameDescription(objectBase, newName);
       }
@@ -48,10 +51,16 @@ namespace MoBi.Core.Commands
       {
          OldName = _objectBase.Name;
          _objectBase.Name = _newName;
-         if (_objectBase.IsAnImplementationOf<IBuildingBlock>())
+         var task = context.Resolve<IRenameInSimulationTask>();
+         
+         switch (_objectBase)
          {
-            var renameBuildingBlockTask = context.Resolve<IRenameBuildingBlockTask>();
-            renameBuildingBlockTask.RenameInSimulationUsingTemplateBuildingBlock(_objectBase.DowncastTo<IBuildingBlock>());
+            case IBuildingBlock buildingBlock:
+               task.RenameInSimulationUsingTemplateBuildingBlock(OldName, buildingBlock);
+               break;
+            case Module module:
+               task.RenameInSimulationUsingTemplateModule(OldName, module);
+               break;
          }
       }
 
