@@ -45,21 +45,21 @@ namespace MoBi.Presentation.Presenter
       public void Edit(SimulationConfiguration simulationConfiguration)
       {
          _individualSelectionDTO = _selectedIndividualDTOMapper.MapFrom(simulationConfiguration.Individual);
-
+         initializeSelectedExpressions(simulationConfiguration);
          addUnusedExpressionsToSelectionView();
-         addUsedExpressionsToSelectedView(simulationConfiguration);
+         addUsedExpressionsToSelectedView();
 
          _view.BindTo(_individualSelectionDTO);
       }
 
-      private void addUsedExpressionsToSelectedView(SimulationConfiguration simulationConfiguration)
+      private void initializeSelectedExpressions(SimulationConfiguration simulationConfiguration)
       {
-         simulationConfiguration.ExpressionProfiles.Each(profile =>
-         {
-            var projectProfile = _buildingBlockRepository.ExpressionProfileByName(profile.Name);
-            addUsedExpressionToSelectedView(projectProfile);
-            _selectedExpressions.Add(projectProfile);
-         });
+         _buildingBlockRepository.ExpressionProfileCollection.Where(x => x.NameIsOneOf(simulationConfiguration.ExpressionProfiles.AllNames())).Each(_selectedExpressions.Add);
+      }
+
+      private void addUsedExpressionsToSelectedView()
+      {
+         _selectedExpressions.Each(addUsedExpressionToSelectedView);
       }
 
       private void addUsedExpressionToSelectedView(ExpressionProfileBuildingBlock expression)
