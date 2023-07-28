@@ -88,7 +88,7 @@ namespace MoBi.Presentation.Nodes
          var expressionProfileFolderNode = new ExpressionProfileFolderNode();
          var nodes = simulationConfiguration.ModuleConfigurations.Select(moduleConfiguration => CreateFor(new ModuleConfigurationDTO(moduleConfiguration))).ToList();
          if (simulationConfiguration.Individual != null)
-            nodes.Add(createWithIcon(simulationConfiguration.Individual));
+            nodes.Add(CreateFor(simulationConfiguration.Individual));
 
          simulationConfiguration.ExpressionProfiles.Each(x => createAndAddNodeUnder(expressionProfileFolderNode, x));
          nodes.Add(expressionProfileFolderNode);
@@ -169,13 +169,8 @@ namespace MoBi.Presentation.Nodes
             return;
 
          // TODO this used to use buildingBlockInfo to create the tree SIMULATION_CONFIGURATION
-         createWithIcon(buildingBlock)
+         CreateFor(buildingBlock)
             .Under(rootNode);
-      }
-
-      private ITreeNode createWithIcon(IBuildingBlock buildingBlock)
-      {
-         return CreateFor(buildingBlock);
       }
 
       public ITreeNode CreateFor(CurveChart chart)
