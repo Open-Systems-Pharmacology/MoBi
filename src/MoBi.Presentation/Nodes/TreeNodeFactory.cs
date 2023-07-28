@@ -55,11 +55,6 @@ namespace MoBi.Presentation.Nodes
          var simNode = new SimulationNode(classifiableSimulation);
          var simulation = classifiableSimulation.Simulation;
 
-
-         //TODO SIMULATION_CONFIGURATION
-         // if (simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks())
-         //    simNode.Icon = ApplicationIcons.SimulationRed;
-
          createFor(simulation.Configuration).Each(x => simNode.AddChild(x));
 
          if (simulation.ResultsDataRepository != null)
@@ -136,12 +131,12 @@ namespace MoBi.Presentation.Nodes
          if (buildingBlock is MoleculeBuildingBlock moleculeBuildingBlock)
             return CreateFor(moleculeBuildingBlock);
 
-         return createFor(buildingBlock);
+         return createForBuildingBlock(buildingBlock);
       }
 
       public ITreeNode CreateFor(MoleculeBuildingBlock moleculeBuildingBlock)
       {
-         var moleculeBuildingBlockNode = createFor(moleculeBuildingBlock);
+         var moleculeBuildingBlockNode = createForBuildingBlock(moleculeBuildingBlock);
          foreach (var molecule in moleculeBuildingBlock)
          {
             var moleculeNode = CreateFor(molecule);
@@ -154,6 +149,12 @@ namespace MoBi.Presentation.Nodes
       public ITreeNode CreateFor(MoleculeBuilder moleculeBuilder)
       {
          return createFor(moleculeBuilder);
+      }
+
+      private ITreeNode createForBuildingBlock(IBuildingBlock buildingBlock) 
+      {
+         return new BuildingBlockNode(buildingBlock)
+            .WithIcon(ApplicationIcons.IconByName(buildingBlock.Icon));
       }
 
       private ITreeNode createFor<T>(T objectBase) where T : class, IObjectBase
@@ -174,13 +175,7 @@ namespace MoBi.Presentation.Nodes
 
       private ITreeNode createWithIcon(IBuildingBlock buildingBlock)
       {
-         var statusIcon = ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
-         // var statusIcon = buildingBlockInfo.BuildingBlockChanged
-         //    ? ApplicationIcons.RedOverlayFor(buildingBlock.Icon)
-         //    : ApplicationIcons.GreenOverlayFor(buildingBlock.Icon);
-
-         return CreateFor(buildingBlock)
-            .WithIcon(statusIcon);
+         return CreateFor(buildingBlock);
       }
 
       public ITreeNode CreateFor(CurveChart chart)

@@ -107,7 +107,7 @@ namespace MoBi.Core.Domain.Model
 
       private bool usesModuleBuildingBlock(IBuildingBlock templateBuildingBlock)
       {
-         return BuildingBlocks().Any(buildingBlock => buildingBlock.Module.IsNamed(templateBuildingBlock.Module.Name) && buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
+         return BuildingBlocks().Any(buildingBlock => buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
       }
 
       public IReadOnlyList<Module> Modules => Configuration.ModuleConfigurations.Select(x => x.Module).ToList();

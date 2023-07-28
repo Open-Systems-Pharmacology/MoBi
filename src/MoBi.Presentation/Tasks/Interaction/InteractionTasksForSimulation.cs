@@ -2,6 +2,7 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
@@ -26,6 +27,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// </summary>
       /// <returns>The executed command used to perform the removal</returns>
       IMoBiCommand RemoveMultipleSimulations(IReadOnlyList<IMoBiSimulation> simulations);
+
+      IBuildingBlock TemplateBuildingBlockFor(IBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
@@ -74,6 +77,15 @@ namespace MoBi.Presentation.Tasks.Interaction
          });
 
          return macroCommand;
+      }
+
+      public IBuildingBlock TemplateBuildingBlockFor(IBuildingBlock buildingBlock)
+      {
+         // In the repository, there should always be exactly one template match. A template match requires
+         // building block name/type and module name match. There could be multiple building blocks with the
+         // same name and type but they would have to have different parent modules. For building blocks
+         // without a parent module, two building blocks cannot have the same name and type
+         return BuildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock));
       }
 
       public IMoBiCommand CreateSimulation()

@@ -33,14 +33,33 @@ namespace MoBi.Core.Domain.Extensions
          return formulaCache.ToList();
       }
 
+      /// <summary>
+      /// Checks that the names, types, and names of the containing module (if any) match <paramref name="name"/>
+      /// </summary>
       public static bool IsTemplateMatchFor(this IBuildingBlock buildingBlock, IBuildingBlock templateBuildingBlock, string name)
       {
-         return buildingBlock.IsNamed(name) && buildingBlock.GetType() == templateBuildingBlock.GetType();
+         return buildingBlock.IsNamed(name) && buildingBlock.GetType() == templateBuildingBlock.GetType() && buildingBlockModulesAreTemplateMatch(buildingBlock, templateBuildingBlock);
       }
 
+      /// <summary>
+      /// Checks that the names, types, and names of the containing module (if any) match
+      /// </summary>
       public static bool IsTemplateMatchFor(this IBuildingBlock buildingBlock, IBuildingBlock templateBuildingBlock)
       {
          return IsTemplateMatchFor(buildingBlock, templateBuildingBlock, templateBuildingBlock.Name);
+      }
+
+      private static bool buildingBlockModulesAreTemplateMatch(IBuildingBlock buildingBlock, IBuildingBlock templateBuildingBlock)
+      {
+         switch (buildingBlock.Module)
+         {
+            case null when templateBuildingBlock.Module == null:
+               return true;
+            case null:
+               return false;
+         }
+
+         return templateBuildingBlock.Module != null && buildingBlock.Module.IsNamed(templateBuildingBlock.Module.Name);
       }
    }
 

@@ -10,6 +10,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
@@ -182,18 +183,31 @@ namespace MoBi.Presentation.Presenter.Main
       private void refreshDisplayedSimulation(IMoBiSimulation simulation)
       {
          var simulationNode = _view.NodeById(simulation.Id);
+         
+         var changedTemplateBuildingBlocks = findChangedTemplateBuildingBlocks(simulation).ToList();
 
-         //Update Simulation Icon
-         // var isChangedSimulation = simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks();
-
-         var isChangedSimulation = true;
+         var isChangedSimulation = changedTemplateBuildingBlocks.Any();
          simulationNode.Icon = isChangedSimulation ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
 
-         // Update Building block
-         // TODO SIMULATION_CONFIGURATION
-         // simulationConfigurationNodeUnder(simulationNode).Children.Each(refreshDisplayedBuildingBlock);
+         updateBuildingBlockIcons(changedTemplateBuildingBlocks.Select(x => x.simulationBuildingBlock), simulationNode.AllNodes.OfType<BuildingBlockNode>());
       }
-      
+
+      private void updateBuildingBlockIcons(IEnumerable<IBuildingBlock> changedSimulationBuildingBlocks, IEnumerable<BuildingBlockNode> simulationNodeChildren)
+      {
+         simulationNodeChildren.Each(x => updateBuildingBlockIcon(x, changedSimulationBuildingBlocks));
+      }
+
+      private static void updateBuildingBlockIcon(BuildingBlockNode x, IEnumerable<IBuildingBlock> changedSimulationBuildingBlocks)
+      {
+         x.Icon = changedSimulationBuildingBlocks.Contains(x.Tag) ? ApplicationIcons.RedOverlayFor(x.BaseIcon) : ApplicationIcons.GreenOverlayFor(x.BaseIcon);
+      }
+
+      private IEnumerable<(IBuildingBlock templateBuildingBlock, IBuildingBlock simulationBuildingBlock)> findChangedTemplateBuildingBlocks(IMoBiSimulation simulation)
+      {
+         return simulation.BuildingBlocks().Select(x => (templateBuildingBlock: _interactionTasksForSimulation.TemplateBuildingBlockFor(x), simulationBuildingBlock:x)).
+            Where(match => match.templateBuildingBlock.Version != match.simulationBuildingBlock.Version);
+      }
+
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
       {
          return Enumerable.Empty<ClassificationTemplate>();

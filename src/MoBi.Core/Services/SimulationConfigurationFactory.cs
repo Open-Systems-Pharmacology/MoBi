@@ -30,8 +30,7 @@ namespace MoBi.Core.Services
             SimulationSettings = _cloneManager.Clone(_projectRetriever.Current.SimulationSettings)
          };
 
-         _calculationMethodRepository.All().Each(
-            cm => simulationConfiguration.AddCalculationMethod(_cloneManager.Clone(cm)));
+         _calculationMethodRepository.All().Each(simulationConfiguration.AddCalculationMethod);
 
          return simulationConfiguration;
       }
