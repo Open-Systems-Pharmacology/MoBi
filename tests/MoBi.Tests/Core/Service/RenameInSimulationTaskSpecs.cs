@@ -107,7 +107,6 @@ namespace MoBi.Core.Service
          _project.AddSimulation(_simulation1);
          _project.AddSimulation(_simulation2);
          _templateBuildingBlock = new IndividualBuildingBlock().WithName("Individual");
-         _templateBuildingBlock.Module = new Module().WithName("moduleName");
       }
 
       private static ModuleConfiguration createModuleConfiguration()

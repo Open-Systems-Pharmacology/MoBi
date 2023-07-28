@@ -16,7 +16,9 @@ namespace MoBi.Core.Service
       private IMoBiProjectRetriever _projectRetriever;
       protected SimulationSettings _clonedSimulationSettings;
       private MoBiProject _currentProject;
-      protected CoreCalculationMethod _clonedMethod1, _clonedMethod2, _clonedMethod3;
+      protected CoreCalculationMethod _method3;
+      protected CoreCalculationMethod _method2;
+      protected CoreCalculationMethod _method1;
 
       protected override void Context()
       {
@@ -34,22 +36,14 @@ namespace MoBi.Core.Service
          A.CallTo(() => _projectRetriever.Current).Returns(_currentProject);
          A.CallTo(() => _cloneManager.Clone(_currentProject.SimulationSettings)).Returns(_clonedSimulationSettings);
 
-         var method1 = new CoreCalculationMethod();
-         _calculationMethodRepository.AddCalculationMethod(method1);
-         var method2 = new CoreCalculationMethod();
-         _calculationMethodRepository.AddCalculationMethod(method2);
-         var method3 = new CoreCalculationMethod();
-         _calculationMethodRepository.AddCalculationMethod(method3);
-
-         _clonedMethod1 = new CoreCalculationMethod();
-         _clonedMethod2 = new CoreCalculationMethod();
-         _clonedMethod3 = new CoreCalculationMethod();
-         A.CallTo(() => _cloneManager.Clone(method1)).Returns(_clonedMethod1);
-         A.CallTo(() => _cloneManager.Clone(method2)).Returns(_clonedMethod2);
-         A.CallTo(() => _cloneManager.Clone(method3)).Returns(_clonedMethod3);
+         _method1 = new CoreCalculationMethod();
+         _calculationMethodRepository.AddCalculationMethod(_method1);
+         _method2 = new CoreCalculationMethod();
+         _calculationMethodRepository.AddCalculationMethod(_method2);
+         _method3 = new CoreCalculationMethod();
+         _calculationMethodRepository.AddCalculationMethod(_method3);
 
          sut = new SimulationConfigurationFactory(_calculationMethodRepository, _cloneManager, _projectRetriever);
-
       }
    }
 
@@ -63,9 +57,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void the_simulation_configuration_should_contain_clones_of_the_calculation_methods()
+      public void the_simulation_configuration_should_contain_the_original_calculation_methods()
       {
-         _simulationConfiguration.AllCalculationMethods.ShouldOnlyContain(_clonedMethod1, _clonedMethod2, _clonedMethod3);
+         _simulationConfiguration.AllCalculationMethods.ShouldOnlyContain(_method1, _method2, _method3);
       }
 
       [Observation]

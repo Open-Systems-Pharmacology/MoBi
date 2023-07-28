@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -9,22 +8,19 @@ using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_InteractionTasksForSimulationSpecs : ContextSpecification<InteractionTasksForSimulation>
+   public abstract class concern_for_InteractionTasksForSimulation : ContextSpecification<InteractionTasksForSimulation>
    {
       protected IEditTasksForSimulation _editTask;
-      private IInteractionTaskContext _context;
+      protected IInteractionTaskContext _context;
       protected IMoBiApplicationController _applicationController;
       protected IDialogCreator _dialogCreator;
       protected ISimulationReferenceUpdater _simulationReferenceUpdater;
@@ -52,7 +48,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_removing_multiple_simulations_from_project_but_canceling : concern_for_InteractionTasksForSimulationSpecs
+   public class When_removing_multiple_simulations_from_project_but_canceling : concern_for_InteractionTasksForSimulation
    {
       private IReadOnlyList<IMoBiSimulation> _simulations;
       private IMoBiCommand _result;
@@ -82,7 +78,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_removing_multiple_simulations_from_project : concern_for_InteractionTasksForSimulationSpecs
+   public class When_removing_multiple_simulations_from_project : concern_for_InteractionTasksForSimulation
    {
       private IReadOnlyList<IMoBiSimulation> _simulations;
       private MoBiMacroCommand _result;
@@ -119,7 +115,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_adding_a_new_simulation : concern_for_InteractionTasksForSimulationSpecs
+   internal class When_adding_a_new_simulation : concern_for_InteractionTasksForSimulation
    {
       private ICreateSimulationConfigurationPresenter _presenter;
       private IMoBiSimulation _simulation;
@@ -162,6 +158,58 @@ namespace MoBi.Presentation
       public void should_start_edit_action_for_the_new_simulation()
       {
          A.CallTo(() => _editTask.Edit(_configuredSimulation)).MustHaveHappened();
+      }
+   }
+
+   internal class When_finding_template_building_block_for_a_simulation_building_block : concern_for_InteractionTasksForSimulation
+   {
+      private IBuildingBlock _resolvedSpatialStructure;
+      private List<IBuildingBlock> _allTemplateBuildingBlocks;
+      private IndividualBuildingBlock _simulationIndividual;
+      private IndividualBuildingBlock _templateIndividual;
+      private IBuildingBlock _resolvedIndividual;
+      private IBuildingBlock _resolvedReaction;
+      private Module _templateModule;
+      private Module _simulationModule;
+
+      protected override void Context()
+      {
+         base.Context();
+         _allTemplateBuildingBlocks = new List<IBuildingBlock>();
+
+         _simulationIndividual = new IndividualBuildingBlock().WithName("name");
+         _templateIndividual = new IndividualBuildingBlock().WithName("name");
+         
+         _simulationModule = createNewModuleWithBuildingBlocks("the module");
+         _templateModule = createNewModuleWithBuildingBlocks("the module");
+         var unrelatedModule = createNewModuleWithBuildingBlocks("unrelated module");
+
+         _templateModule.BuildingBlocks.Each(x => _allTemplateBuildingBlocks.Add(x));
+         unrelatedModule.BuildingBlocks.Each(x => _allTemplateBuildingBlocks.Add(x));
+         
+         _allTemplateBuildingBlocks.Add(_templateIndividual);
+
+         A.CallTo(() => _context.BuildingBlockRepository.All()).Returns(_allTemplateBuildingBlocks);
+      }
+
+      private Module createNewModuleWithBuildingBlocks(string name)
+      {
+         return new Module { new MoBiSpatialStructure().WithName("name"), new MoBiReactionBuildingBlock().WithName("name") }.WithName(name);
+      }
+
+      protected override void Because()
+      {
+         _resolvedSpatialStructure = sut.TemplateBuildingBlockFor(_simulationModule.SpatialStructure);
+         _resolvedIndividual = sut.TemplateBuildingBlockFor(_simulationIndividual);
+         _resolvedReaction = sut.TemplateBuildingBlockFor(_simulationModule.Reactions);
+      }
+
+      [Observation]
+      public void the_template_is_resolved()
+      {
+         _resolvedSpatialStructure.ShouldBeEqualTo(_templateModule.SpatialStructure);
+         _resolvedIndividual.ShouldBeEqualTo(_templateIndividual);
+         _resolvedReaction.ShouldBeEqualTo(_templateModule.Reactions);
       }
    }
 }
