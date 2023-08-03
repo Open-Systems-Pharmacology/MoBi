@@ -138,7 +138,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_adding_observed_data_to_the_char : concern_for_SimulationChartPresenter
+   public class When_adding_observed_data_to_the_chart : concern_for_SimulationChartPresenter
    {
       protected override void Context()
       {
