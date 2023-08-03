@@ -136,11 +136,26 @@ namespace MoBi.Presentation
       {
          _observedDataAddedEventCounter.ShouldBeEqualTo(1);
       }
+   }
+
+   public class When_adding_observed_data_to_the_char : concern_for_SimulationChartPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _userSettings.ColorGroupObservedDataFromSameFolder = false;
+      }
+
+      protected override void Because()
+      {
+         _chartDisplayPresenter.OnDragDrop(_dragEvent);
+      }
 
       [Observation]
       public void columns_showing_should_be_default()
       {
-         A.CallTo(()=> _chartPresenterContext.EditorPresenter.SetShowDataColumnInDataBrowserDefinition(A<Func<DataColumn, bool>>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _chartPresenterContext.EditorPresenter.SetShowDataColumnInDataBrowserDefinition(A<Func<DataColumn, bool>>.Ignored)).MustNotHaveHappened();
       }
    }
+
 }
