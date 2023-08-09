@@ -9,7 +9,7 @@ namespace MoBi.Core.Commands
    {
       protected CurveChartTemplate _chartTemplate;
 
-      protected ChartTemplateInSimulationSettingsCommand(CurveChartTemplate chartTemplate, IMoBiSimulation simulation) : base(chartTemplate, simulation)
+      protected ChartTemplateInSimulationSettingsCommand(CurveChartTemplate chartTemplate, IMoBiSimulation simulation) : base(simulation)
       {
          _chartTemplate = chartTemplate;
          ObjectType = ObjectTypes.ChartTemplate;

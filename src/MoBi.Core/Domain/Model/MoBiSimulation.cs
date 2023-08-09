@@ -48,7 +48,16 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyList<Module> Modules { get; }
       IReadOnlyList<IBuildingBlock> BuildingBlocks();
 
+      IReadOnlyList<ParameterValue> OriginalQuantityValues { get; }
 
+      /// <summary>
+      /// Adds an original quantity value so that changes to quantities in the simulation can be tracked.
+      /// There can only be one original quantity value So, adding a second <paramref name="parameterValue"/>
+      /// with identical path has no affect
+      /// </summary>
+      void AddOriginalQuantityValue(ParameterValue parameterValue);
+      void RemoveOriginalQuantityValue(ObjectPath objectPath);
+      ParameterValue OriginalQuantityValueFor(ObjectPath objectPath);
    }
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
@@ -63,6 +72,9 @@ namespace MoBi.Core.Domain.Model
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
+      private readonly ICache<string, ParameterValue> _quantityValueCache = new Cache<string, ParameterValue>(onMissingKey:key => null);
+      private bool _hasChanged;
+
       public MoBiSimulation()
       {
          HistoricResults = new Cache<string, DataRepository>(x => x.Id, x => null);
@@ -70,9 +82,8 @@ namespace MoBi.Core.Domain.Model
 
       public bool HasChanged
       {
-         //TODO SIMULATION_CONFIGURATION
-         get;
-         set;
+         get => _hasChanged || _quantityValueCache.Any();
+         set => _hasChanged = value;
       }
 
       public OutputSchema OutputSchema => Settings.OutputSchema;
@@ -120,6 +131,24 @@ namespace MoBi.Core.Domain.Model
             buildingBlocks.Add(Configuration.Individual);
 
          return buildingBlocks;
+      }
+
+      public IReadOnlyList<ParameterValue> OriginalQuantityValues => _quantityValueCache.ToList();
+
+      public void AddOriginalQuantityValue(ParameterValue parameterValue)
+      {
+         if (_quantityValueCache[parameterValue.Path] == null)
+            _quantityValueCache[parameterValue.Path] = parameterValue;
+      }
+
+      public void RemoveOriginalQuantityValue(ObjectPath objectPath)
+      {
+         _quantityValueCache.Remove(objectPath);
+      }
+
+      public ParameterValue OriginalQuantityValueFor(ObjectPath objectPath)
+      {
+         return _quantityValueCache[objectPath];
       }
 
       public SolverSettings Solver => Settings.Solver;

@@ -23,6 +23,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          Map(x => x.ParameterIdentificationWorkingDirectory);
          Map(x => x.HasUpToDateResults);
          Map(x => x.OutputMappings);
+         MapEnumerable(x => x.OriginalQuantityValues, simulation => simulation.AddOriginalQuantityValue);
       }
 
       public override MoBiSimulation CreateObject(XElement element, SerializationContext serializationContext)

@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
       private OutputSelections _outputSelections;
       private OutputSelections _oldOutputSelections;
 
-      public UpdateOutputSelectionsInSimulationCommand(OutputSelections outputSelections, IMoBiSimulation simulation) : base(outputSelections, simulation)
+      public UpdateOutputSelectionsInSimulationCommand(OutputSelections outputSelections, IMoBiSimulation simulation) : base(simulation)
       {
          _outputSelections = outputSelections;
          CommandType = AppConstants.Commands.EditCommand;

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Helpers
 {
@@ -41,6 +43,11 @@ namespace MoBi.Helpers
       public static IDimension AmountPerTimeDimension { get; } = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1, TimeExponent = -1 }, Constants.Dimension.AMOUNT_PER_TIME, "µmol/min");
 
       public static IDimension TimeDimension { get; } = new Dimension(new BaseDimensionRepresentation { TimeExponent = 1 }, Constants.Dimension.TIME, "min");
+
+      public static IQuantityValueInSimulationChangeTracker QuantityValueChangeTracker(IEventPublisher eventPublisher)
+      {
+         return new QuantityValueInSimulationChangeTracker(new QuantityToParameterValueMapper(new EntityPathResolver(new ObjectPathFactoryForSpecs())), eventPublisher);
+      }
 
       public static DataRepository ObservedData(string id = "TestData", IDimension timeDimension = null, IDimension concentrationDimension = null, string obsDataColumnName = null)
       {

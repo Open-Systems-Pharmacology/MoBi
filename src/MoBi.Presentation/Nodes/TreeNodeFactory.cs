@@ -167,8 +167,7 @@ namespace MoBi.Presentation.Nodes
       {
          if (buildingBlock == null)
             return;
-
-         // TODO this used to use buildingBlockInfo to create the tree SIMULATION_CONFIGURATION
+         
          CreateFor(buildingBlock)
             .Under(rootNode);
       }
