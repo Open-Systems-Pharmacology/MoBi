@@ -10,6 +10,7 @@ namespace MoBi.Core.Domain.Services
    {
       IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone);
       T CloneBuildingBlock<T>(T toClone) where T : class, IBuildingBlock;
+      SimulationConfiguration CloneSimulationConfiguration(SimulationConfiguration simulationConfiguration);
    }
 
    internal class CloneManagerForSimulation : ICloneManagerForSimulation
@@ -29,14 +30,9 @@ namespace MoBi.Core.Domain.Services
       {
          var model = _cloneManagerForModel.CloneModel(simulationToClone.Model);
 
-         var simulation = _simulationFactory.CreateFrom(simulationConfigurationCloneFor(simulationToClone.Configuration), model);
+         var simulation = _simulationFactory.CreateFrom(CloneSimulationConfiguration(simulationToClone.Configuration), model);
          simulation.UpdatePropertiesFrom(simulationToClone, _cloneManagerForModel);
          return simulation;
-      }
-
-      private SimulationConfiguration simulationConfigurationCloneFor(SimulationConfiguration configuration)
-      {
-         return _cloneManagerForBuildingBlock.Clone(configuration);
       }
 
       public T CloneBuildingBlock<T>(T toClone) where T : class, IBuildingBlock
@@ -45,6 +41,11 @@ namespace MoBi.Core.Domain.Services
          var copy = _cloneManagerForBuildingBlock.Clone(toClone, formulaCache);
          formulaCache.Each(copy.AddFormula);
          return copy;
+      }
+
+      public SimulationConfiguration CloneSimulationConfiguration(SimulationConfiguration simulationConfiguration)
+      {
+         return _cloneManagerForBuildingBlock.Clone(simulationConfiguration);
       }
    }
 }

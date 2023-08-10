@@ -100,17 +100,17 @@ namespace MoBi.Core.Services
 
       private void addSimulationConfigurationToProject(IMoBiSimulation simulation, ICommandCollector commandCollector)
       {
-         var config = simulation.Configuration;
-         config.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(_context.Clone(moduleConfiguration.Module))));
+         var cloneForProjectEntities = _cloneManager.CloneSimulationConfiguration(simulation.Configuration);
+         cloneForProjectEntities.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(moduleConfiguration.Module)));
          
-         addToProject(commandCollector, config.Individual, individual => new AddIndividualBuildingBlockToProjectCommand(individual));
-         config.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile, ep => new AddExpressionProfileBuildingBlockToProjectCommand(ep)));
+         addToProject(commandCollector, cloneForProjectEntities.Individual, individual => new AddIndividualBuildingBlockToProjectCommand(individual));
+         cloneForProjectEntities.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile, ep => new AddExpressionProfileBuildingBlockToProjectCommand(ep)));
       }
 
       private T addToProject<T>(ICommandCollector commandCollector, T buildingBlock, Func<T, ICommand> commandCreatorFunc) where T : class, IBuildingBlock
       {
          if (buildingBlock != null)
-            commandCollector.AddCommand(commandCreatorFunc(_cloneManager.CloneBuildingBlock(buildingBlock)));
+            commandCollector.AddCommand(commandCreatorFunc(buildingBlock));
 
          return buildingBlock;
       }

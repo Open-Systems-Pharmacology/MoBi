@@ -43,9 +43,6 @@ namespace MoBi.Core
       private Module _clonedModule;
       private IndividualBuildingBlock _clonedIndividual;
       private SimulationConfiguration _clonedSimulationConfiguration;
-      private MoBiSimulation _clonedSimulation;
-      private Module _projectModule;
-      private IndividualBuildingBlock _projectIndividual;
 
       protected override void Context()
       {
@@ -70,19 +67,9 @@ namespace MoBi.Core
          _clonedSimulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(_clonedModule));
          _clonedSimulationConfiguration.Individual = _clonedIndividual;
          
-         _projectModule = new Module();
-         A.CallTo(() => _context.Clone(_clonedModule)).Returns(_projectModule);
-
-         _projectIndividual = new IndividualBuildingBlock();
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_clonedIndividual)).Returns(_projectIndividual);
-
-         _clonedSimulation = new MoBiSimulation { Configuration = _clonedSimulationConfiguration };
-         A.CallTo(() => _cloneManager.CloneSimulation(_simulation)).Returns(_clonedSimulation);
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_simulationConfiguration)).Returns(_clonedSimulationConfiguration);
          A.CallTo(() => _simulation.Configuration).Returns(_simulationConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
-
-         // Force cloning of the simulation
-         _project.AddSimulation(new MoBiSimulation().WithId(_simulation.Id));
       }
 
       protected override void Because()
@@ -93,7 +80,7 @@ namespace MoBi.Core
       [Observation]
       public void should_add_clone_of_individual_to_the_project()
       {
-         _project.IndividualsCollection.Single().ShouldBeEqualTo(_projectIndividual);
+         _project.IndividualsCollection.Single().ShouldBeEqualTo(_clonedIndividual);
       }
 
       [Observation]
@@ -105,13 +92,13 @@ namespace MoBi.Core
       [Observation]
       public void the_added_simulation_should_be_marked_as_changed()
       {
-         _clonedSimulation.HasChanged.ShouldBeTrue();
+         _simulation.HasChanged.ShouldBeTrue();
       }
 
       [Observation]
       public void should_add_clone_of_module_to_the_project_as_well()
       {
-         _project.Modules[0].ShouldBeEqualTo(_projectModule);
+         _project.Modules[0].ShouldBeEqualTo(_clonedModule);
       }
    }
 
