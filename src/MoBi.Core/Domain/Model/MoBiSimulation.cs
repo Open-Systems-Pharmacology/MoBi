@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
@@ -48,7 +49,7 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyList<Module> Modules { get; }
       IReadOnlyList<IBuildingBlock> BuildingBlocks();
 
-      IReadOnlyList<ParameterValue> OriginalQuantityValues { get; }
+      IReadOnlyCollection<ParameterValue> OriginalQuantityValues { get; }
 
       /// <summary>
       /// Adds an original quantity value so that changes to quantities in the simulation can be tracked.
@@ -88,15 +89,9 @@ namespace MoBi.Core.Domain.Model
 
       public OutputSchema OutputSchema => Settings.OutputSchema;
 
-      public CurveChartTemplate ChartTemplateByName(string chartTemplate)
-      {
-         return Settings.ChartTemplateByName(chartTemplate);
-      }
+      public CurveChartTemplate ChartTemplateByName(string chartTemplate) => Settings.ChartTemplateByName(chartTemplate);
 
-      public void RemoveAllChartTemplates()
-      {
-         Settings.RemoveAllChartTemplates();
-      }
+      public void RemoveAllChartTemplates() => Settings.RemoveAllChartTemplates();
 
       public bool Uses(IBuildingBlock templateBuildingBlock)
       {
@@ -116,10 +111,7 @@ namespace MoBi.Core.Domain.Model
          return false;
       }
 
-      private bool usesModuleBuildingBlock(IBuildingBlock templateBuildingBlock)
-      {
-         return BuildingBlocks().Any(buildingBlock => buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
-      }
+      private bool usesModuleBuildingBlock(IBuildingBlock templateBuildingBlock) => BuildingBlocks().Any(buildingBlock => buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
 
       public IReadOnlyList<Module> Modules => Configuration.ModuleConfigurations.Select(x => x.Module).ToList();
 
@@ -129,27 +121,22 @@ namespace MoBi.Core.Domain.Model
 
          if (Configuration.Individual != null)
             buildingBlocks.Add(Configuration.Individual);
-
          return buildingBlocks;
       }
 
-      public IReadOnlyList<ParameterValue> OriginalQuantityValues => _quantityValueCache.ToList();
+      public IReadOnlyCollection<ParameterValue> OriginalQuantityValues => _quantityValueCache;
 
       public void AddOriginalQuantityValue(ParameterValue parameterValue)
       {
+         // if there's already a value set for this path, then ignore the add
+         // we only store the first instance for a path
          if (_quantityValueCache[parameterValue.Path] == null)
             _quantityValueCache[parameterValue.Path] = parameterValue;
       }
 
-      public void RemoveOriginalQuantityValue(ObjectPath objectPath)
-      {
-         _quantityValueCache.Remove(objectPath);
-      }
+      public void RemoveOriginalQuantityValue(ObjectPath objectPath) => _quantityValueCache.Remove(objectPath);
 
-      public ParameterValue OriginalQuantityValueFor(ObjectPath objectPath)
-      {
-         return _quantityValueCache[objectPath];
-      }
+      public ParameterValue OriginalQuantityValueFor(ObjectPath objectPath) => _quantityValueCache[objectPath];
 
       public SolverSettings Solver => Settings.Solver;
 
@@ -158,10 +145,7 @@ namespace MoBi.Core.Domain.Model
          return OutputMappings.Any(x => x.UsesObservedData(dataRepository)) || Charts.Any(x => chartUsesObservedData(dataRepository, x));
       }
 
-      private bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart)
-      {
-         return curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
-      }
+      private bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart) => curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
 
       public override void AcceptVisitor(IVisitor visitor)
       {
@@ -177,12 +161,8 @@ namespace MoBi.Core.Domain.Model
 
       public ICache<string, DataRepository> HistoricResults { get; }
 
-      // public IMoBiBuildConfiguration MoBiBuildConfiguration => BuildConfiguration as IMoBiBuildConfiguration;
 
-      public void AddHistoricResults(DataRepository results)
-      {
-         HistoricResults.Add(results);
-      }
+      public void AddHistoricResults(DataRepository results) => HistoricResults.Add(results);
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
@@ -196,11 +176,6 @@ namespace MoBi.Core.Domain.Model
          OutputMappings.SwapSimulation(sourceSimulation, this);
 
          this.UpdateDiagramFrom(sourceSimulation);
-      }
-
-      public double? TotalDrugMassPerBodyWeightFor(string compoundName)
-      {
-         return null;
       }
 
       public void RemoveUsedObservedData(DataRepository dataRepository)
@@ -228,15 +203,9 @@ namespace MoBi.Core.Domain.Model
          get { yield return Chart; }
       }
 
-      public void AddChartTemplate(CurveChartTemplate chartTemplate)
-      {
-         Settings.AddChartTemplate(chartTemplate);
-      }
+      public void AddChartTemplate(CurveChartTemplate chartTemplate) => Settings.AddChartTemplate(chartTemplate);
 
-      public void RemoveChartTemplate(string chartTemplateName)
-      {
-         Settings.RemoveChartTemplate(chartTemplateName);
-      }
+      public void RemoveChartTemplate(string chartTemplateName) => Settings.RemoveChartTemplate(chartTemplateName);
 
       public IEnumerable<CurveChartTemplate> ChartTemplates => Settings.ChartTemplates;
 
@@ -261,17 +230,11 @@ namespace MoBi.Core.Domain.Model
 
       public bool HasUpToDateResults { get; private set; }
 
-      public void MarkResultsOutOfDate()
-      {
-         HasUpToDateResults = false;
-      }
+      public void MarkResultsOutOfDate() => HasUpToDateResults = false;
 
       public bool HasResults => ResultsDataRepository != null;
 
-      public bool Uses(Module module)
-      {
-         return Configuration.ModuleConfigurations.Any(x => Equals(x.Module.Name, module.Name));
-      }
+      public bool Uses(Module module) => Configuration.ModuleConfigurations.Any(x => Equals(x.Module.Name, module.Name));
 
       public DataRepository ResultsDataRepository
       {

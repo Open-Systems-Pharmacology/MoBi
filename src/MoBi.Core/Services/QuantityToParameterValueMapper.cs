@@ -18,18 +18,18 @@ namespace MoBi.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public ParameterValue MapFrom(IQuantity input)
+      public ParameterValue MapFrom(IQuantity quantity)
       {
          var parameterValue = new ParameterValue
          {
-            Path = _entityPathResolver.ObjectPathFor(input),
-            Value = input.Value,
-            Formula = input.Formula,
-            Dimension = input.Dimension,
-            DisplayUnit = input.DisplayUnit
+            Path = _entityPathResolver.ObjectPathFor(quantity),
+            Value = quantity.Value,
+            Formula = quantity.Formula,
+            Dimension = quantity.Dimension,
+            DisplayUnit = quantity.DisplayUnit
          };
 
-         parameterValue.UpdateValueOriginFrom(input.ValueOrigin);
+         parameterValue.UpdateValueOriginFrom(quantity.ValueOrigin);
          return parameterValue;
       }
    }

@@ -46,7 +46,8 @@ namespace MoBi.Helpers
 
       public static IQuantityValueInSimulationChangeTracker QuantityValueChangeTracker(IEventPublisher eventPublisher)
       {
-         return new QuantityValueInSimulationChangeTracker(new QuantityToParameterValueMapper(new EntityPathResolver(new ObjectPathFactoryForSpecs())), eventPublisher);
+         var entityPathResolver = new EntityPathResolver(new ObjectPathFactoryForSpecs());
+         return new QuantityValueInSimulationChangeTracker(new QuantityToParameterValueMapper(entityPathResolver), eventPublisher, entityPathResolver);
       }
 
       public static DataRepository ObservedData(string id = "TestData", IDimension timeDimension = null, IDimension concentrationDimension = null, string obsDataColumnName = null)

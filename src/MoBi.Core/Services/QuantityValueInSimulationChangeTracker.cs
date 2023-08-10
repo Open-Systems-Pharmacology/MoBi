@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Services
@@ -16,11 +17,13 @@ namespace MoBi.Core.Services
    {
       private readonly IQuantityToParameterValueMapper _quantityToParameterValueMapper;
       private readonly IEventPublisher _eventPublisher;
+      private readonly IEntityPathResolver _entityPathResolver;
 
-      public QuantityValueInSimulationChangeTracker(IQuantityToParameterValueMapper quantityToParameterValueMapper, IEventPublisher eventPublisher)
+      public QuantityValueInSimulationChangeTracker(IQuantityToParameterValueMapper quantityToParameterValueMapper, IEventPublisher eventPublisher, IEntityPathResolver entityPathResolver)
       {
          _quantityToParameterValueMapper = quantityToParameterValueMapper;
          _eventPublisher = eventPublisher;
+         _entityPathResolver = entityPathResolver;
       }
 
       public void TrackChanges(IQuantity quantity, IMoBiSimulation simulation, Action changeAction)
@@ -34,6 +37,10 @@ namespace MoBi.Core.Services
 
       private void storeOriginalQuantityValue(IQuantity quantity, IMoBiSimulation simulation)
       {
+         var pathForQuantity = _entityPathResolver.ObjectPathFor(quantity);
+         if (simulation.OriginalQuantityValueFor(pathForQuantity) != null)
+            return;
+         
          simulation.AddOriginalQuantityValue(_quantityToParameterValueMapper.MapFrom(quantity));
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
@@ -54,9 +61,6 @@ namespace MoBi.Core.Services
       /// </summary>
       private void checkForOriginalValueRestored(IQuantity quantity, IMoBiSimulation simulation)
       {
-         if (quantity == null || simulation == null)
-            return;
-         
          var newParameterValue = _quantityToParameterValueMapper.MapFrom(quantity);
          var oldParameterValue = simulation.OriginalQuantityValueFor(newParameterValue.Path);
 

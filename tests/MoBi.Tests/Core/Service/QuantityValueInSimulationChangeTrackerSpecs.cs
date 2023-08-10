@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -48,8 +49,8 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher).TrackChanges(_quantity, _simulation, () => _quantity.Value = 3.0);
-         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher).TrackChanges(_quantity, _simulation, () => _quantity.Value = 1.0);
+         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, () => _quantity.Value = 3.0);
+         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, () => _quantity.Value = 1.0);
       }
 
       [Observation]
@@ -81,7 +82,7 @@ namespace MoBi.Core.Service
          var container = new Container().WithName("topContainer");
          container.Add(_quantity);
 
-         sut = new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher);
+         sut = new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs());
       }
 
       protected override void Because()
@@ -123,7 +124,7 @@ namespace MoBi.Core.Service
 
          var container = new Container().WithName("topContainer");
          container.Add(_quantity);
-         sut = new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher);
+         sut = new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs());
       }
 
       protected override void Because()
@@ -135,7 +136,7 @@ namespace MoBi.Core.Service
       public void the_simulation_should_contain_a_tracker_object_with_the_original_value()
       {
          _simulation.OriginalQuantityValues.Count.ShouldBeEqualTo(1);
-         _simulation.OriginalQuantityValues[0].Value.ShouldBeEqualTo(1.0);
+         _simulation.OriginalQuantityValues.First().Value.ShouldBeEqualTo(1.0);
       }
 
       [Observation]

@@ -23,7 +23,8 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         context.Resolve<IQuantityValueInSimulationChangeTracker>().TrackChanges(_quantity, _simulation, () => base.ExecuteWith(context));
+         var changeTracker = context.Resolve<IQuantityValueInSimulationChangeTracker>();
+         changeTracker.TrackChanges(_quantity, _simulation, () => base.ExecuteWith(context));
       }
 
       protected override void ClearReferences()
