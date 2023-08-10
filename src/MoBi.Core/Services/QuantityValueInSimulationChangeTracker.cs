@@ -40,7 +40,7 @@ namespace MoBi.Core.Services
          var pathForQuantity = _entityPathResolver.ObjectPathFor(quantity);
          if (simulation.OriginalQuantityValueFor(pathForQuantity) != null)
             return;
-         
+
          simulation.AddOriginalQuantityValue(_quantityToParameterValueMapper.MapFrom(quantity));
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
@@ -51,13 +51,13 @@ namespace MoBi.Core.Services
                 newParameterValue.Formula == oldParameterValue.Formula &&
                 newParameterValue.Dimension == oldParameterValue.Dimension &&
                 newParameterValue.DisplayUnit == oldParameterValue.DisplayUnit &&
-                newParameterValue.Path.Equals(oldParameterValue.Path) && 
+                newParameterValue.Path.Equals(oldParameterValue.Path) &&
                 newParameterValue.ValueOrigin.Equals(oldParameterValue.ValueOrigin);
       }
 
       /// <summary>
-      /// If the result of the tracked change is that the new quantity becomes the same as the original quantity,
-      /// then we remove the original quantity value from the simulation.
+      ///    If the result of the tracked change is that the new quantity becomes the same as the original quantity,
+      ///    then we remove the original quantity value from the simulation.
       /// </summary>
       private void checkForOriginalValueRestored(IQuantity quantity, IMoBiSimulation simulation)
       {
@@ -66,7 +66,6 @@ namespace MoBi.Core.Services
 
          if (oldParameterValue == null || !areEquivalent(newParameterValue, oldParameterValue))
             return;
-
 
          simulation.RemoveOriginalQuantityValue(newParameterValue.Path);
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
