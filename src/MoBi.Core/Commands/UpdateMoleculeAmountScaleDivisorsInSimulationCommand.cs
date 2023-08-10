@@ -17,7 +17,7 @@ namespace MoBi.Core.Commands
       private IReadOnlyCollection<ScaleDivisor> _scaleFactors;
 
       public UpdateMoleculeAmountScaleDivisorsInSimulationCommand(IReadOnlyCollection<ScaleDivisor> scaleFactors, IMoBiSimulation simulation)
-         : base(scaleFactors, simulation)
+         : base(simulation)
       {
          _scaleFactors = scaleFactors;
          _oldScaleFactors = new List<ScaleDivisor>();

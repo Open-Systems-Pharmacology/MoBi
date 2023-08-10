@@ -54,10 +54,7 @@ namespace MoBi.Presentation.Presenter
 
       private IMoBiCommand createEditCommandFor(string name, object newValue, object oldValue)
       {
-         if (_simulation == null)
-            return new EditSolverPropertyCommand(name, newValue, oldValue, _simulationSettings);
-
-         return new EditSolverPropertyInSimulationCommand(name, newValue, oldValue, _simulation);
+         return new EditSolverPropertyCommand(name, newValue, oldValue, _simulationSettings);
       }
 
       public override ApplicationIcon Icon => ApplicationIcons.Solver;

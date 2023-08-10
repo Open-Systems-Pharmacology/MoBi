@@ -63,13 +63,13 @@ namespace MoBi.Presentation.Presenter
 
       public void AddOutputInterval()
       {
-         AddCommand(_outputSchemaTask.AddOuputIntervalTo(_simulationSettings, _simulation));
+         AddCommand(_outputSchemaTask.AddOutputIntervalTo(_simulationSettings));
          bindToView();
       }
 
       public void RemoveOutputInterval(OutputIntervalDTO outputIntervalDTO)
       {
-         AddCommand(_outputSchemaTask.RemoveOuputInterval(getIntervalFromDto(outputIntervalDTO), _simulationSettings, _simulation));
+         AddCommand(_outputSchemaTask.RemoveOutputInterval(getIntervalFromDto(outputIntervalDTO), _simulationSettings));
          bindToView();
       }
 
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Presenter
       {
          var parameter = parameterDTO.Parameter;
          AddCommand(_simulation != null
-            ? _quantityTask.SetQuantityDisplayValue(parameter, valuevalueInDisplayUnit, _simulation)
+            ? _quantityTask.SetQuantityDisplayValue(parameter, valuevalueInDisplayUnit, _simulation.Settings)
             : _quantityTask.SetQuantityDisplayValue(parameter, valuevalueInDisplayUnit, _simulationSettings));
       }
 

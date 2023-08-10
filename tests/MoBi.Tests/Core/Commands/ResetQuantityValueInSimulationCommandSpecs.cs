@@ -4,6 +4,9 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Core.Services;
+using MoBi.Helpers;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Commands
 {
@@ -16,6 +19,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
+         A.CallTo(() => _context.Resolve<IQuantityValueInSimulationChangeTracker>()).Returns(DomainHelperForSpecs.QuantityValueChangeTracker(A.Fake<IEventPublisher>()));
          _quantity = new Parameter { IsFixedValue = true };
          _simulation = new MoBiSimulation
          {

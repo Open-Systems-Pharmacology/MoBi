@@ -5,6 +5,9 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using MoBi.Core.Services;
+using MoBi.Helpers;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Commands
 {
@@ -22,6 +25,7 @@ namespace MoBi.Core.Commands
          _valueToSet = 10;
          _oldValue = 5;
          _context = A.Fake<IMoBiContext>();
+         A.CallTo(() => _context.Resolve<IQuantityValueInSimulationChangeTracker>()).Returns(DomainHelperForSpecs.QuantityValueChangeTracker(A.Fake<IEventPublisher>()));
          _quantity = CreateQuantity().WithId("Quantity");
          A.CallTo(() => _context.Get<IMoBiSimulation>(_simulation.Id)).Returns(_simulation);
          A.CallTo(() => _context.Get<IQuantity>(_quantity.Id)).Returns(_quantity);

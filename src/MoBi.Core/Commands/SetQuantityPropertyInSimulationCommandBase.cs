@@ -1,6 +1,7 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 
 namespace MoBi.Core.Commands
@@ -11,13 +12,19 @@ namespace MoBi.Core.Commands
       private readonly string _quantityId;
 
       protected SetQuantityPropertyInSimulationCommandBase(TQuantity quantity, IMoBiSimulation simulation)
-         : base(quantity, simulation)
+         : base(simulation)
       {
          _quantity = quantity;
          ObjectType = new ObjectTypeResolver().TypeFor(quantity);
          _quantityId = _quantity.Id;
          _simulation = simulation;
          CommandType = AppConstants.Commands.EditCommand;
+      }
+
+      protected override void ExecuteWith(IMoBiContext context)
+      {
+         var changeTracker = context.Resolve<IQuantityValueInSimulationChangeTracker>();
+         changeTracker.TrackChanges(_quantity, _simulation, x => base.ExecuteWith(context));
       }
 
       protected override void ClearReferences()

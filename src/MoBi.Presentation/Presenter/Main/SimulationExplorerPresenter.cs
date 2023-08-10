@@ -186,7 +186,7 @@ namespace MoBi.Presentation.Presenter.Main
          
          var changedTemplateBuildingBlocks = findChangedTemplateBuildingBlocks(simulation).ToList();
 
-         var isChangedSimulation = changedTemplateBuildingBlocks.Any();
+         var isChangedSimulation = changedTemplateBuildingBlocks.Any() || simulation.OriginalQuantityValues.Any();
          simulationNode.Icon = isChangedSimulation ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
 
          updateBuildingBlockIcons(changedTemplateBuildingBlocks.Select(x => x.simulationBuildingBlock), simulationNode.AllNodes.OfType<BuildingBlockNode>());

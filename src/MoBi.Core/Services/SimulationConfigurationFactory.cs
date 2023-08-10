@@ -1,5 +1,4 @@
-﻿using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain.Builder;
+﻿using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 

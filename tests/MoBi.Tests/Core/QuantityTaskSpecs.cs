@@ -10,6 +10,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core
@@ -27,7 +28,8 @@ namespace MoBi.Core
       {
          _quantitySynchronizer = A.Fake<IQuantitySynchronizer>();
          _context = A.Fake<IMoBiContext>();
-         _simulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _context.Resolve<IQuantityValueInSimulationChangeTracker>()).Returns(DomainHelperForSpecs.QuantityValueChangeTracker(A.Fake<IEventPublisher>()));
+         _simulation = new MoBiSimulation();
          _buildingBlock = A.Fake<IBuildingBlock>();
          _parameter = new Parameter().WithFormula(new ExplicitFormula("1+2"));
          _parameter.Dimension = DomainHelperForSpecs.TimeDimension;
