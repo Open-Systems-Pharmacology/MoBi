@@ -34,10 +34,9 @@ namespace MoBi.Core.Domain.Services
          return simulation;
       }
 
-      // TODO: do we need to create an actual clone? SIMULATION_CONFIGURATION
       private SimulationConfiguration simulationConfigurationCloneFor(SimulationConfiguration configuration)
       {
-         return configuration;
+         return _cloneManagerForBuildingBlock.Clone(configuration);
       }
 
       public T CloneBuildingBlock<T>(T toClone) where T : class, IBuildingBlock
