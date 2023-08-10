@@ -39,22 +39,34 @@ namespace MoBi.Core
 
    public class When_adding_a_simulation_to_project_that_does_not_contain_any_simulation_or_building_block : concern_for_SimulationLoader
    {
-      
       private ObserverBuildingBlock _cloneBuildingBlock;
       private SimulationConfiguration _simulationConfiguration;
+      private Module _clonedModule;
+      private IndividualBuildingBlock _clonedIndividual;
 
       protected override void Context()
       {
          base.Context();
-         var module = new Module()
+         var originalBuildingBlock = new ObserverBuildingBlock().WithId("SP1");
+         var module = new Module
          {
-            new ObserverBuildingBlock().WithId("SP1")
+            originalBuildingBlock
+         };
+
+         _cloneBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
+         _clonedModule = new Module
+         {
+            _cloneBuildingBlock
          };
          _simulationConfiguration = new SimulationConfiguration();
          _simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
+         _simulationConfiguration.Individual = new IndividualBuildingBlock().WithId("ind1");
+         _clonedIndividual = new IndividualBuildingBlock().WithId("ind2");
 
-         _cloneBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_simulationConfiguration.ModuleConfigurations.First().Module.Observers)).Returns(_cloneBuildingBlock);
+         A.CallTo(() => _context.Clone(module)).Returns(_clonedModule);
+
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(originalBuildingBlock)).Returns(_cloneBuildingBlock);
+         A.CallTo(() => _cloneManager.CloneBuildingBlock(_simulationConfiguration.Individual)).Returns(_clonedIndividual);
          A.CallTo(() => _simulation.Configuration).Returns(_simulationConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }
@@ -62,6 +74,12 @@ namespace MoBi.Core
       protected override void Because()
       {
          sut.AddSimulationToProject(_simulation);
+      }
+
+      [Observation]
+      public void should_add_clone_of_individual_to_the_project()
+      {
+         _project.IndividualsCollection.Single().ShouldBeEqualTo(_clonedIndividual);
       }
 
       [Observation]
@@ -77,9 +95,15 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_add_the_building_block_to_the_project_as_well()
+      public void should_add_clone_of_module_to_the_project_as_well()
       {
-         _project.Modules[0].Observers.ShouldBeEqualTo(_simulationConfiguration.ModuleConfigurations.First().Module.Observers);
+         _project.Modules[0].ShouldBeEqualTo(_clonedModule);
+      }
+
+      [Observation]
+      public void should_add_clone_of_building_block_to_the_project_as_well()
+      {
+         _project.Modules[0].Observers.ShouldBeEqualTo(_cloneBuildingBlock);
       }
    }
 

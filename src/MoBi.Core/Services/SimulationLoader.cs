@@ -93,15 +93,6 @@ namespace MoBi.Core.Services
             .Each(x => loadCommand.AddCommand(new AddObservedDataToProjectCommand(x)));
       }
 
-      // private void checkTemplateBuildingBlock(IBuildingBlockInfo buildingBlockInfo)
-      // {
-      //    if (!string.IsNullOrEmpty(buildingBlockInfo.TemplateBuildingBlockId)) 
-      //       return;
-      //
-      //    buildingBlockInfo.TemplateBuildingBlockId = buildingBlockInfo.UntypedBuildingBlock.Id;
-      //    buildingBlockInfo.UntypedTemplateBuildingBlock = buildingBlockInfo.UntypedBuildingBlock;
-      // }
-
       private IMoBiSimulation cloneSimulation(IMoBiSimulation simulation)
       {
          return _cloneManager.CloneSimulation(simulation);
@@ -110,36 +101,16 @@ namespace MoBi.Core.Services
       private void addSimulationConfigurationToProject(IMoBiSimulation simulation, ICommandCollector commandCollector)
       {
          var config = simulation.Configuration;
-         config.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(moduleConfiguration.Module)));
+         config.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(_context.Clone(moduleConfiguration.Module))));
          
          addToProject(commandCollector, config.Individual, individual => new AddIndividualBuildingBlockToProjectCommand(individual));
          config.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile, ep => new AddExpressionProfileBuildingBlockToProjectCommand(ep)));
-
-         // if (psv != null)
-         // {
-         //    updateTemplateBuildingBlockIds(psv, copyMolecules.Id, copySpatialStructure.Id, config.ParameterStartValuesInfo.BuildingBlock);
-         // }
-         //
-         // var msv = addToProject(commandCollector, createForProject(project.InitialConditionBlockCollection, config.MoleculeStartValuesInfo));
-         // if (msv != null)
-         // {
-         //    updateTemplateBuildingBlockIds(msv, copyMolecules.Id, copySpatialStructure.Id, config.MoleculeStartValuesInfo.BuildingBlock);
-         // }
-      }
-
-      private static void updateTemplateBuildingBlockIds<T>(PathAndValueEntityBuildingBlock<T> pathAndValueEntities, string moleculeBuildingBlockId,
-         string spatialStructureId, PathAndValueEntityBuildingBlock<T> buildingBlock) where T : PathAndValueEntity
-      {
-         // startValues.MoleculeBuildingBlockId = moleculeBuildingBlockId;
-         // startValues.SpatialStructureId = spatialStructureId;
-         // buildingBlock.MoleculeBuildingBlockId = startValues.MoleculeBuildingBlockId;
-         // buildingBlock.SpatialStructureId = startValues.SpatialStructureId;
       }
 
       private T addToProject<T>(ICommandCollector commandCollector, T buildingBlock, Func<T, ICommand> commandCreatorFunc) where T : class, IBuildingBlock
       {
          if (buildingBlock != null)
-            commandCollector.AddCommand(commandCreatorFunc(buildingBlock));
+            commandCollector.AddCommand(commandCreatorFunc(_cloneManager.CloneBuildingBlock(buildingBlock)));
 
          return buildingBlock;
       }
