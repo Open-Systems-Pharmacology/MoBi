@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
@@ -39,22 +38,36 @@ namespace MoBi.Core
 
    public class When_adding_a_simulation_to_project_that_does_not_contain_any_simulation_or_building_block : concern_for_SimulationLoader
    {
-      
-      private ObserverBuildingBlock _cloneBuildingBlock;
+      private ObserverBuildingBlock _clonedBuildingBlock;
       private SimulationConfiguration _simulationConfiguration;
+      private Module _clonedModule;
+      private IndividualBuildingBlock _clonedIndividual;
+      private SimulationConfiguration _clonedSimulationConfiguration;
 
       protected override void Context()
       {
          base.Context();
-         var module = new Module()
+         var originalBuildingBlock = new ObserverBuildingBlock().WithId("SP1");
+         var module = new Module
          {
-            new ObserverBuildingBlock().WithId("SP1")
+            originalBuildingBlock
+         };
+
+         _clonedBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
+         _clonedModule = new Module
+         {
+            _clonedBuildingBlock
          };
          _simulationConfiguration = new SimulationConfiguration();
          _simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
+         _simulationConfiguration.Individual = new IndividualBuildingBlock().WithId("ind1");
 
-         _cloneBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_simulationConfiguration.ModuleConfigurations.First().Module.Observers)).Returns(_cloneBuildingBlock);
+         _clonedIndividual = new IndividualBuildingBlock().WithId("ind2");
+         _clonedSimulationConfiguration = new SimulationConfiguration();
+         _clonedSimulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(_clonedModule));
+         _clonedSimulationConfiguration.Individual = _clonedIndividual;
+         
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_simulationConfiguration)).Returns(_clonedSimulationConfiguration);
          A.CallTo(() => _simulation.Configuration).Returns(_simulationConfiguration);
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }
@@ -62,6 +75,12 @@ namespace MoBi.Core
       protected override void Because()
       {
          sut.AddSimulationToProject(_simulation);
+      }
+
+      [Observation]
+      public void should_add_clone_of_individual_to_the_project()
+      {
+         _project.IndividualsCollection.Single().ShouldBeEqualTo(_clonedIndividual);
       }
 
       [Observation]
@@ -77,13 +96,13 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_add_the_building_block_to_the_project_as_well()
+      public void should_add_clone_of_module_to_the_project_as_well()
       {
-         _project.Modules[0].Observers.ShouldBeEqualTo(_simulationConfiguration.ModuleConfigurations.First().Module.Observers);
+         _project.Modules[0].ShouldBeEqualTo(_clonedModule);
       }
    }
 
-   public class When_adding_a_simulation_to_project_that_does_already_exists_by_name_and_ther_user_cancels_the_rename : concern_for_SimulationLoader
+   public class When_adding_a_simulation_to_project_that_does_already_exists_by_name_and_the_user_cancels_the_rename : concern_for_SimulationLoader
    {
       protected override void Context()
       {

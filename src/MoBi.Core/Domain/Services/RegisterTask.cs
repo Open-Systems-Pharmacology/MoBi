@@ -32,7 +32,8 @@ namespace MoBi.Core.Domain.Services
 
       private void register(IWithId objectBase)
       {
-         if (objectBase == null) return;
+         if (objectBase == null) 
+            return;
          _withIdRepository.Register(objectBase);
       }
 
