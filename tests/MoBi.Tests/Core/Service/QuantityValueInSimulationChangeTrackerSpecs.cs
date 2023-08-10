@@ -49,8 +49,8 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, () => _quantity.Value = 3.0);
-         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, () => _quantity.Value = 1.0);
+         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, x => x.Value = 3.0);
+         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, x => x.Value = 1.0);
       }
 
       [Observation]
@@ -87,7 +87,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         sut.TrackChanges(_quantity, _simulation, () => { });
+         sut.TrackChanges(_quantity, _simulation, x => { });
       }
 
       [Observation]
@@ -129,7 +129,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         sut.TrackChanges(_quantity, _simulation, () => _quantity.Value = 2.0);
+         sut.TrackChanges(_quantity, _simulation, x => x.Value = 2.0);
       }
 
       [Observation]

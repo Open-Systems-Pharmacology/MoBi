@@ -10,7 +10,7 @@ namespace MoBi.Core.Services
 {
    public interface IQuantityValueInSimulationChangeTracker
    {
-      void TrackChanges(IQuantity quantity, IMoBiSimulation simulation, Action changeAction);
+      void TrackChanges(IQuantity quantity, IMoBiSimulation simulation, Action<IQuantity> actionModifyingQuantity);
    }
 
    public class QuantityValueInSimulationChangeTracker : IQuantityValueInSimulationChangeTracker
@@ -26,11 +26,11 @@ namespace MoBi.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public void TrackChanges(IQuantity quantity, IMoBiSimulation simulation, Action changeAction)
+      public void TrackChanges(IQuantity quantity, IMoBiSimulation simulation, Action<IQuantity> actionModifyingQuantity)
       {
          storeOriginalQuantityValue(quantity, simulation);
 
-         changeAction();
+         actionModifyingQuantity(quantity);
 
          checkForOriginalValueRestored(quantity, simulation);
       }
