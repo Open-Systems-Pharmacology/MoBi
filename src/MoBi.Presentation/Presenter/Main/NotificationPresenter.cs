@@ -4,25 +4,24 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Regions;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -33,6 +32,7 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<FormulaInvalidEvent>,
       IListener<ProjectClosedEvent>,
       IListener<ShowNotificationsEvent>,
+      IListener<ClearNotificationsEvent>,
       IListener<RemovedEvent>
    {
       void Toggle(NotificationType typeToToggle);
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Presenter.Main
       {
          _region = _regionResolver.RegionWithName(RegionNames.NotificationList);
          _region.Add(_view);
-         new[] {NotificationType.Error, NotificationType.Info, NotificationType.Warning}.Each(t => _view.Show(t, isShowing(t)));
+         new[] { NotificationType.Error, NotificationType.Info, NotificationType.Warning }.Each(t => _view.Show(t, isShowing(t)));
          _allNotifications = new NotifyList<NotificationMessageDTO>();
          bindToView();
       }
@@ -151,12 +151,12 @@ namespace MoBi.Presentation.Presenter.Main
 
          var dataTable = new DataTable();
 
-         dataTable.Columns.Add(AppConstants.Captions.Type, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.ObjectType, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.ObjectName, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.BuildingBlockType, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.BuildingBlockName, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.Message, typeof (string));
+         dataTable.Columns.Add(AppConstants.Captions.Type, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.ObjectType, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.ObjectName, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.BuildingBlockType, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.BuildingBlockName, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.Message, typeof(string));
          dataTable.Columns.Add(AppConstants.Captions.MessageOrigin, typeof(string));
 
 
@@ -195,7 +195,7 @@ namespace MoBi.Presentation.Presenter.Main
       {
          _allNotifications = new NotifyList<NotificationMessageDTO>(_allNotifications);
 
-     
+
          notificationMessages.Where(notificationIsVisible).Each(m =>
          {
             if (!_allNotifications.Contains(m))
@@ -261,28 +261,32 @@ namespace MoBi.Presentation.Presenter.Main
       {
          return _allNotifications.Where(n => possibleObjects.Contains(n.Object) || possibleObjects.Contains(n.BuildingBlock)).ToList();
       }
+
+      public void Handle(ClearNotificationsEvent eventToHandle)
+      {
+         ClearNotifications(eventToHandle.MessageOrigin);
+      }
    }
 
    public class NotificationMessageDTO : IViewItem
    {
-      private readonly NotificationMessage _notificationMessage;
-
       public NotificationMessageDTO(NotificationMessage notificationMessage)
       {
-         _notificationMessage = notificationMessage;
+         NotificationMessage = notificationMessage;
       }
 
-      public Image Image => _notificationMessage.Image.ToImage();
-      public NotificationType Type => _notificationMessage.Type;
-      public NotificationMessage NotificationMessage => _notificationMessage;
-      public IObjectBase Object => _notificationMessage.Object;
-      public IObjectBase BuildingBlock => _notificationMessage.BuildingBlock;
-      public string ObjectType => _notificationMessage.ObjectType;
-      public string ObjectName => _notificationMessage.ObjectName;
-      public string BuildingBlockType => _notificationMessage.BuildingBlockType;
-      public string BuildingBlockName => _notificationMessage.BuildingBlockName;
-      public MessageOrigin MessageOrigin => _notificationMessage.MessageOrigin;
-      public IEnumerable<string> Details => _notificationMessage.Details;
+      public Image Image => NotificationMessage.Image.ToImage();
+      public NotificationType Type => NotificationMessage.Type;
+      public NotificationMessage NotificationMessage { get; }
+
+      public IObjectBase Object => NotificationMessage.Object;
+      public IObjectBase BuildingBlock => NotificationMessage.BuildingBlock;
+      public string ObjectType => NotificationMessage.ObjectType;
+      public string ObjectName => NotificationMessage.ObjectName;
+      public string BuildingBlockType => NotificationMessage.BuildingBlockType;
+      public string BuildingBlockName => NotificationMessage.BuildingBlockName;
+      public MessageOrigin MessageOrigin => NotificationMessage.MessageOrigin;
+      public IEnumerable<string> Details => NotificationMessage.Details;
 
       public override int GetHashCode()
       {

@@ -168,6 +168,16 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class ClearNotificationsEvent
+   {
+      public MessageOrigin MessageOrigin { get; }
+
+      public ClearNotificationsEvent(MessageOrigin messageOrigin)
+      {
+         MessageOrigin = messageOrigin;
+      }
+   }
+
    public class ShowNotificationsEvent
    {
       public IReadOnlyList<NotificationMessage> NotificationMessages { get; }

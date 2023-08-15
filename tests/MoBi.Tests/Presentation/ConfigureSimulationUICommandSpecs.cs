@@ -14,16 +14,14 @@ namespace MoBi.Presentation
       protected ISimulationUpdateTask _simulationUpdateTask;
       protected IMoBiSimulation _simulation;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
-      protected INotificationPresenter _notificationPresenter;
       protected IMoBiContext _context;
 
       protected override void Context()
       {
          _simulationUpdateTask = A.Fake<ISimulationUpdateTask>();
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
-         _notificationPresenter = A.Fake<INotificationPresenter>();
          _context = A.Fake<IMoBiContext>();
-         sut = new ConfigureSimulationUICommand(_simulationUpdateTask, _notificationPresenter, _context, _activeSubjectRetriever);
+         sut = new ConfigureSimulationUICommand(_simulationUpdateTask, _context, _activeSubjectRetriever);
 
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Subject = _simulation;

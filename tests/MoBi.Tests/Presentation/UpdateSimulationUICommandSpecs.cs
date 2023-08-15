@@ -2,7 +2,6 @@
 using OSPSuite.BDDHelper;
 using MoBi.Presentation.UICommand;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Services;
@@ -14,16 +13,14 @@ namespace MoBi.Presentation
       protected ISimulationUpdateTask _simulationUpdateTask;
       protected IMoBiSimulation _simulation;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
-      protected INotificationPresenter _notificationPresenter;
       protected IMoBiContext _context;
 
       protected override void Context()
       {
          _simulationUpdateTask = A.Fake<ISimulationUpdateTask>();
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
-         _notificationPresenter = A.Fake<INotificationPresenter>();
          _context = A.Fake<IMoBiContext>();
-         sut = new UpdateSimulationUICommand(_simulationUpdateTask, _notificationPresenter, _context, _activeSubjectRetriever);
+         sut = new UpdateSimulationUICommand(_simulationUpdateTask, _context, _activeSubjectRetriever);
 
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Subject = _simulation;

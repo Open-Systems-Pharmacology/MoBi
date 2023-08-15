@@ -1,7 +1,9 @@
 using MoBi.Assets;
+using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Commands.Core;
@@ -72,6 +74,7 @@ namespace MoBi.Presentation.Tasks
          SimulationConfiguration simulationConfigurationReferencingTemplates,
          string message = AppConstants.Captions.ConfiguringSimulation)
       {
+         _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
          //create model using referencing templates
          var model = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
 

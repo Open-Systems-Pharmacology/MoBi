@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation;
@@ -68,6 +69,12 @@ namespace MoBi.Core.Service
       {
          A.CallTo(() => _simulationConfigurationFactory.CreateFromProjectTemplatesBasedOn(_simulationConfiguration)).MustHaveHappened();
       }
+
+      [Observation]
+      public void the_notification_area_should_be_cleared()
+      {
+         A.CallTo(() => _context.PublishEvent(A<ClearNotificationsEvent>.That.Matches(x => x.MessageOrigin.Equals(MessageOrigin.Simulation)))).MustHaveHappened();
+      }
    }
 
    public class When_configuration_a_simulation : concern_for_SimulationUpdateTask
@@ -90,6 +97,12 @@ namespace MoBi.Core.Service
          sut.ConfigureSimulation(_simulationToConfigure);
       }
 
+      [Observation]
+      public void the_notification_area_should_be_cleared()
+      {
+         A.CallTo(() => _context.PublishEvent(A<ClearNotificationsEvent>.That.Matches(x => x.MessageOrigin.Equals(MessageOrigin.Simulation)))).MustHaveHappened();
+      }
+      
       [Observation]
       public void should_start_the_configure_workflow_for_the_user()
       {
