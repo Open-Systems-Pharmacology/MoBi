@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
@@ -42,116 +41,32 @@ namespace MoBi.Core.Service
          _interactionTasksForSimulation = A.Fake<IInteractionTasksForSimulation>();
          _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
 
-         sut = new SimulationUpdateTask(_context, _applicationController, _entityPathResolver, _simulationFactory, _cloneManager, _interactionTasksForSimulation, _simulationConfigurationFactory);
+         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, _simulationConfigurationFactory);
       }
    }
 
-   public class When_updating_a_configuration_from_building_blocks : concern_for_SimulationUpdateTask
+   public class When_updating_a_simulation : concern_for_SimulationUpdateTask
    {
-      private MoBiSimulation _simulationToUpdate;
-      private MoBiProject _project;
-      private SimulationConfiguration _templateSimulationConfiguration, _clonedSimulationConfiguration;
-      private SimulationConfiguration _originalSimulationConfiguration;
-      private SimulationSettings _clonedSimulationSettings;
+      private IMoBiSimulation _moBiSimulation;
+      private SimulationConfiguration _simulationConfiguration;
 
       protected override void Context()
       {
          base.Context();
-         _simulationToUpdate = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
-         _project = new MoBiProject();
-         _originalSimulationConfiguration = new SimulationConfiguration { SimulationSettings = new SimulationSettings() };
-         _templateSimulationConfiguration = new SimulationConfiguration();
-         _clonedSimulationConfiguration = new SimulationConfiguration();
-         _clonedSimulationSettings = new SimulationSettings();
-
-         A.CallTo(() => _cloneManager.Clone(_originalSimulationConfiguration.SimulationSettings)).Returns(_clonedSimulationSettings);
-
-         A.CallTo(() => _simulationConfigurationFactory.Create()).Returns(_templateSimulationConfiguration);
-
-         configureProject();
-         A.CallTo(() => _cloneManager.Clone(_templateSimulationConfiguration)).Returns(_clonedSimulationConfiguration);
-
-         configureSimulationConfiguration(_originalSimulationConfiguration);
-         _simulationToUpdate.Configuration = _originalSimulationConfiguration;
-
-         configureContext();
-      }
-
-      // Configure context to provide the project building blocks for the simulation building blocks
-      private void configureContext()
-      {
-         A.CallTo(() => _interactionTasksForSimulation.TemplateBuildingBlockFor(_simulationToUpdate.Configuration.Individual)).Returns(_project.IndividualsCollection.First());
-         A.CallTo(() => _interactionTasksForSimulation.TemplateBuildingBlockFor(_simulationToUpdate.Configuration.ExpressionProfiles.First())).Returns(_project.ExpressionProfileCollection.First());
-         A.CallTo(() => _interactionTasksForSimulation.TemplateModuleFor(_simulationToUpdate.Configuration.ModuleConfigurations.First().Module)).Returns(_project.Modules.First());
-         A.CallTo(() => _interactionTasksForSimulation.TemplateBuildingBlockFor(_simulationToUpdate.Configuration.ModuleConfigurations.First().SelectedInitialConditions)).Returns(_project.Modules.First().InitialConditionsCollection.First());
-         A.CallTo(() => _interactionTasksForSimulation.TemplateBuildingBlockFor(_simulationToUpdate.Configuration.ModuleConfigurations.First().SelectedParameterValues)).Returns(_project.Modules.First().ParameterValuesCollection.First());
-      }
-
-      private void configureSimulationConfiguration(SimulationConfiguration simulationConfiguration)
-      {
-         simulationConfiguration.AddModuleConfiguration(createModuleConfiguration(createModule()));
-         simulationConfiguration.Individual = createIndividual();
-         simulationConfiguration.AddExpressionProfile(createExpressionProfile());
-      }
-
-      // Add project building blocks for each simulation building block
-      private void configureProject()
-      {
-         A.CallTo(() => _context.CurrentProject).Returns(_project);
-         _project.AddModule(createModule());
-         _project.AddIndividualBuildingBlock(createIndividual());
-         _project.AddExpressionProfileBuildingBlock(createExpressionProfile());
-      }
-
-      private ExpressionProfileBuildingBlock createExpressionProfile()
-      {
-         return new ExpressionProfileBuildingBlock().WithName("EXPRESSION_PROFILE");
-      }
-
-      private IndividualBuildingBlock createIndividual()
-      {
-         return new IndividualBuildingBlock().WithName("INDIVIDUAL");
-      }
-
-      private ModuleConfiguration createModuleConfiguration(Module simulationModule)
-      {
-         return new ModuleConfiguration(simulationModule, simulationModule.InitialConditionsCollection.FirstOrDefault(), simulationModule.ParameterValuesCollection.FirstOrDefault());
-      }
-
-      private Module createModule()
-      {
-         var module = new Module().WithName("MODULE");
-         module.Add(new SpatialStructure().WithName("SPATIAL_STRUCTURE"));
-         module.Add(new ReactionBuildingBlock().WithName("REACTION"));
-         module.Add(new InitialConditionsBuildingBlock().WithName("INITIAL_CONDITIONS"));
-         module.Add(new ParameterValuesBuildingBlock().WithName("PARAMETER_VALUES"));
-
-         return module;
+         _moBiSimulation = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _simulationConfiguration = new SimulationConfiguration();
+         _moBiSimulation.Configuration = _simulationConfiguration;
       }
 
       protected override void Because()
       {
-         sut.UpdateSimulation(_simulationToUpdate);
+         sut.UpdateSimulation(_moBiSimulation);
       }
 
       [Observation]
-      public void the_updated_simulation_should_contain_new_building_blocks_cloned_from_project()
+      public void the_simulation_configuration_factory_creates_the_new_configuration()
       {
-         _simulationToUpdate.Configuration.ShouldBeEqualTo(_clonedSimulationConfiguration);
-         var templateModuleConfiguration = _templateSimulationConfiguration.ModuleConfigurations.First();
-         var templateModule = templateModuleConfiguration.Module;
-         var projectModule = _project.Modules.Single();
-         templateModule.ShouldBeEqualTo(projectModule);
-         templateModuleConfiguration.SelectedInitialConditions.ShouldBeEqualTo(projectModule.InitialConditionsCollection.First());
-         templateModuleConfiguration.SelectedParameterValues.ShouldBeEqualTo(projectModule.ParameterValuesCollection.First());
-         _templateSimulationConfiguration.Individual.ShouldBeEqualTo(_project.IndividualsCollection.First());
-         _templateSimulationConfiguration.ExpressionProfiles.First().ShouldBeEqualTo(_project.All<ExpressionProfileBuildingBlock>().First());
-      }
-
-      [Observation]
-      public void the_simulation_settings_should_be_separately_cloned()
-      {
-         _templateSimulationConfiguration.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
+         A.CallTo(() => _simulationConfigurationFactory.CreateFromProjectTemplatesBasedOn(_simulationConfiguration)).MustHaveHappened();
       }
    }
 

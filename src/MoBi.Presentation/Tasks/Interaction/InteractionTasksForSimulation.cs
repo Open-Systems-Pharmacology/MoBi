@@ -2,15 +2,14 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -30,29 +29,27 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand RemoveMultipleSimulations(IReadOnlyList<IMoBiSimulation> simulations);
 
       /// <summary>
-      /// Returns the project building block that matches <paramref name="buildingBlock"/>
+      ///    Returns the project building block that matches <paramref name="buildingBlock" />
       /// </summary>
       IBuildingBlock TemplateBuildingBlockFor(IBuildingBlock buildingBlock);
-
-      /// <summary>
-      /// Returns the project module that matches <paramref name="module"/>
-      /// </summary>
-      Module TemplateModuleFor(Module module);
    }
 
    public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
    {
       private readonly ISimulationReferenceUpdater _simulationReferenceUpdater;
       private readonly ISimulationFactory _simulationFactory;
+      private readonly ITemplateResolverTask _templateResolverTask;
 
       public InteractionTasksForSimulation(IInteractionTaskContext interactionTaskContext,
          IEditTasksForSimulation editTask,
          ISimulationReferenceUpdater simulationReferenceUpdater,
-         ISimulationFactory simulationFactory)
+         ISimulationFactory simulationFactory,
+         ITemplateResolverTask templateResolverTask)
          : base(interactionTaskContext, editTask)
       {
          _simulationReferenceUpdater = simulationReferenceUpdater;
          _simulationFactory = simulationFactory;
+         _templateResolverTask = templateResolverTask;
       }
 
       protected override string ObjectName => ObjectTypes.Simulation;
@@ -88,18 +85,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      public Module TemplateModuleFor(Module module)
-      {
-         return _interactionTaskContext.Context.CurrentProject.ModuleByName(module.Name);
-      }
-
       public IBuildingBlock TemplateBuildingBlockFor(IBuildingBlock buildingBlock)
       {
          // In the repository, there should always be exactly one template match. A template match requires
          // building block name/type and module name match. There could be multiple building blocks with the
          // same name and type but they would have to have different parent modules. For building blocks
          // without a parent module, two building blocks cannot have the same name and type
-         return BuildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock));
+         return _templateResolverTask.TemplateBuildingBlockFor(buildingBlock);
       }
 
       public IMoBiCommand CreateSimulation()
