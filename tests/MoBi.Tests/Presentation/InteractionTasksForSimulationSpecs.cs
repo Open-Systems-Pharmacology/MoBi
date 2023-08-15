@@ -1,19 +1,20 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {
@@ -27,6 +28,8 @@ namespace MoBi.Presentation
       protected ISimulationFactory _simulationFactory;
       protected IMoBiContext _moBiContext;
       protected IndividualBuildingBlock _individualBuildingBlock;
+      protected MoBiProject _moBiProject;
+      private ITemplateResolverTask _templateResolver;
 
       protected override void Context()
       {
@@ -39,12 +42,14 @@ namespace MoBi.Presentation
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _moBiContext = A.Fake<IMoBiContext>();
-         var moBiProject = new MoBiProject();
+         _moBiProject = new MoBiProject();
          _individualBuildingBlock = new IndividualBuildingBlock().WithName("common individual");
-         moBiProject.AddIndividualBuildingBlock(_individualBuildingBlock);
-         A.CallTo(() => _moBiContext.CurrentProject).Returns(moBiProject);
+         _moBiProject.AddIndividualBuildingBlock(_individualBuildingBlock);
+         A.CallTo(() => _moBiContext.CurrentProject).Returns(_moBiProject);
          A.CallTo(() => _context.Context).Returns(_moBiContext);
-         sut = new InteractionTasksForSimulation(_context, _editTask, _simulationReferenceUpdater, _simulationFactory);
+         _templateResolver = A.Fake<ITemplateResolverTask>();
+
+         sut = new InteractionTasksForSimulation(_context, _editTask, _simulationReferenceUpdater, _simulationFactory, _templateResolver);
       }
    }
 
@@ -86,7 +91,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulations = new List<IMoBiSimulation> {A.Fake<IMoBiSimulation>(), A.Fake<IMoBiSimulation>()};
+         _simulations = new List<IMoBiSimulation> { A.Fake<IMoBiSimulation>(), A.Fake<IMoBiSimulation>() };
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
@@ -158,58 +163,6 @@ namespace MoBi.Presentation
       public void should_start_edit_action_for_the_new_simulation()
       {
          A.CallTo(() => _editTask.Edit(_configuredSimulation)).MustHaveHappened();
-      }
-   }
-
-   internal class When_finding_template_building_block_for_a_simulation_building_block : concern_for_InteractionTasksForSimulation
-   {
-      private IBuildingBlock _resolvedSpatialStructure;
-      private List<IBuildingBlock> _allTemplateBuildingBlocks;
-      private IndividualBuildingBlock _simulationIndividual;
-      private IndividualBuildingBlock _templateIndividual;
-      private IBuildingBlock _resolvedIndividual;
-      private IBuildingBlock _resolvedReaction;
-      private Module _templateModule;
-      private Module _simulationModule;
-
-      protected override void Context()
-      {
-         base.Context();
-         _allTemplateBuildingBlocks = new List<IBuildingBlock>();
-
-         _simulationIndividual = new IndividualBuildingBlock().WithName("name");
-         _templateIndividual = new IndividualBuildingBlock().WithName("name");
-         
-         _simulationModule = createNewModuleWithBuildingBlocks("the module");
-         _templateModule = createNewModuleWithBuildingBlocks("the module");
-         var unrelatedModule = createNewModuleWithBuildingBlocks("unrelated module");
-
-         _templateModule.BuildingBlocks.Each(x => _allTemplateBuildingBlocks.Add(x));
-         unrelatedModule.BuildingBlocks.Each(x => _allTemplateBuildingBlocks.Add(x));
-         
-         _allTemplateBuildingBlocks.Add(_templateIndividual);
-
-         A.CallTo(() => _context.BuildingBlockRepository.All()).Returns(_allTemplateBuildingBlocks);
-      }
-
-      private Module createNewModuleWithBuildingBlocks(string name)
-      {
-         return new Module { new MoBiSpatialStructure().WithName("name"), new MoBiReactionBuildingBlock().WithName("name") }.WithName(name);
-      }
-
-      protected override void Because()
-      {
-         _resolvedSpatialStructure = sut.TemplateBuildingBlockFor(_simulationModule.SpatialStructure);
-         _resolvedIndividual = sut.TemplateBuildingBlockFor(_simulationIndividual);
-         _resolvedReaction = sut.TemplateBuildingBlockFor(_simulationModule.Reactions);
-      }
-
-      [Observation]
-      public void the_template_is_resolved()
-      {
-         _resolvedSpatialStructure.ShouldBeEqualTo(_templateModule.SpatialStructure);
-         _resolvedIndividual.ShouldBeEqualTo(_templateIndividual);
-         _resolvedReaction.ShouldBeEqualTo(_templateModule.Reactions);
       }
    }
 }

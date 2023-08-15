@@ -1058,8 +1058,7 @@ namespace MoBi.Assets
          public static readonly string GoTo = "Go To...";
          public static readonly string DiscardResults = "Discard";
          public static readonly string KeepResults = "Keep";
-         public static readonly string Commit = "Commit to building block ...";
-         public static readonly string Update = "Update from building block ...";
+         public static readonly string UpdateFromBuildingBlocks = "Update from building blocks";
          public static readonly string RemoveAll = "Remove All";
          public static readonly string Import = "Import ...";
          public static readonly string LoadChartTemplate = "Apply Template";
@@ -1348,6 +1347,7 @@ namespace MoBi.Assets
          public static readonly string ImportAsNew = "<Import as new>";
          public const string CreatingSimulation = "Creating...";
          public const string ConfiguringSimulation = "Configuring...";
+         public const string UpdatingSimulation = "Updating...";
          public static readonly string AddParameter = "Add Parameter ";
          public static readonly string AddMolecule = "Add Molecule";
          public static readonly string LoadParameter = "Load Parameter ";
@@ -1783,11 +1783,6 @@ namespace MoBi.Assets
          public static string NumberOfGeneratedCurves(int numberOfSelectedMolecules)
          {
             return $"Number of curves to generate for this simulation : {numberOfSelectedMolecules}";
-         }
-
-         public static string UpdatingSimulation(IObjectBase moBiSimulation)
-         {
-            return $"Updating simulation: '{moBiSimulation.Name}'";
          }
 
          public static string CommitToBuildingBlock(IBuildingBlock buildingBlock)
