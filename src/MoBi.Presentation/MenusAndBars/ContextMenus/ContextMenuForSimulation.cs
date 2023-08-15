@@ -42,13 +42,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             createEditItem(simulation),
             createRenameItem(simulation),
 
-            createConfigure(simulation),
+            createConfigure(simulation).AsGroupStarter(),
+            createUpdate(simulation),
 
-            createRunItem(simulation),
+            createRunItem(simulation).AsGroupStarter(),
             createParameterIdentificationItem(simulation),
             createSensitivityAnalysisItem(simulation),
 
-            createStartPopulationSimulation(simulation),
+            createStartPopulationSimulation(simulation).AsGroupStarter(),
             createSaveItem(simulation),
             createAddToJournal(simulation),
             exportSimulationResultsToExcel(simulation),
@@ -59,8 +60,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             createDebugReportItem(simulation),
             createExportModelPartsItem(simulation),
 
-            createImportReactionParameters(simulation),
-            createDeleteItem(simulation),
+            createImportReactionParameters(simulation).AsGroupStarter(),
+            createDeleteItem(simulation).AsGroupStarter(),
             createDeleteAllResultsItem(simulation),
          };
 
@@ -76,8 +77,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.Captions.ImportSimulationParameters.WithEllipsis())
             .WithIcon(ApplicationIcons.ParameterValuesImport)
-            .WithCommandFor<ImportSimulationParameterValuesUICommand, IMoBiSimulation>(simulation, _container)
-            .AsGroupStarter();
+            .WithCommandFor<ImportSimulationParameterValuesUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createExportModelPartsItem(IMoBiSimulation simulation)
@@ -92,8 +92,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Run)
                .WithIcon(ApplicationIcons.Run)
-               .WithCommandFor<RunSimulationCommand, IMoBiSimulation>(simulation, _container)
-               .AsGroupStarter();
+               .WithCommandFor<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createExportODEForMatlabItem(IMoBiSimulation simulation)
@@ -113,7 +112,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createParameterIdentificationItem(IMoBiSimulation simulation)
       {
-         return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(new[] {simulation}, _container);
+         return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(new[] { simulation }, _container);
       }
 
       private IMenuBarItem createDebugReportItem(IMoBiSimulation simulation)
@@ -140,10 +139,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createStartPopulationSimulation(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.StartPopulationSimulation)
-            .AsGroupStarter()
             .WithIcon(ApplicationIcons.PopulationSimulation)
-            .WithCommandFor<SendSimulationToPKSimUICommand, IMoBiSimulation>(simulation, _container)
-            .AsGroupStarter();
+            .WithCommandFor<SendSimulationToPKSimUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createSaveItem(IMoBiSimulation simulation)
@@ -157,8 +154,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveSimulationUICommand, IMoBiSimulation>(simulation, _container)
-            .WithIcon(ApplicationIcons.Delete)
-            .AsGroupStarter();
+            .WithIcon(ApplicationIcons.Delete);
       }
 
       private IMenuBarItem createDeleteAllResultsItem(IMoBiSimulation simulation)
@@ -173,19 +169,25 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<RenameSimulationUICommand, IMoBiSimulation>(simulation, _container).WithIcon(ApplicationIcons.Rename);
       }
 
-   private IMenuBarItem createEditItem(IMoBiSimulation simulation)
+      private IMenuBarItem createEditItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
             .WithIcon(ApplicationIcons.Edit)
             .WithCommandFor<EditSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
 
+      private IMenuBarItem createUpdate(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.UpdateFromBuildingBlocks.WithEllipsis())
+            .WithIcon(ApplicationIcons.Update)
+            .WithCommandFor<UpdateSimulationUICommand, IMoBiSimulation>(simulation, _container);
+      }
+
       private IMenuBarItem createConfigure(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Configure)
             .WithIcon(ApplicationIcons.SimulationConfigure)
-            .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation, _container)
-            .AsGroupStarter();
+            .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem exportSimulationResultsToExcel(IMoBiSimulation simulation)

@@ -27,6 +27,7 @@ namespace MoBi.Presentation
       protected ISimulationFactory _simulationFactory;
       protected IMoBiContext _moBiContext;
       protected IndividualBuildingBlock _individualBuildingBlock;
+      protected MoBiProject _moBiProject;
 
       protected override void Context()
       {
@@ -39,10 +40,10 @@ namespace MoBi.Presentation
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _moBiContext = A.Fake<IMoBiContext>();
-         var moBiProject = new MoBiProject();
+         _moBiProject = new MoBiProject();
          _individualBuildingBlock = new IndividualBuildingBlock().WithName("common individual");
-         moBiProject.AddIndividualBuildingBlock(_individualBuildingBlock);
-         A.CallTo(() => _moBiContext.CurrentProject).Returns(moBiProject);
+         _moBiProject.AddIndividualBuildingBlock(_individualBuildingBlock);
+         A.CallTo(() => _moBiContext.CurrentProject).Returns(_moBiProject);
          A.CallTo(() => _context.Context).Returns(_moBiContext);
          sut = new InteractionTasksForSimulation(_context, _editTask, _simulationReferenceUpdater, _simulationFactory);
       }
@@ -161,7 +162,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_finding_template_building_block_for_a_simulation_building_block : concern_for_InteractionTasksForSimulation
+   internal class When_finding_templates_for_a_simulation : concern_for_InteractionTasksForSimulation
    {
       private IBuildingBlock _resolvedSpatialStructure;
       private List<IBuildingBlock> _allTemplateBuildingBlocks;
@@ -171,6 +172,7 @@ namespace MoBi.Presentation
       private IBuildingBlock _resolvedReaction;
       private Module _templateModule;
       private Module _simulationModule;
+      private Module _resolvedModule;
 
       protected override void Context()
       {
@@ -182,6 +184,7 @@ namespace MoBi.Presentation
          
          _simulationModule = createNewModuleWithBuildingBlocks("the module");
          _templateModule = createNewModuleWithBuildingBlocks("the module");
+         _moBiProject.AddModule(_templateModule);
          var unrelatedModule = createNewModuleWithBuildingBlocks("unrelated module");
 
          _templateModule.BuildingBlocks.Each(x => _allTemplateBuildingBlocks.Add(x));
@@ -202,6 +205,7 @@ namespace MoBi.Presentation
          _resolvedSpatialStructure = sut.TemplateBuildingBlockFor(_simulationModule.SpatialStructure);
          _resolvedIndividual = sut.TemplateBuildingBlockFor(_simulationIndividual);
          _resolvedReaction = sut.TemplateBuildingBlockFor(_simulationModule.Reactions);
+         _resolvedModule = sut.TemplateModuleFor(_simulationModule);
       }
 
       [Observation]
@@ -210,6 +214,7 @@ namespace MoBi.Presentation
          _resolvedSpatialStructure.ShouldBeEqualTo(_templateModule.SpatialStructure);
          _resolvedIndividual.ShouldBeEqualTo(_templateIndividual);
          _resolvedReaction.ShouldBeEqualTo(_templateModule.Reactions);
+         _resolvedModule.ShouldBeEqualTo(_templateModule);
       }
    }
 }

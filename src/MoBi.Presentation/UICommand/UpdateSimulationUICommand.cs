@@ -6,10 +6,9 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class ConfigureSimulationUICommand : ReconfigureSimulationUICommand
+   public class UpdateSimulationUICommand : ReconfigureSimulationUICommand
    {
-      public ConfigureSimulationUICommand(
-         ISimulationUpdateTask simulationUpdateTask,
+      public UpdateSimulationUICommand(ISimulationUpdateTask simulationUpdateTask,
          INotificationPresenter notificationPresenter,
          IMoBiContext context,
          IActiveSubjectRetriever activeSubjectRetriever) :
@@ -19,7 +18,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override ICommand PerformReconfigure()
       {
-         return _simulationUpdateTask.ConfigureSimulation(Subject);
+         return _simulationUpdateTask.UpdateSimulation(Subject);
       }
    }
 }

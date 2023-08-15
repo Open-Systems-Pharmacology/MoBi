@@ -10,6 +10,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -28,7 +29,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <returns>The executed command used to perform the removal</returns>
       IMoBiCommand RemoveMultipleSimulations(IReadOnlyList<IMoBiSimulation> simulations);
 
+      /// <summary>
+      /// Returns the project building block that matches <paramref name="buildingBlock"/>
+      /// </summary>
       IBuildingBlock TemplateBuildingBlockFor(IBuildingBlock buildingBlock);
+
+      /// <summary>
+      /// Returns the project module that matches <paramref name="module"/>
+      /// </summary>
+      Module TemplateModuleFor(Module module);
    }
 
    public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
@@ -77,6 +86,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          });
 
          return macroCommand;
+      }
+
+      public Module TemplateModuleFor(Module module)
+      {
+         return _interactionTaskContext.Context.CurrentProject.ModuleByName(module.Name);
       }
 
       public IBuildingBlock TemplateBuildingBlockFor(IBuildingBlock buildingBlock)

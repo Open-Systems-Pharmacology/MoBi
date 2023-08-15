@@ -1,11 +1,15 @@
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -16,19 +20,13 @@ namespace MoBi.Presentation.Tasks
    public interface ISimulationUpdateTask
    {
       /// <summary>
-      ///    Updates the simulation according to changes in building Block. All not buildingBlock related changes are kept
-      /// </summary>
-      /// <param name="simulationToUpdate">The simulation to update.</param>
-      /// <param name="templateBuildingBlock">The changed building block.</param>
-      /// <returns>Executed command representing the update performed on the simulation</returns>
-      ICommand UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock);
-
-      /// <summary>
       ///    Configures the simulation (e.g. Allows the user to update the current simulation with other building blocks)
       /// </summary>
       /// <param name="simulationToConfigure"></param>
       /// <returns></returns>
       ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure);
+
+      ICommand UpdateSimulation(IMoBiSimulation subject);
    }
 
    public class SimulationUpdateTask : ISimulationUpdateTask
@@ -37,41 +35,53 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiApplicationController _applicationController;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly ISimulationFactory _simulationFactory;
+      private readonly ICloneManagerForBuildingBlock _cloneManager;
+      private readonly IInteractionTasksForSimulation _interactionTasksForSimulation;
+      private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
 
-      public SimulationUpdateTask(IMoBiContext context, IMoBiApplicationController applicationController, IEntityPathResolver entityPathResolver, ISimulationFactory simulationFactory)
+      public SimulationUpdateTask(IMoBiContext context,
+         IMoBiApplicationController applicationController,
+         IEntityPathResolver entityPathResolver,
+         ISimulationFactory simulationFactory,
+         ICloneManagerForBuildingBlock cloneManager,
+         IInteractionTasksForSimulation interactionTasksForSimulation,
+         ISimulationConfigurationFactory simulationConfigurationFactory)
       {
          _context = context;
          _applicationController = applicationController;
          _entityPathResolver = entityPathResolver;
          _simulationFactory = simulationFactory;
+         _cloneManager = cloneManager;
+         _interactionTasksForSimulation = interactionTasksForSimulation;
+         _simulationConfigurationFactory = simulationConfigurationFactory;
       }
 
-      public ICommand UpdateSimulationFrom(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock)
+      public ICommand UpdateSimulation(IMoBiSimulation simulationToUpdate)
       {
-         SimulationConfiguration simulationConfigurationReferencingTemplate;
-         var configurationCommands = new MoBiMacroCommand();
-         var fixedValueQuantities = new PathCache<IQuantity>(_entityPathResolver);
+         var simulationConfiguration = _simulationConfigurationFactory.Create();
+         
+         simulationConfiguration.CopyPropertiesFrom(simulationToUpdate.Configuration);
+         simulationConfiguration.SimulationSettings = _cloneManager.Clone(simulationToUpdate.Configuration.SimulationSettings);
+         
+         simulationToUpdate.Configuration.ModuleConfigurations.Each(moduleConfiguration => { simulationConfiguration.AddModuleConfiguration(templateModuleConfigurationFor(moduleConfiguration)); });
 
-         if (triggersReconfiguration(templateBuildingBlock))
-         {
-            SimulationConfiguration simulationConfiguration;
-            using (var presenter = _applicationController.Start<ICreateSimulationConfigurationPresenter>())
-            {
-               simulationConfiguration = presenter.CreateBasedOn(simulationToUpdate, allowNaming: false);
-            }
+         simulationConfiguration.Individual = templateBuildingBlockFor(simulationToUpdate.Configuration.Individual);
 
-            if (simulationConfiguration == null)
-               return new MoBiEmptyCommand();
+         simulationToUpdate.Configuration.ExpressionProfiles.Each(x => { simulationConfiguration.AddExpressionProfile(templateBuildingBlockFor(x)); });
 
-            simulationConfigurationReferencingTemplate = simulationConfiguration;
-         }
-         else
-         {
-            simulationConfigurationReferencingTemplate = createBuildConfigurationUsingTemplates(simulationToUpdate, templateBuildingBlock);
-            fixedValueQuantities.AddRange(simulationToUpdate.Model.Root.GetAllChildren<IQuantity>(x => x.IsFixedValue));
-         }
+         return updateSimulation(simulationToUpdate, simulationConfiguration, new MoBiMacroCommand(), AppConstants.Captions.UpdatingSimulation);
+      }
 
-         return updateSimulation(simulationToUpdate, simulationConfigurationReferencingTemplate, configurationCommands, templateBuildingBlock, fixedValueQuantities);
+      private ModuleConfiguration templateModuleConfigurationFor(ModuleConfiguration moduleConfiguration)
+      {
+         return new ModuleConfiguration(_interactionTasksForSimulation.TemplateModuleFor(moduleConfiguration.Module),
+            templateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions),
+            templateBuildingBlockFor(moduleConfiguration.SelectedParameterValues));
+      }
+
+      private TBuildingBlock templateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock
+      {
+         return _interactionTasksForSimulation.TemplateBuildingBlockFor(buildingBlock) as TBuildingBlock;
       }
 
       public ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure)
@@ -92,22 +102,16 @@ namespace MoBi.Presentation.Tasks
          IMoBiSimulation simulationToUpdate,
          SimulationConfiguration simulationConfigurationReferencingTemplates,
          IMoBiCommand configurationCommands,
-         IBuildingBlock templateBuildingBlock = null,
-         PathCache<IQuantity> fixedValueQuantities = null)
+         string message = AppConstants.Captions.ConfiguringSimulation)
       {
          //create model using referencing templates
-         var model = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
+         var model = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
 
-         var simulationBuildConfiguration = createBuildConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
+         var simulationBuildConfiguration = createSimulationConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
 
-         var updateSimulationCommand = templateBuildingBlock == null
-            ? // is null when we a simulation is being configured. Otherwise this is the template building block to user
-            new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration)
-            : new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration, templateBuildingBlock);
+         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration);
 
          updateSimulationCommand.Run(_context);
-
-         synchronizeFixedParameterValues(simulationToUpdate, templateBuildingBlock, fixedValueQuantities);
 
          var macro = new MoBiMacroCommand
          {
@@ -121,59 +125,9 @@ namespace MoBi.Presentation.Tasks
          return macro;
       }
 
-      private void synchronizeFixedParameterValues(IMoBiSimulation simulationToUpdate, IBuildingBlock templateBuildingBlock, PathCache<IQuantity> fixedValueQuantities)
+      private SimulationConfiguration createSimulationConfigurationToUseInSimulation(SimulationConfiguration simulationConfiguration)
       {
-         if (fixedValueQuantities == null)
-            return;
-
-         var currentQuantities = new PathCache<IQuantity>(_entityPathResolver);
-         currentQuantities.AddRange(simulationToUpdate.Model.Root.GetAllChildren<IQuantity>());
-
-         foreach (var fixedValueQuantity in fixedValueQuantities.KeyValues)
-         {
-            //quantity does not exist anymore after update. Nothing to do 
-            var simulationQuantity = currentQuantities[fixedValueQuantity.Key];
-            if (simulationQuantity == null)
-               continue;
-
-            //building block corresponding to quantity could not be found. That should never happen
-
-            continue;
-            //TODO SIMULATION_CONFIGURATION
-            // var affectedBuildingBlock = _affectedBuildingBlockRetriever.RetrieveFor(simulationQuantity, simulationToUpdate);
-            // if (affectedBuildingBlock?.UntypedTemplateBuildingBlock == null)
-            //    continue;
-            //
-            // //The quantity previously fixed is part of the template building block. We should not reset the changes
-            // if (Equals(affectedBuildingBlock.UntypedTemplateBuildingBlock, templateBuildingBlock))
-            //    continue;
-
-            synchronizeQuantities(fixedValueQuantity.Value, simulationQuantity);
-         }
-      }
-
-      private static void synchronizeQuantities(IQuantity fixedValueQuantity, IQuantity simulationQuantity)
-      {
-         //no need to worry about formula cache here as we are dealing with formula in simulations
-         //also formula should be set first and then value
-         simulationQuantity.Formula = fixedValueQuantity.Formula;
-         simulationQuantity.Value = fixedValueQuantity.Value;
-      }
-
-      private bool triggersReconfiguration(IBuildingBlock buildingBlock)
-      {
-         return buildingBlock.IsAnImplementationOf<MoleculeBuildingBlock>() ||
-                buildingBlock.IsAnImplementationOf<SpatialStructure>();
-      }
-
-      private SimulationConfiguration createBuildConfigurationUsingTemplates(IMoBiSimulation simulation, IBuildingBlock templateBuildingBlock)
-      {
-         return simulation.Configuration;
-      }
-
-      private SimulationConfiguration createBuildConfigurationToUseInSimulation(SimulationConfiguration simulationConfiguration)
-      {
-         return simulationConfiguration;
+         return _cloneManager.Clone(simulationConfiguration);
       }
    }
 }
