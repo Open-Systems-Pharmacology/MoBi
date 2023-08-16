@@ -114,7 +114,9 @@ namespace MoBi.Presentation.Tasks
          var newPath = path.Clone<ObjectPath>();
          // Remove the name from the path before creating the initial condition with separate arguments for name and path
          newPath.RemoveAt(newPath.Count - 1);
-         return _initialConditionsCreator.CreateInitialCondition(newPath, path.Last(), moleculeAmount.Dimension, moleculeAmount.DisplayUnit, moleculeAmount.ValueOrigin);
+         var initialCondition = _initialConditionsCreator.CreateInitialCondition(newPath, path.Last(), moleculeAmount.Dimension, moleculeAmount.DisplayUnit, moleculeAmount.ValueOrigin);
+         initialCondition.Value = moleculeAmount.Value;
+         return initialCondition;
       }
 
       private ParameterValue createParameterValue(Parameter parameter, ObjectPath objectPath)
