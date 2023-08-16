@@ -130,8 +130,6 @@ namespace MoBi.Presentation.Presenter
       private void initEditorPresenterSettings()
       {
          editorPresenter.SetDisplayQuantityPathDefinition(displayPathForColumn);
-         //Show all Columns
-         editorPresenter.SetShowDataColumnInDataBrowserDefinition(col => true);
       }
 
       private PathElements displayPathForColumn(DataColumn column)
