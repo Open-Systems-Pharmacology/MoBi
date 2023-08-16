@@ -46,8 +46,7 @@ namespace MoBi.Presentation.Tasks
       {
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
          var templateModule = _templateResolverTask.TemplateModuleFor(lastModuleConfiguration.Module);
-
-
+         
          var moBiMacroCommand = new MoBiMacroCommand
          {
             CommandType = CommitCommand,
