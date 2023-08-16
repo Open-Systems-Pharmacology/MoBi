@@ -2,10 +2,9 @@
 using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
 {
@@ -85,8 +84,8 @@ namespace MoBi.Core.Services
                getNextSuggestedName(usedNames, oldName),
                usedNames,
                iconName: ApplicationIcons.Rename.IconName);
-
          }
+
          //Rename was canceled
          if (newName.IsNullOrEmpty())
             return false;
@@ -98,14 +97,14 @@ namespace MoBi.Core.Services
       public void AutoCorrectName<T>(IEnumerable<string> alreadyUsedNames, T objectForRename) where T : IObjectBase
       {
          var oldName = objectForRename.Name;
-         var updatedName = getNextSuggestedName(alreadyUsedNames, oldName);
+         var updatedName = getNextSuggestedName(alreadyUsedNames, oldName, canUseBaseName: true);
 
          objectForRename.Name = updatedName;
       }
 
-      private string getNextSuggestedName(IEnumerable<string> usedNames, string oldName)
+      private string getNextSuggestedName(IEnumerable<string> usedNames, string oldName, bool canUseBaseName = false)
       {
-         return _containerTask.CreateUniqueName(usedNames.ToList(), oldName);
+         return _containerTask.CreateUniqueName(usedNames.ToList(), oldName, canUseBaseName);
       }
    }
 }

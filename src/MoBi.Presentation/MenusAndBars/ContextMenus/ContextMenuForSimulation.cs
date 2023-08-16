@@ -44,6 +44,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
             createConfigure(simulation).AsGroupStarter(),
             createUpdate(simulation),
+            createCommit(simulation),
 
             createRunItem(simulation).AsGroupStarter(),
             createParameterIdentificationItem(simulation),
@@ -176,9 +177,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<EditSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
 
+      private IMenuBarItem createCommit(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.CommitToBuildingBlocks)
+            .WithIcon(ApplicationIcons.Commit)
+            .WithCommandFor<CommitSimulationUICommand, IMoBiSimulation>(simulation, _container);
+      }
+
       private IMenuBarItem createUpdate(IMoBiSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.UpdateFromBuildingBlocks.WithEllipsis())
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.UpdateFromBuildingBlocks)
             .WithIcon(ApplicationIcons.Update)
             .WithCommandFor<UpdateSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }

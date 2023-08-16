@@ -7,7 +7,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Services
@@ -178,7 +177,7 @@ namespace MoBi.Core.Services
 
       private ICommand setSynchronizeCommand(IParameter buildingBlockParameter)
       {
-         _command = buildingBlockParameter != null ? new SynchronizeParameterValueToParameterValueCommand(_parameter, buildingBlockParameter) : (IMoBiCommand) new MoBiEmptyCommand();
+         _command = buildingBlockParameter != null ? new SynchronizeParameterValueToParameterValueCommand(_parameter, buildingBlockParameter) : (IMoBiCommand)new MoBiEmptyCommand();
          return _command;
       }
    }
