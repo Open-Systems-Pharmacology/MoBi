@@ -54,9 +54,13 @@ namespace MoBi.Presentation.Tasks
             Description = CommitCommandDescription(templateModule, simulationWithChanges),
             ObjectType = new ObjectTypeResolver().TypeFor<Module>()
          };
-         moBiMacroCommand.Add(lastModuleConfiguration.SelectedInitialConditions == null ? addNewInitialConditionsFromSimulationChanges(simulationWithChanges, templateModule) : updateInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration.SelectedInitialConditions));
+         moBiMacroCommand.Add(lastModuleConfiguration.SelectedInitialConditions == null ? 
+            addNewInitialConditionsFromSimulationChanges(simulationWithChanges, templateModule) : 
+            updateInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration.SelectedInitialConditions));
 
-         moBiMacroCommand.Add(lastModuleConfiguration.SelectedParameterValues == null ? addNewParameterValuesFromSimulationChanges(simulationWithChanges, templateModule) : updateParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration.SelectedParameterValues));
+         moBiMacroCommand.Add(lastModuleConfiguration.SelectedParameterValues == null ? 
+            addNewParameterValuesFromSimulationChanges(simulationWithChanges, templateModule) : 
+            updateParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration.SelectedParameterValues));
 
          return moBiMacroCommand.Run(_context);
       }
@@ -108,6 +112,7 @@ namespace MoBi.Presentation.Tasks
       private InitialCondition createInitialCondition(MoleculeAmount moleculeAmount, ObjectPath path)
       {
          var newPath = path.Clone<ObjectPath>();
+         // Remove the name from the path before creating the initial condition with separate arguments for name and path
          newPath.RemoveAt(newPath.Count - 1);
          return _initialConditionsCreator.CreateInitialCondition(newPath, path.Last(), moleculeAmount.Dimension, moleculeAmount.DisplayUnit, moleculeAmount.ValueOrigin);
       }
