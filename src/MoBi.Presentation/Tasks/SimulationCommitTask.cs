@@ -103,7 +103,7 @@ namespace MoBi.Presentation.Tasks
       private IEnumerable<(ObjectPath quantityPath, TQuantity quantity)> changesFrom<TQuantity>(IMoBiSimulation simulation) where TQuantity : Quantity
       {
          var quantities = _entitiesInSimulationRetriever.EntitiesFrom<TQuantity>(simulation);
-         return simulation.OriginalQuantityValues.Where(x => quantities.Contains(x.Path)).Select(x => (objectPath: x.Path, quantity: quantities[x.Path]));
+         return simulation.OriginalQuantityValues.Select(x => (objectPath: x.Path, quantity: quantities[x.Path])).Where(x => x.quantity != null);
       }
 
       private IMoBiCommand createAddBuildingBlockCommand<TBuildingBlock, TPathAndValueEntity>(string buildingBlockName, Module moduleToAddTo, IReadOnlyList<TPathAndValueEntity> entitiesToAdd)
