@@ -57,21 +57,21 @@ namespace MoBi.Presentation.Tasks
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
          var templateModule = _templateResolverTask.TemplateModuleFor(lastModuleConfiguration.Module);
          
-         var moBiMacroCommand = new MoBiMacroCommand
+         var macroCommand = new MoBiMacroCommand
          {
             CommandType = CommitCommand,
             Description = CommitCommandDescription(templateModule, simulationWithChanges),
             ObjectType = _objectTypeResolver.TypeFor<Module>()
          };
-         moBiMacroCommand.Add(lastModuleConfiguration.SelectedInitialConditions == null ? 
+         macroCommand.Add(lastModuleConfiguration.SelectedInitialConditions == null ? 
             addNewInitialConditionsFromSimulationChanges(simulationWithChanges, templateModule) : 
             updateInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration.SelectedInitialConditions));
 
-         moBiMacroCommand.Add(lastModuleConfiguration.SelectedParameterValues == null ? 
+         macroCommand.Add(lastModuleConfiguration.SelectedParameterValues == null ? 
             addNewParameterValuesFromSimulationChanges(simulationWithChanges, templateModule) : 
             updateParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration.SelectedParameterValues));
 
-         return moBiMacroCommand.Run(_context);
+         return macroCommand.Run(_context);
       }
 
       private ICommand updateParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ParameterValuesBuildingBlock selectedParameterValues)
