@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
@@ -38,7 +39,7 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _nameCorrector = A.Fake<INameCorrector>();
 
-         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector);
+         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver());
       }
    }
 

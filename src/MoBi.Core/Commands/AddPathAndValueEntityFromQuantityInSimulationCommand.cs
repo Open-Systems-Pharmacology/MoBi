@@ -79,12 +79,7 @@ namespace MoBi.Core.Commands
       protected override InitialCondition CreateNewEntity(IMoBiContext context)
       {
          var initialConditionsCreator = context.Resolve<IInitialConditionsCreator>();
-         var containerPath = _objectPath.Clone<ObjectPath>();
-         var lastIndex = containerPath.Count - 1;
-         var name = containerPath[lastIndex];
-         containerPath.RemoveAt(lastIndex);
-
-         return initialConditionsCreator.CreateInitialCondition(containerPath, name, _quantity.Dimension, _quantity.DisplayUnit, _quantity.ValueOrigin);
+         return initialConditionsCreator.CreateInitialCondition(_objectPath, _quantity);
       }
    }
 }

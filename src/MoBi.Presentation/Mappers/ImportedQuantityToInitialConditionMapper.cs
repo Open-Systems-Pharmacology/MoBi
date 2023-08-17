@@ -20,21 +20,21 @@ namespace MoBi.Presentation.Mappers
          _initialConditionsCreator = initialConditionsCreator;
       }
 
-      public InitialCondition MapFrom(ImportedQuantityDTO input)
+      public InitialCondition MapFrom(ImportedQuantityDTO importedQuantityDTO)
       {
-         var msv = _initialConditionsCreator.CreateInitialCondition(input.ContainerPath, input.Name, input.Dimension, input.DisplayUnit);
-         msv.Value = input.QuantityInBaseUnit;
-         msv.DisplayUnit = input.DisplayUnit;
-         msv.IsPresent = input.IsPresent;
-         msv.NegativeValuesAllowed = input.NegativeValuesAllowed;
+         var initialCondition = _initialConditionsCreator.CreateInitialCondition(importedQuantityDTO.ContainerPath, importedQuantityDTO.Name, importedQuantityDTO.Dimension, importedQuantityDTO.DisplayUnit);
+         initialCondition.Value = importedQuantityDTO.QuantityInBaseUnit;
+         initialCondition.DisplayUnit = importedQuantityDTO.DisplayUnit;
+         initialCondition.IsPresent = importedQuantityDTO.IsPresent;
+         initialCondition.NegativeValuesAllowed = importedQuantityDTO.NegativeValuesAllowed;
 
-         if(input.IsQuantitySpecified)
-            msv.Value = input.QuantityInBaseUnit;
+         if(importedQuantityDTO.IsQuantitySpecified)
+            initialCondition.Value = importedQuantityDTO.QuantityInBaseUnit;
 
-         if (input.IsScaleDivisorSpecified)
-            msv.ScaleDivisor = input.ScaleDivisor;
+         if (importedQuantityDTO.IsScaleDivisorSpecified)
+            initialCondition.ScaleDivisor = importedQuantityDTO.ScaleDivisor;
 
-         return msv;
+         return initialCondition;
       }
    }
 }
