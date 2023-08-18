@@ -25,6 +25,11 @@ namespace MoBi.Core.Domain.Extensions
          return cache;
       }
 
+      public static void AddRange<TBuildingBlock, T>(this TBuildingBlock buildingBlock, IEnumerable<T> elements) where TBuildingBlock : IBuildingBlock<T> where T : class, IBuilder
+      {
+         elements.Each(buildingBlock.Add);
+      }
+
       public static IReadOnlyList<IFormula> UniqueFormulasByName<T>(this IEnumerable<T> buildingBlock) where T : IUsingFormula
       {
          var formulaCache = new Cache<string, IFormula>(getKey: x => x.Name);

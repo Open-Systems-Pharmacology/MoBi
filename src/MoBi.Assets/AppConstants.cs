@@ -495,9 +495,9 @@ namespace MoBi.Assets
             return string.Format("Remove {3} X: '{0} {5}' Y: '{1} {6}' from {4} '{2}'", xDisplayValue, yDisplayValue, formulaName, ObjectTypes.ValuePoint, ObjectTypes.TableFormula, xDisplayUnit.Name, yDisplayUnit.Name);
          }
 
-         public static string CommitCommandDescription(IBuildingBlock buildingBlock, IModelCoreSimulation simulation, string buildingBlockType)
+         public static string CommitCommandDescription(Module module, IModelCoreSimulation simulation)
          {
-            return $"Commit changes made in Simulation: '{simulation.Name}' to {buildingBlockType}: '{buildingBlock.Name}'";
+            return $"Commit changes made in Simulation: '{simulation.Name}' to module: '{module.Name}'";
          }
 
          public static string UpdateCommandDescription(string simulationName, string buildingBlockName, string buildingBlockType)
@@ -1059,6 +1059,7 @@ namespace MoBi.Assets
          public static readonly string DiscardResults = "Discard";
          public static readonly string KeepResults = "Keep";
          public static readonly string UpdateFromBuildingBlocks = "Update from building blocks";
+         public static readonly string CommitToBuildingBlocks = "Commit to building blocks";
          public static readonly string RemoveAll = "Remove All";
          public static readonly string Import = "Import ...";
          public static readonly string LoadChartTemplate = "Apply Template";
