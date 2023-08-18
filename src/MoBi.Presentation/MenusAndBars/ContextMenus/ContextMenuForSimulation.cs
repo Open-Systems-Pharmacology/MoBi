@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
@@ -18,12 +21,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private readonly IMoBiContext _context;
       private readonly IContainer _container;
-      private IList<IMenuBarItem> _allMenuItems;
+      private readonly IInteractionTasksForSimulation _interactionTask;
+      private List<IMenuBarItem> _allMenuItems;
 
-      public ContextMenuForSimulation(IMoBiContext context, IContainer container)
+      public ContextMenuForSimulation(IMoBiContext context, IContainer container, IInteractionTasksForSimulation interactionTask)
       {
          _context = context;
          _container = container;
+         _interactionTask = interactionTask;
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -41,11 +46,17 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             createEditItem(simulation),
             createRenameItem(simulation),
+            createConfigure(simulation).AsGroupStarter()
+         };
 
-            createConfigure(simulation).AsGroupStarter(),
-            createUpdate(simulation),
-            createCommit(simulation),
+         if (simulation.BuildingBlocks().Any(hasChanges))
+            _allMenuItems.Add(createUpdate(simulation));
 
+         if (simulation.OriginalQuantityValues.Any())
+            _allMenuItems.Add(createCommit(simulation));
+
+         _allMenuItems.AddRange(new[]
+         {
             createRunItem(simulation).AsGroupStarter(),
             createParameterIdentificationItem(simulation),
             createSensitivityAnalysisItem(simulation),
@@ -63,10 +74,15 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
             createImportReactionParameters(simulation).AsGroupStarter(),
             createDeleteItem(simulation).AsGroupStarter(),
-            createDeleteAllResultsItem(simulation),
-         };
+            createDeleteAllResultsItem(simulation)
+         });
 
          return this;
+      }
+
+      private bool hasChanges(IBuildingBlock simulationBuildingBlock)
+      {
+         return _interactionTask.TemplateBuildingBlockFor(simulationBuildingBlock).Version != simulationBuildingBlock.Version;
       }
 
       private IMenuBarItem createSensitivityAnalysisItem(IMoBiSimulation simulation)
@@ -216,16 +232,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private readonly IMoBiContext _context;
       private readonly IContainer _container;
+      private readonly IInteractionTasksForSimulation _interactionTasks;
 
-      public ContextMenuSpecificationFactoryForSimulation(IMoBiContext context, IContainer container)
+      public ContextMenuSpecificationFactoryForSimulation(IMoBiContext context, IContainer container, IInteractionTasksForSimulation interactionTasks)
       {
          _context = context;
          _container = container;
+         _interactionTasks = interactionTasks;
       }
 
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return new ContextMenuForSimulation(_context, _container).InitializeWith(viewItem.DowncastTo<SimulationViewItem>(), presenter);
+         return new ContextMenuForSimulation(_context, _container, _interactionTasks).InitializeWith(viewItem.DowncastTo<SimulationViewItem>(), presenter);
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)

@@ -18,7 +18,6 @@ namespace MoBi.Core
    public abstract class concern_for_QuantityTask : ContextSpecification<IQuantityTask>
    {
       protected IMoBiContext _context;
-      protected IQuantitySynchronizer _quantitySynchronizer;
       protected IParameter _parameter;
       protected ICommand _result;
       protected IMoBiSimulation _simulation;
@@ -26,14 +25,13 @@ namespace MoBi.Core
 
       protected override void Context()
       {
-         _quantitySynchronizer = A.Fake<IQuantitySynchronizer>();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Resolve<IQuantityValueInSimulationChangeTracker>()).Returns(DomainHelperForSpecs.QuantityValueChangeTracker(A.Fake<IEventPublisher>()));
          _simulation = new MoBiSimulation();
          _buildingBlock = A.Fake<IBuildingBlock>();
          _parameter = new Parameter().WithFormula(new ExplicitFormula("1+2"));
          _parameter.Dimension = DomainHelperForSpecs.TimeDimension;
-         sut = new QuantityTask(_context, _quantitySynchronizer);
+         sut = new QuantityTask(_context);
       }
    }
 
@@ -414,15 +412,12 @@ namespace MoBi.Core
    {
       private IQuantity _quantity;
       private ValueOrigin _newValueOrigin;
-      private IMoBiCommand _synchronizeCommand;
 
       protected override void Context()
       {
          base.Context();
-         _synchronizeCommand = A.Fake<IMoBiCommand>();
          _quantity = new Parameter();
          _newValueOrigin = new ValueOrigin {Method = ValueOriginDeterminationMethods.InVitro};
-         A.CallTo(() => _quantitySynchronizer.Synchronize(_quantity, _simulation)).Returns(_synchronizeCommand);
       }
 
       protected override void Because()
@@ -434,15 +429,6 @@ namespace MoBi.Core
       public void should_update_the_value_origin_in_the_quantity()
       {
          _quantity.ValueOrigin.ShouldBeEqualTo(_newValueOrigin);
-      }
-
-      [Observation]
-      public void should_synchronize_the_value_origin_in_the_corresponding_blocks()
-      {
-         var macroComamnd = _result.DowncastTo<MoBiMacroCommand>();
-         macroComamnd.Count.ShouldBeEqualTo(3);
-         macroComamnd.All().ElementAt(0).ShouldBeEqualTo(_synchronizeCommand);
-         macroComamnd.All().ElementAt(2).ShouldBeEqualTo(_synchronizeCommand);
       }
    }
 }

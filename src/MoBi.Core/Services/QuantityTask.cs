@@ -92,12 +92,10 @@ namespace MoBi.Core.Services
    public class QuantityTask : IQuantityTask
    {
       private readonly IMoBiContext _context;
-      private readonly IQuantitySynchronizer _quantitySynchronizer;
 
-      public QuantityTask(IMoBiContext context, IQuantitySynchronizer quantitySynchronizer)
+      public QuantityTask(IMoBiContext context)
       {
          _context = context;
-         _quantitySynchronizer = quantitySynchronizer;
       }
 
       public ICommand SetQuantityDisplayValue(IQuantity quantity, double valueInDisplayUnit, IBuildingBlock buildingBlock)
@@ -114,7 +112,7 @@ namespace MoBi.Core.Services
 
       public ICommand SetQuantityBaseValue(IQuantity quantity, double valueInBaseUnit, IMoBiSimulation simulation)
       {
-         return synchronizedCommand(quantity, simulation, new SetQuantityValueInSimulationCommand(quantity, valueInBaseUnit, simulation));
+         return runAsSimulationMacroCommand(quantity, simulation, new SetQuantityValueInSimulationCommand(quantity, valueInBaseUnit, simulation));
       }
 
       public ICommand SetQuantityDisplayUnit(IQuantity quantity, Unit displayUnit, IBuildingBlock buildingBlock)
@@ -124,7 +122,7 @@ namespace MoBi.Core.Services
 
       public ICommand SetQuantityDisplayUnit(IQuantity quantity, Unit displayUnit, IMoBiSimulation simulation)
       {
-         return synchronizedCommand(quantity, simulation, new SetQuantityUnitInSimulationCommand(quantity, displayUnit, simulation));
+         return runAsSimulationMacroCommand(quantity, simulation, new SetQuantityUnitInSimulationCommand(quantity, displayUnit, simulation));
       }
 
       private ICommand withUpdatedDefaultStateAndValueOrigin(IOSPSuiteCommand executedCommand, IQuantity quantity, IBuildingBlock buildingBlock)
@@ -195,7 +193,7 @@ namespace MoBi.Core.Services
       public ICommand UpdateQuantityValueOriginInSimulation(IQuantity quantity, ValueOrigin newValueOrigin, IMoBiSimulation simulation)
       {
          //Do not update value origin since the main command is already doing it
-         return synchronizedCommand(quantity, simulation, new UpdateValueOriginInSimulationCommand(quantity, newValueOrigin, simulation), shouldUpdateValueOriginAndState:false);
+         return runAsSimulationMacroCommand(quantity, simulation, new UpdateValueOriginInSimulationCommand(quantity, newValueOrigin, simulation), shouldUpdateValueOriginAndState:false);
       }
 
       private IMoBiCommand updateQuantityValueOriginInSimulation(IQuantity quantity, ValueOrigin newValueOrigin, IMoBiSimulation simulation)
@@ -213,24 +211,15 @@ namespace MoBi.Core.Services
          return new SetParameterDefaultStateInSimulationCommand(parameter, defaultState, simulation).Run(_context);
       }
 
-      private ICommand synchronizedCommand(IQuantity quantity, IMoBiSimulation simulation, IMoBiCommand simulationCommandToBeRun, bool shouldUpdateValueOriginAndState = true)
+      private ICommand runAsSimulationMacroCommand(IQuantity quantity, IMoBiSimulation simulation, IMoBiCommand simulationCommandToBeRun, bool shouldUpdateValueOriginAndState = true)
       {
-         var macroCommand = new MoBiMacroCommand();
-
-         //add one before setting the value in the simulation to enable correct undo
-         macroCommand.Add(_quantitySynchronizer.Synchronize(quantity, simulation));
-
          IOSPSuiteCommand executedCommand = simulationCommandToBeRun.AsHidden().Run(_context);
 
          if (shouldUpdateValueOriginAndState)
             executedCommand = withUpdatedDefaultStateAndValueOrigin(executedCommand, quantity, simulation);
 
-         macroCommand.Add(executedCommand);
-
-         macroCommand.Add(_quantitySynchronizer.Synchronize(quantity, simulation));
-
          //needs to be done at the end because description might be set only after run
-         return macroCommand.WithHistoryEntriesFrom(simulationCommandToBeRun);
+         return executedCommand.WithHistoryEntriesFrom(simulationCommandToBeRun);
       }
 
       public ICommand SetDistributedParameterDimension(IDistributedParameter distributedParameter, IDimension dimension, IBuildingBlock buildingBlock)
@@ -248,7 +237,7 @@ namespace MoBi.Core.Services
 
       public ICommand ResetQuantityValue(IQuantity quantity, IMoBiSimulation simulation)
       {
-         return synchronizedCommand(quantity, simulation, new ResetQuantityValueInSimulationCommand(quantity, simulation));
+         return runAsSimulationMacroCommand(quantity, simulation, new ResetQuantityValueInSimulationCommand(quantity, simulation));
       }
 
       public ICommand ResetQuantityValue(IQuantity quantity, IBuildingBlock buildingBlock)

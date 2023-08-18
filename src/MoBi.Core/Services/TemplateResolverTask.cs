@@ -8,7 +8,7 @@ namespace MoBi.Core.Services
 {
    public interface ITemplateResolverTask
    {
-      IBuildingBlock TemplateBuildingBlockFor(IBuildingBlock buildingBlock);
+      TBuildingBlock TemplateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock;
       Module TemplateModuleFor(Module module);
    }
 
@@ -23,9 +23,9 @@ namespace MoBi.Core.Services
          _moBiProjectRetriever = moBiProjectRetriever;
       }
 
-      public IBuildingBlock TemplateBuildingBlockFor(IBuildingBlock buildingBlock)
+      public TBuildingBlock TemplateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock
       {
-         return _buildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock));
+         return _buildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock)) as TBuildingBlock;
       }
 
       public Module TemplateModuleFor(Module module)
