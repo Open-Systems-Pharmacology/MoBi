@@ -132,6 +132,16 @@ namespace MoBi.Presentation.DTO
       }
    }
 
+   public class SimulationBuildingBlockViewItem : IViewItem
+   {
+      public IBuildingBlock BuildingBlock { get; }
+
+      public SimulationBuildingBlockViewItem(IBuildingBlock buildingBlockNode)
+      {
+         BuildingBlock = buildingBlockNode;
+      }
+   }
+
    public class SimulationViewItem : ObjectBaseDTO
    {
       public IMoBiSimulation Simulation { get; }

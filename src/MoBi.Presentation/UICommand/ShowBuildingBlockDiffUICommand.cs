@@ -1,5 +1,5 @@
 ﻿using OSPSuite.Presentation.MenuAndBars;
-using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain.Builder;
 
@@ -8,26 +8,24 @@ namespace MoBi.Presentation.UICommand
    public class ShowBuildingBlockDiffUICommand : IUICommand
    {
       private readonly ISimulationComparisonTask _simulationComparisonTask;
-      private IBuildingBlock _templateBuildingBlock;
-      private IMoBiSimulation _simulation;
+      private IBuildingBlock _simulationBuildingBlock;
+      private readonly ITemplateResolverTask _templateResolverTask;
 
-      public ShowBuildingBlockDiffUICommand(ISimulationComparisonTask simulationComparisonTask)
+      public ShowBuildingBlockDiffUICommand(ISimulationComparisonTask simulationComparisonTask, ITemplateResolverTask templateResolverTask)
       {
+         _templateResolverTask = templateResolverTask;
          _simulationComparisonTask = simulationComparisonTask;
       }
 
-      public ShowBuildingBlockDiffUICommand Initialize(IBuildingBlock templateBuildingBlock, IMoBiSimulation simulation)
+      public ShowBuildingBlockDiffUICommand Initialize(IBuildingBlock simulationBuildingBlock)
       {
-         _templateBuildingBlock = templateBuildingBlock;
-         _simulation = simulation;
+         _simulationBuildingBlock = simulationBuildingBlock;
          return this;
       }
 
       public void Execute()
       {
-         // var buildingBlockInfo = _simulation.MoBiBuildConfiguration.BuildingInfoForTemplate(_templateBuildingBlock);
-         // var simulationBuildingBlock = buildingBlockInfo.UntypedBuildingBlock;
-         // _simulationComparisonTask.ShowDifferencesBetween(_templateBuildingBlock, simulationBuildingBlock);
+         _simulationComparisonTask.ShowDifferencesBetween(_templateResolverTask.TemplateBuildingBlockFor(_simulationBuildingBlock), _simulationBuildingBlock);
       }
    }
 }

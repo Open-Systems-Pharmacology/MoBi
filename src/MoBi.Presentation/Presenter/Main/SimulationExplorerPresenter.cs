@@ -161,6 +161,11 @@ namespace MoBi.Presentation.Presenter.Main
          if (treeNode.TagAsObject is ClassifiableSimulation simulation)
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
 
+         if (treeNode.TagAsObject is IBuildingBlock buildingBlock)
+         {
+            return ContextMenuFor(new SimulationBuildingBlockViewItem(buildingBlock));
+         }
+
          return base.ContextMenuFor(treeNode);
       }
 
