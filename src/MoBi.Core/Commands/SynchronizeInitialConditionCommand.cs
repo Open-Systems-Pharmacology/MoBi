@@ -3,11 +3,12 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using MoBi.Assets;
 
 namespace MoBi.Core.Commands
 {
 
-   public class SynchronizeInitialConditionCommand : MoBiReversibleCommand
+   public class SynchronizeInitialConditionCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
    {
       private IQuantity _quantity;
       private MoleculeAmount _moleculeAmount;
@@ -18,7 +19,7 @@ namespace MoBi.Core.Commands
       ///    Ensures that the value defined in the <see cref="InitialCondition" /> of simulation are synchronized
       ///    with the values defined in the <see cref="IQuantity" /> 
       /// </summary>
-      public SynchronizeInitialConditionCommand(IQuantity quantity, InitialCondition initialCondition)
+      public SynchronizeInitialConditionCommand(IQuantity quantity, InitialCondition initialCondition, InitialConditionsBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _quantity = quantity;
          _quantityId = quantity.Id;
@@ -28,6 +29,7 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
+         base.ExecuteWith(context);
          updateInitialCondition();
 
          if (_initialCondition.Dimension == _quantity.Dimension)
@@ -35,6 +37,8 @@ namespace MoBi.Core.Commands
 
          if (_moleculeAmount!=null)
             _initialCondition.ScaleDivisor = _moleculeAmount.ScaleDivisor;
+
+         Description = AppConstants.Commands.UpdateInitialCondition(_initialCondition.Path, _initialCondition.Value, _initialCondition.IsPresent, _initialCondition.DisplayUnit, _initialCondition.ScaleDivisor, _initialCondition.NegativeValuesAllowed);
       }
 
       private void updateInitialCondition()
@@ -61,13 +65,14 @@ namespace MoBi.Core.Commands
 
       protected override void ClearReferences()
       {
+         base.ClearReferences();
          _quantity = null;
          _moleculeAmount = null;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new SynchronizeInitialConditionCommand(_quantity, _initialCondition)
+         return new SynchronizeInitialConditionCommand(_quantity, _initialCondition, _buildingBlock)
          {
             Visible = Visible
          }.AsInverseFor(this);
@@ -75,6 +80,7 @@ namespace MoBi.Core.Commands
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
+         base.RestoreExecutionData(context);
          _quantity = context.Get<IQuantity>(_quantityId);
       }
    }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Commands;
@@ -63,25 +62,27 @@ namespace MoBi.Presentation.Tasks
             Description = CommitCommandDescription(templateModule, simulationWithChanges),
             ObjectType = _objectTypeResolver.TypeFor<Module>()
          };
-         macroCommand.Add(lastModuleConfiguration.SelectedInitialConditions == null ? 
-            addNewInitialConditionsFromSimulationChanges(simulationWithChanges, templateModule) : 
-            updateInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration.SelectedInitialConditions));
+         if (lastModuleConfiguration.SelectedInitialConditions == null)
+            macroCommand.Add(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, templateModule));
+         else
+            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(simulationWithChanges, _templateResolverTask.TemplateBuildingBlockFor(lastModuleConfiguration.SelectedInitialConditions)));
 
-         macroCommand.Add(lastModuleConfiguration.SelectedParameterValues == null ? 
-            addNewParameterValuesFromSimulationChanges(simulationWithChanges, templateModule) : 
-            updateParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration.SelectedParameterValues));
+         if (lastModuleConfiguration.SelectedParameterValues == null)
+            macroCommand.Add(addNewParameterValuesFromSimulationChanges(simulationWithChanges, templateModule));
+         else
+            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(simulationWithChanges, _templateResolverTask.TemplateBuildingBlockFor(lastModuleConfiguration.SelectedParameterValues)));
 
          return macroCommand.Run(_context);
       }
 
-      private ICommand updateParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ParameterValuesBuildingBlock selectedParameterValues)
+      private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ParameterValuesBuildingBlock selectedParameterValues)
       {
-         throw new NotImplementedException();
+         return changesFrom<Parameter>(simulation).Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, selectedParameterValues));
       }
 
-      private ICommand updateInitialConditionsFromSimulationChanges(IMoBiSimulation simulation, InitialConditionsBuildingBlock selectedInitialConditions)
+      private IEnumerable<IMoBiCommand> updateInitialConditionsFromSimulationChanges(IMoBiSimulation simulation, InitialConditionsBuildingBlock selectedInitialConditions)
       {
-         throw new NotImplementedException();
+         return changesFrom<MoleculeAmount>(simulation).Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, selectedInitialConditions));
       }
 
       private IMoBiCommand addNewParameterValuesFromSimulationChanges(IMoBiSimulation simulation, Module lastModule)
@@ -126,6 +127,26 @@ namespace MoBi.Presentation.Tasks
       private ParameterValue createParameterValue(Parameter parameter, ObjectPath parameterPath)
       {
          return _parameterValuesCreator.CreateParameterValue(parameterPath, parameter);
+      }
+
+      private IMoBiCommand synchronizeInitialConditionCommand(MoleculeAmount moleculeAmount, ObjectPath quantityPath, InitialConditionsBuildingBlock initialConditionsBuildingBlock)
+      {
+         var initialConditionToUpdate = initialConditionsBuildingBlock[quantityPath];
+         
+         if (initialConditionToUpdate != null)
+            return new SynchronizeInitialConditionCommand(moleculeAmount, initialConditionToUpdate, initialConditionsBuildingBlock);
+         
+         return new AddInitialConditionFromQuantityInSimulationCommand(moleculeAmount, initialConditionsBuildingBlock);
+      }
+
+      private IMoBiCommand synchronizeParameterValueCommand(IParameter parameter, ObjectPath quantityPath, ParameterValuesBuildingBlock parameterValuesBuildingBlock)
+      {
+         var parameterToUpdate = parameterValuesBuildingBlock[quantityPath];
+         
+         if(parameterToUpdate != null)
+            return new SynchronizeParameterValueCommand(parameter, parameterToUpdate, parameterValuesBuildingBlock);
+         
+         return new AddParameterValueFromQuantityInSimulationCommand(parameter, parameterValuesBuildingBlock);
       }
    }
 }

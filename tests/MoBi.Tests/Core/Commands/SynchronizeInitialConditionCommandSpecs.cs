@@ -38,7 +38,7 @@ namespace MoBi.Core.Commands
          _moleculeAmount.ValueOrigin.Description = "Hello";
 
          _initialCondition = new InitialCondition();
-         sut = new SynchronizeInitialConditionCommand(_moleculeAmount, _initialCondition);
+         sut = new SynchronizeInitialConditionCommand(_moleculeAmount, _initialCondition, new InitialConditionsBuildingBlock());
 
          _context = A.Fake<IMoBiContext>();
       }

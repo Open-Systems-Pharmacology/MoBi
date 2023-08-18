@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
-using FluentNHibernate.Utils;
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Assets;
-using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
@@ -34,9 +31,7 @@ namespace MoBi.Core.Commands
       protected override void DoExecute(IMoBiContext context)
       {
          var containerTask = context.Resolve<IContainerTask>();
-         var initialConditionsBuildingBlockSynchronizer = context.Resolve<IQuantitySynchronizer>();
          var allMoleculeAmounts = containerTask.CacheAllChildren<MoleculeAmount>(_simulation.Model.Root);
-         var initialConditionsBuildingBlocks = _simulation.Configuration.All<InitialConditionsBuildingBlock>();
 
          foreach (var scaleDivisor in _scaleFactors)
          {
@@ -48,7 +43,6 @@ namespace MoBi.Core.Commands
 
             _oldScaleFactors.Add(new ScaleDivisor { QuantityPath = scaleDivisor.QuantityPath, Value = moleculeAmount.ScaleDivisor });
             moleculeAmount.ScaleDivisor = scaleDivisor.Value;
-            initialConditionsBuildingBlocks.Each(buildingBlock => initialConditionsBuildingBlockSynchronizer.SynchronizeInitialConditions(moleculeAmount, buildingBlock));
          }
       }
 

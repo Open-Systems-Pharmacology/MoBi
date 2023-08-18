@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
          _parameter = new Parameter();
          _parameterStartValue = new ParameterValue();
          _context = A.Fake<IMoBiContext>();
-         sut = new SynchronizeParameterValueCommand(_parameter, _parameterStartValue);
+         sut = new SynchronizeParameterValueCommand(_parameter, _parameterStartValue, new ParameterValuesBuildingBlock());
       }
    }
 

@@ -3,40 +3,46 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using MoBi.Assets;
+using MoBi.Core.Helper;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class AddPathAndValueEntityFromQuantityInSimulationCommand<TQuantity, TPathAndValueEntity> : MoBiReversibleCommand
+   public abstract class AddPathAndValueEntityFromQuantityInSimulationCommand<TQuantity, TPathAndValueEntity> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<TPathAndValueEntity>>
       where TPathAndValueEntity : PathAndValueEntity
       where TQuantity : class, IQuantity
    {
       protected TQuantity _quantity;
-      private PathAndValueEntityBuildingBlock<TPathAndValueEntity> _buildingBlock;
-      private readonly string _buildBuildingBlockId;
       protected ObjectPath _objectPath;
+      private readonly IObjectTypeResolver _objectTypeResolver;
 
-      protected AddPathAndValueEntityFromQuantityInSimulationCommand(TQuantity quantity, PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock)
+      protected AddPathAndValueEntityFromQuantityInSimulationCommand(TQuantity quantity, PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock) : base(buildingBlock)
       {
          _quantity = quantity;
-         _buildingBlock = buildingBlock;
-         _buildBuildingBlockId = buildingBlock.Id;
+         CommandType = AppConstants.Commands.AddCommand;
+         _objectTypeResolver = new ObjectTypeResolver();
       }
 
       protected override void ExecuteWith(IMoBiContext context)
       {
+         base.ExecuteWith(context);
          var entityPathResolver = context.Resolve<IEntityPathResolver>();
          _objectPath = entityPathResolver.ObjectPathFor(_quantity);
 
          if (_buildingBlock[_objectPath] != null)
             return;
 
-         _buildingBlock.Add(CreateNewEntity(context));
+         var pathAndValueEntity = CreateNewEntity(context);
+         ObjectType = _objectTypeResolver.TypeFor(pathAndValueEntity);
+         Description = AppConstants.Commands.AddedPathAndValueEntity(pathAndValueEntity, _buildingBlock.Name, ObjectType);
+         _buildingBlock.Add(pathAndValueEntity);
       }
 
       protected abstract TPathAndValueEntity CreateNewEntity(IMoBiContext context);
 
       protected override void ClearReferences()
       {
+         base.ClearReferences();
          _buildingBlock = null;
          _quantity = null;
       }
@@ -51,7 +57,8 @@ namespace MoBi.Core.Commands
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
-         _buildingBlock = context.Get<PathAndValueEntityBuildingBlock<TPathAndValueEntity>>(_buildBuildingBlockId);
+         base.RestoreExecutionData(context);
+         _buildingBlock = context.Get<PathAndValueEntityBuildingBlock<TPathAndValueEntity>>(_buildingBlockId);
       }
    }
 
