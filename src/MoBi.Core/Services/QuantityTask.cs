@@ -213,17 +213,13 @@ namespace MoBi.Core.Services
 
       private ICommand runAsSimulationMacroCommand(IQuantity quantity, IMoBiSimulation simulation, IMoBiCommand simulationCommandToBeRun, bool shouldUpdateValueOriginAndState = true)
       {
-         var macroCommand = new MoBiMacroCommand();
-
          IOSPSuiteCommand executedCommand = simulationCommandToBeRun.AsHidden().Run(_context);
 
          if (shouldUpdateValueOriginAndState)
             executedCommand = withUpdatedDefaultStateAndValueOrigin(executedCommand, quantity, simulation);
 
-         macroCommand.Add(executedCommand);
-
          //needs to be done at the end because description might be set only after run
-         return macroCommand.WithHistoryEntriesFrom(simulationCommandToBeRun);
+         return executedCommand.WithHistoryEntriesFrom(simulationCommandToBeRun);
       }
 
       public ICommand SetDistributedParameterDimension(IDistributedParameter distributedParameter, IDimension dimension, IBuildingBlock buildingBlock)

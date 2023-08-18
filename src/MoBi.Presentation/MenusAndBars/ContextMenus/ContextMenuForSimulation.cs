@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-   using System.Linq;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -51,6 +51,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          if (simulation.BuildingBlocks().Any(hasChanges))
             _allMenuItems.Add(createUpdate(simulation));
+
          if (simulation.OriginalQuantityValues.Any())
             _allMenuItems.Add(createCommit(simulation));
 
