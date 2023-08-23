@@ -7,7 +7,7 @@ namespace MoBi.Presentation.Tasks
 {
    public interface ISimulationComparisonTask
    {
-      void ShowDifferencesBetween(IBuildingBlock templateBuildingBlock, IBuildingBlock simulationBuildingBlock);
+      void ShowDifferencesBetween(IBuildingBlock projectBuildingBlock, IBuildingBlock simulationBuildingBlock);
    }
 
    public class SimulationComparisonTask : ISimulationComparisonTask
@@ -19,9 +19,9 @@ namespace MoBi.Presentation.Tasks
          _eventPublisher = eventPublisher;
       }
 
-      public void ShowDifferencesBetween(IBuildingBlock templateBuildingBlock, IBuildingBlock simulationBuildingBlock)
+      public void ShowDifferencesBetween(IBuildingBlock projectBuildingBlock, IBuildingBlock simulationBuildingBlock)
       {
-         _eventPublisher.PublishEvent(new StartComparisonEvent(templateBuildingBlock, simulationBuildingBlock, leftCaption: ObjectTypes.BuildingBlock, rightCaption: ObjectTypes.Simulation));
+         _eventPublisher.PublishEvent(new StartComparisonEvent(projectBuildingBlock, simulationBuildingBlock, leftCaption: ObjectTypes.BuildingBlock, rightCaption: ObjectTypes.Simulation));
       }
    }
 }
