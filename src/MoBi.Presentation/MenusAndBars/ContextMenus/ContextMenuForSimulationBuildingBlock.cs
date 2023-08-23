@@ -31,8 +31,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var buildingBlockViewItem = viewItem.DowncastTo<SimulationBuildingBlockViewItem>();
 
          var simulationBuildingBlock = buildingBlockViewItem.BuildingBlock;
-         var projectBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(simulationBuildingBlock);
-         if (projectBuildingBlock.Version != simulationBuildingBlock.Version)
+         var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(simulationBuildingBlock);
+         if (templateBuildingBlock.Version != simulationBuildingBlock.Version)
          {
             _allMenuItems.Add(createDiffItem(simulationBuildingBlock));
          }
@@ -44,16 +44,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createDiffItem(IBuildingBlock simulationBuildingBlock)
       {
          var item = CreateMenuButton.WithCaption(MenuNames.Diff)
-            .WithCommand(_container.Resolve<ShowBuildingBlockDiffUICommand>().Initialize(simulationBuildingBlock))
+            .WithCommandFor<ShowBuildingBlockDiffUICommand, IBuildingBlock>(simulationBuildingBlock, _container)
             .WithIcon(ApplicationIcons.Comparison);
          
          return item;
       }
 
-      public override IEnumerable<IMenuBarItem> AllMenuItems()
-      {
-         return _allMenuItems;
-      }
+      public override IEnumerable<IMenuBarItem> AllMenuItems() => _allMenuItems;
    }
 
    public class ContextMenuSpecificationFactoryForSimulationBuildingBlockViewItem : IContextMenuSpecificationFactory<IViewItem>
@@ -71,9 +68,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return contextMenu.InitializeWith(viewItem.DowncastTo<SimulationBuildingBlockViewItem>(), presenter);
       }
 
-      public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
-      {
-         return viewItem is SimulationBuildingBlockViewItem;
-      }
+      public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter) => viewItem is SimulationBuildingBlockViewItem;
    }
 }

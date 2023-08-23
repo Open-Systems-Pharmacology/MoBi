@@ -1,14 +1,13 @@
-﻿using OSPSuite.Presentation.MenuAndBars;
-using MoBi.Core.Services;
+﻿using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class ShowBuildingBlockDiffUICommand : IUICommand
+   public class ShowBuildingBlockDiffUICommand : ObjectUICommand<IBuildingBlock>
    {
       private readonly ISimulationComparisonTask _simulationComparisonTask;
-      private IBuildingBlock _simulationBuildingBlock;
       private readonly ITemplateResolverTask _templateResolverTask;
 
       public ShowBuildingBlockDiffUICommand(ISimulationComparisonTask simulationComparisonTask, ITemplateResolverTask templateResolverTask)
@@ -17,15 +16,9 @@ namespace MoBi.Presentation.UICommand
          _simulationComparisonTask = simulationComparisonTask;
       }
 
-      public ShowBuildingBlockDiffUICommand Initialize(IBuildingBlock simulationBuildingBlock)
+      protected override void PerformExecute()
       {
-         _simulationBuildingBlock = simulationBuildingBlock;
-         return this;
-      }
-
-      public void Execute()
-      {
-         _simulationComparisonTask.ShowDifferencesBetween(_templateResolverTask.TemplateBuildingBlockFor(_simulationBuildingBlock), _simulationBuildingBlock);
+         _simulationComparisonTask.ShowDifferencesBetween(_templateResolverTask.TemplateBuildingBlockFor(Subject), Subject);
       }
    }
 }

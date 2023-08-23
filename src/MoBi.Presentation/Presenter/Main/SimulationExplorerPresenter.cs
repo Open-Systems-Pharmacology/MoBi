@@ -162,10 +162,8 @@ namespace MoBi.Presentation.Presenter.Main
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
 
          if (treeNode.TagAsObject is IBuildingBlock buildingBlock)
-         {
             return ContextMenuFor(new SimulationBuildingBlockViewItem(buildingBlock));
-         }
-
+         
          return base.ContextMenuFor(treeNode);
       }
 
