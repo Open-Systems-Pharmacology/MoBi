@@ -29,6 +29,7 @@ namespace MoBi.Assets
       public static readonly string ParameterType = "Type";
       public static readonly string NaN = "<NaN>";
       public static readonly string Project = "Project";
+      public static readonly string Simulation = "Simulation";
       public static readonly string Time = "TIME";
       public static readonly double DEFAULT_PARAMETER_START_VALUE = 0.0;
       public static readonly double DEFAULT_PERCENTILE = 0.5;
@@ -495,9 +496,14 @@ namespace MoBi.Assets
             return string.Format("Remove {3} X: '{0} {5}' Y: '{1} {6}' from {4} '{2}'", xDisplayValue, yDisplayValue, formulaName, ObjectTypes.ValuePoint, ObjectTypes.TableFormula, xDisplayUnit.Name, yDisplayUnit.Name);
          }
 
-         public static string CommitCommandDescription(Module module, IModelCoreSimulation simulation)
+         public static string CommitCommandDescription(IModelCoreSimulation simulation)
          {
-            return $"Commit changes made in Simulation: '{simulation.Name}' to module: '{module.Name}'";
+            return $"Commit changes made in Simulation: '{simulation.Name}'";
+         }
+
+         public static string CommitToModuleCommandDescription(Module module, IModelCoreSimulation simulation, string moduleParent)
+         {
+            return $"Commit changes made in Simulation: '{simulation.Name}' to {moduleParent} module: '{module.Name}'";
          }
 
          public static string UpdateCommandDescription(string simulationName, string buildingBlockName, string buildingBlockType)

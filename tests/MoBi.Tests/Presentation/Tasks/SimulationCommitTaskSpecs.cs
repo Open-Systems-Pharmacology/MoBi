@@ -42,6 +42,12 @@ namespace MoBi.Presentation.Tasks
 
          sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver());
       }
+
+      [Observation]
+      public void the_simulation_should_not_have_original_value_trackers()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
+      }
    }
 
    public class When_committing_from_a_simulation_without_any_changes : concern_for_SimulationCommitTask
@@ -179,10 +185,17 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void new_start_values_are_created_when_needed()
+      public void new_project_start_values_are_created_when_needed()
       {
          _projectModule.InitialConditionsCollection.First().Count().ShouldBeEqualTo(1);
          _projectModule.ParameterValuesCollection.First().Count().ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void new_simulation_start_values_are_created_when_needed()
+      {
+         _moduleConfiguration.SelectedInitialConditions.Count().ShouldBeEqualTo(1);
+         _moduleConfiguration.SelectedParameterValues.Count().ShouldBeEqualTo(1);
       }
    }
 
@@ -220,10 +233,24 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void new_building_blocks_are_created()
+      public void new_project_building_blocks_are_created()
       {
          _projectModule.ParameterValuesCollection.Count.ShouldBeEqualTo(1);
          _projectModule.InitialConditionsCollection.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void new_simulation_building_blocks_are_created()
+      {
+         _moduleConfiguration.Module.InitialConditionsCollection.Count.ShouldBeEqualTo(1);
+         _moduleConfiguration.Module.ParameterValuesCollection.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void new_simulation_building_blocks_are_selected()
+      {
+         _moduleConfiguration.SelectedInitialConditions.ShouldNotBeNull();
+         _moduleConfiguration.SelectedParameterValues.ShouldNotBeNull();
       }
    }
 }

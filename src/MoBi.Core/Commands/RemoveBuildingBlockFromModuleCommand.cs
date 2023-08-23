@@ -1,5 +1,4 @@
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
@@ -32,10 +31,20 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
+         DoExecute(context);
+         RaiseEvents(context);
+      }
+
+      protected virtual void RaiseEvents(IMoBiContext context)
+      {
+         context.PublishEvent(new RemovedEvent(_buildingBlock, _existingModule));
+      }
+
+      protected virtual void DoExecute(IMoBiContext context)
+      {
          removeBuildingBlockFromModule();
          context.Unregister(_buildingBlock);
          _serializationStream = context.Serialize(_buildingBlock);
-         context.PublishEvent(new RemovedEvent(_buildingBlock, _existingModule));
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

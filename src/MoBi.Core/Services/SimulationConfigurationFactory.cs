@@ -57,7 +57,8 @@ namespace MoBi.Core.Services
 
          configuration.ModuleConfigurations.Each(moduleConfiguration => { simulationConfiguration.AddModuleConfiguration(templateModuleConfigurationFor(moduleConfiguration)); });
 
-         simulationConfiguration.Individual = templateBuildingBlockFor(configuration.Individual);
+         if (configuration.Individual != null)
+            simulationConfiguration.Individual = templateBuildingBlockFor(configuration.Individual);
 
          configuration.ExpressionProfiles.Each(x => { simulationConfiguration.AddExpressionProfile(templateBuildingBlockFor(x)); });
 
