@@ -1,29 +1,29 @@
-﻿using MoBi.Core.Services;
+﻿using MoBi.Core.Domain;
+using MoBi.Core.Services;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Service
 {
-   public class concern_for_QuantityToParameterValueMapper : ContextSpecification<QuantityToParameterValueMapper>
+   public class concern_for_QuantityToParameterValueMapper : ContextSpecification<QuantityToOriginalQuantityValueMapper>
    {
       protected IEntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
          _entityPathResolver = new EntityPathResolverForSpecs();
-         sut = new QuantityToParameterValueMapper(_entityPathResolver);
+         sut = new QuantityToOriginalQuantityValueMapper(_entityPathResolver);
       }
    }
 
    public class When_mapping_from_parameter_to_parameter_value : concern_for_QuantityToParameterValueMapper
    {
       private IQuantity _quantity;
-      private ParameterValue _result;
+      private OriginalQuantityValue _result;
 
       protected override void Context()
       {
@@ -48,9 +48,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void the_properties_should_be_mapped_correctly()
       {
-         _result.Path.ToString().ShouldBeEqualTo(_entityPathResolver.ObjectPathFor(_quantity).ToString());
+         _result.Path.ShouldBeEqualTo(_entityPathResolver.ObjectPathFor(_quantity).ToString());
          _result.Value.ShouldBeEqualTo(_quantity.Value);
-         _result.Formula.ToString().ShouldBeEqualTo(_quantity.Formula.ToString());
          _result.Dimension.ShouldBeEqualTo(_quantity.Dimension);
          _result.DisplayUnit.ShouldBeEqualTo(_quantity.DisplayUnit);
          _result.ValueOrigin.ShouldBeEqualTo(_quantity.ValueOrigin);

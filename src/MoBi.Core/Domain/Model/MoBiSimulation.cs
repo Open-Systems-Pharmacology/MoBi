@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
@@ -26,19 +25,19 @@ namespace MoBi.Core.Domain.Model
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
+      /// <summary>
+      ///    Returns true if the simulation uses <paramref name="templateBuildingBlock" />.
+      ///    For module building blocks, the test checks if the <paramref name="templateBuildingBlock" /> is a member of
+      ///    a module that's in use <see cref="Uses(Module)" />. If the <paramref name="templateBuildingBlock" /> is not a module
+      ///    building block
+      ///    the test is based on building block name and type.
+      /// </summary>
+      /// <returns>True if the simulation uses the <paramref name="templateBuildingBlock" />, otherwise false</returns>
+      bool Uses(IBuildingBlock templateBuildingBlock);
 
       /// <summary>
-      /// Returns true if the simulation uses <paramref name="templateBuildingBlock"/>.
-      /// For module building blocks, the test checks if the <paramref name="templateBuildingBlock"/> is a member of
-      /// a module that's in use <see cref="Uses(Module)"/>. If the <paramref name="templateBuildingBlock"/> is not a module building block
-      /// the test is based on building block name and type.
-      /// </summary>
-      /// <returns>True if the simulation uses the <paramref name="templateBuildingBlock"/>, otherwise false</returns>
-      bool Uses(IBuildingBlock templateBuildingBlock);
-      
-      /// <summary>
-      /// Checks if the simulation has a module that shares a name with <paramref name="module"/>
-      /// This indicates that the <paramref name="module"/> was used as a template
+      ///    Checks if the simulation has a module that shares a name with <paramref name="module" />
+      ///    This indicates that the <paramref name="module" /> was used as a template
       /// </summary>
       /// <returns>True if the simulation has a matching module, otherwise false</returns>
       bool Uses(Module module);
@@ -49,16 +48,17 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyList<Module> Modules { get; }
       IReadOnlyList<IBuildingBlock> BuildingBlocks();
 
-      IReadOnlyCollection<ParameterValue> OriginalQuantityValues { get; }
+      IReadOnlyCollection<OriginalQuantityValue> OriginalQuantityValues { get; }
 
       /// <summary>
-      /// Adds an original quantity value so that changes to quantities in the simulation can be tracked.
-      /// There can only be one original quantity value So, adding a second <paramref name="parameterValue"/>
-      /// with identical path has no affect
+      ///    Adds an original quantity value so that changes to quantities in the simulation can be tracked.
+      ///    There can only be one original quantity value So, adding a second <paramref name="parameterValue" />
+      ///    with identical path has no affect
       /// </summary>
-      void AddOriginalQuantityValue(ParameterValue parameterValue);
-      void RemoveOriginalQuantityValue(ObjectPath objectPath);
-      ParameterValue OriginalQuantityValueFor(ObjectPath objectPath);
+      void AddOriginalQuantityValue(OriginalQuantityValue parameterValue);
+
+      void RemoveOriginalQuantityValue(string objectPath);
+      OriginalQuantityValue OriginalQuantityValueFor(string objectPath);
    }
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
@@ -73,7 +73,7 @@ namespace MoBi.Core.Domain.Model
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
-      private readonly ICache<string, ParameterValue> _quantityValueCache = new Cache<string, ParameterValue>(onMissingKey:key => null);
+      private readonly ICache<string, OriginalQuantityValue> _quantityValueCache = new Cache<string, OriginalQuantityValue>(onMissingKey: key => null);
       private bool _hasChanged;
 
       public MoBiSimulation()
@@ -124,9 +124,9 @@ namespace MoBi.Core.Domain.Model
          return buildingBlocks;
       }
 
-      public IReadOnlyCollection<ParameterValue> OriginalQuantityValues => _quantityValueCache;
+      public IReadOnlyCollection<OriginalQuantityValue> OriginalQuantityValues => _quantityValueCache;
 
-      public void AddOriginalQuantityValue(ParameterValue parameterValue)
+      public void AddOriginalQuantityValue(OriginalQuantityValue parameterValue)
       {
          // if there's already a value set for this path, then ignore the add
          // we only store the first instance for a path
@@ -134,9 +134,9 @@ namespace MoBi.Core.Domain.Model
             _quantityValueCache[parameterValue.Path] = parameterValue;
       }
 
-      public void RemoveOriginalQuantityValue(ObjectPath objectPath) => _quantityValueCache.Remove(objectPath);
+      public void RemoveOriginalQuantityValue(string objectPath) => _quantityValueCache.Remove(objectPath);
 
-      public ParameterValue OriginalQuantityValueFor(ObjectPath objectPath) => _quantityValueCache[objectPath];
+      public OriginalQuantityValue OriginalQuantityValueFor(string objectPath) => _quantityValueCache[objectPath];
 
       public SolverSettings Solver => Settings.Solver;
 
@@ -160,7 +160,6 @@ namespace MoBi.Core.Domain.Model
       }
 
       public ICache<string, DataRepository> HistoricResults { get; }
-
 
       public void AddHistoricResults(DataRepository results) => HistoricResults.Add(results);
 

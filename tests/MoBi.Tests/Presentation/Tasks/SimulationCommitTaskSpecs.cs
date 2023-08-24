@@ -1,4 +1,5 @@
 ﻿using FakeItEasy;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
@@ -40,7 +41,7 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _nameCorrector = A.Fake<INameCorrector>();
 
-         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver());
+         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver(), new ObjectPathFactoryForSpecs());
       }
    }
 
@@ -94,8 +95,8 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _simulationWithChanges.AddOriginalQuantityValue(new ParameterValue { Path = new ObjectPath("name"), Value = 1.0 });
-         _simulationWithChanges.AddOriginalQuantityValue(new ParameterValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("name"), Value = 1.0 });
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock();
          _module.Add(_initialConditionsBuildingBlock);
@@ -193,8 +194,8 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _simulationWithChanges.AddOriginalQuantityValue(new ParameterValue { Path = new ObjectPath("name"), Value = 1.0 });
-         _simulationWithChanges.AddOriginalQuantityValue(new ParameterValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("name"), Value = 1.0 });
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
 
          _projectModule = new Module();
          A.CallTo(() => _templateResolverTask.TemplateModuleFor(_module)).Returns(_projectModule);
