@@ -186,7 +186,7 @@ namespace MoBi.UI.Views
       public void InitializePathColumns()
       {
          _pathRepositoryItemComboBox.FillComboBoxRepositoryWith(_pathValues);
-         initColumnVisibilty();
+         initColumnVisibility();
       }
 
       public void AddPathItems(IEnumerable<string> pathValues)
@@ -203,7 +203,7 @@ namespace MoBi.UI.Views
          _pathValues.Clear();
       }
 
-      private void initColumnVisibilty()
+      private void initColumnVisibility()
       {
          for (var i = 0; i < _pathElementsColumns.Count; i++)
          {
@@ -230,8 +230,8 @@ namespace MoBi.UI.Views
 
          var startValueDTO = _gridViewBinder.ElementAt(gridView.FocusedRowHandle);
          _presenter.AddNewFormula(startValueDTO);
-         var comboBox = sender as ComboBoxEdit;
-         if (comboBox != null)
+         
+         if (sender is ComboBoxEdit comboBox)
             comboBox.FillComboBoxEditorWith(_presenter.AllFormulas());
       }
 
