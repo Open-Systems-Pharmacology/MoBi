@@ -15,12 +15,12 @@ namespace MoBi.Core.Service
    public class concern_for_QuantityValueChangeTracker : ContextSpecification<QuantityValueInSimulationChangeTracker>
    {
       protected IEventPublisher _eventPublisher;
-      protected IQuantityToParameterValueMapper _quantityToParameterValueMapper;
+      protected IQuantityToOriginalQuantityValueMapper _quantityToOriginalQuantityValueMapper;
 
       protected override void Context()
       {
          _eventPublisher = A.Fake<IEventPublisher>();
-         _quantityToParameterValueMapper = new QuantityToParameterValueMapper(new EntityPathResolverForSpecs());
+         _quantityToOriginalQuantityValueMapper = new QuantityToOriginalQuantityValueMapper(new EntityPathResolverForSpecs());
       }
    }
 
@@ -49,8 +49,8 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, x => x.Value = 3.0);
-         new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, x => x.Value = 1.0);
+         new QuantityValueInSimulationChangeTracker(_quantityToOriginalQuantityValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, x => x.Value = 3.0);
+         new QuantityValueInSimulationChangeTracker(_quantityToOriginalQuantityValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, x => x.Value = 1.0);
       }
 
       [Observation]
@@ -82,7 +82,7 @@ namespace MoBi.Core.Service
          var container = new Container().WithName("topContainer");
          container.Add(_quantity);
 
-         sut = new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs());
+         sut = new QuantityValueInSimulationChangeTracker(_quantityToOriginalQuantityValueMapper, _eventPublisher, new EntityPathResolverForSpecs());
       }
 
       protected override void Because()
@@ -124,7 +124,7 @@ namespace MoBi.Core.Service
 
          var container = new Container().WithName("topContainer");
          container.Add(_quantity);
-         sut = new QuantityValueInSimulationChangeTracker(_quantityToParameterValueMapper, _eventPublisher, new EntityPathResolverForSpecs());
+         sut = new QuantityValueInSimulationChangeTracker(_quantityToOriginalQuantityValueMapper, _eventPublisher, new EntityPathResolverForSpecs());
       }
 
       protected override void Because()

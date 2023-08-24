@@ -1,8 +1,8 @@
 ﻿using System;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Events;
 
@@ -15,13 +15,13 @@ namespace MoBi.Core.Services
 
    public class QuantityValueInSimulationChangeTracker : IQuantityValueInSimulationChangeTracker
    {
-      private readonly IQuantityToParameterValueMapper _quantityToParameterValueMapper;
+      private readonly IQuantityToOriginalQuantityValueMapper _quantityToOriginalQuantityValueMapper;
       private readonly IEventPublisher _eventPublisher;
       private readonly IEntityPathResolver _entityPathResolver;
 
-      public QuantityValueInSimulationChangeTracker(IQuantityToParameterValueMapper quantityToParameterValueMapper, IEventPublisher eventPublisher, IEntityPathResolver entityPathResolver)
+      public QuantityValueInSimulationChangeTracker(IQuantityToOriginalQuantityValueMapper quantityToOriginalQuantityValueMapper, IEventPublisher eventPublisher, IEntityPathResolver entityPathResolver)
       {
-         _quantityToParameterValueMapper = quantityToParameterValueMapper;
+         _quantityToOriginalQuantityValueMapper = quantityToOriginalQuantityValueMapper;
          _eventPublisher = eventPublisher;
          _entityPathResolver = entityPathResolver;
       }
@@ -41,15 +41,13 @@ namespace MoBi.Core.Services
          if (simulation.OriginalQuantityValueFor(pathForQuantity) != null)
             return;
 
-         simulation.AddOriginalQuantityValue(_quantityToParameterValueMapper.MapFrom(quantity));
+         simulation.AddOriginalQuantityValue(_quantityToOriginalQuantityValueMapper.MapFrom(quantity));
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
-      private bool areEquivalent(ParameterValue newParameterValue, ParameterValue oldParameterValue)
+      private bool areEquivalent(OriginalQuantityValue newParameterValue, OriginalQuantityValue oldParameterValue)
       {
          return newParameterValue.Value == oldParameterValue.Value &&
-                newParameterValue.Formula == oldParameterValue.Formula &&
-                newParameterValue.Dimension == oldParameterValue.Dimension &&
                 newParameterValue.DisplayUnit == oldParameterValue.DisplayUnit &&
                 newParameterValue.Path.Equals(oldParameterValue.Path) &&
                 newParameterValue.ValueOrigin.Equals(oldParameterValue.ValueOrigin);
@@ -61,7 +59,7 @@ namespace MoBi.Core.Services
       /// </summary>
       private void checkForOriginalValueRestored(IQuantity quantity, IMoBiSimulation simulation)
       {
-         var newParameterValue = _quantityToParameterValueMapper.MapFrom(quantity);
+         var newParameterValue = _quantityToOriginalQuantityValueMapper.MapFrom(quantity);
          var oldParameterValue = simulation.OriginalQuantityValueFor(newParameterValue.Path);
 
          if (oldParameterValue == null || !areEquivalent(newParameterValue, oldParameterValue))

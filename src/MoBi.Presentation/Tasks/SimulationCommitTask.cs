@@ -8,6 +8,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
 
 namespace MoBi.Presentation.Tasks
@@ -15,10 +16,10 @@ namespace MoBi.Presentation.Tasks
    public interface ISimulationCommitTask
    {
       /// <summary>
-      /// Commits <paramref name="simulationWithChanges"/> changes to the last module in the simulation configuration
-      /// by creating or updating it's initial conditions and parameter values building blocks
-      /// The last module has to be used because if you re-create the simulation from the same modules
-      /// this is the only way you will get the same simulation
+      ///    Commits <paramref name="simulationWithChanges" /> changes to the last module in the simulation configuration
+      ///    by creating or updating it's initial conditions and parameter values building blocks
+      ///    The last module has to be used because if you re-create the simulation from the same modules
+      ///    this is the only way you will get the same simulation
       /// </summary>
       /// <returns>An executed command</returns>
       IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges);
@@ -33,6 +34,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IParameterValuesCreator _parameterValuesCreator;
       private readonly INameCorrector _nameCorrector;
       private readonly IObjectTypeResolver _objectTypeResolver;
+      private readonly IObjectPathFactory _objectPathFactory;
 
       public SimulationCommitTask(IMoBiContext context,
          ITemplateResolverTask templateResolverTask,
@@ -40,7 +42,8 @@ namespace MoBi.Presentation.Tasks
          IInitialConditionsCreator initialConditionsCreator,
          IParameterValuesCreator parameterValuesCreator,
          INameCorrector nameCorrector,
-         IObjectTypeResolver objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         IObjectPathFactory objectPathFactory)
       {
          _context = context;
          _templateResolverTask = templateResolverTask;
@@ -49,13 +52,14 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = parameterValuesCreator;
          _nameCorrector = nameCorrector;
          _objectTypeResolver = objectTypeResolver;
+         _objectPathFactory = objectPathFactory;
       }
 
       public IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges)
       {
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
          var templateModule = _templateResolverTask.TemplateModuleFor(lastModuleConfiguration.Module);
-         
+
          var macroCommand = new MoBiMacroCommand
          {
             CommandType = CommitCommand,
@@ -104,7 +108,7 @@ namespace MoBi.Presentation.Tasks
       private IEnumerable<(ObjectPath quantityPath, TQuantity quantity)> changesFrom<TQuantity>(IMoBiSimulation simulation) where TQuantity : Quantity
       {
          var quantities = _entitiesInSimulationRetriever.EntitiesFrom<TQuantity>(simulation);
-         return simulation.OriginalQuantityValues.Select(x => (objectPath: x.Path, quantity: quantities[x.Path])).Where(x => x.quantity != null);
+         return simulation.OriginalQuantityValues.Select(x => (objectPath: _objectPathFactory.CreateObjectPathFrom(x.Path.ToPathArray()), quantity: quantities[x.Path])).Where(x => x.quantity != null);
       }
 
       private IMoBiCommand createAddBuildingBlockCommand<TBuildingBlock, TPathAndValueEntity>(string buildingBlockName, Module moduleToAddTo, IReadOnlyList<TPathAndValueEntity> entitiesToAdd)
@@ -132,20 +136,20 @@ namespace MoBi.Presentation.Tasks
       private IMoBiCommand synchronizeInitialConditionCommand(MoleculeAmount moleculeAmount, ObjectPath quantityPath, InitialConditionsBuildingBlock initialConditionsBuildingBlock)
       {
          var initialConditionToUpdate = initialConditionsBuildingBlock[quantityPath];
-         
+
          if (initialConditionToUpdate != null)
             return new SynchronizeInitialConditionCommand(moleculeAmount, initialConditionToUpdate, initialConditionsBuildingBlock);
-         
+
          return new AddInitialConditionFromQuantityInSimulationCommand(moleculeAmount, initialConditionsBuildingBlock);
       }
 
       private IMoBiCommand synchronizeParameterValueCommand(IParameter parameter, ObjectPath quantityPath, ParameterValuesBuildingBlock parameterValuesBuildingBlock)
       {
          var parameterToUpdate = parameterValuesBuildingBlock[quantityPath];
-         
-         if(parameterToUpdate != null)
+
+         if (parameterToUpdate != null)
             return new SynchronizeParameterValueCommand(parameter, parameterToUpdate, parameterValuesBuildingBlock);
-         
+
          return new AddParameterValueFromQuantityInSimulationCommand(parameter, parameterValuesBuildingBlock);
       }
    }
