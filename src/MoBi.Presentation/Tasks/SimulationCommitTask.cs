@@ -88,13 +88,13 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration)
       {
-         var projectBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
+         var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
 
-         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(projectBuildingBlock.Module, simulation, AppConstants.Project));
+         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(templateBuildingBlock.Module, simulation, AppConstants.Project));
          var simulationMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(moduleConfiguration.Module, simulation, AppConstants.Simulation));
 
          var valueTuples = changesFrom<Parameter>(simulation).ToList();
-         projectMacroCommand.AddRange(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, projectBuildingBlock)));
+         projectMacroCommand.AddRange(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)));
          simulationMacroCommand.AddRange(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues)));
 
          return new[] { projectMacroCommand, simulationMacroCommand };
@@ -110,13 +110,13 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       private IEnumerable<IMoBiCommand> updateInitialConditionsFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration)
       {
-         var projectBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
+         var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
 
-         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(projectBuildingBlock.Module, simulation, AppConstants.Project));
+         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(templateBuildingBlock.Module, simulation, AppConstants.Project));
          var simulationMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(moduleConfiguration.Module, simulation, AppConstants.Simulation));
 
          var valueTuples = changesFrom<MoleculeAmount>(simulation).ToList();
-         projectMacroCommand.AddRange(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, projectBuildingBlock)));
+         projectMacroCommand.AddRange(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock)));
          simulationMacroCommand.AddRange(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedInitialConditions)));
 
          return new[] { projectMacroCommand, simulationMacroCommand };
@@ -180,25 +180,25 @@ namespace MoBi.Presentation.Tasks
          if (!entitiesToAdd.Any())
             return new[] { new MoBiEmptyCommand() };
 
-         var projectModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
+         var templateModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
 
-         var projectBuildingBlock = createBuildingBlockAndAddEntities<TBuildingBlock, TPathAndValueEntity>(entitiesToAdd.Select(x => x.projectEntity)).WithName(simulation.Name);
-         _nameCorrector.AutoCorrectName(projectModule.BuildingBlocks.OfType<TBuildingBlock>().AllNames(), projectBuildingBlock);
+         var templateBuildingBlock = createBuildingBlockAndAddEntities<TBuildingBlock, TPathAndValueEntity>(entitiesToAdd.Select(x => x.projectEntity)).WithName(simulation.Name);
+         _nameCorrector.AutoCorrectName(templateModule.BuildingBlocks.OfType<TBuildingBlock>().AllNames(), templateBuildingBlock);
 
-         var simulationBuildingBlock = createBuildingBlockAndAddEntities<TBuildingBlock, TPathAndValueEntity>(entitiesToAdd.Select(x => x.simulationEntity)).WithName(projectBuildingBlock.Name);
+         var simulationBuildingBlock = createBuildingBlockAndAddEntities<TBuildingBlock, TPathAndValueEntity>(entitiesToAdd.Select(x => x.simulationEntity)).WithName(templateBuildingBlock.Name);
 
          return new[]
          {
-            new AddBuildingBlockToModuleCommand<TBuildingBlock>(projectBuildingBlock, projectModule),
+            new AddBuildingBlockToModuleCommand<TBuildingBlock>(templateBuildingBlock, templateModule),
             new AddSelectedBuildingBlockToLastModuleConfigurationCommand<TBuildingBlock>(simulationBuildingBlock, simulation)
          };
       }
 
       private TBuildingBlock createBuildingBlockAndAddEntities<TBuildingBlock, TPathAndValueEntity>(IEnumerable<TPathAndValueEntity> pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock where TPathAndValueEntity : PathAndValueEntity
       {
-         var projectBuildingBlock = _context.Create<TBuildingBlock>();
-         projectBuildingBlock.AddRange(pathAndValueEntities);
-         return projectBuildingBlock;
+         var templateBuildingBlock = _context.Create<TBuildingBlock>();
+         templateBuildingBlock.AddRange(pathAndValueEntities);
+         return templateBuildingBlock;
       }
 
       private InitialCondition createInitialCondition(MoleculeAmount moleculeAmount, ObjectPath moleculeAmountPath)
