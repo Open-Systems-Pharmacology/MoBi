@@ -8,23 +8,17 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveBuildingBlockFromModuleCommand<T> : MoBiReversibleCommand where T : class, IBuildingBlock
+   public class RemoveBuildingBlockFromModuleCommand<T> : ModuleContentChangedCommand<T> where T : class, IBuildingBlock
    {
-      protected Module _existingModule;
-      private readonly string _existingModuleId;
+
       public bool Silent { get; set; }
 
-      protected T _buildingBlock;
       private byte[] _serializationStream;
 
-      public RemoveBuildingBlockFromModuleCommand(T buildingBlock, Module existingModule)
+      public RemoveBuildingBlockFromModuleCommand(T buildingBlock, Module existingModule) : base(buildingBlock, existingModule)  
       {
          ObjectType = new ObjectTypeResolver().TypeFor<T>();
          CommandType = AppConstants.Commands.DeleteCommand;
-         _existingModule = existingModule;
-         _existingModuleId = existingModule.Id;
-         _buildingBlock = buildingBlock;
-
          Silent = false;
          Description = AppConstants.Commands.RemoveFromDescription(ObjectType, buildingBlock.Name, _existingModule.Name);
       }
@@ -45,23 +39,19 @@ namespace MoBi.Core.Commands
          removeBuildingBlockFromModule();
          context.Unregister(_buildingBlock);
          _serializationStream = context.Serialize(_buildingBlock);
+         
+         PublishSimulationStatusChangedEvents(_existingModule, context);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
+         base.RestoreExecutionData(context);
          _buildingBlock = context.Deserialize<T>(_serializationStream);
-         _existingModule = context.Get<Module>(_existingModuleId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
          return new AddBuildingBlockToModuleCommand<IBuildingBlock>(_buildingBlock, _existingModule).AsInverseFor(this);
-      }
-
-      protected override void ClearReferences()
-      {
-         _buildingBlock = null;
-         _existingModule = null;
       }
 
       private void removeBuildingBlockFromModule()

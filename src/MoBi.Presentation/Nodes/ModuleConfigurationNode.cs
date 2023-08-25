@@ -1,4 +1,5 @@
 ﻿using MoBi.Presentation.DTO;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Nodes;
 
 namespace MoBi.Presentation.Nodes
@@ -18,5 +19,6 @@ namespace MoBi.Presentation.Nodes
       }
 
       public override string Id { get; }
+      public ApplicationIcon BaseIcon => ApplicationIcons.Module;
    }
 }
