@@ -20,13 +20,14 @@ namespace MoBi.Core.Commands
       protected override void DoExecute(IMoBiContext context)
       {
          base.DoExecute(context);
+         var moduleConfiguration = _simulation.Configuration.ModuleConfigurations.Last();
          switch (_buildingBlock)
          {
             case InitialConditionsBuildingBlock _:
-               _simulation.Configuration.ModuleConfigurations.Last().SelectedInitialConditions = null;
+               moduleConfiguration.SelectedInitialConditions = null;
                break;
             case ParameterValuesBuildingBlock _:
-               _simulation.Configuration.ModuleConfigurations.Last().SelectedParameterValues = null;
+               moduleConfiguration.SelectedParameterValues = null;
                break;
          }
       }

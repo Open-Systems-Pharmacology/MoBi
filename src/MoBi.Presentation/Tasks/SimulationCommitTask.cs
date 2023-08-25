@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -13,6 +13,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
+using static OSPSuite.Assets.ObjectTypes;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -62,7 +63,7 @@ namespace MoBi.Presentation.Tasks
       {
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
 
-         var macroCommand = createEmptyCommitMacroCommand(CommitCommandDescription(simulationWithChanges));
+         var macroCommand = createEmptyCommitMacroCommand(CommitCommandDescription(simulationWithChanges, lastModuleConfiguration.Module));
 
          if (lastModuleConfiguration.SelectedInitialConditions == null)
             macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration));
@@ -94,8 +95,8 @@ namespace MoBi.Presentation.Tasks
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
 
-         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(templateBuildingBlock.Module, simulation, AppConstants.Project));
-         var simulationMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(moduleConfiguration.Module, simulation, AppConstants.Simulation));
+         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(templateBuildingBlock.Module, simulation, ObjectTypes.Project));
+         var simulationMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(moduleConfiguration.Module, simulation, Simulation));
 
          var valueTuples = changesFrom<Parameter>(simulation).ToList();
          projectMacroCommand.AddRange(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)));
@@ -116,8 +117,8 @@ namespace MoBi.Presentation.Tasks
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
 
-         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(templateBuildingBlock.Module, simulation, AppConstants.Project));
-         var simulationMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(moduleConfiguration.Module, simulation, AppConstants.Simulation));
+         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(templateBuildingBlock.Module, simulation, ObjectTypes.Project));
+         var simulationMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(moduleConfiguration.Module, simulation, Simulation));
 
          var valueTuples = changesFrom<MoleculeAmount>(simulation).ToList();
          projectMacroCommand.AddRange(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock)));
