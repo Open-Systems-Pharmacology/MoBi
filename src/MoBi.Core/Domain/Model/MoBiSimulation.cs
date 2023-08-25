@@ -59,6 +59,7 @@ namespace MoBi.Core.Domain.Model
 
       void RemoveOriginalQuantityValue(string objectPath);
       OriginalQuantityValue OriginalQuantityValueFor(string objectPath);
+      void ClearOriginalQuantities();
    }
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
@@ -137,6 +138,10 @@ namespace MoBi.Core.Domain.Model
       public void RemoveOriginalQuantityValue(string objectPath) => _quantityValueCache.Remove(objectPath);
 
       public OriginalQuantityValue OriginalQuantityValueFor(string objectPath) => _quantityValueCache[objectPath];
+      public void ClearOriginalQuantities()
+      {
+         _quantityValueCache.Clear();
+      }
 
       public SolverSettings Solver => Settings.Solver;
 

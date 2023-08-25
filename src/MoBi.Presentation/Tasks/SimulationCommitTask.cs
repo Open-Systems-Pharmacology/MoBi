@@ -5,15 +5,13 @@ using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
-using static OSPSuite.Assets.ObjectTypes;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -63,7 +61,12 @@ namespace MoBi.Presentation.Tasks
       {
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
 
-         var macroCommand = createEmptyCommitMacroCommand(CommitCommandDescription(simulationWithChanges, lastModuleConfiguration.Module));
+         var macroCommand = new MoBiMacroCommand
+         {
+            CommandType = CommitCommand,
+            Description = CommitCommandDescription(simulationWithChanges, lastModuleConfiguration.Module),
+            ObjectType = _objectTypeResolver.TypeFor<Module>()
+         };
 
          if (lastModuleConfiguration.SelectedInitialConditions == null)
             macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration));
@@ -77,7 +80,7 @@ namespace MoBi.Presentation.Tasks
 
          macroCommand.Run(_context);
 
-         simulationWithChanges.OriginalQuantityValues.ToList().Each(x => simulationWithChanges.RemoveOriginalQuantityValue(x.Path));
+         simulationWithChanges.ClearOriginalQuantities();
 
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
          return macroCommand;
@@ -95,14 +98,8 @@ namespace MoBi.Presentation.Tasks
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
 
-         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(templateBuildingBlock.Module, simulation, ObjectTypes.Project));
-         var simulationMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(moduleConfiguration.Module, simulation, Simulation));
-
          var valueTuples = changesFrom<Parameter>(simulation).ToList();
-         projectMacroCommand.AddRange(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)));
-         simulationMacroCommand.AddRange(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues)));
-
-         return new[] { projectMacroCommand, simulationMacroCommand };
+         return valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues).AsHidden()));
       }
 
       /// <summary>
@@ -117,28 +114,12 @@ namespace MoBi.Presentation.Tasks
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
 
-         var projectMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(templateBuildingBlock.Module, simulation, ObjectTypes.Project));
-         var simulationMacroCommand = createEmptyCommitMacroCommand(CommitToModuleCommandDescription(moduleConfiguration.Module, simulation, Simulation));
-
          var valueTuples = changesFrom<MoleculeAmount>(simulation).ToList();
-         projectMacroCommand.AddRange(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock)));
-         simulationMacroCommand.AddRange(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedInitialConditions)));
-
-         return new[] { projectMacroCommand, simulationMacroCommand };
-      }
-
-      private MoBiMacroCommand createEmptyCommitMacroCommand(string commandDescription)
-      {
-         return new MoBiMacroCommand
-         {
-            CommandType = CommitCommand,
-            Description = commandDescription,
-            ObjectType = _objectTypeResolver.TypeFor<Module>()
-         };
+         return valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedInitialConditions).AsHidden()));
       }
 
       /// <summary>
-      ///    Creates two new macro commands that add new ParameterValuesBuildingBlock to a simulation module and to a template
+      ///    Creates two new commands that add new ParameterValuesBuildingBlock to a simulation module and to a template
       ///    module respectively. The simulation module is
       ///    identified by <paramref name="moduleConfiguration" /> and the template module is resolved from the project by name.
       ///    The new building blocks will contain values for changes
@@ -153,7 +134,7 @@ namespace MoBi.Presentation.Tasks
       }
 
       /// <summary>
-      ///    Creates two new macro commands that add new InitialConditionsBuildingBlock to a simulation module and to a template
+      ///    Creates two new commands that add new InitialConditionsBuildingBlock to a simulation module and to a template
       ///    module respectively. The simulation module is
       ///    identified by <paramref name="moduleConfiguration" /> and the template module is resolved from the project by name.
       ///    The new building blocks will contain values for changes
@@ -195,7 +176,7 @@ namespace MoBi.Presentation.Tasks
          return new[]
          {
             new AddBuildingBlockToModuleCommand<TBuildingBlock>(templateBuildingBlock, templateModule),
-            new AddSelectedBuildingBlockToLastModuleConfigurationCommand<TBuildingBlock>(simulationBuildingBlock, simulation)
+            new AddSelectedBuildingBlockToLastModuleConfigurationCommand<TBuildingBlock>(simulationBuildingBlock, simulation).AsHidden()
          };
       }
 
