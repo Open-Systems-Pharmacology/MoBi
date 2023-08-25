@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
 
 namespace MoBi.Presentation.Tasks
@@ -36,6 +37,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IParameterValuesCreator _parameterValuesCreator;
       private readonly INameCorrector _nameCorrector;
       private readonly IObjectTypeResolver _objectTypeResolver;
+      private readonly IObjectPathFactory _objectPathFactory;
 
       public SimulationCommitTask(IMoBiContext context,
          ITemplateResolverTask templateResolverTask,
@@ -43,7 +45,8 @@ namespace MoBi.Presentation.Tasks
          IInitialConditionsCreator initialConditionsCreator,
          IParameterValuesCreator parameterValuesCreator,
          INameCorrector nameCorrector,
-         IObjectTypeResolver objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         IObjectPathFactory objectPathFactory)
       {
          _context = context;
          _templateResolverTask = templateResolverTask;
@@ -52,6 +55,7 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = parameterValuesCreator;
          _nameCorrector = nameCorrector;
          _objectTypeResolver = objectTypeResolver;
+         _objectPathFactory = objectPathFactory;
       }
 
       public IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges)
@@ -169,7 +173,7 @@ namespace MoBi.Presentation.Tasks
       private IEnumerable<(ObjectPath quantityPath, TQuantity quantity)> changesFrom<TQuantity>(IMoBiSimulation simulation) where TQuantity : Quantity
       {
          var quantities = _entitiesInSimulationRetriever.EntitiesFrom<TQuantity>(simulation);
-         return simulation.OriginalQuantityValues.Select(x => (objectPath: x.Path, quantity: quantities[x.Path])).Where(x => x.quantity != null);
+         return simulation.OriginalQuantityValues.Select(x => (objectPath: _objectPathFactory.CreateObjectPathFrom(x.Path.ToPathArray()), quantity: quantities[x.Path])).Where(x => x.quantity != null);
       }
 
       private IEnumerable<IMoBiCommand> createAddBuildingBlockCommands<TBuildingBlock, TPathAndValueEntity>(IMoBiSimulation simulation,

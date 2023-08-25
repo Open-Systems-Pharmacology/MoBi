@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.IO;
+using System.Xml.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Chart;
@@ -28,7 +29,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
 
       public override MoBiSimulation CreateObject(XElement element, SerializationContext serializationContext)
       {
-         return new MoBiSimulation {DiagramManager = serializationContext.Resolve<ISimulationDiagramManager>()};
+         return new MoBiSimulation { DiagramManager = serializationContext.Resolve<ISimulationDiagramManager>() };
       }
 
       protected override void TypedDeserialize(MoBiSimulation simulation, XElement simulationElement, SerializationContext serializationContext)
