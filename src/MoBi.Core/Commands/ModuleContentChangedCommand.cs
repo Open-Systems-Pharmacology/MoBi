@@ -29,12 +29,7 @@ namespace MoBi.Core.Commands
       {
          var projectRetriever = context.Resolve<IMoBiProjectRetriever>();
          var affectedSimulations = projectRetriever.Current.SimulationsUsing(changedModule);
-         affectedSimulations.Each(x => refreshSimulation(x, context));
-      }
-
-      private void refreshSimulation(IMoBiSimulation simulation, IMoBiContext context)
-      {
-         context.PublishEvent(new SimulationStatusChangedEvent(simulation));
+         affectedSimulations.Each(x => context.PublishEvent(new SimulationStatusChangedEvent(x)));
       }
 
       protected override void ClearReferences()
