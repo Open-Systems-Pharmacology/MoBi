@@ -13,6 +13,8 @@ namespace MoBi.Presentation.Nodes
          Text = moduleConfiguration.Module.Name;
       }
 
+      public string ModuleName => Tag.Module.Name;
+
       protected override void UpdateText()
       {
          Text = Tag.Module.Name;

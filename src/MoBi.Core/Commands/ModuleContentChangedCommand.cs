@@ -1,6 +1,5 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
@@ -27,8 +26,7 @@ namespace MoBi.Core.Commands
 
       protected void PublishSimulationStatusChangedEvents(Module changedModule, IMoBiContext context)
       {
-         var projectRetriever = context.Resolve<IMoBiProjectRetriever>();
-         var affectedSimulations = projectRetriever.Current.SimulationsUsing(changedModule);
+         var affectedSimulations = context.CurrentProject.SimulationsUsing(changedModule);
          affectedSimulations.Each(x => context.PublishEvent(new SimulationStatusChangedEvent(x)));
       }
 

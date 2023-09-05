@@ -35,6 +35,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       TBuildingBlock TemplateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock;
 
       Module TemplateModuleFor(Module module);
+      
+      IEnumerable<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation);
+      IEnumerable<Module> FindChangedModules(IMoBiSimulation simulation);
    }
 
    public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
@@ -90,6 +93,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public TBuildingBlock TemplateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock
       {
+         if (buildingBlock == null)
+            return null;
          // In the repository, there should always be exactly one template match. A template match requires
          // building block name/type and module name match. There could be multiple building blocks with the
          // same name and type but they would have to have different parent modules. For building blocks
@@ -161,5 +166,29 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          return new AddSimulationCommand(simulation);
       }
+
+      public IEnumerable<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation)
+      {
+         return simulation.BuildingBlocks().Where(buildingBlock => TemplateBuildingBlockFor(buildingBlock).Version != buildingBlock.Version);
+      }
+
+      public IEnumerable<Module> FindChangedModules(IMoBiSimulation simulation)
+      {
+         return simulation.Configuration.ModuleConfigurations.
+            Where(moduleConfiguration => !versionMatch(TemplateModuleFor(moduleConfiguration.Module), moduleConfiguration)).
+            Select(moduleConfiguration => moduleConfiguration.Module);
+      }
+
+      private bool versionMatch(Module templateModule, ModuleConfiguration moduleConfiguration)
+      {
+         var simulationModule = moduleConfiguration.Module;
+         var templateInitialConditions = TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
+         var templateParameterValues = TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
+
+         return string.Equals(
+            templateModule.VersionWith(templateParameterValues, templateInitialConditions),
+            simulationModule.VersionWith(moduleConfiguration.SelectedParameterValues, moduleConfiguration.SelectedInitialConditions));
+      }
+
    }
 }

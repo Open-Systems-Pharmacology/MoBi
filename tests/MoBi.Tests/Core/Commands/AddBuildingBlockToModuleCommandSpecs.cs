@@ -1,7 +1,6 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -14,7 +13,6 @@ namespace MoBi.Core.Commands
       protected EventGroupBuildingBlock _bb;
       protected Module _existingModule;
       protected IMoBiContext _context;
-      private IMoBiProjectRetriever _projectRetriever;
       protected IMoBiSimulation _affectedSimulation;
       private MoBiProject _project;
 
@@ -25,11 +23,9 @@ namespace MoBi.Core.Commands
          _project = new MoBiProject();
          _existingModule = new Module().WithId("existingModuleId");
          _affectedSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(_existingModule));
-         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
          _context = A.Fake<IMoBiContext>();
-         A.CallTo(() => _context.Resolve<IMoBiProjectRetriever>()).Returns(_projectRetriever);
          _project.AddSimulation(_affectedSimulation);
-         A.CallTo(() => _projectRetriever.Current).Returns(_project);
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
          _bb = new EventGroupBuildingBlock().WithId("newEventGroupBuildingBlockId");
          sut = new AddBuildingBlockToModuleCommand<IBuildingBlock>(_bb, _existingModule);
       }
