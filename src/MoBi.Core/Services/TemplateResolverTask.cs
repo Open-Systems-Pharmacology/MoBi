@@ -23,14 +23,9 @@ namespace MoBi.Core.Services
          _moBiProjectRetriever = moBiProjectRetriever;
       }
 
-      public TBuildingBlock TemplateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock
-      {
-         return _buildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock)) as TBuildingBlock;
-      }
+      public TBuildingBlock TemplateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock => 
+         _buildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock)) as TBuildingBlock;
 
-      public Module TemplateModuleFor(Module module)
-      {
-         return _moBiProjectRetriever.Current.ModuleByName(module.Name);
-      }
+      public Module TemplateModuleFor(Module module) => _moBiProjectRetriever.Current.ModuleByName(module.Name);
    }
 }

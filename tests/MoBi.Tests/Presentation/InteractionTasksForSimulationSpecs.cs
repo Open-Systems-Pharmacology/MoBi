@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -29,7 +30,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _moBiContext;
       protected IndividualBuildingBlock _individualBuildingBlock;
       protected MoBiProject _moBiProject;
-      private ITemplateResolverTask _templateResolver;
+      protected ITemplateResolverTask _templateResolver;
 
       protected override void Context()
       {
@@ -163,6 +164,90 @@ namespace MoBi.Presentation
       public void should_start_edit_action_for_the_new_simulation()
       {
          A.CallTo(() => _editTask.Edit(_configuredSimulation)).MustHaveHappened();
+      }
+   }
+
+   public class When_finding_modules_with_changes_from_simulation : concern_for_InteractionTasksForSimulation
+   {
+      private IMoBiSimulation _simulation;
+      private Module _module;
+      private IndividualBuildingBlock _simulationIndividual;
+      private IEnumerable<Module> _changes;
+      private Module _projectModule;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+         _simulation.Configuration = new SimulationConfiguration();
+         _simulationIndividual = new IndividualBuildingBlock();
+
+         _projectModule = new Module
+         {
+            new IndividualBuildingBlock()
+         };
+         
+         _module = new Module
+         {
+            _simulationIndividual
+         };
+
+         var moduleConfiguration = new ModuleConfiguration(_module);
+         _simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
+         
+         _projectModule.Add(new EventGroupBuildingBlock());
+
+         A.CallTo(() => _templateResolver.TemplateModuleFor(_simulation.Modules.First())).Returns(_projectModule);
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.FindChangedModules(_simulation);
+      }
+
+      [Observation]
+      public void the_changes_should_include_the_individual_from_the_simulation()
+      {
+         _changes.ShouldContain(_simulation.Modules.First());
+      }
+   }
+
+   public class When_finding_building_blocks_with_changes_from_simulation : concern_for_InteractionTasksForSimulation
+   {
+      private IMoBiSimulation _simulation;
+      private Module _module;
+      private IndividualBuildingBlock _simulationIndividual;
+      private IEnumerable<IBuildingBlock> _changes;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+         _simulation.Configuration = new SimulationConfiguration();
+         _simulationIndividual = new IndividualBuildingBlock
+         {
+            Version = 112
+         };
+         _module = new Module
+         {
+            _simulationIndividual
+         };
+         
+         var moduleConfiguration = new ModuleConfiguration(_module);
+         _simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
+
+         A.CallTo(() => _templateResolver.TemplateBuildingBlockFor(_simulationIndividual)).Returns(_individualBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.FindChangedBuildingBlocks(_simulation);
+      }
+
+      [Observation]
+      public void the_changes_should_include_the_individual_from_the_simulation()
+      {
+         _changes.ShouldContain(_simulationIndividual);
       }
    }
 }

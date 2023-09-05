@@ -187,12 +187,19 @@ namespace MoBi.Presentation.Presenter.Main
       {
          var simulationNode = _view.NodeById(simulation.Id);
          
-         var changedTemplateBuildingBlocks = findChangedTemplateBuildingBlocks(simulation).ToList();
+         var changedTemplateBuildingBlocks = _interactionTasksForSimulation.FindChangedBuildingBlocks(simulation).ToList();
+         var changedModules = _interactionTasksForSimulation.FindChangedModules(simulation).ToList();
 
-         var isChangedSimulation = changedTemplateBuildingBlocks.Any() || simulation.OriginalQuantityValues.Any();
-         simulationNode.Icon = isChangedSimulation ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
+         // Set simulation to red if there are any module, building block, or quantity changes
+         simulationNode.Icon = changedModules.Any() || changedTemplateBuildingBlocks.Any() || simulation.OriginalQuantityValues.Any() ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
 
-         updateBuildingBlockIcons(changedTemplateBuildingBlocks.Select(x => x.simulationBuildingBlock), simulationNode.AllNodes.OfType<BuildingBlockNode>());
+         updateModuleIcons(changedModules, simulationNode.AllNodes.OfType<ModuleConfigurationNode>());
+         updateBuildingBlockIcons(changedTemplateBuildingBlocks, simulationNode.AllNodes.OfType<BuildingBlockNode>());
+      }
+
+      private void updateModuleIcons(IEnumerable<Module> changedModules, IEnumerable<ModuleConfigurationNode> simulationNodeChildren)
+      {
+         simulationNodeChildren.Each(x => updateModuleIcon(x, changedModules));
       }
 
       private void updateBuildingBlockIcons(IEnumerable<IBuildingBlock> changedSimulationBuildingBlocks, IEnumerable<BuildingBlockNode> simulationNodeChildren)
@@ -200,16 +207,16 @@ namespace MoBi.Presentation.Presenter.Main
          simulationNodeChildren.Each(x => updateBuildingBlockIcon(x, changedSimulationBuildingBlocks));
       }
 
-      private static void updateBuildingBlockIcon(BuildingBlockNode x, IEnumerable<IBuildingBlock> changedSimulationBuildingBlocks)
+      private void updateModuleIcon(ModuleConfigurationNode moduleConfigurationNode, IEnumerable<Module> changedModules)
       {
-         x.Icon = changedSimulationBuildingBlocks.Contains(x.Tag) ? ApplicationIcons.RedOverlayFor(x.BaseIcon) : ApplicationIcons.GreenOverlayFor(x.BaseIcon);
+         moduleConfigurationNode.Icon = changedModules.AllNames().Contains(moduleConfigurationNode.ModuleName) ? ApplicationIcons.RedOverlayFor(moduleConfigurationNode.BaseIcon) : ApplicationIcons.GreenOverlayFor(moduleConfigurationNode.BaseIcon);
       }
 
-      private IEnumerable<(IBuildingBlock templateBuildingBlock, IBuildingBlock simulationBuildingBlock)> findChangedTemplateBuildingBlocks(IMoBiSimulation simulation)
+      private static void updateBuildingBlockIcon(BuildingBlockNode buildingBlock, IEnumerable<IBuildingBlock> changedSimulationBuildingBlocks)
       {
-         return simulation.BuildingBlocks().Select(x => (templateBuildingBlock: _interactionTasksForSimulation.TemplateBuildingBlockFor(x), simulationBuildingBlock:x)).
-            Where(match => match.templateBuildingBlock.Version != match.simulationBuildingBlock.Version);
+         buildingBlock.Icon = changedSimulationBuildingBlocks.Contains(buildingBlock.Tag) ? ApplicationIcons.RedOverlayFor(buildingBlock.BaseIcon) : ApplicationIcons.GreenOverlayFor(buildingBlock.BaseIcon);
       }
+
 
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
       {
