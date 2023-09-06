@@ -78,9 +78,11 @@ namespace MoBi.Presentation.Tasks
          else
             macroCommand.AddRange(updateParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration));
 
+         macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
+         
          macroCommand.Run(_context);
 
-         simulationWithChanges.ClearOriginalQuantities();
+         
 
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
          return macroCommand;
