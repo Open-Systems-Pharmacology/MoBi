@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using MoBi.Assets;
+using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
@@ -25,6 +26,8 @@ namespace MoBi.Core.Commands
          _quantityId = quantity.Id;
          _initialCondition = initialCondition;
          _moleculeAmount = quantity as MoleculeAmount ?? quantity.ParentContainer as MoleculeAmount;
+         ObjectType = ObjectTypes.InitialCondition;
+         CommandType = AppConstants.Commands.UpdateCommand;
       }
 
       protected override void ExecuteWith(IMoBiContext context)

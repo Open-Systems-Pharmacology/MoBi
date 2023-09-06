@@ -3,7 +3,7 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using MoBi.Assets;
-using MoBi.Core.Helper;
+using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
@@ -19,8 +19,7 @@ namespace MoBi.Core.Commands
          _parameterId = parameter.Id;
          _parameterValue = parameterValue;
          CommandType = AppConstants.Commands.UpdateCommand;
-         ObjectType = new ObjectTypeResolver().TypeFor<ParameterValue>();
-         
+         ObjectType = ObjectTypes.ParameterValue;
       }
 
       protected override void ExecuteWith(IMoBiContext context)
