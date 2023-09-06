@@ -118,14 +118,6 @@ namespace MoBi.Presentation.Presenter
          return selectedStartValueDTOs.Select(x => x.PathWithValueObject);
       }
 
-      private void refreshStartValues(IEnumerable<TPathAndValueEntity> startValues)
-      {
-         AddCommand(
-            _startValuesTask.RefreshPathAndValueEntitiesFromBuildingBlocks(
-               _buildingBlock,
-               startValues.ToList()));
-      }
-
       private void performDeleteAction(SelectOption selectOption)
       {
          if (selectOption == SelectOption.DeleteSelected)
@@ -158,19 +150,7 @@ namespace MoBi.Presentation.Presenter
       {
          bulkRemove(new List<TStartValueDTO> { elementToRemove });
       }
-
-      private void performRefreshAction(SelectOption option)
-      {
-         if (option == SelectOption.RefreshSelected)
-         {
-            refreshStartValues(SelectedStartValues);
-         }
-         else if (option == SelectOption.RefreshAll)
-         {
-            refreshStartValues(VisibleStartValues);
-         }
-      }
-
+      
       public override void Edit(TBuildingBlock buildingBlock)
       {
          _buildingBlock = buildingBlock;
@@ -284,21 +264,6 @@ namespace MoBi.Presentation.Presenter
       {
          if (_handleChangedEvents)
             HandleBuildingBlockEvent(eventToHandle);
-      }
-
-      public void HideDeleteColumn()
-      {
-         _view.HideDeleteColumn();
-      }
-
-      public void HideIsPresentView()
-      {
-         _view.HideIsPresentView();
-      }
-
-      public void HideNegativeValuesAllowedView()
-      {
-         _view.HideNegativeValuesAllowedView();
       }
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)
