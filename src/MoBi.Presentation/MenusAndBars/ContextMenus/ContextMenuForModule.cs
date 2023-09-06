@@ -46,11 +46,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return this;
       }
 
-      private IMenuBarItem createSaveItemFor(Module objectBase)
+      private IMenuBarItem createSaveItemFor(Module module)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
             .WithIcon(ApplicationIcons.SaveIconFor(nameof(Module)))
-            .WithCommandFor<SaveUICommandFor<Module>, Module>(objectBase, _container);
+            .WithCommandFor<SaveUICommandFor<Module>, Module>(module, _container);
       }
 
       private IMenuBarItem createCloneMenuItem(Module module)
