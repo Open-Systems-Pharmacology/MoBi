@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Nodes;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -40,11 +39,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(createExistingBuildingBlockItemFor(module));
          _allMenuItems.Add(createExistingBuildingBlockFromTemplateItemFor(module));
          _allMenuItems.Add(createRenameItemFor(module));
+         _allMenuItems.Add(createSaveItemFor(module));
          _allMenuItems.Add(createRemoveItemFor(module));
          _allMenuItems.Add(createCloneMenuItem(module));
          
-
          return this;
+      }
+
+      private IMenuBarItem createSaveItemFor(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
+            .WithIcon(ApplicationIcons.SaveIconFor(nameof(Module)))
+            .WithCommandFor<SaveUICommandFor<Module>, Module>(module, _container);
       }
 
       private IMenuBarItem createCloneMenuItem(Module module)
