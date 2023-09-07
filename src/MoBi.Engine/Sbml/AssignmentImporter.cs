@@ -3,8 +3,6 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Container;
 using Model = libsbmlcs.Model;
 
 namespace MoBi.Engine.Sbml
@@ -21,17 +19,17 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Creates a Rule and an Initial Assignment Importer to import SBML Rules and Initial Assignments.
+      ///    Creates a Rule and an Initial Assignment Importer to import SBML Rules and Initial Assignments.
       /// </summary>
       protected override void Import(Model model)
       {
          CreateParameterValuesBuildingBlock(model);
-         _initialAssignmentImporter.DoImport(model,_sbmlModule,_sbmlInformation, _command);
+         _initialAssignmentImporter.DoImport(model, _sbmlModule, _sbmlInformation, _command);
          _ruleImporter.DoImport(model, _sbmlModule, _sbmlInformation, _command);
       }
 
       /// <summary>
-      ///     Creates a Parameter Start Values Building Block and adds it to the MoBi Project.
+      ///    Creates a Parameter Start Values Building Block and adds it to the MoBi Project.
       /// </summary>
       protected internal void CreateParameterValuesBuildingBlock(Model model)
       {
@@ -42,7 +40,6 @@ namespace MoBi.Engine.Sbml
       //For Rate Rule only
       public override void AddToProject()
       {
-         
       }
    }
 }

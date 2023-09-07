@@ -58,7 +58,7 @@ namespace MoBi.UI.Views
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          ApplicationIcon = ApplicationIcons.Simulation;
          Caption = AppConstants.Captions.SimulationConfigurationWizard;
-         this.ReziseForCurrentScreen(fractionHeight: UIConstants.UI.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.UI.SCREEN_RESIZE_FRACTION);
+         this.ResizeForCurrentScreen(fractionHeight: UIConstants.UI.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.UI.SCREEN_RESIZE_FRACTION);
       }
 
       public override XtraTabControl TabControl => tabWizard;
