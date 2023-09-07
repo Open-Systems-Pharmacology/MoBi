@@ -171,7 +171,6 @@ namespace MoBi.Assets
          public static readonly string DynamicObservers = "Edit Observer";
          public static readonly string DynamicEvents = "Edit Event";
          public static readonly string DynamicInitialConditions = "Edit Initial Conditions";
-         public static readonly string DynamicExpressionProfile = "Edit Expression Profile";
          public static readonly string DynamicParameterValues = "Edit Parameter Values";
          public static readonly string DynamicRunSimulation = "Run & Analyze";
          public static readonly string Views = "Views";
@@ -187,7 +186,6 @@ namespace MoBi.Assets
          public static readonly string Observers = "Observers";
          public static readonly string Events = "Events";
          public static readonly string InitialConditions = "Initial Conditions";
-         public static readonly string ExpressionProfile = "Expression Profile";
          public static readonly string ParameterValues = "Parameter Values";
          public static readonly string Simulation = "Simulation";
          public static readonly string Skins = "Skins";
@@ -203,7 +201,6 @@ namespace MoBi.Assets
                Observers,
                Events,
                InitialConditions,
-               ExpressionProfile,
                ParameterValues,
                Simulation,
                OSPSuite.Assets.RibbonCategories.ParameterIdentification,

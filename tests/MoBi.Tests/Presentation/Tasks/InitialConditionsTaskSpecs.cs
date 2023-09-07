@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Tasks
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
 
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
-            new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _moleculeResolver, _reactionDimensionRetriever, _initialConditionsCreator, _moleculeBuilderTask);
+            new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _reactionDimensionRetriever, _initialConditionsCreator);
       }
    }
 
@@ -341,31 +341,6 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_updating_a_molecule_start_value_building_block_with_original_value_NaN_and_molecule_start_value_NaN : concern_for_InitialConditionsTask
-   {
-      private IMoBiCommand _command;
-
-      protected override void Context()
-      {
-         base.Context();
-         var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ConstantFormula(double.NaN)};
-         var nanStartValue = new InitialCondition {Formula = new ConstantFormula(double.NaN), Name = molecule.Name, Value = double.NaN, Dimension = Constants.Dimension.NO_DIMENSION};
-         _initialConditionsBuildingBlock.Add(nanStartValue);
-         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
-      }
-
-      protected override void Because()
-      {
-         _command = sut.RefreshPathAndValueEntitiesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
-      }
-
-      [Observation]
-      public void should_not_create_an_entry_in_the_history()
-      {
-         _command.IsEmptyMacro().ShouldBeTrue();
-      }
-   }
-
    public class When_updating_a_molecule_start_value_with_new_display_unit : concern_for_InitialConditionsTask
    {
       private InitialCondition _startValue;
@@ -401,90 +376,6 @@ namespace MoBi.Presentation.Tasks
       {
          // ReSharper disable once PossibleInvalidOperationException - suppress the warning. We want the exception if it's thrown
          _startValue.Value.Value.ShouldBeEqualTo(TARGET_BASE_VALUE);
-      }
-   }
-
-   public class When_updating_a_molecule_start_value_from_original_building_block_When_the_start_value_has_changed : concern_for_InitialConditionsTask
-   {
-      protected override void Context()
-      {
-         base.Context();
-         var builder = new MoleculeBuilder {Name = "molecule", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ExplicitFormula("50")};
-         var pathAndValueEntity = new InitialCondition {Name = builder.Name, Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null};
-         _initialConditionsBuildingBlock.Add(pathAndValueEntity);
-         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Returns(new ExplicitFormula("M/V"));
-         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(builder);
-      }
-
-      protected override void Because()
-      {
-         sut.RefreshPathAndValueEntitiesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
-      }
-
-      [Observation]
-      public void formula_must_be_set()
-      {
-         _initialConditionsBuildingBlock.Each(pathAndValueEntity => pathAndValueEntity.Formula.IsExplicit().ShouldBeTrue());
-      }
-   }
-
-   public class When_updating_a_molecule_start_value_building_block_with_original_value_NaN_and_molecule_start_value_NULL : concern_for_InitialConditionsTask
-   {
-      private IMoBiCommand _command;
-
-      protected override void Context()
-      {
-         base.Context();
-         var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION};
-         var nanStartValue = new InitialCondition {Name = molecule.Name, Value = null, Dimension = Constants.Dimension.NO_DIMENSION};
-         _initialConditionsBuildingBlock.Add(nanStartValue);
-         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
-      }
-
-      protected override void Because()
-      {
-         _command = sut.RefreshPathAndValueEntitiesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
-      }
-
-      [Observation]
-      public void should_not_create_an_entry_in_the_history()
-      {
-         _command.IsEmptyMacro().ShouldBeTrue();
-      }
-   }
-
-   public class When_updating_a_molecule_start_value_building_block_with_original_value_null_and_molecule_start_value_NULL : concern_for_InitialConditionsTask
-   {
-      private IMoBiCommand _command;
-      private InitialCondition _nullStartValue;
-
-      protected override void Context()
-      {
-         base.Context();
-         var moleculeBuildingBlock = new MoleculeBuildingBlock();
-         var molecule = new MoleculeBuilder {Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION};
-         moleculeBuildingBlock.Add(molecule);
-         _nullStartValue = new InitialCondition {Name = molecule.Name, Value = 1, Dimension = Constants.Dimension.NO_DIMENSION};
-         _initialConditionsBuildingBlock.Add(_nullStartValue);
-         A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
-         A.CallTo(() => _moleculeResolver.Resolve(_nullStartValue.ContainerPath, _nullStartValue.MoleculeName, A<SpatialStructure>._, A<MoleculeBuildingBlock>._)).Returns(molecule);
-      }
-
-      protected override void Because()
-      {
-         _command = sut.RefreshPathAndValueEntitiesFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock);
-      }
-
-      [Observation]
-      public void should_create_an_entry_in_the_history()
-      {
-         _command.IsEmptyMacro().ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_set_the_value_to_null()
-      {
-         _nullStartValue.Value.ShouldBeNull();
       }
    }
    
@@ -622,98 +513,6 @@ namespace MoBi.Presentation.Tasks
       public void the_initial_conditions_creator_is_not_used_to_create_initial_conditions()
       {
          A.CallTo(() => _initialConditionsCreator.CreateFrom(A<MoBiSpatialStructure>._, A<IReadOnlyList<MoleculeBuilder>>._)).MustNotHaveHappened();
-      }
-   }
-
-   public class When_extending_initial_conditions_of_expression_profile_and_only_one_spatial_structure_is_available : concern_for_InitialConditionsTask
-   {
-      private ExpressionProfileBuildingBlock _expressionProfileBuildingBlock;
-      private MoBiSpatialStructure _moBiSpatialStructure;
-      private Container _container;
-      private MoleculeBuilder _moleculeBuilder;
-      private ExplicitFormula _explicitFormula;
-
-      protected override void Context()
-      {
-         base.Context();
-         _container = new Container
-         {
-            Mode = ContainerMode.Physical
-         };
-         _moBiSpatialStructure = new MoBiSpatialStructure
-         {
-            _container
-         };
-
-         _expressionProfileBuildingBlock = new ExpressionProfileBuildingBlock
-         {
-            Name = "moleculeName|human|healthy"
-         };
-
-         _explicitFormula = new ExplicitFormula("y=mx+b");
-         _expressionProfileBuildingBlock.AddInitialCondition(new InitialCondition
-         {
-            Formula = _explicitFormula
-         });
-
-         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _moBiSpatialStructure });
-         _moleculeBuilder = new MoleculeBuilder().WithName("moleculeName");
-         A.CallTo(() => _moleculeBuilderTask.CreateDefault("moleculeName", _explicitFormula)).Returns(_moleculeBuilder);
-      }
-
-      protected override void Because()
-      {
-         sut.ExtendExpressionProfileInitialConditions(_expressionProfileBuildingBlock);
-      }
-
-      [Observation]
-      public void the_selection_presenter_is_used_to_select_the_building_blocks()
-      {
-         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).MustNotHaveHappened();
-      }
-
-      [Observation]
-      public void the_initial_conditions_creator_is_used_to_create_initial_conditions()
-      {
-         A.CallTo(_initialConditionsCreator).WithReturnType<InitialCondition>().MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_initial_condition_creator_should_create_with_the_most_used_formula()
-      {
-         A.CallTo(() => _moleculeBuilderTask.CreateDefault("moleculeName", _explicitFormula)).MustHaveHappened();
-         A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(_container, _moleculeBuilder, null)).MustHaveHappened();
-      }
-   }
-
-   public class When_extending_expression_profile_and_the_building_blocks_are_not_selected : concern_for_InitialConditionsTask
-   {
-      private ISelectBuildingBlocksForExtendPresenter _presenter;
-      private ExpressionProfileBuildingBlock _expressionProfile;
-
-      protected override void Context()
-      {
-         base.Context();
-         
-         _expressionProfile = new ExpressionProfileBuildingBlock
-         {
-            Name = "moleculeName|human|healthy"
-         };
-
-         _presenter = A.Fake<ISelectBuildingBlocksForExtendPresenter>();
-         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).Returns(_presenter);
-         A.CallTo(() => _presenter.SelectedSpatialStructure).Returns(null);
-      }
-
-      protected override void Because()
-      {
-         sut.ExtendExpressionProfileInitialConditions(_expressionProfile);
-      }
-
-      [Observation]
-      public void the_initial_conditions_creator_is_not_used_to_create_initial_conditions()
-      {
-         A.CallTo(_initialConditionsCreator).WithReturnType<InitialCondition>().MustNotHaveHappened();
       }
    }
 }

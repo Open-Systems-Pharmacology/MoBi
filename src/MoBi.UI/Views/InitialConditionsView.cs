@@ -23,6 +23,7 @@ namespace MoBi.UI.Views
    {
       private readonly UxComboBoxUnit<InitialConditionDTO> _unitControl;
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
+      private IGridViewBoundColumn<InitialConditionDTO, bool> _isPresentColumn;
 
       public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder) : base(valueOriginBinder)
       {
@@ -43,7 +44,7 @@ namespace MoBi.UI.Views
          colName.XtraColumn.VisibleIndex = 0;
 
          _gridViewBinder.AutoBind(dto => dto.Value)
-            .WithCaption(AppConstants.Captions.InitialCondition)
+            .WithCaption(AppConstants.Captions.Value)
             .WithFormat(dto => dto.InitialConditionFormatter())
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
@@ -55,7 +56,7 @@ namespace MoBi.UI.Views
             .WithCaption(AppConstants.Captions.ScaleDivisor)
             .WithOnValueUpdating((o, e) => OnEvent(() => InitialConditionPresenter.SetScaleDivisor(o, e.NewValue)));
 
-         _gridViewBinder.Bind(dto => dto.IsPresent)
+         _isPresentColumn = _gridViewBinder.Bind(dto => dto.IsPresent)
             .WithCaption(AppConstants.Captions.IsPresent)
             .WithRepository(dto => _checkItemRepository)
             .WithOnValueUpdating((o, e) => OnEvent(() => onSetIsPresent(o, e.NewValue)));
@@ -71,6 +72,11 @@ namespace MoBi.UI.Views
             .WithOnValueUpdating((o, e) => InitialConditionPresenter.SetFormula(o, e.NewValue.Formula));
 
          gridView.HiddenEditor += (o, e) => hideEditor();
+      }
+
+      public void HideIsPresentColumn()
+      {
+         _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
       }
 
       private void onSetIsPresent(InitialConditionDTO dto, bool isPresent)

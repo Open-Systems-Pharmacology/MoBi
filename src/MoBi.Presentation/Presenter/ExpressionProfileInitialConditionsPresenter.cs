@@ -26,6 +26,11 @@ namespace MoBi.Presentation.Presenter
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory) : base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter)
       {
+         HideDeleteColumn();
+         HideIsPresentView();
+         HideDeleteView();
+         _view.HideIsPresentColumn();
+         _view.HideValueOriginColumn();
       }
    }
 }

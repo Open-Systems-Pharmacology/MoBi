@@ -28,8 +28,6 @@ namespace MoBi.Presentation.Presenter
       ///    Sets if new formula can be created. Default is true
       /// </summary>
       bool CanCreateNewFormula { set; }
-
-      void ExtendStartValues();
    }
 
    public interface IStartValuesPresenter<TDTO> : IStartValuesPresenter, IBreadCrumbsPresenter where TDTO : IPathAndValueEntityDTO

@@ -113,7 +113,6 @@ namespace MoBi.Presentation.Presenter.Main
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Observers, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Events, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.InitialConditions, Color.LightGreen);
-         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.ExpressionProfile, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.ParameterValues, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Simulation, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.ParameterIdentification, Color.LightGreen);
@@ -127,7 +126,6 @@ namespace MoBi.Presentation.Presenter.Main
          _dynamicRibbonPageCache.Add(typeof(PassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
          _dynamicRibbonPageCache.Add(typeof(EventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
          _dynamicRibbonPageCache.Add(typeof(InitialConditionsBuildingBlock), AppConstants.RibbonCategories.InitialConditions);
-         _dynamicRibbonPageCache.Add(typeof(ExpressionProfileBuildingBlock), AppConstants.RibbonCategories.ExpressionProfile);
          _dynamicRibbonPageCache.Add(typeof(ParameterValuesBuildingBlock), AppConstants.RibbonCategories.ParameterValues);
          _dynamicRibbonPageCache.Add(typeof(IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
          _dynamicRibbonPageCache.Add(typeof(ParameterIdentification), RibbonCategories.ParameterIdentification);
@@ -142,7 +140,6 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddObserver), AppConstants.RibbonPages.DynamicObservers, AppConstants.RibbonCategories.Observers);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddEvent), AppConstants.RibbonPages.DynamicEvents, AppConstants.RibbonCategories.Events);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditInitialConditions), AppConstants.RibbonPages.DynamicInitialConditions, AppConstants.RibbonCategories.InitialConditions);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditExpressionProfile), AppConstants.RibbonPages.DynamicExpressionProfile, AppConstants.RibbonCategories.ExpressionProfile);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditParameterValues), AppConstants.RibbonPages.DynamicParameterValues, AppConstants.RibbonCategories.ParameterValues);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.Simulation), AppConstants.RibbonPages.DynamicRunSimulation, AppConstants.RibbonCategories.Simulation);
 
@@ -267,7 +264,6 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.InitialConditionsExtend].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.ExpressionProfileExtend].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ParameterValuesExtend].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SearchView].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewParameterValue].Enabled = enabled;

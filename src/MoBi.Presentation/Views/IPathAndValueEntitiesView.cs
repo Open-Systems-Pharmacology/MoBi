@@ -8,15 +8,16 @@ namespace MoBi.Presentation.Views
       void BindTo(IEnumerable<TStartValueDTO> startValueDTOs);
 
       /// <summary>
-      /// Initializes the columns associated with paths in the start value.
+      ///    Initializes the columns associated with paths in the start value.
       /// </summary>
       void InitializePathColumns();
 
       /// <summary>
-      /// Add items to the list of suggested values for path elements
+      ///    Add items to the list of suggested values for path elements
       /// </summary>
       /// <param name="pathValues">The list of suggested path values</param>
       void AddPathItems(IEnumerable<string> pathValues);
+
       void ClearPathItems();
       IReadOnlyList<TStartValueDTO> SelectedStartValues { get; }
       IReadOnlyList<TStartValueDTO> VisibleStartValues { get; }
@@ -25,6 +26,7 @@ namespace MoBi.Presentation.Views
       void HideDeleteColumn();
       void HideIsPresentView();
       void HideNegativeValuesAllowedView();
+      void HideValueOriginColumn();
 
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }
