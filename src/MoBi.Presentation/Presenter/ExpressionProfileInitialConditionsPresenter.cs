@@ -29,8 +29,8 @@ namespace MoBi.Presentation.Presenter
          HideDeleteColumn();
          HideIsPresentView();
          HideDeleteView();
-         _view.HideIsPresentColumn();
-         _view.HideValueOriginColumn();
+         HideIsPresentColumn();
+         HideValueOriginColumn();
       }
    }
 }

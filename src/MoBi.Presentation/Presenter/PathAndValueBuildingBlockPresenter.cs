@@ -266,6 +266,11 @@ namespace MoBi.Presentation.Presenter
             HandleBuildingBlockEvent(eventToHandle);
       }
 
+      public void HideValueOriginColumn()
+      {
+         _view.HideValueOriginColumn();
+      }
+
       public void HideDeleteView()
       {
          _view.HideDeleteView();
