@@ -99,9 +99,13 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected override bool CorrectName(TBuildingBlock buildingBlock, Module module)
       {
+         // If this is an ExpressionProfileBuildingBlock, then the names of existing
+         // building blocks in the module InitialConditionsCollection are not forbidden.
          if (buildingBlock is ExpressionProfileBuildingBlock)
             return base.CorrectName(buildingBlock, module);
          
+         // This is an InitialConditionsBuildingBlock. Prevent renaming to the same name as
+         // an existing building block in the InitialConditionsCollection
          var forbiddenNames = _editTask.GetForbiddenNames(buildingBlock, module.InitialConditionsCollection);
          return InteractionTask.CorrectName(buildingBlock, forbiddenNames);
       }
