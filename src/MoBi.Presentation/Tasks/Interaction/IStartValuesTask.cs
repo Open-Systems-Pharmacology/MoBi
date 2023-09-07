@@ -78,14 +78,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand EditPathAndValueEntityContainerPath(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, int indexToUpdate, string newValue);
 
       /// <summary>
-      ///    Refreshes start values from original building blocks
-      /// </summary>
-      /// <param name="buildingBlock">The StartValueBuildingBlock being updated</param>
-      /// <param name="pathAndValueEntitiesToRefresh">The list of values that should be refreshed</param>
-      /// <returns>The command that was run to refresh the values</returns>
-      IMoBiCommand RefreshPathAndValueEntitiesFromBuildingBlocks(TBuildingBlock buildingBlock, IEnumerable<TPathAndValueEntity> pathAndValueEntitiesToRefresh);
-
-      /// <summary>
       ///    Retrieves all the parent container path elements from the molecule building block and spatial structure
       /// </summary>
       /// <param name="buildingBlock">The start value building block</param>

@@ -10,7 +10,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
 
 namespace MoBi.Presentation.Tasks

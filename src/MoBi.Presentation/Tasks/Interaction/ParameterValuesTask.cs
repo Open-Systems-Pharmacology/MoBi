@@ -20,14 +20,10 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IParameterValuesTask : IStartValuesTask<ParameterValuesBuildingBlock, ParameterValue>
    {
-      IParameter GetPossibleParameterFromProject(ObjectPath parameterPath);
    }
 
    public class ParameterValuesTask : StartValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
    {
-      private readonly IParameterValuesCreator _startValuesCreator;
-      private readonly IParameterResolver _parameterResolver;
-
       public ParameterValuesTask(
          IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> editTask,
@@ -41,16 +37,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          IParameterValuePathTask parameterValuePathTask)
          : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask)
       {
-         _startValuesCreator = startValuesCreator;
-         _parameterResolver = parameterResolver;
       }
 
       private IReadOnlyList<ParameterValue> createTempStartValues(ParameterValuesBuildingBlock parameterValues)
       {
          return new List<ParameterValue>();
-         // var molecules = BuildingBlockById<MoleculeBuildingBlock>(parameterStartValues.MoleculeBuildingBlockId);
-         // var spatialStructure = BuildingBlockById<SpatialStructure>(parameterStartValues.SpatialStructureId);
-         // return _startValuesCreator.CreateFrom(spatialStructure, molecules);
       }
 
       public override void ExtendStartValueBuildingBlock(ParameterValuesBuildingBlock buildingBlock)
@@ -112,38 +103,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return Constants.Dimension.NO_DIMENSION;
       }
 
-      public override IMoBiCommand RefreshPathAndValueEntitiesFromBuildingBlocks(ParameterValuesBuildingBlock buildingBlock, IEnumerable<ParameterValue> pathAndValueEntitiesToRefresh)
+      protected override bool CorrectName(ParameterValuesBuildingBlock buildingBlock, Module module)
       {
-         // TODO OSMOSES
-         // var spatialStructure = SpatialStructureReferencedBy(buildingBlock);
-         // var moleculeBuildingBlock = MoleculeBuildingBlockReferencedBy(buildingBlock);
-
-         var macroCommand = new MoBiMacroCommand
-         {
-            CommandType = AppConstants.Commands.EditCommand,
-            Description = AppConstants.Commands.RefreshParameterValuesFromBuildingBlocks,
-            ObjectType = ObjectTypes.ParameterValue
-         };
-
-         // pathAndValueEntitiesToRefresh.Each(pathAndValueEntity =>
-         // {
-         //    var parameter = _parameterResolver.Resolve(pathAndValueEntity.ContainerPath, pathAndValueEntity.Name, spatialStructure, moleculeBuildingBlock);
-         //    if (parameter == null)
-         //       return;
-         //
-         //    if (!HasEquivalentDimension(pathAndValueEntity, parameter))
-         //       macroCommand.Add(UpdatePathAndValueEntityDimension(buildingBlock, pathAndValueEntity, parameter.Dimension));
-         //
-         //    if (!HasEquivalentPathAndValueEntity(pathAndValueEntity, parameter))
-         //       macroCommand.Add(SetDisplayValueWithUnit(pathAndValueEntity, parameter.ConvertToDisplayUnit(parameter.Value), parameter.DisplayUnit, buildingBlock));
-         //
-         //    // Evaluating the pathAndValueEntity before the formula is important if the pathAndValueEntity is a constant and the original building block uses a constant formula
-         //    if (!HasEquivalentFormula(pathAndValueEntity, parameter.Formula))
-         //       macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, pathAndValueEntity, parameter.Formula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(parameter.Formula, buildingBlock.FormulaCache)));
-         // });
-
-         return macroCommand;
+         var forbiddenNames = _editTask.GetForbiddenNames(buildingBlock, module.ParameterValuesCollection);
+         return InteractionTask.CorrectName(buildingBlock, forbiddenNames);
       }
+
 
       protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToRemove)
       {
