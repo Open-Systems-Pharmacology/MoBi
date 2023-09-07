@@ -26,7 +26,6 @@ namespace MoBi.Core.Domain.Model
       IMoBiDimensionFactory DimensionFactory { get; }
       IObjectBaseFactory ObjectBaseFactory { get; }
       IWithIdRepository ObjectRepository { get; }
-      IContainer Container { get; }
 
       T Create<T>(string id) where T : class, IObjectBase;
       T Create<T>() where T : class, IObjectBase;

@@ -3,7 +3,7 @@ using OSPSuite.Core.Commands;
 
 namespace MoBi.Core.Commands
 {
-   public interface IMoBiCommand : IOSPSuiteCommmand<IMoBiContext>
+   public interface IMoBiCommand : IOSPSuiteCommand<IMoBiContext>
    {
    }
 
