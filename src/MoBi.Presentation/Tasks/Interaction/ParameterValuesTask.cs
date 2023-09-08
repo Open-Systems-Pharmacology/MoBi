@@ -73,6 +73,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return Constants.Dimension.NO_DIMENSION;
       }
 
+      protected override bool CorrectName(ParameterValuesBuildingBlock buildingBlock, Module module)
+      {
+         var forbiddenNames = _editTask.GetForbiddenNames(buildingBlock, module.ParameterValuesCollection);
+         return InteractionTask.CorrectName(buildingBlock, forbiddenNames);
+      }
+
       protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToRemove)
       {
          return new RemoveParameterValueFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);

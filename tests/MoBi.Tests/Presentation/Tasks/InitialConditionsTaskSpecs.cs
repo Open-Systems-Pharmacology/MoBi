@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _initialCondition = new InitialCondition {ScaleDivisor = 1};
+         _initialCondition = new InitialCondition { ScaleDivisor = 1 };
       }
 
       protected override void Because()
@@ -135,7 +135,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _firstStartValueRef = new InitialCondition {Path = new ObjectPath("this", "path", "C1"), Value = -1.0, IsPresent = true};
+         _firstStartValueRef = new InitialCondition { Path = new ObjectPath("this", "path", "C1"), Value = -1.0, IsPresent = true };
          IDimension d = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
          _initialConditions = new List<ImportedQuantityDTO>
@@ -275,7 +275,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new InitialCondition { ContainerPath = new ObjectPath("A", "B") };
          _initialConditionsBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_initialConditionsBuildingBlock, _startValue, 0, "");
       }
@@ -293,7 +293,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new InitialCondition { ContainerPath = new ObjectPath("A", "B") };
          _initialConditionsBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_initialConditionsBuildingBlock, _startValue, 2, "C");
       }
@@ -311,7 +311,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new InitialCondition { ContainerPath = new ObjectPath("A", "B") };
          _initialConditionsBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_initialConditionsBuildingBlock, _startValue, 0, "C");
       }
@@ -329,7 +329,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new InitialCondition {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new InitialCondition { ContainerPath = new ObjectPath("A", "B") };
          _initialConditionsBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_initialConditionsBuildingBlock, _startValue, 5, "C");
       }
@@ -353,7 +353,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _dim = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass);
 
-         _startValue = new InitialCondition {Dimension = _dim, Value = TARGET_DISPLAY_VALUE, DisplayUnit = _dim.Unit("g")};
+         _startValue = new InitialCondition { Dimension = _dim, Value = TARGET_DISPLAY_VALUE, DisplayUnit = _dim.Unit("g") };
       }
 
       protected override void Because()
@@ -393,12 +393,12 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _context.NamingTask.NewName(A<string>._, A<string>._, A<string>._, A<IEnumerable<string>>._, A<IEnumerable<string>>._, A<string>._)).Returns(CloneName());
          A.CallTo(() => _context.InteractionTask.CorrectName(A<InitialConditionsBuildingBlock>._, A<IEnumerable<string>>._)).Returns(true);
       }
-      
+
       protected override void Because()
       {
          _result = sut.CloneAndAddToParent(_buildingBlockToClone, _module);
       }
-      
+
       protected abstract string CloneName();
    }
 
@@ -471,7 +471,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _moBiSpatialStructure });
          _moleculeBuildingBlock = new MoleculeBuildingBlock();
          A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { _moleculeBuildingBlock });
-         
+
       }
 
       protected override void Because()
