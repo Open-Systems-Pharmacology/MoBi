@@ -96,6 +96,11 @@ namespace MoBi.Presentation.Presenter
          setNegativeValuesAllowed(new[] { dto.InitialCondition }, negativeValuesAllowed);
       }
 
+      public void HideIsPresentColumn()
+      {
+         _view.HideIsPresentColumn();
+      }
+
       private void setNegativeValuesAllowed(IEnumerable<InitialCondition> startValuesToUpdate, bool negativeValuesAllowed)
       {
          AddCommand(() => _initialConditionsTask.SetNegativeValuesAllowed(_buildingBlock, startValuesToUpdate, negativeValuesAllowed));

@@ -32,7 +32,6 @@ namespace MoBi.Presentation.Repositories
          yield return addObserverButtonGroup;
          yield return addEventButtonGroup;
          yield return addInitialConditionButtonGroup;
-         yield return addExpressionProfileButtonGroup;
          yield return addParameterValueButtonGroup;
          yield return displayUnitsButtonGroup;
          yield return journalButtonGroup;
@@ -162,11 +161,6 @@ namespace MoBi.Presentation.Repositories
       private IButtonGroup addInitialConditionButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.InitialConditionsExtend)))
          .WithId(ButtonGroupIds.EditInitialConditions)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewInitialConditions)));
-      
-      private IButtonGroup addExpressionProfileButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExpressionProfileExtend)))
-         .WithId(ButtonGroupIds.EditExpressionProfile)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewInitialConditions)));
 
       private IButtonGroup importButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Import)

@@ -144,6 +144,11 @@ namespace MoBi.UI.Views
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => removeStartValue(_gridViewBinder.FocusedElement));
       }
 
+      public void HideValueOriginColumn()
+      {
+         _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
+      }
+
       protected void InitializeValueOriginBinding()
       {
          _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));

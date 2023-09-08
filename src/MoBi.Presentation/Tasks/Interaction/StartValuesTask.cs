@@ -282,7 +282,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
          var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;
-         
+
          // If there is only one option that could be selected for each required building block, then we just use those options and don't
          // need to ask the user to make a selection
          if ((!moleculeRequired || moleculeBlockCollection.Count == 1) && spatialStructureCollection.Count == 1)

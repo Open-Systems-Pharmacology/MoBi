@@ -150,7 +150,7 @@ namespace MoBi.Presentation.Presenter
       {
          bulkRemove(new List<TStartValueDTO> { elementToRemove });
       }
-      
+
       public override void Edit(TBuildingBlock buildingBlock)
       {
          _buildingBlock = buildingBlock;
@@ -264,6 +264,31 @@ namespace MoBi.Presentation.Presenter
       {
          if (_handleChangedEvents)
             HandleBuildingBlockEvent(eventToHandle);
+      }
+
+      public void HideValueOriginColumn()
+      {
+         _view.HideValueOriginColumn();
+      }
+
+      public void HideDeleteView()
+      {
+         _view.HideDeleteView();
+      }
+
+      public void HideDeleteColumn()
+      {
+         _view.HideDeleteColumn();
+      }
+
+      public void HideIsPresentView()
+      {
+         _view.HideIsPresentView();
+      }
+
+      public void HideNegativeValuesAllowedView()
+      {
+         _view.HideNegativeValuesAllowedView();
       }
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)

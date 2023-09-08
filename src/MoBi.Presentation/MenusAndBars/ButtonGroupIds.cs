@@ -21,7 +21,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static ButtonGroupId EditDiagram = new ButtonGroupId("EditDiagram");
       public static ButtonGroupId EditOrganism = new ButtonGroupId("EditOrganism");
       public static ButtonGroupId EditInitialConditions = new ButtonGroupId("EditInitialConditions");
-      public static ButtonGroupId EditExpressionProfile = new ButtonGroupId("EditExpressionProfile");
       public static ButtonGroupId EditParameterValues = new ButtonGroupId("EditParameterValues");
       public static ButtonGroupId DisplayUnits = new ButtonGroupId("DisplayUnits");
       public static ButtonGroupId Journal = new ButtonGroupId("Journal");

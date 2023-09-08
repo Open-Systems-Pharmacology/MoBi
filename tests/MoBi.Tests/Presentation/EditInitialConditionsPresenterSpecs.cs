@@ -61,19 +61,4 @@ namespace MoBi.Presentation
          A.CallTo(() => _initialConditionsPresenter.AddNewEmptyStartValue()).MustHaveHappened();
       }
    }
-
-   public class When_extending_molecule_start_values : concern_for_EditInitialConditionsPresenter
-   {
-      protected override void Because()
-      {
-         sut.ExtendInitialConditions();
-      }
-
-      [Observation]
-      public void the_subpresenter_is_used_to_extend()
-      {
-         A.CallTo(() => _initialConditionsPresenter.ExtendStartValues()).MustHaveHappened();
-      }
-   }
-
 }

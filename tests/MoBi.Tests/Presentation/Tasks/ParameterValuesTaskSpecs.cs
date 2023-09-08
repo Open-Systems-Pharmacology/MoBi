@@ -41,9 +41,8 @@ namespace MoBi.Presentation.Tasks
          _parameterResolver = A.Fake<IParameterResolver>();
 
          sut = new ParameterValuesTask(_context, _editTasks,
-            _parameterValuesCreator,
             _cloneManagerForBuildingBlock,
-            new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), _parameterResolver, A.Fake<IParameterValueBuildingBlockExtendManager>(),
+            new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), A.Fake<IParameterValueBuildingBlockExtendManager>(),
             A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context));
       }
    }
