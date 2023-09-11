@@ -237,8 +237,10 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private bool adjustFormula(TChild childToAdd, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand)
       {
-         //no formula to check for building block
-         if (childToAdd.IsAnImplementationOf<IBuildingBlock>() || childToAdd.IsAnImplementationOf<IMoBiSimulation>())
+         //no formula to check for building blocks, simulations, or modules
+         if (childToAdd.IsAnImplementationOf<IBuildingBlock>() ||
+             childToAdd.IsAnImplementationOf<IMoBiSimulation>() ||
+             childToAdd.IsAnImplementationOf<Module>())
             return true;
 
          return InteractionTask.AdjustFormula(childToAdd, buildingBlockWithFormulaCache, macroCommand);
