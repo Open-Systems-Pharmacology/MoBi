@@ -74,10 +74,15 @@ namespace MoBi.Presentation.Presenter
       private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
       {
          if(neighborhoodBuilder.FirstNeighborPath!=null)
-            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor };
+            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder.FirstNeighbor, neighborhoodBuilder.SecondNeighbor)};
 
          if (neighborhoodBuilder.SecondNeighborPath != null)
-            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor };
+            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder.SecondNeighbor, neighborhoodBuilder.FirstNeighbor) };
+      }
+
+      private string createNeighborhoodId(IWithId me, IWithId myNeighbor)
+      {
+         return $"{me.Id}-{myNeighbor.Id}";
       }
 
       private ContainerType groupingTypeFor(IEntity entity)
