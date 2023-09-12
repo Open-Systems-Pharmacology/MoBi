@@ -80,6 +80,12 @@ namespace MoBi.Presentation.Presenter
             yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder.SecondNeighbor, neighborhoodBuilder.FirstNeighbor) };
       }
 
+      /// <summary>
+      /// Creates an Id for neighbors in a neighborhood.
+      /// The Id must be distinct for the neighborhood, so it cannot be just the Id of the <paramref name="me"/> node, but must
+      /// include the id of the <paramref name="myNeighbor"/> node in some way
+      /// </summary>
+      /// <returns>An Id that combines the two Ids of the neighborhood</returns>
       private string createNeighborhoodId(IWithId me, IWithId myNeighbor)
       {
          return $"{me.Id}-{myNeighbor.Id}";
