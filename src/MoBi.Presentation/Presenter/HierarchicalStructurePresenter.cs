@@ -88,7 +88,7 @@ namespace MoBi.Presentation.Presenter
       /// <returns>An Id that combines the two Ids of the neighborhood</returns>
       private string createNeighborhoodId(IWithId me, IWithId myNeighbor)
       {
-         return $"{me.Id}-{myNeighbor.Id}";
+         return $"{me?.Id}-{myNeighbor?.Id}";
       }
 
       private ContainerType groupingTypeFor(IEntity entity)
