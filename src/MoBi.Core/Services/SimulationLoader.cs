@@ -78,11 +78,7 @@ namespace MoBi.Core.Services
       private void renameCollidingEntities(IEnumerable<IObjectBase> entitiesToRename, IReadOnlyList<IWithName> existingEntities)
       {
          var takenNames = existingEntities.AllNames();
-         entitiesToRename.Each(x =>
-         {
-            if (takenNames.Contains(x.Name))
-               _nameCorrector.AutoCorrectName(takenNames, x);
-         });
+         entitiesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));
       }
 
       public ICommand AddSimulationToProject(SimulationTransfer simulationTransfer)
