@@ -54,8 +54,13 @@ namespace MoBi.Core.Services
       {
          var moBiSimulation = simulation;
 
-         // simulation.MoBiBuildConfiguration.AllBuildingBlockInfos().Each(checkTemplateBuildingBlock);
          var project = _context.CurrentProject;
+
+         renameCollidingEntities(simulation.Modules, project.Modules);
+         renameCollidingEntities(simulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection);
+         
+         if(simulation.Configuration.Individual != null)
+            renameCollidingEntities(new[] { simulation.Configuration.Individual }, project.IndividualsCollection);
 
          if (shouldCloneSimulation)
             moBiSimulation = cloneSimulation(moBiSimulation);
@@ -68,6 +73,16 @@ namespace MoBi.Core.Services
 
          moBiSimulation.HasChanged = true;
          loadCommand.AddCommand(new AddSimulationCommand(moBiSimulation));
+      }
+
+      private void renameCollidingEntities(IEnumerable<IObjectBase> entitiesToRename, IReadOnlyList<IWithName> existingEntities)
+      {
+         var takenNames = existingEntities.AllNames();
+         entitiesToRename.Each(x =>
+         {
+            if (takenNames.Contains(x.Name))
+               _nameCorrector.AutoCorrectName(takenNames, x);
+         });
       }
 
       public ICommand AddSimulationToProject(SimulationTransfer simulationTransfer)
@@ -102,7 +117,7 @@ namespace MoBi.Core.Services
       {
          var cloneForProjectEntities = _cloneManager.CloneSimulationConfiguration(simulation.Configuration);
          cloneForProjectEntities.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(moduleConfiguration.Module)));
-         
+
          addToProject(commandCollector, cloneForProjectEntities.Individual, individual => new AddIndividualBuildingBlockToProjectCommand(individual));
          cloneForProjectEntities.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile, ep => new AddExpressionProfileBuildingBlockToProjectCommand(ep)));
       }

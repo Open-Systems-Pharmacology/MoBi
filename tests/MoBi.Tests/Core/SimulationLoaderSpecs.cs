@@ -21,6 +21,7 @@ namespace MoBi.Core
       protected MoBiProject _project;
       protected IMoBiSimulation _simulation;
       protected IMoBiContext _context;
+      protected SimulationConfiguration _simulationConfiguration;
 
       protected override void Context()
       {
@@ -30,16 +31,25 @@ namespace MoBi.Core
          sut = new SimulationLoader(_cloneManager, _nameCorrector, _context);
 
          _project = DomainHelperForSpecs.NewProject();
-         _simulation = A.Fake<IMoBiSimulation>().WithId("SimId");
+         _simulation = new MoBiSimulation().WithId("SimId");
+         _simulationConfiguration = new SimulationConfiguration();
+         var originalBuildingBlock = new ObserverBuildingBlock().WithId("SP1");
+         var module = new Module
+         {
+            originalBuildingBlock
+         }.WithName("moduleName");
+         _simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
+         _simulationConfiguration.Individual = new IndividualBuildingBlock().WithId("ind1");
+         _simulation.Configuration = _simulationConfiguration;
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.Project).Returns(_project);
       }
    }
 
-   public class When_adding_a_simulation_to_project_that_does_not_contain_any_simulation_or_building_block : concern_for_SimulationLoader
+   public class When_adding_a_simulation_to_project_that_contains_a_module_with_the_same_name : concern_for_SimulationLoader
    {
       private ObserverBuildingBlock _clonedBuildingBlock;
-      private SimulationConfiguration _simulationConfiguration;
+     
       private Module _clonedModule;
       private IndividualBuildingBlock _clonedIndividual;
       private SimulationConfiguration _clonedSimulationConfiguration;
@@ -47,20 +57,13 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         var originalBuildingBlock = new ObserverBuildingBlock().WithId("SP1");
-         var module = new Module
-         {
-            originalBuildingBlock
-         };
+         _project.AddModule(new Module().WithName("moduleName"));
 
          _clonedBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
          _clonedModule = new Module
          {
             _clonedBuildingBlock
          };
-         _simulationConfiguration = new SimulationConfiguration();
-         _simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
-         _simulationConfiguration.Individual = new IndividualBuildingBlock().WithId("ind1");
 
          _clonedIndividual = new IndividualBuildingBlock().WithId("ind2");
          _clonedSimulationConfiguration = new SimulationConfiguration();
@@ -68,8 +71,10 @@ namespace MoBi.Core
          _clonedSimulationConfiguration.Individual = _clonedIndividual;
          
          A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_simulationConfiguration)).Returns(_clonedSimulationConfiguration);
-         A.CallTo(() => _simulation.Configuration).Returns(_simulationConfiguration);
+         
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
+
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, A<IObjectBase>._)).Invokes(x => x.GetArgument<Module>(1).Name = "the corrected name");
       }
 
       protected override void Because()
@@ -98,7 +103,13 @@ namespace MoBi.Core
       [Observation]
       public void should_add_clone_of_module_to_the_project_as_well()
       {
-         _project.Modules[0].ShouldBeEqualTo(_clonedModule);
+         _project.Modules.ShouldContain(_clonedModule);
+      }
+
+      [Observation]
+      public void the_module_in_the_simulation_should_be_renamed()
+      {
+         _simulation.Modules[0].Name.ShouldBeEqualTo("the corrected name");
       }
    }
 
