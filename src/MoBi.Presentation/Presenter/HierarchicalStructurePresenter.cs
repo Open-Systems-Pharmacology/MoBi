@@ -74,21 +74,21 @@ namespace MoBi.Presentation.Presenter
       private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
       {
          if(neighborhoodBuilder.FirstNeighborPath!=null)
-            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder.FirstNeighbor, neighborhoodBuilder.SecondNeighbor)};
+            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.FirstNeighbor)};
 
          if (neighborhoodBuilder.SecondNeighborPath != null)
-            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder.SecondNeighbor, neighborhoodBuilder.FirstNeighbor) };
+            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.SecondNeighbor) };
       }
 
       /// <summary>
       /// Creates an Id for neighbors in a neighborhood.
-      /// The Id must be distinct for the neighborhood, so it cannot be just the Id of the <paramref name="me"/> node, but must
-      /// include the id of the <paramref name="myNeighbor"/> node in some way
+      /// The Id must be distinct for each neighborhood, so it cannot be just the Id of the <paramref name="neighbor"/> node, but must
+      /// include the id of the <paramref name="neighborhood"/>
       /// </summary>
-      /// <returns>An Id that combines the two Ids of the neighborhood</returns>
-      private string createNeighborhoodId(IWithId me, IWithId myNeighbor)
+      /// <returns>An Id that combines the two Ids of the neighborhood and neighbor</returns>
+      private string createNeighborhoodId(NeighborhoodBuilder neighborhood, IWithId neighbor)
       {
-         return $"{me?.Id}-{myNeighbor?.Id}";
+         return $"{neighborhood.Id}-{neighbor?.Id}";
       }
 
       private ContainerType groupingTypeFor(IEntity entity)

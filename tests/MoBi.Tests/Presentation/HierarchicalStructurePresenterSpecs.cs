@@ -71,7 +71,7 @@ namespace MoBi.Presentation
          {
             FirstNeighborPath = new ObjectPath("neighbor1", "path"),
             SecondNeighborPath = new ObjectPath("neighbor2", "path"),
-         };
+         }.WithId("neighborhood");
          _spatialStructure = new SpatialStructure();
          var container = new Container
          {
@@ -94,8 +94,8 @@ namespace MoBi.Presentation
       [Observation]
       public void neighbors_must_have_unique_id()
       {
-         _result[0].Id.ShouldBeEqualTo("neighbor1Id-");
-         _result[1].Id.ShouldBeEqualTo("-neighbor1Id");
+         _result[1].Id.ShouldBeEqualTo("neighborhood-");
+         _result[0].Id.ShouldBeEqualTo("neighborhood-neighbor1Id");
       }
    }
 
@@ -112,7 +112,7 @@ namespace MoBi.Presentation
          {
             FirstNeighborPath = new ObjectPath("neighbor1", "path"),
             SecondNeighborPath = new ObjectPath("neighbor2", "path"),
-         };
+         }.WithId("neighborhood");
          _spatialStructure = new SpatialStructure();
          var container = new Container
          {
@@ -123,7 +123,7 @@ namespace MoBi.Presentation
             new Container
             {
                new Container().WithName("path").WithId("neighbor2Id")
-            }.WithName("neighbor2").WithId("topContainerId")
+            }.WithName("neighbor2")
          };
          _spatialStructure.AddTopContainer(container);
          
@@ -139,8 +139,8 @@ namespace MoBi.Presentation
       [Observation]
       public void neighbors_must_have_unique_id()
       {
-         _result[0].Id.ShouldBeEqualTo("neighbor1Id-neighbor2Id");
-         _result[1].Id.ShouldBeEqualTo("neighbor2Id-neighbor1Id");
+         _result[0].Id.ShouldBeEqualTo("neighborhood-neighbor1Id");
+         _result[1].Id.ShouldBeEqualTo("neighborhood-neighbor2Id");
       }
    }
 
