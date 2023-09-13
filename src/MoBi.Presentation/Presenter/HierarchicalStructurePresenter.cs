@@ -74,21 +74,21 @@ namespace MoBi.Presentation.Presenter
       private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
       {
          if(neighborhoodBuilder.FirstNeighborPath!=null)
-            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.FirstNeighbor)};
+            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.FirstNeighborPath) };
 
          if (neighborhoodBuilder.SecondNeighborPath != null)
-            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.SecondNeighbor) };
+            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.SecondNeighborPath) };
       }
 
       /// <summary>
       /// Creates an Id for neighbors in a neighborhood.
-      /// The Id must be distinct for each neighborhood, so it cannot be just the Id of the <paramref name="neighbor"/> node, but must
+      /// The Id must be distinct for each neighborhood and neighbor, so it cannot be just the <paramref name="neighborPath"/>, but must
       /// include the id of the <paramref name="neighborhood"/>
       /// </summary>
       /// <returns>An Id that combines the two Ids of the neighborhood and neighbor</returns>
-      private string createNeighborhoodId(NeighborhoodBuilder neighborhood, IWithId neighbor)
+      private string createNeighborhoodId(NeighborhoodBuilder neighborhood, ObjectPath neighborPath)
       {
-         return $"{neighborhood.Id}-{neighbor?.Id}";
+         return $"{neighborhood.Id}-{neighborPath}";
       }
 
       private ContainerType groupingTypeFor(IEntity entity)

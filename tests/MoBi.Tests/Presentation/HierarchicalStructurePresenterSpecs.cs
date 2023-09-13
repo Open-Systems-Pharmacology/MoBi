@@ -58,11 +58,10 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_sorting_child_nodes_that_cannot_be_resolved : concern_for_HierarchicalStructurePresenter
+   internal class When_getting_child_objects : concern_for_HierarchicalStructurePresenter
    {
       private IReadOnlyList<ObjectBaseDTO> _result;
       private ObjectBaseDTO _dto;
-      private SpatialStructure _spatialStructure;
 
       protected override void Context()
       {
@@ -72,18 +71,8 @@ namespace MoBi.Presentation
             FirstNeighborPath = new ObjectPath("neighbor1", "path"),
             SecondNeighborPath = new ObjectPath("neighbor2", "path"),
          }.WithId("neighborhood");
-         _spatialStructure = new SpatialStructure();
-         var container = new Container
-         {
-            new Container
-            {
-               new Container().WithName("path").WithId("neighbor1Id")
-            }.WithName("neighbor1"),
-         };
-         _spatialStructure.AddTopContainer(container);
 
          _dto = new ObjectBaseDTO(neighborhoodBuilder);
-         neighborhoodBuilder.ResolveReference(_spatialStructure);
       }
 
       protected override void Because()
@@ -94,53 +83,8 @@ namespace MoBi.Presentation
       [Observation]
       public void neighbors_must_have_unique_id()
       {
-         _result[1].Id.ShouldBeEqualTo("neighborhood-");
-         _result[0].Id.ShouldBeEqualTo("neighborhood-neighbor1Id");
-      }
-   }
-
-   internal class When_sorting_child_nodes_that_can_be_resolved : concern_for_HierarchicalStructurePresenter
-   {
-      private IReadOnlyList<ObjectBaseDTO> _result;
-      private ObjectBaseDTO _dto;
-      private SpatialStructure _spatialStructure;
-
-      protected override void Context()
-      {
-         base.Context();
-         var neighborhoodBuilder = new NeighborhoodBuilder
-         {
-            FirstNeighborPath = new ObjectPath("neighbor1", "path"),
-            SecondNeighborPath = new ObjectPath("neighbor2", "path"),
-         }.WithId("neighborhood");
-         _spatialStructure = new SpatialStructure();
-         var container = new Container
-         {
-            new Container
-            {
-               new Container().WithName("path").WithId("neighbor1Id")
-            }.WithName("neighbor1"),
-            new Container
-            {
-               new Container().WithName("path").WithId("neighbor2Id")
-            }.WithName("neighbor2")
-         };
-         _spatialStructure.AddTopContainer(container);
-         
-         _dto = new ObjectBaseDTO(neighborhoodBuilder);
-         neighborhoodBuilder.ResolveReference(_spatialStructure);
-      }
-
-      protected override void Because()
-      {
-         _result = sut.GetChildObjects(_dto, child => !child.IsAnImplementationOf<IParameter>());
-      }
-
-      [Observation]
-      public void neighbors_must_have_unique_id()
-      {
-         _result[0].Id.ShouldBeEqualTo("neighborhood-neighbor1Id");
-         _result[1].Id.ShouldBeEqualTo("neighborhood-neighbor2Id");
+         _result[1].Id.ShouldBeEqualTo("neighborhood-neighbor2|path");
+         _result[0].Id.ShouldBeEqualTo("neighborhood-neighbor1|path");
       }
    }
 
