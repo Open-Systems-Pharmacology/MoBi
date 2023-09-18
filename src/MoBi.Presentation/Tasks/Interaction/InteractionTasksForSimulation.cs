@@ -93,8 +93,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public TBuildingBlock TemplateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock
       {
-         if (buildingBlock == null)
-            return null;
          // In the repository, there should always be exactly one template match. A template match requires
          // building block name/type and module name match. There could be multiple building blocks with the
          // same name and type but they would have to have different parent modules. For building blocks

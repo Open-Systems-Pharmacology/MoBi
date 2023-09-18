@@ -292,7 +292,61 @@ namespace MoBi.Presentation
          sut.Handle(new AddedEvent<ExpressionProfileBuildingBlock>(_addedObject, _project));
       }
    }
-   
+
+   public class When_the_module_explorer_presenter_is_adding_the_project_to_the_tree_without_initial_conditions : concern_for_ModuleExplorerPresenter
+   {
+      private List<ITreeNode> _allNodesAdded;
+      private MoBiProject _project;
+      private Module _module1;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project = DomainHelperForSpecs.NewProject();
+         _module1 = new Module
+         {
+            new MoBiSpatialStructure(),
+            new ParameterValuesBuildingBlock().WithId("PSV1"),
+            new ParameterValuesBuildingBlock().WithId("PSV2"),
+         };
+
+         _allNodesAdded = new List<ITreeNode>();
+         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>
+         {
+            var treeNode = x.GetArgument<ITreeNode>(0);
+            flattenAndAdd(treeNode);
+         });
+
+         _project.AddModule(_module1);
+      }
+
+      private void flattenAndAdd(ITreeNode treeNode)
+      {
+         treeNode.Children.Each(flattenAndAdd);
+         _allNodesAdded.Add(treeNode);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ProjectCreatedEvent(_project));
+      }
+
+      [Observation]
+      public void should_add_a_folder_node_for_all_building_block_types_except_initial_conditions()
+      {
+         _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.ExpressionProfilesFolder, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.IndividualsFolder, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(RootNodeTypes.ObservedDataFolder, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.SpatialStructure, x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
+
+         // Make sure nodes have not been added for null items
+         _allNodesAdded.Count.ShouldBeEqualTo(9);
+      }
+   }
+
    public class When_the_module_explorer_presenter_is_adding_the_project_to_the_tree : concern_for_ModuleExplorerPresenter
    {
       private List<ITreeNode> _allNodesAdded;
