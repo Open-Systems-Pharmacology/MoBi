@@ -27,6 +27,7 @@
     <Folder Include="Properties\" />
     <Folder Include="Serialization\Converter\v12\" />
     <Folder Include="Serialization\Converter\v11\" />
+    <Folder Include="Services\ProjectConversion\" />
   </ItemGroup>
 
   <ItemGroup>

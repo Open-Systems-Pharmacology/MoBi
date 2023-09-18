@@ -63,7 +63,7 @@ namespace MoBi.IntegrationTests
 
       private void matchSimulationAndProjectModule(Module module, IReadOnlyList<Module> projectModules)
       {
-         projectModules.SingleOrDefault(x => x.IsTemplateMatchFor(module)).ShouldNotBeNull();
+         projectModules.SingleOrDefault(x => x.IsNamed(module.Name)).ShouldNotBeNull();
       }
    }
 }

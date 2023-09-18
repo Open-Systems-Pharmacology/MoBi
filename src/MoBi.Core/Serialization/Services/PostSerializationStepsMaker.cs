@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
@@ -7,7 +8,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.Services
 {
-   public interface IPostSerializationStepsMaker
+    public interface IPostSerializationStepsMaker
    {
       void PerformPostDeserializationFor(MoBiProject project, int originalFileVersion);
 

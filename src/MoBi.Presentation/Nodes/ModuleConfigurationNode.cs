@@ -10,6 +10,8 @@ namespace MoBi.Presentation.Nodes
       public ModuleConfigurationNode(ModuleConfigurationDTO moduleConfiguration)
          : base(moduleConfiguration)
       {
+         // Do not use the module Id here because there can be many configurations
+         // using the same module
          Id = Guid.NewGuid().ToString();
          Text = moduleConfiguration.Module.Name;
       }

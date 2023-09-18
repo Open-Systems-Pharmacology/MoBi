@@ -64,7 +64,12 @@ namespace MoBi.Core.Domain.Extensions
                return false;
          }
 
-         return templateBuildingBlock.Module.IsTemplateMatchFor(buildingBlock.Module);
+         return modulesShareName(templateBuildingBlock.Module, buildingBlock.Module);
+      }
+
+      private static bool modulesShareName(Module module1, Module module2)
+      {
+         return module1 != null && module2.IsNamed(module1.Name);
       }
    }
 
