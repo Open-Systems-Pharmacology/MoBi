@@ -52,7 +52,7 @@ namespace MoBi.Engine.Sbml
          reportConstraints(project, model);
          _importerRepository.AllFor(model).OfType<IStartable>().Each(importer => importer.Start());
 
-         var module = new Module().WithName(project.Name);
+         var module = _mobiContext.Create<Module>().WithName(project.Name);
          project.AddModule(module);
          
          foreach (var importer in _importerRepository.AllFor(model))

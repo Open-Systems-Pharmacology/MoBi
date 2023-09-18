@@ -76,11 +76,17 @@ namespace MoBi.Presentation.Nodes
 
       private void addStartValueCollections(ITreeNode moduleNode, Module module)
       {
-         var parameterValuesFolderNode = new ParameterValuesFolderNode(module).Under(moduleNode);
-         module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(parameterValuesFolderNode, psv); });
+         if (module.ParameterValuesCollection.Any())
+         {
+            var parameterValuesFolderNode = new ParameterValuesFolderNode(module).Under(moduleNode);
+            module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(parameterValuesFolderNode, psv); });
+         }
 
-         var initialConditionsFolderNode = new InitialConditionsFolderNode(module).Under(moduleNode);
-         module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(initialConditionsFolderNode, msv));
+         if (module.InitialConditionsCollection.Any())
+         {
+            var initialConditionsFolderNode = new InitialConditionsFolderNode(module).Under(moduleNode);
+            module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(initialConditionsFolderNode, msv));
+         }
       }
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)
@@ -95,7 +101,7 @@ namespace MoBi.Presentation.Nodes
 
          return nodes;
       }
-      
+
       public ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration)
       {
          var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).WithIcon(ApplicationIcons.Module);
@@ -151,7 +157,7 @@ namespace MoBi.Presentation.Nodes
          return createFor(moleculeBuilder);
       }
 
-      private ITreeNode createForBuildingBlock(IBuildingBlock buildingBlock) 
+      private ITreeNode createForBuildingBlock(IBuildingBlock buildingBlock)
       {
          return new BuildingBlockNode(buildingBlock)
             .WithIcon(ApplicationIcons.IconByName(buildingBlock.Icon));
@@ -167,7 +173,7 @@ namespace MoBi.Presentation.Nodes
       {
          if (buildingBlock == null)
             return;
-         
+
          CreateFor(buildingBlock)
             .Under(rootNode);
       }
@@ -180,23 +186,23 @@ namespace MoBi.Presentation.Nodes
       public ITreeNode CreateForFavorites()
       {
          return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new FavoritesNodeViewItem
-            {
-               Name = Captions.Favorites,
-               Icon = ApplicationIcons.Favorites,
-               Id = Captions.Favorites
-            })
-            { Icon = ApplicationIcons.Favorites };
+         {
+            Name = Captions.Favorites,
+            Icon = ApplicationIcons.Favorites,
+            Id = Captions.Favorites
+         })
+         { Icon = ApplicationIcons.Favorites };
       }
 
       public ITreeNode CreateForUserDefined()
       {
          return new ObjectWithIdAndNameNode<ObjectBaseDTO>(new UserDefinedNodeViewItem
-            {
-               Name = AppConstants.Captions.UserDefined,
-               Icon = ApplicationIcons.UserDefinedVariability,
-               Id = AppConstants.Captions.UserDefined
-            })
-            { Icon = ApplicationIcons.UserDefinedVariability };
+         {
+            Name = AppConstants.Captions.UserDefined,
+            Icon = ApplicationIcons.UserDefinedVariability,
+            Id = AppConstants.Captions.UserDefined
+         })
+         { Icon = ApplicationIcons.UserDefinedVariability };
       }
    }
 }

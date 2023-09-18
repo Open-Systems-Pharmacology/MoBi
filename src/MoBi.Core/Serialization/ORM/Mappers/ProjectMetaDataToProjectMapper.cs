@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
@@ -7,6 +6,7 @@ using MoBi.Core.Exceptions;
 using MoBi.Core.Serialization.ORM.MetaData;
 using MoBi.Core.Serialization.Services;
 using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -29,16 +29,20 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       private readonly IXmlSerializationService _serializationService;
       private readonly ISerializationContextFactory _serializationContextFactory;
       private readonly IDeserializedReferenceResolver _deserializedReferenceResolver;
+      private readonly IModuleFactory _moduleFactory;
+
       private MoBiProject _project;
 
       public ProjectMetaDataToProjectMapper(
          IXmlSerializationService serializationService,
          ISerializationContextFactory serializationContextFactory,
-         IDeserializedReferenceResolver deserializedReferenceResolver)
+         IDeserializedReferenceResolver deserializedReferenceResolver,
+         IModuleFactory moduleFactory)
       {
          _serializationService = serializationService;
          _serializationContextFactory = serializationContextFactory;
          _deserializedReferenceResolver = deserializedReferenceResolver;
+         _moduleFactory = moduleFactory;
       }
 
       public MoBiProject MapFrom(ProjectMetaData projectMetaData)
@@ -105,38 +109,13 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       {
          if (!moduleBuildingBlocks.Any())
             return;
-         
-         if (fitsExactlyOneModule(moduleBuildingBlocks))
-            addAllAsModule(moduleBuildingBlocks);
-         else
-            addModulesByName(moduleBuildingBlocks);
+
+         moduleBuildingBlocks.Each(addBuildingBlockAsModule);
       }
 
-      private void addModulesByName(List<IBuildingBlock> moduleBuildingBlocks)
+      private void addBuildingBlockAsModule(IBuildingBlock buildingBlock)
       {
-         moduleBuildingBlocks.GroupBy(x => x.Name).Each(nameGroup => { addAllAsModule(nameGroup.ToList()); });
-      }
-
-      private bool fitsExactlyOneModule(List<IBuildingBlock> moduleBuildingBlocks)
-      {
-         var listOfTypes = new List<Type>
-         {
-            typeof(MoleculeBuildingBlock),
-            typeof(PassiveTransportBuildingBlock),
-            typeof(EventGroupBuildingBlock),
-            typeof(MoBiReactionBuildingBlock),
-            typeof(MoBiSpatialStructure),
-            typeof(ObserverBuildingBlock),
-         };
-
-         // If, for all types, there is 1 or 0 building blocks of that type, then it fits exactly one module
-         return listOfTypes.All(x => moduleBuildingBlocks.Count(bb => bb.GetType() == x) < 2);
-      }
-
-      private void addAllAsModule(List<IBuildingBlock> moduleBuildingBlocks)
-      {
-         var module = new Module();
-         moduleBuildingBlocks.Each(module.Add);
+         var module = _moduleFactory.CreateDedicatedModuleFor(buildingBlock);
          _project.AddModule(module);
       }
 

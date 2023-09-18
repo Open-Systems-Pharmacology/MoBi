@@ -64,7 +64,7 @@ namespace MoBi.Core.Domain.Extensions
                return false;
          }
 
-         return templateBuildingBlock.Module != null && buildingBlock.Module.IsNamed(templateBuildingBlock.Module.Name);
+         return templateBuildingBlock.Module.IsTemplateMatchFor(buildingBlock.Module);
       }
    }
 

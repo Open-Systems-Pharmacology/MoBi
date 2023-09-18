@@ -20,16 +20,19 @@ namespace MoBi.Core.Serialization.Services
       private readonly IAmountToConcentrationConverter _amountToConcentrationConverter;
       private readonly IProjectClassifiableUpdaterAfterDeserialization _projectClassifiableUpdaterAfterDeserialization;
       private readonly IProjectClassificationConverter _projectClassificationConverter;
+      private readonly IModuleConfigurationBuilder _moduleConfigurationBuilder;
 
       public PostSerializationStepsMaker(IObjectIdResetter objectIdResetter,
          IAmountToConcentrationConverter amountToConcentrationConverter,
          IProjectClassifiableUpdaterAfterDeserialization projectClassifiableUpdaterAfterDeserialization,
-         IProjectClassificationConverter projectClassificationConverter)
+         IProjectClassificationConverter projectClassificationConverter,
+         IModuleConfigurationBuilder moduleConfigurationBuilder)
       {
          _objectIdResetter = objectIdResetter;
          _amountToConcentrationConverter = amountToConcentrationConverter;
          _projectClassifiableUpdaterAfterDeserialization = projectClassifiableUpdaterAfterDeserialization;
          _projectClassificationConverter = projectClassificationConverter;
+         _moduleConfigurationBuilder = moduleConfigurationBuilder;
       }
 
       public void PerformPostDeserializationFor(MoBiProject project, int originalFileVersion)
@@ -37,6 +40,11 @@ namespace MoBi.Core.Serialization.Services
          if (originalFileVersion < ProjectVersions.V6_0_1)
             //this needs to be done after all object were loaded into project
             _projectClassificationConverter.Convert(project);
+
+         // projects before V12 did not use modules at all. Therefore, we need to build the module configurations
+         // for all simulations to match the project modules that were added in project conversion
+         if (originalFileVersion < ProjectVersions.V12_0)
+            _moduleConfigurationBuilder.BuildSimulationModuleConfigurations(project);
 
          //this needs to be done once the project was loaded into context
          _projectClassifiableUpdaterAfterDeserialization.Update(project);

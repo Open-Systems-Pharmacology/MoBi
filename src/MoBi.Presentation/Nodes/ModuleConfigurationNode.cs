@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation.DTO;
+﻿using System;
+using MoBi.Presentation.DTO;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Nodes;
 
@@ -9,7 +10,7 @@ namespace MoBi.Presentation.Nodes
       public ModuleConfigurationNode(ModuleConfigurationDTO moduleConfiguration)
          : base(moduleConfiguration)
       {
-         Id = moduleConfiguration.Module.Id;
+         Id = Guid.NewGuid().ToString();
          Text = moduleConfiguration.Module.Name;
       }
 

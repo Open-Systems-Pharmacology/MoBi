@@ -5,6 +5,7 @@ using MoBi.Core.Serialization.ORM.Mappers;
 using MoBi.Core.Serialization.ORM.MetaData;
 using MoBi.Core.Serialization.Services;
 using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -20,6 +21,7 @@ namespace MoBi.Core
       private ISerializationContextFactory _serializationContextFactory;
       protected MoBiProject _project;
       protected ProjectMetaData _projectMetaData;
+      private IModuleFactory _moduleFactory;
 
       protected override void Context()
       {
@@ -30,7 +32,8 @@ namespace MoBi.Core
          _projectMetaData = new ProjectMetaData();
          A.CallTo(() => _serializationService.Deserialize<MoBiProject>(_projectMetaData.Content.Data, A<MoBiProject>._, A<SerializationContext>._)).Returns(_project);
 
-         sut = new ProjectMetaDataToProjectMapper(_serializationService, _serializationContextFactory, _deserializedReferenceResolver);
+         _moduleFactory = A.Fake<IModuleFactory>();
+         sut = new ProjectMetaDataToProjectMapper(_serializationService, _serializationContextFactory, _deserializedReferenceResolver, _moduleFactory);
       }
    }
 
