@@ -211,11 +211,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateDimensionInPathAndValueEntityCommand<TPathAndValueEntity>(pathAndValueEntity, newDimension, _interactionTaskContext.DisplayUnitFor(newDimension), pathAndValueEntitiesBuildingBlock).Run(Context);
       }
 
-      public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TPathAndValueEntity pathAndValueEntity)
-      {
-         return new UpdateValueOriginInPathAndValueEntityCommand<TPathAndValueEntity>(pathAndValueEntity, valueOrigin, buildingBlock).Run(Context);
-      }
-
       public ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule)
       {
          var name = GetNewNameForClone(buildingBlockToClone);

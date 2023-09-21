@@ -49,6 +49,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="builder">The builder being modified</param>
       /// <returns>The command used to modify the builder</returns>
       IMoBiCommand SetValue(TBuildingBlock buildingBlock, double? valueInDisplayUnit, TBuilder builder);
+
+      /// <summary>
+      ///    Sets the value origin of a path and value entity
+      /// </summary>
+      /// <param name="buildingBlock">The building block that contains the start value</param>
+      /// <param name="valueOrigin">The new value origin</param>
+      /// <param name="pathAndValueEntity">The start value being modified</param>
+      /// <returns>The command used to modify the start value</returns>
+      ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity);
    }
 
    public abstract class InteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder>
@@ -62,6 +71,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          _moBiFormulaTask = moBiFormulaTask;
       }
 
+      public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
+      {
+         return new UpdateValueOriginInPathAndValueEntityCommand<TBuilder>(pathAndValueEntity, valueOrigin, buildingBlock).Run(Context);
+      }
+      
       protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
       {
          var name = _interactionTaskContext.NamingTask.NewName(

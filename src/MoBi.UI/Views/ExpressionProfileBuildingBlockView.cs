@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using DevExpress.Skins;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Views.Grid;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -17,6 +15,7 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
@@ -32,19 +31,27 @@ namespace MoBi.UI.Views
       private readonly ScreenBinder<ExpressionProfileBuildingBlockDTO> _screenBinder = new ScreenBinder<ExpressionProfileBuildingBlockDTO>();
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
       private readonly UxComboBoxUnit<ExpressionParameterDTO> _unitControl;
+      private readonly ValueOriginBinder<ExpressionParameterDTO> _valueOriginBinder;
 
-      public ExpressionProfileBuildingBlockView()
+      public ExpressionProfileBuildingBlockView(ValueOriginBinder<ExpressionParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
+         _valueOriginBinder = valueOriginBinder;
          _gridViewBinder = new GridViewBinder<ExpressionParameterDTO>(gridView);
-         _screenBinder.Bind(dto => dto.Species).To(tbSpecies);
-         _screenBinder.Bind(dto => dto.MoleculeName).To(tbMoleculeName);
-         _screenBinder.Bind(dto => dto.Category).To(tbCategory);
-         _screenBinder.Bind(dto => dto.PKSimVersion).To(tbPKSimVersion);
          _unitControl = new UxComboBoxUnit<ExpressionParameterDTO>(gridControl);
+      }
 
+      public override void InitializeBinding()
+      {
+         base.InitializeBinding();
          initializeBinders();
+         initializeValueOriginBinding();
          gridView.ShowColumnChooser = true;
+      }
+
+      private void initializeValueOriginBinding()
+      {
+         _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));
       }
 
       public override void InitializeResources()
@@ -74,6 +81,11 @@ namespace MoBi.UI.Views
 
       private void initializeBinders()
       {
+         _screenBinder.Bind(dto => dto.Species).To(tbSpecies);
+         _screenBinder.Bind(dto => dto.MoleculeName).To(tbMoleculeName);
+         _screenBinder.Bind(dto => dto.Category).To(tbCategory);
+         _screenBinder.Bind(dto => dto.PKSimVersion).To(tbPKSimVersion);
+         
          _gridViewBinder.AutoBind(dto => dto.Name)
             .WithCaption(ParameterName).AsReadOnly();
 

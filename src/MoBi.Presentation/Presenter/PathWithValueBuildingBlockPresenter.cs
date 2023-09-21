@@ -4,6 +4,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -41,6 +42,11 @@ namespace MoBi.Presentation.Presenter
             .Select(formula => new ValueFormulaDTO(formula)));
 
          return allFormulas;
+      }
+
+      public void SetValueOrigin(TBuilderDTO individualParameterDTO, ValueOrigin newValueOrigin)
+      {
+         AddCommand(_interactionTask.SetValueOrigin(_buildingBlock, newValueOrigin, individualParameterDTO.PathWithValueObject));
       }
 
       protected virtual void RefreshDTO(TBuilderDTO builderDTO, IFormula newFormula, TBuilder builder)

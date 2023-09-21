@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 
@@ -13,5 +14,6 @@ namespace MoBi.Presentation.Presenter
       IEnumerable<ValueFormulaDTO> AllFormulas();
       void AddNewFormula(TDTO expressionParameterDTO);
       IEnumerable<IDimension> DimensionsSortedByName();
+      void SetValueOrigin(TDTO parameterDTO, ValueOrigin valueOrigin);
    }
 }
