@@ -233,15 +233,20 @@ namespace MoBi.Presentation.Presenter.Main
 
       private ITreeNode folderNodeForBuildingBlock(IBuildingBlock buildingBlock, Module module)
       {
-         var moduleNode = _view.TreeView.NodeById(module.Id);
+         var nodeById = _view.TreeView.NodeById(module.Id);
 
-         if (buildingBlock is ParameterValuesBuildingBlock)
-            return moduleNode.Children.OfType<ParameterValuesFolderNode>().FirstOrDefault();
+         if (!(nodeById is ModuleNode moduleNode)) 
+            return nodeById;
+         
+         switch (buildingBlock)
+         {
+            case ParameterValuesBuildingBlock _:
+               return moduleNode.Children.OfType<ParameterValuesFolderNode>().FirstOrDefault() ?? _view.AddNode(_treeNodeFactory.ParameterValuesFolderNodeForModuleUnder(moduleNode));
+            case InitialConditionsBuildingBlock _:
+               return moduleNode.Children.OfType<InitialConditionsFolderNode>().FirstOrDefault() ?? _view.AddNode(_treeNodeFactory.InitialConditionsFolderNodeForModuleUnder(moduleNode));
+         }
 
-         if (buildingBlock is InitialConditionsBuildingBlock)
-            return moduleNode.Children.OfType<InitialConditionsFolderNode>().FirstOrDefault();
-
-         return moduleNode;
+         return nodeById;
       }
 
       private void addModule(Module module)

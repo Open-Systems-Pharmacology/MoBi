@@ -30,6 +30,8 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateForUserDefined();
       ITreeNode CreateFor(Module module);
       ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration);
+      ITreeNode ParameterValuesFolderNodeForModuleUnder(ModuleNode moduleNode);
+      ITreeNode InitialConditionsFolderNodeForModuleUnder(ModuleNode moduleNode);
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -74,20 +76,31 @@ namespace MoBi.Presentation.Nodes
          return moduleNode;
       }
 
-      private void addStartValueCollections(ITreeNode moduleNode, Module module)
+      private void addStartValueCollections(ModuleNode moduleNode, Module module)
       {
          if (module.ParameterValuesCollection.Any())
          {
-            var parameterValuesFolderNode = new ParameterValuesFolderNode(module).Under(moduleNode);
+            var parameterValuesFolderNode = ParameterValuesFolderNodeForModuleUnder(moduleNode);
             module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(parameterValuesFolderNode, psv); });
          }
 
          if (module.InitialConditionsCollection.Any())
          {
-            var initialConditionsFolderNode = new InitialConditionsFolderNode(module).Under(moduleNode);
+            var initialConditionsFolderNode = InitialConditionsFolderNodeForModuleUnder(moduleNode);
             module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(initialConditionsFolderNode, msv));
          }
       }
+
+      public ITreeNode InitialConditionsFolderNodeForModuleUnder(ModuleNode moduleNode)
+      {
+         return new InitialConditionsFolderNode(moduleNode.Tag).Under(moduleNode);
+      }
+
+      public ITreeNode ParameterValuesFolderNodeForModuleUnder(ModuleNode moduleNode)
+      {
+         return new ParameterValuesFolderNode(moduleNode.Tag).Under(moduleNode);
+      }
+
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)
       {
