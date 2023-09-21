@@ -30,8 +30,8 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateForUserDefined();
       ITreeNode CreateFor(Module module);
       ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration);
-      ITreeNode ParameterValuesFolderNodeForModuleUnder(Module module, ITreeNode moduleNode);
-      ITreeNode InitialConditionsFolderNodeForModuleUnder(Module module, ITreeNode moduleNode);
+      ITreeNode ParameterValuesFolderNodeForModuleUnder(ModuleNode moduleNode);
+      ITreeNode InitialConditionsFolderNodeForModuleUnder(ModuleNode moduleNode);
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -76,30 +76,31 @@ namespace MoBi.Presentation.Nodes
          return moduleNode;
       }
 
-      private void addStartValueCollections(ITreeNode moduleNode, Module module)
+      private void addStartValueCollections(ModuleNode moduleNode, Module module)
       {
          if (module.ParameterValuesCollection.Any())
          {
-            var parameterValuesFolderNode = ParameterValuesFolderNodeForModuleUnder(module, moduleNode);
+            var parameterValuesFolderNode = ParameterValuesFolderNodeForModuleUnder(moduleNode);
             module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(parameterValuesFolderNode, psv); });
          }
 
          if (module.InitialConditionsCollection.Any())
          {
-            var initialConditionsFolderNode = InitialConditionsFolderNodeForModuleUnder(module, moduleNode);
+            var initialConditionsFolderNode = InitialConditionsFolderNodeForModuleUnder(moduleNode);
             module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(initialConditionsFolderNode, msv));
          }
       }
 
-      public ITreeNode InitialConditionsFolderNodeForModuleUnder(Module module, ITreeNode moduleNode)
+      public ITreeNode InitialConditionsFolderNodeForModuleUnder(ModuleNode moduleNode)
       {
-         return new InitialConditionsFolderNode(module).Under(moduleNode);
+         return new InitialConditionsFolderNode(moduleNode.Tag).Under(moduleNode);
       }
 
-      public ITreeNode ParameterValuesFolderNodeForModuleUnder(Module module, ITreeNode moduleNode)
+      public ITreeNode ParameterValuesFolderNodeForModuleUnder(ModuleNode moduleNode)
       {
-         return new ParameterValuesFolderNode(module).Under(moduleNode);
+         return new ParameterValuesFolderNode(moduleNode.Tag).Under(moduleNode);
       }
+
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)
       {
