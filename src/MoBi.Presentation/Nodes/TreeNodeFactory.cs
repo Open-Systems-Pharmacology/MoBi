@@ -30,6 +30,8 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateForUserDefined();
       ITreeNode CreateFor(Module module);
       ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration);
+      ITreeNode ParameterValuesFolderNodeForModuleUnder(Module module, ITreeNode moduleNode);
+      ITreeNode InitialConditionsFolderNodeForModuleUnder(Module module, ITreeNode moduleNode);
    }
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
@@ -78,15 +80,25 @@ namespace MoBi.Presentation.Nodes
       {
          if (module.ParameterValuesCollection.Any())
          {
-            var parameterValuesFolderNode = new ParameterValuesFolderNode(module).Under(moduleNode);
+            var parameterValuesFolderNode = ParameterValuesFolderNodeForModuleUnder(module, moduleNode);
             module.ParameterValuesCollection.Each(psv => { createAndAddNodeUnder(parameterValuesFolderNode, psv); });
          }
 
          if (module.InitialConditionsCollection.Any())
          {
-            var initialConditionsFolderNode = new InitialConditionsFolderNode(module).Under(moduleNode);
+            var initialConditionsFolderNode = InitialConditionsFolderNodeForModuleUnder(module, moduleNode);
             module.InitialConditionsCollection.Each(msv => createAndAddNodeUnder(initialConditionsFolderNode, msv));
          }
+      }
+
+      public ITreeNode InitialConditionsFolderNodeForModuleUnder(Module module, ITreeNode moduleNode)
+      {
+         return new InitialConditionsFolderNode(module).Under(moduleNode);
+      }
+
+      public ITreeNode ParameterValuesFolderNodeForModuleUnder(Module module, ITreeNode moduleNode)
+      {
+         return new ParameterValuesFolderNode(module).Under(moduleNode);
       }
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)

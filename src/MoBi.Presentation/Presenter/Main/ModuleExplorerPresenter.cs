@@ -236,10 +236,10 @@ namespace MoBi.Presentation.Presenter.Main
          var moduleNode = _view.TreeView.NodeById(module.Id);
 
          if (buildingBlock is ParameterValuesBuildingBlock)
-            return moduleNode.Children.OfType<ParameterValuesFolderNode>().FirstOrDefault();
+            return moduleNode.Children.OfType<ParameterValuesFolderNode>().FirstOrDefault() ?? _view.AddNode(_treeNodeFactory.ParameterValuesFolderNodeForModuleUnder(module, moduleNode));
 
          if (buildingBlock is InitialConditionsBuildingBlock)
-            return moduleNode.Children.OfType<InitialConditionsFolderNode>().FirstOrDefault();
+            return moduleNode.Children.OfType<InitialConditionsFolderNode>().FirstOrDefault() ?? _view.AddNode(_treeNodeFactory.InitialConditionsFolderNodeForModuleUnder(module, moduleNode));
 
          return moduleNode;
       }
