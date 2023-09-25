@@ -113,7 +113,7 @@ namespace MoBi.Presentation.Presenter
             editPresenter.SelectParameter(parameter);
       }
 
-      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(IObjectBase selectedObject)
       {
          var container = selectedObject as IContainer;
          if (shouldHandleType(selectedObject))

@@ -137,7 +137,7 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(IObjectBase selectedObject)
       {
          if (selectedObject is TransportBuilder transportBuilder)
             return (_passiveTransports.Contains(transportBuilder), transportBuilder);

@@ -130,9 +130,9 @@ namespace MoBi.Presentation.Presenter
          return AllSubPresenters.OfType<T>();
       }
 
-      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(IObjectBase selectedObject)
       {
-         return (shouldShow(selectedObject), null);
+         return (shouldShow(selectedObject), selectedObject as IContainer);
       }
 
       protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
@@ -229,7 +229,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      internal override (bool canHandle, IContainer parentObject) CanHandle(IObjectBase selectedObject)
+      internal override (bool canHandle, IContainer containerObject) CanHandle(IObjectBase selectedObject)
       {
          var specificCanHandle = SpecificCanHandle(selectedObject);
          if (specificCanHandle.canHandle)
