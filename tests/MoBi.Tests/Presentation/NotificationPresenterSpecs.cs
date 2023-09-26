@@ -12,6 +12,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -199,6 +200,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _userSettings.ShowPKSimObserverMessages = false;
+         _userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions = false;
          _validationResult = new ValidationResult();
 
          var staticObserver = A.Fake<ObserverBuilder>().WithId("1").WithName(AppConstants.DefaultNames.PKSimStaticObservers[0]);
@@ -207,6 +209,16 @@ namespace MoBi.Presentation
          _validationResult.AddMessage(NotificationType.Error, staticObserver, string.Empty);
          _validationResult.AddMessage(NotificationType.Error, dynamicObserver, string.Empty);
          _validationResult.AddMessage(NotificationType.Warning, A.Fake<IObjectBase>().WithId("2"), string.Empty);
+         _validationResult.AddMessage(NotificationType.Warning, A.Fake<IObjectBase>().WithId("2"), string.Empty);
+         var initialCondition = new InitialCondition
+         {
+            Name = "moleculeName",
+            ContainerPath = new ObjectPath("Endosome")
+         };
+         // this message should be hidden by ShowUnresolvedEndosomeMessagesForInitialConditions
+         _validationResult.AddMessage(NotificationType.Warning, initialCondition, Validation.StartValueDefinedForContainerThatCannotBeResolved("moleculeName", "Endosome"));
+         // this message should not be hidden by ShowUnresolvedEndosomeMessagesForInitialConditions because it a different type of warning for the same initial condition
+         _validationResult.AddMessage(NotificationType.Warning, initialCondition, string.Empty);
       }
 
       protected override void Because()
@@ -217,14 +229,14 @@ namespace MoBi.Presentation
       [Observation]
       public void should_only_add_visible_notification()
       {
-         _allNotifications.Count().ShouldBeEqualTo(1);
+         _allNotifications.Count().ShouldBeEqualTo(2);
       }
 
       [Observation]
       public void should_update_the_count_for_all_notifications()
       {
          A.CallTo(() => _view.SetNotificationCount(NotificationType.Error, 0)).MustHaveHappened();
-         A.CallTo(() => _view.SetNotificationCount(NotificationType.Warning, 1)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Warning, 2)).MustHaveHappened();
          A.CallTo(() => _view.SetNotificationCount(NotificationType.Info, 0)).MustHaveHappened();
       }
    }
