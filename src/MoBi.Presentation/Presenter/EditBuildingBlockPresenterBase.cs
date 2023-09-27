@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
 
       protected TBuildingBlock BuildingBlock => Subject.DowncastTo<TBuildingBlock>();
 
-      protected virtual (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
+      protected virtual (bool canHandle, IContainer containerObject) SpecificCanHandle(IObjectBase selectedObject)
       {
          return (false, null);
       }
@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Presenter
          _view.ShowDefault();
       }
 
-      private void selectObjectAndParent(IContainer parentObject, IObjectBase selectedObject)
+      private void selectObjectAndContainer(IContainer containerObject, IObjectBase selectedObject)
       {
          _view.Display();
          if (selectedObject is IFormula formula)
@@ -80,19 +80,19 @@ namespace MoBi.Presentation.Presenter
             return;
          }
 
-         EnsureItemsVisibility(parentObject, selectedObject as IParameter);
+         EnsureItemsVisibility(containerObject, selectedObject as IParameter);
       }
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
          var selectedObject = eventToHandle.ObjectBase;
-         var (canHandle, parentContainer) = CanHandle(selectedObject);
+         var (canHandle, containerObject) = CanHandle(selectedObject);
          if (!canHandle) return;
 
-         selectObjectAndParent(parentContainer, selectedObject);
+         selectObjectAndContainer(containerObject, selectedObject);
       }
 
-      internal virtual (bool canHandle, IContainer parentObject) CanHandle(IObjectBase selectedObject)
+      internal virtual (bool canHandle, IContainer containerObject) CanHandle(IObjectBase selectedObject)
       {
          if (selectedObject is IFormula formula)
             return (BuildingBlock.FormulaCache.Contains(formula), null);

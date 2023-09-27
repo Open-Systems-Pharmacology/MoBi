@@ -77,12 +77,12 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _spatialStructure;
 
-      protected override (bool canHandle, IContainer parentObject) SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(IObjectBase selectedObject)
       {
          return (shouldHandleSelection(selectedObject as IEntity), null);
       }
 
-      internal override (bool canHandle, IContainer parentObject) CanHandle(IObjectBase selectedObject)
+      internal override (bool canHandle, IContainer containerObject) CanHandle(IObjectBase selectedObject)
       {
          var specificCanHandle = SpecificCanHandle(selectedObject);
          if (specificCanHandle.Item1)
