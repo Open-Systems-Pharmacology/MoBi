@@ -177,11 +177,6 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_startValueDTOs);
       }
 
-      public void SetValueOrigin(TStartValueDTO startValueDTO, ValueOrigin newValueOrigin)
-      {
-         AddCommand(_startValuesTask.SetValueOrigin(_buildingBlock, newValueOrigin, StartValueFrom(startValueDTO)));
-      }
-
       public void SetValue(TStartValueDTO startValueDTO, double? valueInDisplayUnit)
       {
          AddCommand(_startValuesTask.SetValue(_buildingBlock, valueInDisplayUnit, StartValueFrom(startValueDTO)));
