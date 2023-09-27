@@ -4,6 +4,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -13,19 +14,19 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
-   public abstract class PathWithValueBuildingBlockPresenter<TView, TPresenter, TParent, TBuildingBlock, TBuilder, TBuilderDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
-      where TBuildingBlock : IBuildingBlock<TBuilder>
+   public abstract class PathWithValueBuildingBlockPresenter<TView, TPresenter, TParent, TBuildingBlock, TParameter, TParameterDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
+      where TBuildingBlock : IBuildingBlock<TParameter>
       where TPresenter : IPresenter
       where TView : IView<TPresenter>
-      where TBuilder : PathAndValueEntity
-      where TBuilderDTO : PathAndValueEntityDTO<TBuilder>, IWithDisplayUnitDTO, IWithFormulaDTO
+      where TParameter : PathAndValueEntity
+      where TParameterDTO : PathAndValueEntityDTO<TParameter>, IWithDisplayUnitDTO, IWithFormulaDTO
    {
       protected TBuildingBlock _buildingBlock;
-      private readonly IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> _interactionTask;
+      private readonly IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TParameter> _interactionTask;
       private readonly IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private readonly IDimensionFactory _dimensionFactory;
 
-      protected PathWithValueBuildingBlockPresenter(TView view, IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view)
+      protected PathWithValueBuildingBlockPresenter(TView view, IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TParameter> interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view)
       {
          _interactionTask = interactionTask;
          _formulaToValueFormulaDTOMapper = formulaToValueFormulaDTOMapper;
@@ -43,44 +44,49 @@ namespace MoBi.Presentation.Presenter
          return allFormulas;
       }
 
-      protected virtual void RefreshDTO(TBuilderDTO builderDTO, IFormula newFormula, TBuilder builder)
+      public void SetValueOrigin(TParameterDTO parameterDTO, ValueOrigin newValueOrigin)
       {
-         builderDTO.Formula = _formulaToValueFormulaDTOMapper.MapFrom(newFormula);
+         AddCommand(_interactionTask.SetValueOrigin(_buildingBlock, newValueOrigin, parameterDTO.PathWithValueObject));
       }
 
-      protected void SetFormulaInBuilder(TBuilderDTO builderDTO, IFormula formula, TBuilder builder)
+      protected virtual void RefreshDTO(TParameterDTO parameterDTO, IFormula newFormula, TParameter builder)
+      {
+         parameterDTO.Formula = _formulaToValueFormulaDTOMapper.MapFrom(newFormula);
+      }
+
+      protected void SetFormulaInBuilder(TParameterDTO parameterDTO, IFormula formula, TParameter builder)
       {
          AddCommand(_interactionTask.SetFormula(_buildingBlock, builder, formula));
-         RefreshDTO(builderDTO, formula, builder);
+         RefreshDTO(parameterDTO, formula, builder);
       }
 
-      public void SetUnit(TBuilder builder, Unit newUnit)
+      public void SetUnit(TParameter builder, Unit newUnit)
       {
          AddCommand(_interactionTask.SetUnit(_buildingBlock, builder, newUnit));
       }
 
-      protected void AddNewFormula(TBuilderDTO builderDTO, TBuilder builder)
+      protected void AddNewFormula(TParameterDTO parameterDTO, TParameter builder)
       {
          AddCommand(_interactionTask.AddNewFormulaAtBuildingBlock(_buildingBlock, builder, null));
-         RefreshDTO(builderDTO, builder.Formula, builder);
+         RefreshDTO(parameterDTO, builder.Formula, builder);
       }
 
-      public virtual void SetFormula(TBuilderDTO expressionParameterDTO, IFormula formula)
+      public virtual void SetFormula(TParameterDTO parameterDTO, IFormula formula)
       {
-         SetFormulaInBuilder(expressionParameterDTO, formula, expressionParameterDTO.PathWithValueObject);
+         SetFormulaInBuilder(parameterDTO, formula, parameterDTO.PathWithValueObject);
       }
 
-      public virtual void AddNewFormula(TBuilderDTO expressionParameterDTO)
+      public virtual void AddNewFormula(TParameterDTO parameterDTO)
       {
-         AddNewFormula(expressionParameterDTO, expressionParameterDTO.PathWithValueObject);
+         AddNewFormula(parameterDTO, parameterDTO.PathWithValueObject);
       }
 
-      public virtual void SetUnit(TBuilderDTO expressionParameter, Unit unit)
+      public virtual void SetUnit(TParameterDTO parameterDTO, Unit unit)
       {
-         SetUnit(expressionParameter.PathWithValueObject, unit);
+         SetUnit(parameterDTO.PathWithValueObject, unit);
       }
 
-      public void SetParameterValue(TBuilderDTO parameterDTO, double? newValue)
+      public void SetParameterValue(TParameterDTO parameterDTO, double? newValue)
       {
          AddCommand(_interactionTask.SetValue(_buildingBlock, newValue, parameterDTO.PathWithValueObject));
       }

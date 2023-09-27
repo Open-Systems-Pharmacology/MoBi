@@ -100,15 +100,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       IDimension GetDefaultDimension();
 
       /// <summary>
-      ///    Sets the value of a start value
-      /// </summary>
-      /// <param name="buildingBlock">The building block that contains the start value</param>
-      /// <param name="valueOrigin">The new value origin</param>
-      /// <param name="pathAndValueEntity">The start value being modified</param>
-      /// <returns>The command used to modify the start value</returns>
-      ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TPathAndValueEntity pathAndValueEntity);
-
-      /// <summary>
       ///    Creates a clone of the <paramref name="buildingBlockToClone" /> and adds it to <paramref name="parentModule" />
       /// </summary>
       ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule);

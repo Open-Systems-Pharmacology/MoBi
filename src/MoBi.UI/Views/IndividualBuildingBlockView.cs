@@ -15,12 +15,12 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
@@ -36,16 +36,29 @@ namespace MoBi.UI.Views
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
       private readonly UxComboBoxUnit<IndividualParameterDTO> _unitControl;
       private readonly List<TextEdit> _textBoxes = new List<TextEdit>();
+      private readonly ValueOriginBinder<IndividualParameterDTO> _valueOriginBinder;
 
-      public IndividualBuildingBlockView()
+      public IndividualBuildingBlockView(ValueOriginBinder<IndividualParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
+         _valueOriginBinder = valueOriginBinder;
          _gridViewBinder = new GridViewBinder<IndividualParameterDTO>(gridView);
          _unitControl = new UxComboBoxUnit<IndividualParameterDTO>(gridControl);
-         initializeGridViewBinders();
          gridGroup.Text = Parameters;
       }
 
+      public override void InitializeBinding()
+      {
+         base.InitializeBinding();
+         initializeGridViewBinders();
+         initializeValueOriginBinding();
+      }
+
+      private void initializeValueOriginBinding()
+      {
+         _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));
+      }
+      
       private void initializePathElementColumn(Expression<Func<IndividualParameterDTO, string>> expression, string caption)
       {
          _pathElementsColumns.Add(_gridViewBinder.Bind(expression).WithCaption(caption).AsReadOnly());
