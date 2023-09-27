@@ -213,11 +213,18 @@ namespace MoBi.Presentation
          var initialCondition = new InitialCondition
          {
             Name = "moleculeName",
-            ContainerPath = new ObjectPath("Endosome")
+            ContainerPath = new ObjectPath("Endosome"),
+            Id = "3"
          };
          // this message should be hidden by ShowUnresolvedEndosomeMessagesForInitialConditions
          _validationResult.AddMessage(NotificationType.Warning, initialCondition, Validation.StartValueDefinedForContainerThatCannotBeResolved("moleculeName", "Endosome"));
          // this message should not be hidden by ShowUnresolvedEndosomeMessagesForInitialConditions because it a different type of warning for the same initial condition
+         initialCondition = new InitialCondition
+         {
+            Name = "molecule2Name",
+            ContainerPath = new ObjectPath("Endosome"),
+            Id = "4"
+         };
          _validationResult.AddMessage(NotificationType.Warning, initialCondition, string.Empty);
       }
 

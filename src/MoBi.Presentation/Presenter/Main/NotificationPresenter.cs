@@ -173,12 +173,14 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Toggle(NotificationType typeToToggle) => VisibleNotification ^= typeToToggle;
 
-      public void Handle(ShowValidationResultsEvent validationResultsEvent) => updateNotificationWith(validationResultsEvent.ValidationResult.Messages.Select(m => _notificationMessageMapper.MapFrom(m)));
+      public void Handle(ShowValidationResultsEvent validationResultsEvent)
+      {
+         updateNotificationWith(validationResultsEvent.ValidationResult.Messages.Select(m => _notificationMessageMapper.MapFrom(m)));
+      }
 
       private void updateNotificationWith(IEnumerable<NotificationMessageDTO> notificationMessages)
       {
          _allNotifications = new NotifyList<NotificationMessageDTO>(_allNotifications);
-
 
          notificationMessages.Where(notificationIsVisible).Each(m =>
          {
@@ -191,10 +193,13 @@ namespace MoBi.Presentation.Presenter.Main
 
       private bool notificationIsVisible(NotificationMessageDTO message)
       {
-         if (!_userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions && isUnresolvedEndosomeForInitialConditionMessage(message))
-            return false;
+         if (isUnresolvedEndosomeForInitialConditionMessage(message))
+            return _userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions;
          
-         return _userSettings.ShowPKSimObserverMessages || !isPKSimObserverMessage(message);
+         if(isPKSimObserverMessage(message)) 
+            return _userSettings.ShowPKSimObserverMessages;
+
+         return true;
       }
 
       private bool isUnresolvedEndosomeForInitialConditionMessage(NotificationMessageDTO message)
