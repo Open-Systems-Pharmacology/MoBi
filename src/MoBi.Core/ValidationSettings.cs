@@ -10,6 +10,7 @@ namespace MoBi.Core
       private bool _showPKSimObserverMessages;
       private bool _checkRules;
       private bool _checkCircularReference;
+      private bool _showUnresolvedEndosomesWarningsForInitialConditions;
 
       public bool CheckDimensions
       {
@@ -52,6 +53,12 @@ namespace MoBi.Core
       {
          get => _checkCircularReference;
          set => SetProperty(ref _checkCircularReference, value);
+      }
+
+      public bool ShowUnresolvedEndosomesWarningsForInitialConditions
+      {
+         get => _showUnresolvedEndosomesWarningsForInitialConditions;
+         set => SetProperty(ref _showUnresolvedEndosomesWarningsForInitialConditions, value);
       }
    }
 }

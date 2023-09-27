@@ -1564,6 +1564,7 @@ namespace MoBi.Assets
          public static readonly string ShowPKSimParameterWarnings = "Show known dimension warnings for PK-Sim parameters";
          public static readonly string ShowUnableCalculateWarnings = "Show warnings when formulas dimension could not be calculated";
          public static readonly string ValidatePKSimStandardObserver = "Show warnings from PK-Sim standard observers";
+         public static readonly string ShowUnresolvedEndosomeWarningsForInitialConditions = "Show warnings for unresolved endosome containers";
          public static readonly string PlotProcessRateParameter = "Plot process rate parameter";
          public static readonly string Source = "Source";
          public static readonly string Target = "Target";
@@ -1975,6 +1976,7 @@ namespace MoBi.Assets
       public static readonly string PleaseSelectCurveInChartEditor = "Please select a curve from the chart editor to be displayed in the chart";
       public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN};
       public static readonly string Clone = "Clone";
+      public static readonly string Endosome = "Endosome";
 
       public static string PathType(string pathTypeAsString)
       {

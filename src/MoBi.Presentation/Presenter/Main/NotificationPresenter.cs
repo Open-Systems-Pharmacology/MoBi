@@ -10,6 +10,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
@@ -22,6 +23,8 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using static MoBi.Assets.AppConstants;
+using Validation = OSPSuite.Assets.Validation;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -77,10 +80,7 @@ namespace MoBi.Presentation.Presenter.Main
          VisibleNotification = _userSettings.VisibleNotification;
       }
 
-      public void ToggleVisibility()
-      {
-         _region.ToggleVisibility();
-      }
+      public void ToggleVisibility() => _region.ToggleVisibility();
 
       public override void Initialize()
       {
@@ -104,15 +104,9 @@ namespace MoBi.Presentation.Presenter.Main
          updateCountFor(NotificationType.Info);
       }
 
-      private void updateCountFor(NotificationType notificationType)
-      {
-         _view.SetNotificationCount(notificationType, _allNotifications.Count(x => x.Type == notificationType));
-      }
+      private void updateCountFor(NotificationType notificationType) => _view.SetNotificationCount(notificationType, _allNotifications.Count(x => x.Type == notificationType));
 
-      public bool ShouldShow(NotificationMessageDTO notification)
-      {
-         return notification.Type.Is(VisibleNotification);
-      }
+      public bool ShouldShow(NotificationMessageDTO notification) => notification.Type.Is(VisibleNotification);
 
       private bool isPKSimObserverMessage(NotificationMessageDTO notification)
       {
@@ -133,14 +127,13 @@ namespace MoBi.Presentation.Presenter.Main
          bindToView();
       }
 
-      public void ClearAllNotification()
-      {
-         ClearNotifications(MessageOrigin.All);
-      }
+      public void ClearAllNotification() => ClearNotifications(MessageOrigin.All);
 
       public void GoToObject(NotificationMessageDTO notificationMessage)
       {
-         if (notificationMessage == null) return;
+         if (notificationMessage == null)
+            return;
+         
          _applicationController.Select(notificationMessage.Object, notificationMessage.BuildingBlock, _context.HistoryManager);
       }
 
@@ -176,15 +169,9 @@ namespace MoBi.Presentation.Presenter.Main
          dataTable.ExportToCSV(file);
       }
 
-      private bool isShowing(NotificationType notificationType)
-      {
-         return VisibleNotification.Is(notificationType);
-      }
+      private bool isShowing(NotificationType notificationType) => VisibleNotification.Is(notificationType);
 
-      public void Toggle(NotificationType typeToToggle)
-      {
-         VisibleNotification = VisibleNotification ^ typeToToggle;
-      }
+      public void Toggle(NotificationType typeToToggle) => VisibleNotification ^= typeToToggle;
 
       public void Handle(ShowValidationResultsEvent validationResultsEvent)
       {
@@ -194,7 +181,6 @@ namespace MoBi.Presentation.Presenter.Main
       private void updateNotificationWith(IEnumerable<NotificationMessageDTO> notificationMessages)
       {
          _allNotifications = new NotifyList<NotificationMessageDTO>(_allNotifications);
-
 
          notificationMessages.Where(notificationIsVisible).Each(m =>
          {
@@ -207,7 +193,25 @@ namespace MoBi.Presentation.Presenter.Main
 
       private bool notificationIsVisible(NotificationMessageDTO message)
       {
-         return _userSettings.ShowPKSimObserverMessages || !isPKSimObserverMessage(message);
+         if (isUnresolvedEndosomeForInitialConditionMessage(message))
+            return _userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions;
+         
+         if(isPKSimObserverMessage(message)) 
+            return _userSettings.ShowPKSimObserverMessages;
+
+         return true;
+      }
+
+      private bool isUnresolvedEndosomeForInitialConditionMessage(NotificationMessageDTO message)
+      {
+         if (!(message.Object is InitialCondition initialCondition)) 
+            return false;
+
+         // Only applies to endosome containers. Don't ignore other unresolved containers
+         if (!string.Equals(initialCondition.ContainerPath.Last(), Endosome))
+            return false;
+
+         return message.NotificationMessage.Message.Equals(Validation.StartValueDefinedForContainerThatCannotBeResolved(message.ObjectName, initialCondition.ContainerPath));
       }
 
       public void Handle(FormulaValidEvent eventToHandle)

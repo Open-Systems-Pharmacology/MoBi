@@ -152,6 +152,12 @@ namespace MoBi.UI.Settings
          set => ChartOptions.DefaultLayoutName = value;
       }
 
+      public bool ShowUnresolvedEndosomeMessagesForInitialConditions
+      {
+         set => ValidationSettings.ShowUnresolvedEndosomesWarningsForInitialConditions = value;
+         get => ValidationSettings.ShowUnresolvedEndosomesWarningsForInitialConditions;
+      }
+      
       public bool ShowPKSimObserverMessages
       {
          set => ValidationSettings.ShowPKSimObserverMessages = value;
