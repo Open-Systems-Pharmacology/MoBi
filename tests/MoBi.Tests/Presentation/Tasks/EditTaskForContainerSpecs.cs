@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
@@ -12,6 +13,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
+using static MoBi.Assets.ToolTips;
+using Container = OSPSuite.Core.Domain.Container;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -20,7 +23,7 @@ namespace MoBi.Presentation.Tasks
       protected IMoBiSpatialStructureFactory _spatialStructureFactory;
       protected IInteractionTaskContext _interactionTaskContext;
       protected IInteractionTask _interactionTask;
-      private IObjectPathFactory _objectPathFactory;
+      protected IObjectPathFactory _objectPathFactory;
 
       protected override void Context()
       {
@@ -56,18 +59,42 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_saving_an_entity_to_pkml : concern_for_EditTaskForContainer
+   public class When_saving_a_container_to_pkml : concern_for_EditTaskForContainer
    {
       private IContainer _entityToSave;
       private Container _parentContainer;
+      private MoBiSpatialStructure _tmpSpatialStructure;
+      private MoBiSpatialStructure _activeSpatialStructure;
+      private NeighborhoodBuilder _neighborhood1;
+      private NeighborhoodBuilder _neighborhood2;
 
       protected override void Context()
       {
          base.Context();
-         _parentContainer = new Container();
-         _entityToSave = new Container {ParentContainer = _parentContainer};
-         A.CallTo(() => _interactionTask.AskForFileToSave(A<string>._, A<string>._, A<string>._, A<string>._)).Returns("FilePath");
-         A.CallTo(() => _spatialStructureFactory.Create()).Returns(new MoBiSpatialStructure());
+         _parentContainer = new Container().WithName("Parent");
+         _entityToSave = new Container().WithName("Container").WithMode(ContainerMode.Physical).Under(_parentContainer);
+         //this is a spatial structure that will be created on the fly to export the containers and neighborhoods to the DB
+         _tmpSpatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS)
+         };
+
+         //this is the spatial structure that is active at the moment and that will be used to find all neighborhoods to export
+         _activeSpatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS)
+         };
+
+         _neighborhood1 = new NeighborhoodBuilder().WithName("_neighborhood1");
+         _neighborhood2 = new NeighborhoodBuilder().WithName("_neighborhood2");
+
+         _neighborhood1.FirstNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_entityToSave);
+
+         _activeSpatialStructure.AddNeighborhood(_neighborhood1);
+         _activeSpatialStructure.AddNeighborhood(_neighborhood2);
+         A.CallTo(_interactionTask).WithReturnType<string>().Returns("FilePath");
+         A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
+         A.CallTo(() => _interactionTaskContext.Active<MoBiSpatialStructure>()).Returns(_activeSpatialStructure);
       }
 
       protected override void Because()
@@ -76,9 +103,16 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void the_entity_must_have_the_parent_container_restored_after_saving()
+      public void should_have_kept_the_reference_to_the_parent_container()
       {
          _entityToSave.ParentContainer.ShouldBeEqualTo(_parentContainer);
+      }
+
+      [Observation]
+      public void should_have_exported_all_neighborhoods_connected_to_the_container_or_one_of_its_sub_containers()
+      {
+         _tmpSpatialStructure.Neighborhoods.ShouldContain(_neighborhood1);
+         _tmpSpatialStructure.Neighborhoods.ShouldNotContain(_neighborhood2);
       }
    }
 
