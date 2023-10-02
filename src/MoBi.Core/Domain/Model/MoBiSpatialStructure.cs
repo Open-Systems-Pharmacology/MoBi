@@ -13,32 +13,25 @@ namespace MoBi.Core.Domain.Model
       public IDiagramModel DiagramModel { get; set; }
       public IDiagramManager<MoBiSpatialStructure> DiagramManager { get; set; }
 
+      /// <summary>
+      ///    Returns all neighborhoods defined in the spatial structure having at least one of its neighbor connected to a
+      ///    neighbor from <paramref name="neighbors" />
+      /// </summary>
       public IReadOnlyList<NeighborhoodBuilder> GetConnectingNeighborhoods(IReadOnlyList<IContainer> neighbors, IObjectPathFactory objectPathFactory)
       {
-         var allImportedContainers = neighbors
+         //Returns all possible physical containers that can be taken into consideration
+         var allContainers = neighbors
             .SelectMany(cont => cont.GetAllContainersAndSelf<IContainer>(x => !x.IsAnImplementationOf<IParameter>()))
+            .Where(x => x.Mode == ContainerMode.Physical)
             .ToList();
 
-         var neighborhoods = new List<NeighborhoodBuilder>();
-         foreach (var neighborhood in Neighborhoods)
-         {
-            var firstFound = false;
-            var secondFound = false;
-            foreach (var cont in allImportedContainers)
-            {
-               var contObjectPath = objectPathFactory.CreateAbsoluteObjectPath(cont);
-               if (Equals(neighborhood.FirstNeighborPath, contObjectPath))
-                  firstFound = true;
+         //We use a hashset since we might return the same neighborhood multiple times for different neighbors
+         var neighborhoods = new HashSet<NeighborhoodBuilder>();
+         allContainers.Select(objectPathFactory.CreateAbsoluteObjectPath)
+            .SelectMany(containerPath => Neighborhoods.Where(x => x.IsConnectedTo(containerPath)))
+            .Each(n => neighborhoods.Add(n));
 
-               if (Equals(neighborhood.SecondNeighborPath, contObjectPath))
-                  secondFound = true;
-            }
-
-            if (firstFound && secondFound)
-               neighborhoods.Add(neighborhood);
-         }
-
-         return neighborhoods;
+         return neighborhoods.ToList();
       }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)

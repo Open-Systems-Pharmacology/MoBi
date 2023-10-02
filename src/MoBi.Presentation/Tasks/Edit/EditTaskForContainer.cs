@@ -43,7 +43,8 @@ namespace MoBi.Presentation.Tasks.Edit
       public override void Save(IContainer entityToSerialize)
       {
          var fileName = _interactionTask.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, entityToSerialize.Name);
-         if (fileName.IsNullOrEmpty()) return;
+         if (fileName.IsNullOrEmpty()) 
+            return;
 
          var tmpSpatialStructure = (MoBiSpatialStructure) _spatialStructureFactory.Create();
 
