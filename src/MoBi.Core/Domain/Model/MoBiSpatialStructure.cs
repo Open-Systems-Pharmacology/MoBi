@@ -14,9 +14,9 @@ namespace MoBi.Core.Domain.Model
       public IDiagramManager<MoBiSpatialStructure> DiagramManager { get; set; }
 
       /// <summary>
-      ///    Returns all neighborhoods defined in the spatial structure having at least one neighbor connected to a neighbor
+      ///    Returns all neighborhoods defined in the spatial structure having at least one of its neighbor connected to a
+      ///    neighbor from <paramref name="neighbors" />
       /// </summary>
-      /// <returns></returns>
       public IReadOnlyList<NeighborhoodBuilder> GetConnectingNeighborhoods(IReadOnlyList<IContainer> neighbors, IObjectPathFactory objectPathFactory)
       {
          //Returns all possible physical containers that can be taken into consideration
