@@ -4,7 +4,6 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
@@ -53,10 +52,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (sourceSpatialStructure == null)
             return new MoBiEmptyCommand();
 
-         var allAvailableContainersToImport = sourceSpatialStructure.TopContainers
-            .SelectMany(x => x.GetAllContainersAndSelf<IContainer>(cont => !cont.IsAnImplementationOf<IParameter>()));
-
-         var allImportedContainers = selectContainersToImport(allAvailableContainersToImport).ToList();
+         var allImportedContainers = sourceSpatialStructure.TopContainers;
          var allImportedNeighborhoods = sourceSpatialStructure.GetConnectingNeighborhoods(allImportedContainers, _objectPathFactory);
 
          allImportedContainers.Each(registerLoadedIn);
@@ -128,32 +124,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          command.AddCommand(new AddContainerToSpatialStructureCommand(spatialStructure.NeighborhoodsContainer, neighborhoodBuilder, spatialStructure).Run(Context));
          return true;
-      }
-
-      private IEnumerable<IContainer> selectContainersToImport(IEnumerable<IContainer> containers)
-      {
-         using (var modal = Context.Resolve<IModalPresenter>())
-         {
-            var presenter = Context.Resolve<ISelectManyPresenter<IContainer>>();
-            modal.Text = AppConstants.Captions.SelectEntitiesToLoad(_editTask.ObjectName);
-            presenter.InitializeWith(containers);
-            modal.Encapsulate(presenter);
-            if (!modal.Show())
-               return Enumerable.Empty<IContainer>();
-
-            var containerToImport = presenter.Selections.ToList();
-            var allChildContainer = containerToImport
-               .SelectMany(container => container.GetAllChildren<IContainer>(cont => !cont.IsAnImplementationOf<IParameter>()));
-
-            var containerDoubleImported = containerToImport.Where(allChildContainer.Contains).ToList();
-            if (containerDoubleImported.Any())
-            {
-               containerDoubleImported.Each(c => containerToImport.Remove(c));
-               DialogCreator.MessageBoxInfo(AppConstants.Exceptions.RemovedToPreventErrorDoubleImport(containerDoubleImported));
-            }
-
-            return containerToImport;
-         }
       }
 
       private void registerLoadedIn(IObjectBase deserializedObject)
