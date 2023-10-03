@@ -19,6 +19,15 @@ namespace MoBi.Core.Domain.Model
       /// </summary>
       public IReadOnlyList<NeighborhoodBuilder> GetConnectingNeighborhoods(IReadOnlyList<IContainer> neighbors, IObjectPathFactory objectPathFactory)
       {
+         ObjectPath getContainerPath(IContainer container)
+         {
+            var absolutePath = objectPathFactory.CreateAbsoluteObjectPath(container);
+            if (container.ParentPath == null)
+               return absolutePath;
+
+            return absolutePath.AndAddAtFront(container.ParentPath);
+         }
+
          //Returns all possible physical containers that can be taken into consideration
          var allContainers = neighbors
             .SelectMany(cont => cont.GetAllContainersAndSelf<IContainer>(x => !x.IsAnImplementationOf<IParameter>()))
@@ -27,7 +36,7 @@ namespace MoBi.Core.Domain.Model
 
          //We use a hashset since we might return the same neighborhood multiple times for different neighbors
          var neighborhoods = new HashSet<NeighborhoodBuilder>();
-         allContainers.Select(objectPathFactory.CreateAbsoluteObjectPath)
+         allContainers.Select(getContainerPath)
             .SelectMany(containerPath => Neighborhoods.Where(x => x.IsConnectedTo(containerPath)))
             .Each(n => neighborhoods.Add(n));
 
