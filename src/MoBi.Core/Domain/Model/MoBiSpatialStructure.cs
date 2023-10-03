@@ -22,7 +22,8 @@ namespace MoBi.Core.Domain.Model
          ObjectPath getContainerPath(IContainer container)
          {
             var absolutePath = objectPathFactory.CreateAbsoluteObjectPath(container);
-            //we need to recreated the path from the root container if is has a parent path
+            //we need to recreate the path from the root container if is has a parent path
+            //to ensure that we have the actual FULL path of the container once imported into a structure
             var parentContainer = container.RootContainer;
             if (parentContainer?.ParentPath == null)
                return absolutePath;
