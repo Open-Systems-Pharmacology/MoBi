@@ -22,10 +22,12 @@ namespace MoBi.Core.Domain.Model
          ObjectPath getContainerPath(IContainer container)
          {
             var absolutePath = objectPathFactory.CreateAbsoluteObjectPath(container);
-            if (container.ParentPath == null)
+            //we need to recreated the path from the root container if is has a parent path
+            var parentContainer = container.RootContainer;
+            if (parentContainer?.ParentPath == null)
                return absolutePath;
 
-            return absolutePath.AndAddAtFront(container.ParentPath);
+            return absolutePath.AndAddAtFront(parentContainer.ParentPath);
          }
 
          //Returns all possible physical containers that can be taken into consideration

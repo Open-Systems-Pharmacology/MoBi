@@ -50,9 +50,13 @@ namespace MoBi.Presentation.Tasks.Edit
 
          // make a backup of the parent and reset that after as there is a side effect
          // of removing the reference to parent container.
-         var parent = entityToSerialize.ParentContainer;
+         var originalParent = entityToSerialize.ParentContainer;
+         var originalParentPath = entityToSerialize.ParentPath;
+         var parentPath = originalParentPath ?? _objectPathFactory.CreateAbsoluteObjectPath(originalParent);
+         //this call reset the original parent. We add it back
          tmpSpatialStructure.AddTopContainer(entityToSerialize);
-         entityToSerialize.ParentContainer = parent;
+         entityToSerialize.ParentContainer = originalParent;
+
          var existingSpatialStructure = _interactionTaskContext.Active<MoBiSpatialStructure>();
          if (existingSpatialStructure != null)
          {
@@ -62,7 +66,12 @@ namespace MoBi.Presentation.Tasks.Edit
                tmpSpatialStructure.DiagramModel = existingSpatialStructure.DiagramModel.CreateCopy(entityToSerialize.Id);
          }
 
+         //Save the parent path before we serialize to make sure it's set properly when we import
+         entityToSerialize.ParentPath = parentPath;
          _interactionTask.Save(tmpSpatialStructure, fileName);
+
+         entityToSerialize.ParentPath = originalParentPath;
+
       }
 
       public IMoBiCommand SetContainerMode(IBuildingBlock buildingBlock, IContainer container, ContainerMode containerMode)
