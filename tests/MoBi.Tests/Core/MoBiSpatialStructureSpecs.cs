@@ -90,7 +90,6 @@ namespace MoBi.Core
             FirstNeighborPath = new ObjectPath("PATH1"),
             SecondNeighborPath = new ObjectPath("PATH2"),
             Name = "_randomNeighborhood"
-
          };
 
          sut.AddNeighborhood(_randomNeighborhood);
@@ -105,6 +104,44 @@ namespace MoBi.Core
       public void should_return_the_list_of_all_neighborhood_connected_to_at_least_one_neighbors()
       {
          _result.ShouldOnlyContain(_neighborhoodBetweenCont1AndCont2, _neighborhoodBetweenCont2AndUnknown);
+      }
+   }
+
+   public class When_retrieving_the_list_of_neighborhood_connected_to_a_container_without_parent_but_with_a_parent_path_set : concern_for_MoBiSpatialStructure
+   {
+      private Container _container;
+      private IObjectPathFactory _objectPathFactory;
+      private IReadOnlyList<NeighborhoodBuilder> _result;
+      private NeighborhoodBuilder _neighborhood;
+      private Container _subContainer;
+
+      protected override void Context()
+      {
+         base.Context();
+         _objectPathFactory = new ObjectPathFactoryForSpecs();
+         _container = new Container().WithName("Muscle").WithMode(ContainerMode.Logical);
+         _subContainer = new Container().WithName("Interstitial").WithMode(ContainerMode.Physical).Under(_container);
+         _container.ParentPath = new ObjectPath("Organism");
+
+         _neighborhood = new NeighborhoodBuilder
+         {
+            //mae the neighborhood reference a sub container instead of the root container
+            FirstNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_subContainer).AndAddAtFront("Organism"),
+            SecondNeighborPath = new ObjectPath("A", "PATH"),
+            Name = "_neighborhoodBetweenCont2AndUnknown"
+         };
+         sut.AddNeighborhood(_neighborhood);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.GetConnectingNeighborhoods(new[] {_container}, _objectPathFactory);
+      }
+
+      [Observation]
+      public void should_return_the_list_of_all_neighborhood_connected_to_at_least_one_neighbors()
+      {
+         _result.ShouldContain(_neighborhood);
       }
    }
 }
