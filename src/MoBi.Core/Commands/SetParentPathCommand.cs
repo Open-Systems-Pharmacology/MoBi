@@ -1,10 +1,12 @@
-﻿using MoBi.Assets;
+﻿using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -30,7 +32,44 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _container.ParentPath = _newParentPath;
+         updateObjectPathsInSpatialStructure();
          Description = AppConstants.Commands.UpdateParentPath(_container.EntityPath(), (_newParentPath ?? new ObjectPath()).ToPathString());
+      }
+
+      private void updateObjectPathsInSpatialStructure()
+      {
+         //should probably never be null
+         var spatialStructure = _buildingBlock as SpatialStructure;
+         if (spatialStructure == null)
+            return;
+
+         var oldObjectPathString = createContainerPath(_oldParentPath);
+         var newObjectPathString = createContainerPath(_newParentPath);
+
+         bool referencesPath(ObjectPath objectPath) => objectPath != null && objectPath.PathAsString.StartsWith(oldObjectPathString);
+         
+         //we know that the object path exists in this context
+         void updatePaths(ObjectPath objectPath) => objectPath.ReplaceWith(objectPath.PathAsString.Replace(oldObjectPathString, newObjectPathString).ToPathArray());
+
+         //this takes care of all parameters in the structure as well as in the neighborhoods
+         var allReferencingPaths = spatialStructure.TopContainers
+            .Union(spatialStructure.Neighborhoods)
+            .SelectMany(x => x.GetPathsReferencing(referencesPath))
+            .Select(x => x.path);
+
+         allReferencingPaths.Each(updatePaths);
+
+         var allReferencingPathsInNeighborhood = spatialStructure.Neighborhoods
+            .SelectMany(x => new[] {x.FirstNeighborPath, x.SecondNeighborPath})
+            .Where(referencesPath);
+
+         allReferencingPathsInNeighborhood.Each(updatePaths);
+      }
+
+      private string createContainerPath(ObjectPath parentPath)
+      {
+         var objectPath = (parentPath ?? new ObjectPath()).Clone<ObjectPath>().AndAdd(_container.Name);
+         return objectPath.ToPathString();
       }
 
       protected override void ClearReferences()
