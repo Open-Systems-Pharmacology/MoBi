@@ -43,13 +43,17 @@ namespace MoBi.Core.Commands
          if (spatialStructure == null)
             return;
 
-         var oldObjectPathString = createContainerPath(_oldParentPath);
-         var newObjectPathString = createContainerPath(_newParentPath);
+         var oldContainerPathString = createContainerPath(_oldParentPath);
+         var newContainerPathString = createContainerPath(_newParentPath);
 
-         bool referencesPath(ObjectPath objectPath) => objectPath != null && objectPath.PathAsString.StartsWith(oldObjectPathString);
-         
+         bool referencesPath(ObjectPath objectPath) => objectPath != null && objectPath.PathAsString.StartsWith(oldContainerPathString);
+
          //we know that the object path exists in this context
-         void updatePaths(ObjectPath objectPath) => objectPath.ReplaceWith(objectPath.PathAsString.Replace(oldObjectPathString, newObjectPathString).ToPathArray());
+         void updatePaths(ObjectPath objectPath)
+         {
+            var updatedPath = $"{newContainerPathString}{objectPath.PathAsString.Substring(oldContainerPathString.Length)}";
+            objectPath.ReplaceWith(updatedPath.ToPathArray());
+         }
 
          //this takes care of all parameters in the structure as well as in the neighborhoods
          var allReferencingPaths = spatialStructure.TopContainers
