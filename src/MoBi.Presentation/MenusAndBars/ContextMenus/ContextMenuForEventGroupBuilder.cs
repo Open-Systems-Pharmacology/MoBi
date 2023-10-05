@@ -63,14 +63,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(ObjectTypes.EventGroupBuilder))
                .WithCommandFor<AddExistingFromTemplateCommandFor<EventGroupBuildingBlock, EventGroupBuilder>, EventGroupBuildingBlock>(buildingBlock, _container));
 
-            if (!buildingBlock.ExistsByName(Constants.APPLICATIONS))
-            {
-               _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(Constants.APPLICATIONS))
-                  .WithIcon(ApplicationIcons.Applications)
-                  .WithCommandFor<AddNewApplicationsEventGroup, EventGroupBuildingBlock>(buildingBlock, _container)
-                  .AsGroupStarter());
-            }
-
             _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Application))
                .WithIcon(ApplicationIcons.Add)
                .WithCommandFor<AddNewCommandFor<EventGroupBuildingBlock, ApplicationBuilder>, EventGroupBuildingBlock>(buildingBlock, _container)

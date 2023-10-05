@@ -1,20 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForRootEventGroup : IInteractionTasksForBuilder<EventGroupBuilder>
    {
-      void CreateApplicationsEventGroup(EventGroupBuildingBlock subject);
    }
 
    public class InteractionTasksForRootEventGroup : InteractionTasksForBuilder<EventGroupBuilder, EventGroupBuildingBlock>, IInteractionTasksForRootEventGroup
@@ -42,20 +38,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IMoBiCommand GetAddCommand(EventGroupBuilder builder, EventGroupBuildingBlock buildingBlock)
       {
          return new AddRootEventGroupBuilderCommand(buildingBlock, builder);
-      }
-
-      public void CreateApplicationsEventGroup(EventGroupBuildingBlock eventGroupBuildingBlock)
-      {
-         if(eventGroupBuildingBlock.ExistsByName(Constants.APPLICATIONS))
-            return;
-
-         var context = _interactionTaskContext.Context;
-         var applications = context.Create<EventGroupBuilder>()
-            .WithName(Constants.APPLICATIONS)
-            .WithIcon(ApplicationIcons.Applications.IconName);
-
-         applications.SourceCriteria = Create.Criteria(x => x.With(Constants.ROOT_CONTAINER_TAG));
-         context.AddToHistory(GetAddCommand(applications, eventGroupBuildingBlock).Run(context));
       }
 
       public override IReadOnlyCollection<EventGroupBuilder> LoadItems(string filename)
