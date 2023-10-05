@@ -11,6 +11,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
 
@@ -73,17 +74,59 @@ namespace MoBi.Presentation
    public class When_the_parent_path_of_a_container_is_being_set : concern_for_EditContainerPresenter
    {
       private string _parentPath;
-      private IContainer _container;
-      private SpatialStructure _buildingBlock;
+      private IContainer _muscle;
+      private SpatialStructure _spatialStructure;
+      private NeighborhoodBuilder _neighborhoodReferencingContainer;
+      private Container _anotherTopContainer;
+      private Parameter _parameterInOtherContainerReferencingMuscle;
+      private Parameter _parameterInContainerReferencingMuscle;
+      private Parameter _parameterInNeighborhoodReferencingMuscle;
+      private FormulaUsablePath _muscleInterstitialPath;
+      private Parameter _parameterInContainerNotReferencingMuscle;
 
       protected override void Context()
       {
          base.Context();
-         _parentPath = "A|B";
-         _container = new Container();
-         _buildingBlock = new SpatialStructure();
-         sut.Edit(_container);
-         sut.BuildingBlock = _buildingBlock;
+         _parentPath = "NewPath";
+         _muscleInterstitialPath = new FormulaUsablePath("A", "B", "Muscle", "Interstitial");
+         _muscle = new Container {ParentPath = new ObjectPath("A", "B")}.WithName("Muscle");
+         _neighborhoodReferencingContainer = new NeighborhoodBuilder
+         {
+            FirstNeighborPath = _muscleInterstitialPath,
+            SecondNeighborPath = new ObjectPath("Organism", "Liver", "Interstitial"),
+         };
+
+         _anotherTopContainer = new Container().WithName("Another");
+         _parameterInOtherContainerReferencingMuscle = new Parameter().WithName("ParameterOtherContainer").Under(_anotherTopContainer);
+         _parameterInOtherContainerReferencingMuscle.Formula = new ExplicitFormula("A");
+         _parameterInOtherContainerReferencingMuscle.Formula.AddObjectPath(_muscleInterstitialPath.Clone<FormulaUsablePath>().AndAdd("P"));
+
+         _parameterInContainerReferencingMuscle = new Parameter().WithName("ParameterSubContainer").Under(_muscle);
+         _parameterInContainerReferencingMuscle.Formula = new ExplicitFormula("A");
+         _parameterInContainerReferencingMuscle.Formula.AddObjectPath(_muscleInterstitialPath.Clone<FormulaUsablePath>().AndAdd("P"));
+
+
+         _parameterInContainerNotReferencingMuscle = new Parameter().WithName("AnotherParameterNotReferencing").Under(_muscle);
+         _parameterInContainerNotReferencingMuscle.Formula = new ExplicitFormula("A");
+         _parameterInContainerNotReferencingMuscle.Formula.AddObjectPath(new FormulaUsablePath("A", "B", "AnotherContainer").AndAdd("P"));
+
+
+         _parameterInNeighborhoodReferencingMuscle = new Parameter().WithName("ParameterNeighborhood").Under(_neighborhoodReferencingContainer);
+         _parameterInNeighborhoodReferencingMuscle.Formula = new ExplicitFormula("A");
+         _parameterInNeighborhoodReferencingMuscle.Formula.AddObjectPath(_muscleInterstitialPath.Clone<FormulaUsablePath>().AndAdd("P"));
+
+
+         _spatialStructure = new SpatialStructure
+         {
+            NeighborhoodsContainer = new Container()
+         };
+         _spatialStructure.AddTopContainer(_muscle);
+         _spatialStructure.AddTopContainer(_anotherTopContainer);
+
+
+         _spatialStructure.AddNeighborhood(_neighborhoodReferencingContainer);
+         sut.Edit(_muscle);
+         sut.BuildingBlock = _spatialStructure;
       }
 
       protected override void Because()
@@ -94,7 +137,29 @@ namespace MoBi.Presentation
       [Observation]
       public void should_update_the_path_of_the_underlying_container()
       {
-         _container.ParentPath.PathAsString.ShouldBeEqualTo(_parentPath);
+         _muscle.ParentPath.PathAsString.ShouldBeEqualTo(_parentPath);
+      }
+
+      [Observation]
+      public void should_update_the_path_of_neighbors_in_neighborhoods_referencing_this_container()
+      {
+         _neighborhoodReferencingContainer.FirstNeighborPath.PathAsString.ShouldBeEqualTo("NewPath|Muscle|Interstitial");
+      }
+
+      [Observation]
+      public void should_update_the_reference_to_this_container_in_all_formulas_of_the_spatial_structure()
+      {
+         var expectedPath = "NewPath|Muscle|Interstitial|P";
+
+         _parameterInOtherContainerReferencingMuscle.Formula.ObjectPaths[0].PathAsString.ShouldBeEqualTo(expectedPath);
+         _parameterInContainerReferencingMuscle.Formula.ObjectPaths[0].PathAsString.ShouldBeEqualTo(expectedPath);
+         _parameterInNeighborhoodReferencingMuscle.Formula.ObjectPaths[0].PathAsString.ShouldBeEqualTo(expectedPath);
+      }
+
+      [Observation]
+      public void should_not_update_references_of_formula_not_referencing_the_container()
+      {
+         _parameterInContainerNotReferencingMuscle.Formula.ObjectPaths[0].PathAsString.ShouldBeEqualTo("A|B|AnotherContainer|P");
       }
 
       [Observation]
@@ -124,7 +189,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_update_the_parent_path_if_a_selection_was_made()
       {
-         A.CallTo(() => _selectContainerPresenter.Select()).Returns(new ObjectPath("A","B","C"));
+         A.CallTo(() => _selectContainerPresenter.Select()).Returns(new ObjectPath("A", "B", "C"));
          sut.UpdateParentPath();
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B|C");
       }

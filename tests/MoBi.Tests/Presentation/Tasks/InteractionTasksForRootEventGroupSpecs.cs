@@ -42,35 +42,9 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_return_a_right_configuered_add_command()
+      public void should_return_a_right_configured_add_command()
       {
          _addCommand.ShouldBeAnInstanceOf<AddRootEventGroupBuilderCommand>();
-      }
-   }
-
-   public class When_creating_the_application_event_group : concern_for_InteractionTasksForRootEventGroup
-   {
-      private EventGroupBuildingBlock _eventGroupBuilder;
-
-      protected override void Context()
-      {
-         base.Context();
-         _eventGroupBuilder = new EventGroupBuildingBlock();
-         A.CallTo(() => _context.Context.Create<EventGroupBuilder>()).Returns(new EventGroupBuilder());
-      }
-      protected override void Because()
-      {
-         sut.CreateApplicationsEventGroup(_eventGroupBuilder);
-      }
-
-      [Observation]
-      public void should_create_an_event_group_builder_with_the_expected_properties()
-      {
-         var applications = _eventGroupBuilder.FindByName(Constants.APPLICATIONS);
-         applications.ShouldNotBeNull();
-         var rootContainer = new Container();
-         rootContainer.AddTag(Constants.ROOT_CONTAINER_TAG);
-         applications.SourceCriteria.IsSatisfiedBy(new EntityDescriptor(rootContainer)).ShouldBeTrue();
       }
    }
 }
