@@ -35,16 +35,16 @@ namespace MoBi.UI.Views
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelTags = new DevExpress.XtraEditors.PanelControl();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
-         this.btName = new DevExpress.XtraEditors.ButtonEdit();
+         this.tbName = new DevExpress.XtraEditors.ButtonEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemTab = new DevExpress.XtraLayout.LayoutControlItem();
          this.tabPagesControl = new DevExpress.XtraTab.XtraTabControl();
          this.tabParameters = new DevExpress.XtraTab.XtraTabPage();
-         this.tbFirstNeighborPath = new DevExpress.XtraEditors.TextEdit();
+         this.tbFirstNeighborPath = new DevExpress.XtraEditors.ButtonEdit();
          this.layoutItemFirstNeighborPath = new DevExpress.XtraLayout.LayoutControlItem();
-         this.tbSecondNeighborPath = new DevExpress.XtraEditors.TextEdit();
+         this.tbSecondNeighborPath = new DevExpress.XtraEditors.ButtonEdit();
          this.layoutItemSecondNeighborPath = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          this.tabProperties.SuspendLayout();
@@ -52,7 +52,7 @@ namespace MoBi.UI.Views
          this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelTags)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.btName.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).BeginInit();
@@ -79,7 +79,7 @@ namespace MoBi.UI.Views
          this.layoutControl.Controls.Add(this.tbFirstNeighborPath);
          this.layoutControl.Controls.Add(this.panelTags);
          this.layoutControl.Controls.Add(this.htmlEditor);
-         this.layoutControl.Controls.Add(this.btName);
+         this.layoutControl.Controls.Add(this.tbName);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
@@ -111,15 +111,15 @@ namespace MoBi.UI.Views
          // 
          // btName
          // 
-         this.btName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+         this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.btName.Location = new System.Drawing.Point(176, 12);
-         this.btName.Name = "btName";
-         this.btName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+         this.tbName.Location = new System.Drawing.Point(176, 12);
+         this.tbName.Name = "tbName";
+         this.tbName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.btName.Size = new System.Drawing.Size(690, 20);
-         this.btName.StyleController = this.layoutControl;
-         this.btName.TabIndex = 0;
+         this.tbName.Size = new System.Drawing.Size(690, 20);
+         this.tbName.StyleController = this.layoutControl;
+         this.tbName.TabIndex = 0;
          // 
          // layoutControlGroup1
          // 
@@ -148,7 +148,7 @@ namespace MoBi.UI.Views
          // 
          // layoutItemName
          // 
-         this.layoutItemName.Control = this.btName;
+         this.layoutItemName.Control = this.tbName;
          this.layoutItemName.CustomizationFormText = "Name";
          this.layoutItemName.Location = new System.Drawing.Point(0, 0);
          this.layoutItemName.Name = "layoutItemName";
@@ -231,7 +231,7 @@ namespace MoBi.UI.Views
          this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelTags)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.btName.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).EndInit();
@@ -251,7 +251,7 @@ namespace MoBi.UI.Views
       protected DevExpress.XtraTab.XtraTabPage tabProperties;
       protected DevExpress.XtraTab.XtraTabControl tabPagesControl;
       protected DevExpress.XtraTab.XtraTabPage tabParameters;
-      private ButtonEdit btName;
+      private ButtonEdit tbName;
       private MemoExEdit htmlEditor;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
@@ -259,8 +259,8 @@ namespace MoBi.UI.Views
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private PanelControl panelTags;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemTab;
-      private TextEdit tbSecondNeighborPath;
-      private TextEdit tbFirstNeighborPath;
+      private ButtonEdit tbSecondNeighborPath;
+      private ButtonEdit tbFirstNeighborPath;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemFirstNeighborPath;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemSecondNeighborPath;
    }

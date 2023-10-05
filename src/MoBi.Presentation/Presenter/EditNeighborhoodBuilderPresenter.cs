@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
@@ -6,6 +7,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
@@ -15,6 +17,10 @@ namespace MoBi.Presentation.Presenter
    public interface IEditNeighborhoodBuilderPresenter : IPresenter<IEditNeighborhoodBuilderView>, ICanEditPropertiesPresenter, IPresenterWithFormulaCache, IEditPresenterWithParameters<NeighborhoodBuilder>
    {
       void SetInitialName(string initialName);
+      void SetFirstNeighborPath(string neighborPath);
+      void SetSecondNeighborPath(string neighborPath);
+      void SelectFirstNeighbor();
+      void SelectSecondNeighbor();
    }
 
    public class EditNeighborhoodBuilderPresenter : AbstractContainerEditPresenterWithParameters<IEditNeighborhoodBuilderView, IEditNeighborhoodBuilderPresenter, NeighborhoodBuilder>, IEditNeighborhoodBuilderPresenter
@@ -57,6 +63,24 @@ namespace MoBi.Presentation.Presenter
       {
          SetPropertyValueFromView(_neighborhoodBuilder.PropertyName(x => x.Name), initialName, string.Empty);
          _neighborhoodBuilderDTO.Name = initialName;
+      }
+
+      public void SetFirstNeighborPath(string neighborPath)
+      {
+         AddCommand(new ChangeFirstNeighborPathCommand(neighborPath, _neighborhoodBuilder, BuildingBlock).Run(_context));
+      }
+
+      public void SetSecondNeighborPath(string neighborPath)
+      {
+         AddCommand(new ChangeSecondNeighborPathCommand(neighborPath, _neighborhoodBuilder, BuildingBlock).Run(_context));
+      }
+
+      public void SelectFirstNeighbor()
+      {
+      }
+
+      public void SelectSecondNeighbor()
+      {
       }
 
       public override IBuildingBlock BuildingBlock

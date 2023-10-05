@@ -39,7 +39,6 @@ namespace MoBi.Presentation.Presenter
       private readonly IContainerToContainerDTOMapper _containerMapper;
       private readonly IEditTaskForContainer _editTasks;
       private ContainerDTO _containerDTO;
-      private readonly IMoBiContext _context;
       private readonly ITagsPresenter _tagsPresenter;
       private readonly IApplicationController _applicationController;
 
@@ -54,7 +53,6 @@ namespace MoBi.Presentation.Presenter
          : base(view, editParametersInContainerPresenter, context, editTasks)
       {
          _containerMapper = containerMapper;
-         _context = context;
          _tagsPresenter = tagsPresenter;
          _applicationController = applicationController;
          _editTasks = editTasks;
