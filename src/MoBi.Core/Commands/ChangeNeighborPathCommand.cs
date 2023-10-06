@@ -10,7 +10,7 @@ using OSPSuite.Core.Extensions;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class ChangeNeighborPathCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
+   public abstract class ChangeNeighborPathCommand : BuildingBlockChangeCommandBase<SpatialStructure>
    {
       protected readonly string _newPath;
       protected NeighborhoodBuilder _neighborhoodBuilder;
@@ -20,8 +20,8 @@ namespace MoBi.Core.Commands
       protected ChangeNeighborPathCommand(
          string newPath,
          NeighborhoodBuilder neighborhoodBuilder,
-         IBuildingBlock buildingBlock, Func<NeighborhoodBuilder, ObjectPath> getPathFunc,
-         string type) : base(buildingBlock)
+         SpatialStructure spatialStructure, Func<NeighborhoodBuilder, ObjectPath> getPathFunc,
+         string type) : base(spatialStructure)
       {
          _newPath = newPath;
          _neighborhoodBuilder = neighborhoodBuilder;
@@ -58,8 +58,8 @@ namespace MoBi.Core.Commands
 
    public class ChangeFirstNeighborPathCommand : ChangeNeighborPathCommand
    {
-      public ChangeFirstNeighborPathCommand(string newPath, NeighborhoodBuilder neighborhoodBuilder, IBuildingBlock buildingBlock) :
-         base(newPath, neighborhoodBuilder, buildingBlock, x => x.FirstNeighborPath, AppConstants.Captions.FirstNeighbor)
+      public ChangeFirstNeighborPathCommand(string newPath, NeighborhoodBuilder neighborhoodBuilder, SpatialStructure spatialStructure) :
+         base(newPath, neighborhoodBuilder, spatialStructure, x => x.FirstNeighborPath, AppConstants.Captions.FirstNeighbor)
       {
       }
 
@@ -76,8 +76,8 @@ namespace MoBi.Core.Commands
 
    public class ChangeSecondNeighborPathCommand : ChangeNeighborPathCommand
    {
-      public ChangeSecondNeighborPathCommand(string newPath, NeighborhoodBuilder neighborhoodBuilder, IBuildingBlock buildingBlock) :
-         base(newPath, neighborhoodBuilder, buildingBlock, x => x.SecondNeighborPath, AppConstants.Captions.SecondNeighbor)
+      public ChangeSecondNeighborPathCommand(string newPath, NeighborhoodBuilder neighborhoodBuilder, SpatialStructure spatialStructure) :
+         base(newPath, neighborhoodBuilder, spatialStructure, x => x.SecondNeighborPath, AppConstants.Captions.SecondNeighbor)
       {
       }
 

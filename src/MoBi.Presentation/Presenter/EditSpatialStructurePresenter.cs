@@ -190,7 +190,9 @@ namespace MoBi.Presentation.Presenter
          if (!canHandleNeighborhoodChange(neighborhoodChangedEvent))
             return;
 
-         _hierarchicalSpatialStructurePresenter.Edit(_spatialStructure);
+         //The neighborhood has changed. We need to refresh the presenter to reflect changes 
+         _hierarchicalSpatialStructurePresenter.Refresh(neighborhoodChangedEvent.NeighborhoodBuilder);
+  //       _hierarchicalSpatialStructurePresenter.Edit(_spatialStructure);
       }
 
       private bool canHandleNeighborhoodChange(NeighborhoodChangedEvent neighborhoodChangedEvent)

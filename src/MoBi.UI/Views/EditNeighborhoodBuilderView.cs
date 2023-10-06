@@ -1,4 +1,5 @@
 ﻿using DevExpress.LookAndFeel;
+using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -41,15 +42,18 @@ namespace MoBi.UI.Views
 
          _screenBinder.Bind(dto => dto.Name)
             .To(tbName)
-            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetInitialName(e.NewValue)); ;
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetInitialName(e.NewValue));
+         ;
 
          _screenBinder.Bind(dto => dto.FirstNeighborPath)
             .To(tbFirstNeighborPath)
-            .OnValueUpdating += (o,e)=> OnEvent(() => _presenter.SetFirstNeighborPath(e.NewValue)); ;
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetFirstNeighborPath(e.NewValue));
+         ;
 
          _screenBinder.Bind(dto => dto.SecondNeighborPath)
             .To(tbSecondNeighborPath)
-            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetSecondNeighborPath(e.NewValue)); ;
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetSecondNeighborPath(e.NewValue));
+         ;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
@@ -85,22 +89,31 @@ namespace MoBi.UI.Views
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }
 
-
       private void initControls()
       {
-         editNameButton.Enabled = true;
-         editNameButton.Visible = !_readOnly;
+         enableButton(tbFirstNeighborPath);
+         enableButton(tbName);
+         enableButton(tbSecondNeighborPath);
+
          tbName.ReadOnly = true;
          tbFirstNeighborPath.ReadOnly = false;
          tbSecondNeighborPath.ReadOnly = false;
-    
-         //enabled true otherwise the button cannot be clicked
-         tbName.Enabled = true;
-         tbFirstNeighborPath.Enabled = true;
-         tbSecondNeighborPath.Enabled = true;
       }
 
-      private EditorButton editNameButton => tbName.Properties.Buttons[0];
+      private EditorButton getButton(ButtonEdit button) => button.Properties.Buttons[0];
+
+      private void enableButton(ButtonEdit buttonEdit)
+      {
+         var button = getButton(buttonEdit);
+         button.Enabled = true;
+         editNameButton.Visible = !_readOnly;
+         //enabled true otherwise the button cannot be clicked
+         buttonEdit.Enabled = true;
+      }
+
+      private EditorButton editNameButton => getButton(tbName);
+      private EditorButton changeFirstNeighborButton => getButton(tbFirstNeighborPath);
+      private EditorButton changeSecondNeighborButton => getButton(tbSecondNeighborPath);
 
       public void AddParameterView(IView view)
       {
@@ -134,6 +147,8 @@ namespace MoBi.UI.Views
             tbName.Enabled = value;
             if (value) return;
             editNameButton.Visible = false;
+            changeFirstNeighborButton.Visible = false;
+            changeSecondNeighborButton.Visible = false;
          }
       }
 

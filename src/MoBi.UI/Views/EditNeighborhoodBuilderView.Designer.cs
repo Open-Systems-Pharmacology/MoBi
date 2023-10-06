@@ -191,6 +191,8 @@ namespace MoBi.UI.Views
          this.tbFirstNeighborPath.Size = new System.Drawing.Size(690, 20);
          this.tbFirstNeighborPath.StyleController = this.layoutControl;
          this.tbFirstNeighborPath.TabIndex = 15;
+         this.tbFirstNeighborPath.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton()});
          // 
          // layoutItemFirstNeighborPath
          // 
@@ -207,6 +209,8 @@ namespace MoBi.UI.Views
          this.tbSecondNeighborPath.Size = new System.Drawing.Size(690, 20);
          this.tbSecondNeighborPath.StyleController = this.layoutControl;
          this.tbSecondNeighborPath.TabIndex = 16;
+         this.tbSecondNeighborPath.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton()});
          // 
          // layoutItemSecondNeighborPath
          // 

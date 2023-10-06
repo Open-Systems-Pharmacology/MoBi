@@ -9,12 +9,14 @@ namespace MoBi.Presentation.Views
 {
    public interface IHierarchicalStructureView : IView<IHierarchicalStructurePresenter>
    {
+      void AddRoot(ObjectBaseDTO dto);
+      void Refresh(ObjectBaseDTO objectToRefresh);
       void Show(IEnumerable<ObjectBaseDTO> roots);
       void Add(ObjectBaseDTO newChild, ObjectBaseDTO parent);
+
       void Remove(IWithId withId);
       void AddNode(ITreeNode newNode);
-      void AddRoot(ObjectBaseDTO dto);
-      void Select(string id);
+      void Select(IWithId withId);
       void Clear();
    }
 }
