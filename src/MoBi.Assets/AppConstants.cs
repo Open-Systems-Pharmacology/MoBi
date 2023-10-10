@@ -2145,12 +2145,6 @@ namespace MoBi.Assets
          return $"Cannot remove {typeName} {objectName} from the project. It is being used as a template by {referringBuildingBlockNames.ToString(", ")}";
       }
 
-      public class UIConstants
-      {
-         public static readonly int LargeButtonWidth = 140;
-         public static readonly int ButtonHeight = 24;
-      }
-
       public class Diff
       {
          public const string OlderVersion = "Is Older";
