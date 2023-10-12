@@ -6,7 +6,6 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Settings;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -19,7 +18,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ICreateSimulationConfigurationPresenter : IWizardPresenter, IPresenter<ICreateSimulationConfigurationView>
    {
-      SimulationConfiguration CreateBasedOn(IMoBiSimulation simulation, bool allowNaming = true);
+      SimulationConfiguration CreateBasedOn(IMoBiSimulation simulation, bool isNew = true);
       string SimulationName { get; }
    }
 
@@ -50,9 +49,9 @@ namespace MoBi.Presentation.Presenter
          AllowQuickFinish = false;
       }
 
-      public SimulationConfiguration CreateBasedOn(IMoBiSimulation moBiSimulation, bool allowNaming = true)
+      public SimulationConfiguration CreateBasedOn(IMoBiSimulation moBiSimulation, bool isNew = true)
       {
-         edit(moBiSimulation, allowNaming);
+         edit(moBiSimulation, isNew);
          UpdateControls();
          _view.Display();
          if (_view.Canceled)
@@ -60,7 +59,9 @@ namespace MoBi.Presentation.Presenter
             return null;
          }
 
-         var simulationConfiguration = _simulationConfigurationFactory.Create();
+         // *Configuring* a simulation with new modules and building blocks should not replace the simulation settings
+         var simulationConfiguration = _simulationConfigurationFactory.Create(settings: isNew ? null : moBiSimulation.Settings);
+
          updateSimulationConfiguration(simulationConfiguration);
          return simulationConfiguration;
       }

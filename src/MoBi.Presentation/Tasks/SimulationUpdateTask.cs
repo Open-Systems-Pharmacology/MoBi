@@ -60,7 +60,7 @@ namespace MoBi.Presentation.Tasks
          SimulationConfiguration simulationConfiguration;
          using (var presenter = _applicationController.Start<ICreateSimulationConfigurationPresenter>())
          {
-            simulationConfiguration = presenter.CreateBasedOn(simulationToConfigure, allowNaming: false);
+            simulationConfiguration = presenter.CreateBasedOn(simulationToConfigure, isNew: false);
          }
 
          if (simulationConfiguration == null)

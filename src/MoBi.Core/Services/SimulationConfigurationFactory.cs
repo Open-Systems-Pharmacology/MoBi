@@ -8,9 +8,10 @@ namespace MoBi.Core.Services
    public interface ISimulationConfigurationFactory
    {
       /// <summary>
-      ///    Creates a new SimulationConfiguration with default SimulationSettings and calculation methods from the project
+      ///    Creates a new SimulationConfiguration with calculation methods from the project and
+      ///    either <paramref name="settings" /> if specified, or default simulation settings
       /// </summary>
-      SimulationConfiguration Create();
+      SimulationConfiguration Create(SimulationSettings settings = null);
 
       /// <summary>
       ///    Creates a new SimulationConfiguration from the current project modules and building blocks based on the given
@@ -37,11 +38,11 @@ namespace MoBi.Core.Services
          _templateResolverTask = templateResolverTask;
       }
 
-      public SimulationConfiguration Create()
+      public SimulationConfiguration Create(SimulationSettings settings = null)
       {
          var simulationConfiguration = new SimulationConfiguration
          {
-            SimulationSettings = _cloneManager.Clone(_projectRetriever.Current.SimulationSettings)
+            SimulationSettings = settings ?? _cloneManager.Clone(_projectRetriever.Current.SimulationSettings)
          };
 
          _calculationMethodRepository.All().Each(simulationConfiguration.AddCalculationMethod);

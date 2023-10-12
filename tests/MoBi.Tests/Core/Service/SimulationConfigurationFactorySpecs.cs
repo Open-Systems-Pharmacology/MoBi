@@ -72,6 +72,28 @@ namespace MoBi.Core.Service
       }
    }
 
+   public class When_creating_a_new_simulation_configuration_with_specified_settings : concern_for_SimulationConfigurationFactory
+   {
+      private SimulationConfiguration _simulationConfiguration;
+      private SimulationSettings _existingSimulationSettings;
+      protected override void Context()
+      {
+         base.Context();
+         _existingSimulationSettings = new SimulationSettings();
+      }
+
+      protected override void Because()
+      {
+         _simulationConfiguration = sut.Create(_existingSimulationSettings);
+      }
+
+      [Observation]
+      public void the_configuration_should_have_the_existing_settings()
+      {
+         _simulationConfiguration.SimulationSettings.ShouldBeEqualTo(_existingSimulationSettings);
+      }
+   }
+
    public class When_updating_a_configuration_from_building_blocks : concern_for_SimulationConfigurationFactory
    {
       private MoBiSimulation _simulationToUpdate;

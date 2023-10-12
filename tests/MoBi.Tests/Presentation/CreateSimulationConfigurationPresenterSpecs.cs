@@ -97,19 +97,18 @@ namespace MoBi.Presentation
 
    public class configuring_an_existing_simulation_configuration : concern_for_CreateSimulationConfigurationPresenter
    {
-      private SimulationConfiguration _newSimulationConfiguration;
+      private SimulationConfiguration _result;
 
       protected override void Context()
       {
          base.Context();
-         _newSimulationConfiguration = new SimulationConfiguration();
          A.CallTo(() => _view.Canceled).Returns(false);
-         A.CallTo(() => _simulationConfigurationFactory.Create()).ReturnsLazily(x => _newSimulationConfiguration);
+         A.CallTo(() => _simulationConfigurationFactory.Create(_simulation.Settings)).Returns(new SimulationConfiguration { SimulationSettings = _simulation.Settings });
       }
 
       protected override void Because()
       {
-         sut.CreateBasedOn(_simulation, false);
+         _result = sut.CreateBasedOn(_simulation, false);
       }
       
       [Observation]
@@ -128,6 +127,12 @@ namespace MoBi.Presentation
       public void should_set_the_check_circular_reference_according_to_value_in_user_settings()
       {
          _simulationConfiguration.PerformCircularReferenceCheck.ShouldBeEqualTo(_userSettings.CheckCircularReference);
+      }
+
+      [Observation]
+      public void the_simulation_settings_should_not_be_replaced()
+      {
+         _result.SimulationSettings.ShouldBeEqualTo(_simulation.Settings);
       }
    }
 
