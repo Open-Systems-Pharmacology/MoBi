@@ -43,8 +43,8 @@ namespace MoBi.Core.Services
          var schema = simulationSettings.OutputSchema;
          if (schema.Intervals.Count() > 1)
             return getRemoveCommand(schema, outputInterval,simulationSettings).Run(_context);
-         else
-            throw new MoBiException(AppConstants.Exceptions.CanNotRemoveLastItem);
+         
+         throw new MoBiException(AppConstants.Exceptions.CanNotRemoveLastItem);
       }
 
       private IMoBiCommand getAddCommand(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings)

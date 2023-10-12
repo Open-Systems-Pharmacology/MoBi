@@ -1572,6 +1572,7 @@ namespace MoBi.Assets
          public static readonly string SelectSpatialStructureAndMolecules = "Select a spatial structure and molecules building block";
          public static readonly string SelectSpatialStructure = "Select a spatial structure";
          public static readonly string ExtendDescription = "<b><i>Initial conditions</i> will be created for molecules in all physical containers in the selected <i>spatial structure</i></b>";
+         public static readonly string AddInterval = "Add Interval";
          public static string CouldNotResolveSource(string sourceType) => $"{sourceType} source not defined";
          public static readonly string CurveName = "Curve Name";
          public static readonly string XDataPath = "X-Path";
