@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
@@ -9,7 +8,6 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Settings;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -38,6 +36,7 @@ namespace MoBi.Presentation
       protected SimulationSettings _clonedSimulationSettings;
       private IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
       protected ISimulationConfigurationFactory _simulationConfigurationFactory;
+      protected ICloneManagerForBuildingBlock _cloneManager;
 
       protected override void Context()
       {
@@ -49,7 +48,7 @@ namespace MoBi.Presentation
          _modelConstructor = A.Fake<IModelConstructor>();
          _dialogCreator = A.Fake<IDialogCreator>();
          A.CallTo(() => _modelConstructor.CreateModelFrom(A<SimulationConfiguration>._, A<string>._)).Returns(A.Fake<CreationResult>());
-
+         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
          _validationVisitor = A.Fake<IDimensionValidator>();
          _userSettings = A.Fake<IUserSettings>();
@@ -58,7 +57,7 @@ namespace MoBi.Presentation
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
          _forbiddenNameRetriever = A.Fake<IForbiddenNamesRetriever>();
          sut = new CreateSimulationConfigurationPresenter(_view, _subPresenterManager, _dialogCreator,
-            _forbiddenNameRetriever, _userSettings, _moduleConfigurationMapper, _simulationConfigurationFactory);
+            _forbiddenNameRetriever, _userSettings, _moduleConfigurationMapper, _simulationConfigurationFactory, _cloneManager);
 
          _simulation = new MoBiSimulation();
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
@@ -102,8 +101,9 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
+         A.CallTo(() => _cloneManager.Clone(_simulation.Settings)).Returns(_clonedSimulationSettings);
          A.CallTo(() => _view.Canceled).Returns(false);
-         A.CallTo(() => _simulationConfigurationFactory.Create(_simulation.Settings)).Returns(new SimulationConfiguration { SimulationSettings = _simulation.Settings });
+         A.CallTo(() => _simulationConfigurationFactory.Create(_clonedSimulationSettings)).Returns(new SimulationConfiguration { SimulationSettings = _clonedSimulationSettings });
       }
 
       protected override void Because()
@@ -132,7 +132,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_simulation_settings_should_not_be_replaced()
       {
-         _result.SimulationSettings.ShouldBeEqualTo(_simulation.Settings);
+         _result.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
       }
    }
 

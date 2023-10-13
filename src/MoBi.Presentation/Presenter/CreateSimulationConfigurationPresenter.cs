@@ -9,6 +9,7 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -29,6 +30,7 @@ namespace MoBi.Presentation.Presenter
       protected readonly IUserSettings _userSettings;
       private readonly IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
       private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
+      private readonly ICloneManagerForBuildingBlock _cloneManager;
 
       public CreateSimulationConfigurationPresenter(
          ICreateSimulationConfigurationView view,
@@ -37,13 +39,15 @@ namespace MoBi.Presentation.Presenter
          IForbiddenNamesRetriever forbiddenNamesRetriever,
          IUserSettings userSettings,
          IModuleConfigurationDTOToModuleConfigurationMapper moduleConfigurationMapper,
-         ISimulationConfigurationFactory simulationConfigurationFactory)
+         ISimulationConfigurationFactory simulationConfigurationFactory,
+         ICloneManagerForBuildingBlock cloneManager)
          : base(view, subPresenterManager, SimulationItems.All, dialogCreator)
       {
          _forbiddenNamesRetriever = forbiddenNamesRetriever;
          IMoBiMacroCommand commands = new MoBiMacroCommand();
          _moduleConfigurationMapper = moduleConfigurationMapper;
          _simulationConfigurationFactory = simulationConfigurationFactory;
+         _cloneManager = cloneManager;
          _userSettings = userSettings;
          InitializeWith(commands);
          AllowQuickFinish = false;
@@ -59,8 +63,9 @@ namespace MoBi.Presentation.Presenter
             return null;
          }
 
-         // *Configuring* a simulation with new modules and building blocks should not replace the simulation settings
-         var simulationConfiguration = _simulationConfigurationFactory.Create(settings: isNew ? null : moBiSimulation.Settings);
+         // When creating a simulationConfiguration based on an existing simulation, use the settings from the existing
+         // simulation instead of creating with project default simulation settings
+         var simulationConfiguration = _simulationConfigurationFactory.Create(settings: isNew ? null : _cloneManager.Clone(moBiSimulation.Settings));
 
          updateSimulationConfiguration(simulationConfiguration);
          return simulationConfiguration;
