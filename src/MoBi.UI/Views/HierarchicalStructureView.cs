@@ -5,6 +5,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using NPOI.POIFS.Properties;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
@@ -54,6 +55,17 @@ namespace MoBi.UI.Views
          }
       }
 
+      public void Refresh(ObjectBaseDTO objectToRefresh)
+      {
+         var existingNode = treeView.NodeById(objectToRefresh.Id);
+         //node does not exist. Nothing to do
+         if(existingNode ==null) 
+            return;
+
+         var nodeToRefresh = _spatialStructureNodeMapper.MapFrom(objectToRefresh);
+         treeView.RefreshNode(nodeToRefresh);
+      }
+
       public void Show(IEnumerable<ObjectBaseDTO> roots)
       {
          _spatialStructureNodeMapper.Initialize(dto => _presenter.GetChildObjects(dto, child => !child.IsAnImplementationOf<IParameter>()));
@@ -72,7 +84,7 @@ namespace MoBi.UI.Views
          var newNode = _spatialStructureNodeMapper.MapFrom(newChild);
          var parentNode = treeView.NodeById(parent.Id);
          //Check if parentNode is already displayed? else it's not necessary to add new Node
-         if (parentNode == null) 
+         if (parentNode == null)
             return;
 
          parentNode.AddChild(newNode);
@@ -96,11 +108,11 @@ namespace MoBi.UI.Views
          treeView.AddNode(_spatialStructureNodeMapper.MapFrom(dto));
       }
 
-      public void Select(string id)
+      public void Select(IWithId withId)
       {
-         var node = treeView.NodeById(id);
-         if (node == null) return;
-         treeView.SelectNode(node);
+         var nodeById = treeView.NodeById(withId.Id);
+         if (nodeById == null) return;
+         treeView.SelectNode(nodeById);
       }
 
       public void Clear()

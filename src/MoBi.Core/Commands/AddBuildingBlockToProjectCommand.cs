@@ -9,7 +9,7 @@ namespace MoBi.Core.Commands
    public abstract class AddBuildingBlockToProjectCommand<T> : MoBiReversibleCommand, ISilentCommand where T : class, IBuildingBlock
    {
       protected T _buildingBlock;
-      public string BuildingBlockId { get; private set; }
+      public string BuildingBlockId { get; }
       public bool Silent { get; set; }
 
       protected AddBuildingBlockToProjectCommand(T buildingBlock)

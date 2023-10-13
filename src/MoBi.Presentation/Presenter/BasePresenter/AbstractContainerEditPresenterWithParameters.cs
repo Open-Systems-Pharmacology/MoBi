@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Presenter.BasePresenter
       where TContainer : IContainer
    {
       protected readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
-      private readonly IMoBiContext _context;
+      protected readonly IMoBiContext _context;
       protected readonly IEditTaskForContainer _editTask;
       protected abstract IContainer SubjectContainer { get; }
 

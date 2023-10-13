@@ -1,4 +1,5 @@
 ﻿using DevExpress.LookAndFeel;
+using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -40,14 +41,19 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<NeighborhoodBuilderDTO>();
 
          _screenBinder.Bind(dto => dto.Name)
-            .To(btName)
-            .OnValueUpdating += onNameSet;
+            .To(tbName)
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetInitialName(e.NewValue));
+         ;
 
          _screenBinder.Bind(dto => dto.FirstNeighborPath)
-            .To(tbFirstNeighborPath);
+            .To(tbFirstNeighborPath)
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetFirstNeighborPath(e.NewValue));
+         ;
 
          _screenBinder.Bind(dto => dto.SecondNeighborPath)
-            .To(tbSecondNeighborPath);
+            .To(tbSecondNeighborPath)
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetSecondNeighborPath(e.NewValue));
+         ;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
@@ -56,19 +62,21 @@ namespace MoBi.UI.Views
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
-         btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
+         tbName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
+         tbFirstNeighborPath.ButtonClick += (o, e) => OnEvent(_presenter.SelectFirstNeighbor);
+         tbSecondNeighborPath.ButtonClick += (o, e) => OnEvent(_presenter.SelectSecondNeighbor);
       }
 
       public void Activate()
       {
-         ActiveControl = btName;
+         ActiveControl = tbName;
       }
 
       public override void InitializeResources()
       {
          base.InitializeResources();
 
-         btName.ToolTip = ToolTips.Container.ContainerName;
+         tbName.ToolTip = ToolTips.Container.ContainerName;
          tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
          tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
          layoutItemFirstNeighborPath.Text = AppConstants.Captions.FirstNeighbor.FormatForLabel();
@@ -81,25 +89,31 @@ namespace MoBi.UI.Views
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }
 
-      private void onNameSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)
-      {
-         OnEvent(() => _presenter.SetInitialName(e.NewValue));
-      }
-
       private void initControls()
       {
-         editNameButton.Enabled = true;
-         editNameButton.Visible = !_readOnly;
-         btName.ReadOnly = true;
-         //enabled true otherwise the button cannot be clicked
-         btName.Enabled = true;
-         tbFirstNeighborPath.ReadOnly = true;
-         tbFirstNeighborPath.Enabled = false;
-         tbSecondNeighborPath.ReadOnly = true;
-         tbSecondNeighborPath.Enabled = false;
+         enableButton(tbFirstNeighborPath);
+         enableButton(tbName);
+         enableButton(tbSecondNeighborPath);
+
+         tbName.ReadOnly = true;
+         tbFirstNeighborPath.ReadOnly = false;
+         tbSecondNeighborPath.ReadOnly = false;
       }
 
-      private EditorButton editNameButton => btName.Properties.Buttons[0];
+      private EditorButton getButton(ButtonEdit button) => button.Properties.Buttons[0];
+
+      private void enableButton(ButtonEdit buttonEdit)
+      {
+         var button = getButton(buttonEdit);
+         button.Enabled = true;
+         editNameButton.Visible = !_readOnly;
+         //enabled true otherwise the button cannot be clicked
+         buttonEdit.Enabled = true;
+      }
+
+      private EditorButton editNameButton => getButton(tbName);
+      private EditorButton changeFirstNeighborButton => getButton(tbFirstNeighborPath);
+      private EditorButton changeSecondNeighborButton => getButton(tbSecondNeighborPath);
 
       public void AddParameterView(IView view)
       {
@@ -127,12 +141,14 @@ namespace MoBi.UI.Views
 
       public bool ContainerPropertiesEditable
       {
-         get => btName.Enabled;
+         get => tbName.Enabled;
          set
          {
-            btName.Enabled = value;
+            tbName.Enabled = value;
             if (value) return;
             editNameButton.Visible = false;
+            changeFirstNeighborButton.Visible = false;
+            changeSecondNeighborButton.Visible = false;
          }
       }
 

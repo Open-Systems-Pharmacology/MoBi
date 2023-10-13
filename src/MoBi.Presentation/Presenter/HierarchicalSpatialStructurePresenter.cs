@@ -20,11 +20,12 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<SpatialStructure>,
       IHierarchicalStructurePresenter,
-      IListener<AddedEvent>, 
-      IListener<RemovedEvent>, 
+      IListener<AddedEvent>,
+      IListener<RemovedEvent>,
       IListener<EntitySelectedEvent>
    {
       void Select(IEntity entity);
+      void Refresh(IEntity entity);
    }
 
    public class HierarchicalSpatialStructurePresenter : HierarchicalStructurePresenter, IHierarchicalSpatialStructurePresenter
@@ -33,10 +34,10 @@ namespace MoBi.Presentation.Presenter
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
 
       public HierarchicalSpatialStructurePresenter(
-         IHierarchicalStructureView view, 
+         IHierarchicalStructureView view,
          IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, 
-         IViewItemContextMenuFactory contextMenuFactory, 
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper,
+         IViewItemContextMenuFactory contextMenuFactory,
          ITreeNodeFactory treeNodeFactory)
          : base(view, context, objectBaseMapper, treeNodeFactory)
       {
@@ -68,10 +69,7 @@ namespace MoBi.Presentation.Presenter
 
       public object Subject => _spatialStructure;
 
-      public void Edit(object objectToEdit)
-      {
-         Edit(objectToEdit.DowncastTo<SpatialStructure>());
-      }
+      public void Edit(object objectToEdit) => Edit(objectToEdit.DowncastTo<SpatialStructure>());
 
       protected override void RaiseFavoritesSelectedEvent()
       {
@@ -91,20 +89,28 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(AddedEvent eventToHandle)
       {
-         if (_spatialStructure == null) return;
+         if (_spatialStructure == null)
+            return;
+
          var entity = eventToHandle.AddedObject as IContainer;
 
-         if (entity.IsAnImplementationOf<IDistributedParameter>()) return;
-         if (entity == null) return;
+         if (entity == null)
+            return;
+
+         if (entity.IsAnImplementationOf<IDistributedParameter>())
+            return;
+
 
          var dto = _objectBaseMapper.MapFrom(entity);
-         if (_spatialStructure.Any(tc => tc.GetAllContainersAndSelf<IContainer>().Contains(entity.ParentContainer)))
-         {
+
+         if (entityIsInSpatialStructure(entity))
             _view.Add(dto, _objectBaseMapper.MapFrom(entity.ParentContainer));
-         }
          else
          {
-            if (eventToHandle.Parent != _spatialStructure) return;
+            //the object that has changed does not belong into the spatial structure. Nothing do to
+            if (!Equals(eventToHandle.Parent, _spatialStructure))
+               return;
+
             _view.AddRoot(dto);
          }
       }
@@ -112,28 +118,35 @@ namespace MoBi.Presentation.Presenter
       public void Handle(RemovedEvent eventToHandle)
       {
          if (_spatialStructure == null) return;
-         eventToHandle.RemovedObjects.OfType<IEntity>().Each(_view.Remove);
+         eventToHandle.RemovedObjects.OfType<IEntity>().Each(remove);
       }
 
-      public void Select(IEntity entity)
+      public void Select(IEntity entity) => _view.Select(entity);
+
+      public void Refresh(IEntity entity)
       {
-         _view.Select(entity.Id);
+         var dto = _objectBaseMapper.MapFrom(entity);
+         _view.Refresh(dto);
       }
+
+      private void remove(IEntity entity) => _view.Remove(entity);
+
+      private bool entityIsInSpatialStructure(IEntity entity) => _spatialStructure.TopContainers.Contains(entity.RootContainer);
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         if (eventToHandle.Sender == this) 
+         if (eventToHandle.Sender == this)
             return;
 
          var entity = eventToHandle.ObjectBase as IEntity;
-         if (entity == null || _spatialStructure == null) 
+         if (entity == null || _spatialStructure == null)
             return;
 
-         if (!_spatialStructure.TopContainers.Contains(entity.RootContainer)) 
+         if (!entityIsInSpatialStructure(entity))
             return;
 
          var entityToSelect = entity.IsAnImplementationOf<IParameter>() ? entity.ParentContainer : entity;
-         _view.Select(entityToSelect.Id);
+         _view.Select(entityToSelect);
       }
    }
 }

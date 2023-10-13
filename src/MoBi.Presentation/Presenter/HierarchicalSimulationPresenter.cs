@@ -138,7 +138,7 @@ namespace MoBi.Presentation.Presenter
             return;
 
          var entityToSelect = entity.IsAnImplementationOf<IParameter>() ? entity.ParentContainer : entity;
-         _view.Select(entityToSelect.Id);
+         _view.Select(entityToSelect);
       }
 
       private bool selectedEntityIsInSimulation(IEntity entity)

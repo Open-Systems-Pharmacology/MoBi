@@ -6,12 +6,13 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface ISelectNeighborPathPresenter : IPresenter<ISelectNeighborPathView>
    {
-      void Init(SpatialStructure spatialStructure, string label);
+      void Init(SpatialStructure spatialStructure, string label, string defaultSelection = null);
       ObjectPath NeighborPath { get; }
    }
 
@@ -43,11 +44,13 @@ namespace MoBi.Presentation.Presenter
          if (container.Mode != ContainerMode.Physical) 
             return;
 
-         _selectedPathDTO.Path = containerObjectPath.PathAsString;
+         var parentPath = container.RootContainer.ParentPath?.Clone<ObjectPath>() ?? new ObjectPath();
+         containerObjectPath.Each(parentPath.Add);
+         _selectedPathDTO.Path = parentPath.PathAsString;
          ViewChanged();
       }
 
-      public void Init(SpatialStructure spatialStructure, string label)
+      public void Init(SpatialStructure spatialStructure, string label, string defaultSelection = null)
       {
          _view.Label = label;
          var organism = spatialStructure.TopContainers.Find(x => x.ContainerType == ContainerType.Organism) ?? spatialStructure.TopContainers.FirstOrDefault();
@@ -57,6 +60,7 @@ namespace MoBi.Presentation.Presenter
             return;
 
          _selectContainerInTreePresenter.InitTreeStructure(new[] {_containerDTOMapper.MapFrom(organism)});
+         _selectedPathDTO.Path = defaultSelection ?? string.Empty;
       }
 
       public ObjectPath NeighborPath => new ObjectPath(_selectedPathDTO.Path.ToPathArray());

@@ -126,11 +126,21 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should__update_the_path_if_the_selected_entity_is_a_physical_container()
+      public void should_update_the_path_if_the_selected_entity_is_a_physical_container()
       {
          _selectedPathDTO.Path = "A|B";
          _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithMode(ContainerMode.Physical), new ObjectPath("NEW|PATH")));
          _selectedPathDTO.Path.ShouldBeEqualTo("NEW|PATH");
+      }
+
+      [Observation]
+      public void should_update_the_path_and_add_the_parent_path_of_the_root_container_if_one_is_defined()
+      {
+         _selectedPathDTO.Path = "A|B";
+         var parentContainer = new Container {ParentPath = new ObjectPath("ROOT", "PARENT")};
+         var container = new Container().WithMode(ContainerMode.Physical).Under(parentContainer);
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container, new ObjectPath("NEW|PATH")));
+         _selectedPathDTO.Path.ShouldBeEqualTo("ROOT|PARENT|NEW|PATH");
       }
    }
 

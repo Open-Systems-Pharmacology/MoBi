@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Nodes
 {
@@ -23,10 +23,13 @@ namespace MoBi.Presentation.Nodes
          {
             if (!_childrenLoaded)
             {
+               //remove all children before adding new ones
+               DeleteChildren();
                var children = GetChildren(Tag);
                children.Each(AddChild);
                _childrenLoaded = true;
             }
+
             return base.Children;
          }
       }
