@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditNeighborhoodBuilderPresenter : IPresenter<IEditNeighborhoodBuilderView>, ICanEditPropertiesPresenter, IPresenterWithFormulaCache, IEditPresenterWithParameters<NeighborhoodBuilder>
    {
-      void SetInitialName(string initialName);
+      void SetName(string initialName);
       void SetFirstNeighborPath(string neighborPath);
       void SetSecondNeighborPath(string neighborPath);
       void SelectFirstNeighbor();
@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Presenter
          Edit(_neighborhoodBuilder, _existingObjectsInParent);
       }
 
-      public void SetInitialName(string initialName)
+      public void SetName(string initialName)
       {
          SetPropertyValueFromView(_neighborhoodBuilder.PropertyName(x => x.Name), initialName, string.Empty);
          _neighborhoodBuilderDTO.Name = initialName;

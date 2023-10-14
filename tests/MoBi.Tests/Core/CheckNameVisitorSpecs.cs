@@ -18,6 +18,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core
@@ -94,7 +95,7 @@ namespace MoBi.Core
          base.Context();
          _formula = new ExplicitFormula();
          _formula.Name = _changedName;
-         _path = new FormulaUsablePath(new[] { "A", "B", _changedName }) { Alias = _changedName };
+         _path = new FormulaUsablePath(new[] {"A", "B", _changedName}) {Alias = _changedName};
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_changedName)).Returns(_changedName);
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_newName)).Returns(_newName);
          _formula.AddObjectPath(_path);
@@ -149,23 +150,23 @@ namespace MoBi.Core
       {
          base.Context();
          _module = new Module();
-         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock { Name = _changedName };
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock {Name = _changedName};
          _initialCondition = new InitialCondition();
-         _path = new ObjectPath(new[] { "A", "B", _changedName });
+         _path = new ObjectPath(new[] {"A", "B", _changedName});
          _initialCondition.Path = _path;
          _initialConditionsBuildingBlock.Add(_initialCondition);
 
          _module.Add(_initialConditionsBuildingBlock);
 
          _initialCondition2 = new InitialCondition();
-         _path = new ObjectPath(new[] { "A", _changedName, "B" });
+         _path = new ObjectPath(new[] {"A", _changedName, "B"});
          _initialCondition2.Path = _path;
          _initialConditionsBuildingBlock.Add(_initialCondition2);
       }
 
       protected override void Because()
       {
-         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module, _changedName);
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _initialConditionsBuildingBlock, _changedName);
       }
 
       [Observation]
@@ -215,11 +216,11 @@ namespace MoBi.Core
             Name = _changedName
          };
          _parameterValue = new ParameterValue();
-         _path = new ObjectPath(new[] { "A", "B", _changedName });
+         _path = new ObjectPath(new[] {"A", "B", _changedName});
          _parameterValue.Path = _path;
          _parameterValuesBuildingBlock.Add(_parameterValue);
          _parameterValue2 = new ParameterValue();
-         _path = new ObjectPath(new[] { "A", _changedName, "B" });
+         _path = new ObjectPath(new[] {"A", _changedName, "B"});
          _parameterValue2.Path = _path;
          _parameterValuesBuildingBlock.Add(_parameterValue2);
          _module.Add(_parameterValuesBuildingBlock);
@@ -227,7 +228,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module, _changedName);
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _parameterValuesBuildingBlock, _changedName);
       }
 
       [Observation]
@@ -276,9 +277,9 @@ namespace MoBi.Core
          _changedName = _changedObject.Name;
          _oldAlias = "Name_really_old";
          _theFormula = new ExplicitFormula(String.Format("k_{0}*{0}", _oldAlias));
-         _formulaUsablePathNotToChange = new FormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "BLA", String.Format("k_{0}", _oldAlias) }) { Alias = String.Format("k_{0}", _oldAlias) };
+         _formulaUsablePathNotToChange = new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, "BLA", String.Format("k_{0}", _oldAlias)}) {Alias = String.Format("k_{0}", _oldAlias)};
          _theFormula.AddObjectPath(_formulaUsablePathNotToChange);
-         _formulaUsablePathToChange = new FormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, _changedName }) { Alias = _oldAlias };
+         _formulaUsablePathToChange = new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, _changedName}) {Alias = _oldAlias};
          _theFormula.AddObjectPath(_formulaUsablePathToChange);
          _theFormula.Name = "F1";
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_changedName)).Returns(_oldAlias);
@@ -351,13 +352,13 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         var transportbuilder = new TransportBuilder().WithName("Trans");
-         transportbuilder.AddMoleculeNameToExclude(_oldName);
-         var transportbuilder2 = new TransportBuilder().WithName("Trans2");
-         transportbuilder2.AddMoleculeName(_oldName);
+         var transportBuilder = new TransportBuilder().WithName("Trans");
+         transportBuilder.AddMoleculeNameToExclude(_oldName);
+         var transportBuilder2 = new TransportBuilder().WithName("Trans2");
+         transportBuilder2.AddMoleculeName(_oldName);
          _test = new PassiveTransportBuildingBlock().WithName("Test");
-         _test.Add(transportbuilder);
-         _test.Add(transportbuilder2);
+         _test.Add(transportBuilder);
+         _test.Add(transportBuilder2);
       }
 
       protected override void Because()
@@ -397,6 +398,50 @@ namespace MoBi.Core
       public void should_return_changes_for_output_selection()
       {
          _resultChanges.Count.ShouldBeEqualTo(1);
+      }
+   }
+
+   internal class When_checking_for_dependent_changes_in_a_container_referenced_in_neighborhood_name_and_neighbors : concern_for_CheckNameVisitor
+   {
+      private IEnumerable<IStringChange> _resultChanges;
+      private SpatialStructure _spatialStructure;
+      private NeighborhoodBuilder _neighborhood;
+      private Container _container;
+
+      protected override void Context()
+      {
+         base.Context();
+         _spatialStructure = new SpatialStructure
+         {
+            NeighborhoodsContainer = new Container()
+         };
+
+         _container = new Container().WithName("Muscle");
+         _neighborhood = new NeighborhoodBuilder().WithName("Arterial_blood_to_Muscle_cell");
+         _neighborhood.FirstNeighborPath = new ObjectPath("Organism", "Muscle", "BloodCells");
+         _neighborhood.SecondNeighborPath = new ObjectPath("Organism", "ArterialBlood", "BloodCells");
+         _spatialStructure.AddTopContainer(_container);
+         _spatialStructure.AddNeighborhood(_neighborhood);
+      }
+
+      protected override void Because()
+      {
+         _resultChanges = sut.GetPossibleChangesFrom(_container, "Tumor", _spatialStructure, _container.Name);
+      }
+
+      [Observation]
+      public void should_return_the_change_for_the_neighborhood_name_and_neighbors()
+      {
+         _resultChanges.Count().ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void the_command_should_be_the_one_expected()
+      {
+         //Executing so that we can check the results
+         _resultChanges.Each(c => c.ChangeCommand.Execute(_context));
+         _neighborhood.Name.ShouldBeEqualTo("Arterial_blood_to_Tumor_cell");
+         _neighborhood.FirstNeighborPath.ToPathString().ShouldBeEqualTo("Organism|Tumor|BloodCells");
       }
    }
 
@@ -441,8 +486,8 @@ namespace MoBi.Core
          _simulationSettings.AddChartTemplate(_curveChartTemplate);
          _curveTemplate = new CurveTemplate
          {
-            xData = { Path = $"A|B|{_oldName}" },
-            yData = { Path = $"C|D|{_oldName}" },
+            xData = {Path = $"A|B|{_oldName}"},
+            yData = {Path = $"C|D|{_oldName}"},
          };
          _curveChartTemplate.Curves.Add(_curveTemplate);
 
@@ -483,8 +528,8 @@ namespace MoBi.Core
          _simulationSettings.AddChartTemplate(_curveChartTemplate);
          _curveChartTemplate.Curves.Add(new CurveTemplate
          {
-            xData = { Path = "A|B|D" },
-            yData = { Path = "C|D|E" }
+            xData = {Path = "A|B|D"},
+            yData = {Path = "C|D|E"}
          });
       }
 
@@ -505,21 +550,29 @@ namespace MoBi.Core
       private IReadOnlyList<IStringChange> _resultChanges;
       private readonly string _oldName = "OldName";
       private ApplicationBuilder _applicationBuilder;
+      private EventGroupBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _applicationBuilder = new ApplicationBuilder();
-         _applicationBuilder.SourceCriteria = Create.Criteria(x => x.With(_oldName));
-         var appTransport = new TransportBuilder();
-         appTransport.SourceCriteria = Create.Criteria(x => x.With(_oldName));
-         appTransport.TargetCriteria = Create.Criteria(x => x.With(_oldName));
+         _buildingBlock = new EventGroupBuildingBlock();
+         _applicationBuilder = new ApplicationBuilder
+         {
+            SourceCriteria = Create.Criteria(x => x.With(_oldName))
+         };
+         var appTransport = new TransportBuilder
+         {
+            SourceCriteria = Create.Criteria(x => x.With(_oldName)),
+            TargetCriteria = Create.Criteria(x => x.With(_oldName))
+         };
          _applicationBuilder.AddTransport(appTransport);
+
+         _buildingBlock.Add(_applicationBuilder);
       }
 
       protected override void Because()
       {
-         _resultChanges = sut.GetPossibleChangesFrom(A.Fake<IObjectBase>(), "NewName", _applicationBuilder, _oldName);
+         _resultChanges = sut.GetPossibleChangesFrom(_applicationBuilder, "NewName", _buildingBlock, _oldName);
       }
 
       [Observation]
