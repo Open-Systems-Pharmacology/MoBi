@@ -7,7 +7,13 @@ namespace MoBi.Core.Domain
 {
    public class StringChanges : IEnumerable<IStringChange>
    {
+      private readonly IBuildingBlock _buildingBlock;
       private readonly IList<IStringChange> _list = new List<IStringChange>();
+
+      public StringChanges(IBuildingBlock buildingBlock)
+      {
+         _buildingBlock = buildingBlock;
+      }
 
       public IEnumerator<IStringChange> GetEnumerator()
       {
@@ -19,22 +25,19 @@ namespace MoBi.Core.Domain
          return GetEnumerator();
       }
 
-      public void Add<T>(T entitiyToEdit, IBuildingBlock containingBuildingBlock, IMoBiCommand changeCommand, string description)
+      public void Add<T>(T entityToEdit, IMoBiCommand changeCommand, string description)
       {
          _list.Add(new StringChange<T>
-         {
-            EntityToEdit = entitiyToEdit,
-            ChangeCommand = changeCommand,
-            ChangeDescription = description,
-            BuildingBlock = containingBuildingBlock
-         }
-            );
+            {
+               EntityToEdit = entityToEdit,
+               ChangeCommand = changeCommand,
+               ChangeDescription = description,
+               BuildingBlock = _buildingBlock
+            }
+         );
       }
 
-      public void Add<T>(T entitiyToEdit, IBuildingBlock buildingBlock, IMoBiCommand changeCommand)
-      {
-         Add(entitiyToEdit, buildingBlock, changeCommand, changeCommand.Description);
-      }
+      public void Add<T>(T entityToEdit, IMoBiCommand changeCommand) => Add(entityToEdit, changeCommand, changeCommand.Description);
 
       public void Clear()
       {

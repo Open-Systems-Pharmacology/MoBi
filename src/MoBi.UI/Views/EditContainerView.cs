@@ -81,7 +81,7 @@ namespace MoBi.UI.Views
 
       private void onNameSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)
       {
-         OnEvent(() => _presenter.SetInitialName(e.NewValue));
+         OnEvent(() => _presenter.SetName(e.NewValue));
       }
 
       private void onParentPathSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)

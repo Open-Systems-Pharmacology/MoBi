@@ -137,7 +137,7 @@ namespace MoBi.Presentation.Tasks.Edit
             if (renamedObject.IsAnImplementationOf<IBuildingBlock>())
                selectRenamingPresenter.SetCheckedStateForAll(checkedState: false);
 
-            if (!selectRenamingPresenter.SelectRenamings())
+            if (!selectRenamingPresenter.Show())
                return false;
 
             var commands = selectRenamingPresenter.SelectedCommands();

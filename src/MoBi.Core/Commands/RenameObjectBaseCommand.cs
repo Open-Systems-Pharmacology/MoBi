@@ -1,4 +1,3 @@
-using System;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -7,7 +6,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -52,7 +50,7 @@ namespace MoBi.Core.Commands
          OldName = _objectBase.Name;
          _objectBase.Name = _newName;
          var task = context.Resolve<IRenameInSimulationTask>();
-         
+
          switch (_objectBase)
          {
             case IBuildingBlock buildingBlock:

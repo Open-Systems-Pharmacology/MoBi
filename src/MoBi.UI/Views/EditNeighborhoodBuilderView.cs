@@ -42,7 +42,7 @@ namespace MoBi.UI.Views
 
          _screenBinder.Bind(dto => dto.Name)
             .To(tbName)
-            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetInitialName(e.NewValue));
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetName(e.NewValue));
          ;
 
          _screenBinder.Bind(dto => dto.FirstNeighborPath)
