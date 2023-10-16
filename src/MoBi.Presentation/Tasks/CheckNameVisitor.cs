@@ -159,7 +159,7 @@ namespace MoBi.Presentation.Tasks
       public void Visit(NeighborhoodBuilder neighborhoodBuilder)
       {
          checkObjectBase(neighborhoodBuilder);
-         //If not renaming a container or we are renaming a neighborhood builder, we exist
+         //If not renaming a container or we are renaming a neighborhood builder, we exit
          if (!(_objectToRename is IContainer) || !(_buildingBlock is SpatialStructure spatialStructure) || ReferenceEquals(neighborhoodBuilder, _objectToRename))
             return;
 
