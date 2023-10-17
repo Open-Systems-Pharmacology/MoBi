@@ -15,8 +15,7 @@ namespace MoBi.Presentation.Presenter
       /// <summary>
       /// Opens a dialog where the user will select an IndividualBuildingBlock from the project and a file path to export
       /// </summary>
-      /// <param name="name"></param>
-      void GetPathAndIndividualForExport(string name);
+      void GetPathAndIndividualForExport(IContainer container);
 
       /// <summary>
       /// Returns a list of all IndividualBuildingBlocks in the project
@@ -44,17 +43,22 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IEditTaskForContainer _editTaskForContainer;
+      private readonly IObjectPathFactory _objectPathFactory;
       private IndividualAndFilePathDTO _dto;
 
-      public SelectFolderAndIndividualFromProjectPresenter(ISelectFolderAndIndividualFromProjectView view, IBuildingBlockRepository buildingBlockRepository, IEditTaskForContainer editTaskForContainer) : base(view)
+      public SelectFolderAndIndividualFromProjectPresenter(ISelectFolderAndIndividualFromProjectView view, IBuildingBlockRepository buildingBlockRepository, IEditTaskForContainer editTaskForContainer, IObjectPathFactory objectPathFactory) : base(view)
       {
          _buildingBlockRepository = buildingBlockRepository;
          _editTaskForContainer = editTaskForContainer;
+         _objectPathFactory = objectPathFactory;
       }
 
-      public void GetPathAndIndividualForExport(string name)
+      public void GetPathAndIndividualForExport(IContainer container)
       {
-         _dto = new IndividualAndFilePathDTO().WithName(name);
+         _dto = new IndividualAndFilePathDTO
+         {
+            ContainerPath = _objectPathFactory.CreateAbsoluteObjectPath(container)
+         }.WithName(container.Name);
          _view.BindTo(_dto);
          _view.Display();
          

@@ -25,7 +25,6 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         descriptionLabel.Text = ExportContainerDescription;
          layoutControlItemSelectIndividual.Text = Individual;
          layoutControlItemSelectFilePath.Text = Captions.FilePath;
          Caption = SelectIndividualAndPathForContainerExport;
@@ -48,6 +47,7 @@ namespace MoBi.UI.Views
 
       public void BindTo(IndividualAndFilePathDTO dto)
       {
+         descriptionLabel.Text = ExportContainerDescription(dto.ContainerPath.PathAsString);
          _screenBinder.BindToSource(dto);
       }
 

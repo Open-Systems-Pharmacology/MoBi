@@ -13,6 +13,7 @@ namespace MoBi.Presentation.DTO
       public string FilePath { get; set; }
       public IndividualBuildingBlock IndividualBuildingBlock { get; set; }
       public string Name { get; set; }
+      public ObjectPath ContainerPath { get; set; }
 
       public IndividualAndFilePathDTO()
       {

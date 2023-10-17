@@ -70,7 +70,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
          using (var presenter = _applicationController.Start<ISelectFolderAndIndividualFromProjectPresenter>())
          {
-            presenter.GetPathAndIndividualForExport(container.Name);
+            presenter.GetPathAndIndividualForExport(container);
             filePath = presenter.SelectedFilePath;
             individual = presenter.SelectedIndividual;
          }
