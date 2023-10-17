@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Presenter
    {
       EditParameterMode EditMode { set; }
       bool ReadOnly { set; }
-      void SetInitialName(string initialName);
+      void SetName(string name);
       void SetParentPath(string parentPath);
       void UpdateParentPath();
       string ContainerModeDisplayFor(ContainerMode mode);
@@ -39,7 +39,6 @@ namespace MoBi.Presentation.Presenter
       private readonly IContainerToContainerDTOMapper _containerMapper;
       private readonly IEditTaskForContainer _editTasks;
       private ContainerDTO _containerDTO;
-      private readonly IMoBiContext _context;
       private readonly ITagsPresenter _tagsPresenter;
       private readonly IApplicationController _applicationController;
 
@@ -54,7 +53,6 @@ namespace MoBi.Presentation.Presenter
          : base(view, editParametersInContainerPresenter, context, editTasks)
       {
          _containerMapper = containerMapper;
-         _context = context;
          _tagsPresenter = tagsPresenter;
          _applicationController = applicationController;
          _editTasks = editTasks;
@@ -150,10 +148,10 @@ namespace MoBi.Presentation.Presenter
          set => _view.ReadOnly = value;
       }
 
-      public void SetInitialName(string initialName)
+      public void SetName(string name)
       {
-         SetPropertyValueFromView(_container.PropertyName(x => x.Name), initialName, string.Empty);
-         _containerDTO.Name = initialName;
+         SetPropertyValueFromView(_container.PropertyName(x => x.Name), name, string.Empty);
+         _containerDTO.Name = name;
       }
    }
 }

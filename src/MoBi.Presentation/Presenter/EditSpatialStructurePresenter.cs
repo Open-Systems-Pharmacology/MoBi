@@ -17,7 +17,8 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditSpatialStructurePresenter : ISingleStartPresenter<MoBiSpatialStructure>,
       IDiagramBuildingBlockPresenter,
-      IListener<RemovedEvent>
+      IListener<RemovedEvent>,
+      IListener<NeighborhoodChangedEvent>
    {
       void LoadDiagram();
    }
@@ -173,10 +174,7 @@ namespace MoBi.Presentation.Presenter
          setInitialView();
       }
 
-      private bool shouldHandleRemoved(IObjectBase objectBase)
-      {
-         return Equals(objectBase, _editContainerPresenter.Subject);
-      }
+      private bool shouldHandleRemoved(IObjectBase objectBase) => Equals(objectBase, _editContainerPresenter.Subject);
 
       public void LoadDiagram()
       {
@@ -186,5 +184,19 @@ namespace MoBi.Presentation.Presenter
       }
 
       protected override void ShowView(IView viewToShow) => _view.SetEditView(viewToShow);
+
+      public void Handle(NeighborhoodChangedEvent neighborhoodChangedEvent)
+      {
+         if (!canHandleNeighborhoodChange(neighborhoodChangedEvent))
+            return;
+
+         //The neighborhood has changed. We need to refresh the presenter to reflect changes 
+         _hierarchicalSpatialStructurePresenter.Refresh(neighborhoodChangedEvent.NeighborhoodBuilder);
+      }
+
+      private bool canHandleNeighborhoodChange(NeighborhoodChangedEvent neighborhoodChangedEvent)
+      {
+         return _spatialStructure.Neighborhoods.Contains(neighborhoodChangedEvent.NeighborhoodBuilder);
+      }
    }
 }

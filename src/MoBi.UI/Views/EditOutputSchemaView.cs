@@ -1,23 +1,21 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -35,7 +33,7 @@ namespace MoBi.UI.Views
 
       public override void InitializeBinding()
       {
-         _gridViewBinder = new GridViewBinder<OutputIntervalDTO>(gridViewIntervals) {BindingMode = BindingMode.OneWay, ValidationMode = ValidationMode.LeavingRow};
+         _gridViewBinder = new GridViewBinder<OutputIntervalDTO>(gridViewIntervals) { BindingMode = BindingMode.OneWay, ValidationMode = ValidationMode.LeavingRow };
 
          _gridViewBinder.Bind(dto => dto.StartTime)
             .WithFormat(x => x.StartTimeParameter.ParameterFormatter())
@@ -62,6 +60,8 @@ namespace MoBi.UI.Views
 
          _comboBoxUnit.ParameterUnitSet += setParameterUnit;
          gridViewIntervals.HiddenEditor += (o, e) => { _comboBoxUnit.Visible = false; };
+
+         btnAddOutputInterval.Click += (o, e) => OnEvent(_presenter.AddOutputInterval);
       }
 
       private void setParameterValue(IParameterDTO parameterDTO, double newValue)
@@ -83,11 +83,13 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          layoutGroupIntervals.Text = AppConstants.Captions.OutputIntervals;
          Caption = AppConstants.Captions.OutputIntervals;
+         btnAddOutputInterval.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddInterval);
+         layoutControlItemAddInterval.AdjustButtonSize(layoutControl);
       }
 
       private RepositoryItem createAddRemoveButtons()
       {
-         var buttonRepository = new UxRepositoryItemButtonEdit {TextEditStyle = TextEditStyles.HideTextEditor};
+         var buttonRepository = new UxRepositoryItemButtonEdit { TextEditStyle = TextEditStyles.HideTextEditor };
          buttonRepository.Buttons[0].Kind = ButtonPredefines.Plus;
          buttonRepository.AddButton(ButtonPredefines.Delete);
          buttonRepository.ButtonClick += (o, e) => this.DoWithinExceptionHandler(() => onButtonClick(e));
@@ -102,15 +104,9 @@ namespace MoBi.UI.Views
             _presenter.RemoveOutputInterval(_gridViewBinder.FocusedElement);
       }
 
-      public void AttachPresenter(IEditOutputSchemaPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public void AttachPresenter(IEditOutputSchemaPresenter presenter) => _presenter = presenter;
 
-      public void Show(IEnumerable<OutputIntervalDTO> outputIntervalInfos)
-      {
-         _gridViewBinder.BindToSource(outputIntervalInfos);
-      }
+      public void Show(IEnumerable<OutputIntervalDTO> outputIntervalInfos) => _gridViewBinder.BindToSource(outputIntervalInfos);
 
       public bool ShowGroupCaption
       {
@@ -121,9 +117,6 @@ namespace MoBi.UI.Views
          }
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return _presenter.Icon; }
-      }
+      public override ApplicationIcon ApplicationIcon => _presenter.Icon;
    }
 }

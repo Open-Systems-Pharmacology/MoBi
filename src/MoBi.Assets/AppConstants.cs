@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using DevExpress.Utils.Serializing;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -421,6 +422,11 @@ namespace MoBi.Assets
          public static string ChangeContainerPathElementDescription(string name, string newElement, string oldElement)
          {
             return $"Replace '{oldElement}' with '{newElement}' in container path of application molecule builder:'{name}'";
+         }
+
+         public static string ChangeNeighborPathDescription(string name, string newPath, string oldPath, string type)
+         {
+            return $"Change {type.ToLower()} path from '{oldPath}' to '{newPath}' in neighborhood '{name}'";
          }
 
          public static string AddMany(string objectName)
@@ -1576,6 +1582,7 @@ namespace MoBi.Assets
          public static readonly string ExportContainerDescription = "When exporting a container, you must select an individual and path for the export";
          public static readonly string SelectIndividualAndPathForContainerExport = "Select an individual and path for container export";
 
+         public static readonly string AddInterval = "Add Interval";
          public static string CouldNotResolveSource(string sourceType) => $"{sourceType} source not defined";
          public static readonly string CurveName = "Curve Name";
          public static readonly string XDataPath = "X-Path";

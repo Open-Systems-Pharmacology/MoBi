@@ -46,6 +46,16 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class NeighborhoodChangedEvent
+   {
+      public NeighborhoodBuilder NeighborhoodBuilder { get; }
+
+      public NeighborhoodChangedEvent(NeighborhoodBuilder neighborhoodBuilder)
+      {
+         NeighborhoodBuilder = neighborhoodBuilder;
+      }
+   }
+
    public class DefaultSimulationSettingsUpdatedEvent
    {
       public SimulationSettings NewSimulationSettings { get; }

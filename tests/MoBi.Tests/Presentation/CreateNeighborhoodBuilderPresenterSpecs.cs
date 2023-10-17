@@ -47,8 +47,8 @@ namespace MoBi.Presentation
       [Observation]
       public void should_initialize_the_first_and_second_neighbor_presenter_with_the_spatial_structure()
       {
-         A.CallTo(() => _firstNeighborPresenter.Init(_spatialStructure, AppConstants.Captions.FirstNeighbor)).MustHaveHappened();
-         A.CallTo(() => _secondNeighborPresenter.Init(_spatialStructure, AppConstants.Captions.SecondNeighbor)).MustHaveHappened();
+         A.CallTo(() => _firstNeighborPresenter.Init(_spatialStructure, AppConstants.Captions.FirstNeighbor, null)).MustHaveHappened();
+         A.CallTo(() => _secondNeighborPresenter.Init(_spatialStructure, AppConstants.Captions.SecondNeighbor, null)).MustHaveHappened();
       }
 
       [Observation]

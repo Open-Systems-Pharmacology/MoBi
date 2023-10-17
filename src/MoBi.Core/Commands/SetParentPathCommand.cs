@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -32,15 +33,14 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _container.ParentPath = _newParentPath;
-         updateObjectPathsInSpatialStructure();
+         updateObjectPathsInSpatialStructure(context);
          Description = AppConstants.Commands.UpdateParentPath(_container.EntityPath(), (_newParentPath ?? new ObjectPath()).ToPathString());
       }
 
-      private void updateObjectPathsInSpatialStructure()
+      private void updateObjectPathsInSpatialStructure(IMoBiContext context)
       {
          //should probably never be null
-         var spatialStructure = _buildingBlock as SpatialStructure;
-         if (spatialStructure == null)
+         if (!(_buildingBlock is SpatialStructure spatialStructure))
             return;
 
          var oldContainerPathString = createContainerPath(_oldParentPath);
@@ -56,18 +56,22 @@ namespace MoBi.Core.Commands
          }
 
          //this takes care of all parameters in the structure as well as in the neighborhoods
-         var allReferencingPaths = spatialStructure.TopContainers
+         spatialStructure.TopContainers
             .Union(spatialStructure.Neighborhoods)
             .SelectMany(x => x.GetPathsReferencing(referencesPath))
-            .Select(x => x.path);
-
-         allReferencingPaths.Each(updatePaths);
+            .Select(x => x.path)
+            .Each(updatePaths);
 
          var allReferencingPathsInNeighborhood = spatialStructure.Neighborhoods
-            .SelectMany(x => new[] {x.FirstNeighborPath, x.SecondNeighborPath})
-            .Where(referencesPath);
+            .SelectMany(x => new[] {new {neighborhood = x, neighbor = x.FirstNeighborPath}, new {neighborhood = x, neighbor = x.SecondNeighborPath}})
+            .Where(x => referencesPath(x.neighbor));
 
-         allReferencingPathsInNeighborhood.Each(updatePaths);
+
+         allReferencingPathsInNeighborhood.Each(x =>
+         {
+            updatePaths(x.neighbor);
+            context.PublishEvent(new NeighborhoodChangedEvent(x.neighborhood));
+         });
       }
 
       private string createContainerPath(ObjectPath parentPath)

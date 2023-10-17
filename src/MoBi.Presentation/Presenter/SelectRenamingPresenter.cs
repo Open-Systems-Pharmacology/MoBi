@@ -13,18 +13,18 @@ using OSPSuite.Presentation.Presenters;
 namespace MoBi.Presentation.Presenter
 {
    /// <summary>
-   ///    Presenter managing the selecting of dependant renames for an renamed entity.
+   ///    Presenter managing the selecting of dependent renames for an renamed entity.
    /// </summary>
    public interface ISelectRenamingPresenter : IDisposablePresenter
    {
       /// <summary>
-      ///    Initializes the presenter with possible renamings that could be selected.
+      ///    Initializes the presenter with possible renaming that could be selected.
       /// </summary>
-      /// <param name="possibleRenamings">The possible renamings.</param>
-      void InitializeWith(IEnumerable<IStringChange> possibleRenamings);
+      /// <param name="possibleEntitiesToRename">The possible renaming.</param>
+      void InitializeWith(IReadOnlyList<IStringChange> possibleEntitiesToRename);
 
       /// <summary>
-      ///    Gets the commands for the selected renamings.
+      ///    Gets the commands for the selected entities to rename.
       /// </summary>
       /// <returns></returns>
       IReadOnlyList<IMoBiCommand> SelectedCommands();
@@ -33,9 +33,9 @@ namespace MoBi.Presentation.Presenter
       ///    Starts the Select Renaming View.
       /// </summary>
       /// <returns>
-      ///    <c>true</c> if renamings are accepted, <c>false</c> id renaming is canceled
+      ///    <c>true</c> if the entities to rename are accepted, <c>false</c> if the operation canceled
       /// </returns>
-      bool SelectRenamings();
+      bool Show();
 
       /// <summary>
       /// Sets the default checked/unchecked state for all possible renames
@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IStringChangeToSelectDTOStringChangeMapper _stringChangeToSelectDTOStringChangeMapper;
       private readonly IUserSettings _userSettings;
-      private IEnumerable<SelectStringChangeDTO> _dtos;
+      private IReadOnlyList<SelectStringChangeDTO> _dtos;
 
       public SelectRenamingPresenter(ISelectRenamingView view, IUserSettings userSettings, IStringChangeToSelectDTOStringChangeMapper stringChangeToSelectDTOStringChangeMapper) : base(view)
       {
@@ -56,11 +56,11 @@ namespace MoBi.Presentation.Presenter
          _userSettings = userSettings;
       }
 
-      public void InitializeWith(IEnumerable<IStringChange> possibleRenamings)
+      public void InitializeWith(IReadOnlyList<IStringChange> possibleEntitiesToRename)
       {
          var renameDependentObjectsDefault = _userSettings.RenameDependentObjectsDefault;
          _stringChangeToSelectDTOStringChangeMapper.Initialize(renameDependentObjectsDefault);
-         _dtos = possibleRenamings.MapAllUsing(_stringChangeToSelectDTOStringChangeMapper);
+         _dtos = possibleEntitiesToRename.MapAllUsing(_stringChangeToSelectDTOStringChangeMapper);
          SetCheckedStateForAll(renameDependentObjectsDefault);
          _view.SetData(_dtos, renameDependentObjectsDefault);
       }
@@ -74,14 +74,13 @@ namespace MoBi.Presentation.Presenter
          return commands;
       }
 
-      public bool SelectRenamings()
+      public bool Show()
       {
          _view.Display();
          var accepted = !_view.Canceled;
-         if (accepted)
-         {
+         if (accepted) 
             _userSettings.RenameDependentObjectsDefault = _view.RenameDefault;
-         }
+
          return accepted;
       }
 

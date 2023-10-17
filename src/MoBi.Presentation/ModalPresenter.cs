@@ -48,8 +48,8 @@ namespace MoBi.Presentation
 
       public string Text
       {
-         get { return _view.Caption; }
-         set { _view.Caption = value; }
+         get => _view.Caption;
+         set => _view.Caption = value;
       }
 
       public override bool CanClose
