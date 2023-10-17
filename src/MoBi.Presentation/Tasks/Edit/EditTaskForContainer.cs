@@ -94,14 +94,9 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var tmpSpatialStructure = (MoBiSpatialStructure)_spatialStructureFactory.Create();
 
-         // make a backup of the parent and reset that after as there is a side effect
-         // of removing the reference to parent container.
-         var originalParent = container.ParentContainer;
-         var originalParentPath = container.ParentPath;
-         var parentPath = originalParentPath ?? _objectPathFactory.CreateAbsoluteObjectPath(originalParent);
-
          var clonedEntity = _cloneManager.Clone(container, tmpSpatialStructure.FormulaCache);
-         clonedEntity.ParentPath = parentPath;
+         
+         clonedEntity.ParentPath = parentPathFrom(container);
 
          tmpSpatialStructure.AddTopContainer(clonedEntity);
 
@@ -117,6 +112,11 @@ namespace MoBi.Presentation.Tasks.Edit
          }
 
          _interactionTask.Save(tmpSpatialStructure, fileName);
+      }
+
+      private ObjectPath parentPathFrom(IContainer container)
+      {
+         return container.ParentPath ?? (container.ParentContainer == null ? new ObjectPath() : _objectPathFactory.CreateAbsoluteObjectPath(container.ParentContainer));
       }
 
       private void addIndividualParametersToContainers(IndividualBuildingBlock individual, IContainer entityToSerialize)
@@ -140,6 +140,8 @@ namespace MoBi.Presentation.Tasks.Edit
       private void addIndividualParameterToContainer(IndividualParameter individualParameter, IContainer container)
       {
          var parameter = _individualParameterToParameterMapper.MapFrom(individualParameter);
+         if (container.ContainsName(parameter.Name))
+            container.RemoveChild(container.FindByName(parameter.Name));
          container.Add(parameter);
       }
 

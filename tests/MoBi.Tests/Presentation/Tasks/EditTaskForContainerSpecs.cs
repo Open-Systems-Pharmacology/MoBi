@@ -71,11 +71,12 @@ namespace MoBi.Presentation.Tasks
 
    public class When_saving_a_container_with_individual_to_pkml : concern_for_EditTaskForContainer
    {
-      private IContainer _clonedEntity;
+      private IContainer _clonedContainer;
       private Container _parentContainer;
       private MoBiSpatialStructure _tmpSpatialStructure;
       private IndividualBuildingBlock _individual;
-      private IContainer _entityToSave;
+      private IContainer _containerToSave;
+      private Parameter _replacedParameter;
 
       protected override void Context()
       {
@@ -83,9 +84,12 @@ namespace MoBi.Presentation.Tasks
          _parentContainer = new Container().WithName("Parent");
          _individual = new IndividualBuildingBlock().WithName("Individual");
          _individual.Add(new IndividualParameter {ContainerPath = new ObjectPath("Parent", "Container1")}.WithName("parameter1"));
+         _individual.Add(new IndividualParameter {ContainerPath = new ObjectPath("Parent", "Container1")}.WithName("ShouldBeReplaced"));
          _individual.Add(new IndividualParameter {ContainerPath = new ObjectPath("Parent", "Container2")}.WithName("parameter2"));
-         _entityToSave = new Container().WithName("Container1").WithMode(ContainerMode.Physical).Under(_parentContainer);
-         _clonedEntity = new Container().WithName("Container1").WithMode(ContainerMode.Physical);
+         _containerToSave = new Container().WithName("Container1").WithMode(ContainerMode.Physical).Under(_parentContainer);
+         _clonedContainer = new Container().WithName("Container1").WithMode(ContainerMode.Physical);
+         _replacedParameter = new Parameter().WithName("ShouldBeReplaced");
+         _clonedContainer.Add(_replacedParameter);
          
          _tmpSpatialStructure = new MoBiSpatialStructure
          {
@@ -95,19 +99,26 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _selectIndividualFromProjectPresenter.SelectedFilePath).Returns("FilePath");
          A.CallTo(() => _selectIndividualFromProjectPresenter.SelectedIndividual).Returns(_individual);
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
-         A.CallTo(() => _cloneManager.Clone(_entityToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedEntity);
+         A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
          A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => new Parameter().WithName(x.Arguments.Get<IndividualParameter>(0).Name));
       }
 
       protected override void Because()
       {
-         sut.SaveWithIndividual(_entityToSave);
+         sut.SaveWithIndividual(_containerToSave);
+      }
+
+      [Observation]
+      public void the_exported_structure_should_have_parameter_overrides_when_parameter_is_in_both_individual_and_spatial_structure()
+      {
+         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).GetSingleChildByName("ShouldBeReplaced").ShouldNotBeEqualTo(_replacedParameter);
       }
 
       [Observation]
       public void the_exported_structure_should_have_parameters_from_the_individual_if_they_match_the_container_path()
       {
-         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).Single().Name.ShouldBeEqualTo("parameter1");
+         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).ContainsName("parameter1").ShouldBeTrue();
+         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).ContainsName("ShouldBeReplaced").ShouldBeTrue();
       }
    }
 
