@@ -1,12 +1,14 @@
 ﻿using FakeItEasy;
 using FakeItEasy.Core;
 using MoBi.Core.Domain.Repository;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
@@ -23,7 +25,7 @@ namespace MoBi.Presentation
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _editTaskForContainer = A.Fake<IEditTaskForContainer>();
 
-         sut = new SelectFolderAndIndividualFromProjectPresenter(_view, _buildingBlockRepository, _editTaskForContainer);
+         sut = new SelectFolderAndIndividualFromProjectPresenter(_view, _buildingBlockRepository, _editTaskForContainer, new ObjectPathFactoryForSpecs());
       }
    }
 
@@ -50,7 +52,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.GetPathAndIndividualForExport("name");
+         sut.GetPathAndIndividualForExport(new Container().WithName("name"));
       }
    }
 
