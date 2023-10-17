@@ -30,13 +30,13 @@
       private void InitializeComponent()
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.descriptionLabel = new DevExpress.XtraEditors.LabelControl();
          this.cmbMolecules = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.cmbSpatialStructure = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutControlItemSpatialStructure = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemMolecules = new DevExpress.XtraLayout.LayoutControlItem();
-         this.descriptionLabel = new DevExpress.XtraEditors.LabelControl();
          this.descriptionLayoutControl = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItemSpatialStructure = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -44,9 +44,9 @@
          ((System.ComponentModel.ISupportInitialize)(this.cmbMolecules.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cmbSpatialStructure.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemSpatialStructure)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemMolecules)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.descriptionLayoutControl)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemSpatialStructure)).BeginInit();
          this.SuspendLayout();
          // 
          // tablePanel
@@ -68,6 +68,18 @@
          this.layoutControl1.Size = new System.Drawing.Size(457, 98);
          this.layoutControl1.TabIndex = 1;
          this.layoutControl1.Text = "layoutControl1";
+         // 
+         // descriptionLabel
+         // 
+         this.descriptionLabel.AllowHtmlString = true;
+         this.descriptionLabel.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.Vertical;
+         this.descriptionLabel.Location = new System.Drawing.Point(12, 60);
+         this.descriptionLabel.Name = "descriptionLabel";
+         this.descriptionLabel.Size = new System.Drawing.Size(433, 26);
+         this.descriptionLabel.StyleController = this.layoutControl1;
+         this.descriptionLabel.TabIndex = 6;
+         this.descriptionLabel.Text = "Initial conditions will be created for all physical containers in the spatial str" +
+    "ucture for each molecule";
          // 
          // cmbMolecules
          // 
@@ -102,15 +114,6 @@
          this.layoutControlGroup1.Size = new System.Drawing.Size(457, 98);
          this.layoutControlGroup1.TextVisible = false;
          // 
-         // layoutControlItemSpatialStructure
-         // 
-         this.layoutControlItemSpatialStructure.Control = this.cmbSpatialStructure;
-         this.layoutControlItemSpatialStructure.CustomizationFormText = "layoutControlItemSpatialStructure";
-         this.layoutControlItemSpatialStructure.Location = new System.Drawing.Point(0, 24);
-         this.layoutControlItemSpatialStructure.Name = "layoutControlItemSpatialStructure";
-         this.layoutControlItemSpatialStructure.Size = new System.Drawing.Size(437, 24);
-         this.layoutControlItemSpatialStructure.TextSize = new System.Drawing.Size(164, 13);
-         // 
          // layoutControlItemMolecules
          // 
          this.layoutControlItemMolecules.Control = this.cmbMolecules;
@@ -120,18 +123,6 @@
          this.layoutControlItemMolecules.Size = new System.Drawing.Size(437, 24);
          this.layoutControlItemMolecules.TextSize = new System.Drawing.Size(164, 13);
          // 
-         // descriptionLabel
-         // 
-         this.descriptionLabel.AllowHtmlString = true;
-         this.descriptionLabel.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.Vertical;
-         this.descriptionLabel.Location = new System.Drawing.Point(12, 60);
-         this.descriptionLabel.Name = "descriptionLabel";
-         this.descriptionLabel.Size = new System.Drawing.Size(433, 26);
-         this.descriptionLabel.StyleController = this.layoutControl1;
-         this.descriptionLabel.TabIndex = 6;
-         this.descriptionLabel.Text = "Initial conditions will be created for all physical containers in the spatial str" +
-    "ucture for each molecule";
-         // 
          // descriptionLayoutControl
          // 
          this.descriptionLayoutControl.Control = this.descriptionLabel;
@@ -140,6 +131,15 @@
          this.descriptionLayoutControl.Size = new System.Drawing.Size(437, 30);
          this.descriptionLayoutControl.TextSize = new System.Drawing.Size(0, 0);
          this.descriptionLayoutControl.TextVisible = false;
+         // 
+         // layoutControlItemSpatialStructure
+         // 
+         this.layoutControlItemSpatialStructure.Control = this.cmbSpatialStructure;
+         this.layoutControlItemSpatialStructure.CustomizationFormText = "layoutControlItemSpatialStructure";
+         this.layoutControlItemSpatialStructure.Location = new System.Drawing.Point(0, 24);
+         this.layoutControlItemSpatialStructure.Name = "layoutControlItemSpatialStructure";
+         this.layoutControlItemSpatialStructure.Size = new System.Drawing.Size(437, 24);
+         this.layoutControlItemSpatialStructure.TextSize = new System.Drawing.Size(164, 13);
          // 
          // SelectSpatialStructureAndMoleculesView
          // 
@@ -159,9 +159,9 @@
          ((System.ComponentModel.ISupportInitialize)(this.cmbMolecules.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cmbSpatialStructure.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemSpatialStructure)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemMolecules)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.descriptionLayoutControl)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemSpatialStructure)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
