@@ -10,6 +10,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -60,20 +61,34 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          var targetSpatialStructure = GetSpatialStructure();
 
+         // Keep track of imported containers original names because they could be renamed when being added to the project.
+         var nameCache = initializeNameChangeTracking(allImportedContainers);
          var command = AddItemsToProject(allImportedContainers, parent, buildingBlockWithFormulaCache);
          if (command.IsEmpty())
             return new MoBiEmptyCommand();
 
+         // For all the containers that were imported, check if their names have changed and update neighborhoods accordingly
+         nameCache.Keys.Each(x => updateNeighborhoodsForNewContainerName(x.Name, nameCache[x], allImportedNeighborhoods));
 
          var addNeighborhoodsCommand = addNeighborhoodsToProject(allImportedNeighborhoods, targetSpatialStructure);
 
-         if (addNeighborhoodsCommand.IsEmpty()) return command;
+         if (addNeighborhoodsCommand.IsEmpty())
+            return command;
 
-         var macroCommand = new MoBiMacroCommand() {CommandType = command.CommandType, ObjectType = command.ObjectType, Comment = command.Comment, Description = command.Description, ExtendedDescription = command.ExtendedDescription};
+         var macroCommand = new MoBiMacroCommand
+         {
+            CommandType = command.CommandType,
+            ObjectType = command.ObjectType,
+            Comment = command.Comment,
+            Description = command.Description,
+            ExtendedDescription = command.ExtendedDescription
+         };
          macroCommand.Add(command);
          macroCommand.Add(addNeighborhoodsCommand);
 
-         if (sourceSpatialStructure.DiagramModel == null || targetSpatialStructure.DiagramModel == null) return macroCommand;
+         if (sourceSpatialStructure.DiagramModel == null || targetSpatialStructure.DiagramModel == null)
+            return macroCommand;
+
          var lcs = new LayoutCopyService();
 
          foreach (var container in allImportedContainers)
@@ -95,6 +110,31 @@ namespace MoBi.Presentation.Tasks.Interaction
             targetSpatialStructure.DiagramManager.RefreshFromDiagramOptions();
 
          return macroCommand;
+      }
+
+      private void updateNeighborhoodsForNewContainerName(string newName, string oldName, IReadOnlyList<NeighborhoodBuilder> allImportedNeighborhoods)
+      {
+         if (string.Equals(newName, oldName))
+            return;
+
+         allImportedNeighborhoods.Each(x => updateNeighborhood(x, newName, oldName));
+      }
+
+      private static void updateNeighborhood(NeighborhoodBuilder neighborhood, string newName, string oldName)
+      {
+         neighborhood.Name = neighborhood.Name.Replace(oldName, newName);
+         neighborhood.FirstNeighborPath.Replace(oldName, newName);
+         neighborhood.SecondNeighborPath.Replace(oldName, newName);
+      }
+
+      /// <summary>
+      ///    Creates a cache of container objects and their names
+      /// </summary>
+      private Cache<IContainer, string> initializeNameChangeTracking(IReadOnlyList<IContainer> containers)
+      {
+         var cache = new Cache<IContainer, string>();
+         containers.Each(x => cache[x] = x.Name);
+         return cache;
       }
 
       private IMoBiCommand addNeighborhoodsToProject(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
