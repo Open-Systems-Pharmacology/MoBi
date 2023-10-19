@@ -6,6 +6,7 @@ using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
@@ -91,6 +92,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          base.InitializeWith(dto, presenter);
          var container = _context.Get<IContainer>(dto.Id);
+         
          if (!dto.Name.IsSpecialName())
          {
             _allMenuItems.Add(CreateAddNewItemFor(container));
@@ -99,6 +101,19 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          _allMenuItems.Add(CreateAddNewChild<IDistributedParameter>(container));
          return this;
+      }
+
+      protected override void AddSaveItems(IContainer container)
+      {
+         base.AddSaveItems(container);
+         _allMenuItems.Add(createSaveWithIndividualFor(container));
+      }
+
+      private IMenuBarItem createSaveWithIndividualFor(IContainer containerToSave)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveWithIndividual.WithEllipsis())
+            .WithCommandFor<SaveWithIndividualUICommand, IContainer>(containerToSave, _container)
+            .WithIcon(ApplicationIcons.PKMLSave);
       }
    }
 

@@ -1,20 +1,19 @@
 ﻿using System.Linq;
-using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Helpers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Presenters;
+using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
-using static MoBi.Assets.ToolTips;
-using Container = OSPSuite.Core.Domain.Container;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -24,15 +23,25 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTaskContext _interactionTaskContext;
       protected IInteractionTask _interactionTask;
       protected IObjectPathFactory _objectPathFactory;
+      private IMoBiApplicationController _applicationController;
+      protected ISelectFolderAndIndividualFromProjectPresenter _selectIndividualFromProjectPresenter;
+      protected ICloneManagerForBuildingBlock _cloneManager;
+      protected IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
 
       protected override void Context()
       {
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
+         _applicationController = A.Fake<IMoBiApplicationController>();
+         _selectIndividualFromProjectPresenter = A.Fake<ISelectFolderAndIndividualFromProjectPresenter>();
+         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
+         _individualParameterToParameterMapper = A.Fake<IIndividualParameterToParameterMapper>();
+         A.CallTo(() => _applicationController.Start<ISelectFolderAndIndividualFromProjectPresenter>()).Returns(_selectIndividualFromProjectPresenter);
+         A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_applicationController);
          _interactionTask = A.Fake<IInteractionTask>();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory);
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _individualParameterToParameterMapper);
       }
    }
 
@@ -56,6 +65,58 @@ namespace MoBi.Presentation.Tasks
       public void A_call_to_interaction_task_saving_the_container_must_not_have_happened()
       {
          A.CallTo(() => _spatialStructureFactory.Create()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_saving_a_container_with_individual_to_pkml : concern_for_EditTaskForContainer
+   {
+      private IContainer _clonedContainer;
+      private Container _parentContainer;
+      private MoBiSpatialStructure _tmpSpatialStructure;
+      private IndividualBuildingBlock _individual;
+      private IContainer _containerToSave;
+      private Parameter _replacedParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parentContainer = new Container().WithName("Parent");
+         _individual = new IndividualBuildingBlock().WithName("Individual");
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("parameter1"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("ShouldBeReplaced"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container2") }.WithName("parameter2"));
+         _containerToSave = new Container().WithName("Container1").WithMode(ContainerMode.Physical).Under(_parentContainer);
+         _clonedContainer = new Container().WithName("Container1").WithMode(ContainerMode.Physical);
+         _replacedParameter = new Parameter().WithName("ShouldBeReplaced");
+         _clonedContainer.Add(_replacedParameter);
+
+         _tmpSpatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS)
+         };
+
+         A.CallTo(() => _selectIndividualFromProjectPresenter.GetPathAndIndividualForExport(_containerToSave)).Returns(("FilePath", _individual));
+         A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
+         A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
+         A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => new Parameter().WithName(x.Arguments.Get<IndividualParameter>(0).Name));
+      }
+
+      protected override void Because()
+      {
+         sut.SaveWithIndividual(_containerToSave);
+      }
+
+      [Observation]
+      public void the_exported_structure_should_have_parameter_overrides_when_parameter_is_in_both_individual_and_spatial_structure()
+      {
+         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).GetSingleChildByName("ShouldBeReplaced").ShouldNotBeEqualTo(_replacedParameter);
+      }
+
+      [Observation]
+      public void the_exported_structure_should_have_parameters_from_the_individual_if_they_match_the_container_path()
+      {
+         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).ContainsName("parameter1").ShouldBeTrue();
+         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).ContainsName("ShouldBeReplaced").ShouldBeTrue();
       }
    }
 
