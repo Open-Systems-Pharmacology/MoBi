@@ -13,32 +13,22 @@ namespace MoBi.Presentation.Presenter
    public interface ISelectFolderAndIndividualFromProjectPresenter : IDisposablePresenter
    {
       /// <summary>
-      /// Opens a dialog where the user will select an IndividualBuildingBlock from the project and a file path to export
+      ///    Opens a dialog where the user will select an IndividualBuildingBlock from the project and a file path to export
       /// </summary>
-      void GetPathAndIndividualForExport(IContainer container);
+      (string, IndividualBuildingBlock) GetPathAndIndividualForExport(IContainer container);
 
       /// <summary>
-      /// Returns a list of all IndividualBuildingBlocks in the project
+      ///    Returns a list of all IndividualBuildingBlocks in the project
       /// </summary>
       IReadOnlyList<IndividualBuildingBlock> AllIndividuals { get; }
 
       /// <summary>
-      /// Opens a dialog for the user to select file path
+      ///    Opens a dialog for the user to select file path
       /// </summary>
       /// <returns>The path if dialog is dismissed with ok, empty string if canceled</returns>
       string BrowseFilePath();
-
-      /// <summary>
-      /// After dismissing the dialog, this returns the selected IndividualBuildingBlock or null if the dialog was canceled
-      /// </summary>
-      IndividualBuildingBlock SelectedIndividual { get; }
-      
-      /// <summary>
-      /// After dismissing the dialog, this returns the selected file path for export, or an empty string if the dialog was canceled
-      /// </summary>
-      string SelectedFilePath { get; }
    }
-   
+
    public class SelectFolderAndIndividualFromProjectPresenter : MoBiDisposablePresenter<ISelectFolderAndIndividualFromProjectView, ISelectFolderAndIndividualFromProjectPresenter>, ISelectFolderAndIndividualFromProjectPresenter
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
@@ -53,7 +43,7 @@ namespace MoBi.Presentation.Presenter
          _objectPathFactory = objectPathFactory;
       }
 
-      public void GetPathAndIndividualForExport(IContainer container)
+      public (string, IndividualBuildingBlock) GetPathAndIndividualForExport(IContainer container)
       {
          _dto = new IndividualAndFilePathDTO
          {
@@ -61,20 +51,12 @@ namespace MoBi.Presentation.Presenter
          }.WithName(container.Name);
          _view.BindTo(_dto);
          _view.Display();
-         
-         if (!_view.Canceled)
-            return;
-         
-         _dto.IndividualBuildingBlock = null;
-         _dto.FilePath = string.Empty;
+
+         return _view.Canceled ? (string.Empty, null) : (_dto.FilePath, _dto.IndividualBuildingBlock);
       }
 
-      public string SelectedFilePath => _dto.FilePath;
-      
       public IReadOnlyList<IndividualBuildingBlock> AllIndividuals => _buildingBlockRepository.IndividualsCollection;
-      
-      public IndividualBuildingBlock SelectedIndividual => _dto.IndividualBuildingBlock;
-      
+
       public string BrowseFilePath() => _editTaskForContainer.BrowseSavePathFor(_dto.Name);
    }
 }

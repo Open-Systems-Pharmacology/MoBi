@@ -1,10 +1,11 @@
-﻿using OSPSuite.Core.Domain;
+﻿using System.Collections.Generic;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
-using System.Collections.Generic;
-using OSPSuite.Assets;
+using static MoBi.Assets.AppConstants.Captions;
 
 namespace MoBi.Presentation.DTO
 {
@@ -14,6 +15,8 @@ namespace MoBi.Presentation.DTO
       public IndividualBuildingBlock IndividualBuildingBlock { get; set; }
       public string Name { get; set; }
       public ObjectPath ContainerPath { get; set; }
+
+      public string Description => ExportContainerDescription(ContainerPath?.PathAsString);
 
       public IndividualAndFilePathDTO()
       {

@@ -14,7 +14,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
-using Container = OSPSuite.Core.Domain.Container;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -83,21 +82,20 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _parentContainer = new Container().WithName("Parent");
          _individual = new IndividualBuildingBlock().WithName("Individual");
-         _individual.Add(new IndividualParameter {ContainerPath = new ObjectPath("Parent", "Container1")}.WithName("parameter1"));
-         _individual.Add(new IndividualParameter {ContainerPath = new ObjectPath("Parent", "Container1")}.WithName("ShouldBeReplaced"));
-         _individual.Add(new IndividualParameter {ContainerPath = new ObjectPath("Parent", "Container2")}.WithName("parameter2"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("parameter1"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("ShouldBeReplaced"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container2") }.WithName("parameter2"));
          _containerToSave = new Container().WithName("Container1").WithMode(ContainerMode.Physical).Under(_parentContainer);
          _clonedContainer = new Container().WithName("Container1").WithMode(ContainerMode.Physical);
          _replacedParameter = new Parameter().WithName("ShouldBeReplaced");
          _clonedContainer.Add(_replacedParameter);
-         
+
          _tmpSpatialStructure = new MoBiSpatialStructure
          {
             NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS)
          };
 
-         A.CallTo(() => _selectIndividualFromProjectPresenter.SelectedFilePath).Returns("FilePath");
-         A.CallTo(() => _selectIndividualFromProjectPresenter.SelectedIndividual).Returns(_individual);
+         A.CallTo(() => _selectIndividualFromProjectPresenter.GetPathAndIndividualForExport(_containerToSave)).Returns(("FilePath", _individual));
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
          A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
          A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => new Parameter().WithName(x.Arguments.Get<IndividualParameter>(0).Name));

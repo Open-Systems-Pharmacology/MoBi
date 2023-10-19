@@ -20,14 +20,14 @@ namespace MoBi.Presentation.Tasks.Edit
       IMoBiCommand SetContainerMode(IBuildingBlock buildingBlock, IContainer container, ContainerMode containerMode);
 
       /// <summary>
-      /// Opens a dialog for the user to select file path
+      ///    Opens a dialog for the user to select file path
       /// </summary>
       /// <returns>The path if dialog is dismissed with ok, empty string if canceled</returns>
       string BrowseSavePathFor(string name);
 
       /// <summary>
-      /// The user can select an individual to combine with the container and export combined parameters.
-      /// The individual parameters are exported if they match the path of the <paramref name="container"/> tree
+      ///    The user can select an individual to combine with the container and export combined parameters.
+      ///    The individual parameters are exported if they match the path of the <paramref name="container" /> tree
       /// </summary>
       void SaveWithIndividual(IContainer container);
    }
@@ -39,9 +39,9 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
 
-      public EditTaskForContainer(IInteractionTaskContext interactionTaskContext, 
-         IMoBiSpatialStructureFactory spatialStructureFactory, 
-         IObjectPathFactory objectPathFactory, 
+      public EditTaskForContainer(IInteractionTaskContext interactionTaskContext,
+         IMoBiSpatialStructureFactory spatialStructureFactory,
+         IObjectPathFactory objectPathFactory,
          ICloneManagerForBuildingBlock cloneManager,
          IIndividualParameterToParameterMapper individualParameterToParameterMapper) : base(interactionTaskContext)
       {
@@ -65,20 +65,14 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public void SaveWithIndividual(IContainer container)
       {
-         IndividualBuildingBlock individual;
-         string filePath;
-
          using (var presenter = _applicationController.Start<ISelectFolderAndIndividualFromProjectPresenter>())
          {
-            presenter.GetPathAndIndividualForExport(container);
-            filePath = presenter.SelectedFilePath;
-            individual = presenter.SelectedIndividual;
+            var (filePath, individual) = presenter.GetPathAndIndividualForExport(container);
+            if (filePath.IsNullOrEmpty() || individual == null)
+               return;
+
+            exportContainer(container, filePath, individual);
          }
-         
-         if (filePath.IsNullOrEmpty() || individual == null)
-            return;
-         
-         exportContainer(container, filePath, individual);
       }
 
       public override void Save(IContainer container)
@@ -95,7 +89,7 @@ namespace MoBi.Presentation.Tasks.Edit
          var tmpSpatialStructure = (MoBiSpatialStructure)_spatialStructureFactory.Create();
 
          var clonedEntity = _cloneManager.Clone(container, tmpSpatialStructure.FormulaCache);
-         
+
          clonedEntity.ParentPath = parentPathFrom(container);
 
          tmpSpatialStructure.AddTopContainer(clonedEntity);
@@ -122,27 +116,26 @@ namespace MoBi.Presentation.Tasks.Edit
       private void addIndividualParametersToContainers(IndividualBuildingBlock individual, IContainer entityToSerialize)
       {
          if (individual == null || !individual.Any())
-            return; 
-         
+            return;
+
          var allSubContainers = entityToSerialize.GetAllContainersAndSelf<IContainer>();
-         allSubContainers.Each(container =>
-         {
-            addIndividualParametersToContainer(individual, container, _objectPathFactory.CreateObjectPathFrom(entityToSerialize.ParentPath.Concat(_objectPathFactory.CreateAbsoluteObjectPath(container)).ToArray()));
-         });
+         allSubContainers.Each(container => { addIndividualParametersToContainer(individual, container, _objectPathFactory.CreateObjectPathFrom(entityToSerialize.ParentPath.Concat(_objectPathFactory.CreateAbsoluteObjectPath(container)).ToArray())); });
       }
 
       private void addIndividualParametersToContainer(IndividualBuildingBlock individual, IContainer container, ObjectPath containerPath)
       {
-         
          individual.Where(individualParameter => individualParameter.ContainerPath.Equals(containerPath)).Each(x => addIndividualParameterToContainer(x, container));
       }
 
       private void addIndividualParameterToContainer(IndividualParameter individualParameter, IContainer container)
       {
-         var parameter = _individualParameterToParameterMapper.MapFrom(individualParameter);
-         if (container.ContainsName(parameter.Name))
-            container.RemoveChild(container.FindByName(parameter.Name));
-         container.Add(parameter);
+         var parameterToAdd = _individualParameterToParameterMapper.MapFrom(individualParameter);
+         var existingParameter = container.FindByName(parameterToAdd.Name);
+
+         if (existingParameter != null)
+            container.RemoveChild(existingParameter);
+
+         container.Add(parameterToAdd);
       }
 
       public IMoBiCommand SetContainerMode(IBuildingBlock buildingBlock, IContainer container, ContainerMode containerMode)

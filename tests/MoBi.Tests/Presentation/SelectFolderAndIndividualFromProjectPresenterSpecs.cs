@@ -1,5 +1,4 @@
 ﻿using FakeItEasy;
-using FakeItEasy.Core;
 using MoBi.Core.Domain.Repository;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
@@ -33,6 +32,8 @@ namespace MoBi.Presentation
    {
       protected string _filePath;
       protected IndividualBuildingBlock _individualBuildingBlock;
+      protected IndividualBuildingBlock _selectedIndividual;
+      protected string _selectedPath;
 
       protected override void Context()
       {
@@ -52,7 +53,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.GetPathAndIndividualForExport(new Container().WithName("name"));
+         (_selectedPath, _selectedIndividual) = sut.GetPathAndIndividualForExport(new Container().WithName("name"));
       }
    }
 
@@ -63,8 +64,8 @@ namespace MoBi.Presentation
       [Observation]
       public void the_properties_should_return_selected_values()
       {
-         sut.SelectedFilePath.ShouldBeEqualTo(_filePath);
-         sut.SelectedIndividual.ShouldBeEqualTo(_individualBuildingBlock);
+         _selectedPath.ShouldBeEqualTo(_filePath);
+         _selectedIndividual.ShouldBeEqualTo(_individualBuildingBlock);
       }
    }
 
@@ -75,8 +76,8 @@ namespace MoBi.Presentation
       [Observation]
       public void the_properties_should_return_null_or_empty()
       {
-         sut.SelectedFilePath.ShouldBeEmpty();
-         sut.SelectedIndividual.ShouldBeNull();
+         _selectedPath.ShouldBeEmpty();
+         _selectedIndividual.ShouldBeNull();
       }
    }
 }

@@ -1,11 +1,11 @@
 ﻿using DevExpress.XtraEditors.Controls;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
-using OSPSuite.UI.Views;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.UI.Views;
 using static MoBi.Assets.AppConstants.Captions;
 
 namespace MoBi.UI.Views
@@ -13,13 +13,12 @@ namespace MoBi.UI.Views
    public partial class SelectFolderAndIndividualFromProjectView : BaseModalView, ISelectFolderAndIndividualFromProjectView
    {
       private readonly ScreenBinder<IndividualAndFilePathDTO> _screenBinder = new ScreenBinder<IndividualAndFilePathDTO>();
-      
+
       private ISelectFolderAndIndividualFromProjectPresenter _presenter;
 
       public SelectFolderAndIndividualFromProjectView()
       {
          InitializeComponent();
-         ExtraVisible = false;
       }
 
       public override void InitializeResources()
@@ -37,6 +36,7 @@ namespace MoBi.UI.Views
       {
          _screenBinder.Bind(x => x.IndividualBuildingBlock).To(cmbSelectIndividual).WithValues(x => _presenter.AllIndividuals);
          _screenBinder.Bind(x => x.FilePath).To(btnSelectFilePath);
+         _screenBinder.Bind(x => x.Description).To(descriptionLabel);
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
@@ -47,7 +47,6 @@ namespace MoBi.UI.Views
 
       public void BindTo(IndividualAndFilePathDTO dto)
       {
-         descriptionLabel.Text = ExportContainerDescription(dto.ContainerPath.PathAsString);
          _screenBinder.BindToSource(dto);
       }
 

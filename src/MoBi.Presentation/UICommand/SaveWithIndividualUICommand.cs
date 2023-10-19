@@ -12,6 +12,7 @@ namespace MoBi.Presentation.UICommand
       {
          _editTaskForContainer = editTaskForContainer;
       }
+
       protected override void PerformExecute()
       {
          _editTaskForContainer.SaveWithIndividual(Subject);
