@@ -1,6 +1,5 @@
 ﻿using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using DevExpress.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.UICommand;

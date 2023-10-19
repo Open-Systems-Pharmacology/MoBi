@@ -110,7 +110,7 @@ namespace MoBi.Presentation
       {
          _result = sut.CreateBasedOn(_simulation, false);
       }
-      
+
       [Observation]
       public void the_forbidden_names_must_not_be_initialized()
       {
