@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization.Exchange;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -27,6 +28,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       string AskForFileToOpen(string title, string filter, string directoryKey);
       string AskForFileToSave(string title, string filter, string directoryKey, string defaultName);
       string AskForFolder(string title, string directoryKey);
+      SimulationTransfer LoadSimulationTransfer(string filePath);
    }
 
    public class InteractionTask : IInteractionTask
@@ -68,18 +70,14 @@ namespace MoBi.Presentation.Tasks.Interaction
          _serializationTask.SaveModelPart(entityToSerialize, fileName);
       }
 
-      public void Save<T>(T entityToSerialize, string fileName) where T : IObjectBase
-      {
-         _serializationTask.SaveModelPart(entityToSerialize, fileName);
-      }
+      public void Save<T>(T entityToSerialize, string fileName) where T : IObjectBase => _serializationTask.SaveModelPart(entityToSerialize, fileName);
 
       public virtual T Clone<T>(T objectToClone) where T : class, IObjectBase
       {
          var formulaCache = new FormulaCache();
          var clone = _cloneManagerForBuildingBlock.Clone(objectToClone, formulaCache);
 
-         var cloneBuildingBlock = clone as IBuildingBlock;
-         if (cloneBuildingBlock != null)
+         if (clone is IBuildingBlock cloneBuildingBlock)
             updateFormulaCacheOfClone(objectToClone.DowncastTo<IBuildingBlock>(), cloneBuildingBlock, formulaCache);
 
          return clone;
@@ -109,39 +107,20 @@ namespace MoBi.Presentation.Tasks.Interaction
          return !_adjustFormulasVisitor.Canceled;
       }
 
-      public string TypeFor<T>(T objectRequestingType) where T : class
-      {
-         return _objectTypeResolver.TypeFor(objectRequestingType);
-      }
+      public string TypeFor<T>(T objectRequestingType) where T : class => _objectTypeResolver.TypeFor(objectRequestingType);
 
-      public IEnumerable<string> ForbiddenNamesFor<T>(T objectBase) where T : IObjectBase
-      {
-         return _forbiddenNamesRetriever.For(objectBase);
-      }
+      public IEnumerable<string> ForbiddenNamesFor<T>(T objectBase) where T : IObjectBase => _forbiddenNamesRetriever.For(objectBase);
 
-      public string AskForFileToOpen(string title, string filter, string directoryKey)
-      {
-         return _dialogCreator.AskForFileToOpen(title, filter, directoryKey);
-      }
+      public string AskForFileToOpen(string title, string filter, string directoryKey) => _dialogCreator.AskForFileToOpen(title, filter, directoryKey);
 
-      public string AskForFolder(string title, string directoryKey)
-      {
-         return _dialogCreator.AskForFolder(title, directoryKey);
-      }
+      public string AskForFolder(string title, string directoryKey) => _dialogCreator.AskForFolder(title, directoryKey);
 
-      public string AskForFileToSave(string title, string filter, string directoryKey, string defaultName)
-      {
-         return _dialogCreator.AskForFileToSave(title, filter, directoryKey, defaultName);
-      }
+      public SimulationTransfer LoadSimulationTransfer(string filePath) => _serializationTask.Load<SimulationTransfer>(filePath);
 
-      public string IconFor<T>(T entity) where T : IObjectBase
-      {
-         return _iconRepository.IconNameFor(entity);
-      }
+      public string AskForFileToSave(string title, string filter, string directoryKey, string defaultName) => _dialogCreator.AskForFileToSave(title, filter, directoryKey, defaultName);
 
-      public bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase
-      {
-         return _nameCorrector.CorrectName(forbiddenNames, objectBase);
-      }
+      public string IconFor<T>(T entity) where T : IObjectBase => _iconRepository.IconNameFor(entity);
+
+      public bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase => _nameCorrector.CorrectName(forbiddenNames, objectBase);
    }
 }

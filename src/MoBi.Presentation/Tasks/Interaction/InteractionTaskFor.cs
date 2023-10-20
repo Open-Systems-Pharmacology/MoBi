@@ -25,6 +25,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
 
       TChild CreateNewEntity(TParent parent);
+      IMoBiCommand AddItemsToProject(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
+      IMoBiCommand AddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
+      string AskForPKMLFileToOpen();
    }
 
    public abstract class InteractionTasksForChildren<TParent, TChild> : InteractionTasksForChildren<TParent, TChild, IEditTaskFor<TChild>>
@@ -140,10 +143,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       public virtual IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          var filename = AskForPKMLFileToOpen();
-         return addItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+         return AddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
       }
 
-      protected string AskForPKMLFileToOpen()
+      public string AskForPKMLFileToOpen()
       {
          return InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
       }
@@ -152,10 +155,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          _interactionTaskContext.UpdateTemplateDirectories();
          var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.LoadFromTemplate(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
-         return addItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+         return AddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
       }
 
-      private IMoBiCommand addItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
+      public IMoBiCommand AddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();

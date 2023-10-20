@@ -44,7 +44,7 @@ test:
 
 skip_commits:
   files:
-    - '*.md'
+    - '**/*.md'
 
 skip_branch_with_pr: true
 

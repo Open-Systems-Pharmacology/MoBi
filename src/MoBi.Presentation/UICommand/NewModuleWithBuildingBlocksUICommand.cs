@@ -1,4 +1,3 @@
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Presentation.MenuAndBars;
 
@@ -8,7 +7,7 @@ namespace MoBi.Presentation.UICommand
    {
       private readonly IInteractionTasksForModule _interactionTasks;
 
-      public NewModuleWithBuildingBlocksUICommand(IInteractionTasksForModule interactionTasksForModule, IMoBiContext context)
+      public NewModuleWithBuildingBlocksUICommand(IInteractionTasksForModule interactionTasksForModule)
       {
          _interactionTasks = interactionTasksForModule;
       }
