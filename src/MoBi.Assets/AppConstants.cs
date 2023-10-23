@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using DevExpress.Utils.Serializing;
 using OSPSuite.Assets;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -260,6 +260,7 @@ namespace MoBi.Assets
          public static readonly string UpdateRelativeExpressions = "Update relative expressions";
          public static readonly string UpdateProjectDefaultSimulationSettings = "Update project default simulation settings";
          public static readonly string RemoveTrackedQuantityChanges = "Remove tracked quantity changes";
+         public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
@@ -1864,6 +1865,20 @@ namespace MoBi.Assets
          public static string SelectBuildingBlocksToCloneFrom(Module module)
          {
             return $"Select building blocks to clone from {module.Name}";
+         }
+
+         public static string AlsoImportIndividualsAndExpressions(int numberOfIndividuals, int numberOfExpressions)
+         {
+            var individual = $"{numberOfIndividuals} individual".PluralizeIf(numberOfIndividuals);
+            var expression = $"{numberOfExpressions} expression".PluralizeIf(numberOfExpressions);
+               
+            if (numberOfExpressions == 0)
+               return $"Also import {individual}?";
+            
+            if(numberOfIndividuals == 0)
+               return $"Also import {expression}?";
+
+            return $"Also import {individual} and {expression}?";
          }
       }
 
