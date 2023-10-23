@@ -1869,15 +1869,16 @@ namespace MoBi.Assets
 
          public static string AlsoImportIndividualsAndExpressions(int numberOfIndividuals, int numberOfExpressions)
          {
-            var individual = "individual".PluralizeIf(numberOfIndividuals);
-            var expression = "expressions".PluralizeIf(numberOfExpressions);
+            var individual = $"{numberOfIndividuals} individual".PluralizeIf(numberOfIndividuals);
+            var expression = $"{numberOfExpressions} expression".PluralizeIf(numberOfExpressions);
                
             if (numberOfExpressions == 0)
-               return $"Also import {numberOfIndividuals} {individual}?";
-            else if(numberOfIndividuals == 0)
-               return $"Also import {numberOfExpressions} {expression}?";
+               return $"Also import {individual}?";
+            
+            if(numberOfIndividuals == 0)
+               return $"Also import {expression}?";
 
-            return $"Also import {numberOfIndividuals} {individual} and {numberOfExpressions} {expression}?";
+            return $"Also import {individual} and {expression}?";
          }
       }
 

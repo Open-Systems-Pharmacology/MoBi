@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Tasks
 {
    public interface IModuleLoader
    {
-      IMoBiCommand LoadModule(MoBiProject parent);
+      IMoBiCommand LoadModule(MoBiProject project);
    }
 
    public class ModuleLoader : IModuleLoader
@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTaskContext = interactionTaskContext;
       }
 
-      public IMoBiCommand LoadModule(MoBiProject parent)
+      public IMoBiCommand LoadModule(MoBiProject project)
       {
          var filename = _moduleTask.AskForPKMLFileToOpen();
 
@@ -41,16 +41,16 @@ namespace MoBi.Presentation.Tasks
          try
          {
             // If the user is adding modules from a simulation transfer, optionally add other building blocks
-            return addFromSimulationTransfer(parent, filename);
+            return addFromSimulationTransfer(project, filename);
          }
          catch
          {
             // If the user is not loading from a simulation transfer, only add modules
-            return _moduleTask.AddItemsToProjectFromFile(filename, parent, null);
+            return _moduleTask.AddItemsToProjectFromFile(filename, project);
          }
       }
 
-      private IMoBiCommand addFromSimulationTransfer(MoBiProject parent, string filename)
+      private IMoBiCommand addFromSimulationTransfer(MoBiProject project, string filename)
       {
          var configuration = _interactionTaskContext.InteractionTask.LoadSimulationTransfer(filename).Simulation.Configuration;
 
@@ -65,13 +65,13 @@ namespace MoBi.Presentation.Tasks
          var individuals = configuration.Individual == null ? new List<IndividualBuildingBlock>() : new List<IndividualBuildingBlock> { configuration.Individual };
          var expressions = configuration.ExpressionProfiles;
 
-         macroCommand.Add(_moduleTask.AddItemsToProject(modules, parent, null));
+         macroCommand.Add(_moduleTask.AddItemsToProject(modules, project));
 
          if (!addAdditionalBuildingBlocksConfirmed(individuals.Count, expressions.Count))
             return macroCommand;
 
-         macroCommand.Add(_individualTask.AddItemsToProject(individuals, parent, null));
-         macroCommand.Add(_expressionTask.AddItemsToProject(expressions, parent, null));
+         macroCommand.Add(_individualTask.AddItemsToProject(individuals, project));
+         macroCommand.Add(_expressionTask.AddItemsToProject(expressions, project));
 
          return macroCommand;
       }

@@ -25,8 +25,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
 
       TChild CreateNewEntity(TParent parent);
-      IMoBiCommand AddItemsToProject(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
-      IMoBiCommand AddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
+      IMoBiCommand AddItemsToProject(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null);
+      IMoBiCommand AddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null);
       string AskForPKMLFileToOpen();
    }
 
@@ -158,7 +158,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return AddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
       }
 
-      public IMoBiCommand AddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
+      public IMoBiCommand AddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null)
       {
          if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();
@@ -171,7 +171,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return InteractionTask.LoadItems<TChild>(filename);
       }
 
-      public IMoBiCommand AddItemsToProject(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
+      public IMoBiCommand AddItemsToProject(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null)
       {
          if (itemsToAdd == null || !itemsToAdd.Any())
             return new MoBiEmptyCommand();
