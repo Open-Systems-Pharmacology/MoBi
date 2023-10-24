@@ -11,7 +11,6 @@ using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
@@ -35,13 +34,13 @@ namespace MoBi.Presentation.Tasks
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
 
-      public SimulationRunner(IMoBiContext context, 
+      public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
-         IOutputSelectionsRetriever outputSelectionsRetriever, 
+         IOutputSelectionsRetriever outputSelectionsRetriever,
          ISimulationPersistableUpdater simulationPersistableUpdater,
-         IDisplayUnitUpdater displayUnitUpdater, 
-         ISimModelManagerFactory simModelManagerFactory, 
-         IKeyPathMapper keyPathMapper, 
+         IDisplayUnitUpdater displayUnitUpdater,
+         ISimModelManagerFactory simModelManagerFactory,
+         IKeyPathMapper keyPathMapper,
          IEntityValidationTask entityValidationTask)
       {
          _context = context;
@@ -178,21 +177,11 @@ namespace MoBi.Presentation.Tasks
 
       private void setMolecularWeight(IMoBiSimulation simulation, DataColumn column)
       {
-         var molecule = getMoleculeFor(simulation, column);
-
-         var mwPara = molecule?.Parameter(AppConstants.Parameters.MOLECULAR_WEIGHT);
-         if (mwPara == null) return;
-
-         column.DataInfo.MolWeight = mwPara.Value;
-      }
-
-      private MoleculeBuilder getMoleculeFor(IMoBiSimulation simulation, DataColumn dataColumn)
-      {
-         var moleculeName = _keyPathMapper.MoleculeNameFrom(dataColumn);
+         var moleculeName = _keyPathMapper.MoleculeNameFrom(column);
          if (string.IsNullOrEmpty(moleculeName))
-            return null;
+            return;
 
-         return simulation.Configuration.All<MoleculeBuildingBlock>().Select(x => x[moleculeName]).FirstOrDefault(x => x != null);
+         column.DataInfo.MolWeight = simulation.MolWeightFor(moleculeName);
       }
 
       private bool isConcentrationColumn(DataColumn column)

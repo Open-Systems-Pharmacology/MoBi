@@ -104,7 +104,7 @@ namespace MoBi.Core.Domain.UnitSystem
          if (root == null)
             return false;
 
-         _useablePath = _pathFactory.CreateObjectPathFrom(root.Name, _formulaUsable.Name, AppConstants.Parameters.MOLECULAR_WEIGHT);
+         _useablePath = _pathFactory.CreateObjectPathFrom(root.Name, _formulaUsable.Name, Constants.Parameters.MOL_WEIGHT);
          return _useablePath.TryResolve<IFormulaUsable>(root) != null;
       }
 
@@ -121,7 +121,7 @@ namespace MoBi.Core.Domain.UnitSystem
             return null;
 
          var root = _formulaUsable.RootContainer;
-         var useablePath = _pathFactory.CreateObjectPathFrom(root.Name, _formulaUsable.Name, AppConstants.Parameters.MOLECULAR_WEIGHT);
+         var useablePath = _pathFactory.CreateObjectPathFrom(root.Name, _formulaUsable.Name, Constants.Parameters.MOL_WEIGHT);
          var entity = useablePath.Resolve<IFormulaUsable>(root);
          if (double.IsNaN(entity.Value))
             return null;

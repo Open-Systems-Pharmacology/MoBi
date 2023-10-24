@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Events;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -73,7 +73,7 @@ namespace MoBi.Core.Commands
          var pathToReferencedObject = new List<string> {ObjectPath.PARENT_CONTAINER, moleculeName};
          //in case of concentration, we need to add a reference to the concentration parameter
          if (dimensionRetriever.SelectedDimensionMode == ReactionDimensionMode.ConcentrationBased)
-            pathToReferencedObject.Add(AppConstants.Parameters.CONCENTRATION);
+            pathToReferencedObject.Add(Constants.Parameters.CONCENTRATION);
 
          return objectPathFactory.CreateFormulaUsablePathFrom(pathToReferencedObject)
             .WithDimension(dimensionRetriever.MoleculeDimension)
@@ -105,7 +105,7 @@ namespace MoBi.Core.Commands
       public AddReactionPartnerToEductCollection(MoBiReactionBuildingBlock reactionBuildingBlock, ReactionPartnerBuilder reactionPartnerBuilder, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, reactionPartnerBuilder, reactionBuilder, x => x.AddEduct)
       {
-         ObjectType =ObjectTypes.Educt;
+         ObjectType = ObjectTypes.Educt;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
@@ -125,7 +125,7 @@ namespace MoBi.Core.Commands
       public AddReactionPartnerToProductCollection(MoBiReactionBuildingBlock reactionBuildingBlock, ReactionPartnerBuilder reactionPartnerBuilder, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, reactionPartnerBuilder, reactionBuilder, x => x.AddProduct)
       {
-         ObjectType =ObjectTypes.Product;
+         ObjectType = ObjectTypes.Product;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
@@ -145,7 +145,7 @@ namespace MoBi.Core.Commands
       public AddItemToModifierCollectionCommand(MoBiReactionBuildingBlock reactionBuildingBlock, string modifier, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, modifier, reactionBuilder, x => x.AddModifier)
       {
-         ObjectType =ObjectTypes.Modifier;
+         ObjectType = ObjectTypes.Modifier;
       }
 
       protected override void ExecuteWith(IMoBiContext context)

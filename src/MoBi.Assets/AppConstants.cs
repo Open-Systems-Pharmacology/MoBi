@@ -50,8 +50,6 @@ namespace MoBi.Assets
 
       public static class Parameters
       {
-         public static readonly string CONCENTRATION = "Concentration";
-         public static readonly string MOLECULAR_WEIGHT = "Molecular weight";
          public static readonly string EFFECTIVE_MOLECULAR_WEIGHT = "Effective molecular weight";
          public static readonly string SURFACE_AREA_INTERSTITIAL_INTRACELLULAR = "Surface area (interstitial/intracellular)";
          public static readonly string BSA = "BSA";

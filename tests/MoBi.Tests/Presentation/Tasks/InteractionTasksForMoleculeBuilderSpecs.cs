@@ -111,7 +111,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(_interactionTaskContext.ApplicationController).WithReturnType<IModalPresenter>().Returns(_modalPresenter);
          A.CallTo(_interactionTaskContext).WithReturnType<Unit>().Returns(_displayUnit);
          A.CallTo(() => _modalPresenter.SubPresenter).Returns(_editMoleculeBuilderPresenter);
-         A.CallTo(() => _parameterFactory.CreateConcentrationParameter(_moleculeBuilderBuildingBlock.FormulaCache)).Returns(new Parameter {Name = AppConstants.Parameters.CONCENTRATION});
+         A.CallTo(() => _parameterFactory.CreateConcentrationParameter(_moleculeBuilderBuildingBlock.FormulaCache)).Returns(new Parameter {Name = Constants.Parameters.CONCENTRATION });
 
          _defaultStartFormula = new ConstantFormula();
          A.CallTo(_formulaTask).WithReturnType<ConstantFormula>().Returns(_defaultStartFormula);
@@ -138,7 +138,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_add_the_readonly_concentration_parameter_to_the_molecule_builder()
       {
-         var concentrationParameter = _moleculeBuilder.Parameters.FindByName(AppConstants.Parameters.CONCENTRATION);
+         var concentrationParameter = _moleculeBuilder.Parameters.FindByName(Constants.Parameters.CONCENTRATION);
          concentrationParameter.ShouldNotBeNull();
       }
 
