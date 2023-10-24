@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void AddConcentrationParameterTo(MoleculeBuilder moleculeBuilder, MoleculeBuildingBlock moleculeBuildingBlock)
       {
-         if (moleculeBuilder.Parameters.ExistsByName(AppConstants.Parameters.CONCENTRATION))
+         if (moleculeBuilder.Parameters.ExistsByName(Constants.Parameters.CONCENTRATION))
             return;
 
          var concentrationParameter = _parameterFactory.CreateConcentrationParameter(moleculeBuildingBlock.FormulaCache);

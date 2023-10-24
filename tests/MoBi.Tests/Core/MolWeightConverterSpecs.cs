@@ -1,5 +1,4 @@
 using FakeItEasy;
-using MoBi.Assets;
 using MoBi.Core.Domain.UnitSystem;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -22,7 +21,7 @@ namespace MoBi.Core
          _column = A.Fake<DataColumn>();
          _column.Dimension = _source;
          _column.DataInfo = A.Fake<DataInfo>();
-         _column.DataInfo.MolWeight=_mw;
+         _column.DataInfo.MolWeight = _mw;
          _source = new Dimension(new BaseDimensionRepresentation(), "DrugMass", "g");
          _source.AddUnit("mg", 1000, 0);
          _source.DefaultUnit = _source.Unit("mg");
@@ -46,7 +45,7 @@ namespace MoBi.Core
       [Observation]
       public void should_return_value_in_target_base_unit()
       {
-         _res.ShouldBeEqualTo(10/_mw);
+         _res.ShouldBeEqualTo(10 / _mw);
       }
    }
 
@@ -98,8 +97,8 @@ namespace MoBi.Core
          base.Context();
          IContainer root = new Container().WithName("Top");
          IContainer compound = new Container().WithName("Bla").WithParentContainer(root);
-         IContainer organism  = new Container().WithName("Organism").WithParentContainer(root);
-         IParameter mw = A.Fake<IParameter>().WithName(AppConstants.Parameters.MOLECULAR_WEIGHT).WithParentContainer(compound);
+         IContainer organism = new Container().WithName("Organism").WithParentContainer(root);
+         IParameter mw = A.Fake<IParameter>().WithName(Constants.Parameters.MOL_WEIGHT).WithParentContainer(compound);
          mw.Value = _mw;
          _formulaUsable = new Parameter().WithName("Bla").WithParentContainer(organism);
          sut.SetRefObject(_formulaUsable);
@@ -113,7 +112,7 @@ namespace MoBi.Core
       [Observation]
       public void should_return_value_in_target_base_unit()
       {
-         _res.ShouldBeEqualTo(10/_mw);
+         _res.ShouldBeEqualTo(10 / _mw);
       }
    }
 
@@ -127,7 +126,7 @@ namespace MoBi.Core
          IContainer root = new Container().WithName("Top");
          IContainer compound = new Container().WithName("Bla").WithParentContainer(root);
          IContainer organism = new Container().WithName("Organism").WithParentContainer(root);
-         IParameter mw = A.Fake<IParameter>().WithName(AppConstants.Parameters.MOLECULAR_WEIGHT).WithParentContainer(compound);
+         IParameter mw = A.Fake<IParameter>().WithName(Constants.Parameters.MOL_WEIGHT).WithParentContainer(compound);
          mw.Value = _mw;
 
          _formulaUsable = new Parameter().WithName("Bla").WithParentContainer(organism);
