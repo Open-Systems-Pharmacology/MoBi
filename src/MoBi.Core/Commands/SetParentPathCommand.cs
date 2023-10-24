@@ -59,7 +59,7 @@ namespace MoBi.Core.Commands
          spatialStructure.TopContainers
             .Union(spatialStructure.Neighborhoods)
             .SelectMany(x => x.GetPathsReferencing(referencesPath))
-            .Select(x => x.path)
+            .Select(x => x.Path)
             .Each(updatePaths);
 
          var allReferencingPathsInNeighborhood = spatialStructure.Neighborhoods
