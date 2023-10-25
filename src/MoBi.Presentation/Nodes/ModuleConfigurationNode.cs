@@ -11,6 +11,7 @@ namespace MoBi.Presentation.Nodes
       {
          Id = moduleConfiguration.Module.Id;
          Text = moduleConfiguration.Module.Name;
+         Icon = BaseIcon;
       }
 
       public string ModuleName => Tag.Module.Name;
@@ -21,6 +22,6 @@ namespace MoBi.Presentation.Nodes
       }
 
       public override string Id { get; }
-      public ApplicationIcon BaseIcon => ApplicationIcons.Module;
+      public ApplicationIcon BaseIcon => Tag.Module.IsPKSimModule? ApplicationIcons.PKSimModule : ApplicationIcons.Module;
    }
 }

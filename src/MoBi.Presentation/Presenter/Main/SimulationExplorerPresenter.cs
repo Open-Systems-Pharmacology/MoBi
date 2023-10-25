@@ -217,7 +217,6 @@ namespace MoBi.Presentation.Presenter.Main
          buildingBlock.Icon = changedSimulationBuildingBlocks.Contains(buildingBlock.Tag) ? ApplicationIcons.RedOverlayFor(buildingBlock.BaseIcon) : ApplicationIcons.GreenOverlayFor(buildingBlock.BaseIcon);
       }
 
-
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
       {
          return Enumerable.Empty<ClassificationTemplate>();

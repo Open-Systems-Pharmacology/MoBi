@@ -202,6 +202,16 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class ModuleStatusChangedEvent
+   {
+      public Module Module { get; }
+
+      public ModuleStatusChangedEvent(Module module)
+      {
+         Module = module;
+      }
+   }
+
    public class SimulationStatusChangedEvent
    {
       public IMoBiSimulation Simulation { get; }

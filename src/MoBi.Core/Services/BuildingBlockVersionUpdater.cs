@@ -1,8 +1,10 @@
-﻿using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
+﻿using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
 {
@@ -28,6 +30,21 @@ namespace MoBi.Core.Services
          if (buildingBlock == null) return;
          buildingBlock.Version = newVersion;
          publishSimulationStatusChangedEvents(buildingBlock);
+         publishModuleStatusChangedEvents(buildingBlock);
+      }
+
+      private void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
+      {
+         // Building blocks that are not contained by modules do not need to refresh when modified
+         if (!_projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks).Contains(buildingBlock))
+            return;
+
+         refreshModule(_projectRetriever.Current.Modules.Single(x => x.BuildingBlocks.Contains(buildingBlock)));
+      }
+
+      private void refreshModule(Module module)
+      {
+         _eventPublisher.PublishEvent(new ModuleStatusChangedEvent(module));
       }
 
       public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion)

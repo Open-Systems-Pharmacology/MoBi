@@ -31,6 +31,7 @@ namespace MoBi.Core
       private IList<IModelCoreSimulation> _affectedSimulations;
       private IMoBiSimulation _affectedSimulation;
       private readonly uint _targetVersion = 4;
+      private Module _module;
 
       protected override void Context()
       {
@@ -50,6 +51,8 @@ namespace MoBi.Core
 
          var project = DomainHelperForSpecs.NewProject();
          project.AddSimulation(_affectedSimulation);
+         _module = new Module {_changeBuildingBlock};
+         project.AddModule(_module);
          A.CallTo(() => _projectRetriever.Current).Returns(project);
       }
 
@@ -62,6 +65,12 @@ namespace MoBi.Core
       public void should_increment_building_block_version()
       {
          _changeBuildingBlock.Version.ShouldBeEqualTo(_targetVersion);
+      }
+
+      [Observation]
+      public void should_publish_module_status_changed_event()
+      {
+         A.CallTo(() => _eventPublisher.PublishEvent(A<ModuleStatusChangedEvent>.That.Matches(x => x.Module.Equals(_module)))).MustHaveHappened();
       }
 
       [Observation]
