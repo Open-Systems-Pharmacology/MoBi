@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
    public class AddModuleCommand : MoBiReversibleCommand, ISilentCommand
    {
       protected Module _module;
-      public string ModuleId { get; private set; }
+      public string ModuleId { get; }
       public bool Silent { get; set; }
 
       public AddModuleCommand(Module module)
@@ -27,12 +27,19 @@ namespace MoBi.Core.Commands
       {
          var project = context.CurrentProject;
 
+         updateImportVersion(_module);
          context.Register(_module);
 
          addToProject(project);
 
          if (!Silent)
             context.PublishEvent(new AddedEvent<Module>(_module, project));
+      }
+
+      private void updateImportVersion(Module module)
+      {
+         if(string.IsNullOrEmpty(module.ModuleImportVersion))
+            module.ModuleImportVersion = module.Version;
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

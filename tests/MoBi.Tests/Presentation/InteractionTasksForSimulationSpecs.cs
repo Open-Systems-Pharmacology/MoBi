@@ -136,6 +136,8 @@ namespace MoBi.Presentation
          _simulation.Configuration = new SimulationConfiguration();
          _configuredSimulation = new MoBiSimulation();
          _simulationConfiguration = new SimulationConfiguration();
+         _configuredSimulation.Configuration = new SimulationConfiguration();
+         _configuredSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
          A.CallTo(() => _presenter.CreateBasedOn(_simulation, true)).Returns(_simulationConfiguration);
          A.CallTo(() => _applicationController.Start<ICreateSimulationConfigurationPresenter>()).Returns(_presenter);
          A.CallTo(() => _applicationController.PresenterFor(_simulation)).Returns(A.Fake<IEditSimulationPresenter>());
@@ -146,6 +148,12 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.CreateSimulation();
+      }
+
+      [Observation]
+      public void the_configured_simulation_modules_should_have_import_version_set()
+      {
+         _configuredSimulation.Modules.All(x => !string.IsNullOrEmpty(x.ModuleImportVersion)).ShouldBeTrue();
       }
 
       [Observation]

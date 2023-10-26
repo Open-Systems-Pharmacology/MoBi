@@ -2,6 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -69,7 +70,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_removing_the_selected_building_block_from_the_simulation : concern_for_RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand
+   public class When_removing_the_selected_building_block_module : concern_for_RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand
    {
       protected override void Because()
       {

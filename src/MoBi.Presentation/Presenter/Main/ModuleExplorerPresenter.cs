@@ -6,6 +6,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -35,7 +36,9 @@ namespace MoBi.Presentation.Presenter.Main
    public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter,
       IListener<AddedEvent<Module>>,
       IListener<AddedEvent<IndividualBuildingBlock>>,
-      IListener<AddedEvent<ExpressionProfileBuildingBlock>>
+      IListener<AddedEvent<ExpressionProfileBuildingBlock>>,
+      IListener<ModuleStatusChangedEvent>
+
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private readonly IEditBuildingBlockStarter _editBuildingBlockStarter;
@@ -259,7 +262,9 @@ namespace MoBi.Presentation.Presenter.Main
          switch (eventToHandle.AddedObject)
          {
             case IBuildingBlock buildingBlock:
-               addBuildingBlockToModule(buildingBlock, eventToHandle.Parent as Module);
+               var module = eventToHandle.Parent as Module;
+               addBuildingBlockToModule(buildingBlock, module);
+               refreshModuleIcon(module);
                break;
          }
       }
@@ -267,6 +272,18 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(RemovedEvent eventToHandle)
       {
          RemoveNodesFor(eventToHandle.RemovedObjects);
+         if(eventToHandle.Parent is Module module)
+            refreshModuleIcon(module);
+      }
+
+      public void Handle(ModuleStatusChangedEvent eventToHandle)
+      {
+         refreshModuleIcon(eventToHandle.Module);
+      }
+
+      private void refreshModuleIcon(Module module)
+      {
+         _view.NodeById(module.Id).Icon = ApplicationIcons.IconByName(module.Icon);
       }
    }
 }

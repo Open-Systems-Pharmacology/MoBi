@@ -117,7 +117,7 @@ namespace MoBi.Presentation.Nodes
 
       public ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration)
       {
-         var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration).WithIcon(ApplicationIcons.Module);
+         var moduleConfigurationNode = new ModuleConfigurationNode(moduleConfiguration);
          var module = moduleConfiguration.Module;
 
          addModuleBuildingBlocks(moduleConfigurationNode, module);

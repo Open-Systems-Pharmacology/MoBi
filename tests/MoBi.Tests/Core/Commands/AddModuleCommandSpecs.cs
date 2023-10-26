@@ -51,6 +51,32 @@ namespace MoBi.Core.Commands
       }
    }
 
+   public class When_executing_the_add_module_command_and_the_module_is_from_pk_sim_and_has_not_been_added_to_any_projects_before : concern_for_AddModuleCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _module.PKSimVersion= "1";
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void the_module_is_a_pk_sim_module()
+      {
+         _module.IsPKSimModule.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void the_module_has_its_import_version_added_to_extended_properties()
+      {
+         _module.ModuleImportVersion.ShouldNotBeNull();
+      }
+   }
+
    public class When_executing_the_add_module_command_and_the_module_has_building_blocks : concern_for_AddModuleCommand
    {
       protected override void Context()
@@ -70,6 +96,12 @@ namespace MoBi.Core.Commands
       protected override void Because()
       {
          sut.Execute(_context);
+      }
+
+      [Observation]
+      public void the_module_is_not_pk_sim_module()
+      {
+         _module.IsPKSimModule.ShouldBeFalse();
       }
 
       [Observation]

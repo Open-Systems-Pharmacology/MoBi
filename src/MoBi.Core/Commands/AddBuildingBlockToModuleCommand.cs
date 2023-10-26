@@ -26,7 +26,6 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          DoExecute(context);
-
          RaiseEvents(context);
       }
 
@@ -34,7 +33,7 @@ namespace MoBi.Core.Commands
       {
          if (!Silent)
             context.PublishEvent(new AddedEvent<T>(_buildingBlock, _existingModule));
-         
+
          PublishSimulationStatusChangedEvents(_existingModule, context);
       }
 
