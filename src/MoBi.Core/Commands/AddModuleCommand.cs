@@ -38,13 +38,8 @@ namespace MoBi.Core.Commands
 
       private void updateImportVersion(Module module)
       {
-         if (isPKSimModuleInitialImport(module))
-            module.AddExtendedProperty(Constants.PK_SIM_MODULE_IMPORT_VERSION, module.Version);
-      }
-
-      private static bool isPKSimModuleInitialImport(Module module)
-      {
-         return module.ExtendedProperties.Contains(Constants.PK_SIM_VERSION) && !module.ExtendedProperties.Contains(Constants.PK_SIM_MODULE_IMPORT_VERSION);
+         if(string.IsNullOrEmpty(module.ModuleImportVersion))
+            module.ModuleImportVersion = module.Version;
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

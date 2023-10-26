@@ -3,6 +3,8 @@ using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -25,7 +27,14 @@ namespace MoBi.Core.Commands
          var project = context.CurrentProject;
          context.Register(_simulation);
          project.AddSimulation(_simulation);
+         _simulation.Modules.Each(setModuleImportVersion);
          context.PublishEvent(new SimulationAddedEvent(_simulation));
+      }
+
+      private static void setModuleImportVersion(Module module)
+      {
+         if (string.IsNullOrEmpty(module.ModuleImportVersion))
+            module.ModuleImportVersion = module.Version;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

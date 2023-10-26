@@ -39,7 +39,7 @@ namespace MoBi.Core.Services
          if (!_projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks).Contains(buildingBlock))
             return;
 
-         refreshModule(_projectRetriever.Current.Modules.Single(x => x.BuildingBlocks.Contains(buildingBlock)));
+         refreshModule(buildingBlock.Module);
       }
 
       private void refreshModule(Module module)

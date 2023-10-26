@@ -56,7 +56,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         _module.AddExtendedProperty(Constants.PK_SIM_VERSION, "1");
+         _module.PKSimVersion= "1";
       }
 
       protected override void Because()
@@ -73,7 +73,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_module_has_its_import_version_added_to_extended_properties()
       {
-         _module.ExtendedProperties.Contains(Constants.PK_SIM_MODULE_IMPORT_VERSION).ShouldBeTrue();
+         _module.ModuleImportVersion.ShouldNotBeNull();
       }
    }
 
@@ -96,12 +96,6 @@ namespace MoBi.Core.Commands
       protected override void Because()
       {
          sut.Execute(_context);
-      }
-
-      [Observation]
-      public void the_module_doesnt_have_the_import_version_set()
-      {
-         _module.ExtendedProperties.Contains(Constants.PK_SIM_MODULE_IMPORT_VERSION).ShouldBeFalse();
       }
 
       [Observation]

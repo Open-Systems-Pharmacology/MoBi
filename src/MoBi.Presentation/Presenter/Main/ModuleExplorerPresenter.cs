@@ -283,7 +283,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void refreshModuleIcon(Module module)
       {
-         _view.NodeById(module.Id).Icon = module.IsPKSimModule ? ApplicationIcons.PKSimModule : ApplicationIcons.Module;
+         _view.NodeById(module.Id).Icon = ApplicationIcons.IconByName(module.Icon);
       }
    }
 }
