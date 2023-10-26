@@ -31,6 +31,7 @@ namespace MoBi.Presentation.Presenter
          HideDeleteView();
          HideIsPresentColumn();
          HideValueOriginColumn();
+         DisablePathColumns();
       }
    }
 }

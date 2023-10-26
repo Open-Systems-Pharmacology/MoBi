@@ -24,7 +24,7 @@ namespace MoBi.UI.Views
       private readonly UxComboBoxUnit<InitialConditionDTO> _unitControl;
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
       private IGridViewBoundColumn<InitialConditionDTO, bool> _isPresentColumn;
-
+      
       public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder) : base(valueOriginBinder)
       {
          InitializeComponent();
@@ -34,14 +34,10 @@ namespace MoBi.UI.Views
 
       protected override void DoInitializeBinding()
       {
+         base.DoInitializeBinding();
          _unitControl.ParameterUnitSet += setParameterUnit;
 
-         var colName = _gridViewBinder.AutoBind(dto => dto.Name)
-            .WithCaption(AppConstants.Captions.MoleculeName)
-            .WithOnValueUpdating((o, e) => OnEvent(() => OnNameSet(o, e)));
-
-         //to put the name in the first column
-         colName.XtraColumn.VisibleIndex = 0;
+         
 
          _gridViewBinder.AutoBind(dto => dto.Value)
             .WithCaption(AppConstants.Captions.Value)

@@ -35,6 +35,7 @@ namespace MoBi.UI.Views
       protected readonly GridViewBinder<TPathAndValueEntity> _gridViewBinder;
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
       protected IStartValuesPresenter<TPathAndValueEntity> _presenter;
+      private IGridViewAutoBindColumn<TPathAndValueEntity, string> _colName;
 
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private readonly IList<string> _pathValues;
@@ -51,8 +52,23 @@ namespace MoBi.UI.Views
          _gridViewBinder = new GridViewBinder<TPathAndValueEntity>(gridView);
          _pathValues = new List<string>();
 
-         _pathRepositoryItemComboBox = new RepositoryItemComboBox {TextEditStyle = TextEditStyles.Standard};
+         _pathRepositoryItemComboBox = new RepositoryItemComboBox { TextEditStyle = TextEditStyles.Standard };
          _pathRepositoryItemComboBox.SelectedValueChanged += (o, e) => gridView.PostEditor();
+      }
+
+      protected virtual void DoInitializeBinding()
+      {
+         initializeNameColumnBinding();
+      }
+
+      private void initializeNameColumnBinding()
+      {
+         _colName = _gridViewBinder.AutoBind(dto => dto.Name)
+            .WithCaption(AppConstants.Captions.MoleculeName)
+            .WithOnValueUpdating((o, e) => OnEvent(() => OnNameSet(o, e)));
+
+         //to put the name in the first column
+         _colName.XtraColumn.VisibleIndex = 0;
       }
 
       public void HideIsPresentView()
@@ -75,6 +91,12 @@ namespace MoBi.UI.Views
       public void AddDeleteStartValuesView(IView view)
       {
          panelDeleteStartValues.FillWith(view);
+      }
+
+      public void DisablePathColumns()
+      {
+         _pathElementsColumns.Each(x => x.AsReadOnly());
+         _colName.AsReadOnly();
       }
 
       public void HideDeleteView()
@@ -114,8 +136,6 @@ namespace MoBi.UI.Views
       {
          return true;
       }
-
-      protected abstract void DoInitializeBinding();
 
       public override void InitializeBinding()
       {
@@ -223,7 +243,6 @@ namespace MoBi.UI.Views
 
       private void configureGridView()
       {
-         gridView.ShouldUseColorForDisabledCell = false;
          gridView.OptionsSelection.MultiSelect = true;
          gridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CellSelect;
          gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
@@ -235,7 +254,7 @@ namespace MoBi.UI.Views
 
          var startValueDTO = _gridViewBinder.ElementAt(gridView.FocusedRowHandle);
          _presenter.AddNewFormula(startValueDTO);
-         
+
          if (sender is ComboBoxEdit comboBox)
             comboBox.FillComboBoxEditorWith(_presenter.AllFormulas());
       }

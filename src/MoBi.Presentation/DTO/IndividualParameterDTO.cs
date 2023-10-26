@@ -2,7 +2,7 @@
 
 namespace MoBi.Presentation.DTO
 {
-   public class IndividualParameterDTO : PathAndValueEntityDTO<IndividualParameter>, IWithFormulaDTO
+   public class IndividualParameterDTO : PathAndValueEntityDTO<IndividualParameter>
    {
       public IndividualParameterDTO(IndividualParameter individualParameter) : base(individualParameter)
       {
