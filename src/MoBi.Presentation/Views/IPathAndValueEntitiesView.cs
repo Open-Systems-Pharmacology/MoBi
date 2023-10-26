@@ -27,6 +27,7 @@ namespace MoBi.Presentation.Views
       void HideIsPresentView();
       void HideNegativeValuesAllowedView();
       void HideValueOriginColumn();
+      void DisablePathColumns();
 
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }

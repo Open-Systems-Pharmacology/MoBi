@@ -2,7 +2,7 @@
 
 namespace MoBi.Presentation.DTO
 {
-   public class ExpressionParameterDTO : PathAndValueEntityDTO<ExpressionParameter>, IWithFormulaDTO
+   public class ExpressionParameterDTO : PathAndValueEntityDTO<ExpressionParameter>
    {
       public ExpressionParameterDTO(ExpressionParameter expressionParameter) : base(expressionParameter)
       {

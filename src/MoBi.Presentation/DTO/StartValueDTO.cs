@@ -6,22 +6,12 @@ using System.Linq.Expressions;
 using MoBi.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public interface IPathAndValueEntityDTO : IWithDisplayUnitDTO, IWithValueOrigin, IWithFormulaDTO
-   {
-   }
-
-   public interface IWithFormulaDTO
-   {
-      ValueFormulaDTO Formula { get; set; }
-   }
-
    public abstract class StartValueDTO<T> : PathAndValueEntityDTO<T> where T : PathAndValueEntity
    {
       private readonly IBuildingBlock<T> _buildingBlock;

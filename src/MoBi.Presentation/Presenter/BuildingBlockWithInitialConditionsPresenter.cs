@@ -96,6 +96,11 @@ namespace MoBi.Presentation.Presenter
          setNegativeValuesAllowed(new[] { dto.InitialCondition }, negativeValuesAllowed);
       }
 
+      protected void DisablePathColumns()
+      {
+         _view.DisablePathColumns();
+      }
+
       public void HideIsPresentColumn()
       {
          _view.HideIsPresentColumn();
