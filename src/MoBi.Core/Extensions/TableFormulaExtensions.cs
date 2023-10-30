@@ -8,7 +8,7 @@ namespace MoBi.Core.Extensions
    {
       public static ValuePoint GetPointWithCoordinates(this TableFormula formula, double x, double y)
       {
-         return formula.AllPoints().Single(point => ValueComparer.AreValuesEqual(point.X, x) && ValueComparer.AreValuesEqual(point.Y, y));
+         return formula.AllPoints.Single(point => ValueComparer.AreValuesEqual(point.X, x) && ValueComparer.AreValuesEqual(point.Y, y));
       }
    }
 }

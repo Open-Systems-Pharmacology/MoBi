@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Mappers
          dto.XDisplayName = Constants.NameWithUnitFor(tableFormula.XName, tableFormula.XDisplayUnit);
          dto.YDisplayName = Constants.NameWithUnitFor(tableFormula.YName, tableFormula.YDisplayUnit);
          _valuePointToDTOValuePointMapperMapper.Initialise(tableFormula.XDimension, tableFormula.Dimension, tableFormula.XDisplayUnit, tableFormula.YDisplayUnit, dto);
-         dto.ValuePoints = tableFormula.AllPoints().MapAllUsing(_valuePointToDTOValuePointMapperMapper);
+         dto.ValuePoints = tableFormula.AllPoints.MapAllUsing(_valuePointToDTOValuePointMapperMapper);
          return dto;
       }
    }

@@ -52,7 +52,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_y_display_value_should_be_converted_back()
       {
-         _tableFormula.AllPoints().First().Y.ShouldBeEqualTo(_yvalueInMilliMol);
+         _tableFormula.AllPoints.First().Y.ShouldBeEqualTo(_yvalueInMilliMol);
       }
    }
 
@@ -72,7 +72,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_value_point_should_be_converted()
       {
-         _tableFormula.AllPoints().First().Y.ShouldBeEqualTo(_yvalueInMilliMol / 1000);
+         _tableFormula.AllPoints.First().Y.ShouldBeEqualTo(_yvalueInMilliMol / 1000);
       }
    }
 }

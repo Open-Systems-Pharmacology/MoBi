@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_remove_the_point_from_the_command()
       {
-         _tableFormula.AllPoints().Any().ShouldBeFalse();
+         _tableFormula.AllPoints.Any().ShouldBeFalse();
       }
    }
 

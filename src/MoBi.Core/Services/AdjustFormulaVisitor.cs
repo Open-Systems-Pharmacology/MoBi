@@ -154,11 +154,11 @@ namespace MoBi.Core.Services
 
       public bool AreEqualTableFormula(TableFormula formula, TableFormula allreadyUsedFormula)
       {
-         var valuePoints = allreadyUsedFormula.AllPoints();
-         if (!valuePoints.Count().Equals(formula.AllPoints().Count())) 
+         var valuePoints = allreadyUsedFormula.AllPoints;
+         if (!valuePoints.Count().Equals(formula.AllPoints.Count())) 
             return false;
 
-         foreach (ValuePoint point in formula.AllPoints())
+         foreach (ValuePoint point in formula.AllPoints)
          {
             if (valuePoints.FirstOrDefault(p => p.X.Equals(point.X) && p.Y.Equals(point.Y)) == null) 
                return false;
