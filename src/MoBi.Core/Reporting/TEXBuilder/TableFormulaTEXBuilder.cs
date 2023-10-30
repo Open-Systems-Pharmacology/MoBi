@@ -25,7 +25,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          listToReport.Add(new Paragraph(Constants.TABLE_FORMULA));
          listToReport.Add(string.Format(Constants.PROPERTY_PROMPT_FORMAT, tableFormula.Name, tableFormula.ToString()));
          listToReport.AddRange(this.ReportDescription(tableFormula, buildTracker));
-         listToReport.Add(new Table(toDataTable(tableFormula.AllPoints()).DefaultView, Constants.TABLE_POINTS));
+         listToReport.Add(new Table(toDataTable(tableFormula.AllPoints).DefaultView, Constants.TABLE_POINTS));
 
          _builderRepository.Report(listToReport, buildTracker);
       }

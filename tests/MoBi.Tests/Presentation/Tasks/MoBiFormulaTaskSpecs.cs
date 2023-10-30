@@ -224,7 +224,7 @@ namespace MoBi.Presentation.Tasks
          tableFormula.XDimension.ShouldBeEqualTo(_timeDimension);
          tableFormula.XName.ShouldBeEqualTo(_timeDimension.DisplayName);
          tableFormula.YName.ShouldBeEqualTo(AppConstants.Captions.DisplayNameYValue);
-         tableFormula.AllPoints().Count().ShouldBeEqualTo(1);
+         tableFormula.AllPoints.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]

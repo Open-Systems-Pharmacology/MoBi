@@ -52,7 +52,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_x_display_value_should_be_converted_back()
       {
-         _tableFormula.AllPoints().First().X.ShouldBeEqualTo(_xValueInMinutes);
+         _tableFormula.AllPoints.First().X.ShouldBeEqualTo(_xValueInMinutes);
       }
    }
 
@@ -72,7 +72,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_value_point_should_be_converted()
       {
-         _tableFormula.AllPoints().First().X.ShouldBeEqualTo(_xValueInMinutes / 60);
+         _tableFormula.AllPoints.First().X.ShouldBeEqualTo(_xValueInMinutes / 60);
       }
    }
 }

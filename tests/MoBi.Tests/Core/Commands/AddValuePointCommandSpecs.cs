@@ -46,7 +46,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_add_the_point_to_the_formula()
       {
-         _tableFormula.AllPoints().ShouldContain(_valuePoint);
+         _tableFormula.AllPoints.ShouldContain(_valuePoint);
       }
 
       [Observation]
@@ -74,7 +74,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_remove_the_point_that_was_added()
       {
-         _tableFormula.AllPoints().ShouldBeEmpty();
+         _tableFormula.AllPoints.ShouldBeEmpty();
       }
    }
 }

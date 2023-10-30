@@ -66,7 +66,7 @@ namespace MoBi.Presentation.Presenter
 
       public bool ShouldEnableDelete()
       {
-         return _formula.AllPoints().Count() > 1;
+         return _formula.AllPoints.Count() > 1;
       }
 
       public void AddValuePoint()
