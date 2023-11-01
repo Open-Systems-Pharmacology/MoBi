@@ -27,7 +27,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         btnSelection.InitWithImage(ApplicationIcons.OK, AppConstants.Captions.PerformCheckSelection);
+         btnSelection.InitWithImage(ApplicationIcons.OK, AppConstants.Captions.Apply);
          cbSelection.Properties.AutoHeight = false;
          cbSelection.Height = btnSelection.Height;
       }

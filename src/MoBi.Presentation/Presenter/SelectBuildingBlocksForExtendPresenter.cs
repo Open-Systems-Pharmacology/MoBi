@@ -4,67 +4,54 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface ISelectBuildingBlocksForExtendPresenter : IDisposablePresenter
+   public interface ISelectSpatialStructureAndMoleculesPresenter : IDisposablePresenter
    {
-      IReadOnlyList<MoleculeBuildingBlock> AllMolecules { get; }
       IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures { get; }
 
-      void SelectBuildingBlocksForExtend(bool moleculeRequired = true);
+      void SelectBuildingBlocksForExtend();
       MoBiSpatialStructure SelectedSpatialStructure { get; }
-      MoleculeBuildingBlock SelectedMoleculeBuildingBlock { get; }
+      IReadOnlyList<MoleculeBuilder> SelectedMolecules { get; }
    }
 
-   public class SelectBuildingBlocksForExtendPresenter : AbstractDisposablePresenter<ISelectSpatialStructureAndMoleculesView, ISelectBuildingBlocksForExtendPresenter>, ISelectBuildingBlocksForExtendPresenter
+   public class SelectSpatialStructureAndMoleculesPresenter : AbstractDisposablePresenter<ISelectSpatialStructureAndMoleculesView, ISelectSpatialStructureAndMoleculesPresenter>, ISelectSpatialStructureAndMoleculesPresenter
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private SelectSpatialStructureAndMoleculesDTO _dto;
+      private readonly ISelectSpatialStructureAndMoleculesDTOMapper _mapper;
 
-      public SelectBuildingBlocksForExtendPresenter(ISelectSpatialStructureAndMoleculesView view, IBuildingBlockRepository buildingBlockRepository) : base(view)
+      public SelectSpatialStructureAndMoleculesPresenter(ISelectSpatialStructureAndMoleculesView view, IBuildingBlockRepository buildingBlockRepository, ISelectSpatialStructureAndMoleculesDTOMapper mapper) : base(view)
       {
          _buildingBlockRepository = buildingBlockRepository;
+         _mapper = mapper;
       }
 
-      public void SelectBuildingBlocksForExtend(bool moleculeRequired = true)
+      public void SelectBuildingBlocksForExtend()
       {
-         setViewCaption(moleculeRequired);
-         _dto = createDTO(AllMolecules.FirstOrDefault(), AllSpatialStructures.FirstOrDefault(), moleculeRequired);
-         if (!moleculeRequired)
-            _view.AdjustForNoMoleculeRequired();
-
+         setViewCaption();
+         _dto = _mapper.MapFrom(_buildingBlockRepository.MoleculeBlockCollection, AllSpatialStructures.FirstOrDefault());
          _view.Show(_dto);
          _view.Display();
          if (!_view.Canceled)
             return;
 
-         _dto.Molecules = null;
          _dto.SpatialStructure = null;
       }
 
-      private void setViewCaption(bool moleculeRequired)
+      private void setViewCaption()
       {
-         _view.Caption = moleculeRequired ? AppConstants.Captions.SelectSpatialStructureAndMolecules : AppConstants.Captions.SelectSpatialStructure;
+         _view.Caption = AppConstants.Captions.SelectSpatialStructureAndMolecules;
       }
 
-      private SelectSpatialStructureAndMoleculesDTO createDTO(MoleculeBuildingBlock moleculeBuildingBlock, MoBiSpatialStructure spatialStructure, bool moleculeRequired)
-      {
-         return new SelectSpatialStructureAndMoleculesDTO(moleculeRequired)
-         {
-            Molecules = moleculeBuildingBlock,
-            SpatialStructure = spatialStructure
-         };
-      }
+      public IReadOnlyList<MoleculeBuilder> SelectedMolecules => _dto.Molecules.Where(x => x.Selected).Select(x => x.MoleculeBuilder).ToList();
 
       public MoBiSpatialStructure SelectedSpatialStructure => _dto.SpatialStructure;
-      
-      public MoleculeBuildingBlock SelectedMoleculeBuildingBlock => _dto.Molecules;
-
-      public IReadOnlyList<MoleculeBuildingBlock> AllMolecules => _buildingBlockRepository.MoleculeBlockCollection;
 
       public IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures => _buildingBlockRepository.SpatialStructureCollection;
    }
