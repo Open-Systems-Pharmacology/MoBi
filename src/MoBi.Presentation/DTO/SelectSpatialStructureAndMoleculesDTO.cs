@@ -3,21 +3,20 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
    public class SelectSpatialStructureAndMoleculesDTO : DxValidatableDTO
    {
-      private readonly List<MoleculeSelectionDTO> _molecules;
+      private readonly List<MoleculeSelectionDTO> _molecules = new List<MoleculeSelectionDTO>();
+      private readonly List<MoleculeSelectionDTO> _selectedMolecules = new List<MoleculeSelectionDTO>();
       public MoBiSpatialStructure SpatialStructure { get; set; }
       public IReadOnlyList<MoleculeSelectionDTO> Molecules => _molecules;
+      public IReadOnlyList<MoleculeSelectionDTO> SelectedMolecules => _selectedMolecules;
 
       public SelectSpatialStructureAndMoleculesDTO()
       {
-         _molecules = new List<MoleculeSelectionDTO>();
-
          Rules.Add(AllRules.MoleculeSelected);
          Rules.Add(AllRules.SpatialStructureSelected);
       }
@@ -37,10 +36,34 @@ namespace MoBi.Presentation.DTO
                .WithError(AppConstants.Validation.ExtendingRequiresSpatialStructure);
       }
 
-      public void AddMolecules(List<MoleculeSelectionDTO> molecules)
+      private void addSelectedMolecule(MoleculeSelectionDTO moleculeSelectionDTO)
       {
-         molecules.Each(x => x.AddSelectedMoleculeRetriever(() => Molecules.Where(m => m.Selected).ToList()));
-         _molecules.AddRange(molecules);
+         if (_selectedMolecules.Contains(moleculeSelectionDTO))
+            return;
+
+         _selectedMolecules.Add(moleculeSelectionDTO);
+      }
+
+      private void removeSelectedMolecule(MoleculeSelectionDTO moleculeSelectionDTO)
+      {
+         _selectedMolecules.Remove(moleculeSelectionDTO);
+      }
+
+      public void SelectionUpdated(MoleculeSelectionDTO moleculeSelectionDTO)
+      {
+         if (moleculeSelectionDTO.Selected)
+            addSelectedMolecule(moleculeSelectionDTO);
+         else
+            removeSelectedMolecule(moleculeSelectionDTO);
+      }
+
+      public void AddMolecule(MoleculeSelectionDTO moleculeSelectionDTO)
+      {
+         moleculeSelectionDTO.ParentDTO = this;
+         _molecules.Add(moleculeSelectionDTO);
+
+         if (moleculeSelectionDTO.Selected)
+            addSelectedMolecule(moleculeSelectionDTO);
       }
    }
 }

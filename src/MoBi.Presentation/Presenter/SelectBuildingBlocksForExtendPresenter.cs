@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Presenter
          _view.Caption = AppConstants.Captions.SelectSpatialStructureAndMolecules;
       }
 
-      public IReadOnlyList<MoleculeBuilder> SelectedMolecules => _dto.Molecules.Where(x => x.Selected).Select(x => x.MoleculeBuilder).ToList();
+      public IReadOnlyList<MoleculeBuilder> SelectedMolecules => _dto.SelectedMolecules.Select(x => x.MoleculeBuilder).ToList();
 
       public MoBiSpatialStructure SelectedSpatialStructure => _dto.SpatialStructure;
 
