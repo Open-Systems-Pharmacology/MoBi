@@ -4,7 +4,6 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
@@ -97,7 +96,7 @@ namespace MoBi.Presentation.Tasks.Edit
             Description = AppConstants.Commands.RenameDescription(objectBase, newName)
          };
 
-         if (CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector))
+         if (CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector, buildingBlock?.Module))
             commandCollector.AddCommand(GetRenameCommandFor(objectBase, buildingBlock, newName, objectType));
 
          commandCollector.Run(_context);
@@ -109,20 +108,22 @@ namespace MoBi.Presentation.Tasks.Edit
          return new RenameObjectBaseCommand(objectBase, newName, buildingBlock) { ObjectType = objectType };
       }
 
-      public bool CheckUsagesFor(string newName, string oldName, IObjectBase renamedObject, ICommandCollector commandCollector)
+      public bool CheckUsagesFor(string newName, string oldName, IObjectBase renamedObject, ICommandCollector commandCollector, Module module)
       {
          if (renamedObject.IsAnImplementationOf<IModelCoreSimulation>())
             return changeUsagesInSimulation(newName, renamedObject.DowncastTo<IModelCoreSimulation>(), commandCollector);
 
-         return checkUsagesInBuildingBlocks(newName, renamedObject, commandCollector, oldName);
+         return checkUsagesInModule(newName, renamedObject, commandCollector, oldName, module);
       }
 
-      private bool checkUsagesInBuildingBlocks(string newName, IObjectBase renamedObject, ICommandCollector commandCollector, string oldName)
+      private bool checkUsagesInModule(string newName, IObjectBase renamedObject, ICommandCollector commandCollector, string oldName, Module module)
       {
-         var buildingBlocks = _interactionTaskContext.BuildingBlockRepository.All();
+         if (module == null)
+            return true;
+
          var possibleChanges = new List<IStringChange>();
 
-         foreach (var buildingBlock in buildingBlocks)
+         foreach (var buildingBlock in module.BuildingBlocks)
          {
             possibleChanges.AddRange(_checkNamesVisitor.GetPossibleChangesFrom(renamedObject, newName, buildingBlock, oldName));
          }

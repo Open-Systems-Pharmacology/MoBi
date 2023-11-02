@@ -207,12 +207,18 @@ namespace MoBi.Presentation.Tasks
       private IContainer _container;
       private SpatialStructure _spatialStructure;
       private IMoBiCommand _renameCommand;
+      private Module _module;
+      private IBuildingBlock _moleculesBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _container = new Container().WithName("OLD");
          _spatialStructure = new SpatialStructure();
+         _module = new Module().WithName("Module");
+         _moleculesBuildingBlock = new MoleculeBuildingBlock();
+         _module.Add(_spatialStructure);
+         _module.Add(_moleculesBuildingBlock);
          A.CallTo(_interactionTaskContext.NamingTask).WithReturnType<string>().Returns("NEW");
 
          A.CallTo(() => _interactionTaskContext.Context.AddToHistory(A<IMoBiCommand>._))
@@ -222,6 +228,13 @@ namespace MoBi.Presentation.Tasks
       protected override void Because()
       {
          sut.Rename(_container, _spatialStructure);
+      }
+
+      [Observation]
+      public void the_check_name_visitor_should_be_used_to_find_related_renames_from_the_module()
+      {
+         A.CallTo(() => _interactionTaskContext.CheckNamesVisitor.GetPossibleChangesFrom(_container, "NEW", _spatialStructure, "OLD")).MustHaveHappened();
+         A.CallTo(() => _interactionTaskContext.CheckNamesVisitor.GetPossibleChangesFrom(_container, "NEW", _moleculesBuildingBlock, "OLD")).MustHaveHappened();
       }
 
       [Observation]
