@@ -1420,7 +1420,7 @@ namespace MoBi.Assets
          public static readonly string AllNegativeValuesNotAllowed = "Mark all as not allowing neg. values";
          public static readonly string SelectedNegativeValuesAllowed = "Mark selected as allowing neg. values";
          public static readonly string SelectedNegativeValuesNotAllowed = "Mark selected as not allowing neg. values";
-         public static readonly string PerformCheckSelection = "Apply";
+         public static readonly string Apply = "Apply";
          public static readonly string SimulationConfiguration = "Configuration";
          public static readonly string Search = "Search";
          public static readonly string SearchScope = "Scope";
@@ -1575,7 +1575,7 @@ namespace MoBi.Assets
          public static readonly string Source = "Source";
          public static readonly string Target = "Target";
          public static readonly string DatabaseQuery = "Database Query";
-         public static readonly string SelectSpatialStructureAndMolecules = "Select a spatial structure and molecules building block";
+         public static readonly string SelectSpatialStructureAndMolecules = "Select a spatial structure and molecules";
          public static readonly string SelectSpatialStructure = "Select a spatial structure";
          public static readonly string ExtendDescription = "<b><i>Initial conditions</i> will be created for molecules in all physical containers in the selected <i>spatial structure</i></b>";
          public static string ExportContainerDescription(string exportedContainerPath) => $"Select an individual and file path for container export. Parameters from the individual that match the path {exportedContainerPath} will be addd to the container before exporting.";
@@ -1903,6 +1903,7 @@ namespace MoBi.Assets
          public static readonly string ModuleNameCannotBeEmpty = "Module name cannot be empty";
          public static readonly string ExtendingRequiresMoleculeBuildingBlock = "Extending requires a molecule building block";
          public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
+         public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
          {

@@ -96,7 +96,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          // building blocks in the module InitialConditionsCollection are not forbidden.
          if (buildingBlock is ExpressionProfileBuildingBlock)
             return base.CorrectName(buildingBlock, module);
-         
+
          // This is an InitialConditionsBuildingBlock. Prevent renaming to the same name as
          // an existing building block in the InitialConditionsCollection
          var forbiddenNames = _editTask.GetForbiddenNames(buildingBlock, module.InitialConditionsCollection);
@@ -175,11 +175,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock)
       {
-         var (spatialStructure, moleculeBuildingBlock) = SelectBuildingBlocksForExtend();
-         if (spatialStructure == null || moleculeBuildingBlock == null)
+         var (spatialStructure, molecules) = SelectBuildingBlocksForExtend();
+         if (spatialStructure == null || molecules == null || !molecules.Any())
             return;
 
-         var newStartValues = createStartValuesBasedOnUsedTemplates(spatialStructure, moleculeBuildingBlock.Where(x => !x.QuantityType.Is(QuantityType.Protein)).ToList());
+         var newStartValues = createStartValuesBasedOnUsedTemplates(spatialStructure, molecules);
          updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues.ToList(), initialConditionsBuildingBlock.ToList());
          AddCommand(Extend(newStartValues.ToList(), initialConditionsBuildingBlock));
       }

@@ -273,23 +273,36 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
       }
 
-      protected (MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock) SelectBuildingBlocksForExtend(bool moleculeRequired = true)
+      protected (MoBiSpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForExtend()
       {
          var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
          var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;
 
+         if (moleculeBlockCollection.Count == 0 && spatialStructureCollection.Count == 0)
+            return (null, Enumerable.Empty<MoleculeBuilder>().ToList());
+
          // If there is only one option that could be selected for each required building block, then we just use those options and don't
          // need to ask the user to make a selection
-         if ((!moleculeRequired || moleculeBlockCollection.Count == 1) && spatialStructureCollection.Count == 1)
+         if (!shouldSelectBuildingBlocks(moleculeBlockCollection, spatialStructureCollection))
          {
-            return (spatialStructureCollection.Single(), moleculeRequired ? moleculeBlockCollection.Single() : null);
+            return (spatialStructureCollection.Single(), moleculeBlockCollection.Single().ToList());
          }
 
-         using (var selectorPresenter = Context.Resolve<ISelectBuildingBlocksForExtendPresenter>())
+         using (var selectorPresenter = Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>())
          {
-            selectorPresenter.SelectBuildingBlocksForExtend(moleculeRequired);
-            return (selectorPresenter.SelectedSpatialStructure, selectorPresenter.SelectedMoleculeBuildingBlock);
+            selectorPresenter.SelectBuildingBlocksForExtend();
+            return (selectorPresenter.SelectedSpatialStructure, selectorPresenter.SelectedMolecules);
          }
+      }
+
+      private static bool shouldSelectBuildingBlocks(IReadOnlyList<MoleculeBuildingBlock> moleculeBlockCollection, IReadOnlyList<MoBiSpatialStructure> spatialStructureCollection)
+      {
+         return shouldSelectMolecules(moleculeBlockCollection) || spatialStructureCollection.Count > 1;
+      }
+
+      private static bool shouldSelectMolecules(IReadOnlyList<MoleculeBuildingBlock> moleculeBlockCollection)
+      {
+         return moleculeBlockCollection.Count > 1 || moleculeBlockCollection.Any(x => x.Count() > 1);
       }
    }
 }

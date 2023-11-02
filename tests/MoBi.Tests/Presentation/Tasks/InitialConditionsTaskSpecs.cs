@@ -20,11 +20,9 @@ using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Assets;
-using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -436,15 +434,30 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_extending_initial_conditions_and_not_exactly_one_of_each_type_is_available : concern_for_InitialConditionsTask
+   public class concern_for_extending_initial_conditions : concern_for_InitialConditionsTask
    {
-      private ISelectBuildingBlocksForExtendPresenter _presenter;
+      protected override void Context()
+      {
+         base.Context();
+         ConfigureBuildingBlockRepository();
+      }
+
+      protected virtual void ConfigureBuildingBlockRepository()
+      {
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { new MoBiSpatialStructure(), new MoBiSpatialStructure() });
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { new MoleculeBuildingBlock(), new MoleculeBuildingBlock() });
+      }
+   }
+
+   public class When_extending_initial_conditions_and_not_exactly_one_of_each_type_is_available : concern_for_extending_initial_conditions
+   {
+      private ISelectSpatialStructureAndMoleculesPresenter _presenter;
 
       protected override void Context()
       {
          base.Context();
-         _presenter = A.Fake<ISelectBuildingBlocksForExtendPresenter>();
-         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).Returns(_presenter);
+         _presenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(_presenter);
       }
 
       protected override void Because()
@@ -455,23 +468,30 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_spatial_structure_and_molecule_selection_presenter_is_used_to_select_the_building_blocks()
       {
-         A.CallTo(() => _presenter.SelectBuildingBlocksForExtend(true)).MustHaveHappened();
+         A.CallTo(() => _presenter.SelectBuildingBlocksForExtend()).MustHaveHappened();
       }
    }
 
-   public class When_extending_initial_conditions_and_exactly_one_of_each_type_is_available : concern_for_InitialConditionsTask
+   public class When_extending_initial_conditions_and_exactly_one_spatial_structure_and_one_molecule_is_available : concern_for_extending_initial_conditions
    {
       private MoBiSpatialStructure _moBiSpatialStructure;
+      private ISelectSpatialStructureAndMoleculesPresenter _selectionPresenter;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
 
-      protected override void Context()
+      protected override void ConfigureBuildingBlockRepository()
       {
-         base.Context();
+         _selectionPresenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
          _moBiSpatialStructure = new MoBiSpatialStructure();
-         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _moBiSpatialStructure });
-         _moleculeBuildingBlock = new MoleculeBuildingBlock();
-         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { _moleculeBuildingBlock });
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { _moBiSpatialStructure });
+         _moleculeBuildingBlock = new MoleculeBuildingBlock
+         {
+            new MoleculeBuilder { Name = "M1" }
+         };
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { _moleculeBuildingBlock });
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(_selectionPresenter);
 
+         A.CallTo(() => _selectionPresenter.SelectedMolecules).Returns(_moleculeBuildingBlock.ToList());
+         A.CallTo(() => _selectionPresenter.SelectedSpatialStructure).Returns(_moBiSpatialStructure);
       }
 
       protected override void Because()
@@ -482,7 +502,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_spatial_structure_and_molecule_selection_presenter_is_not_used_to_select_the_building_blocks()
       {
-         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).MustNotHaveHappened();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).MustNotHaveHappened();
       }
 
       [Observation]
@@ -492,16 +512,16 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_extending_initial_conditions_and_the_building_blocks_are_not_selected : concern_for_InitialConditionsTask
+   public class When_extending_initial_conditions_and_the_building_blocks_are_not_selected : concern_for_extending_initial_conditions
    {
-      private ISelectBuildingBlocksForExtendPresenter _presenter;
+      private ISelectSpatialStructureAndMoleculesPresenter _presenter;
 
       protected override void Context()
       {
          base.Context();
-         _presenter = A.Fake<ISelectBuildingBlocksForExtendPresenter>();
-         A.CallTo(() => _context.Context.Resolve<ISelectBuildingBlocksForExtendPresenter>()).Returns(_presenter);
-         A.CallTo(() => _presenter.SelectedMoleculeBuildingBlock).Returns(null);
+         _presenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(_presenter);
+         A.CallTo(() => _presenter.SelectedMolecules).Returns(new List<MoleculeBuilder>());
       }
 
       protected override void Because()
