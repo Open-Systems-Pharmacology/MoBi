@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
@@ -72,7 +71,7 @@ namespace MoBi.Presentation.Tasks.Edit
             Description = AppConstants.Commands.RenameDescription(transporterMoleculeContainer, newName)
          };
 
-         if (CheckUsagesFor(newName, transporterMoleculeContainer.TransportName, transporterMoleculeContainer, commandCollector))
+         if (CheckUsagesFor(newName, transporterMoleculeContainer.TransportName, transporterMoleculeContainer, commandCollector, buildingBlock.Module))
          {
             commandCollector.AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(transporterMoleculeContainer.PropertyName(x => x.TransportName), newName, oldTransportName, transporterMoleculeContainer, buildingBlock) { ObjectType = ObjectName });
          }
