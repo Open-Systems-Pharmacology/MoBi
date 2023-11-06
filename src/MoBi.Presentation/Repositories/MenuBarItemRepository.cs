@@ -234,7 +234,7 @@ namespace MoBi.Presentation.Repositories
             .WithDescription(ToolTips.ModelingRibbon.CreateModule)
             .WithIcon(ApplicationIcons.Module);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.Captions.ExpressionProfile)
+         yield return CreateSubMenu.WithCaption(AppConstants.Captions.ExpressionProfile)
             .WithId(MenuBarItemIds.NewExpressionProfile)
             .WithIcon(ApplicationIcons.ExpressionProfile)
             .WithDescription(ToolTips.ModelingRibbon.CreateExpressionProfile);
