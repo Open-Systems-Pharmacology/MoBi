@@ -88,9 +88,33 @@ namespace MoBi.Presentation.Presenter.Main
          _editBuildingBlockStarter.EditMolecule(moleculeBuildingBlock, moleculeBuilder);
       }
 
+
+      private void editSingleBuildingBlockModule(Module module)
+      {
+         if (module.BuildingBlocks.Count != 1) 
+            return;
+
+         var buildingBlock = module.BuildingBlocks.First();
+         NodeDoubleClicked(_view.NodeById(buildingBlock.Id));
+      }
+
+      private void expandNodes(IReadOnlyList<ITreeNode> treeNodes)
+      {
+         treeNodes.Each(_view.ExpandNode);
+      }
+
       public void Handle(AddedEvent<Module> eventToHandle)
       {
-         addModule(eventToHandle.AddedObject);
+         var moduleToAdd = eventToHandle.AddedObject;
+         var addedNode = addModule(moduleToAdd);
+
+         expandNodes(new List<ITreeNode>
+         {
+            addedNode,
+            _view.NodeByType(MoBiRootNodeTypes.ModulesFolder)
+         });
+
+         editSingleBuildingBlockModule(moduleToAdd);
       }
 
       public void Handle(AddedEvent<IndividualBuildingBlock> eventToHandle)
@@ -218,7 +242,7 @@ namespace MoBi.Presentation.Presenter.Main
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.IndividualsFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
 
-            project.Modules.Each(addModule);
+            project.Modules.Each(x => addModule(x));
 
             project.ExpressionProfileCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ExpressionProfilesFolder));
             project.IndividualsCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.IndividualsFolder));
@@ -252,9 +276,9 @@ namespace MoBi.Presentation.Presenter.Main
          return nodeById;
       }
 
-      private void addModule(Module module)
+      private ITreeNode addModule(Module module)
       {
-         _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ModulesFolder)));
+         return _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ModulesFolder)));
       }
 
       public void Handle(AddedEvent eventToHandle)

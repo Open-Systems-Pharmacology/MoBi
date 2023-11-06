@@ -7,6 +7,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Helpers;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
@@ -278,9 +279,51 @@ namespace MoBi.Presentation
 
    public class When_the_module_explorer_presenter_receives_an_added_module_event : When_the_module_explorer_presenter_receives_an_added_event<Module>
    {
+      private ITreeNode _rootNode;
+      private ITreeNode _moduleNode;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
+      private ITreeNode _eventGroupNode;
+      private IContextMenu _contextMenu;
+
+      protected override void Context()
+      {
+         base.Context();
+         _eventGroupBuildingBlock = new EventGroupBuildingBlock().WithId("eventGroupId");
+         _rootNode = new RootNode(MoBiRootNodeTypes.ModulesFolder);
+         _moduleNode = new ModuleNode(_addedObject);
+         _eventGroupNode = new BuildingBlockNode(_eventGroupBuildingBlock);
+         A.CallTo(() => _view.TreeView.NodeById(_rootNode.Id)).Returns(_rootNode);
+         A.CallTo(() => _view.TreeView.NodeById(_addedObject.Id)).Returns(_moduleNode);
+         
+         _addedObject.Add(_eventGroupBuildingBlock);
+
+         A.CallTo(() => _view.TreeView.NodeById(_eventGroupBuildingBlock.Id)).Returns(_eventGroupNode);
+
+         _contextMenu = A.Fake<IContextMenu>();
+         A.CallTo(() => _viewItemContextMenuFactory.CreateFor(A<BuildingBlockViewItem>.That.Matches(x => x.BuildingBlock.Equals(_eventGroupBuildingBlock)), sut)).Returns(_contextMenu);
+      }
+
       protected override void Because()
       {
          sut.Handle(new AddedEvent<Module>(_addedObject, _project));
+      }
+
+      [Observation]
+      public void the_single_building_block_should_be_opened_in_the_editor()
+      {
+         A.CallTo(() => _contextMenu.ActivateFirstMenu()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_modules_root_folder_should_be_expanded()
+      {
+         A.CallTo(() => _view.TreeView.ExpandNode(_rootNode)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_module_node_should_be_expanded()
+      {
+         A.CallTo(() => _view.TreeView.ExpandNode(_moduleNode)).MustHaveHappened();
       }
    }
 
@@ -352,6 +395,7 @@ namespace MoBi.Presentation
       private List<ITreeNode> _allNodesAdded;
       private MoBiProject _project;
       private Module _module1;
+      private ITreeNode _rootNode;
 
       protected override void Context()
       {
@@ -364,6 +408,7 @@ namespace MoBi.Presentation
             new ParameterValuesBuildingBlock().WithId("PSV2"),
             new InitialConditionsBuildingBlock().WithId("MSV")
          };
+         _rootNode = new RootNode(MoBiRootNodeTypes.ModulesFolder);
 
          _allNodesAdded = new List<ITreeNode>();
          A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>
@@ -373,6 +418,7 @@ namespace MoBi.Presentation
          });
 
          _project.AddModule(_module1);
+         A.CallTo(() => _view.TreeView.NodeById(_rootNode.Id)).Returns(_rootNode);
       }
 
       private void flattenAndAdd(ITreeNode treeNode)
@@ -384,6 +430,12 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.Handle(new ProjectCreatedEvent(_project));
+      }
+
+      [Observation]
+      public void the_modules_root_folder_should_not_be_expanded()
+      {
+         A.CallTo(() => _view.TreeView.ExpandNode(_rootNode)).MustNotHaveHappened();
       }
 
       [Observation]
