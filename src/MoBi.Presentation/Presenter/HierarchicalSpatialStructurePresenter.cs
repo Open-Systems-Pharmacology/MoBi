@@ -103,7 +103,7 @@ namespace MoBi.Presentation.Presenter
 
          var dto = _objectBaseMapper.MapFrom(entity);
 
-         if (entityIsInSpatialStructure(entity))
+         if (entityIsInSpatialStructure(entity) && !entityIsRootContainer(entity))
             _view.Add(dto, _objectBaseMapper.MapFrom(entity.ParentContainer));
          else
          {
@@ -113,6 +113,11 @@ namespace MoBi.Presentation.Presenter
 
             _view.AddRoot(dto);
          }
+      }
+
+      private bool entityIsRootContainer(IContainer entity)
+      {
+         return entity.RootContainer == entity;
       }
 
       public void Handle(RemovedEvent eventToHandle)
