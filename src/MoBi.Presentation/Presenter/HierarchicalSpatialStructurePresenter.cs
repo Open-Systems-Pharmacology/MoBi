@@ -103,7 +103,9 @@ namespace MoBi.Presentation.Presenter
 
          var dto = _objectBaseMapper.MapFrom(entity);
 
-         if (entityIsInSpatialStructure(entity))
+         // A root container in a spatial structure should be added to the root of the tree view
+         // The root container will have ParentContainer == null
+         if (entityIsInSpatialStructure(entity) && !entityIsRootContainer(entity))
             _view.Add(dto, _objectBaseMapper.MapFrom(entity.ParentContainer));
          else
          {
@@ -114,6 +116,8 @@ namespace MoBi.Presentation.Presenter
             _view.AddRoot(dto);
          }
       }
+
+      private bool entityIsRootContainer(IContainer entity) => entity.RootContainer == entity;
 
       public void Handle(RemovedEvent eventToHandle)
       {
