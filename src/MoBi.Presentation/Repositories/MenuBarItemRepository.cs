@@ -234,25 +234,31 @@ namespace MoBi.Presentation.Repositories
             .WithDescription(ToolTips.ModelingRibbon.CreateModule)
             .WithIcon(ApplicationIcons.Module);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.Captions.ExpressionProfile)
+         var newExpressionProfile = CreateSubMenu.WithCaption(AppConstants.Captions.ExpressionProfile)
             .WithId(MenuBarItemIds.NewExpressionProfile)
             .WithIcon(ApplicationIcons.ExpressionProfile)
             .WithDescription(ToolTips.ModelingRibbon.CreateExpressionProfile);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddMetabolizingEnzyme)
+         var newEnzyme = CreateMenuButton.WithCaption(AppConstants.Captions.AddMetabolizingEnzyme)
             .WithId(MenuBarItemIds.NewMetabolizingEnzyme)
             .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.MetabolizingEnzyme, _container)
             .WithIcon(ApplicationIcons.Enzyme);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddTransportProtein)
+         var newTransporter =  CreateMenuButton.WithCaption(AppConstants.Captions.AddTransportProtein)
             .WithId(MenuBarItemIds.NewTransportProtein)
             .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.TransportProtein, _container)
             .WithIcon(ApplicationIcons.Transporter);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.Captions.AddSpecificBindingPartner)
+         var newSpecificBinding = CreateMenuButton.WithCaption(AppConstants.Captions.AddSpecificBindingPartner)
             .WithId(MenuBarItemIds.NewSpecificBindingPartner)
             .WithCommandFor<AddExpressionProfileBuildingBlock, ExpressionType>(ExpressionTypes.ProteinBindingPartner, _container)
             .WithIcon(ApplicationIcons.SpecificBinding);
+
+         newExpressionProfile.AddItem(newEnzyme);
+         newExpressionProfile.AddItem(newTransporter);
+         newExpressionProfile.AddItem(newSpecificBinding);
+
+         yield return newExpressionProfile;
 
          yield return CreateSubMenu.WithCaption(AppConstants.MenuNames.ExportHistory)
             .WithId(MenuBarItemIds.HistoryReportGroup)

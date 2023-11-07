@@ -175,10 +175,7 @@ namespace MoBi.Presentation.Repositories
 
       private IButtonGroup buildingBlocksButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.BuildingBlocks)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewModule)).WithCaption(AppConstants.RibbonButtonNames.NewModule))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewExpressionProfile))
-            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewMetabolizingEnzyme))
-            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewTransportProtein))
-            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.NewSpecificBindingPartner)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewExpressionProfile)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewIndividual)).WithCaption(AppConstants.RibbonButtonNames.Individual))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
          .WithId(ButtonGroupIds.BuildingBlocks);
