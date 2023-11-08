@@ -117,7 +117,7 @@ namespace MoBi.Presentation.Tasks
 
       private static IParameter newParameter(IndividualParameter individualParameter)
       {
-         if(individualParameter.DistributionType == null)
+         if (individualParameter.DistributionType == null)
             return new Parameter().WithName(individualParameter.Name);
 
          return new DistributedParameter().WithName(individualParameter.Name);
@@ -133,8 +133,8 @@ namespace MoBi.Presentation.Tasks
       {
          var distributedParameter = _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).GetSingleChildByName("distributedParameter1-WS") as DistributedParameter;
          distributedParameter.Children.Count.ShouldBeEqualTo(2);
-         distributedParameter.Any(x => x.Name == "Mean").ShouldBeTrue();
-         distributedParameter.Any(x => x.Name == "StandardDeviation").ShouldBeTrue();
+         distributedParameter.ExistsByName("Mean").ShouldBeTrue();
+         distributedParameter.ExistsByName("StandardDeviation").ShouldBeTrue();
       }
 
       [Observation]
