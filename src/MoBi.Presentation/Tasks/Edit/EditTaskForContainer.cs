@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Edit
@@ -113,29 +114,61 @@ namespace MoBi.Presentation.Tasks.Edit
          return container.ParentPath ?? (container.ParentContainer == null ? new ObjectPath() : _objectPathFactory.CreateAbsoluteObjectPath(container.ParentContainer));
       }
 
-      private void addIndividualParametersToContainers(IndividualBuildingBlock individual, IContainer entityToSerialize)
+      private void addIndividualParametersToContainers(IndividualBuildingBlock individual, IContainer container)
       {
          if (individual == null || !individual.Any())
             return;
 
-         var allSubContainers = entityToSerialize.GetAllContainersAndSelf<IContainer>();
-         allSubContainers.Each(container => { addIndividualParametersToContainer(individual, container, _objectPathFactory.CreateObjectPathFrom(entityToSerialize.ParentPath.Concat(_objectPathFactory.CreateAbsoluteObjectPath(container)).ToArray())); });
+         var allSubContainers = container.GetAllContainersAndSelf<IContainer>();
+         allSubContainers.Each(subContainer =>
+         {
+            var subContainerPath = container.ParentPath.Concat(_objectPathFactory.CreateAbsoluteObjectPath(subContainer));
+            addIndividualParametersToContainer(individual, subContainer, new ObjectPath(subContainerPath));
+         });
       }
 
       private void addIndividualParametersToContainer(IndividualBuildingBlock individual, IContainer container, ObjectPath containerPath)
       {
-         individual.Where(individualParameter => individualParameter.ContainerPath.Equals(containerPath)).Each(x => addIndividualParameterToContainer(x, container));
+         var individualParametersToExport = individual.Where(individualParameter => individualParameter.ContainerPath.StartsWith(containerPath)).ToList();
+
+         // Ensure that the distributed parameters are added to the container first. After all distributed parameters are added, then the other parameters can be added.
+         individualParametersToExport.Where(x => x.DistributionType != null).Each(x => addIndividualParameterToContainer(x, container, containerPath));
+         individualParametersToExport.Where(x => x.DistributionType == null).Each(x => addIndividualParameterToContainer(x, container, containerPath));
       }
 
-      private void addIndividualParameterToContainer(IndividualParameter individualParameter, IContainer container)
+      private void addIndividualParameterToContainer(IndividualParameter individualParameter, IContainer container, string containerPath)
       {
-         var parameterToAdd = _individualParameterToParameterMapper.MapFrom(individualParameter);
-         var existingParameter = container.FindByName(parameterToAdd.Name);
+         var parameterToAdd = createParameter(individualParameter);
+         var targetContainer = findTargetContainer(individualParameter.ContainerPath, container, containerPath);
+
+         var existingParameter = targetContainer.FindByName(parameterToAdd.Name);
 
          if (existingParameter != null)
-            container.RemoveChild(existingParameter);
+            targetContainer.RemoveChild(existingParameter);
 
-         container.Add(parameterToAdd);
+         targetContainer.Add(parameterToAdd);
+      }
+
+      private IParameter createParameter(IndividualParameter individualParameter)
+      {
+         var parameterToAdd = _individualParameterToParameterMapper.MapFrom(individualParameter);
+
+         if (individualParameter.Formula != null)
+            parameterToAdd.Formula = individualParameter.Formula;
+         if (individualParameter.Value.HasValue)
+            parameterToAdd.Value = individualParameter.Value.Value;
+
+         return parameterToAdd;
+      }
+
+      private IContainer findTargetContainer(string individualParameterContainerPath, IContainer container, string containerPath)
+      {
+         if(individualParameterContainerPath == containerPath)
+            return container;
+         
+         // if the individualParameterContainerPath is pointing to a sub-container, then search for a child container with the relative path
+         var relativePath = individualParameterContainerPath.Substring(containerPath.Length + 1).ToPathArray();
+         return container.EntityAt<IContainer>(relativePath);
       }
 
       public IMoBiCommand SetContainerMode(IBuildingBlock buildingBlock, IContainer container, ContainerMode containerMode)

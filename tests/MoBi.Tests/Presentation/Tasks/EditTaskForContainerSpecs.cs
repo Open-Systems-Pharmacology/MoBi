@@ -11,6 +11,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
@@ -83,10 +84,23 @@ namespace MoBi.Presentation.Tasks
          _parentContainer = new Container().WithName("Parent");
          _individual = new IndividualBuildingBlock().WithName("Individual");
          _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("parameter1"));
+
+
+         _individual.Add(new IndividualParameter { DistributionType = DistributionType.Normal, ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("distributedParameter1"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1", "distributedParameter1") }.WithName("Mean"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1", "distributedParameter1") }.WithName("StandardDeviation"));
+
+         _individual.Add(new IndividualParameter { DistributionType = DistributionType.Normal, ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("distributedParameter1-WS"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1", "distributedParameter1-WS") }.WithName("Mean"));
+         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1", "distributedParameter1-WS") }.WithName("StandardDeviation"));
+
          _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("ShouldBeReplaced"));
          _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container2") }.WithName("parameter2"));
+
          _containerToSave = new Container().WithName("Container1").WithMode(ContainerMode.Physical).Under(_parentContainer);
          _clonedContainer = new Container().WithName("Container1").WithMode(ContainerMode.Physical);
+         _clonedContainer.Add(new DistributedParameter().WithName("distributedParameter1"));
+
          _replacedParameter = new Parameter().WithName("ShouldBeReplaced");
          _clonedContainer.Add(_replacedParameter);
 
@@ -98,12 +112,29 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _selectIndividualFromProjectPresenter.GetPathAndIndividualForExport(_containerToSave)).Returns(("FilePath", _individual));
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
          A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
-         A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => new Parameter().WithName(x.Arguments.Get<IndividualParameter>(0).Name));
+         A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => newParameter(x.Arguments.Get<IndividualParameter>(0)));
+      }
+
+      private static IParameter newParameter(IndividualParameter individualParameter)
+      {
+         if(individualParameter.DistributionType == null)
+            return new Parameter().WithName(individualParameter.Name);
+
+         return new DistributedParameter().WithName(individualParameter.Name);
       }
 
       protected override void Because()
       {
          sut.SaveWithIndividual(_containerToSave);
+      }
+
+      [Observation]
+      public void the_distributed_parameter_should_contain_sub_parameters()
+      {
+         var distributedParameter = _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).GetSingleChildByName("distributedParameter1-WS") as DistributedParameter;
+         distributedParameter.Children.Count.ShouldBeEqualTo(2);
+         distributedParameter.Any(x => x.Name == "Mean").ShouldBeTrue();
+         distributedParameter.Any(x => x.Name == "StandardDeviation").ShouldBeTrue();
       }
 
       [Observation]
