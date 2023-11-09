@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using OSPSuite.Assets;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
@@ -1877,6 +1878,28 @@ namespace MoBi.Assets
                return $"Also import {expression}?";
 
             return $"Also import {individual} and {expression}?";
+         }
+
+         public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
+         {
+            var sb = new StringBuilder();
+            sb.Append($"Expression profiles cannot be added for");
+            sb.AppendLine();
+            sb.Append(namesList(proteinNames));
+            sb.AppendLine();
+            if (proteinNames.Count > 1)
+               sb.Append("because an expression profile is already selected for those proteins");
+            else
+               sb.Append("because an expression profile is already selected for that protein");
+            return sb.ToString();
+         }
+
+         private static string namesList(IReadOnlyList<string> allNames)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine(allNames.ToString("\n"));
+            return sb.ToString();
          }
       }
 

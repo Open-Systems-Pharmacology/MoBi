@@ -4,11 +4,13 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Utility.Extensions;
@@ -23,15 +25,17 @@ namespace MoBi.Presentation
       protected ITreeNodeFactory _treeNodeFactory;
       protected ISelectedIndividualToIndividualSelectionDTOMapper _selectedIndividualDTOMapper;
       protected IEditIndividualAndExpressionConfigurationsView _view;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
+         _dialogCreator = A.Fake<IDialogCreator>();
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
          _buildingBlockRepository = new BuildingBlockRepository(_projectRetriever);
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
          _selectedIndividualDTOMapper = A.Fake<ISelectedIndividualToIndividualSelectionDTOMapper>();
          _view = A.Fake<IEditIndividualAndExpressionConfigurationsView>();
-         sut = new EditIndividualAndExpressionConfigurationsPresenter(_view, _selectedIndividualDTOMapper, _treeNodeFactory, _buildingBlockRepository);
+         sut = new EditIndividualAndExpressionConfigurationsPresenter(_view, _selectedIndividualDTOMapper, _treeNodeFactory, _buildingBlockRepository, _dialogCreator);
       }
    }
 
@@ -108,7 +112,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.RemoveSelectedExpression(_treeNode);
+         sut.RemoveSelectedExpressions(new[] { _treeNode });
       }
 
       [Observation]
@@ -130,32 +134,54 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_adding_a_new_expression_profile_to_a_simulation_configuration : concern_for_EditIndividualAndExpressionConfigurationsPresenter
+   public class When_adding_a_new_expression_profiles_to_a_simulation_configuration : concern_for_EditIndividualAndExpressionConfigurationsPresenter
    {
       private SimulationConfiguration _simulationConfiguration;
       private ExpressionProfileBuildingBlock _expressionProfile;
       private ITreeNode _treeNode;
+      private ExpressionProfileBuildingBlock _expressionProfile2;
+      private ITreeNode _treeNode2;
 
       protected override void Context()
       {
          base.Context();
          _simulationConfiguration = new SimulationConfiguration();
 
-         _expressionProfile = new ExpressionProfileBuildingBlock().WithName("molecule|species|category");
+         _expressionProfile = new ExpressionProfileBuildingBlock().WithName("molecule|species|category").WithId("1");
+         _expressionProfile.Type = ExpressionTypes.MetabolizingEnzyme;
+
+         _expressionProfile2 = new ExpressionProfileBuildingBlock().WithName("molecule|another species|another category").WithId("2");
+         _expressionProfile2.Type = ExpressionTypes.MetabolizingEnzyme;
          var moBiProject = new MoBiProject();
 
          A.CallTo(() => _projectRetriever.Current).Returns(moBiProject);
 
          moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile);
+         moBiProject.AddExpressionProfileBuildingBlock(_expressionProfile2);
          sut.Edit(_simulationConfiguration);
 
-         _treeNode = new ObjectWithIdAndNameNode<ExpressionProfileBuildingBlock>(_expressionProfile);
+         _treeNode = new BuildingBlockNode(_expressionProfile);
          A.CallTo(() => _treeNodeFactory.CreateFor(_expressionProfile)).Returns(_treeNode);
+
+         _treeNode2 = new BuildingBlockNode(_expressionProfile2);
+         A.CallTo(() => _treeNodeFactory.CreateFor(_expressionProfile2)).Returns(_treeNode2);
       }
 
       protected override void Because()
       {
-         sut.AddSelectedExpression(_treeNode);
+         sut.AddSelectedExpressions(new[] { _treeNode, _treeNode2 });
+      }
+
+      [Observation]
+      public void the_dialog_creator_should_inform_the_user_about_the_expressions_that_could_not_be_added()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>.That.Contains("molecule"))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_node_that_cannot_be_selected_is_not_added_to_the_view()
+      {
+         A.CallTo(() => _view.AddUsedExpression(_treeNode2)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -174,6 +200,12 @@ namespace MoBi.Presentation
       public void the_expression_profile_should_be_added_to_the_simulation_configuration()
       {
          sut.ExpressionProfiles.ShouldContain(_expressionProfile);
+      }
+
+      [Observation]
+      public void the_expression_profile_that_could_not_be_selected_should_not_be_added_to_the_simulation_configuration()
+      {
+         sut.ExpressionProfiles.ShouldNotContain(_expressionProfile2);
       }
    }
 
