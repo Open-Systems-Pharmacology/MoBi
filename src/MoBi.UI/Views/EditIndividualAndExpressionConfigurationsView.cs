@@ -85,12 +85,12 @@ namespace MoBi.UI.Views
 
       private void simulationTreeSelectionChanged()
       {
-         _presenter.SimulationExpressionSelectionChanged(treeViewSelectionToTreeNodeList(simulationExpressionsTree.Selection));
+         _presenter.SimulationExpressionSelectionChanged(treeViewSelectionToTreeNodeList(simulationExpressionsTree));
       }
 
       private void projectTreeSelectionChanged()
       {
-         _presenter.ProjectExpressionSelectionChanged(treeViewSelectionToTreeNodeList(projectExpressionsTree.TreeView.Selection));
+         _presenter.ProjectExpressionSelectionChanged(treeViewSelectionToTreeNodeList(projectExpressionsTree.TreeView));
       }
 
       public bool EnableAdd
@@ -123,18 +123,18 @@ namespace MoBi.UI.Views
       private void removeSelectedExpressions()
       {
          projectExpressionsTree.TreeView.Selection.Clear();
-         _presenter.RemoveSelectedExpressions(treeViewSelectionToTreeNodeList(simulationExpressionsTree.Selection));
+         _presenter.RemoveSelectedExpressions(treeViewSelectionToTreeNodeList(simulationExpressionsTree));
       }
 
       private void addSelectedExpressions()
       {
          simulationExpressionsTree.Selection.Clear();
-         _presenter.AddSelectedExpressions(treeViewSelectionToTreeNodeList(projectExpressionsTree.TreeView.Selection));
+         _presenter.AddSelectedExpressions(treeViewSelectionToTreeNodeList(projectExpressionsTree.TreeView));
       }
 
-      private IReadOnlyList<ITreeNode> treeViewSelectionToTreeNodeList(TreeListSelection treeViewSelection)
+      private IReadOnlyList<ITreeNode> treeViewSelectionToTreeNodeList(UxTreeView treeView)
       {
-         return treeViewSelection.All().Where(x => x.Tag is ITreeNode).Select(x => x.Tag as ITreeNode).ToList();
+         return treeView.Selection.All().Select(treeView.NodeFrom).ToList();
       }
 
       protected virtual void TreeMouseMove(MouseEventArgs e)
@@ -172,7 +172,7 @@ namespace MoBi.UI.Views
 
       private TreeListNode treeListNodeFor(UxTreeView treeView, ITreeNode treeNodeToAdd)
       {
-         return treeView.Nodes.Single(x => Equals(x.Tag, treeNodeToAdd));
+         return treeView.Nodes.First(x => Equals(x.Tag, treeNodeToAdd));
       }
 
       private void disposeBinders()

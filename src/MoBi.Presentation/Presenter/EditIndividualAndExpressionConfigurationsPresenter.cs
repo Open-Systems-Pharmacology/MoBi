@@ -98,7 +98,8 @@ namespace MoBi.Presentation.Presenter
 
       private void removeSelectedExpression(ITreeNode selectedNode)
       {
-         if (!(selectedNode.TagAsObject is ExpressionProfileBuildingBlock expression))
+         var expression = expressionProfileFromNode(selectedNode);
+         if (expression == null)
             return;
 
          _selectedExpressions.Remove(expression);
@@ -110,14 +111,20 @@ namespace MoBi.Presentation.Presenter
       {
          // We need the ToList because all nodes must be evaluated, then we are testing if any
          // nodes failed to be added to the selection
-         var nodesNotAdded = selectedNodes.Where(x => !addSelectedExpression(x)).Select(x => x.TagAsObject as ExpressionProfileBuildingBlock).ToList();
+         var nodesNotAdded = selectedNodes.Where(x => !addSelectedExpression(x)).Select(expressionProfileFromNode).ToList();
          if (nodesNotAdded.Any())
-            _dialogCreator.MessageBoxError(AppConstants.Captions.CouldNotAddExpressionsDuplicatingMolecule(nodesNotAdded.AllNames()));
+            _dialogCreator.MessageBoxInfo(AppConstants.Captions.CouldNotAddExpressionProfilesDuplicatingProtein(nodesNotAdded.Select(x => x.MoleculeName).Distinct().ToList()));
+      }
+
+      private static ExpressionProfileBuildingBlock expressionProfileFromNode(ITreeNode treeNode)
+      {
+         return treeNode.TagAsObject as ExpressionProfileBuildingBlock;
       }
 
       private bool addSelectedExpression(ITreeNode selectedNode)
       {
-         if (!(selectedNode.TagAsObject is ExpressionProfileBuildingBlock expression))
+         var expression = expressionProfileFromNode(selectedNode);
+         if (expression == null)
             return false;
 
          if (_selectedExpressions.Any(x => Equals(expression.MoleculeName, x.MoleculeName)))
@@ -148,7 +155,8 @@ namespace MoBi.Presentation.Presenter
 
       public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode)
       {
-         return targetNode?.TagAsObject is ExpressionProfileBuildingBlock;
+         var expression = expressionProfileFromNode(targetNode);
+         return expression != null;
       }
 
       public void MoveNode(ITreeNode dragNode, ITreeNode targetNode)

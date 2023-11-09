@@ -175,7 +175,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_dialog_creator_should_inform_the_user_about_the_expressions_that_could_not_be_added()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxError(A<string>.That.Contains("molecule|another species|another category"))).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>.That.Contains("molecule"))).MustHaveHappened();
       }
 
       [Observation]

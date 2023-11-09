@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using OSPSuite.Assets;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
@@ -1879,18 +1880,26 @@ namespace MoBi.Assets
             return $"Also import {individual} and {expression}?";
          }
 
-         public static string CouldNotAddExpressionsDuplicatingMolecule(IReadOnlyList<string> allNames)
+         public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
          {
-            if(allNames.Count == 1)
-               return $"The expression could not be added because an expression is already selected for the protein{Environment.NewLine}{namesList(allNames)}";
-
-            return $"Expressions could not be added because expressions are already selected for the protein{Environment.NewLine}{namesList(allNames)}";
+            var sb = new StringBuilder();
+            sb.Append($"Expression profiles cannot be added for");
+            sb.Append(Environment.NewLine);
+            sb.Append(namesList(proteinNames));
+            sb.Append(Environment.NewLine);
+            sb.Append(Environment.NewLine);
+            if(proteinNames.Count > 1)
+               sb.Append("because an expression profile is already selected for those proteins");
+            else
+               sb.Append("because an expression profile is already selected for that protein");
+            return sb.ToString();
          }
 
          private static string namesList(IReadOnlyList<string> allNames)
          {
-            var listBullet = $"{Environment.NewLine} - ";
-            return $"{listBullet}{string.Join(listBullet, allNames)}";
+            var sb = new StringBuilder();
+            allNames.Each(name => sb.Append($"{Environment.NewLine} - {name}"));
+            return sb.ToString();
          }
       }
 
