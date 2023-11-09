@@ -1884,11 +1884,10 @@ namespace MoBi.Assets
          {
             var sb = new StringBuilder();
             sb.Append($"Expression profiles cannot be added for");
-            sb.Append(Environment.NewLine);
+            sb.AppendLine();
             sb.Append(namesList(proteinNames));
-            sb.Append(Environment.NewLine);
-            sb.Append(Environment.NewLine);
-            if(proteinNames.Count > 1)
+            sb.AppendLine();
+            if (proteinNames.Count > 1)
                sb.Append("because an expression profile is already selected for those proteins");
             else
                sb.Append("because an expression profile is already selected for that protein");
@@ -1898,7 +1897,8 @@ namespace MoBi.Assets
          private static string namesList(IReadOnlyList<string> allNames)
          {
             var sb = new StringBuilder();
-            allNames.Each(name => sb.Append($"{Environment.NewLine} - {name}"));
+            sb.AppendLine();
+            sb.AppendLine(allNames.ToString("\n"));
             return sb.ToString();
          }
       }
