@@ -1878,6 +1878,20 @@ namespace MoBi.Assets
 
             return $"Also import {individual} and {expression}?";
          }
+
+         public static string CouldNotAddExpressionsDuplicatingMolecule(IReadOnlyList<string> allNames)
+         {
+            if(allNames.Count == 1)
+               return $"The expression could not be added because an expression is already selected for the protein{Environment.NewLine}{namesList(allNames)}";
+
+            return $"Expressions could not be added because expressions are already selected for the protein{Environment.NewLine}{namesList(allNames)}";
+         }
+
+         private static string namesList(IReadOnlyList<string> allNames)
+         {
+            var listBullet = $"{Environment.NewLine} - ";
+            return $"{listBullet}{string.Join(listBullet, allNames)}";
+         }
       }
 
       public static class Validation

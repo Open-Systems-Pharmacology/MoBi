@@ -1,17 +1,21 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using DevExpress.XtraGrid;
 using DevExpress.XtraTreeList;
+using DevExpress.XtraTreeList.Nodes;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
-using OSPSuite.UI.Controls;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.UI.Binders;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
-using OSPSuite.UI.Binders;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -45,6 +49,15 @@ namespace MoBi.UI.Views
          simulationExpressionsTree.DataColumn.SortMode = ColumnSortMode.Custom;
          simulationExpressionsTree.DataColumn.SortOrder = SortOrder.Ascending;
          simulationExpressionsTree.CompareNodeValues += compareNodeValues;
+
+         configureForMultiSelect(simulationExpressionsTree);
+         configureForMultiSelect(projectExpressionsTree.TreeView);
+      }
+
+      private static void configureForMultiSelect(UxTreeView uxTreeView)
+      {
+         uxTreeView.OptionsSelection.MultiSelect = true;
+         uxTreeView.OptionsSelection.MultiSelectMode = TreeListMultiSelectMode.RowSelect;
       }
 
       private void compareNodeValues(object sender, CompareNodeValuesEventArgs e)
@@ -59,14 +72,25 @@ namespace MoBi.UI.Views
             .WithImages(individual => _imageListRetriever.ImageIndex(individual.Icon))
             .WithValues(x => x.AllIndividuals);
 
-         btnAdd.Click += (o, e) => OnEvent(addSelectedExpression);
-         btnRemove.Click += (o, e) => OnEvent(removeSelectedExpression);
+         btnAdd.Click += (o, e) => OnEvent(addSelectedExpressions);
+         btnRemove.Click += (o, e) => OnEvent(removeSelectedExpressions);
 
-         projectExpressionsTree.TreeView.SelectedNodeChanged += selectedNode => OnEvent(() => _presenter.ProjectExpressionSelectionChanged(selectedNode));
-         simulationExpressionsTree.SelectedNodeChanged += selectedNode => OnEvent(() => _presenter.SimulationExpressionSelectionChanged(selectedNode));
+         projectExpressionsTree.TreeView.SelectionChanged += (sender, args) =>
+            projectExpressionsTree.TreeView.SelectionChanged += (o, e) => OnEvent(projectTreeSelectionChanged);
+         simulationExpressionsTree.SelectionChanged += (o, e) => OnEvent(simulationTreeSelectionChanged);
 
          simulationExpressionsTree.MouseDown += (o, e) => OnEvent(TreeMouseDown, e);
          simulationExpressionsTree.MouseMove += (o, e) => OnEvent(TreeMouseMove, e);
+      }
+
+      private void simulationTreeSelectionChanged()
+      {
+         _presenter.SimulationExpressionSelectionChanged(treeViewSelectionToTreeNodeList(simulationExpressionsTree.Selection));
+      }
+
+      private void projectTreeSelectionChanged()
+      {
+         _presenter.ProjectExpressionSelectionChanged(treeViewSelectionToTreeNodeList(projectExpressionsTree.TreeView.Selection));
       }
 
       public bool EnableAdd
@@ -96,14 +120,21 @@ namespace MoBi.UI.Views
          simulationExpressionsTree.Sort();
       }
 
-      private void removeSelectedExpression()
+      private void removeSelectedExpressions()
       {
-         _presenter.RemoveSelectedExpression(simulationExpressionsTree.SelectedNode);
+         projectExpressionsTree.TreeView.Selection.Clear();
+         _presenter.RemoveSelectedExpressions(treeViewSelectionToTreeNodeList(simulationExpressionsTree.Selection));
       }
 
-      private void addSelectedExpression()
+      private void addSelectedExpressions()
       {
-         _presenter.AddSelectedExpression(projectExpressionsTree.TreeView.SelectedNode);
+         simulationExpressionsTree.Selection.Clear();
+         _presenter.AddSelectedExpressions(treeViewSelectionToTreeNodeList(projectExpressionsTree.TreeView.Selection));
+      }
+
+      private IReadOnlyList<ITreeNode> treeViewSelectionToTreeNodeList(TreeListSelection treeViewSelection)
+      {
+         return treeViewSelection.All().Where(x => x.Tag is ITreeNode).Select(x => x.Tag as ITreeNode).ToList();
       }
 
       protected virtual void TreeMouseMove(MouseEventArgs e)
@@ -130,13 +161,18 @@ namespace MoBi.UI.Views
       public void AddUnusedExpression(ITreeNode treeNodeToAdd)
       {
          projectExpressionsTree.TreeView.AddNode(treeNodeToAdd);
-         projectExpressionsTree.TreeView.SelectNode(treeNodeToAdd);
+         projectExpressionsTree.TreeView.Selection.Add(treeListNodeFor(projectExpressionsTree.TreeView, treeNodeToAdd));
       }
 
       public void AddUsedExpression(ITreeNode treeNodeToAdd)
       {
          simulationExpressionsTree.AddNode(treeNodeToAdd);
-         simulationExpressionsTree.SelectNode(treeNodeToAdd);
+         simulationExpressionsTree.Selection.Add(treeListNodeFor(simulationExpressionsTree, treeNodeToAdd));
+      }
+
+      private TreeListNode treeListNodeFor(UxTreeView treeView, ITreeNode treeNodeToAdd)
+      {
+         return treeView.Nodes.Single(x => Equals(x.Tag, treeNodeToAdd));
       }
 
       private void disposeBinders()

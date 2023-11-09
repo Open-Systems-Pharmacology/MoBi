@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
@@ -16,10 +18,10 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditIndividualAndExpressionConfigurationsPresenter : ISimulationConfigurationItemPresenter, ICanDragDropPresenter
    {
-      void ProjectExpressionSelectionChanged(ITreeNode selectedNode);
-      void SimulationExpressionSelectionChanged(ITreeNode selectedNode);
-      void RemoveSelectedExpression(ITreeNode selectedNode);
-      void AddSelectedExpression(ITreeNode selectedNode);
+      void ProjectExpressionSelectionChanged(IReadOnlyList<ITreeNode> selectedNodes);
+      void SimulationExpressionSelectionChanged(IReadOnlyList<ITreeNode> selectedNodes);
+      void RemoveSelectedExpressions(IReadOnlyList<ITreeNode> selectedNode);
+      void AddSelectedExpressions(IReadOnlyList<ITreeNode> selectedNodes);
       int CompareSelectedNodes(ITreeNode node1, ITreeNode node2);
       IndividualBuildingBlock SelectedIndividual { get; }
       IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfiles { get; }
@@ -31,15 +33,17 @@ namespace MoBi.Presentation.Presenter
       private readonly ITreeNodeFactory _treeNodeFactory;
       private IndividualSelectionDTO _individualSelectionDTO;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IDialogCreator _dialogCreator;
       private readonly List<ExpressionProfileBuildingBlock> _selectedExpressions;
 
       public EditIndividualAndExpressionConfigurationsPresenter(IEditIndividualAndExpressionConfigurationsView view, ISelectedIndividualToIndividualSelectionDTOMapper selectedIndividualDTOMapper,
-         ITreeNodeFactory treeNodeFactory, IBuildingBlockRepository buildingBlockRepository) : base(view)
+         ITreeNodeFactory treeNodeFactory, IBuildingBlockRepository buildingBlockRepository, IDialogCreator dialogCreator) : base(view)
       {
          _selectedExpressions = new List<ExpressionProfileBuildingBlock>();
          _selectedIndividualDTOMapper = selectedIndividualDTOMapper;
          _treeNodeFactory = treeNodeFactory;
          _buildingBlockRepository = buildingBlockRepository;
+         _dialogCreator = dialogCreator;
       }
 
       public void Edit(SimulationConfiguration simulationConfiguration)
@@ -77,17 +81,22 @@ namespace MoBi.Presentation.Presenter
          _view.AddUnusedExpression(_treeNodeFactory.CreateFor(expression));
       }
 
-      public void ProjectExpressionSelectionChanged(ITreeNode selectedNode)
+      public void ProjectExpressionSelectionChanged(IReadOnlyList<ITreeNode> selectedNodes)
       {
-         _view.EnableAdd = selectedNode != null;
+         _view.EnableAdd = selectedNodes.Any();
       }
 
-      public void SimulationExpressionSelectionChanged(ITreeNode selectedNode)
+      public void SimulationExpressionSelectionChanged(IReadOnlyList<ITreeNode> selectedNodes)
       {
-         _view.EnableRemove = selectedNode != null;
+         _view.EnableRemove = selectedNodes.Any();
       }
 
-      public void RemoveSelectedExpression(ITreeNode selectedNode)
+      public void RemoveSelectedExpressions(IReadOnlyList<ITreeNode> selectedNodes)
+      {
+         selectedNodes.Each(removeSelectedExpression);
+      }
+
+      private void removeSelectedExpression(ITreeNode selectedNode)
       {
          if (!(selectedNode.TagAsObject is ExpressionProfileBuildingBlock expression))
             return;
@@ -97,14 +106,28 @@ namespace MoBi.Presentation.Presenter
          _view.RemoveUsedExpression(selectedNode);
       }
 
-      public void AddSelectedExpression(ITreeNode selectedNode)
+      public void AddSelectedExpressions(IReadOnlyList<ITreeNode> selectedNodes)
+      {
+         // We need the ToList because all nodes must be evaluated, then we are testing if any
+         // nodes failed to be added to the selection
+         var nodesNotAdded = selectedNodes.Where(x => !addSelectedExpression(x)).Select(x => x.TagAsObject as ExpressionProfileBuildingBlock).ToList();
+         if (nodesNotAdded.Any())
+            _dialogCreator.MessageBoxError(AppConstants.Captions.CouldNotAddExpressionsDuplicatingMolecule(nodesNotAdded.AllNames()));
+      }
+
+      private bool addSelectedExpression(ITreeNode selectedNode)
       {
          if (!(selectedNode.TagAsObject is ExpressionProfileBuildingBlock expression))
-            return;
+            return false;
+
+         if (_selectedExpressions.Any(x => Equals(expression.MoleculeName, x.MoleculeName)))
+            return false;
 
          _selectedExpressions.Add(expression);
          addUsedExpressionToSelectedView(expression);
          _view.RemoveUnusedExpression(selectedNode);
+
+         return true;
       }
 
       public int CompareSelectedNodes(ITreeNode node1, ITreeNode node2)
