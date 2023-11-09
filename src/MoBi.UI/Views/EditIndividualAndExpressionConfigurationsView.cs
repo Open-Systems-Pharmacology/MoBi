@@ -161,18 +161,13 @@ namespace MoBi.UI.Views
       public void AddUnusedExpression(ITreeNode treeNodeToAdd)
       {
          projectExpressionsTree.TreeView.AddNode(treeNodeToAdd);
-         projectExpressionsTree.TreeView.Selection.Add(treeListNodeFor(projectExpressionsTree.TreeView, treeNodeToAdd));
+         projectExpressionsTree.TreeView.Selection.Add(projectExpressionsTree.TreeView.NodeFrom(treeNodeToAdd));
       }
 
       public void AddUsedExpression(ITreeNode treeNodeToAdd)
       {
          simulationExpressionsTree.AddNode(treeNodeToAdd);
-         simulationExpressionsTree.Selection.Add(treeListNodeFor(simulationExpressionsTree, treeNodeToAdd));
-      }
-
-      private TreeListNode treeListNodeFor(UxTreeView treeView, ITreeNode treeNodeToAdd)
-      {
-         return treeView.Nodes.First(x => Equals(x.Tag, treeNodeToAdd));
+         simulationExpressionsTree.Selection.Add(simulationExpressionsTree.NodeFrom(treeNodeToAdd));
       }
 
       private void disposeBinders()
