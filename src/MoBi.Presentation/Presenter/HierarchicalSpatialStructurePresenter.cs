@@ -100,21 +100,18 @@ namespace MoBi.Presentation.Presenter
          if (entity.IsAnImplementationOf<IDistributedParameter>())
             return;
 
+         //not in the spatial structure? nothing to do here in the first place
+         if (!entityIsInSpatialStructure(entity))
+            return;
 
          var dto = _objectBaseMapper.MapFrom(entity);
 
          // A root container in a spatial structure should be added to the root of the tree view
          // The root container will have ParentContainer == null
-         if (entityIsInSpatialStructure(entity) && !entityIsRootContainer(entity))
-            _view.Add(dto, _objectBaseMapper.MapFrom(entity.ParentContainer));
-         else
-         {
-            //the object that has changed does not belong into the spatial structure. Nothing do to
-            if (!Equals(eventToHandle.Parent, _spatialStructure))
-               return;
-
+         if (entityIsRootContainer(entity))
             _view.AddRoot(dto);
-         }
+         else
+            _view.Add(dto, _objectBaseMapper.MapFrom(entity.ParentContainer));
       }
 
       private bool entityIsRootContainer(IContainer entity) => entity.RootContainer == entity;
@@ -135,7 +132,15 @@ namespace MoBi.Presentation.Presenter
 
       private void remove(IEntity entity) => _view.Remove(entity);
 
-      private bool entityIsInSpatialStructure(IEntity entity) => _spatialStructure.TopContainers.Contains(entity.RootContainer);
+      /// <summary>
+      ///    Entity is in spatial structure when its root container is either one of top container or the neighborhood container
+      /// </summary>
+      private bool entityIsInSpatialStructure(IEntity entity)
+      {
+         var rootContainer = entity.RootContainer;
+         return _spatialStructure.TopContainers.Contains(rootContainer) ||
+                Equals(_spatialStructure.NeighborhoodsContainer, rootContainer);
+      }
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {

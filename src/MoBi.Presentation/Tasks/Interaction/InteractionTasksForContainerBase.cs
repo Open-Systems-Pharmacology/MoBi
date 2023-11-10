@@ -5,7 +5,6 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -38,9 +37,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return newEntity;
       }
 
-      protected MoBiSpatialStructure GetSpatialStructure()
+      private MoBiSpatialStructure getSpatialStructure(IBuildingBlock buildingBlockWithFormulaCache)
       {
-         return _interactionTaskContext.Active<MoBiSpatialStructure>();
+         return buildingBlockWithFormulaCache as MoBiSpatialStructure ?? _interactionTaskContext.Active<MoBiSpatialStructure>();
       }
 
       public override IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
@@ -49,17 +48,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();
 
-         var sourceSpatialStructure = InteractionTask.LoadItems<MoBiSpatialStructure>(filename).FirstOrDefault();
-         if (sourceSpatialStructure == null)
+         var importedSpatialStructure = InteractionTask.LoadItems<MoBiSpatialStructure>(filename).FirstOrDefault();
+         if (importedSpatialStructure == null)
             return new MoBiEmptyCommand();
 
-         var allImportedContainers = sourceSpatialStructure.TopContainers;
-         var allImportedNeighborhoods = sourceSpatialStructure.GetConnectingNeighborhoods(allImportedContainers, _objectPathFactory);
+         var allImportedContainers = importedSpatialStructure.TopContainers;
+         var allImportedNeighborhoods = importedSpatialStructure.GetConnectingNeighborhoods(allImportedContainers, _objectPathFactory);
 
          allImportedContainers.Each(registerLoadedIn);
          allImportedNeighborhoods.Each(registerLoadedIn);
 
-         var targetSpatialStructure = GetSpatialStructure();
+         var spatialStructure = getSpatialStructure(buildingBlockWithFormulaCache);
 
          // Keep track of imported containers original names because they could be renamed when being added to the project.
          var nameCache = initializeNameChangeTracking(allImportedContainers);
@@ -70,7 +69,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          // For all the containers that were imported, check if their names have changed and update neighborhoods accordingly
          nameCache.Keys.Each(x => updateNeighborhoodsForNewContainerName(x.Name, nameCache[x], allImportedNeighborhoods));
 
-         var addNeighborhoodsCommand = addNeighborhoodsToSpatialStructure(allImportedNeighborhoods, targetSpatialStructure);
+         var addNeighborhoodsCommand = AddNeighborhoodsToSpatialStructure(allImportedNeighborhoods, spatialStructure);
 
          if (addNeighborhoodsCommand.IsEmpty())
             return command;
@@ -86,28 +85,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          macroCommand.Add(command);
          macroCommand.Add(addNeighborhoodsCommand);
 
-         if (sourceSpatialStructure.DiagramModel == null || targetSpatialStructure.DiagramModel == null)
+         if (importedSpatialStructure.DiagramModel == null || spatialStructure.DiagramModel == null)
             return macroCommand;
 
-         var lcs = new LayoutCopyService();
-
-         foreach (var container in allImportedContainers)
-         {
-            var sourceContainer = sourceSpatialStructure.DiagramModel.GetNode<IContainerNode>(container.Id);
-            var targetContainer = targetSpatialStructure.DiagramModel.GetNode<IContainerNode>(container.Id);
-            try
-            {
-               targetSpatialStructure.DiagramModel.BeginUpdate();
-               lcs.Copy(sourceContainer, targetContainer);
-            }
-            finally
-            {
-               targetSpatialStructure.DiagramModel.EndUpdate();
-            }
-         }
-
-         if (targetSpatialStructure.DiagramManager.IsInitialized)
-            targetSpatialStructure.DiagramManager.RefreshFromDiagramOptions();
+         updateDiagramLayout(allImportedContainers, importedSpatialStructure, spatialStructure);
 
          return macroCommand;
       }
@@ -137,38 +118,34 @@ namespace MoBi.Presentation.Tasks.Interaction
          return cache;
       }
 
-      private IMoBiCommand addNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
-      {
-         var spatialStructureCast = spatialStructure as TParent;
-         //we only add neighborhoods when adding a top container. 
-         if (neighborhoods == null || !neighborhoods.Any() || spatialStructureCast == null)
-            return new MoBiEmptyCommand();
-
-         //we need to make sure that we use the correct interaction task for the spatial structure in order to add the neighborhoods to the top container
-         var task = Context.Resolve<IInteractionTasksForChildren<IContainer, IContainer>>();
-         return task.AddTo(neighborhoods, spatialStructure.NeighborhoodsContainer, spatialStructure);
-      }
-
-      private bool addNeighborhood(NeighborhoodBuilder neighborhoodBuilder, MoBiMacroCommand command, MoBiSpatialStructure spatialStructure)
-      {
-         var forbiddenNames = spatialStructure.NeighborhoodsContainer.AllNames().Union(AppConstants.UnallowedNames).ToList();
-
-         if (forbiddenNames.Contains(neighborhoodBuilder.Name))
-         {
-            var newName = _interactionTaskContext.NamingTask.NewName(AppConstants.Dialog.AskForChangedName(neighborhoodBuilder.Name, ObjectTypes.Neighborhood), AppConstants.Captions.NewName, neighborhoodBuilder.Name, forbiddenNames);
-
-            if (string.IsNullOrEmpty(newName))
-               return false;
-            neighborhoodBuilder.Name = newName;
-         }
-
-         command.AddCommand(new AddContainerToSpatialStructureCommand(spatialStructure.NeighborhoodsContainer, neighborhoodBuilder, spatialStructure).Run(Context));
-         return true;
-      }
+      protected abstract IMoBiCommand AddNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure);
 
       private void registerLoadedIn(IObjectBase deserializedObject)
       {
          Context.Register(deserializedObject);
+      }
+
+      private static void updateDiagramLayout(IReadOnlyList<IContainer> allImportedContainers, MoBiSpatialStructure importedSpatialStructure, MoBiSpatialStructure spatialStructure)
+      {
+         var lcs = new LayoutCopyService();
+
+         foreach (var container in allImportedContainers)
+         {
+            var sourceContainer = importedSpatialStructure.DiagramModel.GetNode<IContainerNode>(container.Id);
+            var targetContainer = spatialStructure.DiagramModel.GetNode<IContainerNode>(container.Id);
+            try
+            {
+               spatialStructure.DiagramModel.BeginUpdate();
+               lcs.Copy(sourceContainer, targetContainer);
+            }
+            finally
+            {
+               spatialStructure.DiagramModel.EndUpdate();
+            }
+         }
+
+         if (spatialStructure.DiagramManager.IsInitialized)
+            spatialStructure.DiagramManager.RefreshFromDiagramOptions();
       }
    }
 }

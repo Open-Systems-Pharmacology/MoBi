@@ -1,4 +1,5 @@
-﻿using MoBi.Core.Commands;
+﻿using System.Collections.Generic;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
@@ -28,6 +29,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          var newEntity = base.CreateNewEntity(container);
          newEntity.ContainerType = ContainerType.Organ;
          return newEntity;
+      }
+
+      protected override IMoBiCommand AddNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
+      {
+         return AddTo(neighborhoods, spatialStructure.NeighborhoodsContainer, spatialStructure);
       }
    }
 }
