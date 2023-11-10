@@ -71,7 +71,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_module_is_loaded_using_the_interaction_task()
       {
-         A.CallTo(() => _moduleTask.AddItemsToProjectFromFile("filePath", _project, null)).MustHaveHappened();
+         A.CallTo(() => _moduleTask.AddFromFileTo("filePath", _project, null)).MustHaveHappened();
       }
    }
 
@@ -92,10 +92,10 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_tasks_should_be_used_to_add_elements_to_projects()
       {
-         A.CallTo(() => _moduleTask.AddItemsToProject(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
-         A.CallTo(() => _individualTask.AddItemsToProject(A<IReadOnlyCollection<IndividualBuildingBlock>>.That.Matches(x => x.ElementAt(0).Equals(_moBiSimulation.Configuration.Individual)), _project, null)).MustHaveHappened();
-         A.CallTo(() => _expressionTask.AddItemsToProject(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>.That.Matches(x => x.ElementAt(0).Equals(_moBiSimulation.Configuration.ExpressionProfiles[0])), _project, null)).MustHaveHappened();
-         A.CallTo(() => _expressionTask.AddItemsToProject(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>.That.Matches(x => x.ElementAt(1).Equals(_moBiSimulation.Configuration.ExpressionProfiles[1])), _project, null)).MustHaveHappened();
+         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
+         A.CallTo(() => _individualTask.AddTo(A<IReadOnlyCollection<IndividualBuildingBlock>>.That.Matches(x => x.ElementAt(0).Equals(_moBiSimulation.Configuration.Individual)), _project, null)).MustHaveHappened();
+         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>.That.Matches(x => x.ElementAt(0).Equals(_moBiSimulation.Configuration.ExpressionProfiles[0])), _project, null)).MustHaveHappened();
+         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>.That.Matches(x => x.ElementAt(1).Equals(_moBiSimulation.Configuration.ExpressionProfiles[1])), _project, null)).MustHaveHappened();
       }
    }
 
@@ -116,15 +116,15 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_module_is_still_loaded_using_the_interaction_task()
       {
-         A.CallTo(() => _moduleTask.AddItemsToProject(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
+         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
       }
 
       [Observation]
       public void the_tasks_should_not_be_used_to_add_elements_to_projects()
       {
-         A.CallTo(() => _individualTask.AddItemsToProject(A<IReadOnlyCollection<IndividualBuildingBlock>>._, A<MoBiProject>._, null)).MustNotHaveHappened();
-         A.CallTo(() => _expressionTask.AddItemsToProject(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>._, A<MoBiProject>._, null)).MustNotHaveHappened();
-         A.CallTo(() => _expressionTask.AddItemsToProject(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>._, A<MoBiProject>._, null)).MustNotHaveHappened();
+         A.CallTo(() => _individualTask.AddTo(A<IReadOnlyCollection<IndividualBuildingBlock>>._, A<MoBiProject>._, null)).MustNotHaveHappened();
+         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>._, A<MoBiProject>._, null)).MustNotHaveHappened();
+         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>._, A<MoBiProject>._, null)).MustNotHaveHappened();
       }
    }
 
@@ -156,7 +156,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_module_is_still_loaded_using_the_interaction_task()
       {
-         A.CallTo(() => _moduleTask.AddItemsToProject(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
+         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
       }
    }
 }

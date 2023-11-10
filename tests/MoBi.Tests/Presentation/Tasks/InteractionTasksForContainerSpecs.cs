@@ -10,6 +10,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -58,23 +59,32 @@ namespace MoBi.Presentation.Tasks
          _topContainer.GetAllContainersAndSelf<IContainer>().Each(x => x.Mode = ContainerMode.Physical);
          _importedContainer.GetAllContainersAndSelf<IContainer>().Each(x => x.Mode = ContainerMode.Physical);
 
-         addCollidingNeighborhoodsTo(_importedSpatialStructure);
+         var importedNeighborhood = addCollidingNeighborhoodsTo(_importedSpatialStructure);
          addCollidingNeighborhoodsTo(_spatialStructure);
 
          var filePath = "filepath";
          A.CallTo(() => _interactionTaskContext.InteractionTask.AskForFileToOpen(A<string>._, A<string>._, A<string>._)).Returns(filePath);
          A.CallTo(() => _interactionTaskContext.InteractionTask.LoadItems<MoBiSpatialStructure>(filePath)).Returns(new[] { _importedSpatialStructure });
          A.CallTo(() => _interactionTaskContext.Active<MoBiSpatialStructure>()).Returns(_spatialStructure);
-         A.CallTo(() => _interactionTaskContext.InteractionTask.CorrectName(_importedContainer, A<IEnumerable<string>>._)).Invokes(x => x.Arguments.Get<IContainer>(0).Name = "Tumour");
+         A.CallTo(() => _interactionTaskContext.InteractionTask.CorrectName(_importedContainer, A<IEnumerable<string>>._)).Invokes(x => x.Arguments.Get<IContainer>(0).Name = "Tumor");
+
+         //let's add a parameter with formula to the neighborhood to ensure that the formula is added to the cache of the building block
+         var parameter = DomainHelperForSpecs.ConstantParameterWithValue().WithName("NeighborhoodParameter");
+         parameter.Formula = new ExplicitFormula("1+2").WithId("NeighborhoodParameterFormulaId").WithName("NeighborhoodParameterFormula");
+         importedNeighborhood.AddParameter(parameter);
       }
 
-      private void addCollidingNeighborhoodsTo(MoBiSpatialStructure spatialStructure)
+      private NeighborhoodBuilder addCollidingNeighborhoodsTo(MoBiSpatialStructure spatialStructure)
       {
-         spatialStructure.AddNeighborhood(new NeighborhoodBuilder
+         var neighborhoodBuilder = new NeighborhoodBuilder
          {
             FirstNeighborPath = new ObjectPath("Organism", "Muscle", "BloodCells"),
             SecondNeighborPath = new ObjectPath("Organism", "SomethingElse")
-         }.WithName("Muscle_bls_SomethingElse"));
+         }.WithName("Muscle_bls_SomethingElse");   
+
+         spatialStructure.AddNeighborhood(neighborhoodBuilder);
+
+         return neighborhoodBuilder;
       }
 
       protected override void Because()
@@ -85,19 +95,25 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void neighborhoods_with_renamed_container_should_be_renamed()
       {
-         _importedSpatialStructure.Neighborhoods.First().FirstNeighborPath.PathAsString.ShouldBeEqualTo("Organism|Tumour|BloodCells");
+         _importedSpatialStructure.Neighborhoods.First().FirstNeighborPath.PathAsString.ShouldBeEqualTo("Organism|Tumor|BloodCells");
       }
 
       [Observation]
       public void the_colliding_neighborhoods_should_be_renamed()
       {
-         _importedSpatialStructure.Neighborhoods.First().Name.ShouldBeEqualTo("Tumour_bls_SomethingElse");
+         _importedSpatialStructure.Neighborhoods.First().Name.ShouldBeEqualTo("Tumor_bls_SomethingElse");
       }
 
       [Observation]
       public void the_name_corrector_must_be_used_to_rename_the_container()
       {
-         _importedContainer.Name.ShouldBeEqualTo("Tumour");
+         _importedContainer.Name.ShouldBeEqualTo("Tumor");
+      }
+
+      [Observation]
+      public void should_have_added_the_formula_of_all_parameters_defined_in_the_neighborhoods_to_the_spatial_structure_formula_cache()
+      {
+         _importedSpatialStructure.FormulaCache.ExistsByName("NeighborhoodParameterFormula").ShouldBeTrue();
       }
    }
 }

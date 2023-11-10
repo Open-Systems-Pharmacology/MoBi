@@ -1,30 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Services
 {
    public interface IAdjustFormulasVisitor
    {
       /// <summary>
-      /// Adjusts the formula usage for the given objectBase in the buildingBlock.
-      /// The method looks if in the buildingBlocks formula cache the same formula (same name,paths,etc, not id)  is already used.
-      /// If it is, the already existing formula instance is used instead of the original one.
-      /// If the name is the same but other properties are different, the user is asked to rename the formula and then it's added to the formula cache
-      /// In other cases the new formula is added unchanged to the Formula cache
+      ///    Adjusts the formula usage for the given objectBase in the buildingBlock.
+      ///    The method looks if in the buildingBlocks formula cache the same formula (same name,paths,etc, not id)  is already
+      ///    used.
+      ///    If it is, the already existing formula instance is used instead of the original one.
+      ///    If the name is the same but other properties are different, the user is asked to rename the formula and then it's
+      ///    added to the formula cache
+      ///    In other cases the new formula is added unchanged to the Formula cache
       /// </summary>
       /// <param name="objectBase">The object base.</param>
       /// <param name="buildingBlock">The building block.</param>
       /// <returns></returns>
-      IEnumerable<IMoBiCommand> AdjustFormulasIn(IObjectBase objectBase, IBuildingBlock buildingBlock);
-      bool Canceled { get; }
+      (IReadOnlyList<IMoBiCommand> addedFormulaCommand, bool canceled) AdjustFormulasIn(IObjectBase objectBase, IBuildingBlock buildingBlock);
    }
 
    public class AdjustFormulasVisitor : IVisitor<MoleculeBuilder>, IVisitor<IUsingFormula>, IAdjustFormulasVisitor, IVisitor<IParameter>
@@ -42,7 +43,7 @@ namespace MoBi.Core.Services
          _nameCorrector = nameCorrector;
       }
 
-      public IEnumerable<IMoBiCommand> AdjustFormulasIn(IObjectBase objectBase, IBuildingBlock buildingBlock)
+      public (IReadOnlyList<IMoBiCommand> addedFormulaCommand, bool canceled) AdjustFormulasIn(IObjectBase objectBase, IBuildingBlock buildingBlock)
       {
          _buildingBlock = buildingBlock;
          _formulaCache = _buildingBlock.FormulaCache;
@@ -51,7 +52,7 @@ namespace MoBi.Core.Services
          try
          {
             objectBase.AcceptVisitor(this);
-            return _allCommands;
+            return (_allCommands, _canceled);
          }
          finally
          {
@@ -59,11 +60,6 @@ namespace MoBi.Core.Services
             _formulaCache = null;
             _allCommands = null;
          }
-      }
-
-      public bool Canceled
-      {
-         get { return _canceled; }
       }
 
       public void Visit(MoleculeBuilder moleculeBuilder)
@@ -93,13 +89,13 @@ namespace MoBi.Core.Services
             return checkFormulaByType(formulaCache, (ExplicitFormula) formula, AreEqualExplicitFormula);
 
          if (formula.IsBlackBox())
-            return checkFormulaByType(formulaCache, (BlackBoxFormula) formula, AreEqualBalckBoxFormula);
+            return checkFormulaByType(formulaCache, (BlackBoxFormula) formula, AreEqualBlackBoxFormula);
 
          if (formula.IsTable())
             return checkFormulaByType(formulaCache, (TableFormula) formula, AreEqualTableFormula);
 
          if (formula.IsTableWithOffSet())
-            return checkFormulaByType(formulaCache, (TableFormulaWithOffset)formula, AreEqualTableFormulaWithOffset);
+            return checkFormulaByType(formulaCache, (TableFormulaWithOffset) formula, AreEqualTableFormulaWithOffset);
 
          if (formula.IsDynamic())
             return checkFormulaByType(formulaCache, (SumFormula) formula, AreEqualSumFormula);
@@ -126,7 +122,7 @@ namespace MoBi.Core.Services
 
       private T lookForSimilarFormula<T>(IEnumerable<IFormula> formulaCache, T formula, Func<T, T, bool> areEqualFormula) where T : class, IFormula
       {
-         return formulaCache.OfType<T>().FirstOrDefault(f=>areEqualFormula(f,formula));
+         return formulaCache.OfType<T>().FirstOrDefault(f => areEqualFormula(f, formula));
       }
 
       private static T getFormulaFromCache<T>(IFormulaCache formulaCache, string formulaName) where T : class, IFormula
@@ -147,42 +143,43 @@ namespace MoBi.Core.Services
          _canceled = !_nameCorrector.CorrectName(formulaCache, formula);
       }
 
-      public bool AreEqualBalckBoxFormula(BlackBoxFormula usedFormula, BlackBoxFormula alreadyUsedFormula)
+      public bool AreEqualBlackBoxFormula(BlackBoxFormula usedFormula, BlackBoxFormula alreadyUsedFormula)
       {
          return alreadyUsedFormula != null && usedFormula != null;
       }
 
-      public bool AreEqualTableFormula(TableFormula formula, TableFormula allreadyUsedFormula)
+      public bool AreEqualTableFormula(TableFormula formula, TableFormula alreadyUsedFormula)
       {
-         var valuePoints = allreadyUsedFormula.AllPoints;
-         if (!valuePoints.Count().Equals(formula.AllPoints.Count())) 
+         var valuePoints = alreadyUsedFormula.AllPoints;
+         if (!valuePoints.Count().Equals(formula.AllPoints.Count()))
             return false;
 
-         foreach (ValuePoint point in formula.AllPoints)
+         foreach (var point in formula.AllPoints)
          {
-            if (valuePoints.FirstOrDefault(p => p.X.Equals(point.X) && p.Y.Equals(point.Y)) == null) 
+            if (valuePoints.FirstOrDefault(p => p.X.Equals(point.X) && p.Y.Equals(point.Y)) == null)
                return false;
          }
+
          return true;
       }
 
-      public bool AreEqualTableFormulaWithOffset(TableFormulaWithOffset formula, TableFormulaWithOffset allreadyUsedFormula)
+      public bool AreEqualTableFormulaWithOffset(TableFormulaWithOffset formula, TableFormulaWithOffset alreadyUsedFormula)
       {
-         return areEqualObjectPathCollection(formula.ObjectPaths, allreadyUsedFormula.ObjectPaths);
+         return areEqualObjectPathCollection(formula.ObjectPaths, alreadyUsedFormula.ObjectPaths);
       }
 
-      public bool AreEqualSumFormula(SumFormula formula, SumFormula allreadyUsedFormula)
+      public bool AreEqualSumFormula(SumFormula formula, SumFormula alreadyUsedFormula)
       {
-         return allreadyUsedFormula.Criteria.Equals(formula.Criteria);
+         return alreadyUsedFormula.Criteria.Equals(formula.Criteria);
       }
 
       public bool AreEqualExplicitFormula(ExplicitFormula explicitFormula, ExplicitFormula otherExplicitFormula)
       {
-         if (explicitFormula == null || otherExplicitFormula == null) 
+         if (explicitFormula == null || otherExplicitFormula == null)
             return false;
 
-         bool equal = string.Equals(explicitFormula.FormulaString,otherExplicitFormula.FormulaString);
-         if (!equal) 
+         bool equal = string.Equals(explicitFormula.FormulaString, otherExplicitFormula.FormulaString);
+         if (!equal)
             return false;
 
          return areEqualObjectPathCollection(explicitFormula.ObjectPaths, otherExplicitFormula.ObjectPaths);
@@ -194,11 +191,12 @@ namespace MoBi.Core.Services
          var equal = true;
          foreach (var path in objectPaths)
          {
-            var otherPath = otherObjectPaths.FirstOrDefault(objPath => string.Equals(objPath.Alias,path.Alias));
+            var otherPath = otherObjectPaths.FirstOrDefault(objPath => string.Equals(objPath.Alias, path.Alias));
             if (otherPath == null) return false;
             equal = equal && path.Equals(otherPath);
          }
+
          return equal;
-      }  
+      }
    }
 }

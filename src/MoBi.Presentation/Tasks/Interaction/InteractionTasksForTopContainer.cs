@@ -3,7 +3,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {

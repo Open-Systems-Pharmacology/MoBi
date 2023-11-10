@@ -63,14 +63,14 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          // Keep track of imported containers original names because they could be renamed when being added to the project.
          var nameCache = initializeNameChangeTracking(allImportedContainers);
-         var command = AddItemsToProject(allImportedContainers, parent, buildingBlockWithFormulaCache);
+         var command = AddTo(allImportedContainers, parent, buildingBlockWithFormulaCache);
          if (command.IsEmpty())
             return new MoBiEmptyCommand();
 
          // For all the containers that were imported, check if their names have changed and update neighborhoods accordingly
          nameCache.Keys.Each(x => updateNeighborhoodsForNewContainerName(x.Name, nameCache[x], allImportedNeighborhoods));
 
-         var addNeighborhoodsCommand = addNeighborhoodsToProject(allImportedNeighborhoods, targetSpatialStructure);
+         var addNeighborhoodsCommand = addNeighborhoodsToSpatialStructure(allImportedNeighborhoods, targetSpatialStructure);
 
          if (addNeighborhoodsCommand.IsEmpty())
             return command;
@@ -137,22 +137,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          return cache;
       }
 
-      private IMoBiCommand addNeighborhoodsToProject(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
+      private IMoBiCommand addNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
       {
-         if (neighborhoods == null || !neighborhoods.Any()) return new MoBiEmptyCommand();
-         var command = new MoBiMacroCommand
-         {
-            CommandType = AppConstants.Commands.AddCommand,
-            ObjectType = ObjectTypes.Neighborhood,
-            Description = AppConstants.Commands.AddDependentDescription(spatialStructure, ObjectTypes.Neighborhood, ObjectTypes.SpatialStructure)
-         };
+         var spatialStructureCast = spatialStructure as TParent;
+         //we only add neighborhoods when adding a top container. 
+         if (neighborhoods == null || !neighborhoods.Any() || spatialStructureCast == null)
+            return new MoBiEmptyCommand();
 
-         return neighborhoods.Any(existingItem => !addNeighborhood(existingItem, command, spatialStructure)) ? CancelCommand(command) : command;
+         //we need to make sure that we use the correct interaction task for the spatial structure in order to add the neighborhoods to the top container
+         var task = Context.Resolve<IInteractionTasksForChildren<IContainer, IContainer>>();
+         return task.AddTo(neighborhoods, spatialStructure.NeighborhoodsContainer, spatialStructure);
       }
 
       private bool addNeighborhood(NeighborhoodBuilder neighborhoodBuilder, MoBiMacroCommand command, MoBiSpatialStructure spatialStructure)
       {
-         var forbiddenNames = spatialStructure.NeighborhoodsContainer.Children.Select(x => x.Name).Union(AppConstants.UnallowedNames).ToList();
+         var forbiddenNames = spatialStructure.NeighborhoodsContainer.AllNames().Union(AppConstants.UnallowedNames).ToList();
+
          if (forbiddenNames.Contains(neighborhoodBuilder.Name))
          {
             var newName = _interactionTaskContext.NamingTask.NewName(AppConstants.Dialog.AskForChangedName(neighborhoodBuilder.Name, ObjectTypes.Neighborhood), AppConstants.Captions.NewName, neighborhoodBuilder.Name, forbiddenNames);

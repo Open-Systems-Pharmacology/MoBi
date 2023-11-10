@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             AddConcentrationParameterTo(moleculeBuilder, moleculeBuildingBlock);
             setDefaultStartFormula(moleculeBuilder);
             setDefaultDimensionIn(moleculeBuilder);
-            _interactionTaskContext.Context.AddToHistory(AddItemsToProject(new[] { moleculeBuilder }, moleculeBuildingBlock, moleculeBuildingBlock));
+            _interactionTaskContext.Context.AddToHistory(AddTo(new[] { moleculeBuilder }, moleculeBuildingBlock, moleculeBuildingBlock));
          }
       }
 

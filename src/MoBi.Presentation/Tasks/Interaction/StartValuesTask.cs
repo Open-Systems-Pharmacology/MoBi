@@ -220,7 +220,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          var clone = InteractionTask.Clone(buildingBlockToClone).WithName(name);
 
-         return AddToParent(clone, parentModule, null);
+         return AddTo(clone, parentModule, null);
       }
 
       protected static bool ShouldFormulaBeOverridden(ImportedQuantityDTO quantityDTO, TPathAndValueEntity pathAndValueEntity)

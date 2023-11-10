@@ -172,9 +172,9 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _result1 = sut.AreEqualBalckBoxFormula(null, A.Fake<BlackBoxFormula>());
-         _result2 = sut.AreEqualBalckBoxFormula(A.Fake<BlackBoxFormula>(), null);
-         _result3 = sut.AreEqualBalckBoxFormula(A.Fake<BlackBoxFormula>(), A.Fake<BlackBoxFormula>());
+         _result1 = sut.AreEqualBlackBoxFormula(null, A.Fake<BlackBoxFormula>());
+         _result2 = sut.AreEqualBlackBoxFormula(A.Fake<BlackBoxFormula>(), null);
+         _result3 = sut.AreEqualBlackBoxFormula(A.Fake<BlackBoxFormula>(), A.Fake<BlackBoxFormula>());
       }
 
       [Observation]

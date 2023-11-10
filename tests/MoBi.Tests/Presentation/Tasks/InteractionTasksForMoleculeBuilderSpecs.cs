@@ -211,7 +211,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.AddToParent(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
+         _command = sut.AddTo(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
       }
 
       [Observation]
@@ -248,7 +248,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.AddToParent(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
+         _command = sut.AddTo(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
       }
 
       [Observation]
@@ -288,7 +288,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.AddToParent(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
+         _command = sut.AddTo(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
       }
 
       [Observation]

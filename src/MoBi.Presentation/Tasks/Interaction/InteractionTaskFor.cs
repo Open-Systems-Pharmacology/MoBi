@@ -22,11 +22,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand AddNew(TParent parent, IBuildingBlock buildingBlockToAddTo);
       IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
       IMoBiCommand AddExistingTemplate(TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
-      IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
+      IMoBiCommand AddTo(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
+      IMoBiCommand AddTo(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null);
+      IMoBiCommand AddFromFileTo(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null);
 
       TChild CreateNewEntity(TParent parent);
-      IMoBiCommand AddItemsToProject(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null);
-      IMoBiCommand AddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null);
       string AskForPKMLFileToOpen();
    }
 
@@ -143,7 +143,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public virtual IMoBiCommand AddExisting(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          var filename = AskForPKMLFileToOpen();
-         return AddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+         return AddFromFileTo(filename, parent, buildingBlockWithFormulaCache);
       }
 
       public string AskForPKMLFileToOpen()
@@ -155,15 +155,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          _interactionTaskContext.UpdateTemplateDirectories();
          var filename = InteractionTask.AskForFileToOpen(AppConstants.Dialog.LoadFromTemplate(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
-         return AddItemsToProjectFromFile(filename, parent, buildingBlockWithFormulaCache);
+         return AddFromFileTo(filename, parent, buildingBlockWithFormulaCache);
       }
 
-      public IMoBiCommand AddItemsToProjectFromFile(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null)
+      public IMoBiCommand AddFromFileTo(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null)
       {
          if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();
 
-         return AddItemsToProject(LoadItems(filename), parent, buildingBlockWithFormulaCache);
+         return AddTo(LoadItems(filename), parent, buildingBlockWithFormulaCache);
       }
 
       public virtual IReadOnlyCollection<TChild> LoadItems(string filename)
@@ -171,7 +171,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return InteractionTask.LoadItems<TChild>(filename);
       }
 
-      public IMoBiCommand AddItemsToProject(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null)
+      public IMoBiCommand AddTo(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null)
       {
          if (itemsToAdd == null || !itemsToAdd.Any())
             return new MoBiEmptyCommand();
@@ -182,9 +182,10 @@ namespace MoBi.Presentation.Tasks.Interaction
             ObjectType = _editTask.ObjectName,
             Description = AppConstants.Commands.AddMany(_editTask.ObjectName)
          };
+
          foreach (var existingItem in itemsToAdd)
          {
-            var command = AddToParent(existingItem, parent, buildingBlockWithFormulaCache);
+            var command = AddTo(existingItem, parent, buildingBlockWithFormulaCache);
             if (command.IsEmpty())
                return CancelCommand(macroCommand);
 
@@ -213,7 +214,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public abstract IMoBiCommand GetRemoveCommand(TChild objectToRemove, TParent parent, IBuildingBlock buildingBlock);
 
-      public virtual IMoBiCommand AddToParent(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
+      public virtual IMoBiCommand AddTo(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          var nameIsValid = CorrectName(childToAdd, parent);
          if (!nameIsValid)
@@ -229,7 +230,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          //add silently and raise event at the end
          macroCommand.Add(GetSilentAddCommand(childToAdd, parent, buildingBlockWithFormulaCache).Run(Context));
 
-         //no formula to check for building block
          if (!adjustFormula(childToAdd, buildingBlockWithFormulaCache, macroCommand))
             return CancelCommand(macroCommand);
 

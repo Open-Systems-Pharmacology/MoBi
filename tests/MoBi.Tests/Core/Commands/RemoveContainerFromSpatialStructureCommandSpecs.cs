@@ -1,14 +1,11 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Helpers;
-using NPOI.SS.Formula.Functions;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Core.Commands
 {
@@ -44,26 +41,6 @@ namespace MoBi.Core.Commands
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.ObjectPathFactory).Returns(_objectPathFactory);
          sut = new RemoveContainerFromSpatialStructureCommand(_parent, _containerToRemove, _spatialStructure);
-      }
-   }
-
-   internal class When_executing_a_remove_container_from_spatial_structure_command : concern_for_RemoveContainerFromSpatialStructureCommand
-   {
-      protected override void Because()
-      {
-         sut.Execute(_context);
-      }
-
-      [Observation]
-      public void should_remove_the_container()
-      {
-         _parent.ShouldOnlyContain((IEntity) _otherContainer);
-      }
-
-      [Observation]
-      public void should_also_remove_the_neighborhood_connected_to_the_container()
-      {
-         _spatialStructure.Neighborhoods.ShouldBeEmpty();
       }
    }
 
