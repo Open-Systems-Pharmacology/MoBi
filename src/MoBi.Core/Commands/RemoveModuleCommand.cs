@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -27,7 +28,17 @@ namespace MoBi.Core.Commands
          context.Unregister(_module);
 
          _serializationStream = context.Serialize(_module);
-         context.PublishEvent(new RemovedEvent(_module, project));
+
+         // When removing a module, we are implicitly removing all the building blocks it contains.
+         var removedObjects = allRemovedObjectsFrom(_module);
+         context.PublishEvent(new RemovedEvent(removedObjects));
+      }
+
+      private List<IObjectBase> allRemovedObjectsFrom(Module module)
+      {
+         var removedObjects = new List<IObjectBase> { module };
+         removedObjects.AddRange(module.BuildingBlocks);
+         return removedObjects;
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
