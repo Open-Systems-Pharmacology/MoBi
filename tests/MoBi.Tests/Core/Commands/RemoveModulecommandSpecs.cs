@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Builder;
@@ -6,6 +7,7 @@ using System.Linq;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Events;
 using MoBi.Helpers;
 
 namespace MoBi.Core.Commands
@@ -51,7 +53,8 @@ namespace MoBi.Core.Commands
    {
       private RegisterTask _registrationTask;
       protected WithIdRepository _withIdRepository;
-      
+      private List<IBuildingBlock> _allBuildingBlocks;
+
       protected override void Context()
       {
          base.Context();
@@ -66,6 +69,8 @@ namespace MoBi.Core.Commands
          _module.Add(new EventGroupBuildingBlock().WithId("EventGroup"));
          _module.Add(new InitialConditionsBuildingBlock().WithId("InitialConditions"));
          _module.Add(new ParameterValuesBuildingBlock().WithId("ParameterValues"));
+
+         _allBuildingBlocks = _module.BuildingBlocks.ToList();
 
          A.CallTo(() => _context.Register(_module)).Invokes(() => _registrationTask.RegisterAllIn(_module));
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -97,6 +102,17 @@ namespace MoBi.Core.Commands
       public void the_module_is_removed_from_the_project()
       {
          _project.Modules.ShouldNotContain(_module);
+      }
+
+      [Observation]
+      public void remove_event_should_contain_the_module_being_removed_and_all_building_blocks()
+      {
+         A.CallTo(() => _context.PublishEvent(A<RemovedEvent>.That.Matches(x => eventContainsAllBuildingBlocks(x)))).MustHaveHappened();
+      }
+
+      private bool eventContainsAllBuildingBlocks(RemovedEvent removedEvent)
+      {
+         return removedEvent.RemovedObjects.Contains(_module) && _allBuildingBlocks.All(x => removedEvent.RemovedObjects.Contains(x));
       }
    }
 }
