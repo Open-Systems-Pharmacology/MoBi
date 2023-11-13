@@ -1,24 +1,19 @@
-﻿using System.Linq;
-using MoBi.Core.Domain.Model;
-using MoBi.Core.Events;
+﻿using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
    public class AddTopContainerCommand : AddObjectBaseCommand<IContainer, MoBiSpatialStructure>
    {
-      public AddTopContainerCommand(MoBiSpatialStructure parent, IContainer itemToAdd) : base(parent, itemToAdd, parent)
+      public AddTopContainerCommand(MoBiSpatialStructure spatialStructure, IContainer containerToAdd) : base(spatialStructure, containerToAdd, spatialStructure)
       {
       }
 
-      protected override void AddTo(IContainer child, MoBiSpatialStructure spatialStructure, IMoBiContext context)
+      protected override void AddTo(IContainer containerToAdd, MoBiSpatialStructure spatialStructure, IMoBiContext context)
       {
-         spatialStructure.AddTopContainer(child);
-         spatialStructure.DiagramManager.AddObjectBase(child);
+         spatialStructure.AddTopContainer(containerToAdd);
+         spatialStructure.DiagramManager.AddObjectBase(containerToAdd);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
@@ -29,54 +24,14 @@ namespace MoBi.Core.Commands
 
    public class RemoveTopContainerCommand : RemoveObjectBaseCommand<IContainer, MoBiSpatialStructure>
    {
-      private Cache<string, IObjectBase> _removedIds;
-
-      public RemoveTopContainerCommand(MoBiSpatialStructure parent, IContainer itemToRemove) : base(parent, itemToRemove, parent)
+      public RemoveTopContainerCommand(MoBiSpatialStructure spatialStructure, IContainer containerToRemove) : base(spatialStructure, containerToRemove, spatialStructure)
       {
       }
 
-      protected override void RemoveFrom(IContainer childToRemove, MoBiSpatialStructure spatialStructure, IMoBiContext context)
+      protected override void RemoveFrom(IContainer containerToRemove, MoBiSpatialStructure spatialStructure, IMoBiContext context)
       {
-         spatialStructure.RemoveTopContainer(childToRemove);
-         _removedIds = new Cache<string, IObjectBase>(x => x.Id);
-         removeNeighborhoods(childToRemove, _removedIds, spatialStructure, context);
-         unregisterAllChildrenAndRemoveTheirNeighborHoods(childToRemove, _removedIds, spatialStructure, context);
-         spatialStructure.DiagramManager.RemoveObjectBase(childToRemove);
-      }
-
-      private void removeNeighborhoods(IContainer entityToRemove, ICache<string, IObjectBase> removedIds, MoBiSpatialStructure spatialStructure, IMoBiContext context)
-      {
-         var entityToRemovePath = context.ObjectPathFactory.CreateAbsoluteObjectPath(entityToRemove);
-         var neighborhoodsToDelete = spatialStructure.AllNeighborhoodBuildersConnectedWith(entityToRemovePath);
-         foreach (var neighborhoodBuilder in neighborhoodsToDelete)
-         {
-            if (!removedIds.Contains(neighborhoodBuilder.Id))
-            {
-               spatialStructure.RemoveNeighborhood(neighborhoodBuilder);
-               removedIds.Add(neighborhoodBuilder);
-            }
-         }
-      }
-
-      private void unregisterAllChildrenAndRemoveTheirNeighborHoods(IObjectBase entityToRemove, ICache<string, IObjectBase> removedIds, MoBiSpatialStructure spatialStructure, IMoBiContext context)
-      {
-         if (removedIds.Contains(entityToRemove.Id))
-            return;
-
-         var containerToRemove = entityToRemove as IContainer;
-
-         if (containerToRemove == null)
-            return;
-
-         removeNeighborhoods(containerToRemove, removedIds, spatialStructure, context);
-         containerToRemove.GetChildren<IEntity>().Each(x => unregisterAllChildrenAndRemoveTheirNeighborHoods(x, removedIds, spatialStructure, context));
-      }
-
-      protected override void ExecuteWith(IMoBiContext context)
-      {
-         base.ExecuteWith(context);
-         _removedIds.Each(context.Unregister);
-         context.PublishEvent(new RemovedEvent(_removedIds));
+         spatialStructure.RemoveTopContainer(containerToRemove);
+         spatialStructure.DiagramManager.RemoveObjectBase(containerToRemove);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

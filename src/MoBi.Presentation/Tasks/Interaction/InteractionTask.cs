@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
@@ -11,6 +9,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -99,12 +99,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public bool AdjustFormula<T>(T objectBase, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand) where T : IObjectBase
       {
-         var formulaCommands = _adjustFormulasVisitor.AdjustFormulasIn(objectBase, buildingBlockWithFormulaCache);
-         if (!_adjustFormulasVisitor.Canceled)
-         {
-            macroCommand.AddRange(formulaCommands);
-         }
-         return !_adjustFormulasVisitor.Canceled;
+         var (formulaCommands, canceled) = _adjustFormulasVisitor.AdjustFormulasIn(objectBase, buildingBlockWithFormulaCache);
+         if (canceled)
+            return false;
+
+         macroCommand.AddRange(formulaCommands);
+         return true;
       }
 
       public string TypeFor<T>(T objectRequestingType) where T : class => _objectTypeResolver.TypeFor(objectRequestingType);

@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Tasks
 
          protected override void Because()
          {
-            _command = sut.AddToParent(_expressionProfileToAdd, _project, null);
+            _command = sut.AddTo(_expressionProfileToAdd, _project, null);
          }
 
          [Observation]

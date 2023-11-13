@@ -44,7 +44,7 @@ namespace MoBi.Presentation.UICommand
          foreach (var expressionProfile in expressionProfiles)
          {
             var psvBuildingBlock = _mapper.MapFrom(expressionProfile);
-            macroCommand.AddCommand(_interactionTasksForPSVBuildingBlock.AddToParent(psvBuildingBlock, Subject, null));
+            macroCommand.AddCommand(_interactionTasksForPSVBuildingBlock.AddTo(psvBuildingBlock, Subject, null));
          }
 
          _context.AddToHistory(macroCommand);

@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand AddToProject(TBuildingBlock buildingBlockToAdd)
       {
-         return AddToParent(buildingBlockToAdd, Context.CurrentProject, null);
+         return AddTo(buildingBlockToAdd, Context.CurrentProject, null);
       }
 
       public IMoBiCommand AddToProject(IBuildingBlock buildingBlock)

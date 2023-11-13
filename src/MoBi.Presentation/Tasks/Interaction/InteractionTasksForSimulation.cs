@@ -118,7 +118,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand AddToProject(IMoBiSimulation simulation)
       {
-         return AddToParent(simulation, _interactionTaskContext.Context.CurrentProject, null);
+         return AddTo(simulation, _interactionTaskContext.Context.CurrentProject, null);
       }
 
       private IMoBiSimulation createSimulation()

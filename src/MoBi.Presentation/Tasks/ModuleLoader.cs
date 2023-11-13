@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Tasks
          catch
          {
             // If the user is not loading from a simulation transfer, only add modules
-            return _moduleTask.AddItemsToProjectFromFile(filename, project);
+            return _moduleTask.AddFromFileTo(filename, project);
          }
       }
 
@@ -65,13 +65,13 @@ namespace MoBi.Presentation.Tasks
          var individuals = configuration.Individual == null ? new List<IndividualBuildingBlock>() : new List<IndividualBuildingBlock> { configuration.Individual };
          var expressions = configuration.ExpressionProfiles;
 
-         macroCommand.Add(_moduleTask.AddItemsToProject(modules, project));
+         macroCommand.Add(_moduleTask.AddTo(modules, project));
 
          if (!addAdditionalBuildingBlocksConfirmed(individuals.Count, expressions.Count))
             return macroCommand;
 
-         macroCommand.Add(_individualTask.AddItemsToProject(individuals, project));
-         macroCommand.Add(_expressionTask.AddItemsToProject(expressions, project));
+         macroCommand.Add(_individualTask.AddTo(individuals, project));
+         macroCommand.Add(_expressionTask.AddTo(expressions, project));
 
          return macroCommand;
       }
