@@ -28,9 +28,9 @@
     <PackageReference Include="Northwoods.GoWin" Version="5.2.0" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.0.5" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.0.248" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="12.0.248" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.248" />  
+    <PackageReference Include="OSPSuite.Presentation" Version="12.0.249" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="12.0.249" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.249" />  
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
