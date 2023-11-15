@@ -111,7 +111,9 @@ namespace MoBi.Presentation.Presenter
 
       private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
-         _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
+         // First and second neighbor node selections should not trigger an EntitySelectedEvent
+         if(objectBaseDTO.ObjectBase != null)
+            _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)

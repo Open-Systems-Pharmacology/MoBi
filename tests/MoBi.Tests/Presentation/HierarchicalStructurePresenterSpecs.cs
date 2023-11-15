@@ -108,4 +108,48 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.PublishEvent(A<EntitySelectedEvent>._)).MustNotHaveHappened();
       }
    }
+
+   internal class When_selecting_a_node_with_an_object_base : concern_for_HierarchicalStructurePresenter
+   {
+      private ObjectBaseDTO _dto;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dto = new ObjectBaseDTO(new Container());
+      }
+
+      protected override void Because()
+      {
+         sut.Select(_dto);
+      }
+
+      [Observation]
+      public void should_raise_entity_selected_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<EntitySelectedEvent>.That.Matches(x => x.ObjectBase.Equals(_dto.ObjectBase)))).MustHaveHappened();
+      }
+   }
+
+   internal class When_selecting_a_node_without_an_object_base : concern_for_HierarchicalStructurePresenter
+   {
+      private ObjectBaseDTO _dto;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dto = new ObjectBaseDTO();
+      }
+
+      protected override void Because()
+      {
+         sut.Select(_dto);
+      }
+
+      [Observation]
+      public void should_not_raise_entity_selected_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<EntitySelectedEvent>._)).MustNotHaveHappened();
+      }
+   }
 }

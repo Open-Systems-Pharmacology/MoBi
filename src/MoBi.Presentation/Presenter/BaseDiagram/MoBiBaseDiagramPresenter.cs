@@ -102,8 +102,11 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       /// </summary>
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         if (DiagramManager == null) return;
-         if (!DiagramManager.MustHandleExisting(eventToHandle.ObjectBase.Id)) return;
+         if (DiagramManager == null) 
+            return;
+
+         if (!DiagramManager.MustHandleExisting(eventToHandle.ObjectBase.Id)) 
+            return;
 
          IBaseNode baseNode = DiagramModel.GetNode(eventToHandle.ObjectBase.Id);
          if (baseNode == null) return;
