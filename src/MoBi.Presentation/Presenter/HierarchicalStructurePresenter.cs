@@ -112,7 +112,7 @@ namespace MoBi.Presentation.Presenter
       private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
          // First and second neighbor node selections should not trigger an EntitySelectedEvent
-         // because the are not ObjectBase
+         // because they are not a selectable entity
          if(objectBaseDTO.ObjectBase != null)
             _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
       }
