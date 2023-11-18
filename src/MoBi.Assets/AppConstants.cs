@@ -2097,7 +2097,8 @@ namespace MoBi.Assets
          "SRND",
          "TAN",
          "TANH",
-         "NEQ"
+         "NEQ",
+         "EVENTS"
       };
 
       public static readonly string None = "<None>";
