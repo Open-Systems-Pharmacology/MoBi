@@ -319,9 +319,9 @@ namespace MoBi.Core.Service
       }
      
       [Observation]
-      public void should_look_for_root_EventGroupName()
+      public void should_allow_for_root_EventGroupName()
       {
-         _forbiddenNames.ShouldContain(_eventGroupName);
+         _forbiddenNames.ShouldNotContain(_eventGroupName);
       }
 
       [Observation]

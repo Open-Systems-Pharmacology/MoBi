@@ -84,10 +84,7 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      public IEnumerable<string> For(ObserverBuilder observerBuilder)
-      {
-         return allLocalParametersFromMoleculesInProject();
-      }
+      public IEnumerable<string> For(ObserverBuilder observerBuilder) => allLocalParametersFromMoleculesInProject();
 
       public IEnumerable<string> For(TransportBuilder transportBuilder)
       {
@@ -97,22 +94,15 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      public IEnumerable<string> For(IContainer container)
-      {
-         return allMoleculeNamesFromProject();
-      }
+      public IEnumerable<string> For(IContainer container) => allMoleculeNamesFromProject();
 
-      public IEnumerable<string> For(TransporterMoleculeContainer transporterMoleculeContainer)
-      {
-         return allLocalParametersFromMoleculesInProject();
-      }
+      public IEnumerable<string> For(TransporterMoleculeContainer transporterMoleculeContainer) => allLocalParametersFromMoleculesInProject();
 
       public IEnumerable<string> For(IModelCoreSimulation simulation)
       {
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, _buildingBlockRepository.MoleculeBlockCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
          addNamesToHash(nameHash, _buildingBlockRepository.SpatialStructureCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
-         addNamesToHash(nameHash, _buildingBlockRepository.EventBlockCollection.SelectMany(mbb => mbb.Select(x => x.Name)));
          addNamesToHash(nameHash, _buildingBlockRepository.ReactionBlockCollection.SelectMany(rbb => rbb.Select(x => x.Name)));
          addNamesToHash(nameHash, _simulationRepository.All().Select(bb => bb.Name));
          return nameHash;
@@ -125,30 +115,16 @@ namespace MoBi.Core.Services
          return _nameHashForVisitor;
       }
 
-      private IEnumerable<string> allObserverNamesFromProject()
-      {
-         return allNamesFrom<ObserverBuildingBlock, ObserverBuilder>(_buildingBlockRepository.ObserverBlockCollection);
-      }
+      private IEnumerable<string> allObserverNamesFromProject() => allNamesFrom<ObserverBuildingBlock, ObserverBuilder>(_buildingBlockRepository.ObserverBlockCollection);
 
-      private IEnumerable<string> allMoleculeNamesFromProject()
-      {
-         return allNamesFrom<MoleculeBuildingBlock, MoleculeBuilder>(_buildingBlockRepository.MoleculeBlockCollection);
-      }
+      private IEnumerable<string> allMoleculeNamesFromProject() => allNamesFrom<MoleculeBuildingBlock, MoleculeBuilder>(_buildingBlockRepository.MoleculeBlockCollection);
 
-      private IEnumerable<string> allReactionNamesFromProject()
-      {
-         return allNamesFrom<MoBiReactionBuildingBlock, ReactionBuilder>(_buildingBlockRepository.ReactionBlockCollection);
-      }
+      private IEnumerable<string> allReactionNamesFromProject() => allNamesFrom<MoBiReactionBuildingBlock, ReactionBuilder>(_buildingBlockRepository.ReactionBlockCollection);
 
-      private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder
-      {
-         return buildingBlock.SelectMany(x => x.All()).Select(x => x.Name);
-      }
+      private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder => 
+         buildingBlock.SelectMany(x => x.All()).Select(x => x.Name);
 
-      private IEnumerable<string> allLocalParametersFromMoleculesInProject()
-      {
-         return allParametersFromMoleculesInProject(ParameterBuildMode.Local);
-      }
+      private IEnumerable<string> allLocalParametersFromMoleculesInProject() => allParametersFromMoleculesInProject(ParameterBuildMode.Local);
 
       private IEnumerable<string> allParametersFromMoleculesInProject()
       {
@@ -209,64 +185,28 @@ namespace MoBi.Core.Services
          return nameHash;
       }
 
-      private void addNamesToHash(HashSet<string> nameHash, IEnumerable<string> namesToAdd)
-      {
-         namesToAdd.Each(x => nameHash.Add(x));
-      }
+      private void addNamesToHash(HashSet<string> nameHash, IEnumerable<string> namesToAdd) => namesToAdd.Each(x => nameHash.Add(x));
 
-      private IEnumerable<string> allParameterNamesFrom(IContainer container)
-      {
-         return allParameterNamesFrom(container, x => true);
-      }
+      private IEnumerable<string> allParameterNamesFrom(IContainer container) => allParameterNamesFrom(container, x => true);
 
-      private IEnumerable<string> allParameterNamesFrom(IContainer container, Func<IParameter, bool> selector)
-      {
-         return container.GetAllChildren(selector).Select(x => x.Name);
-      }
+      private IEnumerable<string> allParameterNamesFrom(IContainer container, Func<IParameter, bool> selector) => container.GetAllChildren(selector).Select(x => x.Name);
 
-      public void Visit(MoleculeBuilder moleculeBuilder)
-      {
-         addNamesToHash(_nameHashForVisitor, For(moleculeBuilder));
-      }
+      public void Visit(MoleculeBuilder moleculeBuilder) => addNamesToHash(_nameHashForVisitor, For(moleculeBuilder));
 
-      public void Visit(IParameter parameter)
-      {
-         addNamesToHash(_nameHashForVisitor, For(parameter));
-      }
+      public void Visit(IParameter parameter) => addNamesToHash(_nameHashForVisitor, For(parameter));
 
-      public void Visit(IDistributedParameter parameter)
-      {
-         addNamesToHash(_nameHashForVisitor, For(parameter.DowncastTo<IParameter>()));
-      }
+      public void Visit(IDistributedParameter parameter) => addNamesToHash(_nameHashForVisitor, For(parameter.DowncastTo<IParameter>()));
 
-      public void Visit(ObserverBuilder observerBuilder)
-      {
-         addNamesToHash(_nameHashForVisitor, For(observerBuilder));
-      }
+      public void Visit(ObserverBuilder observerBuilder) => addNamesToHash(_nameHashForVisitor, For(observerBuilder));
 
-      public void Visit(TransportBuilder transportBuilder)
-      {
-         addNamesToHash(_nameHashForVisitor, For(transportBuilder));
-      }
+      public void Visit(TransportBuilder transportBuilder) => addNamesToHash(_nameHashForVisitor, For(transportBuilder));
 
-      public void Visit(IContainer container)
-      {
-         addNamesToHash(_nameHashForVisitor, For(container));
-      }
+      public void Visit(IContainer container) => addNamesToHash(_nameHashForVisitor, For(container));
 
-      public void Visit(TransporterMoleculeContainer transporterMoleculeContainer)
-      {
-         addNamesToHash(_nameHashForVisitor, For(transporterMoleculeContainer));
-      }
+      public void Visit(TransporterMoleculeContainer transporterMoleculeContainer) => addNamesToHash(_nameHashForVisitor, For(transporterMoleculeContainer));
 
-      public void Visit(ReactionBuilder objToVisit)
-      {
-         addNamesToHash(_nameHashForVisitor, For(objToVisit));
-      }
+      public void Visit(ReactionBuilder objToVisit) => addNamesToHash(_nameHashForVisitor, For(objToVisit));
 
-      public void Visit(IModelCoreSimulation objToVisit)
-      {
-         addNamesToHash(_nameHashForVisitor, For(objToVisit));
-      }
+      public void Visit(IModelCoreSimulation objToVisit) => addNamesToHash(_nameHashForVisitor, For(objToVisit));
    }
 }
