@@ -1865,18 +1865,34 @@ namespace MoBi.Assets
             return $"Select building blocks to clone from {module.Name}";
          }
 
-         public static string AlsoImportIndividualsAndExpressions(int numberOfIndividuals, int numberOfExpressions)
+         public static string AlsoImportIndividualsAndExpressions(string individualName, IReadOnlyList<string> expressionNames)
          {
-            var individual = $"{numberOfIndividuals} individual".PluralizeIf(numberOfIndividuals);
-            var expression = $"{numberOfExpressions} expression".PluralizeIf(numberOfExpressions);
+            var numberOfIndividuals = string.IsNullOrEmpty(individualName) ? 0 : 1;
+            var numberOfExpressions = expressionNames.Count;
+            var sb = new StringBuilder();
+            
+            var expression = $"Expression Profile".PluralizeIf(numberOfExpressions);
                
             if (numberOfExpressions == 0)
-               return $"Also import {individual}?";
-            
-            if(numberOfIndividuals == 0)
-               return $"Also import {expression}?";
+               return $"Also import individual {individualName}?";
 
-            return $"Also import {individual} and {expression}?";
+            if (numberOfIndividuals == 0)
+            {
+               sb.Append($"Also import {expression}");
+               sb.AppendLine();
+               sb.Append(namesList(expressionNames));
+               return sb.ToString();
+            }
+
+            sb.AppendLine("Do you want to import additional building blocks?");
+            sb.AppendLine();
+
+            sb.Append("<b>Individual</b>");
+            sb.AppendLine(namesList(new[] { individualName }));
+            sb.Append($"<b>{expression}</b>");
+            sb.AppendLine(namesList(expressionNames));
+
+            return sb.ToString();
          }
 
          public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
@@ -1897,7 +1913,8 @@ namespace MoBi.Assets
          {
             var sb = new StringBuilder();
             sb.AppendLine();
-            sb.AppendLine(allNames.ToString("\n"));
+            sb.Append(" - ");
+            sb.AppendLine(allNames.ToString("\n - "));
             return sb.ToString();
          }
       }
