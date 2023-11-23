@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -16,6 +17,8 @@ namespace MoBi.Presentation.DTO
    {
       private readonly List<TSubParameter> _subParameters = new List<TSubParameter>();
       public IReadOnlyList<TSubParameter> SubParameters => _subParameters;
+
+      public ObjectPath Path => PathWithValueObject.Path;
 
       public TSubParameter MeanDTO => SubParameters.FindByName(MEAN);
 

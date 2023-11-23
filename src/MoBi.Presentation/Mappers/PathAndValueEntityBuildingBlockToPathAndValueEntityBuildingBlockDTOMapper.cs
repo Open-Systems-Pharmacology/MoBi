@@ -22,40 +22,33 @@ namespace MoBi.Presentation.Mappers
 
       public TBuildingBlockDTO MapFrom(TBuildingBlock buildingBlock)
       {
-         var distributedParameters = buildingBlock.Where(p => p.DistributionType != null).ToList();
-         var nonDistributedParameters = new PathAndValueEntityCache<TBuilder>();
-         nonDistributedParameters.AddRange(buildingBlock.Where(p => p.DistributionType == null));
+         var parameterDTOs = buildingBlock.MapAllUsing(_builderToBuilderDTOMapper).ToList();
 
-         var parameterDTOs = distributedParameters.Select(x => mapDistributedParameters(x, nonDistributedParameters)).ToList();
-         parameterDTOs.AddRange(nonDistributedParameters.MapAllUsing(_builderToBuilderDTOMapper));
-
+         // We need ToList because we are modifying the list while iterating over it
+         parameterDTOs.Where(x => x.IsDistributed).ToList().Each(x => addDistributionParameters(x, parameterDTOs));
          return MapBuildingBlockDTO(buildingBlock, parameterDTOs);
+      }
+
+      private void addDistributionParameters(TBuilderDTO distributedParameter, List<TBuilderDTO> parameterDTOs)
+      {
+         // We need ToList because we are modifying the list while iterating over it
+         subParametersFor(distributedParameter, parameterDTOs).ToList().Each(x =>
+         {
+            parameterDTOs.Remove(x);
+            distributedParameter.AddSubParameter(x);
+         });
       }
 
       protected abstract TBuildingBlockDTO MapBuildingBlockDTO(TBuildingBlock buildingBlock, List<TBuilderDTO> parameterDTOs);
 
-      private TBuilderDTO mapDistributedParameters(TBuilder distributedParameter, PathAndValueEntityCache<TBuilder> nonDistributedParameters)
+      private IEnumerable<TBuilderDTO> subParametersFor(TBuilderDTO distributedParameter, IEnumerable<TBuilderDTO> parameterList)
       {
-         var dto = _builderToBuilderDTOMapper.MapFrom(distributedParameter);
-         var subParameters = subParametersFor(distributedParameter, nonDistributedParameters).ToList();
-         subParameters.MapAllUsing(_builderToBuilderDTOMapper).Each(x =>
-         {
-            // although the sub-parameter is not distributed, it's already been mapped once as a sub-parameter of a distributed parameter
-            nonDistributedParameters.Remove(x.PathWithValueObject.Path);
-            dto.AddSubParameter(x);
-         });
-
-         return dto;
+         return parameterList.Where(x => isDirectSubParameterOf(distributedParameter, x));
       }
 
-      private IEnumerable<TBuilder> subParametersFor(TBuilder distributedParameter, IEnumerable<TBuilder> nonDistributedParameters)
+      private bool isDirectSubParameterOf(TBuilderDTO distributedParameter, TBuilderDTO builderDTO)
       {
-         return nonDistributedParameters.Where(x => isDirectSubParameterOf(distributedParameter, x));
-      }
-
-      private bool isDirectSubParameterOf(TBuilder distributedParameter, TBuilder individualParameter)
-      {
-         return individualParameter.Path.StartsWith(distributedParameter.Path) && individualParameter.Path.Count - distributedParameter.Path.Count == 1;
+         return builderDTO.Path.StartsWith(distributedParameter.Path) && builderDTO.Path.Count - distributedParameter.Path.Count == 1;
       }
    }
 }
