@@ -80,6 +80,7 @@ namespace MoBi.UI.Views
       private void disposeBinders()
       {
          _gridViewBinder.Dispose();
+         _screenBinder.Dispose();
       }
 
       public void AttachPresenter(TPresenter presenter)
