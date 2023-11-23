@@ -28,16 +28,18 @@ namespace MoBi.Presentation
       private ICommandCollector _commandCollector;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
+      private IIndividualDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
 
       protected override void Context()
       {
+         _distributedParameterPresenter = A.Fake<IIndividualDistributedPathAndValueEntityPresenter>();
          _individualParameterToIndividualParameterDTOMapper = new IndividualParameterToIndividualParameterDTOMapper(new FormulaToValueFormulaDTOMapper());
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _individualBuildingBlockToIndividualBuildingBlockDTOMapper = new IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(_individualParameterToIndividualParameterDTOMapper);
          _view = A.Fake<IIndividualBuildingBlockView>();
          _interactionTaskForIndividual = A.Fake<IInteractionTasksForIndividualBuildingBlock>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
-         sut = new IndividualBuildingBlockPresenter(_view, _individualBuildingBlockToIndividualBuildingBlockDTOMapper, _interactionTaskForIndividual, _formulaToValueFormulaDTOMapper, _dimensionFactory);
+         sut = new IndividualBuildingBlockPresenter(_view, _individualBuildingBlockToIndividualBuildingBlockDTOMapper, _interactionTaskForIndividual, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter);
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
 
@@ -50,6 +52,29 @@ namespace MoBi.Presentation
          };
 
          A.CallTo(() => _view.BindTo(A<IndividualBuildingBlockDTO>._)).Invokes(x => _buildingBlockDTO = x.GetArgument<IndividualBuildingBlockDTO>(0));
+      }
+
+      public class When_editing_a_distributed_parameter : concern_for_IndividualBuildingBlockPresenter
+      {
+         private IndividualParameterDTO _distributedParameter;
+
+         protected override void Context()
+         {
+            base.Context();
+            _distributedParameter = new IndividualParameterDTO( new IndividualParameter { DistributionType = DistributionType.Normal });
+            sut.Edit(_buildingBlock);
+         }
+
+         protected override void Because()
+         {
+            sut.EditDistributedParameter(_distributedParameter);
+         }
+
+         [Observation]
+         public void the_distributed_parameter_presenter_is_called()
+         {
+            A.CallTo(() => _distributedParameterPresenter.Edit(_distributedParameter, _buildingBlock)).MustHaveHappened();
+         }
       }
 
       public class When_searching_for_multiple_distinct_paths : concern_for_IndividualBuildingBlockPresenter

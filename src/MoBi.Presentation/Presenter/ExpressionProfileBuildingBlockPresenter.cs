@@ -12,13 +12,16 @@ using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IExpressionProfileBuildingBlockPresenter : IPresenter<IExpressionProfileBuildingBlockView>, IPathAndValueBuildingBlockPresenter<ExpressionParameterDTO>
+   public interface IExpressionProfileBuildingBlockPresenter : 
+      IPresenter<IExpressionProfileBuildingBlockView>, 
+      IPathAndValueBuildingBlockPresenter<ExpressionParameterDTO>
    {
       void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
       void LoadExpressionFromPKSimDatabaseQuery();
    }
 
-   public class ExpressionProfileBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
+   public class ExpressionProfileBuildingBlockPresenter :
+      PathAndValueBuildingBlockWithDistributionPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
       IExpressionProfileBuildingBlockPresenter, IListener<RenamedEvent>
    {
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;
@@ -26,8 +29,12 @@ namespace MoBi.Presentation.Presenter
       private ExpressionProfileBuildingBlockDTO _expressionProfileBuildingBlockDTO;
       private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTasksForExpressionProfile;
 
-      public ExpressionProfileBuildingBlockPresenter(IExpressionProfileBuildingBlockView view, IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper expressionProfileToDTOMapper,
-         IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view, interactionTaskForExpressionProfile, formulaToValueFormulaDTOMapper, dimensionFactory)
+      public ExpressionProfileBuildingBlockPresenter(IExpressionProfileBuildingBlockView view, 
+         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper expressionProfileToDTOMapper,
+         IInteractionTasksForExpressionProfileBuildingBlock interactionTaskForExpressionProfile, 
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory, 
+         IExpressionDistributedPathAndValueEntityPresenter distributedParameterPresenter) : 
+         base(view, interactionTaskForExpressionProfile, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _expressionProfileToDTOMapper = expressionProfileToDTOMapper;
          _interactionTasksForExpressionProfile = interactionTaskForExpressionProfile;

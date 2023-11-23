@@ -37,8 +37,6 @@ namespace MoBi.UI.Views
          base.DoInitializeBinding();
          _unitControl.ParameterUnitSet += setParameterUnit;
 
-         
-
          _gridViewBinder.AutoBind(dto => dto.Value)
             .WithCaption(AppConstants.Captions.Value)
             .WithFormat(dto => dto.InitialConditionFormatter())

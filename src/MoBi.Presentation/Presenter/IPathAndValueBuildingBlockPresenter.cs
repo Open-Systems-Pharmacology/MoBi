@@ -15,5 +15,6 @@ namespace MoBi.Presentation.Presenter
       void AddNewFormula(TParameterDTO parameterDTO);
       IEnumerable<IDimension> DimensionsSortedByName();
       void SetValueOrigin(TParameterDTO parameterDTO, ValueOrigin valueOrigin);
+      void EditDistributedParameter(TParameterDTO distributedParameter);
    }
 }

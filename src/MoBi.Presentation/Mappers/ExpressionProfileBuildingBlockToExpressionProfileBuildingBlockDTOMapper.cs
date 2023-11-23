@@ -1,7 +1,7 @@
-﻿using MoBi.Presentation.DTO;
+﻿using System.Collections.Generic;
+using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -9,21 +9,18 @@ namespace MoBi.Presentation.Mappers
    {
    }
 
-   public class ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper : IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper
+   public class ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper :
+      PathAndValueEntityBuildingBlockToPathAndValueEntityBuildingBlockDTOMapper<ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionProfileBuildingBlockDTO, ExpressionParameterDTO>,
+      IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper
    {
-      private readonly IExpressionParameterToExpressionParameterDTOMapper _expressionParameterToExpressionParameterDTOMapper;
-
-      public ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(IExpressionParameterToExpressionParameterDTOMapper expressionParameterToExpressionParameterDTOMapper)
+      public ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(IExpressionParameterToExpressionParameterDTOMapper expressionParameterToExpressionParameterDTOMapper) :
+         base(expressionParameterToExpressionParameterDTOMapper)
       {
-         _expressionParameterToExpressionParameterDTOMapper = expressionParameterToExpressionParameterDTOMapper;
       }
 
-      public ExpressionProfileBuildingBlockDTO MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
+      protected override ExpressionProfileBuildingBlockDTO MapBuildingBlockDTO(ExpressionProfileBuildingBlock buildingBlock, List<ExpressionParameterDTO> parameterDTOs)
       {
-         return new ExpressionProfileBuildingBlockDTO(expressionProfileBuildingBlock)
-         {
-            ParameterDTOs = expressionProfileBuildingBlock.MapAllUsing(_expressionParameterToExpressionParameterDTOMapper)
-         };
+         return new ExpressionProfileBuildingBlockDTO(buildingBlock) { ParameterDTOs = parameterDTOs };
       }
    }
 }
