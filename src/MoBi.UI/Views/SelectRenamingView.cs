@@ -54,7 +54,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          Text = AppConstants.Captions.RenameRelatedEntities;
-         chkShouldRename.Text = AppConstants.Captions.ShouldRenameDependentObjects;
+         chkShouldRename.Text = AppConstants.Captions.RenameRelatedEntities;
       }
 
       public void SetData(IEnumerable<SelectStringChangeDTO> dtos, bool renameDependentObjectsDefault)
@@ -65,7 +65,7 @@ namespace MoBi.UI.Views
 
       public bool RenameDefault
       {
-         get { return chkShouldRename.Checked; }
+         get => chkShouldRename.Checked;
          set
          {
             chkShouldRename.Checked = value;
