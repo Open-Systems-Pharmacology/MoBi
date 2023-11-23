@@ -1872,7 +1872,7 @@ namespace MoBi.Assets
             var numberOfExpressions = expressionNames.Count;
             var sb = new StringBuilder();
             
-            var expression = $"expression profile".PluralizeIf(numberOfExpressions);
+            var expression = $"Expression Profile".PluralizeIf(numberOfExpressions);
                
             if (numberOfExpressions == 0)
                return $"Also import individual {individualName}?";
@@ -1885,9 +1885,12 @@ namespace MoBi.Assets
                return sb.ToString();
             }
 
-            sb.AppendLine($"Also import individual {individualName}");
+            sb.AppendLine("Do you want to import additional building blocks?");
             sb.AppendLine();
-            sb.Append($"and {expression}");
+
+            sb.Append("<b>Individual</b>");
+            sb.AppendLine(namesList(new[] { individualName }));
+            sb.Append($"<b>{expression}</b>");
             sb.AppendLine(namesList(expressionNames));
 
             return sb.ToString();
