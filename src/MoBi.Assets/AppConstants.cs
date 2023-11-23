@@ -1866,18 +1866,31 @@ namespace MoBi.Assets
             return $"Select building blocks to clone from {module.Name}";
          }
 
-         public static string AlsoImportIndividualsAndExpressions(int numberOfIndividuals, int numberOfExpressions)
+         public static string AlsoImportIndividualsAndExpressions(string individualName, IReadOnlyList<string> expressionNames)
          {
-            var individual = $"{numberOfIndividuals} individual".PluralizeIf(numberOfIndividuals);
-            var expression = $"{numberOfExpressions} expression".PluralizeIf(numberOfExpressions);
+            var numberOfIndividuals = string.IsNullOrEmpty(individualName) ? 0 : 1;
+            var numberOfExpressions = expressionNames.Count;
+            var sb = new StringBuilder();
+            
+            var expression = $"expression profile".PluralizeIf(numberOfExpressions);
                
             if (numberOfExpressions == 0)
-               return $"Also import {individual}?";
-            
-            if(numberOfIndividuals == 0)
-               return $"Also import {expression}?";
+               return $"Also import individual {individualName}?";
 
-            return $"Also import {individual} and {expression}?";
+            if (numberOfIndividuals == 0)
+            {
+               sb.Append($"Also import {expression}");
+               sb.AppendLine();
+               sb.Append(namesList(expressionNames));
+               return sb.ToString();
+            }
+
+            sb.AppendLine($"Also import individual {individualName}");
+            sb.AppendLine();
+            sb.Append($"and {expression}");
+            sb.AppendLine(namesList(expressionNames));
+
+            return sb.ToString();
          }
 
          public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
