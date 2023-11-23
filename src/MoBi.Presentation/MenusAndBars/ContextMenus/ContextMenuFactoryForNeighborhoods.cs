@@ -50,7 +50,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var neighborhoods = _context.Get<IContainer>(dto.Id);
          //TODO add icon for neighborhood
          _allMenuItems.Add(CreateAddNewChild<NeighborhoodBuilder>(neighborhoods).WithIcon(ApplicationIcons.ActiveEfflux).AsGroupStarter());
-         AddParameterToContainerMenus(neighborhoods);
          return this;
       }
    }
