@@ -1911,7 +1911,8 @@ namespace MoBi.Assets
          {
             var sb = new StringBuilder();
             sb.AppendLine();
-            sb.AppendLine(allNames.ToString("\n"));
+            sb.Append(" - ");
+            sb.AppendLine(allNames.ToString("\n - "));
             return sb.ToString();
          }
       }
