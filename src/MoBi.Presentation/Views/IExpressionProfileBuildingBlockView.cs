@@ -4,7 +4,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IExpressionProfileBuildingBlockView : IView<IExpressionProfileBuildingBlockPresenter>
+   public interface IExpressionProfileBuildingBlockView : IView<IExpressionProfileBuildingBlockPresenter>, IWithDistributedPathAndValueGridView
    {
       void BindTo(ExpressionProfileBuildingBlockDTO buildingBlockDTO);
    }

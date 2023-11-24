@@ -10,18 +10,27 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IIndividualBuildingBlockPresenter : IPresenter<IIndividualBuildingBlockView>, IPathAndValueBuildingBlockPresenter<IndividualParameterDTO>
+   public interface IIndividualBuildingBlockPresenter : 
+      IPresenter<IIndividualBuildingBlockView>, 
+      IPathAndValueBuildingBlockPresenter<IndividualParameterDTO>
    {
       void Edit(IndividualBuildingBlock individualBuildingBlock);
    }
 
-   public class IndividualBuildingBlockPresenter : PathWithValueBuildingBlockPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, MoBiProject, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, IIndividualBuildingBlockPresenter
+   public class IndividualBuildingBlockPresenter : 
+      PathAndValueBuildingBlockWithDistributionPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, MoBiProject, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, 
+      IIndividualBuildingBlockPresenter
    {
       private readonly IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper _individualToDTOMapper;
       private IndividualBuildingBlockDTO _individualBuildingBlockDTO;
+      
 
-      public IndividualBuildingBlockPresenter(IIndividualBuildingBlockView view, IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper individualToDTOMapper,
-         IInteractionTasksForIndividualBuildingBlock interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view, interactionTask, formulaToValueFormulaDTOMapper, dimensionFactory)
+      public IndividualBuildingBlockPresenter(IIndividualBuildingBlockView view, 
+         IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper individualToDTOMapper,
+         IInteractionTasksForIndividualBuildingBlock interactionTask, 
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, 
+         IDimensionFactory dimensionFactory,
+         IIndividualDistributedPathAndValueEntityPresenter distributedPathAndValuePresenter) : base(view, interactionTask, formulaToValueFormulaDTOMapper, dimensionFactory, distributedPathAndValuePresenter)
       {
          _individualToDTOMapper = individualToDTOMapper;
       }

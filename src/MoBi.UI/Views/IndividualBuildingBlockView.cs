@@ -20,6 +20,7 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -37,6 +38,10 @@ namespace MoBi.UI.Views
       private readonly UxComboBoxUnit<IndividualParameterDTO> _unitControl;
       private readonly List<TextEdit> _textBoxes = new List<TextEdit>();
       private readonly ValueOriginBinder<IndividualParameterDTO> _valueOriginBinder;
+      private IGridViewBoundColumn<IndividualParameterDTO, double?> _valueColumn;
+
+      private readonly PopupContainerControl _popupControl = new PopupContainerControl();
+      private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
 
       public IndividualBuildingBlockView(ValueOriginBinder<IndividualParameterDTO> valueOriginBinder)
       {
@@ -45,6 +50,16 @@ namespace MoBi.UI.Views
          _gridViewBinder = new GridViewBinder<IndividualParameterDTO>(gridView);
          _unitControl = new UxComboBoxUnit<IndividualParameterDTO>(gridControl);
          gridGroup.Text = Parameters;
+         _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
+         _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
+      }
+
+      private void queryText(QueryDisplayTextEventArgs e)
+      {
+         var distributedParameter = _gridViewBinder.FocusedElement;
+         if (distributedParameter == null) 
+            return;
+         e.DisplayText = distributedParameter.IndividualParameterFormatter().Format(distributedParameter.Value);
       }
 
       public override void InitializeBinding()
@@ -85,9 +100,10 @@ namespace MoBi.UI.Views
          initializePathElementColumn(dto => dto.PathElement8, Captions.PathElement(8));
          initializePathElementColumn(dto => dto.PathElement9, Captions.PathElement(9));
 
-         _gridViewBinder.Bind(dto => dto.Value).WithCaption(Value)
+         _valueColumn = _gridViewBinder.Bind(dto => dto.Value).WithCaption(Value)
             .WithOnValueUpdating(onExpressionParameterValueSet)
             .WithFormat(dto => dto.IndividualParameterFormatter())
+            .WithRepository(valueRepositoryFor)
             .WithEditorConfiguration(configureRepository);
 
          _unitControl.ParameterUnitSet += setParameterUnit;
@@ -101,9 +117,23 @@ namespace MoBi.UI.Views
          gridView.HiddenEditor += (o, e) => hideEditor();
       }
 
-      private void configureRepository(BaseEdit activeEditor, IndividualParameterDTO expressionParameter)
+      private RepositoryItem valueRepositoryFor(IndividualParameterDTO parameterDTO)
       {
-         _unitControl.UpdateUnitsFor(activeEditor, expressionParameter);
+         if (parameterDTO.IsDistributed)
+            return _repositoryItemPopupContainerEdit;
+
+         return _valueColumn.DefaultRepository();
+      }
+
+      private void configureRepository(BaseEdit activeEditor, IndividualParameterDTO individualParameter)
+      {
+         if (individualParameter.IsDistributed)
+         {
+            _presenter.EditDistributedParameter(individualParameter);
+            return;
+         }
+
+         _unitControl.UpdateUnitsFor(activeEditor, individualParameter);
       }
 
       protected void OnFormulaButtonClick(object sender, ButtonPressedEventArgs e)
@@ -166,6 +196,11 @@ namespace MoBi.UI.Views
          initColumnVisibility();
       }
 
+      public void AddDistributedParameterView(IView view)
+      {
+         _popupControl.FillWith(view);
+      }
+
       private void createNameValuePairs(IndividualBuildingBlockDTO buildingBlock)
       {
          var flowGroup = uxLayoutControl.AddGroup();
@@ -184,7 +219,6 @@ namespace MoBi.UI.Views
       {
          addControlToFlowLayout(PKSimVersion, createTextBox(pkSimVersion), layoutControlGroup);
       }
-
 
       private void resizeTextBoxesToBestFit()
       {

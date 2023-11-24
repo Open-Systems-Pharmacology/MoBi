@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -7,10 +8,48 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
+using static MoBi.Assets.AppConstants.Captions;
+using static OSPSuite.Core.Domain.Constants.Distribution;
 
 namespace MoBi.Presentation.DTO
 {
-   public class PathAndValueEntityDTO<T> : BreadCrumbsDTO<T>, IPathAndValueEntityDTO where T : PathAndValueEntity, IValidatable, INotifier, IWithDimension, IWithDisplayUnit, IUsingFormula
+   public class PathAndValueEntityDTO<T, TSubParameter> : PathAndValueEntityDTO<T> where T : PathAndValueEntity where TSubParameter : PathAndValueEntityDTO<T>
+   {
+      private readonly List<TSubParameter> _subParameters = new List<TSubParameter>();
+      public IReadOnlyList<TSubParameter> SubParameters => _subParameters;
+
+      public ObjectPath Path => PathWithValueObject.Path;
+
+      public TSubParameter MeanDTO => SubParameters.FindByName(MEAN);
+
+      protected PathAndValueEntityDTO(T underlyingObject) : base(underlyingObject)
+      {
+      }
+
+      public void AddSubParameter(TSubParameter subParameter)
+      {
+         _subParameters.Add(subParameter);
+      }
+
+      public bool IsDistributed => PathWithValueObject.DistributionType != null;
+
+      public string DistributionType => $"{PathWithValueObject.DistributionType} {Distribution}";
+
+      public override Unit DisplayUnit
+      {
+         get => IsDistributed ? MeanDTO?.DisplayUnit : base.DisplayUnit;
+         set => base.DisplayUnit = value;
+      }
+
+      public override double? Value
+      {
+         get => IsDistributed ? MeanDTO?.Value : base.Value;
+         set => base.Value = value;
+      }
+   }
+
+   public class PathAndValueEntityDTO<T> : BreadCrumbsDTO<T>, IPathAndValueEntityDTO 
+      where T : PathAndValueEntity, IValidatable, INotifier, IWithDimension, IWithDisplayUnit, IUsingFormula
    {
       public string ContainerPathPropertyName;
       public string FormulaPropertyName;
@@ -44,7 +83,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public Unit DisplayUnit
+      public virtual Unit DisplayUnit
       {
          get => PathWithValueObject.DisplayUnit;
          set
@@ -72,7 +111,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public double? Value
+      public virtual double? Value
       {
          get
          {

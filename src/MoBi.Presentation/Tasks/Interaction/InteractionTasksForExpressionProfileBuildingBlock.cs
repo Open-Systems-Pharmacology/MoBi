@@ -14,8 +14,8 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForProjectBuildingBlock<ExpressionProfileBuildingBlock>, 
-      IInteractionTasksForPathAndValueEntity<MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter>,
+   public interface IInteractionTasksForExpressionProfileBuildingBlock : IInteractionTasksForProjectBuildingBlock<ExpressionProfileBuildingBlock>,
+      IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<ExpressionProfileBuildingBlock, ExpressionParameter>,
       IInteractionTasksForProjectBuildingBlock
    {
       IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML();

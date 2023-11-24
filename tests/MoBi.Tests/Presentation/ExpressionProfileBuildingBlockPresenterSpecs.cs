@@ -30,9 +30,11 @@ namespace MoBi.Presentation
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
       private IPKSimStarter _pkSimStarter;
+      private IExpressionDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
 
       protected override void Context()
       {
+         _distributedParameterPresenter = A.Fake<IExpressionDistributedPathAndValueEntityPresenter>();
          _expressionParameterToExpressionParameterDTOMapper = new ExpressionParameterToExpressionParameterDTOMapper(new FormulaToValueFormulaDTOMapper());
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _pkSimStarter = A.Fake<IPKSimStarter>();
@@ -40,7 +42,7 @@ namespace MoBi.Presentation
          _view = A.Fake<IExpressionProfileBuildingBlockView>();
          _interactionTaskForExpressionProfile = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
-         sut = new ExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper, _interactionTaskForExpressionProfile, _formulaToValueFormulaDTOMapper, _dimensionFactory);
+         sut = new ExpressionProfileBuildingBlockPresenter(_view, _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper, _interactionTaskForExpressionProfile, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter);
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
 

@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
-using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
@@ -15,6 +14,7 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -33,12 +33,26 @@ namespace MoBi.UI.Views
       private readonly UxComboBoxUnit<ExpressionParameterDTO> _unitControl;
       private readonly ValueOriginBinder<ExpressionParameterDTO> _valueOriginBinder;
 
+      private readonly PopupContainerControl _popupControl = new PopupContainerControl();
+      private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
+      private IGridViewBoundColumn<ExpressionParameterDTO, double?> _valueColumn;
+
       public ExpressionProfileBuildingBlockView(ValueOriginBinder<ExpressionParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
          _valueOriginBinder = valueOriginBinder;
          _gridViewBinder = new GridViewBinder<ExpressionParameterDTO>(gridView);
          _unitControl = new UxComboBoxUnit<ExpressionParameterDTO>(gridControl);
+         _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
+         _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
+      }
+
+      private void queryText(QueryDisplayTextEventArgs e)
+      {
+         var distributedParameter = _gridViewBinder.FocusedElement;
+         if (distributedParameter == null)
+            return;
+         e.DisplayText = distributedParameter.ExpressionParameterFormatter().Format(distributedParameter.Value);
       }
 
       public override void InitializeBinding()
@@ -66,7 +80,7 @@ namespace MoBi.UI.Views
          categoryControlItem.Text = Captions.Phenotype.FormatForLabel();
          pkSimVersionControlItem.Text = PKSimVersion.FormatForLabel(checkCase: false);
 
-         btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, AppConstants.Captions.DatabaseQuery);
+         btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, DatabaseQuery);
       }
 
       private void hideEditor()
@@ -74,9 +88,15 @@ namespace MoBi.UI.Views
          _unitControl.Hide();
       }
 
-      private void configureRepository(BaseEdit activeEditor, ExpressionParameterDTO expressionParameter)
+      private void configureRepository(BaseEdit activeEditor, ExpressionParameterDTO expressionParameterDTO)
       {
-         _unitControl.UpdateUnitsFor(activeEditor, expressionParameter);
+         if (expressionParameterDTO.IsDistributed)
+         {
+            _presenter.EditDistributedParameter(expressionParameterDTO);
+            return;
+         }
+
+         _unitControl.UpdateUnitsFor(activeEditor, expressionParameterDTO);
       }
 
       private void initializeBinders()
@@ -100,9 +120,10 @@ namespace MoBi.UI.Views
          initializePathElementColumn(dto => dto.PathElement8, Captions.PathElement(8));
          initializePathElementColumn(dto => dto.PathElement9, Captions.PathElement(9));
 
-         _gridViewBinder.Bind(dto => dto.Value).WithCaption(Value)
+         _valueColumn = _gridViewBinder.Bind(dto => dto.Value).WithCaption(Value)
             .WithOnValueUpdating(onExpressionParameterValueSet)
             .WithFormat(dto => dto.ExpressionParameterFormatter())
+            .WithRepository(valueRepositoryFor)
             .WithEditorConfiguration(configureRepository);
 
          _unitControl.ParameterUnitSet += setParameterUnit;
@@ -188,6 +209,19 @@ namespace MoBi.UI.Views
       {
          _screenBinder.Dispose();
          _gridViewBinder.Dispose();
+      }
+
+      private RepositoryItem valueRepositoryFor(ExpressionParameterDTO parameterDTO)
+      {
+         if (parameterDTO.IsDistributed)
+            return _repositoryItemPopupContainerEdit;
+
+         return _valueColumn.DefaultRepository();
+      }
+
+      public void AddDistributedParameterView(IView view)
+      {
+         _popupControl.FillWith(view);
       }
    }
 }

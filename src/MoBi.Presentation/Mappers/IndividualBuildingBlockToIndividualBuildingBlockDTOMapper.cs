@@ -1,7 +1,7 @@
-﻿using MoBi.Presentation.DTO;
+﻿using System.Collections.Generic;
+using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -9,21 +9,17 @@ namespace MoBi.Presentation.Mappers
    {
    }
 
-   public class IndividualBuildingBlockToIndividualBuildingBlockDTOMapper : IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper
+   public class IndividualBuildingBlockToIndividualBuildingBlockDTOMapper : 
+      PathAndValueEntityBuildingBlockToPathAndValueEntityBuildingBlockDTOMapper<IndividualBuildingBlock, IndividualParameter, IndividualBuildingBlockDTO, IndividualParameterDTO>, 
+      IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper
    {
-      private readonly IIndividualParameterToIndividualParameterDTOMapper _individualParameterToDTOMapper;
-
-      public IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(IIndividualParameterToIndividualParameterDTOMapper individualParameterToDTOMapper)
+      public IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(IIndividualParameterToIndividualParameterDTOMapper individualParameterToDTOMapper) : base(individualParameterToDTOMapper)
       {
-         _individualParameterToDTOMapper = individualParameterToDTOMapper;
       }
 
-      public IndividualBuildingBlockDTO MapFrom(IndividualBuildingBlock individualBuildingBlock)
+      protected override IndividualBuildingBlockDTO MapBuildingBlockDTO(IndividualBuildingBlock buildingBlock, List<IndividualParameterDTO> parameterDTOs)
       {
-         return new IndividualBuildingBlockDTO(individualBuildingBlock)
-         {
-            Parameters = individualBuildingBlock.MapAllUsing(_individualParameterToDTOMapper)
-         };
+         return new IndividualBuildingBlockDTO(buildingBlock) {  Parameters = parameterDTOs };
       }
    }
 }

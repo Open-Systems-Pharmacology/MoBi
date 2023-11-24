@@ -8,7 +8,16 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public abstract class InteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter> : InteractionTasksForPathAndValueEntity<MoBiProject, TBuildingBlock, TParameter> where TParameter : PathAndValueEntity where TBuildingBlock : class, IBuildingBlock<TParameter>
+   public interface IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter> : IInteractionTasksForPathAndValueEntity<MoBiProject, TBuildingBlock, TParameter>
+   {
+
+   }
+
+   public abstract class InteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter> : 
+      InteractionTasksForPathAndValueEntity<MoBiProject, TBuildingBlock, TParameter>,
+      IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter>
+      where TParameter : PathAndValueEntity 
+      where TBuildingBlock : class, IBuildingBlock<TParameter>
    {
       protected InteractionTasksForProjectPathAndValueEntityBuildingBlocks(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask, IMoBiFormulaTask moBiFormulaTask) : base(interactionTaskContext, editTask, moBiFormulaTask)
       {
