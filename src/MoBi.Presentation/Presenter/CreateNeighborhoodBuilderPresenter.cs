@@ -54,8 +54,8 @@ namespace MoBi.Presentation.Presenter
          _objectBaseDTO = new ObjectBaseDTO(neighborhoodBuilder);
          _neighborhoodBuilder = neighborhoodBuilder;
          _objectBaseDTO.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(neighborhoodBuilder, existingObjectsInParent));
-         _firstNeighborPresenter.Init(spatialStructure, AppConstants.Captions.FirstNeighbor);
-         _secondNeighborPresenter.Init(spatialStructure, AppConstants.Captions.SecondNeighbor);
+         _firstNeighborPresenter.Init(AppConstants.Captions.FirstNeighbor);
+         _secondNeighborPresenter.Init(AppConstants.Captions.SecondNeighbor);
 
          _view.BindTo(_objectBaseDTO);
       }
@@ -64,7 +64,5 @@ namespace MoBi.Presentation.Presenter
       {
          _neighborhoodBuilder.Name = name;
       }
-
-      private SpatialStructure spatialStructure => BuildingBlock as SpatialStructure;
    }
 }

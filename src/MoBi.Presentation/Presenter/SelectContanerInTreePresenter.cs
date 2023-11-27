@@ -22,7 +22,8 @@ namespace MoBi.Presentation.Presenter
       public SelectContainerInTreePresenter(ISelectEntityInTreeView view,
          IObjectPathFactory objectPathFactory,
          IMoBiContext context,
-         IContainerToContainerDTOMapper containerDTOMapper) : base(view, objectPathFactory, context)
+         IContainerToContainerDTOMapper containerDTOMapper,
+         IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper) : base(view, objectPathFactory, context, spatialStructureNodeMapper)
       {
          _containerDTOMapper = containerDTOMapper;
          GetChildren = getChildren;

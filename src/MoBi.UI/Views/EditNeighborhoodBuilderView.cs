@@ -43,22 +43,18 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.Name)
             .To(tbName)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetName(e.NewValue));
-         ;
 
          _screenBinder.Bind(dto => dto.FirstNeighborPath)
             .To(tbFirstNeighborPath)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetFirstNeighborPath(e.NewValue));
-         ;
 
          _screenBinder.Bind(dto => dto.SecondNeighborPath)
             .To(tbSecondNeighborPath)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetSecondNeighborPath(e.NewValue));
-         ;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
             .OnValueUpdating += onValueUpdating;
-
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 

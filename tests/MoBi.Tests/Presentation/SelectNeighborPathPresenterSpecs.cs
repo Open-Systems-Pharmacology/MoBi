@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -7,7 +9,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
@@ -16,29 +17,31 @@ namespace MoBi.Presentation
       protected ISelectNeighborPathView _view;
       protected ISelectContainerInTreePresenter _selectContainerInTreePresenter;
       protected IContainerToContainerDTOMapper _containerDTOMapper;
-      protected SpatialStructure _spatialStructure;
-      private IContainer _organism;
+      protected MoBiSpatialStructure _spatialStructure;
+      protected IContainer _organism;
       protected ContainerDTO _organismDTO;
       protected ObjectPathDTO _selectedPathDTO;
+      private IBuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
+         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _view = A.Fake<ISelectNeighborPathView>();
          _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>();
          _containerDTOMapper = A.Fake<IContainerToContainerDTOMapper>();
 
-
          A.CallTo(() => _view.BindTo(A<ObjectPathDTO>._))
             .Invokes(x => _selectedPathDTO = x.GetArgument<ObjectPathDTO>(0));
 
+         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _containerDTOMapper, _buildingBlockRepository);
 
-         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _containerDTOMapper);
-
-         _spatialStructure = new SpatialStructure();
+         _spatialStructure = new MoBiSpatialStructure();
+         _spatialStructure.Module = new Module().WithName("module");
          _organism = new Container().WithContainerType(ContainerType.Organism);
          _spatialStructure.AddTopContainer(_organism);
          _organismDTO = new ContainerDTO(_organism);
 
+         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new []{_spatialStructure});
          A.CallTo(() => _containerDTOMapper.MapFrom(_organism)).Returns(_organismDTO);
       }
    }
@@ -56,7 +59,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Init(_spatialStructure, "label");
+         sut.Init("label");
       }
 
       [Observation]
@@ -87,11 +90,13 @@ namespace MoBi.Presentation
          base.Context();
          A.CallTo(() => _selectContainerInTreePresenter.InitTreeStructure(A<IReadOnlyList<ObjectBaseDTO>>._))
             .Invokes(x => _allObjectBaseForTree = x.GetArgument<IReadOnlyList<ObjectBaseDTO>>(0));
+
+         _spatialStructure.RemoveTopContainer(_organism);
       }
 
       protected override void Because()
       {
-         sut.Init(new SpatialStructure(), "label");
+         sut.Init("label");
       }
 
       [Observation]

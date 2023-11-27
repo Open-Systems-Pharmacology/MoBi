@@ -95,7 +95,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_ask_the_user_to_select_a_neighborhood_path()
       {
-         A.CallTo(() => _selectNeighborPathPresenter.Init(_spatialStructure, AppConstants.Captions.SecondNeighbor, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _selectNeighborPathPresenter.Init(AppConstants.Captions.SecondNeighbor, A<string>._)).MustHaveHappened();
       }
 
       [Observation]

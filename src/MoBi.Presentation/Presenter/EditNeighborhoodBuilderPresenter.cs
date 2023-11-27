@@ -121,7 +121,7 @@ namespace MoBi.Presentation.Presenter
             modalPresenter.Text = AppConstants.Captions.SelectContainer;
             var selectNeighborPresenter = _applicationController.Start<ISelectNeighborPathPresenter>();
             modalPresenter.Encapsulate(selectNeighborPresenter);
-            selectNeighborPresenter.Init(spatialStructure, label, defaultSelection: currentNeighborPath);
+            selectNeighborPresenter.Init(label, defaultSelection: currentNeighborPath);
 
             return modalPresenter.Show() ? selectNeighborPresenter.NeighborPath : null;
          }

@@ -8,7 +8,7 @@ namespace MoBi.Presentation.Views
 {
    public interface ISelectEntityInTreeView : IView<ISelectEntityInTreePresenter>
    {
-      void BindTo(IEnumerable<ObjectBaseDTO> allDTOs);
+      void BindTo(IEnumerable<ITreeNode> allDTOs);
       ObjectBaseDTO Selected { get; }
       ITreeNode GetNode(string id);
    }
