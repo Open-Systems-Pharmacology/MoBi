@@ -75,7 +75,7 @@ namespace MoBi.Presentation.Presenter
 
       public void InitTreeStructure(IReadOnlyList<ObjectBaseDTO> entityDTOs)
       {
-         _view.BindTo(entityDTOs.Select(mapToNode));
+         _view.Display(entityDTOs.Select(mapToNode));
       }
 
       private ITreeNode mapToNode(ObjectBaseDTO dto)

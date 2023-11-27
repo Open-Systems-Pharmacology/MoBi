@@ -14,7 +14,6 @@ namespace MoBi.UI.Views
 {
    public partial class SelectEntityInTreeView : BaseUserControl, ISelectEntityInTreeView
    {
-
       private readonly UxTreeView _treeView;
       private ISelectEntityInTreePresenter _presenter;
 
@@ -25,7 +24,6 @@ namespace MoBi.UI.Views
          Controls.Add(_treeView);
          initTreeView(imageListRetriever);
          _treeView.NodeClick += onNodeClick;
-         
       }
 
       public void AttachPresenter(ISelectEntityInTreePresenter presenter)
@@ -39,13 +37,11 @@ namespace MoBi.UI.Views
          Text = AppConstants.Captions.SelectChangedEntity;
       }
 
-      public void BindTo(IEnumerable<ITreeNode> allDTOs)
+      public void Display(IEnumerable<ITreeNode> treeNodes)
       {
          _treeView.Clear();
-         allDTOs.Each(x => _treeView.AddNode(x));
+         treeNodes.Each(x => _treeView.AddNode(x));
       }
-
-
 
       public ObjectBaseDTO Selected => _treeView.SelectedNode?.TagAsObject as ObjectBaseDTO;
 
@@ -60,8 +56,6 @@ namespace MoBi.UI.Views
          _treeView.StateImageList = imageListRetriever.AllImages16x16;
          this.FillWith(_treeView);
       }
-
-
 
       public ITreeNode GetNode(string id) => _treeView.NodeById(id);
    }
