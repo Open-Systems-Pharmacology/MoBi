@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -22,7 +23,8 @@ namespace MoBi.Presentation.Presenter
       public SelectContainerInTreePresenter(ISelectEntityInTreeView view,
          IObjectPathFactory objectPathFactory,
          IMoBiContext context,
-         IContainerToContainerDTOMapper containerDTOMapper) : base(view, objectPathFactory, context)
+         IContainerToContainerDTOMapper containerDTOMapper,
+         IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper) : base(view, objectPathFactory, context, spatialStructureNodeMapper)
       {
          _containerDTOMapper = containerDTOMapper;
          GetChildren = getChildren;
@@ -38,10 +40,8 @@ namespace MoBi.Presentation.Presenter
             return Array.Empty<ObjectBaseDTO>();
 
          //Add sub containers removing molecule properties and parameters
-         var subContainers = container.GetChildrenSortedByName<IContainer>(x =>
-            !x.IsNamed(Constants.MOLECULE_PROPERTIES) && !x.IsAnImplementationOf<IParameter>()
-         );
-         return subContainers.MapAllUsing(_containerDTOMapper);
+         return container.GetChildrenSortedByName<IContainer>(x =>
+            !x.IsNamed(Constants.MOLECULE_PROPERTIES) && !x.IsAnImplementationOf<IParameter>()).MapAllUsing(_containerDTOMapper);
       }
 
       public bool ContainerSelected => SelectedEntity != null;

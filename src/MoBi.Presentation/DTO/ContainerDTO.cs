@@ -17,5 +17,10 @@ namespace MoBi.Presentation.DTO
       public string ParentPath { get; set; }
 
       public bool ParentPathEditable { get; set; }
+
+      public void AddModuleName(string moduleName)
+      {
+         Name = $"{moduleName} - {Name}";
+      }
    }
 }

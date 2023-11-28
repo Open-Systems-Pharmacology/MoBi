@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
@@ -12,23 +14,26 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectNeighborPathPresenter : IPresenter<ISelectNeighborPathView>
    {
-      void Init(SpatialStructure spatialStructure, string label, string defaultSelection = null);
+      void Init(string label, string defaultSelection = null);
       ObjectPath NeighborPath { get; }
    }
 
    public class SelectNeighborPathPresenter : AbstractPresenter<ISelectNeighborPathView, ISelectNeighborPathPresenter>, ISelectNeighborPathPresenter
    {
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
-      private readonly IContainerToContainerDTOMapper _containerDTOMapper;
+      private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureToSpatialStructureDTOMapper;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly ObjectPathDTO _selectedPathDTO = new ObjectPathDTO();
 
       public SelectNeighborPathPresenter(
          ISelectNeighborPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
-         IContainerToContainerDTOMapper containerDTOMapper) : base(view)
+         ISpatialStructureToSpatialStructureDTOMapper spatialStructureToSpatialStructureDTOMapper,
+         IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
-         _containerDTOMapper = containerDTOMapper;
+         _spatialStructureToSpatialStructureDTOMapper = spatialStructureToSpatialStructureDTOMapper;
+         _buildingBlockRepository = buildingBlockRepository;
          AddSubPresenters(_selectContainerInTreePresenter);
          _view.AddContainerCriteriaView(_selectContainerInTreePresenter.BaseView);
          _view.BindTo(_selectedPathDTO);
@@ -50,17 +55,23 @@ namespace MoBi.Presentation.Presenter
          ViewChanged();
       }
 
-      public void Init(SpatialStructure spatialStructure, string label, string defaultSelection = null)
+      public void Init(string label, string defaultSelection = null)
       {
          _view.Label = label;
-         var organism = spatialStructure.TopContainers.Find(x => x.ContainerType == ContainerType.Organism) ?? spatialStructure.TopContainers.FirstOrDefault();
-
+         
+         var topContainers = _buildingBlockRepository.SpatialStructureCollection.SelectMany(mapTopContainerDTOs).ToList();
+         
          //no organism found, nothing to do?
-         if (organism == null)
+         if (!topContainers.Any())
             return;
 
-         _selectContainerInTreePresenter.InitTreeStructure(new[] {_containerDTOMapper.MapFrom(organism)});
+         _selectContainerInTreePresenter.InitTreeStructure(topContainers);
          _selectedPathDTO.Path = defaultSelection ?? string.Empty;
+      }
+
+      private IReadOnlyList<ObjectBaseDTO> mapTopContainerDTOs(SpatialStructure spatialStructure)
+      {
+         return _spatialStructureToSpatialStructureDTOMapper.MapFrom(spatialStructure).TopContainers.ToList();
       }
 
       public ObjectPath NeighborPath => new ObjectPath(_selectedPathDTO.Path.ToPathArray());
