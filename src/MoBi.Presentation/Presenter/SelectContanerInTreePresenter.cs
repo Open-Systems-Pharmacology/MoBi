@@ -32,9 +32,6 @@ namespace MoBi.Presentation.Presenter
 
       private IReadOnlyList<ObjectBaseDTO> getChildren(ObjectBaseDTO parentDTO)
       {
-         if (parentDTO is SpatialStructureDTO spatialStructureDTO)
-            return spatialStructureDTO.TopContainers.ToList();
-
          var parent = EntityFrom(parentDTO);
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();

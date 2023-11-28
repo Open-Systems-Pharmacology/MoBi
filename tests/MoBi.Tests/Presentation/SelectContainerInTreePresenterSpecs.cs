@@ -32,38 +32,6 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_presenting_a_spatial_structure : concern_for_SelectContainerInTreePresenter
-   {
-      private SpatialStructure _spatialStructure;
-      private SpatialStructureDTO _spatialStructureDTO;
-      private IReadOnlyList<ObjectBaseDTO> _children;
-
-      protected override void Context()
-      {
-         base.Context();
-         _spatialStructure = new SpatialStructure();
-         var topContainers = new List<ContainerDTO>
-         {
-            new ContainerDTO(new Container())
-         };
-         _spatialStructureDTO = new SpatialStructureDTO(_spatialStructure)
-         {
-            TopContainers = topContainers
-         };
-      }
-
-      protected override void Because()
-      {
-         _children = sut.GetChildren(_spatialStructureDTO);
-      }
-
-      [Observation]
-      public void should_map_the_spatial_structure()
-      {
-         _spatialStructureDTO.TopContainers.All(x => _children.Contains(x)).ShouldBeTrue();
-      }
-   }
-
    internal class When_presenting_a_container : concern_for_SelectContainerInTreePresenter
    {
       private IReadOnlyList<ObjectBaseDTO> _children;
