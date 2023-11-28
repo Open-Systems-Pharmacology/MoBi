@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Presenter
          if (parentDTO is SpatialStructureDTO spatialStructureDTO)
             return spatialStructureDTO.TopContainers.ToList();
 
-         var parent = parentDTO.ObjectBase;
+         var parent = EntityFrom(parentDTO);
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();
 
