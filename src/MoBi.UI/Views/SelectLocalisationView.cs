@@ -79,9 +79,9 @@ namespace MoBi.UI.Views
             spatialStructureNode.AddChild(_nodeMapper.MapFrom(dtoSpatialStructure.MoleculeProperties));
          }
 
-         if (dtoSpatialStructure.TopContainer != null && dtoSpatialStructure.TopContainer.Any())
+         if (dtoSpatialStructure.TopContainers != null && dtoSpatialStructure.TopContainers.Any())
          {
-            dtoSpatialStructure.TopContainer.Each(dto => spatialStructureNode.AddChild(_nodeMapper.MapFrom(dto)));
+            dtoSpatialStructure.TopContainers.Each(dto => spatialStructureNode.AddChild(_nodeMapper.MapFrom(dto)));
          }
 
          if (dtoSpatialStructure.Neighborhoods != null)

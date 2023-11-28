@@ -54,14 +54,14 @@ namespace MoBi.Presentation.Presenter
          };
 
          if (_localisation.Is(Localisations.ContainerOnly))
-            dto.TopContainer = spatialStructure.TopContainers.MapAllUsing(_dtoContainerMapper);
+            dto.TopContainers = spatialStructure.TopContainers.MapAllUsing(_dtoContainerMapper);
 
          if (_localisation.Is(Localisations.NeighborhoodsOnly))
             dto.Neighborhoods = _dtoContainerMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
 
          if (_localisation.Is(Localisations.Everywhere))
          {
-            dto.TopContainer = spatialStructure.TopContainers.MapAllUsing(_dtoContainerMapper);
+            dto.TopContainers = spatialStructure.TopContainers.MapAllUsing(_dtoContainerMapper);
             dto.Neighborhoods = _dtoContainerMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
          }
  

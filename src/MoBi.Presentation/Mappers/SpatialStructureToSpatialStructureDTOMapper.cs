@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Mappers
       public SpatialStructureDTO MapFrom(SpatialStructure spatialStructure)
       {
          var dto = Map(new SpatialStructureDTO(spatialStructure));
-         dto.TopContainer = spatialStructure.TopContainers.MapAllUsing(_containerToDTOContainerMapper);
+         dto.TopContainers = spatialStructure.TopContainers.MapAllUsing(_containerToDTOContainerMapper);
          dto.Neighborhoods = _containerToDTOContainerMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
          dto.MoleculeProperties = _containerToDTOContainerMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties);
          dto.Name = spatialStructure.DisplayName;

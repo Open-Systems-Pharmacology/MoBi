@@ -75,7 +75,7 @@ namespace MoBi.Presentation.Presenter
 
       public void InitTreeStructure(IReadOnlyList<ObjectBaseDTO> entityDTOs)
       {
-         _view.Display(entityDTOs.Select(mapToNode));
+         _view.Display(entityDTOs.Select(mapToNode).ToList());
       }
 
       private ITreeNode mapToNode(ObjectBaseDTO dto)
@@ -105,8 +105,8 @@ namespace MoBi.Presentation.Presenter
          if (spatialStructureDTO.MoleculeProperties != null)
             spatialStructureNode.AddChild(_spatialStructureNodeMapper.MapFrom(spatialStructureDTO.MoleculeProperties));
 
-         if (spatialStructureDTO.TopContainer != null && spatialStructureDTO.TopContainer.Any())
-            spatialStructureDTO.TopContainer.Each(dto => spatialStructureNode.AddChild(_spatialStructureNodeMapper.MapFrom(dto)));
+         if (spatialStructureDTO.TopContainers != null && spatialStructureDTO.TopContainers.Any())
+            spatialStructureDTO.TopContainers.Each(dto => spatialStructureNode.AddChild(_spatialStructureNodeMapper.MapFrom(dto)));
 
          if (spatialStructureDTO.Neighborhoods != null)
             spatialStructureNode.AddChild(_spatialStructureNodeMapper.MapFrom(spatialStructureDTO.Neighborhoods));

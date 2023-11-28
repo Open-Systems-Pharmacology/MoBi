@@ -37,7 +37,7 @@ namespace MoBi.UI.Views
          Text = AppConstants.Captions.SelectChangedEntity;
       }
 
-      public void Display(IEnumerable<ITreeNode> treeNodes)
+      public void Display(IReadOnlyList<ITreeNode> treeNodes)
       {
          _treeView.Clear();
          treeNodes.Each(x => _treeView.AddNode(x));
