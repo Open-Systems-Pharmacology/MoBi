@@ -16,27 +16,29 @@ namespace MoBi.Presentation
    {
       protected ISelectNeighborPathView _view;
       protected ISelectContainerInTreePresenter _selectContainerInTreePresenter;
-      protected IContainerToContainerDTOMapper _containerDTOMapper;
+      protected ISpatialStructureToSpatialStructureDTOMapper _spatialStructureToSpatialStructureDTOMapper;
       protected MoBiSpatialStructure _spatialStructure1;
       protected MoBiSpatialStructure _spatialStructure2;
       protected IContainer _organism1;
-      protected ContainerDTO _organismDTO1;
+      protected SpatialStructureDTO _organismDTO1;
       protected ObjectPathDTO _selectedPathDTO;
       private IBuildingBlockRepository _buildingBlockRepository;
       protected Container _organism2;
-      protected ContainerDTO _organismDTO2;
+      protected SpatialStructureDTO _organismDTO2;
+      protected ContainerDTO _containerDTO1;
+      protected ContainerDTO _containerDTO2;
 
       protected override void Context()
       {
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _view = A.Fake<ISelectNeighborPathView>();
          _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>();
-         _containerDTOMapper = A.Fake<IContainerToContainerDTOMapper>();
+         _spatialStructureToSpatialStructureDTOMapper = A.Fake<ISpatialStructureToSpatialStructureDTOMapper>();
 
          A.CallTo(() => _view.BindTo(A<ObjectPathDTO>._))
             .Invokes(x => _selectedPathDTO = x.GetArgument<ObjectPathDTO>(0));
 
-         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _containerDTOMapper, _buildingBlockRepository);
+         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _spatialStructureToSpatialStructureDTOMapper, _buildingBlockRepository);
 
          _spatialStructure1 = new MoBiSpatialStructure
          {
@@ -52,12 +54,20 @@ namespace MoBi.Presentation
          _organism2 = new Container().WithContainerType(ContainerType.Organism);
          _spatialStructure2.AddTopContainer(_organism2);
 
-         _organismDTO1 = new ContainerDTO(_organism1);
-         _organismDTO2 = new ContainerDTO(_organism2);
+         _containerDTO1 = new ContainerDTO(_organism1);
+         _organismDTO1 = new SpatialStructureDTO(_spatialStructure1)
+         {
+            TopContainers = new[] { _containerDTO1 }
+         };
+         _containerDTO2 = new ContainerDTO(_organism2);
+         _organismDTO2 = new SpatialStructureDTO(_spatialStructure2)
+         {
+            TopContainers = new[] { _containerDTO2 }
+         };
 
          A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new []{_spatialStructure1, _spatialStructure2});
-         A.CallTo(() => _containerDTOMapper.MapFrom(_organism1)).Returns(_organismDTO1);
-         A.CallTo(() => _containerDTOMapper.MapFrom(_organism2)).Returns(_organismDTO2);
+         A.CallTo(() => _spatialStructureToSpatialStructureDTOMapper.MapFrom(_spatialStructure1)).Returns(_organismDTO1);
+         A.CallTo(() => _spatialStructureToSpatialStructureDTOMapper.MapFrom(_spatialStructure2)).Returns(_organismDTO2);
       }
    }
 
@@ -86,39 +96,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_initialize_the_container_path_selection_with_the_organism_of_the_spatial_structure()
       {
-         _allObjectBaseForTree.ShouldOnlyContain(_organismDTO1, _organismDTO2);
-      }
-
-      [Observation]
-      public void should_update_the_label_used_in_the_view()
-      {
-         _view.Label.ShouldBeEqualTo("label");
-      }
-   }
-
-   public class When_initializing_the_select_neighborhood_path_presenter_with_a_spatial_structure_without_a_top_container : concern_for_SelectNeighborPathPresenter
-   {
-      private IReadOnlyList<ObjectBaseDTO> _allObjectBaseForTree;
-
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _selectContainerInTreePresenter.InitTreeStructure(A<IReadOnlyList<ObjectBaseDTO>>._))
-            .Invokes(x => _allObjectBaseForTree = x.GetArgument<IReadOnlyList<ObjectBaseDTO>>(0));
-
-         _spatialStructure1.RemoveTopContainer(_organism1);
-         _spatialStructure2.RemoveTopContainer(_organism2);
-      }
-
-      protected override void Because()
-      {
-         sut.Init("label");
-      }
-
-      [Observation]
-      public void should_not_initialize_the_tree_structure()
-      {
-         _allObjectBaseForTree.ShouldBeNull();
+         _allObjectBaseForTree.ShouldOnlyContain(_containerDTO1, _containerDTO2);
       }
 
       [Observation]

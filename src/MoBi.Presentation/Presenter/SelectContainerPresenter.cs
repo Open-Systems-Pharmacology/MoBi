@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Mappers;
@@ -16,19 +17,16 @@ namespace MoBi.Presentation.Presenter
 
    public class SelectContainerPresenter : AbstractDisposablePresenter<ISelectObjectPathView, ISelectObjectPathPresenter>, ISelectContainerPresenter
    {
-      private readonly IMoBiContext _context;
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
       private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public SelectContainerPresenter(
          ISelectObjectPathView view,
-         IMoBiContext context,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
          ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper,
          IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
-         _context = context;
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
          _spatialStructureDTOMapper = spatialStructureDTOMapper;
          _buildingBlockRepository = buildingBlockRepository;
@@ -48,7 +46,7 @@ namespace MoBi.Presentation.Presenter
       private void init()
       {
          var list = _buildingBlockRepository.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper);
-         _selectContainerInTreePresenter.InitTreeStructure(list);
+         _selectContainerInTreePresenter.InitTreeStructure(list.SelectMany(x => x.TopContainers).ToList());
       }
    }
 }

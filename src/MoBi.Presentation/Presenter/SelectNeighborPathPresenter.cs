@@ -21,18 +21,18 @@ namespace MoBi.Presentation.Presenter
    public class SelectNeighborPathPresenter : AbstractPresenter<ISelectNeighborPathView, ISelectNeighborPathPresenter>, ISelectNeighborPathPresenter
    {
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
-      private readonly IContainerToContainerDTOMapper _containerDTOMapper;
+      private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureToSpatialStructureDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly ObjectPathDTO _selectedPathDTO = new ObjectPathDTO();
 
       public SelectNeighborPathPresenter(
          ISelectNeighborPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
-         IContainerToContainerDTOMapper containerDTOMapper,
+         ISpatialStructureToSpatialStructureDTOMapper spatialStructureToSpatialStructureDTOMapper,
          IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
-         _containerDTOMapper = containerDTOMapper;
+         _spatialStructureToSpatialStructureDTOMapper = spatialStructureToSpatialStructureDTOMapper;
          _buildingBlockRepository = buildingBlockRepository;
          AddSubPresenters(_selectContainerInTreePresenter);
          _view.AddContainerCriteriaView(_selectContainerInTreePresenter.BaseView);
@@ -71,15 +71,7 @@ namespace MoBi.Presentation.Presenter
 
       private IReadOnlyList<ObjectBaseDTO> mapTopContainerDTOs(SpatialStructure spatialStructure)
       {
-         var containers = spatialStructure.TopContainers.Where(x => x.ContainerType == ContainerType.Organism).ToList();
-         if (!containers.Any())
-            containers = spatialStructure.TopContainers.ToList();
-
-         var moduleName = spatialStructure.Module.Name;
-
-         var containerDTOs = containers.MapAllUsing(_containerDTOMapper);
-         containerDTOs.Each(x => x.Name = $"{moduleName} - {x.Name}");
-         return containerDTOs;
+         return _spatialStructureToSpatialStructureDTOMapper.MapFrom(spatialStructure).TopContainers.ToList();
       }
 
       public ObjectPath NeighborPath => new ObjectPath(_selectedPathDTO.Path.ToPathArray());

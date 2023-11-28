@@ -1,5 +1,4 @@
-﻿using MoBi.Core.Domain.Extensions;
-using OSPSuite.Utility;
+﻿using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
@@ -26,6 +25,9 @@ namespace MoBi.Presentation.Mappers
          dto.Neighborhoods = _containerToDTOContainerMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
          dto.MoleculeProperties = _containerToDTOContainerMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties);
          dto.Name = spatialStructure.DisplayName;
+
+         dto.TopContainers.Each(x => x.AddModuleName(spatialStructure.Module.Name));
+
          return dto;
       }
    }
