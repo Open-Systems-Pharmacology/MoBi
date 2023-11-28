@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -31,7 +32,10 @@ namespace MoBi.Presentation.Presenter
 
       private IReadOnlyList<ObjectBaseDTO> getChildren(ObjectBaseDTO parentDTO)
       {
-         var parent = EntityFrom(parentDTO);
+         if (parentDTO is SpatialStructureDTO spatialStructureDTO)
+            return spatialStructureDTO.TopContainers.ToList();
+
+         var parent = parentDTO.ObjectBase;
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();
 
@@ -39,10 +43,16 @@ namespace MoBi.Presentation.Presenter
             return Array.Empty<ObjectBaseDTO>();
 
          //Add sub containers removing molecule properties and parameters
+         var subContainers = subContainersFor(container);
+         return subContainers.MapAllUsing(_containerDTOMapper);
+      }
+
+      private static IEnumerable<IContainer> subContainersFor(IContainer container)
+      {
          var subContainers = container.GetChildrenSortedByName<IContainer>(x =>
             !x.IsNamed(Constants.MOLECULE_PROPERTIES) && !x.IsAnImplementationOf<IParameter>()
          );
-         return subContainers.MapAllUsing(_containerDTOMapper);
+         return subContainers;
       }
 
       public bool ContainerSelected => SelectedEntity != null;
