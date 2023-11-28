@@ -43,16 +43,8 @@ namespace MoBi.Presentation.Presenter
             return Array.Empty<ObjectBaseDTO>();
 
          //Add sub containers removing molecule properties and parameters
-         var subContainers = subContainersFor(container);
-         return subContainers.MapAllUsing(_containerDTOMapper);
-      }
-
-      private static IEnumerable<IContainer> subContainersFor(IContainer container)
-      {
-         var subContainers = container.GetChildrenSortedByName<IContainer>(x =>
-            !x.IsNamed(Constants.MOLECULE_PROPERTIES) && !x.IsAnImplementationOf<IParameter>()
-         );
-         return subContainers;
+         return container.GetChildrenSortedByName<IContainer>(x =>
+            !x.IsNamed(Constants.MOLECULE_PROPERTIES) && !x.IsAnImplementationOf<IParameter>()).MapAllUsing(_containerDTOMapper);
       }
 
       public bool ContainerSelected => SelectedEntity != null;
