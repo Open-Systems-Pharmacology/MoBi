@@ -59,9 +59,9 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _buildingBlock;
 
-      public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
+      public bool HasAtLeastOneValue(int pathElementIndex)
       {
-         return _expressionProfileBuildingBlockDTO.ParameterDTOs.HasAtLeastTwoDistinctValues(pathElementIndex);
+         return _expressionProfileBuildingBlockDTO.ParameterDTOs.HasAtLeastOneValue(pathElementIndex);
       }
 
       public void Handle(RenamedEvent eventToHandle)

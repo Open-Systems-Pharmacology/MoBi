@@ -241,9 +241,9 @@ namespace MoBi.Presentation.Presenter
 
       public abstract override void AddNewFormula(TStartValueDTO startValueDTO);
 
-      public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
+      public bool HasAtLeastOneValue(int pathElementIndex)
       {
-         return _startValueDTOs.HasAtLeastTwoDistinctValues(pathElementIndex);
+         return _startValueDTOs.HasAtLeastOneValue(pathElementIndex);
       }
 
       public void HandleBuildingBlockEvent(BuildingBlockEvent eventToHandle)
