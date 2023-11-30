@@ -58,5 +58,7 @@ namespace MoBi.UI.Views
       }
 
       public ITreeNode GetNode(string id) => _treeView.NodeById(id);
+
+      public void ExpandRootNodes() => _treeView.RootNodes.Each(x => _treeView.ExpandNode(x));
    }
 }

@@ -46,6 +46,12 @@ namespace MoBi.Presentation.Presenter
             !x.IsNamed(Constants.MOLECULE_PROPERTIES) && !x.IsAnImplementationOf<IParameter>()).MapAllUsing(_containerDTOMapper);
       }
 
+      public override void InitTreeStructure(IReadOnlyList<ObjectBaseDTO> entityDTOs)
+      {
+         base.InitTreeStructure(entityDTOs);
+         _view.ExpandRootNodes();
+      }
+
       public bool ContainerSelected => SelectedEntity != null;
    }
 }
