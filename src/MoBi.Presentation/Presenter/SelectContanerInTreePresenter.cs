@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -32,6 +31,9 @@ namespace MoBi.Presentation.Presenter
 
       private IReadOnlyList<ObjectBaseDTO> getChildren(ObjectBaseDTO parentDTO)
       {
+         if (parentDTO is ModuleAndSpatialStructureDTO moduleAndSpatialStructureDTO)
+            return moduleAndSpatialStructureDTO.SpatialStructure.TopContainers;
+
          var parent = EntityFrom(parentDTO);
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();

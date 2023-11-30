@@ -16,29 +16,30 @@ namespace MoBi.Presentation
    {
       protected ISelectNeighborPathView _view;
       protected ISelectContainerInTreePresenter _selectContainerInTreePresenter;
-      protected ISpatialStructureToSpatialStructureDTOMapper _spatialStructureToSpatialStructureDTOMapper;
       protected MoBiSpatialStructure _spatialStructure1;
       protected MoBiSpatialStructure _spatialStructure2;
       protected IContainer _organism1;
       protected SpatialStructureDTO _organismDTO1;
+      protected ModuleAndSpatialStructureDTO _moduleAndSpatialStructureDTO1, _moduleAndSpatialStructureDTO2;
       protected ObjectPathDTO _selectedPathDTO;
       private IBuildingBlockRepository _buildingBlockRepository;
       protected Container _organism2;
       protected SpatialStructureDTO _organismDTO2;
       protected ContainerDTO _containerDTO1;
       protected ContainerDTO _containerDTO2;
+      private IModuleToModuleAndSpatialStructureDTOMapper _moduleDTOMapper;
 
       protected override void Context()
       {
+         _moduleDTOMapper = A.Fake<IModuleToModuleAndSpatialStructureDTOMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _view = A.Fake<ISelectNeighborPathView>();
          _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>();
-         _spatialStructureToSpatialStructureDTOMapper = A.Fake<ISpatialStructureToSpatialStructureDTOMapper>();
 
          A.CallTo(() => _view.BindTo(A<ObjectPathDTO>._))
             .Invokes(x => _selectedPathDTO = x.GetArgument<ObjectPathDTO>(0));
 
-         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _spatialStructureToSpatialStructureDTOMapper, _buildingBlockRepository);
+         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _moduleDTOMapper, _buildingBlockRepository);
 
          _spatialStructure1 = new MoBiSpatialStructure
          {
@@ -65,9 +66,18 @@ namespace MoBi.Presentation
             TopContainers = new[] { _containerDTO2 }
          };
 
-         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new []{_spatialStructure1, _spatialStructure2});
-         A.CallTo(() => _spatialStructureToSpatialStructureDTOMapper.MapFrom(_spatialStructure1)).Returns(_organismDTO1);
-         A.CallTo(() => _spatialStructureToSpatialStructureDTOMapper.MapFrom(_spatialStructure2)).Returns(_organismDTO2);
+         _moduleAndSpatialStructureDTO1 = new ModuleAndSpatialStructureDTO(_spatialStructure1.Module)
+         {
+            SpatialStructure = _organismDTO1
+         };
+         _moduleAndSpatialStructureDTO2 = new ModuleAndSpatialStructureDTO(_spatialStructure2.Module)
+         {
+            SpatialStructure = _organismDTO2
+         };
+
+         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new[] { _spatialStructure1, _spatialStructure2 });
+         A.CallTo(() => _moduleDTOMapper.MapFrom(_spatialStructure1.Module)).Returns(_moduleAndSpatialStructureDTO1);
+         A.CallTo(() => _moduleDTOMapper.MapFrom(_spatialStructure2.Module)).Returns(_moduleAndSpatialStructureDTO2);
       }
    }
 
@@ -96,7 +106,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_initialize_the_container_path_selection_with_the_organism_of_the_spatial_structure()
       {
-         _allObjectBaseForTree.ShouldOnlyContain(_containerDTO1, _containerDTO2);
+         _allObjectBaseForTree.ShouldOnlyContain(_moduleAndSpatialStructureDTO1, _moduleAndSpatialStructureDTO2);
       }
 
       [Observation]
@@ -136,7 +146,7 @@ namespace MoBi.Presentation
       public void should_update_the_path_and_add_the_parent_path_of_the_root_container_if_one_is_defined()
       {
          _selectedPathDTO.Path = "A|B";
-         var parentContainer = new Container {ParentPath = new ObjectPath("ROOT", "PARENT")};
+         var parentContainer = new Container { ParentPath = new ObjectPath("ROOT", "PARENT") };
          var container = new Container().WithMode(ContainerMode.Physical).Under(parentContainer);
          _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container, new ObjectPath("NEW|PATH")));
          _selectedPathDTO.Path.ShouldBeEqualTo("ROOT|PARENT|NEW|PATH");
@@ -158,6 +168,7 @@ namespace MoBi.Presentation
       {
          _result = sut.NeighborPath;
       }
+
       [Observation]
       public void should_return_the_path_from_the_selected_path_dto_even_if_the_tree_selection_is_pointing_to_another_object()
       {
