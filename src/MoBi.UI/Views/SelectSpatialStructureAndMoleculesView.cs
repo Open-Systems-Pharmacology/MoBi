@@ -77,14 +77,10 @@ namespace MoBi.UI.Views
 
          _gridViewBinder = new GridViewBinder<MoleculeSelectionDTO>(gridView);
 
-         var colBuildingBlock = _gridViewBinder.Bind(dto => dto.BuildingBlock).AsReadOnly();
+         var colBuildingBlock = _gridViewBinder.Bind(dto => dto.BuildingBlockDisplayName).AsReadOnly();
          colBuildingBlock.XtraColumn.GroupIndex = 0;
 
-         _gridViewBinder.
-            AutoBind(dto => dto.MoleculeName).
-            WithRepository(configureMoleculeRepository).
-            WithCaption(Molecule).
-            AsReadOnly();
+         _gridViewBinder.AutoBind(dto => dto.MoleculeName).WithRepository(configureMoleculeRepository).WithCaption(Molecule).AsReadOnly();
          RegisterValidationFor(_screenBinder);
       }
 

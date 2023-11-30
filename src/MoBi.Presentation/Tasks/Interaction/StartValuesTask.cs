@@ -273,7 +273,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
       }
 
-      protected (MoBiSpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForExtend()
+      protected (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
       {
          var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
          var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;
@@ -290,7 +290,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          using (var selectorPresenter = Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>())
          {
-            selectorPresenter.SelectBuildingBlocksForExtend();
+            selectorPresenter.SelectBuildingBlocksForExtend(defaultMolecules, defaultSpatialStructure);
             return (selectorPresenter.SelectedSpatialStructure, selectorPresenter.SelectedMolecules);
          }
       }

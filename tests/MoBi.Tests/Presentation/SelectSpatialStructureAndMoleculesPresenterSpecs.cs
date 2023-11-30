@@ -15,14 +15,56 @@ namespace MoBi.Presentation
    {
       protected IBuildingBlockRepository _buildingBlockRepository;
       protected ISelectSpatialStructureAndMoleculesView _view;
-      private ISelectSpatialStructureAndMoleculesDTOMapper _mapper;
+      protected ISelectSpatialStructureAndMoleculesDTOMapper _mapper;
 
       protected override void Context()
       {
          _view = A.Fake<ISelectSpatialStructureAndMoleculesView>();
-         _mapper = A.Fake<ISelectSpatialStructureAndMoleculesDTOMapper>();
+         _mapper = new SelectSpatialStructureAndMoleculesDTOMapper();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          sut = new SelectSpatialStructureAndMoleculesPresenter(_view, _buildingBlockRepository, _mapper);
+      }
+   }
+
+   public class When_initializing_the_view_with_default_building_blocks : concern_for_SelectSpatialStructureAndMoleculesPresenter
+   {
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoBiSpatialStructure _moBiSpatialStructure;
+      private MoBiSpatialStructure _unselectedSpatialStructure;
+      private MoleculeBuilder _molecule;
+      private MoleculeBuildingBlock[] _moleculeBuildingBlocks;
+      private MoBiSpatialStructure[] _moBiSpatialStructures;
+      private MoleculeBuildingBlock _unselectedMoleculeBuildingBlock;
+      private MoleculeBuilder _unselectedMolecule;
+
+      protected override void Context()
+      {
+         base.Context();
+         _molecule = new MoleculeBuilder();
+         _unselectedMolecule = new MoleculeBuilder();
+         _moleculeBuildingBlock = new MoleculeBuildingBlock { _molecule };
+         _unselectedMoleculeBuildingBlock = new MoleculeBuildingBlock { _unselectedMolecule };
+
+         _moleculeBuildingBlocks = new[] { _unselectedMoleculeBuildingBlock, _moleculeBuildingBlock };
+         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(_moleculeBuildingBlocks);
+         _moBiSpatialStructure = new MoBiSpatialStructure();
+         _unselectedSpatialStructure = new MoBiSpatialStructure();
+         _moBiSpatialStructures = new[] { _unselectedSpatialStructure, _moBiSpatialStructure };
+         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(_moBiSpatialStructures);
+         A.CallTo(() => _view.Canceled).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         sut.SelectBuildingBlocksForExtend(_moleculeBuildingBlock, _moBiSpatialStructure);
+      }
+
+      [Observation]
+      public void the_selections_should_be_null_or_empty()
+      {
+         sut.SelectedMolecules.ShouldContain(_molecule);
+         sut.SelectedMolecules.ShouldNotContain(_unselectedMolecule);
+         sut.SelectedSpatialStructure.ShouldBeEqualTo(_moBiSpatialStructure);
       }
    }
 
@@ -38,7 +80,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SelectBuildingBlocksForExtend();
+         sut.SelectBuildingBlocksForExtend(null, null);
       }
 
       [Observation]
@@ -60,7 +102,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SelectBuildingBlocksForExtend();
+         sut.SelectBuildingBlocksForExtend(null, null);
       }
 
       [Observation]

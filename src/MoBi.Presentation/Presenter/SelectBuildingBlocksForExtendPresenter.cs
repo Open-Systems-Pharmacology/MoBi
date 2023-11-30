@@ -8,6 +8,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -15,8 +16,8 @@ namespace MoBi.Presentation.Presenter
    {
       IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures { get; }
 
-      void SelectBuildingBlocksForExtend();
-      MoBiSpatialStructure SelectedSpatialStructure { get; }
+      void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure);
+      SpatialStructure SelectedSpatialStructure { get; }
       IReadOnlyList<MoleculeBuilder> SelectedMolecules { get; }
    }
 
@@ -32,16 +33,30 @@ namespace MoBi.Presentation.Presenter
          _mapper = mapper;
       }
 
-      public void SelectBuildingBlocksForExtend()
+      public void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
       {
          setViewCaption();
          _dto = _mapper.MapFrom(_buildingBlockRepository.MoleculeBlockCollection, AllSpatialStructures.FirstOrDefault());
+         selectDefaults(defaultMolecules, defaultSpatialStructure);
+
          _view.Show(_dto);
          _view.Display();
          if (!_view.Canceled)
             return;
 
          _dto.SpatialStructure = null;
+      }
+
+      private void selectDefaults(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
+      {
+         if (defaultSpatialStructure != null)
+            _dto.SpatialStructure = defaultSpatialStructure;
+
+         _dto.Molecules.Where(x => Equals(x.BuildingBlock, defaultMolecules)).Each(x =>
+         {
+            x.Selected = true;
+            _dto.SelectionUpdated(x);
+         });
       }
 
       private void setViewCaption()
@@ -51,7 +66,7 @@ namespace MoBi.Presentation.Presenter
 
       public IReadOnlyList<MoleculeBuilder> SelectedMolecules => _dto.SelectedMolecules.Select(x => x.MoleculeBuilder).ToList();
 
-      public MoBiSpatialStructure SelectedSpatialStructure => _dto.SpatialStructure;
+      public SpatialStructure SelectedSpatialStructure => _dto.SpatialStructure;
 
       public IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures => _buildingBlockRepository.SpatialStructureCollection;
    }

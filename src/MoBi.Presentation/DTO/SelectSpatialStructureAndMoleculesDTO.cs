@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
 
@@ -11,7 +11,7 @@ namespace MoBi.Presentation.DTO
    {
       private readonly List<MoleculeSelectionDTO> _molecules = new List<MoleculeSelectionDTO>();
       private readonly List<MoleculeSelectionDTO> _selectedMolecules = new List<MoleculeSelectionDTO>();
-      public MoBiSpatialStructure SpatialStructure { get; set; }
+      public SpatialStructure SpatialStructure { get; set; }
       public IReadOnlyList<MoleculeSelectionDTO> Molecules => _molecules;
       public IReadOnlyList<MoleculeSelectionDTO> SelectedMolecules => _selectedMolecules;
 
