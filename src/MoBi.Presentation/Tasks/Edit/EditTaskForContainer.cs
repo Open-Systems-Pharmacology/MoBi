@@ -138,9 +138,12 @@ namespace MoBi.Presentation.Tasks.Edit
 
       private void addIndividualParameterToContainer(IndividualParameter individualParameter, IContainer container, string containerPath)
       {
-         var parameterToAdd = createParameter(individualParameter);
          var targetContainer = findTargetContainer(individualParameter.ContainerPath, container, containerPath);
+         // The target container for this parameter is not found - skip
+         if (targetContainer == null)
+            return;
 
+         var parameterToAdd = createParameter(individualParameter);
          var existingParameter = targetContainer.FindByName(parameterToAdd.Name);
 
          if (existingParameter != null)

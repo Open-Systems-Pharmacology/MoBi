@@ -77,6 +77,7 @@ namespace MoBi.Presentation.Tasks
       private IndividualBuildingBlock _individual;
       private IContainer _containerToSave;
       private Parameter _replacedParameter;
+      private IndividualParameter _parameterWithoutContainer;
 
       protected override void Context()
       {
@@ -96,6 +97,9 @@ namespace MoBi.Presentation.Tasks
 
          _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("ShouldBeReplaced"));
          _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container2") }.WithName("parameter2"));
+
+         _parameterWithoutContainer = new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1", "Container3") }.WithName("ContainerDoesNotExist");
+         _individual.Add(_parameterWithoutContainer);
 
          _containerToSave = new Container().WithName("Container1").WithMode(ContainerMode.Physical).Under(_parentContainer);
          _clonedContainer = new Container().WithName("Container1").WithMode(ContainerMode.Physical);
@@ -126,6 +130,12 @@ namespace MoBi.Presentation.Tasks
       protected override void Because()
       {
          sut.SaveWithIndividual(_containerToSave);
+      }
+
+      [Observation]
+      public void the_parameter_is_not_created_when_the_container_does_not_exist()
+      {
+         A.CallTo(() => _individualParameterToParameterMapper.MapFrom(_parameterWithoutContainer)).MustNotHaveHappened();
       }
 
       [Observation]
