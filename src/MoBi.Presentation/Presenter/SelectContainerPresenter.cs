@@ -1,12 +1,10 @@
 ﻿using System.Linq;
 using MoBi.Assets;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -18,17 +16,17 @@ namespace MoBi.Presentation.Presenter
    public class SelectContainerPresenter : AbstractDisposablePresenter<ISelectObjectPathView, ISelectObjectPathPresenter>, ISelectContainerPresenter
    {
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
-      private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
+      private readonly IModuleToModuleAndSpatialStructureDTOMapper _moduleToModuleAndSpatialStructureDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public SelectContainerPresenter(
          ISelectObjectPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
-         ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper,
+         IModuleToModuleAndSpatialStructureDTOMapper moduleToModuleAndSpatialStructureDTOMapper,
          IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
-         _spatialStructureDTOMapper = spatialStructureDTOMapper;
+         _moduleToModuleAndSpatialStructureDTOMapper = moduleToModuleAndSpatialStructureDTOMapper;
          _buildingBlockRepository = buildingBlockRepository;
          AddSubPresenters(_selectContainerInTreePresenter);
          _view.Caption = AppConstants.Captions.SelectContainer;
@@ -45,8 +43,8 @@ namespace MoBi.Presentation.Presenter
 
       private void init()
       {
-         var list = _buildingBlockRepository.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper);
-         _selectContainerInTreePresenter.InitTreeStructure(list.SelectMany(x => x.TopContainers).ToList());
+         var list = _buildingBlockRepository.SpatialStructureCollection.Select(x => _moduleToModuleAndSpatialStructureDTOMapper.MapFrom(x.Module)).ToList();
+         _selectContainerInTreePresenter.InitTreeStructure(list);
       }
    }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -32,6 +31,9 @@ namespace MoBi.Presentation.Presenter
 
       private IReadOnlyList<ObjectBaseDTO> getChildren(ObjectBaseDTO parentDTO)
       {
+         if (parentDTO is ModuleAndSpatialStructureDTO moduleAndSpatialStructureDTO)
+            return moduleAndSpatialStructureDTO.SpatialStructure.TopContainers;
+
          var parent = EntityFrom(parentDTO);
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();
@@ -42,6 +44,12 @@ namespace MoBi.Presentation.Presenter
          //Add sub containers removing molecule properties and parameters
          return container.GetChildrenSortedByName<IContainer>(x =>
             !x.IsNamed(Constants.MOLECULE_PROPERTIES) && !x.IsAnImplementationOf<IParameter>()).MapAllUsing(_containerDTOMapper);
+      }
+
+      public override void InitTreeStructure(IReadOnlyList<ObjectBaseDTO> entityDTOs)
+      {
+         base.InitTreeStructure(entityDTOs);
+         _view.ExpandRootNodes();
       }
 
       public bool ContainerSelected => SelectedEntity != null;

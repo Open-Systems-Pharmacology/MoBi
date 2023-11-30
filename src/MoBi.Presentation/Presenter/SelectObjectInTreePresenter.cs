@@ -73,7 +73,7 @@ namespace MoBi.Presentation.Presenter
          return selectedDTO != null;
       }
 
-      public void InitTreeStructure(IReadOnlyList<ObjectBaseDTO> entityDTOs)
+      public virtual void InitTreeStructure(IReadOnlyList<ObjectBaseDTO> entityDTOs)
       {
          _view.Display(entityDTOs.Select(mapToNode).ToList());
       }

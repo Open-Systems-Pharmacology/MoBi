@@ -9,7 +9,7 @@ namespace MoBi.Presentation.DTO
       {
       }
 
-      public IEnumerable<ContainerDTO> TopContainers { get; set; }
+      public IReadOnlyList<ContainerDTO> TopContainers { get; set; }
       public ContainerDTO Neighborhoods { get; set; }
       public ContainerDTO MoleculeProperties { get; set; }
    }
