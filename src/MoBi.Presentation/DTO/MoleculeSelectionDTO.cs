@@ -11,18 +11,21 @@ namespace MoBi.Presentation.DTO
    {
       private bool _selected;
 
-      public MoleculeSelectionDTO()
+      public MoleculeSelectionDTO(MoleculeBuilder moleculeBuilder)
       {
+         MoleculeBuilder = moleculeBuilder;
          Rules.Add(AllRules.SelectedMoleculesHaveUniqueNames);
       }
 
-      public string BuildingBlock { get; set; }
+      public IBuildingBlock BuildingBlock => MoleculeBuilder.BuildingBlock;
+      public string BuildingBlockDisplayName => BuildingBlock.ToString();
 
-      public string MoleculeName => MoleculeBuilder?.Name;
+      public string MoleculeName => MoleculeBuilder.Name;
 
-      public MoleculeBuilder MoleculeBuilder { get; set; }
+      public MoleculeBuilder MoleculeBuilder { get; }
 
-      public bool Selected {
+      public bool Selected
+      {
          get => _selected;
          set
          {
@@ -33,7 +36,7 @@ namespace MoBi.Presentation.DTO
 
       public string Icon => MoleculeBuilder.Icon;
       public SelectSpatialStructureAndMoleculesDTO ParentDTO { get; set; }
-
+      
       private static class AllRules
       {
          public static IBusinessRule SelectedMoleculesHaveUniqueNames { get; } =

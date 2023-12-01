@@ -8,12 +8,12 @@ namespace MoBi.Presentation.Mappers
 {
    public interface ISelectSpatialStructureAndMoleculesDTOMapper
    {
-      SelectSpatialStructureAndMoleculesDTO MapFrom(IEnumerable<MoleculeBuildingBlock> moleculeBuildingBlocks, MoBiSpatialStructure spatialStructure);
+      SelectSpatialStructureAndMoleculesDTO MapFrom(IEnumerable<MoleculeBuildingBlock> moleculeBuildingBlocks, SpatialStructure spatialStructure);
    }
 
    public class SelectSpatialStructureAndMoleculesDTOMapper : ISelectSpatialStructureAndMoleculesDTOMapper
    {
-      public SelectSpatialStructureAndMoleculesDTO MapFrom(IEnumerable<MoleculeBuildingBlock> moleculeBuildingBlocks, MoBiSpatialStructure spatialStructure)
+      public SelectSpatialStructureAndMoleculesDTO MapFrom(IEnumerable<MoleculeBuildingBlock> moleculeBuildingBlocks, SpatialStructure spatialStructure)
       {
          var dto = new SelectSpatialStructureAndMoleculesDTO
          {
@@ -26,16 +26,12 @@ namespace MoBi.Presentation.Mappers
 
       private void createMoleculeDTOs(MoleculeBuildingBlock buildingBlock, SelectSpatialStructureAndMoleculesDTO parentDTO)
       {
-         buildingBlock.Each(x => createMoleculeDTO(x, buildingBlock.ToString(), parentDTO));
+         buildingBlock.Each(x => createMoleculeDTO(x, parentDTO));
       }
 
-      private void createMoleculeDTO(MoleculeBuilder molecule, string buildingBlockName, SelectSpatialStructureAndMoleculesDTO parentDTO)
+      private void createMoleculeDTO(MoleculeBuilder molecule, SelectSpatialStructureAndMoleculesDTO parentDTO)
       {
-         parentDTO.AddMolecule(new MoleculeSelectionDTO
-         {
-            BuildingBlock = buildingBlockName,
-            MoleculeBuilder = molecule
-         });
+         parentDTO.AddMolecule(new MoleculeSelectionDTO(molecule));
       }
    }
 }

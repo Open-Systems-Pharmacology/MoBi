@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -18,11 +14,15 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -43,7 +43,10 @@ namespace MoBi.Presentation.Tasks
          _editTask = A.Fake<IEditTasksForBuildingBlock<InitialConditionsBuildingBlock>>();
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
-         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock
+         {
+            Module = new Module()
+         };
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeResolver = A.Fake<IMoleculeResolver>();
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
@@ -147,8 +150,8 @@ namespace MoBi.Presentation.Tasks
                Dimension = d,
                IsQuantitySpecified = true
             },
-            new ImportedQuantityDTO {Name = "C1", ContainerPath = new ObjectPath("that", "path"), QuantityInBaseUnit = 2.0, Dimension = d},
-            new ImportedQuantityDTO {Name = "C1", ContainerPath = new ObjectPath("the", "path"), QuantityInBaseUnit = 3.0, Dimension = d}
+            new ImportedQuantityDTO { Name = "C1", ContainerPath = new ObjectPath("that", "path"), QuantityInBaseUnit = 2.0, Dimension = d },
+            new ImportedQuantityDTO { Name = "C1", ContainerPath = new ObjectPath("the", "path"), QuantityInBaseUnit = 3.0, Dimension = d }
          };
 
          _initialConditionsBuildingBlock.Add(_firstStartValueRef);
@@ -213,10 +216,10 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _startValues = new List<InitialCondition>
          {
-            new InitialCondition {Name = "M1", IsPresent = true},
-            new InitialCondition {Name = "M2", IsPresent = false},
-            new InitialCondition {Name = "M3", IsPresent = true},
-            new InitialCondition {Name = "M4", IsPresent = false}
+            new InitialCondition { Name = "M1", IsPresent = true },
+            new InitialCondition { Name = "M2", IsPresent = false },
+            new InitialCondition { Name = "M3", IsPresent = true },
+            new InitialCondition { Name = "M4", IsPresent = false }
          };
          _startValues.Each(_initialConditionsBuildingBlock.Add);
       }
@@ -245,10 +248,10 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _startValues = new List<InitialCondition>
          {
-            new InitialCondition {Name = "M1", NegativeValuesAllowed = true},
-            new InitialCondition {Name = "M2", NegativeValuesAllowed = false},
-            new InitialCondition {Name = "M3", NegativeValuesAllowed = true},
-            new InitialCondition {Name = "M4", NegativeValuesAllowed = false}
+            new InitialCondition { Name = "M1", NegativeValuesAllowed = true },
+            new InitialCondition { Name = "M2", NegativeValuesAllowed = false },
+            new InitialCondition { Name = "M3", NegativeValuesAllowed = true },
+            new InitialCondition { Name = "M4", NegativeValuesAllowed = false }
          };
          _startValues.Each(_initialConditionsBuildingBlock.Add);
       }
@@ -376,7 +379,7 @@ namespace MoBi.Presentation.Tasks
          _startValue.Value.Value.ShouldBeEqualTo(TARGET_BASE_VALUE);
       }
    }
-   
+
    public abstract class When_cloning_a_molecule_start_values_building_block : concern_for_InitialConditionsTask
    {
       protected InitialConditionsBuildingBlock _buildingBlockToClone;
@@ -468,7 +471,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_spatial_structure_and_molecule_selection_presenter_is_used_to_select_the_building_blocks()
       {
-         A.CallTo(() => _presenter.SelectBuildingBlocksForExtend()).MustHaveHappened();
+         A.CallTo(() => _presenter.SelectBuildingBlocksForExtend(null, null)).MustHaveHappened();
       }
    }
 

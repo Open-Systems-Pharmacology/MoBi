@@ -175,7 +175,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock)
       {
-         var (spatialStructure, molecules) = SelectBuildingBlocksForExtend();
+         var commonModule = initialConditionsBuildingBlock.Module;
+         var (spatialStructure, molecules) = SelectBuildingBlocksForExtend(commonModule.Molecules, commonModule.SpatialStructure);
          if (spatialStructure == null || molecules == null || !molecules.Any())
             return;
 
