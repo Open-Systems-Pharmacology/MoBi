@@ -121,9 +121,9 @@ namespace MoBi.Presentation.Presenter
          };
       }
 
-      public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
+      public bool HasAtLeastOneValue(int pathElementIndex)
       {
-         return _scaleDivisors.HasAtLeastTwoDistinctValues(pathElementIndex);
+         return _scaleDivisors.HasAtLeastOneValue(pathElementIndex);
       }
       public async Task StartScaleDivisorsCalculation()
       {

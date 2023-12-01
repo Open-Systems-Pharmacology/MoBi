@@ -44,9 +44,9 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _buildingBlock;
 
-      public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
+      public bool HasAtLeastOneValue(int pathElementIndex)
       {
-         return _individualBuildingBlockDTO.Parameters.HasAtLeastTwoDistinctValues(pathElementIndex);
+         return _individualBuildingBlockDTO.Parameters.HasAtLeastOneValue(pathElementIndex);
       }
    }
 }

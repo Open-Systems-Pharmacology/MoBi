@@ -2,6 +2,6 @@
 {
    public interface IBreadCrumbsPresenter 
    {
-      bool HasAtLeastTwoDistinctValues(int pathElementIndex);
+      bool HasAtLeastOneValue(int pathElementIndex);
    }
 }

@@ -88,8 +88,10 @@ namespace MoBi.Presentation
          [Observation]
          public void should_find_distinct_paths_only_where_appropriate()
          {
-            sut.HasAtLeastTwoDistinctValues(0).ShouldBeFalse();
-            sut.HasAtLeastTwoDistinctValues(1).ShouldBeTrue();
+            sut.HasAtLeastOneValue(0).ShouldBeTrue();
+            sut.HasAtLeastOneValue(1).ShouldBeTrue();
+            sut.HasAtLeastOneValue(2).ShouldBeFalse();
+            sut.HasAtLeastOneValue(3).ShouldBeFalse();
          }
       }
 

@@ -188,7 +188,7 @@ namespace MoBi.UI.Views
 
       private void initColumnVisibility()
       {
-         _pathElementsColumns.Each(column => column.Visible = _presenter.HasAtLeastTwoDistinctValues(_pathElementsColumns.IndexOf(column)));
+         _pathElementsColumns.Each(column => column.Visible = _presenter.HasAtLeastOneValue(_pathElementsColumns.IndexOf(column)));
       }
 
       public void AttachPresenter(IExpressionProfileBuildingBlockPresenter presenter)
