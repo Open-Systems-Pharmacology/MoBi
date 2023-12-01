@@ -11,17 +11,18 @@ namespace MoBi.Presentation.DTO
    {
       private bool _selected;
 
-      public MoleculeSelectionDTO()
+      public MoleculeSelectionDTO(MoleculeBuilder moleculeBuilder)
       {
+         MoleculeBuilder = moleculeBuilder;
          Rules.Add(AllRules.SelectedMoleculesHaveUniqueNames);
       }
 
       public IBuildingBlock BuildingBlock => MoleculeBuilder.BuildingBlock;
       public string BuildingBlockDisplayName => BuildingBlock.ToString();
 
-      public string MoleculeName => MoleculeBuilder?.Name;
+      public string MoleculeName => MoleculeBuilder.Name;
 
-      public MoleculeBuilder MoleculeBuilder { get; set; }
+      public MoleculeBuilder MoleculeBuilder { get; }
 
       public bool Selected
       {

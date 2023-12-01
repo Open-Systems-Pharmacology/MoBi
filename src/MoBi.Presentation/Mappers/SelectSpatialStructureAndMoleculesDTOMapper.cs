@@ -8,12 +8,12 @@ namespace MoBi.Presentation.Mappers
 {
    public interface ISelectSpatialStructureAndMoleculesDTOMapper
    {
-      SelectSpatialStructureAndMoleculesDTO MapFrom(IEnumerable<MoleculeBuildingBlock> moleculeBuildingBlocks, MoBiSpatialStructure spatialStructure);
+      SelectSpatialStructureAndMoleculesDTO MapFrom(IEnumerable<MoleculeBuildingBlock> moleculeBuildingBlocks, SpatialStructure spatialStructure);
    }
 
    public class SelectSpatialStructureAndMoleculesDTOMapper : ISelectSpatialStructureAndMoleculesDTOMapper
    {
-      public SelectSpatialStructureAndMoleculesDTO MapFrom(IEnumerable<MoleculeBuildingBlock> moleculeBuildingBlocks, MoBiSpatialStructure spatialStructure)
+      public SelectSpatialStructureAndMoleculesDTO MapFrom(IEnumerable<MoleculeBuildingBlock> moleculeBuildingBlocks, SpatialStructure spatialStructure)
       {
          var dto = new SelectSpatialStructureAndMoleculesDTO
          {
@@ -31,10 +31,7 @@ namespace MoBi.Presentation.Mappers
 
       private void createMoleculeDTO(MoleculeBuilder molecule, SelectSpatialStructureAndMoleculesDTO parentDTO)
       {
-         parentDTO.AddMolecule(new MoleculeSelectionDTO
-         {
-            MoleculeBuilder = molecule
-         });
+         parentDTO.AddMolecule(new MoleculeSelectionDTO(molecule));
       }
    }
 }

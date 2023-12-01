@@ -36,8 +36,8 @@ namespace MoBi.Presentation.Presenter
       public void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
       {
          setViewCaption();
-         _dto = _mapper.MapFrom(_buildingBlockRepository.MoleculeBlockCollection, AllSpatialStructures.FirstOrDefault());
-         selectDefaults(defaultMolecules, defaultSpatialStructure);
+         _dto = _mapper.MapFrom(_buildingBlockRepository.MoleculeBlockCollection, defaultSpatialStructure ?? AllSpatialStructures.FirstOrDefault());
+         selectDefaultMolecules(defaultMolecules);
 
          _view.Show(_dto);
          _view.Display();
@@ -47,11 +47,8 @@ namespace MoBi.Presentation.Presenter
          _dto.SpatialStructure = null;
       }
 
-      private void selectDefaults(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
+      private void selectDefaultMolecules(MoleculeBuildingBlock defaultMolecules)
       {
-         if (defaultSpatialStructure != null)
-            _dto.SpatialStructure = defaultSpatialStructure;
-
          _dto.Molecules.Where(x => Equals(x.BuildingBlock, defaultMolecules)).Each(x =>
          {
             x.Selected = true;

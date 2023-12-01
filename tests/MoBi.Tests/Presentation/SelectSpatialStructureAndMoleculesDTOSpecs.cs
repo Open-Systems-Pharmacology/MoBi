@@ -25,8 +25,8 @@ namespace MoBi.Presentation
          sut.SpatialStructure = null;
          sut.SpatialStructure = new MoBiSpatialStructure();
          
-         sut.AddMolecule(new MoleculeSelectionDTO {MoleculeBuilder = new MoleculeBuilder().WithName("builder"), Selected = true });
-         sut.AddMolecule(new MoleculeSelectionDTO {MoleculeBuilder = new MoleculeBuilder().WithName("builder"), Selected = true });
+         sut.AddMolecule(new MoleculeSelectionDTO (new MoleculeBuilder().WithName("builder")) { Selected = true });
+         sut.AddMolecule(new MoleculeSelectionDTO (new MoleculeBuilder().WithName("builder")) { Selected = true });
       }
 
       [Observation]
@@ -50,8 +50,8 @@ namespace MoBi.Presentation
          sut.SpatialStructure = null;
          sut.SpatialStructure = new MoBiSpatialStructure();
 
-         sut.AddMolecule(new MoleculeSelectionDTO { MoleculeBuilder = new MoleculeBuilder().WithName("builder")});
-         sut.AddMolecule(new MoleculeSelectionDTO { MoleculeBuilder = new MoleculeBuilder().WithName("builder"), Selected = true });
+         sut.AddMolecule(new MoleculeSelectionDTO (new MoleculeBuilder().WithName("builder")));
+         sut.AddMolecule(new MoleculeSelectionDTO(new MoleculeBuilder().WithName("builder")) { Selected = true });
       }
 
       protected override void Because()
@@ -80,8 +80,8 @@ namespace MoBi.Presentation
          sut.SpatialStructure = null;
          sut.SpatialStructure = new MoBiSpatialStructure();
 
-         sut.AddMolecule(new MoleculeSelectionDTO { MoleculeBuilder = new MoleculeBuilder().WithName("builder"), Selected = true });
-         sut.AddMolecule(new MoleculeSelectionDTO { MoleculeBuilder = new MoleculeBuilder().WithName("builder"), Selected = true });
+         sut.AddMolecule(new MoleculeSelectionDTO (new MoleculeBuilder().WithName("builder")) { Selected = true });
+         sut.AddMolecule(new MoleculeSelectionDTO (new MoleculeBuilder().WithName("builder")) { Selected = true });
       }
 
       protected override void Because()
@@ -109,8 +109,8 @@ namespace MoBi.Presentation
          base.Context();
          sut.SpatialStructure = null;
          sut.SpatialStructure = new MoBiSpatialStructure();
-         sut.AddMolecule(new MoleculeSelectionDTO {MoleculeBuilder = new MoleculeBuilder().WithName("builder"), Selected = true });
-         sut.AddMolecule(new MoleculeSelectionDTO {MoleculeBuilder = new MoleculeBuilder().WithName("builder") });
+         sut.AddMolecule(new MoleculeSelectionDTO (new MoleculeBuilder().WithName("builder")) { Selected = true });
+         sut.AddMolecule(new MoleculeSelectionDTO(new MoleculeBuilder().WithName("builder")));
       }
 
       [Observation]
@@ -127,7 +127,7 @@ namespace MoBi.Presentation
          base.Context();
          sut.SpatialStructure = null;
          sut.SpatialStructure = new MoBiSpatialStructure();
-         sut.AddMolecule(new MoleculeSelectionDTO {MoleculeBuilder = new MoleculeBuilder().WithName("builder")});
+         sut.AddMolecule(new MoleculeSelectionDTO (new MoleculeBuilder().WithName("builder")));
       }
 
       [Observation]
