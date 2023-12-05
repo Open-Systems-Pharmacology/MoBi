@@ -28,9 +28,11 @@ namespace MoBi.Presentation.Tasks
       protected ISelectFolderAndIndividualFromProjectPresenter _selectIndividualFromProjectPresenter;
       protected ICloneManagerForBuildingBlock _cloneManager;
       protected IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
+      private IObjectBaseFactory _objectBaseFactory;
 
       protected override void Context()
       {
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
@@ -42,7 +44,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = A.Fake<IInteractionTask>();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _individualParameterToParameterMapper);
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _individualParameterToParameterMapper, _objectBaseFactory);
       }
    }
 

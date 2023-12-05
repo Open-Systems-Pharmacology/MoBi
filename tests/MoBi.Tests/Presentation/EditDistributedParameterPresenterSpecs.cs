@@ -3,7 +3,6 @@ using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -52,11 +51,11 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_setting_the_display_unit_of_a_distrubtion_parameter : concern_for_EditDistributedParameterPresenter
+   public class When_setting_the_display_unit_of_a_distribution_parameter : concern_for_EditDistributedParameterPresenter
    {
       private IDistributedParameter _distributedParameter;
       private Unit _unit;
-      private DistributionParameterDTO _distributedParmaeterDTO;
+      private DistributionParameterDTO _distributedParameterDTO;
       private IParameter _meanParameter;
 
       protected override void Context()
@@ -65,13 +64,13 @@ namespace MoBi.Presentation
          _unit= A.Fake<Unit>();
          _distributedParameter = A.Fake<IDistributedParameter>();
          _meanParameter = A.Fake<IParameter>();
-         _distributedParmaeterDTO = new DistributionParameterDTO(_meanParameter);
+         _distributedParameterDTO = new DistributionParameterDTO(_meanParameter);
          sut.Edit(_distributedParameter);
       }
 
       protected override void Because()
       {
-         sut.SetParameterUnit(_distributedParmaeterDTO, _unit);
+         sut.SetParameterUnit(_distributedParameterDTO, _unit);
       }
 
       [Observation]

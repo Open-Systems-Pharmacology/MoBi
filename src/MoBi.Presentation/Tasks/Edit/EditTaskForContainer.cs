@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -9,8 +10,10 @@ using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
@@ -39,17 +42,20 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
+      private readonly IObjectBaseFactory _objectBaseFactory;
 
       public EditTaskForContainer(IInteractionTaskContext interactionTaskContext,
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IObjectPathFactory objectPathFactory,
          ICloneManagerForBuildingBlock cloneManager,
-         IIndividualParameterToParameterMapper individualParameterToParameterMapper) : base(interactionTaskContext)
+         IIndividualParameterToParameterMapper individualParameterToParameterMapper,
+         IObjectBaseFactory objectBaseFactory) : base(interactionTaskContext)
       {
          _spatialStructureFactory = spatialStructureFactory;
          _objectPathFactory = objectPathFactory;
          _cloneManager = cloneManager;
          _individualParameterToParameterMapper = individualParameterToParameterMapper;
+         _objectBaseFactory = objectBaseFactory;
       }
 
       protected override IEnumerable<string> GetUnallowedNames(IContainer container, IEnumerable<IObjectBase> existingObjectsInParent)
@@ -156,12 +162,38 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var parameterToAdd = _individualParameterToParameterMapper.MapFrom(individualParameter);
 
+         if (parameterToAdd.Name.Equals(Constants.Distribution.PERCENTILE) && individualParameter.Value.HasValue)
+            setValuesForPercentile(parameterToAdd, individualParameter.Value.Value, individualParameter.Dimension);
+         else
+            setValues(individualParameter, parameterToAdd);
+
+         // NaN formulas do not need to be serialized
+         if (parameterToAdd.Formula is ConstantFormula constantFormula && double.IsNaN(constantFormula.Value)) 
+            parameterToAdd.Formula = null;
+
+         return parameterToAdd;
+      }
+
+      private static void setValues(IndividualParameter individualParameter, IParameter parameterToAdd)
+      {
          if (individualParameter.Formula != null)
             parameterToAdd.Formula = individualParameter.Formula;
          if (individualParameter.Value.HasValue)
             parameterToAdd.Value = individualParameter.Value.Value;
+      }
 
-         return parameterToAdd;
+      private void setValuesForPercentile(IParameter parameterToAdd, double value, IDimension dimension)
+      {
+         // When setting the values for a percentile parameter within a distribution, the IsFixedValue property must be false.
+         // The value of the parameter should be set using an explicit formula rather than by setting the value directly.
+         // A constant formula will not be enough because during export constant formula will be removed.
+         parameterToAdd.Value = double.NaN;
+         parameterToAdd.IsFixedValue = false;
+         // TODO name this formula
+         var explicitFormula = _objectBaseFactory.Create<ExplicitFormula>();
+         explicitFormula.FormulaString = value.ToString(CultureInfo.InvariantCulture);
+         explicitFormula.Dimension = dimension;
+         parameterToAdd.Formula = explicitFormula;
       }
 
       private IContainer findTargetContainer(string individualParameterContainerPath, IContainer container, string containerPath)
