@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Assets;
+using OSPSuite.Core.Events;
 
 namespace MoBi.Core.Commands
 {
@@ -35,6 +36,8 @@ namespace MoBi.Core.Commands
 
    public class AddOutputIntervalCommand : OutputIntervalCommandBase
    {
+      private string _addedIntervalId;
+
       public AddOutputIntervalCommand(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
       {
          CommandType = AppConstants.Commands.AddCommand;
@@ -44,7 +47,16 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+         context.Register(_interval);
          _schema.AddInterval(_interval);
+         _addedIntervalId = _interval.Id;
+         context.PublishEvent(new OutputSchemaChangedEvent(_schema));
+      }
+
+      public override void RestoreExecutionData(IMoBiContext context)
+      {
+         base.RestoreExecutionData(context);
+         _interval = context.Get<OutputInterval>(_addedIntervalId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
@@ -55,6 +67,8 @@ namespace MoBi.Core.Commands
 
    public class RemoveOutputIntervalCommand : OutputIntervalCommandBase
    {
+      private byte[] _serializedInterval;
+
       public RemoveOutputIntervalCommand(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
       {
          CommandType = AppConstants.Commands.DeleteCommand;
@@ -64,7 +78,16 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+         _serializedInterval = context.Serialize(_interval);
          _schema.RemoveInterval(_interval);
+         context.Unregister(_interval);
+         context.PublishEvent(new OutputSchemaChangedEvent(_schema));
+      }
+
+      public override void RestoreExecutionData(IMoBiContext context)
+      {
+         base.RestoreExecutionData(context);
+         _interval = context.Deserialize<OutputInterval>(_serializedInterval);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

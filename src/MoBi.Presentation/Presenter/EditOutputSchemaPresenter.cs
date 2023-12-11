@@ -8,8 +8,10 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Events;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -23,7 +25,9 @@ namespace MoBi.Presentation.Presenter
       void Edit(IMoBiSimulation simulation);
    }
 
-   internal class EditOutputSchemaPresenter : AbstractSubPresenter<IEditOutputSchemaView, IEditOutputSchemaPresenter>, IEditOutputSchemaPresenter
+   internal class EditOutputSchemaPresenter : AbstractSubPresenter<IEditOutputSchemaView, IEditOutputSchemaPresenter>, 
+      IEditOutputSchemaPresenter,
+      IListener<OutputSchemaChangedEvent>
    {
       private readonly IOutputIntervalToOutputIntervalDTOMapper _intervalMapper;
       private readonly IQuantityTask _quantityTask;
@@ -99,6 +103,12 @@ namespace MoBi.Presentation.Presenter
       public bool ShowGroupCaption
       {
          set => View.ShowGroupCaption = value;
+      }
+
+      public void Handle(OutputSchemaChangedEvent eventToHandle)
+      {
+         if (eventToHandle.OutputSchema.Equals(_simulationSettings.OutputSchema))
+            bindToView();
       }
    }
 }
