@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -9,8 +10,10 @@ using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
@@ -39,17 +42,20 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
+      private readonly IFormulaFactory _formulaFactory;
 
       public EditTaskForContainer(IInteractionTaskContext interactionTaskContext,
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IObjectPathFactory objectPathFactory,
          ICloneManagerForBuildingBlock cloneManager,
-         IIndividualParameterToParameterMapper individualParameterToParameterMapper) : base(interactionTaskContext)
+         IIndividualParameterToParameterMapper individualParameterToParameterMapper,
+         IFormulaFactory formulaFactory) : base(interactionTaskContext)
       {
          _spatialStructureFactory = spatialStructureFactory;
          _objectPathFactory = objectPathFactory;
          _cloneManager = cloneManager;
          _individualParameterToParameterMapper = individualParameterToParameterMapper;
+         _formulaFactory = formulaFactory;
       }
 
       protected override IEnumerable<string> GetUnallowedNames(IContainer container, IEnumerable<IObjectBase> existingObjectsInParent)
@@ -159,7 +165,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (individualParameter.Formula != null)
             parameterToAdd.Formula = individualParameter.Formula;
          if (individualParameter.Value.HasValue)
-            parameterToAdd.Value = individualParameter.Value.Value;
+            parameterToAdd.Formula = _formulaFactory.ConstantFormula(individualParameter.Value.Value, individualParameter.Dimension);
 
          return parameterToAdd;
       }

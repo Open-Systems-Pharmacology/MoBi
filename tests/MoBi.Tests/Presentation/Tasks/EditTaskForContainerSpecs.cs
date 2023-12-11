@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
@@ -28,9 +29,11 @@ namespace MoBi.Presentation.Tasks
       protected ISelectFolderAndIndividualFromProjectPresenter _selectIndividualFromProjectPresenter;
       protected ICloneManagerForBuildingBlock _cloneManager;
       protected IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
+      protected IFormulaFactory _formulaFactory;
 
       protected override void Context()
       {
+         _formulaFactory = A.Fake<IFormulaFactory>();
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
@@ -42,7 +45,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = A.Fake<IInteractionTask>();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _individualParameterToParameterMapper);
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _individualParameterToParameterMapper, _formulaFactory);
       }
    }
 
@@ -95,7 +98,9 @@ namespace MoBi.Presentation.Tasks
          _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1", "distributedParameter1-WS") }.WithName("Mean"));
          _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1", "distributedParameter1-WS") }.WithName("StandardDeviation"));
 
-         _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("ShouldBeReplaced"));
+         var replacementIndividualParameter = new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("ShouldBeReplaced");
+         replacementIndividualParameter.Value = 1;
+         _individual.Add(replacementIndividualParameter);
          _individual.Add(new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container2") }.WithName("parameter2"));
 
          _parameterWithoutContainer = new IndividualParameter { ContainerPath = new ObjectPath("Parent", "Container1", "Container3") }.WithName("ContainerDoesNotExist");
@@ -117,6 +122,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
          A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
          A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => newParameter(x.Arguments.Get<IndividualParameter>(0)));
+         A.CallTo(() => _formulaFactory.ConstantFormula(replacementIndividualParameter.Value.Value, replacementIndividualParameter.Dimension)).ReturnsLazily(x => new ConstantFormula(x.Arguments.Get<double>(0)));
       }
 
       private static IParameter newParameter(IndividualParameter individualParameter)
@@ -145,6 +151,20 @@ namespace MoBi.Presentation.Tasks
          distributedParameter.Children.Count.ShouldBeEqualTo(2);
          distributedParameter.ExistsByName("Mean").ShouldBeTrue();
          distributedParameter.ExistsByName("StandardDeviation").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void values_should_be_replaced_with_constant_formula()
+      {
+         var parameter = _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).GetSingleChildByName<IParameter>("ShouldBeReplaced");
+         parameter.Formula.IsConstant().ShouldBeTrue();
+         parameter.Value.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void constant_formulas_should_be_used_instead_of_fixed_values()
+      {
+         _tmpSpatialStructure.TopContainers.Single().GetAllChildren<IParameter>().All(x => x.IsFixedValue == false).ShouldBeTrue();
       }
 
       [Observation]
