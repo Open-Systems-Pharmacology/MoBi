@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
@@ -11,11 +10,9 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -30,20 +27,15 @@ namespace MoBi.Presentation.Presenter
    {
       protected readonly IMoBiContext _context;
       protected IObjectBaseToObjectBaseDTOMapper _objectBaseMapper;
-      protected ITreeNode _favoritesNode;
-      protected ITreeNode _userDefinedNode;
 
       protected HierarchicalStructurePresenter(
          IHierarchicalStructureView view, 
-         IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, 
-         ITreeNodeFactory treeNodeFactory)
+         IMoBiContext context, 
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper) 
          : base(view)
       {
          _context = context;
          _objectBaseMapper = objectBaseMapper;
-         _favoritesNode = treeNodeFactory.CreateForFavorites();
-         _userDefinedNode = treeNodeFactory.CreateForUserDefined();
       }
 
       public virtual IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate)
@@ -73,8 +65,8 @@ namespace MoBi.Presentation.Presenter
 
       private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
       {
-         if(neighborhoodBuilder.FirstNeighborPath!=null)
-            yield return new ObjectBaseDTO{Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.FirstNeighborPath) };
+         if (neighborhoodBuilder.FirstNeighborPath != null)
+            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.FirstNeighborPath) };
 
          if (neighborhoodBuilder.SecondNeighborPath != null)
             yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.SecondNeighborPath) };
@@ -97,26 +89,6 @@ namespace MoBi.Presentation.Presenter
          return container?.ContainerType ?? ContainerType.Other;
       }
 
-      public virtual void Select(ObjectBaseDTO objectBaseDTO)
-      {
-         if (objectBaseDTO == _favoritesNode.TagAsObject)
-            RaiseFavoritesSelectedEvent();
-
-         else if (objectBaseDTO == _userDefinedNode.TagAsObject)
-            RaiseUserDefinedSelectedEvent();
-
-         else
-            raiseEntitySelectedEvent(objectBaseDTO);
-      }
-
-      private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
-      {
-         // First and second neighbor node selections should not trigger an EntitySelectedEvent
-         // because they are not a selectable entity
-         if(objectBaseDTO.ObjectBase != null)
-            _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
-      }
-
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
          base.ReleaseFrom(eventPublisher);
@@ -127,10 +99,6 @@ namespace MoBi.Presentation.Presenter
       {
          _view.Clear();
       }
-
-      protected abstract void RaiseFavoritesSelectedEvent();
-
-      protected abstract void RaiseUserDefinedSelectedEvent();
 
       public abstract void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation);
    }

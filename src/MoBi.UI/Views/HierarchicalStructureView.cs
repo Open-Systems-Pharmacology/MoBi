@@ -51,8 +51,13 @@ namespace MoBi.UI.Views
          if (hitInfo.Node != null)
          {
             var treeNode = treeView.NodeFrom(hitInfo.Node);
-            OnEvent(() => _presenter.Select(treeNode.TagAsObject as ObjectBaseDTO));
+            OnEvent(() => selectionChanged(treeNode));
          }
+      }
+
+      private void selectionChanged(ITreeNode treeNode)
+      {
+         _presenter.Select(treeNode.TagAsObject as ObjectBaseDTO);
       }
 
       public void Refresh(ObjectBaseDTO objectToRefresh)
@@ -111,8 +116,10 @@ namespace MoBi.UI.Views
       public void Select(IWithId withId)
       {
          var nodeById = treeView.NodeById(withId.Id);
-         if (nodeById == null) return;
+         if (nodeById == null) 
+            return;
          treeView.SelectNode(nodeById);
+         selectionChanged(nodeById);
       }
 
       public void Clear()
