@@ -41,7 +41,11 @@ namespace MoBi.Presentation.Tasks
       private readonly ISimulationRepository _simulationRepository;
       private readonly IDialogCreator _dialogCreator;
 
-      public OutputSelectionsTask(IOSPSuiteExecutionContext context, IMoBiApplicationController applicationController, ISimulationRepository simulationRepository, IDialogCreator dialogCreator)
+      public OutputSelectionsTask(
+         IOSPSuiteExecutionContext context, 
+         IMoBiApplicationController applicationController, 
+         ISimulationRepository simulationRepository, 
+         IDialogCreator dialogCreator)
       {
          _context = context;
          _applicationController = applicationController;
@@ -58,7 +62,8 @@ namespace MoBi.Presentation.Tasks
          if (!validateAndWarnNewPath(pathFromSimulations, simulationSettings))
             return;
 
-         simulationSettings.OutputSelections.AddOutput(new QuantitySelection(pathFromSimulations, QuantityType.Undefined));
+         // In the case of output selections, the quantity type is not important
+         simulationSettings.OutputSelections.AddOutput(new QuantitySelection(pathFromSimulations));
          projectHasChanged();
       }
 
@@ -103,7 +108,7 @@ namespace MoBi.Presentation.Tasks
             selectPathPresenter.SelectPathFrom(_simulationRepository.All().ToList());
 
             if(preSelectedQuantity != null)
-               selectPathPresenter.SelectQuantityFromPath(new ObjectPath(preSelectedQuantity.Path.ToPathArray()));
+               selectPathPresenter.SelectQuantityFromPath(preSelectedQuantity.Path.ToObjectPath());
 
             if (modalPresenter.Show())
                return selectPathPresenter.SelectedPath;
@@ -123,7 +128,7 @@ namespace MoBi.Presentation.Tasks
 
       public void UpdateOutputSelection(SimulationSettings simulationSettings, QuantitySelection selection, string newPath)
       {
-         if (noChangesRequired(selection, new ObjectPath(newPath.ToPathArray())))
+         if (noChangesRequired(selection, newPath.ToObjectPath()))
             return;
 
          if (!validateAndUpdate(selection, newPath, simulationSettings)) 
@@ -134,7 +139,7 @@ namespace MoBi.Presentation.Tasks
 
       private bool validateAndUpdate(QuantitySelection selection, string newPath, SimulationSettings simulationSettings)
       {
-         if (!validateAndWarnNewPath(new ObjectPath(newPath.ToPathArray()), simulationSettings))
+         if (!validateAndWarnNewPath(newPath.ToObjectPath(), simulationSettings))
             return false;
 
          selection.Path = newPath;

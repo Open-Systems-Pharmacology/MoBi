@@ -91,11 +91,9 @@ namespace MoBi.Core.Domain.UnitSystem
    {
       private IQuantity _formulaUsable;
       private ObjectPath _useablePath;
-      private readonly ObjectPathFactory _pathFactory;
 
       public MolWeightDimensionConverterForFormulaUsable(IDimension sourceDimension, IDimension targetDimension) : base(sourceDimension, targetDimension)
       {
-         _pathFactory = new ObjectPathFactory(new AliasCreator());
       }
 
       public override bool CanResolveParameters()
@@ -104,7 +102,7 @@ namespace MoBi.Core.Domain.UnitSystem
          if (root == null)
             return false;
 
-         _useablePath = _pathFactory.CreateObjectPathFrom(root.Name, _formulaUsable.Name, Constants.Parameters.MOL_WEIGHT);
+         _useablePath = new ObjectPath(root.Name, _formulaUsable.Name, Constants.Parameters.MOL_WEIGHT);
          return _useablePath.TryResolve<IFormulaUsable>(root) != null;
       }
 
@@ -121,7 +119,7 @@ namespace MoBi.Core.Domain.UnitSystem
             return null;
 
          var root = _formulaUsable.RootContainer;
-         var useablePath = _pathFactory.CreateObjectPathFrom(root.Name, _formulaUsable.Name, Constants.Parameters.MOL_WEIGHT);
+         var useablePath = new ObjectPath(root.Name, _formulaUsable.Name, Constants.Parameters.MOL_WEIGHT);
          var entity = useablePath.Resolve<IFormulaUsable>(root);
          if (double.IsNaN(entity.Value))
             return null;

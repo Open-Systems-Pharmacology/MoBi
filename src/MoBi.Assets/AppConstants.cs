@@ -2033,10 +2033,7 @@ namespace MoBi.Assets
             return $"A value with the name '{name}' already exists for the container {containerPath}";
          }
 
-         public static string ThePathIsAlreadySelectedAsAnOutput(ObjectPath objectPath)
-         {
-            return $"The path {objectPath} is already selected as an output.";
-         }
+         public static string ThePathIsAlreadySelectedAsAnOutput(ObjectPath objectPath) => $"The path {objectPath} is already selected as an output.";
       }
 
       public static readonly string TimeColumnName = "Simulationtime";
