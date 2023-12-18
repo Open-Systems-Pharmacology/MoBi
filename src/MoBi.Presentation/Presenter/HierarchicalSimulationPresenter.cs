@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       Func<IEnumerable<IParameter>> SimulationFavorites { get; set; }
    }
 
-   internal class HierarchicalSimulationPresenter : HierarchicalStructurePresenter, IHierarchicalSimulationPresenter
+   internal class HierarchicalSimulationPresenter : HierarchicalStructureEditPresenter, IHierarchicalSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private readonly ISimulationSettingsToObjectBaseDTOMapper _simulationSettingsMapper;

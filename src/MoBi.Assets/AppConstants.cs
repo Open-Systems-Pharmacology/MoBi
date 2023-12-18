@@ -1578,6 +1578,8 @@ namespace MoBi.Assets
          public static readonly string SelectSpatialStructureAndMolecules = "Select a spatial structure and molecules";
          public static readonly string SelectSpatialStructure = "Select a spatial structure";
          public static readonly string ExtendDescription = "<b><i>Initial conditions</i> will be created for molecules in all physical containers in the selected <i>spatial structure</i></b>";
+         public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
+         public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
          public static string ExportContainerDescription(string exportedContainerPath) => $"Select an individual and file path for container export. Parameters from the individual that match the path {exportedContainerPath} will be addd to the container before exporting.";
          public static readonly string SelectIndividualAndPathForContainerExport = "Select an individual and path for container export";
 
@@ -2030,6 +2032,8 @@ namespace MoBi.Assets
          {
             return $"A value with the name '{name}' already exists for the container {containerPath}";
          }
+
+         public static string ThePathIsAlreadySelectedAsAnOutput(ObjectPath objectPath) => $"The path {objectPath} is already selected as an output.";
       }
 
       public static readonly string TimeColumnName = "Simulationtime";

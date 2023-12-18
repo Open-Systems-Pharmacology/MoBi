@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Presenter
       void Refresh(IEntity entity);
    }
 
-   public class HierarchicalSpatialStructurePresenter : HierarchicalStructurePresenter, IHierarchicalSpatialStructurePresenter
+   public class HierarchicalSpatialStructurePresenter : HierarchicalStructureEditPresenter, IHierarchicalSpatialStructurePresenter
    {
       private SpatialStructure _spatialStructure;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;

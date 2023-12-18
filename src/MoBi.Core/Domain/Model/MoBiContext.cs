@@ -236,7 +236,7 @@ namespace MoBi.Core.Domain.Model
             return DimensionFactory.Dimension(valueAsString);
 
          if (propertyType.IsAnImplementationOf<ObjectPath>())
-            return ObjectPathFactory.CreateObjectPathFrom(valueAsString.ToPathArray());
+            return valueAsString.ToObjectPath();
 
          if (propertyType.IsAnImplementationOf<Unit>())
             return DimensionFactory.DimensionForUnit(valueAsString).UnitOrDefault(valueAsString);
