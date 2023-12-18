@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEntityPathResolver _entityPathResolver;
       private IReadOnlyList<ISimulation> _simulations;
       private ObjectBaseDTO _selection;
-      private IViewItemContextMenuFactory _contextMenuFactory;
+      private readonly IViewItemContextMenuFactory _contextMenuFactory;
 
       public HierarchicalQuantitySelectionPresenter(IHierarchicalStructureView view,
          IMoBiContext context,
