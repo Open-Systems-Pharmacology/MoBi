@@ -53,11 +53,8 @@ namespace MoBi.Presentation.Presenter
       public void SelectPathFrom(IReadOnlyList<ISimulation> simulations)
       {
          _simulations = simulations;
-
          var simulationNodes = new List<ObjectBaseDTO>();
-
          simulationNodes.AddRange(_simulations.Select(x => _objectBaseMapper.MapFrom(x)));
-
          _view.Show(simulationNodes);
       }
 

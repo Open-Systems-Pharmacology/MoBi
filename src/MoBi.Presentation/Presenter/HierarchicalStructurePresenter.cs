@@ -29,9 +29,9 @@ namespace MoBi.Presentation.Presenter
       protected IObjectBaseToObjectBaseDTOMapper _objectBaseMapper;
 
       protected HierarchicalStructurePresenter(
-         IHierarchicalStructureView view, 
-         IMoBiContext context, 
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper) 
+         IHierarchicalStructureView view,
+         IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper)
          : base(view)
       {
          _context = context;
@@ -59,7 +59,6 @@ namespace MoBi.Presentation.Presenter
                return neighborsOf(neighborhood).Union(allChildrenDTO()).ToList();
             default:
                return allChildrenDTO();
-
          }
       }
 
@@ -73,9 +72,10 @@ namespace MoBi.Presentation.Presenter
       }
 
       /// <summary>
-      /// Creates an Id for neighbors in a neighborhood.
-      /// The Id must be distinct for each neighborhood and neighbor, so it cannot be just the <paramref name="neighborPath"/>, but must
-      /// include the id of the <paramref name="neighborhood"/>
+      ///    Creates an Id for neighbors in a neighborhood.
+      ///    The Id must be distinct for each neighborhood and neighbor, so it cannot be just the
+      ///    <paramref name="neighborPath" />, but must
+      ///    include the id of the <paramref name="neighborhood" />
       /// </summary>
       /// <returns>An Id that combines the two Ids of the neighborhood and neighbor</returns>
       private string createNeighborhoodId(NeighborhoodBuilder neighborhood, ObjectPath neighborPath)
