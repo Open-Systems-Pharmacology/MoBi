@@ -1,8 +1,9 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain;
+using MoBi.Core.Services;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 
 namespace MoBi.Core.Commands
@@ -34,6 +35,7 @@ namespace MoBi.Core.Commands
       {
          _oldOutputSelections = _simulation.OutputSelections;
          _simulation.Settings.OutputSelections = _outputSelections;
+         context.Resolve<IBuildingBlockVersionUpdater>().UpdateBuildingBlockVersion(_simulation.Settings, shouldIncrementVersion: true);
          Description = AppConstants.Commands.UpdateOutputSelectionInSimulationDescription(_simulation.Name);
 
          context.PublishEvent(new SimulationOutputSelectionsChangedEvent(_simulation));

@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
@@ -6,10 +7,10 @@ using MoBi.Core.Services;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using System.Linq;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -41,13 +42,42 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _nameCorrector = A.Fake<INameCorrector>();
 
-         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver(), new ObjectPathFactoryForSpecs());
+         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver());
       }
 
       [Observation]
       public void the_simulation_should_not_have_original_value_trackers()
       {
          _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_committing_simulation_settings : concern_for_SimulationCommitTask
+   {
+      private SimulationSettings _simulationSettings;
+      private ICommand _result;
+      private SimulationSettings _clonedSimulationSettings;
+
+      protected override void Context()
+      {
+         base.Context();
+         _clonedSimulationSettings = new SimulationSettings();
+
+         _simulationSettings = new SimulationSettings();
+         _simulationWithChanges.Configuration.SimulationSettings = _simulationSettings;
+
+         A.CallTo(() => _context.Clone(_simulationSettings)).Returns(_clonedSimulationSettings);
+      }
+
+      protected override void Because()
+      {
+         sut.CommitSimulationSettings(_simulationWithChanges);
+      }
+
+      [Observation]
+      public void the_simulation_settings_should_be_updated()
+      {
+         _context.CurrentProject.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
       }
    }
 
@@ -97,7 +127,7 @@ namespace MoBi.Presentation.Tasks
       protected ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
       protected InitialConditionsBuildingBlock _projectInitialConditions;
       protected ParameterValuesBuildingBlock _projectParameterValues;
-      
+
       protected override void Context()
       {
          base.Context();
@@ -143,10 +173,8 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-
    public class When_committing_to_configuration_with_selected_building_blocks_and_matching_start_values : When_committing_to_configuration_with_selected_building_blocks
    {
-
       protected override void Context()
       {
          base.Context();
@@ -160,7 +188,7 @@ namespace MoBi.Presentation.Tasks
             Path = new ObjectPath("name")
          });
       }
-      
+
       [Observation]
       public void new_building_blocks_are_not_created()
       {

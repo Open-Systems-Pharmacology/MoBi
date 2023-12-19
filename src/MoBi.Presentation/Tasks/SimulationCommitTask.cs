@@ -9,7 +9,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
 
 namespace MoBi.Presentation.Tasks
@@ -24,6 +23,12 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       /// <returns>An executed command</returns>
       IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges);
+
+      /// <summary>
+      ///    Replaces the project default simulation settings with the simulation settings from
+      ///    <paramref name="simulationWithChanges" />
+      /// </summary>
+      ICommand CommitSimulationSettings(IMoBiSimulation simulationWithChanges);
    }
 
    public class SimulationCommitTask : ISimulationCommitTask
@@ -35,7 +40,6 @@ namespace MoBi.Presentation.Tasks
       private readonly IParameterValuesCreator _parameterValuesCreator;
       private readonly INameCorrector _nameCorrector;
       private readonly IObjectTypeResolver _objectTypeResolver;
-      private readonly IObjectPathFactory _objectPathFactory;
 
       public SimulationCommitTask(IMoBiContext context,
          ITemplateResolverTask templateResolverTask,
@@ -43,8 +47,7 @@ namespace MoBi.Presentation.Tasks
          IInitialConditionsCreator initialConditionsCreator,
          IParameterValuesCreator parameterValuesCreator,
          INameCorrector nameCorrector,
-         IObjectTypeResolver objectTypeResolver,
-         IObjectPathFactory objectPathFactory)
+         IObjectTypeResolver objectTypeResolver)
       {
          _context = context;
          _templateResolverTask = templateResolverTask;
@@ -53,7 +56,6 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = parameterValuesCreator;
          _nameCorrector = nameCorrector;
          _objectTypeResolver = objectTypeResolver;
-         _objectPathFactory = objectPathFactory;
       }
 
       public IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges)
@@ -78,14 +80,16 @@ namespace MoBi.Presentation.Tasks
             macroCommand.AddRange(updateParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration));
 
          macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
-         
+
          macroCommand.Run(_context);
 
-         
 
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
          return macroCommand;
       }
+
+      public ICommand CommitSimulationSettings(IMoBiSimulation simulationWithChanges) =>
+         new UpdateDefaultSimulationSettingsInProjectCommand(_context.Clone(simulationWithChanges.Settings)).Run(_context);
 
       /// <summary>
       ///    Creates two new macro commands that have synchronized the parameter values building blocks from the template module

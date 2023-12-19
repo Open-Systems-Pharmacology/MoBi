@@ -49,6 +49,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             createConfigure(simulation).AsGroupStarter()
          };
 
+         if (simulationSettingsDifferFromDefault(simulation.Settings))
+         {
+            _allMenuItems.Add(createRefreshSettings(simulation));
+            _allMenuItems.Add(createMakeSettingsProjectDefault(simulation));
+         }
+
          if (simulation.BuildingBlocks().Any(hasChanges))
             _allMenuItems.Add(createUpdate(simulation));
 
@@ -78,6 +84,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          });
 
          return this;
+      }
+
+      private bool simulationSettingsDifferFromDefault(SimulationSettings simulationSettings)
+      {
+         return _context.CurrentProject.SimulationSettings.Version != simulationSettings.Version;
       }
 
       private bool hasChanges(IBuildingBlock simulationBuildingBlock)
@@ -212,6 +223,20 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Configure)
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation, _container);
+      }
+
+      private IMenuBarItem createMakeSettingsProjectDefault(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.MakeSettingsProjectDefault)
+            // .WithIcon(ApplicationIcons.SimulationSettings)
+            .WithCommandFor<CommitSimulationSettingsUICommand, IMoBiSimulation>(simulation, _container);
+      }
+
+      private IMenuBarItem createRefreshSettings(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.RefreshSettingsFromProjectDefault)
+            // .WithIcon(ApplicationIcons.SimulationSettings)
+            .WithCommandFor<RefreshSimulationSettingsUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem exportSimulationResultsToExcel(IMoBiSimulation simulation)

@@ -27,7 +27,9 @@ namespace MoBi.Core.Services
 
       public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion)
       {
-         if (buildingBlock == null) return;
+         if (buildingBlock == null)
+            return;
+
          buildingBlock.Version = newVersion;
          publishSimulationStatusChangedEvents(buildingBlock);
          publishModuleStatusChangedEvents(buildingBlock);

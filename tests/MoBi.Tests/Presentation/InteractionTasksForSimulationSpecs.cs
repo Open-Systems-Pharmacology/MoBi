@@ -43,7 +43,10 @@ namespace MoBi.Presentation
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _moBiContext = A.Fake<IMoBiContext>();
-         _moBiProject = new MoBiProject();
+         _moBiProject = new MoBiProject
+         {
+            SimulationSettings = new SimulationSettings()
+         };
          _individualBuildingBlock = new IndividualBuildingBlock().WithName("common individual");
          _moBiProject.AddIndividualBuildingBlock(_individualBuildingBlock);
          A.CallTo(() => _moBiContext.CurrentProject).Returns(_moBiProject);
@@ -194,7 +197,7 @@ namespace MoBi.Presentation
          {
             new IndividualBuildingBlock()
          };
-         
+
          _module = new Module
          {
             _simulationIndividual
@@ -202,7 +205,7 @@ namespace MoBi.Presentation
 
          var moduleConfiguration = new ModuleConfiguration(_module);
          _simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
-         
+
          _projectModule.Add(new EventGroupBuildingBlock());
 
          A.CallTo(() => _templateResolver.TemplateModuleFor(_simulation.Modules.First())).Returns(_projectModule);
@@ -231,7 +234,10 @@ namespace MoBi.Presentation
       {
          base.Context();
          _simulation = new MoBiSimulation();
-         _simulation.Configuration = new SimulationConfiguration();
+         _simulation.Configuration = new SimulationConfiguration
+         {
+            SimulationSettings = new SimulationSettings { Version = 4 }
+         };
          _simulationIndividual = new IndividualBuildingBlock
          {
             Version = 112
@@ -240,7 +246,7 @@ namespace MoBi.Presentation
          {
             _simulationIndividual
          };
-         
+
          var moduleConfiguration = new ModuleConfiguration(_module);
          _simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
 
@@ -253,9 +259,10 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_changes_should_include_the_individual_from_the_simulation()
+      public void the_changes_should_include_the_individual_and_settings_from_the_simulation()
       {
          _changes.ShouldContain(_simulationIndividual);
+         _changes.ShouldContain(_simulation.Settings);
       }
    }
 }

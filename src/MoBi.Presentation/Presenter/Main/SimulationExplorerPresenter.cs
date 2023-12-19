@@ -39,7 +39,8 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<ChartAddedEvent>,
       IListener<ChartDeletedEvent>,
       IListener<SimulationStatusChangedEvent>,
-      IListener<SimulationReloadEvent>
+      IListener<SimulationReloadEvent>,
+      IListener<DefaultSimulationSettingsUpdatedEvent>
    {
    }
 
@@ -110,25 +111,16 @@ namespace MoBi.Presentation.Presenter.Main
          return simulationNode;
       }
 
-      private void addChartTreeNode(CurveChart chart)
-      {
-         _view.AddNode(_treeNodeFactory.CreateFor(chart));
-      }
+      private void addChartTreeNode(CurveChart chart) => _view.AddNode(_treeNodeFactory.CreateFor(chart));
 
-      public void Handle(SimulationAddedEvent eventToHandle)
-      {
-         addSimulationToTree(eventToHandle.Simulation);
-      }
+      public void Handle(SimulationAddedEvent eventToHandle) => addSimulationToTree(eventToHandle.Simulation);
 
       private ITreeNode addSimulationToTree(IMoBiSimulation simulation)
       {
          return AddSubjectToClassifyToTree<IMoBiSimulation, ClassifiableSimulation>(simulation, addClassifiableSimulationToSimulationRootFolder);
       }
 
-      public void Handle(SimulationRemovedEvent eventToHandle)
-      {
-         RemoveNodeFor(eventToHandle.Simulation);
-      }
+      public void Handle(SimulationRemovedEvent eventToHandle) => RemoveNodeFor(eventToHandle.Simulation);
 
       public override void Handle(SimulationRunFinishedEvent eventToHandle)
       {
@@ -136,25 +128,15 @@ namespace MoBi.Presentation.Presenter.Main
          reCreateSimulationNode(eventToHandle.Simulation);
       }
 
-      public void Handle(RemovedDataEvent eventToHandle)
-      {
-         RemoveNodeFor(eventToHandle.Repository);
-      }
+      public void Handle(RemovedDataEvent eventToHandle) => RemoveNodeFor(eventToHandle.Repository);
 
-      public void Handle(ChartAddedEvent eventToHandle)
-      {
-         addChartTreeNode(eventToHandle.Chart);
-      }
+      public void Handle(ChartAddedEvent eventToHandle) => addChartTreeNode(eventToHandle.Chart);
 
-      public void Handle(ChartDeletedEvent eventToHandle)
-      {
-         RemoveNodeFor(eventToHandle.Chart);
-      }
+      public void Handle(ChartDeletedEvent eventToHandle) => RemoveNodeFor(eventToHandle.Chart);
 
-      public void Handle(SimulationStatusChangedEvent eventToHandle)
-      {
-         refreshDisplayedSimulation(eventToHandle.Simulation);
-      }
+      public void Handle(DefaultSimulationSettingsUpdatedEvent eventToHandle) => _context.CurrentProject.Simulations.Each(refreshDisplayedSimulation);
+
+      public void Handle(SimulationStatusChangedEvent eventToHandle) => refreshDisplayedSimulation(eventToHandle.Simulation);
 
       protected override IContextMenu ContextMenuFor(ITreeNode treeNode)
       {
@@ -163,14 +145,11 @@ namespace MoBi.Presentation.Presenter.Main
 
          if (treeNode.TagAsObject is IBuildingBlock buildingBlock)
             return ContextMenuFor(new SimulationBuildingBlockViewItem(buildingBlock));
-         
+
          return base.ContextMenuFor(treeNode);
       }
 
-      public void Handle(SimulationReloadEvent eventToHandle)
-      {
-         reCreateSimulationNode(eventToHandle.Simulation);
-      }
+      public void Handle(SimulationReloadEvent eventToHandle) => reCreateSimulationNode(eventToHandle.Simulation);
 
       private void reCreateSimulationNode(IMoBiSimulation simulation)
       {
@@ -186,7 +165,7 @@ namespace MoBi.Presentation.Presenter.Main
       private void refreshDisplayedSimulation(IMoBiSimulation simulation)
       {
          var simulationNode = _view.NodeById(simulation.Id);
-         
+
          var changedTemplateBuildingBlocks = _interactionTasksForSimulation.FindChangedBuildingBlocks(simulation).ToList();
          var changedModules = _interactionTasksForSimulation.FindChangedModules(simulation).ToList();
 

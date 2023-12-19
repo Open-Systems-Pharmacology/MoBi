@@ -46,6 +46,44 @@ namespace MoBi.Core.Service
       }
    }
 
+   public class When_updating_simulation_settings : concern_for_SimulationUpdateTask
+   {
+      private IMoBiSimulation _simulation;
+      private SimulationSettings _simulationSettings;
+      private SimulationSettings _clonedSimulationSettings;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+         _simulationSettings = new SimulationSettings();
+         _simulation.Configuration = new SimulationConfiguration
+         {
+            SimulationSettings = new SimulationSettings()
+         };
+
+         _clonedSimulationSettings = new SimulationSettings();
+         A.CallTo(() => _cloneManager.Clone(_context.CurrentProject.SimulationSettings)).Returns(_clonedSimulationSettings);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateSimulationSettings(_simulation);
+      }
+
+      [Observation]
+      public void the_simulation_should_have_a_new_simulation_settings_object()
+      {
+         _simulation.Configuration.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
+      }
+
+      [Observation]
+      public void the_notification_area_should_be_cleared()
+      {
+         A.CallTo(() => _context.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(x => x.Simulation.Equals(_simulation)))).MustHaveHappened();
+      }
+   }
+
    public class When_updating_a_simulation : concern_for_SimulationUpdateTask
    {
       private IMoBiSimulation _moBiSimulation;
@@ -102,7 +140,7 @@ namespace MoBi.Core.Service
       {
          A.CallTo(() => _context.PublishEvent(A<ClearNotificationsEvent>.That.Matches(x => x.MessageOrigin.Equals(MessageOrigin.Simulation)))).MustHaveHappened();
       }
-      
+
       [Observation]
       public void should_start_the_configure_workflow_for_the_user()
       {
