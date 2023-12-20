@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         context.PublishEvent(new SimulationStatusChangedEvent(_simulation));
+         context.PublishEvent(new SimulationReloadEvent(_simulation));
       }
 
       protected override void DoExecute(IMoBiContext context)

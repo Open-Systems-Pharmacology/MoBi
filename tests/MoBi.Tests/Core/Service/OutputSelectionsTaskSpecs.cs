@@ -22,7 +22,6 @@ namespace MoBi.Core.Service
       protected IModalPresenter _modalPresenter;
       protected SimulationSettings _simulationSettings;
       protected IDialogCreator _dialogCreator;
-      protected IBuildingBlockVersionUpdater _buildingBlockVersionUpdater;
       protected IMoBiContext _context;
 
       protected override void Context()
@@ -34,9 +33,8 @@ namespace MoBi.Core.Service
          _modalPresenter = A.Fake<IModalPresenter>();
          _quantitySelectionPresenter = A.Fake<IHierarchicalQuantitySelectionPresenter>();
          _simulationSettings = new SimulationSettings();
-         _buildingBlockVersionUpdater = A.Fake<IBuildingBlockVersionUpdater>();
 
-         sut = new OutputSelectionsTask(_context, _applicationController, _simulationRepository, _dialogCreator, _buildingBlockVersionUpdater);
+         sut = new OutputSelectionsTask(_context, _applicationController, _simulationRepository, _dialogCreator);
 
          A.CallTo(() => _applicationController.Start<IModalPresenter>()).Returns(_modalPresenter);
          A.CallTo(() => _applicationController.Start<IHierarchicalQuantitySelectionPresenter>()).Returns(_quantitySelectionPresenter);
@@ -77,7 +75,6 @@ namespace MoBi.Core.Service
       public void should_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustHaveHappened();
       }
    }
 
@@ -112,7 +109,6 @@ namespace MoBi.Core.Service
       public void should_not_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustNotHaveHappened();
       }
    }
 
@@ -138,7 +134,6 @@ namespace MoBi.Core.Service
       public void should_not_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustNotHaveHappened();
       }
    }
 
@@ -171,7 +166,6 @@ namespace MoBi.Core.Service
       public void should_not_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustNotHaveHappened();
       }
    }
 
@@ -192,7 +186,6 @@ namespace MoBi.Core.Service
       public void should_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustHaveHappened();
       }
    }
 
@@ -230,7 +223,6 @@ namespace MoBi.Core.Service
       public void should_not_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustNotHaveHappened();
       }
    }
 
@@ -268,7 +260,6 @@ namespace MoBi.Core.Service
       public void should_not_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustNotHaveHappened();
       }
    }
 
@@ -299,7 +290,6 @@ namespace MoBi.Core.Service
       public void should_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustHaveHappened();
       }
    }
 
@@ -337,7 +327,6 @@ namespace MoBi.Core.Service
       public void should_not_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustNotHaveHappened();
       }
    }
 
@@ -375,7 +364,6 @@ namespace MoBi.Core.Service
       public void should_not_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustNotHaveHappened();
       }
    }
 
@@ -406,7 +394,6 @@ namespace MoBi.Core.Service
       public void should_update_the_building_block_version()
       {
          A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustHaveHappened();
       }
    }
 }

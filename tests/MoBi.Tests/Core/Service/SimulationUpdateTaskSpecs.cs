@@ -78,9 +78,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void the_notification_area_should_be_cleared()
+      public void the_event_should_be_published()
       {
-         A.CallTo(() => _context.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(x => x.Simulation.Equals(_simulation)))).MustHaveHappened();
+         A.CallTo(() => _context.PublishEvent(A<SimulationReloadEvent>.That.Matches(x => x.Simulation.Equals(_simulation)))).MustHaveHappened();
       }
    }
 

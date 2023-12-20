@@ -39,8 +39,7 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<ChartAddedEvent>,
       IListener<ChartDeletedEvent>,
       IListener<SimulationStatusChangedEvent>,
-      IListener<SimulationReloadEvent>,
-      IListener<DefaultSimulationSettingsUpdatedEvent>
+      IListener<SimulationReloadEvent>
    {
    }
 
@@ -133,15 +132,17 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(ChartAddedEvent eventToHandle) => addChartTreeNode(eventToHandle.Chart);
 
       public void Handle(ChartDeletedEvent eventToHandle) => RemoveNodeFor(eventToHandle.Chart);
-
-      public void Handle(DefaultSimulationSettingsUpdatedEvent eventToHandle) => _context.CurrentProject.Simulations.Each(refreshDisplayedSimulation);
-
+      
       public void Handle(SimulationStatusChangedEvent eventToHandle) => refreshDisplayedSimulation(eventToHandle.Simulation);
 
       protected override IContextMenu ContextMenuFor(ITreeNode treeNode)
       {
          if (treeNode.TagAsObject is ClassifiableSimulation simulation)
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
+
+         // Order is important here because SimulationSettings is also an IBuildingBlock
+         if(treeNode.TagAsObject is SimulationSettings settings)
+            return ContextMenuFor(new SimulationSettingsViewItem(settings));
 
          if (treeNode.TagAsObject is IBuildingBlock buildingBlock)
             return ContextMenuFor(new SimulationBuildingBlockViewItem(buildingBlock));

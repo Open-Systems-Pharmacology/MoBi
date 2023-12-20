@@ -23,12 +23,6 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       /// <returns>An executed command</returns>
       IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges);
-
-      /// <summary>
-      ///    Replaces the project default simulation settings with the simulation settings from
-      ///    <paramref name="simulationWithChanges" />
-      /// </summary>
-      ICommand CommitSimulationSettings(IMoBiSimulation simulationWithChanges);
    }
 
    public class SimulationCommitTask : ISimulationCommitTask
@@ -87,9 +81,6 @@ namespace MoBi.Presentation.Tasks
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
          return macroCommand;
       }
-
-      public ICommand CommitSimulationSettings(IMoBiSimulation simulationWithChanges) =>
-         new UpdateDefaultSimulationSettingsInProjectCommand(_context.Clone(simulationWithChanges.Settings)).Run(_context);
 
       /// <summary>
       ///    Creates two new macro commands that have synchronized the parameter values building blocks from the template module

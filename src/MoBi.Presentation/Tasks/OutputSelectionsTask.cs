@@ -42,20 +42,17 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiApplicationController _applicationController;
       private readonly ISimulationRepository _simulationRepository;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IBuildingBlockVersionUpdater _buildingBlockVersionUpdater;
 
       public OutputSelectionsTask(
          IMoBiContext context,
          IMoBiApplicationController applicationController,
          ISimulationRepository simulationRepository,
-         IDialogCreator dialogCreator,
-         IBuildingBlockVersionUpdater buildingBlockVersionUpdater)
+         IDialogCreator dialogCreator)
       {
          _context = context;
          _applicationController = applicationController;
          _simulationRepository = simulationRepository;
          _dialogCreator = dialogCreator;
-         _buildingBlockVersionUpdater = buildingBlockVersionUpdater;
       }
 
       public void AddOutputSelection(SimulationSettings simulationSettings, QuantitySelection preSelectedQuantitySelection = null)
@@ -69,7 +66,7 @@ namespace MoBi.Presentation.Tasks
 
          // In the case of output selections, the quantity type is not important
          simulationSettings.OutputSelections.AddOutput(new QuantitySelection(pathFromSimulations));
-         projectDefaultsHaveChanged(simulationSettings);
+         _context.ProjectChanged();
       }
 
       private void showWarningMessage(ObjectPath pathFromSimulations)
@@ -82,12 +79,6 @@ namespace MoBi.Presentation.Tasks
          return simulationSettings.OutputSelections.Any(selection => Equals(selection.Path, pathFromSimulations.ToPathString()));
       }
 
-      private void projectDefaultsHaveChanged(SimulationSettings simulationSettings)
-      {
-         _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(simulationSettings, shouldIncrementVersion: true);
-         _context.ProjectChanged();
-      }
-
       public void EditOutputSelection(SimulationSettings simulationSettings, QuantitySelection selection)
       {
          var newPath = selectPathFromSimulationsFor(AppConstants.Captions.ChangeDefaultCurveForNewSimulations, selection);
@@ -96,7 +87,7 @@ namespace MoBi.Presentation.Tasks
             return;
 
          if (validateAndUpdate(selection, newPath, simulationSettings))
-            projectDefaultsHaveChanged(simulationSettings);
+            _context.ProjectChanged();
       }
 
       private static bool noChangesRequired(QuantitySelection selection, ObjectPath newPath)
@@ -140,7 +131,7 @@ namespace MoBi.Presentation.Tasks
          if (!validateAndUpdate(selection, newPath, simulationSettings))
             return;
 
-         projectDefaultsHaveChanged(simulationSettings);
+         _context.ProjectChanged();
       }
 
       private bool validateAndUpdate(QuantitySelection selection, string newPath, SimulationSettings simulationSettings)
@@ -155,7 +146,7 @@ namespace MoBi.Presentation.Tasks
       public void RemoveOutputSelection(SimulationSettings simulationSettings, QuantitySelection selection)
       {
          simulationSettings.OutputSelections.RemoveOutput(selection);
-         projectDefaultsHaveChanged(simulationSettings);
+         _context.ProjectChanged();
       }
    }
 }

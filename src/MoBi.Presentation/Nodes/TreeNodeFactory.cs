@@ -57,6 +57,7 @@ namespace MoBi.Presentation.Nodes
          var simNode = new SimulationNode(classifiableSimulation);
          var simulation = classifiableSimulation.Simulation;
 
+         simNode.AddChild(createFor(simulation.Settings));
          createFor(simulation.Configuration).Each(x => simNode.AddChild(x));
 
          if (simulation.ResultsDataRepository != null)
@@ -100,7 +101,6 @@ namespace MoBi.Presentation.Nodes
       {
          return new ParameterValuesFolderNode(moduleNode.Tag).Under(moduleNode);
       }
-
 
       private IReadOnlyList<ITreeNode> createFor(SimulationConfiguration simulationConfiguration)
       {

@@ -77,31 +77,6 @@ namespace MoBi.Core
       }
    }
 
-   public class When_checking_if_a_simulation_uses_a_simulation_settings_building_block : concern_for_MoBiSimulation
-   {
-      private bool _result;
-      private SimulationSettings _templateBuildingBlock;
-
-      protected override void Context()
-      {
-         base.Context();
-         sut.Configuration = new SimulationConfiguration();
-         sut.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("a Module")));
-         _templateBuildingBlock = new SimulationSettings();
-      }
-
-      protected override void Because()
-      {
-         _result = sut.Uses(_templateBuildingBlock);
-      }
-
-      [Observation]
-      public void the_simulation_should_indicate_it_uses_the_building_block_there_is_only_one_template_simulation_settings()
-      {
-         _result.ShouldBeTrue();
-      }
-   }
-
    public class When_checking_if_a_simulation_uses_a_building_block_but_the_building_block_is_not_used_when_the_module_is_used : concern_for_MoBiSimulation
    {
       private bool _result;

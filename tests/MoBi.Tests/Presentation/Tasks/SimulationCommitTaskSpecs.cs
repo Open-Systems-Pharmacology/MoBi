@@ -52,35 +52,6 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_committing_simulation_settings : concern_for_SimulationCommitTask
-   {
-      private SimulationSettings _simulationSettings;
-      private ICommand _result;
-      private SimulationSettings _clonedSimulationSettings;
-
-      protected override void Context()
-      {
-         base.Context();
-         _clonedSimulationSettings = new SimulationSettings();
-
-         _simulationSettings = new SimulationSettings();
-         _simulationWithChanges.Configuration.SimulationSettings = _simulationSettings;
-
-         A.CallTo(() => _context.Clone(_simulationSettings)).Returns(_clonedSimulationSettings);
-      }
-
-      protected override void Because()
-      {
-         sut.CommitSimulationSettings(_simulationWithChanges);
-      }
-
-      [Observation]
-      public void the_simulation_settings_should_be_updated()
-      {
-         _context.CurrentProject.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
-      }
-   }
-
    public class When_committing_from_a_simulation_without_any_changes : concern_for_SimulationCommitTask
    {
       private Module _projectModule;

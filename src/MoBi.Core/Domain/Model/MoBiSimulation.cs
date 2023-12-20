@@ -100,11 +100,6 @@ namespace MoBi.Core.Domain.Model
          if (templateBuildingBlock.Module != null)
             return usesModuleBuildingBlock(templateBuildingBlock);
 
-         // If the building block is a simulation setting, then it is in use because
-         // there is only one template simulation settings in each project
-         if (templateBuildingBlock is SimulationSettings)
-            return true;
-
          // Simple name match for building blocks that do not belong to a module
          switch (templateBuildingBlock)
          {

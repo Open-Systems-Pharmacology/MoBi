@@ -9,17 +9,15 @@ namespace MoBi.Presentation.UICommand
    public class LoadProjectSimulationSettingsUICommand : IUICommand
    {
       private readonly IInteractionTasksForSimulationSettings _interactionTasks;
-      private readonly IMoBiContext _context;
 
-      public LoadProjectSimulationSettingsUICommand(IInteractionTasksForSimulationSettings interactionTasks, IMoBiContext context)
+      public LoadProjectSimulationSettingsUICommand(IInteractionTasksForSimulationSettings interactionTasks)
       {
          _interactionTasks = interactionTasks;
-         _context = context;
       }
 
       public void Execute()
       {
-         _context.AddToHistory(_interactionTasks.UpdateDefaultSimulationSettingsInProject());
+         _interactionTasks.LoadDefaultSimulationSettingsInProject();
       }
    }
 
