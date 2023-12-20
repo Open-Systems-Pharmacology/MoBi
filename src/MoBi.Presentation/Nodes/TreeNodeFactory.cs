@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Nodes
          var simNode = new SimulationNode(classifiableSimulation);
          var simulation = classifiableSimulation.Simulation;
 
-         simNode.AddChild(createFor(simulation.Settings));
+         simNode.AddChild(createFor(simulation.Settings).WithText(AppConstants.Captions.SimulationSettings));
          createFor(simulation.Configuration).Each(x => simNode.AddChild(x));
 
          if (simulation.ResultsDataRepository != null)
