@@ -141,8 +141,8 @@ namespace MoBi.Presentation.Presenter.Main
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
 
          // Order is important here because SimulationSettings is also an IBuildingBlock
-         if(treeNode.TagAsObject is SimulationSettings settings)
-            return ContextMenuFor(new SimulationSettingsViewItem(settings));
+         if(treeNode.TagAsObject is SimulationSettingsDTO settingsDTO)
+            return ContextMenuFor(new SimulationSettingsViewItem(settingsDTO.Simulation));
 
          if (treeNode.TagAsObject is IBuildingBlock buildingBlock)
             return ContextMenuFor(new SimulationBuildingBlockViewItem(buildingBlock));

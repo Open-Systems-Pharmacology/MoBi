@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
+using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
@@ -29,7 +30,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.RefreshSettingsFromProjectDefault)
             .WithIcon(ApplicationIcons.Refresh)
-            .WithCommandFor<RefreshSimulationSettingsUICommand, SimulationSettings>(viewItem.SimulationSettings, _container));
+            .WithCommandFor<RefreshSimulationSettingsUICommand, IMoBiSimulation>(viewItem.Simulation, _container));
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.MakeSettingsProjectDefault)
             .WithIcon(ApplicationIcons.Commit)

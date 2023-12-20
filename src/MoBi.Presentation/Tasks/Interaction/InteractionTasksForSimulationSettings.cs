@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings)
       {
          Context.CurrentProject.SimulationSettings = simulationSettings;
-         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
+         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(simulationSettings));
       }
 
       public void Edit(SimulationSettings simulationSettings)
