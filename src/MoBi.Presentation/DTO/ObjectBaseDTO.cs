@@ -132,16 +132,6 @@ namespace MoBi.Presentation.DTO
       }
    }
 
-   public class SimulationSettingsViewItem : IViewItem
-   {
-      public SimulationSettings SimulationSettings => Simulation.Settings;
-      public IMoBiSimulation Simulation { get; }
-      public SimulationSettingsViewItem(IMoBiSimulation simulation)
-      {
-         Simulation = simulation;
-      }
-   }
-
    public class SimulationBuildingBlockViewItem : IViewItem
    {
       public IBuildingBlock BuildingBlock { get; }

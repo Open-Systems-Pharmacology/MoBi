@@ -26,7 +26,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public override IEnumerable<IMenuBarItem> AllMenuItems() => _allMenuItems;
 
-      public IContextMenu InitializeWith(SimulationSettingsViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
+      public IContextMenu InitializeWith(SimulationSettingsDTO viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.RefreshSettingsFromProjectDefault)
             .WithIcon(ApplicationIcons.Refresh)
@@ -34,7 +34,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.MakeSettingsProjectDefault)
             .WithIcon(ApplicationIcons.Commit)
-            .WithCommandFor<CommitSimulationSettingsUICommand, SimulationSettings>(viewItem.SimulationSettings, _container));
+            .WithCommandFor<CommitSimulationSettingsUICommand, SimulationSettings>(viewItem.Simulation.Settings, _container));
 
          return this;
       }
@@ -52,9 +52,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
          var contextMenu = new ContextMenuForSimulationSettings(_container);
-         return contextMenu.InitializeWith(viewItem.DowncastTo<SimulationSettingsViewItem>(), presenter);
+         return contextMenu.InitializeWith(viewItem.DowncastTo<SimulationSettingsDTO>(), presenter);
       }
 
-      public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter) => viewItem is SimulationSettingsViewItem;
+      public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter) => viewItem is SimulationSettingsDTO;
    }
 }
