@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
@@ -15,17 +16,17 @@ namespace MoBi.Core.Service
 {
    public class concern_for_OutputSelectionsTask : ContextSpecification<OutputSelectionsTask>
    {
-      protected IOSPSuiteExecutionContext _context;
       protected ISimulationRepository _simulationRepository;
       protected IMoBiApplicationController _applicationController;
       protected IHierarchicalQuantitySelectionPresenter _quantitySelectionPresenter;
       protected IModalPresenter _modalPresenter;
       protected SimulationSettings _simulationSettings;
       protected IDialogCreator _dialogCreator;
+      protected IMoBiContext _context;
 
       protected override void Context()
       {
-         _context = A.Fake<IOSPSuiteExecutionContext>();
+         _context = A.Fake<IMoBiContext>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _simulationRepository = A.Fake<ISimulationRepository>();
@@ -71,9 +72,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_changed()
+      public void should_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeTrue();
+         A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
       }
    }
 
@@ -105,9 +106,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_not_changed()
+      public void should_not_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeFalse();
+         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
       }
    }
 
@@ -130,9 +131,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_not_changed()
+      public void should_not_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeFalse();
+         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
       }
    }
 
@@ -162,9 +163,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_not_changed()
+      public void should_not_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeFalse();
+         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
       }
    }
 
@@ -182,9 +183,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_changed()
+      public void should_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeTrue();
+         A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
       }
    }
 
@@ -219,9 +220,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_not_changed()
+      public void should_not_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeFalse();
+         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
       }
    }
 
@@ -256,9 +257,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_not_changed()
+      public void should_not_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeFalse();
+         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
       }
    }
 
@@ -286,9 +287,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_changed()
+      public void should_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeTrue();
+         A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
       }
    }
 
@@ -323,9 +324,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_not_changed()
+      public void should_not_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeFalse();
+         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
       }
    }
 
@@ -360,9 +361,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_not_changed()
+      public void should_not_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeFalse();
+         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
       }
    }
 
@@ -390,9 +391,9 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_indicate_that_the_project_has_changed()
+      public void should_update_the_building_block_version()
       {
-         _context.Project.HasChanged.ShouldBeTrue();
+         A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
       }
    }
 }

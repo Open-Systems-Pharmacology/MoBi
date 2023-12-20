@@ -2,9 +2,8 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 
@@ -12,8 +11,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForSimulationSettings
    {
-      IMoBiCommand UpdateDefaultSimulationSettingsInProject();
+      void LoadDefaultSimulationSettingsInProject();
       void Edit(SimulationSettings simulationSettings);
+      void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings);
    }
 
    public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>, IInteractionTasksForSimulationSettings
@@ -41,19 +41,25 @@ namespace MoBi.Presentation.Tasks.Interaction
          throw new System.NotImplementedException();
       }
 
-      public IMoBiCommand UpdateDefaultSimulationSettingsInProject()
+      public void LoadDefaultSimulationSettingsInProject()
       {
          var filename = AskForPKMLFileToOpen();
 
          if (filename.IsNullOrEmpty())
-            return new MoBiEmptyCommand();
+            return;
 
          var simulationSettingsBlocks = LoadItems(filename);
 
          if (simulationSettingsBlocks == null || !simulationSettingsBlocks.Any())
-            return new MoBiEmptyCommand();
+            return;
 
-         return new UpdateDefaultSimulationSettingsInProjectCommand(simulationSettingsBlocks.First()).Run(_interactionTaskContext.Context);
+         UpdateDefaultSimulationSettingsInProject(simulationSettingsBlocks.First());
+      }
+
+      public void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings)
+      {
+         Context.CurrentProject.SimulationSettings = simulationSettings;
+         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(simulationSettings));
       }
 
       public void Edit(SimulationSettings simulationSettings)

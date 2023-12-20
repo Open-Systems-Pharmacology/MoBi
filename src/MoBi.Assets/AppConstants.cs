@@ -261,6 +261,9 @@ namespace MoBi.Assets
          public static readonly string RemoveTrackedQuantityChanges = "Remove tracked quantity changes";
          public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
 
+         public static string UpdateSimulationSettingsInSimulation(string simulationName) => $"Update simulation settings in simulation {simulationName}";
+
+
          public static string DeleteResultsFromSimulation(string simulationName)
          {
             return $"Delete all results from simulation '{simulationName}'";
@@ -1087,6 +1090,8 @@ namespace MoBi.Assets
          public static readonly string AddBuildingBlocks = "Add Building Blocks...";
          public static readonly string LoadBuildingBlocks = "Load Building Blocks...";
          public static readonly string LoadBuildingBlocksFromTemplate = "Load Building Blocks from Template...";
+         public static readonly string MakeSettingsProjectDefault = "Make Settings Project Default";
+         public static readonly string RefreshSettingsFromProjectDefault = "Refresh Settings from Project Default";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 

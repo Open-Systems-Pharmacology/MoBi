@@ -35,9 +35,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       TBuildingBlock TemplateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock;
 
       Module TemplateModuleFor(Module module);
-      
-      IEnumerable<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation);
-      IEnumerable<Module> FindChangedModules(IMoBiSimulation simulation);
+
+      IReadOnlyList<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation);
+      IReadOnlyList<Module> FindChangedModules(IMoBiSimulation simulation);
    }
 
    public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
@@ -165,16 +165,18 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddSimulationCommand(simulation);
       }
 
-      public IEnumerable<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation)
+      public IReadOnlyList<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation)
       {
-         return simulation.BuildingBlocks().Where(buildingBlock => TemplateBuildingBlockFor(buildingBlock).Version != buildingBlock.Version);
+         var changedBuildingBlocks = simulation.BuildingBlocks().Where(buildingBlock => TemplateBuildingBlockFor(buildingBlock).Version != buildingBlock.Version).ToList();
+         if (simulation.Settings.Version != _interactionTaskContext.Context.CurrentProject.SimulationSettings.Version)
+            changedBuildingBlocks.Add(simulation.Settings);
+         
+         return changedBuildingBlocks;
       }
 
-      public IEnumerable<Module> FindChangedModules(IMoBiSimulation simulation)
+      public IReadOnlyList<Module> FindChangedModules(IMoBiSimulation simulation)
       {
-         return simulation.Configuration.ModuleConfigurations.
-            Where(moduleConfiguration => !versionMatch(TemplateModuleFor(moduleConfiguration.Module), moduleConfiguration)).
-            Select(moduleConfiguration => moduleConfiguration.Module);
+         return simulation.Configuration.ModuleConfigurations.Where(moduleConfiguration => !versionMatch(TemplateModuleFor(moduleConfiguration.Module), moduleConfiguration)).Select(moduleConfiguration => moduleConfiguration.Module).ToList();
       }
 
       private bool versionMatch(Module templateModule, ModuleConfiguration moduleConfiguration)
@@ -187,6 +189,5 @@ namespace MoBi.Presentation.Tasks.Interaction
             templateModule.VersionWith(templateParameterValues, templateInitialConditions),
             simulationModule.VersionWith(moduleConfiguration.SelectedParameterValues, moduleConfiguration.SelectedInitialConditions));
       }
-
    }
 }

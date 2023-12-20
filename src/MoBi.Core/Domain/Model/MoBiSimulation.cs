@@ -138,6 +138,7 @@ namespace MoBi.Core.Domain.Model
       public void RemoveOriginalQuantityValue(string objectPath) => _quantityValueCache.Remove(objectPath);
 
       public OriginalQuantityValue OriginalQuantityValueFor(string objectPath) => _quantityValueCache[objectPath];
+
       public void ClearOriginalQuantities()
       {
          _quantityValueCache.Clear();

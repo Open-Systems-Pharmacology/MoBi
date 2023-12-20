@@ -49,6 +49,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             createConfigure(simulation).AsGroupStarter()
          };
 
+
          if (simulation.BuildingBlocks().Any(hasChanges))
             _allMenuItems.Add(createUpdate(simulation));
 
@@ -213,6 +214,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
+
 
       private IMenuBarItem exportSimulationResultsToExcel(IMoBiSimulation simulation)
       {

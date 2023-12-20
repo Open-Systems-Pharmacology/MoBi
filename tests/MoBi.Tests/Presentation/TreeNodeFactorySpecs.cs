@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Presentation.Nodes;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
@@ -44,7 +42,10 @@ namespace MoBi.Presentation
          base.Context();
          _simulation = new MoBiSimulation
          {
-            Configuration = new SimulationConfiguration()
+            Configuration = new SimulationConfiguration
+            {
+               SimulationSettings = new SimulationSettings().WithId("simulationSettings")
+            }
          };
          
          _spatialStructure = new SpatialStructure().WithId("1");

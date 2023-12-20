@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
@@ -6,10 +7,10 @@ using MoBi.Core.Services;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using System.Linq;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -41,7 +42,7 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _nameCorrector = A.Fake<INameCorrector>();
 
-         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver(), new ObjectPathFactoryForSpecs());
+         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver());
       }
 
       [Observation]
@@ -97,7 +98,7 @@ namespace MoBi.Presentation.Tasks
       protected ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
       protected InitialConditionsBuildingBlock _projectInitialConditions;
       protected ParameterValuesBuildingBlock _projectParameterValues;
-      
+
       protected override void Context()
       {
          base.Context();
@@ -143,10 +144,8 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-
    public class When_committing_to_configuration_with_selected_building_blocks_and_matching_start_values : When_committing_to_configuration_with_selected_building_blocks
    {
-
       protected override void Context()
       {
          base.Context();
@@ -160,7 +159,7 @@ namespace MoBi.Presentation.Tasks
             Path = new ObjectPath("name")
          });
       }
-      
+
       [Observation]
       public void new_building_blocks_are_not_created()
       {

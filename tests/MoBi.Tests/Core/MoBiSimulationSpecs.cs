@@ -58,7 +58,7 @@ namespace MoBi.Core
          simulationModule.Add(new SpatialStructure().WithName("a Building Block"));
 
          sut.Configuration.AddModuleConfiguration(new ModuleConfiguration(simulationModule));
-         
+
          _templateBuildingBlock = new SpatialStructure
          {
             Module = new Module().WithName("a Module")
