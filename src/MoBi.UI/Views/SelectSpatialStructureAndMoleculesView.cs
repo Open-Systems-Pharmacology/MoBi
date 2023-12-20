@@ -1,5 +1,6 @@
 ﻿using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Localization;
 using DevExpress.XtraGrid.Views.Grid;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -106,6 +107,16 @@ namespace MoBi.UI.Views
          layoutControlItemMolecules.TextLocation = Locations.Top;
          layoutControlItemMolecules.TextVisible = true;
          configureGridGrouping();
+
+         gridView.PopupMenuShowing += (o, e) => OnEvent(() => gridViewPopupMenuShowing(o, e));
+      }
+
+      private void gridViewPopupMenuShowing(object sender, PopupMenuShowingEventArgs e)
+      {
+         e.Menu.Hide(GridStringId.MenuColumnColumnCustomization);
+         e.Menu.Hide(GridStringId.MenuColumnGroupBox);
+         e.Menu.Hide(GridStringId.MenuColumnGroup);
+         e.Menu.Hide(GridStringId.MenuColumnRemoveColumn);
       }
 
       private void configureGridGrouping()
@@ -122,6 +133,9 @@ namespace MoBi.UI.Views
          gridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CheckBoxRowSelect;
          gridView.OptionsSelection.CheckBoxSelectorField = _selectedColumnName;
          gridView.OptionsSelection.ShowCheckBoxSelectorInGroupRow = DefaultBoolean.True;
+         gridView.OptionsCustomization.AllowGroup = false;
+         gridView.OptionsView.ShowGroupPanel = false;
+         gridView.OptionsCustomization.AllowQuickHideColumns = false;
       }
 
       public void Show(SelectSpatialStructureAndMoleculesDTO dto)
