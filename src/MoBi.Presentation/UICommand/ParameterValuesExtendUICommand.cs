@@ -13,8 +13,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         // TODO OSMOSES
-         // _startValueTasks.ExtendStartValueBuildingBlock(Subject);
+         _startValueTasks.ExtendStartValueBuildingBlock(Subject);
       }
    }
 }

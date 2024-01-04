@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
       where TPathAndValueEntity : PathAndValueEntity
    {
-      void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock);
+      void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Generates a command that will add the pathAndValueEntity to the building block

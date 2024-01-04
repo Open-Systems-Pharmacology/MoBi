@@ -39,15 +39,11 @@ namespace MoBi.UI.Views
 
       protected override void DoInitializeBinding()
       {
+         base.DoInitializeBinding();
+
          _unitControl.ParameterUnitSet += setParameterUnit;
 
          _dimensionComboBoxRepository.FillComboBoxRepositoryWith(_dimensionFactory.DimensionsSortedByName);
-
-         var colName = _gridViewBinder.AutoBind(dto => dto.Name)
-            .WithCaption(AppConstants.Captions.ParameterName).WithOnValueUpdating((o,e) => OnEvent(() => OnNameSet(o,e)));
-
-         //to put the name in the first column
-         colName.XtraColumn.VisibleIndex = 0;
 
          _gridViewBinder.AutoBind(dto => dto.Value)
             .WithCaption(AppConstants.Captions.ParameterValue)
@@ -67,6 +63,8 @@ namespace MoBi.UI.Views
 
          gridView.HiddenEditor += (o, e) => hideEditor();
       }
+
+      public override string NameColumnCaption => AppConstants.Captions.ParameterName;
 
       private void onDimensionSet(ParameterValueDTO parameterValueDTO, PropertyValueSetEventArgs<IDimension> propertyValueSetEventArgs)
       {

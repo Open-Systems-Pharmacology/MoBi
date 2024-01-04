@@ -173,21 +173,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          newInitialConditionsToUpdate.Each(x => x.Value.IsPresent = false);
       }
 
-      public override void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock)
+      protected override IReadOnlyList<InitialCondition> CreateStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock initialConditionsBuildingBlock)
       {
-         var commonModule = initialConditionsBuildingBlock.Module;
-         var (spatialStructure, molecules) = SelectBuildingBlocksForExtend(commonModule.Molecules, commonModule.SpatialStructure);
-         if (spatialStructure == null || molecules == null || !molecules.Any())
-            return;
-
-         var newStartValues = createStartValuesBasedOnUsedTemplates(spatialStructure, molecules);
+         var newStartValues = _initialConditionsCreator.CreateFrom(spatialStructure, molecules).ToList();
          updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues.ToList(), initialConditionsBuildingBlock.ToList());
-         AddCommand(Extend(newStartValues.ToList(), initialConditionsBuildingBlock));
-      }
-
-      private InitialConditionsBuildingBlock createStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules)
-      {
-         return _initialConditionsCreator.CreateFrom(spatialStructure, molecules);
+         return newStartValues;
       }
    }
 }

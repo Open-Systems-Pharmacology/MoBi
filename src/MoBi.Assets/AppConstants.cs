@@ -1092,6 +1092,7 @@ namespace MoBi.Assets
          public static readonly string LoadBuildingBlocksFromTemplate = "Load Building Blocks from Template...";
          public static readonly string MakeSettingsProjectDefault = "Make Settings Project Default";
          public static readonly string RefreshSettingsFromProjectDefault = "Refresh Settings from Project Default";
+         public static readonly string AddLocalMoleculeParameters = "Add Local Molecule Parameters";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
