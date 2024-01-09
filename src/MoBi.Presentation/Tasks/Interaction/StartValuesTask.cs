@@ -201,10 +201,22 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToRemove);
       protected abstract IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToAdd);
-      public abstract void ExtendStartValueBuildingBlock(TBuildingBlock initialConditionsBuildingBlock);
+      protected abstract IReadOnlyList<TPathAndValueEntity> CreateStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock buildingBlock);
       public abstract IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
       public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
       public abstract IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
+
+      public virtual void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock)
+      {
+         var commonModule = buildingBlock.Module;
+         var (spatialStructure, molecules) = SelectBuildingBlocksForExtend(commonModule.Molecules, commonModule.SpatialStructure);
+         if (spatialStructure == null || molecules == null || !molecules.Any())
+            return;
+
+         var newStartValues = CreateStartValuesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock);
+
+         AddCommand(Extend(newStartValues.ToList(), buildingBlock));
+      }
 
       public IMoBiCommand UpdatePathAndValueEntityDimension(TBuildingBlock pathAndValueEntitiesBuildingBlock, TPathAndValueEntity pathAndValueEntity, IDimension newDimension)
       {

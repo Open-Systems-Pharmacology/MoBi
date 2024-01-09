@@ -78,12 +78,6 @@ namespace MoBi.Presentation.Presenter
          return _originalStartValues.Contains(pathAndValueEntity.PathWithValueObject);
       }
 
-      public void ExtendStartValues()
-      {
-         // TODO OSMOSES
-         // _startValuesTask.ExtendStartValueBuildingBlock(_buildingBlock);
-      }
-
       private void initializeColumns()
       {
          _view.ClearPathItems();

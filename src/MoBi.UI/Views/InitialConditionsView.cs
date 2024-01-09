@@ -68,6 +68,8 @@ namespace MoBi.UI.Views
          gridView.HiddenEditor += (o, e) => hideEditor();
       }
 
+      public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
+
       public void HideIsPresentColumn()
       {
          _isPresentColumn.AsHidden().WithShowInColumnChooser(true);

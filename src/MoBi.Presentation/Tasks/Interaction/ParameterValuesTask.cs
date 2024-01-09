@@ -21,6 +21,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class ParameterValuesTask : StartValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
    {
+      private readonly IParameterValuesCreator _parameterValuesCreator;
+
       public ParameterValuesTask(
          IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> editTask,
@@ -29,14 +31,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          IParameterValueBuildingBlockExtendManager parameterValuesExtendManager,
          IMoBiFormulaTask moBiFormulaTask,
          IMoBiSpatialStructureFactory spatialStructureFactory,
-         IParameterValuePathTask parameterValuePathTask)
+         IParameterValuePathTask parameterValuePathTask,
+         IParameterValuesCreator parameterValuesCreator)
          : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask)
       {
+         _parameterValuesCreator = parameterValuesCreator;
       }
 
-      public override void ExtendStartValueBuildingBlock(ParameterValuesBuildingBlock buildingBlock)
+      protected override IReadOnlyList<ParameterValue> CreateStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, ParameterValuesBuildingBlock buildingBlock)
       {
-         AddCommand(Extend(new List<ParameterValue>(), buildingBlock));
+         return _parameterValuesCreator.CreateFrom(spatialStructure, molecules);
       }
 
       public override IMoBiCommand AddPathAndValueEntityToBuildingBlock(ParameterValuesBuildingBlock buildingBlock, ParameterValue pathAndValueEntity)

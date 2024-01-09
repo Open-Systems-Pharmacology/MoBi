@@ -35,7 +35,7 @@ namespace MoBi.UI.Views
       protected readonly GridViewBinder<TPathAndValueEntity> _gridViewBinder;
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
       protected IStartValuesPresenter<TPathAndValueEntity> _presenter;
-      private IGridViewAutoBindColumn<TPathAndValueEntity, string> _colName;
+      protected IGridViewAutoBindColumn<TPathAndValueEntity, string> _colName;
 
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private readonly IList<string> _pathValues;
@@ -64,12 +64,14 @@ namespace MoBi.UI.Views
       private void initializeNameColumnBinding()
       {
          _colName = _gridViewBinder.AutoBind(dto => dto.Name)
-            .WithCaption(AppConstants.Captions.MoleculeName)
+            .WithCaption(NameColumnCaption)
             .WithOnValueUpdating((o, e) => OnEvent(() => OnNameSet(o, e)));
 
          //to put the name in the first column
          _colName.XtraColumn.VisibleIndex = 0;
       }
+
+      public abstract string NameColumnCaption { get; }
 
       public void HideIsPresentView()
       {
@@ -232,8 +234,26 @@ namespace MoBi.UI.Views
       {
          for (var i = 0; i < _pathElementsColumns.Count; i++)
          {
-            _pathElementsColumns[i].Visible = _presenter.HasAtLeastOneValue(i);
+            var shouldShow = _presenter.HasAtLeastOneValue(i);
+            var appearing = !_pathElementsColumns[i].Visible && shouldShow;
+            _pathElementsColumns[i].Visible = shouldShow;
+
+            if (appearing)
+               initializePathColumnVisibleIndex(i);
          }
+      }
+
+      // When hiding and showing columns automatically based on presence of path elements
+      // we have to override how the visibility index is set. That's because visibility index
+      // of a column is updated as other columns are hidden. So, if you iterate in order and hide all columns
+      // then their internal hidden visibility index will be 0. If you iterate in order and show them,
+      // they appear in the reverse order
+      private void initializePathColumnVisibleIndex(int i)
+      {
+         var previousColumn = i > 0 ? _pathElementsColumns[i - 1] : _colName;
+
+         // make this appearing column display to the right the previous column
+         _pathElementsColumns[i].XtraColumn.VisibleIndex = previousColumn.XtraColumn.VisibleIndex + 1;
       }
 
       protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs)
