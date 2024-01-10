@@ -1093,6 +1093,7 @@ namespace MoBi.Assets
          public static readonly string MakeSettingsProjectDefault = "Make Settings Project Default";
          public static readonly string RefreshSettingsFromProjectDefault = "Refresh Settings from Project Default";
          public static readonly string AddLocalMoleculeParameters = "Add Local Molecule Parameters";
+         public static readonly string AddProteinExpression = "Add Protein Expression";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1582,10 +1583,14 @@ namespace MoBi.Assets
          public static readonly string Target = "Target";
          public static readonly string DatabaseQuery = "Database Query";
          public static readonly string SelectSpatialStructureAndMolecules = "Select a spatial structure and molecules";
+         public static readonly string SelectOrganAndMolecules = "Select an organ and molecules";
          public static readonly string SelectSpatialStructure = "Select a spatial structure";
-         public static readonly string ExtendDescription = "<b><i>Initial conditions</i> will be created for molecules in all physical containers in the selected <i>spatial structure</i></b>";
+         public static readonly string ExtendDescription = "<b>The building block will be extended with new values for selected <i>molecules</i> in all physical containers in the selected <i>spatial structure</i></b>";
+         public static readonly string AddExpressionDescription = "<b>The building block will be extended with expression parameter values for selected <i>molecules</i> in the selected <i>organ</i> </b>";
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
+         
+
          public static string ExportContainerDescription(string exportedContainerPath) => $"Select an individual and file path for container export. Parameters from the individual that match the path {exportedContainerPath} will be addd to the container before exporting.";
          public static readonly string SelectIndividualAndPathForContainerExport = "Select an individual and path for container export";
 
@@ -1914,6 +1919,16 @@ namespace MoBi.Assets
                sb.Append("because an expression profile is already selected for those proteins");
             else
                sb.Append("because an expression profile is already selected for that protein");
+            return sb.ToString();
+         }
+
+         public static string ExistingParameterValuesWillNotBeReplaced(IReadOnlyList<string> existingPaths)
+         {
+            var sb = new StringBuilder();
+            sb.Append($"Existing parameter values will not be replaced");
+            sb.AppendLine();
+            sb.Append(namesList(existingPaths));
+            sb.AppendLine();
             return sb.ToString();
          }
 

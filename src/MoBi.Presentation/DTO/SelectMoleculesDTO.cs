@@ -1,39 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public class SelectSpatialStructureAndMoleculesDTO : DxValidatableDTO
+   public class SelectMoleculesDTO : DxValidatableDTO
    {
       private readonly List<MoleculeSelectionDTO> _molecules = new List<MoleculeSelectionDTO>();
       private readonly List<MoleculeSelectionDTO> _selectedMolecules = new List<MoleculeSelectionDTO>();
-      public SpatialStructure SpatialStructure { get; set; }
       public IReadOnlyList<MoleculeSelectionDTO> Molecules => _molecules;
       public IReadOnlyList<MoleculeSelectionDTO> SelectedMolecules => _selectedMolecules;
 
-      public SelectSpatialStructureAndMoleculesDTO()
+      public SelectMoleculesDTO()
       {
          Rules.Add(AllRules.MoleculeSelected);
-         Rules.Add(AllRules.SpatialStructureSelected);
       }
 
       private static class AllRules
       {
          public static IBusinessRule MoleculeSelected { get; } =
-            CreateRule.For<SelectSpatialStructureAndMoleculesDTO>()
+            CreateRule.For<SelectMoleculesDTO>()
                .Property(x => x.Molecules)
                .WithRule((dto, moleculeBuildingBlock) => dto.Molecules != null && dto.Molecules.Any())
                .WithError(AppConstants.Validation.ExtendingRequiresMoleculeBuildingBlock);
-
-         public static IBusinessRule SpatialStructureSelected { get; } =
-            CreateRule.For<SelectSpatialStructureAndMoleculesDTO>()
-               .Property(x => x.SpatialStructure)
-               .WithRule((dto, spatialStructure) => dto.SpatialStructure != null)
-               .WithError(AppConstants.Validation.ExtendingRequiresSpatialStructure);
       }
 
       private void addSelectedMolecule(MoleculeSelectionDTO moleculeSelectionDTO)
@@ -44,10 +35,7 @@ namespace MoBi.Presentation.DTO
          _selectedMolecules.Add(moleculeSelectionDTO);
       }
 
-      private void removeSelectedMolecule(MoleculeSelectionDTO moleculeSelectionDTO)
-      {
-         _selectedMolecules.Remove(moleculeSelectionDTO);
-      }
+      private void removeSelectedMolecule(MoleculeSelectionDTO moleculeSelectionDTO) => _selectedMolecules.Remove(moleculeSelectionDTO);
 
       public void SelectionUpdated(MoleculeSelectionDTO moleculeSelectionDTO)
       {

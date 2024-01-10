@@ -209,13 +209,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       public virtual void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock)
       {
          var commonModule = buildingBlock.Module;
-         var (spatialStructure, molecules) = SelectBuildingBlocksForExtend(commonModule.Molecules, commonModule.SpatialStructure);
+         var (spatialStructure, molecules) = selectBuildingBlocksForExtend(commonModule.Molecules, commonModule.SpatialStructure);
          if (spatialStructure == null || molecules == null || !molecules.Any())
             return;
 
          var newStartValues = CreateStartValuesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock);
-
-         AddCommand(Extend(newStartValues.ToList(), buildingBlock));
+         AddCommand(Extend(newStartValues, buildingBlock));
       }
 
       public IMoBiCommand UpdatePathAndValueEntityDimension(TBuildingBlock pathAndValueEntitiesBuildingBlock, TPathAndValueEntity pathAndValueEntity, IDimension newDimension)
@@ -285,7 +284,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
       }
 
-      protected (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
+      private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
       {
          var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
          var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;

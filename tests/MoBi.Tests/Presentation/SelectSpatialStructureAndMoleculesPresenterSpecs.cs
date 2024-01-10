@@ -15,14 +15,16 @@ namespace MoBi.Presentation
    {
       protected IBuildingBlockRepository _buildingBlockRepository;
       protected ISelectSpatialStructureAndMoleculesView _view;
-      protected ISelectSpatialStructureAndMoleculesDTOMapper _mapper;
+      protected ISelectSpatialStructureDTOMapper _mapper;
+      protected ISelectMoleculesPresenter _selectMoleculesPresenter;
 
       protected override void Context()
       {
          _view = A.Fake<ISelectSpatialStructureAndMoleculesView>();
-         _mapper = new SelectSpatialStructureAndMoleculesDTOMapper();
+         _mapper = new SelectSpatialStructureDTOMapper();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
-         sut = new SelectSpatialStructureAndMoleculesPresenter(_view, _buildingBlockRepository, _mapper);
+         _selectMoleculesPresenter = A.Fake<ISelectMoleculesPresenter>();
+         sut = new SelectSpatialStructureAndMoleculesPresenter(_view, _buildingBlockRepository, _mapper, _selectMoleculesPresenter);
       }
    }
 
@@ -60,10 +62,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_selections_should_be_null_or_empty()
+      public void the_default_selections_should_be_made()
       {
-         sut.SelectedMolecules.ShouldContain(_molecule);
-         sut.SelectedMolecules.ShouldNotContain(_unselectedMolecule);
+         A.CallTo(() => _selectMoleculesPresenter.SelectMolecules(_moleculeBuildingBlock, null)).MustHaveHappened();
          sut.SelectedSpatialStructure.ShouldBeEqualTo(_moBiSpatialStructure);
       }
    }

@@ -11,6 +11,7 @@ namespace MoBi.Assets
       public static readonly string FitToPage = "Zoom to fit all elements in the current Flow Chart window ";
       public static readonly string SetToDefault = "Sets Values to Defaults defined in Molecules and Spatial Structure";
       public static readonly string Extend = "Adds new values from Molecules and Spatial Structure";
+      public static readonly string AddProteinExpression = "Adds new expression for a Protein and Organ";
       public static readonly string AddMoleculeNameToList = "Add molecule name to selectable list";
       public static readonly string AddToProject = "Save as a new building block in project.";
       public static readonly string ResetParameterToolTip = "Reset parameter to default";

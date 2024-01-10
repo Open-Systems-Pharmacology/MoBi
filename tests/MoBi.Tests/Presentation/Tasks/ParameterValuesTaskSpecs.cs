@@ -4,10 +4,12 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -18,6 +20,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -29,6 +32,7 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTaskContext _context;
       private IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> _editTasks;
       protected IParameterResolver _parameterResolver;
+      private IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -38,11 +42,12 @@ namespace MoBi.Presentation.Tasks
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _parameterValueBuildingBlock = new ParameterValuesBuildingBlock();
          _parameterResolver = A.Fake<IParameterResolver>();
+         _dialogCreator = A.Fake<IDialogCreator>();
 
          sut = new ParameterValuesTask(_context, _editTasks,
             _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), A.Fake<IParameterValueBuildingBlockExtendManager>(),
-            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _parameterValuesCreator);
+            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _parameterValuesCreator, _dialogCreator);
       }
    }
 
@@ -270,6 +275,48 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue.ValueOrigin.Description.ShouldBeEqualTo(_valueOrigin.Description);
          _startValue.ValueOrigin.Method.ShouldBeEqualTo(_valueOrigin.Method);
+      }
+   }
+
+   public class When_adding_an_expression_profile : concern_for_ParameterValuesTask
+   {
+      private MoBiSpatialStructure _spatialStructure;
+      private MoleculeBuildingBlock _molecules;
+      private ISelectOrganAndProteinsPresenter _selectOrganAndProteinsPresenter;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _spatialStructure = new MoBiSpatialStructure();
+         _molecules = new MoleculeBuildingBlock();
+         _module = new Module
+         {
+            _spatialStructure,
+            _molecules,
+            _parameterValueBuildingBlock
+         };
+         _selectOrganAndProteinsPresenter = A.Fake<ISelectOrganAndProteinsPresenter>();
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _spatialStructure });
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { _molecules});
+         A.CallTo(() => _context.Context.Resolve<ISelectOrganAndProteinsPresenter>()).Returns(_selectOrganAndProteinsPresenter);
+      }
+
+      protected override void Because()
+      {
+         sut.AddStartValueExpression(_parameterValueBuildingBlock);
+      }
+
+      [Observation]
+      public void the_organ_and_molecule_presenter_should_be_used()
+      {
+         A.CallTo(() => _context.Context.Resolve<ISelectOrganAndProteinsPresenter>()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_selection_presenter_is_used_to_select_using_the_module_as_the_default_selection()
+      {
+         A.CallTo(() => _selectOrganAndProteinsPresenter.SelectSelectOrganAndProteins(_module)).MustHaveHappened();
       }
    }
 }

@@ -453,6 +453,12 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.ExtendParameterValues)
             .WithCommand<ParameterValuesExtendUICommand>(_container);
 
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddProteinExpression)
+            .WithId(MenuBarItemIds.AddProteinExpression)
+            .WithDescription(ToolTips.AddProteinExpression)
+            .WithIcon(ApplicationIcons.AddProtein)
+            .WithCommand<AddProteinExpressionUICommand>(_container);
+
          yield return CreateMenuButton
             .WithCaption(AppConstants.MenuNames.NewParameterValue)
             .WithId(MenuBarItemIds.NewParameterValue)
