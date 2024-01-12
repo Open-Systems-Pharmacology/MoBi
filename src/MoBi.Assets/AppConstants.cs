@@ -1589,11 +1589,10 @@ namespace MoBi.Assets
          public static readonly string AddExpressionDescription = "<b>The building block will be extended with expression parameter values for selected <i>molecules</i> in the selected <i>organ</i> </b>";
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
-         
-
+         public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
+         public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
          public static string ExportContainerDescription(string exportedContainerPath) => $"Select an individual and file path for container export. Parameters from the individual that match the path {exportedContainerPath} will be addd to the container before exporting.";
          public static readonly string SelectIndividualAndPathForContainerExport = "Select an individual and path for container export";
-
          public static readonly string AddInterval = "Add Interval";
          public static string CouldNotResolveSource(string sourceType) => $"{sourceType} source not defined";
          public static readonly string CurveName = "Curve Name";
@@ -1919,16 +1918,6 @@ namespace MoBi.Assets
                sb.Append("because an expression profile is already selected for those proteins");
             else
                sb.Append("because an expression profile is already selected for that protein");
-            return sb.ToString();
-         }
-
-         public static string ExistingParameterValuesWillNotBeReplaced(IReadOnlyList<string> existingPaths)
-         {
-            var sb = new StringBuilder();
-            sb.Append($"Existing parameter values will not be replaced");
-            sb.AppendLine();
-            sb.Append(namesList(existingPaths));
-            sb.AppendLine();
             return sb.ToString();
          }
 

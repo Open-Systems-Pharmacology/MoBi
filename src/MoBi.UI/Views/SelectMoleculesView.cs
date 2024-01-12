@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Localization;
 using DevExpress.XtraGrid.Views.Grid;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Controls;
@@ -19,7 +19,6 @@ namespace MoBi.UI.Views
    {
       private readonly IImageListRetriever _imageListRetriever;
       private GridViewBinder<MoleculeSelectionDTO> _gridViewBinder;
-      private readonly string _selectedColumnName;
       private ISelectMoleculesPresenter _presenter;
 
       public SelectMoleculesView(IImageListRetriever imageListRetriever)
@@ -33,7 +32,6 @@ namespace MoBi.UI.Views
 
          // Disable "selected" appearance for rows. UxRepositoryItemImageComboBox do not have a "selected" appearance.
          Load += (o, e) => OnEvent(formLoad);
-         _selectedColumnName = nameof(MoleculeSelectionDTO.Selected);
       }
 
       public override void InitializeResources()
@@ -42,19 +40,9 @@ namespace MoBi.UI.Views
 
          gridView.PopupMenuShowing += (o, e) => OnEvent(() => gridViewPopupMenuShowing(o, e));
 
-         configureGridForCheckBoxSelect();
+         gridView.ConfigureGridForCheckBoxSelect(nameof(MoleculeSelectionDTO.Selected));
+         gridView.DisableGrouping();
          configureGridGrouping();
-      }
-
-      private void configureGridForCheckBoxSelect()
-      {
-         gridView.MultiSelect = true;
-         gridView.OptionsSelection.MultiSelectMode = GridMultiSelectMode.CheckBoxRowSelect;
-         gridView.OptionsSelection.CheckBoxSelectorField = _selectedColumnName;
-         gridView.OptionsSelection.ShowCheckBoxSelectorInGroupRow = DefaultBoolean.True;
-         gridView.OptionsCustomization.AllowGroup = false;
-         gridView.OptionsView.ShowGroupPanel = false;
-         gridView.OptionsCustomization.AllowQuickHideColumns = false;
       }
 
       private void configureGridGrouping()

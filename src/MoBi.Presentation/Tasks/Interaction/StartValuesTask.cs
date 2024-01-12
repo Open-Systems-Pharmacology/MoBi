@@ -164,7 +164,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moBiMacroCommand;
       }
 
-      protected IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> startValues, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend)
+      protected IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> startValues, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true)
       {
          var macro = CreateExtendMacroCommand(_interactionTaskContext.GetTypeFor(buildingBlockToExtend));
 
@@ -173,9 +173,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          var cacheToExtend = startValues.ToCache();
          var targetCache = buildingBlockToExtend.ToCache();
 
-         // Use the merge manager to implement the extend. We can take advantage of the equivalency checker to favor the existing 
-         // start value if a conflict is found (always prefer the existing start value)
-         _extendManager.Merge(cacheToExtend, targetCache, areElementsEquivalent: (s1, s2) => true);
+         _extendManager.Merge(cacheToExtend, targetCache, defaultOption: retainConflictingEntities ? MergeConflictOptions.SkipAll : MergeConflictOptions.ReplaceAll);
 
          macro.Run(Context);
 

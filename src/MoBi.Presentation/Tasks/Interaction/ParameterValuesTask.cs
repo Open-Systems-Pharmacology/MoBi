@@ -14,7 +14,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -26,7 +25,6 @@ namespace MoBi.Presentation.Tasks.Interaction
    public class ParameterValuesTask : StartValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
    {
       private readonly IParameterValuesCreator _parameterValuesCreator;
-      private readonly IDialogCreator _dialogCreator;
 
       public ParameterValuesTask(
          IInteractionTaskContext interactionTaskContext,
@@ -37,12 +35,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask moBiFormulaTask,
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IParameterValuePathTask parameterValuePathTask,
-         IParameterValuesCreator parameterValuesCreator,
-         IDialogCreator dialogCreator)
+         IParameterValuesCreator parameterValuesCreator)
          : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask)
       {
          _parameterValuesCreator = parameterValuesCreator;
-         _dialogCreator = dialogCreator;
       }
 
       protected override IReadOnlyList<ParameterValue> CreateStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, ParameterValuesBuildingBlock buildingBlock)
@@ -90,19 +86,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (organ == null || molecules == null || !molecules.Any())
             return;
 
-         var newStartValues = createExpressionBasedOn(organ, molecules);
-         adviseExistingPaths(buildingBlock, newStartValues);
+         var newStartValues = filterEntitiesToRetain(buildingBlock, createExpressionBasedOn(organ, molecules));
 
-         AddCommand(Extend(newStartValues, buildingBlock));
+         AddCommand(Extend(newStartValues, buildingBlock, retainConflictingEntities: false));
       }
 
-      private void adviseExistingPaths(ParameterValuesBuildingBlock buildingBlock, IReadOnlyList<ParameterValue> newStartValues)
+      private IReadOnlyList<ParameterValue> filterEntitiesToRetain(ParameterValuesBuildingBlock originalBuildingBlock, IReadOnlyList<ParameterValue> newParameterValues)
       {
-         var newPathsToAdd = newStartValues.Select(newStartValue => newStartValue.Path.PathAsString);
-         var pathsThatAlreadyExist = buildingBlock.Select(x => x.Path.PathAsString).Where(x => newPathsToAdd.Contains(x)).ToList();
-
-         if (pathsThatAlreadyExist.Any())
-            _dialogCreator.MessageBoxInfo(AppConstants.Captions.ExistingParameterValuesWillNotBeReplaced(pathsThatAlreadyExist));
+         using (var pathSelectionPresenter = Context.Resolve<IPathAndValueEntitySelectionPresenter>())
+         {
+            return pathSelectionPresenter.SelectReplacementEntities(newParameterValues, originalBuildingBlock);
+         }
       }
 
       private IReadOnlyList<ParameterValue> createExpressionBasedOn(IContainer organ, IReadOnlyList<MoleculeBuilder> molecules) => _parameterValuesCreator.CreateExpressionFrom(organ, molecules);

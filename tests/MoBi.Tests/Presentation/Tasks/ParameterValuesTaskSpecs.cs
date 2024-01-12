@@ -32,7 +32,6 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTaskContext _context;
       private IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> _editTasks;
       protected IParameterResolver _parameterResolver;
-      private IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -42,12 +41,11 @@ namespace MoBi.Presentation.Tasks
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _parameterValueBuildingBlock = new ParameterValuesBuildingBlock();
          _parameterResolver = A.Fake<IParameterResolver>();
-         _dialogCreator = A.Fake<IDialogCreator>();
 
          sut = new ParameterValuesTask(_context, _editTasks,
             _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), A.Fake<IParameterValueBuildingBlockExtendManager>(),
-            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _parameterValuesCreator, _dialogCreator);
+            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _parameterValuesCreator);
       }
    }
 
@@ -66,13 +64,13 @@ namespace MoBi.Presentation.Tasks
          _containerPath = new ObjectPath("the", "container", "path");
 
          _parameterValueBuildingBlock.Add(
-            new ParameterValue { Value = 0.1, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
+            new ParameterValue { Value = 0.1, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue" });
 
-         _parameterValue = new ParameterValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", Value = 4};
-         _clonedParameterValue = new ParameterValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", Value = 4};
+         _parameterValue = new ParameterValue { ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", Value = 4 };
+         _clonedParameterValue = new ParameterValue { ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", Value = 4 };
 
          _templateParameterValues.Add(_parameterValue);
-         _templateParameterValues.Add(new ParameterValue { Value = 0.4, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
+         _templateParameterValues.Add(new ParameterValue { Value = 0.4, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue" });
 
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_parameterValue, A<IFormulaCache>.Ignored)).Returns(_clonedParameterValue);
       }
@@ -121,12 +119,12 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          var unit = new Unit("Dimensionless", 1.0, 0.0);
-         _firstStartValueRef = new ParameterValue {ContainerPath = new ObjectPath("this", "path"), Name = "Name", Value = -1.0, DisplayUnit = unit};
+         _firstStartValueRef = new ParameterValue { ContainerPath = new ObjectPath("this", "path"), Name = "Name", Value = -1.0, DisplayUnit = unit };
          _parameterValue = new List<ImportedQuantityDTO>
          {
-            new ImportedQuantityDTO {Name = "Name", ContainerPath = new ObjectPath(new[] {"this", "path"}), QuantityInBaseUnit = 1.0, DisplayUnit = unit},
-            new ImportedQuantityDTO {Name = "Name", ContainerPath = new ObjectPath(new[] {"that", "path"}), QuantityInBaseUnit = 2.0, DisplayUnit = unit},
-            new ImportedQuantityDTO {Name = "Name", ContainerPath = new ObjectPath(new[] {"the", "path"}), QuantityInBaseUnit = 3.0, DisplayUnit = unit}
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "this", "path" }), QuantityInBaseUnit = 1.0, DisplayUnit = unit },
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "that", "path" }), QuantityInBaseUnit = 2.0, DisplayUnit = unit },
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "the", "path" }), QuantityInBaseUnit = 3.0, DisplayUnit = unit }
          };
 
          _parameterValueBuildingBlock.Add(_firstStartValueRef);
@@ -186,7 +184,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B"), Name = "C"};
+         _startValue = new ParameterValue { ContainerPath = new ObjectPath("A", "B"), Name = "C" };
          _parameterValueBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 0, "");
       }
@@ -204,7 +202,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new ParameterValue { ContainerPath = new ObjectPath("A", "B") };
          _parameterValueBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 2, "C");
       }
@@ -222,7 +220,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B"), Name = "D"};
+         _startValue = new ParameterValue { ContainerPath = new ObjectPath("A", "B"), Name = "D" };
          _parameterValueBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 0, "C");
       }
@@ -240,7 +238,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new ParameterValue { ContainerPath = new ObjectPath("A", "B") };
          _parameterValueBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 5, "C");
       }
@@ -284,10 +282,15 @@ namespace MoBi.Presentation.Tasks
       private MoleculeBuildingBlock _molecules;
       private ISelectOrganAndProteinsPresenter _selectOrganAndProteinsPresenter;
       private Module _module;
+      private IReadOnlyList<MoleculeBuilder> _selectedMolecules;
+      private IContainer _selectedOrgan;
+      private IPathAndValueEntitySelectionPresenter _pathAndValueEntitySelectionPresenter;
 
       protected override void Context()
       {
          base.Context();
+         _selectedOrgan = new Container();
+         _selectedMolecules = new List<MoleculeBuilder> { new MoleculeBuilder() };
          _spatialStructure = new MoBiSpatialStructure();
          _molecules = new MoleculeBuildingBlock();
          _module = new Module
@@ -297,9 +300,14 @@ namespace MoBi.Presentation.Tasks
             _parameterValueBuildingBlock
          };
          _selectOrganAndProteinsPresenter = A.Fake<ISelectOrganAndProteinsPresenter>();
+         _pathAndValueEntitySelectionPresenter = A.Fake<IPathAndValueEntitySelectionPresenter>();
          A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _spatialStructure });
-         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { _molecules});
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { _molecules });
          A.CallTo(() => _context.Context.Resolve<ISelectOrganAndProteinsPresenter>()).Returns(_selectOrganAndProteinsPresenter);
+         A.CallTo(() => _context.Context.Resolve<IPathAndValueEntitySelectionPresenter>()).Returns(_pathAndValueEntitySelectionPresenter);
+
+         A.CallTo(() => _selectOrganAndProteinsPresenter.SelectedOrgan).Returns(_selectedOrgan);
+         A.CallTo(() => _selectOrganAndProteinsPresenter.SelectedMolecules).Returns(_selectedMolecules);
       }
 
       protected override void Because()
@@ -317,6 +325,12 @@ namespace MoBi.Presentation.Tasks
       public void the_selection_presenter_is_used_to_select_using_the_module_as_the_default_selection()
       {
          A.CallTo(() => _selectOrganAndProteinsPresenter.SelectSelectOrganAndProteins(_module)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_selection_presenter_is_used_to_find_colliding_entities_and_allow_the_user_to_replace_existing()
+      {
+         A.CallTo(() => _pathAndValueEntitySelectionPresenter.SelectReplacementEntities(A<IReadOnlyList<ParameterValue>>._, _parameterValueBuildingBlock)).MustHaveHappened();
       }
    }
 }
