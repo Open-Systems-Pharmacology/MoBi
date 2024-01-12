@@ -180,6 +180,8 @@ namespace MoBi.Core.Domain.Model
          //and make sure the output mapping is referencing THIS simulation
          OutputMappings.SwapSimulation(sourceSimulation, this);
 
+         sourceSimulation.OriginalQuantityValues.Each(x => AddOriginalQuantityValue(new OriginalQuantityValue().WithPropertiesFrom(x)));
+
          this.UpdateDiagramFrom(sourceSimulation);
       }
 

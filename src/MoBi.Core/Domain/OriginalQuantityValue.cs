@@ -10,6 +10,16 @@ namespace MoBi.Core.Domain
       public ValueOrigin ValueOrigin { get; } = new ValueOrigin();
       public Unit DisplayUnit { get; set; }
       public IDimension Dimension { get; set; }
+      
+      public OriginalQuantityValue WithPropertiesFrom(OriginalQuantityValue sourceOriginalQuantityValue)
+      {
+         Path = sourceOriginalQuantityValue.Path;
+         Value = sourceOriginalQuantityValue.Value;
+         ValueOrigin.UpdateFrom(sourceOriginalQuantityValue.ValueOrigin);
+         DisplayUnit = sourceOriginalQuantityValue.DisplayUnit;
+         Dimension = sourceOriginalQuantityValue.Dimension;
+         return this;
+      }
 
       public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
       {

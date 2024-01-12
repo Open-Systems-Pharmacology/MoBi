@@ -74,6 +74,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             createExportModelPartsItem(simulation),
 
             createImportReactionParameters(simulation).AsGroupStarter(),
+            createClone(simulation).AsGroupStarter(),
             createDeleteItem(simulation).AsGroupStarter(),
             createDeleteAllResultsItem(simulation)
          });
@@ -96,6 +97,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.Captions.ImportSimulationParameters.WithEllipsis())
             .WithIcon(ApplicationIcons.ParameterValuesImport)
             .WithCommandFor<ImportSimulationParameterValuesUICommand, IMoBiSimulation>(simulation, _container);
+      }
+
+      private IMenuBarItem createClone(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone)
+            .WithIcon(ApplicationIcons.SimulationClone)
+            .WithCommandFor<CloneSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createExportModelPartsItem(IMoBiSimulation simulation)

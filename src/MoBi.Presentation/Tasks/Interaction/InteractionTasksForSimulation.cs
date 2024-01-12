@@ -38,6 +38,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       IReadOnlyList<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation);
       IReadOnlyList<Module> FindChangedModules(IMoBiSimulation simulation);
+
+      /// <summary>
+      /// Create a clone of the <paramref name="simulationToClone"/> and add it to the current project
+      /// </summary>
+      void CloneSimulation(IMoBiSimulation simulationToClone);
    }
 
    public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
@@ -45,17 +50,20 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly ISimulationReferenceUpdater _simulationReferenceUpdater;
       private readonly ISimulationFactory _simulationFactory;
       private readonly ITemplateResolverTask _templateResolverTask;
+      private readonly ICloneManagerForSimulation _cloneManager;
 
       public InteractionTasksForSimulation(IInteractionTaskContext interactionTaskContext,
          IEditTasksForSimulation editTask,
          ISimulationReferenceUpdater simulationReferenceUpdater,
          ISimulationFactory simulationFactory,
-         ITemplateResolverTask templateResolverTask)
+         ITemplateResolverTask templateResolverTask, 
+         ICloneManagerForSimulation cloneManager)
          : base(interactionTaskContext, editTask)
       {
          _simulationReferenceUpdater = simulationReferenceUpdater;
          _simulationFactory = simulationFactory;
          _templateResolverTask = templateResolverTask;
+         _cloneManager = cloneManager;
       }
 
       protected override string ObjectName => ObjectTypes.Simulation;
@@ -177,6 +185,13 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IReadOnlyList<Module> FindChangedModules(IMoBiSimulation simulation)
       {
          return simulation.Configuration.ModuleConfigurations.Where(moduleConfiguration => !versionMatch(TemplateModuleFor(moduleConfiguration.Module), moduleConfiguration)).Select(moduleConfiguration => moduleConfiguration.Module).ToList();
+      }
+
+      public void CloneSimulation(IMoBiSimulation simulationToClone)
+      {
+         var newSimulation = _cloneManager.CloneSimulation(simulationToClone);
+         InteractionTask.CorrectName(newSimulation, _editTask.GetForbiddenNames(newSimulation, _interactionTaskContext.Context.CurrentProject.Simulations));
+         _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).Run(_interactionTaskContext.Context));
       }
 
       private bool versionMatch(Module templateModule, ModuleConfiguration moduleConfiguration)

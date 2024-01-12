@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.UnitSystem;
@@ -142,6 +143,12 @@ namespace MoBi.Core
          sut.Model = new Model();
          sut.Model.Root = new Container();
 
+         var originalQuantityValue = new OriginalQuantityValue
+         {
+            Path = "A|BC",
+         };
+         _moBiSimulation.AddOriginalQuantityValue(originalQuantityValue);
+
          _moBiSimulation.OutputMappings.Add(new OutputMapping
          {
             OutputSelection = new SimulationQuantitySelection(_moBiSimulation, new QuantitySelection("A|BC", QuantityType.Enzyme)),
@@ -152,6 +159,14 @@ namespace MoBi.Core
       protected override void Because()
       {
          sut.UpdatePropertiesFrom(_moBiSimulation, _cloneManager);
+      }
+
+      [Observation]
+      public void the_simulation_has_updated_original_quantity_values()
+      {
+         sut.OriginalQuantityValues.Count.ShouldBeEqualTo(1);
+         sut.OriginalQuantityValues.ElementAt(0).Path.ShouldBeEqualTo("A|BC");
+         sut.OriginalQuantityValues.ElementAt(0).ShouldNotBeEqualTo(_moBiSimulation.OriginalQuantityValues.First());
       }
 
       [Observation]
