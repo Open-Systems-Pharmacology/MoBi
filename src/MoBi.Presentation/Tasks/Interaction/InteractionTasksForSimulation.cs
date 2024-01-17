@@ -189,8 +189,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void CloneSimulation(IMoBiSimulation simulationToClone)
       {
-         var newSimulation = _cloneManager.CloneSimulation(simulationToClone);
-         InteractionTask.CorrectName(newSimulation, _editTask.GetForbiddenNames(newSimulation, _interactionTaskContext.Context.CurrentProject.Simulations));
+         var newName = InteractionTask.PromptForNewName(simulationToClone, _editTask.GetForbiddenNames(simulationToClone, _interactionTaskContext.Context.CurrentProject.Simulations));
+         if (newName.IsNullOrEmpty())
+            return;
+
+         var newSimulation = _cloneManager.CloneSimulation(simulationToClone).WithName(newName);
+         
          _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).Run(_interactionTaskContext.Context));
       }
 

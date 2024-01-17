@@ -47,6 +47,8 @@ namespace MoBi.Core.Services
       /// </param>
       /// <param name="objectForRename">The object whose name is being corrected</param>
       void AutoCorrectName<T>(IEnumerable<string> alreadyUsedNames, T objectForRename) where T : IObjectBase;
+
+      string PromptForCorrectName<T>(IReadOnlyList<string> alreadyUsedNames, T objectForRename) where T : IObjectBase;
    }
 
    internal class NameCorrector : INameCorrector
@@ -70,6 +72,18 @@ namespace MoBi.Core.Services
 
       public bool CorrectName<T>(IEnumerable<string> alreadyUsedNames, T objectForRename) where T : IObjectBase
       {
+         var newName = PromptForCorrectName(alreadyUsedNames.ToList(), objectForRename);
+
+         //Rename was canceled
+         if (newName.IsNullOrEmpty())
+            return false;
+
+         objectForRename.Name = newName;
+         return true;
+      }
+
+      public string PromptForCorrectName<T>(IReadOnlyList<string> alreadyUsedNames, T objectForRename) where T : IObjectBase
+      {
          var usedNames = alreadyUsedNames.ToList();
          var oldName = objectForRename.Name;
          var newName = oldName;
@@ -86,12 +100,7 @@ namespace MoBi.Core.Services
                iconName: ApplicationIcons.Rename.IconName);
          }
 
-         //Rename was canceled
-         if (newName.IsNullOrEmpty())
-            return false;
-
-         objectForRename.Name = newName;
-         return true;
+         return newName;
       }
 
       public void AutoCorrectName<T>(IEnumerable<string> alreadyUsedNames, T objectForRename) where T : IObjectBase

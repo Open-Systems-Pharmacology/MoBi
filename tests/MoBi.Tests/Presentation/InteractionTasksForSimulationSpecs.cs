@@ -53,9 +53,43 @@ namespace MoBi.Presentation
          _moBiProject.AddIndividualBuildingBlock(_individualBuildingBlock);
          A.CallTo(() => _moBiContext.CurrentProject).Returns(_moBiProject);
          A.CallTo(() => _interactionTaskContext.Context).Returns(_moBiContext);
+         
          _templateResolver = A.Fake<ITemplateResolverTask>();
 
          sut = new InteractionTasksForSimulation(_interactionTaskContext, _editTask, _simulationReferenceUpdater, _simulationFactory, _templateResolver, _cloneManager);
+      }
+   }
+
+   public class When_cloning_a_simulation_and_rename_is_canceled : concern_for_InteractionTasksForSimulation
+   {
+      private IMoBiSimulation _originalSimulation;
+      private IMoBiSimulation _clonedSimulation;
+      protected override void Context()
+      {
+         base.Context();
+         _originalSimulation = new MoBiSimulation
+         {
+            Configuration = new SimulationConfiguration()
+         };
+         _clonedSimulation = new MoBiSimulation
+         {
+            Configuration = new SimulationConfiguration()
+         };
+
+         A.CallTo(() => _interactionTaskContext.InteractionTask.PromptForNewName(A<IObjectBase>._, A<IEnumerable<string>>._)).Returns(string.Empty);
+         A.CallTo(() => _cloneManager.CloneSimulation(_originalSimulation)).Returns(_clonedSimulation);
+         A.CallTo(() => _interactionTaskContext.Context.CurrentProject).Returns(_moBiProject);
+      }
+
+      protected override void Because()
+      {
+         sut.CloneSimulation(_originalSimulation);
+      }
+
+      [Observation]
+      public void the_new_simulation_is_added_to_the_project_by_command()
+      {
+         _moBiProject.Simulations.ShouldNotContain(_clonedSimulation);
       }
    }
 
@@ -75,6 +109,7 @@ namespace MoBi.Presentation
             Configuration = new SimulationConfiguration()
          };
 
+         A.CallTo(() => _interactionTaskContext.InteractionTask.PromptForNewName(A<IObjectBase>._, A<IEnumerable<string>>._)).Returns("new name");
          A.CallTo(() => _cloneManager.CloneSimulation(_originalSimulation)).Returns(_clonedSimulation);
          A.CallTo(() => _interactionTaskContext.Context.CurrentProject).Returns(_moBiProject);
       }
@@ -87,13 +122,19 @@ namespace MoBi.Presentation
       [Observation]
       public void the_name_corrector_should_be_used_to_check_for_existing_names()
       {
-         A.CallTo(() => _interactionTaskContext.InteractionTask.CorrectName(_clonedSimulation, A<IEnumerable<string>>._)).MustHaveHappened();
+         A.CallTo(() => _interactionTaskContext.InteractionTask.PromptForNewName(_originalSimulation, A<IEnumerable<string>>._)).MustHaveHappened();
       }
 
       [Observation]
       public void the_new_simulation_is_added_to_the_project_by_command()
       {
          _moBiProject.Simulations.ShouldContain(_clonedSimulation);
+      }
+
+      [Observation]
+      public void the_cloned_simulation_should_be_renamed()
+      {
+         _clonedSimulation.Name.ShouldBeEqualTo("new name");
       }
    }
 
