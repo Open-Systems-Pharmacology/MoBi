@@ -29,6 +29,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       string AskForFileToSave(string title, string filter, string directoryKey, string defaultName);
       string AskForFolder(string title, string directoryKey);
       SimulationTransfer LoadSimulationTransfer(string filePath);
+      string PromptForNewName(IObjectBase objectBase, IEnumerable<string> forbiddenNames);
    }
 
    public class InteractionTask : IInteractionTask
@@ -122,5 +123,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public string IconFor<T>(T entity) where T : IObjectBase => _iconRepository.IconNameFor(entity);
 
       public bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase => _nameCorrector.CorrectName(forbiddenNames, objectBase);
+
+      public string PromptForNewName(IObjectBase objectBase, IEnumerable<string> forbiddenNames) => _nameCorrector.PromptForCorrectName(forbiddenNames.ToList(), objectBase);
    }
 }
