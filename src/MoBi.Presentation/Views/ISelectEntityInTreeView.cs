@@ -12,5 +12,6 @@ namespace MoBi.Presentation.Views
       ObjectBaseDTO Selected { get; }
       ITreeNode GetNode(string id);
       void ExpandRootNodes();
+      void SelectNodeById(string id);
    }
 }

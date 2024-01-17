@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
@@ -17,6 +19,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IParameterValuesTask : IStartValuesTask<ParameterValuesBuildingBlock, ParameterValue>
    {
+      void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock);
    }
 
    public class ParameterValuesTask : StartValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
@@ -75,6 +78,42 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IDimension GetDefaultDimension()
       {
          return Constants.Dimension.NO_DIMENSION;
+      }
+
+      public void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock)
+      {
+         var (organ, molecules) = selectOrganAndProteins(buildingBlock.Module);
+         if (organ == null || molecules == null || !molecules.Any())
+            return;
+
+         var newStartValues = filterEntitiesToRetain(buildingBlock, createExpressionBasedOn(organ, molecules));
+
+         AddCommand(Extend(newStartValues, buildingBlock, retainConflictingEntities: false));
+      }
+
+      private IReadOnlyList<ParameterValue> filterEntitiesToRetain(ParameterValuesBuildingBlock originalBuildingBlock, IReadOnlyList<ParameterValue> newParameterValues)
+      {
+         using (var pathSelectionPresenter = Context.Resolve<IPathAndValueEntitySelectionPresenter>())
+         {
+            return pathSelectionPresenter.SelectReplacementEntities(newParameterValues, originalBuildingBlock);
+         }
+      }
+
+      private IReadOnlyList<ParameterValue> createExpressionBasedOn(IContainer organ, IReadOnlyList<MoleculeBuilder> molecules) => _parameterValuesCreator.CreateExpressionFrom(organ, molecules);
+
+      private (IContainer organ, IReadOnlyList<MoleculeBuilder> molecules) selectOrganAndProteins(Module commonModule)
+      {
+         var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
+         var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;
+
+         if (moleculeBlockCollection.Count == 0 && spatialStructureCollection.Count == 0)
+            return (null, Enumerable.Empty<MoleculeBuilder>().ToList());
+
+         using (var selectorPresenter = Context.Resolve<ISelectOrganAndProteinsPresenter>())
+         {
+            selectorPresenter.SelectSelectOrganAndProteins(commonModule);
+            return (selectorPresenter.SelectedOrgan, selectorPresenter.SelectedMolecules);
+         }
       }
 
       protected override bool CorrectName(ParameterValuesBuildingBlock buildingBlock, Module module)

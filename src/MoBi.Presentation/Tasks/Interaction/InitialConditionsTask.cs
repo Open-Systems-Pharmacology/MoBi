@@ -176,7 +176,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected override IReadOnlyList<InitialCondition> CreateStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock initialConditionsBuildingBlock)
       {
          var newStartValues = _initialConditionsCreator.CreateFrom(spatialStructure, molecules).ToList();
-         updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues.ToList(), initialConditionsBuildingBlock.ToList());
+         updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues, initialConditionsBuildingBlock.ToList());
          return newStartValues;
       }
    }

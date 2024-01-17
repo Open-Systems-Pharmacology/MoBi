@@ -20,7 +20,8 @@ namespace MoBi.Presentation.Tasks
       ///    Optionally specify a Func that will detect for equivalence between two conflicting
       ///    elements
       /// </param>
-      void Merge(ICache<string, T> merge, ICache<string, T> target, Func<T, T, bool> areElementsEquivalent = null);
+      /// <param name="defaultOption">The default option when merging items that are equivalent</param>
+      void Merge(ICache<string, T> merge, ICache<string, T> target, Func<T, T, bool> areElementsEquivalent = null, MergeConflictOptions defaultOption = MergeConflictOptions.SkipOnce);
 
       /// <summary>
       ///    In the event of a conflict where user specifies that the newly merged element should replace the existing, this

@@ -4,10 +4,12 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -18,6 +20,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -61,13 +64,13 @@ namespace MoBi.Presentation.Tasks
          _containerPath = new ObjectPath("the", "container", "path");
 
          _parameterValueBuildingBlock.Add(
-            new ParameterValue { Value = 0.1, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
+            new ParameterValue { Value = 0.1, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue" });
 
-         _parameterValue = new ParameterValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", Value = 4};
-         _clonedParameterValue = new ParameterValue {ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", Value = 4};
+         _parameterValue = new ParameterValue { ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", Value = 4 };
+         _clonedParameterValue = new ParameterValue { ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "FormulaStartValue", Value = 4 };
 
          _templateParameterValues.Add(_parameterValue);
-         _templateParameterValues.Add(new ParameterValue { Value = 0.4, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue"});
+         _templateParameterValues.Add(new ParameterValue { Value = 0.4, ContainerPath = _containerPath.Clone<ObjectPath>(), Name = "ConstantStartValue" });
 
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_parameterValue, A<IFormulaCache>.Ignored)).Returns(_clonedParameterValue);
       }
@@ -116,12 +119,12 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          var unit = new Unit("Dimensionless", 1.0, 0.0);
-         _firstStartValueRef = new ParameterValue {ContainerPath = new ObjectPath("this", "path"), Name = "Name", Value = -1.0, DisplayUnit = unit};
+         _firstStartValueRef = new ParameterValue { ContainerPath = new ObjectPath("this", "path"), Name = "Name", Value = -1.0, DisplayUnit = unit };
          _parameterValue = new List<ImportedQuantityDTO>
          {
-            new ImportedQuantityDTO {Name = "Name", ContainerPath = new ObjectPath(new[] {"this", "path"}), QuantityInBaseUnit = 1.0, DisplayUnit = unit},
-            new ImportedQuantityDTO {Name = "Name", ContainerPath = new ObjectPath(new[] {"that", "path"}), QuantityInBaseUnit = 2.0, DisplayUnit = unit},
-            new ImportedQuantityDTO {Name = "Name", ContainerPath = new ObjectPath(new[] {"the", "path"}), QuantityInBaseUnit = 3.0, DisplayUnit = unit}
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "this", "path" }), QuantityInBaseUnit = 1.0, DisplayUnit = unit },
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "that", "path" }), QuantityInBaseUnit = 2.0, DisplayUnit = unit },
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "the", "path" }), QuantityInBaseUnit = 3.0, DisplayUnit = unit }
          };
 
          _parameterValueBuildingBlock.Add(_firstStartValueRef);
@@ -181,7 +184,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B"), Name = "C"};
+         _startValue = new ParameterValue { ContainerPath = new ObjectPath("A", "B"), Name = "C" };
          _parameterValueBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 0, "");
       }
@@ -199,7 +202,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new ParameterValue { ContainerPath = new ObjectPath("A", "B") };
          _parameterValueBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 2, "C");
       }
@@ -217,7 +220,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B"), Name = "D"};
+         _startValue = new ParameterValue { ContainerPath = new ObjectPath("A", "B"), Name = "D" };
          _parameterValueBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 0, "C");
       }
@@ -235,7 +238,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _startValue = new ParameterValue {ContainerPath = new ObjectPath("A", "B")};
+         _startValue = new ParameterValue { ContainerPath = new ObjectPath("A", "B") };
          _parameterValueBuildingBlock.Add(_startValue);
          sut.EditPathAndValueEntityContainerPath(_parameterValueBuildingBlock, _startValue, 5, "C");
       }
@@ -270,6 +273,64 @@ namespace MoBi.Presentation.Tasks
       {
          _startValue.ValueOrigin.Description.ShouldBeEqualTo(_valueOrigin.Description);
          _startValue.ValueOrigin.Method.ShouldBeEqualTo(_valueOrigin.Method);
+      }
+   }
+
+   public class When_adding_an_expression_profile : concern_for_ParameterValuesTask
+   {
+      private MoBiSpatialStructure _spatialStructure;
+      private MoleculeBuildingBlock _molecules;
+      private ISelectOrganAndProteinsPresenter _selectOrganAndProteinsPresenter;
+      private Module _module;
+      private IReadOnlyList<MoleculeBuilder> _selectedMolecules;
+      private IContainer _selectedOrgan;
+      private IPathAndValueEntitySelectionPresenter _pathAndValueEntitySelectionPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _selectedOrgan = new Container();
+         _selectedMolecules = new List<MoleculeBuilder> { new MoleculeBuilder() };
+         _spatialStructure = new MoBiSpatialStructure();
+         _molecules = new MoleculeBuildingBlock();
+         _module = new Module
+         {
+            _spatialStructure,
+            _molecules,
+            _parameterValueBuildingBlock
+         };
+         _selectOrganAndProteinsPresenter = A.Fake<ISelectOrganAndProteinsPresenter>();
+         _pathAndValueEntitySelectionPresenter = A.Fake<IPathAndValueEntitySelectionPresenter>();
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { _spatialStructure });
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { _molecules });
+         A.CallTo(() => _context.Context.Resolve<ISelectOrganAndProteinsPresenter>()).Returns(_selectOrganAndProteinsPresenter);
+         A.CallTo(() => _context.Context.Resolve<IPathAndValueEntitySelectionPresenter>()).Returns(_pathAndValueEntitySelectionPresenter);
+
+         A.CallTo(() => _selectOrganAndProteinsPresenter.SelectedOrgan).Returns(_selectedOrgan);
+         A.CallTo(() => _selectOrganAndProteinsPresenter.SelectedMolecules).Returns(_selectedMolecules);
+      }
+
+      protected override void Because()
+      {
+         sut.AddStartValueExpression(_parameterValueBuildingBlock);
+      }
+
+      [Observation]
+      public void the_organ_and_molecule_presenter_should_be_used()
+      {
+         A.CallTo(() => _context.Context.Resolve<ISelectOrganAndProteinsPresenter>()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_selection_presenter_is_used_to_select_using_the_module_as_the_default_selection()
+      {
+         A.CallTo(() => _selectOrganAndProteinsPresenter.SelectSelectOrganAndProteins(_module)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_selection_presenter_is_used_to_find_colliding_entities_and_allow_the_user_to_replace_existing()
+      {
+         A.CallTo(() => _pathAndValueEntitySelectionPresenter.SelectReplacementEntities(A<IReadOnlyList<ParameterValue>>._, _parameterValueBuildingBlock)).MustHaveHappened();
       }
    }
 }

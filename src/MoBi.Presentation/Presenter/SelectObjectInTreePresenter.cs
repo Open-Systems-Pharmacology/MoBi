@@ -36,6 +36,7 @@ namespace MoBi.Presentation.Presenter
       ObjectPath SelectedEntityPath { get; }
       void SelectObjectBaseDTO(ObjectBaseDTO dto);
       event EventHandler<SelectedEntityChangedArgs> OnSelectedEntityChanged;
+      void SelectById(string id);
    }
 
    public class SelectEntityInTreePresenter : AbstractPresenter<ISelectEntityInTreeView, ISelectEntityInTreePresenter>, ISelectEntityInTreePresenter
@@ -60,11 +61,13 @@ namespace MoBi.Presentation.Presenter
       public virtual void SelectObjectBaseDTO(ObjectBaseDTO dto)
       {
          var entity = EntityFrom(dto);
-         if (entity == null)
-            return;
 
-         OnSelectedEntityChanged(this, new SelectedEntityChangedArgs(entity, _objectPathFactory.CreateAbsoluteObjectPath(entity)));
+         // if the selected node is not an entity, then use null as the selected entity to indicate
+         // that no entity is selected. This happens when a module node is clicked for example.
+         OnSelectedEntityChanged(this, new SelectedEntityChangedArgs(entity, entity == null ? null : _objectPathFactory.CreateAbsoluteObjectPath(entity)));
       }
+
+      public void SelectById(string id) => _view.SelectNodeById(id);
 
       public Func<ObjectBaseDTO, IReadOnlyList<ObjectBaseDTO>> GetChildren { get; set; }
 

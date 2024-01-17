@@ -42,13 +42,13 @@ namespace MoBi.Presentation.Tasks
          _context = context;
       }
 
-      public virtual void Merge(ICache<string, T> merge, ICache<string, T> target, Func<T, T, bool> areElementsEquivalent = null)
+      public virtual void Merge(ICache<string, T> merge, ICache<string, T> target, Func<T, T, bool> areElementsEquivalent = null, MergeConflictOptions defaultOption = MergeConflictOptions.SkipOnce)
       {
          var resolved = 0;
          var conflictResolution = areElementsEquivalent ?? ((x, y) => false);
          var conflictingElements = GetConflictingElements(merge, target, conflictResolution).ToList();
 
-         var option = MergeConflictOptions.SkipOnce;
+         var option = defaultOption;
          foreach (var key in conflictingElements)
          {
             resolved++;

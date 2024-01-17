@@ -262,6 +262,7 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.LoadObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.InitialConditionsExtend].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ParameterValuesExtend].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.AddProteinExpression].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SearchView].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewParameterValue].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewInitialConditions].Enabled = enabled;

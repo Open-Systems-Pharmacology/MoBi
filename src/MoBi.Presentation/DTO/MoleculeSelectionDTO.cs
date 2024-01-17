@@ -17,11 +17,11 @@ namespace MoBi.Presentation.DTO
          Rules.Add(AllRules.SelectedMoleculesHaveUniqueNames);
       }
 
+      public string Icon => MoleculeBuilder.Icon;
+      public SelectMoleculesDTO ParentDTO { get; set; }
       public IBuildingBlock BuildingBlock => MoleculeBuilder.BuildingBlock;
       public string BuildingBlockDisplayName => BuildingBlock.ToString();
-
       public string MoleculeName => MoleculeBuilder.Name;
-
       public MoleculeBuilder MoleculeBuilder { get; }
 
       public bool Selected
@@ -34,9 +34,6 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public string Icon => MoleculeBuilder.Icon;
-      public SelectSpatialStructureAndMoleculesDTO ParentDTO { get; set; }
-      
       private static class AllRules
       {
          public static IBusinessRule SelectedMoleculesHaveUniqueNames { get; } =
@@ -45,15 +42,9 @@ namespace MoBi.Presentation.DTO
                .WithRule((dto, selected) => !selected || uniqueNamesSelected(dto))
                .WithError((dto, selected) => AppConstants.Validation.AnotherMoleculeNamedIsSelected(dto.MoleculeName));
 
-         private static bool uniqueNamesSelected(MoleculeSelectionDTO dto)
-         {
-            return !selectedMoleculesWithout(dto).Select(x => x.MoleculeName).Contains(dto.MoleculeName);
-         }
+         private static bool uniqueNamesSelected(MoleculeSelectionDTO dto) => !selectedMoleculesWithout(dto).Select(x => x.MoleculeName).Contains(dto.MoleculeName);
 
-         private static IEnumerable<MoleculeSelectionDTO> selectedMoleculesWithout(MoleculeSelectionDTO dto)
-         {
-            return dto.ParentDTO.SelectedMolecules.Except(new[] { dto });
-         }
+         private static IEnumerable<MoleculeSelectionDTO> selectedMoleculesWithout(MoleculeSelectionDTO dto) => dto.ParentDTO.SelectedMolecules.Except(new[] { dto });
       }
    }
 }

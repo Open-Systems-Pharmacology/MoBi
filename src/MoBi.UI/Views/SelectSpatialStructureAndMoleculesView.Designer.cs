@@ -31,25 +31,23 @@
       private void InitializeComponent()
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
-         this.gridView = new MoBi.UI.Views.UxGridView();
          this.descriptionLabel = new DevExpress.XtraEditors.LabelControl();
          this.cmbSpatialStructure = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItemSpatialStructure = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItemMolecules = new DevExpress.XtraLayout.LayoutControlItem();
          this.descriptionLayoutControl = new DevExpress.XtraLayout.LayoutControlItem();
+         this.moleculeSelectionPanel = new DevExpress.XtraEditors.PanelControl();
+         this.layoutControlItemMolecules = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cmbSpatialStructure.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemSpatialStructure)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemMolecules)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.descriptionLayoutControl)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.moleculeSelectionPanel)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemMolecules)).BeginInit();
          this.SuspendLayout();
          // 
          // tablePanel
@@ -60,7 +58,7 @@
          // layoutControl1
          // 
          this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.gridControl);
+         this.layoutControl1.Controls.Add(this.moleculeSelectionPanel);
          this.layoutControl1.Controls.Add(this.descriptionLabel);
          this.layoutControl1.Controls.Add(this.cmbSpatialStructure);
          this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -71,25 +69,6 @@
          this.layoutControl1.Size = new System.Drawing.Size(853, 625);
          this.layoutControl1.TabIndex = 1;
          this.layoutControl1.Text = "layoutControl1";
-         // 
-         // gridControl
-         // 
-         this.gridControl.Location = new System.Drawing.Point(12, 52);
-         this.gridControl.MainView = this.gridView;
-         this.gridControl.Name = "gridControl";
-         this.gridControl.Size = new System.Drawing.Size(829, 544);
-         this.gridControl.TabIndex = 39;
-         this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView});
-         // 
-         // gridView
-         // 
-         this.gridView.AllowsFiltering = true;
-         this.gridView.EnableColumnContextMenu = true;
-         this.gridView.GridControl = this.gridControl;
-         this.gridView.MultiSelect = false;
-         this.gridView.Name = "gridView";
-         this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
          // 
          // descriptionLabel
          // 
@@ -120,8 +99,8 @@
          this.layoutControlGroup1.GroupBordersVisible = false;
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItemSpatialStructure,
-            this.layoutControlItemMolecules,
-            this.descriptionLayoutControl});
+            this.descriptionLayoutControl,
+            this.layoutControlItemMolecules});
          this.layoutControlGroup1.Name = "Root";
          this.layoutControlGroup1.Size = new System.Drawing.Size(853, 625);
          this.layoutControlGroup1.TextVisible = false;
@@ -135,15 +114,6 @@
          this.layoutControlItemSpatialStructure.Size = new System.Drawing.Size(833, 24);
          this.layoutControlItemSpatialStructure.TextSize = new System.Drawing.Size(164, 13);
          // 
-         // layoutControlItemMolecules
-         // 
-         this.layoutControlItemMolecules.Control = this.gridControl;
-         this.layoutControlItemMolecules.Location = new System.Drawing.Point(0, 24);
-         this.layoutControlItemMolecules.Name = "layoutControlItemMolecules";
-         this.layoutControlItemMolecules.Size = new System.Drawing.Size(833, 564);
-         this.layoutControlItemMolecules.TextLocation = DevExpress.Utils.Locations.Top;
-         this.layoutControlItemMolecules.TextSize = new System.Drawing.Size(164, 13);
-         // 
          // descriptionLayoutControl
          // 
          this.descriptionLayoutControl.Control = this.descriptionLabel;
@@ -152,6 +122,22 @@
          this.descriptionLayoutControl.Size = new System.Drawing.Size(833, 17);
          this.descriptionLayoutControl.TextSize = new System.Drawing.Size(0, 0);
          this.descriptionLayoutControl.TextVisible = false;
+         // 
+         // panelControl1
+         // 
+         this.moleculeSelectionPanel.Location = new System.Drawing.Point(12, 36);
+         this.moleculeSelectionPanel.Name = "moleculeSelectionPanel";
+         this.moleculeSelectionPanel.Size = new System.Drawing.Size(829, 560);
+         this.moleculeSelectionPanel.TabIndex = 7;
+         // 
+         // layoutControlItemMolecules
+         // 
+         this.layoutControlItemMolecules.Control = this.moleculeSelectionPanel;
+         this.layoutControlItemMolecules.Location = new System.Drawing.Point(0, 24);
+         this.layoutControlItemMolecules.Name = "layoutControlItemMolecules";
+         this.layoutControlItemMolecules.Size = new System.Drawing.Size(833, 564);
+         this.layoutControlItemMolecules.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItemMolecules.TextVisible = false;
          // 
          // SelectSpatialStructureAndMoleculesView
          // 
@@ -168,13 +154,12 @@
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cmbSpatialStructure.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemSpatialStructure)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemMolecules)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.descriptionLayoutControl)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.moleculeSelectionPanel)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemMolecules)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -188,8 +173,7 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemSpatialStructure;
       private DevExpress.XtraEditors.LabelControl descriptionLabel;
       private DevExpress.XtraLayout.LayoutControlItem descriptionLayoutControl;
-      private OSPSuite.UI.Controls.UxGridControl gridControl;
-      private UxGridView gridView;
+      private DevExpress.XtraEditors.PanelControl moleculeSelectionPanel;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemMolecules;
    }
 }

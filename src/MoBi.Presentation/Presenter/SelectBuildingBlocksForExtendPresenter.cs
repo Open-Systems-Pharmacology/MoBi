@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
@@ -8,7 +9,6 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -24,20 +24,32 @@ namespace MoBi.Presentation.Presenter
    public class SelectSpatialStructureAndMoleculesPresenter : AbstractDisposablePresenter<ISelectSpatialStructureAndMoleculesView, ISelectSpatialStructureAndMoleculesPresenter>, ISelectSpatialStructureAndMoleculesPresenter
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private SelectSpatialStructureAndMoleculesDTO _dto;
-      private readonly ISelectSpatialStructureAndMoleculesDTOMapper _mapper;
+      private SelectSpatialStructureDTO _dto;
+      private readonly ISelectSpatialStructureDTOMapper _mapper;
+      private readonly ISelectMoleculesPresenter _selectMoleculesPresenter;
 
-      public SelectSpatialStructureAndMoleculesPresenter(ISelectSpatialStructureAndMoleculesView view, IBuildingBlockRepository buildingBlockRepository, ISelectSpatialStructureAndMoleculesDTOMapper mapper) : base(view)
+      public SelectSpatialStructureAndMoleculesPresenter(
+         ISelectSpatialStructureAndMoleculesView view,
+         IBuildingBlockRepository buildingBlockRepository,
+         ISelectSpatialStructureDTOMapper mapper,
+         ISelectMoleculesPresenter selectMoleculesPresenter) : base(view)
       {
          _buildingBlockRepository = buildingBlockRepository;
          _mapper = mapper;
+         _selectMoleculesPresenter = selectMoleculesPresenter;
+
+         _subPresenterManager.Add(_selectMoleculesPresenter);
+         _selectMoleculesPresenter.StatusChanged += moleculeSelectionStatusChanged;
+         _view.AddMoleculeSelectionView(_selectMoleculesPresenter.View);
       }
+
+      private void moleculeSelectionStatusChanged(object sender, EventArgs e) => _view.MoleculeSelectionChanged();
 
       public void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
       {
-         setViewCaption();
-         _dto = _mapper.MapFrom(_buildingBlockRepository.MoleculeBlockCollection, defaultSpatialStructure ?? AllSpatialStructures.FirstOrDefault());
-         selectDefaultMolecules(defaultMolecules);
+         _view.Caption = AppConstants.Captions.SelectSpatialStructureAndMolecules;
+         _dto = _mapper.MapFrom(defaultSpatialStructure ?? AllSpatialStructures.FirstOrDefault());
+         _selectMoleculesPresenter.SelectMolecules(defaultMolecules);
 
          _view.Show(_dto);
          _view.Display();
@@ -47,21 +59,9 @@ namespace MoBi.Presentation.Presenter
          _dto.SpatialStructure = null;
       }
 
-      private void selectDefaultMolecules(MoleculeBuildingBlock defaultMolecules)
-      {
-         _dto.Molecules.Where(x => Equals(x.BuildingBlock, defaultMolecules)).Each(x =>
-         {
-            x.Selected = true;
-            _dto.SelectionUpdated(x);
-         });
-      }
+      public override bool CanClose => _subPresenterManager.CanClose;
 
-      private void setViewCaption()
-      {
-         _view.Caption = AppConstants.Captions.SelectSpatialStructureAndMolecules;
-      }
-
-      public IReadOnlyList<MoleculeBuilder> SelectedMolecules => _dto.SelectedMolecules.Select(x => x.MoleculeBuilder).ToList();
+      public IReadOnlyList<MoleculeBuilder> SelectedMolecules => _selectMoleculesPresenter.SelectedMolecules.Select(x => x.MoleculeBuilder).ToList();
 
       public SpatialStructure SelectedSpatialStructure => _dto.SpatialStructure;
 

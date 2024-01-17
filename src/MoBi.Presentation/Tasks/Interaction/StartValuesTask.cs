@@ -164,7 +164,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moBiMacroCommand;
       }
 
-      protected IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> startValues, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend)
+      protected IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> startValues, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true)
       {
          var macro = CreateExtendMacroCommand(_interactionTaskContext.GetTypeFor(buildingBlockToExtend));
 
@@ -173,9 +173,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          var cacheToExtend = startValues.ToCache();
          var targetCache = buildingBlockToExtend.ToCache();
 
-         // Use the merge manager to implement the extend. We can take advantage of the equivalency checker to favor the existing 
-         // start value if a conflict is found (always prefer the existing start value)
-         _extendManager.Merge(cacheToExtend, targetCache, areElementsEquivalent: (s1, s2) => true);
+         _extendManager.Merge(cacheToExtend, targetCache, defaultOption: retainConflictingEntities ? MergeConflictOptions.SkipAll : MergeConflictOptions.ReplaceAll);
 
          macro.Run(Context);
 
@@ -209,13 +207,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       public virtual void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock)
       {
          var commonModule = buildingBlock.Module;
-         var (spatialStructure, molecules) = SelectBuildingBlocksForExtend(commonModule.Molecules, commonModule.SpatialStructure);
+         var (spatialStructure, molecules) = selectBuildingBlocksForExtend(commonModule.Molecules, commonModule.SpatialStructure);
          if (spatialStructure == null || molecules == null || !molecules.Any())
             return;
 
          var newStartValues = CreateStartValuesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock);
-
-         AddCommand(Extend(newStartValues.ToList(), buildingBlock));
+         AddCommand(Extend(newStartValues, buildingBlock));
       }
 
       public IMoBiCommand UpdatePathAndValueEntityDimension(TBuildingBlock pathAndValueEntitiesBuildingBlock, TPathAndValueEntity pathAndValueEntity, IDimension newDimension)
@@ -285,7 +282,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
       }
 
-      protected (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
+      private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
       {
          var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
          var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;

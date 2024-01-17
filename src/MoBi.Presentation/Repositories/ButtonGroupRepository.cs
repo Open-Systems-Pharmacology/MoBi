@@ -212,8 +212,9 @@ namespace MoBi.Presentation.Repositories
 
       private IButtonGroup addParameterValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ParameterValuesExtend)))
-         .WithId(ButtonGroupIds.EditParameterValues)
-         .WithButton((CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewParameterValue))));
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.AddProteinExpression)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewParameterValue)))
+         .WithId(ButtonGroupIds.EditParameterValues);
 
       private IButtonGroup journalButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Journal)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CreateJournalPage)))
