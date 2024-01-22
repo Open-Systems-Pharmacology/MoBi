@@ -32,8 +32,13 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
+    <PackageReference Include="OSPSuite.Core" Version="12.0.262" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.0.262" />
+=======
     <PackageReference Include="OSPSuite.Core" Version="12.0.263" />
     <PackageReference Include="OSPSuite.Assets" Version="12.0.263" />
+>>>>>>> 604e1e6f (Fixes #160 Favorites list: Column "Simulation" is expendable)
   </ItemGroup>
 
   <ItemGroup>

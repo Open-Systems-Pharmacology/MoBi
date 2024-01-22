@@ -214,8 +214,9 @@ namespace MoBi.UI.Views
       public void SetVisibility(PathElementId pathElement, bool isVisible)
       {
          _pathBinder.SetVisibility(pathElement, isVisible);
+         _pathBinder.ColumnAt(pathElement).WithShowInColumnChooser(!isVisible);
       }
-
+      
       public IReadOnlyList<ParameterDTO> SelectedParameters
       {
          get { return _gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
