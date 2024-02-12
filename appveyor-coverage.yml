@@ -23,6 +23,7 @@ clone_depth: 1
 install:
   - set PATH=C:\Ruby22\bin;C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
+  - ps: cinst nunit-extension-vs-project-loader --no-progress
   - ps: >-
      (new-object net.webclient).DownloadFile('https://github.com/Open-Systems-Pharmacology/MiKTeX/releases/download/v2.9.3/MikTex.2.9.3.msi', 'C:\\MikTex.msi')
 
