@@ -5,31 +5,28 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IExpressionParameterToParameterValueMapper : IMapper<ExpressionParameter, ParameterValue>
+   public interface IPathAndValueEntityToParameterValueMapper : IMapper<PathAndValueEntity, ParameterValue>
    {
+
    }
 
-   public class ExpressionParameterToParameterValueMapper : IExpressionParameterToParameterValueMapper
+
+   public class PathAndValueEntityToParameterValueMapper : IPathAndValueEntityToParameterValueMapper
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly ICloneManagerForModel _cloneManager;
 
-      public ExpressionParameterToParameterValueMapper(IObjectBaseFactory objectBaseFactory, ICloneManagerForModel cloneManager)
+      public PathAndValueEntityToParameterValueMapper(IObjectBaseFactory objectBaseFactory, ICloneManagerForModel cloneManager)
       {
          _objectBaseFactory = objectBaseFactory;
          _cloneManager = cloneManager;
       }
 
-      public ParameterValue MapFrom(ExpressionParameter expressionParameter)
+      public ParameterValue MapFrom(PathAndValueEntity pathAndValueEntity)
       {
          var parameterValue = _objectBaseFactory.Create<ParameterValue>();
 
-         parameterValue.Path = expressionParameter.Path;
-         parameterValue.Formula = _cloneManager.Clone(expressionParameter.Formula);
-         parameterValue.Dimension = expressionParameter.Dimension;
-         parameterValue.Value = expressionParameter.Value;
-         parameterValue.Description = expressionParameter.Description;
-         parameterValue.UpdateValueOriginFrom(expressionParameter.ValueOrigin);
+         parameterValue.UpdatePropertiesFrom(pathAndValueEntity, _cloneManager);
 
          return parameterValue;
       }

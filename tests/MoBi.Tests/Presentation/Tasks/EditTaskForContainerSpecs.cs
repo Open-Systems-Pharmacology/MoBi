@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Helpers;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
@@ -26,10 +27,11 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTask _interactionTask;
       protected IObjectPathFactory _objectPathFactory;
       private IMoBiApplicationController _applicationController;
-      protected ISelectFolderAndIndividualFromProjectPresenter _selectIndividualFromProjectPresenter;
+      protected ISelectFolderAndIndividualAndExpressionFromProjectPresenter _selectIndividualAndExpressionFromProjectPresenter;
       protected ICloneManagerForBuildingBlock _cloneManager;
-      protected IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
       protected IFormulaFactory _formulaFactory;
+      protected IPathAndValueEntityToParameterValueMapper _pathAndValueEntityToParameterValueMapper;
+      private IObjectBaseFactory _objectBaseFactory;
 
       protected override void Context()
       {
@@ -37,15 +39,17 @@ namespace MoBi.Presentation.Tasks
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
-         _selectIndividualFromProjectPresenter = A.Fake<ISelectFolderAndIndividualFromProjectPresenter>();
+         _selectIndividualAndExpressionFromProjectPresenter = A.Fake<ISelectFolderAndIndividualAndExpressionFromProjectPresenter>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
-         _individualParameterToParameterMapper = A.Fake<IIndividualParameterToParameterMapper>();
-         A.CallTo(() => _applicationController.Start<ISelectFolderAndIndividualFromProjectPresenter>()).Returns(_selectIndividualFromProjectPresenter);
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         A.CallTo(() => _objectBaseFactory.Create<ParameterValue>()).ReturnsLazily(() => new ParameterValue());
+         _pathAndValueEntityToParameterValueMapper = new PathAndValueEntityToParameterValueMapper(_objectBaseFactory, A.Fake<ICloneManagerForModel>());
+         A.CallTo(() => _applicationController.Start<ISelectFolderAndIndividualAndExpressionFromProjectPresenter>()).Returns(_selectIndividualAndExpressionFromProjectPresenter);
          A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_applicationController);
          _interactionTask = A.Fake<IInteractionTask>();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _individualParameterToParameterMapper, _formulaFactory);
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _pathAndValueEntityToParameterValueMapper);
       }
    }
 
@@ -81,6 +85,7 @@ namespace MoBi.Presentation.Tasks
       private IContainer _containerToSave;
       private Parameter _replacedParameter;
       private IndividualParameter _parameterWithoutContainer;
+      protected ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
 
       protected override void Context()
       {
@@ -113,71 +118,59 @@ namespace MoBi.Presentation.Tasks
          _replacedParameter = new Parameter().WithName("ShouldBeReplaced");
          _clonedContainer.Add(_replacedParameter);
 
+
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock();
+
          _tmpSpatialStructure = new MoBiSpatialStructure
          {
             NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS)
          };
 
-         A.CallTo(() => _selectIndividualFromProjectPresenter.GetPathAndIndividualForExport(_containerToSave)).Returns(("FilePath", _individual));
+         A.CallTo(() => _selectIndividualAndExpressionFromProjectPresenter.GetPathAndIndividualForExport(_containerToSave)).Returns(("FilePath", _individual, null));
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
          A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
-         A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => newParameter(x.Arguments.Get<IndividualParameter>(0)));
          A.CallTo(() => _formulaFactory.ConstantFormula(replacementIndividualParameter.Value.Value, replacementIndividualParameter.Dimension)).ReturnsLazily(x => new ConstantFormula(x.Arguments.Get<double>(0)));
-      }
-
-      private static IParameter newParameter(IndividualParameter individualParameter)
-      {
-         if (individualParameter.DistributionType == null)
-            return new Parameter().WithName(individualParameter.Name);
-
-         return new DistributedParameter().WithName(individualParameter.Name);
+         A.CallTo(() => _interactionTaskContext.Context.Create<ParameterValuesBuildingBlock>()).Returns(_parameterValuesBuildingBlock);
       }
 
       protected override void Because()
       {
-         sut.SaveWithIndividual(_containerToSave);
+         sut.SaveWithIndividualAndExpression(_containerToSave);
       }
 
       [Observation]
       public void the_parameter_is_not_created_when_the_container_does_not_exist()
       {
-         A.CallTo(() => _individualParameterToParameterMapper.MapFrom(_parameterWithoutContainer)).MustNotHaveHappened();
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|Container3|ContainerDoesNotExist").ShouldBeNull();
       }
 
       [Observation]
-      public void the_distributed_parameter_should_contain_sub_parameters()
+      public void simple_parameters_are_included_in_the_parameter_values_building_block()
       {
-         var distributedParameter = _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).GetSingleChildByName("distributedParameter1-WS") as DistributedParameter;
-         distributedParameter.Children.Count.ShouldBeEqualTo(2);
-         distributedParameter.ExistsByName("Mean").ShouldBeTrue();
-         distributedParameter.ExistsByName("StandardDeviation").ShouldBeTrue();
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|parameter1").ShouldNotBeNull();
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|ShouldBeReplaced").ShouldNotBeNull();
       }
 
       [Observation]
-      public void values_should_be_replaced_with_constant_formula()
+      public void the_distributed_parameter_should_contain_sub_parameters_when_the_distributed_parameter_is_not_in_the_container()
       {
-         var parameter = _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).GetSingleChildByName<IParameter>("ShouldBeReplaced");
-         parameter.Formula.IsConstant().ShouldBeTrue();
-         parameter.Value.ShouldBeEqualTo(1);
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1-WS").ShouldNotBeNull();
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1-WS|Mean").ShouldNotBeNull();
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1-WS|StandardDeviation").ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void the_distributed_parameter_should_contain_sub_parameters_when_the_distributed_parameter_is_in_the_container()
+      {
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1").ShouldNotBeNull();
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1|Mean").ShouldNotBeNull();
+         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1|StandardDeviation").ShouldNotBeNull();
       }
 
       [Observation]
       public void constant_formulas_should_be_used_instead_of_fixed_values()
       {
          _tmpSpatialStructure.TopContainers.Single().GetAllChildren<IParameter>().All(x => x.IsFixedValue == false).ShouldBeTrue();
-      }
-
-      [Observation]
-      public void the_exported_structure_should_have_parameter_overrides_when_parameter_is_in_both_individual_and_spatial_structure()
-      {
-         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).GetSingleChildByName("ShouldBeReplaced").ShouldNotBeEqualTo(_replacedParameter);
-      }
-
-      [Observation]
-      public void the_exported_structure_should_have_parameters_from_the_individual_if_they_match_the_container_path()
-      {
-         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).ContainsName("parameter1").ShouldBeTrue();
-         _tmpSpatialStructure.TopContainers.Single(x => x.Name.Equals("Container1")).ContainsName("ShouldBeReplaced").ShouldBeTrue();
       }
    }
 

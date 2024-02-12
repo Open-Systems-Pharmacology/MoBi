@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       where TView : IView<TPresenter>, IPathAndValueEntitiesView<TStartValueDTO>
       where TPresenter : IPresenter
       where TPathAndValueEntity : PathAndValueEntity, IUsingFormula
-      where TStartValueDTO : StartValueDTO<TPathAndValueEntity>
+      where TStartValueDTO : StartValueDTO<TPathAndValueEntity, TStartValueDTO>
       where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
    {
       protected readonly IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> _valueMapper;
@@ -46,16 +46,16 @@ namespace MoBi.Presentation.Presenter
 
       public bool IsLatched { get; set; }
 
-      protected PathAndValueBuildingBlockPresenter(
-         TView view,
+      protected PathAndValueBuildingBlockPresenter(TView view,
          IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> valueMapper,
          IStartValuesTask<TBuildingBlock, TPathAndValueEntity> startValuesTask,
          IEmptyStartValueCreator<TPathAndValueEntity> emptyStartValueCreator,
          IMoBiContext context,
          IDeleteStartValuePresenter deleteStartValuePresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
-         IDimensionFactory dimensionFactory)
-         : base(view, startValuesTask, formulaToValueFormulaDTOMapper, dimensionFactory)
+         IDimensionFactory dimensionFactory,
+         IDistributedPathAndValueEntityPresenter<TStartValueDTO, TBuildingBlock> distributedPathAndValuePresenter)
+         : base(view, startValuesTask, formulaToValueFormulaDTOMapper, dimensionFactory, distributedPathAndValuePresenter)
       {
          _objectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
          _startValuesTask = startValuesTask;
@@ -161,10 +161,12 @@ namespace MoBi.Presentation.Presenter
       private void reBind(TBuildingBlock buildingBlock)
       {
          if (buildingBlock == null) return;
-         _startValueDTOs = buildingBlock.Select(pathAndValueEntity => _valueMapper.MapFrom(pathAndValueEntity, buildingBlock)).OrderBy(pathAndValueEntity => IsOriginalStartValue(pathAndValueEntity)).ToBindingList();
+         _startValueDTOs = ValueDTOsFor(buildingBlock).OrderBy(pathAndValueEntity => IsOriginalStartValue(pathAndValueEntity)).ToBindingList();
          bindToView();
          initializeColumns();
       }
+
+      protected abstract IReadOnlyList<TStartValueDTO> ValueDTOsFor(TBuildingBlock buildingBlock);
 
       private void bindToView()
       {

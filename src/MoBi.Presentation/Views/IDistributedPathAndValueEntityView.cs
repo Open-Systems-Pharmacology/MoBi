@@ -18,7 +18,22 @@ namespace MoBi.Presentation.Views
 
    }
 
+   public interface IParameterValueDistributedPathAndValueEntityView : IDistributedPathAndValueEntityView<IParameterValueDistributedPathAndValueEntityPresenter, ParameterValue, ParameterValueDTO>
+   {
+
+   }
+
    public interface IExpressionDistributedPathAndValueEntityView : IDistributedPathAndValueEntityView<IExpressionDistributedPathAndValueEntityPresenter, ExpressionParameter, ExpressionParameterDTO>
+   {
+
+   }
+
+   public interface IInitialConditionsDistributedInExpressionProfileView : IDistributedPathAndValueEntityView<IInitialConditionsDistributedInExpressionProfilePresenter, InitialCondition, InitialConditionDTO>
+   {
+
+   }
+
+   public interface IInitialConditionsDistributedPathAndValueEntityView : IDistributedPathAndValueEntityView<IInitialConditionsDistributedPathAndValueEntityPresenter, InitialCondition, InitialConditionDTO>
    {
 
    }

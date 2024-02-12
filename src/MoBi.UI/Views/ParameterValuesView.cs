@@ -4,8 +4,6 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Utility.Extensions;
-using DevExpress.XtraEditors;
-using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -14,20 +12,18 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.UI.Binders;
-using OSPSuite.UI.Controls;
 
 namespace MoBi.UI.Views
 {
    public partial class ParameterValuesView : BasePathAndValueEntityView<ParameterValueDTO, ParameterValue>, IParameterValuesView
    {
-      private readonly UxComboBoxUnit<ParameterValueDTO> _unitControl;
       private readonly IDimensionFactory _dimensionFactory;
       private readonly UxRepositoryItemComboBox _dimensionComboBoxRepository;
 
       public ParameterValuesView(IDimensionFactory dimensionFactory, ValueOriginBinder<ParameterValueDTO> valueOriginBinder):base(valueOriginBinder)
       {
          InitializeComponent();
-         _unitControl = new UxComboBoxUnit<ParameterValueDTO>(gridControl);
+         
          _dimensionFactory = dimensionFactory;
          _dimensionComboBoxRepository = new UxRepositoryItemComboBox(gridView);
       }
@@ -45,11 +41,9 @@ namespace MoBi.UI.Views
 
          _dimensionComboBoxRepository.FillComboBoxRepositoryWith(_dimensionFactory.DimensionsSortedByName);
 
-         _gridViewBinder.AutoBind(dto => dto.Value)
+         BindValueColumn(dto => dto.Value)
             .WithCaption(AppConstants.Captions.ParameterValue)
             .WithFormat(dto => dto.ParameterValueFormatter())
-            .WithEditorConfiguration(configureRepository)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnValueUpdating(onParameterValueSet);
 
          InitializeValueOriginBinding();
@@ -60,8 +54,6 @@ namespace MoBi.UI.Views
 
          _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository)
             .WithOnValueUpdating((o,e) => OnEvent(() => onDimensionSet(o,e)));
-
-         gridView.HiddenEditor += (o, e) => hideEditor();
       }
 
       public override string NameColumnCaption => AppConstants.Captions.ParameterName;
@@ -85,16 +77,6 @@ namespace MoBi.UI.Views
          });
       }
 
-      private void hideEditor()
-      {
-         _unitControl.Hide();
-      }
-
       private IParameterValuesPresenter parameterValuesPresenter => _presenter.DowncastTo<IParameterValuesPresenter>();
-
-      private void configureRepository(BaseEdit activeEditor, ParameterValueDTO parameterValue)
-      {
-         _unitControl.UpdateUnitsFor(activeEditor, parameterValue);
-      }
    }
 }

@@ -13,6 +13,7 @@ namespace MoBi.Presentation.DTO
       }
 
       public IReadOnlyList<ExpressionParameterDTO> ParameterDTOs { get; set; }
+      public IReadOnlyList<InitialConditionDTO> InitialConditionDTOs { get; set; }
 
       public string Species => _buildingBlock.Species;
       public string Category => _buildingBlock.Category;

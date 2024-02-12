@@ -20,6 +20,7 @@ namespace MoBi.Presentation
    {
       protected IExpressionProfileBuildingBlockView _view;
       protected ExpressionParameterToExpressionParameterDTOMapper _expressionParameterToExpressionParameterDTOMapper;
+      protected IInitialConditionToInitialConditionDTOMapper _initialConditionToInitialConditionDTOMapper;
       protected ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper;
       protected ExpressionProfileBuildingBlock _buildingBlock;
       protected ExpressionParameter _expressionParameter1;
@@ -36,9 +37,10 @@ namespace MoBi.Presentation
       {
          _distributedParameterPresenter = A.Fake<IExpressionDistributedPathAndValueEntityPresenter>();
          _expressionParameterToExpressionParameterDTOMapper = new ExpressionParameterToExpressionParameterDTOMapper(new FormulaToValueFormulaDTOMapper());
+         _initialConditionToInitialConditionDTOMapper = new InitialConditionToInitialConditionDTOMapper(new FormulaToValueFormulaDTOMapper());
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _pkSimStarter = A.Fake<IPKSimStarter>();
-         _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(_expressionParameterToExpressionParameterDTOMapper);
+         _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(_expressionParameterToExpressionParameterDTOMapper, _initialConditionToInitialConditionDTOMapper);
          _view = A.Fake<IExpressionProfileBuildingBlockView>();
          _interactionTaskForExpressionProfile = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();

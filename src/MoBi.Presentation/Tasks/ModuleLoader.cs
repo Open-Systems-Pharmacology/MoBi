@@ -7,6 +7,7 @@ using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
@@ -53,7 +54,7 @@ namespace MoBi.Presentation.Tasks
 
       private IMoBiCommand addFromSimulationTransfer(MoBiProject project, string filename)
       {
-         var configuration = _interactionTaskContext.InteractionTask.LoadSimulationTransfer(filename).Simulation.Configuration;
+         var configuration = _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(filename).Simulation.Configuration;
 
          var macroCommand = new MoBiMacroCommand
          {

@@ -105,16 +105,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected override void AddSaveItems(IContainer container)
       {
-         base.AddSaveItems(container);
-         _allMenuItems.Add(createSaveWithIndividualFor(container));
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML.WithEllipsis())
+            .WithCommandFor<SaveWithIndividualAndExpressionUICommand, IContainer>(container, _container)
+            .WithIcon(ApplicationIcons.PKMLSave));
       }
 
-      private IMenuBarItem createSaveWithIndividualFor(IContainer containerToSave)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveWithIndividual.WithEllipsis())
-            .WithCommandFor<SaveWithIndividualUICommand, IContainer>(containerToSave, _container)
-            .WithIcon(ApplicationIcons.PKMLSave);
-      }
    }
 
    public class ContextMenuForContainerInEventGroups : ContextMenuForContainerBase<IContainer>

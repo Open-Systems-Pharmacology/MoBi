@@ -49,8 +49,8 @@ namespace MoBi.Presentation.Presenter
          _dto.Molecules.Where(x => Equals(x.BuildingBlock, defaultMolecules)).Each(x =>
          {
             x.Selected = true;
-            _dto.SelectionUpdated(x);
          });
+         _dto.SelectionUpdated();
       }
    }
 }

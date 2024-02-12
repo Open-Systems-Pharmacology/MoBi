@@ -8,6 +8,10 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation
 {
+   public class concern_for_SelectableDTO<TSelectableDTO, TParentDTO> : ContextSpecification<TSelectableDTO> where TSelectableDTO : SelectableDTO<TSelectableDTO, TParentDTO> where TParentDTO : ContainsMultiSelectDTO<TSelectableDTO, TParentDTO>
+   {
+   }
+
     public class concern_for_SelectMoleculesDTO : ContextSpecification<SelectMoleculesDTO>
     {
         protected override void Context()

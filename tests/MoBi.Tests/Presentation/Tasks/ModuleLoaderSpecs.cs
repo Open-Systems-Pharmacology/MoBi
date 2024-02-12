@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadSimulationTransfer(A<string>._)).Throws(() => new NotMatchingSerializationFileException("exception"));
+         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(A<string>._)).Throws(() => new NotMatchingSerializationFileException("exception"));
          A.CallTo(() => _interactionTaskContext.InteractionTask.LoadItems<Module>("filePath")).Returns(new[] { new Module() });
          A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.Yes);
       }
@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadSimulationTransfer(A<string>._)).Returns(_simulationTransfer);
+         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(A<string>._)).Returns(_simulationTransfer);
          A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
@@ -104,7 +104,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadSimulationTransfer(A<string>._)).Returns(_simulationTransfer);
+         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(A<string>._)).Returns(_simulationTransfer);
          A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.No);
       }
 
@@ -133,7 +133,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadSimulationTransfer(A<string>._)).Returns(_simulationTransfer);
+         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(A<string>._)).Returns(_simulationTransfer);
          A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 

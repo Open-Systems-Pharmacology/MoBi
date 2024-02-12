@@ -12,7 +12,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Mapper
 {
-   public class concern_for_ExpressionParameterToParameterValueMapper : ContextSpecification<ExpressionParameterToParameterValueMapper>
+   public class concern_for_ExpressionParameterToParameterValueMapper : ContextSpecification<PathAndValueEntityToParameterValueMapper>
    {
       private IObjectBaseFactory _objectFactory;
       private CloneManagerForModel _cloneManager;
@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Mapper
 
          _cloneManager = new CloneManagerForModel(_objectFactory, new DataRepositoryTask(), A.Fake<IModelFinalizer>());
 
-         sut = new ExpressionParameterToParameterValueMapper(_objectFactory, _cloneManager);
+         sut = new PathAndValueEntityToParameterValueMapper(_objectFactory, _cloneManager);
       }
    }
 

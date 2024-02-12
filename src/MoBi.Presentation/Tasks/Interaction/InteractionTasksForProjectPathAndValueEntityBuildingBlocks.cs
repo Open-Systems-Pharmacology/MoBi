@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter> : IInteractionTasksForPathAndValueEntity<MoBiProject, TBuildingBlock, TParameter>
+   public interface IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter> : IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter>
    {
 
    }

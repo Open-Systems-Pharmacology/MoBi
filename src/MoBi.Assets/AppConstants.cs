@@ -1103,7 +1103,6 @@ namespace MoBi.Assets
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
          
          public static string AddModuleWithBuildingBlocks = "Create Module";
-         public static string SaveWithIndividual = "Save With Individual";
          public static string EditDefaultSimulationSettings = "Edit Default Simulation Settings";
          public static string SaveProjectSimulationSettings = "Save Default Simulation Settings";
          public static string LoadProjectSimulationSettings = "Load Default Simulation Settings";
@@ -1591,7 +1590,7 @@ namespace MoBi.Assets
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
-         public static string ExportContainerDescription(string exportedContainerPath) => $"Select an individual and file path for container export. Parameters from the individual that match the path {exportedContainerPath} will be addd to the container before exporting.";
+         public static string ExportContainerDescription(string exportedContainerPath) => $"<b>Select a <i>file path</i> and optional <i>individual</i> and <i>expression profiles</i> for container export. Parameters from the <i>individual</i> and <i>expression profiles</i> that match the path {exportedContainerPath} will be addd to the container before exporting.</b>";
          public static readonly string SelectIndividualAndPathForContainerExport = "Select an individual and path for container export";
          public static readonly string AddInterval = "Add Interval";
          public static string CouldNotResolveSource(string sourceType) => $"{sourceType} source not defined";

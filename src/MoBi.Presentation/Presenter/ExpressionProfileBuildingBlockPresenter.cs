@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class ExpressionProfileBuildingBlockPresenter :
-      PathAndValueBuildingBlockWithDistributionPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
+      PathAndValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
       IExpressionProfileBuildingBlockPresenter, IListener<RenamedEvent>
    {
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;

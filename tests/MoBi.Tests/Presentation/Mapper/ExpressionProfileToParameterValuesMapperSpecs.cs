@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Mapper
    {
       private IObjectBaseFactory _objectFactory;
       private ICloneManagerForModel _cloneManager;
-      private ExpressionParameterToParameterValueMapper _expressionParameterToParameterValueMapper;
+      private PathAndValueEntityToParameterValueMapper _expressionParameterToParameterValueMapper;
 
       protected override void Context()
       {
@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Mapper
 
          _cloneManager = new CloneManagerForModel(_objectFactory, new DataRepositoryTask(), A.Fake<IModelFinalizer>());
 
-         _expressionParameterToParameterValueMapper = new ExpressionParameterToParameterValueMapper(_objectFactory, _cloneManager);
+         _expressionParameterToParameterValueMapper = new PathAndValueEntityToParameterValueMapper(_objectFactory, _cloneManager);
          sut = new ExpressionProfileToParameterValuesMapper(_expressionParameterToParameterValueMapper, _objectFactory);
       }
    }

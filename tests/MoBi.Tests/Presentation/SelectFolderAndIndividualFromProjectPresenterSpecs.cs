@@ -1,7 +1,9 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core.Domain.Repository;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
@@ -12,19 +14,20 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
-   public class concern_for_SelectFolderAndIndividualFromProjectPresenter : ContextSpecification<SelectFolderAndIndividualFromProjectPresenter>
+   public class concern_for_SelectFolderAndIndividualFromProjectPresenter : ContextSpecification<SelectFolderAndIndividualAndExpressionFromProjectPresenter>
    {
       protected IEditTaskForContainer _editTaskForContainer;
       protected IBuildingBlockRepository _buildingBlockRepository;
-      protected ISelectFolderAndIndividualFromProjectView _view;
+      protected ISelectFolderAndIndividualAndExpressionFromProjectView _view;
+      private IIndividualExpressionAndFilePathDTOMapper _mapper;
 
       protected override void Context()
       {
-         _view = A.Fake<ISelectFolderAndIndividualFromProjectView>();
+         _view = A.Fake<ISelectFolderAndIndividualAndExpressionFromProjectView>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _editTaskForContainer = A.Fake<IEditTaskForContainer>();
-
-         sut = new SelectFolderAndIndividualFromProjectPresenter(_view, _buildingBlockRepository, _editTaskForContainer, new ObjectPathFactoryForSpecs());
+         _mapper = A.Fake<IIndividualExpressionAndFilePathDTOMapper>();
+         sut = new SelectFolderAndIndividualAndExpressionFromProjectPresenter(_view, _buildingBlockRepository, _editTaskForContainer, new ObjectPathFactoryForSpecs(), _mapper);
       }
    }
 
@@ -34,6 +37,8 @@ namespace MoBi.Presentation
       protected IndividualBuildingBlock _individualBuildingBlock;
       protected IndividualBuildingBlock _selectedIndividual;
       protected string _selectedPath;
+      protected ExpressionProfileBuildingBlock _expressionProfileBuildingBlock;
+      protected IReadOnlyList<ExpressionProfileBuildingBlock> _selectedExpressionProfile;
 
       protected override void Context()
       {
@@ -41,11 +46,17 @@ namespace MoBi.Presentation
          A.CallTo(() => _view.Canceled).Returns(Cancelled);
          _individualBuildingBlock = new IndividualBuildingBlock();
          _filePath = "FilePath";
-         A.CallTo(() => _view.BindTo(A<IndividualAndFilePathDTO>._)).Invokes(x =>
+         _expressionProfileBuildingBlock = new ExpressionProfileBuildingBlock();
+
+         A.CallTo(() => _view.BindTo(A<IndividualExpressionAndFilePathDTO>._)).Invokes(x =>
          {
-            var dto = x.Arguments.Get<IndividualAndFilePathDTO>(0);
+            var dto = x.Arguments.Get<IndividualExpressionAndFilePathDTO>(0);
             dto.FilePath = _filePath;
             dto.IndividualBuildingBlock = _individualBuildingBlock;
+            dto.AddSelectableExpressionProfile(_expressionProfileBuildingBlock);
+            dto.AddSelectableExpressionProfile(new ExpressionProfileBuildingBlock());
+            dto.SelectableExpressionProfiles[0].Selected = true;
+            dto.SelectableExpressionProfiles[1].Selected = false;
          });
       }
 
@@ -53,7 +64,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         (_selectedPath, _selectedIndividual) = sut.GetPathAndIndividualForExport(new Container().WithName("name"));
+         (_selectedPath, _selectedIndividual, _selectedExpressionProfile) = sut.GetPathAndIndividualForExport(new Container().WithName("name"));
       }
    }
 
@@ -66,6 +77,7 @@ namespace MoBi.Presentation
       {
          _selectedPath.ShouldBeEqualTo(_filePath);
          _selectedIndividual.ShouldBeEqualTo(_individualBuildingBlock);
+         _selectedExpressionProfile.ShouldOnlyContain(_expressionProfileBuildingBlock);
       }
    }
 

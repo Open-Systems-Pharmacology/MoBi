@@ -63,5 +63,7 @@ namespace MoBi.Presentation.Presenter
       ///    Sets a new value origin for a start value.
       /// </summary>
       void SetValueOrigin(TDTO startValueDTO, ValueOrigin newValueOrigin);
+
+      void EditDistributedParameter(TDTO individualParameter);
    }
 }

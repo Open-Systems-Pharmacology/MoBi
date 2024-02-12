@@ -2,6 +2,9 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Exceptions;
+using MoBi.Core.Serialization.Exchange;
+using MoBi.Core.Serialization.Xml.Serializer;
 using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
@@ -70,6 +73,7 @@ namespace MoBi.Presentation.Tasks
 
          var filePath = "filepath";
          A.CallTo(() => _interactionTaskContext.InteractionTask.AskForFileToOpen(A<string>._, A<string>._, A<string>._)).Returns(filePath);
+         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SpatialStructureTransfer>(filePath)).Throws(() => new NotMatchingSerializationFileException("exception"));
          A.CallTo(() => _interactionTaskContext.InteractionTask.LoadItems<MoBiSpatialStructure>(filePath)).Returns(new[] { _importedSpatialStructure });
          A.CallTo(() => _interactionTaskContext.InteractionTask.CorrectName(_importedContainer, A<IEnumerable<string>>._)).Invokes(x => x.Arguments.Get<IContainer>(0).Name = "Tumor");
 

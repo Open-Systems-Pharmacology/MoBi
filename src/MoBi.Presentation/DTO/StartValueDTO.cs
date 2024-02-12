@@ -12,7 +12,7 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public abstract class StartValueDTO<T> : PathAndValueEntityDTO<T> where T : PathAndValueEntity
+   public abstract class StartValueDTO<T, TSubParameter> : PathAndValueEntityDTO<T, TSubParameter> where T : PathAndValueEntity where TSubParameter : PathAndValueEntityDTO<T>
    {
       private readonly IBuildingBlock<T> _buildingBlock;
 
@@ -65,26 +65,26 @@ namespace MoBi.Presentation.DTO
 
          private static IBusinessRule renameMustNotCauseCollision()
          {
-            return CreateRule.For<StartValueDTO<T>>()
+            return CreateRule.For<StartValueDTO<T, TSubParameter>>()
                .Property(x => x.Name).WithRule(namedOnlyElementDoesNotExist)
                .WithError((dto, name) => AppConstants.Validation.NameIsAlreadyUsedInThisContainer(dto.ContainerPath.ToString(), name));
          }
 
-         private static bool namedOnlyElementDoesNotExist(StartValueDTO<T> dto, string name)
+         private static bool namedOnlyElementDoesNotExist(StartValueDTO<T, TSubParameter> dto, string name)
          {
             return !dto._buildingBlock.Any(sv =>
                string.Equals(sv.Name, name) && sv.ContainerPath.Equals(dto.ContainerPath) && sv != dto.PathWithValueObject);
          }
 
-         private static IBusinessRule mustHaveAllPreviousPathElementsSet(Expression<Func<StartValueDTO<T>, string>> propertyToCheck)
+         private static IBusinessRule mustHaveAllPreviousPathElementsSet(Expression<Func<StartValueDTO<T, TSubParameter>, string>> propertyToCheck)
          {
             var index = getPathIndex(propertyToCheck);
-            return CreateRule.For<StartValueDTO<T>>()
+            return CreateRule.For<StartValueDTO<T, TSubParameter>>()
                .Property(propertyToCheck).WithRule((dto, pathElement) => areAllPreviousPathElementsNonEmpty(dto, pathElement, index))
                .WithError((dto, pathElement) => AppConstants.Validation.CannotSetPathElementWhenPreviousElementsAreEmpty);
          }
 
-         private static bool areAllPreviousPathElementsNonEmpty(StartValueDTO<T> dto, string pathElement, int index)
+         private static bool areAllPreviousPathElementsNonEmpty(StartValueDTO<T, TSubParameter> dto, string pathElement, int index)
          {
             // to set a path element to empty, there is no requirement for the preceding elements
             if (string.IsNullOrEmpty(pathElement))
@@ -99,23 +99,23 @@ namespace MoBi.Presentation.DTO
             return true;
          }
 
-         private static IBusinessRule mustNotAlreadyContainStartValue(Expression<Func<StartValueDTO<T>, string>> propertyToCheck)
+         private static IBusinessRule mustNotAlreadyContainStartValue(Expression<Func<StartValueDTO<T, TSubParameter>, string>> propertyToCheck)
          {
             var index = getPathIndex(propertyToCheck);
-            return CreateRule.For<StartValueDTO<T>>()
+            return CreateRule.For<StartValueDTO<T, TSubParameter>>()
                .Property(propertyToCheck)
                .WithRule((dto, pathElement) => noDuplicatesInBuildingBlockRule(dto, pathElement, index))
                .WithError((dto, pathElement) => AppConstants.Validation.PathIsIdenticalToExistingPath(newPathWithReplacement(dto, pathElement, index)));
          }
 
-         private static int getPathIndex(Expression<Func<StartValueDTO<T>, string>> propertyToCheck)
+         private static int getPathIndex(Expression<Func<StartValueDTO<T, TSubParameter>, string>> propertyToCheck)
          {
             var propertyName = propertyToCheck.PropertyInfo().Name;
             var index = int.Parse(propertyName.Last().ToString(CultureInfo.InvariantCulture));
             return index;
          }
 
-         private static bool noDuplicatesInBuildingBlockRule(StartValueDTO<T> dto, string pathElement, int index)
+         private static bool noDuplicatesInBuildingBlockRule(StartValueDTO<T, TSubParameter> dto, string pathElement, int index)
          {
             var containerPath = newPathWithReplacement(dto, pathElement, index);
 
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.DTO
             return true;
          }
 
-         private static ObjectPath newPathWithReplacement(StartValueDTO<T> dto, string pathElement, int index)
+         private static ObjectPath newPathWithReplacement(StartValueDTO<T, TSubParameter> dto, string pathElement, int index)
          {
             var containerPath = dto.ContainerPath.Clone<ObjectPath>();
 
