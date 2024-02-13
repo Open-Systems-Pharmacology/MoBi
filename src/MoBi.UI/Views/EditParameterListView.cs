@@ -59,9 +59,9 @@ namespace MoBi.UI.Views
          _gridControl.MouseDoubleClick += onDoubleClick;
          _gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
          _favoriteRepository = new UxRepositoryItemCheckEdit(_gridView);
-         PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImages16x16};
+         PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImages16x16 };
 
-         var toolTipController = new ToolTipController {AllowHtmlText = true};
+         var toolTipController = new ToolTipController { AllowHtmlText = true };
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _gridControl.ToolTipController = toolTipController;
       }
@@ -74,7 +74,7 @@ namespace MoBi.UI.Views
          var superToolTip = getToolTipFor(parameterDTO);
 
          //An object that uniquely identifies a row cell
-         e.Info = new ToolTipControlInfo(parameterDTO, string.Empty) {SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip};
+         e.Info = new ToolTipControlInfo(parameterDTO, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
       }
 
       private SuperToolTip getToolTipFor(ParameterDTO parameterDTO)
@@ -120,7 +120,7 @@ namespace MoBi.UI.Views
 
          _pathBinder.InitializeBinding(_gridViewBinder);
          _gridViewBinder.Bind(dto => dto.Value)
-            .WithFormat(dto => dto.ParameterFormatter(checkForEditable:false))
+            .WithFormat(dto => dto.ParameterFormatter(checkForEditable: false))
             .WithRepository(repositoryForValue)
             .WithEditorConfiguration(configureRepository)
             .WithToolTip(ToolTips.ParameterList.SetParameterValue)
@@ -170,7 +170,7 @@ namespace MoBi.UI.Views
       private void createResetButtonItem()
       {
          _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset,
-            ToolTips.ResetParameterToolTip) {TextEditStyle = TextEditStyles.Standard};
+            ToolTips.ResetParameterToolTip) { TextEditStyle = TextEditStyles.Standard };
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
       }
 
@@ -214,6 +214,7 @@ namespace MoBi.UI.Views
       public void SetVisibility(PathElementId pathElement, bool isVisible)
       {
          _pathBinder.SetVisibility(pathElement, isVisible);
+         _pathBinder.ColumnAt(pathElement).WithShowInColumnChooser(!isVisible);
       }
 
       public IReadOnlyList<ParameterDTO> SelectedParameters
