@@ -61,27 +61,17 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
 
          if (!DiagramModel.IsLayouted)
          {
-            applyLayoutFromTemplate();
+            var organismTemplateFile = _configuration.SpaceOrganismBaseTemplate;
+            if (File.Exists(_configuration.SpaceOrganismUserTemplate))
+               organismTemplateFile = _configuration.SpaceOrganismUserTemplate;
+
+            ApplyLayoutFromTemplate(organismTemplateFile);
          }
 
          Refresh();
 
          //to avoid scrollbar error
          ResetViewSize();
-      }
-
-      private void applyLayoutFromTemplate()
-      {
-         string organismTemplateFile = _configuration.SpaceOrganismBaseTemplate;
-         if (File.Exists(_configuration.SpaceOrganismUserTemplate))
-            organismTemplateFile = _configuration.SpaceOrganismUserTemplate;
-
-         foreach (var topContainerNode in DiagramModel.GetDirectChildren<IContainerNode>())
-         {
-            var topContainer = _context.Get<IContainer>(topContainerNode.Id);
-            if (topContainer != null && topContainer.ContainerType == ContainerType.Organism)
-               ApplyLayoutTemplate(topContainerNode, organismTemplateFile, false);
-         }
       }
 
       private IContainer firstTopContainerWithNode(MoBiSpatialStructure spatialStructure)
