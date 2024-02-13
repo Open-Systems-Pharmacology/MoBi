@@ -64,7 +64,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         (_selectedPath, _selectedIndividual, _selectedExpressionProfile) = sut.GetPathAndIndividualForExport(new Container().WithName("name"));
+         (_selectedPath, _selectedIndividual, _selectedExpressionProfile) = sut.GetPathIndividualAndExpressionsForExport(new Container().WithName("name"));
       }
    }
 

@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          using (var presenter = _applicationController.Start<ISelectFolderAndIndividualAndExpressionFromProjectPresenter>())
          {
-            var (filePath, individual, expressionProfiles) = presenter.GetPathAndIndividualForExport(container);
+            var (filePath, individual, expressionProfiles) = presenter.GetPathIndividualAndExpressionsForExport(container);
             if (filePath.IsNullOrEmpty())
                return;
 

@@ -126,7 +126,7 @@ namespace MoBi.Presentation.Tasks
             NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS)
          };
 
-         A.CallTo(() => _selectIndividualAndExpressionFromProjectPresenter.GetPathAndIndividualForExport(_containerToSave)).Returns(("FilePath", _individual, null));
+         A.CallTo(() => _selectIndividualAndExpressionFromProjectPresenter.GetPathIndividualAndExpressionsForExport(_containerToSave)).Returns(("FilePath", _individual, null));
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
          A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
          A.CallTo(() => _formulaFactory.ConstantFormula(replacementIndividualParameter.Value.Value, replacementIndividualParameter.Dimension)).ReturnsLazily(x => new ConstantFormula(x.Arguments.Get<double>(0)));

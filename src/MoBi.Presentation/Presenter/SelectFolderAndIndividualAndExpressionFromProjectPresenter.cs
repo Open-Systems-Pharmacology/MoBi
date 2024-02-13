@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Presenter
       /// <summary>
       ///    Opens a dialog where the user will select an IndividualBuildingBlock from the project and a file path to export
       /// </summary>
-      (string, IndividualBuildingBlock, IReadOnlyList<ExpressionProfileBuildingBlock>) GetPathAndIndividualForExport(IContainer container);
+      (string path, IndividualBuildingBlock individual, IReadOnlyList<ExpressionProfileBuildingBlock> expressions) GetPathIndividualAndExpressionsForExport(IContainer container);
 
       /// <summary>
       ///    Returns a list of all IndividualBuildingBlocks in the project
@@ -53,7 +53,7 @@ namespace MoBi.Presentation.Presenter
          _mapper = mapper;
       }
 
-      public (string, IndividualBuildingBlock, IReadOnlyList<ExpressionProfileBuildingBlock>) GetPathAndIndividualForExport(IContainer container)
+      public (string path, IndividualBuildingBlock individual, IReadOnlyList<ExpressionProfileBuildingBlock> expressions) GetPathIndividualAndExpressionsForExport(IContainer container)
       {
          _dto = mapFrom(container);
          _view.BindTo(_dto);

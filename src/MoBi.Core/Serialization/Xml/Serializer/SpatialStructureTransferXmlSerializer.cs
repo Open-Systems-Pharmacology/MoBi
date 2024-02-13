@@ -7,7 +7,6 @@ namespace MoBi.Core.Serialization.Xml.Serializer
    {
       public override void PerformMapping()
       {
-         Map(x => x.Id);
          Map(x => x.SpatialStructure);
          Map(x => x.ParameterValues);
       }
