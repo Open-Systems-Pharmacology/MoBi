@@ -19,6 +19,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.Presenter.BaseDiagram
 {
@@ -190,6 +191,16 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          finally
          {
             _view.EndUpdate();
+         }
+      }
+
+      protected void ApplyLayoutFromTemplate(string templateFile)
+      {
+         foreach (var topContainerNode in DiagramModel.GetDirectChildren<IContainerNode>())
+         {
+            var topContainer = _context.Get<IContainer>(topContainerNode.Id);
+            if (topContainer != null && topContainer.ContainerType == ContainerType.Organism)
+               ApplyLayoutTemplate(topContainerNode, templateFile, false);
          }
       }
 

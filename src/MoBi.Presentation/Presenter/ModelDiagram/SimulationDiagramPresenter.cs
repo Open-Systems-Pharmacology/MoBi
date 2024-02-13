@@ -1,20 +1,17 @@
+using System.IO;
 using System.Linq;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views.BaseDiagram;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
-using OSPSuite.Core.Diagram.Extensions;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Presenter.ModelDiagram
@@ -28,8 +25,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
    public class SimulationDiagramPresenter : MoBiBaseDiagramPresenter<ISimulationDiagramView, ISimulationDiagramPresenter, IMoBiSimulation>, ISimulationDiagramPresenter
    {
       private readonly IMoBiConfiguration _configuration;
-      private readonly ILayerLayouter _layerLayouter;
-      private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IDiagramLayoutTask _diagramLayoutTask;
       private readonly IDiagramPopupMenuBase _moleculeAmountPopupMenu;
 
       public SimulationDiagramPresenter(ISimulationDiagramView view,
@@ -41,13 +37,11 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
          IDiagramTask diagramTask,
          IStartOptions runOptions,
          IMoBiConfiguration configuration,
-         ILayerLayouter layerLayouter,
-         IBuildingBlockRepository buildingBlockRepository)
+         IDiagramLayoutTask diagramLayoutTask)
          : base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
          _configuration = configuration;
-         _layerLayouter = layerLayouter;
-         _buildingBlockRepository = buildingBlockRepository;
+         _diagramLayoutTask = diagramLayoutTask;
          _diagramPopupMenu = new PopupMenuModelDiagram(this, context, runOptions, dialogCreator);
          _containerPopupMenu = _diagramPopupMenu;
          _moleculeAmountPopupMenu = new DiagramPopupMenuBaseWithContext(this, _context, runOptions);
@@ -72,21 +66,15 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
 
       public void ApplySpaceReactionLayout()
       {
-         var copier = new LayoutCopyService();
-
          // if only one organ is visible, in following Copy steps some wrong locations are calculated
          ShowChildren(DiagramModel);
 
          try
          {
             _view.BeginUpdate();
-            var reactionDiagramModel = getReactionBlockDiagramModel();
-            if (reactionDiagramModel != null && reactionDiagramModel.IsLayouted)
-               copier.Copy(reactionDiagramModel, DiagramModel);
 
-            var spaceDiagramModel = getSpaceBlockDiagramModel();
-            if (spaceDiagramModel != null && spaceDiagramModel.IsLayouted)
-               copier.Copy(spaceDiagramModel, DiagramModel);
+            applyOrganismLayout();
+            applyReactionLayout();
 
             DiagramManager.RefreshFromDiagramOptions();
             DiagramModel.IsLayouted = true;
@@ -101,62 +89,18 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
          ResetViewSize();
       }
 
-      private IDiagramModel getSpaceBlockDiagramModel()
+      private void applyReactionLayout()
       {
-         //TODO OSMOSES
-         var spaceBlockName = DiagramManager.PkModel.Configuration.All<SpatialStructure>().First().Name;
-         var spatialStructure = _buildingBlockRepository.SpatialStructureCollection.FindByName(spaceBlockName);
-         if (spatialStructure == null)
-            return null;
+         _diagramLayoutTask.LayoutReactionDiagram(DiagramModel);
+      }
 
-
-         if (spatialStructure.DiagramModel != null)
-            return spatialStructure.DiagramModel;
-
-         initializeDiagramManagerFor(spatialStructure);
-
+      private void applyOrganismLayout()
+      {
          var organismTemplateFile = _configuration.SpaceOrganismBaseTemplate;
          if (FileHelper.FileExists(_configuration.SpaceOrganismUserTemplate))
             organismTemplateFile = _configuration.SpaceOrganismUserTemplate;
 
-         foreach (var topContainerNode in spatialStructure.DiagramModel.GetDirectChildren<IContainerNode>())
-         {
-            var topContainer = _context.Get<IContainer>(topContainerNode.Id);
-            if (topContainer != null && topContainer.ContainerType == ContainerType.Organism)
-               ApplyLayoutTemplate(topContainerNode, organismTemplateFile, recursive: false);
-         }
-
-         spatialStructure.DiagramModel.IsLayouted = true;
-         return spatialStructure.DiagramModel;
-      }
-
-      private IDiagramModel getReactionBlockDiagramModel()
-      {
-         // TODO OSMOSES naming is no longer unique among all reaction blocks so we will need a new way
-         // to find specific reaction in the repository
-         var reactionBlockName = DiagramManager.PkModel.Configuration.All<ReactionBuildingBlock>().First().Name;
-         var reactionBlock = _buildingBlockRepository.ReactionBlockCollection.FindByName(reactionBlockName);
-
-         if (reactionBlock == null)
-            return null;
-
-         if (reactionBlock.DiagramModel != null)
-            return reactionBlock.DiagramModel;
-
-         initializeDiagramManagerFor(reactionBlock);
-
-         _view.DisplayEductsRight(reactionBlock.DiagramModel);
-
-         _layerLayouter.PerformLayout(reactionBlock.DiagramModel, null);
-
-         reactionBlock.DiagramModel.IsLayouted = true;
-         return reactionBlock.DiagramModel;
-      }
-
-      private void initializeDiagramManagerFor<T>(T reactionBlock) where T : IWithDiagramFor<T>
-      {
-         reactionBlock.DiagramModel = CreateDiagramModel();
-         reactionBlock.InitializeDiagramManager(_userSettings.DiagramOptions);
+         ApplyLayoutFromTemplate(organismTemplateFile);
       }
 
       public bool ObserverLinksVisible
