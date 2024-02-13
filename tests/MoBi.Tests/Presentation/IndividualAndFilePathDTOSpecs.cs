@@ -6,11 +6,11 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation
 {
-   public class concern_for_IndividualAndFilePathDTO : ContextSpecification<IndividualAndFilePathDTO>
+   public class concern_for_IndividualAndFilePathDTO : ContextSpecification<IndividualExpressionAndFilePathDTO>
    {
       protected override void Context()
       {
-         sut = new IndividualAndFilePathDTO();
+         sut = new IndividualExpressionAndFilePathDTO();
       }
    }
 
@@ -39,9 +39,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_validation_fails()
+      public void the_validation_passes()
       {
-         sut.IsValid().ShouldBeFalse();
+         sut.IsValid().ShouldBeTrue();
       }
    }
 

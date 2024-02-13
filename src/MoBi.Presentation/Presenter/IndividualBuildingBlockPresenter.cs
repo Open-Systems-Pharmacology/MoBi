@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class IndividualBuildingBlockPresenter : 
-      PathAndValueBuildingBlockWithDistributionPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, MoBiProject, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, 
+      PathAndValueBuildingBlockPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, MoBiProject, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, 
       IIndividualBuildingBlockPresenter
    {
       private readonly IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper _individualToDTOMapper;

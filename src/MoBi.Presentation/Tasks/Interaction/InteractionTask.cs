@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
@@ -18,7 +17,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       IReadOnlyCollection<T> LoadItems<T>(string filename) where T : class, IObjectBase;
       void Save<T>(T entityToSerialize) where T : IObjectBase;
-      void Save<T>(T entityToSerialize, string fileName) where T : IObjectBase;
+      void Save<T>(T entityToSerialize, string fileName);
       string IconFor<T>(T entity) where T : IObjectBase;
       bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase;
       T Clone<T>(T objectToClone) where T : class, IObjectBase;
@@ -28,7 +27,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       string AskForFileToOpen(string title, string filter, string directoryKey);
       string AskForFileToSave(string title, string filter, string directoryKey, string defaultName);
       string AskForFolder(string title, string directoryKey);
-      SimulationTransfer LoadSimulationTransfer(string filePath);
+      T LoadTransfer<T>(string filePath);
       string PromptForNewName(IObjectBase objectBase, IEnumerable<string> forbiddenNames);
    }
 
@@ -71,7 +70,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _serializationTask.SaveModelPart(entityToSerialize, fileName);
       }
 
-      public void Save<T>(T entityToSerialize, string fileName) where T : IObjectBase => _serializationTask.SaveModelPart(entityToSerialize, fileName);
+      public void Save<T>(T entityToSerialize, string fileName) => _serializationTask.SaveModelPart(entityToSerialize, fileName);
 
       public virtual T Clone<T>(T objectToClone) where T : class, IObjectBase
       {
@@ -116,7 +115,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public string AskForFolder(string title, string directoryKey) => _dialogCreator.AskForFolder(title, directoryKey);
 
-      public SimulationTransfer LoadSimulationTransfer(string filePath) => _serializationTask.Load<SimulationTransfer>(filePath);
+      public T LoadTransfer<T>(string filePath) => _serializationTask.Load<T>(filePath);
 
       public string AskForFileToSave(string title, string filter, string directoryKey, string defaultName) => _dialogCreator.AskForFileToSave(title, filter, directoryKey, defaultName);
 

@@ -12,9 +12,11 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
@@ -29,13 +31,14 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.UI.Views
 {
-   public abstract partial class BasePathAndValueEntityView<TPathAndValueEntity, T> : BaseUserControl, IPathAndValueEntitiesView<TPathAndValueEntity> where TPathAndValueEntity : BreadCrumbsDTO<T>, IPathAndValueEntityDTO where T : IValidatable, INotifier
+   public abstract partial class BasePathAndValueEntityView<TPathAndValueEntity, T> : BaseUserControl, IPathAndValueEntitiesView<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntityDTO<T>, IPathAndValueEntityDTO where T : PathAndValueEntity, IValidatable, INotifier
    {
       private readonly ValueOriginBinder<TPathAndValueEntity> _valueOriginBinder;
       protected readonly GridViewBinder<TPathAndValueEntity> _gridViewBinder;
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
       protected IStartValuesPresenter<TPathAndValueEntity> _presenter;
       protected IGridViewAutoBindColumn<TPathAndValueEntity, string> _colName;
+      protected readonly UxComboBoxUnit<TPathAndValueEntity> _unitControl;
 
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private readonly IList<string> _pathValues;
@@ -43,6 +46,9 @@ namespace MoBi.UI.Views
 
       private IGridViewColumn<TPathAndValueEntity> _deleteColumn;
       public bool CanCreateNewFormula { get; set; }
+      private readonly PopupContainerControl _popupControl = new PopupContainerControl();
+      private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
+      private IGridViewAutoBindColumn<TPathAndValueEntity, double?> _valueColumn;
 
       protected BasePathAndValueEntityView(ValueOriginBinder<TPathAndValueEntity> valueOriginBinder)
       {
@@ -51,9 +57,54 @@ namespace MoBi.UI.Views
          configureGridView();
          _gridViewBinder = new GridViewBinder<TPathAndValueEntity>(gridView);
          _pathValues = new List<string>();
-
+         _unitControl = new UxComboBoxUnit<TPathAndValueEntity>(gridControl);
          _pathRepositoryItemComboBox = new RepositoryItemComboBox { TextEditStyle = TextEditStyles.Standard };
          _pathRepositoryItemComboBox.SelectedValueChanged += (o, e) => gridView.PostEditor();
+         _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
+         _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
+
+         gridView.HiddenEditor += (o, e) => hideEditor();
+      }
+
+      private void hideEditor()
+      {
+         _unitControl.Hide();
+      }
+
+      private void queryText(QueryDisplayTextEventArgs e)
+      {
+         var distributedParameter = _gridViewBinder.FocusedElement;
+         if (distributedParameter == null)
+            return;
+         e.DisplayText = distributedParameter.PathAndValueEntityFormatter().Format(distributedParameter.Value);
+      }
+
+      private RepositoryItem valueRepositoryFor(TPathAndValueEntity parameterDTO)
+      {
+         if (parameterDTO.IsDistributed)
+            return _repositoryItemPopupContainerEdit;
+
+         return _valueColumn.DefaultRepository();
+      }
+
+      protected IGridViewAutoBindColumn<TPathAndValueEntity, double?> BindValueColumn(Expression<Func<TPathAndValueEntity, double?>> propertyToBindTo)
+      {
+         _valueColumn = _gridViewBinder.
+            AutoBind(propertyToBindTo).
+            WithRepository(valueRepositoryFor).
+            WithEditorConfiguration(ConfigureValueRepository);
+         return _valueColumn;
+      }
+
+      protected virtual void ConfigureValueRepository(BaseEdit activeEditor, TPathAndValueEntity individualParameter)
+      {
+         if (individualParameter.IsDistributed)
+         {
+            _presenter.EditDistributedParameter(individualParameter);
+            return;
+         }
+
+         _unitControl.UpdateUnitsFor(activeEditor, individualParameter);
       }
 
       protected virtual void DoInitializeBinding()
@@ -164,6 +215,11 @@ namespace MoBi.UI.Views
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => removeStartValue(_gridViewBinder.FocusedElement));
+      }
+
+      public void AddDistributedParameterView(IView view)
+      {
+         _popupControl.FillWith(view);
       }
 
       public void HideValueOriginColumn()

@@ -4,12 +4,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IWithDistributedPathAndValueGridView
-   {
-      void AddDistributedParameterView(IView view);
-   }
-
-   public interface IIndividualBuildingBlockView : IView<IIndividualBuildingBlockPresenter>, IWithDistributedPathAndValueGridView
+   public interface IIndividualBuildingBlockView : IView<IIndividualBuildingBlockPresenter>, IPathAndValueEntitiesView
    {
       void BindTo(IndividualBuildingBlockDTO individualBuildingBlockDTO);
    }

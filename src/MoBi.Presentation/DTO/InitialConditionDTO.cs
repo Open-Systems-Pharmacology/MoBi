@@ -2,7 +2,7 @@
 
 namespace MoBi.Presentation.DTO
 {
-   public class InitialConditionDTO : StartValueDTO<InitialCondition>
+   public class InitialConditionDTO : StartValueDTO<InitialCondition, InitialConditionDTO>
    {
       public bool IsPresent
       {

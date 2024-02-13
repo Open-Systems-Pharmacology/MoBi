@@ -4,18 +4,18 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class SaveWithIndividualUICommand : ObjectUICommand<IContainer>
+   public class SaveWithIndividualAndExpressionUICommand : ObjectUICommand<IContainer>
    {
       private readonly IEditTaskForContainer _editTaskForContainer;
 
-      public SaveWithIndividualUICommand(IEditTaskForContainer editTaskForContainer)
+      public SaveWithIndividualAndExpressionUICommand(IEditTaskForContainer editTaskForContainer)
       {
          _editTaskForContainer = editTaskForContainer;
       }
 
       protected override void PerformExecute()
       {
-         _editTaskForContainer.SaveWithIndividual(Subject);
+         _editTaskForContainer.SaveWithIndividualAndExpression(Subject);
       }
    }
 }

@@ -3,7 +3,12 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IPathAndValueEntitiesView<TStartValueDTO> : IView
+   public interface IPathAndValueEntitiesView : IView
+   {
+      void AddDistributedParameterView(IView view);
+   }
+
+   public interface IPathAndValueEntitiesView<TStartValueDTO> : IPathAndValueEntitiesView
    {
       void BindTo(IEnumerable<TStartValueDTO> startValueDTOs);
 

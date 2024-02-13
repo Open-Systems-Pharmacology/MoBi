@@ -1,4 +1,5 @@
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Format;
 
 namespace MoBi.Presentation.Formatters
@@ -25,6 +26,11 @@ namespace MoBi.Presentation.Formatters
          return new ValueAllowingNaNFormatter(expressionParameterDTO);
       }
 
+      public static IFormatter<double?> PathAndValueEntityFormatter<T>(this PathAndValueEntityDTO<T> pathAndValueEntityDTO) where T : PathAndValueEntity
+      {
+         return new ValueAllowingNaNFormatter(pathAndValueEntityDTO);
+      }
+ 
       public static IFormatter<double> ValuePointXFormatter(this DTOValuePoint valuePointDTO)
       {
          return new ValuePointFormatter(valuePointDTO.X);

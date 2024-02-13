@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -30,8 +29,6 @@ namespace MoBi.Presentation.DTO
       {
          _subParameters.Add(subParameter);
       }
-
-      public bool IsDistributed => PathWithValueObject.DistributionType != null;
 
       public string DistributionType => $"{PathWithValueObject.DistributionType} {Distribution}";
 
@@ -64,6 +61,8 @@ namespace MoBi.Presentation.DTO
          FormulaPropertyName = MoBiReflectionHelper.PropertyName<PathAndValueEntity>(x => x.Formula);
          ContainerPath = underlyingObject.ContainerPath;
       }
+
+      public bool IsDistributed => PathWithValueObject.DistributionType != null;
 
       public string Name
       {

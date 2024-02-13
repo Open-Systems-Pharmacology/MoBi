@@ -13,8 +13,16 @@ namespace MoBi.Presentation.Mappers
       PathAndValueEntityBuildingBlockToPathAndValueEntityBuildingBlockDTOMapper<IndividualBuildingBlock, IndividualParameter, IndividualBuildingBlockDTO, IndividualParameterDTO>, 
       IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper
    {
-      public IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(IIndividualParameterToIndividualParameterDTOMapper individualParameterToDTOMapper) : base(individualParameterToDTOMapper)
+      private readonly IIndividualParameterToIndividualParameterDTOMapper _individualParameterToDTOMapper;
+
+      public IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(IIndividualParameterToIndividualParameterDTOMapper individualParameterToDTOMapper)
       {
+         _individualParameterToDTOMapper = individualParameterToDTOMapper;
+      }
+
+      protected override IndividualParameterDTO BuilderDTOFor(IndividualParameter pathAndValueEntity, IndividualBuildingBlock buildingBlock)
+      {
+         return _individualParameterToDTOMapper.MapFrom(pathAndValueEntity);
       }
 
       protected override IndividualBuildingBlockDTO MapBuildingBlockDTO(IndividualBuildingBlock buildingBlock, List<IndividualParameterDTO> parameterDTOs)

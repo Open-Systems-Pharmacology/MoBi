@@ -21,11 +21,11 @@ namespace MoBi.Presentation.Presenter
       where TPresenter : IPresenter<TView>
       where TParameterDTO : PathAndValueEntityDTO<TParameter, TParameterDTO> where TParameter : PathAndValueEntity where TBuildingBlock : class, IBuildingBlock<TParameter>
    {
-      private readonly IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter> _interactionTasksForBuildingBlock;
+      private readonly IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter> _interactionTasksForBuildingBlock;
       private TBuildingBlock _buildingBlock;
 
-      protected DistributedPathAndValueEntityPresenter(TView view, 
-         IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter> interactionTasksForIndividualBuildingBlock) : base(view)
+      protected DistributedPathAndValueEntityPresenter(TView view,
+         IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter> interactionTasksForIndividualBuildingBlock) : base(view)
       {
          _interactionTasksForBuildingBlock = interactionTasksForIndividualBuildingBlock;
       }

@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Context()
       {
-         sut = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(new ExpressionParameterToExpressionParameterDTOMapper(new FormulaToValueFormulaDTOMapper()));
+         sut = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(new ExpressionParameterToExpressionParameterDTOMapper(new FormulaToValueFormulaDTOMapper()), new InitialConditionToInitialConditionDTOMapper(new FormulaToValueFormulaDTOMapper()));
       }
 
       public class When_mapping_the_building_block : concern_for_ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper

@@ -12,10 +12,10 @@ namespace MoBi.Presentation.Mappers
 
    public class ExpressionProfileToParameterValuesMapper : IExpressionProfileToParameterValuesMapper
    {
-      private readonly IExpressionParameterToParameterValueMapper _expressionParameterToParameterValueMapper;
+      private readonly IPathAndValueEntityToParameterValueMapper _expressionParameterToParameterValueMapper;
       private readonly IObjectBaseFactory _objectBaseFactory;
 
-      public ExpressionProfileToParameterValuesMapper(IExpressionParameterToParameterValueMapper expressionParameterToParameterValueMapper, IObjectBaseFactory objectBaseFactory)
+      public ExpressionProfileToParameterValuesMapper(IPathAndValueEntityToParameterValueMapper expressionParameterToParameterValueMapper, IObjectBaseFactory objectBaseFactory)
       {
          _expressionParameterToParameterValueMapper = expressionParameterToParameterValueMapper;
          _objectBaseFactory = objectBaseFactory;
@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Mappers
       {
          var buildingBlock = _objectBaseFactory.Create<ParameterValuesBuildingBlock>();
          buildingBlock.Name = expressionProfileBuildingBlock.Name;
-         expressionProfileBuildingBlock.MapAllUsing(_expressionParameterToParameterValueMapper).Each(x => buildingBlock.Add(x));
+         expressionProfileBuildingBlock.ExpressionParameters.MapAllUsing(_expressionParameterToParameterValueMapper).Each(x => buildingBlock.Add(x));
          buildingBlock.FormulaCache.AddRange(buildingBlock.UniqueFormulasByName());
 
          return buildingBlock;

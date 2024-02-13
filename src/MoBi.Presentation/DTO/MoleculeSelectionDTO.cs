@@ -2,15 +2,12 @@
 using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public class MoleculeSelectionDTO : DxValidatableDTO
+   public class MoleculeSelectionDTO : SelectableDTO<MoleculeSelectionDTO, SelectMoleculesDTO>
    {
-      private bool _selected;
-
       public MoleculeSelectionDTO(MoleculeBuilder moleculeBuilder)
       {
          MoleculeBuilder = moleculeBuilder;
@@ -18,21 +15,10 @@ namespace MoBi.Presentation.DTO
       }
 
       public string Icon => MoleculeBuilder.Icon;
-      public SelectMoleculesDTO ParentDTO { get; set; }
       public IBuildingBlock BuildingBlock => MoleculeBuilder.BuildingBlock;
       public string BuildingBlockDisplayName => BuildingBlock.ToString();
       public string MoleculeName => MoleculeBuilder.Name;
       public MoleculeBuilder MoleculeBuilder { get; }
-
-      public bool Selected
-      {
-         get => _selected;
-         set
-         {
-            _selected = value;
-            ParentDTO?.SelectionUpdated(this);
-         }
-      }
 
       private static class AllRules
       {

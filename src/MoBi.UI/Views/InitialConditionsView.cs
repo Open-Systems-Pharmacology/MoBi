@@ -3,8 +3,6 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Extensions;
-using DevExpress.XtraEditors;
-using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -13,7 +11,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
-using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using MoBi.Presentation.Views;
 
@@ -21,14 +18,12 @@ namespace MoBi.UI.Views
 {
    public partial class InitialConditionsView : BasePathAndValueEntityView<InitialConditionDTO, InitialCondition>, IInitialConditionsView
    {
-      private readonly UxComboBoxUnit<InitialConditionDTO> _unitControl;
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
       private IGridViewBoundColumn<InitialConditionDTO, bool> _isPresentColumn;
       
       public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder) : base(valueOriginBinder)
       {
          InitializeComponent();
-         _unitControl = new UxComboBoxUnit<InitialConditionDTO>(gridControl);
          _checkItemRepository = new UxRepositoryItemCheckEdit(gridView);
       }
 
@@ -37,11 +32,9 @@ namespace MoBi.UI.Views
          base.DoInitializeBinding();
          _unitControl.ParameterUnitSet += setParameterUnit;
 
-         _gridViewBinder.AutoBind(dto => dto.Value)
+         BindValueColumn(dto => dto.Value)
             .WithCaption(AppConstants.Captions.Value)
             .WithFormat(dto => dto.InitialConditionFormatter())
-            .WithEditorConfiguration(configureRepository)
-            .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnValueUpdating((o, e) => OnEvent(() => InitialConditionPresenter.SetValue(o, e.NewValue)));
 
          InitializeValueOriginBinding();
@@ -64,8 +57,6 @@ namespace MoBi.UI.Views
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())
             .WithOnValueUpdating((o, e) => InitialConditionPresenter.SetFormula(o, e.NewValue.Formula));
-
-         gridView.HiddenEditor += (o, e) => hideEditor();
       }
 
       public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
@@ -95,16 +86,6 @@ namespace MoBi.UI.Views
       }
 
       public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();
-
-      private void hideEditor()
-      {
-         _unitControl.Hide();
-      }
-
-      private void configureRepository(BaseEdit activeEditor, InitialConditionDTO initialCondition)
-      {
-         _unitControl.UpdateUnitsFor(activeEditor, initialCondition);
-      }
 
       public void AddIsPresentSelectionView(IView view)
       {

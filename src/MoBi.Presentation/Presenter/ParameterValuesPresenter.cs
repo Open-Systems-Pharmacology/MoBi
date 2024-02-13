@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -29,6 +30,7 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IParameterValuesTask _parameterValuesTask;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
+      private readonly IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
 
       public ParameterValuesPresenter(
          IParameterValuesView view,
@@ -39,11 +41,14 @@ namespace MoBi.Presentation.Presenter
          IDisplayUnitRetriever displayUnitRetriever,
          IDeleteStartValuePresenter deleteStartValuePresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
+         IParameterValueDistributedPathAndValueEntityPresenter distributedParameterPresenter,
+         IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
          IDimensionFactory dimensionFactory)
-         : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory)
+         : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
+         _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          view.HideIsPresentView();
          view.HideNegativeValuesAllowedView();
       }
@@ -51,6 +56,11 @@ namespace MoBi.Presentation.Presenter
       protected override string RemoveCommandDescription()
       {
          return AppConstants.Commands.RemoveMultipleParameterValues;
+      }
+
+      protected override IReadOnlyList<ParameterValueDTO> ValueDTOsFor(ParameterValuesBuildingBlock buildingBlock)
+      {
+         return _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper.MapFrom(buildingBlock).ParameterDTOs;
       }
 
       public override void AddNewFormula(ParameterValueDTO parameterValueDTO)

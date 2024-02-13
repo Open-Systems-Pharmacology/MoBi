@@ -35,6 +35,8 @@ namespace MoBi.Presentation
       protected IInitialConditionsCreator _initialConditionsCreator;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
+      private IInitialConditionsDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
+      private IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper _buildingBlockMapper;
 
       protected override void Context()
       {
@@ -48,10 +50,13 @@ namespace MoBi.Presentation
          _deleteStartValuePresenter = A.Fake<IDeleteStartValuePresenter>();
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
+         _distributedParameterPresenter = A.Fake<IInitialConditionsDistributedPathAndValueEntityPresenter>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
+         _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_mapper);
+
          sut = new InitialConditionsPresenter(
             _view, _mapper, _isPresentSelectionPresenter, _negativeStartValuesAllowedSelectionPresenter, _initialConditionTask,
-            _initialConditionsCreator, _context, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory);
+            _initialConditionsCreator, _context, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);

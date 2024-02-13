@@ -4,6 +4,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Interaction;
+using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -17,20 +18,28 @@ namespace MoBi.Presentation.Presenter
    public abstract class PathAndValueBuildingBlockPresenter<TView, TPresenter, TParent, TBuildingBlock, TParameter, TParameterDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
    where TBuildingBlock : IBuildingBlock<TParameter>
    where TPresenter : IPresenter
-   where TView : IView<TPresenter>
+   where TView : IView<TPresenter>, IPathAndValueEntitiesView
    where TParameter : PathAndValueEntity
    where TParameterDTO : PathAndValueEntityDTO<TParameter>, IWithDisplayUnitDTO
    {
       protected TBuildingBlock _buildingBlock;
-      private readonly IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TParameter> _interactionTask;
+      private readonly IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter> _interactionTask;
       private readonly IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private readonly IDimensionFactory _dimensionFactory;
+      private readonly IDistributedPathAndValueEntityPresenter<TParameterDTO, TBuildingBlock> _distributedPathAndValuePresenter;
 
-      protected PathAndValueBuildingBlockPresenter(TView view, IInteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TParameter> interactionTask, IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, IDimensionFactory dimensionFactory) : base(view)
+      protected PathAndValueBuildingBlockPresenter(TView view, 
+         IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter> interactionTask, 
+         IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper, 
+         IDimensionFactory dimensionFactory,
+         IDistributedPathAndValueEntityPresenter<TParameterDTO, TBuildingBlock> distributedPathAndValuePresenter) : base(view)
       {
          _interactionTask = interactionTask;
          _formulaToValueFormulaDTOMapper = formulaToValueFormulaDTOMapper;
          _dimensionFactory = dimensionFactory;
+         _distributedPathAndValuePresenter = distributedPathAndValuePresenter;
+         _subPresenterManager.Add(_distributedPathAndValuePresenter);
+         _view.AddDistributedParameterView(_distributedPathAndValuePresenter.BaseView);
       }
 
       public IEnumerable<ValueFormulaDTO> AllFormulas()
@@ -94,6 +103,11 @@ namespace MoBi.Presentation.Presenter
       public IEnumerable<IDimension> DimensionsSortedByName()
       {
          return _dimensionFactory.DimensionsSortedByName;
+      }
+
+      public void EditDistributedParameter(TParameterDTO distributedParameter)
+      {
+         _distributedPathAndValuePresenter.Edit(distributedParameter, _buildingBlock);
       }
    }
 }

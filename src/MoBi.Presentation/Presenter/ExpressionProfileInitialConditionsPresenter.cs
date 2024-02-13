@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using MoBi.Core.Domain.Model;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
@@ -14,8 +16,9 @@ namespace MoBi.Presentation.Presenter
 
    public class ExpressionProfileInitialConditionsPresenter : BuildingBlockWithInitialConditionsPresenter<IInitialConditionsView, IBuildingBlockWithInitialConditionsPresenter, ExpressionProfileBuildingBlock>, IExpressionProfileInitialConditionsPresenter
    {
-      public ExpressionProfileInitialConditionsPresenter(
-         IInitialConditionsView view,
+      private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _buildingBlockMapper;
+
+      public ExpressionProfileInitialConditionsPresenter(IInitialConditionsView view,
          IInitialConditionToInitialConditionDTOMapper startValueMapper,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
@@ -24,14 +27,32 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IDeleteStartValuePresenter deleteStartValuePresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
-         IDimensionFactory dimensionFactory) : base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter)
+         IDimensionFactory dimensionFactory, 
+         IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
+         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper) : 
+         base(view, 
+            startValueMapper, 
+            initialConditionsTask, 
+            msvCreator, 
+            context, 
+            deleteStartValuePresenter, 
+            formulaToValueFormulaDTOMapper, 
+            dimensionFactory, 
+            isPresentSelectionPresenter, 
+            negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
       {
+         _buildingBlockMapper = buildingBlockMapper;
          HideDeleteColumn();
          HideIsPresentView();
          HideDeleteView();
          HideIsPresentColumn();
          HideValueOriginColumn();
          DisablePathColumns();
+      }
+
+      protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(ExpressionProfileBuildingBlock buildingBlock)
+      {
+         return _buildingBlockMapper.MapFrom(buildingBlock).InitialConditionDTOs;
       }
    }
 }

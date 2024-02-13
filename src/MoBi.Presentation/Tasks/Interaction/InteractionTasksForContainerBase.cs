@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Serialization.Exchange;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
@@ -48,7 +49,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (filename.IsNullOrEmpty())
             return new MoBiEmptyCommand();
 
-         var importedSpatialStructure = InteractionTask.LoadItems<MoBiSpatialStructure>(filename).FirstOrDefault();
+         var (importedSpatialStructure, parameterValues) = loadFromPKML(filename);
          if (importedSpatialStructure == null)
             return new MoBiEmptyCommand();
 
@@ -66,14 +67,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (command.IsEmpty())
             return new MoBiEmptyCommand();
 
-         // For all the containers that were imported, check if their names have changed and update neighborhoods accordingly
-         nameCache.Keys.Each(x => updateNeighborhoodsForNewContainerName(x.Name, nameCache[x], allImportedNeighborhoods));
-
-         var addNeighborhoodsCommand = AddNeighborhoodsToSpatialStructure(allImportedNeighborhoods, spatialStructure);
-
-         if (addNeighborhoodsCommand.IsEmpty())
-            return command;
-
          var macroCommand = new MoBiMacroCommand
          {
             CommandType = command.CommandType,
@@ -83,7 +76,19 @@ namespace MoBi.Presentation.Tasks.Interaction
             ExtendedDescription = command.ExtendedDescription
          };
          macroCommand.Add(command);
-         macroCommand.Add(addNeighborhoodsCommand);
+
+         // For all the containers that were imported, check if their names have changed and update neighborhoods accordingly
+         nameCache.Keys.Each(x => updateNamesForRenamedContainer(x, nameCache, allImportedNeighborhoods, parameterValues));
+
+         var addParameterValuesCommand = addParameterValues(parameterValues, spatialStructure.Module);
+
+         if(!addParameterValuesCommand.IsEmpty())
+            macroCommand.Add(addParameterValuesCommand);
+
+         var addNeighborhoodsCommand = AddNeighborhoodsToSpatialStructure(allImportedNeighborhoods, spatialStructure);
+
+         if (!addNeighborhoodsCommand.IsEmpty())
+            macroCommand.Add(addNeighborhoodsCommand);
 
          if (importedSpatialStructure.DiagramModel == null || spatialStructure.DiagramModel == null)
             return macroCommand;
@@ -91,6 +96,47 @@ namespace MoBi.Presentation.Tasks.Interaction
          updateDiagramLayout(allImportedContainers, importedSpatialStructure, spatialStructure);
 
          return macroCommand;
+      }
+
+      private void updateNamesForRenamedContainer(IContainer x, Cache<IContainer, string> nameCache, IReadOnlyList<NeighborhoodBuilder> allImportedNeighborhoods, ParameterValuesBuildingBlock parameterValuesBuildingBlock)
+      {
+         updateNeighborhoodsForNewContainerName(x.Name, nameCache[x], allImportedNeighborhoods);
+         updateParameterValuesForNewContainerName(x.Name, nameCache[x], parameterValuesBuildingBlock);
+      }
+
+      private void updateParameterValuesForNewContainerName(string newName, string oldName, ParameterValuesBuildingBlock parameterValuesBuildingBlock)
+      {
+         if (string.Equals(newName, oldName) || parameterValuesBuildingBlock == null)
+            return;
+
+         parameterValuesBuildingBlock.Name = parameterValuesBuildingBlock.Name.Replace(oldName, newName);
+         parameterValuesBuildingBlock.Each(x =>
+         {
+            x.ContainerPath.Replace(oldName, newName);
+         });
+      }
+
+      private ICommand addParameterValues(ParameterValuesBuildingBlock parameterValues, Module module)
+      {
+         if (parameterValues == null || !parameterValues.Any())
+            return new MoBiEmptyCommand();
+
+         var cloneOfParameterValues = _interactionTaskContext.InteractionTask.Clone(parameterValues);
+         return new AddBuildingBlockToModuleCommand<ParameterValuesBuildingBlock>(cloneOfParameterValues, module).Run(_interactionTaskContext.Context);
+      }
+
+      private (MoBiSpatialStructure, ParameterValuesBuildingBlock) loadFromPKML(string filename)
+      {
+         try
+         {
+            var spatialStructureTransfer = InteractionTask.LoadTransfer<SpatialStructureTransfer>(filename);
+            // Clone here because we will received all original Id's from InteractionTask
+            return (Context.Clone(spatialStructureTransfer.SpatialStructure), Context.Clone(spatialStructureTransfer.ParameterValues));
+         }
+         catch
+         {
+            return (InteractionTask.LoadItems<MoBiSpatialStructure>(filename).FirstOrDefault(), null);
+         }
       }
 
       private void updateNeighborhoodsForNewContainerName(string newName, string oldName, IReadOnlyList<NeighborhoodBuilder> allImportedNeighborhoods)

@@ -13,21 +13,20 @@ namespace MoBi.Presentation.Mappers
       where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder>
       where TBuilderDTO : PathAndValueEntityDTO<TBuilder, TBuilderDTO>
    {
-      private readonly IMapper<TBuilder, TBuilderDTO> _builderToBuilderDTOMapper;
-
-      protected PathAndValueEntityBuildingBlockToPathAndValueEntityBuildingBlockDTOMapper(IMapper<TBuilder, TBuilderDTO> builderToBuilderDTOMapper)
+      protected PathAndValueEntityBuildingBlockToPathAndValueEntityBuildingBlockDTOMapper()
       {
-         _builderToBuilderDTOMapper = builderToBuilderDTOMapper;
       }
 
       public TBuildingBlockDTO MapFrom(TBuildingBlock buildingBlock)
       {
-         var parameterDTOs = buildingBlock.MapAllUsing(_builderToBuilderDTOMapper).ToList();
+         var parameterDTOs = buildingBlock.Select(x => BuilderDTOFor(x, buildingBlock)).ToList();
 
          // We need ToList because we are modifying the list while iterating over it
          parameterDTOs.Where(x => x.IsDistributed).ToList().Each(x => addDistributionParameters(x, parameterDTOs));
          return MapBuildingBlockDTO(buildingBlock, parameterDTOs);
       }
+
+      protected abstract TBuilderDTO BuilderDTOFor(TBuilder pathAndValueEntity, TBuildingBlock buildingBlock);
 
       private void addDistributionParameters(TBuilderDTO distributedParameter, List<TBuilderDTO> parameterDTOs)
       {
