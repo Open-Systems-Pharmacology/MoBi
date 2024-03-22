@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using DevExpress.Utils.Extensions;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Presentation.DTO;
@@ -137,7 +138,7 @@ namespace MoBi.Presentation
          var parentContainer = new Container().WithName(_parentName);
          rootContainer.Add(parentContainer);
          parentContainer.Add(_moleculeProperties);
-         _refObject = new Parameter();
+         _refObject = new Parameter().WithName("refObject");
          rootContainer.Add(_refObject);
       }
 
