@@ -28,7 +28,8 @@ namespace MoBi.Core.Domain.Model
             if (parentContainer?.ParentPath == null)
                return absolutePath;
 
-            return absolutePath.AndAddAtFront(parentContainer.ParentPath);
+            absolutePath.AddAtFront(parentContainer.ParentPath);
+            return absolutePath;
          }
 
          //Returns all possible physical containers that can be taken into consideration
