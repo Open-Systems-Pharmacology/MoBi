@@ -20,6 +20,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
@@ -51,8 +52,8 @@ namespace MoBi.Presentation.Tasks
          _moleculeResolver = A.Fake<IMoleculeResolver>();
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
 
-         sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
-            new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _reactionDimensionRetriever, _initialConditionsCreator);
+         sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _moleculeResolver);
       }
    }
 
@@ -536,6 +537,133 @@ namespace MoBi.Presentation.Tasks
       public void the_initial_conditions_creator_is_not_used_to_create_initial_conditions()
       {
          A.CallTo(() => _initialConditionsCreator.CreateFrom(A<MoBiSpatialStructure>._, A<IReadOnlyList<MoleculeBuilder>>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_updating_a_molecule_start_value_building_block_with_original_value_NaN_and_molecule_start_value_NaN : concern_for_InitialConditionsTask
+   {
+      private IMoBiCommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         var spatialStructure = A.Fake<MoBiSpatialStructure>();
+         var moleculeBuildingBlock = new MoleculeBuildingBlock();
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { moleculeBuildingBlock });
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { spatialStructure });
+         var molecule = new MoleculeBuilder { Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ConstantFormula(double.NaN) };
+         moleculeBuildingBlock.Add(molecule);
+         var nanStartValue = new InitialCondition { Formula = new ConstantFormula(double.NaN), Name = molecule.Name, Value = double.NaN, Dimension = Constants.Dimension.NO_DIMENSION };
+         _initialConditionsBuildingBlock.Add(nanStartValue);
+         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
+      }
+
+      protected override void Because()
+      {
+         _command = sut.RefreshInitialConditionsFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock.ToList());
+      }
+
+      [Observation]
+      public void should_not_create_an_entry_in_the_history()
+      {
+         _command.IsEmptyMacro().ShouldBeTrue();
+      }
+   }
+
+   public class When_updating_a_molecule_start_value_from_original_building_block_When_the_start_value_has_changed : concern_for_InitialConditionsTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         var spatialStructure = A.Fake<MoBiSpatialStructure>();
+         var moleculeBuildingBlock = new MoleculeBuildingBlock();
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { moleculeBuildingBlock });
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { spatialStructure });
+         var builder = new MoleculeBuilder { Name = "molecule", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ExplicitFormula("50") };
+         moleculeBuildingBlock.Add(builder);
+         var startValue = new InitialCondition { Name = builder.Name, Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null };
+         _initialConditionsBuildingBlock.Add(startValue);
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Returns(new ExplicitFormula("M/V"));
+         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(builder);
+      }
+
+      protected override void Because()
+      {
+         sut.RefreshInitialConditionsFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock.ToList());
+      }
+
+      [Observation]
+      public void formula_must_be_set()
+      {
+         _initialConditionsBuildingBlock.Each(startValue => startValue.Formula.IsExplicit().ShouldBeTrue());
+      }
+   }
+
+   public class When_updating_a_molecule_start_value_building_block_with_original_value_NaN_and_molecule_start_value_NULL : concern_for_InitialConditionsTask
+   {
+      private IMoBiCommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         var spatialStructure = A.Fake<MoBiSpatialStructure>();
+         var moleculeBuildingBlock = new MoleculeBuildingBlock();
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { moleculeBuildingBlock });
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { spatialStructure });
+         var molecule = new MoleculeBuilder { Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION };
+         moleculeBuildingBlock.Add(molecule);
+         var nanStartValue = new InitialCondition { Name = molecule.Name, Value = null, Dimension = Constants.Dimension.NO_DIMENSION };
+         _initialConditionsBuildingBlock.Add(nanStartValue);
+         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
+      }
+
+      protected override void Because()
+      {
+         _command = sut.RefreshInitialConditionsFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock.ToList());
+      }
+
+      [Observation]
+      public void should_not_create_an_entry_in_the_history()
+      {
+         _command.IsEmptyMacro().ShouldBeTrue();
+      }
+   }
+
+   public class When_updating_a_molecule_start_value_building_block_with_original_value_null_and_molecule_start_value_NULL : concern_for_InitialConditionsTask
+   {
+      private IMoBiCommand _command;
+      private InitialCondition _nullStartValue;
+
+      protected override void Context()
+      {
+         base.Context();
+         var spatialStructure = A.Fake<MoBiSpatialStructure>();
+         var moleculeBuildingBlock = new MoleculeBuildingBlock();
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { moleculeBuildingBlock });
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] {spatialStructure});
+         var molecule = new MoleculeBuilder { Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION };
+         moleculeBuildingBlock.Add(molecule);
+         _nullStartValue = new InitialCondition { Name = molecule.Name, Value = 1, Dimension = Constants.Dimension.NO_DIMENSION };
+         _initialConditionsBuildingBlock.Add(_nullStartValue);
+         A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
+         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
+      }
+
+      protected override void Because()
+      {
+         _command = sut.RefreshInitialConditionsFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock.ToList());
+      }
+
+      [Observation]
+      public void should_create_an_entry_in_the_history()
+      {
+         _command.IsEmptyMacro().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_set_the_value_to_null()
+      {
+         _nullStartValue.Value.ShouldBeNull();
       }
    }
 }

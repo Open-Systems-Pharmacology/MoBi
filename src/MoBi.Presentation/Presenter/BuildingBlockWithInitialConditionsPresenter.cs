@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -52,24 +53,44 @@ namespace MoBi.Presentation.Presenter
          IDeleteStartValuePresenter deleteStartValuePresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
+         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter, 
          IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter) : 
          base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _initialConditionsTask = initialConditionsTask;
-
+         refreshInitialConditionsPresenter.ApplySelectionAction = performRefreshAction;
          _view.AddIsPresentSelectionView(isPresentSelectionPresenter.BaseView);
          _view.AddNegativeValuesAllowedSelectionView(negativeStartValuesAllowedSelectionPresenter.BaseView);
+         _view.AddRefreshSelectionView(refreshInitialConditionsPresenter.BaseView);
 
+         AddSubPresenters(refreshInitialConditionsPresenter);
          isPresentSelectionPresenter.ApplySelectionAction = performIsPresentAction;
          negativeStartValuesAllowedSelectionPresenter.ApplySelectionAction = performNegativeValuesAllowedAction;
       }
 
-      protected override string RemoveCommandDescription()
+      private void performRefreshAction(SelectOption option)
       {
-         return AppConstants.Commands.RemoveMultipleInitialConditions;
+         if (option == SelectOption.RefreshSelected)
+         {
+            refreshInitialConditions(SelectedStartValues);
+         }
+         else if (option == SelectOption.RefreshAll)
+         {
+            refreshInitialConditions(VisibleStartValues);
+         }
       }
+
+      private void refreshInitialConditions(IEnumerable<InitialCondition> initialConditions)
+      {
+         AddCommand(
+            _initialConditionsTask.RefreshInitialConditionsFromBuildingBlocks(
+               _buildingBlock,
+               initialConditions.ToList()));
+      }
+
+      protected override string RemoveCommandDescription() => AppConstants.Commands.RemoveMultipleInitialConditions;
 
       public override void AddNewFormula(InitialConditionDTO initialConditionDTO)
       {
@@ -77,15 +98,9 @@ namespace MoBi.Presentation.Presenter
          AddNewFormula(initialConditionDTO, pathAndValueEntity);
       }
 
-      public void SetScaleDivisor(InitialConditionDTO dto, double newScaleDivisor)
-      {
-         AddCommand(() => _initialConditionsTask.UpdateInitialConditionScaleDivisor(_buildingBlock, dto.InitialCondition, newScaleDivisor, dto.InitialCondition.ScaleDivisor));
-      }
+      public void SetScaleDivisor(InitialConditionDTO dto, double newScaleDivisor) => AddCommand(() => _initialConditionsTask.UpdateInitialConditionScaleDivisor(_buildingBlock, dto.InitialCondition, newScaleDivisor, dto.InitialCondition.ScaleDivisor));
 
-      public void SetIsPresent(InitialConditionDTO dto, bool isPresent)
-      {
-         setIsPresent(new[] { dto.InitialCondition }, isPresent);
-      }
+      public void SetIsPresent(InitialConditionDTO dto, bool isPresent) => setIsPresent(new[] { dto.InitialCondition }, isPresent);
 
       private void setIsPresent(IEnumerable<InitialCondition> startValuesToUpdate, bool isPresent)
       {
@@ -93,20 +108,11 @@ namespace MoBi.Presentation.Presenter
          _view.RefreshData();
       }
 
-      public void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed)
-      {
-         setNegativeValuesAllowed(new[] { dto.InitialCondition }, negativeValuesAllowed);
-      }
+      public void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, negativeValuesAllowed);
 
-      protected void DisablePathColumns()
-      {
-         _view.DisablePathColumns();
-      }
+      protected void DisablePathColumns() => _view.DisablePathColumns();
 
-      public void HideIsPresentColumn()
-      {
-         _view.HideIsPresentColumn();
-      }
+      public void HideIsPresentColumn() => _view.HideIsPresentColumn();
 
       private void setNegativeValuesAllowed(IEnumerable<InitialCondition> startValuesToUpdate, bool negativeValuesAllowed)
       {
@@ -114,15 +120,9 @@ namespace MoBi.Presentation.Presenter
          _view.RefreshData();
       }
 
-      private void performIsPresentAction(SelectOption option)
-      {
-         performSetFlagValueAction(setIsPresent, option);
-      }
+      private void performIsPresentAction(SelectOption option) => performSetFlagValueAction(setIsPresent, option);
 
-      private void performNegativeValuesAllowedAction(SelectOption option)
-      {
-         performSetFlagValueAction(setNegativeValuesAllowed, option);
-      }
+      private void performNegativeValuesAllowedAction(SelectOption option) => performSetFlagValueAction(setNegativeValuesAllowed, option);
 
       private void performSetFlagValueAction(Action<IEnumerable<InitialCondition>, bool> selectionAction, SelectOption option)
       {

@@ -37,6 +37,7 @@ namespace MoBi.Presentation
       private IDimensionFactory _dimensionFactory;
       private IInitialConditionsDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
       private IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper _buildingBlockMapper;
+      private IRefreshInitialConditionsPresenter _refreshInitialConditionsPresenter;
 
       protected override void Context()
       {
@@ -44,6 +45,7 @@ namespace MoBi.Presentation
          _mapper = A.Fake<IInitialConditionToInitialConditionDTOMapper>();
          _context = A.Fake<IMoBiContext>();
          _isPresentSelectionPresenter = A.Fake<IMoleculeIsPresentSelectionPresenter>();
+         _refreshInitialConditionsPresenter = A.Fake<IRefreshInitialConditionsPresenter>();
          _negativeStartValuesAllowedSelectionPresenter = A.Fake<IMoleculeNegativeValuesAllowedSelectionPresenter>();
          _initialConditionTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _commandCollector = A.Fake<ICommandCollector>();
@@ -55,7 +57,7 @@ namespace MoBi.Presentation
          _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_mapper);
 
          sut = new InitialConditionsPresenter(
-            _view, _mapper, _isPresentSelectionPresenter, _negativeStartValuesAllowedSelectionPresenter, _initialConditionTask,
+            _view, _mapper, _isPresentSelectionPresenter, _refreshInitialConditionsPresenter, _negativeStartValuesAllowedSelectionPresenter, _initialConditionTask,
             _initialConditionsCreator, _context, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
@@ -179,7 +181,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_updae_the_value_description_in_the_start_value()
+      public void should_update_the_value_description_in_the_start_value()
       {
          A.CallTo(() => _initialConditionTask.SetValueOrigin(_initialConditionsBuildingBlock, _valueOrigin, _startValue)).MustHaveHappened();
       }
@@ -202,16 +204,16 @@ namespace MoBi.Presentation
       public void The_returned_list_Should_contain_null_formula()
       {
          var nullFormula =
-            _resultFormulas.Where(dto => dto.Formula == null)
-               .Where(dto => dto.FormulaString == AppConstants.Captions.FormulaNotAvailable)
-               .FirstOrDefault();
+            _resultFormulas
+               .Where(dto => dto.Formula == null)
+               .FirstOrDefault(dto => dto.FormulaString == AppConstants.Captions.FormulaNotAvailable);
          nullFormula.ShouldNotBeNull();
       }
 
       [Observation]
-      public void The_returned_list_Should_contain_explizit_formula_from_cache()
+      public void The_returned_list_Should_contain_explicit_formula_from_cache()
       {
-         var explicitFormula = _resultFormulas.Where(dto => _explicitFormula.Equals(dto.Formula)).FirstOrDefault();
+         var explicitFormula = _resultFormulas.FirstOrDefault(dto => _explicitFormula.Equals(dto.Formula));
          explicitFormula.ShouldNotBeNull();
       }
    }
@@ -267,21 +269,21 @@ namespace MoBi.Presentation
    public class When_performing_a_bulk_update_of_molecule_start_values : concern_for_InitialConditionsPresenter
    {
       private InitialCondition _msv1;
-      private InitialConditionDTO _msv1DTOFirst;
-      private InitialConditionDTO _msv1DTOSecond;
+      private InitialConditionDTO _initialConditionDTO1;
+      private InitialConditionDTO _initialConditionDTO2;
 
       protected override void Context()
       {
          base.Context();
          _msv1 = new InitialCondition();
-         _msv1DTOFirst = new InitialConditionDTO(_msv1, _initialConditionsBuildingBlock);
-         _msv1DTOSecond = new InitialConditionDTO(_msv1, _initialConditionsBuildingBlock);
+         _initialConditionDTO1 = new InitialConditionDTO(_msv1, _initialConditionsBuildingBlock);
+         _initialConditionDTO2 = new InitialConditionDTO(_msv1, _initialConditionsBuildingBlock);
          A.CallTo(() => _mapper.MapFrom(_msv1, _initialConditionsBuildingBlock))
-            .ReturnsNextFromSequence(_msv1DTOFirst, _msv1DTOSecond);
+            .ReturnsNextFromSequence(_initialConditionDTO1, _initialConditionDTO2);
 
          _initialConditionsBuildingBlock.Add(_msv1);
          sut.Edit(_initialConditionsBuildingBlock);
-         _view.FocusedStartValue = _msv1DTOFirst;
+         _view.FocusedStartValue = _initialConditionDTO1;
       }
 
       protected override void Because()
@@ -293,7 +295,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_save_the_currently_focused_start_values_and_set_it_back_to_the_view()
       {
-         _view.FocusedStartValue.ShouldBeEqualTo(_msv1DTOSecond);
+         _view.FocusedStartValue.ShouldBeEqualTo(_initialConditionDTO2);
       }
    }
 }

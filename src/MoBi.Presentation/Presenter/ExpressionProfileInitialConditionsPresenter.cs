@@ -27,9 +27,10 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IDeleteStartValuePresenter deleteStartValuePresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
-         IDimensionFactory dimensionFactory, 
+         IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
-         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper) : 
+         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper, 
+         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter) : 
          base(view, 
             startValueMapper, 
             initialConditionsTask, 
@@ -38,6 +39,7 @@ namespace MoBi.Presentation.Presenter
             deleteStartValuePresenter, 
             formulaToValueFormulaDTOMapper, 
             dimensionFactory, 
+            refreshInitialConditionsPresenter,
             isPresentSelectionPresenter, 
             negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
       {
@@ -50,9 +52,6 @@ namespace MoBi.Presentation.Presenter
          DisablePathColumns();
       }
 
-      protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(ExpressionProfileBuildingBlock buildingBlock)
-      {
-         return _buildingBlockMapper.MapFrom(buildingBlock).InitialConditionDTOs;
-      }
+      protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(ExpressionProfileBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).InitialConditionDTOs;
    }
 }

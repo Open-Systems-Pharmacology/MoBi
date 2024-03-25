@@ -27,6 +27,7 @@ namespace MoBi.Presentation.Presenter
          IInitialConditionsView view,
          IInitialConditionToInitialConditionDTOMapper startValueMapper,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
+         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
          IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
@@ -36,14 +37,11 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper buildingBlockMapper)
-         : base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
+         : base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, refreshInitialConditionsPresenter, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
       }
 
-      protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(InitialConditionsBuildingBlock buildingBlock)
-      {
-         return _buildingBlockMapper.MapFrom(buildingBlock).ParameterDTOs;
-      }
+      protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(InitialConditionsBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).ParameterDTOs;
    }
 }

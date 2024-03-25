@@ -17,6 +17,7 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures { get; }
 
       void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure);
+      void SelectBuildingBlocksForRefresh(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure);
       SpatialStructure SelectedSpatialStructure { get; }
       IReadOnlyList<MoleculeBuilder> SelectedMolecules { get; }
    }
@@ -45,8 +46,13 @@ namespace MoBi.Presentation.Presenter
 
       private void moleculeSelectionStatusChanged(object sender, EventArgs e) => _view.MoleculeSelectionChanged();
 
-      public void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
+      public void SelectBuildingBlocksForRefresh(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) => selectBuildingBlocks(defaultMolecules, defaultSpatialStructure, AppConstants.Captions.RefreshDescription);
+
+      public void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) => selectBuildingBlocks(defaultMolecules, defaultSpatialStructure, AppConstants.Captions.ExtendDescription);
+
+      private void selectBuildingBlocks(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure, string descriptionText)
       {
+         _view.SetDescriptionText(descriptionText);
          _view.Caption = AppConstants.Captions.SelectSpatialStructureAndMolecules;
          _dto = _mapper.MapFrom(defaultSpatialStructure ?? AllSpatialStructures.FirstOrDefault());
          _selectMoleculesPresenter.SelectMolecules(defaultMolecules);
