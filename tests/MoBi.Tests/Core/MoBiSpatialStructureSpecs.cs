@@ -113,20 +113,18 @@ namespace MoBi.Core
       private IObjectPathFactory _objectPathFactory;
       private IReadOnlyList<NeighborhoodBuilder> _result;
       private NeighborhoodBuilder _neighborhood;
-      private Container _subContainer;
 
       protected override void Context()
       {
          base.Context();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
-         _container = new Container().WithName("Muscle").WithMode(ContainerMode.Logical);
-         _subContainer = new Container().WithName("Interstitial").WithMode(ContainerMode.Physical).Under(_container);
-         _container.ParentPath = new ObjectPath("Organism");
+         _container = new Container().WithName("Interstitial").WithMode(ContainerMode.Physical);
+         _container.ParentPath = new ObjectPath("Organism", "Bone");
 
          _neighborhood = new NeighborhoodBuilder
          {
             //mae the neighborhood reference a sub container instead of the root container
-            FirstNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_subContainer).AndAddAtFront("Organism"),
+            FirstNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_container).AndAddAtFront("Bone").AndAddAtFront("Organism"),
             SecondNeighborPath = new ObjectPath("A", "PATH"),
             Name = "_neighborhoodBetweenCont2AndUnknown"
          };

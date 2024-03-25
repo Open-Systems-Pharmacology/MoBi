@@ -338,7 +338,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_not_affect_start_value_path()
       {
-         _startValue.Path.PathAsString.ShouldBeEqualTo("A|B|");
+         _startValue.Path.PathAsString.ShouldBeEqualTo("A|B");
       }
    }
 

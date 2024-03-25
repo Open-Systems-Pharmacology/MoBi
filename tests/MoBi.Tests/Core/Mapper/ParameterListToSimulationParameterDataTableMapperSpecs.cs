@@ -15,7 +15,7 @@ namespace MoBi.Core.Mapper
 {
    public abstract class concern_for_ParameterListToSimulationParameterDataTableMapper : ContextSpecification<ParameterListToSimulationParameterDataTableMapper>
    {
-      protected IMoBiSimulation _simultion;
+      protected IMoBiSimulation _simulation;
       protected DataTable _result;
 
       protected override void Context()
@@ -25,12 +25,12 @@ namespace MoBi.Core.Mapper
                new ObjectPathFactory(
                   new AliasCreator())));
 
-         _simultion = A.Fake<IMoBiSimulation>();
+         _simulation = A.Fake<IMoBiSimulation>();
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_simultion.Model.Root.GetAllChildren<IParameter>());
+         _result = sut.MapFrom(_simulation.Model.Root.GetAllChildren<IParameter>());
       }
    }
 
@@ -39,7 +39,7 @@ namespace MoBi.Core.Mapper
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _simultion.Model.Root.GetAllChildren<IParameter>()).Returns(generateParameters());
+         A.CallTo(() => _simulation.Model.Root.GetAllChildren<IParameter>()).Returns(generateParameters());
       }
 
       [Observation]
@@ -76,7 +76,7 @@ namespace MoBi.Core.Mapper
                DisplayUnit = DimensionFactoryForSpecs.Factory.Dimension(DimensionFactoryForSpecs.DimensionNames.Mass).DefaultUnit,
                Description = "description"
             },
-            new Parameter()
+            new Parameter().WithName("aParameter")
          };
       }
    }
