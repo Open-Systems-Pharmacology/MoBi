@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
@@ -12,6 +13,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
@@ -33,12 +35,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="oldScaleDivisor">The old value of the scale divisor</param>
       /// <returns>The command used to modify the initial condition</returns>
       IMoBiCommand UpdateInitialConditionScaleDivisor(TBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor);
+
+      IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions);
    }
 
    public class InitialConditionsTask<TBuildingBlock> : StartValuesTask<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       protected readonly IInitialConditionsCreator _initialConditionsCreator;
+      private readonly IMoleculeResolver _moleculeResolver;
 
       public InitialConditionsTask(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
@@ -49,10 +54,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          IImportedQuantityToInitialConditionMapper dtoMapper,
          IInitialConditionPathTask initialConditionPathTask,
          IReactionDimensionRetriever dimensionRetriever,
-         IInitialConditionsCreator initialConditionsCreator) : base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask)
+         IInitialConditionsCreator initialConditionsCreator, 
+         IMoleculeResolver moleculeResolver) : 
+         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask)
       {
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;
+         _moleculeResolver = moleculeResolver;
       }
 
       public IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> startValues, bool isPresent)
@@ -130,6 +138,55 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand UpdateInitialConditionScaleDivisor(TBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor)
       {
          return new UpdateInitialConditionScaleDivisorCommand(buildingBlock, initialCondition, newScaleDivisor, oldScaleDivisor).Run(Context);
+      }
+
+      public IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions)
+      {
+         var initialConditionsModule = buildingBlock.Module;
+         var (spatialStructure, molecules) = SelectBuildingBlocksForRefresh(initialConditionsModule.Molecules, initialConditionsModule.SpatialStructure);
+
+         if (spatialStructure == null || molecules == null || !molecules.Any())
+            return new MoBiEmptyCommand();
+
+         var macroCommand = new MoBiMacroCommand
+         {
+            CommandType = AppConstants.Commands.EditCommand,
+            Description = AppConstants.Commands.RefreshInitialConditionsFromBuildingBlocks,
+            ObjectType = ObjectTypes.InitialCondition
+         };
+
+         initialConditions.Each(initialCondition =>
+         {
+            var moleculeBuilder = _moleculeResolver.Resolve(initialCondition.ContainerPath, initialCondition.MoleculeName, spatialStructure, molecules);
+            if (moleculeBuilder == null) 
+               return;
+         
+            var originalInitialCondition = moleculeBuilder.GetDefaultInitialCondition();
+            var originalUnit = moleculeBuilder.DisplayUnit;
+         
+            if (!ValueComparer.AreValuesEqual(Constants.DEFAULT_SCALE_DIVISOR, initialCondition.ScaleDivisor))
+            {
+               macroCommand.Add(UpdateInitialConditionScaleDivisor(buildingBlock, initialCondition, Constants.DEFAULT_SCALE_DIVISOR, initialCondition.ScaleDivisor));
+            }
+         
+            if (!HasEquivalentDimension(initialCondition, moleculeBuilder))
+            {
+               macroCommand.Add(UpdatePathAndValueEntityDimension(buildingBlock, initialCondition, moleculeBuilder.Dimension));
+            }
+         
+            if (!HasEquivalentPathAndValueEntity(initialCondition, originalInitialCondition))
+            {
+               macroCommand.Add(SetValueWithUnit(initialCondition, originalInitialCondition, originalUnit, buildingBlock));
+            }
+         
+            if (!HasEquivalentFormula(initialCondition, moleculeBuilder.DefaultStartFormula))
+            {
+               macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, initialCondition,
+                  moleculeBuilder.DefaultStartFormula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(moleculeBuilder.DefaultStartFormula, buildingBlock.FormulaCache)));
+            }
+         });
+
+         return macroCommand;
       }
 
       public override IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(InitialCondition pathAndValueEntity, TBuildingBlock buildingBlock)

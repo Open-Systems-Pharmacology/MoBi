@@ -61,20 +61,11 @@ namespace MoBi.UI.Views
 
       public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
 
-      public void HideIsPresentColumn()
-      {
-         _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
-      }
+      public void HideIsPresentColumn() => _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
 
-      private void onSetIsPresent(InitialConditionDTO dto, bool isPresent)
-      {
-         InitialConditionPresenter.SetIsPresent(dto, isPresent);
-      }
+      private void onSetIsPresent(InitialConditionDTO dto, bool isPresent) => InitialConditionPresenter.SetIsPresent(dto, isPresent);
 
-      private void onSetNegativeValueAllowed(InitialConditionDTO dto, bool negativeValuesAllowed)
-      {
-         InitialConditionPresenter.SetNegativeValuesAllowed(dto, negativeValuesAllowed);
-      }
+      private void onSetNegativeValueAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => InitialConditionPresenter.SetNegativeValuesAllowed(dto, negativeValuesAllowed);
 
       private void setParameterUnit(InitialConditionDTO initialCondition, Unit unit)
       {
@@ -87,20 +78,13 @@ namespace MoBi.UI.Views
 
       public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();
 
-      public void AddIsPresentSelectionView(IView view)
-      {
-         panelIsPresent.FillWith(view);
-      }
+      public void AddRefreshSelectionView(IView view) => panelRefresh.FillWith(view);
 
-      public void AddNegativeValuesAllowedSelectionView(IView view)
-      {
-         panelNegativeValuesAllowed.FillWith(view);
-      }
+      public void AddIsPresentSelectionView(IView view) => panelIsPresent.FillWith(view);
 
-      public void AttachPresenter(IBuildingBlockWithInitialConditionsPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public void AddNegativeValuesAllowedSelectionView(IView view) => panelNegativeValuesAllowed.FillWith(view);
+
+      public void AttachPresenter(IBuildingBlockWithInitialConditionsPresenter presenter) => _presenter = presenter;
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.InitialConditions;
    }

@@ -8,6 +8,7 @@ namespace MoBi.Presentation.Views
    {
       void AddIsPresentSelectionView(IView view);
       void AddNegativeValuesAllowedSelectionView(IView view);
+      void AddRefreshSelectionView(IView view);
       void HideIsPresentColumn();
    }
 }

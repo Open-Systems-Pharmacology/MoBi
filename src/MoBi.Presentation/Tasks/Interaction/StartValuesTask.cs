@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
@@ -282,7 +283,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
       }
 
-      private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure)
+      private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) => 
+         selectBuildingBlocks(x => x.SelectBuildingBlocksForExtend(defaultMolecules, defaultSpatialStructure));
+      
+      protected (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForRefresh(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) =>
+         selectBuildingBlocks(x => x.SelectBuildingBlocksForRefresh(defaultMolecules, defaultSpatialStructure));
+
+      private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocks(Action<ISelectSpatialStructureAndMoleculesPresenter> actionToSelectBuildingBlocks)
       {
          var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
          var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;
@@ -299,7 +306,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          using (var selectorPresenter = Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>())
          {
-            selectorPresenter.SelectBuildingBlocksForExtend(defaultMolecules, defaultSpatialStructure);
+            actionToSelectBuildingBlocks(selectorPresenter);
             return (selectorPresenter.SelectedSpatialStructure, selectorPresenter.SelectedMolecules);
          }
       }

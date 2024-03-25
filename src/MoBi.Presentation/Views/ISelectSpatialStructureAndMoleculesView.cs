@@ -9,5 +9,6 @@ namespace MoBi.Presentation.Views
       void Show(SelectSpatialStructureDTO dto);
       void AddMoleculeSelectionView(IView view);
       void MoleculeSelectionChanged();
+      void SetDescriptionText(string description);
    }
 }

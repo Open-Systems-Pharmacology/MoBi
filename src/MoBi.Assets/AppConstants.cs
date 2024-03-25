@@ -1585,6 +1585,7 @@ namespace MoBi.Assets
          public static readonly string SelectOrganAndMolecules = "Select an organ and molecules";
          public static readonly string SelectSpatialStructure = "Select a spatial structure";
          public static readonly string ExtendDescription = "<b>The building block will be extended with new values for selected <i>molecules</i> in all physical containers in the selected <i>spatial structure</i></b>";
+         public static readonly string RefreshDescription = "<b>The building block values will be refreshed for selected <i>molecules</i> in all physical containers in the selected <i>spatial structure</i></b>";
          public static readonly string AddExpressionDescription = "<b>The building block will be extended with expression parameter values for selected <i>molecules</i> in the selected <i>organ</i> </b>";
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";

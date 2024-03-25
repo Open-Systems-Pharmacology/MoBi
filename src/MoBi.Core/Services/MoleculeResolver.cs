@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -7,6 +8,7 @@ namespace MoBi.Core.Services
    public interface IMoleculeResolver
    {
       MoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock);
+      MoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules);
    }
 
    public class MoleculeResolver : IMoleculeResolver
@@ -18,17 +20,14 @@ namespace MoBi.Core.Services
             .FirstOrDefault(container => container != null && (container.Mode == ContainerMode.Physical)) != null;
       }
 
-      private bool canResolveMolecule(MoleculeBuildingBlock moleculeBuildingBlock, string moleculeName)
-      {
-         return moleculeBuildingBlock[moleculeName] != null;
-      }
-
       public MoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock)
       {
-         if (!canResolveMolecule(moleculeBuildingBlock, moleculeName) || !canResolvePhysicalContainer(containerPath, spatialStructure))
-            return null;
+         return Resolve(containerPath, moleculeName, spatialStructure, moleculeBuildingBlock.ToList());
+      }
 
-         return moleculeBuildingBlock[moleculeName];
+      public MoleculeBuilder Resolve(ObjectPath containerPath, string moleculeName, SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules)
+      {
+         return !canResolvePhysicalContainer(containerPath, spatialStructure) ? null : molecules.FindByName(moleculeName);
       }
    }
 }

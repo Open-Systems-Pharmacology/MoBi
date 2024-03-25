@@ -23,13 +23,11 @@ namespace MoBi.UI.Views
          InitializeComponent();
 
          descriptionLabel.AsDescription();
-         descriptionLabel.Text = AppConstants.Captions.ExtendDescription;
       }
 
-      public void AttachPresenter(ISelectSpatialStructureAndMoleculesPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public void SetDescriptionText(string description) => descriptionLabel.Text = description;
+
+      public void AttachPresenter(ISelectSpatialStructureAndMoleculesPresenter presenter) => _presenter = presenter;
 
       public override void InitializeBinding()
       {
@@ -52,26 +50,14 @@ namespace MoBi.UI.Views
          Text = AppConstants.Captions.NewWindow(ObjectTypes.MoleculeBuildingBlock);
       }
 
-      public void Show(SelectSpatialStructureDTO dto)
-      {
-         _screenBinder.BindToSource(dto);
-      }
+      public void Show(SelectSpatialStructureDTO dto) => _screenBinder.BindToSource(dto);
 
-      public void AddMoleculeSelectionView(IView view)
-      {
-         moleculeSelectionPanel.FillWith(view);
-      }
+      public void AddMoleculeSelectionView(IView view) => moleculeSelectionPanel.FillWith(view);
 
-      public void MoleculeSelectionChanged()
-      {
-         SetOkButtonEnable();
-      }
+      public void MoleculeSelectionChanged() => SetOkButtonEnable();
 
       public override bool HasError => !_presenter.CanClose || base.HasError || _screenBinder.HasError;
 
-      private void disposeBinders()
-      {
-         _screenBinder.Dispose();
-      }
+      private void disposeBinders() => _screenBinder.Dispose();
    }
 }
