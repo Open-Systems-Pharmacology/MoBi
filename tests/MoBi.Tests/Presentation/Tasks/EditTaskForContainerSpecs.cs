@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using DevExpress.Utils.Extensions;
+using DevExpress.XtraCharts;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
@@ -32,6 +33,7 @@ namespace MoBi.Presentation.Tasks
       protected IFormulaFactory _formulaFactory;
       protected IPathAndValueEntityToParameterValueMapper _pathAndValueEntityToParameterValueMapper;
       private IObjectBaseFactory _objectBaseFactory;
+      private IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
 
       protected override void Context()
       {
@@ -40,6 +42,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _selectIndividualAndExpressionFromProjectPresenter = A.Fake<ISelectFolderAndIndividualAndExpressionFromProjectPresenter>();
+         _individualParameterToParameterMapper = A.Fake<IIndividualParameterToParameterMapper>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          A.CallTo(() => _objectBaseFactory.Create<ParameterValue>()).ReturnsLazily(() => new ParameterValue());
@@ -49,7 +52,16 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = A.Fake<IInteractionTask>();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
-         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _pathAndValueEntityToParameterValueMapper);
+         A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => newParameter(x.Arguments.Get<IndividualParameter>(0)));
+         sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureFactory, _objectPathFactory, _cloneManager, _pathAndValueEntityToParameterValueMapper, _formulaFactory, _individualParameterToParameterMapper);
+      }
+
+      private static IParameter newParameter(IndividualParameter individualParameter)
+      {
+         if (individualParameter.DistributionType == null)
+            return new Parameter().WithName(individualParameter.Name);
+
+         return new DistributedParameter().WithName(individualParameter.Name);
       }
    }
 
@@ -145,26 +157,32 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void simple_parameters_are_included_in_the_parameter_values_building_block()
+      public void the_top_container_should_be_created()
       {
-         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|parameter1").ShouldNotBeNull();
-         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|ShouldBeReplaced").ShouldNotBeNull();
+         _tmpSpatialStructure.TopContainers.ShouldOnlyContain(_clonedContainer);
+      }
+
+      [Observation]
+      public void simple_parameters_are_included_in_the_exported_spatial_structure()
+      {
+         _clonedContainer.FindByName("ShouldBeReplaced").ShouldNotBeNull();
+         _clonedContainer.FindByName("parameter1").ShouldNotBeNull();
       }
 
       [Observation]
       public void the_distributed_parameter_should_contain_sub_parameters_when_the_distributed_parameter_is_not_in_the_container()
       {
-         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1-WS").ShouldNotBeNull();
-         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1-WS|Mean").ShouldNotBeNull();
-         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1-WS|StandardDeviation").ShouldNotBeNull();
+         _clonedContainer.FindByName("distributedParameter1-WS").ShouldNotBeNull();
+         _clonedContainer.GetAllContainersAndSelf<IDistributedParameter>().FindByName("distributedParameter1-WS").FindByName("Mean").ShouldNotBeNull();
+         _clonedContainer.GetAllContainersAndSelf<IDistributedParameter>().FindByName("distributedParameter1-WS").FindByName("StandardDeviation").ShouldNotBeNull();
       }
 
       [Observation]
       public void the_distributed_parameter_should_contain_sub_parameters_when_the_distributed_parameter_is_in_the_container()
       {
-         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1").ShouldNotBeNull();
-         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1|Mean").ShouldNotBeNull();
-         _parameterValuesBuildingBlock.FindByPath("Parent|Container1|distributedParameter1|StandardDeviation").ShouldNotBeNull();
+         _clonedContainer.FindByName("distributedParameter1").ShouldNotBeNull();
+         _clonedContainer.GetAllContainersAndSelf<IDistributedParameter>().FindByName("distributedParameter1").FindByName("Mean").ShouldNotBeNull();
+         _clonedContainer.GetAllContainersAndSelf<IDistributedParameter>().FindByName("distributedParameter1").FindByName("StandardDeviation").ShouldNotBeNull();
       }
 
       [Observation]
