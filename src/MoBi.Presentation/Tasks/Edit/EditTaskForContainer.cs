@@ -11,6 +11,8 @@ using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
@@ -40,17 +42,23 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IPathAndValueEntityToParameterValueMapper _pathAndValueEntityToParameterValueMapper;
+      private readonly IFormulaFactory _formulaFactory;
+      private readonly IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
 
       public EditTaskForContainer(IInteractionTaskContext interactionTaskContext,
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IObjectPathFactory objectPathFactory,
          ICloneManagerForBuildingBlock cloneManager,
-         IPathAndValueEntityToParameterValueMapper pathAndValueEntityToParameterValueMapper) : base(interactionTaskContext)
+         IPathAndValueEntityToParameterValueMapper pathAndValueEntityToParameterValueMapper,
+         IFormulaFactory formulaFactory,
+         IIndividualParameterToParameterMapper individualParameterToParameterMapper) : base(interactionTaskContext)
       {
          _spatialStructureFactory = spatialStructureFactory;
          _objectPathFactory = objectPathFactory;
          _cloneManager = cloneManager;
          _pathAndValueEntityToParameterValueMapper = pathAndValueEntityToParameterValueMapper;
+         _formulaFactory = formulaFactory;
+         _individualParameterToParameterMapper = individualParameterToParameterMapper;
       }
 
       protected override IEnumerable<string> GetUnallowedNames(IContainer container, IEnumerable<IObjectBase> existingObjectsInParent)
@@ -86,6 +94,67 @@ namespace MoBi.Presentation.Tasks.Edit
          exportContainer(container, fileName);
       }
 
+      private void addIndividualParametersToContainerAndSubContainers(IndividualBuildingBlock individual, IContainer container)
+      {
+         if (individual == null || !individual.Any())
+            return;
+
+         var allSubContainers = container.GetAllContainersAndSelf<IContainer>();
+         allSubContainers.Each(subContainer =>
+         {
+            var subContainerPath = container.ParentPath.Concat(_objectPathFactory.CreateAbsoluteObjectPath(subContainer));
+            addIndividualParametersToContainerByPath(individual, subContainer, new ObjectPath(subContainerPath));
+         });
+      }
+
+      private void addIndividualParametersToContainerByPath(IndividualBuildingBlock individual, IContainer container, ObjectPath containerPath)
+      {
+         var individualParametersToExport = individual.Where(individualParameter => individualParameter.ContainerPath.StartsWith(containerPath)).ToList();
+
+         // Ensure that the distributed parameters are added to the container first. After all distributed parameters are added, then the other parameters can be added.
+         individualParametersToExport.Where(x => x.IsDistributed()).Each(x => addIndividualParameterToContainerByPath(x, container, containerPath));
+         individualParametersToExport.Where(x => !x.IsDistributed()).Each(x => addIndividualParameterToContainerByPath(x, container, containerPath));
+      }
+
+      private void addIndividualParameterToContainerByPath(IndividualParameter individualParameter, IContainer container, string containerPath)
+      {
+         var targetContainer = findTargetContainer(individualParameter.ContainerPath, container, containerPath);
+         // The target container for this parameter is not found - skip
+         if (targetContainer == null)
+            return;
+
+         var parameterToAdd = createParameter(individualParameter);
+         var existingParameter = targetContainer.FindByName(parameterToAdd.Name);
+
+         if (existingParameter != null)
+            targetContainer.RemoveChild(existingParameter);
+
+         targetContainer.Add(parameterToAdd);
+      }
+
+      private IParameter createParameter(IndividualParameter individualParameter)
+      {
+         var parameterToAdd = _individualParameterToParameterMapper.MapFrom(individualParameter);
+
+         // The mapper does not create a formula for the parameter. Caller must clone or create the formula based on how it will be used 
+         if (individualParameter.Value.HasValue)
+            parameterToAdd.Formula = _formulaFactory.ConstantFormula(individualParameter.Value.Value, individualParameter.Dimension);
+         else if (individualParameter.Formula != null)
+            parameterToAdd.Formula = _cloneManager.Clone(individualParameter.Formula);
+
+         return parameterToAdd;
+      }
+
+      private IContainer findTargetContainer(string individualParameterContainerPath, IContainer container, string containerPath)
+      {
+         if (individualParameterContainerPath == containerPath)
+            return container;
+
+         // if the individualParameterContainerPath is pointing to a sub-container, then search for a child container with the relative path
+         var relativePath = individualParameterContainerPath.Substring(containerPath.Length + 1).ToPathArray();
+         return container.EntityAt<IContainer>(relativePath);
+      }
+
       private void exportContainer(IContainer container, string fileName, IndividualBuildingBlock individual = null, IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfileBuildingBlocks = null)
       {
          var tmpSpatialStructure = (MoBiSpatialStructure)_spatialStructureFactory.Create();
@@ -98,9 +167,9 @@ namespace MoBi.Presentation.Tasks.Edit
 
          var entitiesToExport = new List<PathAndValueEntity>();
 
-         entitiesToExport.AddRange(pathAndValueEntitiesForContainer(individual, clonedEntity));
+         addIndividualParametersToContainerAndSubContainers(individual, clonedEntity);
 
-         if(expressionProfileBuildingBlocks != null)
+         if (expressionProfileBuildingBlocks != null)
             entitiesToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x, clonedEntity, x.MoleculeName)));
 
          var existingSpatialStructure = _interactionTaskContext.Active<MoBiSpatialStructure>();
