@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Tasks.Edit
          exportContainer(container, fileName);
       }
 
-      private void addIndividualParametersToContainers(IndividualBuildingBlock individual, IContainer container)
+      private void addIndividualParametersToContainerAndSubContainers(IndividualBuildingBlock individual, IContainer container)
       {
          if (individual == null || !individual.Any())
             return;
@@ -103,20 +103,20 @@ namespace MoBi.Presentation.Tasks.Edit
          allSubContainers.Each(subContainer =>
          {
             var subContainerPath = container.ParentPath.Concat(_objectPathFactory.CreateAbsoluteObjectPath(subContainer));
-            addIndividualParametersToContainer(individual, subContainer, new ObjectPath(subContainerPath));
+            addIndividualParametersToContainerByPath(individual, subContainer, new ObjectPath(subContainerPath));
          });
       }
 
-      private void addIndividualParametersToContainer(IndividualBuildingBlock individual, IContainer container, ObjectPath containerPath)
+      private void addIndividualParametersToContainerByPath(IndividualBuildingBlock individual, IContainer container, ObjectPath containerPath)
       {
          var individualParametersToExport = individual.Where(individualParameter => individualParameter.ContainerPath.StartsWith(containerPath)).ToList();
 
          // Ensure that the distributed parameters are added to the container first. After all distributed parameters are added, then the other parameters can be added.
-         individualParametersToExport.Where(x => x.DistributionType != null).Each(x => addIndividualParameterToContainer(x, container, containerPath));
-         individualParametersToExport.Where(x => x.DistributionType == null).Each(x => addIndividualParameterToContainer(x, container, containerPath));
+         individualParametersToExport.Where(x => x.IsDistributed()).Each(x => addIndividualParameterToContainerByPath(x, container, containerPath));
+         individualParametersToExport.Where(x => !x.IsDistributed()).Each(x => addIndividualParameterToContainerByPath(x, container, containerPath));
       }
 
-      private void addIndividualParameterToContainer(IndividualParameter individualParameter, IContainer container, string containerPath)
+      private void addIndividualParameterToContainerByPath(IndividualParameter individualParameter, IContainer container, string containerPath)
       {
          var targetContainer = findTargetContainer(individualParameter.ContainerPath, container, containerPath);
          // The target container for this parameter is not found - skip
@@ -136,10 +136,11 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var parameterToAdd = _individualParameterToParameterMapper.MapFrom(individualParameter);
 
-         if (individualParameter.Formula != null)
-            parameterToAdd.Formula = individualParameter.Formula;
+         // The mapper does not create a formula for the parameter. Caller must clone or create the formula based on how it will be used 
          if (individualParameter.Value.HasValue)
             parameterToAdd.Formula = _formulaFactory.ConstantFormula(individualParameter.Value.Value, individualParameter.Dimension);
+         else if (individualParameter.Formula != null)
+            parameterToAdd.Formula = _cloneManager.Clone(individualParameter.Formula);
 
          return parameterToAdd;
       }
@@ -166,7 +167,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
          var entitiesToExport = new List<PathAndValueEntity>();
 
-         addIndividualParametersToContainers(individual, clonedEntity);
+         addIndividualParametersToContainerAndSubContainers(individual, clonedEntity);
 
          if (expressionProfileBuildingBlocks != null)
             entitiesToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x, clonedEntity, x.MoleculeName)));
