@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using DevExpress.Utils.Extensions;
-using DevExpress.XtraCharts;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
