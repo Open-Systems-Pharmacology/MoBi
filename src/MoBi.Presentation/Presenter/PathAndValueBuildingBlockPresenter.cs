@@ -15,7 +15,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
-   public abstract class PathAndValueBuildingBlockPresenter<TView, TPresenter, TParent, TBuildingBlock, TParameter, TParameterDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
+   public abstract class PathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TParameter, TParameterDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
    where TBuildingBlock : IBuildingBlock<TParameter>
    where TPresenter : IPresenter
    where TView : IView<TPresenter>, IPathAndValueEntitiesView
@@ -40,6 +40,13 @@ namespace MoBi.Presentation.Presenter
          _distributedPathAndValuePresenter = distributedPathAndValuePresenter;
          _subPresenterManager.Add(_distributedPathAndValuePresenter);
          _view.AddDistributedParameterView(_distributedPathAndValuePresenter.BaseView);
+      }
+      
+      public override object Subject => _buildingBlock;
+
+      public override void Edit(TBuildingBlock buildngBlock)
+      {
+         _buildingBlock = buildngBlock;
       }
 
       public IEnumerable<ValueFormulaDTO> AllFormulas()
@@ -95,7 +102,7 @@ namespace MoBi.Presentation.Presenter
          SetUnit(parameterDTO.PathWithValueObject, unit);
       }
 
-      public void SetParameterValue(TParameterDTO parameterDTO, double? newValue)
+      public void SetValue(TParameterDTO parameterDTO, double? newValue)
       {
          AddCommand(_interactionTask.SetValue(_buildingBlock, newValue, parameterDTO.PathWithValueObject));
       }

@@ -6,19 +6,19 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInitialConditionPathTask : IStartValuePathTask<ILookupBuildingBlock<InitialCondition>, InitialCondition>
+   public interface IInitialConditionPathTask : IPathAndValueEntityPathTask<ILookupBuildingBlock<InitialCondition>, InitialCondition>
    {
    }
 
-   public class InitialConditionPathTask : AbstractStartValuePathTask<ILookupBuildingBlock<InitialCondition>, InitialCondition>, IInitialConditionPathTask
+   public class InitialConditionPathTask : AbstractPathAndValueEntityPathTask<ILookupBuildingBlock<InitialCondition>, InitialCondition>, IInitialConditionPathTask
    {
       public InitialConditionPathTask(IFormulaTask formulaTask, IMoBiContext context) : base(formulaTask, context)
       {
       }
 
-      public override IMoBiCommand UpdateNameCommand(ILookupBuildingBlock<InitialCondition> startValues, InitialCondition pathAndValueEntity, string newValue)
+      public override IMoBiCommand UpdateNameCommand(ILookupBuildingBlock<InitialCondition> initialConditions, InitialCondition pathAndValueEntity, string newValue)
       {
-         return new ChangeInitialConditionNameCommand(startValues, pathAndValueEntity.Path, newValue);
+         return new ChangeInitialConditionNameCommand(initialConditions, pathAndValueEntity.Path, newValue);
       }
 
       public override IMoBiCommand UpdateContainerPathCommand(ILookupBuildingBlock<InitialCondition> buildingBlock, InitialCondition pathAndValueEntity, int indexToUpdate, string newValue)

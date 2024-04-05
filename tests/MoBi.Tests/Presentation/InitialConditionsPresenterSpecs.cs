@@ -30,7 +30,7 @@ namespace MoBi.Presentation
       protected IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionTask;
       protected ICommandCollector _commandCollector;
       protected InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
-      protected IDeleteStartValuePresenter _deleteStartValuePresenter;
+      protected IDeletePathAndValueEntityPresenter _deletePathAndValueEntityPresenter;
       private IMoleculeNegativeValuesAllowedSelectionPresenter _negativeStartValuesAllowedSelectionPresenter;
       protected IInitialConditionsCreator _initialConditionsCreator;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
@@ -49,7 +49,7 @@ namespace MoBi.Presentation
          _negativeStartValuesAllowedSelectionPresenter = A.Fake<IMoleculeNegativeValuesAllowedSelectionPresenter>();
          _initialConditionTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _commandCollector = A.Fake<ICommandCollector>();
-         _deleteStartValuePresenter = A.Fake<IDeleteStartValuePresenter>();
+         _deletePathAndValueEntityPresenter = A.Fake<IDeletePathAndValueEntityPresenter>();
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _distributedParameterPresenter = A.Fake<IInitialConditionsDistributedPathAndValueEntityPresenter>();
@@ -58,7 +58,7 @@ namespace MoBi.Presentation
 
          sut = new InitialConditionsPresenter(
             _view, _mapper, _isPresentSelectionPresenter, _refreshInitialConditionsPresenter, _negativeStartValuesAllowedSelectionPresenter, _initialConditionTask,
-            _initialConditionsCreator, _context, _deleteStartValuePresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
+            _initialConditionsCreator, _context, _deletePathAndValueEntityPresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);
@@ -80,7 +80,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.AddNewEmptyStartValue();
+         sut.AddNewEmptyPathAndValueEntity();
       }
 
       [Observation]
@@ -136,7 +136,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _deleteStartValuePresenter.ApplySelectionAction(SelectOption.DeleteSelected);
+         _deletePathAndValueEntityPresenter.ApplySelectionAction(SelectOption.DeleteSelected);
       }
    }
 
@@ -150,7 +150,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.UpdateStartValueName(new InitialConditionDTO(new InitialCondition { Path = new ObjectPath("one", "two", "C1") }, new InitialConditionsBuildingBlock()), "C2");
+         sut.UpdatePathAndValueEntityName(new InitialConditionDTO(new InitialCondition { Path = new ObjectPath("one", "two", "C1") }, new InitialConditionsBuildingBlock()), "C2");
       }
 
       [Observation]

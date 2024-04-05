@@ -442,7 +442,7 @@ namespace MoBi.Presentation.Tasks
          checkPathAndValueEntity(parameterValue, _parameterValuePathTask);
       }
 
-      private void checkPathAndValueEntity<TPathAndValueEntity, TBuildingBlock>(TPathAndValueEntity pathAndValueEntity, IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> startValueTask)
+      private void checkPathAndValueEntity<TPathAndValueEntity, TBuildingBlock>(TPathAndValueEntity pathAndValueEntity, IPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> startValueTask)
          where TPathAndValueEntity : PathAndValueEntity
          where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity>
       {

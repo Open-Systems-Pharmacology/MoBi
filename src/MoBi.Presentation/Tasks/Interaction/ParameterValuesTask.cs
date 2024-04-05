@@ -17,12 +17,12 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IParameterValuesTask : IStartValuesTask<ParameterValuesBuildingBlock, ParameterValue>
+   public interface IParameterValuesTask : IInteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>
    {
       void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock);
    }
 
-   public class ParameterValuesTask : StartValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
+   public class ParameterValuesTask : InteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
    {
       private readonly IParameterValuesCreator _parameterValuesCreator;
 
@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _parameterValuesCreator = parameterValuesCreator;
       }
 
-      protected override IReadOnlyList<ParameterValue> CreateStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, ParameterValuesBuildingBlock buildingBlock)
+      protected override IReadOnlyList<ParameterValue> CreatePathAndValueEntitiesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, ParameterValuesBuildingBlock buildingBlock)
       {
          return _parameterValuesCreator.CreateFrom(spatialStructure, molecules);
       }

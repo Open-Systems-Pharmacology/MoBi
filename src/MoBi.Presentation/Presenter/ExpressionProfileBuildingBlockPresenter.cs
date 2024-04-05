@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class ExpressionProfileBuildingBlockPresenter :
-      PathAndValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, MoBiProject, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
+      PathAndValueBuildingBlockPresenter<IExpressionProfileBuildingBlockView, IExpressionProfileBuildingBlockPresenter, ExpressionProfileBuildingBlock, ExpressionParameter, ExpressionParameterDTO>,
       IExpressionProfileBuildingBlockPresenter, IListener<RenamedEvent>
    {
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _expressionProfileToDTOMapper;
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Presenter
 
       public override void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
-         _buildingBlock = expressionProfileBuildingBlock;
+         base.Edit(expressionProfileBuildingBlock);
          rebind();
       }
 
@@ -56,8 +56,6 @@ namespace MoBi.Presentation.Presenter
          _expressionProfileBuildingBlockDTO = _expressionProfileToDTOMapper.MapFrom(_buildingBlock);
          _view.BindTo(_expressionProfileBuildingBlockDTO);
       }
-
-      public override object Subject => _buildingBlock;
 
       public bool HasAtLeastOneValue(int pathElementIndex)
       {

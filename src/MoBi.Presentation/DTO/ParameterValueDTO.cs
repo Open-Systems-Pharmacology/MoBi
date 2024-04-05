@@ -2,7 +2,7 @@
 
 namespace MoBi.Presentation.DTO
 {
-   public class ParameterValueDTO : StartValueDTO<ParameterValue, ParameterValueDTO>
+   public class ParameterValueDTO : ExtendablePathAndValueEntityDTO<ParameterValue, ParameterValueDTO>
    {
       public ParameterValue ParameterValue => PathWithValueObject;
 

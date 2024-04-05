@@ -171,7 +171,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetParameterValue(_buildingBlockDTO.ParameterDTOs.First(), _newValue);
+         sut.SetValue(_buildingBlockDTO.ParameterDTOs.First(), _newValue);
       }
 
       [Observation]

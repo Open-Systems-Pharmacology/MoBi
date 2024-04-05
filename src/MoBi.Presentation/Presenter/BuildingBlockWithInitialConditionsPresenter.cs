@@ -16,7 +16,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IBuildingBlockWithInitialConditionsPresenter : IStartValuesPresenter<InitialConditionDTO>
+   public interface IBuildingBlockWithInitialConditionsPresenter : IExtendablePathAndValueBuildingBlockPresenter<InitialConditionDTO>
    {
       /// <summary>
       ///    Sets the Scale Divisor of the start value to the new value
@@ -41,23 +41,23 @@ namespace MoBi.Presentation.Presenter
    {
    }
 
-   public abstract class BuildingBlockWithInitialConditionsPresenter<TView, TPresenter, TBuildingBlock> : PathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, InitialConditionDTO, InitialCondition> where TView : IInitialConditionsView, IPathAndValueEntitiesView<InitialConditionDTO>, IView<TPresenter> where TPresenter : IPresenter where TBuildingBlock : class, IBuildingBlock<InitialCondition>
+   public abstract class BuildingBlockWithInitialConditionsPresenter<TView, TPresenter, TBuildingBlock> : ExtendablePathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, InitialConditionDTO, InitialCondition> where TView : IInitialConditionsView, IPathAndValueEntitiesView<InitialConditionDTO>, IView<TPresenter> where TPresenter : IPresenter where TBuildingBlock : class, IBuildingBlock<InitialCondition>
    {
       private readonly IInitialConditionsTask<TBuildingBlock> _initialConditionsTask;
 
       protected BuildingBlockWithInitialConditionsPresenter(TView view,
-         IInitialConditionToInitialConditionDTOMapper startValueMapper,
+         IInitialConditionToInitialConditionDTOMapper dtoMapper,
          IInitialConditionsTask<TBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
-         IDeleteStartValuePresenter deleteStartValuePresenter,
+         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter, 
          IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter) : 
-         base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _initialConditionsTask = initialConditionsTask;
          refreshInitialConditionsPresenter.ApplySelectionAction = performRefreshAction;
@@ -91,12 +91,6 @@ namespace MoBi.Presentation.Presenter
       }
 
       protected override string RemoveCommandDescription() => AppConstants.Commands.RemoveMultipleInitialConditions;
-
-      public override void AddNewFormula(InitialConditionDTO initialConditionDTO)
-      {
-         var pathAndValueEntity = StartValueFrom(initialConditionDTO);
-         AddNewFormula(initialConditionDTO, pathAndValueEntity);
-      }
 
       public void SetScaleDivisor(InitialConditionDTO dto, double newScaleDivisor) => AddCommand(() => _initialConditionsTask.UpdateInitialConditionScaleDivisor(_buildingBlock, dto.InitialCondition, newScaleDivisor, dto.InitialCondition.ScaleDivisor));
 

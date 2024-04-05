@@ -20,11 +20,11 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInitialConditionsTask<TBuildingBlock> : IStartValuesTask<TBuildingBlock, InitialCondition> where TBuildingBlock : class, IBuildingBlock<InitialCondition>
+   public interface IInitialConditionsTask<TBuildingBlock> : IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition> where TBuildingBlock : class, IBuildingBlock<InitialCondition>
    {
-      IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> startValues, bool isPresent);
+      IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool isPresent);
 
-      IMoBiCommand SetNegativeValuesAllowed(TBuildingBlock initialConditions, IEnumerable<InitialCondition> startValues, bool negativeValuesAllowed);
+      IMoBiCommand SetNegativeValuesAllowed(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool negativeValuesAllowed);
 
       /// <summary>
       ///    Updates the scale divisor for a initial condition
@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions);
    }
 
-   public class InitialConditionsTask<TBuildingBlock> : StartValuesTask<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>
+   public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       protected readonly IInitialConditionsCreator _initialConditionsCreator;
@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _moleculeResolver = moleculeResolver;
       }
 
-      public IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> startValues, bool isPresent)
+      public IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool isPresent)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             ObjectType = ObjectTypes.InitialCondition,
          };
 
-         startValues.Where(x => x.IsPresent != isPresent).Each(msv =>
+         pathAndValueEntities.Where(x => x.IsPresent != isPresent).Each(msv =>
             macroCommand.Add(updateIsPresent(initialConditions, msv, isPresent)));
 
          return macroCommand;
@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateInitialConditionIsPresentCommand(initialConditions, msv, isPresent).Run(Context);
       }
 
-      public IMoBiCommand SetNegativeValuesAllowed(TBuildingBlock initialConditions, IEnumerable<InitialCondition> startValues, bool negativeValuesAllowed)
+      public IMoBiCommand SetNegativeValuesAllowed(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool negativeValuesAllowed)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             ObjectType = ObjectTypes.InitialCondition,
          };
 
-         startValues.Where(x => x.NegativeValuesAllowed != negativeValuesAllowed).Each(msv =>
+         pathAndValueEntities.Where(x => x.NegativeValuesAllowed != negativeValuesAllowed).Each(msv =>
             macroCommand.Add(updateNegativeValuesAllowed(initialConditions, msv, negativeValuesAllowed)));
 
          return macroCommand;
@@ -225,16 +225,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       private void updateDefaultIsPresentToFalseForSpecificExtendedValues(IReadOnlyList<InitialCondition> allInitialConditions, IReadOnlyList<InitialCondition> templateValues)
       {
          var templateInitialConditions = templateValues.ToCache();
-         var startValuesThatShouldPotentiallyNotBePresent = allInitialConditions.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ => x.Key.Contains(organ)));
-         var newInitialConditionsToUpdate = startValuesThatShouldPotentiallyNotBePresent.Where(x => !templateInitialConditions.Contains(x.Key));
+         var entitiesThatShouldPotentiallyNotBePresent = allInitialConditions.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ => x.Key.Contains(organ)));
+         var newInitialConditionsToUpdate = entitiesThatShouldPotentiallyNotBePresent.Where(x => !templateInitialConditions.Contains(x.Key));
          newInitialConditionsToUpdate.Each(x => x.Value.IsPresent = false);
       }
 
-      protected override IReadOnlyList<InitialCondition> CreateStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock initialConditionsBuildingBlock)
+      protected override IReadOnlyList<InitialCondition> CreatePathAndValueEntitiesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock initialConditionsBuildingBlock)
       {
-         var newStartValues = _initialConditionsCreator.CreateFrom(spatialStructure, molecules).ToList();
-         updateDefaultIsPresentToFalseForSpecificExtendedValues(newStartValues, initialConditionsBuildingBlock.ToList());
-         return newStartValues;
+         var newEntities = _initialConditionsCreator.CreateFrom(spatialStructure, molecules).ToList();
+         updateDefaultIsPresentToFalseForSpecificExtendedValues(newEntities, initialConditionsBuildingBlock.ToList());
+         return newEntities;
       }
    }
 }

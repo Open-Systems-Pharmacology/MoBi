@@ -12,7 +12,7 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public abstract class StartValueDTO<T, TSubParameter> : PathAndValueEntityDTO<T, TSubParameter> where T : PathAndValueEntity where TSubParameter : PathAndValueEntityDTO<T>
+   public abstract class ExtendablePathAndValueEntityDTO<T, TSubParameter> : PathAndValueEntityDTO<T, TSubParameter> where T : PathAndValueEntity where TSubParameter : PathAndValueEntityDTO<T>
    {
       private readonly IBuildingBlock<T> _buildingBlock;
 
@@ -22,8 +22,8 @@ namespace MoBi.Presentation.DTO
       /// <param name="newName">The new name for the start value</param>
       public abstract void UpdateName(string newName);
 
-      protected StartValueDTO(T startValueObject, IBuildingBlock<T> buildingBlock)
-         : base(startValueObject)
+      protected ExtendablePathAndValueEntityDTO(T pathAndValueEntity, IBuildingBlock<T> buildingBlock)
+         : base(pathAndValueEntity)
       {
          _buildingBlock = buildingBlock;
 
@@ -40,16 +40,16 @@ namespace MoBi.Presentation.DTO
          public static IEnumerable<IBusinessRule> All()
          {
             yield return renameMustNotCauseCollision();
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement0);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement1);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement2);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement3);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement4);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement5);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement6);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement7);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement8);
-            yield return mustNotAlreadyContainStartValue(x => x.PathElement9);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement0);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement1);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement2);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement3);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement4);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement5);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement6);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement7);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement8);
+            yield return mustNotAlreadyContainPathAndValueEntity(x => x.PathElement9);
 
 
             yield return mustHaveAllPreviousPathElementsSet(x => x.PathElement1);
@@ -65,26 +65,26 @@ namespace MoBi.Presentation.DTO
 
          private static IBusinessRule renameMustNotCauseCollision()
          {
-            return CreateRule.For<StartValueDTO<T, TSubParameter>>()
+            return CreateRule.For<ExtendablePathAndValueEntityDTO<T, TSubParameter>>()
                .Property(x => x.Name).WithRule(namedOnlyElementDoesNotExist)
                .WithError((dto, name) => AppConstants.Validation.NameIsAlreadyUsedInThisContainer(dto.ContainerPath.ToString(), name));
          }
 
-         private static bool namedOnlyElementDoesNotExist(StartValueDTO<T, TSubParameter> dto, string name)
+         private static bool namedOnlyElementDoesNotExist(ExtendablePathAndValueEntityDTO<T, TSubParameter> dto, string name)
          {
             return !dto._buildingBlock.Any(sv =>
                string.Equals(sv.Name, name) && sv.ContainerPath.Equals(dto.ContainerPath) && sv != dto.PathWithValueObject);
          }
 
-         private static IBusinessRule mustHaveAllPreviousPathElementsSet(Expression<Func<StartValueDTO<T, TSubParameter>, string>> propertyToCheck)
+         private static IBusinessRule mustHaveAllPreviousPathElementsSet(Expression<Func<ExtendablePathAndValueEntityDTO<T, TSubParameter>, string>> propertyToCheck)
          {
             var index = getPathIndex(propertyToCheck);
-            return CreateRule.For<StartValueDTO<T, TSubParameter>>()
+            return CreateRule.For<ExtendablePathAndValueEntityDTO<T, TSubParameter>>()
                .Property(propertyToCheck).WithRule((dto, pathElement) => areAllPreviousPathElementsNonEmpty(dto, pathElement, index))
                .WithError((dto, pathElement) => AppConstants.Validation.CannotSetPathElementWhenPreviousElementsAreEmpty);
          }
 
-         private static bool areAllPreviousPathElementsNonEmpty(StartValueDTO<T, TSubParameter> dto, string pathElement, int index)
+         private static bool areAllPreviousPathElementsNonEmpty(ExtendablePathAndValueEntityDTO<T, TSubParameter> dto, string pathElement, int index)
          {
             // to set a path element to empty, there is no requirement for the preceding elements
             if (string.IsNullOrEmpty(pathElement))
@@ -99,23 +99,23 @@ namespace MoBi.Presentation.DTO
             return true;
          }
 
-         private static IBusinessRule mustNotAlreadyContainStartValue(Expression<Func<StartValueDTO<T, TSubParameter>, string>> propertyToCheck)
+         private static IBusinessRule mustNotAlreadyContainPathAndValueEntity(Expression<Func<ExtendablePathAndValueEntityDTO<T, TSubParameter>, string>> propertyToCheck)
          {
             var index = getPathIndex(propertyToCheck);
-            return CreateRule.For<StartValueDTO<T, TSubParameter>>()
+            return CreateRule.For<ExtendablePathAndValueEntityDTO<T, TSubParameter>>()
                .Property(propertyToCheck)
                .WithRule((dto, pathElement) => noDuplicatesInBuildingBlockRule(dto, pathElement, index))
                .WithError((dto, pathElement) => AppConstants.Validation.PathIsIdenticalToExistingPath(newPathWithReplacement(dto, pathElement, index)));
          }
 
-         private static int getPathIndex(Expression<Func<StartValueDTO<T, TSubParameter>, string>> propertyToCheck)
+         private static int getPathIndex(Expression<Func<ExtendablePathAndValueEntityDTO<T, TSubParameter>, string>> propertyToCheck)
          {
             var propertyName = propertyToCheck.PropertyInfo().Name;
             var index = int.Parse(propertyName.Last().ToString(CultureInfo.InvariantCulture));
             return index;
          }
 
-         private static bool noDuplicatesInBuildingBlockRule(StartValueDTO<T, TSubParameter> dto, string pathElement, int index)
+         private static bool noDuplicatesInBuildingBlockRule(ExtendablePathAndValueEntityDTO<T, TSubParameter> dto, string pathElement, int index)
          {
             var containerPath = newPathWithReplacement(dto, pathElement, index);
 
@@ -123,7 +123,7 @@ namespace MoBi.Presentation.DTO
 
             // if the path being validated is the same as the original path of the object then 
             // we can assume the path is valid as no changes will take place
-            // This prevents us from having to evaluate path equals checks against all start values when
+            // This prevents us from having to evaluate path equals checks against all entities when
             // the validation is not caused by user edit
             if (Equals(proposedNewPath, dto.PathWithValueObject.Path))
                return true;
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.DTO
             return true;
          }
 
-         private static ObjectPath newPathWithReplacement(StartValueDTO<T, TSubParameter> dto, string pathElement, int index)
+         private static ObjectPath newPathWithReplacement(ExtendablePathAndValueEntityDTO<T, TSubParameter> dto, string pathElement, int index)
          {
             var containerPath = dto.ContainerPath.Clone<ObjectPath>();
 

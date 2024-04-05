@@ -58,7 +58,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_subpresenter_is_used_to_add_the_molecule_start_value()
       {
-         A.CallTo(() => _initialConditionsPresenter.AddNewEmptyStartValue()).MustHaveHappened();
+         A.CallTo(() => _initialConditionsPresenter.AddNewEmptyPathAndValueEntity()).MustHaveHappened();
       }
    }
 }
