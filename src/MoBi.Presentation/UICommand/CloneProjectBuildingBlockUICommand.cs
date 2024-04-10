@@ -25,7 +25,7 @@ namespace MoBi.Presentation.UICommand
    public class ClonePathAndValueEntityBuildingBlockUICommand<TBuildingBlock, TPathAndValueEntity, TTask> : ObjectUICommand<TBuildingBlock> 
       where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>
       where TPathAndValueEntity : PathAndValueEntity
-      where TTask : IStartValuesTask<TBuildingBlock, TPathAndValueEntity>
+      where TTask : IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
    {
       private readonly IMoBiContext _context;
       private readonly TTask _interactionTasks;

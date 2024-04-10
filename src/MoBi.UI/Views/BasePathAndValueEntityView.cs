@@ -36,7 +36,7 @@ namespace MoBi.UI.Views
       private readonly ValueOriginBinder<TPathAndValueEntity> _valueOriginBinder;
       protected readonly GridViewBinder<TPathAndValueEntity> _gridViewBinder;
       private readonly IList<IGridViewColumn> _pathElementsColumns = new List<IGridViewColumn>();
-      protected IStartValuesPresenter<TPathAndValueEntity> _presenter;
+      protected IExtendablePathAndValueBuildingBlockPresenter<TPathAndValueEntity> _presenter;
       protected IGridViewAutoBindColumn<TPathAndValueEntity, string> _colName;
       protected readonly UxComboBoxUnit<TPathAndValueEntity> _unitControl;
 
@@ -83,7 +83,7 @@ namespace MoBi.UI.Views
       {
          if (parameterDTO.IsDistributed)
             return _repositoryItemPopupContainerEdit;
-
+      
          return _valueColumn.DefaultRepository();
       }
 
@@ -103,7 +103,7 @@ namespace MoBi.UI.Views
             _presenter.EditDistributedParameter(individualParameter);
             return;
          }
-
+      
          _unitControl.UpdateUnitsFor(activeEditor, individualParameter);
       }
 
@@ -234,7 +234,7 @@ namespace MoBi.UI.Views
 
       private void removeStartValue(TPathAndValueEntity elementToRemove)
       {
-         _presenter.RemoveStartValue(elementToRemove);
+         _presenter.RemovePathAndValueEntity(elementToRemove);
       }
 
       public GridControl GridControl => gridControl;
@@ -247,7 +247,7 @@ namespace MoBi.UI.Views
       {
          if (index == AppConstants.NotFoundIndex)
             return;
-         _presenter.UpdateStartValueContainerPath(pathAndValueEntity, index, eventArgs.NewValue);
+         _presenter.UpdatePathAndValueEntityContainerPath(pathAndValueEntity, index, eventArgs.NewValue);
       }
 
       private void initPathElementColumn(Expression<Func<TPathAndValueEntity, string>> expression, string caption)
@@ -314,7 +314,7 @@ namespace MoBi.UI.Views
 
       protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs)
       {
-         _presenter.UpdateStartValueName(startValueDTO, eventArgs.NewValue);
+         _presenter.UpdatePathAndValueEntityName(startValueDTO, eventArgs.NewValue);
       }
 
       private void configureGridView()

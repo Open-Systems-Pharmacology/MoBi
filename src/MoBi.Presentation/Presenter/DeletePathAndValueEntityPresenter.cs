@@ -4,13 +4,13 @@ using MoBi.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IDeleteStartValuePresenter : IApplyToSelectionPresenter
+   public interface IDeletePathAndValueEntityPresenter : IApplyToSelectionPresenter
    {
    }
 
-   public class DeleteStartValuePresenter : ApplyToSelectionPresenter, IDeleteStartValuePresenter
+   public class DeletePathAndValueEntityPresenter : ApplyToSelectionPresenter, IDeletePathAndValueEntityPresenter
    {
-      public DeleteStartValuePresenter(IApplyToSelectionView view)
+      public DeletePathAndValueEntityPresenter(IApplyToSelectionView view)
          : base(view, SelectOption.DeleteSelected, AppConstants.Captions.DeleteValues)
       {
       }

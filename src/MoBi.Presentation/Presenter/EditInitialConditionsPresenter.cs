@@ -40,7 +40,7 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewEmptyInitialCondition()
       {
-         _initialConditionsPresenter.AddNewEmptyStartValue();
+         _initialConditionsPresenter.AddNewEmptyPathAndValueEntity();
       }
 
       protected override void UpdateCaption()

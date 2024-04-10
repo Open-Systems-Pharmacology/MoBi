@@ -9,7 +9,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock where TPathAndValueEntity : PathAndValueEntity
+   public interface IPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock where TPathAndValueEntity : PathAndValueEntity
    {
       /// <summary>
       ///    Updates the name of the <paramref name="pathAndValueEntity" /> to <paramref name="newName" /> and returns the
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       ///    returns the non executed command
       /// </summary>
       /// <returns>The command corresponding to the rename of the start value. The command was not run yet</returns>
-      IMoBiCommand UpdateNameCommand(ILookupBuildingBlock<TPathAndValueEntity> startValues, TPathAndValueEntity pathAndValueEntity, string newName);
+      IMoBiCommand UpdateNameCommand(ILookupBuildingBlock<TPathAndValueEntity> pathAndValueEntities, TPathAndValueEntity pathAndValueEntity, string newName);
 
       /// <summary>
       ///    Creates a command corresponding to the update of the path entry at <paramref name="indexToUpdate" /> of the
@@ -53,12 +53,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       bool HasEquivalentFormula(PathAndValueEntity pathAndValueEntity, IFormula targetFormula);
    }
 
-   public abstract class AbstractStartValuePathTask<TBuildingBlock, TPathAndValueEntity> : IStartValuePathTask<TBuildingBlock, TPathAndValueEntity> where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntity
+   public abstract class AbstractPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> : IPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntity
    {
       private readonly IFormulaTask _formulaTask;
       private readonly IMoBiContext _context;
 
-      protected AbstractStartValuePathTask(IFormulaTask formulaTask, IMoBiContext context)
+      protected AbstractPathAndValueEntityPathTask(IFormulaTask formulaTask, IMoBiContext context)
       {
          _formulaTask = formulaTask;
          _context = context;

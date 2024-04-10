@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class IndividualBuildingBlockPresenter : 
-      PathAndValueBuildingBlockPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, MoBiProject, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, 
+      PathAndValueBuildingBlockPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, 
       IIndividualBuildingBlockPresenter
    {
       private readonly IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper _individualToDTOMapper;
@@ -37,12 +37,10 @@ namespace MoBi.Presentation.Presenter
 
       public override void Edit(IndividualBuildingBlock individualBuildingBlock)
       {
-         _buildingBlock = individualBuildingBlock;
+         base.Edit(individualBuildingBlock);
          _individualBuildingBlockDTO = _individualToDTOMapper.MapFrom(individualBuildingBlock);
          _view.BindTo(_individualBuildingBlockDTO);
       }
-
-      public override object Subject => _buildingBlock;
 
       public bool HasAtLeastOneValue(int pathElementIndex)
       {

@@ -25,19 +25,19 @@ namespace MoBi.Presentation.Presenter
 
       public InitialConditionsPresenter(
          IInitialConditionsView view,
-         IInitialConditionToInitialConditionDTOMapper startValueMapper,
+         IInitialConditionToInitialConditionDTOMapper dtoMapper,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
          IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
          IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
-         IDeleteStartValuePresenter deleteStartValuePresenter,
+         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper buildingBlockMapper)
-         : base(view, startValueMapper, initialConditionsTask, msvCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, refreshInitialConditionsPresenter, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
+         : base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, refreshInitialConditionsPresenter, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
       }

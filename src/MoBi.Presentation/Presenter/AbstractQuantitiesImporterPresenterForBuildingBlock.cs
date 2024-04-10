@@ -26,13 +26,13 @@ namespace MoBi.Presentation.Presenter
    {
       protected readonly IMoBiContext _context;
       protected T _buildingBlock;
-      private readonly IStartValuesTask<T, TPathAndValueEntity> _startValuesTask;
+      private readonly IInteractionTasksForExtendablePathAndValueEntity<T, TPathAndValueEntity> _interactionTasksForExtendablePathAndValueEntity;
 
-      protected AbstractQuantitiesImporterPresenterForBuildingBlock(IImportQuantityView view, IDialogCreator dialogCreator, IMoBiContext context, IImportFromExcelTask excelTask, IStartValuesTask<T, TPathAndValueEntity> startValuesTask)
+      protected AbstractQuantitiesImporterPresenterForBuildingBlock(IImportQuantityView view, IDialogCreator dialogCreator, IMoBiContext context, IImportFromExcelTask excelTask, IInteractionTasksForExtendablePathAndValueEntity<T, TPathAndValueEntity> interactionTasksForExtendablePathAndValueEntity)
          : base(view, dialogCreator, excelTask)
       {
          _context = context;
-         _startValuesTask = startValuesTask;
+         _interactionTasksForExtendablePathAndValueEntity = interactionTasksForExtendablePathAndValueEntity;
       }
 
       public override void Initialize()
@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Presenter
 
       public override void TransferImportedQuantities()
       {
-         AddCommand(_startValuesTask.ImportPathAndValueEntitiesToBuildingBlock(_buildingBlock, _quantityDTOs));
+         AddCommand(_interactionTasksForExtendablePathAndValueEntity.ImportPathAndValueEntitiesToBuildingBlock(_buildingBlock, _quantityDTOs));
       }
    }
 }

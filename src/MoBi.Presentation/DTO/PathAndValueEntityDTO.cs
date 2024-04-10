@@ -21,7 +21,7 @@ namespace MoBi.Presentation.DTO
 
       public TSubParameter MeanDTO => SubParameters.FindByName(MEAN);
 
-      protected PathAndValueEntityDTO(T underlyingObject) : base(underlyingObject)
+      protected PathAndValueEntityDTO(T pathAndValueEntity) : base(pathAndValueEntity)
       {
       }
 
@@ -53,13 +53,13 @@ namespace MoBi.Presentation.DTO
       private ValueFormulaDTO _formula;
       public T PathWithValueObject { get; }
 
-      protected PathAndValueEntityDTO(T underlyingObject) : base(underlyingObject)
+      protected PathAndValueEntityDTO(T pathAndValueEntity) : base(pathAndValueEntity)
       {
-         PathWithValueObject = underlyingObject;
+         PathWithValueObject = pathAndValueEntity;
          PathWithValueObject.PropertyChanged += underlyingObjectOnPropertyChanged;
          ContainerPathPropertyName = MoBiReflectionHelper.PropertyName<PathAndValueEntity>(x => x.ContainerPath);
          FormulaPropertyName = MoBiReflectionHelper.PropertyName<PathAndValueEntity>(x => x.Formula);
-         ContainerPath = underlyingObject.ContainerPath;
+         ContainerPath = pathAndValueEntity.ContainerPath;
       }
 
       public bool IsDistributed => PathWithValueObject.DistributionType != null;

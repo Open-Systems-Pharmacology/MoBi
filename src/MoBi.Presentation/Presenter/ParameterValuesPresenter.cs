@@ -16,13 +16,13 @@ using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IParameterValuesPresenter : IStartValuesPresenter<ParameterValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>
+   public interface IParameterValuesPresenter : IExtendablePathAndValueBuildingBlockPresenter<ParameterValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>
    {
       void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension);
    }
 
    public class ParameterValuesPresenter
-      : PathAndValueBuildingBlockPresenter<IParameterValuesView,
+      : ExtendablePathAndValueBuildingBlockPresenter<IParameterValuesView,
             IParameterValuesPresenter,
             ParameterValuesBuildingBlock,
             ParameterValueDTO, ParameterValue>,
@@ -39,12 +39,12 @@ namespace MoBi.Presentation.Presenter
          IParameterValuesCreator parameterValuesCreator,
          IMoBiContext context,
          IDisplayUnitRetriever displayUnitRetriever,
-         IDeleteStartValuePresenter deleteStartValuePresenter,
+         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IParameterValueDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
          IDimensionFactory dimensionFactory)
-         : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deleteStartValuePresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
@@ -63,16 +63,10 @@ namespace MoBi.Presentation.Presenter
          return _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper.MapFrom(buildingBlock).ParameterDTOs;
       }
 
-      public override void AddNewFormula(ParameterValueDTO parameterValueDTO)
-      {
-         var parameterValue = StartValueFrom(parameterValueDTO);
-         AddNewFormula(parameterValueDTO, parameterValue);
-      }
-
       public void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension)
       {
          var macroCommand = new MoBiMacroCommand();
-         var pathAndValueEntity = StartValueFrom(valueObject);
+         var pathAndValueEntity = PathAndValueEntityFrom(valueObject);
 
          macroCommand.CommandType = AppConstants.Commands.EditCommand;
          macroCommand.Description = AppConstants.Commands.UpdateDimensionsAndUnits;

@@ -466,7 +466,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock);
+         sut.ExtendPathAndValueEntityBuildingBlock(_initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -500,7 +500,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock);
+         sut.ExtendPathAndValueEntityBuildingBlock(_initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -530,7 +530,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.ExtendStartValueBuildingBlock(_initialConditionsBuildingBlock);
+         sut.ExtendPathAndValueEntityBuildingBlock(_initialConditionsBuildingBlock);
       }
 
       [Observation]

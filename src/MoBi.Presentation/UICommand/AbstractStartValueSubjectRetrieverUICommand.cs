@@ -7,10 +7,10 @@ namespace MoBi.Presentation.UICommand
 {
    internal abstract class AbstractStartValueSubjectRetrieverUICommand<T, TPathAndValueEntity> : ActiveObjectUICommand<T> where T : PathAndValueEntityBuildingBlock<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntity
    {
-      protected readonly IStartValuesTask<T, TPathAndValueEntity> _startValueTasks;
+      protected readonly IInteractionTasksForExtendablePathAndValueEntity<T, TPathAndValueEntity> _startValueTasks;
       protected readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      protected AbstractStartValueSubjectRetrieverUICommand(IStartValuesTask<T, TPathAndValueEntity> startValueTasks, IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
+      protected AbstractStartValueSubjectRetrieverUICommand(IInteractionTasksForExtendablePathAndValueEntity<T, TPathAndValueEntity> startValueTasks, IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
       {
          _startValueTasks = startValueTasks;
          _activeSubjectRetriever = activeSubjectRetriever;

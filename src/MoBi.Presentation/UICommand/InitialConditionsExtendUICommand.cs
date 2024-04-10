@@ -13,7 +13,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _startValueTasks.ExtendStartValueBuildingBlock(Subject);
+         _startValueTasks.ExtendPathAndValueEntityBuildingBlock(Subject);
       }
    }
 }

@@ -81,7 +81,7 @@ namespace MoBi.UI.Views
 
       private void onExpressionParameterValueSet(IndividualParameterDTO expressionParameterDTO, PropertyValueSetEventArgs<double?> e)
       {
-         OnEvent(() => _presenter.SetParameterValue(expressionParameterDTO, e.NewValue));
+         OnEvent(() => _presenter.SetValue(expressionParameterDTO, e.NewValue));
       }
 
       private void initializeGridViewBinders()

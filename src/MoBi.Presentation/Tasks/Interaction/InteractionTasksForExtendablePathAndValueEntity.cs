@@ -23,7 +23,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public abstract class StartValuesTask<TBuildingBlock, TPathAndValueEntity> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>, IStartValuesTask<TBuildingBlock, TPathAndValueEntity>
+   public abstract class InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>, IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
       where TBuildingBlock : class, ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock
       where TPathAndValueEntity : PathAndValueEntity
    {
@@ -32,12 +32,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected readonly ISpatialStructureFactory _spatialStructureFactory;
       private readonly IMapper<ImportedQuantityDTO, TPathAndValueEntity> _dtoToQuantityToParameterValueMapper;
-      private readonly IStartValuePathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
+      private readonly IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
 
-      protected StartValuesTask(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
+      protected InteractionTasksForExtendablePathAndValueEntity(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
-         IStartValuePathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask)
+         IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask)
          : base(interactionTaskContext, editTask, moBiFormulaTask)
       {
          _extendManager = extendManager;
@@ -53,14 +53,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
       /// <summary>
-      ///    Updates the start values defined in <paramref name="buildingBlockToUpdate" /> with the values defined in
+      ///    Updates the path and value entities defined in <paramref name="buildingBlockToUpdate" /> with the values defined in
       ///    <paramref name="buildingBlock" />. Returns a template cache containing all values defined in the template
       /// </summary>
       public ICache<string, TPathAndValueEntity> UpdateValuesFromTemplate(TBuildingBlock buildingBlockToUpdate, TBuildingBlock buildingBlock)
       {
          var templateBuildingBlock = buildingBlock;
-         // if (startValueInfo.BuildingBlockIsTemplate)
-         //    templateStartValues = startValueInfo.TemplateBuildingBlock;
 
          var entityCache = buildingBlockToUpdate.ToCache();
          var templateCache = templateBuildingBlock.ToCache();
@@ -96,7 +94,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
       /// <summary>
-      ///    Returns the default dimension for the start value type
+      ///    Returns the default dimension for the path and value entity type
       /// </summary>
       /// <returns>The default dimension</returns>
       public abstract IDimension GetDefaultDimension();
@@ -122,11 +120,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
       /// <summary>
-      ///    Checks that the formula is equivalent for the start value. This includes evaluation of constant formula to a double
+      ///    Checks that the formula is equivalent for the path and value entity. This includes evaluation of constant formula to a double
       /// </summary>
-      /// <param name="pathAndValueEntity">The start value to check</param>
+      /// <param name="pathAndValueEntity">The path and value entity to check</param>
       /// <param name="targetFormula">The formula being evaluated</param>
-      /// <returns>True if the formula is equivalent to the start value formula</returns>
+      /// <returns>True if the formula is equivalent to the path and value entity formula</returns>
       protected bool HasEquivalentFormula(PathAndValueEntity pathAndValueEntity, IFormula targetFormula)
       {
          return _entityPathTask.HasEquivalentFormula(pathAndValueEntity, targetFormula);
@@ -165,13 +163,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moBiMacroCommand;
       }
 
-      protected IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> startValues, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true)
+      protected IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> pathAndValueEntities, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true)
       {
          var macro = CreateExtendMacroCommand(_interactionTaskContext.GetTypeFor(buildingBlockToExtend));
 
          prepareExtendActions(buildingBlockToExtend, macro);
 
-         var cacheToExtend = startValues.ToCache();
+         var cacheToExtend = pathAndValueEntities.ToCache();
          var targetCache = buildingBlockToExtend.ToCache();
 
          _extendManager.Merge(cacheToExtend, targetCache, defaultOption: retainConflictingEntities ? MergeConflictOptions.SkipAll : MergeConflictOptions.ReplaceAll);
@@ -200,20 +198,20 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToRemove);
       protected abstract IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToAdd);
-      protected abstract IReadOnlyList<TPathAndValueEntity> CreateStartValuesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock buildingBlock);
+      protected abstract IReadOnlyList<TPathAndValueEntity> CreatePathAndValueEntitiesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock buildingBlock);
       public abstract IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
       public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
       public abstract IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
 
-      public virtual void ExtendStartValueBuildingBlock(TBuildingBlock buildingBlock)
+      public virtual void ExtendPathAndValueEntityBuildingBlock(TBuildingBlock buildingBlock)
       {
          var commonModule = buildingBlock.Module;
          var (spatialStructure, molecules) = selectBuildingBlocksForExtend(commonModule.Molecules, commonModule.SpatialStructure);
          if (spatialStructure == null || molecules == null || !molecules.Any())
             return;
 
-         var newStartValues = CreateStartValuesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock);
-         AddCommand(Extend(newStartValues, buildingBlock));
+         var newPathAndValueEntities = CreatePathAndValueEntitiesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock);
+         AddCommand(Extend(newPathAndValueEntities, buildingBlock));
       }
 
       public IMoBiCommand UpdatePathAndValueEntityDimension(TBuildingBlock pathAndValueEntitiesBuildingBlock, TPathAndValueEntity pathAndValueEntity, IDimension newDimension)

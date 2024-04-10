@@ -8,7 +8,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IPathAndValueBuildingBlockPresenter<in TParameterDTO> : IBreadCrumbsPresenter
    {
-      void SetParameterValue(TParameterDTO parameterDTO, double? newValue);
+      void SetValue(TParameterDTO parameterDTO, double? newValue);
       void SetUnit(TParameterDTO parameterDTO, Unit unit);
       void SetFormula(TParameterDTO parameterDTO, IFormula newValueFormula);
       IEnumerable<ValueFormulaDTO> AllFormulas();

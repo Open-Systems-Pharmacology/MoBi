@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewEmptyParameterValue()
       {
-         _parameterValuesPresenter.AddNewEmptyStartValue();
+         _parameterValuesPresenter.AddNewEmptyPathAndValueEntity();
       }
    }
 }

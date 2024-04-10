@@ -178,7 +178,7 @@ namespace MoBi.UI.Views
 
       private void onExpressionParameterValueSet(ExpressionParameterDTO expressionParameterDTO, PropertyValueSetEventArgs<double?> e)
       {
-         OnEvent(() => _presenter.SetParameterValue(expressionParameterDTO, e.NewValue));
+         OnEvent(() => _presenter.SetValue(expressionParameterDTO, e.NewValue));
       }
 
       private void initializePathElementColumn(Expression<Func<ExpressionParameterDTO, string>> expression, string caption)
