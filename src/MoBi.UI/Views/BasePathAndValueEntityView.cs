@@ -222,6 +222,12 @@ namespace MoBi.UI.Views
          _popupControl.FillWith(view);
       }
 
+      public void RefreshForUpdatedEntity()
+      {
+         gridView.CloseEditor();
+         gridView.ShowEditor();
+      }
+
       public void HideValueOriginColumn()
       {
          _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);

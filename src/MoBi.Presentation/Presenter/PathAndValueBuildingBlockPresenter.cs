@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -40,8 +41,20 @@ namespace MoBi.Presentation.Presenter
          _distributedPathAndValuePresenter = distributedPathAndValuePresenter;
          _subPresenterManager.Add(_distributedPathAndValuePresenter);
          _view.AddDistributedParameterView(_distributedPathAndValuePresenter.BaseView);
+         _distributedPathAndValuePresenter.ParameterModified += UpdateEntityFor;
       }
-      
+
+      public override void ReleaseFrom(IEventPublisher eventPublisher)
+      {
+         base.ReleaseFrom(eventPublisher);
+         _distributedPathAndValuePresenter.ParameterModified -= UpdateEntityFor;
+      }
+
+      protected void UpdateEntityFor(ObjectPath objectPath)
+      {
+         _view.RefreshForUpdatedEntity();
+      }
+
       public override object Subject => _buildingBlock;
 
       public override void Edit(TBuildingBlock buildngBlock)

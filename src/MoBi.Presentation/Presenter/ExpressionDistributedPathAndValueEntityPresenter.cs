@@ -15,9 +15,8 @@ namespace MoBi.Presentation.Presenter
       DistributedPathAndValueEntityPresenter<IExpressionDistributedPathAndValueEntityView, IExpressionDistributedPathAndValueEntityPresenter, ExpressionParameterDTO, ExpressionParameter, ExpressionProfileBuildingBlock>,
       IExpressionDistributedPathAndValueEntityPresenter
    {
-      public ExpressionDistributedPathAndValueEntityPresenter(IExpressionDistributedPathAndValueEntityView view, 
-         IInteractionTasksForExpressionProfileBuildingBlock interactionTasksForExpressionProfile) : 
-         base(view, interactionTasksForExpressionProfile)
+      public ExpressionDistributedPathAndValueEntityPresenter(IExpressionDistributedPathAndValueEntityView view, IInteractionTasksForExpressionProfileBuildingBlock interactionTasks) : 
+         base(view, interactionTasks)
       {
       }
    }

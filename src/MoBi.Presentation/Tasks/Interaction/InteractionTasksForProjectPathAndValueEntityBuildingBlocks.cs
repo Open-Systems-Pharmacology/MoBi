@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       InteractionTasksForPathAndValueEntity<MoBiProject, TBuildingBlock, TParameter>,
       IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<TBuildingBlock, TParameter>
       where TParameter : PathAndValueEntity 
-      where TBuildingBlock : class, IBuildingBlock<TParameter>
+      where TBuildingBlock : class, ILookupBuildingBlock<TParameter>
    {
       protected InteractionTasksForProjectPathAndValueEntityBuildingBlocks(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask, IMoBiFormulaTask moBiFormulaTask) : base(interactionTaskContext, editTask, moBiFormulaTask)
       {

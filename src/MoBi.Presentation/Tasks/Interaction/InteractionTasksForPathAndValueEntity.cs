@@ -3,6 +3,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -58,10 +59,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="pathAndValueEntity">The start value being modified</param>
       /// <returns>The command used to modify the start value</returns>
       ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity);
+
+      IMoBiCommand ConvertDistributedParameterToConstantParameter(TBuilder distributedParameter, TBuildingBlock buildingBlock, IReadOnlyList<TBuilder> subParameters);
    }
 
    public abstract class InteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder>
-      where TBuildingBlock : class, IBuildingBlock, IBuildingBlock<TBuilder>
+      where TBuildingBlock : class, IBuildingBlock, IBuildingBlock<TBuilder>, ILookupBuildingBlock<TBuilder>
       where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TParent : class, IObjectBase
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
@@ -75,7 +78,32 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return new UpdateValueOriginInPathAndValueEntityCommand<TBuilder>(pathAndValueEntity, valueOrigin, buildingBlock).Run(Context);
       }
-      
+
+      public IMoBiCommand ConvertDistributedParameterToConstantParameter(TBuilder distributedParameter, TBuildingBlock buildingBlock, IReadOnlyList<TBuilder> subParameters)
+      {
+         var meanEntity = subParameters.FindByName(Constants.Distribution.MEAN);
+
+         if (meanEntity == null)
+            return new MoBiEmptyCommand();
+
+         var objectType = new ObjectTypeResolver().TypeFor<TBuilder>();
+         var moBiMacroCommand = new MoBiMacroCommand
+         {
+            CommandType = AppConstants.Commands.UpdateCommand,
+            ObjectType = objectType,
+            Description = AppConstants.Commands.ConvertDistributedPathAndValueEntityToConstantValue(objectType, distributedParameter.Path)
+         };
+
+         moBiMacroCommand.Add(new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(distributedParameter, meanEntity.Value, meanEntity.DisplayUnit, buildingBlock));
+         
+         foreach (var subParameter in subParameters)
+         {
+            moBiMacroCommand.Add(new RemovePathAndValueEntityFromBuildingBlockCommand<TBuilder>(buildingBlock, subParameter.Path));
+         }
+
+         return moBiMacroCommand.Run(Context);
+      }
+
       protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
       {
          var name = _interactionTaskContext.NamingTask.NewName(

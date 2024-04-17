@@ -16,7 +16,7 @@ namespace MoBi.Presentation.Presenter
       DistributedPathAndValueEntityPresenter<IParameterValueDistributedPathAndValueEntityView, IParameterValueDistributedPathAndValueEntityPresenter, ParameterValueDTO, ParameterValue, ParameterValuesBuildingBlock>,
       IParameterValueDistributedPathAndValueEntityPresenter
    {
-      public ParameterValueDistributedPathAndValueEntityPresenter(IParameterValueDistributedPathAndValueEntityView view, IParameterValuesTask interactionTasks) : base(view, interactionTasks)
+      public ParameterValueDistributedPathAndValueEntityPresenter(IParameterValueDistributedPathAndValueEntityView view, IParameterValuesTask parameterValuesTask) : base(view, parameterValuesTask)
       {
       }
    }

@@ -51,6 +51,7 @@ namespace MoBi.UI.Views
          _unitControl = new UxComboBoxUnit<IndividualParameterDTO>(gridControl);
          gridGroup.Text = Parameters;
          _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
+
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
       }
 
@@ -194,6 +195,12 @@ namespace MoBi.UI.Views
          createNameValuePairs(buildingBlockDTO);
          _gridViewBinder.BindToSource(buildingBlockDTO.Parameters);
          initColumnVisibility();
+      }
+
+      public void RefreshForUpdatedEntity()
+      {
+         gridView.CloseEditor();
+         gridView.ShowEditor();
       }
 
       public void AddDistributedParameterView(IView view)
