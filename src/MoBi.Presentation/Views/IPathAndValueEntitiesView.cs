@@ -31,6 +31,7 @@ namespace MoBi.Presentation.Views
       void HideDeleteView();
       void HideDeleteColumn();
       void HideIsPresentView();
+      void HideRefreshView();
       void HideNegativeValuesAllowedView();
       void HideValueOriginColumn();
       void DisablePathColumns();
