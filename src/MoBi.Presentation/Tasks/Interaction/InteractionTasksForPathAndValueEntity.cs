@@ -68,10 +68,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TParent : class, IObjectBase
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
+      private readonly IParameterFactory _parameterFactory;
 
-      protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask, IMoBiFormulaTask moBiFormulaTask) : base(interactionTaskContext, editTask)
+      protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext,
+         IEditTasksForBuildingBlock<TBuildingBlock> editTask,
+         IMoBiFormulaTask moBiFormulaTask,
+         IParameterFactory parameterFactory) : base(interactionTaskContext, editTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
+         _parameterFactory = parameterFactory;
       }
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
@@ -81,10 +86,10 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand ConvertDistributedParameterToConstantParameter(TBuilder distributedParameter, TBuildingBlock buildingBlock, IReadOnlyList<TBuilder> subParameters)
       {
-         var meanEntity = subParameters.FindByName(Constants.Distribution.MEAN);
-
-         if (meanEntity == null)
+         if (distributedParameter.DistributionType == null)
+         {
             return new MoBiEmptyCommand();
+         }
 
          var objectType = new ObjectTypeResolver().TypeFor<TBuilder>();
          var moBiMacroCommand = new MoBiMacroCommand
@@ -94,16 +99,23 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.ConvertDistributedPathAndValueEntityToConstantValue(objectType, distributedParameter.Path)
          };
 
-         moBiMacroCommand.Add(new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(distributedParameter, meanEntity.Value, meanEntity.DisplayUnit, buildingBlock));
-         
+         var temporaryParameter = createTemporaryParameter(distributedParameter, distributedParameter.DistributionType.Value);
+
          foreach (var subParameter in subParameters)
          {
+            temporaryParameter.Add(_parameterFactory.CreateParameter(subParameter.Name, subParameter.Value, subParameter.Dimension, formula: subParameter.Formula, displayUnit: subParameter.DisplayUnit));
             moBiMacroCommand.Add(new RemovePathAndValueEntityFromBuildingBlockCommand<TBuilder>(buildingBlock, subParameter.Path));
          }
+
+         moBiMacroCommand.Add(new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(distributedParameter, temporaryParameter.Value, temporaryParameter.DisplayUnit, buildingBlock));
 
          return moBiMacroCommand.Run(Context);
       }
 
+      private IDistributedParameter createTemporaryParameter(TBuilder distributedEntity, DistributionType distributionType)
+      {
+         return _parameterFactory.CreateDistributedParameter(distributedEntity.Name, distributionType, dimension: distributedEntity.Dimension, displayUnit: distributedEntity.DisplayUnit) as IDistributedParameter;
+      }
       protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
       {
          var name = _interactionTaskContext.NamingTask.NewName(

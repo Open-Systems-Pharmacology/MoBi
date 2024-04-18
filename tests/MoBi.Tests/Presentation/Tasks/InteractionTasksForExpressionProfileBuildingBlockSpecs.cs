@@ -29,6 +29,7 @@ namespace MoBi.Presentation.Tasks
       protected IFormula _formula;
       protected IPKSimStarter _pkSimStarter;
       private IContainerTask _containerTask;
+      private IParameterFactory _parameterFactory;
 
       protected override void Context()
       {
@@ -37,8 +38,9 @@ namespace MoBi.Presentation.Tasks
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _pkSimStarter = A.Fake<IPKSimStarter>();
          _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), A.Fake<IEntityPathResolver>(), A.Fake<IObjectPathFactory>());
+         _parameterFactory = A.Fake<IParameterFactory>();
 
-         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask);
+         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _parameterFactory);
 
          _formula = new ExplicitFormula("y=mx+b");
          _expressionParameter = GetExpressionParameter();

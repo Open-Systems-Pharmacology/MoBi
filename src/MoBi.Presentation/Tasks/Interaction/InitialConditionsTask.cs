@@ -55,8 +55,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInitialConditionPathTask initialConditionPathTask,
          IReactionDimensionRetriever dimensionRetriever,
          IInitialConditionsCreator initialConditionsCreator, 
-         IMoleculeResolver moleculeResolver) : 
-         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask)
+         IMoleculeResolver moleculeResolver, 
+         IParameterFactory parameterFactory) : 
+         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory)
       {
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;

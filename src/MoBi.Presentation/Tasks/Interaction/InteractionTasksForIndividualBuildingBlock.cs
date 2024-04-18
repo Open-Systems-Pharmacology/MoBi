@@ -2,6 +2,7 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -14,7 +15,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class InteractionTasksForIndividualBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>, IInteractionTasksForIndividualBuildingBlock
    {
-      public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForIndividualBuildingBlock editTask, IMoBiFormulaTask moBiFormulaTask) : base(interactionTaskContext, editTask, moBiFormulaTask)
+      public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext, 
+         IEditTasksForIndividualBuildingBlock editTask, 
+         IMoBiFormulaTask moBiFormulaTask, 
+         IParameterFactory parameterFactory) : 
+         base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
       {
       }
 
