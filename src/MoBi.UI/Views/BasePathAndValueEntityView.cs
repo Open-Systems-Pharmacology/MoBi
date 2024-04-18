@@ -66,10 +66,7 @@ namespace MoBi.UI.Views
          gridView.HiddenEditor += (o, e) => hideEditor();
       }
 
-      private void hideEditor()
-      {
-         _unitControl.Hide();
-      }
+      private void hideEditor() => _unitControl.Hide();
 
       private void queryText(QueryDisplayTextEventArgs e)
       {
@@ -109,11 +106,6 @@ namespace MoBi.UI.Views
 
       protected virtual void DoInitializeBinding()
       {
-         initializeNameColumnBinding();
-      }
-
-      private void initializeNameColumnBinding()
-      {
          _colName = _gridViewBinder.AutoBind(dto => dto.Name)
             .WithCaption(NameColumnCaption)
             .WithOnValueUpdating((o, e) => OnEvent(() => OnNameSet(o, e)));
@@ -124,15 +116,11 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-      public void HideIsPresentView()
-      {
-         layoutItemIsPresent.Visibility = LayoutVisibility.Never;
-      }
+      public void HideRefreshView() => layoutItemRefresh.Visibility = LayoutVisibility.Never;
 
-      public void HideNegativeValuesAllowedView()
-      {
-         layoutItemNegativeValuesAllowed.Visibility = LayoutVisibility.Never;
-      }
+      public void HideIsPresentView() => layoutItemIsPresent.Visibility = LayoutVisibility.Never;
+
+      public void HideNegativeValuesAllowedView() => layoutItemNegativeValuesAllowed.Visibility = LayoutVisibility.Never;
 
       public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {
@@ -141,10 +129,7 @@ namespace MoBi.UI.Views
 
       public IReadOnlyList<TPathAndValueEntity> VisibleStartValues => gridView.DataController.GetAllFilteredAndSortedRows().Cast<TPathAndValueEntity>().ToList();
 
-      public void AddDeleteStartValuesView(IView view)
-      {
-         panelDeleteStartValues.FillWith(view);
-      }
+      public void AddDeleteStartValuesView(IView view) => panelDeleteStartValues.FillWith(view);
 
       public void DisablePathColumns()
       {
@@ -152,15 +137,9 @@ namespace MoBi.UI.Views
          _colName.AsReadOnly();
       }
 
-      public void HideDeleteView()
-      {
-         layoutItemDelete.Visibility = LayoutVisibility.Never;
-      }
+      public void HideDeleteView() => layoutItemDelete.Visibility = LayoutVisibility.Never;
 
-      public void HideDeleteColumn()
-      {
-         _deleteColumn.AsHidden();
-      }
+      public void HideDeleteColumn() => _deleteColumn.AsHidden();
 
       public void HideSubPresenterGrouping()
       {
@@ -168,10 +147,7 @@ namespace MoBi.UI.Views
          layoutGroupPanel.GroupBordersVisible = false;
       }
 
-      public void RefreshData()
-      {
-         gridView.RefreshData();
-      }
+      public void RefreshData() => gridView.RefreshData();
 
       public TPathAndValueEntity FocusedStartValue
       {
@@ -185,10 +161,7 @@ namespace MoBi.UI.Views
          }
       }
 
-      protected virtual bool IsEditable(GridColumn column)
-      {
-         return true;
-      }
+      protected virtual bool IsEditable(GridColumn column) => true;
 
       public override void InitializeBinding()
       {
@@ -217,25 +190,13 @@ namespace MoBi.UI.Views
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => removeStartValue(_gridViewBinder.FocusedElement));
       }
 
-      public void AddDistributedParameterView(IView view)
-      {
-         _popupControl.FillWith(view);
-      }
+      public void AddDistributedParameterView(IView view) => _popupControl.FillWith(view);
 
-      public void HideValueOriginColumn()
-      {
-         _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
-      }
+      public void HideValueOriginColumn() => _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
 
-      protected void InitializeValueOriginBinding()
-      {
-         _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));
-      }
+      protected void InitializeValueOriginBinding() => _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));
 
-      private void removeStartValue(TPathAndValueEntity elementToRemove)
-      {
-         _presenter.RemovePathAndValueEntity(elementToRemove);
-      }
+      private void removeStartValue(TPathAndValueEntity elementToRemove) => _presenter.RemovePathAndValueEntity(elementToRemove);
 
       public GridControl GridControl => gridControl;
 
@@ -261,10 +222,7 @@ namespace MoBi.UI.Views
                .WithOnValueUpdating((o, e) => OnEvent(() => OnPathElementSet(o, e, index))));
       }
 
-      public void BindTo(IEnumerable<TPathAndValueEntity> startValues)
-      {
-         _gridViewBinder.BindToSource(startValues);
-      }
+      public void BindTo(IEnumerable<TPathAndValueEntity> startValues) => _gridViewBinder.BindToSource(startValues);
 
       public void InitializePathColumns()
       {
@@ -281,10 +239,7 @@ namespace MoBi.UI.Views
          });
       }
 
-      public void ClearPathItems()
-      {
-         _pathValues.Clear();
-      }
+      public void ClearPathItems() => _pathValues.Clear();
 
       private void initColumnVisibility()
       {
@@ -312,10 +267,7 @@ namespace MoBi.UI.Views
          _pathElementsColumns[i].XtraColumn.VisibleIndex = previousColumn.XtraColumn.VisibleIndex + 1;
       }
 
-      protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs)
-      {
-         _presenter.UpdatePathAndValueEntityName(startValueDTO, eventArgs.NewValue);
-      }
+      protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs) => _presenter.UpdatePathAndValueEntityName(startValueDTO, eventArgs.NewValue);
 
       private void configureGridView()
       {
