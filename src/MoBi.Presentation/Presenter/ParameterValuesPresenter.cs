@@ -50,6 +50,7 @@ namespace MoBi.Presentation.Presenter
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          view.HideIsPresentView();
+         view.HideRefreshView();
          view.HideNegativeValuesAllowedView();
       }
 
