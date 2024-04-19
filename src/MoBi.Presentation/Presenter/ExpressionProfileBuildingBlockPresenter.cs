@@ -1,5 +1,4 @@
-﻿using MoBi.Core.Domain.Model;
-using MoBi.Presentation.DTO;
+﻿using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;

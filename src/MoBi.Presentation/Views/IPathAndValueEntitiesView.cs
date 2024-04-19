@@ -6,6 +6,7 @@ namespace MoBi.Presentation.Views
    public interface IPathAndValueEntitiesView : IView
    {
       void AddDistributedParameterView(IView view);
+      void RefreshForUpdatedEntity();
    }
 
    public interface IPathAndValueEntitiesView<TStartValueDTO> : IPathAndValueEntitiesView

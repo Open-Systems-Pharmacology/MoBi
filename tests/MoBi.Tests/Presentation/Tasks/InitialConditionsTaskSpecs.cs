@@ -37,6 +37,7 @@ namespace MoBi.Presentation.Tasks
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IMoleculeResolver _moleculeResolver;
       protected IInteractionTasksForMoleculeBuilder _moleculeBuilderTask;
+      protected IParameterFactory _parameterFactory;
 
       protected override void Context()
       {
@@ -48,12 +49,13 @@ namespace MoBi.Presentation.Tasks
          {
             Module = new Module()
          };
+         _parameterFactory = A.Fake<IParameterFactory>();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeResolver = A.Fake<IMoleculeResolver>();
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
 
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _moleculeResolver);
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _moleculeResolver, _parameterFactory);
       }
    }
 

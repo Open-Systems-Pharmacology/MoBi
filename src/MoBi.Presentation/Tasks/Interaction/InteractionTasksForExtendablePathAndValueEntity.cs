@@ -37,8 +37,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected InteractionTasksForExtendablePathAndValueEntity(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
-         IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask)
-         : base(interactionTaskContext, editTask, moBiFormulaTask)
+         IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask,
+         IParameterFactory parameterFactory)
+         : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
       {
          _extendManager = extendManager;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;

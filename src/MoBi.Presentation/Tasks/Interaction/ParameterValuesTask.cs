@@ -35,8 +35,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask moBiFormulaTask,
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IParameterValuePathTask parameterValuePathTask,
-         IParameterValuesCreator parameterValuesCreator)
-         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask)
+         IParameterValuesCreator parameterValuesCreator, 
+         IParameterFactory parameterFactory)
+         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory)
       {
          _parameterValuesCreator = parameterValuesCreator;
       }

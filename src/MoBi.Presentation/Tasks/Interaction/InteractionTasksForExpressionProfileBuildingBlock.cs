@@ -32,8 +32,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          IEditTasksForExpressionProfileBuildingBlock editTask, 
          IMoBiFormulaTask formulaTask, 
          IPKSimStarter pkSimStarter, 
-         IContainerTask containerTask) :
-         base(interactionTaskContext, editTask, formulaTask)
+         IContainerTask containerTask, 
+         IParameterFactory parameterFactory) :
+         base(interactionTaskContext, editTask, formulaTask, parameterFactory)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;

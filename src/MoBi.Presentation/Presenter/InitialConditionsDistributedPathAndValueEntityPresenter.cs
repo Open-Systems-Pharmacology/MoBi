@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Presenter
       DistributedPathAndValueEntityPresenter<IInitialConditionsDistributedPathAndValueEntityView, IInitialConditionsDistributedPathAndValueEntityPresenter, InitialConditionDTO, InitialCondition, InitialConditionsBuildingBlock>,
       IInitialConditionsDistributedPathAndValueEntityPresenter
    {
-      public InitialConditionsDistributedPathAndValueEntityPresenter(IInitialConditionsDistributedPathAndValueEntityView view, IInitialConditionsTask<InitialConditionsBuildingBlock> interactionTasks) : base(view, interactionTasks)
+      public InitialConditionsDistributedPathAndValueEntityPresenter(IInitialConditionsDistributedPathAndValueEntityView view, IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(view, initialConditionsTask)
       {
       }
    }
@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       DistributedPathAndValueEntityPresenter<IInitialConditionsDistributedInExpressionProfileView, IInitialConditionsDistributedInExpressionProfilePresenter, InitialConditionDTO, InitialCondition, ExpressionProfileBuildingBlock>,
       IInitialConditionsDistributedInExpressionProfilePresenter
    {
-      public InitialConditionsDistributedInExpressionProfilePresenter(IInitialConditionsDistributedInExpressionProfileView view, IInitialConditionsTask<ExpressionProfileBuildingBlock> interactionTasks) : base(view, interactionTasks)
+      public InitialConditionsDistributedInExpressionProfilePresenter(IInitialConditionsDistributedInExpressionProfileView view, IInitialConditionsTask<ExpressionProfileBuildingBlock> initialConditionsTask) : base(view, initialConditionsTask)
       {
       }
    }

@@ -223,5 +223,11 @@ namespace MoBi.UI.Views
       {
          _popupControl.FillWith(view);
       }
+
+      public void RefreshForUpdatedEntity()
+      {
+         gridView.CloseEditor();
+         gridView.ShowEditor();
+      }
    }
 }

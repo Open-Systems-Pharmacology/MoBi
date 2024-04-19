@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using System.Linq;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
@@ -19,7 +20,7 @@ namespace MoBi.Core.Commands
       protected double? _newBaseValue;
       protected double? _oldBaseValue;
       protected readonly ObjectPath _valuePath;
-
+      private readonly DistributionType? _oldDistributionType;
 
       public PathAndValueEntityValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock) : base(buildingBlock)
       {
@@ -29,6 +30,7 @@ namespace MoBi.Core.Commands
          _newBaseValue = newBaseValue;
          _oldBaseValue = builder.Value;
          _valuePath = builder.Path;
+         _oldDistributionType = builder.DistributionType;
 
          CommandType = AppConstants.Commands.EditCommand;
          ObjectType = new ObjectTypeResolver().TypeFor(builder);
@@ -43,7 +45,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock).AsInverseFor(this);
+         return new PathAndValueEntityValueOrUnitChangedCommandWithDistribution<TBuilder, TBuildingBlock>(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock, _oldDistributionType).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
@@ -63,6 +65,25 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          _builder.Value = _newBaseValue;
          _builder.DisplayUnit = _newDisplayUnit;
+         _builder.DistributionType = null;
+      }
+
+      // This command is used to restore a distribution when a distributed parameter is changed to non-distributed, and then the command is reversed.
+      // There is no general way to change between distribution types, so this class is private so it can only be used with restore functionality
+      private class PathAndValueEntityValueOrUnitChangedCommandWithDistribution<TBuilder, TBuildingBlock> : PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock> where TBuilder : PathAndValueEntity where TBuildingBlock : class, IBuildingBlock<TBuilder>
+      {
+         private readonly DistributionType? _newDistributionType;
+
+         public PathAndValueEntityValueOrUnitChangedCommandWithDistribution(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock, DistributionType? newDistributionType) : base(builder, newBaseValue, newDisplayUnit, buildingBlock)
+         {
+            _newDistributionType = newDistributionType;
+         }
+
+         protected override void ExecuteWith(IMoBiContext context)
+         {
+            base.ExecuteWith(context);
+            _builder.DistributionType = _newDistributionType;
+         }
       }
    }
 }

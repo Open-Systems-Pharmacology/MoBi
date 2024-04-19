@@ -1,18 +1,22 @@
-﻿using MoBi.Presentation.DTO;
+﻿using System.Linq;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IDistributedPathAndValueEntityPresenter<TParameterDTO, TBuildingBlock> : IPresenter
    {
-      void SetParameterUnit(TParameterDTO distributionSubParameterDTO, Unit unit);
-      void SetParameterValue(TParameterDTO distributionSubParameterDTO, double? newValueInDisplayUnit);
       void Edit(TParameterDTO distributedParameterDTO, TBuildingBlock pathAndValueEntities);
+      void ConvertToConstantFormula();
+
+      event ParameterModifiedDelegate ParameterModified;
    }
+
+   public delegate void ParameterModifiedDelegate(ObjectPath objectPath);
 
    public abstract class DistributedPathAndValueEntityPresenter<TView, TPresenter, TParameterDTO, TParameter, TBuildingBlock> : 
       AbstractCommandCollectorPresenter<TView, TPresenter>,
@@ -21,29 +25,29 @@ namespace MoBi.Presentation.Presenter
       where TPresenter : IPresenter<TView>
       where TParameterDTO : PathAndValueEntityDTO<TParameter, TParameterDTO> where TParameter : PathAndValueEntity where TBuildingBlock : class, IBuildingBlock<TParameter>
    {
-      private readonly IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter> _interactionTasksForBuildingBlock;
+      private readonly IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter> _interactionTasks;
+      private TParameterDTO _distributedParameterDTO;
       private TBuildingBlock _buildingBlock;
+      
 
-      protected DistributedPathAndValueEntityPresenter(TView view,
-         IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter> interactionTasksForIndividualBuildingBlock) : base(view)
-      {
-         _interactionTasksForBuildingBlock = interactionTasksForIndividualBuildingBlock;
-      }
+      public event ParameterModifiedDelegate ParameterModified = path => { };
 
-      public void SetParameterUnit(TParameterDTO distributionSubParameterDTO, Unit unit)
+      protected DistributedPathAndValueEntityPresenter(TView view, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TParameter> interactionTasks) : base(view)
       {
-         AddCommand(_interactionTasksForBuildingBlock.SetUnit(_buildingBlock, distributionSubParameterDTO.PathWithValueObject, unit));
+         _interactionTasks = interactionTasks;
       }
 
       public void Edit(TParameterDTO distributedParameterDTO, TBuildingBlock buildingBlock)
       {
+         _distributedParameterDTO = distributedParameterDTO;
          _buildingBlock = buildingBlock;
          _view.BindTo(distributedParameterDTO);
       }
 
-      public void SetParameterValue(TParameterDTO distributionSubParameterDTO, double? newValueInDisplayUnit)
+      public void ConvertToConstantFormula()
       {
-         AddCommand(_interactionTasksForBuildingBlock.SetValue(_buildingBlock, newValueInDisplayUnit, distributionSubParameterDTO.PathWithValueObject));
+         AddCommand(_interactionTasks.ConvertDistributedParameterToConstantParameter(_distributedParameterDTO.PathWithValueObject, _buildingBlock, _distributedParameterDTO.SubParameters.Select(x => x.PathWithValueObject).ToList()));
+         ParameterModified(_distributedParameterDTO.Path);
       }
    }
 }

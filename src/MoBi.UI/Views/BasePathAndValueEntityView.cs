@@ -194,6 +194,12 @@ namespace MoBi.UI.Views
 
       public void HideValueOriginColumn() => _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
 
+      public void RefreshForUpdatedEntity()
+      {
+         gridView.CloseEditor();
+         gridView.ShowEditor();
+      }
+
       protected void InitializeValueOriginBinding() => _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));
 
       private void removeStartValue(TPathAndValueEntity elementToRemove) => _presenter.RemovePathAndValueEntity(elementToRemove);
