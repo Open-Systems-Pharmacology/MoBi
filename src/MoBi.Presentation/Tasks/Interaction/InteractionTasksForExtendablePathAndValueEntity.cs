@@ -285,8 +285,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) => 
          selectBuildingBlocks(x => x.SelectBuildingBlocksForExtend(defaultMolecules, defaultSpatialStructure));
       
-      protected (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForRefresh(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) =>
-         selectBuildingBlocks(x => x.SelectBuildingBlocksForRefresh(defaultMolecules, defaultSpatialStructure));
+      protected (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForRefresh(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure, IReadOnlyList<string> selectableBuilders) =>
+         selectBuildingBlocks(x => x.SelectMoleculesForRefresh(defaultMolecules, selectableBuilders));
 
       private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocks(Action<ISelectSpatialStructureAndMoleculesPresenter> actionToSelectBuildingBlocks)
       {

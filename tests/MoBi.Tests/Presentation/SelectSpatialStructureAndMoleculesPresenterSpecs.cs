@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
@@ -116,6 +117,41 @@ namespace MoBi.Presentation
       public void the_selected_spatial_structure_is_still_set()
       {
          sut.SelectedSpatialStructure.ShouldBeNull();
+      }
+   }
+
+   public class When_selecting_molecules_only_for_refresh : concern_for_SelectSpatialStructureAndMoleculesPresenter
+   {
+      private MoleculeBuilder _molecule1;
+      private MoleculeBuilder _molecule2;
+
+      protected override void Context()
+      {
+         base.Context();
+         _molecule1 = new MoleculeBuilder { Name = "Molecule1"};
+         _molecule2 = new MoleculeBuilder { Name = "Molecule2"};
+      }
+
+      protected override void Because()
+      {
+         sut.SelectMoleculesForRefresh(null, new List<string> {_molecule1.Name});
+      }
+
+      [Observation]
+      public void the_view_should_not_show_the_spatial_structure_selection()
+      {
+         A.CallTo(() => _view.HideSpatialStructureSelection()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_selectable_molecules_should_not_include_molecules_not_in_the_list()
+      {
+         A.CallTo(() => _selectMoleculesPresenter.SelectMolecules(null, A<Func<MoleculeBuilder, bool>>.That.Matches(x => includesOnlyMolecule1(x)))).MustHaveHappened();
+      }
+
+      private bool includesOnlyMolecule1(Func<MoleculeBuilder, bool> canSelect)
+      {
+         return canSelect(_molecule1) && !canSelect(_molecule2);
       }
    }
 }

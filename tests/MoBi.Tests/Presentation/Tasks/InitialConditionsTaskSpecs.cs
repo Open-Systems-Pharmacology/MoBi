@@ -7,7 +7,6 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
-using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -35,7 +34,6 @@ namespace MoBi.Presentation.Tasks
       private IEditTasksForBuildingBlock<InitialConditionsBuildingBlock> _editTask;
       protected IInteractionTaskContext _context;
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
-      protected IMoleculeResolver _moleculeResolver;
       protected IInteractionTasksForMoleculeBuilder _moleculeBuilderTask;
       protected IParameterFactory _parameterFactory;
 
@@ -51,11 +49,10 @@ namespace MoBi.Presentation.Tasks
          };
          _parameterFactory = A.Fake<IParameterFactory>();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
-         _moleculeResolver = A.Fake<IMoleculeResolver>();
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
 
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _moleculeResolver, _parameterFactory);
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory);
       }
    }
 
@@ -557,7 +554,6 @@ namespace MoBi.Presentation.Tasks
          moleculeBuildingBlock.Add(molecule);
          var nanStartValue = new InitialCondition { Formula = new ConstantFormula(double.NaN), Name = molecule.Name, Value = double.NaN, Dimension = Constants.Dimension.NO_DIMENSION };
          _initialConditionsBuildingBlock.Add(nanStartValue);
-         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
       }
 
       protected override void Because()
@@ -586,7 +582,6 @@ namespace MoBi.Presentation.Tasks
          var startValue = new InitialCondition { Name = builder.Name, Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null };
          _initialConditionsBuildingBlock.Add(startValue);
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Returns(new ExplicitFormula("M/V"));
-         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(builder);
       }
 
       protected override void Because()
@@ -616,7 +611,6 @@ namespace MoBi.Presentation.Tasks
          moleculeBuildingBlock.Add(molecule);
          var nanStartValue = new InitialCondition { Name = molecule.Name, Value = null, Dimension = Constants.Dimension.NO_DIMENSION };
          _initialConditionsBuildingBlock.Add(nanStartValue);
-         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
       }
 
       protected override void Because()
@@ -648,7 +642,6 @@ namespace MoBi.Presentation.Tasks
          _nullStartValue = new InitialCondition { Name = molecule.Name, Value = 1, Dimension = Constants.Dimension.NO_DIMENSION };
          _initialConditionsBuildingBlock.Add(_nullStartValue);
          A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
-         A.CallTo(_moleculeResolver).WithReturnType<MoleculeBuilder>().Returns(molecule);
       }
 
       protected override void Because()

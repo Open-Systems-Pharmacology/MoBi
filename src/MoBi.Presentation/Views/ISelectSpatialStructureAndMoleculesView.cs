@@ -6,9 +6,10 @@ namespace MoBi.Presentation.Views
 {
    public interface ISelectSpatialStructureAndMoleculesView : IModalView<ISelectSpatialStructureAndMoleculesPresenter>
    {
-      void Show(SelectSpatialStructureDTO dto);
+      void ShowSpatialStructureSelection(SelectSpatialStructureDTO dto);
       void AddMoleculeSelectionView(IView view);
       void MoleculeSelectionChanged();
       void SetDescriptionText(string description);
+      void HideSpatialStructureSelection();
    }
 }

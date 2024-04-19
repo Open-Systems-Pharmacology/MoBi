@@ -5,7 +5,6 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
@@ -43,7 +42,6 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       protected readonly IInitialConditionsCreator _initialConditionsCreator;
-      private readonly IMoleculeResolver _moleculeResolver;
 
       public InitialConditionsTask(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
@@ -55,13 +53,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInitialConditionPathTask initialConditionPathTask,
          IReactionDimensionRetriever dimensionRetriever,
          IInitialConditionsCreator initialConditionsCreator, 
-         IMoleculeResolver moleculeResolver, 
          IParameterFactory parameterFactory) : 
          base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory)
       {
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;
-         _moleculeResolver = moleculeResolver;
       }
 
       public IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool isPresent)
@@ -144,9 +140,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions)
       {
          var initialConditionsModule = buildingBlock.Module;
-         var (spatialStructure, molecules) = SelectBuildingBlocksForRefresh(initialConditionsModule.Molecules, initialConditionsModule.SpatialStructure);
 
-         if (spatialStructure == null || molecules == null || !molecules.Any())
+         // When refreshing initial conditions from an expression profile, a default module will not be available
+         var (_, molecules) = SelectBuildingBlocksForRefresh(initialConditionsModule?.Molecules, initialConditionsModule?.SpatialStructure, initialConditions.Select(x => x.MoleculeName).Distinct().ToList());
+
+         if (molecules == null || !molecules.Any())
             return new MoBiEmptyCommand();
 
          var macroCommand = new MoBiMacroCommand
@@ -158,7 +156,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          initialConditions.Each(initialCondition =>
          {
-            var moleculeBuilder = _moleculeResolver.Resolve(initialCondition.ContainerPath, initialCondition.MoleculeName, spatialStructure, molecules);
+            var moleculeBuilder = molecules.FindByName(initialCondition.MoleculeName);
             if (moleculeBuilder == null) 
                return;
          
