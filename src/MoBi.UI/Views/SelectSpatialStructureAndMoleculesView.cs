@@ -1,4 +1,5 @@
 ﻿using DevExpress.Utils;
+using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -27,6 +28,11 @@ namespace MoBi.UI.Views
 
       public void SetDescriptionText(string description) => descriptionLabel.Text = description;
 
+      public void HideSpatialStructureSelection()
+      {
+         layoutControlItemSpatialStructure.Visibility = LayoutVisibility.Never;
+      }
+
       public void AttachPresenter(ISelectSpatialStructureAndMoleculesPresenter presenter) => _presenter = presenter;
 
       public override void InitializeBinding()
@@ -50,7 +56,7 @@ namespace MoBi.UI.Views
          Text = AppConstants.Captions.NewWindow(ObjectTypes.MoleculeBuildingBlock);
       }
 
-      public void Show(SelectSpatialStructureDTO dto) => _screenBinder.BindToSource(dto);
+      public void ShowSpatialStructureSelection(SelectSpatialStructureDTO dto) => _screenBinder.BindToSource(dto);
 
       public void AddMoleculeSelectionView(IView view) => moleculeSelectionPanel.FillWith(view);
 

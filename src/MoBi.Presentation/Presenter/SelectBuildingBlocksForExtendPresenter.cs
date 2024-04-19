@@ -17,7 +17,7 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures { get; }
 
       void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure);
-      void SelectBuildingBlocksForRefresh(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure);
+      void SelectMoleculesForRefresh(MoleculeBuildingBlock defaultMolecules, IReadOnlyList<string> selectableMoleculeNames);
       SpatialStructure SelectedSpatialStructure { get; }
       IReadOnlyList<MoleculeBuilder> SelectedMolecules { get; }
    }
@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
    public class SelectSpatialStructureAndMoleculesPresenter : AbstractDisposablePresenter<ISelectSpatialStructureAndMoleculesView, ISelectSpatialStructureAndMoleculesPresenter>, ISelectSpatialStructureAndMoleculesPresenter
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private SelectSpatialStructureDTO _dto;
+      private SelectSpatialStructureDTO _spatialStructureSelectionDTO;
       private readonly ISelectSpatialStructureDTOMapper _mapper;
       private readonly ISelectMoleculesPresenter _selectMoleculesPresenter;
 
@@ -46,7 +46,19 @@ namespace MoBi.Presentation.Presenter
 
       private void moleculeSelectionStatusChanged(object sender, EventArgs e) => _view.MoleculeSelectionChanged();
 
-      public void SelectBuildingBlocksForRefresh(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) => selectBuildingBlocks(defaultMolecules, defaultSpatialStructure, AppConstants.Captions.RefreshDescription);
+      public void SelectMoleculesForRefresh(MoleculeBuildingBlock defaultMolecules, IReadOnlyList<string> selectableMoleculeNames) => selectMolecules(defaultMolecules, selectableMoleculeNames, AppConstants.Captions.RefreshDescription);
+
+      private void selectMolecules(MoleculeBuildingBlock defaultMolecules, IReadOnlyList<string> selectableMoleculeNames, string refreshDescription)
+      {
+         _view.SetDescriptionText(refreshDescription);
+         _view.Caption = AppConstants.Captions.SelectMolecules;
+         
+         _selectMoleculesPresenter.SelectMolecules(defaultMolecules, x => selectableMoleculeNames.Contains(x.Name));
+
+         _view.HideSpatialStructureSelection();
+
+         _view.Display();
+      }
 
       public void SelectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) => selectBuildingBlocks(defaultMolecules, defaultSpatialStructure, AppConstants.Captions.ExtendDescription);
 
@@ -54,22 +66,22 @@ namespace MoBi.Presentation.Presenter
       {
          _view.SetDescriptionText(descriptionText);
          _view.Caption = AppConstants.Captions.SelectSpatialStructureAndMolecules;
-         _dto = _mapper.MapFrom(defaultSpatialStructure ?? AllSpatialStructures.FirstOrDefault());
+         _spatialStructureSelectionDTO = _mapper.MapFrom(defaultSpatialStructure ?? AllSpatialStructures.FirstOrDefault());
          _selectMoleculesPresenter.SelectMolecules(defaultMolecules);
 
-         _view.Show(_dto);
+         _view.ShowSpatialStructureSelection(_spatialStructureSelectionDTO);
          _view.Display();
          if (!_view.Canceled)
             return;
 
-         _dto.SpatialStructure = null;
+         _spatialStructureSelectionDTO.SpatialStructure = null;
       }
 
       public override bool CanClose => _subPresenterManager.CanClose;
 
       public IReadOnlyList<MoleculeBuilder> SelectedMolecules => _selectMoleculesPresenter.SelectedMolecules.Select(x => x.MoleculeBuilder).ToList();
 
-      public SpatialStructure SelectedSpatialStructure => _dto.SpatialStructure;
+      public SpatialStructure SelectedSpatialStructure => _spatialStructureSelectionDTO?.SpatialStructure;
 
       public IReadOnlyList<MoBiSpatialStructure> AllSpatialStructures => _buildingBlockRepository.SpatialStructureCollection;
    }
