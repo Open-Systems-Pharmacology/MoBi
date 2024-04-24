@@ -7,6 +7,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -36,6 +37,8 @@ namespace MoBi.Presentation.Tasks
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IInteractionTasksForMoleculeBuilder _moleculeBuilderTask;
       protected IParameterFactory _parameterFactory;
+      protected INameCorrector _nameCorrector;
+      protected IFormulaTask _formulaTask;
 
       protected override void Context()
       {
@@ -43,6 +46,7 @@ namespace MoBi.Presentation.Tasks
          _editTask = A.Fake<IEditTasksForBuildingBlock<InitialConditionsBuildingBlock>>();
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
+         _nameCorrector = A.Fake<INameCorrector>();
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock
          {
             Module = new Module()
@@ -51,8 +55,9 @@ namespace MoBi.Presentation.Tasks
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
 
+         _formulaTask = A.Fake<IFormulaTask>();
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(A.Fake<IFormulaTask>(), _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory);
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _nameCorrector);
       }
    }
 
@@ -659,6 +664,102 @@ namespace MoBi.Presentation.Tasks
       public void should_set_the_value_to_null()
       {
          _nullStartValue.Value.ShouldBeNull();
+      }
+   }
+
+   public class When_updating_a_molecule_start_value_from_original_building_block_and_all_formulas_will_be_replaced : concern_for_InitialConditionsTask
+   {
+      private BlackBoxFormula _replacedFormula;
+      private ExplicitFormula _refreshedFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         var spatialStructure = A.Fake<MoBiSpatialStructure>();
+         var moleculeBuildingBlock = new MoleculeBuildingBlock();
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { moleculeBuildingBlock });
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { spatialStructure });
+         var builder = new MoleculeBuilder { Name = "molecule", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ExplicitFormula("50").WithId("50") };
+         moleculeBuildingBlock.Add(builder);
+         _replacedFormula = new BlackBoxFormula().WithId("blackbox");
+         var startValue = new InitialCondition { Name = builder.Name, Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = _replacedFormula };
+         _initialConditionsBuildingBlock.Add(startValue);
+         _initialConditionsBuildingBlock.FormulaCache.Add(startValue.Formula);
+         _refreshedFormula = new ExplicitFormula("M/V").WithId("m/v");
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Invokes(x => _initialConditionsBuildingBlock.FormulaCache.Add(_refreshedFormula)).Returns(_refreshedFormula);
+      }
+
+      protected override void Because()
+      {
+         sut.RefreshInitialConditionsFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsBuildingBlock.ToList());
+      }
+
+      [Observation]
+      public void the_formula_that_was_refreshed_is_in_the_cache()
+      {
+         _initialConditionsBuildingBlock.FormulaCache.Contains(_refreshedFormula).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void the_formula_that_was_replaced_is_removed_from_cache()
+      {
+         _initialConditionsBuildingBlock.FormulaCache.Contains(_replacedFormula).ShouldBeFalse();
+      }
+   }
+
+   public class When_updating_a_molecule_start_value_from_original_building_block_and_not_all_formulas_will_be_replaced : concern_for_InitialConditionsTask
+   {
+      private IFormula _replacedFormula;
+      private IFormula _refreshedFormula;
+      private List<InitialCondition> _initialConditionsToRefresh;
+
+      protected override void Context()
+      {
+         base.Context();
+         var spatialStructure = A.Fake<MoBiSpatialStructure>();
+         var moleculeBuildingBlock = new MoleculeBuildingBlock();
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { moleculeBuildingBlock });
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { spatialStructure });
+         var builder = new MoleculeBuilder { Name = "molecule", Dimension = Constants.Dimension.NO_DIMENSION, DefaultStartFormula = new ExplicitFormula("50").WithId("50") };
+         moleculeBuildingBlock.Add(builder);
+         _replacedFormula = new BlackBoxFormula().WithId("blackbox").WithName("M/V");
+         var startValue = new InitialCondition { Name = builder.Name, Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = _replacedFormula };
+         var thirdStartValue = new InitialCondition { Name = "yet another name", Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = _replacedFormula };
+
+         _initialConditionsBuildingBlock.Add(startValue);
+         _initialConditionsBuildingBlock.Add(thirdStartValue);
+         var secondStartValue = new InitialCondition { Name = "anothername", Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = _replacedFormula };
+         _initialConditionsBuildingBlock.Add(secondStartValue);
+         
+         _initialConditionsBuildingBlock.FormulaCache.Add(startValue.Formula);
+         _refreshedFormula = new ExplicitFormula("M/V").WithId("m/v").WithName("M/V");
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Invokes(x => _initialConditionsBuildingBlock.FormulaCache.Add(_refreshedFormula)).Returns(_refreshedFormula);
+
+         A.CallTo(() => _formulaTask.FormulasAreTheSame(startValue.Formula, secondStartValue.Formula)).Returns(true);
+         _initialConditionsToRefresh = new List<InitialCondition> { startValue, thirdStartValue };
+      }
+
+      protected override void Because()
+      {
+         sut.RefreshInitialConditionsFromBuildingBlocks(_initialConditionsBuildingBlock, _initialConditionsToRefresh);
+      }
+
+      [Observation]
+      public void the_formula_that_was_refreshed_is_in_the_cache()
+      {
+         _initialConditionsBuildingBlock.FormulaCache.Contains(_refreshedFormula).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void the_formula_that_was_replaced_is_not_removed_from_cache()
+      {
+         _initialConditionsBuildingBlock.FormulaCache.Contains(_replacedFormula).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void the_formula_that_was_added_is_renamed()
+      {
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, _refreshedFormula)).MustHaveHappenedOnceExactly();
       }
    }
 }

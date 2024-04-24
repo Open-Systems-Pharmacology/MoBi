@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
@@ -15,6 +16,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -42,6 +44,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       protected readonly IInitialConditionsCreator _initialConditionsCreator;
+      private readonly INameCorrector _nameCorrector;
 
       public InitialConditionsTask(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
@@ -53,11 +56,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInitialConditionPathTask initialConditionPathTask,
          IReactionDimensionRetriever dimensionRetriever,
          IInitialConditionsCreator initialConditionsCreator, 
-         IParameterFactory parameterFactory) : 
+         IParameterFactory parameterFactory,
+         INameCorrector nameCorrector) : 
          base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory)
       {
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;
+         _nameCorrector = nameCorrector;
       }
 
       public IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool isPresent)
@@ -180,12 +185,37 @@ namespace MoBi.Presentation.Tasks.Interaction
          
             if (!HasEquivalentFormula(initialCondition, moleculeBuilder.DefaultStartFormula))
             {
-               macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, initialCondition,
-                  moleculeBuilder.DefaultStartFormula.IsConstant() ? null : _cloneManagerForBuildingBlock.Clone(moleculeBuilder.DefaultStartFormula, buildingBlock.FormulaCache)));
+               updateFormulaUsages(buildingBlock, initialConditions, initialCondition, macroCommand, moleculeBuilder);
             }
          });
 
          return macroCommand;
+      }
+
+      private void updateFormulaUsages(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions, InitialCondition initialCondition, MoBiMacroCommand macroCommand, MoleculeBuilder moleculeBuilder)
+      {
+         // If all usages of a formula are being refreshed, then we can remove the existing formula from the formula cache
+         if(canRemoveFormula(buildingBlock, initialConditions, initialCondition.Formula))
+            macroCommand.Add(new RemoveFormulaFromFormulaCacheCommand(buildingBlock, initialCondition.Formula).Run(Context));
+
+         // The clone manager can return an existing formula from the formula cache if it is present and equivalent to the formula being cloned
+         // This is important for renaming step. We can't just rename this formula if one already exists in the cache with the same name because
+         // it might actually be the same one.
+         var clonedFormula = _cloneManagerForBuildingBlock.Clone(moleculeBuilder.DefaultStartFormula, buildingBlock.FormulaCache);
+
+         // Update this formula in the initial condition
+         macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, initialCondition,
+            moleculeBuilder.DefaultStartFormula.IsConstant() ? null : clonedFormula));
+
+         // After the formula has been updated, if there are two formulas with the same name, then we can rename this one, so it does not collide
+         if (buildingBlock.FormulaCache.Count(x => Equals(x.Name, clonedFormula.Name)) > 1)
+            _nameCorrector.AutoCorrectName(buildingBlock.FormulaCache.AllNames(), clonedFormula);
+      }
+
+      private bool canRemoveFormula(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions, IFormula formula)
+      {
+         var allUsingFormula = buildingBlock.Where(x => HasEquivalentFormula(x, formula));
+         return initialConditions.ContainsAll(allUsingFormula) && buildingBlock.FormulaCache.Contains(formula);
       }
 
       public override IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(InitialCondition pathAndValueEntity, TBuildingBlock buildingBlock)
