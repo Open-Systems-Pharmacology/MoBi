@@ -1,21 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MoBi.Assets;
+﻿using MoBi.Assets;
+using MoBi.Core.Domain.Model;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
-using MoBi.Core.Domain.Model;
-using MoBi.Presentation.UICommand;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Utility.Extensions;
-using IContainer = OSPSuite.Utility.Container.IContainer;
-using static OSPSuite.Assets.Captions;
-using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
-using OSPSuite.Core.Domain;
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Presentation.UICommands;
+using IContainer = OSPSuite.Utility.Container.IContainer;
+using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -29,12 +26,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             _context = context;
             _container = container;
         }
-
-        //protected override IContextMenu CreateFor(IReadOnlyList<ClassifiableSimulation> classifiableSimulations, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
-        //{
-        //    var moBiSimulations = classifiableSimulations.Select(x => x.Subject).ToList();
-        //    return new MultipleParameterIdentificationContextMenu(moBiSimulations, _context, _container);
-        //}
 
         public override bool IsSatisfiedBy(IReadOnlyList<ITreeNode> treeNodes, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
         {
@@ -55,29 +46,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
         {
         }
 
-        private IMenuBarItem createStartParameterIdentificationMenuBarItem(IReadOnlyList<ParameterIdentification> parameterIdentifications)
-        {
-            return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(parameterIdentifications[0].AllSimulations, _container);
-        }
-
-        //protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<IMoBiSimulation> simulations, IMoBiContext context)
         protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<ParameterIdentification> parameterIdentifications, IMoBiContext context)
         {
-            if (parameterIdentifications.Count != 0)
-            {
+            yield return ObjectBaseCommonContextMenuItems.AddToJournal(parameterIdentifications, _container);
 
-                //if (parameterIdentifications.Count == 2)
-                //    yield return ComparisonCommonContextMenuItems.CompareObjectsMenu(parameterIdentifications, context, _container);
-
-                yield return ObjectBaseCommonContextMenuItems.AddToJournal(parameterIdentifications, _container);
-
-                //yield return createStartParameterIdentificationMenuBarItem(parameterIdentifications);
-
-                yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-                    .WithCommandFor<DeleteParameterIdentificationUICommand, ParameterIdentification>(parameterIdentifications[0], _container)
-                    .WithIcon(ApplicationIcons.Delete)
-                    .AsGroupStarter();
-            }
+            yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
+                .WithCommandFor<RemoveMultipleParameterIdentificationsUICommand, IReadOnlyList<ParameterIdentification>>(parameterIdentifications, _container)
+                .WithIcon(ApplicationIcons.Delete)
+                .AsGroupStarter();
         }
     }
 }
