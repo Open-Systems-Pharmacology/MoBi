@@ -35,6 +35,7 @@ namespace MoBi.Presentation.Tasks
       private IObjectTypeResolver _objectTypeResolver;
       private IBuildingBlockRepository _buildingBlockRepository;
       protected IObjectBaseNamingTask _namingTask;
+      private IConfirmationManager _confirmationManager;
 
       protected override void Context()
       {
@@ -49,7 +50,8 @@ namespace MoBi.Presentation.Tasks
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _namingTask = A.Fake<IObjectBaseNamingTask>();
-         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask);
+         _confirmationManager = A.Fake<IConfirmationManager>();
+         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask, _confirmationManager);
 
          _project = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.Project).Returns(_project);
