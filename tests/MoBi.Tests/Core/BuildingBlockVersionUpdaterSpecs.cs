@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -8,6 +9,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 
 namespace MoBi.Core
@@ -16,12 +18,14 @@ namespace MoBi.Core
    {
       protected IMoBiProjectRetriever _projectRetriever;
       protected IEventPublisher _eventPublisher;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
          _projectRetriever= A.Fake<IMoBiProjectRetriever>();
          _eventPublisher= A.Fake<IEventPublisher>();
-         sut = new BuildingBlockVersionUpdater(_projectRetriever,_eventPublisher);
+         _dialogCreator = A.Fake<IDialogCreator>();
+         sut = new BuildingBlockVersionUpdater(_projectRetriever,_eventPublisher, _dialogCreator);
       }
    }
 
@@ -36,7 +40,7 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         _changeBuildingBlock = A.Fake<IBuildingBlock>();
+         _changeBuildingBlock = new ParameterValuesBuildingBlock();
          _changeBuildingBlock.Version = 3;
          _changeBuildingBlock.Id = "TRALLLLA";
          _affectedSimulations = new List<IModelCoreSimulation>();
@@ -52,6 +56,8 @@ namespace MoBi.Core
          var project = DomainHelperForSpecs.NewProject();
          project.AddSimulation(_affectedSimulation);
          _module = new Module {_changeBuildingBlock};
+         _module.PKSimVersion = "1";
+         _module.ModuleImportVersion = _module.Version;
          project.AddModule(_module);
          A.CallTo(() => _projectRetriever.Current).Returns(project);
       }
@@ -78,6 +84,12 @@ namespace MoBi.Core
       {
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>._)).MustHaveHappened();
          _affectedSimulations.ShouldOnlyContain(_affectedSimulation);
+      }
+
+      [Observation]
+      public void the_dialog_creator_warns_user_that_the_pk_sim_module_will_be_converted()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(AppConstants.Captions.TheModuleWillBeConvertedFromPKSimToExtensionModule(_module.Name))).MustHaveHappened();
       }
    }
 }	

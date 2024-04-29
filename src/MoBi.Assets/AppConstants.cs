@@ -1931,6 +1931,11 @@ namespace MoBi.Assets
             sb.AppendLine(allNames.ToString("\n - "));
             return sb.ToString();
          }
+
+         public static string TheModuleWillBeConvertedFromPKSimToExtensionModule(string moduleName)
+         {
+            return $"The PK-Sim module '{moduleName}' will be converted to an extension module";
+         }
       }
 
       public static class Validation
