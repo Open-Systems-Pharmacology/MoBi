@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Serialization.Exchange;
@@ -67,9 +68,10 @@ namespace MoBi.Presentation.Tasks
          var individual = configuration.Individual;
          var expressions = configuration.ExpressionProfiles;
 
-         macroCommand.Add(_moduleTask.AddTo(modules, project));
+         var commandToAdd = _moduleTask.AddTo(modules, project);
+         macroCommand.Add(commandToAdd);
 
-         if (!addAdditionalBuildingBlocksConfirmed(individual, expressions))
+         if (commandToAdd.IsEmpty() || !addAdditionalBuildingBlocksConfirmed(individual, expressions))
             return macroCommand;
 
          macroCommand.Add(_individualTask.AddTo(new[] { individual }, project));
