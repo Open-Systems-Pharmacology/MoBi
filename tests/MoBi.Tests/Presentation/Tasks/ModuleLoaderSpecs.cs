@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Tasks.Interaction;
@@ -21,6 +22,7 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTasksForExpressionProfileBuildingBlock _expressionTask;
       protected IInteractionTasksForModule _moduleTask;
       protected IInteractionTaskContext _interactionTaskContext;
+      protected Module _addedModule;
 
       protected override void Context()
       {
@@ -36,7 +38,8 @@ namespace MoBi.Presentation.Tasks
          _simulationTransfer.Simulation = _moBiSimulation;
 
          _moBiSimulation.Configuration = new SimulationConfiguration();
-         _moBiSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("module")));
+         _addedModule = new Module().WithName("module");
+         _moBiSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(_addedModule));
          AddAdditionalBuildingBlocks();
 
          A.CallTo(() => _interactionTaskContext.InteractionTask.CorrectName(A<Module>._, A<IEnumerable<string>>._)).Returns(true);
@@ -50,6 +53,35 @@ namespace MoBi.Presentation.Tasks
          _moBiSimulation.Configuration.Individual = new IndividualBuildingBlock().WithName("individual");
          _moBiSimulation.Configuration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("expressionProfile1"));
          _moBiSimulation.Configuration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("expressionProfile2"));
+      }
+   }
+
+   internal class When_the_user_cancels_loading_a_module : concern_for_ModuleLoader
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _moduleTask.AddTo(A<List<Module>>.That.Matches(x => containsAddedModule(x)), _project, null)).Returns(new MoBiEmptyCommand());
+         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(A<string>._)).Returns(_simulationTransfer);
+         A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, ViewResult.Yes)).Returns(ViewResult.Yes);
+      }
+
+      private bool containsAddedModule(List<Module> list)
+      {
+         return list.Contains(_addedModule);
+      }
+
+      protected override void Because()
+      {
+         sut.LoadModule(_project);
+      }
+
+      [Observation]
+      public void the_expressions_and_individual_should_not_be_added()
+      {
+         A.CallTo(() => _individualTask.AddTo(A<IReadOnlyCollection<IndividualBuildingBlock>>._, _project, null)).MustNotHaveHappened();
+         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>._, _project, null)).MustNotHaveHappened();
+
       }
    }
 
