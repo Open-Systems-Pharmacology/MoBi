@@ -70,12 +70,6 @@ namespace MoBi.UI.Views
          pnlFormula.FillWith(subView);
       }
 
-      public string TargetPath
-      {
-         get => btnTargetPath.Text;
-         set => btnTargetPath.Text = value;
-      }
-
       public void AttachPresenter(IEditAssignmentBuilderPresenter presenter)
       {
          _presenter = presenter;
