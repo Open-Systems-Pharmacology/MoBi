@@ -417,11 +417,9 @@ namespace MoBi.UI.Views
          // layoutItemDimension
          // 
          this.layoutItemDimension.Control = this.cbDimension;
-         this.layoutItemDimension.CustomizationFormText = "Dimension";
          this.layoutItemDimension.Location = new System.Drawing.Point(0, 24);
          this.layoutItemDimension.Name = "layoutItemDimension";
          this.layoutItemDimension.Size = new System.Drawing.Size(712, 24);
-         this.layoutItemDimension.Text = "Dimension:";
          this.layoutItemDimension.TextSize = new System.Drawing.Size(106, 13);
          // 
          // layoutItemGroup

@@ -67,7 +67,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_selectEntityInTreePresenter);
          _selectEntityInTreePresenter.GetChildren = GetChildren;
          _selectEntityInTreePresenter.OnSelectedEntityChanged += (o, e) => _view.OkEnabled = e != null;
-
+         _view.AddSelectionView(_selectEntityInTreePresenter.View);
       }
 
       public FormulaUsablePath Select()

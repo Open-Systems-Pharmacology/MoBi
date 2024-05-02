@@ -23,6 +23,7 @@ namespace MoBi.Presentation.Mappers
          dto.ChangedEntityPath = eventAssignmentBuilder.ObjectPath == null ? string.Empty : eventAssignmentBuilder.ObjectPath.PathAsString;
          dto.NewFormula = _formulaDTOMapper.MapFrom(eventAssignmentBuilder.Formula);
          dto.UseAsValue = eventAssignmentBuilder.UseAsValue;
+         dto.Dimension = eventAssignmentBuilder.Dimension;
          return dto;
       }
    }
