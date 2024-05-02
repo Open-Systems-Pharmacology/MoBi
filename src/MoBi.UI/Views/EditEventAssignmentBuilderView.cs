@@ -14,7 +14,7 @@ namespace MoBi.UI.Views
    public partial class EditEventAssignmentBuilderView : BaseUserControl, IEditEventAssignmentBuilderView
    {
       private IEditAssignmentBuilderPresenter _presenter;
-      private ScreenBinder<EventAssignmentBuilderDTO> _screenBinder;
+      private readonly ScreenBinder<EventAssignmentBuilderDTO> _screenBinder = new ScreenBinder<EventAssignmentBuilderDTO>();
 
       public EditEventAssignmentBuilderView()
       {
@@ -24,17 +24,22 @@ namespace MoBi.UI.Views
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         _screenBinder = new ScreenBinder<EventAssignmentBuilderDTO>();
          _screenBinder.Bind(dto => dto.Name)
-            .To(btnName)
+            .To(tbName)
             .OnValueUpdating += OnValueUpdating;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
             .OnValueUpdating += OnValueUpdating;
 
+         _screenBinder.Bind(dto => dto.Dimension)
+            .To(cbDimension)
+            .WithValues(dto => _presenter.AllDimensions())
+            .OnValueUpdated += (o, e) => OnEvent(_presenter.SetDimension, e);
+
          _screenBinder.Bind(dto => dto.ChangedEntityPath)
-            .To(btnTargetPath);
+            .To(btnTargetPath)
+            .OnValueUpdated += (o, e) => OnEvent(_presenter.SetEventAssignmentPath, e);
 
          _screenBinder.Bind(dto => dto.UseAsValue)
             .To(chkUseAsValue)
@@ -51,8 +56,8 @@ namespace MoBi.UI.Views
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          layoutItemChangedEntity.Text = AppConstants.Captions.ChangedEntity.FormatForLabel();
          layoutItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
+         layoutItemDimension.Text = AppConstants.Captions.Dimension.FormatForLabel();
          layoutGroupAssignment.Text = AppConstants.Captions.Assignment;
-         btnTargetPath.Properties.ReadOnly = true;
       }
 
       private void OnValueUpdating<T>(EventAssignmentBuilderDTO eventAssignmentBuilder, PropertyValueSetEventArgs<T> e)
@@ -85,7 +90,7 @@ namespace MoBi.UI.Views
 
       public void Activate()
       {
-         ActiveControl = btnName;
+         ActiveControl = tbName;
       }
    }
 }
