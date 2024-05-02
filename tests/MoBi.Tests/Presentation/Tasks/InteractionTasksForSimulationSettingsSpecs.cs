@@ -29,28 +29,66 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_committing_simulation_settings : concern_for_InteractionTasksForSimulationSettings
+   public class When_committing_simulation_solver_and_schema : concern_for_InteractionTasksForSimulationSettings
    {
       private SimulationSettings _simulationSettings;
       private IMoBiContext _context;
+      private MoBiProject _currentProject;
 
       protected override void Context()
       {
          base.Context();
          _simulationSettings = new SimulationSettings();
          _context = A.Fake<IMoBiContext>();
+         _currentProject = new MoBiProject
+         {
+            SimulationSettings = new SimulationSettings()
+         };
          A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
+         A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
       }
 
       protected override void Because()
       {
-         sut.UpdateDefaultSimulationSettingsInProject(_simulationSettings);
+         sut.UpdateDefaultSimulationSettingsInProject(_simulationSettings.Solver, _simulationSettings.OutputSchema);
       }
 
       [Observation]
       public void the_simulation_settings_should_be_updated()
       {
-         _context.CurrentProject.SimulationSettings.ShouldBeEqualTo(_simulationSettings);
+         _context.CurrentProject.SimulationSettings.OutputSchema.ShouldBeEqualTo(_simulationSettings.OutputSchema);
+         _context.CurrentProject.SimulationSettings.Solver.ShouldBeEqualTo(_simulationSettings.Solver);
+      }
+   }
+
+   public class When_committing_simulation_output_selections : concern_for_InteractionTasksForSimulationSettings
+   {
+      private SimulationSettings _simulationSettings;
+      private IMoBiContext _context;
+      private MoBiProject _currentProject;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationSettings = new SimulationSettings();
+         _context = A.Fake<IMoBiContext>();
+         _currentProject = new MoBiProject
+         {
+            SimulationSettings = new SimulationSettings()
+         };
+         A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
+         A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateDefaultOutputSelectionsInProject(_simulationSettings.OutputSelections);
+      }
+
+      [Observation]
+      public void the_simulation_settings_should_be_updated()
+      {
+         _context.CurrentProject.SimulationSettings.OutputSelections.ShouldBeEqualTo(_simulationSettings.OutputSelections);
       }
    }
 

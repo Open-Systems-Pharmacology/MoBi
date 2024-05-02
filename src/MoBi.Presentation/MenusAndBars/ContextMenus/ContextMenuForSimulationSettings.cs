@@ -28,15 +28,29 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu InitializeWith(SimulationSettingsDTO viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.RefreshSettingsFromProjectDefault)
-            .WithIcon(ApplicationIcons.Refresh)
-            .WithCommandFor<RefreshSimulationSettingsUICommand, IMoBiSimulation>(viewItem.Simulation, _container));
-
-         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.MakeSettingsProjectDefault)
-            .WithIcon(ApplicationIcons.Commit)
-            .WithCommandFor<CommitSimulationSettingsUICommand, SimulationSettings>(viewItem.Simulation.Settings, _container));
+         _allMenuItems.Add(createRefreshSubMenu(viewItem));
+         _allMenuItems.Add(createCommitSubMenu(viewItem));
 
          return this;
+      }
+
+      private IMenuBarItem createRefreshSubMenu(SimulationSettingsDTO viewItem)
+      {
+         return CreateSubMenu.WithCaption(AppConstants.MenuNames.RefreshFromProjectDefaults).WithIcon(ApplicationIcons.Refresh)
+            .WithItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.OutputSelections)
+               .WithCommandFor<RefreshSimulationOutputSelectionsUICommand, IMoBiSimulation>(viewItem.Simulation, _container))
+            .WithItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.SettingsAndSchema)
+               .WithCommandFor<RefreshSimulationSolverAndSchemaUICommand, IMoBiSimulation>(viewItem.Simulation, _container));
+         ;
+      }
+
+      private IMenuBarItem createCommitSubMenu(SimulationSettingsDTO viewItem)
+      {
+         return CreateSubMenu.WithCaption(AppConstants.MenuNames.CommitToProjectDefaults).WithIcon(ApplicationIcons.Commit)
+            .WithItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.OutputSelections)
+               .WithCommandFor<CommitSimulationOutputSelectionsUICommand, SimulationSettings>(viewItem.Simulation.Settings, _container))
+            .WithItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.SettingsAndSchema)
+               .WithCommandFor<CommitSimulationSolverAndSchemaUICommand, SimulationSettings>(viewItem.Simulation.Settings, _container));
       }
    }
 

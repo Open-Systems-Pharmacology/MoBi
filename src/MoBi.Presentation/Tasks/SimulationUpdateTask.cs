@@ -26,10 +26,9 @@ namespace MoBi.Presentation.Tasks
 
       ICommand UpdateSimulation(IMoBiSimulation simulationToUpdate);
 
-      /// <summary>
-      ///    Re-applies the simulation settings from the project defaults to the <paramref name="simulationToUpdate" />
-      /// </summary>
-      ICommand UpdateSimulationSettings(IMoBiSimulation simulationToUpdate);
+      ICommand UpdateSimulationOutputSelections(IMoBiSimulation simulation);
+
+      ICommand UpdateSimulationSolverAndSchema(IMoBiSimulation simulationToUpdate);
    }
 
    public class SimulationUpdateTask : ISimulationUpdateTask
@@ -60,9 +59,15 @@ namespace MoBi.Presentation.Tasks
          return updateSimulation(simulationToUpdate, simulationConfiguration, AppConstants.Captions.UpdatingSimulation);
       }
 
-      public ICommand UpdateSimulationSettings(IMoBiSimulation simulationToUpdate)
+      public ICommand UpdateSimulationSolverAndSchema(IMoBiSimulation simulationToUpdate)
       {
-         return new UpdateSimulationSettingsInSimulationCommand(simulationToUpdate, _cloneManager.Clone(_context.CurrentProject.SimulationSettings)).Run(_context);
+         var newSimulationSettings = _cloneManager.Clone(_context.CurrentProject.SimulationSettings);
+         return new UpdateSolverAndSchemaInSimulationCommand(simulationToUpdate, newSimulationSettings.Solver, newSimulationSettings.OutputSchema).Run(_context);
+      }
+
+      public ICommand UpdateSimulationOutputSelections(IMoBiSimulation simulation)
+      {
+         return new UpdateOutputSelectionsInSimulationCommand(_cloneManager.Clone(_context.CurrentProject.SimulationSettings).OutputSelections, simulation).Run(_context);
       }
 
       public ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure)

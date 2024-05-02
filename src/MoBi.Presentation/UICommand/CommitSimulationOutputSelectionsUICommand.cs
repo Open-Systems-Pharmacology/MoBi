@@ -6,12 +6,12 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class CommitSimulationSettingsUICommand : ActiveObjectUICommand<SimulationSettings>
+   public class CommitSimulationOutputSelectionsUICommand : ActiveObjectUICommand<SimulationSettings>
    {
       private readonly IInteractionTasksForSimulationSettings _simulationSettingsTask;
       private readonly IMoBiContext _context;
 
-      public CommitSimulationSettingsUICommand(
+      public CommitSimulationOutputSelectionsUICommand(
          IInteractionTasksForSimulationSettings simulationSettingsTask,
          IMoBiContext context,
          IActiveSubjectRetriever activeSubjectRetriever) :
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _simulationSettingsTask.UpdateDefaultSimulationSettingsInProject(_context.Clone(Subject));
+         _simulationSettingsTask.UpdateDefaultOutputSelectionsInProject(_context.Clone(Subject).OutputSelections);
       }
    }
 }

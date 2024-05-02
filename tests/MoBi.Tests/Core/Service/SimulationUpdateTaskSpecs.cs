@@ -68,13 +68,14 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         sut.UpdateSimulationSettings(_simulation);
+         sut.UpdateSimulationSolverAndSchema(_simulation);
       }
 
       [Observation]
       public void the_simulation_should_have_a_new_simulation_settings_object()
       {
-         _simulation.Configuration.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
+         _simulation.Configuration.SimulationSettings.Solver.ShouldBeEqualTo(_clonedSimulationSettings.Solver);
+         _simulation.Configuration.SimulationSettings.OutputSchema.ShouldBeEqualTo(_clonedSimulationSettings.OutputSchema);
       }
 
       [Observation]
