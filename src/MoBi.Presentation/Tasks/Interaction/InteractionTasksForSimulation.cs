@@ -173,14 +173,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddSimulationCommand(simulation);
       }
 
-      public IReadOnlyList<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation)
-      {
-         var changedBuildingBlocks = simulation.BuildingBlocks().Where(buildingBlock => TemplateBuildingBlockFor(buildingBlock).Version != buildingBlock.Version).ToList();
-         if (simulation.Settings.Version != _interactionTaskContext.Context.CurrentProject.SimulationSettings.Version)
-            changedBuildingBlocks.Add(simulation.Settings);
-         
-         return changedBuildingBlocks;
-      }
+      public IReadOnlyList<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation) => 
+         simulation.BuildingBlocks().Where(buildingBlock => TemplateBuildingBlockFor(buildingBlock).Version != buildingBlock.Version).ToList();
 
       public IReadOnlyList<Module> FindChangedModules(IMoBiSimulation simulation)
       {

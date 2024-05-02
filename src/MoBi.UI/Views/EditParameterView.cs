@@ -109,6 +109,7 @@ namespace MoBi.UI.Views
 
          layoutItemGroup.Text = AppConstants.Captions.Group.FormatForLabel();
          layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
+         layoutItemDimension.Text = AppConstants.Captions.Dimension.FormatForLabel();
          chkIsFavorite.Text = Captions.Favorite;
          layoutGroupProperties.Text = AppConstants.Captions.Properties;
          layoutItemValueOrigin.AdjustControlHeight(layoutItemGroup.Control.Height);
