@@ -11,8 +11,8 @@ namespace MoBi.Core.Commands
    {
       private SolverSettings _newSolverSettings;
       private OutputSchema _newOutputSchema;
-      private byte[] _serializedOldSolverSettings;
-      private byte[] _serializedOldOutputSchema;
+      private OutputSchema _oldOutputSchema;
+      private SolverSettings _oldSolverSettings;
 
       public UpdateSolverAndSchemaInSimulationCommand(IMoBiSimulation simulation, SolverSettings solverSettings, OutputSchema outputSchema) : base(simulation)
       {
@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new UpdateSolverAndSchemaInSimulationCommand(_simulation, context.Deserialize<SolverSettings>(_serializedOldSolverSettings), context.Deserialize<OutputSchema>(_serializedOldOutputSchema));
+         return new UpdateSolverAndSchemaInSimulationCommand(_simulation, _oldSolverSettings, _oldOutputSchema);
       }
 
       protected override void ClearReferences()
@@ -43,8 +43,8 @@ namespace MoBi.Core.Commands
 
       protected override void DoExecute(IMoBiContext context)
       {
-         _serializedOldOutputSchema = context.Serialize(_simulation.Configuration.SimulationSettings.OutputSchema);
-         _serializedOldSolverSettings = context.Serialize(_simulation.Configuration.SimulationSettings.Solver);
+         _oldOutputSchema = _simulation.Configuration.SimulationSettings.OutputSchema;
+         _oldSolverSettings = _simulation.Configuration.SimulationSettings.Solver;
 
          _simulation.Configuration.SimulationSettings.OutputSchema = _newOutputSchema;
          _simulation.Configuration.SimulationSettings.Solver = _newSolverSettings;

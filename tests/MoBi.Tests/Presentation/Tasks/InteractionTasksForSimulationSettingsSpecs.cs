@@ -34,30 +34,42 @@ namespace MoBi.Presentation.Tasks
       private SimulationSettings _simulationSettings;
       private IMoBiContext _context;
       private MoBiProject _currentProject;
+      private SimulationSettings _clonedSettings;
 
       protected override void Context()
       {
          base.Context();
          _simulationSettings = new SimulationSettings();
          _context = A.Fake<IMoBiContext>();
+
+         _clonedSettings = new SimulationSettings
+         {
+            Solver = new SolverSettings(),
+            OutputSchema = new OutputSchema()
+         };
          _currentProject = new MoBiProject
          {
-            SimulationSettings = new SimulationSettings()
+            SimulationSettings = new SimulationSettings
+            {
+               Solver = new SolverSettings(),
+               OutputSchema = new OutputSchema()
+            }
          };
          A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
          A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
+         A.CallTo(() => _context.Clone(_simulationSettings)).Returns(_clonedSettings);
       }
 
       protected override void Because()
       {
-         sut.UpdateDefaultSimulationSettingsInProject(_simulationSettings.Solver, _simulationSettings.OutputSchema);
+         sut.UpdateDefaultSimulationSettingsInProject(_simulationSettings);
       }
 
       [Observation]
       public void the_simulation_settings_should_be_updated()
       {
-         _context.CurrentProject.SimulationSettings.OutputSchema.ShouldBeEqualTo(_simulationSettings.OutputSchema);
-         _context.CurrentProject.SimulationSettings.Solver.ShouldBeEqualTo(_simulationSettings.Solver);
+         _context.CurrentProject.SimulationSettings.OutputSchema.ShouldBeEqualTo(_clonedSettings.OutputSchema);
+         _context.CurrentProject.SimulationSettings.Solver.ShouldBeEqualTo(_clonedSettings.Solver);
       }
    }
 
@@ -66,6 +78,7 @@ namespace MoBi.Presentation.Tasks
       private SimulationSettings _simulationSettings;
       private IMoBiContext _context;
       private MoBiProject _currentProject;
+      private SimulationSettings _clonedSettings;
 
       protected override void Context()
       {
@@ -76,19 +89,26 @@ namespace MoBi.Presentation.Tasks
          {
             SimulationSettings = new SimulationSettings()
          };
+
+         _clonedSettings = new SimulationSettings
+         {
+            OutputSelections = new OutputSelections()
+         };
+
          A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
          A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
+         A.CallTo(() => _context.Clone(_simulationSettings)).Returns(_clonedSettings);
       }
 
       protected override void Because()
       {
-         sut.UpdateDefaultOutputSelectionsInProject(_simulationSettings.OutputSelections);
+         sut.UpdateDefaultOutputSelectionsInProject(_simulationSettings);
       }
 
       [Observation]
       public void the_simulation_settings_should_be_updated()
       {
-         _context.CurrentProject.SimulationSettings.OutputSelections.ShouldBeEqualTo(_simulationSettings.OutputSelections);
+         _context.CurrentProject.SimulationSettings.OutputSelections.ShouldBeEqualTo(_clonedSettings.OutputSelections);
       }
    }
 

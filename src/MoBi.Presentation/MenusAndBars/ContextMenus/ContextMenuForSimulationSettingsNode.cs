@@ -53,7 +53,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<RefreshSimulationSolverAndSchemaUICommand, IMoBiSimulation>(_presenter.Simulation, _container)
             .WithIcon(ApplicationIcons.Refresh);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.CommitToProjectDefaults)
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.MakeProjectDefaults)
             .WithCommandFor<CommitSimulationSolverAndSchemaUICommand, SimulationSettings>(_presenter.Simulation.Settings, _container)
             .WithIcon(ApplicationIcons.Commit);
       }

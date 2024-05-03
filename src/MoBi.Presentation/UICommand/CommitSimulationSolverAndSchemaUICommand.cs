@@ -9,22 +9,18 @@ namespace MoBi.Presentation.UICommand
    public class CommitSimulationSolverAndSchemaUICommand : ActiveObjectUICommand<SimulationSettings>
    {
       private readonly IInteractionTasksForSimulationSettings _simulationSettingsTask;
-      private readonly IMoBiContext _context;
 
       public CommitSimulationSolverAndSchemaUICommand(
-         IInteractionTasksForSimulationSettings simulationSettingsTask,
-         IMoBiContext context,
+         IInteractionTasksForSimulationSettings simulationSettingsTask, 
          IActiveSubjectRetriever activeSubjectRetriever) :
          base(activeSubjectRetriever)
       {
          _simulationSettingsTask = simulationSettingsTask;
-         _context = context;
       }
 
       protected override void PerformExecute()
       {
-         var clonedSimulationSettings = _context.Clone(Subject);
-         _simulationSettingsTask.UpdateDefaultSimulationSettingsInProject(clonedSimulationSettings.Solver, clonedSimulationSettings.OutputSchema);
+         _simulationSettingsTask.UpdateDefaultSimulationSettingsInProject(Subject);
       }
    }
 }

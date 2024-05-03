@@ -1092,7 +1092,7 @@ namespace MoBi.Assets
          public static readonly string AddBuildingBlocks = "Add Building Blocks...";
          public static readonly string LoadBuildingBlocks = "Load Building Blocks...";
          public static readonly string LoadBuildingBlocksFromTemplate = "Load Building Blocks from Template...";
-         public static readonly string CommitToProjectDefaults = "Commit to project defaults";
+         public static readonly string MakeProjectDefaults = "Make project defaults";
          public static readonly string RefreshFromProjectDefaults = "Refresh from project defaults";
          public static readonly string AddLocalMoleculeParameters = "Add Local Molecule Parameters";
          public static readonly string AddProteinExpression = "Add Protein Expression";

@@ -46,7 +46,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createCommitSubMenu(SimulationSettingsDTO viewItem)
       {
-         return CreateSubMenu.WithCaption(AppConstants.MenuNames.CommitToProjectDefaults).WithIcon(ApplicationIcons.Commit)
+         return CreateSubMenu.WithCaption(AppConstants.MenuNames.MakeProjectDefaults).WithIcon(ApplicationIcons.Commit)
             .WithItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.OutputSelections)
                .WithCommandFor<CommitSimulationOutputSelectionsUICommand, SimulationSettings>(viewItem.Simulation.Settings, _container))
             .WithItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.SettingsAndSchema)
